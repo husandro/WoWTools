@@ -4,8 +4,8 @@ WoWTools_ColorMixin={
     Save= {
         --disabled=true,
         --hide=true,
-        color={},--保存，历史记录
-        --selectType2=true,
+        --sacle=1,
+        logColor={},--保存，历史记录
     }
 }
 

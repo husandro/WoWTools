@@ -814,8 +814,8 @@ local function Init(mixin)
 
 
     --颜色
-    mixin:SetFrame(ColorPickerFrame.Header, {alpha= 0.3})
-    mixin:SetFrame(ColorPickerFrame.Border, {alpha= 0.3})
+    --mixin:SetFrame(ColorPickerFrame.Header, {alpha= 0.3})
+    --mixin:SetFrame(ColorPickerFrame.Border, {alpha= 0.3})
 
     --编辑模式
     mixin:SetScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)

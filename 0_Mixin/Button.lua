@@ -202,13 +202,13 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     local isType2= tab.isType2--圆形按钮
     local atlas= tab.atlas
     local texture= tab.texture
-    local mouseEvent= tab.mouseEvent
+    --local mouseEvent= tab.mouseEvent
 
     local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
     btn.mouseEvent= tab.mouseEvent
 
     btn:SetFrameStrata(frame:GetFrameStrata())
-    btn:SetFrameLevel(frame:GetFrameLevel())
+    btn:SetFrameLevel(frame:GetFrameLevel()+7)
     btn:SetSize(get_size(size))
     self:Settings(btn, isType2)
 

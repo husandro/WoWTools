@@ -5149,7 +5149,9 @@
         "PET_SHOW_IN_JOURNAL",
         "CollectionsJournal_SetTab",
         "PetJournal_SelectSpecies",
-        "PetBattleUnitFrame_UpdateDisplay"
+        "PetBattleUnitFrame_UpdateDisplay",
+        "ColorPickerFrameMixin",
+        "OpacityFrameSlider"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

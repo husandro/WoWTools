@@ -1,6 +1,13 @@
 local e= select(2, ...)
 
-local Frame
+
+local function Set_Color(r, g, b, a, textCode)
+    if r and g and b then
+        ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
+        ColorPickerFrame.Content.ColorPicker:SetColorAlpha(a or 1)
+        
+    end
+end
 
 
 
@@ -9,18 +16,15 @@ local Frame
 
 
 
-
-
-
-
+local size= 23
 local function Create_Texture(r,g,b,a, atlas)
-	local texture= Frame:CreateTexture()
-	texture:SetSize(23, 23)
+	local texture= _G['WoWToolsColorPickerFrameButton'].frame:CreateTexture()
+	texture:SetSize(size, size)
 	texture:EnableMouse(true)
 	a=a or 1
 	texture.r, texture.g, texture.b, texture.a= r, g, b, a
 	texture:SetScript('OnMouseDown', function(self)
-		WoWTools_ColorMixin:Set_Edit_Text(self.r, self.g, self.b, self.a, self.textCode)
+		Set_Color(self.r, self.g, self.b, self.a, self.textCode)
 		self:SetAlpha(0.1)
 	end)
 	texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
@@ -78,7 +82,7 @@ local function Init()
 --右边
 --职业 ColorUtil.lua
     local colorTab={}
-    local size, x, y, n= 23, 0, -15, 1
+    local x, y, n= 0, -15, 1
     for className, col in pairs(RAID_CLASS_COLORS) do
         local text= col.r..col.g..col.b.. (col.a or 1)
         if not colorTab[text] then
@@ -87,6 +91,7 @@ local function Init()
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             local hex= col:GenerateHexColor()
             texture.tooltip= '|c'..hex..'RAID_CLASS_COLORS["'..className..'"]'
+          
             if n==7 then
                 n=0
                 x= x+ size
@@ -272,6 +277,22 @@ end
 function WoWTools_ColorMixin:Init_SelectColor()
     Init()
 end
+
+
+
+
 function WoWTools_ColorMixin:Create_Texture(...)
     Create_Texture(...)
 end
+
+
+
+
+
+
+
+
+
+
+
+

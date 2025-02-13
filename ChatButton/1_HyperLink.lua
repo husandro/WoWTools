@@ -1268,6 +1268,17 @@ local function Init_Menu(_, root)
         GameTooltip_AddNormalLine(tooltip, '|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (e.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(e.onlyChinese and '类型' or TYPE))
     end)
 
+    root:CreateButton(
+        '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER),
+    function()
+        if ColorPickerFrame:IsShown() then
+            ColorPickerFrame:Hide()
+        else
+            WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
+        end
+        return MenuResponse.Open
+    end)
+
     root:CreateDivider()
     sub=WoWTools_MenuMixin:Reload(root, false)
 

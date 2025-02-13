@@ -116,9 +116,8 @@ Plus_Color\0_ColorMixin.lua
 Plus_Color\1_Init.lua
 Plus_Color\2_Options.lua
 Plus_Color\Log.lua
-Plus_Color\Color.lua
 Plus_Color\Edit.lua
-
+Plus_Color\Select_Color.lua
 
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统

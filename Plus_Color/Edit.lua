@@ -2,7 +2,7 @@ local e= select(2, ...)
 
 
 
-
+--[[
 
 local function Set_Edit_Text(r, g, b, a, textCode)
 	if ColorPickerFrame.Content then
@@ -25,8 +25,8 @@ end
 
 
 
-local function Init()
-    local Frame= WoWTools_ColorMixin.Frame
+local function Init_1()
+    local Frame= _G['WoWToolsColorPickerFrameButton'].frame
 
     --RGB
     local w=290
@@ -41,7 +41,7 @@ local function Init()
         enter:SetScript("OnEnter", func)
     end
 
-    Frame.rgb= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')-- 1 1 1 1
+    Frame.rgb= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')-- 1 1 1 1
     Frame.rgb:SetPoint("TOPLEFT", ColorPickerFrame, 'BOTTOMLEFT',10,0)
     Frame.rgb:SetSize(w,20)
     Frame.rgb:SetAutoFocus(false)
@@ -272,8 +272,217 @@ local function Init()
     local cnText2=WoWTools_LabelMixin:Create(Frame)--提示
     cnText2:SetPoint('LEFT', Frame.cn2, 'RIGHT', 2,0)
     cnText2:SetText(':')
+end]]
+
+
+
+
+
+local EditBoxs={
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Set_Color(r,g,b,a)
+    if r and g and b then
+        ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
+        ColorPickerFrame.Content.ColorPicker:SetColorAlpha(a or 1)
+    end
 end
 
+
+
+
+
+
+local function Get_RGBtoText(text)
+    text= text:gsub(',',' ')
+    text= text:gsub('，',' ')
+    text= text:gsub('  ',' ')
+    if text=='' then
+        return
+    end
+
+    local r, g, b, a
+
+    if text:find('#') or text:find('|c') then
+        r, g, b, a= WoWTools_ColorMixin:HEXtoRGB(text)
+    else
+        r, g, b, a= text:match('(.-) (.-) (.-) (.+)')
+        if not r or not g or not b then
+            r, g, b= text:match('(.-) (.-) (.+)')
+        end
+
+        if not r or not g or not b then
+            r, g, b= text:match('(%d+) (%d+) (%d+)')
+        end
+    end
+
+    if r and g and b then
+        r= r and tonumber(r) or 1
+        g= g and tonumber(g) or 1
+        b= b and tonumber(b) or 1
+        a= a and tonumber(a) or 1
+
+        r= r>1 and 1 or b<0 and 0 or r
+        g= g>1 and 1 or g<0 and 0 or g
+        b= b>1 and 1 or b<0 and 0 or b
+        a= a>1 and 1 or a<0 and 0 or a
+
+        local maxValue= max(r, g, b)
+        if maxValue<=1 then
+           return r,g,b,a
+        elseif maxValue<=255 then
+            a= (not a or a==1) and 255 or a
+           r,g,b,a= r/255, g/255, b/255, a/255
+           return r,g,b,a
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Set_ValueRGBText(self, r, g, b)
+
+end
+
+
+
+
+
+
+
+local function Create_EditBox(index, tab)
+    local frame= CreateFrame("EditBox", nil, _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 RED_FONT_COLOR
+    frame:SetPoint('TOPLEFT', ColorPickerFrame.Content, 'BOTTOMLEFT', 12, -(index-1)*22)
+    frame:SetPoint('RIGHT', ColorPickerFrame.Content, -26, 0)
+    frame:SetHeight(20)
+    frame:SetAutoFocus(false)
+    frame:ClearFocus()
+
+    frame.set_value= tab.set_value
+    frame.set_text= tab.set_text
+    frame.set_tooltip= tab.set_tooltip
+    frame.name=tab.name
+
+    frame.Instructions:SetText(tab.name or '')
+    --frame.searchIcon:SetAtlas('NPE_Icon')
+
+    frame:SetScript('OnEnterPressed', function(self)
+        self:ClearFocus()
+        ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())
+    end)
+
+    frame:SetScript('OnTextChanged', function(self, userInput)
+        if userInput and self:HasFocus() then
+            self.set_value(self:GetText())
+        end
+        self.Instructions:SetShown(self:GetText()=='')
+    end)
+
+    frame:SetScript('OnEscapePressed', frame.ClearFocus)
+
+    frame:SetScript('OnHide', function(self)
+        self:SetText('')
+        self:ClearFocus()
+    end)
+
+    frame:SetScript('OnLeave', function()
+        e.tips:Hide()
+    end)
+    frame:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(self.name)
+        e.tips:Show()
+    end)
+
+   --[[rame.icon= frame:CreateTexture()
+    frame.icon:SetPoint('LEFT', frame, 'RIGHT')
+    frame.icon:SetAtlas('NPE_Icon')
+    frame.icon:SetSize(20,20)]]
+
+    table.insert(EditBoxs, frame)
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+local Tab={
+{
+    name='R G B A',
+    set_value= function(text)
+        Set_Color(Get_RGBtoText(text))
+    end,
+    set_text= function(r,g,b,a)
+        return format(
+            '%.2f %.2f %.2f%s',
+            r,
+            g,
+            b,
+            (a~=1 and format(' %.2f', a) or '')
+        )
+    end,
+    set_tooltip=function(tooltip)
+        tooltip:AddLine('R G B A')
+    end
+},{
+    name='HEX',
+    set_value= function(text)
+        Set_Color(WoWTools_ColorMixin:HEXtoRGB(text))
+    end,
+    set_text= function(r,g,b,a)
+        return WoWTools_ColorMixin:RGBtoHEX(r,g,b,a)
+    end,
+},
+
+}
+
+    for index, tab in pairs(Tab) do
+        Create_EditBox(index, tab)
+    end
+
+    ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", function(self, r, g, b)
+        if WoWTools_ColorMixin.Save.hide or not (r and g and b) then
+            return
+        end
+
+        local a= ColorPickerFrame.hasOpacity and self:GetColorAlpha() or 1
+        for _, frame in pairs(EditBoxs) do
+            local text= not frame:HasFocus() and frame.set_text(r, g, b, a)
+            if text then
+                frame:SetText(text)
+            end
+        end
+    end)
+end
 
 
 
@@ -283,6 +492,6 @@ end
 
 
 
-function WoWTools_ColorMixin:Set_Edit_Text(...)
+--[[function WoWTools_ColorMixin:Set_Edit_Text(...)
 	Set_Edit_Text(...)
-end
+end]]

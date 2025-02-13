@@ -3,9 +3,9 @@ local function Save()
 	return WoWTools_ColorMixin.Save
 end
 
+local btn
 
-
-local function Init()
+--[[local function Init2()
 	local Frame= WoWTools_ColorMixin.Frame
 	if OpacitySliderFrame then
 		Frame.alphaText=WoWTools_LabelMixin:Create(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
@@ -79,7 +79,75 @@ local function Init()
 		e.tips:Show()
 	end)
 	check2.type2:SetScript('OnLeave', GameTooltip_Hide)
+end]]
+
+
+local function Init_Menu(self, root)
+	root:CreateCheckbox(
+		e.onlyChinese and '显示' or SHOW,
+	function()
+		return self.frame:IsShown()
+	end, function()
+		Save().hide= not Save().hide and true or nil
+		self:Settings()
+	end)
 end
+
+--[[
+local function Init_OpacityFrame()
+	OpacityFrameSlider:HookScript('OnValueChanged', function(self, ...)
+		print(...)
+	end)
+end]]
+
+
+
+local function Init()
+	btn=WoWTools_ButtonMixin:CreateMenu(ColorPickerFrame, {name='WoWToolsColorPickerFrameButton'})
+	btn:SetPoint("TOPLEFT", ColorPickerFrame.Border, 7, -7)
+	
+	function btn:set_alpha()
+		self:GetNormalTexture():SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.2)
+	end
+
+	function btn:set_tooltip()
+		e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ColorMixin.addName)
+		e.tips:AddLine(' ')
+		e.tips:AddDoubleLine(
+			e.GetShowHide(self.frame:IsShown()),
+			(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left
+		)
+        e.tips:Show()
+	end
+
+	btn:SetScript('OnLeave', function(self)
+		e.tips:Hide()
+		self:set_alpha()
+	end)
+	btn:SetScript('OnEnter', function(self)
+		self:set_tooltip()
+		self:set_alpha()
+	end)
+
+	btn.frame=CreateFrame("Frame", nil, btn)
+	btn.frame:SetPoint('BOTTOMRIGHT')
+	btn.frame:SetSize(1,1)
+
+	function btn:Settings()
+		self:SetNormalAtlas(Save().hide and e.Icon.icon or 'ui-questtrackerbutton-filter')
+		self.frame:SetShown(not Save().hide)
+		self.frame:SetScale(Save().sacle or 1)
+		ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())
+	end
+
+	btn:SetupMenu(Init_Menu)
+	btn:Settings()
+	btn:set_alpha()
+end
+
+
 
 
 
