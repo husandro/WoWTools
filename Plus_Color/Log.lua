@@ -13,10 +13,13 @@ end
 
 
 local function set_Text(self, elapsed)
+	local Frame= WoWTools_ColorMixin.Frame
 	if not Frame or not Frame:IsShown() then
 		return
 	end
+
 	self.elapsed = (self.elapsed or 0.3) + elapsed
+
 	if self.elapsed > 0.3 then
 		local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 		r= r==0 and 0 or r
@@ -49,13 +52,14 @@ end
 
 
 local function Init()
-
 	local restColor= WoWTools_ColorMixin:Create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
+
 	if ColorSwatch then
 		restColor:SetPoint('TOP', ColorSwatch, 'BOTTOM', 0, -60)
 	else
 		restColor:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 2,0)
 	end
+	
 	restColor:SetScript('OnShow', function(self)
 		local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 		self:SetColorTexture(r, g, b, a)
@@ -113,7 +117,7 @@ local function Init()
         ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", set_Text)
     end
 
-    Frame:SetShown(not Save().hide)
+    
 end
 
 

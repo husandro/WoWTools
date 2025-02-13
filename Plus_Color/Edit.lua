@@ -12,8 +12,8 @@ local function Set_Edit_Text(r, g, b, a, textCode)
 		OpacitySliderFrame:SetValue(a and 1-a or 0)
 		ColorPickerFrame:SetColorRGB(r, g, b)
 	end
-	Frame.cn:SetText(textCode and textCode..'_CODE' or '')
-	Frame.cn2:SetText(textCode and '|cn'..textCode or '')
+	WoWTools_ColorMixin.Frame.cn:SetText(textCode and textCode..'_CODE' or '')
+	WoWTools_ColorMixin.Frame.cn2:SetText(textCode and '|cn'..textCode or '')
 end
 
 
@@ -26,6 +26,7 @@ end
 
 
 local function Init()
+    local Frame= WoWTools_ColorMixin.Frame
 
     --RGB
     local w=290

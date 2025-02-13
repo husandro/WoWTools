@@ -73,9 +73,7 @@ end
 
 
 local function Init()
-    Frame= CreateFrame("Frame", 'WoWToolsColorPickerFramePlus', ColorPickerFrame)
-    Frame:SetPoint('BOTTOMRIGHT')
-    Frame:SetSize(1,1)
+  
 
 --右边
 --职业 ColorUtil.lua
@@ -273,4 +271,7 @@ end
 
 function WoWTools_ColorMixin:Init_SelectColor()
     Init()
+end
+function WoWTools_ColorMixin:Create_Texture(...)
+    Create_Texture(...)
 end

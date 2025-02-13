@@ -45,6 +45,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			})
 
             if not WoWTools_ColorMixin.Save.disabled then
+
+				local frame= CreateFrame("Frame", 'WoWToolsColorPickerFramePlus', ColorPickerFrame)
+				frame:SetPoint('BOTTOMRIGHT')
+				frame:SetSize(1,1)
+				WoWTools_ColorMixin.Frame= frame
+				frame:SetShown(not WoWTools_ColorMixin.hide)
+
 				if ColorPickerFrame:IsShown() then
 					Init()
 				else

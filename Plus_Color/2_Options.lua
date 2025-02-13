@@ -6,6 +6,7 @@ end
 
 
 local function Init()
+	local Frame= WoWTools_ColorMixin.Frame
 	if OpacitySliderFrame then
 		Frame.alphaText=WoWTools_LabelMixin:Create(OpacitySliderFrame, {mouse=true, size=14})--14)--透明值，提示
 		Frame.alphaText:SetPoint('LEFT', OpacitySliderFrame, 'RIGHT', 5,0)
