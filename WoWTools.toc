@@ -20,8 +20,10 @@
 ##调用库，不能删除
 Libs\Init.xml
 
+
 ##主要function，不能删除
 API_WoWTools.lua
+0_Mixin\Color.lua
 
 0_Mixin\0_Mixin.lua
 0_Mixin\Aura.lua
@@ -31,6 +33,7 @@ API_WoWTools.lua
 0_Mixin\ToolsButton.lua
 0_Mixin\Chat.lua
 0_Mixin\Collected.lua
+
 0_Mixin\Currency.lua
 0_Mixin\Durabiliy.lua
 0_Mixin\EditBox.lua
@@ -64,14 +67,12 @@ API_Panel.lua
 API_WoWDate.lua
 
 
-##颜色选择器，增强
-Plus\Color.lua
-##Plus_Color\0_ColorMixin.lua
-##Plus_Color\1_Init.lua
-##Plus_Color\2_Options.lua
-##Plus_Color\Log.lua
-##Plus_Color\Color.lua
-##Plus_Color\Edit.lua
+Plus_Color\1_Init.lua
+Plus_Color\2_Options.lua
+Plus_Color\Log.lua
+Plus_Color\Color.lua
+Plus_Color\Edit.lua
+
 
 ##WoWPlus
 ##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上

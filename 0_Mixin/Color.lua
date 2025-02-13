@@ -1,4 +1,4 @@
---local e= select(2, ...)
+local e= select(2, ...)
 
 WoWTools_ColorMixin={
     Save= {
@@ -8,6 +8,9 @@ WoWTools_ColorMixin={
         --selectType2=true,
     }
 }
+
+
+
 
 
 local function set_Frame_Color(frame, setR, setG, setB, setA, setHex)
@@ -108,6 +111,42 @@ end
 
 
 
+
+--设置颜色
+function WoWTools_ColorMixin:SetLabelTexture(frame, tab)--设置颜色
+    if frame and (e.Player.useColor or tab.color) then
+        local type= tab.type or type(frame)-- FontString Texture String
+        local alpha= tab.alpha
+        local col= tab.color or e.Player.useColor
+
+        local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
+        if type=='FontString' or type=='EditBox' then
+            frame:SetTextColor(r, g, b, a)
+
+        elseif type=='Texture' then
+            frame:SetVertexColor(r, g, b, a)
+        elseif type=='Button' then
+            local texture= frame:GetNormalTexture()
+            if texture then
+                texture:SetVertexColor(r, g, b, a)
+            end
+            texture= frame:GetPushedTexture()
+            if texture then
+                texture:SetVertexColor(r, g, b, a)
+            end
+            texture= frame:GetHighlightTexture()
+            if texture then
+                texture:SetVertexColor(r, g, b, a)
+            end
+
+        elseif type=='String' then
+            local hex= tab.color and tab.color.hex or e.Player.useColor.hex
+            return hex..frame
+        end
+    elseif type=='String' then
+        return frame
+    end
+end
 
 --[[
 
