@@ -83,6 +83,7 @@ end]]
 
 
 local function Init_Menu(self, root)
+	local sub
 	root:CreateCheckbox(
 		e.onlyChinese and '显示' or SHOW,
 	function()
@@ -92,7 +93,27 @@ local function Init_Menu(self, root)
 		self:Settings()
 	end)
 
-	
+	root:CreateDivider()
+--缩放
+	WoWTools_MenuMixin:Scale(root, function()
+		return Save().scale or 1
+	end, function(value)
+		Save().scale= value
+		self:Settings()
+	end)
+
+	local num= #Save().logColor
+	sub=root:CreateButton(
+		'|A:bags-button-autosort-up:0:0|a'
+		..(num==0 and '|cff828282' or '')
+		..'#'..num
+		..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
+	function()
+		WoWTools_ColorMixin:Clear_Log()
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine(e.onlyChinese and '最多保存30个颜色' or 'Save up to 30 colors')
+	end)
 end
 
 --[[
@@ -140,7 +161,7 @@ local function Init()
 	function btn:Settings()
 		self:SetNormalAtlas(Save().hide and e.Icon.icon or 'ui-questtrackerbutton-filter')
 		self.frame:SetShown(not Save().hide)
-		self.frame:SetScale(Save().sacle or 1)
+		self.frame:SetScale(Save().scale or 1)
 		ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())
 	end
 

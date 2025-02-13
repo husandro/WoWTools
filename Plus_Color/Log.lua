@@ -110,6 +110,8 @@ function WoWTools_ColorMixin:Init_Log()
 	Init()
 end
 
+
+--清除记录
 function WoWTools_ColorMixin:Clear_Log()
 	self.Save.logColor={}
 	Set_SaveList()
