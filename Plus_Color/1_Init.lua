@@ -34,6 +34,23 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
 --透明值，提示
 	ColorPickerFrame.Content.ColorPicker.alphaText=WoWTools_LabelMixin:Create(ColorPickerFrame.Content.ColorPicker)
@@ -65,6 +82,25 @@ local function Init()
 
 --显示，透明度值
 	ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", OnColorSelect)
+
+
+--移动，个会标记，不好找位置
+	--[[ColorPickerFrame.DragBar.tipTexture=ColorPickerFrame.DragBar:CreateTexture(nil, 'OVERLAY')
+	ColorPickerFrame.DragBar.tipTexture:SetAllPoints()
+	ColorPickerFrame.DragBar.tipTexture:SetAtlas('transmog-frame-small-pink')
+	ColorPickerFrame.DragBar.tipTexture:Hide()
+
+	ColorPickerFrame.DragBar:HookScript('OnLeave', function(self)
+		self.tipTexture:SetShown(false)
+	end)
+
+	ColorPickerFrame.DragBar:HookScript('OnEnter', function(self)
+		self.tipTexture:SetShown(true)
+	end)]]
+
+
+
+
 
 
 

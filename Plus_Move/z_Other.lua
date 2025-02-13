@@ -92,6 +92,9 @@ local function Init()
     WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
 
     WoWTools_MoveMixin:Setup(ColorPickerFrame, {click='RightButton'})--颜色选择器
+    WoWTools_MoveMixin:Setup(ColorPickerFrame.Header, {frame=ColorPickerFrame})
+    WoWTools_MoveMixin:Setup(ColorPickerFrame.Content, {frame=ColorPickerFrame})
+
     WoWTools_MoveMixin:Setup(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
     WoWTools_MoveMixin:Setup(OpacityFrame)
     WoWTools_MoveMixin:Setup(ArcheologyDigsiteProgressBar, {notZoom=true})

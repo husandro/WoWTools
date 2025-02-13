@@ -114,6 +114,10 @@ local function Init_Menu(self, root)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(e.onlyChinese and '最多保存30个颜色' or 'Save up to 30 colors')
 	end)
+	
+	root:CreateDivider()
+--打开选项界面
+	WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ColorMixin.addName,})
 end
 
 --[[
