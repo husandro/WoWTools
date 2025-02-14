@@ -5173,7 +5173,8 @@
         "FCF_NewChatWindow",
         "FCF_PopInWindow",
         "FCF_Close",
-        "GUILD_BANK_LOG"
+        "GUILD_BANK_LOG",
+        "DragonflightLandingOverlayMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

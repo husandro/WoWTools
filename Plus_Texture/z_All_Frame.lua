@@ -878,6 +878,11 @@ local function Init(mixin)
                 mixin:HideTexture(self.overlayFrame.ScrollFadeOverlay)
             end
         end)
+        hooksecurefunc(DragonflightLandingOverlayMixin, 'SetUpMajorFactionList', function(self)
+            mixin:SetScrollBar(self.MajorFactionList)
+            mixin:SetNineSlice(self)
+            mixin:SetAlphaColor(self.DragonridingPanel.Background, nil,nil, 0.75)
+        end)
     end
 end
 
