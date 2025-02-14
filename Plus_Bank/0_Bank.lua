@@ -79,7 +79,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)]]
-    
+
 
 --左边列表
     root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
@@ -226,7 +226,7 @@ local function Init()
 
     OptionButton:SetFrameStrata(strata)
     OptionButton:SetFrameLevel(level)
- 
+
 
     OptionButton:SetScript('OnLeave', GameTooltip_Hide)
     OptionButton:SetScript('OnEnter', function(self)
@@ -257,20 +257,19 @@ local function Init()
 
 
 
-    
+
 --钱    
     BankFrameMoneyFrameBorder:Hide()
     BankFrameMoneyFrame:ClearAllPoints()
     if IsReagentBankUnlocked() then
         BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
-        BankFrameMoneyFrame:SetFrameStrata(strata)
-        BankFrameMoneyFrame:SetFrameLevel(level)
     else
         BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
         WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
     end
+    BankFrameMoneyFrame:SetFrameStrata(strata)
+    BankFrameMoneyFrame:SetFrameLevel(level)
 
-    
 
 
     WoWTools_BankFrameMixin:Init_Plus()--整合，一起
