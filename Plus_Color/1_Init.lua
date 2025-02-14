@@ -17,7 +17,7 @@ local function OnColorSelect(self, r, g, b)
 	end
 
 	self.alphaText:SetText(alphaText or '')
-	self.alphaWheelTexture:SetShown(alphaText)
+	--self.alphaWheelTexture:SetShown(alphaText)
 
 	for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
 		if icon:GetObjectType()=="Texture" then
@@ -56,10 +56,10 @@ local function Init()
 	ColorPickerFrame.Content.ColorPicker.alphaText=WoWTools_LabelMixin:Create(ColorPickerFrame.Content.ColorPicker)
 	ColorPickerFrame.Content.ColorPicker.alphaText:SetPoint('BOTTOM', ColorPickerFrame.Content.ColorPicker.Alpha, 'TOP',0,1)
 
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture= ColorPickerFrame.Content.ColorPicker:CreateTexture(nil, 'OVERLAY', nil, 7)
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorPicker.Alph)
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:SetPoint('BOTTOMRIGHT', ColorPickerFrame.Content.ColorPicker.Alph)
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:EnableMouseWheel(true)
+	--[[ColorPickerFrame.Content.ColorPicker.alphaWheelTexture= ColorPickerFrame.Content.ColorPicker:CreateTexture(nil, 'OVERLAY', nil, 7)
+	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorPicker.Alpha)
+	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:SetPoint('BOTTOMRIGHT', ColorPickerFrame.Content.ColorPicker.Alpha)
+	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:EnableMouseWheel(true)]]
 
 --修行，透明度值，MouseWheel
 	ColorPickerFrame.Content.ColorPicker:EnableMouseWheel(true)
@@ -77,7 +77,7 @@ local function Init()
 		value= math.min(1, value)
 		value= math.max(0, value)
 		self:SetColorAlpha(value)
-		self.alphaWheelTexture:SetShown(value)
+		--self.alphaWheelTexture:SetShown(value)
 	end)
 
 --显示，透明度值

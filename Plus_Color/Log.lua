@@ -63,7 +63,7 @@ end
 
 local function Init()
 	RestColor= WoWTools_ColorMixin:Create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
-	RestColor:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 2,0)
+	RestColor:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 10,0)
 
 	hooksecurefunc(ColorPickerFrame, 'SetupColorPickerAndShow', function(_, info)
 		local r = info.r
