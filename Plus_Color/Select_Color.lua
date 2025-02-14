@@ -44,9 +44,9 @@ local function Create_Texture(r,g,b,a, atlas)
 		e.tips:AddDoubleLine(col..WoWTools_Mixin.addName, col..WoWTools_ColorMixin.addName)
 
 		e.tips:AddDoubleLine(
-            'r'..tonumber(format('%.2f',self.r))
-            ..'  g'..tonumber(format('%.2f',self.g))
-            ..'  b'..tonumber(format('%.2f',self.b)),
+            '|cffff0000r|r|cffffffff=|r'..tonumber(format('%.2f',self.r))
+            ..'  |cff00ff00g|r|cffffffff=|r'..tonumber(format('%.2f',self.g))
+            ..'  |cff0000ffb|r|cffffffff=|r'..tonumber(format('%.2f',self.b)),
 
             'a'..(self.a and tonumber(format('%.2f',self.a) or 1))
             ..(self.a and self.a<1 and '|cnGREEN_FONT_COLOR: / 1|r' or '')
@@ -226,7 +226,6 @@ local function Init()
             n=n+1
         end
     end
-
 
 
 

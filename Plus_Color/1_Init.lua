@@ -145,9 +145,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					if Init() then Init=function()end end
 				end)
 
-				if e.Player.husandro then
+				if Save().autoShow then
 					C_Timer.After(2, function()
 						WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
+						print(
+							WoWTools_Mixin.addName,
+							WoWTools_ColorMixin.addName,
+							'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))..'|A:colorblind-colorwheel:0:0|a'
+						)
 					end)
 				end
 

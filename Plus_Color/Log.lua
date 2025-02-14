@@ -3,35 +3,34 @@ local function Save()
 	return WoWTools_ColorMixin.Save
 end
 
+
+
+
+
+
+
+
+
 local Textures={}
-
-
-
-
-
-
-
-
-
-
-local function Set_SaveList()
-	local n= #Save().logColor
+local function Set_SaveLogList()
 	local logColor= Save().logColor
-	for i=1, n do
-		local texture= Textures[i]
+	local n= math.min(#logColor, Save().logMaxColor or 30)
+
+	for i=1, n, 1 do
+		local icon= Textures[i]
 		local col= logColor[i]
 		if not Textures[i] then
-			texture= WoWTools_ColorMixin:Create_Texture(col.r, col.g, col.b, 1)--记录，打开时的颜色， 和历史
+			icon= WoWTools_ColorMixin:Create_Texture(col.r, col.g, col.b, col.a)--记录，打开时的颜色， 和历史
 			if i==1 then
-				texture:SetPoint('TOPRIGHT', ColorPickerFrame, "TOPLEFT", 0, -20)
+				icon:SetPoint('TOPRIGHT', ColorPickerFrame, "TOPLEFT", 0, -20)
 			else
-				texture:SetPoint('TOP', Textures[i-1], 'BOTTOM')
+				icon:SetPoint('TOP', Textures[i-1], 'BOTTOM')
 			end
-			table.insert(Textures, texture)
+			table.insert(Textures, icon)
 		end
-		texture.r, texture.g, texture.b, texture.a= col.r, col.g, col.b, col.a
-		texture:SetColorTexture(col.r, col.g, col.b , col.a)
-		texture:SetShown(true)
+		icon.r, icon.g, icon.b, icon.a= col.r, col.g, col.b, col.a
+		icon:SetColorTexture(col.r, col.g, col.b , 1)
+		icon:SetShown(true)
 	end
 
 	for i= 11, n, 10 do
@@ -73,7 +72,7 @@ local function Init_Menu(self, root)
         )
 	end
 
-	local function add_texture(button, desc)
+	local function add_icon(button, desc)
 		local icon = button:AttachTexture()
 		icon:SetSize(20, 20);
 		icon:SetPoint("RIGHT")
@@ -88,7 +87,7 @@ local function Init_Menu(self, root)
 		end,
 		{r=self.r, g=self.g, b=self.b, a=self.a or 1}
 	)
-	sub:AddInitializer(add_texture)
+	sub:AddInitializer(add_icon)
 	sub:SetTooltip(set_tooltip)
 	root:CreateDivider()
 
@@ -104,7 +103,7 @@ local function Init_Menu(self, root)
 		print(WoWTools_ColorMixin.addName, e.onlyChinese and '替换成功' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, COMPLETE))
 		return MenuResponse
 	end, col)
-	sub:AddInitializer(add_texture)
+	sub:AddInitializer(add_icon)
 	sub:SetTooltip(set_tooltip)
 end
 
@@ -120,7 +119,7 @@ local function Init()
 		self:SetAlpha(1)
 	end)
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
         e.tips:ClearLines()
 		e.tips:AddLine(e.onlyChinese and "当前颜色" or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, COLOR))
 		e.tips:Show()
@@ -133,7 +132,7 @@ local function Init()
 	end)
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript('OnEnter', function(self)
 		local r,g,b,a= ColorPickerFrame:GetPreviousValues()
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
+		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
         e.tips:ClearLines()
 		e.tips:AddDoubleLine(e.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, e.Icon.left)
 		if r and g and b then
@@ -159,23 +158,33 @@ local function Init()
 			end
 		end
 	end)
-	hooksecurefunc(ColorPickerFrame, 'SetupColorPickerAndShow', Set_SaveList)
-	Set_SaveList()
+	hooksecurefunc(ColorPickerFrame, 'SetupColorPickerAndShow', Set_SaveLogList)
+	Set_SaveLogList()
 
 
 --保存，记录数量
 	ColorPickerFrame.Footer.OkayButton:HookScript('OnClick', function()
+		local logNum= Save().logMaxColor or 30
+		if logNum==0 then
+			Save().logColor={}
+			return
+		end
+--检测，已存在
 		local r, g, b, a= WoWTools_ColorMixin:Get_ColorFrameRGBA()
 		for _, col in pairs(Save().logColor) do
 			if col.r==r and col.g==g and col.b==b and col.a== a then
 				return
 			end
 		end
-
-		if #Save().logColor >=30 then--记录数量
-			table.remove(Save().logColor, 1)
+--移除，最后，记录数量
+		local num= #Save().logColor
+		do
+			for i= num, logNum, -1 do
+				table.remove(Save().logColor, i)
+			end
 		end
-		table.insert(Save().logColor,{r=r, g=g, b=b, a=a})
+
+		table.insert(Save().logColor, 1, {r=r, g=g, b=b, a=a})
 	end)
 
 	--RestColor= WoWTools_ColorMixin:Create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
@@ -237,8 +246,7 @@ function WoWTools_ColorMixin:Init_Log()
 end
 
 
---清除记录
-function WoWTools_ColorMixin:Clear_Log()
-	self.Save.logColor={}
-	Set_SaveList()
+--设置，记录
+function WoWTools_ColorMixin:Set_SaveLogList()
+	Set_SaveLogList()
 end

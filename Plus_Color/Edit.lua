@@ -125,16 +125,71 @@ local Tab={
             )
         end,
     },
+    {
+        name= 'CODE',
+        get_value= function(text)
+            if text=='' then
+                return
+            end
+            text=text:gsub(' ', '')
+            text= text:match('|cn(.+)') or text
+            text= text:gsub(':', '')
+            text= string.upper(text)
+            local color= _G[text:gsub("_CODE", '')] or _G[text]
+
+            local t= type(color)
+            if t=='string' then
+                return WoWTools_ColorMixin:HEXtoRGB(color)
+            elseif t=='table' then
+                return color.r, color.g, color.b, color.a
+            end
+        end,
+        get_text= function(r,g,b,a)
+            local r2,g2,b2,a2= format('%.2f',r), format('%.2f',g), format('%.2f',b), format('%.2f',a or 1)
+            local r3,g3,b3,a3, r4,g4,b4,a4
+            for _, info in pairs(C_UIColor.GetColors() or {}) do
+                r4,g4,b4,a4= info.color.r, info.color.g, info.color.b, info.color.a or 1
+                r3,g3,b3,a3= format('%.2f',r4), format('%.2f', g4), format('%.2f',b4), format('%.2f',a4)
+                if
+                    (r2==r3 or r4==r)
+                    and (g2==g3 or g4==g)
+                    and (b2==b3 or b4==b)
+                    and (a2==a3 or a4==a4)
+                then
+                    return info.baseTag
+                end
+            end
+            return ''
+        end,
+    }
 }
 
 
+-- |cnGREEN_FONT_COLOR:
 
 
 
+--[[
+if not r or not g or not b then
+                return ''
+            end
 
-
-
-
+            local r2,g2,b2,a2= format('%.2f',r), format('%.2f',g), format('%.2f',b), format('%.2f',a or 1)
+            local r3,g3,b3,a3, r4,g4,b4,a4
+            for _, info in pairs(C_UIColor.GetColors() or {}) do
+                r4,g4,b4,a4= info.color.r, info.color.g, info.color.b, info.color.a or 1
+                r3,g3,b3,a3= format('%.2f',r4), format('%.2f', g4), format('%.2f',b4), format('%.2f',a4)
+                if
+                    (r2==r3 or r4==r)
+                    and (g2==g3 or g4==g)
+                    and (b2==b3 or b4==b)
+                    and (a2==a3 or a4==a4)
+                then
+                    return info.baseTag
+                end
+            end
+            return ''
+]]
 
 
 
