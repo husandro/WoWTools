@@ -306,12 +306,9 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            WoWTools_BankFrameMixin.addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
---旧数据
-            WoWToolsSave[BANK]=nil
-            WoWToolsSave['Bank_Lua']=nil
 
             WoWTools_BankFrameMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankFrameMixin.Save
+            WoWTools_BankFrameMixin.addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
 
             --添加控制面板
             e.AddPanel_Check({
@@ -324,7 +321,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if not Save().disabled then
-                Init()--银行
+               Init()--银行
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
