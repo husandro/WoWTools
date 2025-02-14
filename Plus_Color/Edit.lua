@@ -11,7 +11,7 @@ local function OnColorSelect(_, r, g, b)
     for _, frame in pairs(EditBoxs) do
 
         if not frame:HasFocus() then
-            local text= frame.set_text(r, g, b, a)
+            local text= frame.get_text(r, g, b, a)
             if text then
                 frame:SetText(text)
             end
@@ -20,28 +20,12 @@ local function OnColorSelect(_, r, g, b)
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Set_Color(r,g,b,a)
     if r and g and b then
         ColorPickerFrame.Content.ColorPicker:SetColorRGB(r, g, b)
         ColorPickerFrame.Content.ColorPicker:SetColorAlpha(a or 1)
     end
 end
-
 
 local function Get_RGBAtoText(text)
     text= text:gsub(',',' ')
@@ -92,16 +76,6 @@ end
 
 
 
-local function Get_RGB255toText(text)
-    local r,g,b= text:match('(%d+).-(%d+).-(%d+)')
-    if r and g and b then
-        local r2,g2,b2= tonumber(r), tonumber(g), tonumber(b)
-        r2,g2,b2= math.min(r, 255), math.min(g, 255), math.min(b, 255)
-        return r2/255, g2/255, b2/255
-    end
-end
-
-
 
 
 
@@ -112,10 +86,10 @@ end
 local Tab={
     {
         name='R G B A',
-        set_value= function(text)
+        get_value= function(text)
             return Get_RGBAtoText(text)
         end,
-        set_text= function(r,g,b,a)
+        get_text= function(r,g,b,a)
             r= tonumber(format('%.2f', r))
             g= tonumber(format('%.2f', g))
             b= tonumber(format('%.2f', b))
@@ -125,19 +99,24 @@ local Tab={
     },
     {
         name='HEX',
-        set_value= function(text)
+        get_value= function(text)
             return WoWTools_ColorMixin:HEXtoRGB(text)
         end,
-        set_text= function(r,g,b,a)
+        get_text= function(r,g,b,a)
             return WoWTools_ColorMixin:RGBtoHEX(r,g,b,a)
         end,
     },
     {
         name='R G B',
-        set_value= function(text)
-            return Get_RGB255toText(text)
+        get_value= function(text)
+            local r,g,b= text:match('(%d+).-(%d+).-(%d+)')
+            if r and g and b then
+                local r2,g2,b2= tonumber(r), tonumber(g), tonumber(b)
+                r2,g2,b2= math.min(r, 255), math.min(g, 255), math.min(b, 255)
+                return r2/255, g2/255, b2/255
+            end
         end,
-        set_text= function(r,g,b)
+        get_text= function(r,g,b)
             return format(
                 '%i %i %i',
                 r*255,
@@ -153,6 +132,16 @@ local Tab={
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Create_EditBox(index, tab)
     local frame= CreateFrame("EditBox", nil, _G['WoWToolsColorPickerFrameButton'].frame, 'SearchBoxTemplate', index)--格式 RED_FONT_COLOR
 
@@ -162,8 +151,8 @@ local function Create_EditBox(index, tab)
     frame:SetAutoFocus(false)
     frame:ClearFocus()
 
-    frame.set_value= tab.set_value
-    frame.set_text= tab.set_text
+    frame.get_value= tab.get_value
+    frame.get_text= tab.get_text
     frame.name=tab.name
 
     frame.Instructions:SetText(tab.name or '')
@@ -171,21 +160,21 @@ local function Create_EditBox(index, tab)
     frame.Instructions:SetPoint('RIGHT', frame.clearButton, 'LEFT')
     WoWTools_PlusTextureMixin:SetSearchBox(frame, {alpha=0.6})
     frame.Instructions:SetAlpha(0.6)
-    
+
     --frame.clearButton:SetAlpha(0.6)
     --frame.searchIcon:SetAlpha(0.6)
     --frame.searchIcon:SetAtlas('NPE_Icon')
     function frame:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        local r,g,b,a= self.set_value(self:GetText())
+        local r,g,b,a= self.get_value(self:GetText())
         e.tips:AddLine(self.name, r,g,b)
-        
+
         if r and g and b then
             e.tips:AddLine(' ')
-            e.tips:AddLine(Tab[1].set_text(r, g, b, a))
-            e.tips:AddLine(Tab[2].set_text(r, g, b, a))
-            e.tips:AddLine(Tab[3].set_text(r, g, b, a))
+            e.tips:AddLine(Tab[1].get_text(r, g, b, a))
+            e.tips:AddLine(Tab[2].get_text(r, g, b, a))
+            e.tips:AddLine(Tab[3].get_text(r, g, b, a))
         end
         e.tips:Show()
     end
@@ -206,10 +195,9 @@ local function Create_EditBox(index, tab)
 --OnTextChanged
     frame:SetScript('OnTextChanged', function(self, userInput)
         if userInput and self:HasFocus() then
-            Set_Color(self.set_value(self:GetText()))
+            Set_Color(self.get_value(self:GetText()))
         end
-        local hasText= self:HasText()
-        self.clearButton:SetShown(hasText)
+        self.clearButton:SetShown(self:HasText())
         if GameTooltip:IsOwned(self) then
             self:set_tooltip()
         end
@@ -280,8 +268,6 @@ end
 
 
 local function Init()
-    
-
     for index, tab in pairs(Tab) do
         Create_EditBox(index, tab)
     end
@@ -296,8 +282,3 @@ function WoWTools_ColorMixin:Init_EditBox()
     Init()
 end
 
-
-
---[[function WoWTools_ColorMixin:Set_Edit_Text(...)
-	Set_Edit_Text(...)
-end]]

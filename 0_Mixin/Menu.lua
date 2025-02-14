@@ -7,6 +7,7 @@ Scale(
 ShowTexture(root, GetValue, SetValue)
 ShowBackground(root, GetValue, SetValue)
 FrameStrata(root, GetValue, SetValue)
+Color(root,OnClick, ColorInfo)
 RestPoint(root, point, SetValue)
 RestData(root, name, SetValue)
 Reload(root, isControlKeyDown)
@@ -232,8 +233,46 @@ end, function(value)
     self:set_scale()
 end)
 ]]
+--[[
+function WoWTools_MenuMixin:Color(root, text, onClick, colorInfo, data)
+    return root:CreateColorSwatch(
+        text,
+        onClick or function()end,
+        {
+            r = colorInfo.r or e.Player.r,
+            g = colorInfo.g or e.Player.g,
+            b = colorInfo.b or e.Player.b,
+            opacity = colorInfo.opacity or colorInfo.a or 1,
+            swatchFunc = colorInfo.opacity or function()end,
+            opacityFunc = colorInfo.opacityFunc or function()end,
+            cancelFunc = colorInfo.cancelFunc or function()end,
+            hasOpacity = (colorInfo.opacity or colorInfo.a) and true or false,
+        },
+        data
+    )
+end
 
+--颜色选择器
+WoWTools_MenuMixin:Color(root,
+    text,
+function()
 
+end, {
+    r= r,
+    g= g,
+    b= b,
+    opacity= 1,
+    swatchFunc= function()
+
+    end,
+    opacityFunc= function()
+
+    end,
+    cancelFunc= function()
+
+    end,
+})
+]]
 
 
 

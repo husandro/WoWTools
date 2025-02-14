@@ -49,7 +49,7 @@ end
 
 --HEX转RGB -- ColorUtil.lua
 function WoWTools_ColorMixin:HEXtoRGB(text, frame)
-	if not text then
+	if not text or text=='' then
         return
     end
     text= text:gsub(' ','')
@@ -57,6 +57,9 @@ function WoWTools_ColorMixin:HEXtoRGB(text, frame)
     text= text:gsub('#', '')
     local len= #text
     local r,g,b,a
+    if len>8 then
+        text=string.sub(text,1,8)
+    end
     if len == 8 then
         r,g,b, a= ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), ExtractColorValueFromHex(text, 7), ExtractColorValueFromHex(text, 1)
     elseif len==6 then
@@ -74,11 +77,11 @@ end
 --取得, ColorFrame, 颜色
 function WoWTools_ColorMixin:Get_ColorFrameRGBA()
     local r,g,b= ColorPickerFrame:GetColorRGB()
-    local a= ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha()
+    local a= ColorPickerFrame.hasOpacity and ColorPickerFrame:GetColorAlpha() or 1
     r= r and tonumber(format('%.2f', r)) or 1
     g= g and tonumber(format('%.2f', g)) or 1
     b= b and tonumber(format('%.2f', b)) or 1
-    a= a and tonumber(format('%.2f', a)) or 1
+    a= a~=1 and tonumber(format('%.2f', a)) or a
 	return r, g, b, a, {r=r, g=g, b=b, a=a}
 end
 

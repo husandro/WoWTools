@@ -1,5 +1,7 @@
 local id, e= ...
-
+local function Save()
+	return WoWTools_ColorMixin.Save
+end
 
 
 
@@ -8,64 +10,36 @@ local id, e= ...
 
 local function OnColorSelect(self, r, g, b)
 	local alphaText, a
-	a=(not WoWTools_ColorMixin.Save.hide and self.Alpha:IsShown()) and self:GetColorAlpha()
+		a=(not Save().hide and self.Alpha:IsShown()) and self:GetColorAlpha()
 
-	if a then
-		alphaText= format('%.2f', a)
-	else
-		r,g,b,a=1,1,1,1
-	end
-
-	self.alphaText:SetText(alphaText or '')
-	--self.alphaWheelTexture:SetShown(alphaText)
-
-	for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
-		if icon:GetObjectType()=="Texture" then
-			icon:SetVertexColor(r,g,b,a)
+		if a then
+			alphaText= format('%.2f', a)
+		else
+			r,g,b,a=1,1,1,1
 		end
-	end
-	for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
-		if icon:GetObjectType()=="Texture" then
-			icon:SetVertexColor(r,g,b,a)
+--透明度值
+		self.alphaText:SetText(alphaText or '')
+--修改材质颜色
+		for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
+			if icon:GetObjectType()=="Texture" then
+				icon:SetVertexColor(r,g,b,a)
+			end
 		end
-	end
+		for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
+			if icon:GetObjectType()=="Texture" then
+				icon:SetVertexColor(r,g,b,a)
+			end
+		end
+		local texture= _G['WoWToolsColorPickerFrameButton']:GetNormalTexture()
+		texture:SetVertexColor(r,g,b)
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init()
---透明值，提示
-	ColorPickerFrame.Content.ColorPicker.alphaText=WoWTools_LabelMixin:Create(ColorPickerFrame.Content.ColorPicker)
-	ColorPickerFrame.Content.ColorPicker.alphaText:SetPoint('BOTTOM', ColorPickerFrame.Content.ColorPicker.Alpha, 'TOP',0,1)
-
-	--[[ColorPickerFrame.Content.ColorPicker.alphaWheelTexture= ColorPickerFrame.Content.ColorPicker:CreateTexture(nil, 'OVERLAY', nil, 7)
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:SetPoint('TOPLEFT', ColorPickerFrame.Content.ColorPicker.Alpha)
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:SetPoint('BOTTOMRIGHT', ColorPickerFrame.Content.ColorPicker.Alpha)
-	ColorPickerFrame.Content.ColorPicker.alphaWheelTexture:EnableMouseWheel(true)]]
-
---修行，透明度值，MouseWheel
+local function Init_Other()
+--修改，透明度值，MouseWheel
 	ColorPickerFrame.Content.ColorPicker:EnableMouseWheel(true)
 	ColorPickerFrame.Content.ColorPicker:HookScript('OnMouseWheel', function(self, d)
 		local value
-		value= (not WoWTools_ColorMixin.Save.hide and self.Alpha:IsShown()) and self:GetColorAlpha()
+		value= (not Save().hide and self.Alpha:IsShown()) and self:GetColorAlpha()
 		if not value then
 			return
 		end
@@ -77,11 +51,36 @@ local function Init()
 		value= math.min(1, value)
 		value= math.max(0, value)
 		self:SetColorAlpha(value)
-		--self.alphaWheelTexture:SetShown(value)
 	end)
 
---显示，透明度值
+--透明度值
+	ColorPickerFrame.Content.ColorPicker.alphaText=WoWTools_LabelMixin:Create(ColorPickerFrame.Content.ColorPicker)
+	ColorPickerFrame.Content.ColorPicker.alphaText:SetPoint('BOTTOM', ColorPickerFrame.Content.ColorPicker.Alpha, 'TOP',0,1)
+
+--修改材质颜色
 	ColorPickerFrame.Content.ColorPicker:HookScript("OnColorSelect", OnColorSelect)
+	OnColorSelect(ColorPickerFrame.Content.ColorPicker, ColorPickerFrame:GetColorRGB())
+end
+
+
+
+
+
+
+
+
+
+
+local function Init()
+	do
+		WoWTools_ColorMixin:Init_Options()
+	end
+	WoWTools_ColorMixin:Init_EditBox()
+	WoWTools_ColorMixin:Init_SelectColor()
+	WoWTools_ColorMixin:Init_Log()
+	Init_Other()
+	return true
+end
 
 
 --移动，个会标记，不好找位置
@@ -104,18 +103,6 @@ local function Init()
 
 
 
-	do
-		WoWTools_ColorMixin:Init_Options()
-	end
-	WoWTools_ColorMixin:Init_EditBox()
-	WoWTools_ColorMixin:Init_SelectColor()
-	WoWTools_ColorMixin:Init_Log()
-	return true
-end
-
-
-
-
 
 
 
@@ -130,19 +117,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
 			
 			WoWToolsSave[COLOR_PICKER]= nil
-            WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or WoWTools_ColorMixin.Save
+			WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or Save()
+
 			WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER)
 
 			--添加控制面板
 			e.AddPanel_Check_Button({
 				checkName= WoWTools_ColorMixin.addName,
-				GetValue= function() return not WoWTools_ColorMixin.Save.disabled end,
+				GetValue= function() return not Save().disabled end,
 				SetValue= function()
-					WoWTools_ColorMixin.Save.disabled= not WoWTools_ColorMixin.Save.disabled and true or nil
+					Save().disabled= not Save().disabled and true or nil
                 	print(
 						WoWTools_Mixin.addName,
 						WoWTools_ColorMixin.addName,
-						e.GetEnabeleDisable(not WoWTools_ColorMixin.Save.disabled),
+						e.GetEnabeleDisable(not Save().disabled),
 						e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)
 				end,
@@ -152,7 +140,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end,
 			})
 
-            if not WoWTools_ColorMixin.Save.disabled then
+            if not Save().disabled then
 				ColorPickerFrame:HookScript('OnShow', function()
 					if Init() then Init=function()end end
 				end)

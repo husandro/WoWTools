@@ -25,12 +25,14 @@ local function Create_Texture(r,g,b,a, atlas)
 	local texture= _G['WoWToolsColorPickerFrameButton'].frame:CreateTexture()
 	texture:SetSize(size, size)
 	texture:EnableMouse(true)
-	
+
     a=a or 1
 	texture.r, texture.g, texture.b, texture.a= r, g, b, a
 
-	texture:SetScript('OnMouseDown', function(self)
-		Set_Color(self.r, self.g, self.b, 1)--, self.textCode)
+	texture:SetScript('OnMouseDown', function(self, d)
+        if d~=self.notClick then
+		    Set_Color(self.r, self.g, self.b, 1)--, self.textCode)
+        end
 		self:SetAlpha(0.1)
 	end)
 
@@ -40,18 +42,26 @@ local function Create_Texture(r,g,b,a, atlas)
 		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(col..WoWTools_Mixin.addName, col..WoWTools_ColorMixin.addName)
-		if self.tooltip then
-			e.tips:AddLine(' ')
-			e.tips:AddLine(self.tooltip)
-		end
-        
-		e.tips:AddDoubleLine('r'..format('%.2f',self.r)..'  g'..format('%.2f',self.g)..'  b'..format('%.2f',self.b),
 
-            'a'..(self.a and format('%.2f',self.a) or 1)..(self.a and self.a<1 and '|cnGREEN_FONT_COLOR: / 1|r' or '')
+		e.tips:AddDoubleLine(
+            'r'..tonumber(format('%.2f',self.r))
+            ..'  g'..tonumber(format('%.2f',self.g))
+            ..'  b'..tonumber(format('%.2f',self.b)),
+
+            'a'..(self.a and tonumber(format('%.2f',self.a) or 1))
+            ..(self.a and self.a<1 and '|cnGREEN_FONT_COLOR: / 1|r' or '')
         )
         if self.textCode then
             e.tips:AddLine(self.textCode)
         end
+        if self.tooltip then
+            if type(self.tooltip)=='function' then
+                self.tooltip(self)
+            else
+                e.tips:AddLine(' ')
+                e.tips:AddLine(self.tooltip)
+            end
+		end
 		e.tips:Show()
 		self:SetAlpha(0.7)
 	end)
@@ -92,7 +102,7 @@ end
 
 
 local function Init()
-  
+
 
 --右边
 --职业 ColorUtil.lua
@@ -106,7 +116,7 @@ local function Init()
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             --local hex= col:GenerateHexColor()
             texture.tooltip= 'RAID_CLASS_COLORS["'..className..'"]'
-          
+
             if n==7 then
                 n=0
                 x= x+ size
@@ -253,7 +263,7 @@ local function Init()
 
 
 
-    
+
 
 --颜色 选择器2
 	if WoWTools_ColorMixin.Save.selectType2 then
