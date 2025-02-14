@@ -5152,7 +5152,8 @@
         "PetBattleUnitFrame_UpdateDisplay",
         "ColorPickerFrameMixin",
         "OpacityFrameSlider",
-        "ExtractColorValueFromHex"
+        "ExtractColorValueFromHex",
+        "COLORS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

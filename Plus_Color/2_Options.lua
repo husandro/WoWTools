@@ -115,6 +115,22 @@ local function Init_Menu(self, root)
 		tooltip:AddLine(e.onlyChinese and '最多保存30个颜色' or 'Save up to 30 colors')
 	end)
 	
+	sub=root:CreateCheckbox(
+		e.onlyChinese and '更多颜色' or (COLORS..' 2'),
+	function()
+		return Save().selectType2
+	end, function()
+		Save().selectType2 = not Save().selectType2 and true or nil
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine( e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+	end)
+
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
+
+
 	root:CreateDivider()
 --打开选项界面
 	WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ColorMixin.addName,})
