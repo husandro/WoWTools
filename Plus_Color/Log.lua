@@ -14,7 +14,7 @@ end
 local Textures={}
 local function Set_SaveLogList()
 	local logColor= Save().logColor
-	local n= math.min(#logColor, Save().logMaxColor or 30)
+	local n= math.min(#logColor, Save().logMaxColor or 10)
 
 	for i=1, n, 1 do
 		local icon= Textures[i]
@@ -26,6 +26,7 @@ local function Set_SaveLogList()
 			else
 				icon:SetPoint('TOP', Textures[i-1], 'BOTTOM')
 			end
+			icon.tooltip= (e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..i
 			table.insert(Textures, icon)
 		end
 		icon.r, icon.g, icon.b, icon.a= col.r, col.g, col.b, col.a
@@ -114,6 +115,8 @@ local function Init()
 	Save().logColor= Save().logColor or {}
 	Save().saveColor= Save().saveColor or {}
 
+	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript("OnMouseDown", function(self) self:SetAlpha(0.3) end)
+	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript("OnMouseUp", function(self) self:SetAlpha(0.5) end)
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript('OnLeave', function(self)
 		e.tips:Hide()
 		self:SetAlpha(1)
@@ -126,6 +129,8 @@ local function Init()
 		self:SetAlpha(0.5)
 	end)
 
+	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript("OnMouseDown", function(self) self:SetAlpha(0.3) end)
+	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript("OnMouseUp", function(self) self:SetAlpha(0.5) end)
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript('OnLeave', function(self)
 		e.tips:Hide()
 		self:SetAlpha(1)
@@ -164,7 +169,7 @@ local function Init()
 
 --保存，记录数量
 	ColorPickerFrame.Footer.OkayButton:HookScript('OnClick', function()
-		local logNum= Save().logMaxColor or 30
+		local logNum= Save().logMaxColor or 10
 		if logNum==0 then
 			Save().logColor={}
 			return

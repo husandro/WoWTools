@@ -5172,7 +5172,8 @@
         "IsBuiltinChatWindow",
         "FCF_NewChatWindow",
         "FCF_PopInWindow",
-        "FCF_Close"
+        "FCF_Close",
+        "GUILD_BANK_LOG"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

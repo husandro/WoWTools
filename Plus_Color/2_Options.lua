@@ -35,10 +35,11 @@ local function Init_Menu(self, root)
 	function()
 		Save().logColor={}
 		WoWTools_ColorMixin:Set_SaveLogList()
+		return MenuResponse.Close
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(
-			format((e.onlyChinese and '最多保存%d个颜色' or 'Save up to %d colors'), Save().logMaxColor or 30)
+			format((e.onlyChinese and '最多保存%d个颜色' or 'Save up to %d colors'), Save().logMaxColor or 10)
 		)
 	end)
 
@@ -46,7 +47,7 @@ local function Init_Menu(self, root)
 	sub:CreateSpacer()
 	WoWTools_MenuMixin:CreateSlider(sub, {
 		getValue=function()
-			return Save().logMaxColor or 30
+			return Save().logMaxColor or 10
 		end, setValue=function(value)
 			Save().logMaxColor=value
 			WoWTools_ColorMixin:Set_SaveLogList()--设置，记录
