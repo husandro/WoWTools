@@ -144,8 +144,8 @@ end
 
 
 function WoWTools_StableFrameMixin:Init_UI()
-    Init_Texture()
     Init_UI()
+    Init_Texture()
 end
 
 function WoWTools_StableFrameMixin:Set_UI_Texture()
