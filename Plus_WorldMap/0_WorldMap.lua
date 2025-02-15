@@ -121,7 +121,7 @@ local function Init()
     WoWTools_WorldMapMixin:Init_MpaID()--地图ID，信息
     WoWTools_WorldMapMixin:Init_XY_Map()--地图坐标
     WoWTools_WorldMapMixin:Init_XY_Player()--实时玩家当前坐标
-    
+
     WoWTools_WorldMapMixin:Init_AreaPOI_Name()--地图POI提示，加名称
     WoWTools_WorldMapMixin:Init_Dungeon_Name()--地下城，加名称
     WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
@@ -133,6 +133,53 @@ end
 
 
 
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1==id then
+        WoWTools_WorldMapMixin.Save= WoWToolsSave['Plus_WorldMap'] or WoWTools_WorldMapMixin.Save
+        WoWToolsSave[WORLD_MAP]= nil
+
+        WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
+        --WoWTools_WorldMapMixin.addName2= e.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
+
+        --添加控制面板
+        e.AddPanel_Check({
+            name= WoWTools_WorldMapMixin.addName,
+            tooltip=  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+            GetValue= function() return not WoWTools_WorldMapMixin.Save.disabled end,
+            func= function()
+                WoWTools_WorldMapMixin.Save.disabled= not WoWTools_WorldMapMixin.Save.disabled and true or nil
+                print(
+                    WoWTools_Mixin.addName,
+                    WoWTools_WorldMapMixin.addName,
+                    e.GetEnabeleDisable(not WoWTools_WorldMapMixin.Save.disabled),
+                    e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end
+        })
+
+        if not WoWTools_WorldMapMixin.Save.disabled then
+            Init()
+        end
+
+    elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
+        if not WoWTools_WorldMapMixin.Save.disabled then
+            WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
+        end
+    end
+end)
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not e.ClearAllSave then
+		WoWToolsSave['Plus_WorldMap']= WoWTools_WorldMapMixin.Save
+	end
+end)
+
+
+--[[
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -140,7 +187,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             WoWTools_WorldMapMixin.Save= WoWToolsSave['Plus_WorldMap'] or WoWTools_WorldMapMixin.Save
             WoWToolsSave[WORLD_MAP]= nil
-            
+
             WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
             --WoWTools_WorldMapMixin.addName2= e.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
 
@@ -179,3 +226,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 end)
+]]
