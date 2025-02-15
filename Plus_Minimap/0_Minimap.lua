@@ -84,7 +84,7 @@ local function Init_Menu(self, root)
 
 --追踪 AreaPoiID
     sub2= sub:CreateCheckbox(
-        '|A:VignetteKillElite:0:0|a|cff00ffff'..(e.onlyChinese and '追踪' or TRACKING)..' AreaPoi|r',
+        '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)..' AreaPoi',
     function()
         return Save().vigentteButton
     end, function()
@@ -95,8 +95,8 @@ local function Init_Menu(self, root)
         tooltip:AddLine('AreaPoiID')
         tooltip:AddLine('WorldQuest')
         tooltip:AddLine('Vignette')
-        tooltip:AddLine(' ')
-        tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
+        --tooltip:AddLine(' ')
+        --tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
     end)
 
 --追踪 AreaPoiID 菜单
