@@ -20,14 +20,14 @@ local function Init()
     frame:SetPoint('TOP')
     frame:SetSize(1,1)
 
-    frame.Text= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', MainMenuMicroButton, 0,  -3)
 
-    frame.Text2= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', MainMenuMicroButton, 0, 3)
 
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text2)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text2)
 
     frame.elapsed= 1
     frame:SetScript("OnUpdate", function(self, elapsed)
@@ -137,6 +137,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Help()--帮助
+function WoWTools_MainMenuMixin:Init_Help()--帮助
     Init()
 end

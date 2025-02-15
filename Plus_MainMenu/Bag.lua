@@ -15,14 +15,14 @@ local e= select(2, ...)
 local function Init()
     local frame= CreateFrame("Frame")
 
-    frame.Text= WoWTools_LabelMixin:Create(MainMenuBarBackpackButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(MainMenuBarBackpackButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', MainMenuBarBackpackButton, 0, -6)
 
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
     function frame:settings()
         local money=0
-        if WoWTools_PlusMainMenuMixin.Save.moneyWoW then
+        if WoWTools_MainMenuMixin.Save.moneyWoW then
             for _, info in pairs(e.WoWDate or {}) do
                 if info.Money then
                     money= money+ info.Money
@@ -180,6 +180,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Bag()--背包
+function WoWTools_MainMenuMixin:Init_Bag()--背包
     Init()
 end

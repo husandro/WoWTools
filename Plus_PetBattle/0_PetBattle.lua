@@ -156,9 +156,58 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1==id then
+
+        WoWToolsSave[PET_BATTLE_COMBAT_LOG]=nil
+        WoWToolsSave['Plus_PetBattles']= nil
+        WoWToolsSave['Plus_PetBattle']=nil
+        WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattle2'] or WoWTools_PetBattleMixin.Save
+
+        WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
+        WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
+        WoWTools_PetBattleMixin.addName4= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物类型' or PET_FAMILIES)
+        WoWTools_PetBattleMixin.addName6= '|A:plunderstorm-icon-offensive:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
+
+        WoWTools_PetBattleMixin:Init_Options()
+
+        if not WoWTools_PetBattleMixin.Save.disabled then
+            WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
+            if C_PetBattles.IsInBattle() then
+                if Init() then
+                    Init=function()end
+                end
+            else
+                PetBattleFrame:HookScript("OnShow", function()
+                    if Init() then
+                        Init=function()end
+                    end
+                end)
+            end
+        end
+
+    elseif arg1=='Blizzard_Collections' then
+        if not WoWTools_PetBattleMixin.Save.disabled then
+            PetJournal:HookScript('OnShow', function()
+                WoWTools_PetBattleMixin:TypeButton_SetShown()
+            end)
+            PetJournal:HookScript('OnHide', function()
+                WoWTools_PetBattleMixin:TypeButton_SetShown()
+            end)
+        end
+    elseif arg1=='Blizzard_Settings' then
+        WoWTools_PetBattleMixin:Set_Options()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not e.ClearAllSave then
+        WoWToolsSave['Plus_PetBattle2']= WoWTools_PetBattleMixin.Save
+	end
+end)
 
 
---###########
+--[[###########
 --加载保存数据
 --###########
 local panel= CreateFrame('Frame')
@@ -215,4 +264,4 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave['Plus_PetBattle2']= WoWTools_PetBattleMixin.Save
         end
     end
-end)
+end)]]

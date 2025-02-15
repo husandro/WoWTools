@@ -193,6 +193,7 @@ local function Init()
     WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
     WoWTools_MacroMixin:Init_ChangeTab()
     WoWTools_MacroMixin:Init_MacroButton_Plus()
+    return true
 end
 
 
@@ -205,9 +206,56 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1==id then
+        WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
+        WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or MACRO)
+
+        --添加控制面板
+        e.AddPanel_Check({
+            name= WoWTools_MacroMixin.addName,
+            tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+            GetValue= function() return not Save().disabled end,
+            SetValue= function()
+                Save().disabled = not Save().disabled and true or nil
+                print(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            end
+        })
+
+        if not Save().disabled  then
+            if C_AddOns.IsAddOnLoaded("MacroToolkit") then
+                print(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName,
+                    e.GetEnabeleDisable(false), 'MacroToolkit',
+                    e.onlyChinese and '插件' or ADDONS
+                )
+            end
+            if C_AddOns.IsAddOnLoaded('Blizzard_MacroUI') then
+                if Init() then
+                    Init=function()end
+                end
+            end
+        end
+
+    elseif arg1=='Blizzard_MacroUI' and not Save().disabled then
+        if Init() then
+            Init=function()end
+        end
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not e.ClearAllSave then
+        if WoWTools_MacroMixin.NoteEditBox and WoWTools_MacroMixin.NoteEditBox:IsVisible() then
+            WoWTools_MacroMixin.NoteEditBox:Hide()
+        end
+        WoWToolsSave['Plus_Macro2']= Save()
+	end
+end)
 
 
-local panel=CreateFrame("Frame")
+
+--[[local panel=CreateFrame("Frame")
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -273,4 +321,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Macro2']= Save()
         end
     end
-end)
+end)]]

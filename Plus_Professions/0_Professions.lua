@@ -60,36 +60,16 @@ end
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(e.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
-
-
-            if WoWToolsSave[PROFESSIONS_TRACKER_HEADER_PROFESSION..'Tools'] then
-                WoWTools_ProfessionMixin.Save= WoWToolsSave[PROFESSIONS_TRACKER_HEADER_PROFESSION..'Tools']
-                WoWToolsSave[PROFESSIONS_TRACKER_HEADER_PROFESSION..'Tools']=nil
-            else
-                WoWTools_ProfessionMixin.Save= WoWToolsSave['Plus_Professions'] or WoWTools_ProfessionMixin.Save
-            end
-
             if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent('PLAYER_LOGOUT')
+                self:UnregisterAllEvents()
                 return
             end
-            --[[if not e.toolsFrame.disabled or PlayerGetTimerunningSeasonID() then
-                --ProfessionsFrame_LoadUI()
-                --ProfessionsCustomerOrders_LoadUI()
-                -C_Timer.After(2.2, function()
-                    if UnitAffectingCombat('player') then
-                        self.combat= true
-                        self:RegisterEvent("PLAYER_REGEN_ENABLED")
-                    else
-                        Init_Tools_Button()
-                    end
-                end)
-            end]]
+
+            WoWTools_ProfessionMixin.Save= WoWToolsSave['Plus_Professions'] or WoWTools_ProfessionMixin.Save
+            WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(e.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
 
             --添加控制面板
             e.AddPanel_Check({
@@ -127,11 +107,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Professions']= WoWTools_ProfessionMixin.Save
         end
 
-    --[[elseif event=='PLAYER_REGEN_ENABLED' then
-        if self.combat then
-            self.combat=nil
-            Init_Tools_Button()--初始
-        end
-        self:UnregisterEvent("PLAYER_REGEN_ENABLED")]]
     end
 end)

@@ -9,9 +9,9 @@ local e= select(2, ...)
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(QuestLogMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(QuestLogMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', QuestLogMicroButton, 0,  -3)
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
     function frame:settings()
         local num
@@ -44,6 +44,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Quest()--任务
+function WoWTools_MainMenuMixin:Init_Quest()--任务
     Init()
 end

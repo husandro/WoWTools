@@ -111,10 +111,47 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1~=id then
+		return
+	end
+
+    WoWTools_ObjectiveTrackerMixin.Save= WoWToolsSave['ObjectiveTracker'] or WoWTools_ObjectiveTrackerMixin.Save
+
+    WoWTools_ObjectiveTrackerMixin.addName= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
+
+    --添加控制面板
+    e.AddPanel_Check({
+        name= WoWTools_ObjectiveTrackerMixin.addName,
+        tooltip= WoWTools_ObjectiveTrackerMixin.addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+
+    if not Save().disabled then
+        WoWTools_ObjectiveTrackerMixin:Init_Quest()
+        WoWTools_ObjectiveTrackerMixin:Init_Campaign_Quest()
+        WoWTools_ObjectiveTrackerMixin:Init_World_Quest()
+        WoWTools_ObjectiveTrackerMixin:Init_Achievement()
+        WoWTools_ObjectiveTrackerMixin:Init_Professions()
+        WoWTools_ObjectiveTrackerMixin:Init_MonthlyActivities()    
+        WoWTools_ObjectiveTrackerMixin:Init_ScenarioObjective()
+        WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerFrame()
+        WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerShared()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not e.ClearAllSave then
+		WoWToolsSave['ObjectiveTracker']=WoWTools_ObjectiveTrackerMixin.Save
+	end
+end)
 
 
-
---###########
+--[[###########
 --加载保存数据
 --###########
 local panel=CreateFrame("Frame")
@@ -158,7 +195,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['ObjectiveTracker']=WoWTools_ObjectiveTrackerMixin.Save
         end
     end
-end)
+end)]]
 
 
 

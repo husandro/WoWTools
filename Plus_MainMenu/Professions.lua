@@ -91,6 +91,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Professions()
+function WoWTools_MainMenuMixin:Init_Professions()
     Init()
 end

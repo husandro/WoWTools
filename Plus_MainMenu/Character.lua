@@ -9,14 +9,14 @@ local function Init()
     local frame= CreateFrame("Frame")
 
 
-    frame.Text= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', CharacterMicroButton, 0,  -3)
 
-    frame.Text2= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', CharacterMicroButton, 0, 3)
 
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text2)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text2)
 
     function frame:settings()
         local to, cu= GetAverageItemLevel()--装等
@@ -100,6 +100,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Character()
+function WoWTools_MainMenuMixin:Init_Character()
     Init()
 end

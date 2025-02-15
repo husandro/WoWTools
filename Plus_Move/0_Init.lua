@@ -73,21 +73,9 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave['Frame'] then
-                WoWTools_MoveMixin.Save= WoWToolsSave['Frame']
-                Save().scale= Save().scale or {}
-                Save().size= Save().size or {}
-                Save().disabledSize= Save().disabledSize or {}
-                Save().disabledAlpha= Save().disabledAlpha or {}
-                Save().alpha= Save().alpha or 0.5
-                WoWToolsSave['Frame']=nil
 
-            elseif WoWToolsSave['Plus_Move'] then
-                WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move']
-            end
-
+            WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move']
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE)
-
             WoWTools_MoveMixin:Init_Options()
 
             if not Save().disabled then

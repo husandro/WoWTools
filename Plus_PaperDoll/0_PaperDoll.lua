@@ -101,15 +101,49 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("SOCKET_INFO_UPDATE", function()
+	if not Save().disabled and PaperDollItemsFrame:IsShown() then
+        e.call(PaperDollFrame_UpdateStats)
+    end
+end)
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1~=id then
+		return
+	end
+
+    WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
+
+    WoWTools_PaperDollMixin.addName= (
+        e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
+        or '|A:charactercreate-gendericon-female-selected:0:0|a'
+    )..(e.onlyChinese and '角色' or addName)
+
+    --添加控制面板
+    e.AddPanel_Check({
+        name= WoWTools_PaperDollMixin.addName,
+        --tooltip= WoWTools_PaperDollMixin.addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end,
+    })
+
+    if not Save().disabled then
+        Init()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not e.ClearAllSave then
+		WoWToolsSave['Plus_PaperDoll']= Save()
+	end
+end)
 
 
-
-
-
-
---###########
+--[[###########
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
@@ -120,7 +154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if WoWToolsSave[CHARACTER] then
                 WoWTools_PaperDollMixin.Save= WoWToolsSave[CHARACTER]
                 WoWToolsSave[CHARACTER]=nil
-                
+
             else
                 WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
             end
@@ -129,7 +163,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
                 or '|A:charactercreate-gendericon-female-selected:0:0|a'
             )..(e.onlyChinese and '角色' or addName)
-            
+
             --添加控制面板
             e.AddPanel_Check({
                 name= WoWTools_PaperDollMixin.addName,
@@ -160,4 +194,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             e.call(PaperDollFrame_UpdateStats)
         end
     end
-end)
+end)]]

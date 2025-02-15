@@ -10,10 +10,10 @@ local e= select(2, ...)
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', LFDMicroButton, 0,  -3)
 
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
     function frame:settings()
         local lv= C_MythicPlus.GetOwnedKeystoneLevel() or 0
@@ -90,6 +90,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_LFD()--地下城查找器
+function WoWTools_MainMenuMixin:Init_LFD()--地下城查找器
     Init()
 end

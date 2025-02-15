@@ -11,14 +11,14 @@ local e= select(2, ...)
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', StoreMicroButton, 0,  -3)
 
-    frame.Text2= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(StoreMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text2:SetPoint('BOTTOM', StoreMicroButton, 0, 3)
 
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text2)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text2)
 
     StoreMicroButton.Text2= frame.Text2
 
@@ -118,6 +118,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Store()--商店
+function WoWTools_MainMenuMixin:Init_Store()--商店
     Init()
 end

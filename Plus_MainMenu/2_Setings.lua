@@ -1,6 +1,6 @@
 --local e= select(2, ...)
 local function Save()
-    return WoWTools_PlusMainMenuMixin.Save
+    return WoWTools_MainMenuMixin.Save
 end
 
 
@@ -149,14 +149,14 @@ end
 
 
 local function Sett_Label()
-    for _, lable in pairs(WoWTools_PlusMainMenuMixin.Labels) do
+    for _, lable in pairs(WoWTools_MainMenuMixin.Labels) do
         WoWTools_LabelMixin:Create(nil, {size=Save().size, changeFont=lable, color=true})
     end
 end
 
 
 
-function WoWTools_PlusMainMenuMixin:Settings()
+function WoWTools_MainMenuMixin:Settings()
     Set_Alpha()
     Sett_Label()
 end

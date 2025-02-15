@@ -184,8 +184,44 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1~=id then
+		return
+	end
 
---###########
+    WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
+    WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
+    WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
+
+    WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
+
+    --添加控制面板
+    e.AddPanel_Check({
+        name= WoWTools_SellBuyMixin.addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+        end
+    })
+
+    if Save().disabled then
+        WoWTools_SellBuyMixin.CheckSellItem=nil
+    else
+        Init()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not Save().saveBossLootList then
+        Save().bossItems={}
+    end
+    WoWToolsSave['Plus_SellBuy']= WoWTools_SellBuyMixin.Save
+end)
+
+
+
+--[[###########
 --加载保存数据
 --###########
 local panel= CreateFrame("Frame")
@@ -238,4 +274,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_SellBuy']= WoWTools_SellBuyMixin.Save
         end
     end
-end)
+end)]]

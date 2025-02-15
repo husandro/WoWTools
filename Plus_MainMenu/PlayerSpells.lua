@@ -22,9 +22,9 @@ local function Init()
     PlayerSpellsMicroButton.Texture2:SetScale(0.5)
 
 
-    if WoWTools_PlusMainMenuMixin.Save.enabledMainMenuAlpha then
-        PlayerSpellsMicroButton.Portrait:SetAlpha(WoWTools_PlusMainMenuMixin.Save.mainMenuAlphaValue)
-        PlayerSpellsMicroButton.Texture2:SetAlpha(WoWTools_PlusMainMenuMixin.Save.mainMenuAlphaValue)
+    if WoWTools_MainMenuMixin.Save.enabledMainMenuAlpha then
+        PlayerSpellsMicroButton.Portrait:SetAlpha(WoWTools_MainMenuMixin.Save.mainMenuAlphaValue)
+        PlayerSpellsMicroButton.Texture2:SetAlpha(WoWTools_MainMenuMixin.Save.mainMenuAlphaValue)
     end
 
 
@@ -144,6 +144,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Talent()--天赋
+function WoWTools_MainMenuMixin:Init_Talent()--天赋
     Init()
 end

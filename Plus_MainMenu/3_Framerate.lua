@@ -1,7 +1,7 @@
 --每秒帧数 Plus
 local e= select(2, ...)
 local function Save()
-    return WoWTools_PlusMainMenuMixin.Save
+    return WoWTools_MainMenuMixin.Save
 end
 
 local FramerateButton
@@ -57,7 +57,7 @@ local function Init()
         e.tips:AddLine(MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"))
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '字体大小' or FONT_SIZE, (Save().framerateSize or 12)..e.Icon.mid)
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusMainMenuMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MainMenuMixin.addName)
         e.tips:Show()
     end
     FramerateButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -106,6 +106,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Framerate_Plus()
+function WoWTools_MainMenuMixin:Init_Framerate_Plus()
     Init()
 end

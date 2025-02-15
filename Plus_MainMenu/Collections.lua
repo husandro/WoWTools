@@ -67,6 +67,6 @@ end
 
 
 
-function WoWTools_PlusMainMenuMixin:Init_Collections()--收藏
+function WoWTools_MainMenuMixin:Init_Collections()--收藏
     Init()
 end

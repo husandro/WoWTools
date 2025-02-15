@@ -8,9 +8,9 @@ local e= select(2, ...)
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(AchievementMicroButton,  {size=WoWTools_PlusMainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(AchievementMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', AchievementMicroButton, 0,  -3)
-    table.insert(WoWTools_PlusMainMenuMixin.Labels, frame.Text)
+    table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
     function frame:settings()
         local num
@@ -37,6 +37,6 @@ local function Init()
 end
 
 
-function WoWTools_PlusMainMenuMixin:Init_Achievement()--成就
+function WoWTools_MainMenuMixin:Init_Achievement()--成就
     Init()
 end
