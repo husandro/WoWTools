@@ -542,12 +542,12 @@ Plus_Professions\TrainerUI.lua
 
 
 ##仅限猎人加载，专门，宠物管理，增强
-Plus_HunterPet\0_StableFrame.lua
-Plus_HunterPet\All_List.lua
-Plus_HunterPet\Menu.lua
-Plus_HunterPet\Plus.lua
-Plus_HunterPet\Tooltips.lua
-Plus_HunterPet\UI.lua
+Plus_StableFrame\0_StableFrame.lua
+Plus_StableFrame\All_List.lua
+Plus_StableFrame\Menu.lua
+Plus_StableFrame\Plus.lua
+Plus_StableFrame\Tooltips.lua
+Plus_StableFrame\UI.lua
 
 
 

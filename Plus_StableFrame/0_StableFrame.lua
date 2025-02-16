@@ -34,8 +34,9 @@ WoWTools_StableFrameMixin={
 local function Init()
     WoWTools_StableFrameMixin:Init_Menu()
     WoWTools_StableFrameMixin:Set_StableFrame_List()
-    WoWTools_StableFrameMixin:Init_StableFrame_Plus()
+
     WoWTools_StableFrameMixin:Init_UI()
+    return true
 end
 
 
@@ -46,7 +47,13 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         return
     end
 
-    WoWTools_StableFrameMixin.Save= WoWToolsSave['Other_HunterPet'] or WoWTools_StableFrameMixin.Save
+    if WoWToolsSave['Other_HunterPet'] then
+        WoWToolsSave['Plus_StableFrame']= WoWToolsSave['Other_HunterPet']
+        WoWToolsSave['Other_HunterPet']= nil
+    else
+        WoWTools_StableFrameMixin.Save= WoWToolsSave['Plus_StableFrame'] or WoWTools_StableFrameMixin.Save
+    end
+
     WoWTools_StableFrameMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
     --添加控制面板
@@ -62,51 +69,15 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
     })
 
     if not WoWTools_StableFrameMixin.Save.disabled then
-        Init()
+        WoWTools_StableFrameMixin:Init_StableFrame_Plus()
+        StableFrame:HookScript('OnShow', function()
+            if Init() then Init=function()end end
+        end)
     end
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then
-        WoWToolsSave['Other_HunterPet']= WoWTools_StableFrameMixin.Save
+        WoWToolsSave['Plus_StableFrame']= WoWTools_StableFrameMixin.Save
     end
 end)
-
-
-
---[[local panel=CreateFrame('Frame')
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            WoWTools_StableFrameMixin.Save= WoWToolsSave['Other_HunterPet'] or WoWTools_StableFrameMixin.Save
-
-            WoWTools_StableFrameMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
-
-
-            --添加控制面板
-             e.AddPanel_Check({
-                name= WoWTools_StableFrameMixin.addName,
-                tooltip= nil,
-                Value= not WoWTools_StableFrameMixin.Save.disabled,
-                GetValue=function() return not WoWTools_StableFrameMixin.Save.disabled end,
-                SetValue= function()
-                    WoWTools_StableFrameMixin.Save.disabled = not WoWTools_StableFrameMixin.Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName, e.GetEnabeleDisable(not WoWTools_StableFrameMixin.Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            if not WoWTools_StableFrameMixin.Save.disabled then
-               Init()
-            end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Other_HunterPet']= WoWTools_StableFrameMixin.Save
-        end
-    end
-
-end)]]
