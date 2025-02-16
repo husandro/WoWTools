@@ -106,7 +106,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
 
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
     local num=0
     local findReTips--显示第一个，退回信里，的物品
     for i=1, select(2, GetInboxNumItems()) do
@@ -164,7 +164,7 @@ end
 local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
-    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
+    e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
     e.tips:AddLine(' ')
     local packageIcon, stationeryIcon, _, _, _, _, _, itemCount = GetInboxHeaderInfo(self.openMailID)
     local allCount=0
@@ -309,15 +309,15 @@ end
 --总，内容，提示
 local function Create_AllTipsLable()
     InboxFrame.AllTipsLable= WoWTools_LabelMixin:Create(InboxFrame)
-    InboxFrame.AllTipsLable:SetPoint('TOP', 20, -48)
+    InboxFrame.AllTipsLable:SetPoint('BOTTOM', InboxFrame, 'TOP', 0, 6)
 
-    MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
+    --[[MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
     MailFrameTrialError:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)
     MailFrameTrialError:SetPoint('LEFT', InboxFrame, 55, 0)
     MailFrameTrialError:SetPoint('RIGHT', InboxFrame)
     MailFrameTrialError:SetWordWrap(false)
 
-    InboxTooMuchMail:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)
+    InboxTooMuchMail:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)]]
 end
 
 
@@ -334,8 +334,14 @@ local function Create_Unit_Button(btn, i)
         return
     end
 
+    --btn.expireTimeButton= _G['MailItem'..i..'ExpireTime']
+    local lable= _G['MailItem'..i ..'ButtonCOD']
+    if lable then
+        lable:SetText("")
+    end
+
     --发信人，提示, 点击回复
-    local lable=_G["MailItem"..i.."Sender"]
+    lable=_G["MailItem"..i.."Sender"]
     btn.senderLable= lable
 
     lable:SetScript('OnMouseDown', function(self)
@@ -351,7 +357,7 @@ local function Create_Unit_Button(btn, i)
         if (self.playerName or self.sender) and self.canReply  then
             e.tips:SetOwner(self:GetParent(), "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
             e.tips:AddDoubleLine(e.onlyChinese and '回复' or REPLY_MESSAGE, self.playerName or self.sender)
             e.tips:Show()
         end
@@ -376,15 +382,8 @@ local function Create_Unit_Button(btn, i)
     btn.moneyPagaTip:SetPoint('CENTER', btn.CODAmountTips)
     btn.moneyPagaTip:EnableMouse(true)
 
-    btn.DeleteButton= WoWTools_ButtonMixin:Cbtn(btn, {size=18})
-    function btn.DeleteButton:set_point()
-        self:ClearAllPoints()
-        if _G['MailItem'..i..'ExpireTime'] and _G['MailItem'..i..'ExpireTime'].returnicon then
-            self:SetPoint('RIGHT', _G['MailItem'..i..'ExpireTime'].returnicon, 'LEFT')
-        else
-            self:SetPoint('BOTTOMRIGHT', _G['MailItem'..i])
-        end
-    end
+    btn.DeleteButton= WoWTools_ButtonMixin:Cbtn(btn, {size=18, name=_G['WoWToolsMailItem'..i..'DeleteButton']})
+    btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i], -4, 0)
 
     btn.DeleteButton:SetScript('OnClick', function(self)--OpenMail_Delete()
         return_delete_InBox(self.openMailID)--删除，或退信
@@ -436,14 +435,12 @@ local function Create_Unit_Button(btn, i)
         self.senderLable.openMailID= nil
         self.senderLable.playerName= nil
         self.senderLable:EnableMouse(false)
-        
+
         self.indexText:SetText('')
         self.CODAmountTips:SetShown(false)
         self.moneyPagaTip:SetText('')
-        self.DeleteButton:SetShown(false)
         self.outItemOrMoney:SetShown(false)
         self.DeleteButton:SetShown(false)
-        self.outItemOrMoney:SetShown(false)
         e.Set_Item_Info(btn, {})
     end
     btn:HookScript('OnHide', btn.clear_all_date)
@@ -468,7 +465,7 @@ local function Init_InboxFrame_Update()
 
     for i=1, INBOXITEMS_TO_DISPLAY do
         local btn=_G["MailItem"..i.."Button"]
-        if hide or not btn then
+        if hide or not btn or not btn.index then
             if btn and btn.clear_all_date then
                 btn:clear_all_date()
             end
@@ -530,24 +527,20 @@ local function Init_InboxFrame_Update()
             btn.moneyPagaTip:SetText(text or '')
 
             --删除，或退信，按钮，设置参数
+
+
+            local show= true
+            if  invoiceType or (sender and strlower(sender) == strlower(BUTTON_LAG_AUCTIONHOUSE)) then
+                show=false
+            end
             btn.DeleteButton:SetNormalTexture(InboxItemCanDelete(btn.index) and 'xmarksthespot' or 'common-icon-undo')
             btn.DeleteButton.openMailID= btn.index
-            if invoiceType or (sender and strlower(sender) == strlower(BUTTON_LAG_AUCTIONHOUSE)) then
-                btn.DeleteButton:SetShown(show)
-                btn.DeleteButton.numItemLabel:SetText(show and (itemCount and itemCount>1) and itemCount or '')
-                btn.outItemOrMoney.openMailID= btn.index
-                btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount)
-                btn.DeleteButton:SetShown(show)
-                btn.DeleteButton.numItemLabel:SetText(show and (itemCount and itemCount>1) and itemCount or '')
+            btn.DeleteButton:SetShown(show)
 
-                btn.outItemOrMoney.openMailID= btn.index
-                btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount)
-            else
-                btn.DeleteButton:SetShown(false)
-                btn.outItemOrMoney:SetShown(false)
-                btn.DeleteButton:SetShown(false)
-                btn.outItemOrMoney:SetShown(false)
-            end
+            btn.DeleteButton.numItemLabel:SetText((itemCount and itemCount>1) and itemCount or '')
+
+            btn.outItemOrMoney.openMailID= btn.index
+            btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount)
 
             e.Set_Item_Info(btn, {itemLink=firstItemLink})
         end
@@ -738,41 +731,6 @@ end
 
 --收信箱，物品，提示
 local function Init()
-    local showButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {size=22, icon='hide'})
-    showButton:SetFrameStrata(MailFrame.TitleContainer:GetFrameStrata())
-    showButton:SetFrameLevel(MailFrame.TitleContainer:GetFrameLevel()+1)
-    showButton:SetPoint('LEFT', MailFrame.TitleContainer, -5, 0)
-    showButton:SetAlpha(0.3)
-    function showButton:set_texture()
-        self:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
-    end
-    showButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            Save().hide= not Save().hide and true or nil
-            self:set_texture()
-            WoWTools_MailMixin:RefreshAll()
-        elseif d=='RightButton' then
-            e.OpenPanelOpting(nil, WoWTools_MailMixin.addName)
-        end
-    end)
-
-    showButton:SetScript('OnLeave', function(self)
-        self:SetAlpha(0.3)
-        e.tips:Hide()
-    end)
-    showButton:SetScript('OnEnter', function(self)
-        self:SetAlpha(1)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)--not e.onlyChinese and SHOW..'/'..HIDE or '显示/隐藏')
-        e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.right)
-        e.tips:Show()
-    end)
-    showButton:set_texture()
-
-
     Create_DeleteAllButton()--删除所有信，按钮
     Create_ReAllButton()--退回，所有信，按钮
     Create_AllTipsLable()--总，内容，提示

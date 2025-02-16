@@ -79,7 +79,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
     unit= unit or tab.unit or (guid and UnitTokenFromGUID(guid))
     name= name or tab.name
-    guid= guid or tab.guid or (UnitExists(unit) and UnitGUID(unit)) or WoWTools_UnitMixin:GetGUID(unit, name)
+    guid= guid or tab.guid or (UnitExists(unit) and UnitGUID(unit)) or self:GetGUID(unit, name)
 
 
     local faction= tab.faction
@@ -95,7 +95,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     end
 
     if reLink then
-        return WoWTools_UnitMixin:GetLink(name, guid, true) --玩家超链接
+        return self:GetLink(name, guid, true) --玩家超链接
     end
 
 
@@ -112,15 +112,15 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
             end
         end
 
-        local friend= WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil)--检测, 是否好友
+        local friend= self:GetIsFriendIcon(nil, guid, nil)--检测, 是否好友
         local groupInfo= e.GroupGuid[guid] or {}--队伍成员
         local server= not reNotRegion and e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 
         text= (server and server.col or '')
                     ..(friend or '')
-                    ..(WoWTools_UnitMixin:GetFaction(unit, faction) or '')--检查, 是否同一阵营
-                    ..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
-                    ..(WoWTools_UnitMixin:GetClassIcon(unit, englishClass) or '')
+                    ..(self:GetFaction(unit, faction) or '')--检查, 是否同一阵营
+                    ..(self:GetRaceIcon({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
+                    ..(self:GetClassIcon(unit, englishClass) or '')
 
         if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
             text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
@@ -150,7 +150,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
     if (not text or text=='') and name then
         if reLink then
-            return WoWTools_UnitMixin:GetLink(name, nil, true) --玩家超链接
+            return self:GetLink(name, nil, true) --玩家超链接
 
         elseif reName then
             if not reRealm then
@@ -216,21 +216,21 @@ end
 
 
 function WoWTools_UnitMixin:GetLink(name, guid, onlyLink) --玩家超链接
-    guid= guid or WoWTools_UnitMixin:GetGUID(nil, name)
+    guid= guid or self:GetGUID(nil, name)
     if guid==e.Player.guid then--自已
         return (not onlyLink and e.Icon.player)..'|Hplayer:'..e.Player.name_realm..'|h['..e.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
         if name2 then
-            local showName= WoWTools_UnitMixin:NameRemoveRealm(name2, realm)
+            local showName= self:NameRemoveRealm(name2, realm)
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
-            return (not onlyLink and WoWTools_UnitMixin:GetRaceIcon({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
+            return (not onlyLink and self:GetRaceIcon({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
-        return '|Hplayer:'..name..'|h['..WoWTools_UnitMixin:NameRemoveRealm(name)..']|h'
+        return '|Hplayer:'..name..'|h['..self:NameRemoveRealm(name)..']|h'
     end
     return ''
 end
@@ -262,16 +262,18 @@ end
 --e.WoWDate[e.Player.guid].battleTag= e.Player.battleTag or e.WoWDate[e.Player.guid].battleTag
 function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好友
     if guid or unit then
-        guid= guid or WoWTools_UnitMixin:GetGUID(unit, name)
+        guid= guid or self:GetGUID(unit, name)
         if guid and guid~=e.Player.guid then
             local data= e.WoWDate[guid]
             if data then
-                if data.battleTag~=e.Player.region then--不在一区
-                    return '|A:tokens-guildRealmTransfer-small:0:0|a'
-
-                elseif data.battleTag~=e.Player.battleTag then--不同战网
+                if data.region~=e.Player.region then--不在一区
                     return '|A:tokens-characterTransfer-small:0:0|a'
 
+                elseif data.battleTag~=e.Player.battleTag then--不同战网
+                    return '|A:tokens-guildRealmTransfer-small:0:0|a'
+                    
+                elseif data.faction~= e.Player.faction then
+                    
                 else
                     return '|A:auctionhouse-icon-favorite:0:0|a'
                 end
@@ -292,7 +294,7 @@ function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
 
-        if e.WoWGUID[WoWTools_UnitMixin:GetFullName(name)] then
+        if e.WoWGUID[self:GetFullName(name)] then
             return e.Icon.net2
         end
     end
@@ -312,7 +314,7 @@ function WoWTools_UnitMixin:GetGUID(unit, name)--从名字,名unit, 获取GUID
             return info.guid
         end
 
-        name= WoWTools_UnitMixin:GetFullName(name)
+        name= self:GetFullName(name)
         if e.GroupGuid[name] then--队友
             return e.GroupGuid[name].guid
 
@@ -322,7 +324,7 @@ function WoWTools_UnitMixin:GetGUID(unit, name)--从名字,名unit, 获取GUID
         elseif name==e.Player.name then
             return e.Player.guid
 
-        elseif UnitIsPlayer('target') and WoWTools_UnitMixin:GetFullName(nil, 'target')==name then--目标
+        elseif UnitIsPlayer('target') and self:GetFullName(nil, 'target')==name then--目标
             return UnitGUID('target')
         end
     end

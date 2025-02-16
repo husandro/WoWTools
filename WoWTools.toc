@@ -410,13 +410,15 @@ Plus\Challenges.lua
 
 ##邮件，增加
 Plus_Mail\0_mail.lua
-Plus_Mail\Clear_Send_Items.lua
-Plus_Mail\Fast_Button.lua
-Plus_Mail\History_SendName_List.lua
-Plus_Mail\InBox.lua
-Plus_Mail\Letter_Num.lua
-Plus_Mail\SendName_List.lua
-Plus_Mail\Set_UI.lua
+Plus_Mail\1_Menu.lua
+Plus_Mail\A_InBox.lua
+Plus_Mail\B_ClearSendItems.lua
+Plus_Mail\B_LetterNum.lua
+Plus_Mail\B_Set_UI.lua
+Plus_Mail\History_SendNameList.lua
+Plus_Mail\Item_FastButton.lua
+Plus_Mail\PlayerName_List.lua
+
 
 
 

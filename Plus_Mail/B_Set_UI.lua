@@ -123,6 +123,8 @@ local function Init()
     SendMailCostMoneyFrame:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
+        e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '邮资：' or SEND_MAIL_COST)
         e.tips:Show()
     end)
@@ -186,6 +188,16 @@ local function Init()
     WoWTools_EditBoxMixn:SetInstructions(SendMailSubjectEditBox, e.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
     WoWTools_EditBoxMixn:HookInstructions(SendMailSubjectEditBox)
 
+    hooksecurefunc('SendMailRadioButton_OnClick', function(index)
+        if ( index == 1 ) then
+            SendMailMoneyText:SetTextColor(1,0,0)--Text(AMOUNT_TO_SEND)
+        else
+            SendMailMoneyText:SetTextColor(0,1,0)--(COD_AMOUNT);
+        end
+    end)
+
+
+    WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
 end
 
 

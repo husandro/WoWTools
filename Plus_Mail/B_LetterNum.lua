@@ -16,7 +16,29 @@ end
 
 
 local function Init()--字数
-    --收件人
+    --清除，收件人
+    SendMailNameEditBox.clearButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {
+        size=22,
+        atlas='bags-button-autosort-up',
+        name= 'WoWToolsClearSendMailNameButton'
+    })
+
+    SendMailNameEditBox.clearButton:SetPoint('RIGHT', SendMailNameEditBox, 'LEFT', -4, 0)
+    SendMailNameEditBox.clearButton:SetScript('OnLeave', GameTooltip_Hide)
+    SendMailNameEditBox.clearButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.onlyChinese and '收件人' or MAIL_TO_LABEL)
+        e.tips:Show()
+    end)
+    SendMailNameEditBox.clearButton:SetScript('OnClick', function(self)
+        self:GetParent():SetText('')
+        WoWTools_MailMixin:RefreshAll()
+    end)
+
+--收件人
     SendMailNameEditBox.playerTipsLable= WoWTools_LabelMixin:Create(SendMailNameEditBox, {justifyH='CENTER', size=10})
     SendMailNameEditBox.playerTipsLable:SetPoint('BOTTOM', SendMailNameEditBox, 'TOP',0,-3)
     function SendMailNameEditBox:save_log()--保存内容
@@ -33,9 +55,32 @@ local function Init()--字数
         end
         self.playerTipsLable:SetText(text)
         self:save_log()
+
+        self.clearButton:SetShown(self:HasText())
     end)
 
-    --主题
+--清除，主题
+    SendMailSubjectEditBox.clearButton= WoWTools_ButtonMixin:Cbtn(SendMailSubjectEditBox, {
+        size=22,
+        atlas='bags-button-autosort-up',
+        name= 'WoWToolsClearSendMailNameButton'
+    })
+
+    SendMailSubjectEditBox.clearButton:SetPoint('RIGHT', SendMailSubjectEditBox, 'LEFT', -4, 0)
+    SendMailSubjectEditBox.clearButton:SetScript('OnLeave', GameTooltip_Hide)
+    SendMailSubjectEditBox.clearButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.onlyChinese and '收件人' or MAIL_TO_LABEL)
+        e.tips:Show()
+    end)
+    SendMailSubjectEditBox.clearButton:SetScript('OnClick', function(self)
+        self:GetParent():SetText('')
+    end)
+
+--主题
     SendMailSubjectEditBox.numLetters= WoWTools_LabelMixin:Create(SendMailSubjectEditBox)
     SendMailSubjectEditBox.numLetters:SetPoint('RIGHT')
     SendMailSubjectEditBox.numLetters:SetAlpha(0)
@@ -50,6 +95,7 @@ local function Init()--字数
     SendMailSubjectEditBox:HookScript('OnTextChanged', function(self)
         self.numLetters:SetFormattedText('%d/%d', self:GetNumLetters() or 0, self:GetMaxLetters() or 0)
         self:save_log()
+        self.clearButton:SetShown(self:HasText())
     end)
     SendMailSubjectEditBox:HookScript('OnEditFocusGained', function(self)
         self.numLetters:SetAlpha(1)

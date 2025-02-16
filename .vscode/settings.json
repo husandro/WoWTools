@@ -5174,7 +5174,18 @@
         "FCF_PopInWindow",
         "FCF_Close",
         "GUILD_BANK_LOG",
-        "DragonflightLandingOverlayMixin"
+        "DragonflightLandingOverlayMixin",
+        "MailItem2ButtonCOD",
+        "SendMailCODButton",
+        "SendMailSendMoneyButton",
+        "AMOUNT_TO_SEND",
+        "COD_AMOUNT",
+        "SENDMAIL",
+        "INBOX",
+        "WHO_LIST",
+        "COMMUNITIES_ROSTER_TAB_TOOLTIP",
+        "CRAFTING_ORDER_MAIL_FULFILLED_TO",
+        "NPE_TURN"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -8,6 +8,14 @@ local id, e= ...
 WoWTools_MailMixin={
 Save={
     --hide=true,--隐藏
+    --hideUIPlus=true,
+    --hideSendNameList=true,
+    --hideHistoryList=true,
+    --hideItemButtonList=true
+
+    --notAutoToSendFrame=true,--自动转到，收件箱
+    --autoToSendFrameSecond=1,
+
     lastSendPlayerList= {},--历史记录, {'名字-服务器',},
     --hideSendPlayerList=true,--隐藏，历史记录
     lastMaxSendPlayerList=20,--记录, 最大数
@@ -174,11 +182,13 @@ local function set_to_send()
     end
     SendMailNameEditBox:ClearFocus()
 
-    C_Timer.After(1, function()
-        if GetInboxNumItems()==0 then--如果没有信，转到，发信
-            MailFrameTab_OnClick(nil, 2)
-        end
-    end)
+    if not Save().notAutoToSendFrame then
+        C_Timer.After(Save().autoToSendFrameSecond or 1, function()
+            if GetInboxNumItems()==0 then--如果没有信，转到，发信
+                MailFrameTab_OnClick(nil, 2)
+            end
+        end)
+    end
 end
 
 
@@ -186,16 +196,38 @@ end
 
 
 
---初始
-local function Init()--SendMailNameEditBox
 
+
+
+
+
+--初始
+local function Init()--SendMailNameEditBox    
+    WoWTools_MailMixin:Init_Menu_Button()
+
+--收件箱 Plus
     WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
-    WoWTools_MailMixin:Init_UI()
-    WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
-    WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
-    WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
-    WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
-    WoWTools_MailMixin:Init_Fast_Button()
+
+--UI Plus
+    if not Save().hideUIPlus then
+        WoWTools_MailMixin:Init_UI()
+        WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
+        WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
+    end
+--名单列表
+    if not Save().hideSendNameList then
+        WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
+    end
+
+--历史收件人
+    if not Save().hideHistoryList then
+        WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
+    end
+
+--物品快捷键
+    if not Save().hideItemButtonList then
+        WoWTools_MailMixin:Init_Fast_Button()
+    end
 
     return true
 end
@@ -244,82 +276,3 @@ end)
 
 
 
-
-
---[[local panel= CreateFrame('Frame')
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            if WoWToolsSave[BUTTON_LAG_MAIL] then
-                WoWTools_MailMixin.Save= WoWToolsSave[BUTTON_LAG_MAIL]
-                WoWToolsSave[BUTTON_LAG_MAIL]=nil
-            else
-                WoWTools_MailMixin.Save= WoWToolsSave['Plus_Mail'] or Save()
-            end
-
-
-            if e.Player.husandro and #Save().lastSendPlayerList==0 then
-                --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-                if e.Player.region==3 then
-                    Save().lastSendPlayerList= {
-                        'Zans-Nemesis',
-                        'Qisi-Nemesis',
-                        'Sandroxx-Nemesis',
-                        'Fuocco-Nemesis',
-                        'Sm-Nemesis',
-                        'Xiaod-Nemesis',
-                        'Dz-Nemesis',
-                        'Ws-Nemesis',
-                        'Sosi-Nemesis',
-                        'Maggoo-Nemesis',
-                        'Dhb-Nemesis',
-                        'Ms-Nemesis',--最大存20个
-                    }
-                    Save().fast={
-                        [e.onlyChinese and '布甲' or C_Item.GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
-                        [e.onlyChinese and '皮甲' or C_Item.GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
-                        [e.onlyChinese and '锁甲' or C_Item.GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
-                        [e.onlyChinese and '板甲' or C_Item.GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
-                        [e.onlyChinese and '盾牌' or C_Item.GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
-                        [e.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
-
-                    }
-                elseif e.Player.region==4 then
-                    Save().lastSendPlayerList= {
-                        'Wowtools-巫妖之王',
-                    }
-                    Save().fast={}
-                end
-            end
-
-            WoWTools_MailMixin.addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= WoWTools_MailMixin.addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, WoWTools_MailMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            if not Save().disabled then
-               -- Init()
-                self:RegisterEvent('MAIL_SHOW')
-            end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_Mail']= Save()
-        end
-
-    elseif event=='MAIL_SHOW' then
-        Init()
-        self:UnregisterEvent('MAIL_SHOW')--仅一次
-    end
-end)]]

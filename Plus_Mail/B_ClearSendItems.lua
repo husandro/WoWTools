@@ -29,7 +29,7 @@ local function Init()
     clearSendItem:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
         e.tips:AddLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
         e.tips:Show()
     end)
@@ -53,9 +53,8 @@ local function Init()
     end)
 
     for _, btn in pairs(SendMailFrame.SendMailAttachments or {}) do
-        btn:HookScript('OnLeave', function(self) WoWTools_BagMixin:Find(false, nil) end)
+        btn:HookScript('OnLeave', function() WoWTools_BagMixin:Find(false, nil) end)
         btn:HookScript('OnEnter', function(self)
-
             WoWTools_BagMixin:Find(true, {itemLink=GetSendMailItemLink(self:GetID())})
         end)
     end

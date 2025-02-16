@@ -29,7 +29,7 @@ local function created_button(index)
     btn:SetScript('OnEnter', function(frame)
         e.tips:SetOwner(frame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(WoWTools_MailMixin:GetRealmInfo(frame.name) or ' ', frame.name)
         e.tips:Show()
@@ -66,7 +66,8 @@ end
 
 
 local function set_list()
-    Button.Text:SetText(#Save().lastSendPlayerList)--列表，数量
+    local num= #Save().lastSendPlayerList
+    Button.Text:SetText(num>0 and num or '')--列表，数量
 
     if Save().hideSendPlayerList then
         return
@@ -214,18 +215,19 @@ local function Init_Menu(_, root)
 --SetGridMode
     WoWTools_MenuMixin:SetGridMode(sub, num)
 
---打开选项
-    root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
-
-
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(root, function()
         return Save().scaleSendPlayerFrame or 1
     end, function(value)
         Save().scaleSendPlayerFrame=value
         Set_Button()
     end)
+
+--打开选项
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
+
+
 end
 
 
@@ -297,7 +299,7 @@ local function Init()
     function Button:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:Show()
