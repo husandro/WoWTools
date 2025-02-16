@@ -47,9 +47,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
 
     elseif arg1=='Blizzard_Settings' then
-        if not WoWTools_MainMenuMixin.Save.disabled then
-            WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-        end
+        WoWTools_MainMenuMixin:Init_Options()--初始, 选项
     end
 end)
 

@@ -144,14 +144,17 @@ end
 
 function WoWTools_MoveMixin:Setup(frame, tab)
     tab= tab or {}
-    local save= Save()
+
+    local SavePoint= self.Save.SavePoint
+    local moveToScreenFuori= self.Save.moveToScreenFuori
+    local disabledMove= self.Save.disabledMove
 
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
 
     local click= tab.click
-    local notSave= ((tab.notSave or not save.SavePoint) and not tab.save) and true or nil
-    local notFuori=  not save.moveToScreenFuori and save.SavePoint or tab.notFuori
+    local notSave= ((tab.notSave or not SavePoint) and not tab.save) and true or nil
+    local notFuori=  not moveToScreenFuori and SavePoint or tab.notFuori
     local isAltKeyDown= tab.isAltKeyDown
 
     if not frame or not name then --or not frame.setMoveFrame then
@@ -162,7 +165,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     self:ScaleSize(frame, tab)
 
-    if (save.disabledMove and not tab.needMove) or tab.notMove  then
+    if (disabledMove and not tab.needMove) or tab.notMove  then
         return
     end
 

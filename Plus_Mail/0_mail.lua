@@ -175,7 +175,7 @@ local function set_to_send()
     SendMailNameEditBox:ClearFocus()
 
     C_Timer.After(1, function()
-        if GetInboxNumItems()==0 or e.Player.husandro then--如果没有信，转到，发信
+        if GetInboxNumItems()==0 then--如果没有信，转到，发信
             MailFrameTab_OnClick(nil, 2)
         end
     end)
