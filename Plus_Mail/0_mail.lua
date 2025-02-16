@@ -1,31 +1,26 @@
 --受限模式
-
+if GameLimitedMode_IsActive() then
+    return
+end
 
 local id, e= ...
 
 WoWTools_MailMixin={
 Save={
     --hide=true,--隐藏
-
-
     lastSendPlayerList= {},--历史记录, {'名字-服务器',},
     --hideSendPlayerList=true,--隐藏，历史记录
     lastMaxSendPlayerList=20,--记录, 最大数
-
     show={--显示离线成员
         ['FRIEND']=true,--好友
         --['GUILD']=true,--公会
     },
-
     fast={},--快速，加载，物品，指定玩家
     fastShow=true,--显示/隐藏，快速，加载，按钮
     --CtrlFast= e.Player.husandro,--Ctrl+RightButton,快速，加载，物品
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
-
     scaleFastButton=1.3,
-
     --INBOXITEMS_TO_DISPLAY=7,
-
     logSendInfo= e.Player.husandro,--隐藏时不,清除，内容
     --lastSendPlayer='Fuocco-server',--收件人
     --lastSendSub=主题
@@ -33,13 +28,57 @@ Save={
 },
 }
 
-if GameLimitedMode_IsActive() then
-    return
-end
 
 local function Save()
     return WoWTools_MailMixin.Save
 end
+
+
+
+local function Is_Sandro()
+    if not e.Player.husandro or #Save().lastSendPlayerList~=0 then
+        return
+    end
+        --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+    if e.Player.region==3 then
+        Save().lastSendPlayerList= {
+            'Zans-Nemesis',
+            'Qisi-Nemesis',
+            'Sandroxx-Nemesis',
+            'Fuocco-Nemesis',
+            'Sm-Nemesis',
+            'Xiaod-Nemesis',
+            'Dz-Nemesis',
+            'Ws-Nemesis',
+            'Sosi-Nemesis',
+            'Maggoo-Nemesis',
+            'Dhb-Nemesis',
+            'Ms-Nemesis',--最大存20个
+        }
+        Save().fast={
+            [e.onlyChinese and '布甲' or C_Item.GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
+            [e.onlyChinese and '皮甲' or C_Item.GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
+            [e.onlyChinese and '锁甲' or C_Item.GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
+            [e.onlyChinese and '板甲' or C_Item.GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
+            [e.onlyChinese and '盾牌' or C_Item.GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
+            [e.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
+
+        }
+    elseif e.Player.region==4 then
+        Save().lastSendPlayerList= {
+            'Wowtools-巫妖之王',
+        }
+        Save().fast={}
+    end
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -149,6 +188,7 @@ end
 
 --初始
 local function Init()--SendMailNameEditBox
+
     WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
     WoWTools_MailMixin:Init_UI()
     WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
@@ -157,9 +197,6 @@ local function Init()--SendMailNameEditBox
     WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
     WoWTools_MailMixin:Init_Fast_Button()
 
-
-    MailFrame:HookScript('OnShow', set_to_send)
-    set_to_send()
     return true
 end
 
@@ -172,6 +209,7 @@ EventRegistry:RegisterFrameEventAndCallback("MAIL_SHOW", function()
         if Init() then
             Init=function()end
         end
+        set_to_send()
     end
 end)
 
@@ -182,42 +220,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 	end
 
     WoWTools_MailMixin.Save= WoWToolsSave['Plus_Mail'] or Save()
-
-    if e.Player.husandro and #Save().lastSendPlayerList==0 then
-        --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-        if e.Player.region==3 then
-            Save().lastSendPlayerList= {
-                'Zans-Nemesis',
-                'Qisi-Nemesis',
-                'Sandroxx-Nemesis',
-                'Fuocco-Nemesis',
-                'Sm-Nemesis',
-                'Xiaod-Nemesis',
-                'Dz-Nemesis',
-                'Ws-Nemesis',
-                'Sosi-Nemesis',
-                'Maggoo-Nemesis',
-                'Dhb-Nemesis',
-                'Ms-Nemesis',--最大存20个
-            }
-            Save().fast={
-                [e.onlyChinese and '布甲' or C_Item.GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
-                [e.onlyChinese and '皮甲' or C_Item.GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
-                [e.onlyChinese and '锁甲' or C_Item.GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
-                [e.onlyChinese and '板甲' or C_Item.GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
-                [e.onlyChinese and '盾牌' or C_Item.GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
-                [e.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
-
-            }
-        elseif e.Player.region==4 then
-            Save().lastSendPlayerList= {
-                'Wowtools-巫妖之王',
-            }
-            Save().fast={}
-        end
-    end
-
     WoWTools_MailMixin.addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
+
+    Is_Sandro()
 
     --添加控制面板
     e.AddPanel_Check({

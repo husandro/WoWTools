@@ -1,3 +1,7 @@
+if GameLimitedMode_IsActive() then
+    return
+end
+
 --清除所有，要发送物品
 local e= select(2, ...)
 

@@ -1,3 +1,8 @@
+if GameLimitedMode_IsActive() then
+    return
+end
+
+
 local e= select(2, ...)
 local function Save()
     return WoWTools_MailMixin.Save

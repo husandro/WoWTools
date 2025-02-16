@@ -1,3 +1,8 @@
+if GameLimitedMode_IsActive() then
+    return
+end
+
+
 --收件人，历史记录
 local e= select(2, ...)
 local function Save()
