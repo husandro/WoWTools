@@ -31,12 +31,12 @@ Save={
     --lastSendSub=主题
     --lastSendBody=内容
 },
-addName=nil,
 }
 
 if GameLimitedMode_IsActive() then
     return
 end
+
 local function Save()
     return WoWTools_MailMixin.Save
 end
