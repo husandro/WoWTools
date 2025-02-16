@@ -15,7 +15,7 @@ local Save= {
 
 local addName
 local SayButton
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 
 local SLASH_SAY1= SLASH_SAY1
 local SLASH_YELL1= SLASH_YELL1

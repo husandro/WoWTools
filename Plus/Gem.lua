@@ -18,7 +18,7 @@ local Save={
 
 
 
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 local Frame
 local SpellButton
 local Initializer

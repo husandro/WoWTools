@@ -269,7 +269,7 @@ end
 
 
 local function Init()
-    Frame= CreateFrame("Frame")
+    Frame= CreateFrame('Frame')
 
     function Frame:set_event()
         if Save().hideEncounterJournal then

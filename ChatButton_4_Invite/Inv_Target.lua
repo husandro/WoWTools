@@ -18,7 +18,7 @@ end
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
     WoWTools_InviteMixin.InvTargetFrame= frame
 
     function frame:set_event()--设置, 邀请目标事件

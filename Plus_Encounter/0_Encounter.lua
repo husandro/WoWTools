@@ -78,9 +78,10 @@ end
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('BOSS_KILL')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -105,7 +106,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
                 WoWTools_EncounterMixin:WorldBoss_Settings()
                 WoWTools_EncounterMixin:InstanceBoss_Settings()
-                self:RegisterEvent('BOSS_KILL')
+
                 self:RegisterEvent('UPDATE_INSTANCE_INFO')
                 self:RegisterEvent('PLAYER_ENTERING_WORLD')
                 self:RegisterEvent('WEEKLY_REWARDS_UPDATE')

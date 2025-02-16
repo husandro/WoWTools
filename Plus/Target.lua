@@ -48,7 +48,7 @@ local Save= {
 
 
 
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 
 local TargetFrame
 local QuestFrame
@@ -174,7 +174,7 @@ function Init_Target()
     end
 
     if not TargetFrame then
-        TargetFrame= CreateFrame("Frame")
+        TargetFrame= CreateFrame('Frame')
         TargetFrame.Texture= TargetFrame:CreateTexture(nil, 'BACKGROUND')
         TargetFrame.Texture:SetAllPoints(TargetFrame)
 

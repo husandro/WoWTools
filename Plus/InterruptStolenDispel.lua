@@ -3,7 +3,7 @@ local id, e = ...
 local Save={
     --enabledInRaid=true--在团队中启用会掉帧
 }
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 
 local de='>'--分隔符
 --if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then

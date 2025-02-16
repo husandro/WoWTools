@@ -117,7 +117,7 @@ end
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
     frame:RegisterEvent('PARTY_INVITE_REQUEST')
     frame:SetScript('OnEvent', PARTY_INVITE_REQUEST)
 

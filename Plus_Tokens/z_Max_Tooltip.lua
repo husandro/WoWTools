@@ -2,7 +2,7 @@ local e=select(2, ...)
 local function Save()
 	return WoWTools_TokensMixin.Save
 end
-local Frame
+
 local MaxTabs={}
 
 
@@ -59,7 +59,7 @@ local function Currency_Max(curID)--已达到资源上限
 end
 
 local function Init()
-    Frame= CreateFrame("Frame")
+    local Frame= CreateFrame('Frame')
     WoWTools_TokensMixin.MaxFrame= Frame
 
     function Frame:settings()

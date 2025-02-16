@@ -2,7 +2,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_PlusCollectionMixin.Save
+    return WoWTools_CollectionMixin.Save
 end
 
 
@@ -33,7 +33,7 @@ local function UpdateMountDisplay()
             e.tips:ClearLines()
             e.tips:AddDoubleLine(e.onlyChinese and '显示信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INFO), e.GetShowHide(not Save().ShowMountDisplayInfo))
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
             e.tips:Show()
         end
         function MountJournal.MountDisplay.tipButton:set_Text()
@@ -115,6 +115,6 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_Mount()--坐骑 1
+function WoWTools_CollectionMixin:Init_Mount()--坐骑 1
     Init()
 end

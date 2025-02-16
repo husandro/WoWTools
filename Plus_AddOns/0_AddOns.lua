@@ -310,9 +310,52 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if not arg1~=id then
+        return
+    end
+
+    if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)] then
+        WoWTools_AddOnsMixin.Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)]
+        WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)]=nil
+        Save().fast= Save().fast or {}
+        Save().load_list_size= Save().load_list_size or 22
+        Save().rightListScale=1
+        Save().leftListScale=1
+    else
+        WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or WoWTools_AddOnsMixin.Save
+    end
+
+    WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
+
+    --添加控制面板
+    e.AddPanel_Check({
+        name= WoWTools_AddOnsMixin.addName,
+        tooltip= WoWTools_AddOnsMixin.addName,
+        Value= not Save().disabled,
+        GetValue=function () return not Save().disabled end,
+        SetValue= function()
+            Save().disabled = not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+        end
+    })
 
 
---###########
+    if not Save().disabled then
+        Init()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_AddOns']= Save()
+    end
+end)
+
+
+
+
+--[[###########
 --加载保存数据
 --###########
 local panel= CreateFrame('Frame')
@@ -360,4 +403,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_AddOns']= Save()
         end
     end
-end)
+end)]]

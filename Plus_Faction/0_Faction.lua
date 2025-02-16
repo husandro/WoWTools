@@ -42,72 +42,52 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+	if arg1==id then
+
+		WoWTools_ReputationMixin.Save= WoWToolsSave['Plus_Reputation'] or WoWTools_ReputationMixin.Save
+		WoWTools_ReputationMixin.addName= format('|A:%s:0:0|a%s', e.Icon[e.Player.faction] or 'ParagonReputation_Glow', e.onlyChinese and '声望' or REPUTATION)
+		Save().factions= Save().factions or {}
+
+		--添加控制面板
+		e.AddPanel_Check({
+			name= WoWTools_ReputationMixin.addName,
+			tooltip= WoWTools_ReputationMixin.addName,
+			GetValue= function() return not Save().disabled end,
+			SetValue= function()
+				Save().disabled= not Save().disabled and true or nil
+				print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+			end
+		})
 
 
 
---###########
---加载保存数据
---###########
-local panel= CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-		if arg1==id then
-			if WoWToolsSave[REPUTATION] then
-				WoWTools_ReputationMixin.Save= WoWToolsSave[REPUTATION]
-				WoWToolsSave[REPUTATION]= nil
-			else
-				WoWTools_ReputationMixin.Save= WoWToolsSave['Plus_Reputation'] or WoWTools_ReputationMixin.Save
+		if not Save().disabled then
+			Init()
+
+			if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
+				WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
 			end
 
-			WoWTools_ReputationMixin.addName= format('|A:%s:0:0|a%s', e.Icon[e.Player.faction] or 'ParagonReputation_Glow', e.onlyChinese and '声望' or REPUTATION)
-
-			Save().factions= Save().factions or {}
-
-
-
-			--添加控制面板
-            e.AddPanel_Check({
-                name= WoWTools_ReputationMixin.addName,
-                tooltip= WoWTools_ReputationMixin.addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-
-
-            if not Save().disabled then
-                Init()
-
-				if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
-                    WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
-                end
-
-				if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
-                    WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
-                end
-				
-			else
-				self:UnregisterEvent('ADDON_LOADED')
-            end
-            
-
-
-		elseif arg1=='Blizzard_MajorFactions' then
-			WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
-
-
-		elseif arg1=='Blizzard_CovenantRenown' then
-			WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
+			if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
+				WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
+			end
 		end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_Reputation']= WoWTools_ReputationMixin.Save
-        end
-    end
+	elseif arg1=='Blizzard_MajorFactions' then
+		if not Save().disabled then
+			WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
+		end
+
+	elseif arg1=='Blizzard_CovenantRenown' then
+		if not Save().disabled then
+			WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
+		end
+	end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+	if not e.ClearAllSave then
+		WoWToolsSave['Plus_Reputation']= WoWTools_ReputationMixin.Save
+	end
 end)

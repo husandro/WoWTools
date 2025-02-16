@@ -2,7 +2,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_PlusCollectionMixin.Save
+    return WoWTools_CollectionMixin.Save
 end
 
 local SetsDataProvider
@@ -416,7 +416,7 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
+function WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
     if not TipsLabel and not self.Save.hideSets then
         Init()
     end

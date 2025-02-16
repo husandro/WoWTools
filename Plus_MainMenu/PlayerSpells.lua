@@ -7,7 +7,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
     --table.insert(Frames, frame)
     PlayerSpellsMicroButton.frame= frame
 

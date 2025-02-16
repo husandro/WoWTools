@@ -7,7 +7,7 @@ local Save={
         --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
         --showFriendInfoOnlyFavorite=true,--仅限收藏好友
     }
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 local FriendsButton
 local OptionText--= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
 

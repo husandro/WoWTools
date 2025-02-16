@@ -41,8 +41,40 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
 
-local panel=CreateFrame("Frame")
+    WoWTools_StableFrameMixin.Save= WoWToolsSave['Other_HunterPet'] or WoWTools_StableFrameMixin.Save
+    WoWTools_StableFrameMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
+
+    --添加控制面板
+        e.AddPanel_Check({
+        name= WoWTools_StableFrameMixin.addName,
+        tooltip= nil,
+        Value= not WoWTools_StableFrameMixin.Save.disabled,
+        GetValue=function() return not WoWTools_StableFrameMixin.Save.disabled end,
+        SetValue= function()
+            WoWTools_StableFrameMixin.Save.disabled = not WoWTools_StableFrameMixin.Save.disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName, e.GetEnabeleDisable(not WoWTools_StableFrameMixin.Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+        end
+    })
+
+    if not WoWTools_StableFrameMixin.Save.disabled then
+        Init()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Other_HunterPet']= WoWTools_StableFrameMixin.Save
+    end
+end)
+
+
+
+--[[local panel=CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -77,4 +109,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     end
 
-end)
+end)]]

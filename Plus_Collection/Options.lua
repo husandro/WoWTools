@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_PlusCollectionMixin.Save
+    return WoWTools_CollectionMixin.Save
 end
 
 
@@ -35,7 +35,7 @@ local function Init_Menu(self, root)
         return not Save().hideHeirloomClassList
     end, function()
         Save().hideHeirloomClassList= not Save().hideHeirloomClassList and true or nil
-        WoWTools_PlusCollectionMixin:Init_Heirloom()--传家宝 4
+        WoWTools_CollectionMixin:Init_Heirloom()--传家宝 4
     end)
 
 
@@ -48,7 +48,7 @@ local function Init_Menu(self, root)
         return not Save().hideItems
     end, function()
         Save().hideItems= not Save().hideItems and true or nil
-        WoWTools_PlusCollectionMixin:Init_Wardrober_Items()--幻化 5
+        WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化 5
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
@@ -61,7 +61,7 @@ local function Init_Menu(self, root)
         return not Save().hideSets
     end, function()
         Save().hideSets= not Save().hideSets and true or nil
-        WoWTools_PlusCollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
+        WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PlusCollectionMixin.addName})
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_CollectionMixin.addName})
 end
 
 
@@ -97,6 +97,6 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_Options()
+function WoWTools_CollectionMixin:Init_Options()
     Init()
 end

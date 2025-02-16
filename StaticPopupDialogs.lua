@@ -416,7 +416,7 @@ StaticPopup_Show("PERKS_PROGRAM_CONFIRM_PURCHASE", product.price, markup, data);
 
 
 
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" and arg1== id then

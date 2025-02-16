@@ -32,7 +32,7 @@ local Save={
 DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 local LinkButton, Category
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 
 local LOOT_ITEM= LOOT_ITEM--= WoWTools_TextMixin:Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 local CHAT_SAY_SEND= CHAT_SAY_SEND

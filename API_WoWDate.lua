@@ -1,5 +1,5 @@
 local id, e = ...
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 
 
 

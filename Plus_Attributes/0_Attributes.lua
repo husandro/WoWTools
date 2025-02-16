@@ -85,6 +85,7 @@ local function Init()
     WoWTools_AttributesMixin:Init_Dragonriding_Speed()--驭空术UI，速度
     WoWTools_AttributesMixin:Init_Vehicle_Speed()--载具，移动，速度
     WoWTools_AttributesMixin:Init_Target_Speed()--目标，移动，速度
+    return true
 end
 
 
@@ -93,8 +94,52 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
 
-local panel= CreateFrame('Frame')
+        WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or WoWTools_AttributesMixin.Save
+
+        WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+
+        WoWTools_AttributesMixin.PanelFrame= CreateFrame('Frame')
+        WoWTools_AttributesMixin.Category= e.AddPanel_Sub_Category({name=WoWTools_AttributesMixin.addName, frame=WoWTools_AttributesMixin.PanelFrame})--添加控制面板
+
+        e.ReloadPanel({panel=WoWTools_AttributesMixin.PanelFrame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            disabledfunc=function()
+                Save().disabled = not Save().disabled and true or nil
+                if not Save().disabled then
+                    if Init() then Init=function()end end
+                    WoWTools_AttributesMixin:Init_Options()
+                else
+                    print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+                end
+            end,
+            clearfunc= function()
+                WoWTools_AttributesMixin.Save=nil
+                WoWTools_Mixin:Reload()
+            end
+        })
+
+        if not Save().disabled then
+            if Init() then Init=function()end end
+        end
+
+    elseif arg1=='Blizzard_Settings' then
+        WoWTools_AttributesMixin:Init_Options()
+
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Attributes']= WoWTools_AttributesMixin.Save
+    end
+end)
+
+
+
+--[[local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -146,7 +191,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Attributes']= WoWTools_AttributesMixin.Save
         end
     end
-end)
+end)]]
 
 
 

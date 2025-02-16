@@ -29,7 +29,7 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_ToyBox()--玩具 3
+function WoWTools_CollectionMixin:Init_ToyBox()--玩具 3
 
     hooksecurefunc('ToySpellButton_UpdateButton', Update_Button)
     ToyBox.searchBox:SetPoint('LEFT', ToyBox.progressBar, 'RIGHT', 12,0)

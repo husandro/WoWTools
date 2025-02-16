@@ -3,7 +3,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_PlusCollectionMixin.Save
+    return WoWTools_CollectionMixin.Save
 end
 
 
@@ -66,7 +66,7 @@ local function UpdateButton(_, button)
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:AddLine(format(e.onlyChinese and '传家宝升级等级：%d/%d' or HEIRLOOM_UPGRADE_TOOLTIP_FORMAT, self2.upgradeLevel, self2.maxUp))
-                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
+                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
                     e.tips:Show()
                 end
             end)
@@ -100,7 +100,7 @@ local function UpdateButton(_, button)
             e.tips:SetOwner(self2, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(e.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
             e.tips:Show()
         end)
         button.isPvP:SetScript('OnMouseDown', function(self2)
@@ -162,7 +162,7 @@ local function Init_ClassListButton()
     function ListButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
 
         if UnitAffectingCombat('player') then
             e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
@@ -231,7 +231,7 @@ local function Init_ClassListButton()
             if UnitAffectingCombat('player') then
                 e.tips:SetOwner(f, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
                 e.tips:AddLine(' ')
                 e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
                 e.tips:Show()
@@ -366,6 +366,6 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_Heirloom()--传家宝 4
+function WoWTools_CollectionMixin:Init_Heirloom()--传家宝 4
     Init()
 end

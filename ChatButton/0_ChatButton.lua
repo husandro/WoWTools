@@ -10,7 +10,7 @@ local Save={
     --isShowBackground=nil,--是否显示背景 bool
     --isEnterShowMenu 移过图标，显示菜单
 }
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 local addName
 local ChatButton
 local Initializer, Layout

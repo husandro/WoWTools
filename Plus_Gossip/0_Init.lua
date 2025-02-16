@@ -105,12 +105,67 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1 == id then
+
+        WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or Save()
+
+        WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'
+            ..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
+
+        WoWTools_GossipMixin.addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'
+            ..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
+
+         --添加控制面板
+        e.AddPanel_Check_Button({
+             checkName= WoWTools_GossipMixin.addName,
+             GetValue= function() return not Save().disabled end,
+             SetValue= function()
+                 Save().disabled = not Save().disabled and true or nil
+                 print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+             end,
+             buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+             buttonFunc= function()
+                 Save().point=nil
+                 local btn= WoWTools_GossipMixin.GossipButton
+                 if btn then
+                    btn:ClearAllPoints()
+                    btn:set_Point()
+                 end
+                 print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+             end,
+             tooltip= WoWTools_GossipMixin.addName,
+             layout= nil,
+             category= nil,
+         })
+
+        if not Save().disabled then
+            Init()
+        end
+
+    elseif arg1=='Blizzard_PlayerChoice' then
+        if not Save().disabled then
+            WoWTools_GossipMixin:Init_PlayerChoice()
+        end
+
+    elseif arg1=='Blizzard_DelvesDifficultyPicker' then--地下堡
+        if not Save().disabled then
+            WoWTools_GossipMixin:Init_Delves()
+        end
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Gossip']= Save()
+    end
+end)
 
 
---###########
+--[[###########
 --加载保存数据
 --###########
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -164,7 +219,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Gossip']= Save()
+            
         end
     end
-end)
+end)]]

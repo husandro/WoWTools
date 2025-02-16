@@ -13,7 +13,7 @@ end
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
     WoWTools_InviteMixin.InvChanellFrame= frame
 
 

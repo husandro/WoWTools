@@ -11,7 +11,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
 
     frame.Text= WoWTools_LabelMixin:Create(GuildMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
     frame.Text:SetPoint('TOP', GuildMicroButton, 0,  -3)

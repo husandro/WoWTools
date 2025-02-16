@@ -130,7 +130,7 @@ end
 
 
 
-local Frame=CreateFrame("Frame")
+local Frame= CreateFrame('Frame')
 Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName)--encounterID, itemID, itemLink, quantity, playerName, classFileName
     if event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
         if IsInInstance() and  (playerName and playerName:find(e.Player.name) or not IsInGroup()) then

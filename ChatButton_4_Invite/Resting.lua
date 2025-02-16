@@ -10,7 +10,7 @@ end
 --休息区提示
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
     WoWTools_InviteMixin.RestingFrame= frame
 
     frame.enterText= '|A:communities-icon-addgroupplus:0:0|a'..(

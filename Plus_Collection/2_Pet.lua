@@ -24,6 +24,6 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_Pet()--宠物 2
+function WoWTools_CollectionMixin:Init_Pet()--宠物 2
     Init()
 end

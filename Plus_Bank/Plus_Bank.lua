@@ -2,7 +2,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_BankFrameMixin.Save
+    return WoWTools_BankMixin.Save
 end
 
 
@@ -434,7 +434,7 @@ end
 
 
 --整合
-function WoWTools_BankFrameMixin:Init_Plus()
+function WoWTools_BankMixin:Init_Plus()
     Init()
 end
 

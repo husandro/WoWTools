@@ -154,7 +154,7 @@ end)
 --[[###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent("ADDON_LOADED")
 

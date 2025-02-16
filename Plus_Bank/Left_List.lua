@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_BankFrameMixin.Save
+    return WoWTools_BankMixin.Save
 end
 
 
@@ -49,7 +49,7 @@ end
 --大包时，显示，存取，分类，按钮
 local ListButton
 local function Init()
-    ListButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide', name='WoWTools_BankFrameMixinLeftListButton'})
+    ListButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide', name='WoWTools_BankMixinLeftListButton'})
     ListButton:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
     ListButton.frame=CreateFrame('Frame', nil, ListButton)
     ListButton.frame:SetPoint('BOTTOMRIGHT')
@@ -63,7 +63,7 @@ local function Init()
     function ListButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankFrameMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.GetShowHide(Save().show_AllBank_Type), e.Icon.left)
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save().show_AllBank_Type_Scale or 1), e.Icon.mid)
@@ -266,7 +266,7 @@ end
 
 
 --分类，存取,
-function WoWTools_BankFrameMixin:Init_Left_List()
+function WoWTools_BankMixin:Init_Left_List()
     if self.Save.left_List and not ListButton then
         Init()
     elseif ListButton then

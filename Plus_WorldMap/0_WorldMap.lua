@@ -180,7 +180,7 @@ end)
 
 
 --[[
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then

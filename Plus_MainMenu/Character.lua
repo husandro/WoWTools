@@ -6,7 +6,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
 
 
     frame.Text= WoWTools_LabelMixin:Create(CharacterMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})

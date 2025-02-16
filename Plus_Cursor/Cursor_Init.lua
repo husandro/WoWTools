@@ -61,7 +61,7 @@ end
 
 
 local nowX, nowY = 0, 0
-local set_Cursor_Update = function(self, elapsed)
+local function set_Cursor_Update(self, elapsed)
     self.elapsed= (self.elapsed or Save().rate) + elapsed
     if self.elapsed> Save().rate then
         self.elapsed=0
@@ -122,11 +122,12 @@ end
 
 --Cursor, 初始化
 local function Init()
-    Frame= CreateFrame('Frame')
+    local Frame= CreateFrame('Frame')
     WoWTools_CursorMixin.CursorFrame= Frame
 
     Frame.egim=0
     WoWTools_CursorMixin:Cursor_Settings()
+    Frame.elapsed= Save().rate or 1
     Frame:SetScript('OnUpdate', set_Cursor_Update)
 
     WoWTools_CursorMixin:Cursor_SetEvent()--随机, 图片，事件

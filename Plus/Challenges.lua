@@ -1715,7 +1715,7 @@ local function set_Week_Reward_Look_Specialization()
         print(WoWTools_Mixin.addName, Initializer:GetName(),'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
-    WeekRewardLookFrame= CreateFrame("Frame")
+    WeekRewardLookFrame= CreateFrame('Frame')
     WeekRewardLookFrame:SetSize(40,40)
     WeekRewardLookFrame:SetPoint("CENTER", -100, 60)
     WeekRewardLookFrame:SetShown(false)
@@ -2096,7 +2096,7 @@ end
 --###########
 --加载保存数据
 --###########
-local panel=CreateFrame("Frame")
+local panel=CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 

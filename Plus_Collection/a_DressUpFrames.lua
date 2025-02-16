@@ -118,6 +118,6 @@ end
 
 
 
-function WoWTools_PlusCollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
+function WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'SetDetails', Set_SetDetails)
 end

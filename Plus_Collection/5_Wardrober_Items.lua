@@ -2,7 +2,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_PlusCollectionMixin.Save
+    return WoWTools_CollectionMixin.Save
 end
 
 local SlotsIcon = {
@@ -312,7 +312,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                                 e.tips:AddLine(' ')
                                 e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
                                 e.tips:Show()
-                               e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PlusCollectionMixin.addName)
+                               e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
                              end
                              self2:SetAlpha(1)
                         end)
@@ -452,7 +452,7 @@ end
 
 
 local IsSet
-function WoWTools_PlusCollectionMixin:Init_Wardrober_Items()--幻化 5
+function WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化 5
     if not IsSet and not self.Save.hideItems then
         IsSet=true
         Init()

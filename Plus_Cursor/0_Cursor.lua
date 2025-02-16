@@ -73,12 +73,19 @@ GCDFrame=nil,
 }
 
 
-local panel= CreateFrame("Frame")
+
 local gcdFrame
 
 local function Save()
     return WoWTools_CursorMixin.Save
 end
+
+
+
+
+
+
+
 
 --####
 --颜色
@@ -101,6 +108,82 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        WoWTools_CursorMixin.Save= WoWToolsSave['Plus_Cursor'] or WoWTools_CursorMixin.Save
+        WoWTools_CursorMixin.addName= '|A:ClickCast-Icon-Mouse:0:0|a'..(e.onlyChinese and '鼠标' or MOUSE_LABEL)
+
+        WoWTools_CursorMixin:Set_Color()
+
+        local frame= CreateFrame('Frame')
+        WoWTools_CursorMixin.OptionsFrame= frame
+        e.AddPanel_Sub_Category({name=WoWTools_CursorMixin.addName, frame=frame})
+
+        e.ReloadPanel({panel=frame, addName=WoWTools_CursorMixin.addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            disabledfunc=nil,
+            clearfunc= function() WoWTools_CursorMixin.Save=nil WoWTools_Mixin:Reload() end}
+        )
+
+        --Cursor, 启用/禁用
+        frame.cursorCheck=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+        frame.cursorCheck:SetChecked(not Save().disabled)
+        frame.cursorCheck:SetPoint("TOPLEFT", 0, -35)
+        frame.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+        frame.cursorCheck:SetScript('OnMouseDown', function()
+            Save().disabled = not Save().disabled and true or nil
+            if not Save().disabled and not WoWTools_CursorMixin.CursorFrame then
+                WoWTools_CursorMixin:Init_Cursor()
+            end
+            if WoWTools_CursorMixin.CursorFrame then
+                WoWTools_CursorMixin:Cursor_SetEvent()--随机, 图片，事件
+                WoWTools_CursorMixin.CursorFrame:SetShown(not Save().disabled)
+            end
+            WoWTools_CursorMixin:Init_Options()
+            WoWTools_CursorMixin:Init_Cursor_Options()
+        end)
+
+        --GCD, 启用/禁用
+        frame.gcdCheck=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+        frame.gcdCheck:SetChecked(not Save().disabledGCD)
+        frame.gcdCheck:SetPoint("TOPLEFT", frame, 'TOP', 0, -35)
+        frame.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
+        frame.gcdCheck:SetScript('OnMouseDown', function()
+            Save().disabledGCD = not Save().disabledGCD and true or nil
+            if not Save().disabledGCD and not gcdFrame then
+                WoWTools_CursorMixin:Init_GCD()
+            end
+            if not Save().disabledGCD then
+                WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
+            else
+                WoWTools_CursorMixin:GCD_Settings()--设置 GCD
+            end
+            WoWTools_CursorMixin:Init_Options()
+            WoWTools_CursorMixin:Init_GCD_Options()
+        end)
+
+        if not Save().disabled then
+            C_Timer.After(2, function()
+                WoWTools_CursorMixin:Init_Cursor()
+            end)
+        end
+        if not Save().disabledGCD then
+            C_Timer.After(2, function()
+                WoWTools_CursorMixin:Init_GCD()
+            end)
+        end
+
+    elseif arg1=='Blizzard_Settings' then
+        WoWTools_CursorMixin:Init_Options()
+        WoWTools_CursorMixin:Init_Cursor_Options()
+        WoWTools_CursorMixin:Init_GCD_Options()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Cursor']=WoWTools_CursorMixin.Save
+    end
+end)
 
 
 
@@ -108,10 +191,10 @@ end
 
 
 
-
---###########
+--[[###########
 --加载保存数据
 --###########
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)
@@ -129,21 +212,21 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWTools_CursorMixin.addName= '|A:ClickCast-Icon-Mouse:0:0|a'..(e.onlyChinese and '鼠标' or MOUSE_LABEL)
 
 
-            WoWTools_CursorMixin.OptionsFrame= CreateFrame('Frame')
+            frame= CreateFrame('Frame')
 
-            e.AddPanel_Sub_Category({name=WoWTools_CursorMixin.addName, frame=WoWTools_CursorMixin.OptionsFrame})
+            e.AddPanel_Sub_Category({name=WoWTools_CursorMixin.addName, frame=frame})
 
-            e.ReloadPanel({panel=WoWTools_CursorMixin.OptionsFrame, addName=WoWTools_CursorMixin.addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            e.ReloadPanel({panel=frame, addName=WoWTools_CursorMixin.addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=nil,
                 clearfunc= function() WoWTools_CursorMixin.Save=nil WoWTools_Mixin:Reload() end}
             )
 
             --Cursor, 启用/禁用
-            WoWTools_CursorMixin.OptionsFrame.cursorCheck=CreateFrame("CheckButton", nil, WoWTools_CursorMixin.OptionsFrame, "InterfaceOptionsCheckButtonTemplate")
-            WoWTools_CursorMixin.OptionsFrame.cursorCheck:SetChecked(not Save().disabled)
-            WoWTools_CursorMixin.OptionsFrame.cursorCheck:SetPoint("TOPLEFT", 0, -35)
-            WoWTools_CursorMixin.OptionsFrame.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
-            WoWTools_CursorMixin.OptionsFrame.cursorCheck:SetScript('OnMouseDown', function()
+            frame.cursorCheck=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+            frame.cursorCheck:SetChecked(not Save().disabled)
+            frame.cursorCheck:SetPoint("TOPLEFT", 0, -35)
+            frame.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+            frame.cursorCheck:SetScript('OnMouseDown', function()
                 Save().disabled = not Save().disabled and true or nil
                 if not Save().disabled and not WoWTools_CursorMixin.CursorFrame then
                     WoWTools_CursorMixin:Init_Cursor()
@@ -157,11 +240,11 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             end)
 
             --GCD, 启用/禁用
-            WoWTools_CursorMixin.OptionsFrame.gcdCheck=CreateFrame("CheckButton", nil, WoWTools_CursorMixin.OptionsFrame, "InterfaceOptionsCheckButtonTemplate")
-            WoWTools_CursorMixin.OptionsFrame.gcdCheck:SetChecked(not Save().disabledGCD)
-            WoWTools_CursorMixin.OptionsFrame.gcdCheck:SetPoint("TOPLEFT", WoWTools_CursorMixin.OptionsFrame, 'TOP', 0, -35)
-            WoWTools_CursorMixin.OptionsFrame.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
-            WoWTools_CursorMixin.OptionsFrame.gcdCheck:SetScript('OnMouseDown', function()
+            frame.gcdCheck=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+            frame.gcdCheck:SetChecked(not Save().disabledGCD)
+            frame.gcdCheck:SetPoint("TOPLEFT", frame, 'TOP', 0, -35)
+            frame.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
+            frame.gcdCheck:SetScript('OnMouseDown', function()
                 Save().disabledGCD = not Save().disabledGCD and true or nil
                 if not Save().disabledGCD and not gcdFrame then
                     WoWTools_CursorMixin:Init_GCD()
@@ -204,4 +287,4 @@ panel:SetScript("OnEvent", function(_, event, arg1)
             WoWToolsSave['Plus_Cursor']=WoWTools_CursorMixin.Save
         end
     end
-end)
+end)]]

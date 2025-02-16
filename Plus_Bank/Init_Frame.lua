@@ -132,7 +132,7 @@ local function Init_BankSlotsFrame()
     BankFrame.Background:ClearAllPoints()
     BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
     BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-    WoWTools_BankFrameMixin:Set_Background_Texture(BankFrame.Background)
+    WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
 
 
 --隐藏，背景
@@ -443,7 +443,7 @@ local function Init_AccountBankPanel()
 --背景    
     AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
     AccountBankPanel.Background:SetAllPoints()
-    WoWTools_BankFrameMixin:Set_Background_Texture(AccountBankPanel.Background)
+    WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()
@@ -496,7 +496,7 @@ local function Init_OpenAllBag_Button()
         do
             WoWTools_BankMixin:OpenBag()
         end
-        WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+        WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
     end)
 
     local down=  WoWTools_ButtonMixin:CreateDownButton(parent, nil, nil)
@@ -512,7 +512,7 @@ local function Init_OpenAllBag_Button()
         do
             WoWTools_BankMixin:CloseBag()
         end
-        WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+        WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
     end)
 end
 
@@ -556,6 +556,6 @@ end
 
 
 
-function WoWTools_BankFrameMixin:Init_Frame()
+function WoWTools_BankMixin:Init_Frame()
    Init()
 end

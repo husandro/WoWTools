@@ -460,7 +460,7 @@ end
 
 
 
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(_, event, arg1)

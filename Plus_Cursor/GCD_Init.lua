@@ -32,7 +32,7 @@ end
 
 --GCD, 初始化
 local function Init()
-    Frame= CreateFrame("Frame")
+    local Frame= CreateFrame('Frame')
     WoWTools_CursorMixin.GCDFrame= Frame
 
     Frame:SetFrameStrata("TOOLTIP")

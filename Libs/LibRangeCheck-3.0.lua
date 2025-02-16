@@ -1402,7 +1402,7 @@ end
 
 function lib:activate()
   if not self.frame then
-    local frame = CreateFrame("Frame")
+    local frame = CreateFrame('Frame')
     self.frame = frame
 
     frame:RegisterEvent("LEARNED_SPELL_IN_TAB")

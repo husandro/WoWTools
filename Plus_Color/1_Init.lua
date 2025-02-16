@@ -120,6 +120,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 	if Save().disabled then
 		return
 	end
+
 	ColorPickerFrame:HookScript('OnShow', function()
 		if Init() then Init=function()end end
 	end)
@@ -142,7 +143,7 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
 	end
 end)
 --[[
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:RegisterEvent('ADDON_LOADED')
 panel:SetScript("OnEvent", function(self, event, arg1)

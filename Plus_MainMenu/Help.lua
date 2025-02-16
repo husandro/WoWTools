@@ -15,7 +15,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    local frame= CreateFrame("Frame")
+    local frame= CreateFrame('Frame')
 
     frame:SetPoint('TOP')
     frame:SetSize(1,1)

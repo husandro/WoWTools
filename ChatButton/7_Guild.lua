@@ -3,7 +3,7 @@ local id, e = ...
 local Save={}
 local addName
 local GuildButton
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 
 --#######
 --在线人数

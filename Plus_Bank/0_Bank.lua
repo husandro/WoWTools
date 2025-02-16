@@ -1,5 +1,5 @@
 local id, e = ...
-WoWTools_BankFrameMixin={
+WoWTools_BankMixin={
 Save={
     --disabled=true,--禁用
     --hideReagentBankFrame=true,--银行,隐藏，材料包
@@ -29,17 +29,17 @@ Init_Frame=function()end,
 
 
 local function Save()
-    return WoWTools_BankFrameMixin.Save
+    return WoWTools_BankMixin.Save
 end
 
-function WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+function WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
     if _G['WoWTools_SetAllBankButton'] then
         _G['WoWTools_SetAllBankButton']:settings()
     end
 end
 
 
-function WoWTools_BankFrameMixin:Set_Background_Texture(texture)
+function WoWTools_BankMixin:Set_Background_Texture(texture)
     if texture then
         if self.Save.showBackground then
             texture:SetAtlas('bank-frame-background')
@@ -86,7 +86,7 @@ local function Init_Menu(self, root)
         return Save().left_List
     end, function()
         Save().left_List= not Save().left_List and true or nil
-        WoWTools_BankFrameMixin:Init_Left_List()--分类，存取,
+        WoWTools_BankMixin:Init_Left_List()--分类，存取,
     end)
 
 --自动打开背包栏位
@@ -118,7 +118,7 @@ local function Init_Menu(self, root)
         return Save().showIndex
     end, function()
         Save().showIndex= not Save().showIndex and true or nil--显示，索引
-        WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+        WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
     end)
 
 --显示背景
@@ -128,8 +128,8 @@ local function Init_Menu(self, root)
         return Save().showBackground
     end, function()
         Save().showBackground= not Save().showBackground and true or nil
-        WoWTools_BankFrameMixin:Set_Background_Texture(BankFrame.Background)
-        WoWTools_BankFrameMixin:Set_Background_Texture(AccountBankPanel.Background)
+        WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
+        WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
     end)
 
     root:CreateSpacer()
@@ -138,7 +138,7 @@ local function Init_Menu(self, root)
             return Save().num
         end, setValue=function(value)
             Save().num=value
-            WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+            WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
         end,
         name=e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
         minValue=4,
@@ -154,7 +154,7 @@ local function Init_Menu(self, root)
             return Save().line
         end, setValue=function(value)
             Save().line=value
-            WoWTools_BankFrameMixin:Settings_All_Bank()--设置，整合银行
+            WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
         end,
         name=e.onlyChinese and '间隔' or 'Interval',
         minValue=0,
@@ -166,7 +166,7 @@ local function Init_Menu(self, root)
 end
 
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankFrameMixin.addName})
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
     WoWTools_MenuMixin:Reload(sub, false)
 end
 
@@ -272,11 +272,11 @@ local function Init()
 
 
 
-    WoWTools_BankFrameMixin:Init_Plus()--整合，一起
-    WoWTools_BankFrameMixin:Init_Frame()--存放，取出，所有
+    WoWTools_BankMixin:Init_Plus()--整合，一起
+    WoWTools_BankMixin:Init_Frame()--存放，取出，所有
 
     C_Timer.After(4, function()--分类，存取, 2秒为翻译加载时间
-        WoWTools_BankFrameMixin:Init_Left_List()
+        WoWTools_BankMixin:Init_Left_List()
     end)
 end
 
@@ -293,13 +293,43 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
+
+    WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
+    WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
+
+    --添加控制面板
+    e.AddPanel_Check({
+        name= WoWTools_BankMixin.addName,
+        GetValue=function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_BankMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+        end
+    })
+
+    if not Save().disabled then
+        Init()--银行
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Bank']= WoWTools_BankMixin.Save
+    end
+end)
 
 
 
---###########
+
+
+--[[###########
 --加载保存数据
 --###########
-local panel= CreateFrame("Frame")
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 
@@ -307,16 +337,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
-            WoWTools_BankFrameMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankFrameMixin.Save
-            WoWTools_BankFrameMixin.addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
+            WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
+            WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
 
             --添加控制面板
             e.AddPanel_Check({
-                name= WoWTools_BankFrameMixin.addName,
+                name= WoWTools_BankMixin.addName,
                 GetValue=function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, WoWTools_BankFrameMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_Mixin.addName, WoWTools_BankMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
@@ -328,7 +358,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Bank']= WoWTools_BankFrameMixin.Save
+            WoWToolsSave['Plus_Bank']= WoWTools_BankMixin.Save
         end
     end
-end)
+end)]]
