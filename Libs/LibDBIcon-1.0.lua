@@ -379,6 +379,9 @@ end
 --
 
 function lib:Register(name, object, db, customCompartmentIcon)
+	if not object then
+		return
+	end
 	if not object.icon then error("Can't register LDB objects without icons set!") end
 	if lib:GetMinimapButton(name) then error(DBICON10.. ": Object '".. name .."' is already registered.") end
 	createButton(name, object, db, customCompartmentIcon)
