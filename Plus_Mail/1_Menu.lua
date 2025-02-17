@@ -95,7 +95,7 @@ local function Init_Menu(_, root)
         name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
         minValue=0.5,
         maxValue=5,
-        step=1,
+        step=0.5,
         bit='%.1f',
     })
     sub:CreateSpacer()
