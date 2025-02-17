@@ -2,16 +2,17 @@ if GameLimitedMode_IsActive() then
     return
 end
 
-
 local e= select(2, ...)
 local function Save()
     return WoWTools_MailMixin.Save
 end
 
-
-
-
 local AUCTION_REMOVED_MAIL_SUBJECT= WoWTools_TextMixin:Magic(AUCTION_REMOVED_MAIL_SUBJECT) --= "拍卖取消：%s";
+
+
+
+
+
 
 
 
@@ -214,7 +215,11 @@ end
 
 --删除所有信，按钮
 local function Create_DeleteAllButton()
-    InboxFrame.DeleteAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {size={25,25}, atlas='xmarksthespot'})
+    InboxFrame.DeleteAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {
+        size={25,25},
+        atlas='xmarksthespot',
+        name='WoWToolsInboxDeleteAllButton'
+    })
     if _G['PostalSelectReturnButton'] then
         InboxFrame.DeleteAllButton:SetPoint('LEFT', _G['PostalSelectReturnButton'], 'RIGHT')
     else
@@ -265,7 +270,11 @@ end
 
 --退回，所有信，按钮
 local function Create_ReAllButton()
-    InboxFrame.ReAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {size={25,25}, atlas='common-icon-undo'})
+    InboxFrame.ReAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {
+        size=25,
+        atlas='common-icon-undo',
+        name= 'WoWToolsInboxReAllButton'
+    })
     if _G['PostalSelectReturnButton'] then
         InboxFrame.ReAllButton:SetPoint('RIGHT', _G['PostalSelectOpenButton'], 'LEFT')
     else

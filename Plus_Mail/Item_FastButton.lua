@@ -8,7 +8,9 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_MailMixin.Save
 end
+
 local fastButton
+local Buttons= {}
 
 
 
@@ -293,101 +295,7 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
---快速，加载，物品，按钮
-local function Init()
-    fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size={22, 22}, icon='hide'})
-    fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
-    fastButton.buttons={}
-    fastButton.frame= CreateFrame('Frame', nil, fastButton)
-    fastButton.frame:SetSize(1, 1)
-    fastButton.frame:SetPoint('TOPLEFT', fastButton, 'BOTTOMLEFT')
-
-
-    function fastButton:set_scale()
-        self.frame:SetScale(Save().scaleFastButton or 1)
-    end
-    function fastButton:set_shown()
-        self.frame:SetShown(Save().fastShow)
-        self:SetAlpha(Save().fastShow and 1 or 0.3)
-        self:SetNormalAtlas(Save().fastShow and 'NPE_ArrowDown' or 'NPE_ArrowRight')
-    end
-    function fastButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-        e.tips:Show()
-    end
-    fastButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        for _, btn in pairs(self.buttons) do
-            btn:set_alpha()
-        end
-    end)
-    fastButton:SetScript('OnEnter', function(self)
-        self:set_tooltips()
-        for _, btn in pairs(self.buttons) do
-            btn:SetAlpha(1)
-        end
-    end)
-    fastButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)
-
-    fastButton:set_scale()
-    fastButton:set_shown()
-
-
-
-
-
-    function fastButton:get_send_max_item()--能发送，数量
-        local tab={}
-        for i= 1, ATTACHMENTS_MAX_SEND do
-            if not HasSendMailItem(i) then
-                table.insert(tab, i)
-            end
-        end
-        self.canSendTab= tab
-    end
-    hooksecurefunc('SendMailFrame_Update', function() fastButton:get_send_max_item() end)
-
-    function fastButton:set_PickupContainerItem(classID, subClassID, findString)--自动放物品
-        if #self.canSendTab>0 then
-            for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-                for slot=1, C_Container.GetContainerNumSlots(bag) do
-                    local info= check_Enabled_Item(classID, subClassID, findString, bag, slot)
-                    if info then
-                        C_Container.PickupContainerItem(bag, slot)
-                        ClickSendMailItemButton(self.canSendTab[1])
-                        if #self.canSendTab==0 or not self:IsShown() then
-                            return
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-
-
-
-
-
+local function Init_Button()
     local fast={
         {C_Spell.GetSpellTexture(3908) or 4620681, 7, 5, e.onlyChinese and '布'},--1
         {C_Spell.GetSpellTexture(2108) or 4620678, 7, 6, e.onlyChinese and '皮革'},--2
@@ -426,7 +334,7 @@ local function Init()
     local x, y=0, 0
     for _, tab in pairs(fast) do
         if tab~='-' then
-            local btn= WoWTools_ButtonMixin:Cbtn(fastButton.frame, {size=22, texture=tab[1]})
+            local btn= WoWTools_ButtonMixin:Cbtn(fastButton.frame, {size=22, texture=tab[1], name='WoWToolsFastItemClass'..tab[2]..'SubClass'..(tab[3] or '')..'Button'})
             btn:SetPoint('TOPLEFT', fastButton.frame,'BOTTOMLEFT', x, y)
 
             btn.classID= tab[2]
@@ -517,7 +425,7 @@ local function Init()
                 e.tips:Show()
                 self:SetAlpha(1)
             end)
-            table.insert(fastButton.buttons, btn)
+            table.insert(Buttons, btn)
             y= y- 22
         else
             x= x+ 22
@@ -525,10 +433,101 @@ local function Init()
         end
     end
 
-    local texture= fastButton.frame:CreateTexture(nil, 'BACKGROUND')--添加，背景
+--添加，背景
+    local texture= fastButton.frame:CreateTexture(nil, 'BACKGROUND')
     texture:SetAtlas('footer-bg')
-    texture:SetPoint("TOPLEFT", fastButton.buttons[1],-2, 2)
-    texture:SetPoint('BOTTOMRIGHT', fastButton.buttons[#fastButton.buttons], 2, -2)
+    texture:SetPoint("TOPLEFT", Buttons[1],-2, 2)
+    texture:SetPoint('BOTTOMRIGHT', Buttons[#fastButton.buttons], 2, -2)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+--快速，加载，物品，按钮
+local function Init()
+    fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size={22, 22}, icon='hide', name='WoWToolsMailFastItemListButton'})
+    fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
+
+    fastButton.frame= CreateFrame('Frame', nil, fastButton)
+    fastButton.frame:SetSize(1, 1)
+    fastButton.frame:SetPoint('TOPLEFT', fastButton, 'BOTTOMLEFT')
+
+
+    function fastButton:set_scale()
+        self.frame:SetScale(Save().scaleFastButton or 1)
+    end
+    function fastButton:set_shown()
+        self.frame:SetShown(Save().fastShow)
+        self:SetAlpha(Save().fastShow and 1 or 0.3)
+        self:SetNormalAtlas(Save().fastShow and 'NPE_ArrowDown' or 'NPE_ArrowRight')
+    end
+    function fastButton:set_tooltips()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        e.tips:Show()
+    end
+    fastButton:SetScript('OnLeave', function(self)
+        e.tips:Hide()
+        for _, btn in pairs(Buttons) do
+            btn:set_alpha()
+        end
+    end)
+    fastButton:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+        for _, btn in pairs(Buttons) do
+            btn:SetAlpha(1)
+        end
+    end)
+    fastButton:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
+    end)
+
+    fastButton:set_scale()
+    fastButton:set_shown()
+
+
+    hooksecurefunc('SendMailFrame_Update', function()
+        local tab={}
+        for i= 1, ATTACHMENTS_MAX_SEND do
+            if not HasSendMailItem(i) then
+                table.insert(tab, i)
+            end
+        end
+        fastButton.canSendTab= tab
+    end)
+
+    function fastButton:set_PickupContainerItem(classID, subClassID, findString)--自动放物品
+        if #self.canSendTab>0 then
+            for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+                for slot=1, C_Container.GetContainerNumSlots(bag) do
+                    local info= check_Enabled_Item(classID, subClassID, findString, bag, slot)
+                    if info then
+                        C_Container.PickupContainerItem(bag, slot)
+                        ClickSendMailItemButton(self.canSendTab[1])
+                        if #self.canSendTab==0 or not self:IsShown() then
+                            return
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+
+    
+
+    Init_Button()
 end
 
 
@@ -541,5 +540,11 @@ end
 
 
 function WoWTools_MailMixin:Init_Fast_Button()
-    Init()
+    if self.Save.hideItemButtonList or fastButton then
+        if fastButton then
+            fastButton:Settings()
+        end
+    else
+        Init()
+    end
 end

@@ -67,7 +67,7 @@ end
 
 local function set_list()
     local num= #Save().lastSendPlayerList
-    Button.Text:SetText(num>0 and num or '')--列表，数量
+    Button.Text:SetText(num or '')--列表，数量
 
     if Save().hideSendPlayerList then
         return
@@ -226,8 +226,6 @@ local function Init_Menu(_, root)
 --打开选项
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
-
-
 end
 
 
@@ -280,12 +278,12 @@ end
 local function Init()
     Tab={}
 
-    Button= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, icon='hide', 'WoWToolsMailHistorySendNameListButton'})
     Button:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -22)
 
-    Frame= CreateFrame('Frame', nil, Button)
-    Frame:SetPoint('BOTTOMRIGHT')
-    Frame:SetSize(1,1)
+    function Button:Settings()
+        self:SetShown(not Save().hideHistoryList)
+    end
 
     Button.Text= WoWTools_LabelMixin:Create(Button, {justifyH='CENTER', color={r=1,g=1,b=1}})--列表，数量
     Button.Text:SetPoint('CENTER')
@@ -299,7 +297,7 @@ local function Init()
     function Button:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))
+        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))..'|cnGREEN_FONT_COLOR:#'..#Save().lastSendPlayerList)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:Show()
@@ -317,6 +315,10 @@ local function Init()
         self:RegisterEvent('MAIL_FAILED')
         set_list()
     end)
+
+    Frame= CreateFrame('Frame', nil, Button)
+    Frame:SetPoint('BOTTOMRIGHT')
+    Frame:SetSize(1,1)
 
     Set_Button()
 end
@@ -336,5 +338,11 @@ end
 
 
 function WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
-    Init()
+    if self.Save.hideHistoryList or Button then
+        if Button then
+            Button:Settings()
+        end
+    else
+        Init()
+    end
 end

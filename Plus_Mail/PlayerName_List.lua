@@ -10,7 +10,7 @@ local function Save()
 end
 
 
-
+local listButton
 
 
 
@@ -391,7 +391,7 @@ end
 --收件人，列表
 function Init()
     --下拉，菜单
-    local listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
+    listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
 
     listButton:SetPoint('LEFT', SendMailNameEditBox, 'RIGHT')
     listButton:SetScript('OnMouseDown', function(self)
@@ -402,7 +402,7 @@ function Init()
 
     --目标，名称
     listButton.btn= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, icon='hide'})
-    listButton.btn:SetPoint('LEFT', listButton, 'RIGHT', 2, 0)
+    listButton.btn:SetPoint('TOP', listButton, 'BOTTOM')
     listButton.btn:SetScript('OnClick', function(self)
           WoWTools_MailMixin:SetSendName(self.name)
     end)
@@ -420,7 +420,7 @@ function Init()
         e.tips:Show()
     end)
 
-    function listButton:settings()
+    function listButton:Settings()
         local name
         if UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
             name= WoWTools_UnitMixin:GetFullName(nil, 'target', nil)--取得全名
@@ -444,14 +444,15 @@ function Init()
         self.btn.tooltip= WoWTools_MailMixin:GetRealmInfo(name)
         self.btn:SetShown(name and true or false)
         self.btn:SetAlpha(self.btn.tooltip and 0.5 or 1)
+        self:SetShown(not Save().hideSendNameList)
     end
 
-    listButton:SetScript('OnEvent',  listButton.settings)
+    listButton:SetScript('OnEvent',  listButton.Settings)
     listButton:SetScript('OnHide', listButton.UnregisterAllEvents)
     listButton:SetScript('OnShow', function(self)
         self:RegisterEvent('PLAYER_TARGET_CHANGED')--SendName，设置，发送成功，名字
         self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:settings()
+        self:Settings()
     end)
     listButton:SetScript('OnLeave', GameTooltip_Hide)
     listButton:SetScript('OnEnter', function(self)
@@ -481,5 +482,11 @@ end
 
 
 function WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
-    Init()
+    if self.Save.hideSendNameList or listButton then
+        if listButton then
+            listButton:Settings()
+        end
+    else
+        Init()
+    end
 end

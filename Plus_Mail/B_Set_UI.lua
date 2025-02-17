@@ -38,7 +38,6 @@ local function Set_Inbox_btn_Point(btn, index)--设置，模板，内容，位�
             else
                 region:SetTexture(0)
             end
-            
         end
     end
 end

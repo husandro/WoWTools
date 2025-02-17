@@ -28,6 +28,9 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(set_tooltip)
 
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
+
     root:CreateTitle(e.onlyChinese and '收件箱' or INBOX)
     root:CreateCheckbox(
         (e.onlyChinese and '收件箱' or INBOX)..' Plus',
@@ -47,8 +50,8 @@ local function Init_Menu(self, root)
         return not Save().hideSendNameList
     end, function()
         Save().hideSendNameList= not Save().hideSendNameList and true or nil
+        WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
     end)
-    sub:SetTooltip(set_tooltip)
 
 
     sub=root:CreateCheckbox(
@@ -57,8 +60,8 @@ local function Init_Menu(self, root)
         return not Save().hideHistoryList
     end, function()
         Save().hideHistoryList= not Save().hideHistoryList and true or nil
+        WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
     end)
-    sub:SetTooltip(set_tooltip)
 
 
     sub=root:CreateCheckbox(
@@ -67,8 +70,8 @@ local function Init_Menu(self, root)
         return not Save().hideItemButtonList
     end, function()
         Save().hideItemButtonList= not Save().hideItemButtonList and true or nil
+        WoWTools_MailMixin:Init_Fast_Button()
     end)
-    sub:SetTooltip(set_tooltip)
 
     sub=root:CreateCheckbox(
         e.onlyChinese and '自动转到发件箱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, SENDMAIL)),
@@ -99,8 +102,7 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
 
---重新加载UI
-    WoWTools_MenuMixin:Reload(root)
+
 --打开选项界面
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
 end

@@ -215,19 +215,14 @@ local function Init()--SendMailNameEditBox
         WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
     end
 --名单列表
-    if not Save().hideSendNameList then
-        WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
-    end
+    WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
+
 
 --历史收件人
-    if not Save().hideHistoryList then
-        WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
-    end
+    WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
 
 --物品快捷键
-    if not Save().hideItemButtonList then
-        WoWTools_MailMixin:Init_Fast_Button()
-    end
+    WoWTools_MailMixin:Init_Fast_Button()
 
     return true
 end
