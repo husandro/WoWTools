@@ -28,7 +28,6 @@ API_WoWTools.lua
 0_Mixin\0_Mixin.lua
 0_Mixin\Aura.lua
 0_Mixin\Bag.lua
-0_Mixin\Bank.lua
 0_Mixin\Button.lua
 0_Mixin\ToolsButton.lua
 0_Mixin\Chat.lua

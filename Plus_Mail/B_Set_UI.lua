@@ -196,8 +196,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 local function Set_Move()
     if not Save().hideUIPlus then
+
         WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, initFunc=function(btn)
             if Save().INBOXITEMS_TO_DISPLAY then
                 INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
@@ -220,9 +231,10 @@ local function Set_Move()
             Set_Inbox_Button()--显示，隐藏，建立，收件，物品
             WoWTools_MailMixin:RefreshAll()
         end})
-        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
 
+        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
         WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
+
     else
         WoWTools_MoveMixin:Setup(MailFrame)
         WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
@@ -241,7 +253,6 @@ end
 function WoWTools_MailMixin:Init_UI()--收信箱，物品，提示
     if not self.Save.hideUIPlus then
         Init()
-    else
-        Set_Move()
     end
+    Set_Move()
 end

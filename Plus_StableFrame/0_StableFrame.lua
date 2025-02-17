@@ -69,7 +69,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
     })
 
     if not WoWTools_StableFrameMixin.Save.disabled then
+    
         WoWTools_StableFrameMixin:Init_StableFrame_Plus()
+
         StableFrame:HookScript('OnShow', function()
             if Init() then Init=function()end end
         end)

@@ -110,18 +110,28 @@ local function Init()
     WoWTools_MoveMixin:MoveAlpha(BagsBar)--背包
 
     WoWTools_MoveMixin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800, initFunc=function(btn)
- 
+
     end, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(800, 537)
     end})
 
-    C_Timer.After(4, function()
-        WoWTools_MoveMixin:Setup(BankFrame)
-        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+    if WoWTools_MailMixin.Save.disabled then--MailFrame
+        WoWTools_MailMixin:Init_UI()
+    end
+
+    if WoWTools_StableFrameMixin.Save.disabled then--StableFrame
         WoWTools_MoveMixin:Setup(StableFrame)
+    end
+
+    if WoWTools_SellBuyMixin.Save.disabled then
         WoWTools_MoveMixin:Setup(MerchantFrame)
+    end
+
+    if WoWTools_AddOnsMixin.Save.disabled then
         WoWTools_MoveMixin:Setup(AddonList)--插件 
-    end)
+    end
+
+    WoWTools_MoveMixin:Setup(BankFrame)
 end
 
 
