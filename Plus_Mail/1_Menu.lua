@@ -35,7 +35,7 @@ local function Init_Menu(self, root)
         return not Save().hide
     end, function()
         Save().hide= not Save().hide and true or nil
-        WoWTools_MailMixin:RefreshAll()
+        WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
     end)
 
 
@@ -71,7 +71,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(set_tooltip)
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '自动转到收件箱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, SENDMAIL)),
+        e.onlyChinese and '自动转到发件箱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, SENDMAIL)),
     function()
         return not Save().notAutoToSendFrame
     end, function()

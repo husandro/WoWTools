@@ -1250,7 +1250,8 @@ local function Init_BrowseResultsFrame()
 
     --购买，数量
     AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.InputBox:HookScript('OnShow', function(self)
-        if self:GetText()=='' then
+        --print(self:HasText())
+        if not self:HasText() then
             self:SetText(1)
         end
     end)

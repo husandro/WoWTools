@@ -311,21 +311,12 @@ end
 
 
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if not arg1~=id then
+    if arg1~=id then
         return
     end
 
-    if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)] then
-        WoWTools_AddOnsMixin.Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)]
-        WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE)]=nil
-        Save().fast= Save().fast or {}
-        Save().load_list_size= Save().load_list_size or 22
-        Save().rightListScale=1
-        Save().leftListScale=1
-    else
-        WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or WoWTools_AddOnsMixin.Save
-    end
 
+    WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or WoWTools_AddOnsMixin.Save
     WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
     --添加控制面板

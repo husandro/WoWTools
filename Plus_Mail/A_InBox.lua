@@ -11,7 +11,7 @@ end
 
 
 
-
+local AUCTION_REMOVED_MAIL_SUBJECT= WoWTools_TextMixin:Magic(AUCTION_REMOVED_MAIL_SUBJECT) --= "拍卖取消：%s";
 
 
 
@@ -138,7 +138,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
                 e.tips:AddLine(' ')
             end
 
-            if not findReTips and not Save().hide then--显示，所有，选中提示
+            if not findReTips then--显示，所有，选中提示
                 for i2=1, INBOXITEMS_TO_DISPLAY do
                     local btn=_G["MailItem"..i2.."Button"]
                     if btn and btn.enterTipTexture and btn.index==i then
@@ -340,6 +340,8 @@ local function Create_Unit_Button(btn, i)
         lable:SetText("")
     end
 
+    btn.countLable= _G['MailItem'..i..'ButtonCount']
+
     --发信人，提示, 点击回复
     lable=_G["MailItem"..i.."Sender"]
     btn.senderLable= lable
@@ -373,16 +375,17 @@ local function Create_Unit_Button(btn, i)
     btn.indexText:SetPoint('RIGHT', btn, 'LEFT',-2,0)
 
 --提示，需要付钱, 可收取钱
-    btn.CODAmountTips= btn:CreateTexture(nil, 'OVERLAY')--图片
-    btn.CODAmountTips:SetSize(150, 20)
-    btn.CODAmountTips:SetPoint('BOTTOM', _G['MailItem'..i], 0,-4)
-    btn.CODAmountTips:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
-    btn.CODAmountTips:EnableMouse(true)
-    btn.moneyPagaTip= WoWTools_LabelMixin:Create(btn)--文本
-    btn.moneyPagaTip:SetPoint('CENTER', btn.CODAmountTips)
-    btn.moneyPagaTip:EnableMouse(true)
+    btn.typeTexture= btn:CreateTexture(nil, 'OVERLAY')--图片
+    btn.typeTexture:SetSize(150, 16)
+    btn.typeTexture:SetPoint('BOTTOM', _G['MailItem'..i], 0,-4)
+    btn.typeTexture:SetAtlas('jailerstower-wayfinder-rewardbackground-selected')
+    btn.typeTexture:SetAlpha(0.75)
+    --btn.typeTexture:EnableMouse(true)
+    btn.typeText= WoWTools_LabelMixin:Create(btn)--文本
+    btn.typeText:SetPoint('CENTER', btn.typeTexture)
+    --btn.typeText:EnableMouse(true)
 
-    btn.DeleteButton= WoWTools_ButtonMixin:Cbtn(btn, {size=18, name=_G['WoWToolsMailItem'..i..'DeleteButton']})
+    btn.DeleteButton= WoWTools_ButtonMixin:Cbtn(btn, {size=18, name='WoWToolsMailItem'..i..'DeleteButton'})
     btn.DeleteButton:SetPoint('BOTTOMRIGHT', _G['MailItem'..i], -4, 0)
 
     btn.DeleteButton:SetScript('OnClick', function(self)--OpenMail_Delete()
@@ -413,7 +416,7 @@ local function Create_Unit_Button(btn, i)
     btn.enterTipTexture:Hide()
 
     --提取，物品，和钱
-    btn.outItemOrMoney= WoWTools_ButtonMixin:Cbtn(btn, {size={22, 20}, atlas='talents-search-notonactionbarhidden'})
+    btn.outItemOrMoney= WoWTools_ButtonMixin:Cbtn(btn, {size={22, 20}, atlas='Cursor_OpenHand_32'})
     btn.outItemOrMoney:SetPoint('RIGHT', btn.DeleteButton, 'LEFT', -22, 0)
     btn.outItemOrMoney:SetScript('OnClick', function(self)
         e.call(InboxFrame_OnModifiedClick, self:GetParent(), self.openMailID)
@@ -437,13 +440,13 @@ local function Create_Unit_Button(btn, i)
         self.senderLable:EnableMouse(false)
 
         self.indexText:SetText('')
-        self.CODAmountTips:SetShown(false)
-        self.moneyPagaTip:SetText('')
+        self.typeTexture:SetShown(false)
+        self.typeText:SetText('')
         self.outItemOrMoney:SetShown(false)
         self.DeleteButton:SetShown(false)
         e.Set_Item_Info(btn, {})
     end
-    btn:HookScript('OnHide', btn.clear_all_date)
+   
 end
 
 
@@ -462,33 +465,40 @@ end
 
 local function Init_InboxFrame_Update()
     local hide= Save().hide
+    --local numItems, totalItems = GetInboxNumItems()
+    --local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1;
 
     for i=1, INBOXITEMS_TO_DISPLAY do
         local btn=_G["MailItem"..i.."Button"]
-        if hide or not btn or not btn.index then
-            if btn and btn.clear_all_date then
+
+        if hide or not btn:IsShown() or not btn.index then
+            if btn.clear_all_date then
                 btn:clear_all_date()
             end
         else
 
             Create_Unit_Button(btn, i)
 
-            local _, _, sender, subject, money2, CODAmount2, _, itemCount2, _, _, _, canReply, isGM, _, firstItemLink = GetInboxHeaderInfo(btn.index)
-            local invoiceType, _, playerName, bid, _, deposit, consignment = GetInboxInvoiceInfo(btn.index)
-            local CODAmount= (CODAmount2 and CODAmount2>0) and CODAmount2 or nil
-            local money= (money2 and money2>0) and money2 or nil
-            local itemCount= (itemCount2 and itemCount2>0) and itemCount2 or nil
-            --local isPlayer= sender and canReply and sender ~= UnitName("player") and not isGM
+            local packageIcon, stationeryIcon, sender, subject, money, CODAmount, daysLeft, hasItem, wasRead, wasReturned, textCreated, canReply, isGM, firstItemQuantity, firstItemLink= GetInboxHeaderInfo(btn.index)
 
+            local invoiceType, itemName, playerName, bid, buyout, deposit, consignment = GetInboxInvoiceInfo(btn.index)
+
+            local isCOD = CODAmount and CODAmount>0
+            local isAuctionHouse= invoiceType~=nil or sender==BUTTON_LAG_AUCTIONHOUSE--拍卖行
+            local isSelf= sender==e.Player.name
+            
+            if hasItem and hasItem>1 then
+                btn.countLable:SetText('|cffffd100'..hasItem..'|r')
+                btn.countLable:SetShown(true)
+            end
             --发信人，提示, 点击回复
-
             btn.senderLable.canReply= canReply
             btn.senderLable.sender= sender
             btn.senderLable.subject= subject
             btn.senderLable.openMailID= btn.index
             btn.senderLable.playerName= (invoiceType=='buyer' or invoiceType=='seller') and playerName or nil
-            --frame.isGM= isGM
-            if sender and not isGM and btn.index then
+
+            if sender and not isGM and not isSelf and not isAuctionHouse then
                 btn.senderLable:EnableMouse(true)
                 btn.senderLable:SetText(playerName and sender..'  '..WoWTools_MailMixin:GetNameInfo(playerName) or WoWTools_MailMixin:GetNameInfo(sender))--发信人，提示 
             else
@@ -496,51 +506,53 @@ local function Init_InboxFrame_Update()
             end
 
             --信件，索引，提示
-            btn.indexText:SetText(btn.index and '')
+            btn.indexText:SetText(btn.index or '')
 
             --提示，需要付钱, 可收取钱
-            if CODAmount then
-                btn.CODAmountTips:SetVertexColor(1,0,0)
-                btn.moneyPagaTip:SetTextColor(1,0,0)
-            else
-                btn.CODAmountTips:SetVertexColor(0,1,0)
-                btn.moneyPagaTip:SetTextColor(0,1,0)
-            end
-            btn.CODAmountTips:SetShown(money or CODAmount)
+            local text=''
+            if isAuctionHouse then--拍卖行，黄色
+                btn.typeTexture:SetVertexColor(1,1,0)
+                btn.typeText:SetTextColor(1,1,0)
+                text= invoiceType=='buyer' and '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'--卖
+                        or (subject and subject:match(AUCTION_REMOVED_MAIL_SUBJECT) and '|A:common-icon-undo:0:0|a')
+                        or '|A:UI-HUD-Minimap-Zoom-In:0:0|a'--买
 
-            local text
-            if (money or CODAmount) then
-                if CODAmount then
-                    text= (e.onlyChinese and '付款' or COD)
-                elseif money or invoiceType=='seller' then
-                    text= (e.onlyChinese and '可取' or WITHDRAW)
-                    text= invoiceType=='seller' and '|A:Levelup-Icon-Bag:0:0|a'..text or text
-                end
-                if text then
-                    if bid and deposit and consignment then
-                        text= text..' '..get_Money(bid + deposit - consignment)
-                    else
-                        text= text..' '..get_Money(money)
-                    end
+            elseif isCOD then--付款，红色
+                btn.typeTexture:SetVertexColor(1,0,0)
+                btn.typeText:SetTextColor(1,0,0)
+                text= e.onlyChinese and '付款' or COD
+
+            elseif isGM or isSelf then--GM, 自已,系统功能，如角色直升, 紫色
+                btn.typeTexture:SetVertexColor(0,0.5,1)
+                btn.typeText:SetTextColor(0,0.5,1)
+                text= isGM and 'GM' or e.Icon.player
+
+            else--绿色
+                btn.typeTexture:SetVertexColor(0,1,0)
+                btn.typeText:SetTextColor(0,1,0)
+                if money and money>0 then
+                    text= e.onlyChinese and '可取' or WITHDRAW
                 end
             end
-            btn.moneyPagaTip:SetText(text or '')
+            
+
+            if bid>0 or deposit>0 or consignment>0 then
+                text= text..get_Money(bid + deposit - consignment)
+            else
+                text= text..get_Money(isCOD and CODAmount or money)
+            end
+            btn.typeTexture:SetShown(hasItem and hasItem>0 or text~='')
+            btn.typeText:SetText(text)
 
             --删除，或退信，按钮，设置参数
-
-
-            local show= true
-            if  invoiceType or (sender and strlower(sender) == strlower(BUTTON_LAG_AUCTIONHOUSE)) then
-                show=false
-            end
             btn.DeleteButton:SetNormalTexture(InboxItemCanDelete(btn.index) and 'xmarksthespot' or 'common-icon-undo')
             btn.DeleteButton.openMailID= btn.index
-            btn.DeleteButton:SetShown(show)
+            btn.DeleteButton:SetShown(not isAuctionHouse)
 
-            btn.DeleteButton.numItemLabel:SetText((itemCount and itemCount>1) and itemCount or '')
+            btn.DeleteButton.numItemLabel:SetText(hasItem and hasItem>1 and hasItem or '')
 
             btn.outItemOrMoney.openMailID= btn.index
-            btn.outItemOrMoney:SetShown((money or itemCount) and not CODAmount)
+            btn.outItemOrMoney:SetShown((money or hasItem) and not isCOD)
 
             e.Set_Item_Info(btn, {itemLink=firstItemLink})
         end
@@ -734,7 +746,16 @@ local function Init()
     Create_DeleteAllButton()--删除所有信，按钮
     Create_ReAllButton()--退回，所有信，按钮
     Create_AllTipsLable()--总，内容，提示
+
     hooksecurefunc('InboxFrame_Update', Init_InboxFrame_Update)
+    MailFrame:HookScript('OnHide', function()--隐藏时，清除数据
+        for i=1, INBOXITEMS_TO_DISPLAY do
+            local btn=_G["MailItem"..i.."Button"]
+            if btn and btn.clear_all_date then
+                btn:clear_all_date()
+            end
+        end
+    end)
 
 
     --提示，需要付钱, 可收取钱
@@ -747,5 +768,11 @@ end
 
 
 function WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
+    if self.hide or InboxFrame.DeleteAllButton then
+        if InboxFrame.DeleteAllButton then
+            WoWTools_MailMixin:RefreshAll()
+        end
+        return
+    end
     Init()
 end

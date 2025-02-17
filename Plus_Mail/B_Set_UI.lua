@@ -18,31 +18,50 @@ end
 
 local P_INBOXITEMS_TO_DISPLAY= INBOXITEMS_TO_DISPLAY--7
 
-local function Set_Inbox_btn_Point(frame, index)--设置，模板，内容，位置
-    if frame then
-        frame:SetPoint('RIGHT', -17, 0)
-        _G['MailItem'..index..'Sender']:SetPoint('RIGHT', -40, 0)
-        _G['MailItem'..index..'Subject']:SetPoint('RIGHT', -2, 0)
-        local region= select(2, frame:GetRegions())
-        if region and region:GetObjectType()=='Texture' then
-            region:SetPoint('LEFT', MailItem6ButtonSlot, 'RIGHT', -16, 0)
+local function Set_Inbox_btn_Point(btn, index)--设置，模板，内容，位置
+    if not btn then
+        return
+    end
+
+    btn:SetPoint('RIGHT', -17, 0)
+
+    _G['MailItem'..index..'Sender']:SetPoint('RIGHT', -40, 0)
+    _G['MailItem'..index..'Subject']:SetPoint('RIGHT', -2, 0)
+
+    for i, region in pairs({btn:GetRegions()}) do
+        if region:GetObjectType()=='Texture' then
+            if i==3 then
+                region:ClearAllPoints()
+                region:SetPoint('BOTTOMLEFT')
+                region:SetPoint('TOPRIGHT')
+                region:SetAtlas('ClickCastList-ButtonBackground')
+            else
+                region:SetTexture(0)
+            end
+            
         end
     end
 end
 
 local function Set_Inbox_Button()--显示，隐藏，建立，收件，物品
     for i=P_INBOXITEMS_TO_DISPLAY +1, INBOXITEMS_TO_DISPLAY, 1 do
-        local frame= _G['MailItem'..i]
-        if not frame then
-            frame= CreateFrame('Frame', 'MailItem'..i, InboxFrame, 'MailItemTemplate')
-            frame:SetPoint('TOPLEFT', _G['MailItem'..(i-1)], 'BOTTOMLEFT')
-            Set_Inbox_btn_Point(frame, i)--设置，模板，内容，位置
+        local btn= _G['MailItem'..i]
+        if not btn then
+            btn= CreateFrame('Frame', 'MailItem'..i, InboxFrame, 'MailItemTemplate')
+            btn:SetPoint('TOPLEFT', _G['MailItem'..(i-1)], 'BOTTOMLEFT')
+            Set_Inbox_btn_Point(btn, i)--设置，模板，内容，位置
         end
-        frame:SetShown(true)
+        
+        btn:SetShown(true)
     end
+
     local index= INBOXITEMS_TO_DISPLAY+1--隐藏    
     while _G['MailItem'..index] do
-        _G['MailItem'..index]:SetShown(false)
+        local btn= _G['MailItem'..index]
+        btn:SetShown(false)
+        if btn.clear_all_date then
+            btn:clear_all_date()
+        end
         index= index+1
     end
     --InboxFrameBg:SetShown(Save().INBOXITEMS_TO_DISPLAY)--因为图片，大小不一样，所有这样处理
@@ -66,6 +85,8 @@ end
 
 
 local function Init()
+    MailFrameInset.Bg:SetTexture(0)
+
 --收件箱
     InboxFrame:SetPoint('RIGHT')
     for i= 1, INBOXITEMS_TO_DISPLAY do--7
