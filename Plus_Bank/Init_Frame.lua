@@ -496,7 +496,7 @@ local function Init_OpenAllBag_Button()
         do
             WoWTools_BankMixin:OpenBag()
         end
-        WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
+        WoWTools_BankMixin:Init_Plus()
     end)
 
     local down=  WoWTools_ButtonMixin:CreateDownButton(parent, nil, nil)
@@ -512,7 +512,7 @@ local function Init_OpenAllBag_Button()
         do
             WoWTools_BankMixin:CloseBag()
         end
-        WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
+        WoWTools_BankMixin:Init_Plus()
     end)
 end
 

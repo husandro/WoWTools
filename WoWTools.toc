@@ -347,10 +347,11 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 
 
 ##银行
-Plus_Bank\0_Bank.lua
-Plus_Bank\Left_List.lua
-Plus_Bank\Init_Frame.lua
-Plus_Bank\Plus_Bank.lua
+##Plus_Bank\0_Bank.lua
+##Plus_Bank\1_Menu.lua
+##Plus_Bank\Left_List.lua
+##Plus_Bank\Init_Frame.lua
+##Plus_Bank\Plus_Bank.lua
 
 
 
