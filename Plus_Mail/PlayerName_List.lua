@@ -401,7 +401,7 @@ function Init()
 
 
     --目标，名称
-    listButton.btn= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, icon='hide'})
+    listButton.btn= WoWTools_ButtonMixin:Cbtn(listButton, {size=22, icon='hide'})
     listButton.btn:SetPoint('TOP', listButton, 'BOTTOM')
     listButton.btn:SetScript('OnClick', function(self)
           WoWTools_MailMixin:SetSendName(self.name)

@@ -455,12 +455,14 @@ end
 local function Init()
     fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size={22, 22}, icon='hide', name='WoWToolsMailFastItemListButton'})
     fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
-
+    
     fastButton.frame= CreateFrame('Frame', nil, fastButton)
     fastButton.frame:SetSize(1, 1)
     fastButton.frame:SetPoint('TOPLEFT', fastButton, 'BOTTOMLEFT')
 
-
+    function fastButton:Settings()
+        self:SetShown(not Save().hideItemButtonList)
+    end
     function fastButton:set_scale()
         self.frame:SetScale(Save().scaleFastButton or 1)
     end
@@ -477,7 +479,7 @@ local function Init()
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:Show()
     end
-    fastButton:SetScript('OnLeave', function(self)
+    fastButton:SetScript('OnLeave', function()
         e.tips:Hide()
         for _, btn in pairs(Buttons) do
             btn:set_alpha()

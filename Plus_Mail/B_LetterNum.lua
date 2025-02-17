@@ -141,5 +141,7 @@ end
 
 
 function WoWTools_MailMixin:Init_Edit_Letter_Num()
-    Init()
+    if not self.Save.hideUIPlus then
+        Init()
+    end
 end

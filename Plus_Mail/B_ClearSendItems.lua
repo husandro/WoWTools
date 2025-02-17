@@ -96,5 +96,7 @@ end
 
 
 function WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
-    Init()
+    if not self.Save.hideUIPlus then
+        Init()
+    end
 end

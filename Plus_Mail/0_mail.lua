@@ -209,11 +209,10 @@ local function Init()--SendMailNameEditBox
     WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
 
 --UI Plus
-    if not Save().hideUIPlus then
-        WoWTools_MailMixin:Init_UI()
-        WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
-        WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
-    end
+    WoWTools_MailMixin:Init_UI()
+    WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
+    WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
+    
 --名单列表
     WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
 

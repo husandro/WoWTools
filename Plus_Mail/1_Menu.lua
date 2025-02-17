@@ -12,7 +12,7 @@ end
 
 
 
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     local sub
 
     local function set_tooltip(tooltip)

@@ -184,6 +184,7 @@ local function Init()
     end})
     WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
 
+    WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
 
 --收件人：
     for _, region in pairs({SendMailNameEditBox:GetRegions()}) do
@@ -217,6 +218,14 @@ local function Init()
     end)
 
 
+  
+end
+
+
+
+local function Set_Move()
+    WoWTools_MoveMixin:Setup(MailFrame)
+    WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
     WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
 end
 
@@ -228,10 +237,10 @@ end
 
 
 
-
-
-
-
 function WoWTools_MailMixin:Init_UI()--收信箱，物品，提示
-    Init()
+    if not self.Save.hideUIPlus then
+        Init()
+    else
+        Set_Move()
+    end
 end
