@@ -437,7 +437,7 @@ local function Init_Button()
     local texture= fastButton.frame:CreateTexture(nil, 'BACKGROUND')
     texture:SetAtlas('footer-bg')
     texture:SetPoint("TOPLEFT", Buttons[1],-2, 2)
-    texture:SetPoint('BOTTOMRIGHT', Buttons[#fastButton.buttons], 2, -2)
+    texture:SetPoint('BOTTOMRIGHT', Buttons[#Buttons], 2, -2)
 end
 
 
