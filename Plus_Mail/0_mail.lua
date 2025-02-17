@@ -202,7 +202,7 @@ end
 
 
 --初始
-local function Init()--SendMailNameEditBox    
+local function Init()--SendMailNameEditBox
     WoWTools_MailMixin:Init_Menu_Button()
 
 --收件箱 Plus
@@ -212,7 +212,7 @@ local function Init()--SendMailNameEditBox
     WoWTools_MailMixin:Init_UI()
     WoWTools_MailMixin:Init_Edit_Letter_Num()--字数
     WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
-    
+
 --名单列表
     WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
 

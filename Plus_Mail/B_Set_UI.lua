@@ -160,31 +160,7 @@ local function Init()
     end
 
 
-    WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, initFunc=function(btn)
-        if Save().INBOXITEMS_TO_DISPLAY then
-            INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
-            Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
-        end
-    end, sizeUpdateFunc=function(btn)
-        local h= btn.targetFrame:GetHeight()-424
-        local num= P_INBOXITEMS_TO_DISPLAY
-        if h>45 then
-            num= num+ math.modf(h/45)
-        end
-        INBOXITEMS_TO_DISPLAY=num
-        Set_Inbox_Button()--显示，隐藏，建立，收件，物品
-        Save().INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
-        WoWTools_MailMixin:RefreshAll()
-    end, sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(338, 424)
-        Save().INBOXITEMS_TO_DISPLAY=nil
-        INBOXITEMS_TO_DISPLAY= P_INBOXITEMS_TO_DISPLAY
-        Set_Inbox_Button()--显示，隐藏，建立，收件，物品
-        WoWTools_MailMixin:RefreshAll()
-    end})
-    WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
 
-    WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
 
 --收件人：
     for _, region in pairs({SendMailNameEditBox:GetRegions()}) do
@@ -216,17 +192,42 @@ local function Init()
             SendMailMoneyText:SetTextColor(0,1,0)--(COD_AMOUNT);
         end
     end)
-
-
-  
 end
 
 
 
 local function Set_Move()
-    WoWTools_MoveMixin:Setup(MailFrame)
-    WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-    WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
+    if not Save().hideUIPlus then
+        WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, initFunc=function(btn)
+            if Save().INBOXITEMS_TO_DISPLAY then
+                INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
+                Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
+            end
+        end, sizeUpdateFunc=function(btn)
+            local h= btn.targetFrame:GetHeight()-424
+            local num= P_INBOXITEMS_TO_DISPLAY
+            if h>45 then
+                num= num+ math.modf(h/45)
+            end
+            INBOXITEMS_TO_DISPLAY=num
+            Set_Inbox_Button()--显示，隐藏，建立，收件，物品
+            Save().INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
+            WoWTools_MailMixin:RefreshAll()
+        end, sizeRestFunc=function(btn)
+            btn.targetFrame:SetSize(338, 424)
+            Save().INBOXITEMS_TO_DISPLAY=nil
+            INBOXITEMS_TO_DISPLAY= P_INBOXITEMS_TO_DISPLAY
+            Set_Inbox_Button()--显示，隐藏，建立，收件，物品
+            WoWTools_MailMixin:RefreshAll()
+        end})
+        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+
+        WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
+    else
+        WoWTools_MoveMixin:Setup(MailFrame)
+        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+        WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
+    end
 end
 
 
