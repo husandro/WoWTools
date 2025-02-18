@@ -557,6 +557,8 @@ local function Init()
 
     Init_OpenAllBag_Button()
 
+--搜索框
+    WoWTools_PlusTextureMixin:SetSearchBox(BankItemSearchBox)
 
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
         --local index= BankFrame.activeTabIndex
@@ -575,32 +577,7 @@ local function Init()
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetNineSlice(BankFrame, true, false, false, false)
 
---钱    
-    BankFrameMoneyFrameBorder:Hide()
-    BankFrameMoneyFrame:ClearAllPoints()
-    if IsReagentBankUnlocked() then
-        BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
-    else
-        BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
-        WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
-    end
-    BankFrameMoneyFrame:SetFrameStrata(OptionButton:GetFrameStrata())
-    BankFrameMoneyFrame:SetFrameLevel(OptionButton:GetFrameLevel()+1)
 
-    BankFrameMoneyFrameGoldButton:HookScript("OnLeave", ResetCursor)
-    BankFrameMoneyFrameGoldButton:HookScript('OnEnter', function()
-        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
-    end)
-
-    BankFrameMoneyFrameSilverButton:HookScript("OnLeave", ResetCursor)
-    BankFrameMoneyFrameSilverButton:HookScript('OnEnter', function()
-        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
-    end)
-
-    BankFrameMoneyFrameCopperButton:HookScript("OnLeave", ResetCursor)
-    BankFrameMoneyFrameCopperButton:HookScript('OnEnter', function()
-        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
-    end)
 end
 
 

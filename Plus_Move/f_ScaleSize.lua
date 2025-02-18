@@ -67,10 +67,9 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(root, function()
         return self.targetFrame:GetScale()
     end, function(value)
-        if self.targetFrame:CanChangeAttribute() then
+        --if self.targetFrame:CanChangeAttribute() then
             Save().scale[self.name]=value
             self.targetFrame:SetScale(value)
-        end
     end, function()
         Save().scale[self.name]=nil
         if self.scaleRestFunc then
@@ -93,34 +92,44 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetWidth())
             end, setValue=function(value)
-                if self.targetFrame:CanChangeAttribute() then
+                --if self.targetFrame:CanChangeAttribute() then
                     self.targetFrame:SetWidth(value)
                     Save_Frame_Size(self)--保存，大小
-                end
+                    if self.sizeUpdateFunc then
+                        self:sizeUpdateFunc()
+                    end
+                    if self.sizeStopFunc then
+                        self:sizeStopFunc()
+                    end
             end,
             name='x',
             minValue=self.minWidth,
             maxValue=self.maxWidth or math.modf(UIParent:GetWidth()),
             step=5,
         })
-        sub2:SetEnabled(not Save().disabledSize[self.name] and self.targetFrame:CanChangeAttribute())
+        sub2:SetEnabled(not Save().disabledSize[self.name])
         sub:CreateSpacer()
         sub:CreateSpacer()
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=function()
                 return math.modf(self.targetFrame:GetHeight())
             end, setValue=function(value)
-                if self.targetFrame:CanChangeAttribute() then
+                --if self.targetFrame:CanChangeAttribute() then
                     self.targetFrame:SetHeight(value)
                     Save_Frame_Size(self)--保存，大小
-                end
+                    if self.sizeUpdateFunc then
+                        self:sizeUpdateFunc()
+                    end
+                    if self.sizeStopFunc then
+                        self:sizeStopFunc()
+                    end
             end,
             name='y',
             minValue= self.minHeight,
             maxValue= self.maxHeight or math.modf(UIParent:GetHeight()),
             step=5,
         })
-        sub2:SetEnabled(not Save().disabledSize[self.name] and self.targetFrame:CanChangeAttribute())
+        sub2:SetEnabled(not Save().disabledSize[self.name])
         sub:CreateSpacer()
         sub:CreateButton(
             '+0.1%',
@@ -142,7 +151,7 @@ local function Init_Menu(self, root)
         end, function()
             Save().size[self.name]=nil
             if self.sizeRestFunc then--还原
-                self.sizeRestFunc(self)
+                self:sizeRestFunc()
             end
             if not self.notUpdatePositon then
                 e.call(UpdateUIPanelPositions, self.targetFrame)
@@ -636,6 +645,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
     btn.sizeTooltip= tab.sizeTooltip
     btn.alpha= tab.alpha
+    
 
     --btn.hideButton= tab.hideButton--隐藏按钮，移过时，才显示
 

@@ -16,8 +16,9 @@ Save={
 
     openBagInBank=e.Player.husandro,
 
-    --disabledReagentFrame=true,材料银行
-    --disabledBankBag=true,银行背包
+    --disabledBankBag=true,--银行背包
+    disabledReagentFrame= not e.Player.husandro,--材料银行
+    disabledAccountBag= not e.Player.husandro,--战团银行
 },
 }
 

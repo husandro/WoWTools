@@ -390,7 +390,7 @@ C_Timer.After(1, function()
     mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
     mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
 
-    
+
     --ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     --ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     ContainerFrameCombinedBags.Bg.BottomLeft:Hide()
@@ -399,7 +399,7 @@ C_Timer.After(1, function()
     mixin:SetAlphaColor(BagItemSearchBox.Middle)
     mixin:SetAlphaColor(BagItemSearchBox.Left)
     mixin:SetAlphaColor(BagItemSearchBox.Right)
-    
+
      for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
          local frame= _G['ContainerFrame'..i]
          if frame then
@@ -412,7 +412,7 @@ C_Timer.After(1, function()
             mixin:SetNineSlice(frame, true)
             mixin:SetFrame(frame.Bg)
          end
-     end
+    end
     end)
      --[[for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
         local frame= _G['ContainerFrame'..i]

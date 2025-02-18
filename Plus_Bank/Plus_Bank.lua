@@ -332,9 +332,6 @@ end
 
 
 
-
-
-
 local function Settings()
     NumReagentLeftButton= 0
     NumAccountLeftButton= 0
@@ -349,21 +346,9 @@ end
 
 
 
-
-
-
-
-
-
-
---GameTooltip:SetInventoryItem("player", self.BankSlotButton:GetInventorySlot())--hasItem 
-
-
-
-
 local function Init()
 
-    --背包，需要这个函数 ContainerFrame7 - 13 <Frame name="ContainerFrame7" inherits="ContainerFrameBankTemplate"/>
+--背包，需要这个函数 ContainerFrame7 - 13 <Frame name="ContainerFrame7" inherits="ContainerFrameBankTemplate"/>
     function BankSlotsFrame:IsCombinedBagContainer()
         return false
     end
@@ -378,7 +363,7 @@ local function Init()
         end
     end)
 
-    --背包位
+--背包位
     for index=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
         local btn= BankSlotsFrame['Bag'..index]
         if btn then
@@ -397,7 +382,15 @@ local function Init()
     BankFramePurchaseInfo:ClearAllPoints()
     BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
     WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
+
+    return true
 end
+
+
+
+
+
+
 
 
 --整合
@@ -406,6 +399,6 @@ function WoWTools_BankMixin:Init_Plus()
     if Init() then
         Init= function() end
     else
-        Settings()
+        Settings('init')
     end
 end

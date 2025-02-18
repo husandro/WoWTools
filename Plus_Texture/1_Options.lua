@@ -201,7 +201,6 @@ end
 
 
 function WoWTools_PlusTextureMixin:Init_Category()
-    
     Init_Category()
 end
 
@@ -209,4 +208,5 @@ end
 function WoWTools_PlusTextureMixin:Blizzard_Settings()
     Init(self)
     Init_Options()
+    
 end

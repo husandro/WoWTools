@@ -24,11 +24,12 @@ local function Init()
 
     WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
 
-    hooksecurefunc('BankFrame_ShowPanel', function(self)
-        local frame= BankFrame
-        if frame.ResizeButton then
-            frame.ResizeButton.setSize= frame.activeTabIndex==1 and true or false
-        end
+    if not BankFrame.ResizeButton then
+        return
+    end
+
+    hooksecurefunc('BankFrame_ShowPanel', function()
+        BankFrame.ResizeButton.setSize= BankFrame.activeTabIndex==1 and true or false
     end)
 end
 

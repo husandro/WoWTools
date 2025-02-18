@@ -174,14 +174,13 @@ end
 
 
 local function Init()
-    OptionButton= WoWTools_ButtonMixin:CreateMenu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
+    local OptionButton= WoWTools_ButtonMixin:CreateMenu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
     function OptionButton:Open_Bag()
         do
             WoWTools_BankMixin:OpenBag()
         end
-        WoWTools_BankMixin:Init_Plus()
     end
     OptionButton:SetupMenu(Init_Menu)
 
@@ -211,10 +210,32 @@ local function Init()
 
 
 
+--钱    
+    BankFrameMoneyFrameBorder:Hide()
+    BankFrameMoneyFrame:ClearAllPoints()
+    if IsReagentBankUnlocked() then
+        BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
+    else
+        BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
+        WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
+    end
+    BankFrameMoneyFrame:SetFrameStrata(OptionButton:GetFrameStrata())
+    BankFrameMoneyFrame:SetFrameLevel(OptionButton:GetFrameLevel()+1)
 
+    BankFrameMoneyFrameGoldButton:HookScript("OnLeave", ResetCursor)
+    BankFrameMoneyFrameGoldButton:HookScript('OnEnter', function()
+        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
+    end)
 
+    BankFrameMoneyFrameSilverButton:HookScript("OnLeave", ResetCursor)
+    BankFrameMoneyFrameSilverButton:HookScript('OnEnter', function()
+        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
+    end)
 
-
+    BankFrameMoneyFrameCopperButton:HookScript("OnLeave", ResetCursor)
+    BankFrameMoneyFrameCopperButton:HookScript('OnEnter', function()
+        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
+    end)
 end
 
 
