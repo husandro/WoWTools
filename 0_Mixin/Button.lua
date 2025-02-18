@@ -248,7 +248,7 @@ end
 
 
 
---向上
+--[[向上
 function WoWTools_ButtonMixin:CreateUpButton(frame, name, setID)
     local btn= CreateFrame("Button", name or ('WoWToolsUpButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
     btn:SetSize(23,23)
@@ -275,7 +275,7 @@ function WoWTools_ButtonMixin:CreateDownButton(frame, name, setID)
 end
 
 
---[[拿取
+--拿取
 function WoWTools_ButtonMixin:CreatePrendButton(frame, name, setID)
     local btn= CreateFrame("Button", name or ('WoWToolsPrendButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
     btn:SetSize(23,23)

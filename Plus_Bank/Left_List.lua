@@ -51,38 +51,40 @@ local ListButton
 local function Init()
     ListButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide', name='WoWTools_BankMixinLeftListButton'})
     ListButton:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
+
     ListButton.frame=CreateFrame('Frame', nil, ListButton)
     ListButton.frame:SetPoint('BOTTOMRIGHT')
     ListButton.frame:SetSize(1,1)
+
     function ListButton:settings()
-        self:SetNormalAtlas(Save().show_AllBank_Type and 'NPE_ArrowDown' or 'RedButton-MiniCondense')
-        self:SetAlpha(Save().show_AllBank_Type and 1 or 0.3)
-        self.frame:SetShown(Save().show_AllBank_Type)
-        self.frame:SetScale(Save().show_AllBank_Type_Scale or 1)
+        self:SetNormalAtlas(Save().showLeftList and 'NPE_ArrowDown' or 'RedButton-MiniCondense')
+        self:SetAlpha(Save().showLeftList and 1 or 0.3)
+        self.frame:SetShown(Save().showLeftList)
+        self.frame:SetScale(Save().leftListScale or 1)
     end
     function ListButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(Save().show_AllBank_Type), e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save().show_AllBank_Type_Scale or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(e.GetShowHide(Save().showLeftList), e.Icon.left)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save().leftListScale or 1), e.Icon.mid)
         e.tips:Show()
     end
     ListButton:SetScript('OnClick', function(self)
-        Save().show_AllBank_Type= not Save().show_AllBank_Type and true or nil
+        Save().showLeftList= not Save().showLeftList and true or nil
         self:settings()
         self:set_tooltips()
     end)
     ListButton:SetScript('OnMouseWheel', function(self, d)
         local n
-        n= Save().show_AllBank_Type_Scale or 1
+        n= Save().leftListScale or 1
         n= d==1 and n-0.05 or n
         n= d==-1 and n+0.05 or n
         n= n>4 and 4 or n
         n= n<0.4 and 0.4 or n
         if n==1 then n=nil end
-        Save().show_AllBank_Type_Scale= n
+        Save().leftListScale= n
         self:settings()
         self:set_tooltips()
     end)

@@ -21,20 +21,6 @@ end
 --#######
 local function Init_Menu(self, root)
     local sub
-    --[[local sub= root:CreateCheckbox(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED, function()
-        return Save().allBank
-    end, function()
-        Save().allBank= not Save().allBank and true or nil
-        self:set_atlas()
-    end)
-
---需要重新加载
-    root:CreateDivider()
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-    end)]]
-
-
 
 
 --自动打开背包栏位
@@ -80,27 +66,30 @@ local function Init_Menu(self, root)
         WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
     end)
 
-    
+
+    local isEnabled= BankFrame.activeTabIndex==1
 
     
+
     root:CreateTitle(e.onlyChinese and '银行' or BANK)
 
-    --[[sub=root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         e.onlyChinese and '材料银行' or REAGENT_BANK,
     function()
-        return Save().
+        --return Save().
     end, function()
         
     end)
-    BAG_COMMAND_CONVERT_TO_COMBINED = "转化为联合的大包";]]
+   -- BAG_COMMAND_CONVERT_TO_COMBINED = "转化为联合的大包";]]
 
 --行数
-    root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
+    sub=root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
         return Save().left_List
     end, function()
         Save().left_List= not Save().left_List and true or nil
         WoWTools_BankMixin:Init_Left_List()--分类，存取,
     end)
+    sub:SetEnabled(isEnabled)
 
 --行数
     root:CreateSpacer()
@@ -117,9 +106,10 @@ local function Init_Menu(self, root)
         step=1,
         bit=nil,
     })
+    sub:SetEnabled(isEnabled)
 
 --间隔
-    root:CreateSpacer()    
+    root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
             return Save().line
@@ -133,6 +123,7 @@ local function Init_Menu(self, root)
         step=1,
         bit=nil,
     })
+    sub:SetEnabled(isEnabled)
     root:CreateSpacer()
 
     root:CreateDivider()
@@ -154,7 +145,7 @@ local function Init()
         WoWTools_BankMixin:Init_Plus()
     end
     OptionButton:SetupMenu(Init_Menu)
-    
+
 
     OptionButton:SetScript('OnLeave', GameTooltip_Hide)
     OptionButton:SetScript('OnEnter', function(self)

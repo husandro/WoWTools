@@ -2,23 +2,19 @@ local id, e = ...
 WoWTools_BankMixin={
 Save={
     --disabled=true,--禁用
-    --hideReagentBankFrame=true,--银行,隐藏，材料包
-    --scaleReagentBankFrame=0.75,--银行，缩放
-    --xReagentBankFrame=-15,--坐标x
-    --yReagentBankFrame=10,--坐标y
-    --pointReagentBank=｛｝--保存位置
+
     line=2,
     num=15,
-    --notSearchItem=true,--OnEnter时，搜索物品
+
     --showIndex=true,--显示，索引
     showBackground= true,--设置，背景
 
-    --allBank=e.Player.husandro,--转化为联合的大包
-    show_AllBank_Type=true,--大包时，显示，存取，分类，按钮
-    openBagInBank=e.Player.husandro,
-    left_List= true,
 
-    --show_AllBank_Type_Scale=1,
+    left_List= true,
+    showLeftList=true,--大包时，显示，存取，分类，按钮
+    --leftListScale=1,
+
+    openBagInBank=e.Player.husandro,
 },
 }
 
@@ -89,19 +85,13 @@ function WoWTools_BankMixin:CloseBag(bagID)
 end
 
 
---[[function WoWTools_BankMixin:Settings_All_Bank()--设置，整合银行
-    if _G['WoWTools_SetAllBankButton'] then
-        _G['WoWTools_SetAllBankButton']:settings()
-    end
-end]]
-
-
 function WoWTools_BankMixin:Set_Background_Texture(texture)
     if texture then
         if self.Save.showBackground then
             texture:SetAtlas('bank-frame-background')
         else
-            texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+            texture:SetTexture(0)
+            --texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
         end
     end
 end
@@ -127,56 +117,18 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --银行
 --BankFrame.lua
 local function Init()
-  
-
-    
-
-
+    if Save().disabled then
+        return
+    end
 
     WoWTools_BankMixin:Init_Menu()
-
-
-
+    WoWTools_BankMixin:Init_MoveFrame()
 
     WoWTools_BankMixin:Init_Plus()--整合，一起
-    WoWTools_BankMixin:Init_Frame()--存放，取出，所有
+    WoWTools_BankMixin:Init_UI()--存放，取出，所有
     WoWTools_BankMixin:Init_Left_List()
 
     return true
@@ -197,9 +149,7 @@ end
 
 
 EventRegistry:RegisterFrameEventAndCallback('BANKFRAME_OPENED', function()
-    if not Save().disabled then
-        if Init() then Init=function() end end--银行
-    end
+    if Init() then Init=function() end end
 end)
 
 
@@ -223,7 +173,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         GetValue=function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            if not Save().disabled and Init() then
+            if Init() then
                 Init=function()end
             else
                 print(WoWTools_Mixin.addName, WoWTools_BankMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)        

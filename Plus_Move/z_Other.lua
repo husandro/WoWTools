@@ -126,12 +126,15 @@ local function Init()
     if WoWTools_SellBuyMixin.Save.disabled then
         WoWTools_MoveMixin:Setup(MerchantFrame)
     end
-
+--插件
     if WoWTools_AddOnsMixin.Save.disabled then
-        WoWTools_MoveMixin:Setup(AddonList)--插件 
+        WoWTools_MoveMixin:Setup(AddonList)
     end
-
-    WoWTools_MoveMixin:Setup(BankFrame)
+--银行
+    if WoWTools_BankMixin.Save.disabled then
+        WoWTools_MoveMixin:Setup(BankFrame)
+    WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
+    end
 end
 
 

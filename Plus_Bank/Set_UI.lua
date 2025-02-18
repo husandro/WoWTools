@@ -135,9 +135,9 @@ local function Init_BankSlotsFrame()
     WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
 
 
---隐藏，背景
-    BankFrameBg:SetTexture(0)
-
+--背景
+    BankFrameBg:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    BankFrameBg:SetAlpha(0.5)
 
 --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
     for _, region in pairs({BankSlotsFrame:GetRegions()}) do
@@ -434,16 +434,16 @@ local function Init_AccountBankPanel()
         label:SetText(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
     end
 
---移动Frame    
-    WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
 
 --钱    
     AccountBankPanel.MoneyFrame.Border:Hide()
+    AccountBankPanel.MoneyFrame.MoneyDisplay:ClearAllPoints()
+    AccountBankPanel.MoneyFrame.MoneyDisplay:SetPoint('BOTTOM', AccountBankPanel.MoneyFrame.DepositButton, 'TOPLEFT', 6, -2)
 
 --背景    
-    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
+    --[[AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
     AccountBankPanel.Background:SetAllPoints()
-    WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
+    WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)]]
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()
@@ -479,11 +479,17 @@ end
 --打开，银行，背包
 local function Init_OpenAllBag_Button()
     local parent= BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS]
-    if not parent then
-        return
-    end
 
-    local up=  WoWTools_ButtonMixin:CreateUpButton(parent, nil, nil)
+
+
+    local up= CreateFrame("Button", ('WoWToolsBankOpenAllBagButton'), parent)
+    up:SetSize(23,23)
+    up:SetNormalAtlas('128-RedButton-ArrowUpGlow')
+    up:SetPushedAtlas('128-RedButton-ArrowUpGlow-Pressed')
+    up:SetHighlightAtlas('Callings-BackHighlight')
+    up:SetDisabledAtlas('128-RedButton-ArrowUpGlow-Disabled')
+    up:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+
     up:SetPoint('BOTTOMLEFT', parent, 'RIGHT', 4, -3)
     up:SetScript('OnLeave', GameTooltip_Hide)
     up:SetScript('OnEnter', function(self)
@@ -499,7 +505,15 @@ local function Init_OpenAllBag_Button()
         WoWTools_BankMixin:Init_Plus()
     end)
 
-    local down=  WoWTools_ButtonMixin:CreateDownButton(parent, nil, nil)
+
+    local down= CreateFrame("Button", ('WoWToolsBankCloseAllBagButton'), parent)--ObjectiveTrackerContainerFilterButtonTemplate
+    down:SetSize(23,23)
+    down:SetNormalAtlas('128-RedButton-ArrowDown')
+    down:SetPushedAtlas('128-RedButton-ArrowDown-Pressed')
+    down:SetHighlightAtlas('128-RedButton-ArrowDown-Highlight')
+    down:SetDisabledAtlas('128-RedButton-ArrowDown-Disabled')
+    down:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+
     down:SetPoint('TOPLEFT', parent, 'RIGHT', 4, -3)
     down:SetScript('OnLeave', GameTooltip_Hide)
     down:SetScript('OnEnter', function(self)
@@ -524,6 +538,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 local function Init()
     Init_BankSlotsFrame()
     Init_ReagentBankFrame()
@@ -531,14 +553,14 @@ local function Init()
 
     Init_OpenAllBag_Button()
 
+
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
-        local index= BankFrame.activeTabIndex
+        --local index= BankFrame.activeTabIndex
 --移动，搜索框
         BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
-
 --与，战团边框
-        BankFrame.NineSlice.RightEdge:SetShown(index~=1)
+        --BankFrame.NineSlice.RightEdge:SetShown(index~=1)
         --BankFrame.NineSlice.TopRightCorner:SetShown(index~=1)
         --BankFrame.NineSlice.BottomRightCorner:SetShown(index~=1)
     end)
@@ -556,6 +578,6 @@ end
 
 
 
-function WoWTools_BankMixin:Init_Frame()
+function WoWTools_BankMixin:Init_UI()
    Init()
 end

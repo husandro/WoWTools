@@ -758,19 +758,21 @@ local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
     if not self.isBag then
         e.Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
     else
-        local slot = self:GetBagID()
-        local numFreeSlots
-        numFreeSlots = C_Container.GetContainerNumFreeSlots(slot)
-        if not numFreeSlots or numFreeSlots==0 then
-            numFreeSlots= nil
-        end
-        if numFreeSlots and not self.numFreeSlots then
-            self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER'})
-            self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
-        end
-        if self.numFreeSlots then
-            self.numFreeSlots:SetText(numFreeSlots or '')
-        end
+        C_Timer.After(0.3, function()
+            local slot = self:GetBagID()
+            local numFreeSlots
+            numFreeSlots = C_Container.GetContainerNumFreeSlots(slot)
+            if not numFreeSlots or numFreeSlots==0 then
+                numFreeSlots= nil
+            end
+            if numFreeSlots and not self.numFreeSlots then
+                self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER'})
+                self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
+            end
+            if self.numFreeSlots then
+                self.numFreeSlots:SetText(numFreeSlots or '')
+            end
+        end)
     end
 end
 
@@ -860,6 +862,8 @@ local function Init_Bag()
         info.isShow=true
         e.Set_Item_Info(self, info)
     end)
+
+
 
     --############
     --排序:从右到左

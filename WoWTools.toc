@@ -68,7 +68,7 @@ API_WoWDate.lua
 
 
 ##WoWPlus
-##移动框架, 缩放--放在第一个，有些，需要放置点，到移动按钮上
+##移动框架, 缩放
 Plus_Move\0_Init.lua
 Plus_Move\Add_Button.lua
 Plus_Move\f_Move.lua
@@ -109,20 +109,11 @@ Plus_Texture\a_HelpTip.lua
 Plus_Texture\z_All_Frame.lua
 Plus_Texture\z_Event_Frame.lua
 
-
-##颜色选择器
-Plus_Color\0_ColorMixin.lua
-Plus_Color\1_Init.lua
-Plus_Color\2_Options.lua
-Plus_Color\Log.lua
-Plus_Color\Edit.lua
-Plus_Color\Select_Color.lua
-
-
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus\ItemInfo.lua
 ##物品升级，增强
 ##Plus\ItemUpgrade.lua
+
 
 
 
@@ -308,6 +299,14 @@ Plus\FriendsList.lua
 
 
 
+##颜色选择器
+Plus_Color\0_ColorMixin.lua
+Plus_Color\1_Init.lua
+Plus_Color\2_Options.lua
+Plus_Color\Log.lua
+Plus_Color\Edit.lua
+Plus_Color\Select_Color.lua
+
 
 
 ##小地图，增强
@@ -320,10 +319,6 @@ Plus_Minimap\Menu_Garrison.lua
 Plus_Minimap\Menu_Faction.lua
 Plus_Minimap\ExpansionLanding.lua
 Plus_Minimap\Zoom.lua
-
-
-
-
 
 
 
@@ -349,11 +344,10 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 ##银行
 Plus_Bank\0_Bank.lua
 Plus_Bank\1_Menu.lua
+Plus_Bank\2_MoveFrame.lua
 Plus_Bank\Left_List.lua
-Plus_Bank\Init_Frame.lua
+Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua
-
-
 
 
 
