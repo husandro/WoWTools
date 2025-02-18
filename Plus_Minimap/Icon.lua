@@ -47,37 +47,42 @@ end
 function WoWTools_MinimapMixin:Init_Icon()
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
-    if libDataBroker and libDBIcon then
-        libDBIcon:Register('WoWTools', libDataBroker:NewDataObject('WoWTools', {
-            OnClick=On_Click,--fun(displayFrame: Frame, buttonName: string)
-            OnEnter=OnEnter_Tooltip,--fun(displayFrame: Frame)
-            OnLeave=nil,--fun(displayFrame: Frame)
-            OnTooltipShow=nil,--fun(tooltip: Frame)
-            icon='Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga',--string
-            iconB=nil,--number,
-            iconCoords=nil,--table,
-            iconG=nil,--number,
-            iconR=nil,--number,
-            label=nil,--string,
-            suffix=nil,--string,
-            text='WoWTools',-- string,
-            tocname=nil,--string,
-            tooltip=WoWTools_Mixin.addName,--Frame,
-            type='data source',-- "data source"|"launcher",
-            value=nil,--string,
-        }), Save().miniMapPoint)
+    if not libDataBroker or not libDBIcon then
+        return
+    end
 
-        local btn= _G['LibDBIcon10_WoWTools']
-        if btn then
-            btn:EnableMouseWheel(true)
-            btn:SetScript('OnMouseWheel', function(_, d)
-                if d==1 then
-                    e.OpenPanelOpting(nil, '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
-                else
-                    e.OpenPanelOpting(nil, WoWTools_MinimapMixin.addName)
-                end
-            end)
-        end
+    local name='WoWTools'
+    --if not libDBIcon:GetMinimapButton(name) then
+    libDBIcon:Register(name, libDataBroker:NewDataObject('WoWTools', {
+        OnClick=On_Click,--fun(displayFrame: Frame, buttonName: string)
+        OnEnter=OnEnter_Tooltip,--fun(displayFrame: Frame)
+        OnLeave=nil,--fun(displayFrame: Frame)
+        OnTooltipShow=nil,--fun(tooltip: Frame)
+        icon='Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga',--string
+        iconB=nil,--number,
+        iconCoords=nil,--table,
+        iconG=nil,--number,
+        iconR=nil,--number,
+        label=nil,--string,
+        suffix=nil,--string,
+        text=name,-- string,
+        tocname=nil,--string,
+        tooltip=WoWTools_Mixin.addName,--Frame,
+        type='data source',-- "data source"|"launcher",
+        value=nil,--string,
+    }), Save().miniMapPoint)
+
+
+    local btn= libDBIcon:GetMinimapButton(name)
+    if btn then
+        btn:EnableMouseWheel(true)
+        btn:SetScript('OnMouseWheel', function(_, d)
+            if d==1 then
+                e.OpenPanelOpting(nil, '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
+            else
+                e.OpenPanelOpting(nil, WoWTools_MinimapMixin.addName)
+            end
+        end)
     end
 end
 

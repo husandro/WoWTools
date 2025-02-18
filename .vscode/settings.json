@@ -5187,7 +5187,9 @@
         "CRAFTING_ORDER_MAIL_FULFILLED_TO",
         "NPE_TURN",
         "AUCTION_REMOVED_MAIL_SUBJECT",
-        "OpenMail_GetItemCounts"
+        "OpenMail_GetItemCounts",
+        "ContainerFrameMixin",
+        "BankPanelTabMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

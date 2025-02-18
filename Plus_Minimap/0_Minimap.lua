@@ -192,27 +192,24 @@ function WoWTools_MinimapMixin:OpenPanel(root)
 end
 
 
-function WoWTools_MinimapMixin:Init()
-    self:Init_InstanceDifficulty()--副本，难度，指示
-    self:Init_TrackButton()--小地图, 标记, 文本
-    self:Init_Icon()--添加，图标
-    self:Init_ExpansionLanding()
-    self:Init_Minimap_Zoom()--缩放数值, 缩小化地图
+
+
+
+local function Init()
+    WoWTools_MinimapMixin:Init_InstanceDifficulty()--副本，难度，指示
+    WoWTools_MinimapMixin:Init_TrackButton()--小地图, 标记, 文本
+    WoWTools_MinimapMixin:Init_Icon()--添加，图标
+    WoWTools_MinimapMixin:Init_ExpansionLanding()
+    WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
+    return true
 end
-
-
-
-
-
-
-
-
 
 
 
 
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 	if arg1==id then
+        
         addName='|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
         WoWTools_MinimapMixin.addName= addName
         WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
@@ -242,7 +239,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
                 e.LoadData({id= questID, type=='quest'})
             end
 
-            WoWTools_MinimapMixin:Init()
+            if Init() then
+                Init=function()end
+            end
 
             if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then--秒表
                 WoWTools_MinimapMixin:Init_TimeManager()
@@ -261,88 +260,5 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
 		WoWToolsSave['Minimap_Plus']= WoWTools_MinimapMixin.Save
 	end
 end)
-
-
-
-
-
-
-
---加载保存数据
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            addName='|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
-            WoWTools_MinimapMixin.addName= addName
-            WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
---清除，旧版本，数据
-            if WoWToolsSave[HUD_EDIT_MODE_MINIMAP_LABEL]  then
-                WoWTools_MinimapMixin.Save= WoWToolsSave[HUD_EDIT_MODE_MINIMAP_LABEL]
-                WoWToolsSave[HUD_EDIT_MODE_MINIMAP_LABEL] =nil
-            else
-                WoWTools_MinimapMixin.Save= WoWToolsSave['Minimap_Plus'] or WoWTools_MinimapMixin.Save
-            end
-
-
-           e.AddPanel_Check_Button({
-                checkName= addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                buttonFunc= function()
-                    if StopwatchFrame.rest_point then
-                        StopwatchFrame:rest_point()
-                    end
-                    WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
-                    WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
-                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-                end
-            })
-
-
-            if Save().disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-
-            else
-                for questID in pairs(Save().questIDs or {}) do
-                    e.LoadData({id= questID, type=='quest'})
-                end
-
-                WoWTools_MinimapMixin:Init()
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then--秒表
-                    WoWTools_MinimapMixin:Init_TimeManager()
-                end
-            end
-
-        elseif arg1=='Blizzard_TimeManager' then
-            WoWTools_MinimapMixin:Init_TimeManager()--秒表
-
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Minimap_Plus']= WoWTools_MinimapMixin.Save
-        end
-
-    end
-end)
-
-
-
-
-
-
-
-
-
-
-
 
 

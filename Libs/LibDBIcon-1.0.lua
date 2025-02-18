@@ -379,13 +379,13 @@ end
 --
 
 function lib:Register(name, object, db, customCompartmentIcon)
-	if object and not object.icon then error("Can't register LDB objects without icons set!") end
-	if lib:GetMinimapButton(name) then error(DBICON10.. ": Object '".. name .."' is already registered.") end
+	if not object or not object.icon then error("Can't register LDB objects without icons set!") end
+	if self:GetMinimapButton(name) then error(DBICON10.. ": Object '".. name .."' is already registered.") end
 	createButton(name, object, db, customCompartmentIcon)
 end
 
 function lib:Lock(name)
-	local button = lib:GetMinimapButton(name)
+	local button = self:GetMinimapButton(name)
 	if button then
 		button:SetScript("OnDragStart", nil)
 		button:SetScript("OnDragStop", nil)
