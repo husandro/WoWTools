@@ -166,9 +166,6 @@ local function Init()
 
     function OptionButton:set_event()
         if Save().openBagInBank then
-            do
-                WoWTools_BankMixin:Open_Bag()
-            end
             self:RegisterEvent('BANKFRAME_OPENED')
         else
             self:UnregisterEvent('BANKFRAME_OPENED')
@@ -177,8 +174,9 @@ local function Init()
     OptionButton:SetScript('OnEvent', OptionButton.Open_Bag)
     OptionButton:set_event()
 
-
-
+   if Save().openBagInBank then
+        OptionButton:Open_Bag()
+   end
 
 
 
