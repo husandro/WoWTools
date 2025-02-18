@@ -139,13 +139,15 @@ local function Set_BankSlotsFrame(index)
             Hide_BagFrame(frame, i)
 
             for _, btn in frame:EnumerateValidItems()  do
-                if isShow then
-                    btn:SetParent(BankSlotsFrame)
-                    table.insert(tab, btn)
-                else
-                    btn:SetParent(frame)
+                if btn then
+                    if isShow then
+                        btn:SetParent(BankSlotsFrame)
+                        table.insert(tab, btn)
+                    else
+                        btn:SetParent(frame)
+                    end
+                    btn:SetShown(isShow)
                 end
-                btn:SetShown(isShow)
             end
         end
     end
@@ -295,10 +297,7 @@ local function Set_AccountBankPanel(index)
         end
 
     elseif index==3 then
-        AccountBankPanel:SetShown(true)
-       
-    else
-        AccountBankPanel:SetShown(false)
+        AccountBankPanel:GenerateItemSlotsForSelectedTab()
     end
 end
 
@@ -393,6 +392,7 @@ local function Init()
     end
 
 
+--购买，背包栏
     BankFramePurchaseInfo:ClearAllPoints()
     BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
     WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})

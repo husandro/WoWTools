@@ -35,13 +35,7 @@ local function Init_Menu(self, root)
     end)]]
 
 
---左边列表
-    root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
-        return Save().left_List
-    end, function()
-        Save().left_List= not Save().left_List and true or nil
-        WoWTools_BankMixin:Init_Left_List()--分类，存取,
-    end)
+
 
 --自动打开背包栏位
     sub=root:CreateCheckbox(
@@ -86,6 +80,29 @@ local function Init_Menu(self, root)
         WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
     end)
 
+    
+
+    
+    root:CreateTitle(e.onlyChinese and '银行' or BANK)
+
+    --[[sub=root:CreateCheckbox(
+        e.onlyChinese and '材料银行' or REAGENT_BANK,
+    function()
+        return Save().
+    end, function()
+        
+    end)
+    BAG_COMMAND_CONVERT_TO_COMBINED = "转化为联合的大包";]]
+
+--行数
+    root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
+        return Save().left_List
+    end, function()
+        Save().left_List= not Save().left_List and true or nil
+        WoWTools_BankMixin:Init_Left_List()--分类，存取,
+    end)
+
+--行数
     root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
@@ -100,9 +117,9 @@ local function Init_Menu(self, root)
         step=1,
         bit=nil,
     })
-    root:CreateSpacer()
-    root:CreateSpacer()
-    root:CreateSpacer()
+
+--间隔
+    root:CreateSpacer()    
     sub=WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
             return Save().line
@@ -130,7 +147,14 @@ local function Init()
     OptionButton= WoWTools_ButtonMixin:CreateMenu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
+    function OptionButton:Open_Bag()
+        do
+            WoWTools_BankMixin:OpenBag()
+        end
+        WoWTools_BankMixin:Init_Plus()
+    end
     OptionButton:SetupMenu(Init_Menu)
+    
 
     OptionButton:SetScript('OnLeave', GameTooltip_Hide)
     OptionButton:SetScript('OnEnter', function(self)
@@ -142,17 +166,15 @@ local function Init()
 
     function OptionButton:set_event()
         if Save().openBagInBank then
-            WoWTools_BankMixin:OpenBag()
+            do
+                WoWTools_BankMixin:Open_Bag()
+            end
             self:RegisterEvent('BANKFRAME_OPENED')
         else
             self:UnregisterEvent('BANKFRAME_OPENED')
         end
     end
-    OptionButton:SetScript('OnEvent', function()
-        if not _G['NDui_BackpackBank'] then
-            WoWTools_BankMixin:OpenBag()
-        end
-    end)
+    OptionButton:SetScript('OnEvent', OptionButton.Open_Bag)
     OptionButton:set_event()
 
 
