@@ -560,24 +560,16 @@ local function Init()
 --搜索框
     WoWTools_PlusTextureMixin:SetSearchBox(BankItemSearchBox)
 
-    hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
-        --local index= BankFrame.activeTabIndex
 --移动，搜索框
+    hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
         BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
---与，战团边框
-        --BankFrame.NineSlice.RightEdge:SetShown(index~=1)
-        --BankFrame.NineSlice.TopRightCorner:SetShown(index~=1)
-        --BankFrame.NineSlice.BottomRightCorner:SetShown(index~=1)
     end)
-
 
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetNineSlice(BankFrame, true, false, false, false)
-
-
 end
 
 
