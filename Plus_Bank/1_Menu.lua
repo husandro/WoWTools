@@ -69,23 +69,57 @@ local function Init_Menu(self, root)
 
 
     local isEnabled= BankFrame.activeTabIndex==1
-
+    local function settings(desc)
+        desc:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED)
+        end)
+        desc:SetEnabled(isEnabled)
+    end
 
     root:CreateTitle(e.onlyChinese and '银行' or BANK)
 
+
+--银行背包
+    sub=root:CreateCheckbox(
+        '1 '..(e.onlyChinese and '银行背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BANK,BAGSLOT)),
+    function()
+        return not Save().disabledBankBag
+    end, function()
+        Save().disabledBankBag= not Save().disabledBankBag and true or nil
+        WoWTools_BankMixin:CloseBag()
+        if not Save().disabledBankBag then
+            WoWTools_BankMixin:OpenBag()
+        end
+        WoWTools_BankMixin:Init_Plus()
+    end)
+    settings(sub)
+
 --材料银行
     sub=root:CreateCheckbox(
-        e.onlyChinese and '材料银行' or REAGENT_BANK,
+        '2 '..(e.onlyChinese and '材料银行' or REAGENT_BANK),
     function()
         return not Save().disabledReagentFrame
     end, function()
         Save().disabledReagentFrame= not Save().disabledReagentFrame and true or nil
+        ReagentBankFrame:SetShown(false)
         WoWTools_BankMixin:Init_Plus()
     end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED)
+    settings(sub)
+
+
+
+--战团银行
+    sub=root:CreateCheckbox(
+        '3 '..(e.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE),
+    function()
+        return not Save().disabledAccountBag
+    end, function()
+        Save().disabledAccountBag= not Save().disabledAccountBag and true or nil
+        AccountBankPanel:SetShown(false)
+        WoWTools_BankMixin:Init_Plus()
     end)
-    sub:SetEnabled(isEnabled)
+    settings(sub)
+
 
 --行数
     sub=root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()

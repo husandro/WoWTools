@@ -5195,7 +5195,8 @@
         "BankFrameMoneyFrameCopperButton",
         "AccountBankPanelGoldButton",
         "ContainerFrame9",
-        "ContainerFrame8"
+        "ContainerFrame8",
+        "ACCOUNT_BANK_PANEL_TITLE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

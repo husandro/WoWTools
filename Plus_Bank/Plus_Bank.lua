@@ -69,57 +69,6 @@ end
 
 
 
---设置，frame到最左边，为隐藏
-local function Hide_BagFrame(frame, index)
-    --[[if not frame:IsShown() then
-        ToggleBag(frame:GetID())
-    end]]
-
-
-
-    if frame.set_point_toleft then
-        frame:set_point_toleft()
-        return
-    end
-
-    if frame.ResizeButton then
-        frame.ResizeButton:SetClampedToScreen(false)
-    end
-
-    function frame:set_point_toleft()
-        self:ClearAllPoints()
-        self:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)
-        self:SetAlpha(0)
-        self.PortraitButton:SetShown(self:IsShown())
-    end
---GameTooltip:SetInventoryItem("player", self.BankSlotButton:GetInventorySlot())--hasItem 
-
---菜单，选项
-    local btn= BankSlotsFrame['Bag'..index]
-    btn.MatchesBagID= frame.PortraitButton:GetParent().MatchesBagID
-
-    frame.BankSlotButton= btn
-
-    frame.PortraitButton:SetParent(btn)
-    frame.PortraitButton:ClearAllPoints()
-    frame.PortraitButton:SetPoint('TOPLEFT', btn,-2,2)
-    frame.PortraitButton:SetSize(20,20)--37
-    frame.PortraitButton:SetNormalAtlas(e.Icon.icon)
-    frame.PortraitButton:SetPushedAtlas('bag-border-highlight')
-    frame.PortraitButton:SetHighlightAtlas('bag-border')
-
-    frame.FilterIcon.Icon:SetParent(frame.PortraitButton)
-    frame.FilterIcon.Icon:ClearAllPoints()
-    frame.FilterIcon.Icon:SetAllPoints()
-
-
-    frame:HookScript('OnEnter', frame.set_point_toleft)
-    frame:HookScript('OnShow', frame.set_point_toleft)
-    frame:HookScript('OnHide', frame.set_point_toleft)
-
-    frame:set_point_toleft()
-end
-
 
 
 
@@ -151,7 +100,7 @@ local function Set_BankSlotsFrame(index)
 
 
 --背包
-    if not Save().disabledReagentFrame then
+    if not Save().disabledBankBag then
         local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
         for i=1, NUM_BANKBAGSLOTS do
             local frame= _G['ContainerFrame'..(i+numBag)]
@@ -231,7 +180,7 @@ local function Set_BankReagent(tabIndex)
             end
         end
 
-    elseif tabIndex==1 then--1
+    elseif tabIndex==1 and not Save().disabledReagentFrame then--1
 
         do ReagentBankFrame:SetShown(true) end
 
@@ -268,7 +217,7 @@ end
 
 
 local function Set_AccountBankPanel(index)
-    if not C_PlayerInfo.HasAccountInventoryLock() then
+    if not C_PlayerInfo.HasAccountInventoryLock() or Save().disabledAccountBag then
         return
     end
 
@@ -307,7 +256,7 @@ end
 
 
 local function Set_PortraitButton()
-    local isReagentFrame = not Save().disabledReagentFrame
+    local isReagentFrame = not Save().disabledBankBag
     local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
     for index=1, NUM_BANKBAGSLOTS do
         local bag= index+ numBag
