@@ -19,9 +19,9 @@ local function Set_Frame_Size(index)
         local y =Save().num
 
         BankFrame:SetSize(
-            x*(37+2+line)+12,
+            x*(37+line)+16,
 
-            y*(37+2+line) + 108
+            y*(37+line) + 108
         )
     else
         BankFrame:SetSize(738, 460)
@@ -159,7 +159,7 @@ local function Set_BankSlotsFrame(index)
     NumLeftButton= 1
     Set_IndexLabel(LastButton, 1)--索引，提示
 
-    local line= Save().line+2
+    local line= Save().line
     num= Save().num
 
     for i=2, #tab, 1 do
@@ -220,7 +220,7 @@ local function Set_BankReagent(tabIndex)
 
         do ReagentBankFrame:SetShown(true)  end
 
-        local line= Save().line+2
+        local line= Save().line
         local num= Save().num
 
         
@@ -268,7 +268,7 @@ local function Set_AccountBankPanel(index)
 
     if index==1 then--for btn in AccountBankPanel.itemButtonPool:EnumerateActive() do
 
-        local line= Save().line+2
+        local line= Save().line
         local num= Save().num
         local i=1
         local last
