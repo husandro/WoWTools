@@ -341,7 +341,6 @@ end
 
 
 
-
 local function Settings()
     NumReagentLeftButton= 0
     NumAccountLeftButton= 0
