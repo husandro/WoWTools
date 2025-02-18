@@ -424,7 +424,7 @@ local function Init_AccountBankPanel()
 
     local texture= AccountBankPanel.Header:CreateTexture()
     texture:SetSize(22,22)
-    texture:SetPoint('RIGHT', AccountBankPanel.Header.Text, 'LEFT',0,-2)
+    texture:SetPoint('RIGHT', AccountBankPanel.Header.Text, 'LEFT',3,0)
     texture:SetAtlas('questlog-questtypeicon-account')
 
 --标签，战团银行
@@ -453,8 +453,12 @@ local function Init_AccountBankPanel()
     AccountBankPanel.NineSlice.LeftEdge:Hide()
     AccountBankPanel.EdgeShadows:Hide()
 
-    --[[AccountBankPanel.TitleContainer=CreateFrame('Frame', nil, AccountBankPanel, 'DefaultPanelBaseTemplate')
-    AccountBankPanel.TitleContainer:SetAllPoints()]]
+--钱，提示
+
+    local icon= AccountBankPanel.MoneyFrame:CreateTexture()
+    icon:SetPoint('RIGHT', AccountBankPanelGoldButton, 'LEFT', 0,2)
+    icon:SetSize(16,16)
+    icon:SetAtlas('questlog-questtypeicon-account')
 end
 
 
@@ -570,6 +574,33 @@ local function Init()
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetNineSlice(BankFrame, true, false, false, false)
+
+--钱    
+    BankFrameMoneyFrameBorder:Hide()
+    BankFrameMoneyFrame:ClearAllPoints()
+    if IsReagentBankUnlocked() then
+        BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
+    else
+        BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
+        WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
+    end
+    BankFrameMoneyFrame:SetFrameStrata(OptionButton:GetFrameStrata())
+    BankFrameMoneyFrame:SetFrameLevel(OptionButton:GetFrameLevel()+1)
+
+    BankFrameMoneyFrameGoldButton:HookScript("OnLeave", ResetCursor)
+    BankFrameMoneyFrameGoldButton:HookScript('OnEnter', function()
+        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
+    end)
+
+    BankFrameMoneyFrameSilverButton:HookScript("OnLeave", ResetCursor)
+    BankFrameMoneyFrameSilverButton:HookScript('OnEnter', function()
+        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
+    end)
+
+    BankFrameMoneyFrameCopperButton:HookScript("OnLeave", ResetCursor)
+    BankFrameMoneyFrameCopperButton:HookScript('OnEnter', function()
+        SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
+    end)
 end
 
 

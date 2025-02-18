@@ -238,7 +238,7 @@ local function Init(mixin)
     mixin:SetNineSlice(CurrencyTransferMenuInset)
     mixin:SetFrame(TokenFramePopup.Border, {alpha=0.3})
     mixin:SetMenu(TokenFrame.filterDropdown)
-    
+
 
 
     mixin:SetSearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
@@ -382,33 +382,45 @@ local function Init(mixin)
 
 
 
+C_Timer.After(1, function()
+--背包
+    mixin:SetNineSlice(ContainerFrameCombinedBags, true)
 
-     --背包
-     if ContainerFrameCombinedBags and ContainerFrameCombinedBags.NineSlice then
-        mixin:SetNineSlice(ContainerFrameCombinedBags, true)
+    mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
+    mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
+    mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
 
-         mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
-         mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
-         mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
-
-         mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.TopSection, true)
-         mixin:SetAlphaColor(BagItemSearchBox.Middle)
-         mixin:SetAlphaColor(BagItemSearchBox.Left)
-         mixin:SetAlphaColor(BagItemSearchBox.Right)
-     end
+    
+    --ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    --ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    ContainerFrameCombinedBags.Bg.BottomLeft:Hide()
+    ContainerFrameCombinedBags.Bg.BottomRight:Hide()
+    mixin:SetFrame(ContainerFrameCombinedBags.Bg)
+    mixin:SetAlphaColor(BagItemSearchBox.Middle)
+    mixin:SetAlphaColor(BagItemSearchBox.Left)
+    mixin:SetAlphaColor(BagItemSearchBox.Right)
+    
      for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
          local frame= _G['ContainerFrame'..i]
-         if frame and frame.NineSlice then
-             mixin:SetAlphaColor(frame.Bg.TopSection, true)
-             mixin:SetNineSlice(frame, true)
+         if frame then
+            --mixin:SetAlphaColor(frame.Bg.TopSection, true)
+            --frame.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+            --frame.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+            mixin:SetColorTexture(frame.Bg.BottomLeft)
+            mixin:SetColorTexture(frame.Bg.BottomRight)
+            frame.Bg:SetFrameStrata('LOW')
+            mixin:SetNineSlice(frame, true)
+            mixin:SetFrame(frame.Bg)
          end
      end
-     for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
+    end)
+     --[[for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
         local frame= _G['ContainerFrame'..i]
         if frame and frame.Bg and frame.Bg:GetObjectType()=='Frame' then
             frame.Bg:SetFrameStrata('BACKGROUND')
+            mixin:SetFrame(frame.Bg)
         end
-    end
+    end]]
 
 
 

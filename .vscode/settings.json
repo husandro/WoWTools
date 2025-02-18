@@ -5189,7 +5189,13 @@
         "AUCTION_REMOVED_MAIL_SUBJECT",
         "OpenMail_GetItemCounts",
         "ContainerFrameMixin",
-        "BankPanelTabMixin"
+        "BankPanelTabMixin",
+        "BankFrameMoneyFrameGoldButton",
+        "BankFrameMoneyFrameSilverButton",
+        "BankFrameMoneyFrameCopperButton",
+        "AccountBankPanelGoldButton",
+        "ContainerFrame9",
+        "ContainerFrame8"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

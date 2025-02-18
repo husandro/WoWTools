@@ -11,15 +11,33 @@ local NumLeftButton=0
 local NumReagentLeftButton=0
 local NumAccountLeftButton=0
 
-
-local function Set_Frame_Size(index)
+--[[local function Get_Frame_Size(index)
+    index= index or BankFrame.activeTabIndex or 1
     if index==1 then
         local x= NumLeftButton + NumReagentLeftButton+ NumAccountLeftButton
         local line= Save().line
         local y =Save().num
 
+        return x*(37+line)+14, y*(37+line) + 108
+    else
+        return 738, 460
+    end
+end
+
+
+local function Set_Frame_Size(index)
+    BankFrame:SetSize(Get_Frame_Size(index))
+end]]
+
+
+local function Set_Frame_Size(index)
+    if index==1 then
+        local line= Save().line
+        local x= NumLeftButton + NumReagentLeftButton+ NumAccountLeftButton
+        local y = Save().num
+
         BankFrame:SetSize(
-            x*(37+line)+14,
+            x*(37+line) + 14,
 
             y*(37+line) + 108
         )
@@ -94,7 +112,7 @@ local function Hide_BagFrame(frame, index)
     frame.FilterIcon.Icon:ClearAllPoints()
     frame.FilterIcon.Icon:SetAllPoints()
 
-    
+
     frame:HookScript('OnEnter', frame.set_point_toleft)
     frame:HookScript('OnShow', frame.set_point_toleft)
     frame:HookScript('OnHide', frame.set_point_toleft)
@@ -133,30 +151,24 @@ local function Set_BankSlotsFrame(index)
 
 
 --背包
-    local num=0
-    local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
-    for i=1, NUM_BANKBAGSLOTS do
-        local bag= i+ numBag
-        local frame= _G['ContainerFrame'..bag]
-        if frame then
-            local isShow= frame:IsShown()
-
-            Hide_BagFrame(frame, i)
-
-            for _, btn in frame:EnumerateValidItems()  do
-                if btn then
-                    if isShow then
-                        btn:SetParent(BankSlotsFrame)
-                        table.insert(tab, btn)
-                    else
-                        btn:SetParent(frame)
+    if not Save().disabledReagentFrame then
+        local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
+        for i=1, NUM_BANKBAGSLOTS do
+            local frame= _G['ContainerFrame'..(i+numBag)]
+            if frame then
+                local isShow= frame:IsShown()
+                frame:bank_settings()
+                for _, btn in frame:EnumerateValidItems()  do
+                    if btn then
+                        if isShow then
+                            table.insert(tab, btn)
+                        end
+                        btn:SetShown(isShow)
                     end
-                    --btn:SetShown(isShow)
                 end
             end
         end
     end
-
 
     LastButton= tab[1]
     LastButton:ClearAllPoints()
@@ -165,7 +177,7 @@ local function Set_BankSlotsFrame(index)
     Set_IndexLabel(LastButton, 1)--索引，提示
 
     local line= Save().line
-    num= Save().num
+    local num= Save().num
 
     for i=2, #tab, 1 do
         local btn= tab[i]
@@ -294,11 +306,89 @@ end
 
 
 
+local function Set_PortraitButton()
+    local isReagentFrame = not Save().disabledReagentFrame
+    local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
+    for index=1, NUM_BANKBAGSLOTS do
+        local bag= index+ numBag
+        local frame= _G['ContainerFrame'..bag]
+        local btn= BankSlotsFrame['Bag'..index]
+        if frame and btn then
+
+            for _, button in frame:EnumerateValidItems()  do
+                if button then
+                    button:SetParent(isReagentFrame and BankSlotsFrame or frame)
+                    button:SetShown(true)
+                end
+            end
+
+            frame.PortraitButton:ClearAllPoints()
+
+            if not isReagentFrame then
+                function frame:bank_settings() end
+                frame.PortraitButton:SetParent(frame)
+                frame.PortraitButton:SetShown(true)
+                frame:SetAlpha(1)
+                if frame.ResizeButton then
+                    frame.ResizeButton:SetClampedToScreen(true)
+                end
+                frame.PortraitButton:SetPoint('LEFT', frame.PortraitContainer.portrait, 'RIGHT', 2,0)
+            else
+                function frame:bank_settings()
+                    self:ClearAllPoints()
+                    self:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)
+                    self:SetAlpha(0)
+                    self.PortraitButton:SetShown(self:IsShown())
+                end
+                frame:SetParent(frame.BankSlotButton)
+                if frame.ResizeButton then
+                    frame.ResizeButton:SetClampedToScreen(false)
+                end
+                frame.PortraitButton:SetPoint('TOPLEFT', btn,-2,2)
+            end
+
+
+            if not frame.BankSlotButton then
+                frame:HookScript('OnEnter', function(self)
+                    self:bank_settings()
+                end)
+                frame:HookScript('OnShow', function(self)
+                    self:bank_settings()
+                end)
+                frame:HookScript('OnHide', function(self)
+                    self:bank_settings()
+                end)
+
+
+                btn.MatchesBagID= frame.PortraitButton:GetParent().MatchesBagID
+
+                frame.BankSlotButton= btn
+
+
+
+                frame.PortraitButton:SetSize(20,20)--37
+                frame.PortraitButton:SetNormalAtlas(e.Icon.icon)
+                frame.PortraitButton:SetPushedAtlas('bag-border-highlight')
+                frame.PortraitButton:SetHighlightAtlas('bag-border')
+
+                frame.FilterIcon.Icon:SetParent(frame.PortraitButton)
+                frame.FilterIcon.Icon:ClearAllPoints()
+                frame.FilterIcon.Icon:SetAllPoints()
+            end
+
+            frame:bank_settings()
+        end
+    end
+end
+
+
+
+
+
 
 local function Settings()
     NumReagentLeftButton= 0
     NumAccountLeftButton= 0
-
     local index= BankFrame.activeTabIndex or 1
     do Set_BankSlotsFrame(index) end
     do Set_BankReagent(index) end
@@ -310,6 +400,14 @@ end
 
 
 
+
+
+
+
+
+
+
+--GameTooltip:SetInventoryItem("player", self.BankSlotButton:GetInventorySlot())--hasItem 
 
 
 
@@ -328,7 +426,7 @@ local function Init()
     hooksecurefunc('BankFrameItemButton_Update', function(self)
         if self.isBag and self.set_point_toleft then
             C_Timer.After(0.3, self.set_point_toleft)
-        end 
+        end
     end)
 
     --背包位
@@ -355,6 +453,7 @@ end
 
 --整合
 function WoWTools_BankMixin:Init_Plus()
+    Set_PortraitButton()
     if Init() then
         Init= function() end
     else

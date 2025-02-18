@@ -119,13 +119,18 @@ function WoWTools_ColorMixin:SetLabelTexture(frame, tab)--设置颜色
         local type= tab.type or type(frame)-- FontString Texture String
         local alpha= tab.alpha
         local col= tab.color or e.Player.useColor
+        local isColorTexture= tab.isColorTexture
 
         local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
         if type=='FontString' or type=='EditBox' then
             frame:SetTextColor(r, g, b, a)
 
         elseif type=='Texture' then
-            frame:SetVertexColor(r, g, b, a)
+            if isColorTexture then
+                frame:SetColorTexture(r,g,b,a)
+            else
+                frame:SetVertexColor(r, g, b, a)
+            end
         elseif type=='Button' then
             local texture= frame:GetNormalTexture()
             if texture then

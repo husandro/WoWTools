@@ -52,6 +52,7 @@ local function Init_Menu(self, root)
         return Save().showIndex
     end, function()
         Save().showIndex= not Save().showIndex and true or nil--显示，索引
+        WoWTools_BankMixin:CloseBag()
         WoWTools_BankMixin:Init_Plus()
     end)
 
@@ -69,18 +70,22 @@ local function Init_Menu(self, root)
 
     local isEnabled= BankFrame.activeTabIndex==1
 
-    
 
     root:CreateTitle(e.onlyChinese and '银行' or BANK)
 
+--材料银行
     sub=root:CreateCheckbox(
         e.onlyChinese and '材料银行' or REAGENT_BANK,
     function()
-        --return Save().
+        return not Save().disabledReagentFrame
     end, function()
-        
+        Save().disabledReagentFrame= not Save().disabledReagentFrame and true or nil
+        WoWTools_BankMixin:Init_Plus()
     end)
-   -- BAG_COMMAND_CONVERT_TO_COMBINED = "转化为联合的大包";]]
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED)
+    end)
+    sub:SetEnabled(isEnabled)
 
 --行数
     sub=root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
@@ -175,17 +180,6 @@ local function Init()
 
 
 
---钱    
-BankFrameMoneyFrameBorder:Hide()
-BankFrameMoneyFrame:ClearAllPoints()
-if IsReagentBankUnlocked() then
-    BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
-else
-    BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
-    WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
-end
-BankFrameMoneyFrame:SetFrameStrata(OptionButton:GetFrameStrata())
-BankFrameMoneyFrame:SetFrameLevel(OptionButton:GetFrameLevel()+1)
 
 end
 

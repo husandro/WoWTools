@@ -15,6 +15,8 @@ Save={
     --leftListScale=1,
 
     openBagInBank=e.Player.husandro,
+
+    --disabledReagentFrame=true,材料银行
 },
 }
 

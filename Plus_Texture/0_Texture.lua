@@ -33,7 +33,15 @@ end
 
 
 
-
+function WoWTools_PlusTextureMixin:SetColorTexture(object, tab)
+    if object then
+        tab= tab or {}
+        tab.isColorTexture=true
+        tab.type=object:GetObjectType()
+        tab.alpha= tab.alpha or self.alpha or self.min or Save().alpha or 0.5
+        WoWTools_ColorMixin:SetLabelTexture(object, tab)
+    end
+end
 
 
 
