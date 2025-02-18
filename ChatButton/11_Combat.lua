@@ -803,34 +803,26 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
+    addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
+    Save= WoWToolsSave['ChatButton_Combat'] or Save
+    CombatButton= WoWTools_ChatButtonMixin:CreateButton('Combat', addName)
 
---###########
---加载保存数据
---###########
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
-            Save= WoWToolsSave['ChatButton_Combat'] or Save
-            CombatButton= WoWTools_ChatButtonMixin:CreateButton('Combat', addName)
+    if Save.SayTime==0 then
+        Save.disabledSayTime= true
+        Save.SayTime=120
+    end
 
-            if Save.SayTime==0 then
-                Save.disabledSayTime= true
-                Save.SayTime=120
-            end
+    if CombatButton then--禁用Chat Button
+        Init()
+    end
+end)
 
-            if CombatButton then--禁用Chat Button
-                Init()
-            end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ChatButton_Combat']=Save
-        end
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['ChatButton_Combat']=Save
     end
 end)

@@ -2137,7 +2137,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
-            
+
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init()--史诗钥石地下城, 界面

@@ -969,25 +969,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             --处理，上版本数据
-            if WoWToolsSave[FRIENDS_LIST] then
-                Save= WoWToolsSave[FRIENDS_LIST]
-                WoWToolsSave[FRIENDS_LIST]= nil
-                
-                if Save.Friends[e.Player.name_realm] then
-                    if Save.Friends[e.Player.name_realm].Availabel then
-                        Save.Friends[e.Player.guid]= 'Availabel'
-                    elseif Save.Friends[e.Player.name_realm].Away then
-                        Save.Friends[e.Player.guid]= 'Away'
-                    elseif Save.Friends[e.Player.name_realm].DND then
-                        Save.Friends[e.Player.guid]= 'DND'
-                    else
-                        Save.Friends[e.Player.name_realm]= nil
-                    end
-                end
-            else
-                Save= WoWToolsSave['FriendsList_lua'] or Save
-            end
-
+            Save= WoWToolsSave['FriendsList_lua'] or Save
             addName= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or FRIENDS_LIST)
 
             --添加控制面板
@@ -1035,8 +1017,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='SOCIAL_QUEUE_UPDATE' then--更新, 快速加入
         set_SOCIAL_QUEUE_UPDATE()
-
-
     end
-
 end)

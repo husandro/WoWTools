@@ -80,19 +80,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Init_Buttons()--设置按钮
     Frame.Buttons={}
 
@@ -151,115 +138,6 @@ local function Init_Buttons()--设置按钮
 
     Frame:set_buttons_point()
 end
-    --[[local last, index, line=Frame, 0, nil
-
-    local function setPoint(btn, text)--设置位置, 操作
-        if index>0 and select(2, math.modf(index / 10))==0 then
-            btn:SetPoint('BOTTOMLEFT', line, 'TOPLEFT')
-            line=btn
-        else
-            btn:SetPoint('BOTTOMLEFT', last, 'BOTTOMRIGHT')
-            if index==0 then line=btn end
-        end
-        btn:SetScript('OnClick', function(self, d)
-            send(text, d)
-            Save.clickIndex= self:GetID()
-            EmojiButton:set_texture()
-        end)
-        btn:SetScript('OnEnter', function()
-            e.tips:SetOwner(last, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            e.tips:AddLine(text)
-            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '插入' or 'Insert'), (e.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
-            e.tips:Show()
-        end)
-        btn:SetScript('OnLeave', GameTooltip_Hide)
-    end
-
-    for i, texture in pairs(EmojiText) do
-        local btn=WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide',size=30, setID=i})
-        setPoint(btn, EmojiText[i])
-        btn:SetNormalTexture('Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..texture)
-        last=btn
-        index=index+1
-    end
-
-    local numFile= #EmojiText
-    for i= 1, 8 do
-        local btn=WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide',size=30, setID= i+numFile})
-        setPoint(btn, 'rt'..i)
-        btn:SetNormalTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..i)
-        last=btn
-        index=index+1
-    end
-end]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---[[local function Init_Frame_Menu(self, root)
---缩放
-    local sub= root:CreateButton(e.onlyChinese and '缩放' or UI_SCALE, function()
-        return MenuResponse.Open
-    end)
-    for index=0.4, 4, 0.05 do
-        sub:CreateCheckbox(index, function(data)
-            return Save.scale==data
-        end, function(data)
-            Save.scale= data
-            self:set_scale()
-            return MenuResponse.Refresh
-        end, index)
-    end
-    sub:CreateDivider()
-    sub:CreateTitle(Save.scale or 1)
-    sub:SetGridMode(MenuConstants.VerticalGridDirection, 5)
-
-
---数量
-    sub=root:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
-    for index= 1, EmojiButton.numAllFile, 1 do
-        if select(2, math.modf(EmojiButton.numAllFile/index))==0 then
-            sub:CreateCheckbox(index, function(data)
-                return Save.numButtonLine==data
-            end, function(data)
-                Save.numButtonLine= data
-                self:set_buttons_point()
-                return MenuResponse.Refresh
-            end, index)
-        end
-    end
-    sub:CreateDivider()
-    sub:CreateTitle(Save.numButtonLine..'/'..EmojiButton.numAllFile)
-    sub:SetGridMode(MenuConstants.VerticalGridDirection, 2)
-
-    root:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
-        return Save.show_background
-    end, function()
-        Save.show_background= not Save.show_background and true or nil
-        self:set_background()
-    end)
-
-    root:CreateDivider()
-    root:CreateButton((Save.Point and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
-        Save.Point=nil
-        self:set_point()
-    end)
-end]]
-
-
-
 
 
 
@@ -582,21 +460,6 @@ local function Init()
         e.tips:Show()
     end
 
-    --[[EmojiButton:SetScript('OnEnter', function(self)
-        if Save.showEnter then
-            self:set_frame_shown(true)
-        end
-        self:set_frame_state(true)
-        self:set_tooltip()
-        self:state_enter()--Init_Menu)
-        self.chatFrameEditBox= ChatEdit_GetActiveWindow() and true or false
-    end)
-    EmojiButton:SetScript('OnLeave', function(self)
-        self:set_frame_state(false)
-        self:state_leave()
-        e.tips:Hide()
-        self.chatFrameEditBox=nil
-    end)]]
 
     function EmojiButton:set_OnLeave()
         self:set_frame_state(false)
@@ -674,31 +537,6 @@ local function Init()
             send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
         end
     end
-
-    --[[EmojiButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' then
-            if Save.On_Click_Show then
-                self:set_frame_shown(not Frame:IsShown())
-                self:set_tooltip()
-            else
-                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
-            end
-            self:CloseMenu()
-        end
-    end)
-    EmojiButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            if Save.On_Click_Show then
-                self:set_frame_shown(not Frame:IsShown())
-                self:set_tooltip()
-            else
-                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
-            end
-
-        elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-        end
-    end)]]
 end
 
 
@@ -708,47 +546,21 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
+    Save= WoWToolsSave['ChatButton_Emoji'] or Save
+    addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
+    EmojiButton= WoWTools_ChatButtonMixin:CreateButton('Emoji', addName)
 
-
---###########
---加载保存数据
---###########
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave['ChatButton_Emoji'] or Save
-            addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
-            EmojiButton= WoWTools_ChatButtonMixin:CreateButton('Emoji', addName)
-
-            if EmojiButton then--禁用Chat Button
-                Init()
-            end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            if Frame then
-                Save.show= Frame:IsShown()
-            end
-            WoWToolsSave['ChatButton_Emoji']=Save
-        end
+    if EmojiButton then--禁用Chat Button
+        Init()
     end
 end)
---[[
-elseif LOCALE_frFR then
-    EmojiText= {'ange','en colère','riant','applaudissements','cool','pleurant','mignon','dédain','rêve','embarras','mal','excité','halo','se battre','grippe','rester','fronçant les sourcils ','salut','grimace','voile','heureux','cœur','peur','malade','innocent','KungFu','nympho','mail','maquillage','contemplation','pauvre','bon','joli','cracher','poignée de main','crier','se taire','timide','dormir','sourire','surpris','échec','sueur','larmes','tragédie','penser','ricaner','obscène','victoire',' héros','grief','Mario'}
-elseif LOCALE_deDE then
-    EmojiText= {'engel','wütend','lachen','applaus','cool','weinen','süß','verachtung','traum','verlegenheit','böse','aufgeregt','heiligenschein','kämpfen','grippe','bleiben','stirnrunzeln','gruß','grimace','segeln','glücklich','herz','angst','krank','unschuldig','KungFu','nymphoman','mail','schminke','nachdenklichkeit','arm','gut','hübsch','spucken','händedruck','schrei','halt die klappe','schüchtern','schlaf','lächeln','überrascht','versagen','schweiß','tränen','tragödie','denken','kichern','obszön','sieg','held','beschwerde','Mario'}
-elseif LOCALE_esES or LOCALE_esMX then
-    EmojiText= {'ángel','enojado','riendo','aplausos','guay','llorando','lindo','desdén','soñar','vergüenza','maldad','emocionado','halo','pelea','gripe','quedarse','frunciendo el ceño ','saludo','mueca','navegar','feliz','corazón','miedo','enfermo','inocente','KungFu','ninfómana','gorreo','maquillaje','contemplación','pobre','bueno','bonita','escupir','apretón de manos','gritar','cállate','tímido','dormir','sonreír','sorprendido','fallar','sudar','lágrimas','tragedia','pensar','risitas','obsceno','victoria','héroe','queja','Mario'}
-elseif LOCALE_ruRU then
-    EmojiText= {'ангел','злость','смех','аплодисменты','клевые','плакать','милый','презирающий','красивая мечта','смущение','зло','возбуждение','головокружение','драка','грипп','тупость','морщины','почтение','грим','гримаса','гримаса','гримаса','гримаса','жалость','красивая','плюнь','рукопожатие','крик','заткнись','застенчивость','спать','улыбка','удивление','неудача','потение','слезы','трагедия','хохот','воровство','мелочь','победа','гром','обида','Марио'}
-elseif LOCALE_ptBR then
-    --EmojiText= {'anjo','irritado','rindo','aplauso','legal','chorando','fofo','desdém','sonho','embaraço','mal','excitado','halo','luta','gripe','fique','franzindo a testa','saudação','careta','navega','feliz','coração','medo','doente','inocente','KungFu','ninfo','correio','maquiagem','contemplação','pobre','bom','bonito','cuspir','aperto de mão','gritar','cala a boca','tímido','dormir','sorriso','surpreso','falhar','suar','lágrimas','tragédia','pensar','risada','obsceno','vitória','herói','queixa','mario'}
-elseif LOCALE_itIT then
-    EmojiText= {'angelo','arrabbiato','risata','applauso','freddo','piange','carino','disprezza','sogno','imbarazzato','cattivo','eccitato','alone','lotta','influenza','resta','accigliato ','omaggio','faccia torva','denti che colpiscono','felice','cuore','paura','ill','innocente','KungFu','idioma','mail','trucco','meditazione','povero','buono','bello','sputa','stretta di mano','grida','zitto','timido','dormiente','sorridente','sorpreso','fallimento','sudore','lacrima','tragedia','pensando','sorprendendosi','preoccupante','vittoria','hero','wronged','Mario'}
-]]
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['ChatButton_Emoji']=Save
+    end
+end)

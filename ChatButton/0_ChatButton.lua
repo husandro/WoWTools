@@ -250,73 +250,48 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Save= WoWToolsSave['ChatButton'] or Save
 
+        Save.disabledADD= Save.disabledADD or {}
 
+        addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
+        Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
 
+        e.AddPanel_Check_Button({
+            checkName= e.onlyChinese and '启用' or ENABLE,
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end,
+            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+            buttonFunc= function()
+                Save.Point=nil
+                if ChatButton then
+                    ChatButton:set_point()
+                end
+                print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end,
+            tooltip= addName,
+            layout= Layout,
+            category= Initializer,
+        })
 
-
-
-
-
-
-
-
-
---###########
---加载保存数据
---###########
-
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave['ChatButton'] or Save
-
-            Save.disabledADD= Save.disabledADD or {}
-
-            addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
-
-            Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
-
-            e.AddPanel_Check_Button({
-                checkName= e.onlyChinese and '启用' or ENABLE,
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                buttonFunc= function()
-                    Save.Point=nil
-                    if ChatButton then
-                        ChatButton:set_point()
-                    end
-                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-                end,
-                tooltip= addName,
-                layout= Layout,
-                category= Initializer,
-            })
-
-            if not Save.disabled then
-                ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
-
-                Init()
-            end
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                Init_Panel()
-            end
-
-        elseif arg1=='Blizzard_Settings' then
-            Init_Panel()
+        if not Save.disabled then
+            ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
+            Init()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ChatButton']=Save
-        end
+    elseif arg1=='Blizzard_Settings' then
+        Init_Panel()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['ChatButton']=Save
     end
 end)

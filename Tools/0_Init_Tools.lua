@@ -458,40 +458,32 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1== id then
+        Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
 
+        Save.BottomPoint= Save.BottomPoint or {
+            Mount=true,
+            Hearthstone=true,
+            OpenItems=true,
+        }
 
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== id then
-            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
-            Save.BottomPoint= Save.BottomPoint or {
-                Mount=true,
-                Hearthstone=true,
-                OpenItems=true,
-            }
-            Button= WoWTools_ToolsButtonMixin:Init(Save)
+        Button= WoWTools_ToolsButtonMixin:Init(Save)
 
-            if Button  then
-                Init()
-            end
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                Init_Panel()
-            end
-
-        elseif arg1=='Blizzard_Settings' then
-            Init_Panel()
+        if Button then
+            Init()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            if Save then
-                Save.show= Button and Button.Frame:IsShown()
-            end
-            WoWToolsSave['WoWTools_ToolsButton']=Save
+    elseif arg1=='Blizzard_Settings' then
+        Init_Panel()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        if Button and Save then
+            Save.show= Button.Frame:IsShown()
         end
+        WoWToolsSave['WoWTools_ToolsButton']=Save
     end
 end)

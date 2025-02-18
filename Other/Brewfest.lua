@@ -5,7 +5,7 @@ local Save={
     --Point
     --scale
 }
-local panel= CreateFrame('Frame')
+
 local button
 
 --####
@@ -230,57 +230,54 @@ end
 
 
 
---###########
---加载保存数据
---###########
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
-panel:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave[addName] or Save
 
-            if not Save.disabled then
-                Init()
-            end
-            panel:UnregisterEvent('ADDON_LOADED')
 
-            --添加控制面板
-            e.AddPanel_Header(nil, e.onlyChinese and '其它' or OTHER)
-            e.AddPanel_Check_Button({
-                checkName= '|T132248:0|t'..e.cn(addName),
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    if not Save.disabled then
-                        if not button then
-                            Init()
-                        end
-                        button:SetShown(true)
-                    else
-                        print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Save= WoWToolsSave[addName] or Save
+
+        --添加控制面板
+        e.AddPanel_Header(nil, e.onlyChinese and '其它' or OTHER)
+        e.AddPanel_Check_Button({
+            checkName= '|T132248:0|t'..e.cn(addName),
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                if not Save.disabled then
+                    if not button then
+                        Init()
                     end
-                end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-                buttonFunc= function()
-                    Save.Point=nil
-                    if button then
-                        button:ClearAllPoints()
-                        button:set_Point()
-                    end
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-                end,
-                tooltip= e.onlyChinese and '节日: 美酒节（赛羊）' or CALENDAR_FILTER_HOLIDAYS,
-                layout= nil,
-                category= nil,
-            })
-        end
+                    button:SetShown(true)
+                else
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            end,
+            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+            buttonFunc= function()
+                Save.Point=nil
+                if button then
+                    button:ClearAllPoints()
+                    button:set_Point()
+                end
+                print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+            end,
+            tooltip= e.onlyChinese and '节日: 美酒节（赛羊）' or CALENDAR_FILTER_HOLIDAYS,
+            layout= nil,
+            category= nil,
+        })
+    end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
+    if not Save.disabled then
+        Init()
+    end
+end)
 
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
     end
 end)

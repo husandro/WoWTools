@@ -606,64 +606,39 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Save= WoWToolsSave[addName] or Save
 
-
-
-
-
-
---###########
---加载保存数据
---###########
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-
-            --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName),
-                tooltip= e.onlyChinese and '法术距离, 颜色|n法术弹出框'
-                        or (
-                            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
-                            ..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Flyout')..': '..LFG_LIST_TITLE
-                            ..'|n...'
-                    ),
-                Value= not Save.disabled,
-                GetValue=function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-
-            if Save.disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-            else
-                Init()
-                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-                    Init_Blizzard_PlayerSpells()
-                    self:UnregisterEvent('ADDON_LOADED')
-                end
+        --添加控制面板
+        Initializer= e.AddPanel_Check({
+            name= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or addName),
+            tooltip= e.onlyChinese and '法术距离, 颜色|n法术弹出框'
+                    or (
+                        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
+                        ..'|n'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Flyout')..': '..LFG_LIST_TITLE
+                        ..'|n...'
+                ),
+            Value= not Save.disabled,
+            GetValue=function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
+        })
 
-        --[[elseif arg1=='Blizzard_ClassTalentUI' then--天赋
-            if not Save.disabled then
-                hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-            end]]
-
-        elseif arg1=='Blizzard_PlayerSpells' then--天赋
-            Init_Blizzard_PlayerSpells()
-            self:UnregisterEvent('ADDON_LOADED')
+        if not Save.disabled then
+            Init()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
+    elseif arg1=='Blizzard_PlayerSpells' and not Save.disabled then--天赋
+        Init_Blizzard_PlayerSpells()
     end
 end)
 
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
+    end
+end)

@@ -1288,51 +1288,36 @@ end
 
 
 
---###########
---加载保存数据
---###########
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent('ADDON_LOADED')
-                return
-            end
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Save= WoWToolsSave[addName] or Save
 
-            Save= WoWToolsSave[addName] or Save
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
-
-                tooltip= e.cn(addName),
-                Value= not Save.disabled,
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-                end
-            })
-
-            if Save.disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-            end
-
-
-
-        elseif arg1=='Blizzard_AuctionHouseUI' then
-            Init_BrowseResultsFrame()
-            Init_AllAuctions()
-            Init_Sell()
-            self:UnregisterEvent('ADDON_LOADED')
+        if PlayerGetTimerunningSeasonID() then
+            return
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
+        --添加控制面板
+        e.AddPanel_Check({
+            name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
+
+            tooltip= e.cn(addName),
+            Value= not Save.disabled,
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+            end
+        })
+
+    elseif arg1=='Blizzard_AuctionHouseUI' and not Save.disabled then
+        Init_BrowseResultsFrame()
+        Init_AllAuctions()
+        Init_Sell()
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
     end
 end)

@@ -198,56 +198,13 @@ local function Init()
         end
     end
 
-    --[[LFDButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' and self.dungeonID then
-            if self.type==LE_LFG_CATEGORY_LFD then
-                e.call(LFDQueueFrame_SetType, self.dungeonID)
-                e.call(LFDQueueFrame_Join)
-            elseif self.type==LE_LFG_CATEGORY_RF then
-                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
-                e.call(RaidFinderQueueFrame_Join)
-            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
-
-            end
-            self:CloseMenu()
-            self:set_tooltip()
-        end
-    end)]]
-
 
     function LFDButton:set_OnLeave()
         if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
             WoWTools_LFDMixin.TipsButton:SetButtonState('NORMAL')
         end
     end
-    --[[LFDButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' and self.dungeonID then
-            if self.type==LE_LFG_CATEGORY_LFD then
-                e.call(LFDQueueFrame_SetType, self.dungeonID)
-                e.call(LFDQueueFrame_Join)
-            elseif self.type==LE_LFG_CATEGORY_RF then
-                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
-                e.call(RaidFinderQueueFrame_Join)
-            elseif self.type==LE_LFG_CATEGORY_SCENARIO then
 
-            end
-        else
-            WoWTools_LFDMixin:Init_Menu(self)
-        end
-    end)
-
-    LFDButton:SetScript('OnEnter',function(self)
-        self:set_tooltip()
-        self:state_enter()--Init_Menu)
-    end)
-
-    LFDButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
-            WoWTools_LFDMixin.TipsButton:SetButtonState('NORMAL')
-        end
-        self:state_leave()
-    end)]]
 
     WoWTools_LFDMixin:Init_Queue_Status()--建立，小眼睛, 更新信息
     WoWTools_LFDMixin:Init_Loot_Plus()--历史, 拾取框
@@ -284,36 +241,24 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
+    WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
+    WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 3
 
---加载保存数据
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
-            WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 3
+    WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
-            WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+    LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 
-            LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
-
-            if LFDButton then--禁用Chat Button                
-                Init()
-
-                self:RegisterEvent('UPDATE_BATTLEFIELD_STATUS')
-                self:RegisterEvent('GROUP_LEFT')
-                self:RegisterEvent('PLAYER_ROLES_ASSIGNED')--职责确认
-            end
-
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
-        end
+    if LFDButton then--禁用Chat Button                
+        Init()
     end
 end)
 
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
+    end
+end)

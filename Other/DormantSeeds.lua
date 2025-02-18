@@ -5,7 +5,7 @@ local Save={
     scale= e.Player.husandro and 0.85 or 1,
 }
 
-local panel= CreateFrame('Frame')
+
 local Button
 
 local ItemTab={
@@ -245,57 +245,48 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
 
+    Save= WoWToolsSave[addName] or Save
 
+    if PlayerGetTimerunningSeasonID() then
+        return
+    end
 
-
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-
-            if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent('ADDON_LOADED')
-                return
-            end
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= '|T656681:0|t'..e.cn(addName),
-                tooltip= function()
-                    return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
-                    --e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
-                   -- e.tips:ClearLines()
-                    --e.tips:SetItemByID(208047)
-                    --e.tips:AddLine(' ')
-                    --local info= C_Map.GetMapInfo(2200) or {}
-                    --e.tips:AddDoubleLine( '|cnGREEN_FONT_COLOR:'..format(LFG_LIST_CROSS_FACTION, info.name or 'uiMapID 2200'), '|cnGREEN_FONT_COLOR:uiMapID 2200')
-                    --e.tips:Show()
-                end,
-                Value= not Save.disabled,
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled = not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            if not Save.disabled then
-                for _, itemID in pairs(ItemTab) do
-                    e.LoadData({id=itemID, type='item'})
-                end
-                C_Timer.After(2, Init)
-            end
-
-            self:UnregisterEvent('ADDON_LOADED')
+    --添加控制面板
+    e.AddPanel_Check({
+        name= '|T656681:0|t'..e.cn(addName),
+        tooltip= function()
+            return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
+            --e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
+            -- e.tips:ClearLines()
+            --e.tips:SetItemByID(208047)
+            --e.tips:AddLine(' ')
+            --local info= C_Map.GetMapInfo(2200) or {}
+            --e.tips:AddDoubleLine( '|cnGREEN_FONT_COLOR:'..format(LFG_LIST_CROSS_FACTION, info.name or 'uiMapID 2200'), '|cnGREEN_FONT_COLOR:uiMapID 2200')
+            --e.tips:Show()
+        end,
+        Value= not Save.disabled,
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
+            Save.disabled = not Save.disabled and true or nil
+            print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
         end
+    })
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+    if not Save.disabled then
+        for _, itemID in pairs(ItemTab) do
+            e.LoadData({id=itemID, type='item'})
         end
+        C_Timer.After(2, Init)
+    end
+end)
 
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
     end
 end)

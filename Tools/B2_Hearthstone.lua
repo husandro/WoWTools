@@ -797,43 +797,27 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1== id then
+        Save= WoWToolsSave['Tools_Hearthstone'] or Save
+        addName='|A:delves-bountiful:0:0|a'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
---###########
---加载保存数据
---###########
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== id then
-            --旧版本
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)] then
-                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)]
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)]=nil
-            else
-                Save= WoWToolsSave['Tools_Hearthstone'] or Save
-            end
-            addName='|A:delves-bountiful:0:0|a'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
+        ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+            name='Hearthstone',
+            tooltip=addName,
+        })
 
-            ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
-                name='Hearthstone',
-                tooltip=addName,
-            })
-
-            if ToyButton then
-                Init()--初始
-            else
-                self:UnregisterEvent('ADDON_LOADED')
-            end
-
-        elseif arg1=='Blizzard_Collections' then
-            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+        if ToyButton then
+            Init()--初始
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Tools_Hearthstone']=Save
-        end
+    elseif arg1=='Blizzard_Collections' and ToyButton then
+        hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Tools_Hearthstone']=Save
     end
 end)

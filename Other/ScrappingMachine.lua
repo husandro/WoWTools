@@ -447,56 +447,30 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Save= WoWToolsSave['Other_ScrappingMachine'] or Save
+        addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
 
-
-
-
-
-
-
-
---###########
---加载保存数据
---###########
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            if WoWToolsSave[SCRAPPING_MACHINE_TITLE] then
-                Save= WoWToolsSave[SCRAPPING_MACHINE_TITLE]
-                WoWToolsSave[SCRAPPING_MACHINE_TITLE]=nil
-            else
-                Save= WoWToolsSave['Other_ScrappingMachine'] or Save
+        --添加控制面板
+        e.AddPanel_Check({
+            name= addName,
+            Value= not Save.disabled,
+            GetValue=function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
             end
+        })
 
-            addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
+    elseif arg1=='Blizzard_ScrappingMachineUI' and not Save.disabled then--分解 ScrappingMachineFrame
+        Init()
+        Init_Disabled_Button()
+    end
+end)
 
-            --添加控制面板
-            e.AddPanel_Check({
-                name= addName,
-                Value= not Save.disabled,
-                GetValue=function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
-                end
-            })
-
-            if Save.disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-            end
-
-        elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
-            Init()
-            Init_Disabled_Button()
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Other_ScrappingMachine']=Save
-        end
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Other_ScrappingMachine']=Save
     end
 end)

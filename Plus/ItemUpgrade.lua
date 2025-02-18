@@ -111,39 +111,39 @@ local function Init_ItemInteractionFrame()
     end)
 end
 
-local panel= CreateFrame('Frame')
-panel:RegisterEvent('PLAYER_LOGOUT')
-panel:RegisterEvent('ADDON_LOADED')
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave[addName] or Save
 
-            --添加控制面板
-            Initializer= e.AddPanel_Check({
-                name= format('|A:Garr_UpgradeIcon:0:0|a%s', e.onlyChinese and '物品升级' or addName),
-                --tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
 
-            if Save.disabled then
-                self:UnregisterEvent("ADDON_LOADED")
+
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Save= WoWToolsSave[addName] or Save
+
+        --添加控制面板
+        Initializer= e.AddPanel_Check({
+            name= format('|A:Garr_UpgradeIcon:0:0|a%s', e.onlyChinese and '物品升级' or addName),
+            --tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
+        })
 
-        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-            Init_ItemInteractionFrame()
-            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
 
-        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
-        end
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
-	end
+    elseif arg1=='Blizzard_ItemInteractionUI' and not Save.disabled then--套装转换, 界面
+        Init_ItemInteractionFrame()
+        add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
+
+    elseif arg1=='Blizzard_ItemUpgradeUI' and not Save.disabled then--装备升级, 界面
+        add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
+    end
 end)

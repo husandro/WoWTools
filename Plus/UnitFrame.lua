@@ -6,7 +6,7 @@ local Save={
     --raidFrameAlpha=1,
     --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 }
-local panel=CreateFrame('Frame')
+
 
 
 local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
@@ -1898,34 +1898,6 @@ local function Init_RaidFrame()--设置,团队
     end)
     CompactRaidFrameManager.ScaleButton:settings()
 
-    --[[CompactRaidFrameManager.ScaleButton:SetScript("OnMouseDown", function(self, d)
-        print(WoWTools_Mixin.addName, e.cn(addName), 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.managerScale or 1)
-    end)
-    CompactRaidFrameManager.ScaleButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            if UnitAffectingCombat('player') then
-                print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
-            else
-                local sacle= Save.managerScale or 1
-                if d==1 then
-                    sacle=sacle+0.05
-                elseif d==-1 then
-                    sacle=sacle-0.05
-                end
-                if sacle>1.5 then
-                    sacle=1.5
-                elseif sacle<0.5 then
-                    sacle=0.5
-                end
-                print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
-                CompactRaidFrameManager:SetScale(sacle)
-                Save.managerScale=sacle
-            end
-        end
-    end)
-    if Save.managerScale and Save.managerScale~=1 then
-        CompactRaidFrameManager:SetScale(Save.managerScale)
-    end]]
 
 
 
@@ -2124,60 +2096,6 @@ local function Init()
             self.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
         end
     end)
-
-    --############10.2.7，没有这个 FUNC
-    --去掉生命条 % extStatusBar.lua TextStatusBar.lua
-    --高CPU
-    --[[local deadText= e.onlyChinese and '死亡' or DEAD
-    hooksecurefunc('TextStatusBar_UpdateTextStringWithValues', function(frame, textString, value)
-        if not UnitExists(frame.unit) then
-            return
-        end
-        if value then--statusFrame.unit
-            if textString then
-                local text
-                if UnitIsGhost(frame.unit) then
-                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                else
-                    text= textString:GetText()
-                end
-                if text then
-                    if text=='100%' or text=='0%' then
-                        text= ''
-                    else
-                        text= text:gsub('%%', '')
-                    end
-                    textString:SetText(text)
-                end
-
-            elseif frame.LeftText and frame.LeftText:IsShown() then
-                local text
-                if UnitIsGhost(frame.unit) then
-                    text= '|A:poi-soulspiritghost:18:18|a'..deadText
-                else
-                    text= frame.LeftText:GetText()
-                end
-                if text then
-                    if text=='100%' then
-                        text= ''
-                    else
-                        text= text:gsub('%%', '')
-                    end
-                    frame.LeftText:SetText(text)
-                end
-            end
-        elseif frame.zeroText and frame.DeadText and frame.DeadText:IsShown() then
-            local text= deadText--死亡
-            if frame.unit then
-                if UnitIsGhost(frame.unit) then--灵魂
-                    text= '|A:poi-soulspiritghost:18:18|a'..text
-                elseif UnitIsDead(frame.unit) then--死亡
-                    text= '|A:deathrecap-icon-tombstone:18:18|a'..text
-                end
-            end
-            frame.DeadText:SetText(text)
-        end
-    end)]]
 end
 
 
@@ -2219,43 +2137,33 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
+    Save= WoWToolsSave[addName] or Save
+    --Save.healthbar = Save.healthbar or 'UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 
---###########
---加载保存数据
---###########
-panel:RegisterEvent("ADDON_LOADED")
-
-panel:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-            --Save.healthbar = Save.healthbar or 'UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName),
-                tooltip= e.cn(addName),
-                GetValue= function() return not Save.disabled end,
-                func= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-
-            if Save.disabled then
-                panel:UnregisterAllEvents()
-            else
-                Init()
-                panel:UnregisterEvent('ADDON_LOADED')
-            end
-            panel:RegisterEvent("PLAYER_LOGOUT")
+    --添加控制面板
+    e.AddPanel_Check({
+        name= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(e.onlyChinese and '单位框体' or addName),
+        tooltip= e.cn(addName),
+        GetValue= function() return not Save.disabled end,
+        func= function()
+            Save.disabled= not Save.disabled and true or nil
+            print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
+    })
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
+    if not Save.disabled then
+        Init()
+    end
+end)
+
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
     end
 end)
 

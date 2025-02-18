@@ -153,64 +153,58 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~= id then
+        return
+    end
 
+    WoWTools_FoodMixin.Save= WoWToolsSave['Tools_Foods'] or Save()
 
+    Save().spells= Save().spells or ClassSpells
 
+    local class= Save().spells[e.Player.class]
+    if not class then
+        Save().spells[e.Player.class]= {}
+    else
+        e.LoadData({id=class.item, type='item'})
+        e.LoadData({id=class.alt, type='spell'})
+        e.LoadData({id=class.shift, type='spell'})
+        e.LoadData({id=class.ctrl, type='spell'})
+    end
 
+    WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
 
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== id then
-
-            WoWTools_FoodMixin.Save= WoWToolsSave['Tools_Foods'] or Save()
-
-            Save().spells= Save().spells or ClassSpells
-
-            local class= Save().spells[e.Player.class]
-            if not class then
-                Save().spells[e.Player.class]= {}
-            else
-                e.LoadData({id=class.item, type='item'})
-                e.LoadData({id=class.alt, type='spell'})
-                e.LoadData({id=class.shift, type='spell'})
-                e.LoadData({id=class.ctrl, type='spell'})
-            end
-
-            WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
-
-            UseButton= WoWTools_ToolsButtonMixin:CreateButton({
-                name='Food',
+    UseButton= WoWTools_ToolsButtonMixin:CreateButton({
+        name='Food',
+        tooltip=WoWTools_FoodMixin.addName,
+        isMoveButton=true,
+        option=function(Category, layout, initializer)
+            e.AddPanel_Button({
+                category=Category,
+                layout=layout,
                 tooltip=WoWTools_FoodMixin.addName,
-                isMoveButton=true,
-                option=function(Category, layout, initializer)
-                    e.AddPanel_Button({
-                        category=Category,
-                        layout=layout,
-                        tooltip=WoWTools_FoodMixin.addName,
-                        buttonText= e.onlyChinese and '还原位置' or RESET_POSITION,
-                        SetValue= function()
-                            Save().point=nil
-                            if UseButton and UseButton:CanChangeAttribute() then
-                                Save().point=nil
-                                UseButton:set_point()
-                            end
-                        end
-                    }, initializer)
+                buttonText= e.onlyChinese and '还原位置' or RESET_POSITION,
+                SetValue= function()
+                    Save().point=nil
+                    if UseButton and UseButton:CanChangeAttribute() then
+                        Save().point=nil
+                        UseButton:set_point()
+                    end
                 end
-            })
-
-            if UseButton then
-               Init()
-            end
-            self:UnregisterEvent('ADDON_LOADED')
+            }, initializer)
         end
+    })
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Tools_Foods']=Save()
-        end
+    if UseButton then
+        Init()
+    end
+end)
+
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Tools_Foods']=Save()
     end
 end)
