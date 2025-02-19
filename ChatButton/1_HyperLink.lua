@@ -1486,7 +1486,6 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1 == id then
@@ -1500,6 +1499,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 DEFAULT_CHAT_FRAME.ADD= nil
                 self:UnregisterAllEvents()
             end
+            self:RegisterEvent('PLAYER_LOGOUT')
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()--设置控制面板
