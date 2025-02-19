@@ -21,7 +21,6 @@ local Save={
 local panel=CreateFrame('Frame')
 local Frame
 local SpellButton
-local Initializer
 local SpellsTab={
     433397,--取出宝石
     --405805,--拔出始源之石
@@ -478,7 +477,7 @@ local function Init_Spell_Button()
     --SpellButton:SetPoint('BOTTOMRIGHT', -4, 42)--, ItemSocketingSocketButton, 'TOPRIGHT', 20, 10)
     SpellButton:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 4, 4)
     SpellButton.texture= SpellButton:CreateTexture(nil, 'OVERLAY')
-    SpellButton.texture:SetAllPoints(SpellButton)
+    SpellButton.texture:SetAllPoints()
     SpellButton.count=WoWTools_LabelMixin:Create(SpellButton, {color={r=1,g=1,b=1}})--nil,nil,nil,true)
     SpellButton.count:SetPoint('BOTTOMRIGHT',-2, 9)
 

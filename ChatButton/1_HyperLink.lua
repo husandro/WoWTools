@@ -655,6 +655,31 @@ end
 
 
 
+--#############
+--欢迎加入, 信息
+--#############
+local raidMS=ERR_RAID_MEMBER_ADDED_S:gsub("%%s", "(.+)")--%s加入了团队。
+local partyMS= JOINED_PARTY:gsub("%%s", "(.+)")--%s加入了队伍。
+local guildMS= ERR_GUILD_JOIN_S:gsub("%%s", "(.+)")--加入了公会
+
+local function Event_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
+    if not text then
+        return
+    end
+    local group= Save.groupWelcome and text:match(raidMS) or text:match(partyMS)
+    local guild= Save.guildWelcome and text:match(guildMS)
+    if group then
+        if UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
+            WoWTools_ChatMixin:Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), group, nil)
+        end
+    elseif guild and IsInGuild() and text:find(guildMS) then
+        C_Timer.After(2, function()
+            SendChatMessage(Save.guildWelcomeText..' '.. guild.. ' ' ..GUILD_INVITE_JOIN, "GUILD")
+        end)
+    end
+end
+
+
 
 
 
@@ -672,15 +697,15 @@ local function Init_Panel()
     Category= e.AddPanel_Sub_Category({name=addName, frame=frame, category=WoWTools_ChatButtonMixin.Category})
 
     local function Cedit(self)
-        local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
-        frame:SetPoint('CENTER')
-        frame:SetSize(500,250)
-        frame.texture= frame:CreateTexture(nil, "BACKGROUND")
-        frame.texture:SetAllPoints()
-        frame.texture:SetAtlas('CreditsScreen-Background-0')
-        frame.texture:SetAlpha(0.3)
+        local edit= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
+        edit:SetPoint('CENTER')
+        edit:SetSize(500,250)
+        edit.texture= edit:CreateTexture(nil, "BACKGROUND")
+        edit.texture:SetAllPoints()
+        edit.texture:SetAtlas('CreditsScreen-Background-0')
+        edit.texture:SetAlpha(0.3)
 
-        return frame
+        return edit
     end
 
     local str=WoWTools_LabelMixin:Create(frame)--内容加颜色
@@ -775,31 +800,6 @@ end
 
 
 
-
-
---#############
---欢迎加入, 信息
---#############
-local raidMS=ERR_RAID_MEMBER_ADDED_S:gsub("%%s", "(.+)")--%s加入了团队。
-local partyMS= JOINED_PARTY:gsub("%%s", "(.+)")--%s加入了队伍。
-local guildMS= ERR_GUILD_JOIN_S:gsub("%%s", "(.+)")--加入了公会
-
-local function Event_CHAT_MSG_SYSTEM(_, text)--欢迎加入, 信息
-    if not text then
-        return
-    end
-    local group= Save.groupWelcome and text:match(raidMS) or text:match(partyMS)
-    local guild= Save.guildWelcome and text:match(guildMS)
-    if group then
-        if UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
-            WoWTools_ChatMixin:Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), group, nil)
-        end
-    elseif guild and IsInGuild() and text:find(guildMS) then
-        C_Timer.After(2, function()
-            SendChatMessage(Save.guildWelcomeText..' '.. guild.. ' ' ..GUILD_INVITE_JOIN, "GUILD")
-        end)
-    end
-end
 
 
 
@@ -917,10 +917,6 @@ local function Init_Add_Reload_Button()
 --隐藏NPC发言
 local VoHandle
 local function Set_Talking()
-    if Save.disabledNPCTalking then
-        return
-    end
-
     local _, _, vo, _, _, _, name, text = C_TalkingHead.GetCurrentLineInfo()
     TalkingHeadFrame:CloseImmediately()
 
@@ -1011,7 +1007,7 @@ local function Set_PlayerSound()--事件, 声音
 end
 
 
-local function Event_START_TIMER(_, arg1, arg2, arg3)
+local function Event_START_TIMER(arg1, arg2, arg3)
     if not Save.setPlayerSound then
         return
     end
@@ -1084,7 +1080,7 @@ end
 --#####
 --主菜单
 --#####
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub, tre, col
     local isInBat= UnitAffectingCombat('player')
 
@@ -1181,6 +1177,7 @@ local function Init_Menu(_, root)
             Save.guildWelcome=true
             Save.groupWelcome=true
         end
+        self:Settings()
     end)
 
     --公会新成员
@@ -1188,6 +1185,7 @@ local function Init_Menu(_, root)
         return Save.guildWelcome
     end, function()
         Save.guildWelcome= not Save.guildWelcome and true or nil
+        self:Settings()
     end)
     tre:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save.guildWelcomeText)
@@ -1217,7 +1215,7 @@ local function Init_Menu(_, root)
         return Save.groupWelcome
     end, function ()
         Save.groupWelcome= not Save.groupWelcome and true or nil
-        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+        self:Settings()
     end)
     tre:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save.groupWelcomeText)
@@ -1242,8 +1240,8 @@ local function Init_Menu(_, root)
             nil,
             {
                 text=Save.groupWelcomeText,
-                SetValue= function(self)
-                    local text= self.editBox:GetText()
+                SetValue= function(frame)
+                    local text= frame.editBox:GetText()
                     Save.groupWelcomeText=text
                     print(WoWTools_Mixin.addName, addName, text)
                 end
@@ -1387,16 +1385,6 @@ end
 
 
 
-local function Set_Event(self, event, arg1, arg2, arg3)
-
-if event=='START_TIMER' then--播放, 声音
-
-    elseif event=='STOP_TIMER_OF_TYPE' then
-
-    end
-end
-
-
 
 
 
@@ -1415,7 +1403,37 @@ local function Set_Button()
     function LinkButton:Settings()
         self.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
         self.setPlayerSoundTips:SetShown(Save.setPlayerSound)
+
+        self:UnregisterAllEvents()
+--欢迎加入, 信息
+        if Save.groupWelcome or Save.guildWelcome then
+            self:RegisterEvent('CHAT_MSG_SYSTEM')
+        end
+--事件, 声音
+        if Save.setPlayerSound then
+            self:RegisterEvent('START_TIMER')
+            self:RegisterEvent('STOP_TIMER_OF_TYPE')
+        end
+--隐藏NPC发言
+        if not Save.disabledNPCTalking then
+            self:RegisterEvent('TALKINGHEAD_REQUESTED')
+        end
     end
+
+    LinkButton:SetScript('OnEvent', function(_, event, arg1, arg2, arg3)
+        if event=='CHAT_MSG_SYSTEM' then
+            Event_CHAT_MSG_SYSTEM(arg1)
+
+        elseif event=='START_TIMER' then
+            Event_START_TIMER(arg1, arg2, arg3)
+
+        elseif event=='STOP_TIMER_OF_TYPE' then
+            Event_STOP_TIMER_OF_TYPE()
+
+        elseif event=='TALKINGHEAD_REQUESTED' then
+            Set_Talking()
+        end
+    end)
 
     LinkButton:SetupMenu(Init_Menu)
 
@@ -1433,26 +1451,17 @@ local function Init()
     e.setPlayerSound= Save.setPlayerSound--播放, 声音
     LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
 
-
-
     Set_Button()
+
     if not Save.disabed then--使用，禁用
         Set_HyperLlinkIcon()
     end
 
---事件, 公会新成员, 队伍新成员
-    EventRegistry:RegisterFrameEventAndCallback("CHAT_MSG_SYSTEM", Event_CHAT_MSG_SYSTEM)
 
---事件, 声音
-    Set_PlayerSound()
-    EventRegistry:RegisterFrameEventAndCallback("START_TIMER", Event_START_TIMER)
-    EventRegistry:RegisterFrameEventAndCallback("STOP_TIMER_OF_TYPE", Event_STOP_TIMER_OF_TYPE)
+    LFGListInviteDialog:SetScript("OnShow", Set_LFGListInviteDialog_OnShow)--队伍查找器, 接受邀请
+    Init_Add_Reload_Button()--添加 RELOAD 按钮
+    Set_PlayerSound()--事件, 声音
 
---队伍查找器, 接受邀请
-    LFGListInviteDialog:SetScript("OnShow", Set_LFGListInviteDialog_OnShow)
-
---隐藏NPC发言
-    EventRegistry:RegisterFrameEventAndCallback("TALKINGHEAD_REQUESTED", Set_Talking)
 
 --是否有，聊天中时间戳
     IsShowTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
@@ -1461,10 +1470,6 @@ local function Init()
             IsShowTimestamps= arg2~='none' and true or nil
         end
     end)
-
-
-
-    Init_Add_Reload_Button()--添加 RELOAD 按钮
 end
 
 
