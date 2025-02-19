@@ -58,10 +58,21 @@ local P_Tabs={
     },
 }
 
+
+for _, ID in pairs(P_Tabs.item) do
+    e.LoadData({id=ID, type='item'})
+end
+for _, ID in pairs(P_Tabs.spell) do
+    e.LoadData({id=ID, type='spell'})
+end
+for _, ID in pairs(P_Tabs.equip) do
+    e.LoadData({id=ID, type='item'})
+end
+
+
 WoWTools_UseItemsMixin={
     Save= P_Tabs,
     P_Tabs=P_Tabs,
-    addName=nil
 }
 
 
@@ -81,7 +92,28 @@ end
 
 
 
+
+
 local function Init()
+    WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
+
+    --禁用，Tools模块，退出
+    if not WoWTools_ToolsButtonMixin:GetButton() then
+        return
+    end
+
+    WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or USE_ITEM)
+
+    for _, ID in pairs(WoWTools_UseItemsMixin.Save.item) do
+        e.LoadData({id=ID, type='item'})
+    end
+    for _, ID in pairs(WoWTools_UseItemsMixin.Save.spell) do
+        e.LoadData({id=ID, type='spell'})
+    end
+    for _, ID in pairs(WoWTools_UseItemsMixin.Save.equip) do
+        e.LoadData({id=ID, type='item'})
+    end
+
     WoWTools_UseItemsMixin:Init_All_Buttons()
     WoWTools_UseItemsMixin:Init_Button()
     WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
@@ -91,64 +123,19 @@ end
 
 
 
---加载保存数据
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== id then
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1== id then
+        Init()
+    elseif arg1=='Blizzard_Collections' and WoWTools_ToolsButtonMixin:GetButton() then
+        WoWTools_UseItemsMixin:Init_UI_Toy()
 
-            WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
+    elseif arg1=='Blizzard_PlayerSpells' and WoWTools_ToolsButtonMixin:GetButton() then--法术书
+        WoWTools_UseItemsMixin:Init_PlayerSpells()
+    end
+end)
 
---禁用，Tools模块，退出
-            if not WoWTools_ToolsButtonMixin:GetButton() then
-                self:UnregisterEvent('ADDON_LOADED')
-                return
-            end
-
-            --if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and WoWTools_UseItemsMixin.Save.item[1]==194885 then
-            --Save.item[1] = 156833
-            --end
-
-            WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or USE_ITEM)
-
-            for _, ID in pairs(WoWTools_UseItemsMixin.Save.item) do
-                e.LoadData({id=ID, type='item'})
-            end
-            for _, ID in pairs(WoWTools_UseItemsMixin.Save.spell) do
-                e.LoadData({id=ID, type='spell'})
-            end
-            for _, ID in pairs(WoWTools_UseItemsMixin.Save.equip) do
-                e.LoadData({id=ID, type='item'})
-            end
-
-            C_Timer.After(2.3, function()
-                if UnitAffectingCombat('player') then
-                    self:RegisterEvent("PLAYER_REGEN_ENABLED")
-                else
-                    Init()--初始
-                end
-            end)
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                WoWTools_UseItemsMixin:Init_UI_Toy()
-            end
-
-        elseif arg1=='Blizzard_Collections' then
-            WoWTools_UseItemsMixin:Init_UI_Toy()
-
-        elseif arg1=='Blizzard_PlayerSpells' then--法术书
-            WoWTools_UseItemsMixin:Init_PlayerSpells()
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Tools_UseItems']=WoWTools_UseItemsMixin.Save
-        end
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        Init()--初始
-        self:UnregisterEvent("PLAYER_REGEN_ENABLED")
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Tools_UseItems']=WoWTools_UseItemsMixin.Save
     end
 end)

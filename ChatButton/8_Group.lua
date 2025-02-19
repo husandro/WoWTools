@@ -662,41 +662,31 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~=id then
+        return
+    end
+        Save= WoWToolsSave['ChatButtonGroup'] or Save
+        addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
+        GroupButton= WoWTools_ChatButtonMixin:CreateButton('Group', addName)
 
---###########
---加载保存数据
---###########
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave['ChatButtonGroup'] or Save
-            addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
-            GroupButton= WoWTools_ChatButtonMixin:CreateButton('Group', addName)
+        if not GroupButton then--禁用 ChatButton
+            return
+        end
 
-            if GroupButton then--禁用 ChatButton
-                Init()
-                self:RegisterEvent('GROUP_LEFT')
-                self:RegisterEvent('GROUP_ROSTER_UPDATE')
-                self:RegisterEvent('CVAR_UPDATE')
+        Init()
 
+        EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", Settings)--队伍信息提示
+        EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", Settings)--队伍信息提示
+        EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_, arg2)
+            if arg2=='chatBubblesParty' then
+                Settings()--提示，聊天泡泡，开启/禁用
             end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
+        end)
+end)
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ChatButtonGroup']=Save
-        end
-
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        C_Timer.After(0.3, Settings)--队伍信息提示
-
-    elseif event=='CVAR_UPDATE' then
-        if arg1=='chatBubblesParty' then
-            Settings()--提示，聊天泡泡，开启/禁用
-        end
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['ChatButtonGroup']=Save
     end
 end)

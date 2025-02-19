@@ -23,7 +23,10 @@ Libs\Init.xml
 
 ##主要function，不能删除
 API_WoWTools.lua
-
+StaticPopupDialogs.lua
+API_LoadData.lua
+API_Panel.lua
+API_WoWDate.lua
 
 0_Mixin\0_Mixin.lua
 0_Mixin\Aura.lua
@@ -58,11 +61,55 @@ API_WoWTools.lua
 0_Mixin\Week.lua
 
 
-StaticPopupDialogs.lua
-API_LoadData.lua
-API_Create.lua
-API_Panel.lua
-API_WoWDate.lua
+
+
+##坐骑， Tools 主要的，
+Tools\0_Init_Tools.lua
+
+##坐骑
+Tools_B1_Mount\B1_Mount.lua
+Tools_B1_Mount\Button.lua
+Tools_B1_Mount\Menu.lua
+Tools_B1_Mount\Mount_Show.lua
+Tools_B1_Mount\UI_Collections.lua
+Tools_B1_Mount\UI_SpellBook.lua
+
+##随机炉石
+Tools\B2_Hearthstone.lua
+##打开物品，各种物品
+
+Tools\B3_OpenItems.lua
+##侦察地图, 玩具, 没有小号，可以禁用
+Tools\B4_MapToy.lua
+
+##随机，玩具
+Tools\L0_UseToy.lua
+##传业
+
+Tools\L1_Professions.lua
+##自动召唤，宠物
+
+Tools\L2_Pet.lua
+##诺格弗格药剂 Noggenfogger Elixir
+Tools\L3_NoggenfoggerElixir.lua
+
+##各种专送门,物品，玩具
+Tools_L4_UsaItems\0_UsaItems.lua
+Tools_L4_UsaItems\All_Buttons.lua
+Tools_L4_UsaItems\Init_Button.lua
+Tools_L4_UsaItems\Menu.lua
+Tools_L4_UsaItems\UI_Spell.lua
+Tools_L4_UsaItems\UI_Toy.lua
+
+##食物
+Tools_5B_Food\5B_Food.lua
+Tools_5B_Food\Button_Init.lua
+Tools_5B_Food\Button_AltKey.lua
+Tools_5B_Food\Create_Button.lua
+Tools_5B_Food\Menu_Init.lua
+
+##法师传送门
+Tools\LL_MagePortal.lua
 
 
 
@@ -549,59 +596,6 @@ Plus_StableFrame\UI.lua
 
 
 
-
-##坐骑， Tools 主要的，
-##如果要使用Tools中的一个模块，必须开启坐骑模块
-Tools\0_Init_Tools.lua
-
-
-
-##坐骑
-Tools_B1_Mount\B1_Mount.lua
-Tools_B1_Mount\Button.lua
-Tools_B1_Mount\Menu.lua
-Tools_B1_Mount\Mount_Show.lua
-Tools_B1_Mount\UI_Collections.lua
-Tools_B1_Mount\UI_SpellBook.lua
-
-
-##随机炉石
-Tools\B2_Hearthstone.lua
-##打开物品，各种物品
-Tools\B3_OpenItems.lua
-##侦察地图, 玩具, 没有小号，可以禁用
-Tools\B4_MapToy.lua
-
-
-##随机，玩具
-Tools\L0_UseToy.lua
-
-Tools\L1_Professions.lua
-##自动召唤，宠物
-Tools\L2_Pet.lua
-##诺格弗格药剂 Noggenfogger Elixir
-Tools\L3_NoggenfoggerElixir.lua
-
-##各种专送门,物品，玩具
-Tools_L4_UsaItems\0_UsaItems.lua
-Tools_L4_UsaItems\All_Buttons.lua
-Tools_L4_UsaItems\Init_Button.lua
-Tools_L4_UsaItems\Menu.lua
-Tools_L4_UsaItems\UI_Spell.lua
-Tools_L4_UsaItems\UI_Toy.lua
-
-##食物
-Tools_5B_Food\5B_Food.lua
-Tools_5B_Food\Button_Init.lua
-Tools_5B_Food\Button_AltKey.lua
-Tools_5B_Food\Create_Button.lua
-Tools_5B_Food\Menu_Init.lua
-
-
-
-
-##法师传送门
-Tools\LL_MagePortal.lua
 
 
 

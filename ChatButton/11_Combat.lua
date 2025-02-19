@@ -710,35 +710,7 @@ local function Init()
     function CombatButton:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
     end
-    --[[CombatButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' then
-            if Save.On_Click_Show then
-                self:set_frame_shown(not Frame:IsShown())
-                e.tips:Hide()
-            else
-                send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
-                self:set_tooltip()
-            end
-            self:CloseMenu()
-        end
-    end)
-    CombatButton:SetScript('OnMouseDown', function(self, d)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)
 
-    CombatButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        set_Tooltips_Info()
-        e.tips:Show()
-        Set_TrackButton_Pushed(true)--TrackButton，提示
-        self:state_enter()--Init_Menu)
-    end)
-    CombatButton:SetScript('OnLeave', function(self)
-        Set_TrackButton_Pushed(false)--TrackButton，提示
-        self:state_leave()
-        e.tips:Hide()
-    end)]]
 
     function CombatButton:set_OnLeave()
         Set_TrackButton_Pushed(false)--TrackButton，提示
@@ -798,21 +770,12 @@ end
 
 
 
-
-
-
-
-
-
---###########
---加载保存数据
---###########
-local panel= CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
+local panel= CreateFrame('Frame')
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript('OnEvent', function(self, event, arg1)
+    if event=='ADDON_LOADED' then
+        if arg1 == id then
             addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
             Save= WoWToolsSave['ChatButton_Combat'] or Save
             CombatButton= WoWTools_ChatButtonMixin:CreateButton('Combat', addName)
@@ -828,7 +791,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent('ADDON_LOADED')
         end
 
-    elseif event == "PLAYER_LOGOUT" then
+    elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
             WoWToolsSave['ChatButton_Combat']=Save
         end

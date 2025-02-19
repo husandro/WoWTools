@@ -1,5 +1,5 @@
 local id, e = ...
-local panel=CreateFrame('Frame')
+
 
 
 
@@ -84,7 +84,7 @@ local function setwowguidTab(info)
         end
     end
 end
-local function Get_WoW_GUID_Info(friendIndex)
+local function Get_WoW_GUID_Info(_, friendIndex)
     if friendIndex then
         local accountInfo =C_BattleNet.GetFriendAccountInfo(friendIndex)
         setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
@@ -116,7 +116,7 @@ end
 --玩家装等
 --########
 e.UnitItemLevel={}
-local function Get_Player_Info(guid)--取得玩家信息
+local function Get_Player_Info(_, guid)--取得玩家信息
     local unit= guid and UnitTokenFromGUID(guid)
     if not unit then
         return
@@ -243,6 +243,13 @@ function e.GetGroupGuidDate()--队伍数据收集
 end
 
 
+
+
+
+
+
+
+
 --#########
 --地下城挑战
 --#########
@@ -284,46 +291,19 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         weekWorld=WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
         link= e.WoWDate[e.Player.guid].Keystone.link,
     }
-
-    --weekMythicPlus
 end
---[[
-Enum.WeeklyRewardChestThresholdType?
-Value	Field	Description
-0	None	
-1	Activities	
-2	RankedPvP	
-3	Raid	
-4	AlsoReceive	
-5	Concession	
-6	World	
-]]
 
 
 
---[[#######
-local function Set_Bag(bagID)
-    for slotID=1, C_Container.GetContainerNumSlots(bagID) do
-        local itemID = C_Container.GetContainerItemID(bagID, slotID)
-        if itemID then
-            if C_Item.IsItemKeystoneByID(itemID) then--挑战
-                local itemLink=C_Container.GetContainerItemLink(bagID, slotID)
-                if itemLink then
-                    e.WoWDate[e.Player.guid].Keystone.itemLink[itemLink]=true
-                end
-            else
-                local bag=C_Item.GetItemCount(itemID)--物品ID
-                e.WoWDate[e.Player.guid].Item[itemID]={
-                    bag=bag,
-                    bank=C_Item.GetItemCount(itemID,true)-bag,
-                }
-            end
-        end
-    end
-end]]
+
+
+
+
+
+
+
 
 --更新物品
---#######
 local function Update_Bag_Items()
     e.WoWDate[e.Player.guid].Keystone.link=nil
     e.WoWDate[e.Player.guid].Item={}--{itemID={bag=包, bank=银行}}
@@ -399,7 +379,7 @@ end
 --#######
 --更新货币
 --#######
-local function Update_Currency(arg1)--{currencyID = 数量}
+local function Update_Currency(_, arg1)--{currencyID = 数量}
     if arg1 and arg1~=2032 then
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
@@ -573,18 +553,131 @@ end
 
 --挑战
 local function Get_Info_Challenge()--挑战
+    if not e.Player.levelMax then
+        return
+    end
     C_MythicPlus.RequestCurrentAffixes()
     C_MythicPlus.RequestMapInfo()
     C_MythicPlus.RequestRewards()
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
         e.LoadData({type='mapChallengeModeID',mapChallengeModeID })
     end
+end  
 --[[
     C_MythicPlus.GetRunHistory(false, true)--本周记录      
     RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
     RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息
     RequestBattlefieldScoreData()--请求战地得分数据
 ]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init(_, arg1)
+    if arg1~=id then
+        return
+    end
+    
+    WoWToolsSave= WoWToolsSave or {}
+    WoWTools_WoWDate= WoWTools_WoWDate or {}
+    e.WoWDate= WoWTools_WoWDate or {}
+
+
+    local day= date('%x')--日期
+    if not e.WoWDate[e.Player.guid] then
+        e.WoWDate[e.Player.guid]= {--默认数据
+            Item={},--{itemID={bag=包, bank=银行}},
+            Currency={},--{currencyID = 数量}
+
+            Keystone={week=e.Player.week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+
+            Instance={ins={}, week=e.Player.week, day=day},--ins={[名字]={[难度]=已击杀数}}
+            Worldboss={boss={}, week=e.Player.week, day=day},--{week=周数, boss=table}
+            Rare={day=day, boss={}},--稀有
+            Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+            --Money=钱
+            --GuildInfo=公会信息,
+            Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
+            region= e.Player.region
+        }
+    else
+        e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
+    end
+
+    e.WoWDate[e.Player.guid].region= e.Player.region
+    e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
+    e.WoWDate[e.Player.guid].level= e.Player.level
+    e.WoWDate[e.Player.guid].battleTag= e.Player.battleTag or e.WoWDate[e.Player.guid].battleTag
+
+
+    for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
+        if tab.Keystone.week ~=e.Player.week then
+            e.WoWDate[guid].Keystone={week=e.Player.week}
+        end
+        if tab.Instance.week~=e.Player.week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
+            e.WoWDate[guid].Instance={ins={}, day=day}
+        end
+        if (tab.Worldboss.week~=e.Player.week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
+            e.WoWDate[guid].Worldboss={boss={}, day=day}
+        end
+
+        if tab.Rare.day~=day then
+            e.WoWDate[guid].Rare={day=day,boss={}}
+        end
+    end
+
+    Get_Info_Challenge()--挑战
+
+    --C_MajorFactions.RequestCatchUpState()
+    C_FriendList.ShowFriends()
+    if IsInGuild() then--请求，公会名单
+        C_GuildInfo.GuildRoster()
+    end
+    --C_PerksProgram.RequestPendingChestRewards()
+
+    C_Timer.After(4, function()
+        C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+        RequestRaidInfo()
+
+        C_Calendar.OpenCalendar()
+        e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
+        e.GetGroupGuidDate()--队伍数据收集
+
+        Update_Currency()--{currencyID = 数量}
+        Update_Bag_Items()
+        Set_Money()--钱
+        Update_Challenge_Mode()
+        --################
+        --开启, 新手編輯模式
+        --################ LFDFrame.lua
+        if C_PlayerInfo.IsPlayerNPERestricted() then
+            --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
+            EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
+                return TableIsEmpty(self2.FramesBlockingEditMode)
+            end
+            if Minimap then
+                Minimap:SetShown(true)
+                MinimapCluster:SetShown(true)
+            end
+        end
+
+        Get_WoW_GUID_Info()--战网，好友GUID                
+
+    end)
 end
 
 
@@ -592,232 +685,132 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", Init)
 
 
 
 
 
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
---panel:RegisterEvent('PLAYER_QUITING')
---panel:RegisterEvent('PLAYER_CAMPING')
-
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-panel:RegisterEvent('GROUP_ROSTER_UPDATE')--队伍数据收集 e.GroupGuid
-panel:RegisterEvent('GROUP_LEFT')
-panel:RegisterEvent('TIME_PLAYED_MSG')--总游戏时间：%s
-panel:RegisterEvent('INSPECT_READY')--取得装等
-panel:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
-panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')--地下城挑战
-panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
-panel:RegisterEvent('PLAYER_MONEY')--钱
-panel:RegisterEvent('ZONE_CHANGED_NEW_AREA')--位面, 清除
-panel:RegisterEvent('BOSS_KILL')--显示世界BOSS击杀数据
-panel:RegisterEvent('CURRENCY_DISPLAY_UPDATE')--货币
-panel:RegisterEvent('BAG_UPDATE_DELAYED')--物品
-panel:RegisterEvent('UPDATE_INSTANCE_INFO')--副本
-panel:RegisterEvent('PLAYER_LEVEL_UP')--更新等级
-panel:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')--更新阵营
-
-panel:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')--取得,自已, 装等
-panel:RegisterEvent('PLAYER_SPECIALIZATION_CHANGED')--取得,自已, 装等
-panel:RegisterEvent('PLAYER_AVG_ITEM_LEVEL_UPDATE')--取得,自已, 装等
-
-panel:RegisterEvent('ENCOUNTER_START')-- 给 e.REload用
-panel:RegisterEvent('ENCOUNTER_END')
-
-panel:RegisterEvent('BN_FRIEND_INFO_CHANGED')--战网，好友GUID
-
-panel:RegisterEvent('BARBER_SHOP_RESULT')--更新, 性别
-
-panel:SetScript('OnEvent', function(self, event, arg1, arg2)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            WoWToolsSave= WoWToolsSave or {}
-            WoWTools_WoWDate= WoWTools_WoWDate or {}
-            e.WoWDate= WoWTools_WoWDate or {}
 
 
-            local day= date('%x')--日期
-            if not e.WoWDate[e.Player.guid] then
-                e.WoWDate[e.Player.guid]= {--默认数据
-                    Item={},--{itemID={bag=包, bank=银行}},
-                    Currency={},--{currencyID = 数量}
 
-                    Keystone={week=e.Player.week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
-
-                    Instance={ins={}, week=e.Player.week, day=day},--ins={[名字]={[难度]=已击杀数}}
-                    Worldboss={boss={}, week=e.Player.week, day=day},--{week=周数, boss=table}
-                    Rare={day=day, boss={}},--稀有
-                    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
-                    --Money=钱
-                    --GuildInfo=公会信息,
-                    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
-                    region= e.Player.region
-                }
-            else
-                e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
-            end
-
-            e.WoWDate[e.Player.guid].region= e.Player.region
-            e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
-            e.WoWDate[e.Player.guid].level= e.Player.level
-            e.WoWDate[e.Player.guid].battleTag= e.Player.battleTag or e.WoWDate[e.Player.guid].battleTag
-            
-
-            for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
-                if tab.Keystone.week ~=e.Player.week then
-                    e.WoWDate[guid].Keystone={week=e.Player.week}
-                end
-                if tab.Instance.week~=e.Player.week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
-                    e.WoWDate[guid].Instance={ins={}, day=day}
-                end
-                if (tab.Worldboss.week~=e.Player.week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
-                    e.WoWDate[guid].Worldboss={boss={}, day=day}
-                end
-
-                if tab.Rare.day~=day then
-                    e.WoWDate[guid].Rare={day=day,boss={}}
-                end
-            end
-
-            if e.Player.levelMax then
-                Get_Info_Challenge()--挑战
-            end
-            
-            --C_MajorFactions.RequestCatchUpState()
-            C_FriendList.ShowFriends()
-            if IsInGuild() then--请求，公会名单
-                C_GuildInfo.GuildRoster()
-            end
-            --C_PerksProgram.RequestPendingChestRewards()
-
-            C_Timer.After(4, function()
-                C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
-                RequestRaidInfo()
-
-                C_Calendar.OpenCalendar()
-                e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
-                e.GetGroupGuidDate()--队伍数据收集
-
-                Update_Currency()--{currencyID = 数量}
-                Update_Bag_Items()
-                Set_Money()--钱
-                Update_Challenge_Mode()
-                --################
-                --开启, 新手編輯模式
-                --################ LFDFrame.lua
-                if C_PlayerInfo.IsPlayerNPERestricted() then
-                    --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
-                    EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
-                        return TableIsEmpty(self2.FramesBlockingEditMode)
-                    end
-                    if Minimap then
-                        Minimap:SetShown(true)
-                        MinimapCluster:SetShown(true)
-                    end
-                end
-
-                Get_WoW_GUID_Info()--战网，好友GUID                
-
-            end)
-            self:UnregisterEvent('ADDON_LOADED')
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if e.ClearAllSave then
+        WoWToolsSave={}
+        if not e.Player.husandro then
+            WoWTools_WoWDate={}
         end
+    else
+        WoWTools_WoWDate= e.WoWDate or {}
+    end
+end)
 
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then--队伍数据
-        e.GetGroupGuidDate()
+--队伍数据
+EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", e.GetGroupGuidDate)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", e.GetGroupGuidDate)
 
-    elseif event=='TIME_PLAYED_MSG' then--总游戏时间：%s
-        if arg1 and arg2 then
-            e.WoWDate[e.Player.guid].Time={
-                totalTime= arg1,
-                levelTime= arg2,
-            }
-        end
+--总游戏时间：%s
+EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
+    if arg1 and arg2 then
+        e.WoWDate[e.Player.guid].Time={
+            totalTime= arg1,
+            levelTime= arg2,
+        }
+    end
+end)
 
-    elseif event=='INSPECT_READY' then--装等
-            Get_Player_Info(arg1)
+--取得玩家信息
+EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", Get_Player_Info)
 
-    elseif event=='CHALLENGE_MODE_MAPS_UPDATE' or event=='WEEKLY_REWARDS_UPDATE' then--地下城挑战
-        C_MythicPlus.RequestRewards()
-        C_Timer.After(4, Update_Challenge_Mode)
+--地下城挑战
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_MAPS_UPDATE", function(_, arg1)
+    C_MythicPlus.RequestRewards()
+    C_Timer.After(4, Update_Challenge_Mode)
+end)
+EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function(_, arg1)
+    C_MythicPlus.RequestRewards()
+    C_Timer.After(4, Update_Challenge_Mode)
+end)
 
-    elseif event=='CHALLENGE_MODE_COMPLETED' then
-        Get_Info_Challenge()--挑战
+--挑战
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", Get_Info_Challenge)
 
-    elseif event=='ZONE_CHANGED_NEW_AREA' then--位面, 清除
-        e.Player.Layer=nil
+--位面, 清除
+EventRegistry:RegisterFrameEventAndCallback("ZONE_CHANGED_NEW_AREA", function(_, arg1)
+    e.Player.Layer=nil
+end)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(_, arg1)
+    e.Player.Layer=nil
+end)
 
-    elseif event=='PLAYER_ENTERING_WORLD' then--记录稀有怪
-        e.Player.Layer=nil
-        if IsInInstance() then--稀有怪
-            self:UnregisterEvent('UNIT_FLAGS')
-            self:UnregisterEvent('LOOT_OPENED')
-        else
-            self:RegisterEvent('UNIT_FLAGS')
-            self:RegisterEvent('LOOT_OPENED')
-        end
+--记录稀有怪
+EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, arg1)
+    if not IsInInstance() and arg1 then
+        return
+    end
+    Set_Rare_Elite_Killed(arg1)
+end)
+EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function(_, arg1)
+    if not IsInInstance() then
+        return
+    end
+    Set_Rare_Elite_Killed('loot')
+end)
+EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", RequestRaidInfo)
 
-    elseif event=='BOSS_KILL' then
-        RequestRaidInfo()
+--货币
+EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", Update_Currency)
 
-    elseif event=='CURRENCY_DISPLAY_UPDATE' then--货币
-        Update_Currency(arg1)
+--更新物品
+EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", Update_Bag_Items)
 
-    elseif event=='BAG_UPDATE_DELAYED' then
-            Update_Bag_Items()
+--副本
+EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", Update_Instance)
 
-    elseif event=='UPDATE_INSTANCE_INFO' then--副本
-        Update_Instance()
+--钱
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
 
-    elseif event=='UNIT_FLAGS' then--稀有怪
-        Set_Rare_Elite_Killed(arg1)
+--玩家是否最高等级
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEVEL_UP", function(_, arg1)
+    local level= arg1 or UnitLevel('player')
+    e.Player.levelMax= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
+    e.Player.level= level
+    e.WoWDate[e.Player.guid].level= level
+end)
 
-    elseif event=='LOOT_OPENED' then
-        Set_Rare_Elite_Killed('loot')
+--玩家, 派系
+EventRegistry:RegisterFrameEventAndCallback("NEUTRAL_FACTION_SELECT_RESULT", function(_, arg1)
+    if arg1 then
+        e.Player.faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
+    end
+end)
 
-    elseif event=='PLAYER_MONEY' then--钱
-        Set_Money()--钱
+--取得装等, 更新自已
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_EQUIPMENT_CHANGED", function(_, arg1)
+    e.GetNotifyInspect(nil, 'player')--取得装等
+end)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(_, arg1)
+    e.GetNotifyInspect(nil, 'player')--取得装等
+end)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_AVG_ITEM_LEVEL_UPDATE", function(_, arg1)
+    e.GetNotifyInspect(nil, 'player')--取得装等
+end)
 
-    elseif event=='PLAYER_LEVEL_UP' then--玩家是否最高等级
-        local level= arg1 or UnitLevel('player')
-        e.Player.levelMax= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
-        e.Player.level= level
-        e.WoWDate[e.Player.guid].level= level
+--给 e.Reload用
+EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_START", function(_, encounterID)
+    e.IsEncouter_Start= encounterID
+end)
+EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_END", function(_, arg1)
+    e.IsEncouter_Start= nil
+end)
 
-    elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then--玩家, 派系
-        if arg1 then
-            e.Player.faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
-        end
+--战网，好友GUID
+EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", Get_WoW_GUID_Info)
 
-    elseif event=='PLAYER_EQUIPMENT_CHANGED' or event=='PLAYER_SPECIALIZATION_CHANGED' or event=='PLAYER_AVG_ITEM_LEVEL_UPDATE' then--更新自已
-        e.GetNotifyInspect(nil, arg1 or 'player')--取得装等
-
-    elseif event=='ENCOUNTER_START' then-- 给 e.Reload用
-        e.IsEncouter_Start= true
-    elseif event=='ENCOUNTER_START' then
-        e.IsEncouter_Start= nil
-
-    elseif event=='BN_FRIEND_INFO_CHANGED' then
-        if arg1 then
-            Get_WoW_GUID_Info(arg1)--战网，好友GUID
-        end
-
-    elseif event=='BARBER_SHOP_RESULT' then--更新, 性别
-        if arg1 then
-            e.Player.sex= UnitSex("player")
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if e.ClearAllSave then
-            WoWToolsSave={}
-            if not e.Player.husandro then
-                WoWTools_WoWDate={}
-            end
-        else
-            WoWTools_WoWDate= e.WoWDate or {}
-        end
+EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, arg1)
+    if arg1 then
+        e.Player.sex= UnitSex("player")
+        e.Icon.player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false})
     end
 end)

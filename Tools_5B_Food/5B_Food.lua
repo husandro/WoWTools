@@ -71,14 +71,7 @@ Save={
     },
     spells=ClassSpells,
 },
-addName= nil,
-UseButton=nil
 }
-
-
-local function Save()
-    return WoWTools_FoodMixin.Save
-end
 
 
 local UseButton
@@ -91,7 +84,9 @@ local PaneIDs={
     [5512]=true,--治疗石
 }
 
-
+local function Save()
+    return WoWTools_FoodMixin.Save
+end
 
 
 
@@ -133,31 +128,6 @@ end
 
 
 local function Init()
-    WoWTools_FoodMixin.UseButton= UseButton
-
-    WoWTools_FoodMixin:Set_AltSpell()
-    WoWTools_FoodMixin:Init_Button()
-    WoWTools_FoodMixin:Init_Check()
-    if Save().autoWho then
-        WoWTools_FoodMixin:Check_Items()
-    end
-
-    if Save().autoLogin then
-        C_Timer.After(2, function()
-            WoWTools_FoodMixin:Check_Items()
-        end)
-    end
-end
-
-
-
-
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~= id then
-        return
-    end
-
     WoWTools_FoodMixin.Save= WoWToolsSave['Tools_Foods'] or Save()
 
     Save().spells= Save().spells or ClassSpells
@@ -195,13 +165,36 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         end
     })
 
-    if UseButton then
-        Init()
+    if not UseButton then
+        return
     end
+
+    WoWTools_FoodMixin.UseButton= UseButton
+
+    WoWTools_FoodMixin:Set_AltSpell()
+    WoWTools_FoodMixin:Init_Button()
+    WoWTools_FoodMixin:Init_Check()
+    if Save().autoWho then
+        WoWTools_FoodMixin:Check_Items()
+    end
+
+    if Save().autoLogin then
+        C_Timer.After(2, function()
+            WoWTools_FoodMixin:Check_Items()
+        end)
+    end
+end
+
+
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~= id then
+        return
+    end
+    Init()
 end)
-
-
-
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then

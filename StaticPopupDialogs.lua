@@ -381,13 +381,7 @@ StaticPopup_Show('WoWTools_OK',
         end,
         whileDead=true, hideOnEscape=true, exclusive=true, showAlert=true,
     }
-    --[[
-    StaticPopup_Show('WoWTools_Currency', nil, nil, {
-    GetValue=function()
-    end, CheckValue=function(button1, currencyID)
-    end, SetValue=function(currencyID)
-    end})
-    ]]
+    return true
 end
 
 
@@ -416,11 +410,9 @@ StaticPopup_Show("PERKS_PROGRAM_CONFIRM_PURCHASE", product.price, markup, data);
 
 
 
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" and arg1== id then
-        Init()
-        self:UnregisterEvent('ADDON_LOADED')
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1~= id then
+        return
     end
+    if Init() then Init=function()end end
 end)

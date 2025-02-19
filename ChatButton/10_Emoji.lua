@@ -543,24 +543,25 @@ end
 
 
 
+local panel= CreateFrame('Frame')
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript('OnEvent', function(self, event, arg1)
+    if event=='ADDON_LOADED' then
+        if arg1 == id then
+            Save= WoWToolsSave['ChatButton_Emoji'] or Save
+            addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
+            EmojiButton= WoWTools_ChatButtonMixin:CreateButton('Emoji', addName)
 
+            if EmojiButton then--禁用Chat Button
+                Init()
+            end
+            self:UnregisterEvent('ADDON_LOADED')
+        end
 
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~=id then
-        return
-    end
-    Save= WoWToolsSave['ChatButton_Emoji'] or Save
-    addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
-    EmojiButton= WoWTools_ChatButtonMixin:CreateButton('Emoji', addName)
-
-    if EmojiButton then--禁用Chat Button
-        Init()
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['ChatButton_Emoji']=Save
+    elseif event=='PLAYER_LOGOUT' then
+        if not e.ClearAllSave then
+            WoWToolsSave['ChatButton_Emoji']=Save
+        end
     end
 end)

@@ -119,6 +119,24 @@ local function Init()
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
     --WoWTools_TooltipMixin:Set_Init_Item(GlueTooltip)
+
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEAVING_WORLD", function(_, arg1)
+        if Save().setCVar then
+            if not UnitAffectingCombat('player') then
+                Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
+                SetCVar("graphicsViewDistance", 0)
+            else
+                Save().graphicsViewDistance=nil
+            end
+        end
+    end)
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(_, arg1)--https://wago.io/ZtSxpza28
+        if Save().setCVar and Save().graphicsViewDistance and not UnitAffectingCombat('player') then
+            C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)
+            Save().graphicsViewDistance=nil
+        end
+    end)
+
 end
 
 
@@ -128,88 +146,55 @@ end
 
 
 
+--Save().WidgetSetID = Save().WidgetSetID or 0
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
+        WoWTools_TooltipMixin.addName= addName
 
+        e.AddPanel_Check({
+            name= e.onlyChinese and '启用' or ENABLE,
+            tooltip= addName,
+            GetValue= function() return not Save().disabled end,
+            category= Initializer,
+            func= function()
+                Save().disabled= not Save().disabled and true or nil
+                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
 
+        WoWTools_TooltipMixin:Init_WoWHeadText()
 
+        if Save().disabled then
+            Load_Addon= function()end
+            return
+        end
+            Init()--初始
 
-
-
---加载保存数据
-local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
-
-            --Save().WidgetSetID = Save().WidgetSetID or 0
-
-            WoWTools_TooltipMixin.addName= addName
-
-            e.AddPanel_Check({
-                name= e.onlyChinese and '启用' or ENABLE,
-                tooltip= addName,
-                GetValue= function() return not Save().disabled end,
-                category= Initializer,
-                func= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            WoWTools_TooltipMixin:Init_WoWHeadText()
-
-            if not Save().disabled then
-                self:RegisterEvent('PLAYER_LEAVING_WORLD')
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-                Init()--初始
-
-                for _, name in pairs(
-                    {
-                     'Blizzard_AchievementUI',
-                     'Blizzard_Collections',
-                     'Blizzard_ChallengesUI',
-                     'Blizzard_OrderHallUI',
-                     'Blizzard_FlightMap',
-                     'Blizzard_Professions',
-                     'Blizzard_ClassTalentUI',
-                     'Blizzard_PlayerChoice',
-                     'Blizzard_GenericTraitUI',
-                     'Blizzard_Settings',
-                    }
-                )do
-                    Load_Addon(nil, name)
-                end
-            else
-                self:UnregisterEvent('ADDON_LOADED')
+            for _, name in pairs(
+                {
+                 'Blizzard_AchievementUI',
+                 'Blizzard_Collections',
+                 'Blizzard_ChallengesUI',
+                 'Blizzard_OrderHallUI',
+                 'Blizzard_FlightMap',
+                 'Blizzard_Professions',
+                 'Blizzard_ClassTalentUI',
+                 'Blizzard_PlayerChoice',
+                 'Blizzard_GenericTraitUI',
+                 'Blizzard_Settings',
+                }
+            )do
+                Load_Addon(nil, name)
             end
 
-        else
-            Load_Addon(arg1)
-        end
-
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_Tootips']= WoWTools_TooltipMixin.Save
-        end
-
-    elseif event=='PLAYER_LEAVING_WORLD' then
-        if Save().setCVar then
-            if not UnitAffectingCombat('player') then
-                Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
-                SetCVar("graphicsViewDistance", 0)
-            else
-                Save().graphicsViewDistance=nil
-            end
-        end
-
-    elseif event=='PLAYER_ENTERING_WORLD' then--https://wago.io/ZtSxpza28
-        if Save().setCVar and Save().graphicsViewDistance and not UnitAffectingCombat('player') then
-            C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)
-            Save().graphicsViewDistance=nil
-        end
+    else
+        Load_Addon(arg1)
     end
 end)
 
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Tootips']= WoWTools_TooltipMixin.Save
+    end
+end)

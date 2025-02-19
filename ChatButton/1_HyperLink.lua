@@ -28,15 +28,11 @@ local Save={
     --not_Add_Reload_Button=true,--添加 RELOAD 按钮
 }
 
-
-DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
-
 local LinkButton, Category
-local panel= CreateFrame('Frame')
-
 local LOOT_ITEM= LOOT_ITEM--= WoWTools_TextMixin:Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
 local CHAT_SAY_SEND= CHAT_SAY_SEND
 
+DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
@@ -527,7 +523,7 @@ end
 
 
 
-local showTimestamps--聊天中时间戳
+local IsShowTimestamps--聊天中时间戳
 local function setAddMessageFunc(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
@@ -562,7 +558,7 @@ local function setAddMessageFunc(self, s, ...)
 
     if not Save.notShowPlayerInfo then--不处理，玩家信息
         s=s:gsub('|Hplayer:.-]|h', Set_Realm)
-        if not showTimestamps then
+        if not IsShowTimestamps then
             local unitName= s:match(LOOT_ITEM)--	%s获得了战利品：%s。
             if unitName then
                 if unitName==e.Player.name or unitName==YOU then
@@ -614,7 +610,7 @@ end
 --#########
 --使用，禁用
 --#########
-local function setUseDisabled()
+local function Set_HyperLlinkIcon()
     for i = 3, NUM_CHAT_WINDOWS do
         local frame = _G["ChatFrame"..i]
         if frame then
@@ -638,12 +634,6 @@ local function setUseDisabled()
     end
 
     LinkButton.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
-end
-
-local function setFunc()--使用，禁用
-    Save.disabed= not Save.disabed and true or nil
-    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabed))
-    setUseDisabled()
 end
 
 
@@ -678,7 +668,8 @@ end
 --###########
 --local Category, Layout
 local function Init_Panel()
-    Category= e.AddPanel_Sub_Category({name=addName, frame=panel})
+    local frame= CreateFrame('Frame')
+    Category= e.AddPanel_Sub_Category({name=addName, frame=frame, category=WoWTools_ChatButtonMixin.Category})
 
     local function Cedit(self)
         local frame= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
@@ -692,10 +683,10 @@ local function Init_Panel()
         return frame
     end
 
-    local str=WoWTools_LabelMixin:Create(panel)--内容加颜色
+    local str=WoWTools_LabelMixin:Create(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
     str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
-    local editBox=Cedit(panel)
+    local editBox=Cedit(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
 
     if Save.text then
@@ -730,10 +721,10 @@ local function Init_Panel()
         print(WoWTools_Mixin.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-    local str2=WoWTools_LabelMixin:Create(panel)--频道名称替换
+    local str2=WoWTools_LabelMixin:Create(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
     str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
-    local editBox2=Cedit(panel)
+    local editBox2=Cedit(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save.channels then
         local t3=''
@@ -789,38 +780,24 @@ end
 --#############
 --欢迎加入, 信息
 --#############
-local function set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-    if (Save.guildWelcome and IsInGuild() ) or Save.groupWelcome then
-        panel:RegisterEvent('CHAT_MSG_SYSTEM')
-    else
-        panel:UnregisterEvent('CHAT_MSG_SYSTEM')
-    end
-end
-
 local raidMS=ERR_RAID_MEMBER_ADDED_S:gsub("%%s", "(.+)")--%s加入了团队。
 local partyMS= JOINED_PARTY:gsub("%%s", "(.+)")--%s加入了队伍。
 local guildMS= ERR_GUILD_JOIN_S:gsub("%%s", "(.+)")--加入了公会
 
-local function setMsg_CHAT_MSG_SYSTEM(text)--欢迎加入, 信息
+local function Event_CHAT_MSG_SYSTEM(_, text)--欢迎加入, 信息
     if not text then
         return
     end
-    if text:find(raidMS) or text:find(partyMS) then
-        if Save.groupWelcome and UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
-            local name=text:match(raidMS) or text:match(partyMS)
-            if name then
-                WoWTools_ChatMixin:Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), name, nil)
-            end
+    local group= Save.groupWelcome and text:match(raidMS) or text:match(partyMS)
+    local guild= Save.guildWelcome and text:match(guildMS)
+    if group then
+        if UnitIsGroupLeader('player') and (Save.welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save.welcomeOnlyHomeGroup) then
+            WoWTools_ChatMixin:Chat(Save.groupWelcomeText or EMOTE103_CMD1:gsub('/',''), group, nil)
         end
-    elseif text:find(guildMS) then
-        if Save.guildWelcome and IsInGuild() then
-            local name=text:match(guildMS)
-            if name then
-                C_Timer.After(2, function()
-                    SendChatMessage(Save.guildWelcomeText..' '.. name.. ' ' ..GUILD_INVITE_JOIN, "GUILD");
-                end)
-            end
-        end
+    elseif guild and IsInGuild() and text:find(guildMS) then
+        C_Timer.After(2, function()
+            SendChatMessage(Save.guildWelcomeText..' '.. guild.. ' ' ..GUILD_INVITE_JOIN, "GUILD")
+        end)
     end
 end
 
@@ -937,42 +914,37 @@ local function Init_Add_Reload_Button()
 
 
 
---##########
 --隐藏NPC发言
---##########
-local function set_Talking()
+local VoHandle
+local function Set_Talking()
     if Save.disabledNPCTalking then
-        if panel.talkingFrame then
-            panel:UnregisterAllEvents()
-        end
         return
     end
 
-    if not panel.talkingFrame then
-        panel.talkingFrame= CreateFrame("Frame", nil, panel)
-        panel.talkingFrame:SetScript('OnEvent', function(self)
-            local _, _, vo, _, _, _, name, text = C_TalkingHead.GetCurrentLineInfo()
-            TalkingHeadFrame:CloseImmediately()
-            if vo and vo>0 then
-                if ( self.voHandle ) then
-                    StopSound(self.voHandle);
-                    self.voHandle = nil;
-                end
-                local success, voHandle = e.PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true);
-                if ( success ) then
-                    self.voHandle = voHandle;
-                end
-                if not Save.disabledTalkingPringText and text then
-                    print(e.Icon.icon2
-                        ..'|cffff00ff'..(name or '')
-                        ..'|r|A:voicechat-icon-textchat-silenced:0:0|a|cff00ff00'
-                        ..(text or '')
-                    )
-                end
-            end
-        end)
+    local _, _, vo, _, _, _, name, text = C_TalkingHead.GetCurrentLineInfo()
+    TalkingHeadFrame:CloseImmediately()
+
+    if not vo or vo<=0 then
+        return
     end
-    panel.talkingFrame:RegisterEvent('TALKINGHEAD_REQUESTED')
+
+    if ( VoHandle ) then
+        StopSound(VoHandle)
+        VoHandle = nil
+    end
+
+    local success, vo2 = e.PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
+    if ( success ) then
+        VoHandle = vo2
+    end
+
+    if not Save.disabledTalkingPringText and text then
+        print(e.Icon.icon2
+            ..'|cffff00ff'..(name or '')
+            ..'|r|A:voicechat-icon-textchat-silenced:0:0|a|cff00ff00'
+            ..(text or '')
+        )
+    end
 end
 
 
@@ -980,6 +952,30 @@ end
 
 
 
+--队伍查找器, 接受邀请
+local function Set_LFGListInviteDialog_OnShow(self)
+    if Save.setPlayerSound then
+        e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
+    end
+    e.Ccool(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+    local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
+    if status=="invited" then
+        local info= C_LFGList.GetSearchResultInfo(self.resultID)
+        if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
+            print(WoWTools_Mixin.addName, addName,
+                info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
+                info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
+                info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(WoWTools_UnitMixin:GetLink(info.leaderName)..' ') or '',--	%s邀请你加入
+                info.name,--名称
+                e.Icon[role] or '',
+                info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
+                info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, INVITE))..'|r' or '',--对方是否开启, 自动邀请
+                info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
+                info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r' or ''
+            )
+        end
+    end
+end
 
 
 
@@ -989,45 +985,78 @@ end
 --#########
 --事件, 声音
 --#########
-local function set_START_TIMER_Event()--事件, 声音
-    if Save.setPlayerSound then
-        panel:RegisterEvent('START_TIMER')
-        panel:RegisterEvent('STOP_TIMER_OF_TYPE')
-        if not UnitAffectingCombat('player') then
-            if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
-                C_CVar.SetCVar('Sound_EnableAllSound', '1')
-                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
-            end
-            if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
-                C_CVar.SetCVar('Sound_MasterVolume', '1.0')
-                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
-            end
-
-            if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
-                C_CVar.SetCVar('Sound_DialogVolume', '1.0')
-                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
-            end
-            if not C_CVar.GetCVarBool('Sound_EnableDialog') then
-                C_CVar.SetCVar('Sound_EnableDialog', '1')
-                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
-            end
+local function Set_PlayerSound()--事件, 声音
+    if not Save.setPlayerSound then
+        return
+    end
+    if not UnitAffectingCombat('player') then
+        if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
+            C_CVar.SetCVar('Sound_EnableAllSound', '1')
+            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
+        end
+        if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
+            C_CVar.SetCVar('Sound_MasterVolume', '1.0')
+            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
         end
 
-    else
-        panel:UnregisterEvent('START_TIMER')
-        panel:UnregisterEvent('STOP_TIMER_OF_TYPE')
+        if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
+            C_CVar.SetCVar('Sound_DialogVolume', '1.0')
+            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
+        end
+        if not C_CVar.GetCVarBool('Sound_EnableDialog') then
+            C_CVar.SetCVar('Sound_EnableDialog', '1')
+            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
+        end
     end
-
-    LinkButton.setPlayerSoundTips:SetShown(Save.setPlayerSound)
 end
 
 
+local function Event_START_TIMER(_, arg1, arg2, arg3)
+    if not Save.setPlayerSound then
+        return
+    end
+    if arg2==0 and arg3==0 then
+        LinkButton.timerType= nil
+        if LinkButton.timer4 then LinkButton.timer4:Cancel() end
+        if LinkButton.timer3 then LinkButton.timer3:Cancel() end
+        if LinkButton.timer2 then LinkButton.timer2:Cancel() end
+        if LinkButton.timer1 then LinkButton.timer1:Cancel() end
+        if LinkButton.timer0 then LinkButton.timer0:Cancel() end
+
+    elseif arg1 and arg2 and arg2>3 and not LinkButton.timerType then
+        LinkButton.timerType=arg1
+        if arg2>20 then
+            LinkButton.timer4= C_Timer.NewTimer(arg2-10, function()--3
+                e.PlaySound()
+            end)
+        elseif arg2>=7 then
+            e.PlaySound()
+        end
+        LinkButton.timer3= C_Timer.NewTimer(arg2-3, function()--3
+            e.PlaySound(115003)
+        end)
+        LinkButton.timer2= C_Timer.NewTimer(arg2-2, function()--2
+            e.PlaySound(115003)
+        end)
+        LinkButton.timer1= C_Timer.NewTimer(arg2-1, function()--1
+            e.PlaySound(115003)
+        end)
+        LinkButton.timer0= C_Timer.NewTimer(arg2, function()--0
+            e.PlaySound(114995 )--63971)
+            LinkButton.timerType=nil
+        end)
+    end
+end
 
 
-
-
-
-
+local function Event_STOP_TIMER_OF_TYPE()
+    LinkButton.timerType= nil
+    if LinkButton.timer4 then LinkButton.timer4:Cancel() end
+    if LinkButton.timer3 then LinkButton.timer3:Cancel() end
+    if LinkButton.timer2 then LinkButton.timer2:Cancel() end
+    if LinkButton.timer1 then LinkButton.timer1:Cancel() end
+    if LinkButton.timer0 then LinkButton.timer0:Cancel() end
+end
 
 
 
@@ -1062,7 +1091,11 @@ local function Init_Menu(_, root)
     --超链接图标
     sub= root:CreateCheckbox(e.onlyChinese and '超链接图标'or addName, function()
         return not Save.disabed
-    end, setFunc)--使用，禁用
+    end, function()
+        Save.disabed= not Save.disabed and true or nil
+        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabed))
+        Set_HyperLlinkIcon()
+    end)
 
     --关键词
     sub:CreateCheckbox(e.Player.L.key, function()--关键词, 内容颜色，和频道名称替换
@@ -1109,8 +1142,7 @@ local function Init_Menu(_, root)
         if Save.setPlayerSound then
             e.PlaySound()--播放, 声音
         end
-        set_START_TIMER_Event()--事件, 声音
-        set_Talking()--隐藏NPC发言
+        Set_PlayerSound()
         print(WoWTools_Mixin.addName, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
     end)
     sub:SetTooltip(function(tooltip)
@@ -1129,7 +1161,6 @@ local function Init_Menu(_, root)
         return not Save.disabledNPCTalking
     end, function()
         Save.disabledNPCTalking= not Save.disabledNPCTalking and true or nil
-        set_Talking()--隐藏NPC发言
     end)
     --文本
     sub:CreateCheckbox('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '文本' or LOCALE_TEXT_LABEL), function()
@@ -1150,7 +1181,6 @@ local function Init_Menu(_, root)
             Save.guildWelcome=true
             Save.groupWelcome=true
         end
-        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     end)
 
     --公会新成员
@@ -1158,7 +1188,6 @@ local function Init_Menu(_, root)
         return Save.guildWelcome
     end, function()
         Save.guildWelcome= not Save.guildWelcome and true or nil
-        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
     end)
     tre:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save.guildWelcomeText)
@@ -1306,6 +1335,46 @@ end
 
 
 
+local function Init_Blizzard_DebugTools()
+    if not LinkButton then
+        return
+    end
+    local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
+    btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
+    btn:SetNormalAtlas(e.Icon.icon)
+    btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self2)
+        e.tips:SetOwner(self2, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(true)..'/'..e.GetEnabeleDisable(false))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        e.tips:Show()
+    end)
+
+    local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
+    edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
+    edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 10, 24 )
+    edit:SetAutoFocus(false)
+    edit:ClearFocus()
+    edit:SetScript('OnUpdate', function(self2, elapsed)
+        self2.elapsed= (self2.elapsed or 0.3) +elapsed
+        if self2.elapsed>0.3 then
+            self2.elapsed=0
+            if not self2:HasFocus() then
+                local text = TableAttributeDisplay.TitleButton.Text:GetText()
+                if text and text~='' then
+                    edit:SetText(text:match('%- (.+)') or text)
+                end
+            end
+        end
+    end)
+    edit:SetScript("OnKeyUp", function(s, key)
+        if IsControlKeyDown() and key == "C" then
+            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+        end
+    end)
+end
 
 
 
@@ -1318,6 +1387,14 @@ end
 
 
 
+local function Set_Event(self, event, arg1, arg2, arg3)
+
+if event=='START_TIMER' then--播放, 声音
+
+    elseif event=='STOP_TIMER_OF_TYPE' then
+
+    end
+end
 
 
 
@@ -1325,11 +1402,25 @@ end
 
 
 
+local function Set_Button()
+    --事件, 声音, 提示图标
+    LinkButton.setPlayerSoundTips= LinkButton:CreateTexture(nil,'OVERLAY')
+    LinkButton.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
+    LinkButton.setPlayerSoundTips:SetSize(12,12)
+    LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
 
+    function LinkButton:HandlesGlobalMouseEvent(_, event)
+        return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton"
+    end
+    function LinkButton:Settings()
+        self.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
+        self.setPlayerSoundTips:SetShown(Save.setPlayerSound)
+    end
 
+    LinkButton:SetupMenu(Init_Menu)
 
-
-
+    LinkButton:Settings()
+end
 
 
 
@@ -1338,69 +1429,40 @@ end
 --初始
 --####
 local function Init()
-    --事件, 声音, 提示图标
-    LinkButton.setPlayerSoundTips= LinkButton:CreateTexture(nil,'OVERLAY')
-    LinkButton.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
-    LinkButton.setPlayerSoundTips:SetSize(12,12)
-    LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
-    LinkButton.setPlayerSoundTips:Hide()
 
-    function LinkButton:set_texture()
-        self.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
-    end
-    LinkButton:set_texture()
+    e.setPlayerSound= Save.setPlayerSound--播放, 声音
+    LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
 
-    LinkButton:SetupMenu(Init_Menu)
-    function LinkButton:HandlesGlobalMouseEvent(_, event)
-        return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
-    end
 
+
+    Set_Button()
     if not Save.disabed then--使用，禁用
-        setUseDisabled()
-    else
-        LinkButton.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
+        Set_HyperLlinkIcon()
     end
 
-    set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+--事件, 公会新成员, 队伍新成员
+    EventRegistry:RegisterFrameEventAndCallback("CHAT_MSG_SYSTEM", Event_CHAT_MSG_SYSTEM)
 
-    showTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
+--事件, 声音
+    Set_PlayerSound()
+    EventRegistry:RegisterFrameEventAndCallback("START_TIMER", Event_START_TIMER)
+    EventRegistry:RegisterFrameEventAndCallback("STOP_TIMER_OF_TYPE", Event_STOP_TIMER_OF_TYPE)
 
-    set_START_TIMER_Event()--事件, 声音
+--队伍查找器, 接受邀请
+    LFGListInviteDialog:SetScript("OnShow", Set_LFGListInviteDialog_OnShow)
 
+--隐藏NPC发言
+    EventRegistry:RegisterFrameEventAndCallback("TALKINGHEAD_REQUESTED", Set_Talking)
 
-    LFGListInviteDialog:SetScript("OnShow", function(self)--队伍查找器, 接受邀请
-        if Save.setPlayerSound then
-            e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        end
-        e.Ccool(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
-        local status, _, _, role= select(2,C_LFGList.GetApplicationInfo(self.resultID))
-        if status=="invited" then
-            local info= C_LFGList.GetSearchResultInfo(self.resultID)
-            --[[local name= info.name
-            if name then--["INSTANCE_DIFFICULTY_FORMAT"] = "（%s）",
-                local name2= e.cn(name:match('(.-)%(') or name:match('(.-)（') or name)
-                if name2 then
-                    name= name..'( |cnGREEN_FONT_COLOR:'..name2..'|r)'
-                end
-            end]]
-            if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-                print(WoWTools_Mixin.addName, addName,
-                    info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
-                    info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
-                    info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(WoWTools_UnitMixin:GetLink(info.leaderName)..' ') or '',--	%s邀请你加入
-                    info.name,--名称
-                    e.Icon[role] or '',
-                    info.numMembers and (e.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r' or '',--队伍成员数量
-                    info.autoAccept and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动邀请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, INVITE))..'|r' or '',--对方是否开启, 自动邀请
-                    info.activityID and '|cffff00ff'..C_LFGList.GetActivityFullName(info.activityID)..'|r' or '',--查找器,类型
-                    info.isWarMode~=nil and info.isWarMode ~= C_PvP.IsWarModeDesired() and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '战争模式' or TALENT_FRAME_LABEL_WARMODE)..'|r' or ''
-                )
-            end
+--是否有，聊天中时间戳
+    IsShowTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
+    EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_,arg1,arg2)
+        if arg1=='showTimestamps' then
+            IsShowTimestamps= arg2~='none' and true or nil
         end
     end)
 
 
-    set_Talking()--隐藏NPC发言
 
     Init_Add_Reload_Button()--添加 RELOAD 按钮
 end
@@ -1417,136 +1479,42 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
---###########
---加载保存数据
---###########
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
-    if event == "ADDON_LOADED" then
+local panel= CreateFrame('Frame')
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript('OnEvent', function(self, event, arg1)
+    if event=='ADDON_LOADED' then
         if arg1 == id then
             Save= WoWToolsSave['ChatButton_HyperLink'] or Save
             addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatButtonMixin:CreateButton('HyperLink', addName)
 
             if LinkButton then
-                e.setPlayerSound= Save.setPlayerSound--播放, 声音
-
-                LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
-
                 Init()
-
-                self:RegisterEvent('CVAR_UPDATE')
             else
                 DEFAULT_CHAT_FRAME.ADD= nil
-                self:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterAllEvents()
             end
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()--设置控制面板
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
-            if not LinkButton then
-                return
-            end
-            local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
-            btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
-            btn:SetNormalAtlas(e.Icon.icon)
-            btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
-            btn:SetScript('OnLeave', GameTooltip_Hide)
-            btn:SetScript('OnEnter', function(self2)
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(true)..'/'..e.GetEnabeleDisable(false))
-                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-                e.tips:Show()
-            end)
-
-            local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
-            edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
-            edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 10, 24 )
-            edit:SetAutoFocus(false)
-            edit:ClearFocus()
-            edit:SetScript('OnUpdate', function(self2, elapsed)
-                self2.elapsed= (self2.elapsed or 0.3) +elapsed
-                if self2.elapsed>0.3 then
-                    self2.elapsed=0
-                    if not self2:HasFocus() then
-                        local text = TableAttributeDisplay.TitleButton.Text:GetText()
-                        if text and text~='' then
-                            edit:SetText(text:match('%- (.+)') or text)
-                        end
-                    end
-                end
-            end)
-            edit:SetScript("OnKeyUp", function(s, key)
-                if IsControlKeyDown() and key == "C" then
-                    print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
-                end
-            end)
+            Init_Blizzard_DebugTools()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
+    elseif event=='PLAYER_LOGOUT' then
         if not e.ClearAllSave then
             WoWToolsSave['ChatButton_HyperLink']=Save
         end
-    elseif event=='CHAT_MSG_SYSTEM' then
-        setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
-
-    elseif event=='CVAR_UPDATE' then
-        if arg1=='showTimestamps' then
-            showTimestamps= arg2~='none' and true or nil
-        end
-
-    elseif event=='START_TIMER' then--播放, 声音
-        if arg2==0 and arg3==0 then
-            LinkButton.timerType= nil
-            if LinkButton.timer4 then LinkButton.timer4:Cancel() end
-            if LinkButton.timer3 then LinkButton.timer3:Cancel() end
-            if LinkButton.timer2 then LinkButton.timer2:Cancel() end
-            if LinkButton.timer1 then LinkButton.timer1:Cancel() end
-            if LinkButton.timer0 then LinkButton.timer0:Cancel() end
-
-        elseif arg1 and arg2 and arg2>3 and not LinkButton.timerType then
-            LinkButton.timerType=arg1
-            if arg2>20 then
-                LinkButton.timer4= C_Timer.NewTimer(arg2-10, function()--3
-                    e.PlaySound()
-                end)
-            elseif arg2>=7 then
-                e.PlaySound()
-            end
-            LinkButton.timer3= C_Timer.NewTimer(arg2-3, function()--3
-                e.PlaySound(115003)
-            end)
-            LinkButton.timer2= C_Timer.NewTimer(arg2-2, function()--2
-                e.PlaySound(115003)
-            end)
-            LinkButton.timer1= C_Timer.NewTimer(arg2-1, function()--1
-                e.PlaySound(115003)
-            end)
-            LinkButton.timer0= C_Timer.NewTimer(arg2, function()--0
-                e.PlaySound(114995 )--63971)
-                LinkButton.timerType=nil
-            end)
-        end
-    elseif event=='STOP_TIMER_OF_TYPE' then
-        LinkButton.timerType= nil
-        if LinkButton.timer4 then LinkButton.timer4:Cancel() end
-        if LinkButton.timer3 then LinkButton.timer3:Cancel() end
-        if LinkButton.timer2 then LinkButton.timer2:Cancel() end
-        if LinkButton.timer1 then LinkButton.timer1:Cancel() end
-        if LinkButton.timer0 then LinkButton.timer0:Cancel() end
-	end
+    end
 end)
+
+
+
+
+
+
+
+
+

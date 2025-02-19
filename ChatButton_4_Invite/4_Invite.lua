@@ -177,29 +177,28 @@ end
 
 
 
+local panel= CreateFrame('Frame')
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript('OnEvent', function(self, event, arg1)
+    if event=='ADDON_LOADED' then
+        if arg1 == id then
+            WoWTools_InviteMixin.Save= WoWToolsSave['ChatButton_Invite'] or WoWTools_InviteMixin.Save
 
+            WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
 
+            local btn= WoWTools_ChatButtonMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
+            WoWTools_InviteMixin.InviteButton= btn
 
+            if WoWTools_InviteMixin.InviteButton then
+                Init()
+            end
+            self:UnregisterEvent('ADDON_LOADED')
+        end
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~=id then
-        return
-    end
-
-    WoWTools_InviteMixin.Save= WoWToolsSave['ChatButton_Invite'] or WoWTools_InviteMixin.Save
-
-    WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
-
-    local btn= WoWTools_ChatButtonMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
-    WoWTools_InviteMixin.InviteButton= btn
-
-    if WoWTools_InviteMixin.InviteButton then
-        Init()
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['ChatButton_Invite']= WoWTools_InviteMixin.Save
+    elseif event=='PLAYER_LOGOUT' then
+        if not e.ClearAllSave then
+            WoWToolsSave['ChatButton_Invite']= WoWTools_InviteMixin.Save
+        end
     end
 end)

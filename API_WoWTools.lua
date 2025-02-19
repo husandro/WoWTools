@@ -8,7 +8,6 @@ local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 ]]
 
---securecallfunction
 e.WoWDate={}--战网，数据
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
@@ -124,30 +123,7 @@ e.Icon={
 	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",--8
 
 }
---leader='|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a',--队长
---toLeft2='|A:common-icon-rotateleft:0:0|a',
---toRight2='|A:common-icon-rotateright:0:0|a',
---info2='|A:questlegendary:0:0|a',--黄色!
---star2='|A:auctionhouse-icon-favorite:0:0|a',--星星 recipetoast-icon-star
---number='services-number-',
---number2='|A:services-number-%d:0:0|a',
---clock='socialqueuing-icon-clock',
---clock2='|A:socialqueuing-icon-clock:0:0|a',
---select2='|A:common-icon-checkmark:0:0|a',--绿色√
---selectYellow='common-icon-checkmark-yellow',--黄色√
---X2='|A:common-icon-redx:0:0|a',
---O2='|A:talents-button-reset:0:0|a',--￠
---map='poi-islands-table',
---map2='|A:poi-islands-table:0:0|a',
---unlocked='tradeskills-icon-locked',--'Levelup-Icon-Lock',--没锁
---quest='AutoQuest-Badge-Campaign',--任务
---guild2='|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a',--guild2='|A:communities-guildbanner-background:0:0|a',
---bank2='|A:Banker:0:0|a',
---bag='bag-main',
---bag2='|A:bag-main:0:0|a',
---bagEmpty='bag-reagent-border-empty',
---up2='|A:bags-greenarrow:0:0|a',--绿色向上, 红色向上 UI-HUD-Minimap-Arrow-Corpse， 金色 UI-HUD-Minimap-Arrow-Guard
---down2='|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a',--红色向下
+
 
 --[[
 C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    

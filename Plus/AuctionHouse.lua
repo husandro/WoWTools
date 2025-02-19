@@ -1292,10 +1292,6 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
     if arg1==id then
         Save= WoWToolsSave[addName] or Save
 
-        if PlayerGetTimerunningSeasonID() then
-            return
-        end
-
         --添加控制面板
         e.AddPanel_Check({
             name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
@@ -1309,7 +1305,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-    elseif arg1=='Blizzard_AuctionHouseUI' and not Save.disabled then
+    elseif arg1=='Blizzard_AuctionHouseUI' then
         Init_BrowseResultsFrame()
         Init_AllAuctions()
         Init_Sell()

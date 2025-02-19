@@ -476,9 +476,9 @@ end
             index= index+1
             local name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil,{reName=true, reRealm=true})
             name= name=='' and guid or name
-            
+
             sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. WoWTools_Mixin:MK(num, 3)..'|r', function(data)
-                local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})                
+                local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})
                 if Save.myChatFilterPlayers[data.guid] then
                     print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', player)
                 else
@@ -581,27 +581,6 @@ end
             tooltip:AddLine(' ')
             tooltip:AddLine(description.data.text, nil, nil,nil, true)
         end)
-
-        --[[sub2:AddInitializer(function(button)
-            button:SetHyperlinksEnabled(true)
-            button:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
-            button:SetScript('OnHyperlinkEnter', function(self, link)
-                if link then
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetHyperlink(link)
-                    e.tips:Show()
-                end
-            end)
-            button:SetScript('OnHyperlinkClick', function(_, link, text2, region)
-                SetItemRef(link, text2, region, nil)
-            end)
-            button:SetScript('OnHide', function(self)
-                self:SetScript('OnHyperlinkLeave', nil)
-                self:SetScript('OnHyperlinkEnter', nil)
-                self:SetScript('OnHyperlinkClick', nil)
-            end)
-        end)]]
 
 
 
@@ -926,8 +905,8 @@ local function Add_Menu(root, name, channelNumber)
             ..'|cffff7f00'
             ..(clubInfo.shortName or clubInfo.name)
             ..' '.. (online..'/'..#members)
-          
-            
+
+
 
         communityName=clubInfo.shortName or clubInfo.name
         communityTexture=clubInfo.avatarId
@@ -935,7 +914,7 @@ local function Add_Menu(root, name, channelNumber)
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
 
     local sub=root:CreateCheckbox(
-        text, 
+        text,
     function(data)
         return WorldButton.channelNumber == GetChannelName(data.communityName or data.name)
 
@@ -1018,7 +997,7 @@ local function Init_Menu(_, root)
     end
 
 
-    
+
     Init_Filter_Menu(root)--屏蔽刷屏, 菜单
 
     Init_User_Filter_Menu(root)--屏蔽刷屏, 自定义，菜单
@@ -1160,7 +1139,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave['ChatButtonWorldChannel'] or Save
             Save.myChatFilterPlayers= Save.myChatFilterPlayers or {}
-            
+
             addName= '|A:tokens-WoW-generic-regular:0:0|a'..(e.onlyChinese and '频道' or CHANNEL)
             WorldButton= WoWTools_ChatButtonMixin:CreateButton('World', addName)
 

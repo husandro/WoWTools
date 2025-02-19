@@ -206,3 +206,134 @@ function e.Get_RaidTargetTexture(index, unit)--取得图片
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, setSwipeTexture, hideDrawBling)--冷却条
+    if not self then
+        return
+    elseif not duration or duration<=0 then
+        if self.cooldown then
+            self.cooldown:Clear()
+        end
+        return
+    end
+    if not self.cooldown then
+        self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
+        self.cooldown:SetFrameLevel(self:GetFrameLevel()+5)
+        self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
+        self.cooldown:SetDrawBling(not hideDrawBling)--闪光
+        self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
+        self.cooldown:SetHideCountdownNumbers(HideCountdownNumbers)--隐藏数字
+        self.cooldown:SetReverse(Reverse)--控制冷却动画的方向
+        self.cooldown:SetAlpha(0.7)
+        self.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
+        if setSwipeTexture then
+            self.cooldown:SetSwipeTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')--圆框架
+        end
+        self:HookScript('OnHide', function(self2)
+            if self2.cooldown then
+                self2.cooldown:Clear()
+            end
+        end)
+    end
+    start=start or GetTime()
+    self.cooldown:SetCooldown(start, duration, modRate)
+end
+
+function e.SetItemSpellCool(frame, tab)--{item=, spell=, type=, isUnit=true} type=true圆形，false方形
+    if not frame or not tab then
+        return
+    end
+
+    local item= tab.item
+    local spell= tab.spell
+    local type= tab.type
+    local unit= tab.unit
+
+    if unit then
+        local texture, startTime, endTime, duration, channel
+
+        if UnitExists(unit) then
+            texture, startTime, endTime= select(3, UnitChannelInfo(unit))
+
+            if not (texture and startTime and endTime) then
+                texture, startTime, endTime= select(3, UnitCastingInfo(unit))
+            else
+                channel= true
+            end
+            if texture and startTime and endTime then
+                duration= (endTime - startTime) / 1000
+                e.Ccool(frame, nil, duration, nil, true, channel, nil,nil)
+                return texture
+            end
+            e.Ccool(frame)
+        end
+
+    elseif item then
+        local startTime, duration = C_Item.GetItemCooldown(item)
+
+        e.Ccool(frame, startTime, duration, nil, true, nil, not type)
+    elseif spell then
+        local data= C_Spell.GetSpellCooldown(spell) or {}
+        e.Ccool(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
+
+    elseif frame.cooldown then
+        e.Ccool(frame)
+    end
+end
+
+--[[
+Cooldown.lua
+CooldownFrame_Set(self.SpellButton.Cooldown, cooldownInfo.startTime, cooldownInfo.duration, cooldownInfo.isEnabled)
+CooldownFrame_Clear(self.SpellButton.Cooldown);
+CooldownFrame_SetDisplayAsPercentage(self, percentage)
+]]
+
+function e.GetSpellItemCooldown(spellID, itemID)--法术,物品,冷却
+    if spellID then
+        if not C_Spell.GetOverrideSpell(spellID) then
+            return
+        end
+        local data= C_Spell.GetSpellCooldown(spellID)
+        if data then
+            if data.duration>0 then
+                local t= GetTime()
+                while t<data.startTime do
+                    t= t+86400
+                end
+                t= t-data.startTime
+                t= data.duration-t
+                t= t<0 and 0 or t
+                return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+
+            elseif data.isEnabled==false then
+                return '|cff9e9e9e'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+            end
+        end
+    elseif itemID then
+        local startTime, duration, enable = C_Item.GetItemCooldown(itemID)
+        if duration and duration>0 then
+            local t= GetTime()
+            while t<startTime do
+                t= t+86400
+            end
+            t= t-startTime
+            t= duration-t
+            t= t<0 and 0 or t
+            if enable==false then
+                return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+            else
+                return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
+            end
+        end
+    end
+end

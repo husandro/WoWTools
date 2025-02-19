@@ -247,7 +247,7 @@ Settings.RegisterAddOnCategory(Category)
 function e.OpenPanelOpting(category, name)
     category= (category and category.GetID) and category or Category
     Category.expanded=true
-    name= name or (category and category.GetName and category:GetName())    
+    name= name or (category and category.GetName and category:GetName())
     Settings.OpenToCategory(category:GetID(), name)
 end
 
@@ -255,9 +255,9 @@ end
 --添加，子目录
 function e.AddPanel_Sub_Category(tab)
     if tab.frame then
-        return Settings.RegisterCanvasLayoutSubcategory(Category, tab.frame, tab.name)
+        return Settings.RegisterCanvasLayoutSubcategory(tab.category or Category, tab.frame, tab.name)
     else
-        return Settings.RegisterVerticalLayoutSubcategory(Category, tab.name)--Blizzard_SettingsInbound.lua
+        return Settings.RegisterVerticalLayoutSubcategory(tab.category or Category, tab.name)--Blizzard_SettingsInbound.lua
     end
 end
 
@@ -772,6 +772,24 @@ end
 
 
 local function Init()
+    WoWToolsSave= WoWToolsSave or {}
+    Save= WoWToolsSave[addName] or Save
+    Save.useColor= Save.useColor or 1
+    Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+    Set_Color()--自定义，颜色
+
+    Init_Options()
+
+    e.Is_Timerunning= PlayerGetTimerunningSeasonID()
+    e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
+
+    if e.onlyChinese then
+        e.Player.L= {
+            layer='位面',
+            key='关键词',
+        }
+    end
+
     e.StausText={
         [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
         [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
@@ -782,6 +800,22 @@ local function Init()
         [ITEM_MOD_CR_SPEED_SHORT]=e.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
         --[ITEM_MOD_EXTRA_ARMOR_SHORT]= e.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
     }
+
+
+    if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow then
+        --你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？
+        --所有设置
+        StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow= function(frame)
+            frame.button1:SetEnabled(false)
+            C_Timer.After(3, function()
+                frame.button1:SetEnabled(true)
+            end)
+        end
+    end
+
+    C_Timer.After(2, function()
+        e.Is_Timerunning= PlayerGetTimerunningSeasonID()
+    end)
 end
 
 
@@ -792,56 +826,18 @@ end
 
 
 
-local panel = CreateFrame('Frame')
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1==id then
-            e.Is_Timerunning= PlayerGetTimerunningSeasonID()
 
 
-            WoWToolsSave= WoWToolsSave or {}
-            --e.WoWDate= e.WoWDate or e.WoWDate or {}
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+    if arg1==id then
+        Init()
+    end
+end)
 
-            Save= WoWToolsSave[addName] or Save
-            Save.useColor= Save.useColor or 1
-            Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
-            Set_Color()--自定义，颜色
 
-            e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
 
-            if e.onlyChinese then
-                e.Player.L= {
-                    layer='位面',
-                    key='关键词',
-                }
-            end
-
-            Init()
-            Init_Options()
-
-            if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow then
-                --你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？
-                --所有设置
-                StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow= function(frame)
-                    frame.button1:SetEnabled(false)
-                    C_Timer.After(3, function()
-                        frame.button1:SetEnabled(true)
-                    end)
-                end
-            end
-
-            self:UnregisterEvent('ADDON_LOADED')
-
-            C_Timer.After(2, function()
-                e.Is_Timerunning= PlayerGetTimerunningSeasonID()
-            end)
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
     end
 end)

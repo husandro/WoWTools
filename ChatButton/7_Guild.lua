@@ -127,6 +127,15 @@ local function set_RequestToJoinFrame(frame)
     end
 end
 
+
+
+
+
+
+
+
+
+
 --####################
 --设置，自动申请，check
 --####################
@@ -258,38 +267,6 @@ end
 
 
 
---[[
-btn.background= btn:CreateTexture(nil, 'BACKGROUND')
-btn.background:SetAllPoints(btn)
-btn.background:SetAtlas('bag-reagent-border-empty')
-btn.background:SetAlpha(0.5)
-btn.background:AddMaskTexture(btn.mask)
-
-btn.texture=btn:CreateTexture(nil, 'BORDER')
-btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
-btn.texture:AddMaskTexture(btn.mask)
-
-btn.border=btn:CreateTexture(nil, 'ARTWORK')
-btn.border:SetAllPoints(btn)
-btn.border:SetAtlas('bag-reagent-border')
-]]
-
-
---####
---初始
---####
---local data=  C_GuildInfo.GetGuildTabardInfo('player')
-
-    --[[GuildButton.background2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
-    GuildButton.background2:SetAllPoints()
-    GuildButton.background2:SetAtlas('UI-Achievement-Guild-Flag-Short')
-    GuildButton.background2:AddMaskTexture(GuildButton.mask)]]
-
-    --[[GuildButton.border2= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
-    GuildButton.border2:SetAllPoints()
-    GuildButton.border2:SetAtlas('UI-Achievement-Guild-Flag-Short')
-    GuildButton.border2:AddMaskTexture(GuildButton.mask)]]
 
 local function Init()
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
@@ -324,17 +301,7 @@ local function Init()
         e.tips:Show()
     end
 
-    --[[GuildButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        self:state_leave()
-    end)
-    GuildButton:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-        self:state_enter()--Init_Menu)
-        if IsInGuild() then
-            C_GuildInfo.GuildRoster()
-        end
-    end)]]
+
 
     GuildButton:SetupMenu(Init_Menu)
 
@@ -354,22 +321,6 @@ local function Init()
             C_GuildInfo.GuildRoster()
         end
     end
-    --[[GuildButton:SetScript('OnClick', function(self, d)
-        if not IsInGuild() then
-            ToggleGuildFrame()
-        else
-            if d=='LeftButton' then
-                WoWTools_ChatMixin:Say('/g')
-            else
-                if IsInGuild() then
-                    MenuUtil.CreateContextMenu(self, Init_Menu)
-                    e.tips:Hide()
-                else
-                    ToggleGuildFrame()
-                end
-            end
-        end
-    end)]]
 
     if not IsVeteranTrialAccount() then--试用帐号
         set_check(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
@@ -469,13 +420,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='GUILD_ROSTER_UPDATE' or event=='PLAYER_GUILD_UPDATE' then
         GuildButton:settings()
-
+        if event=='PLAYER_GUILD_UPDATE' then
+             set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
+            set_Guild_Members()
+        end
 
     elseif event=='CHAT_MSG_SYSTEM' then
         setMsg_CHAT_MSG_SYSTEM(arg1)--欢迎加入, 信息
-
-    elseif event=='PLAYER_GUILD_UPDATE' then
-        set_CHAT_MSG_SYSTEM()--事件, 公会新成员, 队伍新成员
-        set_Guild_Members()
     end
 end)

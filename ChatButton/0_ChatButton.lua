@@ -10,7 +10,7 @@ local Save={
     --isShowBackground=nil,--是否显示背景 bool
     --isEnterShowMenu 移过图标，显示菜单
 }
-local panel= CreateFrame('Frame')
+
 local addName
 local ChatButton
 local Initializer, Layout
@@ -253,13 +253,17 @@ end
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
     if arg1==id then
         Save= WoWToolsSave['ChatButton'] or Save
+        if not Save.disabled then
+            ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
+        end
 
         Save.disabledADD= Save.disabledADD or {}
 
         addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
         Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
-
+        WoWTools_ChatButtonMixin.Category= Initializer
+        
         e.AddPanel_Check_Button({
             checkName= e.onlyChinese and '启用' or ENABLE,
             GetValue= function() return not Save.disabled end,
@@ -281,7 +285,6 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         })
 
         if not Save.disabled then
-            ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
             Init()
         end
 

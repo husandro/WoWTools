@@ -237,28 +237,28 @@ end
 
 
 
+local panel= CreateFrame('Frame')
+panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript('OnEvent', function(self, event, arg1)
+    if event=='ADDON_LOADED' then
+        if arg1 == id then
+            WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
+            WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 3
 
+            WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
+            LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 
+            if LFDButton then--禁用Chat Button                
+                Init()
+            end
+            self:UnregisterEvent('ADDON_LOADED')
+        end
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~=id then
-        return
-    end
-    WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
-    WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 3
-
-    WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
-
-    LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
-
-    if LFDButton then--禁用Chat Button                
-        Init()
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
+    elseif event=='PLAYER_LOGOUT' then
+        if not e.ClearAllSave then
+            WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
+        end
     end
 end)

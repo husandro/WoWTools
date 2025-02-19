@@ -261,13 +261,6 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         name= '|T656681:0|t'..e.cn(addName),
         tooltip= function()
             return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
-            --e.tips:SetOwner(SettingsPanel, "ANCHOR_LEFT")
-            -- e.tips:ClearLines()
-            --e.tips:SetItemByID(208047)
-            --e.tips:AddLine(' ')
-            --local info= C_Map.GetMapInfo(2200) or {}
-            --e.tips:AddDoubleLine( '|cnGREEN_FONT_COLOR:'..format(LFG_LIST_CROSS_FACTION, info.name or 'uiMapID 2200'), '|cnGREEN_FONT_COLOR:uiMapID 2200')
-            --e.tips:Show()
         end,
         Value= not Save.disabled,
         GetValue= function() return not Save.disabled end,
