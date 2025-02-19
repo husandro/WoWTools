@@ -176,7 +176,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         Save.afk.num= Save.afk.num + 1
         Save.afk.time= Save.afk.time + sec
-        print(e.addName, e.cn(addName), LastText)
+        print(e.addName, addName, LastText)
         OnAFKTime=nil
     end
 
@@ -215,7 +215,7 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
         else
             LastText='|cnRED_FONT_COLOR:'..LastText..'|r'
         end
-        print(e.addName, e.cn( addName), e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
+        print(e.addName,  addName, e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, Save.pet.win..'/'..Save.pet.num, (Save.pet.capture>0 and Save.pet.capture..' |T646379:0|t' or ''));
 
         PetRound={}
         OnPetTime=nil
@@ -353,7 +353,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         e.tips:AddLine(' ')
         set_Tooltips_Info()
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.addName, e.cn(addName))
+        e.tips:AddDoubleLine(e.addName, addName)
         e.tips:Show()
     end
 
@@ -377,7 +377,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
             Save.textScale=sacle
             self:set_text_scale()
             self:set_tooltip()
-            print(e.addName, e.cn( addName), e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+            print(e.addName, addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 

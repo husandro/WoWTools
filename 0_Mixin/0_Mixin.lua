@@ -1,11 +1,8 @@
---[[
-MK
-]]
-
 local e= select(2, ...)
+e.addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
 
 WoWTools_Mixin={
-    addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
+    addName= e.addName,
     isChinese= e.onlyChinese,
 }
 
