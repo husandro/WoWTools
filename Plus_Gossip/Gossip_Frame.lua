@@ -285,7 +285,7 @@ local function Init()
             self.Add.tooltip=e.onlyChinese and '添加' or ADD
         end
         self.Delete:SetShown(self.gossipID and true or false)--显示/隐藏，删除按钮
-        self.Add:SetShown(num>0 and (name or icon or hex~='ff000000'))--显示/隐藏，添加按钮
+        self.Add:SetShown(num>0 and (name or icon or hex~='ff000000') and true or false)--显示/隐藏，添加按钮
     end
 
     function Menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
