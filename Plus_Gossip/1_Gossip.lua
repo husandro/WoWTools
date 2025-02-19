@@ -1,6 +1,4 @@
 local e= select(2, ...)
-local addName
-local addName2
 local GossipButton
 
 local function Save()
@@ -152,7 +150,7 @@ local function Create_CheckButton(frame, info)
                 local f= GossipButton:isShow_Gossip_Text_Icon_Frame()
                 e.tips:SetOwner(f or self, f and "ANCHOR_BOTTOM" or "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName)
                 e.tips:AddDoubleLine(e.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG), e.GetEnabeleDisable(Save().gossip))
                 e.tips:AddDoubleLine(' ')
                 e.tips:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..self.id..'|r')
@@ -173,7 +171,7 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save().gossipOption[self.id]= not Save().gossipOption[self.id] and (self.name or '') or nil
                 if Save().gossipOption[self.id] and not IsModifierKeyDown() and Save().gossip then
-                    print(WoWTools_Mixin.addName, addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
+                    print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
                 end
             end)
@@ -258,7 +256,7 @@ local function Init()
     GossipButton.gossipFrane_Button:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
@@ -350,7 +348,7 @@ local function Init()
             else
                 Gossip_Text_Icon_Frame:SetShown(d==-1)
             end
-            --e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
+            --e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
         end
     end)
 
@@ -389,7 +387,7 @@ local function Init()
                 if Save().movie[arg1] then
                     if Save().stopMovie then
                         MovieFrame:StopMovie()
-                        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
+                        print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
                             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
@@ -399,7 +397,7 @@ local function Init()
                 else
                     Save().movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
+                print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
@@ -407,7 +405,7 @@ local function Init()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(WoWTools_Mixin.addName, addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)
@@ -429,12 +427,12 @@ local function Init()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(WoWTools_Mixin.addName, addName, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
+        print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName)
         if self.npc and self.name then
             e.tips:AddDoubleLine(self.name, 'NPC |cnGREEN_FONT_COLOR:'..self.npc..'|r')
         else
@@ -586,7 +584,7 @@ local function Init()
             self.sel:SetScript("OnEnter", function(frame)
                 e.tips:SetOwner(frame, "ANCHOR_RIGHT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName2)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
                 e.tips:AddDoubleLine(' ')
                 if frame.id and frame.text then
                     e.tips:AddDoubleLine(frame.text, 'ID |cnGREEN_FONT_COLOR:'..frame.id..'|r')
@@ -605,7 +603,7 @@ local function Init()
                         C_GossipInfo.SelectAvailableQuest(frame.id)
                     end
                 else
-                    print(WoWTools_Mixin.addName, addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
+                    print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end

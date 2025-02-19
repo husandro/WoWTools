@@ -377,7 +377,7 @@ local function Init_Quest()
         end
     end)
     --[[QuestButton:SetScript('OnMouseWheel', function()
-        e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or addName))
+        e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
     end)]]
 
     QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)

@@ -39,8 +39,6 @@ WoWTools_GossipMixin= {
     Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 
     --delvesDifficultyMaxLevel=nil,--地下堡指定难度
-    addName=nil,
-    addName2=nil,
 }
 
 }

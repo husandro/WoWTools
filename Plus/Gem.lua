@@ -349,7 +349,7 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                             local date= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, index=2})
                             type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
                         else
-                            type=e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))
+                            type= subclassID and e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))
                         end
                         type=type or ' '
                         items[type]= items[type] or {}
