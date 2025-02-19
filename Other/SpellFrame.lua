@@ -1,7 +1,6 @@
 local id, e = ...
 local addName= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame')
 local Save={}
-local panel=CreateFrame('Frame')
 local Initializer
 local SpellTab={}--e.ChallengesSpellTabs
 
