@@ -34,7 +34,7 @@ local function Init()
 end
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1==id then
         WoWTools_MainMenuMixin.Save= WoWToolsSave['Plus_MainMenu'] or WoWTools_MainMenuMixin.Save
         WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
@@ -48,6 +48,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 
     elseif arg1=='Blizzard_Settings' then
         WoWTools_MainMenuMixin:Init_Options()--初始, 选项
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

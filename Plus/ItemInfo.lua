@@ -1,7 +1,7 @@
 local id, e = ...
 local addName
 local Save={}
-local panel= CreateFrame('Frame')
+
 
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
@@ -403,7 +403,7 @@ function e.Set_Item_Info(self, tab)
                     if dateInfo.text[pvpItemStr] then--PvP装备
                         rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                     end
-                    if e.Player.levelMax and dateInfo.text[upgradeStr] then--"升级：%s/%s"
+                    if e.Player.IsMaxLevel and dateInfo.text[upgradeStr] then--"升级：%s/%s"
                         local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                         local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
 
@@ -849,11 +849,9 @@ local function Init_Bag()
             end
         end)
 
-
-           -- panel:RegisterEvent('BANKFRAME_OPENED')--打开所有银行，背包
-            panel:RegisterEvent("GUILDBANKBAGSLOTS_CHANGED")--打开公会银行时, 打开背包
-            panel:RegisterEvent("GUILDBANK_ITEM_LOCK_CHANGED")
-
+--打开公会银行时, 打开背包
+        EventRegistry:RegisterFrameEventAndCallback("GUILDBANKBAGSLOTS_CHANGED", setGuildBank)
+        EventRegistry:RegisterFrameEventAndCallback("GUILDBANK_ITEM_LOCK_CHANGED", setGuildBank)
     end
 
     hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
@@ -926,6 +924,22 @@ end
 --初始
 --####
 local function Init()
+    FMTab={--附魔
+        ['主属性']= '主',
+        ['坐骑速度']= '骑',
+        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or WoWTools_TextMixin:sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
+        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or WoWTools_TextMixin:sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
+        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or WoWTools_TextMixin:sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
+        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or WoWTools_TextMixin:sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
+        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 3, true),
+        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 3, true),
+        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 3, true),
+        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 3, true),
+        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_TextMixin:sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
+        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_TextMixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
+        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or WoWTools_TextMixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
+    }
+
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
     hooksecurefunc('BossBanner_ConfigureLootFrame', function(lootFrame, data)--LevelUpDisplay.lua
         WoWTools_ItemStatsMixin:SetItem(lootFrame, data.itemLink, {point=lootFrame.Icon})
@@ -1147,179 +1161,165 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---###########
---加载保存数据
---###########
-panel:RegisterEvent("ADDON_LOADED")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-
-        if arg1==id then
-            addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
-
-            Save= WoWToolsSave['ItemInfo_Lua'] or Save
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= addName,
-                tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    if Save.disabled then
-                        Save.disabled=nil
-                        panel:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                    else
-                        Save.disabled=true
-                        panel:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-                    end
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled))
-                end
-            })
-
-            if Save.disabled then
-                self:UnregisterAllEvents()
-            else
-                Init()
-
-                FMTab={--附魔
-                        ['主属性']= '主',
-                        ['坐骑速度']= '骑',
-                        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or WoWTools_TextMixin:sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
-                        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or WoWTools_TextMixin:sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
-                        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or WoWTools_TextMixin:sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
-                        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or WoWTools_TextMixin:sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
-                        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 3, true),
-                        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 3, true),
-                        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 3, true),
-                        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 3, true),
-                        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_TextMixin:sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
-                        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_TextMixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
-                        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or WoWTools_TextMixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
-                    }
+--商站 Blizzard_PerksProgram.lua
+local function Set_Blizzard_PerksProgram()
+    local function set_FrozenButton_Tips()
+        if PerksProgramFrame.GetFrozenItemFrame then
+            local frame= PerksProgramFrame:GetFrozenItemFrame()
+            if frame then
+                local itemLink= frame.FrozenButton.itemID and WoWTools_ItemMixin:GetLink(frame.FrozenButton.itemID)
+                e.Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
             end
-            self:RegisterEvent("PLAYER_LOGOUT")
-
-        elseif arg1=='Blizzard_PerksProgram' then
-            --##########################
-            --商站
-            --Blizzard_PerksProgram.lua
-            local function set_FrozenButton_Tips()
-                if PerksProgramFrame.GetFrozenItemFrame then
-                    local frame= PerksProgramFrame:GetFrozenItemFrame()
-                    if frame then
-                        local itemLink= frame.FrozenButton.itemID and WoWTools_ItemMixin:GetLink(frame.FrozenButton.itemID)
-                        e.Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
-                    end
+        end
+    end
+    hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
+        if not self2:GetView() then
+            return
+        end
+        for _, btn in pairs(self2:GetFrames()) do
+            if btn.itemID then
+                local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
+                e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
+            elseif btn.GetItemInfo then--10.2
+                local itemInfo=btn:GetItemInfo()
+                if itemInfo then
+                    local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
+                    e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                 end
             end
-            hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
-                if not self2:GetView() then
-                    return
-                end
-                for _, btn in pairs(self2:GetFrames()) do
-                    if btn.itemID then
-                        local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
-                        e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
-                    elseif btn.GetItemInfo then--10.2
-                        local itemInfo=btn:GetItemInfo()
-                        if itemInfo then
-                            local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
-                            e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
-                        end
-                    end
-                end
-                set_FrozenButton_Tips()
-            end)
+        end
+        set_FrozenButton_Tips()
+    end)
+end
 
-        elseif arg1=='Blizzard_WeeklyRewards' then--周奖励, 物品提示，信息
-            hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
-                for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
-                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
-                    local itemFrame= frame and frame.ItemFrame
-                    if itemFrame then
-                        WoWTools_ItemStatsMixin:SetItem(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
-                    end
-                end
-            end)
-            hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
-                for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
-                    local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
-                    local itemFrame= frame and frame.ItemFrame
-                    if itemFrame then
-                        WoWTools_ItemStatsMixin:SetItem(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
-                    end
-                end
-            end)
 
-        elseif arg1=='Blizzard_AuctionHouseUI' then--拍卖行
-            --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
-            hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
-                e.Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
-            end)
 
-            hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
-                local itemKey = browseResult.itemKey
-                local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
-                if itemKeyInfo.isCommodity then
-                    e.Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
-                else
-                    e.Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
-                end
-            end)
 
-        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-            add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
-            ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
-            ItemInteractionFrame.Tip:SetScript('OnHide', ItemInteractionFrame.Tip.ClearLines)
-            hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
-                local itemInteractionFrame = self:GetParent():GetParent()
-                local itemLocation = itemInteractionFrame:GetItemLocation()
-                local itemLink
-                local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
-                if show then
-                    itemInteractionFrame.Tip:SetItemInteractionItem()
-                    itemLink= select(2, itemInteractionFrame.Tip:GetItem())
-                end
-                WoWTools_ItemStatsMixin:SetItem(self, itemLink, {}) --设置，物品，次属性，表
-            end)
-            hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(self)
-                local itemInteractionFrame = self:GetParent():GetParent()
-                local itemLocation = itemInteractionFrame:GetItemLocation()
-                local itemLink
-                local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
-                if show then
-                    itemLink= C_Item.GetItemLink(itemLocation)
-                end
-                WoWTools_ItemStatsMixin:SetItem(self, itemLink, {}) --设置，物品，次属性，表
-            end)
 
-        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项                       
+
+
+
+--周奖励, 物品提示，信息
+local function Set_Blizzard_WeeklyRewards()
+    hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
+        for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
+            local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
+            local itemFrame= frame and frame.ItemFrame
+            if itemFrame then
+                WoWTools_ItemStatsMixin:SetItem(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
+            end
+        end
+    end)
+    hooksecurefunc(WeeklyRewardsFrame, 'UpdateSelection', function(self2)
+        for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
+            local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
+            local itemFrame= frame and frame.ItemFrame
+            if itemFrame then
+                WoWTools_ItemStatsMixin:SetItem(itemFrame, itemFrame.displayedItemDBID and C_WeeklyRewards.GetItemHyperlink(itemFrame.displayedItemDBID), {point=itemFrame.Icon})
+            end
+        end
+    end)
+end
+
+
+
+--拍卖行
+local function Set_Blizzard_AuctionHouseUI()
+--出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
+    hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
+        e.Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
+    end)
+
+    hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
+        local itemKey = browseResult.itemKey
+        local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
+        if itemKeyInfo.isCommodity then
+            e.Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
+        else
+            e.Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
+        end
+    end)
+end
+
+
+
+
+
+
+--套装转换, 界面
+local function Set_Blizzard_ItemInteractionUI()
+    add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
+    ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
+    ItemInteractionFrame.Tip:SetScript('OnHide', ItemInteractionFrame.Tip.ClearLines)
+    hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionOutputSlot, 'RefreshIcon', function(self)
+        local itemInteractionFrame = self:GetParent():GetParent()
+        local itemLocation = itemInteractionFrame:GetItemLocation()
+        local itemLink
+        local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
+        if show then
+            itemInteractionFrame.Tip:SetItemInteractionItem()
+            itemLink= select(2, itemInteractionFrame.Tip:GetItem())
+        end
+        WoWTools_ItemStatsMixin:SetItem(self, itemLink, {}) --设置，物品，次属性，表
+    end)
+    hooksecurefunc(ItemInteractionFrame.ItemConversionFrame.ItemConversionInputSlot, 'RefreshIcon', function(self)
+        local itemInteractionFrame = self:GetParent():GetParent()
+        local itemLocation = itemInteractionFrame:GetItemLocation()
+        local itemLink
+        local show= (itemLocation and itemInteractionFrame:GetInteractionType() == Enum.UIItemInteractionType.ItemConversion)
+        if show then
+            itemLink= C_Item.GetItemLink(itemLocation)
+        end
+        WoWTools_ItemStatsMixin:SetItem(self, itemLink, {}) --设置，物品，次属性，表
+    end)
+end
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1==id then
+        addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
+
+        Save= WoWToolsSave['ItemInfo_Lua'] or Save
+
+        --添加控制面板
+        e.AddPanel_Check({
+            name= addName,
+            tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+            Init()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ItemInfo_Lua']=Save
-        end
 
-    elseif event == "GUILDBANKBAGSLOTS_CHANGED" or event =="GUILDBANK_ITEM_LOCK_CHANGED" then
-        setGuildBank()--公会银行,设置
+    elseif arg1=='Blizzard_PerksProgram' then
+        Set_Blizzard_PerksProgram()
 
+    elseif arg1=='Blizzard_WeeklyRewards' then
+        Set_Blizzard_WeeklyRewards()
+
+    elseif arg1=='Blizzard_AuctionHouseUI' then
+        Set_Blizzard_AuctionHouseUI()
+
+    elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
+        Set_Blizzard_ItemInteractionUI()
+
+
+    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
+        add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项                       
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['ItemInfo_Lua']=Save
     end
 end)

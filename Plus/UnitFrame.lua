@@ -2137,12 +2137,12 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~=id then
         return
     end
+
     Save= WoWToolsSave[addName] or Save
-    --Save.healthbar = Save.healthbar or 'UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 
     --添加控制面板
     e.AddPanel_Check({
@@ -2158,6 +2158,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
     if not Save.disabled then
         Init()
     end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 

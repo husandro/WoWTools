@@ -90,6 +90,15 @@ e.ChallengesSpellTabs={
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
 }
 
+
+
+
+if not e.Player.IsMaxLevel then
+    return
+end
+
+
+
 --双法术，
 if e.Player.faction=='Alliance' then
     e.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
@@ -633,7 +642,6 @@ end
 --[[词缀日程表AngryKeystones Schedule.lua
 local function Init_Affix()
     if --C_AddOns.IsAddOnLoaded("AngryKeystones")
-        not e.Player.levelMax
         or not affixSchedule
         or TipsFrame.affixesButton
         --or C_MythicPlus.GetCurrentSeason()~= affixSchedule.season
@@ -1628,7 +1636,7 @@ end
 
 --周奖励界面界面
 --#############
-local function Init_WeeklyRewardsFrame()
+local function Init_Blizzard_WeeklyRewards()
     --添加一个按钮，打开挑战界面
     WeeklyRewardsFrame.showChallenges =WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size={42,42}})--所有角色,挑战
     WeeklyRewardsFrame.showChallenges:SetPoint('RIGHT',-4,-42)
@@ -1709,7 +1717,7 @@ end
 --########################
 local WeekRewardLookFrame
 local function set_Week_Reward_Look_Specialization()
-    if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame or not e.Player.levelMax then
+    if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame then
         return
     elseif C_WeeklyRewards.HasAvailableRewards() then
         print(WoWTools_Mixin.addName, Initializer:GetName(),'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
@@ -1815,7 +1823,7 @@ end
 --####
 --初始
 --####
-local function Init()
+local function Init_Blizzard_ChallengesUI()
     TipsFrame= CreateFrame("Frame",nil, ChallengesFrame)
     TipsFrame:SetFrameStrata('HIGH')
     TipsFrame:SetFrameLevel(7)
@@ -2093,75 +2101,79 @@ end
 
 
 
---###########
---加载保存数据
---###########
-local panel=CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1==id then
 
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
+        Save= WoWToolsSave[addName] or Save
+        Save.rightX= Save.rightX or 2--右边，提示，位置
+        Save.rightY= Save.rightY or -22
 
-            Save= WoWToolsSave[addName] or Save
-            Save.rightX= Save.rightX or 2--右边，提示，位置
-            Save.rightY= Save.rightY or -22
+        if PlayerGetTimerunningSeasonID() then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            return
+        end
+        --添加控制面板
 
-            if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent('PLAYER_LOGOUT')
-                return
+        Initializer= e.AddPanel_Check({
+            name= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or addName),
+            tooltip= e.cn(addName),
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled= not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
-            --添加控制面板
+        })
 
-            Initializer= e.AddPanel_Check({
-                name= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or addName),
-                tooltip= e.cn(addName),
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+
+            EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
+                if Save.slotKeystoneSay then
+                    local itemLink= get_Bag_Key()--查找，包的key
+                    if itemLink then
+                        C_Timer.After(2, function()
+                            WoWTools_ChatMixin:Chat(itemLink, nil, nil)
+                        end)
+                    end
                 end
-            })
-
-            if Save.disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-            else
-                self:RegisterEvent("CHALLENGE_MODE_COMPLETED")
-                if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                    Init()
-                end
-                if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
-                    Init_WeeklyRewardsFrame()
-                end
-                C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
-            end
+            end)
 
 
-        elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
-            Init()--史诗钥石地下城, 界面
-
-        elseif arg1=='Blizzard_WeeklyRewards' then
-            Init_WeeklyRewardsFrame()
+            C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
         end
 
-    elseif event == "PLAYER_LOGOUT" then
+    elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
+        Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
+
+    elseif arg1=='Blizzard_WeeklyRewards' then
+        Init_Blizzard_WeeklyRewards()
+    end
+end)
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
         if not e.ClearAllSave then
             WoWToolsSave[addName]=Save
         end
-
-    elseif event=='CHALLENGE_MODE_COMPLETED' then
-        if Save.slotKeystoneSay then
-            local itemLink= get_Bag_Key()--查找，包的key
-            if itemLink then
-                C_Timer.After(2, function()
-                    WoWTools_ChatMixin:Chat(itemLink, nil, nil)
-                end)
-            end
-        end
     end
 end)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --panel:RegisterEvent('CHALLENGE_MODE_START')
 --[[elseif event=='CHALLENGE_MODE_START' then -赏金, 说 Bounty

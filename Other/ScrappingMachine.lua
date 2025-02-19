@@ -447,7 +447,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         Save= WoWToolsSave['Other_ScrappingMachine'] or Save
         addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
@@ -463,11 +463,17 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-    elseif arg1=='Blizzard_ScrappingMachineUI' and not Save.disabled then--分解 ScrappingMachineFrame
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
+
+    elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
         Init()
         Init_Disabled_Button()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
+
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then

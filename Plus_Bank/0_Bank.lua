@@ -124,10 +124,6 @@ end
 --银行
 --BankFrame.lua
 local function Init()
-    if Save().disabled then
-        return
-    end
-
     WoWTools_BankMixin:Init_Menu()
     WoWTools_BankMixin:Init_MoveFrame()
 
@@ -152,8 +148,11 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback('BANKFRAME_OPENED', function()
-    if Init() then Init=function() end end
+EventRegistry:RegisterFrameEventAndCallback('BANKFRAME_OPENED', function(owner)
+    if not Save().disabled and Init() then
+        Init=function() end
+        EventRegistry:UnregisterCallback('BANKFRAME_OPENED', owner)
+    end
 end)
 
 
@@ -163,7 +162,7 @@ end)
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~=id then
         return
     end
@@ -177,13 +176,12 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         GetValue=function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            if Init() then
-                Init=function()end
-            else
-                print(WoWTools_Mixin.addName, WoWTools_BankMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)        
+            if _G['WoWTools_BankFrameMenuButton'] then
+                print(WoWTools_Mixin.addName, WoWTools_BankMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end
         end
     })
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 

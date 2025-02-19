@@ -349,7 +349,7 @@ end
 
 
 local function Init_All_Flyout()
-    --if not e.Player.levelMax or e.Is_Timerunning then return end
+    --if not e.Player.IsMaxLevel or e.Is_Timerunning then return end
     --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
     local tab={
         232,--'英雄之路：地心之战--11
@@ -606,7 +606,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         Save= WoWToolsSave[addName] or Save
 
@@ -627,12 +627,15 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-        if not Save.disabled then
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
             Init()
         end
 
-    elseif arg1=='Blizzard_PlayerSpells' and not Save.disabled then--天赋
+    elseif arg1=='Blizzard_PlayerSpells' then--天赋
         Init_Blizzard_PlayerSpells()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

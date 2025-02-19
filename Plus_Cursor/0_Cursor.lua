@@ -108,7 +108,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         WoWTools_CursorMixin.Save= WoWToolsSave['Plus_Cursor'] or WoWTools_CursorMixin.Save
         WoWTools_CursorMixin.addName= '|A:ClickCast-Icon-Mouse:0:0|a'..(e.onlyChinese and '鼠标' or MOUSE_LABEL)
@@ -176,6 +176,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         WoWTools_CursorMixin:Init_Options()
         WoWTools_CursorMixin:Init_Cursor_Options()
         WoWTools_CursorMixin:Init_GCD_Options()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

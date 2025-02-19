@@ -94,7 +94,9 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
 
         WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or WoWTools_AttributesMixin.Save
@@ -127,7 +129,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 
     elseif arg1=='Blizzard_Settings' then
         WoWTools_AttributesMixin:Init_Options()
-
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

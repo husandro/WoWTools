@@ -230,17 +230,16 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("MAIL_SHOW", function()
+EventRegistry:RegisterFrameEventAndCallback("MAIL_SHOW", function(owner)
 	if not Save().disabled then
-        if Init() then
-            Init=function()end
-        end
+        Init()
         set_to_send()
+        EventRegistry:UnregisterCallback('MAIL_SHOW', owner)
     end
 end)
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1~=id then
 		return
 	end
@@ -259,6 +258,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             print(WoWTools_Mixin.addName, WoWTools_MailMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 

@@ -249,8 +249,7 @@ end
 
 
 
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         Save= WoWToolsSave['ChatButton'] or Save
         if not Save.disabled then
@@ -263,7 +262,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 
         Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
         WoWTools_ChatButtonMixin.Category= Initializer
-        
+
         e.AddPanel_Check_Button({
             checkName= e.onlyChinese and '启用' or ENABLE,
             GetValue= function() return not Save.disabled end,
@@ -290,6 +289,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 
     elseif arg1=='Blizzard_Settings' then
         Init_Panel()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

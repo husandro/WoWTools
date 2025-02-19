@@ -409,10 +409,10 @@ StaticPopup_Show("PERKS_PROGRAM_CONFIRM_PURCHASE", product.price, markup, data);
 
 
 
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~= id then
         return
     end
     if Init() then Init=function()end end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)

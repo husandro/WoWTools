@@ -136,9 +136,7 @@ end
 
 local function Init()
     WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
-   
     WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
-    return true
 end
 
 
@@ -171,30 +169,32 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 
         WoWTools_PetBattleMixin:Init_Options()
 
-        if not WoWTools_PetBattleMixin.Save.disabled then
-            WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
-            if C_PetBattles.IsInBattle() then
-                if Init() then
-                    Init=function()end
-                end
-            else
-                PetBattleFrame:HookScript("OnShow", function()
-                    if Init() then
-                        Init=function()end
-                    end
-                end)
-            end
+        if WoWTools_PetBattleMixin.Save.disabled then
+            return
+        end
+
+        WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
+
+        if C_PetBattles.IsInBattle() then
+            Init()
+        else
+            EventRegistry:RegisterFrameEventAndCallback('PET_BATTLE_OPENING_DONE', function(owner2)
+                Init()
+                EventRegistry:UnregisterCallback('PET_BATTLE_OPENING_DONE', owner2)
+            end)
         end
 
     elseif arg1=='Blizzard_Collections' then
-        if not WoWTools_PetBattleMixin.Save.disabled then
-            PetJournal:HookScript('OnShow', function()
-                WoWTools_PetBattleMixin:TypeButton_SetShown()
-            end)
-            PetJournal:HookScript('OnHide', function()
-                WoWTools_PetBattleMixin:TypeButton_SetShown()
-            end)
+        if WoWTools_PetBattleMixin.Save.disabled then
+            return
         end
+
+        PetJournal:HookScript('OnShow', function()
+            WoWTools_PetBattleMixin:TypeButton_SetShown()
+        end)
+        PetJournal:HookScript('OnHide', function()
+            WoWTools_PetBattleMixin:TypeButton_SetShown()
+        end)
     elseif arg1=='Blizzard_Settings' then
         WoWTools_PetBattleMixin:Set_Options()
     end

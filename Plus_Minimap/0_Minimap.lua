@@ -201,15 +201,14 @@ local function Init()
     WoWTools_MinimapMixin:Init_Icon()--添加，图标
     WoWTools_MinimapMixin:Init_ExpansionLanding()
     WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
-    return true
 end
 
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1==id then
-        
+
         addName='|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
         WoWTools_MinimapMixin.addName= addName
         WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(e.onlyChinese and '追踪' or TRACKING)
@@ -234,24 +233,19 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-        if not Save().disabled then
+        if Save().disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
             for questID in pairs(Save().questIDs or {}) do
                 e.LoadData({id= questID, type=='quest'})
             end
 
-            if Init() then
-                Init=function()end
-            end
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then--秒表
-                WoWTools_MinimapMixin:Init_TimeManager()
-            end
+            Init()
         end
 
     elseif arg1=='Blizzard_TimeManager' then
-        if not Save().disabled then
-            WoWTools_MinimapMixin:Init_TimeManager()--秒表
-        end
+        WoWTools_MinimapMixin:Init_TimeManager()--秒表
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

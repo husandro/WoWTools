@@ -85,7 +85,7 @@ local function Init()
             '|n'..(not e.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
             ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(false)
             ..'|n'..(e.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..e.GetEnabeleDisable(true)
-            ..(e.Player.levelMax and '|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '满级' or GUILD_RECRUITMENT_MAXLEVEL) or '')
+            ..(e.Player.IsMaxLevel and '|n|n|cnRED_FONT_COLOR:'..(e.onlyChinese and '满级' or GUILD_RECRUITMENT_MAXLEVEL) or '')
         end,
         GetValue= function() return Save().clickToMove end,
         SetValue= function()

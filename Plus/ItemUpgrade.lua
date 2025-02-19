@@ -117,7 +117,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         Save= WoWToolsSave[addName] or Save
 
@@ -131,7 +131,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
                 print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
-
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
 
     elseif arg1=='Blizzard_ItemInteractionUI' and not Save.disabled then--套装转换, 界面
         Init_ItemInteractionFrame()

@@ -542,6 +542,14 @@ end
 --初始
 --####
 local function Init()
+    EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", Settings)--队伍信息提示
+    EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", Settings)--队伍信息提示
+    EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_, arg2)
+        if arg2=='chatBubblesParty' then
+            Settings()--提示，聊天泡泡，开启/禁用
+        end
+    end)
+
     --使用,提示
     GroupButton.typeText=WoWTools_LabelMixin:Create(GroupButton,{color=true})
     GroupButton.typeText:SetPoint('BOTTOM',0,2)
@@ -594,22 +602,7 @@ local function Init()
             return true
         end
     end
-    --[[GroupButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' and self.type then
-            WoWTools_ChatMixin:Say(self.type)
-            self:CloseMenu()
-            self:set_tooltip()
-        end
-    end)
-
-    GroupButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' and self.type then
-            WoWTools_ChatMixin:Say(self.type)
-        else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-            e.tips:Hide()
-        end
-    end)]]
+    
 
     GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
         local text
@@ -630,15 +623,6 @@ local function Init()
         end
     end)
 
-
-    --[[GroupButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        self:state_leave()
-    end)
-    GroupButton:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-        self:state_enter()--Init_Menu)
-    end)]]
 
     C_Timer.After(0.3, Settings)--队伍信息提示
 end
@@ -661,28 +645,19 @@ end
 
 
 
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~=id then
         return
     end
-        Save= WoWToolsSave['ChatButtonGroup'] or Save
-        addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
-        GroupButton= WoWTools_ChatButtonMixin:CreateButton('Group', addName)
 
-        if not GroupButton then--禁用 ChatButton
-            return
-        end
+    Save= WoWToolsSave['ChatButtonGroup'] or Save
+    addName= '|A:socialqueuing-icon-group:0:0:|a'..(e.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
+    GroupButton= WoWTools_ChatButtonMixin:CreateButton('Group', addName)
 
+    if GroupButton then--禁用 ChatButton
         Init()
-
-        EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", Settings)--队伍信息提示
-        EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", Settings)--队伍信息提示
-        EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_, arg2)
-            if arg2=='chatBubblesParty' then
-                Settings()--提示，聊天泡泡，开启/禁用
-            end
-        end)
+    end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()

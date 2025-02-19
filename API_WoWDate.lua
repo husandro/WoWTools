@@ -553,7 +553,7 @@ end
 
 --挑战
 local function Get_Info_Challenge()--挑战
-    if not e.Player.levelMax then
+    if not e.Player.IsMaxLevel then
         return
     end
     C_MythicPlus.RequestCurrentAffixes()
@@ -585,9 +585,7 @@ end
 
 
 
-
-
-local function Init(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~=id then
         return
     end
@@ -678,15 +676,9 @@ local function Init(_, arg1)
         Get_WoW_GUID_Info()--战网，好友GUID                
 
     end)
-end
 
-
-
-
-
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", Init)
-
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+end)
 
 
 
@@ -708,7 +700,7 @@ end)
 
 --队伍数据
 EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", e.GetGroupGuidDate)
-EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", e.GetGroupGuidDate)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", e.GetGroupGuidDate)
 
 --总游戏时间：%s
 EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
@@ -774,7 +766,7 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
 --玩家是否最高等级
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEVEL_UP", function(_, arg1)
     local level= arg1 or UnitLevel('player')
-    e.Player.levelMax= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
+    e.Player.IsMaxLevel= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
     e.Player.level= level
     e.WoWDate[e.Player.guid].level= level
 end)

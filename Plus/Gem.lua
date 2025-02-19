@@ -326,7 +326,7 @@ function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==3
-                    and (e.Is_Timerunning or (e.Player.levelMax and e.ExpansionLevel== expacID or not e.Player.levelMax))--最高等级
+                    and (e.Is_Timerunning or (e.Player.IsMaxLevel and e.ExpansionLevel== expacID or not e.Player.IsMaxLevel))--最高等级
                 then
                     local tab={
                         info= info,

@@ -245,37 +245,36 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~=id then
         return
     end
 
     Save= WoWToolsSave[addName] or Save
 
-    if PlayerGetTimerunningSeasonID() then
-        return
-    end
+    if not PlayerGetTimerunningSeasonID() and e.Player.level>=70 then
+        --添加控制面板
+        e.AddPanel_Check({
+            name= '|T656681:0|t'..e.cn(addName),
+            tooltip= function()
+                return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
+            end,
+            Value= not Save.disabled,
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled = not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            end
+        })
 
-    --添加控制面板
-    e.AddPanel_Check({
-        name= '|T656681:0|t'..e.cn(addName),
-        tooltip= function()
-            return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
-        end,
-        Value= not Save.disabled,
-        GetValue= function() return not Save.disabled end,
-        SetValue= function()
-            Save.disabled = not Save.disabled and true or nil
-            print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+        if not Save.disabled then
+            for _, itemID in pairs(ItemTab) do
+                e.LoadData({id=itemID, type='item'})
+            end
+            C_Timer.After(2, Init)
         end
-    })
-
-    if not Save.disabled then
-        for _, itemID in pairs(ItemTab) do
-            e.LoadData({id=itemID, type='item'})
-        end
-        C_Timer.After(2, Init)
     end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()

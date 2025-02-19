@@ -193,7 +193,6 @@ local function Init()
     WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
     WoWTools_MacroMixin:Init_ChangeTab()
     WoWTools_MacroMixin:Init_MacroButton_Plus()
-    return true
 end
 
 
@@ -206,7 +205,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1==id then
         WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
         WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or MACRO)
@@ -223,24 +222,20 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-        if not Save().disabled  then
+        if Save().disabled  then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
             if C_AddOns.IsAddOnLoaded("MacroToolkit") then
                 print(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName,
                     e.GetEnabeleDisable(false), 'MacroToolkit',
                     e.onlyChinese and '插件' or ADDONS
                 )
             end
-            if C_AddOns.IsAddOnLoaded('Blizzard_MacroUI') then
-                if Init() then
-                    Init=function()end
-                end
-            end
         end
 
-    elseif arg1=='Blizzard_MacroUI' and not Save().disabled then
-        if Init() then
-            Init=function()end
-        end
+    elseif arg1=='Blizzard_MacroUI' then
+        Init()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

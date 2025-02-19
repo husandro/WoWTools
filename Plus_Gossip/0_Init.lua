@@ -105,7 +105,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1 == id then
 
         WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or Save()
@@ -139,19 +139,17 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
              category= nil,
          })
 
-        if not Save().disabled then
+        if Save().disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
             Init()
         end
 
     elseif arg1=='Blizzard_PlayerChoice' then
-        if not Save().disabled then
-            WoWTools_GossipMixin:Init_PlayerChoice()
-        end
+        WoWTools_GossipMixin:Init_PlayerChoice()
 
     elseif arg1=='Blizzard_DelvesDifficultyPicker' then--地下堡
-        if not Save().disabled then
-            WoWTools_GossipMixin:Init_Delves()
-        end
+        WoWTools_GossipMixin:Init_Delves()
     end
 end)
 

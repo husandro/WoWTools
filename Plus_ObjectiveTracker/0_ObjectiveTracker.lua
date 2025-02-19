@@ -111,7 +111,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1~=id then
 		return
 	end
@@ -137,11 +137,12 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         WoWTools_ObjectiveTrackerMixin:Init_World_Quest()
         WoWTools_ObjectiveTrackerMixin:Init_Achievement()
         WoWTools_ObjectiveTrackerMixin:Init_Professions()
-        WoWTools_ObjectiveTrackerMixin:Init_MonthlyActivities()    
+        WoWTools_ObjectiveTrackerMixin:Init_MonthlyActivities()
         WoWTools_ObjectiveTrackerMixin:Init_ScenarioObjective()
         WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerFrame()
         WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerShared()
     end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()

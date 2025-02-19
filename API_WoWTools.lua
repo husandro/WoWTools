@@ -72,7 +72,7 @@ e.Player={
     --Lo= GetLocale(),
     week= GetWeek(),--周数
     guid= UnitGUID('player'),
-    levelMax= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
+    IsMaxLevel= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
     level= UnitLevel('player') or 1,--UnitEffectiveLevel('player')
     husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
     battleTag= battleTag,

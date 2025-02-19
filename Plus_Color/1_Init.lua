@@ -89,7 +89,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1~=id then
 		return
 	end
@@ -118,6 +118,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 	})
 
 	if Save().disabled then
+		EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 		return
 	end
 
@@ -135,6 +136,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 			)
 		end)
 	end
+	EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()

@@ -78,6 +78,12 @@ local function Init()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     end)
 
+    EventRegistry:RegisterFrameEventAndCallback("SOCKET_INFO_UPDATE", function()
+        if PaperDollItemsFrame:IsShown() then
+            e.call(PaperDollFrame_UpdateStats)
+        end
+    end)
+
     C_Timer.After(2, function()
         WoWTools_PaperDollMixin:Init_TrackButton()--装备管理框
     end)
@@ -101,14 +107,9 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("SOCKET_INFO_UPDATE", function()
-	if not Save().disabled and PaperDollItemsFrame:IsShown() then
-        e.call(PaperDollFrame_UpdateStats)
-    end
-end)
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1~=id then
 		return
 	end
@@ -134,6 +135,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
     if not Save().disabled then
         Init()
     end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()

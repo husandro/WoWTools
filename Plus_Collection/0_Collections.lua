@@ -36,7 +36,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
 
         WoWTools_CollectionMixin.Save= WoWToolsSave['Plus_Collection'] or Save()
@@ -53,12 +53,15 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-        if not Save().disabled then
+        if Save().disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
             WoWTools_CollectionMixin:Init_DressUpFrames()--试衣间, 外观列表 a
         end
 
-    elseif arg1=='Blizzard_Collections' and not Save().disabled then
+    elseif arg1=='Blizzard_Collections' then
         Init()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

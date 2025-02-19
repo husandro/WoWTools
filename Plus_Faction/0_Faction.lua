@@ -42,7 +42,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1==id then
 
 		WoWTools_ReputationMixin.Save= WoWToolsSave['Plus_Reputation'] or WoWTools_ReputationMixin.Save
@@ -60,29 +60,18 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 			end
 		})
 
-
-
-		if not Save().disabled then
+		if Save().disabled then
+			EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+		else
 			Init()
-
-			if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
-				WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
-			end
-
-			if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
-				WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
-			end
 		end
 
 	elseif arg1=='Blizzard_MajorFactions' then
-		if not Save().disabled then
-			WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
-		end
+		WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
 
 	elseif arg1=='Blizzard_CovenantRenown' then
-		if not Save().disabled then
-			WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
-		end
+		WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
+
 	end
 end)
 

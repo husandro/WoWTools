@@ -26,13 +26,11 @@ end
 
 
 
-local IsOpened
+
 local function Init_Open()
-    EventRegistry:RegisterFrameEventAndCallback("CALENDAR_UPDATE_EVENT_LIST", function()
-        if not IsOpened then
-            ToggleCalendar()
-            IsOpened=true
-        end
+    EventRegistry:RegisterFrameEventAndCallback("CALENDAR_UPDATE_EVENT_LIST", function(owner)
+        ToggleCalendar()
+        EventRegistry:UnregisterCallback('CALENDAR_UPDATE_EVENT_LIST', owner)
     end)
     ToggleCalendar()
 end
@@ -41,7 +39,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
 
         WoWTools_HolidayMixin.Save= WoWToolsSave['Plus_Holiday'] or Save()
@@ -67,16 +65,16 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             category= nil,
         })
 
-        if not Save().disabled then
-            C_Timer.After(0.3, Init_Open)
+        if Save().disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+            C_Timer.After(2, Init_Open)
         end
 
     elseif arg1=='Blizzard_Calendar' then
-        if not Save().disabled then
-            WoWTools_HolidayMixin:Init_CreateEventFrame()
-            WoWTools_HolidayMixin:Init_Calendar_Uptate()
-            WoWTools_HolidayMixin:Init_TrackButton()
-        end
+        WoWTools_HolidayMixin:Init_CreateEventFrame()
+        WoWTools_HolidayMixin:Init_Calendar_Uptate()
+        WoWTools_HolidayMixin:Init_TrackButton()
     end
 end)
 

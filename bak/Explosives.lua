@@ -1,7 +1,7 @@
 ---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 
 local id, e= ...
-if not e.Player.levelMax then
+if not e.Player.IsMaxLevel then
     return
 end
 

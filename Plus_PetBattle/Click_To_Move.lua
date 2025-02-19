@@ -53,7 +53,7 @@ end
 
 local function Get_Lock_ClickToMove_Value()
     if Save().ClickMoveButton.AutoClickToMove then
-        return e.Player.levelMax and '1' or '0'
+        return e.Player.IsMaxLevel and '1' or '0'
     else
         return Save().ClickMoveButton['lock_autoInteract']
     end

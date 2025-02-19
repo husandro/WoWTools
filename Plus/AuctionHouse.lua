@@ -1,3 +1,8 @@
+--受限模式
+if GameLimitedMode_IsActive() then
+    return
+end
+
 local id, e = ...
 local addName= BUTTON_LAG_AUCTIONHOUSE--拍卖行
 local Save={
@@ -1287,28 +1292,35 @@ end
 
 
 
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         Save= WoWToolsSave[addName] or Save
 
-        --添加控制面板
-        e.AddPanel_Check({
-            name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
+        if PlayerGetTimerunningSeasonID() then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+            --添加控制面板
+            e.AddPanel_Check({
+                name= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or addName),
 
-            tooltip= e.cn(addName),
-            Value= not Save.disabled,
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                tooltip= e.cn(addName),
+                Value= not Save.disabled,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
+            if Save.disabled then
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
             end
-        })
+        end
 
     elseif arg1=='Blizzard_AuctionHouseUI' then
         Init_BrowseResultsFrame()
         Init_AllAuctions()
         Init_Sell()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

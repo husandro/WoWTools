@@ -175,7 +175,7 @@ local function Init()
     end)
 
 
-    if e.Player.levelMax then
+    if e.Player.IsMaxLevel then
         Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
         Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
         Button.btn.keystones:SetNormalTexture(4352494)

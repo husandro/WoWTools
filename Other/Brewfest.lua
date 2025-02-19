@@ -236,44 +236,46 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1==id then
-        Save= WoWToolsSave[addName] or Save
-
-        --添加控制面板
-        e.AddPanel_Header(nil, e.onlyChinese and '其它' or OTHER)
-        e.AddPanel_Check_Button({
-            checkName= '|T132248:0|t'..e.cn(addName),
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                if not Save.disabled then
-                    if not button then
-                        Init()
-                    end
-                    button:SetShown(true)
-                else
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            end,
-            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-            buttonFunc= function()
-                Save.Point=nil
-                if button then
-                    button:ClearAllPoints()
-                    button:set_Point()
-                end
-                print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
-            end,
-            tooltip= e.onlyChinese and '节日: 美酒节（赛羊）' or CALENDAR_FILTER_HOLIDAYS,
-            layout= nil,
-            category= nil,
-        })
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1~=id then
+        return
     end
+    Save= WoWToolsSave[addName] or Save
+
+    --添加控制面板
+    e.AddPanel_Header(nil, e.onlyChinese and '其它' or OTHER)
+    e.AddPanel_Check_Button({
+        checkName= '|T132248:0|t'..e.cn(addName),
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
+            Save.disabled= not Save.disabled and true or nil
+            if not Save.disabled then
+                if not button then
+                    Init()
+                end
+                button:SetShown(true)
+            else
+                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        end,
+        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonFunc= function()
+            Save.Point=nil
+            if button then
+                button:ClearAllPoints()
+                button:set_Point()
+            end
+            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+        end,
+        tooltip= e.onlyChinese and '节日: 美酒节（赛羊）' or CALENDAR_FILTER_HOLIDAYS,
+        layout= nil,
+        category= nil,
+    })
 
     if not Save.disabled then
         Init()
     end
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
