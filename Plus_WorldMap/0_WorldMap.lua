@@ -165,7 +165,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
         WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        if WoWTools_WorldMapMixin.addName then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
     end
 end)
 

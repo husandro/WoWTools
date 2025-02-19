@@ -107,7 +107,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 		hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 			WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)
 		end)
-		EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+		if addName then
+			EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+		end
 	end
 end)
 

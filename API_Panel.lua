@@ -824,8 +824,20 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1 == id then
+        Init()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    end
+end)
 
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
+    end
+end)
 
+--[[
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
@@ -842,3 +854,4 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
     end
 end)
+]]

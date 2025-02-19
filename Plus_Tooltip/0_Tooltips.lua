@@ -110,6 +110,23 @@ end
 
 --初始
 local function Init()
+    for _, name in pairs(
+        {
+         'Blizzard_AchievementUI',
+         'Blizzard_Collections',
+         'Blizzard_ChallengesUI',
+         'Blizzard_OrderHallUI',
+         'Blizzard_FlightMap',
+         'Blizzard_Professions',
+         'Blizzard_ClassTalentUI',
+         'Blizzard_PlayerChoice',
+         'Blizzard_GenericTraitUI',
+         'Blizzard_Settings',
+        }
+    )do
+        Load_Addon(nil, name)
+    end
+    
     WoWTools_TooltipMixin:Init_StatusBar()--生命条提示
     WoWTools_TooltipMixin:Init_Hook()
     WoWTools_TooltipMixin:Init_BattlePet()
@@ -169,25 +186,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             Load_Addon= function()end
             EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
         end
-            Init()--初始
 
-            for _, name in pairs(
-                {
-                 'Blizzard_AchievementUI',
-                 'Blizzard_Collections',
-                 'Blizzard_ChallengesUI',
-                 'Blizzard_OrderHallUI',
-                 'Blizzard_FlightMap',
-                 'Blizzard_Professions',
-                 'Blizzard_ClassTalentUI',
-                 'Blizzard_PlayerChoice',
-                 'Blizzard_GenericTraitUI',
-                 'Blizzard_Settings',
-                }
-            )do
-                Load_Addon(nil, name)
-            end
-
+        Init()--初始
     else
         Load_Addon(arg1)
     end
