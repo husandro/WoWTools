@@ -32,7 +32,6 @@ API_WoWDate.lua
 0_Mixin\Aura.lua
 0_Mixin\Bag.lua
 0_Mixin\Button.lua
-0_Mixin\ToolsButton.lua
 0_Mixin\Chat.lua
 0_Mixin\Collected.lua
 0_Mixin\Currency.lua
@@ -64,7 +63,8 @@ API_WoWDate.lua
 
 
 ##坐骑， Tools 主要的，
-Tools\0_Init_Tools.lua
+Tools\0_ToolsButtonMixin.lua
+Tools\1_Init.lua
 
 ##坐骑
 Tools_B1_Mount\B1_Mount.lua
