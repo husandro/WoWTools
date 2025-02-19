@@ -149,8 +149,6 @@ end
 
 
 local function Init()
-    ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
-    
     WoWTools_KeyMixin:Init(button, function() return Save.KEY end)
 
     button:SetAttribute('type1','item')
@@ -191,31 +189,6 @@ local function Init()
     end)
 
 
-    button:RegisterEvent("PLAYER_REGEN_ENABLED")
-    button:RegisterEvent("PLAYER_REGEN_DISABLED")
-    button:RegisterEvent('BAG_UPDATE_DELAYED')
-    if not UnitAffectingCombat('player') then
-        button:RegisterUnitEvent("UNIT_AURA", 'player')
-    end
-    button:RegisterEvent('BAG_UPDATE_COOLDOWN')
-
-    button:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_REGEN_ENABLED' then
-            self:RegisterUnitEvent("UNIT_AURA", 'player')
-
-        elseif event=='PLAYER_REGEN_DISABLED' then
-            self:UnregisterEvent('UNIT_AURA')
-
-        elseif event=='BAG_UPDATE_DELAYED' then
-            setCount()--设置数量
-
-        elseif event=='UNIT_AURA' then
-            Set_Aura()--光环取消
-
-        elseif event=='BAG_UPDATE_COOLDOWN' then
-            e.SetItemSpellCool(button, {item=ItemID})
-        end
-    end)
 end
 
 
@@ -230,27 +203,81 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~= id then
-        return
-    end
 
-    Save= WoWToolsSave['NoggenfoggerElixir'] or Save
-    addName= '|T134863:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
-    button= WoWTools_ToolsButtonMixin:CreateButton({
-        name='NoggenfoggerElixir',
-        tooltip=addName,
-    })
 
-    if not button then
-        return
-    end
 
-    Init()--初始
-end)
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['NoggenfoggerElixir']=Save
+
+
+
+
+
+
+
+
+
+
+
+
+--###########
+--加载保存数据
+--###########
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            --[[print(C_Item.GetItemCount(ItemID))
+            if (C_Item.GetItemCount(ItemID)==0) then--没有时,不加载
+                self:UnregisterEvent('ADDON_LOADED')
+                return
+            end]]
+
+
+
+            addName= '|T134863:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
+
+            Save= WoWToolsSave['NoggenfoggerElixir'] or Save
+            button= WoWTools_ToolsButtonMixin:CreateButton({
+                name='NoggenfoggerElixir',
+                tooltip=addName,
+            })
+
+            if button then
+                ItemName= C_Item.GetItemNameByID(ItemID) or ItemName
+
+                self:RegisterEvent("PLAYER_REGEN_ENABLED")
+                self:RegisterEvent("PLAYER_REGEN_DISABLED")
+                self:RegisterEvent('BAG_UPDATE_DELAYED')
+                self:RegisterUnitEvent("UNIT_AURA", 'player')
+                self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+
+
+                Init()--初始
+            end
+            self:UnregisterEvent('ADDON_LOADED')
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['NoggenfoggerElixir']=Save
+        end
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        self:RegisterUnitEvent("UNIT_AURA", 'player')
+
+
+    elseif event=='PLAYER_REGEN_DISABLED' then
+        self:UnregisterEvent('UNIT_AURA')
+
+    elseif event=='BAG_UPDATE_DELAYED' then
+        setCount()--设置数量
+
+    elseif event=='UNIT_AURA' then
+        Set_Aura()--光环取消
+
+    elseif event=='BAG_UPDATE_COOLDOWN' then
+        e.SetItemSpellCool(button, {item=ItemID})
     end
 end)

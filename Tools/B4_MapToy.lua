@@ -137,7 +137,7 @@ local function Init_Options(category, layout)
         buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         SetValue= function()
            Save.no={}
-           print(WoWTools_Mixin.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+           print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     }, initializer)
 end
@@ -225,7 +225,7 @@ local function Init_Menu(self, root)
         return Save.no[e.Player.guid]
     end, function()
         Save.no[e.Player.guid]= not Save.no[e.Player.guid] and true or nil
-        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
+        print(e.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
@@ -251,7 +251,7 @@ local function Init_Menu(self, root)
                 return Save.no[data.guid]
             end, function(data)
                 Save.no[data.guid]= not Save.no[data.guid] and true or nil
-                    print(WoWTools_Mixin.addName, addName,
+                    print(e.addName, addName,
                         e.GetEnabeleDisable(not Save.no[data.guid]),
                         WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
                     )
@@ -402,59 +402,65 @@ end
 
 
 
+--###########
+--加载保存数据
+--###########
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave['Tools_MapToy'] or Save
 
+            addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~= id then
-        return
-    end
+            WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
-    Save= WoWToolsSave['Tools_MapToy'] or Save
-    addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
-    WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
-
-    if not Save.disabled
-        and not Save.no[e.Player.guid]
-        and WoWTools_ToolsButtonMixin:GetButton()
-    then
-
-        local find
-        local notHasToy
-        for _, info in pairs(Tab) do
-            local new= Is_Completed(info)
-
-            if new.hasToy~=false--没收集
-                and new.num>0--没完成，数量
-                or new.isNotChecked--没数据
+            if not Save.disabled
+                and not Save.no[e.Player.guid]
+                and WoWTools_ToolsButtonMixin:GetButton()
             then
-                find=true
+
+                local find
+                local notHasToy
+                for _, info in pairs(Tab) do
+                    local new= Is_Completed(info)
+
+                    if new.hasToy~=false--没收集
+                        and new.num>0--没完成，数量
+                        or new.isNotChecked--没数据
+                    then
+                        find=true
+                    end
+                    if new.hasToy~=true then
+                        notHasToy=true
+                    end
+                end
+
+                if find==nil then
+                    if not notHasToy and Save.autoAddDisabled then
+                        Save.no[e.Player.guid]=true
+                        self:UnregisterEvent('ADDON_LOADED')
+                        return
+                    end
+                end
+
+                ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+                    name='MapToy',
+                    tooltip=addName,
+                    disabledOptions=true
+                })
+
+                Init()
             end
-            if new.hasToy~=true then
-                notHasToy=true
-            end
+
+            self:UnregisterEvent('ADDON_LOADED')
         end
 
-        if find==nil then
-            if not notHasToy and Save.autoAddDisabled then
-                Save.no[e.Player.guid]=true
-                return
-            end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_MapToy']= Save
         end
-
-        ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
-            name='MapToy',
-            tooltip=addName,
-            disabledOptions=true
-        })
-
-        if ToyButton then
-            Init()
-        end
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Tools_MapToy']= Save
     end
 end)

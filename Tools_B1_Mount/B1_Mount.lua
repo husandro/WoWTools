@@ -89,10 +89,6 @@ WoWTools_MountMixin={
     --faction= nil,0 1
 }
 
-
-
-local MountButton
-
 function WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
     local num= 0
     for _ in pairs(self.Save.Mounts[type]) do
@@ -110,25 +106,9 @@ end
 
 
 
+
+
 local function Init()
-    WoWTools_MountMixin.Save= WoWToolsSave['Tools_Mounts'] or WoWTools_MountMixin.Save
-    WoWTools_MountMixin.addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)
-
-    if not WoWTools_MountMixin.Save.Mounts[SPELLS] then--为不同语言，
-        WoWTools_MountMixin.Save.Mounts= P_Mouts_Tab
-    end
-
-    MountButton= WoWTools_ToolsButtonMixin:CreateButton({
-        name='Mount',
-        tooltip=WoWTools_MountMixin.addName,
-    })
-
-    if not MountButton then
-        return
-    end
-
-    WoWTools_MountMixin.MountButton= MountButton
-
     for type, tab in pairs(WoWTools_MountMixin.Save.Mounts) do
         for ID in pairs(tab) do
             e.LoadData({id=ID, type= type==ITEMS and 'item' or 'spell'})
@@ -138,25 +118,61 @@ local function Init()
     WoWTools_MountMixin:Init_Button()
     WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
     WoWTools_MountMixin:Init_SpellFlyoutButton()
-
-    WoWTools_MountMixin.faction= e.Player.faction=='Horde' and 0 or (e.Player.faction=='Alliance' and 1)
 end
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1==id then
-        Init()
-    elseif arg1=='Blizzard_Collections' and MountButton then--收藏
-        WoWTools_MountMixin:Init_MountJournal()
 
-    elseif arg1=='Blizzard_PlayerSpells' and MountButton then--法术书
-        WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
-    end
-end)
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Tools_Mounts']= WoWTools_MountMixin.Save
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_MountMixin.addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(e.onlyChinese and '坐骑' or MOUNT)
+
+            if WoWToolsSave['Tools_Mounts'] then
+                WoWTools_MountMixin.Save= WoWToolsSave['Tools_Mounts']
+            end
+
+            if not WoWTools_MountMixin.Save.Mounts[SPELLS] then--为不同语言，
+                WoWTools_MountMixin.Save.Mounts= P_Mouts_Tab
+            end
+
+            WoWTools_MountMixin.MountButton= WoWTools_ToolsButtonMixin:CreateButton({
+                name='Mount',
+                tooltip=WoWTools_MountMixin.addName,
+            })
+
+            if WoWTools_MountMixin.MountButton then
+                Init()--初始
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                    WoWTools_MountMixin:Init_MountJournal()
+                end
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+                    WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
+                end
+
+                WoWTools_MountMixin.faction= e.Player.faction=='Horde' and 0 or (e.Player.faction=='Alliance' and 1)
+            else
+                self:UnregisterEvent('ADDON_LOADED')
+            end
+
+        elseif arg1=='Blizzard_Collections' then--收藏
+            WoWTools_MountMixin:Init_MountJournal()
+
+        elseif arg1=='Blizzard_PlayerSpells' then--法术书
+            WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
+        end
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_Mounts']= WoWTools_MountMixin.Save
+        end
     end
 end)
 --436854 C_MountJournal.GetDynamicFlightModeSpellID() 切换飞行模式

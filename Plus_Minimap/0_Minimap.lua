@@ -245,7 +245,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     elseif arg1=='Blizzard_TimeManager' then
         WoWTools_MinimapMixin:Init_TimeManager()--秒表
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        if addName then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
     end
 end)
 

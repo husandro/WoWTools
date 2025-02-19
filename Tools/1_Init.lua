@@ -45,7 +45,7 @@ local function Init_Panel()
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled= not Save.disabled and true or nil
-            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
@@ -53,7 +53,7 @@ local function Init_Panel()
             if Button then
                 Button:set_point()
             end
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= addName,
         layout= Layout,
@@ -458,32 +458,40 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1== id then
-        Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
 
-        Save.BottomPoint= Save.BottomPoint or {
-            Mount=true,
-            Hearthstone=true,
-            OpenItems=true,
-        }
 
-        Button= WoWTools_ToolsButtonMixin:Init(Save)
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(_, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
+            Save.BottomPoint= Save.BottomPoint or {
+                Mount=true,
+                Hearthstone=true,
+                OpenItems=true,
+            }
+            Button= WoWTools_ToolsButtonMixin:Init(Save)
 
-        if Button then
-            Init()
+            if Button  then
+                Init()
+            end
+
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                Init_Panel()
+            end
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Panel()
         end
 
-    elseif arg1=='Blizzard_Settings' then
-        Init_Panel()
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        if Button and Save then
-            Save.show= Button.Frame:IsShown()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            if Save then
+                Save.show= Button and Button.Frame:IsShown()
+            end
+            WoWToolsSave['WoWTools_ToolsButton']=Save
         end
-        WoWToolsSave['WoWTools_ToolsButton']=Save
     end
 end)

@@ -1,15 +1,14 @@
 local id, e= ...
-
 e.dropdownIconForPetSpec = {
     [STABLE_PET_SPEC_CUNNING] = "cunning-icon-small",
     [STABLE_PET_SPEC_FEROCITY] = "ferocity-icon-small",
     [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
 }
-
-if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
+if e.Player.class~='HUNTER' then
     WoWTools_StableFrameMixin={Save={disabled=true}}
     return
 end
+
 
 
 WoWTools_StableFrameMixin={
@@ -31,30 +30,17 @@ WoWTools_StableFrameMixin={
 }
 
 
-local function Init()
-    WoWTools_StableFrameMixin:Init_Menu()
-    WoWTools_StableFrameMixin:Set_StableFrame_List()
-
-    WoWTools_StableFrameMixin:Init_UI()
-    return true
-end
 
 
 
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~=id then
         return
     end
 
     WoWTools_StableFrameMixin.Save= WoWToolsSave['Plus_StableFrame'] or WoWTools_StableFrameMixin.Save
-
     WoWTools_StableFrameMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
-    if e.Player.class~='HUNTER' then --or C_AddOns.IsAddOnLoaded("ImprovedStableFrame") then
-        e.dropdownIconForPetSpec={}
-        return
-    end
 
     --添加控制面板
         e.AddPanel_Check({
@@ -68,16 +54,18 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
         end
     })
 
-    if WoWTools_StableFrameMixin.Save.disabled then
-        return
+    if not WoWTools_StableFrameMixin.Save.disabled then
+        EventRegistry:RegisterFrameEventAndCallback("PET_STABLE_SHOW", function(owner2)
+            WoWTools_StableFrameMixin:Init_StableFrame_Plus()
+            WoWTools_StableFrameMixin:Init_Menu()
+            WoWTools_StableFrameMixin:Set_StableFrame_List()
+            WoWTools_StableFrameMixin:Init_UI()
+            EventRegistry:UnregisterCallback('PET_STABLE_SHOW', owner2)
+        end)
     end
-
-    WoWTools_StableFrameMixin:Init_StableFrame_Plus()
-
-    StableFrame:HookScript('OnShow', function()
-        if Init() then Init=function()end end
-    end)
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
+
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then

@@ -48,7 +48,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     elseif arg1=='Blizzard_Settings' then
         WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        if WoWTools_MainMenuMixin.addName then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
     end
 end)
 
@@ -57,33 +59,3 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
 		WoWToolsSave['Plus_MainMenu']= WoWTools_MainMenuMixin.Save
 	end
 end)
-
---[[local panel= CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            WoWTools_MainMenuMixin.Save= WoWToolsSave['Plus_MainMenu'] or WoWTools_MainMenuMixin.Save
-            WoWToolsSave[HUD_EDIT_MODE_MICRO_MENU_LABEL..' Plus']= nil--清除，旧版本数据
-
-
-            WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(e.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
-            WoWTools_MainMenuMixin:Init_Category()
-
-
-            if not WoWTools_MainMenuMixin.Save.disabled then
-                Init()
-            end
-            WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
-            
-        elseif arg1=='Blizzard_Settings' then
-            WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_MainMenu']= WoWTools_MainMenuMixin.Save
-        end
-    end
-end)]]

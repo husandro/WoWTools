@@ -46,7 +46,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
         frame.sumButton:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            e.tips:AddDoubleLine(e.addName, addName)
             e.tips:Show()
             self:SetAlpha(1)
         end)
@@ -356,42 +356,58 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1== id then
-        if WoWToolsSave['DaisyToolsTools'] then
-            Save= WoWToolsSave['DaisyToolsTools']
-            Save.Pets= Save.Pets or {[2780]=true}
+
+
+
+
+
+--###########
+--加载保存数据
+--###########
+local panel= CreateFrame('Frame')
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('PLAYER_LOGOUT')
+
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            if WoWToolsSave['DaisyToolsTools'] then
+                Save= WoWToolsSave['DaisyToolsTools']
+                Save.Pets= Save.Pets or {[2780]=true}
+                Save.speciesID= Save.speciesID or 2780
+                WoWToolsSave['DaisyToolsTools']=nil
+
+            elseif WoWToolsSave['Tools_Daisy'] then
+                Save= WoWToolsSave['Tools_Daisy']
+            end
+
             Save.speciesID= Save.speciesID or 2780
-            WoWToolsSave['DaisyToolsTools']=nil
 
-        elseif WoWToolsSave['Tools_Daisy'] then
-            Save= WoWToolsSave['Tools_Daisy']
+            addName= '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy')
+
+            button= WoWTools_ToolsButtonMixin:CreateButton({
+                name='SummonPet',
+                tooltip=addName,
+            })
+
+            if button then
+                Init()
+                if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                    hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)        
+                    self:UnregisterEvent('ADDON_LOADED')
+                end
+            else
+                self:UnregisterEvent('ADDON_LOADED')
+            end
+
+        elseif arg1=='Blizzard_Collections' then
+            hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
         end
 
-        Save.speciesID= Save.speciesID or 2780
-
-        addName= '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy')
-
-        button= WoWTools_ToolsButtonMixin:CreateButton({
-            name='SummonPet',
-            tooltip=addName,
-        })
-
-        if button then
-            Init()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_Daisy']=Save
         end
 
-    elseif arg1=='Blizzard_Collections' and button then
-        hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
     end
 end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Tools_Daisy']=Save
-    end
-end)
-
-
-
-

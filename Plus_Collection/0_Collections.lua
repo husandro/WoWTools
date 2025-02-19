@@ -61,7 +61,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     elseif arg1=='Blizzard_Collections' then
         Init()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        if WoWTools_CollectionMixin.addName then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
     end
 end)
 

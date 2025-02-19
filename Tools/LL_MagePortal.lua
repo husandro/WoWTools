@@ -336,28 +336,40 @@ end
 
 
 
+--###########
+--加载保存数据
+--###########
+local panel=CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
 
+            Save= WoWToolsSave['Tools_MagePortal'] or Save
 
+            if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
+                addName= '|T626001:0|t|cff3fc6ea'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+                Init()
+            else
+                Tab=nil
+            end
+            self:UnregisterEvent('ADDON_LOADED')
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1~= id then
-        return
-    end
+            WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
 
-    Save= WoWToolsSave['Tools_MagePortal'] or Save
+        end
 
-    if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
-        addName= '|T626001:0|t|cff3fc6ea'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
-        Init()
-    else
-        Tab=nil
-    end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_MagePortal']=Save
+        end
 
-    WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Tools_MagePortal']=Save
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        if self.combat then
+            self.combat=nil
+            Init()
+        end
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
     end
 end)

@@ -135,7 +135,7 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1==id then
         WoWTools_WorldMapMixin.Save= WoWToolsSave['Plus_WorldMap'] or WoWTools_WorldMapMixin.Save
         WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
@@ -157,14 +157,15 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
             end
         })
 
-        if not WoWTools_WorldMapMixin.Save.disabled then
+        if WoWTools_WorldMapMixin.Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
             Init()
         end
 
     elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
-        if not WoWTools_WorldMapMixin.Save.disabled then
-            WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
-        end
+        WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 

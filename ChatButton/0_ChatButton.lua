@@ -289,7 +289,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     elseif arg1=='Blizzard_Settings' then
         Init_Panel()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        if Initializer then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
     end
 end)
 

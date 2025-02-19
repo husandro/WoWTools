@@ -120,7 +120,7 @@ local function Init()
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
     --WoWTools_TooltipMixin:Set_Init_Item(GlueTooltip)
 
-    EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEAVING_WORLD", function(_, arg1)
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEAVING_WORLD", function()
         if Save().setCVar then
             if not UnitAffectingCombat('player') then
                 Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
@@ -130,7 +130,7 @@ local function Init()
             end
         end
     end)
-    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(_, arg1)--https://wago.io/ZtSxpza28
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()--https://wago.io/ZtSxpza28
         if Save().setCVar and Save().graphicsViewDistance and not UnitAffectingCombat('player') then
             C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)
             Save().graphicsViewDistance=nil
@@ -147,7 +147,7 @@ end
 
 
 --Save().WidgetSetID = Save().WidgetSetID or 0
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
         WoWTools_TooltipMixin.addName= addName
@@ -167,7 +167,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
 
         if Save().disabled then
             Load_Addon= function()end
-            return
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
         end
             Init()--初始
 

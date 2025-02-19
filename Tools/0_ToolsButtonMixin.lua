@@ -55,7 +55,12 @@ function WoWTools_ToolsButtonMixin:Init(save)
 
     self:SetSaveData(save)
 
-    self.Button= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_ToolsButton', icon='hide', size={30, save.height or 10}})
+    self.Button= WoWTools_ButtonMixin:Cbtn(nil, {
+        --button='DropdownButton',
+        name='WoWTools_ToolsButton',
+        icon='hide',
+        size={30, save.height or 10}
+    })
 
     self.Button.Frame= CreateFrame('Frame', nil, self.Button)
     self.Button.Frame:SetAllPoints()

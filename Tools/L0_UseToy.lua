@@ -129,7 +129,7 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save.lockedToy)
     end
-    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(e.addName, addName, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 
@@ -350,7 +350,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() then
             Save.items={}
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(e.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:Rest_Random()
         else
             return MenuResponse.Open
@@ -370,7 +370,7 @@ local function Init_Menu(self, root)
         if IsControlKeyDown() then
             Save.items= P_Items
             ToyButton:Rest_Random()
-            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(e.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
         end
@@ -451,6 +451,24 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --#############
 --玩具界面, 按钮
 --#############
@@ -468,7 +486,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
         function btn.useToy:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            e.tips:AddDoubleLine(e.addName, addName)
             e.tips:AddLine(' ')
             local itemID=self:get_itemID()
             local icon= C_Item.GetItemIconByID(itemID)
@@ -783,29 +801,49 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(_, arg1)
-    if arg1== id then
-        Save= WoWToolsSave['Tools_UseToy'] or Save
 
-        addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
 
-        ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
-            name='UseToy',
-            tooltip=addName,
-        })
 
-        if ToyButton then
-            Set_Alt_Table()
-            Init()--初始
+
+
+
+
+
+
+
+--###########
+--加载保存数据
+--###########
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+
+            Save= WoWToolsSave['Tools_UseToy'] or Save
+
+            addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
+
+            ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+                name='UseToy',
+                tooltip=addName,
+            })
+
+            if ToyButton then
+                Set_Alt_Table()
+                Init()--初始
+            else
+                self:UnregisterEvent('ADDON_LOADED')
+            end
+
+        elseif arg1=='Blizzard_Collections' then
+            hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
         end
 
-    elseif arg1=='Blizzard_Collections' and ToyButton then
-        hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Tools_UseToy']=Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Tools_UseToy']=Save
+        end
     end
 end)

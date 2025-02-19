@@ -235,7 +235,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     elseif arg1=='Blizzard_MacroUI' then
         Init()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        if WoWTools_MacroMixin.addName then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        end
     end
 end)
 
