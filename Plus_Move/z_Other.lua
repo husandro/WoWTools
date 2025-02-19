@@ -119,7 +119,7 @@ local function Init()
         WoWTools_MailMixin:Init_UI()
     end
 
-    if WoWTools_StableFrameMixin.Save.disabled then--StableFrame
+    if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame
         WoWTools_MoveMixin:Setup(StableFrame)
     end
 
