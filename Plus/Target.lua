@@ -1548,67 +1548,61 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1==id then
+        Save= WoWToolsSave[addName] or Save
 
+        Save.targetTextureTab= nil
+        Save.targetTextureNewTab= Save.targetTextureNewTab or {}
 
+        Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
+        Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
+        Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
 
+        Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
+        Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
+        Save.unitIsMeSize= Save.unitIsMeSize or 12
+        Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
+        Save.unitIsMeX= Save.unitIsMeX or 0
+        Save.unitIsMeY= Save.unitIsMeY or -2
+        Save.unitIsMeColor= Save.unitIsMeColor or {r=1,g=1,b=1,a=1}
 
+        Save.scale= Save.scale or 1.5
+        Save.elapsed= Save.elapsed or 0.5
 
+        Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
 
+        --添加控制面板
+        e.AddPanel_Sub_Category({name=format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '目标' or addName)..'|r', frame=panel})
 
+        e.ReloadPanel({panel=panel, addName= e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            disabledfunc=function()
+                Save.disabled= not Save.disabled and true or nil
+                if not TargetFrame and not Save.disabled  then
+                    set_Option()
+                    Init()
+                end
+                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+            end,
+            clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
+        )
 
-panel:RegisterEvent('PLAYER_LOGOUT')
-panel:RegisterEvent('ADDON_LOADED')
-panel:SetScript("OnEvent", function(_, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave[addName] or Save
-
-            Save.targetTextureTab= nil
-            Save.targetTextureNewTab= Save.targetTextureNewTab or {}
-
-            Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
-            Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
-            Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
-
-            Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
-            Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
-            Save.unitIsMeSize= Save.unitIsMeSize or 12
-            Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
-            Save.unitIsMeX= Save.unitIsMeX or 0
-            Save.unitIsMeY= Save.unitIsMeY or -2
-            Save.unitIsMeColor= Save.unitIsMeColor or {r=1,g=1,b=1,a=1}
-
-            Save.scale= Save.scale or 1.5
-            Save.elapsed= Save.elapsed or 0.5
-
-            Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
-
-            --添加控制面板
-            e.AddPanel_Sub_Category({name=format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '目标' or addName)..'|r', frame=panel})
-
-            e.ReloadPanel({panel=panel, addName= e.cn(addName), restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-                disabledfunc=function()
-                    Save.disabled= not Save.disabled and true or nil
-                    if not TargetFrame and not Save.disabled  then
-                        set_Option()
-                        Init()
-                    end
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
-                end,
-                clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
-            )
-
-            if not Save.disabled then
-                Init()
-            end
-        elseif arg1=='Blizzard_Settings' then
-            set_Option()
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+            Init()
         end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
-        end
+    elseif arg1=='Blizzard_Settings' then
+        set_Option()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
---NamePlate2PlaterUnitFrameHealthBar
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave[addName]=Save
+    end
+end)
+
+
+
