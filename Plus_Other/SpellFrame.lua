@@ -196,14 +196,14 @@ local function Init_Spec_Button()
         btn:SetScript('OnEnter', function(self)
             WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
                 specIndex= self.specIndex,
-                tooltip= function(tooltip, data)
+                tooltip= function(tooltip)
                     tooltip:AddLine(' ')
+                    local col= ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '|cffffffff')
                     tooltip:AddDoubleLine(
-                        ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '')
-                        ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
+                        col..(e.onlyChinese and '激活' or SPEC_ACTIVE)
                         ..e.Icon.left,
                         
-                        e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..addName
+                        '|cffffffff'..e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..addName
                     )
                 end
             })
