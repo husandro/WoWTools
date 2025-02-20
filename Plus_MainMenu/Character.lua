@@ -54,7 +54,7 @@ local function Init()
 
         e.tips:AddLine(' ')
         local bat= UnitAffectingCombat('player')
-        
+
         e.tips:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '角色' or CHARACTER)..'|r'
             ..e.Icon.mid

@@ -191,7 +191,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:CanChangeAttribute() then --UnitAffectingCombat('player') then
+    if not self:CanChangeAttribute() then
         root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -356,8 +356,8 @@ local function Init_Menu(self, root)
 
 --重置位置
     sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, sub, Save().point , function()--UnitAffectingCombat('player')
-        if self:CanChangeAttribute() then--UnitAffectingCombat('player') then
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point , function()
+        if self:CanChangeAttribute() then
             Save().point=nil
             self:set_point()
         end

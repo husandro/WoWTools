@@ -432,7 +432,7 @@ local function Init()
             WoWTools_MountMixin:Init_Menu(self)
         elseif d=='LeftButton' then
             if IsMounted() then
-            C_MountJournal.Dismiss()
+                C_MountJournal.Dismiss()
 
             --战斗中，可用，驭空术
             elseif UnitAffectingCombat('player') and not IsPlayerMoving() and  C_Spell.IsSpellUsable(368896) then
@@ -538,7 +538,7 @@ local function Init()
     MountButton:settings()
 
     C_Timer.After(4, function()
-        if not UnitAffectingCombat('player') then
+        if MountButton:CanChangeAttribute() then
             setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
             setClickAtt()--设置
             e.SetItemSpellCool(MountButton, {item=MountButton.itemID, spell=MountButton.spellID})--设置冷却

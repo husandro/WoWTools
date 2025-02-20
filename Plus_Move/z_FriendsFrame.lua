@@ -42,13 +42,10 @@ end
 
 
 local function Set_RaidFrame_Button_size()
-    if UnitAffectingCombat('player') then
-        return
-    end
     local w= FriendsFrame:GetWidth()/2-8
     for i=1, 8 do
         local frame= _G['RaidGroup'..i]
-        if frame then
+        if frame and frame:CanChangeAttribute() then
             frame:SetWidth(w)
             for _, r in pairs({frame:GetRegions()}) do
                 if r:GetObjectType()=='Texture' then
@@ -58,18 +55,18 @@ local function Set_RaidFrame_Button_size()
         end
         for b=1, 5 do
             local btn2= _G['RaidGroup'..i..'Slot'..b]
-            if btn2 then
+            if btn2 and btn2:CanChangeAttribute()  then
                 btn2:SetWidth(w)
             end
         end
     end
     for i=1, 40 do
         local btn2= _G['RaidGroupButton'..i]
-        if btn2 then
+        if btn2 and btn2:CanChangeAttribute()  then
             btn2:SetWidth(w)
         end
         local name= _G['RaidGroupButton'..i..'Name']
-        if name then--11+23+50 
+        if name and name:CanChangeAttribute()  then--11+23+50 
             name:SetWidth(w-114)
         end
     end
@@ -100,7 +97,7 @@ local function Init()
         minW=338,
         minH=424,
         sizeUpdateFunc=function()
-            if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
+            if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 if RaidGroupFrame_Update then
                     e.call(RaidGroupFrame_Update)
@@ -109,7 +106,7 @@ local function Init()
         end,
         sizeRestFunc=function(btn)
             btn.targetFrame:SetSize(338, 424)
-            if RaidFrame:IsShown() and not UnitAffectingCombat('player') then
+            if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 if RaidGroupFrame_Update then
                     e.call(RaidGroupFrame_Update)

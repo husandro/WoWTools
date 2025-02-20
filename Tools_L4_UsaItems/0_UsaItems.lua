@@ -137,10 +137,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
 
-            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                WoWTools_UseItemsMixin:Init_UI_Toy()
-            end
-
         elseif arg1=='Blizzard_Collections' then
             WoWTools_UseItemsMixin:Init_UI_Toy()
 

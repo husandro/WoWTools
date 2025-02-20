@@ -58,7 +58,7 @@ end
 --菜单
 local function Init_Menu(self, root)
     local sub, sub2
-    if UnitAffectingCombat('player') then
+    if not self:GetParent():CanChangeAttribute() then
         root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -114,8 +114,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetHeight())
             end, setValue=function(value)
-                --if self.targetFrame:CanChangeAttribute() then
-                    self.targetFrame:SetHeight(value)
+                if self.targetFrame:CanChangeAttribute() then
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
                         self:sizeUpdateFunc()
@@ -123,6 +122,7 @@ local function Init_Menu(self, root)
                     if self.sizeStopFunc then
                         self:sizeStopFunc()
                     end
+                end
             end,
             name='y',
             minValue= self.minHeight,
@@ -305,14 +305,7 @@ local function Set_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
-
-    if UnitAffectingCombat('player') then
-        e.tips:AddLine(format('|cnRED_FONT_COLOR:%s', e.onlyChinese and '当前不可更改' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, DISABLE)))
-        e.tips:Show()
-        return
-    end
-
-    if UnitAffectingCombat('player') then
+    if not self:CanChangeAttribute() then
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
         e.tips:Show()
         return
@@ -414,7 +407,7 @@ end
 local function Set_OnMouseUp(self, d)
     self:SetScript("OnUpdate", nil)
 
-    if UnitAffectingCombat('player') then
+    if not self:CanChangeAttribute() then
         return
     end
 
@@ -445,7 +438,7 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive or UnitAffectingCombat('player') then
+    if self.isActive or not self.targetFrame:CanChangeAttribute() then
         return
     end
 
@@ -522,7 +515,7 @@ end
 
 
 local function Set_OnShow(self)
-    if UnitAffectingCombat('player') then
+    if not self:CanChangeAttribute() then
         return
     end
     local name2= self:GetName()
@@ -542,8 +535,18 @@ end
 
 
 local function Set_Init_Frame(btn, target, size, initFunc)
-    if UnitAffectingCombat('player') then
-        btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
+    if not btn:CanChangeAttribute() then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, btn2, target2, size2, initFunc2)
+            if size2 then
+                target2:SetSize(size2[1], size2[2])
+            end
+            if initFunc then
+                initFunc(btn2)
+            end
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end, nil, btn, target, size, initFunc)
+
+        --[[btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
         btn.notInCombatFrame.size=size
         btn.notInCombatFrame.targetFrame=target
         btn.notInCombatFrame.initFunc=initFunc
@@ -563,7 +566,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             end
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
         end)
-        btn:RegisterEvent('PLAYER_REGEN_ENABLED')
+        btn:RegisterEvent('PLAYER_REGEN_ENABLED')]]
     else
         if size then
             target:SetSize(size[1], size[2])

@@ -20,7 +20,7 @@ local function Init()
         end
         ChallengesFrame:HookScript('OnShow', function()
             local self= PVEFrame
-            if not self.ResizeButton or self.ResizeButton.disabledSize or UnitAffectingCombat('player') then
+            if not self.ResizeButton or self.ResizeButton.disabledSize or not self:CanChangeAttribute() then
                 return
             end
             local size= Save().size['PVEFrame_KEY']

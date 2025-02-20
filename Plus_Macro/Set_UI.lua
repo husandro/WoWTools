@@ -170,7 +170,7 @@ local function Init_Scroll()
     end)
 
 
-    hooksecurefunc(MacroFrame, "SelectMacro", function(self, index)
+    hooksecurefunc(MacroFrame, "SelectMacro", function(self)
         if ScrollFrame.tempScrollPer and not UnitAffectingCombat('player') then-- 恢复宏选择框的滚动条位置
             self.MacroSelector.ScrollBox:SetScrollPercentage(ScrollFrame.tempScrollPer)
         end

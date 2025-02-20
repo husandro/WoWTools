@@ -751,7 +751,7 @@ local function Init()
                 e.tips:Hide()
             else
                 e.tips:SetBagItem(bagID, slotIndex)
-                if not UnitAffectingCombat('player') then
+                if self:CanChangeAttribute() then
                     e.tips:AddLine(' ')
                     e.tips:AddLine(' ')
                     e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), noText)

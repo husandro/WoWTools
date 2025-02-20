@@ -74,6 +74,9 @@ local function Init()
     end
 
     function UseButton:set_point()
+        if not self:CanChangeAttribute() then
+            return
+        end
         self:ClearAllPoints()
         if Save().point and Save().point[1] then
             self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
@@ -83,7 +86,7 @@ local function Init()
     end
 
     function UseButton:set_scale()
-        if not self:CanChangeAttribute() then-- not UnitAffectingCombat('player') then
+        if self:CanChangeAttribute() then
             self:SetScale(Save().scale or 1)
         end
     end
@@ -133,7 +136,7 @@ local function Init()
     UseButton:SetScript("OnMouseUp", ResetCursor)
     UseButton:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
-            if not self:CanChangeAttribute() then--UnitAffectingCombat('player') then
+            if not self:CanChangeAttribute() then
                 print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 WoWTools_FoodMixin:Check_Items(true)
@@ -156,7 +159,7 @@ local function Init()
             e.tips:AddLine(' ')
             e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
+            e.tips:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
 
             e.tips:AddLine(' ')
             if self.alt then

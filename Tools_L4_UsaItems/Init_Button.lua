@@ -34,7 +34,7 @@ end
 
 
 local function Init()
-    Init_Dia()
+
 
     local btn= WoWTools_ToolsButtonMixin:GetButton()
 
@@ -81,6 +81,8 @@ local function Init()
     C_Timer.After(8, function()
         button:SetAlpha(0.3)
     end)
+
+    Init_Dia()
 end
 
 
@@ -90,6 +92,5 @@ end
 
 
 function WoWTools_UseItemsMixin:Init_Button()
-    Init_Dia()
     Init()
 end

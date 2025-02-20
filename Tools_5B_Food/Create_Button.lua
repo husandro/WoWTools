@@ -188,7 +188,7 @@ end
 function WoWTools_FoodMixin:Check_Items(isPrint)
     if CheckFrame.isChecking then--正在查询
         return
-    elseif not self.Button:CanChangeAttribute() then --UnitAffectingCombat('player') then
+    elseif not self.Button:CanChangeAttribute() then
         CheckFrame.isCheckInCombat=true
         CheckFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
         return

@@ -39,6 +39,9 @@ local function Init()
     end
 
     function Frame:set_shown()--设置，是否显示
+        if not self:CanChangeAttribute() then
+            return
+        end
         local show= true
         if UnitAffectingCombat('player') or IsIndoors() then
             show=false

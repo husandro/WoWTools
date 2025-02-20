@@ -145,7 +145,7 @@ end
 
 
 local function Init_KeyButton_Menu(self, root)
-    local isInCombat= not self:CanChangeAttribute() UnitAffectingCombat('player')
+    local isInCombat= not self:CanChangeAttribute()
     local sub, sub2
 
     root:CreateButton(
@@ -170,7 +170,6 @@ local function Init_KeyButton_Menu(self, root)
     function()
         return WoWTools_KeyMixin:IsKeyValid(self)
     end, function()
-        --if not UnitAffectingCombat('player') then
         if self:CanChangeAttribute() then
             self:set_key(not WoWTools_KeyMixin:IsKeyValid(self))
         end
@@ -245,7 +244,7 @@ local function Init_KeyButton(index, type)
         e.tips:AddLine(' ')
 
         local isKeyValid= WoWTools_KeyMixin:IsKeyValid(self)
-        local isInCombat= not self:CanChangeAttribute()-- UnitAffectingCombat('player')
+        local isInCombat= not self:CanChangeAttribute()
         e.tips:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
             ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKey()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
@@ -275,7 +274,6 @@ local function Init_KeyButton(index, type)
         self:set_tooltip()
     end)
     button:SetScript('OnMouseWheel', function(self, d)
-        --if UnitAffectingCombat('player') then
         if not self:CanChangeAttribute() then
             print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return

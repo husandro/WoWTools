@@ -345,7 +345,7 @@ local function Init()
     end
 
     function ToyButton:Cerca_Toy()
-        if self.isLocked or not self:CanChangeAttribute() then-- UnitAffectingCombat('player') then
+        if self.isLocked or not self:CanChangeAttribute() then
             return
         end
 

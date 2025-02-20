@@ -57,9 +57,8 @@ local function Init_Menu(self, root)
         WoWTools_MenuMixin:Scale(self, root, function()
             return Save().scale[self.name] or 1
         end, function(value)
-            Save().scale[self.name]= value
-            local targetFrame= self.targetFrame
-            if self.targetFrame and not UnitAffectingCombat('player') then
+            if self.targetFrame and self.targetFrame:CanChangeAttribute() then
+                Save().scale[self.name]= value
                 self.targetFrame:SetScale(value)
             end
         end)

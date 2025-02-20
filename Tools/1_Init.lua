@@ -176,8 +176,13 @@ end
 
 
 local function Init_Menu(self, root)
+
+    if not self:CanChangeAttribute() then
+        root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        return
+    end
+
     local sub, sub2
-    local isInCombat=UnitAffectingCombat('player')
     sub=root:CreateCheckbox(e.onlyChinese and '显示' or SHOW, function()
         return self.Frame:IsShown()
     end, function()
@@ -355,7 +360,7 @@ local function Init()
     function Button:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine((UnitAffectingCombat('player') and '|cff9e9e9e' or '')..e.GetShowHide(nil, true), e.Icon.left)
+        e.tips:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
@@ -420,7 +425,7 @@ local function Init()
 
 
     function Button:set_shown()
-        if not UnitAffectingCombat('player') then
+        if self.Frame:CanChangeAttribute() then
             self.Frame:SetShown(not self.Frame:IsShown())
         end
     end
@@ -441,7 +446,7 @@ local function Init()
                 self:SetShown(false)--设置, TOOLS 框架,隐藏
             end
         elseif event=='PLAYER_STARTED_MOVING' then
-            if not UnitAffectingCombat('player') and self:IsShown() then
+            if self:CanChangeAttribute() and self:IsShown() then
                 self:SetShown(false)--设置, TOOLS 框架,隐藏
             end
         end

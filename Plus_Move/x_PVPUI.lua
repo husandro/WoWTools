@@ -15,7 +15,7 @@ local function Init()
     LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
     hooksecurefunc('PVPQueueFrame_ShowFrame', function()
         local btn= PVEFrame.ResizeButton
-        if not btn or btn.disabledSize or UnitAffectingCombat('player') then
+        if not btn or btn.disabledSize or not PVEFrame:CanChangeAttribute() then
             return
         end
         if PVPQueueFrame.selection==LFGListPVPStub then

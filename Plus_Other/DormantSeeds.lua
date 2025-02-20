@@ -28,6 +28,9 @@ local function Init()
     Button= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, icon='hide'})
 
     function Button:set_Point()
+        if not self:CanChangeAttribute() then
+            return
+        end
         self:ClearAllPoints()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
@@ -38,7 +41,9 @@ local function Init()
         end
     end
     function Button:set_Scale()
-        self:SetScale(Save.scale or 1)
+        if self:CanChangeAttribute() then
+            self:SetScale(Save.scale or 1)
+        end
     end
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -63,7 +68,7 @@ local function Init()
         end
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
+        local col= not self:CanChangeAttribute() and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
         col= not Save.point and '|cff9e9e9e' or ''
         e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
@@ -90,25 +95,28 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then--移动
             SetCursor('UI_MOVE_CURSOR');
         elseif d=='RightButton' and IsControlKeyDown() then--还原
-           Save.point=nil
-           self:set_Point()
-           print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            if self:CanChangeAttribute() then
+                Save.point=nil
+                self:set_Point()
+                print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end
         end
     end)
     Button:SetScript('OnMouseWheel',function(self, d)
-        if IsAltKeyDown() and not UnitAffectingCombat('player') then
-            local scale= Save.scale or 1
-            if d==1 then
-                scale= scale+ 0.05
-            elseif d==-1 then
-                scale= scale- 0.05
-            end
-            scale= scale>4 and 4 or scale
-            scale= scale<0.4 and 0.4 or scale
-            Save.scale=scale
-            self:set_Scale()
-            self:set_Tooltips()
+        if not IsAltKeyDown() or not self:CanChangeAttribute() then
+            return
         end
+        local scale= Save.scale or 1
+        if d==1 then
+            scale= scale+ 0.05
+        elseif d==-1 then
+            scale= scale- 0.05
+        end
+        scale= scale>4 and 4 or scale
+        scale= scale<0.4 and 0.4 or scale
+        Save.scale=scale
+        self:set_Scale()
+        self:set_Tooltips()
     end)
     Button:SetScript('OnLeave', function()
         e.tips:Hide()
@@ -156,7 +164,7 @@ local function Init()
         self:set_Shown()
     end
     function Button:set_Shown(show)
-        if not UnitAffectingCombat('player') then
+        if self:CanChangeAttribute() then
             self:SetShown(
                 show or (self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
             )
@@ -168,7 +176,7 @@ local function Init()
     Button:SetScript("OnEvent", function(self, event, arg1)
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then
             self:get_UIMapID()
-            if not UnitAffectingCombat('player') then
+            if self:CanChangeAttribute() then
                 self:set_Event()
             end
         elseif event=='PLAYER_REGEN_ENABLED' then
@@ -182,7 +190,7 @@ local function Init()
             end
         end
 
-        if not UnitAffectingCombat('player') then
+        if self:CanChangeAttribute() then
             self:set_Shown()
         end
     end)
@@ -281,7 +289,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
             buttonFunc= function()
                 Save.Point=nil
-                if Button and UnitAffectingCombat('player') then
+                if Button then
                     Button:set_Point()
                 end
                 print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)

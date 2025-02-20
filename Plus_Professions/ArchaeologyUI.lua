@@ -99,8 +99,8 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         ArcheologyButton.keyButton:SetScript('OnEnter', ArcheologyButton.set_tooltip)
 
         ArcheologyButton.keyButton:SetScript('OnMouseWheel', function(_, d)
-            if not UnitAffectingCombat('player') then
-                ArcheologyButton:set_OnMouseWheel(d)
+            if not UnitAffectingCombat('player') and ArcheologyButton.set_OnMouseWheel then
+                ArcheologyButton:set_OnMouseWheel(d)--没找到这个FUNC, 
             end
         end)
 

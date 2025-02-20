@@ -148,7 +148,7 @@ local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
     end
 end
 local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，按钮
-    if not subClassToSlot[slot] or UnitAffectingCombat('player') then
+    if not subClassToSlot[slot] or not self:CanChangeAttribute() then
         return
     end
     local tab
@@ -178,7 +178,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
                     e.tips:SetOwner(self2, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:SetBagItem(self2.tab.bag, self2.tab.slot)
-                    if UnitAffectingCombat('player') then
+                    if not self:CanChangeAttribute() then
                         e.tips:AddLine(' ')
                         e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
@@ -195,7 +195,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
             end)
             self.noEnchant:RegisterEvent('BAG_UPDATE_DELAYED')
             self.noEnchant:SetScript('OnEvent', function(self2)
-                if not UnitAffectingCombat('player') then
+                if self2:CanChangeAttribute() then
                     local tab2=get_no_Enchant_Bag(self2.slot)--取得，物品，bag, slot
                     if tab2 then
                         self2:SetAttribute("item", tab2.bag..' '..tab2.slot)
