@@ -623,7 +623,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             SetValue= function()
                 Save.disabled= not Save.disabled and true or nil
                 print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
+            end,
+            layout= WoWTools_OtherMixin.Layout,
+            category= WoWTools_OtherMixin.Category,
         })
 
         if Save.disabled then

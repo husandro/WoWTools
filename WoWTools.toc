@@ -629,11 +629,9 @@ ChatButton_4_Invite\Inv_Chanell.lua
 ChatButton_4_Invite\Inv_Target.lua
 ChatButton_4_Invite\Inv_StaticPopup.lua
 ChatButton_4_Invite\Inv_All_Unit.lua
-
 ChatButton_4_Invite\Summon.lua
 ChatButton_4_Invite\Resting.lua
 ChatButton_4_Invite\Foucs.lua
-
 
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton_5_LFD\5_LFD.lua
@@ -649,13 +647,6 @@ ChatButton_5_LFD\RepopMe.lua
 ChatButton_5_LFD\Role_Check.lua
 ChatButton_5_LFD\Role_Info.lua
 ChatButton_5_LFD\Roll.lua
-
-
-
-
-
-
-
 
 ##世界频道
 ChatButton\6_World.lua

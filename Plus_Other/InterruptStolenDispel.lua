@@ -3,7 +3,7 @@ local id, e = ...
 local Save={
     --enabledInRaid=true--在团队中启用会掉帧
 }
-
+local addName
 
 local de='>'--分隔符
 --if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
@@ -119,15 +119,18 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         return
     end
     Save= WoWToolsSave['Interrupts_Tolen'] or Save
+    addName= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
 
     --添加控制面板 format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))
     local root= e.AddPanel_Check({
-        name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))),
+        name= addName,
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled = not Save.disabled and true or nil
             EventFrame:set_event()
-        end
+        end,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
     })
 
     e.AddPanel_Check({
@@ -137,12 +140,16 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             Save.enabledInRaid = not Save.enabledInRaid and true or nil
             EventFrame:set_event()
         end,
-        tooltip=e.onlyChinese and '掉帧' or 'Dropped Frames'
+        tooltip=(e.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
     }, root)
 
     if not Save.disabled then
         EventFrame:set_event()
     end
+
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
