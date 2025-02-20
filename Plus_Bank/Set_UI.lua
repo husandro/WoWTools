@@ -304,10 +304,10 @@ end
 local function Init_AccountBankPanel()
 
 --添加，取出所有物品
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel, {size=23, icon='hide'})
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, icon='hide'})
     btnAllOut:SetNormalAtlas('Cursor_OpenHandGlow_64')
-    btnAllOut:SetPoint('TOPRIGHT', -16, -26)
-
+    btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -26)
+    
     btnAllOut:SetScript('OnClick', function(self)
         if self.isDoing then
             return
@@ -381,7 +381,7 @@ local function Init_AccountBankPanel()
     end)
 
 --添加，整理
-    local btnSort= CreateFrame("Button", nil, AccountBankPanel, 'BankAutoSortButtonTemplate')
+    local btnSort= CreateFrame("Button", nil, AccountBankPanel.ItemDepositFrame, 'BankAutoSortButtonTemplate')
     btnSort:SetSize(32, 32)
     btnSort:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.DepositButton, 'LEFT', -2, 0)--整理材料银行
     btnSort:SetScript('OnEnter', function(self)
