@@ -1045,7 +1045,7 @@ end
 
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
-        Save= WoWToolsSave['Plus_Gem']
+        Save= WoWToolsSave['Plus_Gem'] or Save
 
         --添加控制面板
         addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)

@@ -237,7 +237,7 @@ local function Init_NotDisabled_Button()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
-        e.tips:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\0_Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', e.onlyChinese and '启用' or ENABLE, ''), e.GetYesNo(Save().enableAllButtn))
+        e.tips:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', e.onlyChinese and '启用' or ENABLE, ''), e.GetYesNo(Save().enableAllButtn))
         e.tips:Show()
         self:SetAlpha(1)
     end
