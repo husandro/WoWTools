@@ -114,6 +114,10 @@ Tools\LL_MagePortal.lua
 
 
 
+
+
+
+
 ##WoWPlus
 ##移动框架, 缩放
 Plus_Move\0_Init.lua
@@ -208,6 +212,16 @@ Plus_Tooltip\z_EventTrace.lua
 
 
 
+##小地图，增强
+Plus_Minimap\0_Minimap.lua
+Plus_Minimap\Icon.lua
+Plus_Minimap\InstanceDifficulty.lua
+Plus_Minimap\TrackButton.lua
+Plus_Minimap\TimeManager.lua
+Plus_Minimap\Menu_Garrison.lua
+Plus_Minimap\Menu_Faction.lua
+Plus_Minimap\ExpansionLanding.lua
+Plus_Minimap\Zoom.lua
 
 
 
@@ -356,16 +370,7 @@ Plus_Color\Select_Color.lua
 
 
 
-##小地图，增强
-Plus_Minimap\0_Minimap.lua
-Plus_Minimap\Icon.lua
-Plus_Minimap\InstanceDifficulty.lua
-Plus_Minimap\TrackButton.lua
-Plus_Minimap\TimeManager.lua
-Plus_Minimap\Menu_Garrison.lua
-Plus_Minimap\Menu_Faction.lua
-Plus_Minimap\ExpansionLanding.lua
-Plus_Minimap\Zoom.lua
+
 
 
 

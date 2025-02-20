@@ -94,7 +94,6 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 		return
 	end
 
-	WoWToolsSave[COLOR_PICKER]= nil
 	WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or Save()
 	WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER)
 
