@@ -1,5 +1,6 @@
 --受限模式
 if GameLimitedMode_IsActive() then
+    WoWTools_MailMixin={Save={disabled=true}}
     return
 end
 

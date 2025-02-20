@@ -316,7 +316,7 @@ local function Init_AccountBankPanel()
         local isAll= C_CVar.GetCVarBool('bankAutoDepositReagents')--包括可交易的材料
         local free= WoWTools_BagMixin:GetFree(isAll)
 
-        if free==0 or not C_PlayerInfo.HasAccountInventoryLock() then
+        if free==0 then--or not C_PlayerInfo.HasAccountInventoryLock() then
             return
         end
         self.isDoing=true

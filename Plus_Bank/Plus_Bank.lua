@@ -217,7 +217,7 @@ end
 
 
 local function Set_AccountBankPanel(index)
-    if not C_PlayerInfo.HasAccountInventoryLock() or Save().disabledAccountBag then
+    if C_PlayerInfo.HasAccountInventoryLock() or Save().disabledAccountBag then
         return
     end
 

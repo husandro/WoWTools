@@ -116,7 +116,9 @@ local function Init()
     end})
 
     if WoWTools_MailMixin.Save.disabled then--MailFrame
-        WoWTools_MailMixin:Init_UI()
+        WoWTools_MoveMixin:Setup(MailFrame)
+        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+        WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
     end
 
     if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame
