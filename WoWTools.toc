@@ -18,16 +18,15 @@
 
 
 ##调用库，不能删除
-Libs\Init.xml
-
+0_Sesource\Libs\Init.xml
 
 ##主要function，不能删除
 API_WoWTools.lua
-StaticPopupDialogs.lua
 API_LoadData.lua
 API_Panel.lua
 API_WoWDate.lua
 
+0_Mixin\StaticPopupDialogs.lua
 0_Mixin\0_Mixin.lua
 0_Mixin\Aura.lua
 0_Mixin\Bag.lua
