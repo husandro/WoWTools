@@ -10,17 +10,6 @@ local Save={}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 --天赋, 点数 Blizzard_SharedTalentButtonTemplates.lua Blizzard_ClassTalentButtonTemplates.lua
 local function set_UpdateSpendText(btn)
     local info= btn.nodeInfo-- C_Traits.GetNodeInfo btn:GetSpellID()
