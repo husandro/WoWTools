@@ -446,20 +446,19 @@ end
 
 
 
-
+local Initializer
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1==id then
         Save= WoWToolsSave['Other_ScrappingMachine'] or Save
-        addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
 
         --添加控制面板
-        e.AddPanel_Check({
-            name= addName,
+        Initializer= e.AddPanel_Check({
+            name= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(e.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE),
             Value= not Save.disabled,
             GetValue=function() return not Save.disabled end,
             SetValue= function()
                 Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(Save.disabled), ScrappingMachineFrame and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
             end,
             layout= WoWTools_OtherMixin.Layout,
             category= WoWTools_OtherMixin.Category,

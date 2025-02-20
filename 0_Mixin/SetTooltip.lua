@@ -172,6 +172,7 @@ local function Set_Specialization(tooltip, specIndex, specID)
         ..'|A:'..(roleIcon or '')..':0:0|a'..(e.cn(_G[role] or role) or '')
     )
 
+    tooltip:AddLine(' ')
     tooltip:AddDoubleLine(
         WoWTools_SpellMixin:GetName(specIDs[1]),
         WoWTools_SpellMixin:GetName(specIDs[6])

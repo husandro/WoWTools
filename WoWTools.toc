@@ -668,6 +668,10 @@ Plus_Other\0_Init.lua
 ##美酒节 Brewfest
 Plus_Other\Brewfest.lua
 
+
+##法术弹出框，加名称
+Plus_Other\SpellFlyout.lua
+
 ##法术弹出框，加名称, 和颜色
 Plus_Other\SpellFrame.lua
 Plus_Other\ScrappingMachine.lua
