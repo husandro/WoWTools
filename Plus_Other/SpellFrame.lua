@@ -202,8 +202,8 @@ local function Init_Spec_Button()
                     tooltip:AddDoubleLine(
                         col..(e.onlyChinese and '激活' or SPEC_ACTIVE)
                         ..e.Icon.left,
-                        
-                        '|cffffffff'..e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..addName
+
+                        col..e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..addName
                     )
                 end
             })
