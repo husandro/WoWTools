@@ -68,13 +68,21 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         if Save().disabled then
             EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
         else
-            C_Timer.After(2, Init_Open)
+            if UnitAffectingCombat('player') then
+                EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner2)
+                    Init_Open()
+                    EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner2)
+                end)
+            else
+                C_Timer.After(2, Init_Open)
+            end
         end
 
     elseif arg1=='Blizzard_Calendar' then
         WoWTools_HolidayMixin:Init_CreateEventFrame()
         WoWTools_HolidayMixin:Init_Calendar_Uptate()
         WoWTools_HolidayMixin:Init_TrackButton()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 
