@@ -29,7 +29,10 @@ end
 --缩放，Frame
 function WoWTools_FrameMixin:ScaleFrame(frame, delta, value, func)
     local n= value
-    if not UnitAffectingCombat('player') and IsAltKeyDown() then
+    if not frame:CanChangeAttribute() then
+        print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+    end
+    if IsAltKeyDown() then
         n= n or 1
         n= delta==1 and n-0.05 or n
         n= delta==-1 and n+0.05 or n

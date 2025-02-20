@@ -32,11 +32,7 @@ local function Init()
     ClearFoucsFrame.frames={}
 
     function ClearFoucsFrame:set_event(frame)
-        if UnitAffectingCombat('player') then
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        else
-            self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        end
+        self:RegisterEvent('PLAYER_REGEN_ENABLED')
         self.frames[frame]=true
     end
 

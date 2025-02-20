@@ -62,8 +62,9 @@ local function Init()--设置标记, 框架
     end)
 
     function btn:set_scale()
-        if not UnitAffectingCombat('player') then
-            self:GetParent():SetScale(Save().markersScale or 1)--缩放
+        local frame= self:GetParent()
+        if frame:CanChangeAttribute() then
+            frame:SetScale(Save().markersScale or 1)--缩放
         end
     end
     btn:set_scale()
@@ -787,7 +788,7 @@ local function Init()--设置标记, 框架
     MakerFrame:Init_Set_Frame()
 
     function MakerFrame:set_Shown()
-        if UnitAffectingCombat('player') then
+        if not self:CanChangeAttribute() then
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         elseif C_PetBattles.IsInBattle() or not Save().markersFrame then
@@ -936,7 +937,7 @@ local function Init()--设置标记, 框架
 
 --位于上方
     function MakerFrame:set_button_point()
-        if UnitAffectingCombat('player') then
+        if not self:CanChangeAttribute() then
             return
         end
         for _, frame in pairs(self.Buttons) do

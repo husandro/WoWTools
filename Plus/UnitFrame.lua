@@ -1345,26 +1345,27 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
     CompactPartyFrame.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() then
-            if UnitAffectingCombat('player') then
-                print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
-            else
-                local sacle= Save.compactPartyFrameScale or 1
-                if d==1 then
-                    sacle=sacle+0.05
-                elseif d==-1 then
-                    sacle=sacle-0.05
-                end
-                if sacle>1.5 then
-                    sacle=1.5
-                elseif sacle<0.5 then
-                    sacle=0.5
-                end
-                print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
-                CompactPartyFrame:SetScale(sacle)
-                Save.compactPartyFrameScale=sacle
-            end
+        if not IsAltKeyDown() then
+            return
         end
+        if not self:CanChangeAttribute() then
+            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+            return
+        end
+        local sacle= Save.compactPartyFrameScale or 1
+        if d==1 then
+            sacle=sacle+0.05
+        elseif d==-1 then
+            sacle=sacle-0.05
+        end
+        if sacle>1.5 then
+            sacle=1.5
+        elseif sacle<0.5 then
+            sacle=0.5
+        end
+        print(WoWTools_Mixin.addName, e.cn(addName), (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+        CompactPartyFrame:SetScale(sacle)
+        Save.compactPartyFrameScale=sacle
     end)
     if Save.compactPartyFrameScale and Save.compactPartyFrameScale~=1 then
         CompactPartyFrame:SetScale(Save.compactPartyFrameScale)
@@ -1656,12 +1657,9 @@ local function Init_BossFrame()
 
     --设置位置
     local function set_TotButton_point()
-        if UnitAffectingCombat('player') then
-            return
-        end
         for i=1, MAX_BOSS_FRAMES do
             local frame= _G['Boss'..i..'TargetFrame']
-            if frame.TotButton then
+            if frame.TotButton and frame.TotButton:CanChangeAttribute() then
                 frame.TotButton:ClearAllPoints()
                 frame.TotButton:set_point()
             end
@@ -1841,20 +1839,25 @@ local function Init_RaidFrame()--设置,团队
         self:GetParent():SetScale(Save.raidFrameScale or 1)
     end
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
-        if IsAltKeyDown() and not UnitAffectingCombat('player') then
-            local num= Save.raidFrameScale or 1
-            if d==1 then
-                num= num+0.05
-            elseif d==-1 then
-                num= num-0.05
-            end
-            num= num>4 and 4 or num
-            num= num<0.4 and 0.4 or num
-            Save.raidFrameScale= num
-            self:set_Scale()
-            self:set_Tooltips()
-            print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, num)
+        if not IsAltKeyDown() then
+            return
         end
+        if not self:CanChangeAttribute() then
+            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            return
+        end
+        local num= Save.raidFrameScale or 1
+        if d==1 then
+            num= num+0.05
+        elseif d==-1 then
+            num= num-0.05
+        end
+        num= num>4 and 4 or num
+        num= num<0.4 and 0.4 or num
+        Save.raidFrameScale= num
+        self:set_Scale()
+        self:set_Tooltips()
+        print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '缩放' or UI_SCALE, num)
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
         e.tips:Hide()
@@ -1886,10 +1889,8 @@ local function Init_RaidFrame()--设置,团队
         WoWTools_MenuMixin:Scale(self, root, function()
             return Save.managerScale or 1
         end, function(value)
-            if not UnitAffectingCombat('player') then
-                Save.managerScale= value
-                self:settings()
-            end
+            Save.managerScale= value
+            self:settings()
         end)
 
         root:CreateDivider()

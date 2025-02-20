@@ -240,7 +240,7 @@ local function Init_Menu(self, root)
     end)
 
     for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
-        col= (UnitAffectingCombat('player') or Save().focusKey== key) and '|cff9e9e9e' or ''
+        col= (Save().focusKey== key or not self:CanChangeAttribute()) and '|cff9e9e9e' or ''
         sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, e.Icon.left), function(data)
             return Save().focusKey== data
         end, function(data)

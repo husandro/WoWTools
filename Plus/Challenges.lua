@@ -1937,7 +1937,8 @@ local function Init_Blizzard_ChallengesUI()
         self:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or e.Icon.disabled)
     end)
     spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        if UnitAffectingCombat('player') then
+        if not self:CanChangeAttribute() then
+            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         local scale= Save.portScale or 1

@@ -112,9 +112,9 @@ end]]
 function WoWTools_KeyMixin:SetMenu(frame, root, tab)
     local sub
     if not frame:CanChangeAttribute() then
-        return root:CreateTitle(
-            (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' |cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-        )
+        sub= root:CreateButton('|cff828282'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), function()end)
+        sub:SetEnabled(false)
+        return sub
     end
     sub=root:CreateCheckbox(
         '|A:NPE_Icon:0:0|a'

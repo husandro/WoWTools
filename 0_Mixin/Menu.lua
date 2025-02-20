@@ -166,14 +166,7 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         maxValue=4,
         step=0.05,
         bit='%0.2f',
-        tooltip=function(tooltip)
-            tooltip:AddDoubleLine(
-                e.onlyChinese and '缩放' or UI_SCALE,
-
-                UnitAffectingCombat('player')
-                and ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
-            )
-        end
+        tooltip=function(tooltip) tooltip:AddLine(e.onlyChinese and '缩放' or UI_SCALE) end,
     })
     root:CreateSpacer()
 
@@ -698,7 +691,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     end)
 
     for specIndex=1, numSpec do
-        specID, name, description, icon, role, primaryStat= GetSpecializationInfo(specIndex, false, false, nil, sex)
+        specID, name, _, icon= GetSpecializationInfo(specIndex, false, false, nil, sex)
         if specID and name and specID~=curSpecID then
             roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
 
