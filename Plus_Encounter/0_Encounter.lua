@@ -69,74 +69,73 @@ end
 
 
 
+local function Init()
+    WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
+    WoWTools_EncounterMixin:WorldBoss_Settings()
+    WoWTools_EncounterMixin:InstanceBoss_Settings()
 
-
-
-
-
-
---###########
---加载保存数据
---###########
-local panel=CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('BOSS_KILL')
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-
-            WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
-
-            Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}--这个不能删除，不然换职业会出错
-
-            WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= WoWTools_EncounterMixin.addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_EncounterMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            if not Save().disabled then
-                WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-                WoWTools_EncounterMixin:WorldBoss_Settings()
-                WoWTools_EncounterMixin:InstanceBoss_Settings()
-
-                self:RegisterEvent('UPDATE_INSTANCE_INFO')
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-                self:RegisterEvent('WEEKLY_REWARDS_UPDATE')
-
-            else
-                self:UnregisterEvent('ADDON_LOADED')
-            end
-
-        elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
-            Init_EncounterJournal()--冒险指南界面
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Adventure_Journal']=Save()
-        end
-
-    elseif event=='UPDATE_INSTANCE_INFO' then
+    EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function(owner, arg1)
         C_Timer.After(2, function()
             WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
             WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
+    end)
 
-    elseif event=='BOSS_KILL' and arg1 then
-        Save().wowBossKill[arg1]= Save().wowBossKill[arg1] and Save().wowBossKill[arg1] +1 or 1--Boss击杀数量
+    EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", function(_, arg1)
+        if arg1 then
+            Save().wowBossKill[arg1]= Save().wowBossKill[arg1] and Save().wowBossKill[arg1] +1 or 1--Boss击杀数量
+        end
+    end)
 
-    elseif event=='WEEKLY_REWARDS_UPDATE' then
+    EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function(owner, arg1)
         C_Timer.After(2, function()
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
+    end)
+end
+
+
+
+
+
+
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1==id then
+
+        WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
+
+        Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}--这个不能删除，不然换职业会出错
+
+        WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
+
+        --添加控制面板
+        e.AddPanel_Check({
+            name= WoWTools_EncounterMixin.addName,
+            GetValue= function() return not Save().disabled end,
+            SetValue= function()
+                Save().disabled= not Save().disabled and true or nil
+                print(WoWTools_EncounterMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+
+        if Save().disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+            Init()
+        end
+
+    elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
+        Init_EncounterJournal()--冒险指南界面
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Adventure_Journal']=Save()
     end
 end)

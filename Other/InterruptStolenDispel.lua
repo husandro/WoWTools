@@ -3,7 +3,7 @@ local id, e = ...
 local Save={
     --enabledInRaid=true--在团队中启用会掉帧
 }
-local panel=CreateFrame('Frame')
+
 
 local de='>'--分隔符
 --if e.Player.Lo== "zhCN" or e.Player.Lo == "zhTW" or e.Player.Lo=='koKR' then
@@ -25,7 +25,15 @@ local UMark={--'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..t..':0|t'
 
 
 
+local EventFrame=CreateFrame('Frame')
+EventFrame:SetScript("OnEvent", function(self, event)
+    if event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
+        self:set_event()
 
+    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then
+        self:settings()
+    end
+end)
 
 
 
@@ -34,7 +42,7 @@ timestamp, subevent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaid
 local target = destGUID and UnitTokenFromGUID(destGUID)
 https://wowpedia.fandom.com/wiki/COMBAT_LOG_EVENT
 ]]
-function panel:settings()
+function EventFrame:settings()
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
     if sourceGUID~=e.Player.guid--不是自已
     or not C_PlayerInfo.GUIDIsPlayer(sourceGUID)--PET
@@ -56,7 +64,7 @@ end
 
 
 
-function panel:set_event()
+function EventFrame:set_event()
     if Save.disabled then
 --禁用
         self:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
@@ -86,50 +94,59 @@ end
 
 
 
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            Save= WoWToolsSave['Interrupts_Tolen'] or Save
-
-            --添加控制面板 format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))
-            local root= e.AddPanel_Check({
-                name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))),
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled = not Save.disabled and true or nil
-                    self:set_event()
-                end
-            })
-
-            e.AddPanel_Check({
-                name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '团队' or RAID),
-                GetValue= function() return Save.enabledInRaid end,
-                SetValue= function()
-                    Save.enabledInRaid = not Save.enabledInRaid and true or nil
-                    self:set_event()
-                end,
-                tooltip=e.onlyChinese and '掉帧' or 'Dropped Frames'
-            }, root)
-
-            if not Save.disabled then
 
 
-                self:set_event()
-            end
-            self:UnregisterEvent('ADDON_LOADED')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1~=id then
+        return
+    end
+    Save= WoWToolsSave['Interrupts_Tolen'] or Save
+
+    --添加控制面板 format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))
+    local root= e.AddPanel_Check({
+        name= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN))),
+        GetValue= function() return not Save.disabled end,
+        SetValue= function()
+            Save.disabled = not Save.disabled and true or nil
+            EventFrame:set_event()
         end
+    })
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Interrupts_Tolen']=Save
-        end
+    e.AddPanel_Check({
+        name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '团队' or RAID),
+        GetValue= function() return Save.enabledInRaid end,
+        SetValue= function()
+            Save.enabledInRaid = not Save.enabledInRaid and true or nil
+            EventFrame:set_event()
+        end,
+        tooltip=e.onlyChinese and '掉帧' or 'Dropped Frames'
+    }, root)
 
-    elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        self:set_event()
+    if not Save.disabled then
+        EventFrame:set_event()
+    end
+end)
 
-    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then
-        self:settings()
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Interrupts_Tolen']=Save
     end
 end)

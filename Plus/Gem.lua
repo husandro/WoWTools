@@ -12,13 +12,12 @@ local Save={
 }
 
 
+local Func={}
 
 
 
 
 
-
-local panel=CreateFrame('Frame')
 local Frame
 local SpellButton
 local SpellsTab={
@@ -86,7 +85,7 @@ local function Init_Button_Menu(self, root)
         Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
         self:set_favorite()
         print(WoWTools_Mixin.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-        panel:set_Gem()
+        Func.Set_Gem()
     end)
     root:CreateDivider()
 
@@ -97,7 +96,7 @@ local function Init_Button_Menu(self, root)
         return Save.gemLeft[self.itemID]
     end, function ()
         Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
-        panel:set_Gem()
+        Func.Set_Gem()
     end)
 
     root:CreateCheckbox(
@@ -107,7 +106,7 @@ local function Init_Button_Menu(self, root)
         return Save.gemTop[self.itemID]
     end, function ()
         Save.gemTop[self.itemID]= not Save.gemTop[self.itemID] and true or nil
-        panel:set_Gem()
+        Func.Set_Gem()
     end)
 
     root:CreateCheckbox(
@@ -117,7 +116,7 @@ local function Init_Button_Menu(self, root)
         return Save.gemRight[self.itemID]
     end, function ()
         Save.gemRight[self.itemID]= not Save.gemRight[self.itemID] and true or nil
-        panel:set_Gem()
+        Func.Set_Gem()
     end)
 end
 
@@ -216,10 +215,10 @@ local function creatd_button(index, parent)
         if IsAltKeyDown() then
             if d=='LeftButton' then
                 Save.gemLeft[self.itemID]= not Save.gemLeft[self.itemID] and true or nil
-                panel:set_Gem()
+                Func.Set_Gem()
             elseif d=='RightButton' then
                 Save.gemRight[self.itemID]= not Save.gemRight[self.itemID] and true or nil
-                panel:set_Gem()
+                Func.Set_Gem()
             end
         elseif d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
@@ -231,7 +230,7 @@ local function creatd_button(index, parent)
     btn:SetScript("OnMouseWheel", function(self)
         if IsAltKeyDown() then
             Save.gemTop[self.itemID]= not Save.gemTop[self.itemID] and true or nil
-            panel:set_Gem()
+            Func.Set_Gem()
         end
     end)
     btn:SetScript('OnEnter', function(self)
@@ -310,7 +309,7 @@ local function Set_Sort_Button(tab)
     end)
 end
 
-function panel:set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
+Func.Set_Gem= function()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     local items, gemLeft, gemTop, gemRight= {}, {}, {}, {}
     local scale= Save.scale or 1
 
@@ -762,7 +761,7 @@ local function Init_ItemSocketingFrame_Update()
         ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
     end
     set_point()
-    panel:set_Gem()
+    Func.Set_Gem()
 end
 
 
@@ -840,7 +839,7 @@ local function Init_Menu(self, root)
          ..num,
     function()
         Save.gemLeft={}
-        panel:set_Gem()
+        Func.Set_Gem()
         return MenuResponse.Refresh
     end)
 
@@ -856,7 +855,7 @@ local function Init_Menu(self, root)
         ..num,
     function()
         Save.gemTop={}
-        panel:set_Gem()
+        Func.Set_Gem()
         return MenuResponse.Refresh
     end)
 
@@ -872,7 +871,7 @@ local function Init_Menu(self, root)
          ..num,
     function()
         Save.gemRight={}
-        panel:set_Gem()
+        Func.Set_Gem()
         return MenuResponse.Refresh
     end)
 
@@ -919,7 +918,7 @@ local function Init_Button_All()
     function btn:set_scale()
         if Frame:CanChangeAttribute() then
             Frame:SetScale(Save.scale or 1)
-            panel:set_Gem()
+            Func.Set_Gem()
         else
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -1005,7 +1004,7 @@ local function Init()
     end
     Frame:SetScript('OnHide', Frame.set_event)
     Frame:SetScript('OnShow', Frame.set_event)
-    Frame:SetScript('OnEvent', panel.set_Gem)
+    Frame:SetScript('OnEvent', Func.Set_Gem)
     Frame:set_event()
 
     ItemSocketingSocket3Left:ClearAllPoints()
@@ -1021,10 +1020,10 @@ local function Init()
     WoWTools_MoveMixin:Setup(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 424)
         set_point()
-        panel:set_Gem()
+        Func.Set_Gem()
     end, sizeUpdateFunc=function()
         set_point()
-        panel:set_Gem()
+        Func.Set_Gem()
     end})
     WoWTools_MoveMixin:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
 
@@ -1044,60 +1043,34 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1==id then
+        Save= WoWToolsSave['Plus_Gem']
 
+        --添加控制面板
+        addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
 
-
-panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
-
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-            
-            if WoWToolsSave[SOCKET_GEMS] then
-                Save= WoWToolsSave[SOCKET_GEMS]
-                Save.favorites= Save.favorites or {}
-                Save.gemLeft= Save.gemLeft or {}
-                Save.gemTop= Save.gemTop or {}
-                Save.gemRight= Save.gemRight or {}
-
-                Save.gemLoc= Save.gemLoc or {}
-                Save.gemLoc[e.Player.class]= Save.gemLoc[e.Player.class] or {}
-                WoWToolsSave[SOCKET_GEMS]= nil
-
-            elseif WoWToolsSave['Plus_Gem'] then
-                Save= WoWToolsSave['Plus_Gem']
+        e.AddPanel_Check({
+            name= addName,
+            GetValue= function() return not Save.disabled end,
+            SetValue= function()
+                Save.disabled = not Save.disabled and true or nil
+                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
             end
+        })
 
-            --添加控制面板
-            addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
-
-            e.AddPanel_Check({
-                name= addName,
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled = not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-                end
-            })
-
-            if Save.disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-
-            elseif ItemSocketingFrame then
-                Init()
-                self:UnregisterEvent('ADDON_LOADED')
-            end
-
-        elseif arg1=='Blizzard_ItemSocketingUI' then
-
-            Init()
-            self:UnregisterEvent('ADDON_LOADED')
+        if Save.disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
         end
 
-    elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_Gem']=Save
-        end
+    elseif arg1=='Blizzard_ItemSocketingUI' then
+        Init()
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    end
+end)
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Gem']=Save
     end
 end)

@@ -26,20 +26,6 @@ local function Save()
 end
 
 
-local panel= CreateFrame("Frame", nil, PaperDollFrame)
-
-
-
---[[local function Is_Load_ElvUI(btn)
-    if C_AddOns.IsAddOnLoaded('ElvUI') and not btn.icon then
-        btn.icon= btn:CreateTexture()
-    end
-end]]
-
-
-
-
-
 
 
 
@@ -92,23 +78,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
 	if arg1~=id then
 		return
@@ -137,6 +106,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     end
     EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
+
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
 	if not e.ClearAllSave then

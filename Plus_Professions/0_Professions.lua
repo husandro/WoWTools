@@ -52,60 +52,51 @@ end
 
 
 
+EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+    if arg1== id then
+        WoWTools_ProfessionMixin.Save= WoWToolsSave['Plus_Professions'] or WoWTools_ProfessionMixin.Save
 
-
---###########
---加载保存数据
---###########
-local panel=CreateFrame('Frame')
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== id then
-            if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent(event)
-                return
-            end
-
-            WoWTools_ProfessionMixin.Save= WoWToolsSave['Plus_Professions'] or WoWTools_ProfessionMixin.Save
-            WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(e.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
-
-            --添加控制面板
-            e.AddPanel_Check({
-                name= WoWTools_ProfessionMixin.addName,
-                tooltip= WoWTools_ProfessionMixin.addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            if Save().disabled then
-                self:UnregisterEvent('ADDON_LOADED')
-            else
-                Load_AddOn()
-            end
-
-        elseif arg1== 'Blizzard_TrainerUI' then
-            WoWTools_ProfessionMixin:Init_Blizzard_TrainerUI()--添一个,全学,专业, 按钮
-
-        elseif arg1== 'Blizzard_Professions' then --10.1.5
-            WoWTools_ProfessionMixin:Init_ProfessionsFrame()--初始
-
-        elseif arg1=='Blizzard_ArchaeologyUI' then
-            WoWTools_ProfessionMixin:Init_Archaeology()
-
-        elseif arg1=='Blizzard_ProfessionsBook' then--专业书
-            WoWTools_ProfessionMixin:Init_ProfessionsBook()
+        if PlayerGetTimerunningSeasonID() then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            return
         end
 
+        WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(e.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_Professions']= WoWTools_ProfessionMixin.Save
+        --添加控制面板
+        e.AddPanel_Check({
+            name= WoWTools_ProfessionMixin.addName,
+            tooltip= WoWTools_ProfessionMixin.addName,
+            GetValue= function() return not Save().disabled end,
+            SetValue= function()
+                Save().disabled= not Save().disabled and true or nil
+                print(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
+        })
+
+        if Save().disabled then
+            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        else
+            Load_AddOn()
         end
 
+    elseif arg1== 'Blizzard_TrainerUI' then
+        WoWTools_ProfessionMixin:Init_Blizzard_TrainerUI()--添一个,全学,专业, 按钮
+
+    elseif arg1== 'Blizzard_Professions' then --10.1.5
+        WoWTools_ProfessionMixin:Init_ProfessionsFrame()--初始
+
+    elseif arg1=='Blizzard_ArchaeologyUI' then
+        WoWTools_ProfessionMixin:Init_Archaeology()
+
+    elseif arg1=='Blizzard_ProfessionsBook' then--专业书
+        WoWTools_ProfessionMixin:Init_ProfessionsBook()
+    end
+end)
+
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+    if not e.ClearAllSave then
+        WoWToolsSave['Plus_Professions']= WoWTools_ProfessionMixin.Save
     end
 end)

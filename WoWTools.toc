@@ -492,7 +492,7 @@ Plus_AddOns\Info_Plus.lua
 ##自动隐藏，弹出NPC说话，
 ##Plus\Talking.lua
 ##断， 驱，散
-Plus\InterruptStolenDispel.lua
+
 
 
 
@@ -682,7 +682,7 @@ Other\Brewfest.lua
 Other\SpellFrame.lua
 Other\ScrappingMachine.lua
 Other\AccountStore.lua
-
+Other\InterruptStolenDispel.lua
 ##10.1 梦境之种
 ##Other\DormantSeeds.lua
 
