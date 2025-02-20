@@ -132,7 +132,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub, sub2
     root:CreateCheckbox(
         e.onlyChinese and '显示' or SHOW,
@@ -216,7 +216,7 @@ local function Init_Menu(_, root)
     WoWTools_MenuMixin:SetGridMode(sub, num)
 
 --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scaleSendPlayerFrame or 1
     end, function(value)
         Save().scaleSendPlayerFrame=value

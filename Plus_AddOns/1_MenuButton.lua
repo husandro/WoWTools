@@ -15,7 +15,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub, num
 --快捷键
     num=0
@@ -39,7 +39,7 @@ local function Init_Menu(_, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().leftListScale or 1
     end, function(value)
         Save().leftListScale= value
@@ -126,7 +126,7 @@ local function Init_Menu(_, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().rightListScale or 1
     end, function(value)
         Save().rightListScale= value

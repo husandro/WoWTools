@@ -1,10 +1,14 @@
 local id, e = ...
-local addName= 'DormantSeeds'
+if e.Player.level<70 then
+    return
+end
+
+local addName
 local Save={
     disabled= not e.Player.husandro,
     scale= e.Player.husandro and 0.85 or 1,
 }
-
+--梦境之种
 
 local Button
 
@@ -14,11 +18,17 @@ local ItemTab={
     208047,--硕大的梦境之种
    -- 210014
 }
+for _, itemID in pairs(ItemTab) do
+    e.LoadData({id=itemID, type='item'})
+end
+
 local CurrencyID= 2650
 
 local function Init()
     Button= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, icon='hide'})
+
     function Button:set_Point()
+        self:ClearAllPoints()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         elseif e.Player.husandro then
@@ -33,7 +43,7 @@ local function Init()
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= WoWTools_ItemMixin:GetLink(itemID)
@@ -60,10 +70,6 @@ local function Init()
         e.tips:Show()
     end
 
-    --[[Button.texture= Button:CreateTexture()
-    Button.texture:SetAllPoints(Button)
-    Button.texture:SetAtlas(e.Icon.icon)
-    Button.texture:SetAlpha(0.5)]]
 
     Button:SetClampedToScreen(true)
     Button:SetMovable(true)
@@ -84,10 +90,9 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then--移动
             SetCursor('UI_MOVE_CURSOR');
         elseif d=='RightButton' and IsControlKeyDown() then--还原
-           self:ClearAllPoints()
            Save.point=nil
            self:set_Point()
-           print(WoWTools_Mixin.addName, e.cn(addName), e.onlyChinese and '重置位置' or RESET_POSITION)
+           print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
     Button:SetScript('OnMouseWheel',function(self, d)
@@ -150,9 +155,11 @@ local function Init()
         end
         self:set_Shown()
     end
-    function Button:set_Shown()
+    function Button:set_Shown(show)
         if not UnitAffectingCombat('player') then
-            self:SetShown(self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
+            self:SetShown(
+                show or (self.uiMapID and not C_PetBattles.IsInBattle() and not IsInInstance())
+            )
         end
     end
     function Button:get_UIMapID()
@@ -174,7 +181,7 @@ local function Init()
                 self:set_Currency()
             end
         end
-       
+
         if not UnitAffectingCombat('player') then
             self:set_Shown()
         end
@@ -183,14 +190,14 @@ local function Init()
 
 
     Button.btn={}
-    function Button:set_button()
+    function Button:set_button(show)
         if UnitAffectingCombat('player') then
             return
         end
         local index=1
         for _, itemID in pairs(ItemTab) do
             local num= C_Item.GetItemCount(itemID)
-            if num>0 then
+            if num>0 or show then
                 local btn= self.btn[index]
                 if not btn then
                     btn= WoWTools_ButtonMixin:Cbtn(self, {type=true, button='ItemButton', icon='hide'})
@@ -216,6 +223,7 @@ local function Init()
                 end
                 btn:SetItemButtonCount(C_Item.GetItemCount(itemID))
                 index= index+1
+                btn:SetShown(true)
             end
         end
         for i= index, #self.btn do
@@ -227,12 +235,13 @@ local function Init()
         end
     end
 
-    --Button:SetScript('OnShow', Button.set_button)
     Button:set_Point()
     Button:set_button()
     Button:set_Scale()
     Button:get_UIMapID()
     Button:set_Event()
+
+    return true
 end
 
 
@@ -250,28 +259,43 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         return
     end
 
-    Save= WoWToolsSave[addName] or Save
+    WoWToolsSave['DormantSeeds']= nil
+    Save= WoWToolsSave['Other_DormantSeeds'] or Save
 
-    if not PlayerGetTimerunningSeasonID() and e.Player.level>=70 then
-        --添加控制面板
-        e.AddPanel_Check({
-            name= '|T656681:0|t'..e.cn(addName),
-            tooltip= function()
-                return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true})
-            end,
-            Value= not Save.disabled,
+    if not PlayerGetTimerunningSeasonID() then
+        addName= '|T656681:0|t'..(e.onlyChinese and '梦境之种' or 'DormantSeeds')
+
+        e.AddPanel_Check_Button({
+            checkName= addName,
             GetValue= function() return not Save.disabled end,
             SetValue= function()
                 Save.disabled = not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-            end
+                if Button then
+                    Button:set_Shown(not Save.disabled)
+                    Button:set_button(not Save.disabled)
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                elseif not Save.disabled then
+                    if Init() then Init=function()end end
+                end
+            end,
+            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+            buttonFunc= function()
+                Save.Point=nil
+                if Button and UnitAffectingCombat('player') then
+                    Button:set_Point()
+                end
+                print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            end,
+            tooltip=function()
+                return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName
+            end,
+            layout= WoWTools_OtherMixin.Layout,
+            category= WoWTools_OtherMixin.Category,
         })
 
+
         if not Save.disabled then
-            for _, itemID in pairs(ItemTab) do
-                e.LoadData({id=itemID, type='item'})
-            end
-            C_Timer.After(2, Init)
+            if Init() then Init=function()end end
         end
     end
     EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
@@ -279,6 +303,6 @@ end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then
-        WoWToolsSave[addName]=Save
+        WoWToolsSave['Other_DormantSeeds']=Save
     end
 end)

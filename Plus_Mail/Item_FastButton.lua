@@ -163,7 +163,7 @@ local function Init_Menu(self, root)
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
 
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scaleFastButton or 1
     end, function(value)
         Save().scaleFastButton= value

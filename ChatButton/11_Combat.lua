@@ -573,7 +573,7 @@ local function Init_Menu(self, root)
 
 --缩放
     root:CreateDivider()
-    sub2, sub= WoWTools_MenuMixin:ScaleCheck(root, function()
+    sub2, sub= WoWTools_MenuMixin:ScaleCheck(self, root, function()
         return Save.inCombatScale
     end, function(value)
         Save.inCombatScale= value

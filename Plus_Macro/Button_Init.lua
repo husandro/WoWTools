@@ -23,7 +23,7 @@ local PointTab={
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
@@ -87,7 +87,7 @@ local function Init_Menu(_, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:ScaleRoot(sub,
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
     function()
         return Save().bottomListScale or 1
     end, function(value)

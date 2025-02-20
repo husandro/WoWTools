@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
 
 --重置位置
 	sub:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		if WoWTools_ReputationMixin.TrackButton then
 			WoWTools_ReputationMixin.TrackButton:ClearAllPoints()

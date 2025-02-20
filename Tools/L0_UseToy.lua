@@ -391,7 +391,7 @@ local function Init_Menu(self, root)
     end)
 
 --设置捷键
-    WoWTools_KeyMixin:SetMenu(sub, {
+    WoWTools_KeyMixin:SetMenu(self, sub, {
         name=addName,
         key=Save.KEY,
         GetKey=function(key)

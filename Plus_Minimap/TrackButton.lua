@@ -969,27 +969,29 @@ local function Init_Menu(self, root)--菜单
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().vigentteButtonTextScale
     end, function(value)
         Save().vigentteButtonTextScale= value
         self:set_scale()
     end)
 
+
 --FrameStrata    
-    sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().trackButtonStrata= data
         self:set_strata()
-    end))
-    if UnitAffectingCombat('player') then
-        sub2:SetEnabled(false)
-    end
+    end)
+    sub2:SetEnabled(self:CanChangeAttribute())
+    --if UnitAffectingCombat('player') then
+      --  sub2:SetEnabled(false)
+    --end
 
 --重置位置
     sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
 end
 
 

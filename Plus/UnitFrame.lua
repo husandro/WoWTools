@@ -1883,7 +1883,7 @@ local function Init_RaidFrame()--设置,团队
     end)
     CompactRaidFrameManager.ScaleButton:SetupMenu(function(self, root)
 --缩放
-        WoWTools_MenuMixin:Scale(root, function()
+        WoWTools_MenuMixin:Scale(self, root, function()
             return Save.managerScale or 1
         end, function(value)
             if not UnitAffectingCombat('player') then

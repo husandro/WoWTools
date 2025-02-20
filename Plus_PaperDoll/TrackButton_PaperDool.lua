@@ -58,7 +58,7 @@ local function Init_Menu(self, root)
     end)
 
 --缩放, 单行
-    WoWTools_MenuMixin:ScaleRoot(sub, function()
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().trackButtonTextScale or 1
     end, function(value)
         Save().trackButtonTextScale= value
@@ -78,7 +78,7 @@ local function Init_Menu(self, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().equipmentFrameScale
     end, function(value)
         Save().equipmentFrameScale= value
@@ -95,7 +95,7 @@ local function Init_Menu(self, root)
 
 --重置位置
     root:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(root, Save().Equipment, function()
+    WoWTools_MenuMixin:RestPoint(self, root, Save().Equipment, function()
         Save().Equipment=nil
         TrackButton:set_point()
         print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)

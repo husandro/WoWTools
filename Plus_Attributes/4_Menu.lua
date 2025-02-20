@@ -93,7 +93,7 @@ local function Init_Menu(self, root)
 
     sub:CreateDivider()
 --重置位置
-    WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
         Save().point=nil
         self:set_Point()--设置, 位置
         return MenuResponse.Open

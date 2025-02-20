@@ -64,7 +64,7 @@ local function Init_Menu(self, root)
     end
 
 --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return self.targetFrame:GetScale()
     end, function(value)
         --if self.targetFrame:CanChangeAttribute() then

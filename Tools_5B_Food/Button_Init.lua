@@ -83,7 +83,7 @@ local function Init()
     end
 
     function UseButton:set_scale()
-        if not UnitAffectingCombat('player') then
+        if not self:CanChangeAttribute() then-- not UnitAffectingCombat('player') then
             self:SetScale(Save().scale or 1)
         end
     end
@@ -133,7 +133,7 @@ local function Init()
     UseButton:SetScript("OnMouseUp", ResetCursor)
     UseButton:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
-            if UnitAffectingCombat('player') then
+            if not self:CanChangeAttribute() then--UnitAffectingCombat('player') then
                 print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 WoWTools_FoodMixin:Check_Items(true)

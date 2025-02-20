@@ -86,7 +86,7 @@ end
 
 
 --追踪
-local function Init_TrackButton_Menu(_, root)
+local function Init_TrackButton_Menu(self, root)
     if Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root)
 		or not WoWTools_TokensMixin.TrackButton
 	then
@@ -169,7 +169,7 @@ local function Init_TrackButton_Menu(_, root)
 
 
     --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scaleTrackButton
     end, function(value)
         Save().scaleTrackButton= value
@@ -186,7 +186,7 @@ local function Init_TrackButton_Menu(_, root)
 
 --重置位置
 	root:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(root, Save().point, function()
+	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
 		if WoWTools_TokensMixin.TrackButton then
 			WoWTools_TokensMixin.TrackButton:set_point()
@@ -220,7 +220,7 @@ local function Init_Menu(self, root)
     end
 
 	local sub, sub2, num
-	
+
 
 --追踪
 	sub=root:CreateCheckbox(
@@ -234,7 +234,7 @@ local function Init_Menu(self, root)
 	end)
 
 --TrackButton 选项
-	Init_TrackButton_Menu(_, sub)
+	Init_TrackButton_Menu(self, sub)
 
 --指定货币
 	num=0
@@ -331,7 +331,7 @@ local function Init_Menu(self, root)
 		tooltip:AddLine(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
 	end)
 
-	
+
 --Plus
 	root:CreateCheckbox(
 		'UI Plus',

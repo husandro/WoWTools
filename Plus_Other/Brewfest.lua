@@ -254,7 +254,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     Save= WoWToolsSave['Other_Brewfest'] or Save
 
     --添加控制面板
-   addName= '|T132248:0|t'..(e.onlyChinese and '美酒节赛羊' or C_Item.GetItemNameByID(33976) or 'Brewfest')
+   addName= '|T132248:0|t'..(e.onlyChinese and '美酒节赛羊' or e.cn(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true}) or 'Brewfest')
 
     e.AddPanel_Check_Button({
         checkName= addName,
@@ -280,10 +280,15 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip=function()
-            return e.onlyChinese and '节日: 美酒节（赛羊）' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_FILTER_HOLIDAYS, C_Item.GetItemNameByID(33976) or '')
+            return e.onlyChinese and '节日: 美酒节（赛羊）'
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
+                    CALENDAR_FILTER_HOLIDAYS,
+                    e.cn(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true})
+                    or ''
+                )
         end,
         layout= WoWTools_OtherMixin.Layout,
-        category= nil,
+        category= WoWTools_OtherMixin.Category,
     })
 
     if not Save.disabled then
@@ -291,6 +296,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     end
     EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
+
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then

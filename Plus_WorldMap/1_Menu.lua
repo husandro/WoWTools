@@ -175,7 +175,7 @@ local function Init_PlayerXY_Option_Menu(self, root2)
         bit=nil,
     })
 
-    WoWTools_MenuMixin:ScaleRoot(root, function()--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, root, function()--缩放
         return Save().PlayerXY_Scale or 1
     end, function(value)
         Save().PlayerXY_Scale= value
@@ -207,7 +207,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub
 
 --地图和任务日志
@@ -235,7 +235,7 @@ local function Init_Menu(_, root)
         WoWTools_WorldMapMixin:Init_MpaID()
     end)
 
-    WoWTools_MenuMixin:ScaleRoot(sub, function()
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()
         return Save().MapIDScale or 1
     end, function(value)
         Save().MapIDScale= value
@@ -305,7 +305,7 @@ local function Init_Menu(_, root)
     })
     sub:CreateSpacer()
 
-    WoWTools_MenuMixin:ScaleRoot(sub, function()--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub, function()--缩放
         return Save().MapXYScale or 1
     end, function(value)
         Save().MapXYScale= value

@@ -145,7 +145,7 @@ end
 
 
 local function Init_KeyButton_Menu(self, root)
-    local isInCombat= UnitAffectingCombat('player')
+    local isInCombat= not self:CanChangeAttribute() UnitAffectingCombat('player')
     local sub, sub2
 
     root:CreateButton(
@@ -170,14 +170,15 @@ local function Init_KeyButton_Menu(self, root)
     function()
         return WoWTools_KeyMixin:IsKeyValid(self)
     end, function()
-        if not UnitAffectingCombat('player') then
+        --if not UnitAffectingCombat('player') then
+        if self:CanChangeAttribute() then
             self:set_key(not WoWTools_KeyMixin:IsKeyValid(self))
         end
     end)
     sub:SetEnabled(not isInCombat)
 
 --设置KEY
-    WoWTools_KeyMixin:SetMenu(sub,  {
+    WoWTools_KeyMixin:SetMenu(self, sub,  {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=e.cn(self.name),
         key=Save[self.type],
@@ -244,7 +245,7 @@ local function Init_KeyButton(index, type)
         e.tips:AddLine(' ')
 
         local isKeyValid= WoWTools_KeyMixin:IsKeyValid(self)
-        local isInCombat= UnitAffectingCombat('player')
+        local isInCombat= not self:CanChangeAttribute()-- UnitAffectingCombat('player')
         e.tips:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
             ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKey()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
@@ -274,7 +275,9 @@ local function Init_KeyButton(index, type)
         self:set_tooltip()
     end)
     button:SetScript('OnMouseWheel', function(self, d)
-        if UnitAffectingCombat('player') then
+        --if UnitAffectingCombat('player') then
+        if not self:CanChangeAttribute() then
+            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         self:set_key(d==1)-- 1上, -1下
@@ -369,13 +372,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave['Tools_Professions'] or Save
             if WoWTools_ToolsButtonMixin:GetButton() then
-                C_Timer.After(2, function()
+                Init()
+                --[[C_Timer.After(2, function()
                     if UnitAffectingCombat('player') then
                         self:RegisterEvent('PLAYER_REGEN_ENABLED')
                     else
                        Init()
                     end
-                end)
+                end)]]
             end
             self:UnregisterEvent('ADDON_LOADED')
         end

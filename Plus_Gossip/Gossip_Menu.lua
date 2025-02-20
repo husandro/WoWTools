@@ -349,7 +349,7 @@ local function Init_Menu(self, root)
 
 
     --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
         Save().scale= value
@@ -359,7 +359,7 @@ local function Init_Menu(self, root)
 
 --重置位置
     sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
         Save().point=nil
         WoWTools_GossipMixin.GossipButton:ClearAllPoints()
         WoWTools_GossipMixin.GossipButton:set_Point()

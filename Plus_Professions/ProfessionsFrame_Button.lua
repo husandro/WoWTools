@@ -199,7 +199,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     if Save().showFuocoButton and WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
@@ -243,7 +243,7 @@ local function Init_Menu(_, root)
    
 
     --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scaleButton or 1
     end, function(value)
         Save().scaleButton= value

@@ -19,7 +19,7 @@ local function Init_Menu(self, root)
 
 	root:CreateDivider()
 --缩放
-	WoWTools_MenuMixin:Scale(root, function()
+	WoWTools_MenuMixin:Scale(self, root, function()
 		return Save().scale or 1
 	end, function(value)
 		Save().scale= value

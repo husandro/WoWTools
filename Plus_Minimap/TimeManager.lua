@@ -46,7 +46,7 @@ end
 
 
 --秒表
-local function Init_Stopwatch_Menu(_, root)
+local function Init_Stopwatch_Menu(self, root)
 --plus
     local sub=root:CreateCheckbox('|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t Plus', function()
         return not Save().disabledClockPlus
@@ -92,7 +92,7 @@ local function Init_Stopwatch_Menu(_, root)
 
 
 --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().StopwatchFrameScale
     end, function(value)
         Save().StopwatchFrameScale= value
@@ -114,7 +114,7 @@ local function Init_Stopwatch_Menu(_, root)
 
 --重置位置
     root:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint, function()
+    WoWTools_MenuMixin:RestPoint(self, root, Save().TimeManagerClockButtonPoint, function()
         if StopwatchFrame.rest_point then
             StopwatchFrame:rest_point()
         end
@@ -143,7 +143,7 @@ end
 
 
 --时间信息
-local function Init_TimeManager_Menu(_, root)
+local function Init_TimeManager_Menu(self, root)
 --plus
     local sub=root:CreateCheckbox('|A:auctionhouse-icon-clock:0:0:|a Plus', function()
         return not Save().disabledClockPlus
@@ -172,7 +172,7 @@ local function Init_TimeManager_Menu(_, root)
         end)
 
     --缩放
-        WoWTools_MenuMixin:Scale(root, function()
+        WoWTools_MenuMixin:Scale(self, root, function()
             return Save().TimeManagerClockButtonScale
         end, function(value)
             Save().TimeManagerClockButtonScale= value
@@ -193,7 +193,7 @@ local function Init_TimeManager_Menu(_, root)
 
 
     --重置位置
-        WoWTools_MenuMixin:RestPoint(root, Save().TimeManagerClockButtonPoint,  WoWTools_MinimapMixin.Rest_TimeManager_Point)
+        WoWTools_MenuMixin:RestPoint(self, root, Save().TimeManagerClockButtonPoint,  WoWTools_MinimapMixin.Rest_TimeManager_Point)
     end
 
 --秒表
@@ -209,7 +209,7 @@ local function Init_TimeManager_Menu(_, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
     end)
-    Init_Stopwatch_Menu(_, sub)
+    Init_Stopwatch_Menu(self, sub)
 end
 
 
@@ -652,9 +652,9 @@ end
 
 
 local function Init()
-    TimeManagerClockButton:SetScript('OnClick', function(frame, d)
+    TimeManagerClockButton:SetScript('OnClick', function(self, d)
         if d=='RightButton' and not IsAltKeyDown() then
-            MenuUtil.CreateContextMenu(frame, Init_TimeManager_Menu)
+            MenuUtil.CreateContextMenu(self, Init_TimeManager_Menu)
 
         elseif d=='LeftButton' then
             e.call(TimeManager_Toggle)

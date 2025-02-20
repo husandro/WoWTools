@@ -55,7 +55,7 @@ local function Init(self, root)
         self.MakerFrame:set_frame_strata()
     end)
 
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().markersScale
     end, function(value)
         Save().markersScale= value
@@ -77,7 +77,7 @@ local function Init(self, root)
 
 
 --重置位置
-    WoWTools_MenuMixin:RestPoint(root, Save().markersFramePoint and self.MakerFrame:CanChangeAttribute(), function()
+    WoWTools_MenuMixin:RestPoint(self, root, Save().markersFramePoint, function()
         Save().markersFramePoint=nil
         self.MakerFrame:ClearAllPoints()
         self.MakerFrame:Init_Set_Frame()

@@ -101,7 +101,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub
     sub=root:CreateTitle(e.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS))
     sub:SetTooltip(function(tooltip)
@@ -120,7 +120,7 @@ local function Init_Menu(_, root)
     end
 
     root:CreateDivider()
-    WoWTools_KeyMixin:SetMenu(root, {
+    WoWTools_KeyMixin:SetMenu(self, root, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName,
         key=Save.KEY,

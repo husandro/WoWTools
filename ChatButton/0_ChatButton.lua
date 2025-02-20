@@ -38,7 +38,7 @@ end
 local function Init_Menu(self, root)
     local sub
 
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save.scale
     end, function(value)
         Save.scale= value
@@ -92,7 +92,7 @@ local function Init_Menu(self, root)
 
 
     --重置位置
-    WoWTools_MenuMixin:RestPoint(root, Save.point, function()
+    WoWTools_MenuMixin:RestPoint(self, root, Save.point, function()
         Save.Point=nil
         self:set_point()
         return MenuResponse.Open

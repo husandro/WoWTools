@@ -150,9 +150,15 @@ sub:CreateSpacer()
 
 
 --缩放, 单行
-function WoWTools_MenuMixin:ScaleRoot(root, GetValue, SetValue, ResetValue)
+function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValue)
+    local sub
+    if not frame:CanChangeAttribute() then
+        sub=root:CreateButton('|cff828282'..e.onlyChinese and '缩放' or UI_SCALE,function() end)
+        sub:SetEnabled(false)
+        return
+    end
     root:CreateSpacer()
-    local sub= self:CreateSlider(root, {
+    sub= self:CreateSlider(root, {
         getValue=GetValue,
         setValue=SetValue,
         name= nil,
@@ -193,8 +199,14 @@ end
 
 
 --缩放, 加check
-function WoWTools_MenuMixin:ScaleCheck(root, GetValue, SetValue, ResetValue, checkGetValue, checkSetValue)
-    local sub= root:CreateCheckbox(
+function WoWTools_MenuMixin:ScaleCheck(frame, root, GetValue, SetValue, ResetValue, checkGetValue, checkSetValue)
+    local sub
+    if not frame:CanChangeAttribute() then
+        sub=root:CreateButton('|cff828282'..e.onlyChinese and '缩放' or UI_SCALE,function() end)
+        sub:SetEnabled(false)
+        return
+    end
+    sub= root:CreateCheckbox(
         '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
         checkGetValue,
         checkSetValue,
@@ -204,7 +216,7 @@ function WoWTools_MenuMixin:ScaleCheck(root, GetValue, SetValue, ResetValue, che
         tooltip:AddLine(e.GetEnabeleDisable(nil, true))
     end)
 
-    local sub2= self:ScaleRoot(sub, GetValue, SetValue, ResetValue)
+    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.GetEnabeleDisable(nil, true))
     end)
@@ -213,20 +225,26 @@ end
 
 
 --缩放
-function WoWTools_MenuMixin:Scale(root, GetValue, SetValue, ResetValue)
-    local sub= root:CreateButton(
+function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
+    local sub
+    if not frame:CanChangeAttribute() then
+        sub=root:CreateButton('|cff828282'..e.onlyChinese and '缩放' or UI_SCALE, function() end)
+        sub:SetEnabled(false)
+        return
+    end
+    sub= root:CreateButton(
         '|A:common-icon-zoomin:0:0|a'
         ..(e.onlyChinese and '缩放' or UI_SCALE),
     function()
         return MenuResponse.Open
     end)
 
-    local sub2= self:ScaleRoot(sub, GetValue, SetValue, ResetValue)
+    local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
     return sub2, sub
 end
 --[[
 --缩放
-WoWTools_MenuMixin:Scale(root, function()
+WoWTools_MenuMixin:Scale(self, root, function()
     return Save.scale
 end, function(value)
     Save.scale= value
@@ -345,17 +363,19 @@ end)
 
 
 --重置位置
-function WoWTools_MenuMixin:RestPoint(root, point, SetValue)
-    return root:CreateButton(
+function WoWTools_MenuMixin:RestPoint(frame, root, point, SetValue)
+    local sub= root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'
         ..(point and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '重置位置' or RESET_POSITION),
         SetValue
     )
+    sub:SetEnabled(frame:CanChangeAttribute())
+    return sub
 end
 --[[
 --重置位置
-WoWTools_MenuMixin:RestPoint(sub, Save().point, function()
+WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
     Save().point=nil
     self:ClearAllPoints()
     self:set_point()

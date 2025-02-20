@@ -223,7 +223,7 @@ local function Init_Menu(self, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().TypeButton.scale or 1
     end, function(value)
         Save().TypeButton.scale= value
@@ -240,7 +240,7 @@ local function Init_Menu(self, root)
     end)
 
 --重置位置
-    WoWTools_MenuMixin:RestPoint(sub, Save().TypeButton.Point, function()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().TypeButton.Point, function()
         Save().TypeButton.point= nil
         self:set_point()
         return MenuResponse.Open

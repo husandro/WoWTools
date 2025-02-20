@@ -203,6 +203,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if UseButton then
+                WoWTools_FoodMixin.Button= UseButton
                Init()
             end
             self:UnregisterEvent('ADDON_LOADED')

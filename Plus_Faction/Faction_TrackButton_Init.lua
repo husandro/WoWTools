@@ -92,7 +92,7 @@ local function Init_Menu(self, root)
 	sub:SetEnabled(not PlayerGetTimerunningSeasonID())
 
 --缩放
-	WoWTools_MenuMixin:Scale(root, function()
+	WoWTools_MenuMixin:Scale(self, root, function()
 		return Save().scaleTrackButton or 1
 	end, function(value)
 		Save().scaleTrackButton= value
@@ -120,7 +120,7 @@ local function Init_Menu(self, root)
 
 	--重置位置
 	root:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(root, Save().point, function()
+	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()

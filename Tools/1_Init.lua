@@ -257,28 +257,29 @@ local function Init_Menu(self, root)
     end)
 
 
-    sub2= select(2, WoWTools_MenuMixin:Scale(sub, function()
+    sub2= WoWTools_MenuMixin:Scale(self, sub, function()
         return Save.scale
     end, function(data)
-        Save.scale=data
-        self:set_scale()
-    end))
-    if isInCombat then
-        sub2:SetEnabled(false)
-    end
+        if self:CanChangeAttribute() then
+            Save.scale=data
+            self:set_scale()
+        else
+            print(e.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        end
+    end)
+    sub2:SetEnabled(self:CanChangeAttribute())
 
-   sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
+   sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save.strata= data
         self:set_strata()
-    end))
-    if isInCombat then
-        sub2:SetEnabled(false)
-    end
+    end)
+    
+    
 
     sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(sub, Save.point, function()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save.point, function()
         Save.point=nil
         self:set_point()
     end)
@@ -325,18 +326,26 @@ local function Init()
     end
 
     function Button:set_point()
-        self:ClearAllPoints()
-        if Save.point then
-            self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-        elseif e.Player.husandro then
-            self:SetPoint('BOTTOMRIGHT', -420, 10)
+        if not self:CanChangeAttribute() then
+           print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
-            self:SetPoint('CENTER', 300, 100)
+            self:ClearAllPoints()
+            if Save.point then
+                self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+            elseif e.Player.husandro then
+                self:SetPoint('BOTTOMRIGHT', -420, 10)
+            else
+                self:SetPoint('CENTER', 300, 100)
+            end
         end
     end
 
     function Button:set_scale()
-        self:SetScale(Save.scale or 1)
+        if self:CanChangeAttribute() then
+            self:SetScale(Save.scale or 1)
+        else
+            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        end
     end
 
     function Button:set_strata()

@@ -41,7 +41,7 @@ local function menu_tooltip(root)
     end)
 end
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub
     sub=root:CreateButton((e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
         set_frames_show(true)
@@ -54,7 +54,7 @@ local function Init_Menu(_, root)
     menu_tooltip(sub)
 
     root:CreateDivider()
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scale
     end, function(value)
         Save().scale= value
@@ -79,9 +79,9 @@ local function Init()
         e.tips:Show()
     end)
 
-    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseDown', function(frame, d)
+    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(frame, Init_Menu)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 

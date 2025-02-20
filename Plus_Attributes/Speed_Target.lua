@@ -11,7 +11,7 @@ end
 local btn
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
 --右
     root:CreateCheckbox(
         e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
@@ -31,7 +31,7 @@ local function Init_Menu(_, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scaleTargetMove or 1
     end, function(value)
         Save().scaleTargetMove= value
@@ -48,7 +48,7 @@ local function Init_Menu(_, root)
 
     
 --重置位置
-    WoWTools_MenuMixin:RestPoint(root, Save().targetMovePoint, function()
+    WoWTools_MenuMixin:RestPoint(self, root, Save().targetMovePoint, function()
         Save().targetMovePoint=nil
         btn:Settings()
         return MenuResponse.Open

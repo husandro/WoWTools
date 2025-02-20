@@ -81,7 +81,7 @@ local function Init_Menu(self, root)
 --打开选项界面
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HolidayMixin.addName})
     --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
         Save().scale=value

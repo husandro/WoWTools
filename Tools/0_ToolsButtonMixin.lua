@@ -257,7 +257,8 @@ end
 
 --重置所有按钮位置
 function WoWTools_ToolsButtonMixin:RestAllPoint()
-    if UnitAffectingCombat('player') then
+    --if UnitAffectingCombat('player') then
+    if not self.Button:CanChangeAttribute() then
         return
     end
     self.leftNewLineButton=nil

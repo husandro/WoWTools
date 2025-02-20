@@ -191,7 +191,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if UnitAffectingCombat('player') then
+    if not self:CanChangeAttribute() then --UnitAffectingCombat('player') then
         root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -321,21 +321,21 @@ local function Init_Menu(self, root)
         self:set_background()
     end)
 
-    sub2=select(2, WoWTools_MenuMixin:Scale(sub, function()
+    sub2=WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
         Save().scale= value
         self:set_scale()
-    end))
+    end)
 
 
 
-    sub2= select(2, WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
         self:set_strata()
-    end))
+    end)
 
     sub2=sub:CreateButton(e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function()return MenuResponse.Open end)
     sub2:CreateSpacer()
@@ -356,8 +356,8 @@ local function Init_Menu(self, root)
 
 --重置位置
     sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(sub, Save().point and not UnitAffectingCombat('player'), function()
-        if not UnitAffectingCombat('player') then
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point , function()--UnitAffectingCombat('player')
+        if self:CanChangeAttribute() then--UnitAffectingCombat('player') then
             Save().point=nil
             self:set_point()
         end

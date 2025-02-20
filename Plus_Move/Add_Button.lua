@@ -54,7 +54,7 @@ end
 local function Init_Menu(self, root)
     if self.setZoom then
 --缩放
-        WoWTools_MenuMixin:Scale(root, function()
+        WoWTools_MenuMixin:Scale(self, root, function()
             return Save().scale[self.name] or 1
         end, function(value)
             Save().scale[self.name]= value

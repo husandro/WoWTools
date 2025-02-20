@@ -300,7 +300,7 @@ local function Init_Menu(self, root)
 
 
     --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save.scale
     end, function(value)
         Save.scale= value

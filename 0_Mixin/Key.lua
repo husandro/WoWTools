@@ -75,7 +75,8 @@ end
 
 
 function WoWTools_KeyMixin:Setup(btn, isDisabled)
-    if UnitAffectingCombat('player') then
+    --if UnitAffectingCombat('player') then
+    if not btn:CanChangeAttribute() then
         Frame.buttons[btn]={isDisabled=isDisabled}
         Frame:set_event(true)
         return
@@ -108,10 +109,16 @@ end]]
 
 
 --快捷键
-function WoWTools_KeyMixin:SetMenu(root, tab)
-    local sub=root:CreateCheckbox(
+function WoWTools_KeyMixin:SetMenu(frame, root, tab)
+    local sub
+    if not frame:CanChangeAttribute() then
+        return root:CreateTitle(
+            (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' |cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        )
+    end
+    sub=root:CreateCheckbox(
         '|A:NPE_Icon:0:0|a'
-        ..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
+        --..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
         ..(tab.key or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL))
         ..(tab.icon or ''),
     function(data)
@@ -148,7 +155,7 @@ function WoWTools_KeyMixin:SetMenu(root, tab)
         tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, description.data.key)
     end)
-    sub:SetEnabled(not UnitAffectingCombat('player'))
+    --sub:SetEnabled(not UnitAffectingCombat('player'))
     return sub
 end
 
@@ -157,7 +164,7 @@ end
 --设置捷键
     sub:CreateSpacer()
     local text2, num2= WoWTools_MenuMixin:GetDragonriding()--驭空术
-    WoWTools_KeyMixin:SetMenu(sub, {
+    WoWTools_KeyMixin:SetMenu(self, sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName..(num2 and num2>0 and text2 or ''),
         key=Save.KEY,

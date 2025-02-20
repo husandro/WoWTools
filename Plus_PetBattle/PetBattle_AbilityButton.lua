@@ -626,7 +626,7 @@ end
 
 --移动按钮, 菜单
 local function Init_Button_Menu(self, root)
-    local sub, sub2
+    local sub
 
 --打开，宠物手册
     local petIndex= self:getPetIndex()
@@ -699,7 +699,7 @@ local function Init_Button_Menu(self, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return self:GetScale() --Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.85)
     end, function(value)
         Save().AbilityButton['scale'..self.name]= value
