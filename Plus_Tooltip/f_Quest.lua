@@ -19,8 +19,9 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
         else
             levelText='|cffffffff['..lv..']|r'
         end
+        levelText= (e.onlyChinese and '等级' or LEVEL)
     end
-    tooltip:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..(levelText or ''), questID)
+    tooltip:AddDoubleLine('questID '..questID, levelText)
 
     if not info then
         local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)

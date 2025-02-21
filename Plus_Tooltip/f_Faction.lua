@@ -12,11 +12,17 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     local icon= info.texture and ('|T'..info.texture..':0|t'..info.texture)
                 or (info.atlas and '|A:'..info.atlas..':0:0|a')--..info.atlas)
     if info.friendshipID then
-        tooltip:AddDoubleLine((e.onlyChinese and '个人' or format(QUEST_REPUTATION_REWARD_TITLE, 'NPC'))..' '..info.friendshipID, icon)
+        tooltip:AddDoubleLine(
+            'friendshipID '..info.friendshipID,
+            (factionID~=info.friendshipID and 'factionID '..info.factionID..' ' or '')..icon
+        )
     elseif info.isMajor then
-        tooltip:AddDoubleLine((e.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID, icon)
+        tooltip:AddDoubleLine(
+            (e.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID,
+            icon
+        )
     else
-        tooltip:AddDoubleLine((e.onlyChinese and '声望' or REPUTATION)..' '..info.factionID, icon)
+        tooltip:AddDoubleLine('factionID '..info.factionID, icon)
     end
     if info.factionStandingtext or info.valueText then
         tooltip:AddDoubleLine(info.factionStandingtext or ' ', (info.hasRewardPending or '')..(info.valueText or '')..(info.valueText and info.isParagon and '|A:Banker:0:0|a' or ''))

@@ -5197,7 +5197,9 @@
         "ContainerFrame9",
         "ContainerFrame8",
         "ACCOUNT_BANK_PANEL_TITLE",
-        "BankFrame_ShowPanel"
+        "BankFrame_ShowPanel",
+        "COLLECTIONS_JOURNAL_TAB_INDEX_PETS",
+        "PetJournal_SelectPet"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

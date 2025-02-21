@@ -73,7 +73,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
 
     local spellTexture=  originalIcon or icon
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine((e.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture, 1,1,1, 1,1,1)
+    tooltip:AddDoubleLine('spellID '..spellID, spellTexture and '|T'..spellTexture..':0|t'..spellTexture, 1,1,1, 1,1,1)
 
     Set_HunterPet(tooltip, spellID)--猎人兽栏，宠物
 

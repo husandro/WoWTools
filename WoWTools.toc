@@ -181,13 +181,13 @@ Plus_Tooltip\3_Set_Point.lua
 Plus_Tooltip\f_Achievement.lua
 Plus_Tooltip\f_Aura.lua
 Plus_Tooltip\f_Azerite.lua
-Plus_Tooltip\f_BattlePet.lua
 Plus_Tooltip\f_Currency.lua
 Plus_Tooltip\f_Faction.lua
 Plus_Tooltip\f_Flyout.lua
 Plus_Tooltip\f_Item.lua
 Plus_Tooltip\f_Mount.lua
 Plus_Tooltip\f_Pet.lua
+Plus_Tooltip\f_Pet_BattlePet.lua
 Plus_Tooltip\f_PlayerModel.lua
 Plus_Tooltip\f_Quest.lua
 Plus_Tooltip\f_Spell.lua

@@ -67,7 +67,23 @@ function WoWTools_LoadUIMixin:Journal(index, tab)--加载，收藏，UI
         end
     end
 end
-    --[[if
+--[[
+
+function BattlePetTooltipJournalClick_OnClick(self)
+	SetCollectionsJournalShown(true, COLLECTIONS_JOURNAL_TAB_INDEX_PETS);
+	if CollectionsJournal then
+		local battlePetID = self:GetParent().battlePetID;
+		if ( battlePetID ) then
+			local speciesID = C_PetJournal.GetPetInfoByPetID(battlePetID);
+			if ( speciesID and speciesID == self:GetParent().speciesID ) then
+				PetJournal_SelectPet(PetJournal, battlePetID);
+				return;
+			end
+		end
+		PetJournal_SelectSpecies(PetJournal, self:GetParent().speciesID);
+	end
+end
+    if
         (index==1 and not MountJournal:IsVisible())
         or (index==2 and not PetJournal:IsVisible())
         or (index==3 and not ToyBox:IsVisible())

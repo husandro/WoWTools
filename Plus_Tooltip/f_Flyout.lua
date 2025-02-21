@@ -12,15 +12,15 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     for slot= 1, numSlots do
         local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(flyoutID, slot)
         local spellID= overrideSpellID or flyoutSpellID
+        local col= not isKnown2 and '|cnRED_FONT_COLOR:' or (select(2, math.modf(slot/2))==0 and '|cffffffff') or ''
         if spellID then
             e.LoadData({id=spellID, type='spell'})
             local name2= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
             local icon= C_Spell.GetSpellTexture(spellID)
-            if name2 and icon then
-                tooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
-            else
-                tooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
-            end
+            tooltip:AddDoubleLine(
+                col..'|T'..(icon or 0)..':0|t'..(name2 or spellName or ''),
+                col..spellID..' ('..slot
+            )
         end
     end
 

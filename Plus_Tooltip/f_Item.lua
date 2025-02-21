@@ -12,66 +12,83 @@ local e= select(2, ...)
 
 
 local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
-    itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel--装等
-        if itemLevel and itemLevel>1 then
-            local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)--比较装等
-            if slot then
-                local slotTexture= select(2, WoWTools_ItemMixin:GetEquipSlotIcon(slot))
-                if slotTexture then
-                    tooltip.Portrait:SetTexture(slotTexture)
-                    tooltip.Portrait:SetShown(true)
-                end
-                tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.cn(_G[itemEquipLoc]) or '', itemEquipLoc), format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot), 1,1,1, 1,1,1)--栏位
-                local slotLink=GetInventoryItemLink('player', slot)
-                local text
-                if slotLink then
-                    local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink)
-                    if slotItemLevel then
-                        local num=itemLevel-slotItemLevel
-                        if num>0 then
-                            text=itemLevel..'|A:bags-greenarrow:0:0|a'..'|cnGREEN_FONT_COLOR:+'..num..'|r'
-                        elseif num<0 then
-                            text=itemLevel..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..'|cnRED_FONT_COLOR:'..num..'|r'
-                        end
+--装等
+    itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
+    if itemLevel and itemLevel>1 then
+--比较装等
+        local slot= WoWTools_ItemMixin:GetEquipSlotID(itemEquipLoc)
+        if slot then
+            local slotTexture= select(2, WoWTools_ItemMixin:GetEquipSlotIcon(slot))
+            if slotTexture then
+                tooltip.Portrait:SetTexture(slotTexture)
+                tooltip.Portrait:SetShown(true)
+            end
+--栏位
+            tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.cn(_G[itemEquipLoc]) or '', itemEquipLoc),
+                format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot),
+                1,1,1, 1,1,1
+            )
+            local slotLink=GetInventoryItemLink('player', slot)
+            local text
+            if slotLink then
+                local slotItemLevel= C_Item.GetDetailedItemLevelInfo(slotLink)
+                if slotItemLevel then
+                    local num=itemLevel-slotItemLevel
+                    if num>0 then
+                        text=itemLevel..'|A:bags-greenarrow:0:0|a'..'|cnGREEN_FONT_COLOR:+'..num..'|r'
+                    elseif num<0 then
+                        text=itemLevel..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..'|cnRED_FONT_COLOR:'..num..'|r'
                     end
-                else
-                    text=itemLevel..'|A:bags-greenarrow:0:0|a'
                 end
-                text= col..(text or itemLevel)..'|r'
-                tooltip.textLeft:SetText(text)
+            else
+                text=itemLevel..'|A:bags-greenarrow:0:0|a'
+            end
+            text= col..(text or itemLevel)..'|r'
+            tooltip.textLeft:SetText(text)
+        end
+    end
+
+    local appearanceID, sourceID = C_TransmogCollection.GetItemInfo(itemLink or itemID)--幻化
+    local visualID
+    if sourceID then
+        local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
+        if sourceInfo then
+            visualID=sourceInfo.visualID
+            tooltip.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+        end
+    end
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
+
+    if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
+        tooltip.Portrait:SetAtlas('greatVault-lock')
+    end
+
+--专精图标
+    local specTable = itemLink and C_Item.GetItemSpecInfo(itemLink)
+    if specTable and #specTable>0 then
+        local player=''
+        local other=''
+        local otherTab={}
+
+        for _, specID in pairs(specTable) do
+            local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
+            if classFile and icon2 then
+
+
+                if e.Player.class==classFile then
+                    player=player..'|T'..icon2..':0|t'
+
+                elseif not otherTab[classFile] then
+                    other= other..(WoWTools_UnitMixin:GetClassIcon(nil, classFile, false) or '')
+                    --otherTab[classFile]= true
+                end
             end
         end
+        otherTab=nil
 
-        local appearanceID, sourceID = C_TransmogCollection.GetItemInfo(itemLink or itemID)--幻化
-        local visualID
-        if sourceID then
-            local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
-            if sourceInfo then
-                visualID=sourceInfo.visualID
-                tooltip.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-            end
-        end
-        WoWTools_TooltipMixin:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
-
-        if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
-            tooltip.Portrait:SetAtlas('greatVault-lock')
-        end
-
-        local specTable = itemLink and C_Item.GetItemSpecInfo(itemLink) or {}--专精图标
-        local specTableNum=#specTable
-        if specTableNum>0 then
-            --local num=math.modf(specTableNum/2)
-            local specA=''
-            local class
-            table.sort(specTable, function (a2, b2) return a2<b2 end)
-            for k,  specID in pairs(specTable) do
-                local icon2, _, classFile=select(4, GetSpecializationInfoByID(specID))
-                icon2='|T'..icon2..':0|t'
-                specA = specA..((k>1 and class~=classFile) and '  ' or '')..icon2
-                class=classFile
-            end
-            tooltip:AddDoubleLine(specA, ' ')
-        end
+        tooltip:AddDoubleLine(player or ' ', other)
+    end
+       -- tooltip:Show()
 end
 
 
@@ -132,7 +149,7 @@ end
 
 
 local function Set_Player(tooltip, itemID)
-    local wowNum= 0--WoW 数量    
+    --local wowNum= 0--WoW 数量    
     local bag= C_Item.GetItemCount(itemID, false, false, false, false)--物品数量
     local bank= C_Item.GetItemCount(itemID, true, false, true, false) --bank
     local net= C_Item.GetItemCount(itemID, false, false, false, true)--战团
@@ -256,10 +273,10 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end
 
     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
-    tooltip:AddDoubleLine(format('%s%d %s', e.onlyChinese and '物品' or ITEMS, itemID , setID and (e.onlyChinese and '套装' or WARDROBE_SETS)..setID or ''),
+    tooltip:AddDoubleLine('itemID '..itemID..(setID and ' setID '..setID or ''),
                     itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
     if classID and subclassID then
-        tooltip:AddDoubleLine((e.cn(itemType) or 'itemType')..classID, (e.cn(itemSubType) or 'itemSubType')..subclassID)
+        tooltip:AddDoubleLine((e.cn(itemType) or 'itemType')..' '..classID, (e.cn(itemSubType) or 'itemSubType')..' '..subclassID)
     end
 
     if classID==2 or classID==4 then
@@ -315,6 +332,6 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
-    tooltip:Show()
+    --tooltip:Show()
 end
 

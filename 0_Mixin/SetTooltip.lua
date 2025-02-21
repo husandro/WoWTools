@@ -187,7 +187,19 @@ end
 
 
 
-
+local function Add_Tooltip(tooltip, tip, data)
+    if type(tip)=='function' then
+        tip(tooltip, data)
+    elseif tip then
+        if tooltip==BattlePetTooltip then
+            BattlePetTooltipTemplate_AddTextLine(BattlePetTooltip, tip)
+            BattlePetTooltipTemplate_AddTextLine(BattlePetTooltip, ' ')
+            --BattlePetTooltip:Show()
+        else
+            GameTooltip_AddNormalLine(tooltip, tip, true)
+        end
+    end
+end
 
 
 
@@ -219,11 +231,14 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     local specID= data.specID
 
     local tip= data.tooltip--添加，提示
+
     tooltip= tooltip or GameTooltip
 
+
     if itemLink then
-        if itemLink:find('Hbattlepet:%d+') then
+        if tooltip==BattlePetTooltip or itemLink:find('Hbattlepet:%d+') then
             BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
+            Add_Tooltip(BattlePetTooltip, tip, data)
             return
         else
             tooltip:SetHyperlink(itemLink)
@@ -276,12 +291,8 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         Set_Specialization(tooltip, specIndex, specID)
     end
 
-    if tip then
-        local text= type(tip)=='function' and tip(tooltip, data) or tip
-        if text then
-            GameTooltip_AddNormalLine(tooltip, text, true)
-        end
-    end
+    Add_Tooltip(tooltip, tip, data)
+    return true
 end
 
 
@@ -298,8 +309,13 @@ function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
     tooltip= tooltip or GameTooltip
     tooltip:SetOwner(frame, "ANCHOR_LEFT");
     tooltip:ClearLines()
-    self:Setup(tooltip, data)
-    tooltip:Show();
+    if frame.itemLink and (not data or not data.itemLink) then
+        data= data or {}
+        data.itemLink= frame.itemLink
+    end
+    if self:Setup(tooltip, data) then
+        tooltip:Show()
+    end
 end
 
 function WoWTools_SetTooltipMixin:Set_Menu(root)

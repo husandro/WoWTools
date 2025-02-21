@@ -10,7 +10,281 @@ end
 
 local levelFrame
 local AuctionHouseButton
-local ShowSellItemCheck
+
+--物品列表，检测有效物品
+local function Get_Item_CommodityStatus(bag, slot, isCheckHideItem)
+    local itemLocation = ItemLocation:CreateFromBagAndSlot(bag, slot);
+    if itemLocation and itemLocation:IsValid() and C_AuctionHouse.IsSellItemValid(itemLocation, false) then--ContainerFrame.lua
+        local itemCommodityStatus= C_AuctionHouse.GetItemCommodityStatus(itemLocation) or 0
+        if itemCommodityStatus>0 then
+            local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+            if
+                info.itemID
+                and info.hyperlink
+                and info.quality>0
+                and (isCheckHideItem and not Save().hideSellItem[info.itemID] or not isCheckHideItem)
+            then
+                return itemLocation, itemCommodityStatus, info
+            end
+        end
+    end
+end
+
+
+
+
+local function Create_Button(index)
+    local btn= WoWTools_ButtonMixin:Cbtn(AuctionHouseButton.frame, {button='ItemButton', icon='hide'})
+    btn.selectTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.selectTexture:SetAtlas('Forge-ColorSwatchSelection')
+    btn.selectTexture:SetPoint('CENTER')
+    btn.selectTexture:SetSize(42, 42)
+    btn.selectTexture:Hide()
+
+    btn.isCommoditiesTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.isCommoditiesTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')--common-icon-checkmark')
+    btn.isCommoditiesTexture:SetPoint('TOPRIGHT',2,2)
+    btn.isCommoditiesTexture:SetSize(16, 16)
+    btn.isCommoditiesTexture:Hide()
+
+    function btn:Settings()
+        btn:SetAlpha(Save().hideSellItem[self:GetItemID()] and 0.3 or 1)
+    end
+
+
+    btn:SetScript('OnHide', function(self)
+        self.isCommodities=nil
+        self.isPet=nil
+        self:Reset()
+    end)
+
+    btn:UpdateItemContextOverlayTextures(1)
+    btn:SetScript('OnLeave', function()
+        C_Container.SetItemSearch('')
+        GameTooltip_Hide()
+    end)
+
+
+    btn:SetScript('OnEnter', function(self)
+        local itemLink=self:GetItemLink()
+        WoWTools_SetTooltipMixin:Frame(self, nil, {
+            itemLink=itemLink,
+            tooltip= self.isPet and (e.onlyChinese and '开始拍卖' or CREATE_AUCTION).. e.Icon.left or function(tooltip)
+                tooltip:AddLine(' ')
+                tooltip:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION, e.Icon.left)
+            end
+        })
+        C_Container.SetItemSearch(itemLink and C_Item.GetItemNameByID(itemLink) or '')
+    end)
+
+    btn:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then--放入，物品
+            if AuctionHouseMultisellProgressFrame:IsShown() then
+                C_AuctionHouse.CancelSell()
+            end
+            AuctionHouseFrame:SetPostItem(self.itemLocation)--ContainerFrame.lua
+
+        elseif d=='RightButton' then--隐藏，物品
+            local itemID= C_Item.GetItemID(self.itemLocation)
+            if itemID then
+                Save().hideSellItem[itemID]= not Save().hideSellItem[itemID] and true or nil
+
+                if Save().hideSellItemListButton then--隐藏物品列表，隐藏按钮
+                    WoWTools_AuctionHouseMixin:Init_Item_Button()
+                else
+                    self:Settings()
+                end
+
+                if self.selectTexture:IsShown() then
+                    AuctionHouseFrame:ClearPostItem()
+                    AuctionHouseButton:set_next_item()
+                end
+            end
+        end
+    end)
+    AuctionHouseButton.buttons[index]= btn
+    return btn
+end
+
+
+
+
+
+
+
+
+
+
+local function Init_Item_Button()
+    if Save().hideSellItemList then
+       return
+    end
+
+
+    local isCheckHideItem= not Save().hideSellItemListButton--隐藏物品列表，隐藏按钮
+
+    local index=1
+    local isCommoditiesSellFrame, isItemSellFrame= AuctionHouseButton:get_displayMode()
+    for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local itemLocation, itemCommodityStatus, info= Get_Item_CommodityStatus(bag, slot, isCheckHideItem)
+            if itemLocation then
+                local btn= AuctionHouseButton.buttons[index] or Create_Button(index)
+
+                btn:ClearAllPoints()
+                btn:SetPoint("TOPLEFT", index==1 and AuctionHouseButton or AuctionHouseButton.buttons[index-1], 'BOTTOMLEFT', 0, -2)
+
+                btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
+                btn:SetItemLocation(itemLocation)
+                btn:SetItemButtonCount(info.stackCount)
+
+                btn.isCommoditiesTexture:SetShown(
+                    (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
+                    or (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and isCommoditiesSellFrame)
+                )
+
+                btn:SetShown(true)
+                btn:Settings()
+
+                index= index +1
+            end
+        end
+    end
+    for i= Save().numButton+1, index-1, Save().numButton  do
+        local btn= AuctionHouseButton.buttons[i]
+        btn:ClearAllPoints()
+        btn:SetPoint('LEFT', AuctionHouseButton.buttons[i-Save().numButton], 'RIGHT', 2, 0)
+    end
+
+    for i= index, #AuctionHouseButton.buttons do
+        local btn= AuctionHouseButton.buttons[i]
+        if btn then
+            btn:SetShown(false)
+        end
+    end
+
+    AuctionHouseButton.Text:SetText(index-1)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
+    local sub, sub2
+    root:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return not Save().hideSellItemList
+    end, function()
+        Save().hideSellItemList= not Save().hideSellItemList and true or nil
+        self:Settings()
+        Init_Item_Button()
+    end)
+
+    root:CreateDivider()
+
+    sub=root:CreateButton(
+        e.onlyChinese and '隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS),
+    function()
+        return MenuResponse.Open
+    end)
+
+--隐藏物品列表，隐藏按钮
+    sub:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return not Save().hideSellItemListButton
+    end, function()
+        Save().hideSellItemListButton= not Save().hideSellItemListButton and true or nil
+        Init_Item_Button()
+    end)
+
+--全部清除
+    sub:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+    function()
+        Save().hideSellItem={}
+        Init_Item_Button()
+        print(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+        return MenuResponse.Refresh
+    end)
+
+    sub:CreateDivider()
+    local find
+--隐藏，物品，列表
+    for itemID, speciaID in pairs(Save().hideSellItem) do
+        sub2= sub:CreateCheckbox(
+            WoWTools_ItemMixin:GetName(itemID, nil),
+        function(data)
+            return Save().hideSellItem[data.itemID]
+        end, function(data)
+            Save().hideSellItem[data.itemID]= not Save().hideSellItem[data.itemID] and true or nil
+            Init_Item_Button()
+        end, {itemID= itemID})
+        WoWTools_SetTooltipMixin:Set_Menu(sub2)
+        find=true
+    end
+    if not find then
+       sub:CreateTitle(e.onlyChinese and '无' or NONE)
+    end
+    WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+--行数
+    sub=root:CreateButton(
+        e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+    function()
+        return MenuResponse.Open
+    end)
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().numButton
+        end, setValue=function(value)
+            Save().numButton=value
+            Init_Item_Button()
+        end,
+        name=e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+        minValue=1,
+        maxValue=40,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, root, function()
+        return Save().scaleSellButton or 1
+    end, function(value)
+        Save().scaleSellButton= value
+        self:set_scale()
+    end)
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20,7 +294,8 @@ local function Init_AuctionHouseButton()
 
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,10)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
-    AuctionHouseButton.frame:SetAllPoints()
+    AuctionHouseButton.frame:SetSize(1,1)
+    AuctionHouseButton.frame:SetPoint('BOTTOMLEFT')
     AuctionHouseButton.Text= WoWTools_LabelMixin:Create(AuctionHouseButton)
     AuctionHouseButton.Text:SetPoint('CENTER')
     AuctionHouseButton.buttons={}
@@ -34,61 +309,27 @@ local function Init_AuctionHouseButton()
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(not Save().hideSellItemList)..e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scaleSellButton or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS)..' |cnGREEN_FONT_COLOR:'..(Save().numButton or 15), 'Shift+'..e.Icon.mid)
-        e.tips:AddLine(' ')
-        local num= 0
-        for _ in pairs(Save().hideSellItem) do
-            num= num+1
-        end
-        e.tips:AddDoubleLine((e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))..' |cnGREEN_FONT_COLOR:'..num, 'Ctrl+'..e.Icon.right)
-        e.tips:Show()
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
     end
+
+    function AuctionHouseButton:Settings()
+        self.frame:SetScale(Save().scaleSellButton or 1)
+        local hide= Save().hideSellItemList
+        self.frame:SetShown(not hide)
+        if hide then
+            self.Text:SetText('|cff828282'..(e.onlyChinese and '隐藏' or HIDE))
+        end
+    end
+    AuctionHouseButton:Settings()
+
+
     AuctionHouseButton:SetScript('OnLeave', GameTooltip_Hide)
     AuctionHouseButton:SetScript('OnEnter', AuctionHouseButton.set_tooltips)
-    AuctionHouseButton:SetScript('OnEvent', function(self)
-        C_Timer.After(0.3, function() self:init_items() end)
-    end)
-    AuctionHouseButton:SetScript('OnClick', function(self, d)
-        if IsControlKeyDown() and d=='RightButton' then
-            Save().hideSellItem={}
-            self:init_items()
-            print(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
-
-        elseif not IsModifierKeyDown() then
-            Save().hideSellItemList= not Save().hideSellItemList and true or nil
-            self:init_items()
-        end
-        self:set_tooltips()
+    AuctionHouseButton:SetScript('OnEvent', function()
+        C_Timer.After(0.3, Init_Item_Button)
     end)
 
-    function AuctionHouseButton:set_scale()
-        self.frame:SetScale(Save().scaleSellButton or 1)
-    end
-    AuctionHouseButton:SetScript('OnMouseWheel', function(self, d)
-        if IsShiftKeyDown() then
-            local n=Save().numButton
-            n= d==1 and n+1 or n-1
-            n= n>40 and 40 or n
-            n= n<1 and 1 or n
-            Save().numButton= n
-            self:init_items()
-
-        elseif IsAltKeyDown() then
-            local n= Save().scaleSellButton or 1
-            n= d==1 and n-0.05 or n+0.05
-            n= n>4 and 4 or n
-            n= n<0.4 and 0.4 or n
-            Save().scaleSellButton=n
-            self:set_scale()
-        end
-        self:set_tooltips()
-    end)
-    AuctionHouseButton:set_scale()
-
-
+    AuctionHouseButton:SetupMenu(Init_Menu)
 
 
 
@@ -103,12 +344,6 @@ local function Init_AuctionHouseButton()
     end
 
 
-    function AuctionHouseButton:get_itemLocation(bag, slot)
-        local itemLocation = ItemLocation:CreateFromBagAndSlot(bag, slot);
-        if itemLocation and itemLocation:IsValid() and C_AuctionHouse.IsSellItemValid(itemLocation, false) then--ContainerFrame.lua
-            return itemLocation, C_AuctionHouse.GetItemCommodityStatus(itemLocation) or 0
-        end
-    end
 
 
     function AuctionHouseButton:set_next_item()--放入，第一个，物品
@@ -121,13 +356,8 @@ local function Init_AuctionHouseButton()
         end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
-                if info
-                    and itemLocation
-                    and itemCommodityStatus>0
-                    and info.itemID
-                    and not Save().hideSellItem[info.itemID]
+                local itemLocation, itemCommodityStatus= Get_Item_CommodityStatus(bag, slot, true)
+                if itemLocation
                     and (
                         (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and isCommoditiesSellFrame)
                         or (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
@@ -142,120 +372,7 @@ local function Init_AuctionHouseButton()
 
 
 
-    function AuctionHouseButton:init_items()
-        local index=1
-        if not Save().hideSellItemList then
-            local isCommoditiesSellFrame, isItemSellFrame= self:get_displayMode()
-            for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
-                for slot=1, C_Container.GetContainerNumSlots(bag) do
-                    local info = C_Container.GetContainerItemInfo(bag, slot)
-                    local itemLocation, itemCommodityStatus= self:get_itemLocation(bag, slot)
-                    if info and info.hyperlink and info.itemID and itemLocation and itemCommodityStatus>0 and info.quality>0 then
-                        local btn= self.buttons[index]
-                        if not btn then
-                            btn= WoWTools_ButtonMixin:Cbtn(self.frame, {button='ItemButton', icon='hide'})
-                            btn.selectTexture= btn:CreateTexture(nil, 'OVERLAY')
-                            btn.selectTexture:SetAtlas('Forge-ColorSwatchSelection')
-                            btn.selectTexture:SetPoint('CENTER')
-                            btn.selectTexture:SetSize(42, 42)
-                            btn.selectTexture:Hide()
 
-                            btn.isCommoditiesTexture= btn:CreateTexture(nil, 'OVERLAY')
-                            btn.isCommoditiesTexture:SetAtlas('AnimaChannel-Bar-Necrolord-Gem')--common-icon-checkmark')
-                            btn.isCommoditiesTexture:SetPoint('TOPRIGHT',2,2)
-                            btn.isCommoditiesTexture:SetSize(16, 16)
-                            btn.isCommoditiesTexture:Hide()
-
-
-
-                            btn:UpdateItemContextOverlayTextures(1)
-                            btn:SetScript('OnLeave', function()
-                                C_Container.SetItemSearch('')
-                                GameTooltip_Hide()
-                            end)
-
-                            btn:SetScript('OnEnter', function(frame)
-                                e.tips:SetOwner(frame:GetParent(), "ANCHOR_LEFT")
-                                e.tips:ClearLines()
-                                if frame.itemLocation and frame.itemLocation:IsValid() and C_Item.DoesItemExist(frame.itemLocation) then
-                                    local itemName
-                                    local itemLink= C_Item.GetItemLink(frame.itemLocation)
-                                    if itemLink then
-                                        if frame.isPet then
-                                            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
-                                        else
-                                            e.tips:SetHyperlink(itemLink)
-                                            e.tips:AddLine(' ')
-                                            e.tips:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION, e.Icon.left)
-                                        end
-                                        itemName=C_Item.GetItemNameByID(itemLink)
-                                    end
-                                    local itemID= C_Item.GetItemID(frame.itemLocation)
-                                    if itemID then
-                                        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.GetShowHide(Save().hideSellItem[itemID])..e.Icon.right)
-                                    end
-                                    C_Container.SetItemSearch(itemName or '')
-                                else
-                                    e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未发现物品' or BROWSE_ORDERS))
-                                end
-                                e.tips:Show()
-                            end)
-                            btn:SetScript('OnClick', function(frame, d)
-                                if d=='LeftButton' then--放入，物品
-                                    if AuctionHouseMultisellProgressFrame:IsShown() then
-                                        C_AuctionHouse.CancelSell()
-                                    end
-                                    AuctionHouseFrame:SetPostItem(frame.itemLocation)--ContainerFrame.lua
-
-                                elseif d=='RightButton' then--隐藏，物品
-                                    local itemID= C_Item.GetItemID(frame.itemLocation)
-                                    if itemID then
-                                        Save().hideSellItem[itemID]= not Save().hideSellItem[itemID] and true or nil
-                                        frame:GetParent():GetParent():init_items()
-                                        if frame.selectTexture:IsShown() then
-                                            AuctionHouseFrame:ClearPostItem()
-                                            AuctionHouseButton:set_next_item()
-                                        end
-                                    end
-                                end
-                            end)
-                            self.buttons[index]= btn
-                        end
-                        btn:ClearAllPoints()
-                        btn:SetPoint("TOPLEFT", index==1 and self or self.buttons[index-1], 'BOTTOMLEFT', 0, -2)
-
-                        btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
-                        btn:SetItemLocation(itemLocation)
-                        btn:SetItemButtonCount(info.stackCount)
-                        btn:SetAlpha(Save().hideSellItem[info.itemID] and 0.3 or 1)
-                        btn.isCommoditiesTexture:SetShown(not Save().hideSellItem[info.itemID] and (
-                            (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
-                            or (itemCommodityStatus==Enum.ItemCommodityStatus.Commodity and isCommoditiesSellFrame)
-                        ))
-
-                        btn:SetShown(true)
-                        index= index +1
-                    end
-                end
-            end
-            for i= Save().numButton+1, index-1, Save().numButton  do
-                local btn= self.buttons[i]
-                btn:ClearAllPoints()
-                btn:SetPoint('LEFT', self.buttons[i-Save().numButton], 'RIGHT', 2, 0)
-            end
-        end
-        for i= index, #self.buttons do
-            local btn= self.buttons[i]
-            if btn then
-                btn.isCommodities=nil
-                btn.isPet=nil
-                --btn.itemCommodityStatus= nil
-                btn:Reset()
-                btn:SetShown(false)
-            end
-        end
-        self.Text:SetText(Save().hideSellItemList and '|cff9e9e9e'..(e.onlyChinese and '隐藏' or HIDE) or index-1)
-    end
 
 
 
@@ -288,7 +405,7 @@ local function Init_AuctionHouseButton()
             return
         end
         if displayMode[1]== "ItemSellFrame" or displayMode[1]=='CommoditiesSellFrame' then
-            AuctionHouseButton:init_items()
+            Init_Item_Button()
 		end
         AuctionHouseButton:set_shown()
         AuctionHouseButton:set_event()
@@ -448,7 +565,7 @@ end
 
 --显示拍卖行时，转到出售物品
 local function Init_ShowSellItemCheck()
-    ShowSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame, 'InterfaceOptionsCheckButtonTemplate')
+    local ShowSellItemCheck= CreateFrame('CheckButton', nil, AuctionHouseFrame.CommoditiesSellFrame, 'InterfaceOptionsCheckButtonTemplate')
     ShowSellItemCheck:SetPoint('BOTTOMLEFT', AuctionHouseFrame.CommoditiesSellFrame, 8, 8)
     ShowSellItemCheck:SetSize(24,24)
     ShowSellItemCheck:SetChecked(Save().intShowSellItem)
@@ -473,9 +590,7 @@ local function Init_ShowSellItemCheck()
         local find
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
             for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                local itemCommodityStatus= info and info.itemID and not Save().hideSellItem[info.itemID] and select(2, AuctionHouseButton:get_itemLocation(bag, slot)) or 0
-                if itemCommodityStatus>0 then
+                if select(2, Get_Item_CommodityStatus(bag, slot, true)) then
                     find=true
                     break
                 end
@@ -600,7 +715,7 @@ local function Init_PercentLabel()
                     local itemID=  C_Item.GetItemID(itemLocation)
                     if itemID and not Save().hideSellItem[itemID] then--加入，隐藏，物品列表
                         Save().hideSellItem[itemID]=true
-                        self:init_items()
+                        Init_Item_Button()
                         AuctionHouseFrame:ClearPostItem()
                         C_Timer.After(0.3, function() self:set_next_item() end)--放入，第一个，物品
                     end
@@ -639,7 +754,7 @@ end
 local function Init_NextItem()
     AuctionHouseFrame.CommoditiesSellFrame.PostButton:SetHeight(32)--<Size x="194" y="22"/>
     AuctionHouseFrame.ItemSellFrame.PostButton:SetHeight(32)
-      
+
     hooksecurefunc(AuctionHouseFrame.CommoditiesSellFrame, 'PostItem', function(self)
         self.isNextItem=true
     end)
@@ -817,7 +932,13 @@ end
 local function Init()
     levelFrame= AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton:GetFrameLevel()
 
-    AuctionHouseButton= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame, {size={34, 34}, icon='hide'})
+    AuctionHouseButton= WoWTools_ButtonMixin:CreateMenu(AuctionHouseFrame, {
+        --button='DropdownButton',
+        size=23,
+        hideIcon=true,
+        name='WoWToolsAuctionHouseSellListButton'
+    })
+
     Init_AuctionHouseButton()
 
 
@@ -881,4 +1002,8 @@ end
 
 function WoWTools_AuctionHouseMixin:Init_Sell()
     Init()
+end
+
+function WoWTools_AuctionHouseMixin:Init_Item_Button()
+    Init_Item_Button()
 end

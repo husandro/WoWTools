@@ -45,7 +45,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     if guid then
         zone, npc = select(5, strsplit("-", guid))--位面,NPCID
         if zone then
-            tooltip:AddDoubleLine(e.Player.L.layer..' '..zone, 'NPC '..npc)
+            tooltip:AddDoubleLine(e.Player.L.layer..' '..zone, 'npcID '..npc)
             e.Player.Layer=zone
         end
         self:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 

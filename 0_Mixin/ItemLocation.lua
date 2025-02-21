@@ -8,7 +8,7 @@ function WoWTools_ItemLocationMixin:Clear()
     self.itemLocation={}
 end
 --是否，有数扰
-function WoWTools_ItemLocationMixin:HasAnyLocation()	
+function WoWTools_ItemLocationMixin:HasAnyLocation()
 	return self:IsEquipmentSlot() or self:IsBagAndSlot();
 end
 --是否，存在，物品
@@ -148,7 +148,7 @@ function WoWTools_ItemLocationMixin:GetItemCooldown()
 		if self:IsBagAndSlot() then
 			return C_Container.GetContainerItemCooldown(self:GetBagAndSlot())
 		elseif self:IsEquipmentSlot() then
-			
+
 			return GetInventoryItemCooldown('player', self.itemLocation.equipmentSlotIndex)
 		end
 	end

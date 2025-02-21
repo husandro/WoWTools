@@ -83,65 +83,78 @@ end
 
 
 
+
+
+local function Create_Button(tooltip)
+    tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
+        size={24,24},
+        type=false,
+        name=tooltip:GetName()..'_WoWToolsURLButton',
+        atlas='questlegendary',
+    })
+    tooltip.WoWHeadButton:SetPoint('RIGHT',tooltip.CloseButton, 'LEFT')
+    tooltip.WoWHeadButton:SetScript('OnClick', function(f)
+        if f.type and f.id then
+            WoWTools_TooltipMixin:Show_URL(true, f.type, f.id, f.name)
+        end
+    end)
+    tooltip.WoWHeadButton:SetScript('OnLeave', GameTooltip_Hide)
+    tooltip.WoWHeadButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self:GetParent(), "ANCHOR_TOPRIGHT", 0, 18)
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(
+            WoWTools_TooltipMixin.addName,
+            'WoWHead URL'
+        )
+        e.tips:Show()
+    end)
+    function tooltip.WoWHeadButton:rest()
+        self.type=nil
+        self.id=nil
+        self.name=nil
+        self:SetShown(false)
+    end
+
+
+    tooltip.AchievementButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
+        size={24,24},
+        type=false,
+        name=tooltip:GetName()..'_WoWToolsAchievementButton',
+        atlas='UI-HUD-MicroMenu-Achievements-Mouseover',
+    })
+    tooltip.AchievementButton:SetPoint('RIGHT', tooltip.WoWHeadButton, 'LEFT')
+    tooltip.AchievementButton:SetScript('OnClick', function(f)
+        if f.type and f.achievementID then
+            WoWTools_LoadUIMixin:Achievement(f.achievementID)
+        end
+    end)
+    tooltip.AchievementButton:SetScript('OnLeave', GameTooltip_Hide)
+    tooltip.AchievementButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self:GetParent(), "ANCHOR_TOPRIGHT", 0, 18)
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(
+            WoWTools_TooltipMixin.addName,
+            e.onlyChinese and '打开成就' or OBJECTIVES_VIEW_ACHIEVEMENT
+        )
+        e.tips:Show()
+    end)
+    function tooltip.AchievementButton:rest()
+        self.type=nil
+        self.id=nil
+        self:SetShown(false)
+    end
+end
+
+
+
+
+
+
+
+
 local function Create_URL_Button(tooltip, tab)
     if not tooltip.WoWHeadButton then
-        tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
-            size={24,24},
-            type=false,
-            name=tooltip:GetName()..'_WoWToolsURLButton',
-            atlas='questlegendary',
-        })
-        tooltip.WoWHeadButton:SetPoint('RIGHT',tooltip.CloseButton, 'LEFT')
-        tooltip.WoWHeadButton:SetScript('OnClick', function(f)
-            if f.type and f.id then
-                WoWTools_TooltipMixin:Show_URL(true, f.type, f.id, f.name)
-            end
-        end)
-        tooltip.WoWHeadButton:SetScript('OnLeave', GameTooltip_Hide)
-        tooltip.WoWHeadButton:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(
-                WoWTools_TooltipMixin.addName,
-                'WoWHead URL'
-            )
-            e.tips:Show()
-        end)
-        function tooltip.WoWHeadButton:rest()
-            self.type=nil
-            self.id=nil
-            self.name=nil
-            self:SetShown(false)
-        end
-
-
-        tooltip.AchievementButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
-            size={24,24},
-            type=false,
-            name=tooltip:GetName()..'_WoWToolsAchievementButton',
-            atlas='UI-HUD-MicroMenu-Achievements-Mouseover',
-        })
-        tooltip.AchievementButton:SetPoint('RIGHT', tooltip.WoWHeadButton, 'LEFT')
-        tooltip.AchievementButton:SetScript('OnClick', function(f)
-            if f.type and f.achievementID then
-                WoWTools_LoadUIMixin:Achievement(f.achievementID)
-            end
-        end)
-        tooltip.AchievementButton:SetScript('OnLeave', GameTooltip_Hide)
-        tooltip.AchievementButton:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(
-                WoWTools_TooltipMixin.addName,
-                e.onlyChinese and '打开成就' or OBJECTIVES_VIEW_ACHIEVEMENT
-            )
-            e.tips:Show()
-        end)
-        function tooltip.AchievementButton:rest()
-            self.type=nil
-            self.id=nil
-            self:SetShown(false)
-        end
+        Create_Button(tooltip)
     end
 
     tooltip.WoWHeadButton.type= tab.type
@@ -185,10 +198,10 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         else
             if tab.isPetUI then
                 if tooltip then
-                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift'..wowheadIcon)
+                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|a Ctrl+Shift '..wowheadIcon)
                 end
             elseif tooltip== e.tips then
-                tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift'..wowheadIcon)
+                tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|a Ctrl+Shift '..wowheadIcon)
             end
         end
 
@@ -197,10 +210,10 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
             WoWTools_TooltipMixin:Show_URL(false, nil, tab.realm or e.Player.realm, tab.unitName)
         else
             if tooltip then
-                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|aCtrl+Shift')
+                tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
                 tooltip:Show(true)
             else
-                e.tips:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|aCtrl+Shift')
+                e.tips:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
                 e.tips:Show(true)
             end
         end
@@ -209,7 +222,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         if IsControlKeyDown() and IsShiftKeyDown() then
             WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
-            tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift'..wowheadIcon)
+            tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|a Ctrl+Shift '..wowheadIcon)
             tooltip:Show()
         end
     end

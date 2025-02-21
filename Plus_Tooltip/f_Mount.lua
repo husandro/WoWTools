@@ -16,12 +16,9 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     tooltip:AddLine(' ')
     --local creatureName, spellID, icon, active, isUsable, sourceType, isFavorite, isFactionSpecific, faction, isFiltered, isCollected, mountID, isForDragonriding = C_MountJournal.GetDisplayedMountInfo(elementData.index)
     local creatureName, spellID, _,isActive, isUsable, _, _, isFactionSpecific, faction, _, isCollected, _, isForDragonriding =C_MountJournal.GetMountInfoByID(mountID)
-    local spell
-    if spellID then
-        local icon= C_Spell.GetSpellTexture(spellID) or 0
-        spell= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, (icon and '|T'..icon..':0|t' or '')..(e.onlyChinese and '法术' or SPELLS), spellID)
-    end
-    tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '坐骑' or MOUNTS, mountID), spell)
+
+    e.LoadData({id=spellID, type='spell'})
+    tooltip:AddDoubleLine('mountID '..mountID, spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'..'spellID '..spellID or nil)
 
     if isFactionSpecific then
         if faction==0 then

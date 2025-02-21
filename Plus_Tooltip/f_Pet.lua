@@ -15,7 +15,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip.text2Left:SetText(CollectedText or '')
         tooltip.textRight:SetText(AllCollected or '')
 
-        tooltip:AddDoubleLine((e.onlyChinese and '宠物' or PET)..' '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and (e.onlyChinese and '模型' or MODEL)..' '..creatureDisplayID or '')..(companionID and ' NPC '..companionID or ''))--ID
+        tooltip:AddDoubleLine('speciesID '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and 'displayID '..creatureDisplayID..' ' or '')..(companionID and 'companionID'..companionID or ''))--ID
 
         local tab = C_PetJournal.GetPetAbilityListTable(speciesID) or {}--技能图标
         table.sort(tab, function(a,b) return a.level< b.level end)
@@ -59,7 +59,10 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     end
     WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
-    if obtainable and not UnitAffectingCombat('player') then
+    if obtainable
+        and not UnitAffectingCombat('player')
+        and (not tooltip.JournalClick or not tooltip.JournalClick:IsShown())
+    then
         if IsAltKeyDown() then--宠物手册，设置名称
             WoWTools_LoadUIMixin:Journal(2, {petSpeciesID=speciesID})
             --PetJournalSearchBox:SetText(speciesName)
@@ -67,7 +70,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip:AddLine(' ')
         tooltip:AddLine('|A:NPE_Icon:0:0|aAlt |TInterface\\Icons\\PetJournalPortrait:0|t'..(e.onlyChinese and '搜索' or SEARCH))
     end
-    
+
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
 
