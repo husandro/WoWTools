@@ -305,6 +305,8 @@ local ExpansionIcon = {
 	}
 }
 
+
+
 function WoWTools_TextureMixin:GetWoWLog(expacID, tab)
     local info= ExpansionIcon[expacID]
     if not info then
