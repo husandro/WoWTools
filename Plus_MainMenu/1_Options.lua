@@ -11,10 +11,13 @@ local Category, Layout
 
 
 local function Init_Options()--初始, 选项
-
+    e.AddPanel_Header(Layout, 
+        (Save().disabled and '|cff828282' or '')
+        ..'1) Plus'
+    )
 
     local initializer2= e.AddPanel_Check({
-        name= 'Plus',
+        name= e.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_MainMenuMixin.addName,
         GetValue= function() return not Save().disabled end,
         category= Category,
@@ -68,7 +71,11 @@ local function Init_Options()--初始, 选项
     })
     initializer:SetParentInitializer(initializer2, function() if Save().plus then return true else return false end end)
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '系统' or SYSTEM)
+    e.AddPanel_Header(Layout,
+        (Save().frameratePlus and '' or '|cff828282')
+        ..'2) '..(e.onlyChinese and '系统' or SYSTEM)
+    )
+
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
         tooltip= MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
@@ -97,8 +104,6 @@ local function Init_Options()--初始, 选项
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save().frameratePlus then return true else return false end end)
-
-
 end
 
 
@@ -108,7 +113,10 @@ end
 
 
 function WoWTools_MainMenuMixin:Init_Category()
-    Category, Layout= e.AddPanel_Sub_Category({name= self.addName})
+    Category, Layout= e.AddPanel_Sub_Category({
+            name= self.addName,
+            disabled= Save().disabled and not Save().frameratePlus,
+        })
 end
 
 

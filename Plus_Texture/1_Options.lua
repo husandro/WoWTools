@@ -181,7 +181,11 @@ end
 local function Init_Category()
     GetMinValueAlpha()--min，透明度，最小值
 
-    Category, Layout= e.AddPanel_Sub_Category({name= WoWTools_PlusTextureMixin.addName})
+    Category, Layout= e.AddPanel_Sub_Category({
+        name= WoWTools_PlusTextureMixin.addName,
+        disabled= Save().disabled,
+    })
+
     e.AddPanel_Check({
         name= e.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_PlusTextureMixin.addName,

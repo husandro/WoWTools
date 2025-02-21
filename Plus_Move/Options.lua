@@ -135,7 +135,10 @@ end
 
 
 local function Init_Add()
-    Category, Layout= e.AddPanel_Sub_Category({name=WoWTools_MoveMixin.addName})
+    Category, Layout= e.AddPanel_Sub_Category({
+        name=WoWTools_MoveMixin.addName,
+        disabled= Save().disabled,
+    })
     WoWTools_MoveMixin.Category= Category
 
     e.AddPanel_Check({

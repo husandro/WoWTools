@@ -260,7 +260,10 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
         addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
-        Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
+        Initializer, Layout= e.AddPanel_Sub_Category({
+            name=addName,
+            disabled=Save.disabled
+        })
         WoWTools_ChatButtonMixin.Category= Initializer
 
         e.AddPanel_Check_Button({

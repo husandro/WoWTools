@@ -36,7 +36,10 @@ local addName= WoWTools_ToolsButtonMixin:GetName()
 
 
 local function Init_Panel()
-    local Category, Layout= e.AddPanel_Sub_Category({name=addName})
+    local Category, Layout= e.AddPanel_Sub_Category({
+        name=addName,
+        disabled= not Button,
+    })
     WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
 
 
@@ -490,10 +493,6 @@ panel:SetScript("OnEvent", function(_, event, arg1)
 
             if Button  then
                 Init()
-            end
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                Init_Panel()
             end
 
         elseif arg1=='Blizzard_Settings' then

@@ -1,13 +1,10 @@
 --添加新控制面板 Blizzard_Settings
-
-
-
 local e= select(2, ...)
 local function Save()
     return WoWTools_TooltipMixin.Save
 end
 
-
+local Category, Layout
 
 
 
@@ -39,16 +36,15 @@ end
 
 local function Init_Panel()
     local addName= WoWTools_TooltipMixin.addName
-    local Initializer= WoWTools_TooltipMixin.Initializer
-    local Layout= WoWTools_TooltipMixin.Layout
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
+
 
     local initializer2= e.AddPanel_Check({
         name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
         tooltip= addName,
         GetValue= function() return Save().setDefaultAnchor end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().setDefaultAnchor= not Save().setDefaultAnchor and true or nil
             if Save().setDefaultAnchor then
@@ -58,61 +54,61 @@ local function Init_Panel()
         end
     })
 
-        local initializer= e.AddPanelSider({
-            name= 'X',
-            GetValue= function() return Save().cursorX or 0 end,
-            minValue= -240,
-            maxValue= 240,
-            setp= 1,
-            tooltip= addName,
-            category= Initializer,
-            SetValue= function(_, _, value2)
-                if not value2 then return end
-                Save().cursorX= e.GetFormatter1to10(value2, -200, 200)
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    local initializer= e.AddPanelSider({
+        name= 'X',
+        GetValue= function() return Save().cursorX or 0 end,
+        minValue= -240,
+        maxValue= 240,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        SetValue= function(_, _, value2)
+            if not value2 then return end
+            Save().cursorX= e.GetFormatter1to10(value2, -200, 200)
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
-        initializer= e.AddPanelSider({
-            name= 'Y',
-            GetValue= function() return Save().cursorY or 0 end,
-            minValue= -240,
-            maxValue= 240,
-            setp= 1,
-            tooltip= addName,
-            category= Initializer,
-            SetValue= function(_, _, value2)
-                if not value2 then return end
-                Save().cursorY= e.GetFormatter1to10(value2, -200, 200)
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    initializer= e.AddPanelSider({
+        name= 'Y',
+        GetValue= function() return Save().cursorY or 0 end,
+        minValue= -240,
+        maxValue= 240,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        SetValue= function(_, _, value2)
+            if not value2 then return end
+            Save().cursorY= e.GetFormatter1to10(value2, -200, 200)
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
-        initializer= e.AddPanel_Check({
-            name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
-            tooltip= addName,
-            GetValue= function() return Save().cursorRight end,
-            category= Initializer,
-            SetValue= function()
-                Save().cursorRight= not Save().cursorRight and true or nil
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    initializer= e.AddPanel_Check({
+        name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+        tooltip= addName,
+        GetValue= function() return Save().cursorRight end,
+        category= Category,
+        SetValue= function()
+            Save().cursorRight= not Save().cursorRight and true or nil
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
-        initializer= e.AddPanel_Check({
-            name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
-            tooltip= addName,
-            GetValue= function() return Save().inCombatDefaultAnchor end,
-            category= Initializer,
-            SetValue= function()
-                Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or nil
-                set_Cursor_Tips()
-            end
-        })
-        initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    initializer= e.AddPanel_Check({
+        name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
+        tooltip= addName,
+        GetValue= function() return Save().inCombatDefaultAnchor end,
+        category= Category,
+        SetValue= function()
+            Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or nil
+            set_Cursor_Tips()
+        end
+    })
+    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
 
     e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
@@ -121,7 +117,7 @@ local function Init_Panel()
         name= e.onlyChinese and '模型' or MODEL,
         tooltip= addName,
         GetValue= function() return not Save().hideModel end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().hideModel= not Save().hideModel and true or nil
             set_Cursor_Tips()
@@ -132,7 +128,7 @@ local function Init_Panel()
         name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
         tooltip= addName,
         GetValue= function() return Save().modelLeft end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().modelLeft= not Save().modelLeft and true or nil
             set_Cursor_Tips()
@@ -144,7 +140,7 @@ local function Init_Panel()
         name= (e.onlyChinese and '模型' or MODEL)..' ID',
         tooltip= addName,
         value= Save().showModelFileID,
-        category= Initializer,
+        category= Category,
         func= function()
             Save().showModelFileID= not Save().showModelFileID and true or nil
             set_Cursor_Tips()
@@ -159,7 +155,7 @@ local function Init_Panel()
         maxValue= 300,
         setp= 1,
         tooltip= addName,
-        category= Initializer,
+        category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
             Save().modelSize= e.GetFormatter1to10(value2, 40, 300)
@@ -175,7 +171,7 @@ local function Init_Panel()
         maxValue= 240,
         setp= 1,
         tooltip= addName,
-        category= Initializer,
+        category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
             Save().modelX= e.GetFormatter1to10(value2, -200, 200)
@@ -191,7 +187,7 @@ local function Init_Panel()
         maxValue= 240,
         setp= 1,
         tooltip= addName,
-        category= Initializer,
+        category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
             Save().modelY= e.GetFormatter1to10(value2, -200, 200)
@@ -207,7 +203,7 @@ local function Init_Panel()
         maxValue= 1,
         setp= 0.1,
         tooltip= addName,
-        category= Initializer,
+        category= Category,
         SetValue= function(_, _, value2)
             if not value2 then return end
             Save().modelFacing= e.GetFormatter1to10(value2, -1, 1)
@@ -220,7 +216,7 @@ local function Init_Panel()
         name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
         tooltip= addName,
         GetValue= function() return not Save().disabledNPCcolor end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().disabledNPCcolor= not Save().disabledNPCcolor and true or nil
         end
@@ -230,7 +226,7 @@ local function Init_Panel()
         name= e.onlyChinese and '生命值' or HEALTH,
         tooltip= addName,
         GetValue= function() return not Save().hideHealth end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().hideHealth= not Save().hideHealth and true or nil
             print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -240,7 +236,7 @@ local function Init_Panel()
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
         GetValue= function() return Save().ctrl end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().ctrl= not Save().ctrl and true or nil
             set_Cursor_Tips()
@@ -254,7 +250,7 @@ local function Init_Panel()
         name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
         tooltip= function() return WoWTools_TooltipMixin:Set_CVar(nil, true, true) end,
         GetValue= function() return Save().setCVar end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().setCVar= not Save().setCVar and true or nil
             Save().graphicsViewDistance=nil
@@ -302,14 +298,14 @@ local function Init_Panel()
                     name='ActionButtonUseKeyDown',
                     msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,
-        category=Initializer
+        category= Category
     })
 
     initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
         GetValue= function() return Save().ShowOptionsCVarTips end,
-        category= Initializer,
+        category= Category,
         SetValue= function()
             Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
             print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
@@ -333,4 +329,27 @@ end
 
 function WoWTools_TooltipMixin.AddOn.Blizzard_Settings()
     Init_Panel()
+end
+
+
+
+
+
+function WoWTools_TooltipMixin:Init_Category()
+    Category, Layout= e.AddPanel_Sub_Category({
+        name=self.addName,
+        disabled=Save().disabled
+    })
+
+
+    e.AddPanel_Check({
+        name= e.onlyChinese and '启用' or ENABLE,
+        tooltip= self.addName,
+        GetValue= function() return not Save().disabled end,
+        category= Category,
+        func= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, self.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
 end

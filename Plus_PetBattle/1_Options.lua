@@ -143,7 +143,11 @@ end
 
 
 local function Init_Panel()
-    Category, Layout= e.AddPanel_Sub_Category({name=WoWTools_PetBattleMixin.addName})
+    Category, Layout= e.AddPanel_Sub_Category({
+        name=WoWTools_PetBattleMixin.addName,
+        disabled= Save().disabled,
+    })
+
     WoWTools_PetBattleMixin.Category= Category
 
     e.AddPanel_Check({
@@ -158,10 +162,6 @@ local function Init_Panel()
         end
     })
 
-    --[[local action = "WoWTools_SUMMON";
-    local bindingIndex = C_KeyBindings.GetBindingIndex(action);
-    local initializer = CreateKeybindingEntryInitializer(bindingIndex, true);
-    initializer:AddSearchTags(GetBindingName(action));]]
 end
 
 

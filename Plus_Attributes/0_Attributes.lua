@@ -106,7 +106,11 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         local frame= CreateFrame('Frame')
         WoWTools_AttributesMixin.PanelFrame= frame
         
-        local Category= e.AddPanel_Sub_Category({name=WoWTools_AttributesMixin.addName, frame=frame})--添加控制面板
+        local Category= e.AddPanel_Sub_Category({--添加控制面板
+            name=WoWTools_AttributesMixin.addName,
+            frame=frame,
+            disabled= Save().disabled,
+        })
         WoWTools_AttributesMixin.Category= Category
 
         e.ReloadPanel({panel=WoWTools_AttributesMixin.PanelFrame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮

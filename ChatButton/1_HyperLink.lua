@@ -694,7 +694,12 @@ end
 --local Category, Layout
 local function Init_Panel()
     local frame= CreateFrame('Frame')
-    Category= e.AddPanel_Sub_Category({name=addName, frame=frame, category=WoWTools_ChatButtonMixin.Category})
+    Category= e.AddPanel_Sub_Category({
+        name=addName,
+        frame=frame,
+        category=WoWTools_ChatButtonMixin.Category,
+        disabled=not LinkButton
+    })
 
     local function Cedit(self)
         local edit= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua

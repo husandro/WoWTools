@@ -254,10 +254,19 @@ end
 
 --添加，子目录
 function e.AddPanel_Sub_Category(tab)
-    if tab.frame then
-        return Settings.RegisterCanvasLayoutSubcategory(tab.category or Category, tab.frame, tab.name)
+    local disabled
+    if type(tab.disabled)=='function' then
+        disabled= tab.disabled()
     else
-        return Settings.RegisterVerticalLayoutSubcategory(tab.category or Category, tab.name)--Blizzard_SettingsInbound.lua
+        disabled= tab.disabled
+    end
+
+    local name= (disabled and '|cff828282' or '')..tab.name
+
+    if tab.frame then
+        return Settings.RegisterCanvasLayoutSubcategory(tab.category or Category, tab.frame, name)
+    else
+        return Settings.RegisterVerticalLayoutSubcategory(tab.category or Category, name)--Blizzard_SettingsInbound.lua
     end
 end
 

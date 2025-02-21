@@ -1,7 +1,6 @@
 
 local id, e = ...
 local addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips'
-local Initializer, Layout= e.AddPanel_Sub_Category({name=addName})
 
 WoWTools_TooltipMixin={
     Save={
@@ -26,8 +25,6 @@ WoWTools_TooltipMixin={
         --hideHealth=true,----生命条提示
     },
     addName=addName,
-    Initializer=Initializer,
-    Layout=Layout,
     WoWHead= 'https://www.wowhead.com/',
     AddOn={},
 }
@@ -169,22 +166,14 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
         WoWTools_TooltipMixin.addName= addName
 
-        e.AddPanel_Check({
-            name= e.onlyChinese and '启用' or ENABLE,
-            tooltip= addName,
-            GetValue= function() return not Save().disabled end,
-            category= Initializer,
-            func= function()
-                Save().disabled= not Save().disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        })
-
+       
+        WoWTools_TooltipMixin:Init_Category()
         WoWTools_TooltipMixin:Init_WoWHeadText()
 
         if Save().disabled then
             Load_Addon= function()end
             EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            return
         end
 
         Init()--初始

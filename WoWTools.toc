@@ -174,9 +174,10 @@ Plus\ItemInfo.lua
 
 
 ##鼠标，提示
-Plus_Tooltip\0_Tooltips.lua
-Plus_Tooltip\1_Hook.lua
-Plus_Tooltip\2_Init_Settings.lua
+Plus_Tooltip\0_Init.lua
+Plus_Tooltip\1_Panel.lua
+Plus_Tooltip\2_Hook.lua
+Plus_Tooltip\2_Settings.lua
 Plus_Tooltip\3_Set_Point.lua
 Plus_Tooltip\f_Achievement.lua
 Plus_Tooltip\f_Aura.lua
@@ -203,7 +204,6 @@ Plus_Tooltip\z_Collections.lua
 Plus_Tooltip\z_FlightMap.lua
 Plus_Tooltip\z_GenericTraitUI.lua
 Plus_Tooltip\z_OrderHallUI.lua
-Plus_Tooltip\z_Panel.lua
 Plus_Tooltip\z_PlayerChoice.lua
 Plus_Tooltip\z_Professions.lua
 Plus_Tooltip\z_EventTrace.lua

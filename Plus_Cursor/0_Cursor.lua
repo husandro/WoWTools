@@ -117,7 +117,11 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
         local frame= CreateFrame('Frame')
         WoWTools_CursorMixin.OptionsFrame= frame
-        e.AddPanel_Sub_Category({name=WoWTools_CursorMixin.addName, frame=frame})
+        e.AddPanel_Sub_Category({
+            name= WoWTools_CursorMixin.addName,
+            frame= frame,
+            disabled= Save().disabled and  Save().disabledGCD,
+        })
 
         e.ReloadPanel({panel=frame, addName=WoWTools_CursorMixin.addName, restTips=true, checked=nil, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
             disabledfunc=nil,
