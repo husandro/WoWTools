@@ -269,7 +269,7 @@ local function Init_Menu(self, root)
         return Save().scaleSellButton or 1
     end, function(value)
         Save().scaleSellButton= value
-        self:set_scale()
+        self:Settings()
     end)
 
 end
@@ -295,7 +295,7 @@ end
 
 local function Init_AuctionHouseButton()
 
-    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,10)
+    AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,0)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)
     AuctionHouseButton.frame:SetSize(1,1)
     AuctionHouseButton.frame:SetPoint('BOTTOMLEFT')
