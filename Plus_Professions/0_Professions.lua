@@ -1,3 +1,8 @@
+if PlayerGetTimerunningSeasonID() then
+    WoWTools_ProfessionMixin={Save={disabled=true}}
+    return
+end
+
 local id, e = ...
 
 WoWTools_ProfessionMixin={

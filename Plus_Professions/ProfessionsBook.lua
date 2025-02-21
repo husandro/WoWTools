@@ -1,3 +1,7 @@
+if PlayerGetTimerunningSeasonID() then
+    return
+end
+
 local e= select(2, ...)
 local function Save()
     return WoWTools_ProfessionMixin.Save

@@ -1,3 +1,7 @@
+if PlayerGetTimerunningSeasonID() then
+    return
+end
+
 --Blizzard_TrainerUI
 local e= select(2, ...)
 local function Save()

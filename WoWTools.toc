@@ -469,7 +469,12 @@ Plus_Mail\PlayerName_List.lua
 
 
 ##拍卖行
-Plus\AuctionHouse.lua
+Plus_AuctionHouse\0_Init.lua
+Plus_AuctionHouse\AllAuctionsList.lua
+Plus_AuctionHouse\BrowseResultsFrame.lua
+Plus_AuctionHouse\Sell.lua
+Plus_AuctionHouse\AccountStore.lua
+
 
 ##宠物对战
 Plus_PetBattle\0_PetBattle.lua
@@ -675,7 +680,7 @@ Plus_Other\SpellFlyout.lua
 ##法术弹出框，加名称, 和颜色
 Plus_Other\SpellFrame.lua
 Plus_Other\ScrappingMachine.lua
-Plus_Other\AccountStore.lua
+
 ##断， 驱，散
 Plus_Other\InterruptStolenDispel.lua
 ##10.1 梦境之种

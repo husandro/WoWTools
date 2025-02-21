@@ -1,3 +1,8 @@
+if PlayerGetTimerunningSeasonID() then
+    return
+end
+
+
 local id, e = ...
 if e.Player.level<70 then
     return

@@ -1,7 +1,3 @@
-if not AccountStoreFrame then
-    return
-end
-
 local e= select(2, ...)
 
 
@@ -57,3 +53,10 @@ hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', function(fram
         btn.IsRefundable:SetShown(isRefundable)
     end
 end)
+
+
+function WoWTools_AuctionHouseMixin:Init_AccountStore()
+    if AccountStoreFrame then
+        Init()
+    end
+end
