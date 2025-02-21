@@ -24,9 +24,9 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
                 tooltip.Portrait:SetShown(true)
             end
 --栏位
-            tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.cn(_G[itemEquipLoc]) or '', itemEquipLoc),
-                format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, slot),
-                1,1,1, 1,1,1
+            tooltip:AddDoubleLine(
+                (e.cn(_G[itemEquipLoc]) or '')..' '..(itemEquipLoc or ''),
+                ( e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot
             )
             local slotLink=GetInventoryItemLink('player', slot)
             local text
@@ -267,20 +267,31 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         r, g, b, col= C_Item.GetItemQualityColor(itemQuality)
         col=col and '|c'..col
     end
+
     tooltip:AddLine(' ')
-    if expacID or setID then--版本数据
-        tooltip:AddLine(
+
+--版本数据, 图标，名称，版本
+    if expacID or setID then
+        tooltip:AddDoubleLine(
             WoWTools_Mixin:GetExpansionText(expacID, nil) or '  ',
             setID and 'setID '..setID
-        )--图标， 版本
+        )
     end
 
     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
 
-    tooltip:AddDoubleLine('itemID '..itemID,--..(setID and ' setID '..setID or ''),
-                    itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
+--itemID,  图标
+    tooltip:AddDoubleLine(
+        'itemID '..itemID,
+        itemTexture and '|T'..itemTexture..':0|t'..itemTexture
+    )
+
+--物品，类型
     if classID and subclassID then
-        tooltip:AddDoubleLine((e.cn(itemType) or 'itemType')..' '..classID, (e.cn(itemSubType) or 'itemSubType')..' '..subclassID)
+        tooltip:AddDoubleLine(
+            (e.cn(itemType) or 'itemType')..' '..classID,
+            (e.cn(itemSubType) or 'itemSubType')..' '..subclassID
+        )
     end
 
     if classID==2 or classID==4 then

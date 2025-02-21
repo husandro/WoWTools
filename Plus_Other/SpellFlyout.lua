@@ -283,7 +283,7 @@ local function Init_All_Flyout()
             end
 
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('flyoutID '..self.flyoutID, Initializer:GetName(), 1,1,1, 1,1,1)
+            e.tips:AddDoubleLine('flyoutID '..self.flyoutID, Initializer:GetName())
             e.tips:Show()
         end)
 

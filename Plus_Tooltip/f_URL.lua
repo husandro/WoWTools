@@ -198,10 +198,10 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         else
             if tab.isPetUI then
                 if tooltip then
-                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|a Ctrl+Shift '..wowheadIcon)
+                    BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
                 end
             elseif tooltip== e.tips then
-                tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|a Ctrl+Shift '..wowheadIcon)
+                tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
             end
         end
 
@@ -222,7 +222,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
         if IsControlKeyDown() and IsShiftKeyDown() then
             WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
-            tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|a Ctrl+Shift '..wowheadIcon)
+            tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
             tooltip:Show()
         end
     end
