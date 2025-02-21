@@ -69,10 +69,13 @@ local function Create_Button(index)
         local itemLink=self:GetItemLink()
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             itemLink=itemLink,
-            tooltip= self.isPet and (e.onlyChinese and '开始拍卖' or CREATE_AUCTION).. e.Icon.left or function(tooltip)
-                tooltip:AddLine(' ')
-                tooltip:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION, e.Icon.left)
-            end
+            tooltip= self.isPet and
+                (e.onlyChinese and '开始拍卖' or CREATE_AUCTION).. e.Icon.left..' '..e.Icon.right..(e.onlyChinese and '隐藏' or HIDE)
+                or
+                function(tooltip)
+                    tooltip:AddLine(' ')
+                    tooltip:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION..e.Icon.left, e.Icon.right..(e.onlyChinese and '隐藏' or HIDE))
+                end
         })
         C_Container.SetItemSearch(itemLink and C_Item.GetItemNameByID(itemLink) or '')
     end)
