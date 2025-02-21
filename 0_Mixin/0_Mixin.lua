@@ -45,18 +45,20 @@ end
 
 
 
+
 --版本
 function WoWTools_Mixin:GetExpansionText(expacID, questID)
     if not expacID and questID then
         expacID= GetQuestExpansion(questID)
     end
-    if expacID and _G['EXPANSION_NAME'..expacID] then
-        local text= e.cn(_G['EXPANSION_NAME'..expacID])
-        if e.ExpansionLevel >= expacID then
-            return text, (e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)
-        else
-            return '|cff828282'..text..'|r', '|cff828282'..(e.onlyChinese and '版本' or GAME_VERSION_LABEL)..' '..(expacID+1)..'|r'
+    
+    local text= expacID and e.cn(_G['EXPANSION_NAME'..expacID])
+    if text then
+        text= (WoWTools_TextureMixin:GetWoWLog(expacID) or '')..' '..text..' '..(expacID+1)
+        if e.ExpansionLevel < expacID then
+            text='|cff828282'..text..'|r'
         end
+        return text
     end
 end
 

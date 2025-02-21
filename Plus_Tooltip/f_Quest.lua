@@ -7,7 +7,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     if not questID then
         return
     end
-    tooltip:AddDoubleLine(WoWTools_Mixin:GetExpansionText(nil, questID))--任务版本
+    tooltip:AddLine(WoWTools_Mixin:GetExpansionText(nil, questID))--任务版本
 
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--等级
     local levelText

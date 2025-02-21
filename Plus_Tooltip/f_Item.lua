@@ -268,17 +268,16 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         col=col and '|c'..col
     end
     tooltip:AddLine(' ')
-    if expacID then--版本数据
+    if expacID or setID then--版本数据
         tooltip:AddLine(
-            (WoWTools_TextureMixin:GetWoWLog(expacID) or '')
-            ..(WoWTools_Mixin:GetExpansionText(expacID) or (e.onlyChinese and '版本' or GAME_VERSION_LABEL))
-            ..' '..(expacID+1)
-        )
+            WoWTools_Mixin:GetExpansionText(expacID, nil) or '  ',
+            setID and 'setID '..setID
+        )--图标， 版本
     end
 
     itemTexture= itemTexture or C_Item.GetItemIconByID(itemID or itemLink)
 
-    tooltip:AddDoubleLine('itemID '..itemID..(setID and ' setID '..setID or ''),
+    tooltip:AddDoubleLine('itemID '..itemID,--..(setID and ' setID '..setID or ''),
                     itemTexture and '|T'..itemTexture..':0|t'..itemTexture, 1,1,1, 1,1,1)--ID, texture
     if classID and subclassID then
         tooltip:AddDoubleLine((e.cn(itemType) or 'itemType')..' '..classID, (e.cn(itemSubType) or 'itemSubType')..' '..subclassID)
