@@ -7,7 +7,7 @@ function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
     local name= C_Spell.GetSpellName(spellID)
     local icon= C_Spell.GetSpellTexture(spellID)
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine((e.onlyChinese and '光环' or AURAS)..' '..spellID, icon and '|T'..icon..':0|t'..icon)
+    tooltip:AddDoubleLine('auraID '..spellID, icon and '|T'..icon..':0|t'..icon)
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
     if mountID then
         WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, 'aura')

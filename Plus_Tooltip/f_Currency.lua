@@ -14,7 +14,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     local currIcon= '|T'..(info2.iconFileID or 0)..':0|t'
 
     tooltip:AddDoubleLine(
-        (icon or '')..(col or '')..(e.onlyChinese and '货币' or TOKENS)..' '..currencyID,
+        (icon or '')..(col or '')..'currencyID '..currencyID,
         info2.iconFileID and currIcon..(col or '')..info2.iconFileID
     )
 
