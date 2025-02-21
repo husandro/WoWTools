@@ -5228,7 +5228,17 @@
         "AchievementButton_LocalizeMiniAchievement",
         "ITEM_LEVEL_PLUS",
         "BATTLE_PET_CAGE_TOOLTIP_LEVEL",
-        "EquipmentFlyoutFrameButtons"
+        "EquipmentFlyoutFrameButtons",
+        "POWER_TYPE_ESSENCE",
+        "GetDifficultyColor",
+        "GetQuestDifficultyColor",
+        "TooltipComparisonManager",
+        "OptionsListButtonToggle_OnClick",
+        "StaticPopup_StandardEditBoxOnEscapePressed",
+        "GetCreatureDifficultyColor",
+        "WORLD_QUEST_QUALITY_COLORS",
+        "FACTION_NEUTRAL",
+        "StaticPopup_OnClick"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

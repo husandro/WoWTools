@@ -55,7 +55,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         print(WoWTools_Mixin.addName, self.addName, spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(e.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-    tooltip:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+')
+    tooltip:AddDoubleLine(col..(e.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+|A:NPE_Icon:0:0|a')
 
     if type and MountJournal and MountJournal:IsVisible() and creatureName then
         MountJournalSearchBox:SetText(creatureName)

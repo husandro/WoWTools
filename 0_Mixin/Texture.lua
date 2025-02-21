@@ -184,3 +184,144 @@ function WoWTools_TextureMixin:Edit_Text_Icon(frame, tab)
 
     IconFrame:SetShown(true)
 end
+
+
+
+
+
+
+
+--TipTacItemRef\Texture\wow
+local ExpansionIcon = {
+	[0] = {  -- Classic Era
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\wow_logo.tga",
+		textureWidth = 32,
+		textureHeight = 16,
+		aspectRatio = 31 / 16,
+		leftTexel = 0.03125,
+		rightTexel = 1,
+		topTexel = 0,
+		bottomTexel = 1
+	},
+	[1] = {  -- Burning Crusade
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\bc_logo.tga",
+		textureWidth = 32,
+		textureHeight = 16,
+		aspectRatio = 29 / 12,
+		leftTexel = 0.0625,
+		rightTexel = 0.96875,
+		topTexel = 0.125,
+		bottomTexel = 0.875
+	},
+	[2] = {  -- Wrath of the Lich King
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\wotlk_logo.tga",
+		textureWidth = 64,
+		textureHeight = 32,
+		aspectRatio = 36 / 19,
+		leftTexel = 0.21875,
+		rightTexel = 0.78125,
+		topTexel = 0.1875,
+		bottomTexel = 0.78125
+	},
+	[3] = {  -- Cataclysm
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\cata_logo.tga",
+		textureWidth = 64,
+		textureHeight = 16,
+		aspectRatio = 38 / 15,
+		leftTexel = 0.203125,
+		rightTexel = 0.796875,
+		topTexel = 0,
+		bottomTexel = 0.9375
+	},
+	[4] = {  -- Mists of Pandaria
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\mop_logo.tga",
+		textureWidth = 64,
+		textureHeight = 16,
+		aspectRatio = 46 / 14,
+		leftTexel = 0.140625,
+		rightTexel = 0.859375,
+		topTexel = 0.0625,
+		bottomTexel = 0.9375
+	},
+	[5] = {  -- Warlords of Draenor
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\wod_logo.tga",
+		textureWidth = 64,
+		textureHeight = 16,
+		aspectRatio = 46 / 13,
+		leftTexel = 0.140625,
+		rightTexel = 0.859375,
+		topTexel = 0.0625,
+		bottomTexel = 0.875
+	},
+	[6] = {  -- Legion
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\legion_logo.tga",
+		textureWidth = 64,
+		textureHeight = 16,
+		aspectRatio = 40 / 15,
+		leftTexel = 0.1875,
+		rightTexel = 0.8125,
+		topTexel = 0,
+		bottomTexel = 0.9375
+	},
+	[7] = {  -- Battle for Azeroth
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\bfa_logo.tga",
+		textureWidth = 64,
+		textureHeight = 32,
+		aspectRatio = 48 / 17,
+		leftTexel = 0.125,
+		rightTexel = 0.875,
+		topTexel = 0.21875,
+		bottomTexel = 0.75
+	},
+	[8] = {  -- Shadowlands
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\sl_logo.tga",
+		textureWidth = 64,
+		textureHeight = 32,
+		aspectRatio = 43 / 17,
+		leftTexel = 0.15625,
+		rightTexel = 0.828125,
+		topTexel = 0.21875,
+		bottomTexel = 0.75
+	},
+	[9] = {  -- Dragonflight
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\df_logo.tga",
+		textureWidth = 64,
+		textureHeight = 32,
+		aspectRatio = 42 / 17,
+		leftTexel = 0.171875,
+		rightTexel = 0.828125,
+		topTexel = 0.21875,
+		bottomTexel = 0.75
+	},
+	[10] = {  -- The War Within
+		textureFile = "Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\tww_logo.tga",
+		textureWidth = 64,
+		textureHeight = 32,
+		aspectRatio = 42 / 17,
+		leftTexel = 0.171875,
+		rightTexel = 0.828125,
+		topTexel = 0.21875,
+		bottomTexel = 0.75
+	}
+}
+
+function WoWTools_TextureMixin:GetWoWLog(expacID, tab)
+    local info= ExpansionIcon[expacID]
+    if not info then
+        return
+    end
+
+    return ("|T%s:%d:%f:%d:%d:%d:%d:%d:%d:%d:%d|t"):format(
+        info.textureFile,
+        0,
+        info.aspectRatio,
+        info.xOffset or 0,
+        info.yOffset or 0,
+        info.textureWidth,
+        info.textureHeight,
+        info.leftTexel * info.textureWidth,
+        info.rightTexel * info.textureWidth,
+        info.topTexel * info.textureHeight,
+        info.bottomTexel * info.textureHeight
+  ), info
+end

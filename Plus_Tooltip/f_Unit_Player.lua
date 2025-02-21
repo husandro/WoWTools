@@ -248,4 +248,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
     self:Set_Width(tooltip)--设置，宽度
+    --if hideLine then
+        --tooltip:Show()
+    --end
 end
