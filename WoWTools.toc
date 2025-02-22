@@ -21,13 +21,13 @@
 Sesource\Libs\Init.xml
 
 ##主要function，不能删除
-API_WoWTools.lua
-API_LoadData.lua
-API_Panel.lua
-API_WoWDate.lua
+1_WoWTools\0_WoWTools.lua
+1_WoWTools\1_Mixin.lua
+1_WoWTools\API_Panel.lua
+1_WoWTools\API_WoWDate.lua
+1_WoWTools\z_ADDON_LOADED.lua
 
 0_Mixin\StaticPopupDialogs.lua
-0_Mixin\0_Mixin.lua
 0_Mixin\Aura.lua
 0_Mixin\Bag.lua
 0_Mixin\Button.lua
@@ -607,6 +607,31 @@ Plus_StableFrame\UI.lua
 
 
 
+##其它
+Plus_Other\0_Init.lua
+##美酒节 Brewfest
+Plus_Other\Brewfest.lua
+##法术弹出框，加名称
+Plus_Other\SpellFlyout.lua
+##法术弹出框，加名称, 和颜色
+Plus_Other\SpellFrame.lua
+Plus_Other\ScrappingMachine.lua
+##断， 驱，散
+Plus_Other\InterruptStolenDispel.lua
+##10.1 梦境之种
+Plus_Other\DormantSeeds.lua
+##自动隐藏，弹出NPC说话，
+Plus_Other\Talking.lua
+##美服，欧服，服器语言，提示
+Plus_Other\Realm.lua
+
+
+
+
+
+
+
+
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
@@ -665,31 +690,3 @@ ChatButton\9_Say.lua
 ChatButton\10_Emoji.lua
 ##各种, 战斗时间
 ChatButton\11_Combat.lua
-
-
-##其它
-Plus_Other\0_Init.lua
-
-##美酒节 Brewfest
-Plus_Other\Brewfest.lua
-
-
-##法术弹出框，加名称
-Plus_Other\SpellFlyout.lua
-
-##法术弹出框，加名称, 和颜色
-Plus_Other\SpellFrame.lua
-Plus_Other\ScrappingMachine.lua
-
-##断， 驱，散
-Plus_Other\InterruptStolenDispel.lua
-##10.1 梦境之种
-Plus_Other\DormantSeeds.lua
-
-
-##自动隐藏，弹出NPC说话，
-Plus_Other\Talking.lua
-
-
-##美服，欧服，服器语言，提示
-Plus_Other\Realm.lua
