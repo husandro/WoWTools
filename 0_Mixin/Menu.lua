@@ -152,7 +152,7 @@ sub:CreateSpacer()
 --缩放, 单行
 function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValue)
     local sub
-    if not frame:CanChangeAttribute() then
+    if  not frame:CanChangeAttribute() then
         sub=root:CreateButton('|cff828282'..e.onlyChinese and '缩放' or UI_SCALE,function() end)
         sub:SetEnabled(false)
         return

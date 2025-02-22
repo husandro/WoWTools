@@ -20,7 +20,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub, sub2
 
     sub=root:CreateCheckbox(
@@ -171,7 +171,9 @@ local function Init_Menu(_, root)
             GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
         end
     end)
-    WoWTools_MarkerMixin:Init_MarkerTools_Menu(sub)--队伍标记工具, 选项，菜单
+
+    
+    WoWTools_MarkerMixin:Init_MarkerTools_Menu(self, sub)--队伍标记工具, 选项，菜单
 
 
     sub=root:CreateCheckbox(e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)), function()
@@ -229,11 +231,6 @@ end
 
 
 
-
-function WoWTools_MarkerMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
-end
-
-function WoWTools_MarkerMixin:Set_Menu(...)
-    Init_Menu(...)
+function WoWTools_MarkerMixin:Setup_Menu()
+    self.MarkerButton:SetupMenu(Init_Menu)
 end

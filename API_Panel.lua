@@ -781,16 +781,12 @@ end
 
 
 local function Init()
-    WoWToolsSave= WoWToolsSave or {}
-    Save= WoWToolsSave[addName] or Save
-    Save.useColor= Save.useColor or 1
-    Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
-    Set_Color()--自定义，颜色
 
+   
     Init_Options()
 
     e.Is_Timerunning= PlayerGetTimerunningSeasonID()
-    e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
+
 
     if e.onlyChinese then
         e.Player.L= {
@@ -835,13 +831,32 @@ end
 
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1 == id then
+        WoWToolsSave= WoWToolsSave or {}
+
+        if WoWToolsSave['Panel Settings'] then
+            Save= WoWToolsSave['Panel Settings']
+            WoWToolsSave['Panel_Settings']=nil
+        else
+            Save= WoWToolsSave['Panel_Settings'] or Save
+        end
+        
+
+        e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
+
+        print( e.onlyChinese)
+
+        Save.useColor= Save.useColor or 1
+        Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+        Set_Color()--自定义，颜色
+
         Init()
+
         EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
     if not e.ClearAllSave then
-        WoWToolsSave[addName]=Save
+        WoWToolsSave['Panel_Settings']=Save
     end
 end)

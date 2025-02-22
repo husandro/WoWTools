@@ -114,35 +114,12 @@ local function Init()
     MarkerButton:RegisterEvent('GROUP_JOINED')
     MarkerButton:SetScript("OnEvent", MarkerButton.settings)
 
-
-
-    MarkerButton:SetupMenu(function(...)
-        WoWTools_MarkerMixin:Set_Menu(...)
-    end)
+     WoWTools_MarkerMixin:Setup_Menu()
 
     function MarkerButton:set_OnMouseDown()
         WoWTools_MarkerMixin.TankHealerFrame:on_click()
     end
-    --[[function MarkerButton:set_OnMouseDown()
-        WoWTools_MarkerMixin.TankHealerFrame:on_click()
-        self:CloseMenu()
-        self:set_tooltip()
-    end
-    MarkerButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' then
-            WoWTools_MarkerMixin.TankHealerFrame:on_click()
-            self:CloseMenu()
-            self:set_tooltip()
-        end
-    end)
 
-    MarkerButton:SetScript("OnClick", function(self, d)
-        if d=='LeftButton' then
-            WoWTools_MarkerMixin.TankHealerFrame:on_click()
-        else
-            WoWTools_MarkerMixin:Init_Menu(self)
-        end
-    end)]]
 
     function MarkerButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")

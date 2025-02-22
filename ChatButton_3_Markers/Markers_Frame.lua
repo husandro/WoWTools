@@ -49,8 +49,8 @@ local function Init()--设置标记, 框架
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif not IsModifierKeyDown() then
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)--队伍标记工具, 选项，菜单    
+            MenuUtil.CreateContextMenu(self, function(frame, root)
+                WoWTools_MarkerMixin:Init_MarkerTools_Menu(frame, root)--队伍标记工具, 选项，菜单    
             end)
         end
         self:SetAlpha(0.3)

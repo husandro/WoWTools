@@ -101,7 +101,7 @@ end
 
 
 
-function WoWTools_MarkerMixin:Init_MarkerTools_Menu(root)
-    Init(self, root)
+function WoWTools_MarkerMixin:Init_MarkerTools_Menu(frame, root)
+    Init(frame, root)
 end
 
