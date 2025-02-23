@@ -6,9 +6,9 @@ Save={
     scale= e.Player.husandro and 0.85 or 1,
     autoHide= e.Player.husandro and true or nil
 },
-
 }
 
+local addName
 local function Save()
     return WoWTools_ObjectiveTrackerMixin.Save
 end
@@ -28,7 +28,7 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     btn:SetScript('OnEnter', function(f)
         e.tips:SetOwner(f, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName,addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine((e.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (e.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
         e.tips:Show()
@@ -36,7 +36,7 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     end)
     btn:SetScript('OnDoubleClick', func)
     function btn:print_text(num)
-        print(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(WoWTools_Mixin.addName,addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -110,46 +110,50 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_ObjectiveTrackerMixin.Save= WoWToolsSave['ObjectiveTracker'] or WoWTools_ObjectiveTrackerMixin.Save
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1~=id then
-		return
-	end
+           addName= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
+           WoWTools_ObjectiveTrackerMixin.addName= addName
 
-    WoWTools_ObjectiveTrackerMixin.Save= WoWToolsSave['ObjectiveTracker'] or WoWTools_ObjectiveTrackerMixin.Save
+            --添加控制面板
+            e.AddPanel_Check({
+                name=addName,
+                tooltip=addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
-    WoWTools_ObjectiveTrackerMixin.addName= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
+            if not Save().disabled then
+                WoWTools_ObjectiveTrackerMixin:Init_Quest()
+                WoWTools_ObjectiveTrackerMixin:Init_Campaign_Quest()
+                WoWTools_ObjectiveTrackerMixin:Init_World_Quest()
+                WoWTools_ObjectiveTrackerMixin:Init_Achievement()
+                WoWTools_ObjectiveTrackerMixin:Init_Professions()
+                WoWTools_ObjectiveTrackerMixin:Init_MonthlyActivities()
+                WoWTools_ObjectiveTrackerMixin:Init_ScenarioObjective()
+                WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerFrame()
+                WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerShared()
+            end
 
-    --添加控制面板
-    e.AddPanel_Check({
-        name= WoWTools_ObjectiveTrackerMixin.addName,
-        tooltip= WoWTools_ObjectiveTrackerMixin.addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            self:UnregisterEvent(event)
         end
-    })
 
-    if not Save().disabled then
-        WoWTools_ObjectiveTrackerMixin:Init_Quest()
-        WoWTools_ObjectiveTrackerMixin:Init_Campaign_Quest()
-        WoWTools_ObjectiveTrackerMixin:Init_World_Quest()
-        WoWTools_ObjectiveTrackerMixin:Init_Achievement()
-        WoWTools_ObjectiveTrackerMixin:Init_Professions()
-        WoWTools_ObjectiveTrackerMixin:Init_MonthlyActivities()
-        WoWTools_ObjectiveTrackerMixin:Init_ScenarioObjective()
-        WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerFrame()
-        WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerShared()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['ObjectiveTracker']= Save()
+        end
     end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-		WoWToolsSave['ObjectiveTracker']=WoWTools_ObjectiveTrackerMixin.Save
-	end
-end)
 
 --[[
 local Frames={

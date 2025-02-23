@@ -1276,50 +1276,72 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
-        Save= WoWToolsSave['ItemInfo_Lua'] or Save
 
-        --添加控制面板
-        e.AddPanel_Check({
-            name= addName,
-            tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+
+
+
+
+
+
+
+
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+
+            if WoWToolsSave['ItemInfo_Lua'] then
+                Save= WoWToolsSave['ItemInfo_Lua']
+                WoWToolsSave['ItemInfo_Lua']= nil
+            else
+                Save= WoWToolsSave['Plus_ItemInfo'] or Save
             end
-        })
 
-        if Save.disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            Init()
+            addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
+
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            if Save.disabled then
+                self:UnregisterEvent(event)
+            else
+                Init()
+            end
+
+
+        elseif arg1=='Blizzard_PerksProgram' then
+            Set_Blizzard_PerksProgram()
+
+        elseif arg1=='Blizzard_WeeklyRewards' then
+            Set_Blizzard_WeeklyRewards()
+
+        elseif arg1=='Blizzard_AuctionHouseUI' then
+            Set_Blizzard_AuctionHouseUI()
+
+        elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
+            Set_Blizzard_ItemInteractionUI()
+
+
+        elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
+            add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项                       
         end
 
-
-    elseif arg1=='Blizzard_PerksProgram' then
-        Set_Blizzard_PerksProgram()
-
-    elseif arg1=='Blizzard_WeeklyRewards' then
-        Set_Blizzard_WeeklyRewards()
-
-    elseif arg1=='Blizzard_AuctionHouseUI' then
-        Set_Blizzard_AuctionHouseUI()
-
-    elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-        Set_Blizzard_ItemInteractionUI()
-
-
-    elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
-        add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项                       
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['ItemInfo_Lua']=Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_ItemInfo']=Save
+        end
     end
 end)

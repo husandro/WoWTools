@@ -159,39 +159,43 @@ end)
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
 
+            local addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
+            WoWTools_BankMixin.addName= addName
 
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue=function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1~=id then
-        return
-    end
-
-    WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
-    WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
-
-    --添加控制面板
-    e.AddPanel_Check({
-        name= WoWTools_BankMixin.addName,
-        GetValue=function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            if _G['WoWTools_BankFrameMenuButton'] then
-                print(WoWTools_Mixin.addName, WoWTools_BankMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+            if  Save().disabled then
+                self:UnregisterEvent(event)
+            else
+                self:RegisterEvent('BANKFRAME_OPENED')
             end
         end
-    })
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
 
+    elseif event=='BANKFRAME_OPENED' then
+        Init()
+        self:UnregisterEvent(event)
 
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Bank']= WoWTools_BankMixin.Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Bank']=Save()
+        end
     end
 end)
-
-
 
 

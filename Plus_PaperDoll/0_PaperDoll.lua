@@ -1,5 +1,5 @@
 local id, e = ...
-local addName= CHARACTER
+
 WoWTools_PaperDollMixin={
 Save={
     --hide=true,--隐藏CreateTexture
@@ -77,39 +77,40 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1~=id then
-		return
-	end
+            local addName= (
+                e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
+                or '|A:charactercreate-gendericon-female-selected:0:0|a'
+            )..(e.onlyChinese and '角色' or CHARACTER)
 
-    WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
+            WoWTools_PaperDollMixin.addName= addName
 
-    WoWTools_PaperDollMixin.addName= (
-        e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
-        or '|A:charactercreate-gendericon-female-selected:0:0|a'
-    )..(e.onlyChinese and '角色' or addName)
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+            })
 
-    --添加控制面板
-    e.AddPanel_Check({
-        name= WoWTools_PaperDollMixin.addName,
-        --tooltip= WoWTools_PaperDollMixin.addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end,
-    })
+            if not Save().disabled then
+                Init()
+            end
 
-    if not Save().disabled then
-        Init()
+            self:UnregisterEvent(event)
+        end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_PaperDoll']=Save()
+        end
     end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-		WoWToolsSave['Plus_PaperDoll']= Save()
-	end
 end)

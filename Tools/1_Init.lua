@@ -480,7 +480,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(_, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
@@ -489,14 +489,16 @@ panel:SetScript("OnEvent", function(_, event, arg1)
                 Hearthstone=true,
                 OpenItems=true,
             }
+
             Button= WoWTools_ToolsButtonMixin:Init(Save)
 
-            if Button  then
+            if Button then
                 Init()
             end
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
+            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

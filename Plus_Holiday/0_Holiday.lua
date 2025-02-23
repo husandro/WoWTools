@@ -39,56 +39,65 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
 
-        WoWTools_HolidayMixin.Save= WoWToolsSave['Plus_Holiday'] or Save()
-        WoWTools_HolidayMixin.addName= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)
 
-        e.AddPanel_Check_Button({
-            checkName= WoWTools_HolidayMixin.addName,
-            GetValue= function() return not Save().disabled end,
-            SetValue= function()
-                Save().disabled = not Save().disabled and true or nil
-                print(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-            end,
-            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-            buttonFunc= function()
-                Save().point=nil
-                if WoWTools_HolidayMixin.TrackButton then
-                    WoWTools_HolidayMixin.TrackButton:set_point()
-                end
-                print(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-            end,
-            tooltip= WoWTools_HolidayMixin.addName,
-            layout= nil,
-            category= nil,
-        })
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
 
-        if Save().disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            if UnitAffectingCombat('player') then
-                EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner2)
-                    Init_Open()
-                    EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner2)
-                end)
+            WoWTools_HolidayMixin.Save= WoWToolsSave['Plus_Holiday'] or Save()
+
+            local addName= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)
+            WoWTools_HolidayMixin.addName= addName
+
+            e.AddPanel_Check_Button({
+                checkName= addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled = not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save().point=nil
+                    if WoWTools_HolidayMixin.TrackButton then
+                        WoWTools_HolidayMixin.TrackButton:set_point()
+                    end
+                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                layout= nil,
+                category= nil,
+            })
+
+            if Save().disabled then
+                self:UnregisterEvent(event)
             else
-                C_Timer.After(2, Init_Open)
+                C_Timer.After(2, function()
+                    if UnitAffectingCombat('player') then
+                        self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                    else
+                        Init_Open()
+                    end
+                end)
             end
+
+        elseif arg1=='Blizzard_Calendar' then
+            WoWTools_HolidayMixin:Init_CreateEventFrame()
+            WoWTools_HolidayMixin:Init_Calendar_Uptate()
+            WoWTools_HolidayMixin:Init_TrackButton()
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_Calendar' then
-        WoWTools_HolidayMixin:Init_CreateEventFrame()
-        WoWTools_HolidayMixin:Init_Calendar_Uptate()
-        WoWTools_HolidayMixin:Init_TrackButton()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end
-end)
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        Init_Open()
+        self:UnregisterEvent(event)
 
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Holiday']= Save()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Holiday']=Save()
+        end
     end
 end)

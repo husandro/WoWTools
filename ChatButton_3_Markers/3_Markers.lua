@@ -188,7 +188,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if MarkerButton then
                 Init()
             end
-            self:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_LOGOUT' then

@@ -95,56 +95,56 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
+            WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or Save()
+            local addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+            WoWTools_AttributesMixin.addName= addName
 
-        WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or WoWTools_AttributesMixin.Save
+            local frame= CreateFrame('Frame')
+            WoWTools_AttributesMixin.PanelFrame= frame
 
-        WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+            local Category= e.AddPanel_Sub_Category({--添加控制面板
+                name=addName,
+                frame=frame,
+                disabled= Save().disabled,
+            })
+            WoWTools_AttributesMixin.Category= Category
 
-        local frame= CreateFrame('Frame')
-        WoWTools_AttributesMixin.PanelFrame= frame
-        
-        local Category= e.AddPanel_Sub_Category({--添加控制面板
-            name=WoWTools_AttributesMixin.addName,
-            frame=frame,
-            disabled= Save().disabled,
-        })
-        WoWTools_AttributesMixin.Category= Category
-
-        e.ReloadPanel({panel=WoWTools_AttributesMixin.PanelFrame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-            disabledfunc=function()
-                Save().disabled = not Save().disabled and true or nil
-                if not Save().disabled then
-                    if Init() then Init=function()end end
-                    WoWTools_AttributesMixin:Init_Options()
-                else
-                    print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                    WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+            e.ReloadPanel({panel=WoWTools_AttributesMixin.PanelFrame, addName=addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+                disabledfunc=function()
+                    Save().disabled = not Save().disabled and true or nil
+                    if not Save().disabled then
+                        if Init() then Init=function()end end
+                        WoWTools_AttributesMixin:Init_Options()
+                    else
+                        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+                    end
+                end,
+                clearfunc= function()
+                    WoWTools_AttributesMixin.Save=nil
+                    WoWTools_Mixin:Reload()
                 end
-            end,
-            clearfunc= function()
-                WoWTools_AttributesMixin.Save=nil
-                WoWTools_Mixin:Reload()
+            })
+
+            if not Save().disabled then
+                if Init() then Init=function()end end
             end
-        })
 
-        if not Save().disabled then
-            if Init() then Init=function()end end
+        elseif arg1=='Blizzard_Settings' then
+            WoWTools_AttributesMixin:Init_Options()
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_Settings' then
-        WoWTools_AttributesMixin:Init_Options()
-        if WoWTools_AttributesMixin.Category then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Attributes']=Save()
         end
-    end
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Attributes']= WoWTools_AttributesMixin.Save
     end
 end)

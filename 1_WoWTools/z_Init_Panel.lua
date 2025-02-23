@@ -182,7 +182,8 @@ local function Init_Options()
             e.Get_Region=function() end
         end
     end
-    --e.AddPanel_Header(nil, ' - ')
+
+    e.AddPanel_Header(nil, 'Plus')
 end
 
 
@@ -212,9 +213,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save= WoWToolsSave['Panel Settings']
                 WoWToolsSave['Panel_Settings']=nil
             else
-                Save= WoWToolsSave['Panel_Settings'] or Save
+                Save= WoWToolsSave['WoWTools_Settings'] or Save
             end
             e.onlyChinese= LOCALE_zhCN or Save.onlyChinese
+            WoWTools_Mixin.onlyChinese= e.onlyChinese
 
             Save.useColor= Save.useColor or 1
             Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
@@ -262,7 +264,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
     else
         if not e.ClearAllSave then
-            WoWToolsSave['Panel_Settings']= Save    
+            WoWToolsSave['Panel_Settings']= Save
         end
     end
 end)

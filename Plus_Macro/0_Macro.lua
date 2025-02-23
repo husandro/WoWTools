@@ -22,9 +22,6 @@ local function Save()
 end
 
 
-
-
-
 function WoWTools_MacroMixin:GetName(name, icon)
     if name then
         return
@@ -35,16 +32,6 @@ function WoWTools_MacroMixin:GetName(name, icon)
     end
 end
 
-
-
-
-
-
-
-
-
-
-
 --取得选定宏，index
 function WoWTools_MacroMixin:GetSelectIndex()
     local index= MacroFrame:GetSelectedIndex()
@@ -53,17 +40,11 @@ function WoWTools_MacroMixin:GetSelectIndex()
     end
 end
 
-
-
-
 function WoWTools_MacroMixin:IsCanCreateNewMacro()
     return not UnitAffectingCombat('player') and MacroNewButton:IsEnabled()
 end
 
-
-
---修改，当前图标
---Blizzard_MacroIconSelector.lua MacroPopupFrameMixin:OkayButton_OnClick()
+--修改，当前图标 Blizzard_MacroIconSelector.lua MacroPopupFrameMixin:OkayButton_OnClick()
 function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
     if UnitAffectingCombat('player') or not iconTexture or iconTexture==0 then
         return
@@ -77,7 +58,6 @@ function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
         e.call(MacroFrame.Update, MacroFrame, true)
     end
 end
-
 
 --新建，宏
 function WoWTools_MacroMixin:CreateMacroNew(name, icon, body)--新建，宏
@@ -95,16 +75,7 @@ function WoWTools_MacroMixin:CreateMacroNew(name, icon, body)--新建，宏
     e.call(MacroFrame.Update, MacroFrame, true)
 end
 
-
-
-
-
-
-
-
-
 --宏，提示
---#######
 function WoWTools_MacroMixin:SetTooltips(frame, index)
     index= index or (frame.selectionIndex and frame.selectionIndex+ MacroFrame.macroBase)
 
@@ -141,14 +112,6 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
     end
 end
 
-
-
-
-
-
-
-
-
 --宏，提示
 function WoWTools_MacroMixin:SetMenuTooltip(root)
     root:SetTooltip(function(tooltip, description)
@@ -183,17 +146,6 @@ end
 
 
 
---初始
---####
-local function Init()
-    WoWTools_MacroMixin:Init_Set_UI()
-    WoWTools_MacroMixin:Init_Button()--宏列表，位置
-    WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
-    WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
-    WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
-    WoWTools_MacroMixin:Init_ChangeTab()
-    WoWTools_MacroMixin:Init_MacroButton_Plus()
-end
 
 
 
@@ -202,50 +154,59 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
 
+            local addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or MACRO)
+            WoWTools_MacroMixin.addName= addName
 
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                    ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled = not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1==id then
-        WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
-        WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or MACRO)
-
-        --添加控制面板
-        e.AddPanel_Check({
-            name= WoWTools_MacroMixin.addName,
-            tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
-                ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
-            GetValue= function() return not Save().disabled end,
-            SetValue= function()
-                Save().disabled = not Save().disabled and true or nil
-                print(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            if Save().disabled  then
+                self:UnregisterEvent(event)
+            else
+                if C_AddOns.IsAddOnLoaded("MacroToolkit") then
+                    print(
+                        WoWTools_Mixin.addName,
+                        addName,
+                        e.GetEnabeleDisable(false), 'MacroToolkit',
+                        e.onlyChinese and '插件' or ADDONS
+                    )
+                end
             end
-        })
 
-        if Save().disabled  then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            if C_AddOns.IsAddOnLoaded("MacroToolkit") then
-                print(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName,
-                    e.GetEnabeleDisable(false), 'MacroToolkit',
-                    e.onlyChinese and '插件' or ADDONS
-                )
-            end
+        elseif arg1=='Blizzard_MacroUI' then
+            WoWTools_MacroMixin:Init_Set_UI()
+            WoWTools_MacroMixin:Init_Button()--宏列表，位置
+            WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
+            WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
+            WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
+            WoWTools_MacroMixin:Init_ChangeTab()
+            WoWTools_MacroMixin:Init_MacroButton_Plus()
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_MacroUI' then
-        Init()
-        if WoWTools_MacroMixin.addName then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            if WoWTools_MacroMixin.NoteEditBox and WoWTools_MacroMixin.NoteEditBox:IsVisible() then
+                WoWTools_MacroMixin.NoteEditBox:Hide()
+            end
+            WoWToolsSave['Plus_Macro2']= Save()
         end
     end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-        if WoWTools_MacroMixin.NoteEditBox and WoWTools_MacroMixin.NoteEditBox:IsVisible() then
-            WoWTools_MacroMixin.NoteEditBox:Hide()
-        end
-        WoWToolsSave['Plus_Macro2']= Save()
-	end
 end)

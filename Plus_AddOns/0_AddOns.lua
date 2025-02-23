@@ -60,25 +60,12 @@ RightFrame=nil,--右边列表
 LeftFrame=nil,--左边列表
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 local function Save()
     return WoWTools_AddOnsMixin.Save
 end
+
+
+
 
 
 function WoWTools_AddOnsMixin:Get_MenoryValue(indexORname, showText)
@@ -308,38 +295,38 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or Save()
+            local addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
+
+            WoWTools_AddOnsMixin.addName= addName
+
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                Value= not Save().disabled,
+                GetValue=function () return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled = not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1~=id then
-        return
-    end
-
-
-    WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or WoWTools_AddOnsMixin.Save
-    WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
-
-    --添加控制面板
-    e.AddPanel_Check({
-        name= WoWTools_AddOnsMixin.addName,
-        tooltip= WoWTools_AddOnsMixin.addName,
-        Value= not Save().disabled,
-        GetValue=function () return not Save().disabled end,
-        SetValue= function()
-            Save().disabled = not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            if not Save().disabled then
+                Init()
+            end
+            self:UnregisterEvent(event)
         end
-    })
 
-
-    if not Save().disabled then
-        Init()
-    end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_AddOns']= Save()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_AddOns']=Save()
+        end
     end
 end)

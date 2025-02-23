@@ -219,7 +219,7 @@ local function Init()
     btn:SetupMenu(Init_Menu)
 
 
-   
+
     WoWTools_AddOnsMixin.MenuButton= btn
 end
 

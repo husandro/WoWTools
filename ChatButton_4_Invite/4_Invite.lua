@@ -193,7 +193,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if WoWTools_InviteMixin.InviteButton then
                 Init()
             end
-            self:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_LOGOUT' then

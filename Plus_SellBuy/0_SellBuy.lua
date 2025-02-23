@@ -12,7 +12,7 @@ Save={
         [144391]=true,--拳手的重击指环
         [144392]=true,--拳手的重击指环
         [37863]=true,--[烈酒的遥控器]
-        
+
     },
     Sell={
         [34498]=true,--[纸飞艇工具包]
@@ -170,7 +170,6 @@ local function Init()
     WoWTools_SellBuyMixin:Init_Buy_Items_Button()--购买物品
     WoWTools_SellBuyMixin:Init_Buyback_Button()--回购物品
     WoWTools_SellBuyMixin:Init_Menu()
-    
 end
 
 
@@ -182,40 +181,44 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
+            WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
+            WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
 
+            local addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
+            WoWTools_SellBuyMixin.addName= addName
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1~=id then
-		return
-	end
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
 
-    WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
-    WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
-    WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
+            if Save().disabled then
+                WoWTools_SellBuyMixin.CheckSellItem=nil
+            else
+                Init()
+            end
 
-    WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
-
-    --添加控制面板
-    e.AddPanel_Check({
-        name= WoWTools_SellBuyMixin.addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+            self:UnregisterEvent(event)
         end
-    })
 
-    if Save().disabled then
-        WoWTools_SellBuyMixin.CheckSellItem=nil
-    else
-        Init()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            if not Save().saveBossLootList then
+                Save().bossItems={}
+            end
+            WoWToolsSave['Plus_SellBuy']= WoWTools_SellBuyMixin.Save
+        end
     end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not Save().saveBossLootList then
-        Save().bossItems={}
-    end
-    WoWToolsSave['Plus_SellBuy']= WoWTools_SellBuyMixin.Save
 end)

@@ -546,7 +546,7 @@ end)
     end
     FriendsButton:set_status(true)
 end
-    
+
 
 
 
@@ -956,56 +956,70 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        --处理，上版本数据
-        Save= WoWToolsSave['FriendsList_lua'] or Save
-        addName= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or FRIENDS_LIST)
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
 
-        --添加控制面板
-        e.AddPanel_Check({
-            name= addName,
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName , addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            if WoWToolsSave['FriendsList_lua'] then
+                Save= WoWToolsSave['FriendsList_lua']
+                WoWToolsSave['FriendsList_lua']= nil
+            else
+                Save= WoWToolsSave['Plus_FriendsList'] or Save
             end
-        })
+            addName= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or FRIENDS_LIST)
 
-        if Save.disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            OptionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
-            RegionNames = {
-                [1] = e.onlyChinese and '北美' or NORTH_AMERICA,
-                [2] = e.onlyChinese and '韩国' or KOREA,
-                [3] = e.onlyChinese and '欧洲' or EUROPE,
-                [4] = e.onlyChinese and '台湾' or TAIWAN,
-                [5] = e.onlyChinese and '中国' or CHINA,
-            }
-            Init()
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
-            EventRegistry:RegisterFrameEventAndCallback("SOCIAL_QUEUE_UPDATE", set_SOCIAL_QUEUE_UPDATE)
+            if Save.disabled then
+                self:UnregisterEvent(event)
+            else
+                OptionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
+                RegionNames = {
+                    [1] = e.onlyChinese and '北美' or NORTH_AMERICA,
+                    [2] = e.onlyChinese and '韩国' or KOREA,
+                    [3] = e.onlyChinese and '欧洲' or EUROPE,
+                    [4] = e.onlyChinese and '台湾' or TAIWAN,
+                    [5] = e.onlyChinese and '中国' or CHINA,
+                }
+                Init()
+
+                self:RegisterEvent('SOCIAL_QUEUE_UPDATE')
+            end
+
+        elseif arg1=='Blizzard_RaidUI' then
+
+            hooksecurefunc('RaidGroupFrame_Update', Init_RaidGroupFrame_Update)--团队, 模块
+
+            RaidFrame:HookScript('OnUpdate', function(frame, elapsed)
+                frame.elapsed= (frame.elapsed or 1) + elapsed
+                if frame.elapsed>1 then
+                    frame.elapsed=0
+                    if not UnitAffectingCombat('player') then
+                        e.call(RaidGroupFrame_Update)
+                    end
+                end
+            end)
+
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_RaidUI' then
+    elseif event=='SOCIAL_QUEUE_UPDATE' then
+        set_SOCIAL_QUEUE_UPDATE()
 
-        hooksecurefunc('RaidGroupFrame_Update', Init_RaidGroupFrame_Update)--团队, 模块
-
-        RaidFrame:HookScript('OnUpdate', function(frame, elapsed)
-            frame.elapsed= (frame.elapsed or 1) + elapsed
-            if frame.elapsed>1 then
-                frame.elapsed=0
-                if not UnitAffectingCombat('player') then
-                    e.call(RaidGroupFrame_Update)
-                end
-            end
-        end)
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['FriendsList_lua']=Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_FriendsList']=Save
+        end
     end
 end)

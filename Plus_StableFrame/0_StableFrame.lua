@@ -30,45 +30,50 @@ WoWTools_StableFrameMixin={
 }
 
 
+local function Save()
+    return WoWTools_StableFrameMixin.Save
+end
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_StableFrameMixin.Save= WoWToolsSave['Plus_StableFrame'] or Save()
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1~=id then
-        return
-    end
+            local addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
+            WoWTools_StableFrameMixin.addName= addName
 
-    WoWTools_StableFrameMixin.Save= WoWToolsSave['Plus_StableFrame'] or WoWTools_StableFrameMixin.Save
-    WoWTools_StableFrameMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(e.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
+            --添加控制面板
+                e.AddPanel_Check({
+                name= addName,
+                tooltip= nil,
+                GetValue=function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled = not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
+            if not Save().disabled then
+                self:RegisterEvent('PET_STABLE_SHOW')
+            end
 
-    --添加控制面板
-        e.AddPanel_Check({
-        name= WoWTools_StableFrameMixin.addName,
-        tooltip= nil,
-        Value= not WoWTools_StableFrameMixin.Save.disabled,
-        GetValue=function() return not WoWTools_StableFrameMixin.Save.disabled end,
-        SetValue= function()
-            WoWTools_StableFrameMixin.Save.disabled = not WoWTools_StableFrameMixin.Save.disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName, e.GetEnabeleDisable(not WoWTools_StableFrameMixin.Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+            self:UnregisterEvent(event)
         end
-    })
 
-    if not WoWTools_StableFrameMixin.Save.disabled then
-        EventRegistry:RegisterFrameEventAndCallback("PET_STABLE_SHOW", function(owner2)
-            WoWTools_StableFrameMixin:Init_StableFrame_Plus()
-            WoWTools_StableFrameMixin:Init_Menu()
-            WoWTools_StableFrameMixin:Set_StableFrame_List()
-            WoWTools_StableFrameMixin:Init_UI()
-            EventRegistry:UnregisterCallback('PET_STABLE_SHOW', owner2)
-        end)
-    end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
+    elseif event=='PET_STABLE_SHOW' then
+        WoWTools_StableFrameMixin:Init_StableFrame_Plus()
+        WoWTools_StableFrameMixin:Init_Menu()
+        WoWTools_StableFrameMixin:Set_StableFrame_List()
+        WoWTools_StableFrameMixin:Init_UI()
+        self:UnregisterEvent(event)
 
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_StableFrame']= WoWTools_StableFrameMixin.Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_StableFrame']= Save()
+        end
     end
 end)

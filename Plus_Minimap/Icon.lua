@@ -58,7 +58,7 @@ function WoWTools_MinimapMixin:Init_Icon()
         OnEnter=OnEnter_Tooltip,--fun(displayFrame: Frame)
         OnLeave=nil,--fun(displayFrame: Frame)
         OnTooltipShow=nil,--fun(tooltip: Frame)
-        icon='Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga',--string
+        icon='Interface\\AddOns\\WoWTools\\z_Sesource\\Texture\\WoWtools.tga',--string
         iconB=nil,--number,
         iconCoords=nil,--table,
         iconG=nil,--number,

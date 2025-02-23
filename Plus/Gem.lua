@@ -528,7 +528,7 @@ local function Init_Spell_Button()
 
         local spellID, action
         for _, spell in pairs(SpellsTab) do
-            if IsSpellKnownOrOverridesKnown(spell) then                
+            if IsSpellKnownOrOverridesKnown(spell) then
                 local name= C_Spell.GetSpellName(spell)
                 local icon= C_Spell.GetSpellTexture(spell)
                 self:SetAttribute("type", "spell")
@@ -1041,36 +1041,38 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave['Plus_Gem'] or Save
 
+            addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        Save= WoWToolsSave['Plus_Gem'] or Save
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled = not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
 
-        --添加控制面板
-        addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
-
-        e.AddPanel_Check({
-            name= addName,
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled = not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+            if Save.disabled then
+                self:UnregisterEvent(event)
             end
-        })
 
-        if Save.disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        elseif arg1=='Blizzard_ItemSocketingUI' then
+            Init()
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_ItemSocketingUI' then
-        Init()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Gem']=Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Gem']=Save
+        end
     end
 end)

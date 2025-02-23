@@ -101,41 +101,43 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
 
+            WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
+            Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}--这个不能删除，不然换职业会出错
 
-        WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
+            WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
-        Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}--这个不能删除，不然换职业会出错
+            --添加控制面板
+            e.AddPanel_Check({
+                name= WoWTools_EncounterMixin.addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_EncounterMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
 
-        WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
-
-        --添加控制面板
-        e.AddPanel_Check({
-            name= WoWTools_EncounterMixin.addName,
-            GetValue= function() return not Save().disabled end,
-            SetValue= function()
-                Save().disabled= not Save().disabled and true or nil
-                print(WoWTools_EncounterMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            if Save().disabled then
+                self:UnregisterEvent(event)
+            else
+                Init()
             end
-        })
 
-        if Save().disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            Init()
+        elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
+            Init_EncounterJournal()--冒险指南界面
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
-        Init_EncounterJournal()--冒险指南界面
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Adventure_Journal']=Save()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Adventure_Journal']=Save()
+        end
     end
 end)

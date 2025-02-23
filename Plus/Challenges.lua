@@ -93,28 +93,32 @@ e.ChallengesSpellTabs={
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
 }
 
-
-
-
-if not e.Player.IsMaxLevel then
-    return
-end
-
-
-
 --双法术，
 if e.Player.faction=='Alliance' then
     e.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
 end
 
---if C_MythicPlus.GetCurrentSeason()==12 then
+if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
+    return
+end
+
 for _, tab in pairs(e.ChallengesSpellTabs) do
     e.LoadData({id=tab.spell, type='spell'})
 end
 
 
 
-local addName= CHALLENGES
+
+
+
+
+
+
+
+
+
+
+local addName
 local Save= {
     --hideIns=true,--隐藏，副本，挑战，信息
     --insScale=0.8,--副本，缩放
@@ -132,7 +136,6 @@ local Save= {
 }
 
 local TipsFrame
-local Initializer
 
 
 
@@ -453,7 +456,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     self.ins:SetScript("OnMouseDown",function()
             if UnitAffectingCombat('player') then
-                print(WoWTools_Mixin.addName, Initializer:GetName(),'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+                print(WoWTools_Mixin.addName, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
                 return
             end
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
@@ -546,7 +549,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     check:SetScript('OnEnter', function(self2)
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN, '|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
         e.tips:Show()
@@ -612,7 +615,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.countdown2:SetScript('OnEnter', function(frame)
         e.tips:SetOwner(frame, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(' ', '|A:transmog-icon-chat:0:0|a'..(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
         e.tips:Show()
@@ -711,7 +714,7 @@ local function Init_Affix()
             label:SetScript('OnEnter', function(self)
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddLine(Initializer:GetName())
+                e.tips:AddLine(addName)
                 e.tips:AddLine(' ')
                 for idx=1, self.max do
                     local tab= self.affixSchedule[idx]
@@ -967,7 +970,7 @@ local function set_All_Text()--所有记录
         function ChallengesFrame.moveRightTipsButton:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
             e.tips:AddLine(' ')
             e.tips:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
             e.tips:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
@@ -1683,7 +1686,7 @@ local function Init_Blizzard_WeeklyRewards()
                         text= format(e.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
                     end
                     if text then
-                        print(WoWTools_Mixin.addName, Initializer:GetName(),'|n|cffff00ff',text)
+                        print(WoWTools_Mixin.addName, addName,'|n|cffff00ff',text)
                     end
                 end
             end
@@ -1723,7 +1726,7 @@ local function set_Week_Reward_Look_Specialization()
     if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame then
         return
     elseif C_WeeklyRewards.HasAvailableRewards() then
-        print(WoWTools_Mixin.addName, Initializer:GetName(),'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
+        print(WoWTools_Mixin.addName, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
     WeekRewardLookFrame= CreateFrame('Frame')
@@ -1759,7 +1762,7 @@ local function set_Week_Reward_Look_Specialization()
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(frame)
                 frame:set_Show(false)
-                print(WoWTools_Mixin.addName, Initializer:GetName(), '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                print(WoWTools_Mixin.addName, addName, '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             end)
             local texture= self:CreateTexture(nil,'BORDER')
             texture:SetSize(60,60)
@@ -1864,7 +1867,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_Mixin.addName, Initializer:GetName(), e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1875,7 +1878,7 @@ local function Init_Blizzard_ChallengesUI()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:Show()
     end
     check:SetScript("OnEnter",function(self)
@@ -1909,7 +1912,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_Mixin.addName, Initializer:GetName(), e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.tipsScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
@@ -1920,7 +1923,7 @@ local function Init_Blizzard_ChallengesUI()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.tipsScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:Show()
     end
     tipsButton:SetScript('OnEnter', function(self)
@@ -1952,7 +1955,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_Mixin.addName, Initializer:GetName(), format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(WoWTools_Mixin.addName, addName, format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1981,7 +1984,7 @@ local function Init_Blizzard_ChallengesUI()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:Show()
     end
     spellButton:SetScript('OnLeave', function(self)
@@ -2023,7 +2026,7 @@ local function Init_Blizzard_ChallengesUI()
             local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
             if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
                 ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-                print(WoWTools_Mixin.addName, Initializer:GetName())
+                print(WoWTools_Mixin.addName, addName)
                 print('|cffff00ff',text)
             end
         end
@@ -2059,7 +2062,7 @@ local function Init_Blizzard_ChallengesUI()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, Initializer:GetName())
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
         e.tips:Show()
         self:SetAlpha(1)
     end)
@@ -2101,74 +2104,76 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            if WoWToolsSave[CHALLENGES] then
+                Save= WoWToolsSave[CHALLENGES]
+                Save.rightX= Save.rightX or 2--右边，提示，位置
+                Save.rightY= Save.rightY or -22
+                WoWToolsSave[CHALLENGES]=nil
+            else
+                Save= WoWToolsSave['Plus_Challenges'] or Save
+            end
+
+            if PlayerGetTimerunningSeasonID() then
+                self:UnregisterEvent(event)
+                return
+            end
+
+            addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or CHALLENGES)
+
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+
+            if Save.disabled then
+                self:UnregisterEvent(event)
+            else
+                self:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+                C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
+            end
+
+        elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
+            Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
+            if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
+                self:UnregisterEvent(event)
+            end
 
 
+        elseif arg1=='Blizzard_WeeklyRewards' then
+            Init_Blizzard_WeeklyRewards()
+            if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
+                self:UnregisterEvent(event)
+            end
+        end
 
-
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-
-        Save= WoWToolsSave[addName] or Save
-        Save.rightX= Save.rightX or 2--右边，提示，位置
-        Save.rightY= Save.rightY or -22
-
-        if PlayerGetTimerunningSeasonID() then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    elseif event=='CHALLENGE_MODE_COMPLETED' then
+        if not Save.slotKeystoneSay then
             return
         end
-        --添加控制面板
-
-        Initializer= e.AddPanel_Check({
-            name= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or addName),
-            tooltip= e.cn(addName),
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        })
-
-        if Save.disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-
-            EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
-                if Save.slotKeystoneSay then
-                    local itemLink= get_Bag_Key()--查找，包的key
-                    if itemLink then
-                        C_Timer.After(2, function()
-                            WoWTools_ChatMixin:Chat(itemLink, nil, nil)
-                        end)
-                    end
-                end
+        local itemLink= get_Bag_Key()--查找，包的key
+        if itemLink then
+            C_Timer.After(2, function()
+                WoWTools_ChatMixin:Chat(itemLink, nil, nil)
             end)
-
-
-            C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
         end
 
-    elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
-        Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
-
-    elseif arg1=='Blizzard_WeeklyRewards' then
-        Init_Blizzard_WeeklyRewards()
-    end
-end)
-
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
+    elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave[addName]=Save
+            WoWToolsSave['Plus_Challenges']=Save
         end
     end
 end)
-
-
-
-
 
 
 

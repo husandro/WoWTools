@@ -123,7 +123,7 @@ local function Init()
     )do
         Load_Addon(nil, name)
     end
-    
+
     WoWTools_TooltipMixin:Init_StatusBar()--生命条提示
     WoWTools_TooltipMixin:Init_Hook()
     WoWTools_TooltipMixin:Init_BattlePet()
@@ -161,29 +161,33 @@ end
 
 
 --Save().WidgetSetID = Save().WidgetSetID or 0
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
-        WoWTools_TooltipMixin.addName= addName
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
+            WoWTools_TooltipMixin.addName= addName
 
-       
-        WoWTools_TooltipMixin:Init_Category()
-        WoWTools_TooltipMixin:Init_WoWHeadText()
 
-        if Save().disabled then
-            Load_Addon= function()end
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-            return
+            WoWTools_TooltipMixin:Init_Category()
+            WoWTools_TooltipMixin:Init_WoWHeadText()
+
+            if Save().disabled then
+                Load_Addon= function()end
+                self:UnregisterEvent(event)
+                return
+            end
+
+            Init()--初始
+        else
+            Load_Addon(arg1)
         end
 
-        Init()--初始
-    else
-        Load_Addon(arg1)
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Tootips']= WoWTools_TooltipMixin.Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['']=Save()
+        end
     end
 end)

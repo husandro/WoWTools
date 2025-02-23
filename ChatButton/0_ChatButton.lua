@@ -13,13 +13,13 @@ local Save={
 
 local addName
 local ChatButton
-local Initializer, Layout
+local Category, Layout
 
 
 
 
 function WoWTools_ChatButtonMixin:Open_SettingsPanel(root, name)
-    WoWTools_MenuMixin:OpenOptions(root, {category=Initializer, name=name or addName})
+    WoWTools_MenuMixin:OpenOptions(root, {category=Category, name=name or addName})
 end
 
 
@@ -229,7 +229,7 @@ local function Init_Panel()
 
     for _, data in pairs (WoWTools_ChatButtonMixin:GetAllAddList()) do
         e.AddPanel_Check({
-            category= Initializer,
+            category= Category,
             name= data.tooltip,
             tooltip= data.name,
             Value= not Save.disabledADD[data.name],
@@ -246,60 +246,59 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave['ChatButton'] or Save
+            if not Save.disabled then
+                ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
+            end
 
+            Save.disabledADD= Save.disabledADD or {}
 
+            addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        Save= WoWToolsSave['ChatButton'] or Save
-        if not Save.disabled then
-            ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
+            Category, Layout= e.AddPanel_Sub_Category({
+                name=addName,
+                disabled=Save.disabled
+            })
+            WoWTools_ChatButtonMixin.Category= Category
+
+            e.AddPanel_Check_Button({
+                checkName= e.onlyChinese and '启用' or ENABLE,
+                GetValue= function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonFunc= function()
+                    Save.Point=nil
+                    if ChatButton then
+                        ChatButton:set_point()
+                    end
+                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                end,
+                tooltip= addName,
+                layout= Layout,
+                category= Category,
+            })
+
+            if not Save.disabled then
+                Init()
+            end
+
+        elseif arg1=='Blizzard_Settings' then
+            Init_Panel()
+            self:UnregisterEvent(event)
         end
 
-        Save.disabledADD= Save.disabledADD or {}
-
-        addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
-
-        Initializer, Layout= e.AddPanel_Sub_Category({
-            name=addName,
-            disabled=Save.disabled
-        })
-        WoWTools_ChatButtonMixin.Category= Initializer
-
-        e.AddPanel_Check_Button({
-            checkName= e.onlyChinese and '启用' or ENABLE,
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end,
-            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-            buttonFunc= function()
-                Save.Point=nil
-                if ChatButton then
-                    ChatButton:set_point()
-                end
-                print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-            end,
-            tooltip= addName,
-            layout= Layout,
-            category= Initializer,
-        })
-
-        if not Save.disabled then
-            Init()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['ChatButton']=Save
         end
-
-    elseif arg1=='Blizzard_Settings' then
-        Init_Panel()
-        if Initializer then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        end
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['ChatButton']=Save
     end
 end)

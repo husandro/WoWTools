@@ -10,29 +10,31 @@ end
 
 local function OnColorSelect(self, r, g, b)
 	local alphaText, a
-		a=(not Save().hide and self.Alpha:IsShown()) and self:GetColorAlpha()
+	a=(not Save().hide and self.Alpha:IsShown()) and self:GetColorAlpha()
 
-		if a then
-			alphaText= format('%.2f', a)
-		else
-			r,g,b,a=1,1,1,1
-		end
+	if a then
+		alphaText= format('%.2f', a)
+	else
+		r,g,b,a=1,1,1,1
+	end
 --透明度值
-		self.alphaText:SetText(alphaText or '')
+	self.alphaText:SetText(alphaText or '')
 --修改材质颜色
-		for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
-			if icon:GetObjectType()=="Texture" then
-				icon:SetVertexColor(r,g,b,a)
-			end
+	for _, icon in pairs({ColorPickerFrame.Border:GetRegions()}) do
+		if icon:GetObjectType()=="Texture" then
+			icon:SetVertexColor(r,g,b,a)
 		end
-		for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
-			if icon:GetObjectType()=="Texture" then
-				icon:SetVertexColor(r,g,b,a)
-			end
+	end
+	for _, icon in pairs({ColorPickerFrame.Header:GetRegions()}) do
+		if icon:GetObjectType()=="Texture" then
+			icon:SetVertexColor(r,g,b,a)
 		end
-		local texture= _G['WoWToolsColorPickerFrameButton']:GetNormalTexture()
-		texture:SetVertexColor(r,g,b)
+	end
+	local texture= _G['WoWToolsColorPickerFrameButton']:GetNormalTexture()
+	texture:SetVertexColor(r,g,b)
 end
+
+
 
 local function Init_Other()
 --修改，透明度值，MouseWheel
@@ -88,60 +90,64 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+			WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or Save()
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1~=id then
-		return
-	end
+			local addName= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER)
+			WoWTools_ColorMixin.addName= addName
 
-	WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or Save()
-	WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER)
+			--添加控制面板
+			e.AddPanel_Check_Button({
+				checkName= addName,
+				GetValue= function() return not Save().disabled end,
+				SetValue= function()
+					Save().disabled= not Save().disabled and true or nil
+					print(
+						WoWTools_Mixin.addName,
+						addName,
+						e.GetEnabeleDisable(not Save().disabled),
+						e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+					)
+				end,
+				buttonText='|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '显示' or SHOW),
+				buttonFunc= function()
+					WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
+				end,
+			})
 
-	--添加控制面板
-	e.AddPanel_Check_Button({
-		checkName= WoWTools_ColorMixin.addName,
-		GetValue= function() return not Save().disabled end,
-		SetValue= function()
-			Save().disabled= not Save().disabled and true or nil
-			print(
-				WoWTools_Mixin.addName,
-				WoWTools_ColorMixin.addName,
-				e.GetEnabeleDisable(not Save().disabled),
-				e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-			)
-		end,
-		buttonText='|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '显示' or SHOW),
-		buttonFunc= function()
-			WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
-		end,
-	})
+			if Save().disabled then
+				self:UnregisterEvent(event)
+				return
+			end
 
-	if Save().disabled then
-		EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-		return
-	end
+			ColorPickerFrame:HookScript('OnShow', function()
+				if Init() then Init=function()end end
+			end)
 
-	ColorPickerFrame:HookScript('OnShow', function()
-		if Init() then Init=function()end end
-	end)
+			if Save().autoShow then
+				C_Timer.After(2, function()
+					WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
+					print(
+						WoWTools_Mixin.addName,
+						WoWTools_ColorMixin.addName,
+						'|cnGREEN_FONT_COLOR:'
+						..(e.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
+						..'|A:colorblind-colorwheel:0:0|a'
+					)
+				end)
+			end
 
-	if Save().autoShow then
-		C_Timer.After(2, function()
-			WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
-			print(
-				WoWTools_Mixin.addName,
-				WoWTools_ColorMixin.addName,
-				'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))..'|A:colorblind-colorwheel:0:0|a'
-			)
-		end)
-	end
+            self:UnregisterEvent(event)
+        end
 
-	EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-		WoWToolsSave['Plus_Color']=WoWTools_ColorMixin.Save
-	end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Color']=Save()
+        end
+    end
 end)

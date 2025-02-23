@@ -223,66 +223,67 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
 
+            WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame')]= nil
+            Save= WoWToolsSave['Other_SpellFrame'] or Save
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
+            addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
 
-        WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame')]= nil
-        Save= WoWToolsSave['Other_SpellFrame'] or Save
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                tooltip= e.onlyChinese and '法术距离, 颜色'
+                        or (
+                            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
 
-        addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
+                    ),
+                Value= not Save.disabled,
+                GetValue=function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                layout= WoWTools_OtherMixin.Layout,
+                category= WoWTools_OtherMixin.Category,
+            })
 
-        --添加控制面板
-        e.AddPanel_Check({
-            name= addName,
-            tooltip= e.onlyChinese and '法术距离, 颜色'
-                    or (
-                        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
+            if Save.disabled then
+                self:UnregisterEvent(event)
+            else
+    --法术按键, 颜色
+                hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
+            end
 
-                ),
-            Value= not Save.disabled,
-            GetValue=function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end,
-            layout= WoWTools_OtherMixin.Layout,
-            category= WoWTools_OtherMixin.Category,
-        })
+        elseif arg1=='Blizzard_PlayerSpells' then--天赋
+            hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
 
-        if Save.disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
---法术按键, 颜色
-            hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
+            Init_Spec_Button()
+
+            hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+                frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
+                if frame.Button.Arrow then--11.1
+                    if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
+                        frame.Button.Arrow:SetVertexColor(1,0,1)
+                        frame.Button.Border:SetVertexColor(1,0,1)
+                    else
+                        frame.Button.Arrow:SetVertexColor(1,1,1)
+                        frame.Button.Border:SetVertexColor(1,1,1)
+                    end
+                end
+            end)
+
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_PlayerSpells' then--天赋
-        hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-
-        Init_Spec_Button()
-
-        hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-            frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-            if frame.Button.Arrow then--11.1
-                if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
-                    frame.Button.Arrow:SetVertexColor(1,0,1)
-                    frame.Button.Border:SetVertexColor(1,0,1)
-                else
-                    frame.Button.Arrow:SetVertexColor(1,1,1)
-                    frame.Button.Border:SetVertexColor(1,1,1)
-                end
-            end
-        end)
-
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Other_SpellFrame']=Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Other_SpellFrame']=Save
+        end
     end
 end)

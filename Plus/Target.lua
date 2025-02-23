@@ -50,8 +50,8 @@ local Save= {
 
 local panel= CreateFrame('Frame')
 
-local TargetFrame
-local QuestFrame
+local targetFrame
+local questFrame
 local IsMeFrame
 local NumFrame
 
@@ -83,49 +83,49 @@ local function get_texture_tab()
         ['common-icon-rotateright']='a',
         ['Adventures-Target-Indicator']='a',
         ['Adventures-Target-Indicator-desat']='a',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Hunters_Mark.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Hunters_Mark.tga']='t',
         ['NPE_ArrowDown']='a',
         ['UI-HUD-MicroMenu-StreamDLYellow-Up']='a',
         ['Interface\\AddOns\\WeakAuras\\Media\\Textures\\targeting-mark.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Reticule.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonReticule.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonRedArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\RedChevronArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PaleRedChevronArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_green.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\arrow_tip_red.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\skull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\circles_target.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\red_star.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\greenarrowtarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\BlueArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\bluearrow1.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\gearsofwar.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\malthael.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewRedArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NewSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\PurpleArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Shield.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\NeonGreenArrow.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_FelFlamingSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedFlamingSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_ShadowFlamingSkull.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenGPS.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedGPS.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteGPS.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_GreenTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_RedTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Towards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_Away.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_SelfAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendTowards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
-        ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Reticule.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\RedArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\NeonReticule.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\NeonRedArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\RedChevronArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\PaleRedChevronArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\arrow_tip_green.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\arrow_tip_red.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\skull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\circles_target.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\red_star.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\greenarrowtarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\BlueArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\bluearrow1.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\gearsofwar.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\malthael.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\NewRedArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\NewSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\PurpleArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Shield.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\NeonGreenArrow.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_FelFlamingSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_RedFlamingSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_ShadowFlamingSkull.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_GreenGPS.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_RedGPS.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_WhiteGPS.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_GreenTarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_RedTarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Q_WhiteTarget.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_Towards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_Away.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_SelfTowards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_SelfAway.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_FriendTowards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_FriendAway.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_FocusTowards.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
+        ['Interface\\AddOns\\WoWTools\\z_Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
     }
     for name, _ in pairs(Save.targetTextureNewTab) do
         if tab[name] then
@@ -164,28 +164,28 @@ end
 --指示目标 Blizzard_NamePlates.xml
 --HealthBarsContainer castBar WidgetContainer
 function Init_Target()
-    if TargetFrame then
-        TargetFrame:UnregisterAllEvents()
+    if targetFrame then
+        targetFrame:UnregisterAllEvents()
     end
     if not Save.target then
-        if TargetFrame then
-            TargetFrame:SetShown(false)
+        if targetFrame then
+            targetFrame:SetShown(false)
         end
     end
 
-    if not TargetFrame then
-        TargetFrame= CreateFrame('Frame')
-        TargetFrame.Texture= TargetFrame:CreateTexture(nil, 'BACKGROUND')
-        TargetFrame.Texture:SetAllPoints(TargetFrame)
+    if not targetFrame then
+        targetFrame= CreateFrame('Frame')
+        targetFrame.Texture= targetFrame:CreateTexture(nil, 'BACKGROUND')
+        targetFrame.Texture:SetAllPoints(targetFrame)
 
-        function TargetFrame:set_color(isInCombat)
+        function targetFrame:set_color(isInCombat)
             if isInCombat then
                 self.Texture:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
             else
                 self.Texture:SetVertexColor(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
             end
         end
-        function TargetFrame:set_texture()
+        function targetFrame:set_texture()
             self:SetSize(Save.w, Save.h)--设置大小
             local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.targetTextureName)--设置，图片
             if isAtlas then
@@ -210,7 +210,7 @@ function Init_Target()
             self:set_target()
         end
 
-        function TargetFrame:set_target()
+        function targetFrame:set_target()
             local plate= C_NamePlate.GetNamePlateForUnit("target", issecure())
             if not plate or not plate.UnitFrame then
                 self:SetShown(false)
@@ -270,11 +270,11 @@ function Init_Target()
 
         hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
             if Save.TargetFramePoint=='TOP' then
-                TargetFrame:set_target()
+                targetFrame:set_target()
             end
         end)
 
-        TargetFrame:SetScript("OnEvent", function(self, event, arg1)
+        targetFrame:SetScript("OnEvent", function(self, event, arg1)
             if event=='PLAYER_TARGET_CHANGED'
                 or event=='RAID_TARGET_UPDATE'
                 or event=='UNIT_FLAGS'
@@ -291,18 +291,18 @@ function Init_Target()
             end
         end)
     end
-    TargetFrame:SetShown(false)
+    targetFrame:SetShown(false)
 
-    TargetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-    TargetFrame:RegisterEvent('CVAR_UPDATE')
-    TargetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
-    TargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
-    TargetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
+    targetFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    targetFrame:RegisterEvent('CVAR_UPDATE')
+    targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
+    targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
+    targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
     if Save.targetInCombat then
-        TargetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
-        TargetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
+        targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
+        targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
-    TargetFrame:set_texture()
+    targetFrame:set_texture()
 end
 
 
@@ -343,7 +343,7 @@ local function Init_Num()
     end
     --怪物数量
     if not NumFrame then
-        if Save.creatureUIParent or not TargetFrame then
+        if Save.creatureUIParent or not targetFrame then
             NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size={18, 18}, icon='hide'})
 
             NumFrame.Text= WoWTools_LabelMixin:Create(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
@@ -431,7 +431,7 @@ local function Init_Num()
             NumFrame:SetScript("OnEnter", NumFrame.set_tooltip)
         else
             NumFrame= CreateFrame('Frame')
-            NumFrame.Text= WoWTools_LabelMixin:Create(TargetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            NumFrame.Text= WoWTools_LabelMixin:Create(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
             function NumFrame:set_text_point()
                 self.Text:ClearAllPoints()
                 if Save.TargetFramePoint=='LEFT' then
@@ -535,16 +535,16 @@ end
 --#########
 local function Init_Quest()
     if not Save.quest then
-        if QuestFrame then
-            QuestFrame:UnregisterAllEvents()
-            QuestFrame:rest_all()
+        if questFrame then
+            questFrame:UnregisterAllEvents()
+            questFrame:rest_all()
         end
         return
     end
-    if not QuestFrame then
-        QuestFrame= CreateFrame('Frame')
-        QuestFrame.THREAT_TOOLTIP= WoWTools_TextMixin:Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
-        function QuestFrame:find_text(text)
+    if not questFrame then
+        questFrame= CreateFrame('Frame')
+        questFrame.THREAT_TOOLTIP= WoWTools_TextMixin:Magic(THREAT_TOOLTIP)--:gsub('%%d', '%%d+')--"%d%% 威胁"
+        function questFrame:find_text(text)
             if text and not text:find(self.THREAT_TOOLTIP) then
                 if text:find('(%d+/%d+)') then
                     local min, max= text:match('(%d+)/(%d+)')
@@ -562,7 +562,7 @@ local function Init_Quest()
                 end
             end
         end
-        function QuestFrame:get_unit_text(unit)--取得，内容 GameTooltip.lua --local questID= line and line.id
+        function questFrame:get_unit_text(unit)--取得，内容 GameTooltip.lua --local questID= line and line.id
             if not UnitIsPlayer(unit) then
                 local type = UnitClassification(unit)
                 if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
@@ -592,8 +592,8 @@ local function Init_Quest()
                 return text
             end
         end
-        function QuestFrame:set_quest_text(plate, unit)--设置，内容
-            local plate= unit and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
+        function questFrame:set_quest_text(plate, unit)--设置，内容
+            plate= unit and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
             local frame= plate and plate.UnitFrame
             if not frame then
                 return
@@ -607,22 +607,22 @@ local function Init_Quest()
                 frame.questProgress:SetText(text or '')
             end
         end
-        function QuestFrame:hide_plate(plate)--移除，内容
+        function questFrame:hide_plate(plate)--移除，内容
             if plate and plate.UnitFrame and plate.UnitFrame.questProgress then--任务
                 plate.UnitFrame.questProgress:SetText('')
             end
         end
-        function QuestFrame:rest_all()--移除，所有内容
+        function questFrame:rest_all()--移除，所有内容
             for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-                QuestFrame:hide_plate(plate)
+                self:hide_plate(plate)
             end
         end
-        function QuestFrame:check_all()--检查，所有
+        function questFrame:check_all()--检查，所有
             for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 self:set_quest_text(plate, nil)
             end
         end
-        function QuestFrame:set_event()--注册，事件
+        function questFrame:set_event()--注册，事件
             self:UnregisterAllEvents()
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -647,7 +647,7 @@ local function Init_Quest()
                 self:rest_all()
             end
         end
-        QuestFrame:SetScript("OnEvent", function(self, event, arg1)
+        questFrame:SetScript("OnEvent", function(self, event, arg1)
             if event=='PLAYER_ENTERING_WORLD' then
                 self:set_event()--注册，事件
 
@@ -659,7 +659,7 @@ local function Init_Quest()
             end
         end)
     end
-    QuestFrame:set_event()--注册，事件
+    questFrame:set_event()--注册，事件
 end
 
 
@@ -853,8 +853,8 @@ local function Init()
         if IsMeFrame then
             IsMeFrame:hide_plate(plate)
         end
-        if QuestFrame then
-            QuestFrame:hide_plate(plate)
+        if questFrame then
+            questFrame:hide_plate(plate)
         end
     end)
     set_All_Init()
@@ -1543,79 +1543,74 @@ end
 
 
 
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
 
+            if WoWToolsSave[TARGET]  then
+                Save= WoWToolsSave[TARGET]
+                WoWToolsSave[TARGET]= nil
 
+                Save.targetTextureTab= nil
+                Save.targetTextureNewTab= Save.targetTextureNewTab or {}
 
+                Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
+                Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
+                Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
 
+                Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
+                Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
+                Save.unitIsMeSize= Save.unitIsMeSize or 12
+                Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
+                Save.unitIsMeX= Save.unitIsMeX or 0
+                Save.unitIsMeY= Save.unitIsMeY or -2
+                Save.unitIsMeColor= Save.unitIsMeColor or {r=1,g=1,b=1,a=1}
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
+                Save.scale= Save.scale or 1.5
+                Save.elapsed= Save.elapsed or 0.5
 
-        if WoWToolsSave[TARGET]  then
-            Save= WoWToolsSave[TARGET]
-            WoWToolsSave[TARGET]= nil
+                Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
+                WoWToolsSave[TARGET]=nil
+            else
+                Save= WoWToolsSave['Plus_Target'] or Save
+            end
 
-            Save.targetTextureTab= nil
-            Save.targetTextureNewTab= Save.targetTextureNewTab or {}
+            addName= '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET)
 
-            Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
-            Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
-            Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
+            --添加控制面板
+            e.AddPanel_Sub_Category({
+                name= addName,
+                frame= self,
+                disabled= Save.disabled
+            })
 
-            Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
-            Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
-            Save.unitIsMeSize= Save.unitIsMeSize or 12
-            Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
-            Save.unitIsMeX= Save.unitIsMeX or 0
-            Save.unitIsMeY= Save.unitIsMeY or -2
-            Save.unitIsMeColor= Save.unitIsMeColor or {r=1,g=1,b=1,a=1}
+            e.ReloadPanel({panel=self, addName= addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+                disabledfunc=function()
+                    Save.disabled= not Save.disabled and true or nil
+                    if not targetFrame and not Save.disabled  then
+                        set_Option()
+                        Init()
+                    end
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+                end,
+                clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
+            )
 
-            Save.scale= Save.scale or 1.5
-            Save.elapsed= Save.elapsed or 0.5
+            if not Save.disabled then
+                Init()
+            end
 
-            Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
-            WoWToolsSave[TARGET]=nil
-        else
-            Save= WoWToolsSave['Plus_Target'] or Save
+        elseif arg1=='Blizzard_Settings' then
+            set_Option()
+            self:UnregisterEvent(event)
+
         end
 
-        addName= '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET)
-
-        --添加控制面板
-        e.AddPanel_Sub_Category({
-            name= addName,
-            frame= panel,
-            disabled= Save.disabled
-        })
-
-        e.ReloadPanel({panel=panel, addName= addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-            disabledfunc=function()
-                Save.disabled= not Save.disabled and true or nil
-                if not TargetFrame and not Save.disabled  then
-                    set_Option()
-                    Init()
-                end
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
-            end,
-            clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
-        )
-
-        if Save.disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            Init()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Target']=Save
         end
-    elseif arg1=='Blizzard_Settings' then
-        set_Option()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
     end
 end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Target']=Save
-    end
-end)
-
-
-

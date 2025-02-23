@@ -1,9 +1,9 @@
-local e= select(2, ...)
+if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
+    return
+end
 
 
-
-
-hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', function(frame)
+local function Set_Update(frame)
     if not frame:GetView() then
         return
     end
@@ -39,7 +39,7 @@ hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', function(fram
             btn.IsRefundable:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(e.onlyChinese and '可以退款' or PLUNDERSTORE_REFUND_BUTTON_TEXT, WoWTools_Mixin.addName)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '可以退款' or PLUNDERSTORE_REFUND_BUTTON_TEXT, WoWTools_Mixin.addName)
                 GameTooltip:Show()
             end)
         end
@@ -52,11 +52,11 @@ hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', function(fram
         )
         btn.IsRefundable:SetShown(isRefundable)
     end
-end)
+end
 
 
 function WoWTools_AuctionHouseMixin:Init_AccountStore()
     if AccountStoreFrame then
-        Init()
+        hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', Set_Update)
     end
 end

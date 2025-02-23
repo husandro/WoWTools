@@ -11,7 +11,7 @@ WoWTools_GossipMixin= {
     gossipOption={--gossipID= text
         --[123201]=2,--跳过，任务
         [123176]=2,--跳过，去11.0地图任务
-        
+
     },
     choice={},--PlayerChoiceFrame
     movie={},--电影
@@ -99,60 +99,66 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1 == id then
 
+            WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or Save()
 
+            local addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
+            WoWTools_GossipMixin.addName= addName
 
+            WoWTools_GossipMixin.addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'
+                ..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1 == id then
+             --添加控制面板
+            e.AddPanel_Check_Button({
+                 checkName= addName,
+                 GetValue= function() return not Save().disabled end,
+                 SetValue= function()
+                     Save().disabled = not Save().disabled and true or nil
+                     print(WoWTools_Mixin.addName, addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                 end,
+                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                 buttonFunc= function()
+                     Save().point=nil
+                     local btn= WoWTools_GossipMixin.GossipButton
+                     if btn then
+                        btn:ClearAllPoints()
+                        btn:set_Point()
+                     end
+                     print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                 end,
+                 tooltip= addName,
+                 layout= nil,
+                 category= nil,
+             })
 
-        WoWTools_GossipMixin.Save= WoWToolsSave['Plus_Gossip'] or Save()
+            if Save().disabled then
+                self:UnregisterEvent(event)
+            else
+                Init()
+            end
 
-        WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'
-            ..(e.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
+        elseif arg1=='Blizzard_PlayerChoice' then
+            WoWTools_GossipMixin:Init_PlayerChoice()
+            if C_AddOns.IsAddOnLoaded('Blizzard_DelvesDifficultyPicker') then
+                self:UnregisterEvent(event)
+            end
 
-        WoWTools_GossipMixin.addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'
-            ..(e.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
-
-         --添加控制面板
-        e.AddPanel_Check_Button({
-             checkName= WoWTools_GossipMixin.addName,
-             GetValue= function() return not Save().disabled end,
-             SetValue= function()
-                 Save().disabled = not Save().disabled and true or nil
-                 print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
-             end,
-             buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-             buttonFunc= function()
-                 Save().point=nil
-                 local btn= WoWTools_GossipMixin.GossipButton
-                 if btn then
-                    btn:ClearAllPoints()
-                    btn:set_Point()
-                 end
-                 print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-             end,
-             tooltip= WoWTools_GossipMixin.addName,
-             layout= nil,
-             category= nil,
-         })
-
-        if Save().disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-        else
-            Init()
+        elseif arg1=='Blizzard_DelvesDifficultyPicker' then--地下堡
+            WoWTools_GossipMixin:Init_Delves()
+            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
+                self:UnregisterEvent(event)
+            end
         end
 
-    elseif arg1=='Blizzard_PlayerChoice' then
-        WoWTools_GossipMixin:Init_PlayerChoice()
-
-    elseif arg1=='Blizzard_DelvesDifficultyPicker' then--地下堡
-        WoWTools_GossipMixin:Init_Delves()
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Gossip']= Save()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Gossip']=Save()
+        end
     end
 end)

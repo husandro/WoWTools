@@ -10,7 +10,7 @@ end
 local wowheadText= 'https://www.wowhead.com/%s=%d'
 local raiderioText= 'https://raider.io/characters/%s/%s/%s'
 
-local wowheadIcon= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\Wowhead.tga:0|t'
+local wowheadIcon= '|TInterface\\AddOns\\WoWTools\\z_Sesource\\Texture\\Wowhead.tga:0|t'
 
 
 --################

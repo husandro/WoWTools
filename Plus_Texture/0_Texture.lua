@@ -156,7 +156,7 @@ function WoWTools_PlusTextureMixin:SetSearchBox(frame, tab)
     end
     tab= tab or {}
     local alpha= tab.alpha or true
-    
+
     self:SetAlphaColor(frame.Middle, nil, nil, alpha)
     self:SetAlphaColor(frame.Left, nil, nil, alpha)
     self:SetAlphaColor(frame.Right, nil, nil, alpha)
@@ -359,31 +359,35 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1== id then
+            WoWTools_PlusTextureMixin.Save= WoWToolsSave['Plus_Texture'] or Save()
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1== id then
-        WoWTools_PlusTextureMixin.Save= WoWToolsSave['Plus_Texture'] or Save()
+            local addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+            WoWTools_PlusTextureMixin.addName= addName
 
-        WoWTools_PlusTextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+            WoWTools_PlusTextureMixin:Init_Category()
 
-        WoWTools_PlusTextureMixin:Init_Category()
+            if Save().disabled then
+                WoWTools_PlusTextureMixin:Blizzard_Settings()
+                self:UnregisterEvent(event)
+            else
+                Init()
+            end
 
-        if Save().disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+        elseif arg1=='Blizzard_Settings' then
+            WoWTools_PlusTextureMixin:Blizzard_Settings()
         else
-            Init()
+            WoWTools_PlusTextureMixin:Set_Event(arg1)
         end
 
-    elseif arg1=='Blizzard_Settings' then
-        WoWTools_PlusTextureMixin:Blizzard_Settings()
-    else
-        WoWTools_PlusTextureMixin:Set_Event(arg1)
-    end
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Texture']= Save()
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Texture']=Save()
+        end
     end
 end)

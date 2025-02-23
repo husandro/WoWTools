@@ -155,12 +155,10 @@ local function Init_Add()
     if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
         Init_Options()
     else
-        local frame= CreateFrame('Frame')
-        frame:RegisterEvent('ADDON_LOADED')
-        frame:SetScript('OnEvent', function(self, _, arg1)
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
             if arg1=='Blizzard_Settings' then
                 Init_Options()
-                self:UnregisterEvent('ADDON_LOADED')
+                EventRegistry:UnregisterCallback(arg1, owner)
             end
         end)
     end

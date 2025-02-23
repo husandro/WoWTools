@@ -40,8 +40,9 @@ WoWTools_PetBattleMixin={
         }
     },
 }
-
-
+local function Save()
+    return WoWTools_PetBattleMixin.Save
+end
 
 
 
@@ -152,60 +153,65 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+
+            WoWToolsSave[PET_BATTLE_COMBAT_LOG]=nil
+            WoWToolsSave['Plus_PetBattles']= nil
+            WoWToolsSave['Plus_PetBattle']=nil
+            WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattle2'] or Save()
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1==id then
+            WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
+            WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
+            WoWTools_PetBattleMixin.addName4= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物类型' or PET_FAMILIES)
+            WoWTools_PetBattleMixin.addName6= '|A:plunderstorm-icon-offensive:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
 
-        WoWToolsSave[PET_BATTLE_COMBAT_LOG]=nil
-        WoWToolsSave['Plus_PetBattles']= nil
-        WoWToolsSave['Plus_PetBattle']=nil
-        WoWTools_PetBattleMixin.Save= WoWToolsSave['Plus_PetBattle2'] or WoWTools_PetBattleMixin.Save
+            WoWTools_PetBattleMixin:Init_Options()
 
-        if WoWTools_PetBattleMixin.Save.disabled then
-            EventRegistry:UnregisterCallback('PET_BATTLE_OPENING_DONE', owner)
-            return
-        end
+            if Save().disabled then
+                self:UnregisterEvent(event)
+                WoWTools_PetBattleMixin:Set_Options()
 
-        WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
-        WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
-        WoWTools_PetBattleMixin.addName4= '|A:WildBattlePetCapturable:0:0|a'..(e.onlyChinese and '宠物类型' or PET_FAMILIES)
-        WoWTools_PetBattleMixin.addName6= '|A:plunderstorm-icon-offensive:0:0|a'..(e.onlyChinese and '技能按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_BATTLE_ABILITIES_LABEL, 'Button'))
+            else
+                WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
 
-        WoWTools_PetBattleMixin:Init_Options()
+                if C_PetBattles.IsInBattle() then
+                    Init()
+                else
+                    self:RegisterEvent('PET_BATTLE_OPENING_DONE')
+                end
+            end
 
-       
-        WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
-
-        if C_PetBattles.IsInBattle() then
-            Init()
-        else
-            EventRegistry:RegisterFrameEventAndCallback('PET_BATTLE_OPENING_DONE', function(owner2)
-                Init()
-                EventRegistry:UnregisterCallback('PET_BATTLE_OPENING_DONE', owner2)
+        elseif arg1=='Blizzard_Collections' then
+            PetJournal:HookScript('OnShow', function()
+                WoWTools_PetBattleMixin:TypeButton_SetShown()
             end)
+            PetJournal:HookScript('OnHide', function()
+                WoWTools_PetBattleMixin:TypeButton_SetShown()
+            end)
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                self:UnregisterEvent(event)
+            end
+
+        elseif arg1=='Blizzard_Settings' then
+            WoWTools_PetBattleMixin:Set_Options()
+            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                self:UnregisterEvent(event)
+            end
         end
 
-    elseif arg1=='Blizzard_Collections' then
-        if WoWTools_PetBattleMixin.Save.disabled then
-            return
+    elseif event=='PET_BATTLE_OPENING_DONE' then
+        Init()
+        self:UnregisterEvent(event)
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_PetBattle2']= Save()
         end
-
-        PetJournal:HookScript('OnShow', function()
-            WoWTools_PetBattleMixin:TypeButton_SetShown()
-        end)
-        PetJournal:HookScript('OnHide', function()
-            WoWTools_PetBattleMixin:TypeButton_SetShown()
-        end)
-
-    elseif arg1=='Blizzard_Settings' then
-        WoWTools_PetBattleMixin:Set_Options()
     end
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-        WoWToolsSave['Plus_PetBattle2']= WoWTools_PetBattleMixin.Save
-	end
 end)

@@ -2,7 +2,7 @@
 local id, e= ...
 local Save={}
 local SpellTab={}--e.ChallengesSpellTabs
-local Initializer
+local addName
 
 --[[local function Vstr(t)--垂直文字
     local len = select(2, t:gsub("[^\128-\193]", ""))
@@ -283,7 +283,7 @@ local function Init_All_Flyout()
             end
 
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('flyoutID '..self.flyoutID, Initializer:GetName())
+            e.tips:AddDoubleLine('flyoutID '..self.flyoutID, addName)
             e.tips:Show()
         end)
 
@@ -325,54 +325,56 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            Save= WoWToolsSave['Other_SpellFlyout'] or Save
 
+            addName= '|A:common-icon-backarrow:0:0|a'..(e.onlyChinese and '法术弹出框' or 'SpellFlyout')
 
-    
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        Save= WoWToolsSave['Other_SpellFlyout'] or Save
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                Value= not Save.disabled,
+                GetValue=function() return not Save.disabled end,
+                SetValue= function()
+                    Save.disabled= not Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end,
+                layout= WoWTools_OtherMixin.Layout,
+                category= WoWTools_OtherMixin.Category,
+            })
 
-        --添加控制面板
-        Initializer= e.AddPanel_Check({
-            name= '|A:common-icon-backarrow:0:0|a'..(e.onlyChinese and '法术弹出框' or 'SpellFlyout'),
-            Value= not Save.disabled,
-            GetValue=function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled= not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, Initializer:GetName(), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end,
-            layout= WoWTools_OtherMixin.Layout,
-            category= WoWTools_OtherMixin.Category,
-        })
-
-        if not Save.disabled then
---挑战传送门数据 --Flyout, 挑战传送门数据e.ChallengesSpellTabs，仅限 不是中文
-            if e.onlyChinese then
-                --C_Timer.After(4, function()
-                for _, info in pairs(e.ChallengesSpellTabs or {}) do
-                    if info.spell and info.name then--local name= EJ_GetInstanceInfo(info.ins)
-                        SpellTab[info.spell]=info.name
+            if Save.disabled then
+                self:UnregisterEvent(event)
+            else
+                if e.onlyChinese then
+                    for _, info in pairs(e.ChallengesSpellTabs or {}) do
+                        if info.spell and info.name then
+                            SpellTab[info.spell]=info.name
+                        end
                     end
                 end
+
+                if SpellFlyoutPopupButtonMixin then--11.1
+                    hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+                else
+                    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+                end
+                hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
             end
 
-            if SpellFlyoutPopupButtonMixin then--11.1
-                hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
-            else
-                hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
-            end
-            hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
+        elseif arg1=='Blizzard_PlayerSpells' then--天赋
+            Init_All_Flyout()
+            self:UnregisterEvent(event)
         end
 
-    elseif arg1=='Blizzard_PlayerSpells' then--天赋
-        Init_All_Flyout()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Other_SpellFlyout']=Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Other_SpellFlyout']=Save
+        end
     end
 end)

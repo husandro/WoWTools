@@ -31,13 +31,10 @@ end
 
 local function Setup(name)
     local func= WoWTools_MoveMixin.ADDON_LOADED[name]
-    if not func then
-        return
-    end
-    do
+    if func then
         func()
+        WoWTools_MoveMixin.ADDON_LOADED[name]=nil
     end
-    WoWTools_MoveMixin.ADDON_LOADED[name]=nil
 end
 
 
@@ -63,25 +60,35 @@ end
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
 
-        WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or WoWTools_MoveMixin.Save
-        WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE)
-        WoWTools_MoveMixin:Init_Options()
 
-        if Save().disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+
+            WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or WoWTools_MoveMixin.Save
+
+            local addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE)
+            WoWTools_MoveMixin.addName= addName
+
+            WoWTools_MoveMixin:Init_Options()
+
+            if Save().disabled then
+                self:UnregisterEvent(event)
+            else
+                Init()--初始, 移动
+            end
+
         else
-            Init()--初始, 移动
+            Setup(arg1)
         end
-    else
-        Setup(arg1)
-    end
-end)
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_Move']= WoWTools_MoveMixin.Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Move']= WoWTools_MoveMixin.Save
+        end
     end
 end)

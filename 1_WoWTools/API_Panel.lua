@@ -1,6 +1,6 @@
 local e= select(2, ...)
 --插件名称
-local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
+local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\z_Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
 
@@ -284,7 +284,7 @@ function e.AddPanel_Check(tab, parentInitializer)
         Set_VariableIndex(),
         Settings.VarType.Boolean,
         tab.name,
-        tab.value or tab.GetValue(),
+        tab.GetValue() or tab.value,
         tab.GetValue,
         tab.SetValue or tab.func
     )

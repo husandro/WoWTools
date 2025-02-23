@@ -1,22 +1,21 @@
+--梦境之种
 if PlayerGetTimerunningSeasonID() then
     return
 end
-
 
 local id, e = ...
 if e.Player.level<70 then
     return
 end
 
-local addName
 local Save={
     disabled= not e.Player.husandro,
     scale= e.Player.husandro and 0.85 or 1,
 }
---梦境之种
 
+local addName
 local Button
-
+local CurrencyID= 2650
 local ItemTab={
     208066,--小小的梦境之种
     208067,--饱满的梦境之种
@@ -27,10 +26,17 @@ for _, itemID in pairs(ItemTab) do
     e.LoadData({id=itemID, type='item'})
 end
 
-local CurrencyID= 2650
+
+
+
+
+
+
+
+
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=22, icon='hide'})
 
     function Button:set_Point()
         if not self:CanChangeAttribute() then
@@ -265,57 +271,58 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWToolsSave['DormantSeeds']= nil
+            Save= WoWToolsSave['Other_DormantSeeds'] or Save
 
+            if not PlayerGetTimerunningSeasonID() then
+                addName= '|T656681:0|t'..(e.onlyChinese and '梦境之种' or 'DormantSeeds')
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1~=id then
-        return
-    end
+                e.AddPanel_Check_Button({
+                    checkName= addName,
+                    GetValue= function() return not Save.disabled end,
+                    SetValue= function()
+                        Save.disabled = not Save.disabled and true or nil
+                        if Button then
+                            Button:set_Shown(not Save.disabled)
+                            Button:set_button(not Save.disabled)
+                            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        elseif not Save.disabled then
+                            if Init() then Init=function()end end
+                        end
+                    end,
+                    buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                    buttonFunc= function()
+                        Save.Point=nil
+                        if Button then
+                            Button:set_Point()
+                        end
+                        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    end,
+                    tooltip=function()
+                        return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName
+                    end,
+                    layout= WoWTools_OtherMixin.Layout,
+                    category= WoWTools_OtherMixin.Category,
+                })
 
-    WoWToolsSave['DormantSeeds']= nil
-    Save= WoWToolsSave['Other_DormantSeeds'] or Save
-
-    if not PlayerGetTimerunningSeasonID() then
-        addName= '|T656681:0|t'..(e.onlyChinese and '梦境之种' or 'DormantSeeds')
-
-        e.AddPanel_Check_Button({
-            checkName= addName,
-            GetValue= function() return not Save.disabled end,
-            SetValue= function()
-                Save.disabled = not Save.disabled and true or nil
-                if Button then
-                    Button:set_Shown(not Save.disabled)
-                    Button:set_button(not Save.disabled)
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                elseif not Save.disabled then
+                if not Save.disabled then
                     if Init() then Init=function()end end
                 end
-            end,
-            buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
-            buttonFunc= function()
-                Save.Point=nil
-                if Button then
-                    Button:set_Point()
-                end
-                print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
-            end,
-            tooltip=function()
-                return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName
-            end,
-            layout= WoWTools_OtherMixin.Layout,
-            category= WoWTools_OtherMixin.Category,
-        })
+            end
 
+            self:UnregisterEvent(event)
+        end
 
-        if not Save.disabled then
-            if Init() then Init=function()end end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Other_DormantSeeds']=Save
         end
     end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Other_DormantSeeds']=Save
-    end
-end)

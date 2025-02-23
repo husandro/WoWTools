@@ -223,51 +223,54 @@ local function Init()--SendMailNameEditBox
 
 --物品快捷键
     WoWTools_MailMixin:Init_Fast_Button()
-
-    return true
 end
 
 
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("MAIL_SHOW", function(owner)
-	if not Save().disabled then
-        Init()
+
+
+
+
+
+
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            WoWTools_MailMixin.Save= WoWToolsSave['Plus_Mail'] or Save()
+
+            local addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
+            WoWTools_MailMixin.addName= addName
+
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                end
+            })
+            if not Save().disabled then
+                Is_Sandro()
+                self:RegisterEvent('MAIL_SHOW')
+            end
+
+            self:UnregisterEvent(event)
+        end
+
+    elseif event=='MAIL_SHOW' then
         set_to_send()
-        EventRegistry:UnregisterCallback('MAIL_SHOW', owner)
+        Init()
+        self:UnregisterEvent(event)
+
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_Mail']=Save()
+        end
     end
 end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1~=id then
-		return
-	end
-
-    WoWTools_MailMixin.Save= WoWToolsSave['Plus_Mail'] or Save()
-    WoWTools_MailMixin.addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
-
-    Is_Sandro()
-
-    --添加控制面板
-    e.AddPanel_Check({
-        name= WoWTools_MailMixin.addName,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_MailMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-        WoWToolsSave['Plus_Mail']= Save()
-	end
-end)
-
-
-

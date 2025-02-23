@@ -1,6 +1,4 @@
 local id, e = ...
-local addName
-
 WoWTools_TokensMixin={
 Save={
 	--notPlus=true,
@@ -20,9 +18,6 @@ Save={
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
 	--showID=true,--显示ID
 },
-Button=nil,
-TrackButton=nil,
-MaxFrame=nil
 }
 local function Save()
 	return WoWTools_TokensMixin.Save
@@ -32,12 +27,6 @@ function WoWTools_TokensMixin:UpdateTokenFrame()
 	e.call(TokenFrame.Update, TokenFrame)
 	e.call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
 end
-
-
-
-
-
-
 
 
 
@@ -72,50 +61,46 @@ end
 
 
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+			WoWTools_TokensMixin.Save= WoWToolsSave['Currency2'] or Save()
 
+			local addName= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
+			WoWTools_TokensMixin.addName= addName
 
+			--添加控制面板
+			e.AddPanel_Check({
+				name= addName,
+				GetValue= function() return not Save().disabled end,
+				SetValue= function()
+					Save().disabled= not Save().disabled and true or nil
+					print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+				end
+			})
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-	if arg1==id then
-		WoWTools_TokensMixin.Save= WoWToolsSave['Currency2'] or Save()
-
-		for itemID, _ in pairs(Save().item) do
-			e.LoadData({id=itemID, type='item'})--加载 item quest spell
-		end
-
-		addName= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
-		WoWTools_TokensMixin.addName= addName
-
-		--添加控制面板
-		e.AddPanel_Check({
-			name= addName,
-			GetValue= function() return not Save().disabled end,
-			SetValue= function()
-				Save().disabled= not Save().disabled and true or nil
-				print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+			if Save().disabled then
+				self:UnregisterEvent(event)
+			else
+				for itemID, _ in pairs(Save().item) do
+					e.LoadData({id=itemID, type='item'})--加载 item quest spell
+				end
+				Init()
 			end
-		})
 
-		if Save().disabled then
-			EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-		else
-			Init()
+		elseif arg1=='Blizzard_ItemInteractionUI' then
+			hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
+				WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)
+			end)
+			self:UnregisterEvent(event)
 		end
 
-
-	elseif arg1=='Blizzard_ItemInteractionUI' then
-		hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
-			WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)
-		end)
-		if addName then
-			EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-		end
-	end
-end)
-
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-	if not e.ClearAllSave then
-		WoWToolsSave['Currency2']= WoWTools_TokensMixin.Save
-	end
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Currency2']= Save()
+        end
+    end
 end)

@@ -1491,6 +1491,7 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
+panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1 == id then
@@ -1502,15 +1503,21 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 Init()
             else
                 DEFAULT_CHAT_FRAME.ADD= nil
-                self:UnregisterAllEvents()
+                Init_Panel()
+                self:UnregisterEvent(event)
             end
-            self:RegisterEvent('PLAYER_LOGOUT')
 
         elseif arg1=='Blizzard_Settings' then
-            Init_Panel()--设置控制面板
+            Init_Panel()
+            if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+                self:UnregisterEvent(event)
+            end
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
             Init_Blizzard_DebugTools()
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event=='PLAYER_LOGOUT' then

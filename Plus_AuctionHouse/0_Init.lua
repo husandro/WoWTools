@@ -48,51 +48,54 @@ local function Save()
     return WoWTools_AuctionHouseMixin.Save
 end
 
-
-
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1==id then
-        if WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE] then
-            WoWTools_AuctionHouseMixin.Save= WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]
-            WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]= nil
-        else
-            WoWTools_AuctionHouseMixin.Save= WoWToolsSave['Plus_AuctionHouse'] or Save()
-        end
-
-        if PlayerGetTimerunningSeasonID() then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-            return
-        end
-
-        local addName= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or BUTTON_LAG_AUCTIONHOUSE)
-        WoWTools_AuctionHouseMixin.addName= addName
-
-        --添加控制面板
-        e.AddPanel_Check({
-            name= addName,
-            Value= not Save().disabled,
-            GetValue= function() return not Save().disabled end,
-            SetValue= function()
-                Save().disabled= not Save().disabled and true or nil
-                print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("PLAYER_LOGOUT")
+panel:SetScript("OnEvent", function(self, event, arg1)
+    if event == "ADDON_LOADED" then
+        if arg1==id then
+            if WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE] then
+                WoWTools_AuctionHouseMixin.Save= WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]
+                WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]= nil
+            else
+                WoWTools_AuctionHouseMixin.Save= WoWToolsSave['Plus_AuctionHouse'] or Save()
             end
-        })
 
-        if Save().disabled then
-            EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+            if PlayerGetTimerunningSeasonID() then
+                self:UnregisterEvent(event)
+                return
+            end
+
+            local addName= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or BUTTON_LAG_AUCTIONHOUSE)
+            WoWTools_AuctionHouseMixin.addName= addName
+
+            --添加控制面板
+            e.AddPanel_Check({
+                name= addName,
+                Value= not Save().disabled,
+                GetValue= function() return not Save().disabled end,
+                SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            })
+
+            if Save().disabled then
+                self:UnregisterEvent(event)
+            else
+
+                WoWTools_AuctionHouseMixin:Init_AccountStore()
+            end
+
+        elseif arg1=='Blizzard_AuctionHouseUI' then
+            WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
+            WoWTools_AuctionHouseMixin:Init_AllAuctions()
+            WoWTools_AuctionHouseMixin:Init_Sell()
+            self:UnregisterEvent(event)
         end
-
-    elseif arg1=='Blizzard_AuctionHouseUI' then
-        WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
-        WoWTools_AuctionHouseMixin:Init_AllAuctions()
-        WoWTools_AuctionHouseMixin:Init_Sell()
-        WoWTools_AuctionHouseMixin:Init_AccountStore()
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end
-end)
-
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
-    if not e.ClearAllSave then
-        WoWToolsSave['Plus_AuctionHouse']= WoWTools_AuctionHouseMixin.Save
+    elseif event == "PLAYER_LOGOUT" then
+        if not e.ClearAllSave then
+            WoWToolsSave['Plus_AuctionHouse']=Save()
+        end
     end
 end)
