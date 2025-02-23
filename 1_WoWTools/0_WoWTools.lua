@@ -1,5 +1,5 @@
 local e = select(2, ...)
-e.addName= '|TInterface\\AddOns\\WoWTools\\z_Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
+e.addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r'
 
 WoWTools_Mixin={
     addName= e.addName,
@@ -102,7 +102,7 @@ end
 e.Icon={
     --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=e.Player.guid , race=nil , sex=e.Player.sex , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
-    icon2='|TInterface\\AddOns\\WoWTools\\z_Sesource\\Texture\\WoWtools.tga:0|t',
+    icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t',
     disabled='talents-button-reset',
     select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
     right='|A:NPE_RightClick:0:0|a',

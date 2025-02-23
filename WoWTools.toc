@@ -8,7 +8,7 @@
 ## X-Wago-ID: baND1J6o
 ## X-Curse-Project-ID: 715192
 ## X-Category: Plugins
-## IconTexture: Interface\AddOns\WoWTools\z_Sesource\Texture\WoWtools.tga
+## IconTexture: Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga
 ## IconAtlas: orderhalltalents-done-glow
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
@@ -18,7 +18,7 @@
 
 
 ##调用库，不能删除
-z_Sesource\Libs\Init.xml
+Sesource\Libs\Init.xml
 
 ##主要function，不能删除
 1_WoWTools\0_WoWTools.lua
