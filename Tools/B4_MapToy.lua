@@ -117,31 +117,6 @@ end
 
 
 
-local function Init_Options(category, layout)
-   -- e.AddPanel_Header(layout, addName)
-
-    local initializer=e.AddPanel_Check({
-        category= category,
-        name= addName,--(e.onlyChinese and '启用' or ENABLE),
-        tooltip= e.GetEnabeleDisable(nil, true),
-        GetValue= function() return not Save.disabled end,
-        SetValue= function()
-            Save.disabled= not Save.disabled and true or nil
-        end
-    })
-
-    e.AddPanel_Button({
-        category=category,
-        layout=layout,
-        tooltip=addName,
-        buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-        SetValue= function()
-           Save.no={}
-           print(e.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    }, initializer)
-end
-
 
 
 
@@ -415,7 +390,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
-            WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
+            WoWTools_ToolsButtonMixin:AddOptions(function(category, layout)
+                 e.AddPanel_Check_Button({
+                     checkName= addName,
+                     GetValue= function() return not Save.disabled end,
+                     SetValue= function()
+                         Save.disabled = not Save.disabled and true or nil
+                     end,
+                     buttonText= e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+                     buttonFunc= function()
+                         Save.no={}
+                     end,
+                     layout= layout,
+                     category= category,
+                 })
+             end)
 
             if not Save.disabled
                 and not Save.no[e.Player.guid]

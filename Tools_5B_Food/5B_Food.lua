@@ -71,8 +71,6 @@ Save={
     },
     spells=ClassSpells,
 },
-addName= nil,
-UseButton=nil
 }
 
 
@@ -179,17 +177,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 e.LoadData({id=class.ctrl, type='spell'})
             end
 
-            WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
+            local addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
+            WoWTools_FoodMixin.addName= addName
 
             UseButton= WoWTools_ToolsButtonMixin:CreateButton({
                 name='Food',
-                tooltip=WoWTools_FoodMixin.addName,
+                tooltip=addName,
                 isMoveButton=true,
-                option=function(Category, layout, initializer)
+                option=function(category, layout, initializer)
                     e.AddPanel_Button({
-                        category=Category,
+                        category=category,
                         layout=layout,
-                        tooltip=WoWTools_FoodMixin.addName,
+                        tooltip=addName,
                         buttonText= e.onlyChinese and '还原位置' or RESET_POSITION,
                         SetValue= function()
                             Save().point=nil

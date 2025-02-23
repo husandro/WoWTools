@@ -172,8 +172,6 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self.Button.BottomFrame:SetPoint('LEFT', btn)--需要，设置宽 LEFT
                 table.insert(self.BottomButtons, btn)
             end
-            
-
         else
 --上面，合集
             local num=#self.LeftButtons
@@ -183,7 +181,6 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
                 self.Button.LeftFrame:SetPoint('TOP', btn)
                 self.Button.LeftFrame:SetPoint('LEFT', btn)
                 self:SetBackground(self.Button.LeftFrame)
-
 
             else
                 local numLine= self.Save.lineNum or 10
