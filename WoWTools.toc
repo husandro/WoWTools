@@ -18,7 +18,7 @@
 
 
 ##调用库，不能删除
-Sesource\Libs\Init.xml
+Init.xml
 
 ##主要function，不能删除
 1_WoWTools\0_WoWTools.lua
