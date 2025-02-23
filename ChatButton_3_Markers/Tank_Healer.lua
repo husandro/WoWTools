@@ -15,7 +15,7 @@ local function Is_Enable(set)
                 return true
             end
         else
-            return Save().isSelf
+            return Save().isSelf or Save().target
         end
     end
 end
@@ -88,9 +88,16 @@ local function Set_TankHealer(set)--设置队伍标记
             end
         end
 
-    elseif Save().isSelf then
-        WoWTools_MarkerMixin:Set_Taget('player', Save().isSelf or (set and 0))--设置,目标,标记
-        isSelf= true
+    else
+        if Save().isSelf then
+            WoWTools_MarkerMixin:Set_Taget('player', Save().isSelf or (set and 0))--设置,目标,标记
+            isSelf= true
+        end
+        if Save().target then
+            WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
+            isSelf= true
+        end
+        
     end
     return tank or healer or isSelf
 end
@@ -129,11 +136,14 @@ local function Init()
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
             self:RegisterEvent('GROUP_LEFT')
             self:RegisterEvent('GROUP_JOINED')
-
+            if Save().target and not IsInGroup() then
+                self:RegisterEvent('PLAYER_TARGET_CHANGED')
+            end
         else
             self:UnregisterEvent('GROUP_ROSTER_UPDATE')
             self:UnregisterEvent('GROUP_LEFT')
             self:UnregisterEvent('GROUP_JOINED')
+            self:UnregisterEvent('PLAYER_TARGET_CHANGED')
         end
     end
 

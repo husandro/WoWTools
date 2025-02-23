@@ -487,18 +487,54 @@ end
 
 
 local function Init_Menu(self, root)
+    local sub
 --队伍查找器
-
     root:CreateButton(
         MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"),
     function ()
         e.call(PVEFrame_ToggleFrame)
+        return MenuResponse.Open
     end)
 
-    root:CreateButton(
+--离开所有队列
+    root:CreateDivider()
+    sub=root:CreateButton(
         e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
     function()
         WoWTools_LFDMixin:Leave_All_LFG()
+    end)
+    sub:SetEnabled(UnitIsGroupLeader("player"))
+
+    root:CreateDivider()
+--打开选项界面
+    sub= WoWTools_MenuMixin:OpenOptions(root, {
+        name=WoWTools_LFDMixin.addName,
+        category=WoWTools_ChatButtonMixin.Category
+    })
+
+
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().queueStatusStrata= data
+        self:set_strata()
+    end)
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save().tipsScale or 1
+    end, function(value)
+        Save().tipsScale= value
+        self:set_scale()
+    end)
+
+    sub:CreateDivider()
+--重置位置
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().tipsFramePoint, function()
+        Save().tipsFramePoint=nil
+        self:set_Point()
+        return MenuResponse.Open
     end)
 end
 
@@ -515,17 +551,34 @@ end
 
 
 
-
-
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=23, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
 
     function Button:set_Point()
+        self:ClearAllPoints()
         if Save().tipsFramePoint then
             Button:SetPoint(Save().tipsFramePoint[1], UIParent, Save().tipsFramePoint[3], Save().tipsFramePoint[4], Save().tipsFramePoint[5])
         else
-            Button:SetPoint('BOTTOMLEFT', WoWTools_LFDMixin.LFDButton, 'TOPLEFT',0,2)
+            Button:SetPoint('BOTTOMLEFT', WoWTools_LFDMixin.LFDButton, 'TOPLEFT',0, 4)
         end
+    end
+
+    function Button:set_strata()
+        self:SetFrameStrata(Save().queueStatusStrata or 'MEDIUM')
+    end
+
+    function Button:set_scale()
+        self.text:SetScale(Save().tipsScale or 1)
+    end
+
+    function Button:set_tooltip()
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine(WoWTools_LFDMixin.addName, e.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:Show()
     end
 
     Button:SetScript("OnDragStart", function(self, d)
@@ -540,60 +593,25 @@ local function Init()
         Save().tipsFramePoint[2]=nil
     end)
 
-    function Button:set_scale()
-        self.text:SetScale(Save().tipsScale or 1)
-    end
-
-    Button:SetScript('OnMouseWheel', function(self, delta)
-        Save().tipsScale= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().tipsScale, nil)
-    end)
-
-    Button:SetScript("OnMouseDown", function(_, d)
+    Button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
+        else
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
+        self:set_tooltip()
     end)
     Button:SetScript('OnMouseUp', ResetCursor)
-
-    function Button:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '列表信息' or (SOCIAL_QUEUE_TOOLTIP_HEADER..INFO), '|A:groupfinder-eye-frame:0:0|a')
-        e.tips:AddLine(' ')
-
-        e.tips:AddDoubleLine(
-            (IsInGroup() and not UnitIsGroupLeader("player") and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..(e.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES),
-            '|cnGREEN_FONT_COLOR:Shift+'..e.Icon.left
-        )
-        e.tips:AddDoubleLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON, e.Icon.right)
-        e.tips:AddLine(' ')
-
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().tipsScale or 1), 'Alt+'..e.Icon.mid)
-
-        e.tips:Show()
-    end
 
     Button:SetScript("OnLeave", function()
         e.tips:Hide()
         ResetCursor()
         WoWTools_LFDMixin.LFDButton:SetButtonState('NORMAL')
     end)
-
     Button:SetScript('OnEnter', function(self)
         self:set_tooltip()
         Set_Queue_Status()--小眼睛, 更新信息
         WoWTools_LFDMixin.LFDButton:SetButtonState('PUSHED')
-    end)
-
-
-    Button:SetScript('OnClick', function(_, d)--离开所有队列
-        if d=='RightButton' and not IsModifierKeyDown() then
-            e.call(PVEFrame_ToggleFrame)
-
-        elseif IsShiftKeyDown() and d=='LeftButton' then
-            WoWTools_LFDMixin:Leave_All_LFG()
-        end
     end)
 
 
@@ -607,6 +625,7 @@ local function Init()
 
     Button:set_Point()
     Button:set_scale()--设置, 缩放
+    Button:set_strata()
     Button:RegisterForDrag("RightButton")
     Button:SetMovable(true)
     Button:SetClampedToScreen(true)

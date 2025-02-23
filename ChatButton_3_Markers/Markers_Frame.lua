@@ -766,7 +766,7 @@ local function Init()--设置标记, 框架
 
     function MakerFrame:set_frame_strata()
         if self:CanChangeAttribute() then
-            self:SetFrameStrata(Save().FrameStrata)
+            self:SetFrameStrata(Save().FrameStrata or 'MEDIUM')
         end
     end
     MakerFrame:set_frame_strata()

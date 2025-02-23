@@ -5238,7 +5238,8 @@
         "GetCreatureDifficultyColor",
         "WORLD_QUEST_QUALITY_COLORS",
         "FACTION_NEUTRAL",
-        "StaticPopup_OnClick"
+        "StaticPopup_OnClick",
+        "OR_CAPS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -6,6 +6,7 @@ Save={
     tank2= 6,
     healer= 1,
     isSelf= e.Player.husandro and 4 or nil,
+    target= e.Player.husandro and 7 or nil,
 
     countdown=7,
     groupReadyTips=true,
@@ -44,11 +45,13 @@ local MarkerButton
 
 
 function WoWTools_MarkerMixin:Set_Taget(unit, index)--设置,目标,标记
-    local marker= GetRaidTargetIndex(unit)
-    if not marker and index==0 or not UnitExists(unit) or not CanBeRaidTarget(unit) or marker==index then
-        return
+    if index and CanBeRaidTarget(unit) then
+        local marker= GetRaidTargetIndex(unit)
+        if marker==index or (not marker and index==0) then
+            return
+        end
+        SetRaidTarget(unit, index)
     end
-    SetRaidTarget(unit, index)
 end
 
 
@@ -92,19 +95,23 @@ local function Init()
 
 
     function MarkerButton:settings()--主图标,是否有权限
-        if not IsInGroup() and Save().isSelf then
-            self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save().isSelf)
-            self.texture:SetDesaturated(false)
-        else
-            local raid= IsInRaid()
-            local enabled= not WoWTools_MapMixin:IsInPvPArea()
-                    and (
-                            (raid and WoWTools_GroupMixin:isLeader())--队长(团长)或助理
-                        or (GetNumGroupMembers()>1 and not raid)
-                    )
-            self.texture:SetDesaturated(not enabled)
-            self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..Save().tank)
+        local index
+        if not WoWTools_MapMixin:IsInPvPArea() then
+            if GetNumGroupMembers()<=1 then
+                index= Save().isSelf or Save().target
+            else
+                local raid= IsInRaid()
+                if (raid and WoWTools_GroupMixin:isLeader() or not raid) then
+                    index= Save().tank or Save().healer
+                end
+            end
+
+            if index then
+                self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+            end
         end
+        self.texture:SetShown(index)
+        self.texture:SetDesaturated(not Save().autoSet)
     end
     --MarkerButton:settings()--主图标,是否有权限
 

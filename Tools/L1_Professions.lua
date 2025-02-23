@@ -370,14 +370,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             Save= WoWToolsSave['Tools_Professions'] or Save
             if WoWTools_ToolsButtonMixin:GetButton() then
-                Init()
-                --[[C_Timer.After(2, function()
+                --Init()
+                C_Timer.After(2, function()
                     if UnitAffectingCombat('player') then
                         self:RegisterEvent('PLAYER_REGEN_ENABLED')
                     else
                        Init()
                     end
-                end)]]
+                end)
             end
             self:UnregisterEvent('ADDON_LOADED')
         end
