@@ -285,7 +285,10 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         end
         if petID then
             tooltip:SetCompanionPet(petID)
+        elseif speciesID then
+            
         end
+        
 
     elseif specIndex or specID then
         Set_Specialization(tooltip, specIndex, specID)

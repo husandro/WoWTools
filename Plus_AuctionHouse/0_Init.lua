@@ -35,12 +35,15 @@ WoWTools_AuctionHouseMixin.Save={
 
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
     isMaxSellItem= true,--出售物品时，使用，最大数量
-    hideSellItem={
+    hideSellItem={--跳过，拍卖行物品
         [201469]=true,--翡翠青苹果
         [202071]=true,--元素微粒
         [192658]=true,--高纤维树叶
         [192615]=true,--幽光液体
-    },--跳过，拍卖行物品
+    },
+    hideSellPet={
+        --[speciaID]=true, --speciaID 为字符
+    },
     SellItemDefaultPrice={},--默认价格
 }
 
@@ -60,6 +63,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 WoWTools_AuctionHouseMixin.Save= WoWToolsSave['Plus_AuctionHouse'] or Save()
             end
+--宠物笼
+            Save().hideSellItem[82800]= nil
+            Save().hideSellPet= Save().hideSellPet or {}
 
             if PlayerGetTimerunningSeasonID() then
                 self:UnregisterEvent(event)

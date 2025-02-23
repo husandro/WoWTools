@@ -22,7 +22,13 @@ local function Get_Item_CommodityStatus(bag, slot, isCheckHideItem)
                 info.itemID
                 and info.hyperlink
                 and info.quality>0
-                and (isCheckHideItem and not Save().hideSellItem[info.itemID] or not isCheckHideItem)
+                and (isCheckHideItem
+                    and (
+                        (info.itemID==82800 and not Save().hideSellPet[info.hyperlink:match('Hbattlepet:(%d+)')])
+                        or (info.itemID~=82800 and not Save().hideSellItem[info.itemID])
+                    )
+                    or not isCheckHideItem
+                )
             then
                 return itemLocation, itemCommodityStatus, info
             end
@@ -48,7 +54,10 @@ local function Create_Button(index)
     btn.isCommoditiesTexture:Hide()
 
     function btn:Settings()
-        btn:SetAlpha(Save().hideSellItem[self:GetItemID()] and 0.3 or 1)
+        btn:SetAlpha(
+            (self.isPet and Save().hideSellPet[self.isPet] or  Save().hideSellItem[self:GetItemID()])
+            and 0.3 or 1
+        )
     end
 
 
@@ -77,7 +86,15 @@ local function Create_Button(index)
                     tooltip:AddDoubleLine(e.onlyChinese and '开始拍卖' or CREATE_AUCTION..e.Icon.left, e.Icon.right..(e.onlyChinese and '隐藏' or HIDE))
                 end
         })
-        C_Container.SetItemSearch(itemLink and C_Item.GetItemNameByID(itemLink) or '')
+        local itemName
+        if itemLink then
+            local speciesID= itemLink and itemLink:match('Hbattlepet:(%d+)')
+            if speciesID then
+                itemName= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+            end
+            itemName= itemName or C_Item.GetItemNameByID(itemLink)
+        end
+        C_Container.SetItemSearch(itemName or '')
     end)
 
     btn:SetScript('OnClick', function(self, d)
@@ -90,7 +107,11 @@ local function Create_Button(index)
         elseif d=='RightButton' then--隐藏，物品
             local itemID= C_Item.GetItemID(self.itemLocation)
             if itemID then
-                Save().hideSellItem[itemID]= not Save().hideSellItem[itemID] and true or nil
+                if self.isPet then
+                    Save().hideSellPet[self.isPet]= not Save().hideSellPet[self.isPet] and self:GetItemLink() or nil
+                else
+                    Save().hideSellItem[itemID]= not Save().hideSellItem[itemID] and true or nil
+                end
 
                 if Save().hideSellItemListButton then--隐藏物品列表，隐藏按钮
                     WoWTools_AuctionHouseMixin:Init_Item_Button()
@@ -124,7 +145,7 @@ local function Init_Item_Button()
     end
 
 
-    local isCheckHideItem= not Save().hideSellItemListButton--隐藏物品列表，隐藏按钮
+    local isCheckHideItem= Save().hideSellItemListButton--隐藏物品列表，隐藏按钮
 
     local index=1
     local isCommoditiesSellFrame, isItemSellFrame= AuctionHouseButton:get_displayMode()
@@ -137,9 +158,10 @@ local function Init_Item_Button()
                 btn:ClearAllPoints()
                 btn:SetPoint("TOPLEFT", index==1 and AuctionHouseButton or AuctionHouseButton.buttons[index-1], 'BOTTOMLEFT', 0, -2)
 
-                btn.isPet= info.hyperlink:find('Hbattlepet:(%d+)')
+                btn.isPet= info.hyperlink:match('Hbattlepet:(%d+)')-- 注意，isPet 这个是字符
                 btn:SetItemLocation(itemLocation)
                 btn:SetItemButtonCount(info.stackCount)
+                
 
                 btn.isCommoditiesTexture:SetShown(
                     (itemCommodityStatus==Enum.ItemCommodityStatus.Item and isItemSellFrame)
@@ -203,9 +225,9 @@ local function Init_Menu(self, root)
 
 --隐藏物品列表，隐藏按钮
     sub:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
+        e.onlyChinese and '隐藏' or HIDE,
     function()
-        return not Save().hideSellItemListButton
+        return Save().hideSellItemListButton
     end, function()
         Save().hideSellItemListButton= not Save().hideSellItemListButton and true or nil
         Init_Item_Button()
@@ -216,15 +238,16 @@ local function Init_Menu(self, root)
         '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
     function()
         Save().hideSellItem={}
+        Save().hideSellPet={}
         Init_Item_Button()
         print(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
         return MenuResponse.Refresh
     end)
 
     sub:CreateDivider()
-    local find
+    local find=false
 --隐藏，物品，列表
-    for itemID, speciaID in pairs(Save().hideSellItem) do
+    for itemID in pairs(Save().hideSellItem) do
         sub2= sub:CreateCheckbox(
             WoWTools_ItemMixin:GetName(itemID, nil),
         function(data)
@@ -236,10 +259,38 @@ local function Init_Menu(self, root)
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
         find=true
     end
+
+
+--隐藏，宠物，列表
+    if find then
+        sub:CreateDivider()
+    end
+    for speciesID, itemLink in pairs(Save().hideSellPet) do--speciesID是字符
+        local speciesName, speciesIcon, _, companionID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+        if speciesName then
+            sub2= sub:CreateCheckbox(
+                '|T'..(speciesIcon or 0)..':0|t'
+                ..e.cn(speciesName, {npcID=companionID, isName=true}),
+            function(data)
+                return Save().hideSellPet[data.speciesID]
+            end, function(data)
+                Save().hideSellPet[data.speciesID]= not Save().hideSellPet[data.speciesID] and data.itemLink or nil
+                Init_Item_Button()
+            end, {speciesID= speciesID, itemLink= itemLink})
+
+            WoWTools_SetTooltipMixin:Set_Menu(sub2)
+            find=true
+        end
+    end
+
+
     if not find then
        sub:CreateTitle(e.onlyChinese and '无' or NONE)
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+
 
 
 --行数
@@ -397,9 +448,10 @@ local function Init_AuctionHouseButton()
     end
 --设置事件
     function AuctionHouseButton:set_event()
-        self:UnregisterAllEvents()
         if self:IsShown() then
             self:RegisterEvent('BAG_UPDATE_DELAYED')
+        else
+            self:UnregisterEvent('BAG_UPDATE_DELAYED')
         end
     end
 --事件
