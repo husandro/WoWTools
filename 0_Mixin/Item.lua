@@ -363,3 +363,28 @@ function WoWTools_ItemMixin:IsCan_EquipmentSet(setID)--装备管理，能否装�
 		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
 	end
 end
+
+
+
+function WoWTools_ItemMixin:GetItemCount(itemID, tab)
+    tab= tab or {}
+    itemID= itemID
+        or (tab.itemKey and tab.itemKey.itemID)
+
+    if not itemID then
+        return
+    end
+
+    local bag= C_Item.GetItemCount(itemID, false, false, false, false) or 0--物品数量
+    local bank= C_Item.GetItemCount(itemID, true, false, true, false) or 0--bank
+    local net= C_Item.GetItemCount(itemID, false, false, false, true) or 0--战团
+    bank= bank- bag
+    net= net-bag
+
+    return (net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
+        ..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a '
+        ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a',
+
+        bag, bank, net
+
+end

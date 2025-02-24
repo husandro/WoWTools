@@ -1225,7 +1225,7 @@ end
 
 --拍卖行
 local function Set_Blizzard_AuctionHouseUI()
---出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
+    --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
     hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
         e.Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
     end)
@@ -1238,6 +1238,13 @@ local function Set_Blizzard_AuctionHouseUI()
         else
             e.Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
         end
+
+        if not self.countLable then
+            self.countLable= WoWTools_LabelMixin:Create(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay)
+            self.countLable:SetPoint('BOTTOM', self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay, 'TOP', 0,1)
+        end
+        local count= WoWTools_ItemMixin:GetItemCount(itemKey.itemID)
+        self.countLable:SetText(count or '')
     end)
 end
 

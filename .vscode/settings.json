@@ -5302,6 +5302,6 @@
         "need-check-nil",
         "assign-type-mismatch",
         "undefined-field",
-        "param-type-mismatch"
+        "param-type-mismatch",
     ],
 }

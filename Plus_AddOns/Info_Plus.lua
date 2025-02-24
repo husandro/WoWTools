@@ -90,7 +90,8 @@ local function Create_Check(frame)
 
     frame.check.select= frame:CreateTexture(nil, 'OVERLAY')--光标，移过提示
     frame.check.select:SetAtlas('CreditsScreen-Selected')
-    frame.check.select:SetAllPoints(frame)
+    frame.check.select:SetAllPoints()
+    frame.check.select:SetAlpha(0.3)
     frame.check.select:Hide()
 
     frame.check.Text:SetParent(frame)--索引
@@ -269,7 +270,7 @@ local function Init()
 
 
     hooksecurefunc('AddonTooltip_Update', function(frame)
-        WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
+        --WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
 
         local index= frame:GetID()
         local va= WoWTools_AddOnsMixin:Get_MenoryValue(index, true)
@@ -282,9 +283,9 @@ local function Init()
         end
     end)
 
-    hooksecurefunc('AddonList_Update', function()
+    --[[hooksecurefunc('AddonList_Update', function()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
-    end)
+    end)]]
 end
 
 
