@@ -12,18 +12,84 @@ end
 
 
 
+--取出，ClassID 物品
+local function take_out_item(classID)
+    local free= WoWTools_BagMixin:GetFree()--背包，空位
+    if free==0 then
+        return
+    end
+    for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
+        for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
+            if IsModifierKeyDown() or free<=0 then
+                return
+            end
+            local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+            if info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
+                C_Container.UseContainerItem(bag, slot)
+                free= free-1
+            end
+        end
+    end
+    for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
+        if IsModifierKeyDown() or free<=0 then
+            return
+        end
+        local bag, slot= WoWTools_BankMixin:GetBagAndSlot(BankSlotsFrame["Item"..i])
+        if bag and slot then
+            local info= C_Container.GetContainerItemInfo(bag, slot) or {}
+            if info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
+                C_Container.UseContainerItem(bag, slot)
+                free= free-1
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+--存放，ClassID 物品
+local function desposit_item(classID)
+    local free= WoWTools_BankMixin:GetFree()--银行，空位
+    if free==0 then
+        return
+    end
+    for bag= NUM_BAG_FRAMES, BACKPACK_CONTAINER, -1 do-- + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
+        for slot= C_Container.GetContainerNumSlots(bag), 1, -1 do
+            if IsModifierKeyDown() or free==0 then
+                return
+            end
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            if info and info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
+                C_Container.UseContainerItem(bag, slot)
+                free= free-1
+            end
+        end
+    end
+end
+
+
+
+
+
+
+
+
 
 
 local function Init_Menu(self, root)
     local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(self.bankNumText or ''), function(data)
-        self:GetParent():take_out_item(data.classID)
+        take_out_item(data.classID)
     end, {classID=self.classID})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
     end)
-    
+
     sub=root:CreateButton('|A:Cursor_buy_32:0:0|a'..(e.onlyChinese and '存放' or DEPOSIT)..' '..(self.bagNumText or ''), function(data)
-        self:GetParent():desposit_item(data.classID)
+        desposit_item(data.classID)
     end, {classID=self.classID})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
@@ -49,7 +115,11 @@ end
 --大包时，显示，存取，分类，按钮
 local ListButton
 local function Init()
-    ListButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide', name='WoWTools_BankMixinLeftListButton'})
+    --ListButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide', name='WoWTools_BankMixinLeftListButton'})
+    ListButton=WoWTools_ButtonMixin:CreateMenu(BankSlotsFrame, {
+        name='WoWTools_BankMixinLeftListButton',
+        hideIcon=true,
+    })
     ListButton:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
 
     ListButton.frame=CreateFrame('Frame', nil, ListButton)
@@ -57,7 +127,11 @@ local function Init()
     ListButton.frame:SetSize(1,1)
 
     function ListButton:settings()
-        self:SetNormalAtlas(Save().showLeftList and 'NPE_ArrowDown' or 'RedButton-MiniCondense')
+        if Save().showLeftList then
+            self:SetNormalTexture(0)
+        else
+            self:SetNormalAtlas('NPE_ArrowRightGlow')
+        end
         self:SetAlpha(Save().showLeftList and 1 or 0.3)
         self.frame:SetShown(Save().showLeftList)
         self.frame:SetScale(Save().leftListScale or 1)
@@ -106,58 +180,6 @@ local function Init()
 
     ListButton.buttons={}
 
---取出，ClassID 物品
-    function ListButton.frame:take_out_item(classID)
-        local free= WoWTools_BagMixin:GetFree()--背包，空位
-        if free==0 then
-            return
-        end
-        for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
-            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
-                if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
-                    return
-                end
-                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
-                if info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
-                    C_Container.UseContainerItem(bag, slot)
-                    free= free-1
-                end
-            end
-        end
-        for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
-            if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
-                return
-            end
-            local bag, slot= WoWTools_BankMixin:GetBagAndSlot(BankSlotsFrame["Item"..i])
-            if bag and slot then
-                local info= C_Container.GetContainerItemInfo(bag, slot) or {}
-                if info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
-                    C_Container.UseContainerItem(bag, slot)
-                    free= free-1
-                end
-            end
-        end
-    end
-
---存放，ClassID 物品
-    function ListButton.frame:desposit_item(classID)
-        local free= WoWTools_BankMixin:GetFree()--银行，空位
-        if free==0 then
-            return
-        end
-        for bag= NUM_BAG_FRAMES,  BACKPACK_CONTAINER, -1 do-- + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
-            for slot= C_Container.GetContainerNumSlots(bag), 1, -1 do
-                if not self:IsVisible() or IsModifierKeyDown() or free==0 then
-                    return
-                end
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
-                    C_Container.UseContainerItem(bag, slot)
-                    free= free-1
-                end
-            end
-        end
-    end
 
     local last= ListButton.frame
 --生成,物品列表
@@ -210,6 +232,7 @@ local function Init()
     function ListButton:set_label()
         if not self:IsShown() or self.isRun then return end
         self.isRun=true
+
         local bankClass={}
         for i=1, NUM_BANKGENERIC_SLOTS do--28
             local itemInfo= WoWTools_BankMixin:GetItemInfo(BankSlotsFrame["Item"..i])
@@ -218,6 +241,7 @@ local function Init()
                 bankClass[classID]= (bankClass[classID] or 0)+ (itemInfo.stackCount or 1)
             end
         end
+
         for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
             for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
                 local info = C_Container.GetContainerItemInfo(bag, slot)

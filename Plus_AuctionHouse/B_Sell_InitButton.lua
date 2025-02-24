@@ -212,7 +212,6 @@ end
 
 local function Init()
     AuctionHouseButton= WoWTools_ButtonMixin:CreateMenu(AuctionHouseFrame, {
-        size=23,
         hideIcon=true,
         name='WoWToolsAuctionHouseSellListButton'
     })
