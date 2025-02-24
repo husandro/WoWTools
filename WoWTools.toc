@@ -460,11 +460,13 @@ Plus_Mail\PlayerName_List.lua
 
 
 ##拍卖行
-Plus_AuctionHouse\0_Init.lua
+Plus_AuctionHouse\0_AuctionHouseMixin.lua
+Plus_AuctionHouse\1_Init.lua
+Plus_AuctionHouse\Sell.lua
+Plus_AuctionHouse\Sell_Menu.lua
 Plus_AuctionHouse\AllAuctionsList.lua
 Plus_AuctionHouse\BrowseResultsFrame.lua
-Plus_AuctionHouse\Sell.lua
-Plus_AuctionHouse\AccountStore.lua
+Plus_AuctionHouse\z_AccountStore.lua
 
 
 ##宠物对战
