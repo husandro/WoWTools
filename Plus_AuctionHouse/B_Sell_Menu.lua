@@ -117,7 +117,7 @@ local function Init_Menu(self, root)
     end)
 --物品品质 0, 8
     for quality= Enum.ItemQuality.Poor ,  Enum.ItemQuality.WoWToken do
-        sub:CreateCheckbox(
+        sub2=sub:CreateCheckbox(
             select(4, WoWTools_ItemMixin:GetColor(quality))
             ..(e.cn(_G['ITEM_QUALITY'..quality..'_DESC']) or quality),
         function(data)
@@ -126,6 +126,9 @@ local function Init_Menu(self, root)
             Save().sellItemQualiy= data.quality
             self:Init_Sell_Item_Button()
         end, {quality=quality})
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.quality)
+        end)
     end
 
 --转到出售
@@ -139,7 +142,7 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '显示拍卖行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, BUTTON_LAG_AUCTIONHOUSE))
     end)
-    
+
 --打开，选项
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_AuctionHouseMixin.addName})
