@@ -1,23 +1,4 @@
 
-WoWTools_AuctionHouseMixin= {}
-
-function WoWTools_AuctionHouseMixin:GetItemLink(rowData)
-    if not rowData then
-        return
-    end
-    local itemLink= rowData.itemLink
-    local itemID, isPet
-    itemID= rowData.itemID or (rowData and rowData.itemKey and rowData.itemKey.itemID)
-    if not itemLink and rowData.auctionID then
-        local priceInfo = C_AuctionHouse.GetAuctionInfoByID(rowData.auctionID) or {}
-        itemLink= priceInfo.itemLink or priceInfo.battlePetLink
-    end
-    if not itemLink and itemID then
-        itemLink= WoWTools_ItemMixin:GetLink(itemID)
-    end
-    isPet= rowData and rowData.itemKey and rowData.itemKey.battlePetSpeciesID and rowData.itemKey.battlePetSpeciesID>0
-    return itemLink, itemID, isPet
-end
 
 
 --拍卖行, 受限模式

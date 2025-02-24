@@ -1,4 +1,13 @@
 
+if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
+    return
+end
+
+
+
+
+
+
 
 local function Set_BrowseResultsFrame(frame)
     if not frame:GetView() then
