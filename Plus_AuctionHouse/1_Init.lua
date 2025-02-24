@@ -80,6 +80,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
             WoWTools_AuctionHouseMixin:Init_AllAuctions()
             WoWTools_AuctionHouseMixin:Init_Sell()
+            WoWTools_AuctionHouseMixin:Sell_Other()
+            WoWTools_AuctionHouseMixin:Init_MenuButton()
             self:UnregisterEvent(event)
         end
     elseif event == "PLAYER_LOGOUT" then

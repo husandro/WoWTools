@@ -152,5 +152,7 @@ end
 
 --所有，出售物品, 列表
 function WoWTools_AuctionHouseMixin:Init_AllAuctions()
-    Init()
+    if not self.Save.disabledAuctionsPlus then
+        Init()
+    end
 end

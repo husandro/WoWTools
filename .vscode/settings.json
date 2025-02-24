@@ -5277,7 +5277,11 @@
         "VERTICAL_MULTI_BAR_VERTICAL_SPACING",
         "MultiBarBottomRight",
         "VERTICAL_MULTI_BAR_MIN_SCALE",
-        "COLORBLIND_ITEM_QUALITY"
+        "COLORBLIND_ITEM_QUALITY",
+        "PROFESSIONS_COLUMN_HEADER_QUALITY",
+        "AuctionHouseFrameCloseButton",
+        "AUCTION_HOUSE_BUY_TAB",
+        "AUCTION_HOUSE_AUCTIONS_SUB_TAB"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

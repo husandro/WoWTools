@@ -56,7 +56,5 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Init_AccountStore()
-    if AccountStoreFrame then
-        hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', Set_Update)
-    end
+    hooksecurefunc(AccountStoreFrame.CategoryList.ScrollBox, 'Update', Set_Update)
 end

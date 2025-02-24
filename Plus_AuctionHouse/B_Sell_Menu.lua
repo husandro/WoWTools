@@ -23,7 +23,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().hideSellItemList= not Save().hideSellItemList and true or nil
         self:Settings()
-        self:Init_Item_Button()
+        self:Init_Sell_Item_Button()
     end)
 
     root:CreateDivider()
@@ -41,7 +41,7 @@ local function Init_Menu(self, root)
         return Save().hideSellItemListButton
     end, function()
         Save().hideSellItemListButton= not Save().hideSellItemListButton and true or nil
-        self:Init_Item_Button()
+        self:Init_Sell_Item_Button()
     end)
 
 --全部清除
@@ -50,7 +50,7 @@ local function Init_Menu(self, root)
     function()
         Save().hideSellItem={}
         Save().hideSellPet={}
-        self:Init_Item_Button()
+        self:Init_Sell_Item_Button()
         print(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
         return MenuResponse.Refresh
     end)
@@ -65,7 +65,7 @@ local function Init_Menu(self, root)
             return Save().hideSellItem[data.itemID]
         end, function(data)
             Save().hideSellItem[data.itemID]= not Save().hideSellItem[data.itemID] and true or nil
-            self:Init_Item_Button()
+            self:Init_Sell_Item_Button()
         end, {itemID= itemID})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
         find=true
@@ -86,7 +86,7 @@ local function Init_Menu(self, root)
                 return Save().hideSellPet[data.speciesID]
             end, function(data)
                 Save().hideSellPet[data.speciesID]= not Save().hideSellPet[data.speciesID] and data.itemLink or nil
-                self:Init_Item_Button()
+                self:Init_Sell_Item_Button()
             end, {speciesID= speciesID, itemLink= itemLink})
 
             WoWTools_SetTooltipMixin:Set_Menu(sub2)
@@ -103,12 +103,16 @@ local function Init_Menu(self, root)
 --物品品质
     sub= root:CreateButton(
         select(4, WoWTools_ItemMixin:GetColor(Save().sellItemQualiy))
-        ..(e.cn(_G['ITEM_QUALITY'..Save().sellItemQualiy..'_DESC']) or Save().sellItemQualiy),
-        --e.onlyChinese and '物品品质' or COLORBLIND_ITEM_QUALITY,
+        ..format(
+            CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
+            e.onlyChinese and '品质' or PROFESSIONS_COLUMN_HEADER_QUALITY,
+            (e.cn(_G['ITEM_QUALITY'..Save().sellItemQualiy..'_DESC']) or Save().sellItemQualiy)
+        ),
     function()
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '最小' or MINIMUM)
         tooltip:AddLine(e.onlyChinese and '物品品质' or COLORBLIND_ITEM_QUALITY)
     end)
 --物品品质 0, 8
@@ -120,7 +124,7 @@ local function Init_Menu(self, root)
             return Save().sellItemQualiy== data.quality
         end, function(data)
             Save().sellItemQualiy= data.quality
-            self:Init_Item_Button()
+            self:Init_Sell_Item_Button()
         end, {quality=quality})
     end
 
@@ -135,7 +139,8 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '显示拍卖行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, BUTTON_LAG_AUCTIONHOUSE))
     end)
-
+    
+--打开，选项
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_AuctionHouseMixin.addName})
 
@@ -146,7 +151,7 @@ local function Init_Menu(self, root)
             return Save().numButton
         end, setValue=function(value)
             Save().numButton=value
-            self:Init_Item_Button()
+            self:Init_Sell_Item_Button()
         end,
         name=e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
         minValue=1,

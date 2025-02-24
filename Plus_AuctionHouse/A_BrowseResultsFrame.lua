@@ -126,5 +126,7 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
-    Init()
+    if not self.Save.disabledBuyPlus then
+        Init()
+    end
 end
