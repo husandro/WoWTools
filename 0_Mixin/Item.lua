@@ -136,9 +136,14 @@ end
 
 
 
---GetButtonOverlayQualityColor
-function WoWTools_ItemMixin:GetColor(itemID, quality)
-    quality= quality or (itemID and C_Item.GetItemQualityByID(itemID))
+--GetButtonOverlayQualityColor {itemID, itemLocation}
+function WoWTools_ItemMixin:GetColor(quality, tab)
+    tab= tab or {}
+
+    quality= quality
+        or (tab.itemID and C_Item.GetItemQualityByID(tab.itemID))
+        or (tab.itemLocation and C_Item.GetItemQuality(tab.itemLocation))
+
     local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
     return color.r, color.g, color.b, color.hex, color, quality
 end

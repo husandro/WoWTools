@@ -24,7 +24,7 @@ local function Init(self)--WorldQuestDataProvider.lua self.tagInfo
 
         local itemEquipLoc, _, classID = select(4, C_Item.GetItemInfoInstant(data.itemID))
         if classID==2 or classID==4 then
-            local hex= select(4, WoWTools_ItemMixin:GetColor(data.itemID, data.quality))
+            local hex= select(4, WoWTools_ItemMixin:GetColor(data.quality, {itemID=data.itemID}))
 
             if hex and text then--物品，颜色
                 text=hex..text..'|r'

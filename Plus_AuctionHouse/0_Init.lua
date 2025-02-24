@@ -30,7 +30,7 @@ local id, e = ...
 WoWTools_AuctionHouseMixin.Save={
     --出售
     --hideSellItemList=true,--隐藏，物品列表
-    numButton=15,--行数
+    numButton=14,--行数
     scaleSellButton=0.95,--综合
 
     intShowSellItem= e.Player.husandro,--显示，转到出售物品
@@ -44,6 +44,7 @@ WoWTools_AuctionHouseMixin.Save={
     hideSellPet={
         --[speciaID]=true, --speciaID 为字符
     },
+    sellItemQualiy=1,--物品列表，检测有效物品
     SellItemDefaultPrice={},--默认价格
 }
 
@@ -66,6 +67,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 --宠物笼
             Save().hideSellItem[82800]= nil
             Save().hideSellPet= Save().hideSellPet or {}
+            Save().sellItemQualiy= Save().sellItemQualiy or 1--物品列表，检测有效物品
 
             if PlayerGetTimerunningSeasonID() then
                 self:UnregisterEvent(event)

@@ -142,6 +142,9 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
             else
                 btn:SetNormalAtlas(e.Icon.disabled)
             end
+        elseif frameType=='ItemButton' then
+            --btn.NormalTexture:SetTexture(0)
+            --btn.NormalTexture:Hide()
         end
     end
 
