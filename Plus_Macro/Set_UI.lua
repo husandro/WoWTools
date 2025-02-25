@@ -171,7 +171,7 @@ local function Init_Scroll()
 
 
     hooksecurefunc(MacroFrame, "SelectMacro", function(self)
-        if ScrollFrame.tempScrollPer and not UnitAffectingCombat('player') then-- 恢复宏选择框的滚动条位置
+        if ScrollFrame.tempScrollPer and not InCombatLockdown() then-- 恢复宏选择框的滚动条位置
             self.MacroSelector.ScrollBox:SetScrollPercentage(ScrollFrame.tempScrollPer)
         end
         ScrollFrame.tempScrollPer = nil
@@ -183,7 +183,7 @@ local function Init_Scroll()
         self:RegisterEvent("UPDATE_MACROS")
         C_Timer.After(0.1, function()
             local index= self.selectionIndex
-            if index and not UnitAffectingCombat('player') then
+            if index and not InCombatLockdown() then
                 if index>MAX_ACCOUNT_MACROS then
                     index= index-MAX_ACCOUNT_MACROS
                     e.call(MacroFrame.ChangeTab, MacroFrame, 2)

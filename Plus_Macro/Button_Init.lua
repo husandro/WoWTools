@@ -63,7 +63,7 @@ local function Init_Menu(self, root)
             function(data)
                 return Save().toRightLeft==data.value
             end, function(data)
-                if not UnitAffectingCombat('player') then
+                if not InCombatLockdown() then
                     Save().toRightLeft=data.value
                     --self:set_texture()
                     e.call(MacroFrame.ChangeTab, MacroFrame, 1)
@@ -114,10 +114,10 @@ local function Init_Menu(self, root)
         '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
-            if UnitAffectingCombat('player') then return end
+            if InCombatLockdown() then return end
             print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE))
             for i = GetNumMacros(), 1, -1 do
-                if IsModifierKeyDown() or UnitAffectingCombat('player') then
+                if IsModifierKeyDown() or InCombatLockdown() then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
@@ -138,10 +138,10 @@ local function Init_Menu(self, root)
         '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
-            if UnitAffectingCombat('player') then return end
+            if InCombatLockdown() then return end
             print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE))
             for  i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
-                if IsModifierKeyDown() or UnitAffectingCombat('player') then
+                if IsModifierKeyDown() or InCombatLockdown() then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
@@ -176,7 +176,7 @@ local function Create_Button(name)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
 
-        if UnitAffectingCombat('player') then
+        if InCombatLockdown() then
             e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         else
             e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
@@ -192,7 +192,7 @@ local function Create_Button(name)
         e.tips:Show()
     end
     btn:SetScript('OnClick', function(self, d)
-        if UnitAffectingCombat('player') then return end
+        if InCombatLockdown() then return end
         if d=='LeftButton' then
             if self.textCursor then
                 MacroFrameText:SetCursorPosition(self.textCursor)
@@ -321,7 +321,7 @@ local function Init()
     Button:SetScript('OnShow', function(self)
         self:RegisterEvent('PLAYER_REGEN_DISABLED')
         self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        self.Text:SetShown(UnitAffectingCombat('player'))
+        self.Text:SetShown(InCombatLockdown())
     end)
     Button:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()

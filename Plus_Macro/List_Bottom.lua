@@ -403,7 +403,7 @@ local function Sub_Menu(root, tab)
             '|T'..(tab.icon or 0)..':0|t'
             ..(e.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
         function(data)
-            if UnitAffectingCombat('player') then return end
+            if InCombatLockdown() then return end
             WoWTools_MacroMixin:SetMacroTexture(data.icon)
             return MenuResponse.Open
         end, tab)
@@ -455,7 +455,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
 
-        if UnitAffectingCombat('player') then return end
+        if InCombatLockdown() then return end
 
         local text=''
         local macroText2, showName= Get_Spell_Macro(data.name, data.spellID)
@@ -553,7 +553,7 @@ local function Init_SpellBook_Menu(self, root)
         local sub=root:CreateButton(
             e.onlyChinese and '解散水元素' or 'PetDismiss',
         function()
-            if UnitAffectingCombat('player') then return end
+            if InCombatLockdown() then return end
             MacroFrameText:Insert('/script PetDismiss()\n')
             MacroFrameText:SetFocus()
             return MenuResponse.Open
@@ -664,7 +664,7 @@ local function Init_Equip_Menu(_, root)
                     ..(spellID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
 
                 function(data)
-                    if UnitAffectingCombat('player') then return end
+                    if InCombatLockdown() then return end
                     MacroFrameText:Insert((data.spellID and '/use ' or '/equip ')..data.name..'\n')
                     MacroFrameText:SetFocus()
                     return MenuResponse.Open
@@ -714,7 +714,7 @@ local function Init_Chat_Menu(root, listTab)
             sub=root:CreateButton(
                 e.cn(label),
             function(data)
-                if UnitAffectingCombat('player') then return end
+                if InCombatLockdown() then return end
                 MacroFrameText:Insert(data.label..'\n')
                 MacroFrameText:SetFocus()
                 return MenuResponse.Open
@@ -741,7 +741,7 @@ local function Init_MacroList_Menu(_, root)
         sub=root:CreateButton(
             info.text,
         function(data)
-            if not UnitAffectingCombat('player') and data.macro then
+            if not InCombatLockdown() and data.macro then
                 MacroFrameText:Insert(data.macro)
                 MacroFrameText:SetFocus()
             end
@@ -758,7 +758,7 @@ local function Init_MacroList_Menu(_, root)
             sub:CreateButton(
                 macro.text:gsub('\n', ' '),
             function(data)
-                if not UnitAffectingCombat('player') then
+                if not InCombatLockdown() then
                     MacroFrameText:Insert(data.text)
                     MacroFrameText:SetFocus()
                 end

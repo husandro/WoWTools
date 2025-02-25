@@ -20,7 +20,6 @@ local ScrollBoxBackground
 --设置，列表
 local function Init_ChangeTab(self, tabID)
     self.MacroSelector:ClearAllPoints()
-   
 
     local point= Save().toRightLeft
 
@@ -42,7 +41,6 @@ local function Init_ChangeTab(self, tabID)
         self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
         self.MacroSelector:SetPoint('BOTTOMRIGHT', self, 'RIGHT', -6, 0)
     end
-
 
     MacroFrameScrollFrame:ClearAllPoints()
     if point==4 then
@@ -75,7 +73,13 @@ end
 
 
 
-
+local function Set_OnSizeChanged(self)
+    local value= math.max(1, math.modf(self:GetWidth()/49))
+    if self:GetStride()~= value then
+        self:SetCustomStride(value)
+        self:Init()
+    end
+end
 
 
 
@@ -92,10 +96,13 @@ local function Init()
 
 --宏列表，按钮宽，数量
     MacroFrame.MacroSelector:HookScript('OnSizeChanged', function(self)--Blizzard_ScrollBoxSelector.lua
-        local value= math.max(1, math.modf(self:GetWidth()/49))
-        if self:GetStride()~= value then
-            self:SetCustomStride(value)
-            self:Init()
+        if InCombatLockdown() then
+            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+                Set_OnSizeChanged(self)
+                EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+            end)
+        else
+            Set_OnSizeChanged(self)
         end
     end)
 

@@ -459,7 +459,7 @@ WoWTools_MenuMixin:ToTop(root, {
 
 
 function WoWTools_MenuMixin:CheckInCombat(root)
-    if UnitAffectingCombat('player') then
+    if InCombatLockdown() then
         if not root then
             return true
         else

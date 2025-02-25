@@ -150,7 +150,7 @@ local function Init_Menu(_, root)
         sub=root:CreateButton(
             tab.name,
         function(data)
-            if UnitAffectingCombat('player') then
+            if InCombatLockdown() then
                 return
             end
             local index= WoWTools_MacroMixin:GetSelectIndex()

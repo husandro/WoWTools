@@ -41,12 +41,12 @@ function WoWTools_MacroMixin:GetSelectIndex()
 end
 
 function WoWTools_MacroMixin:IsCanCreateNewMacro()
-    return not UnitAffectingCombat('player') and MacroNewButton:IsEnabled()
+    return not InCombatLockdown() and MacroNewButton:IsEnabled()
 end
 
 --修改，当前图标 Blizzard_MacroIconSelector.lua MacroPopupFrameMixin:OkayButton_OnClick()
 function WoWTools_MacroMixin:SetMacroTexture(iconTexture)--修改，当前图标
-    if UnitAffectingCombat('player') or not iconTexture or iconTexture==0 then
+    if InCombatLockdown() or not iconTexture or iconTexture==0 then
         return
     end
     local MacroFrame =MacroFrame
@@ -98,7 +98,7 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
             e.tips:AddLine(body, nil,nil,nil, true)
             e.tips:AddLine(' ')
             if frame~=MacroFrameSelectedMacroButton then
-                local col= UnitAffectingCombat('player') and '|cff9e9e9e' or '|cffffffff'
+                local col= InCombatLockdown() and '|cff9e9e9e' or '|cffffffff'
                 e.tips:AddDoubleLine(
                     col..(e.onlyChinese and '删除' or DELETE),
                     col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
@@ -146,7 +146,15 @@ end
 
 
 
-
+local function Init()
+    WoWTools_MacroMixin:Init_Set_UI()
+    WoWTools_MacroMixin:Init_Button()--宏列表，位置
+    WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
+    WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
+    WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
+    WoWTools_MacroMixin:Init_ChangeTab()
+    WoWTools_MacroMixin:Init_MacroButton_Plus()
+end
 
 
 
@@ -191,15 +199,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_MacroUI' then
-            WoWTools_MacroMixin:Init_Set_UI()
-            WoWTools_MacroMixin:Init_Button()--宏列表，位置
-            WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
-            WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
-            WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
-            WoWTools_MacroMixin:Init_ChangeTab()
-            WoWTools_MacroMixin:Init_MacroButton_Plus()
+            if InCombatLockdown() then
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            else
+                Init()
+            end
             self:UnregisterEvent(event)
         end
+
+    elseif event=='PLAYER_REGEN_ENABLED' then
+        Init()
+        self:UnregisterEvent(event)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

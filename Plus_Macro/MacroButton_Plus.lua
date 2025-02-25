@@ -5,7 +5,7 @@ local e= select(2, ...)
 local function Delete_Macro(self)
     local index= MacroFrame:GetSelectedIndex()
 
-    if UnitAffectingCombat('player')
+    if InCombatLockdown()
         or not MacroDeleteButton:IsEnabled()
         or not index or index~=self.selectionIndex
     then
@@ -64,7 +64,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         '|A:QuestLegendary:0:0|a'..(e.onlyChinese and '修改' or EDIT),
     function()
-        if not UnitAffectingCombat('player') then
+        if not InCombatLockdown() then
             e.call(MacroEditButton_OnClick, MacroFrame, self)
         end
         return MenuResponse.Open
