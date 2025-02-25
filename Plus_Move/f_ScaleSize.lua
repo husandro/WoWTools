@@ -6,6 +6,8 @@ end
 
 
 
+
+
 --保存，大小
 local function Save_Frame_Size(self)
     if self.sizeStopFunc ~= nil then
@@ -58,7 +60,7 @@ end
 --菜单
 local function Init_Menu(self, root)
     local sub, sub2
-    if not self:GetParent():CanChangeAttribute() then
+    if not self:IsCanChange() then
         root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -67,13 +69,16 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(self, root, function()
         return self.targetFrame:GetScale()
     end, function(value)
-        --if self.targetFrame:CanChangeAttribute() then
+        if self:IsCanChange() then
             Save().scale[self.name]=value
             self.targetFrame:SetScale(value)
+        end
     end, function()
-        Save().scale[self.name]=nil
-        if self.scaleRestFunc then
-            self.scaleRestFunc(self)
+        if self:IsCanChange() then
+            Save().scale[self.name]=nil
+            if self.scaleRestFunc then
+                self.scaleRestFunc(self)
+            end
         end
     end)
 
@@ -92,7 +97,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetWidth())
             end, setValue=function(value)
-                --if self.targetFrame:CanChangeAttribute() then
+                if self:IsCanChange() then
                     self.targetFrame:SetWidth(value)
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
@@ -101,6 +106,7 @@ local function Init_Menu(self, root)
                     if self.sizeStopFunc then
                         self:sizeStopFunc()
                     end
+                end
             end,
             name='x',
             minValue=self.minWidth,
@@ -113,8 +119,8 @@ local function Init_Menu(self, root)
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=function()
                 return math.modf(self.targetFrame:GetHeight())
-            end, setValue=function(value)
-                if self.targetFrame:CanChangeAttribute() then
+            end, setValue=function()
+                if self:IsCanChange() then
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
                         self:sizeUpdateFunc()
@@ -150,11 +156,13 @@ local function Init_Menu(self, root)
             return Save().size[self.name]
         end, function()
             Save().size[self.name]=nil
-            if self.sizeRestFunc then--还原
-                self:sizeRestFunc()
-            end
-            if not self.notUpdatePositon then
-                e.call(UpdateUIPanelPositions, self.targetFrame)
+            if self:IsCanChange() then
+                if self.sizeRestFunc then--还原
+                    self:sizeRestFunc()
+                end
+                if not self.notUpdatePositon then
+                    e.call(UpdateUIPanelPositions, self.targetFrame)
+                end
             end
             return MenuResponse.Refresh
         end)
@@ -187,7 +195,7 @@ local function Init_Menu(self, root)
         function()
             return Save().point[self.name]
         end, function()
-            if self.targetFrame.setMoveFrame and not self.targetFrame.notSave then
+            if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and self:IsCanChange() then
                 Save().point[self.name]=nil
                 if self.restPointFunc then
                     self.restPointFunc(self)
@@ -305,7 +313,7 @@ local function Set_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_RIGHT")
     e.tips:ClearLines()
 
-    if not self:CanChangeAttribute() then
+    if not self:IsCanChange() then
         e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
         e.tips:Show()
         return
@@ -384,7 +392,7 @@ local function Set_Enter(btn)
             end)
         end
     end
-    
+
     btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         ResetCursor()
@@ -438,7 +446,8 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive or not self.targetFrame:CanChangeAttribute() then
+    if self.isActive then
+    elseif InCombatLockdown() and self:IsProtected() then
         return
     end
 
@@ -451,10 +460,13 @@ local function Set_OnMouseDown(self, d)
         self.SOS.EFscale = target:GetEffectiveScale()
         self.SOS.dist = GetScaleDistance(self.SOS)
         self:SetScript("OnUpdate", function(frame2)
+            if InCombatLockdown() and self:IsProtected() then
+                return
+            end
             local SOS= frame2.SOS
             local distance= GetScaleDistance(SOS)
             local scale2 = distance/SOS.dist*SOS.scale
-            if scale2 < 0.4 then -- clamp min and max scale
+            if scale2 < 0.4 then
                 scale2 = 0.4
             elseif scale2 > 2.5 then
                 scale2 = 2.5
@@ -506,18 +518,7 @@ end
 
 
 
-
-
-
-
-
-
-
-
-local function Set_OnShow(self)
-    if not self:CanChangeAttribute() then
-        return
-    end
+local function set_sizescale_on_show(self)
     local name2= self:GetName()
     local scale2= Save().scale[name2]
     if scale2 then
@@ -531,11 +532,22 @@ local function Set_OnShow(self)
     end
 end
 
+local function Set_OnShow(self)
+    if self:IsProtected() and InCombatLockdown() then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, frame)
+            set_sizescale_on_show(frame)
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end, nil, self)
+    else
+        set_sizescale_on_show(self)
+    end
+end
+
 
 
 
 local function Set_Init_Frame(btn, target, size, initFunc)
-    if target:IsProtected() then--not InCombatLockdown() or not sel:IsProtected() 
+    if target:IsProtected() and InCombatLockdown() then--not InCombatLockdown() or not sel:IsProtected() 
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
             if tab.size then
                 tab.target:SetSize(tab.size[1], tab.size[2])
@@ -551,7 +563,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc=initFunc
         })
         if e.Player.husandro then
-            print(target:GetName(), '|cnRED_FONT_COLOR:不能执行')
+            print(WoWTools_MoveMixin.addName, issecure(), target:GetName(), '|cnRED_FONT_COLOR:不能执行')
         end
     else
         if size then
@@ -561,7 +573,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             initFunc(btn)
         end
         if e.Player.husandro then
-            print(target:GetName(), '|cnGREEN_FONT_COLOR:执行')
+            print(WoWTools_MoveMixin.addName, issecure(), target:GetName(), '|cnGREEN_FONT_COLOR:执行')
         end
     end
 end
@@ -603,15 +615,20 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     local btn=_G['WoWToolsResizeButton'..name]
     if not btn then
-        btn= CreateFrame('Button', _G['WoWToolsResizeButton'..name], frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+        btn= CreateFrame('Button','WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
         btn:SetFrameStrata('DIALOG')
         btn:SetFrameLevel(frame:GetFrameLevel()+7)---9999)
         btn:Raise()
         btn:SetSize(16, 16)
+
         if setResizeButtonPoint then
             btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
         else
             btn:SetPoint('BOTTOMRIGHT', frame)--m, 6,-6)
+        end
+
+        function btn:IsCanChange()
+            return not self.targetFrame:IsProtected() or not InCombatLockdown()
         end
     end
 
@@ -673,7 +690,14 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     local scale= Save().scale[name]
     if scale and scale~=1 then
-        frame:SetScale(scale)
+        if InCombatLockdown() and frame:IsProtected() then
+            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, info)
+                info.frame:SetScale(info.scale)
+                EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+            end, nil, {frame=frame, scale= scale})
+        else
+            frame:SetScale(scale)
+        end
     end
 
     btn:SetScript("OnMouseUp", function(s, d)

@@ -11,10 +11,6 @@ end
 
 
 
-
-
-
-
 --移动, 位置
 local function Set_Frame_Point(frame, name)--设置, 移动, 位置
     if not frame
@@ -29,8 +25,10 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
     local p= Save().point[name]
     if p and p[1] and p[3] and p[4] and p[5] then
         local target= frame.targetFrame or frame
-        if target:IsProtected() then
-            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
+
+        if target:IsProtected() and InCombatLockdown() then
+
+            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)
                 target:ClearAllPoints()
                 target:SetPoint(tab.p[1], UIParent, tab.p[3], tab.p[4], tab.p[5])
                 EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
@@ -38,6 +36,7 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
                 target=target,
                 p=p,
             })
+
         else
             target:ClearAllPoints()
             target:SetPoint(p[1], UIParent, p[3], p[4], p[5])
