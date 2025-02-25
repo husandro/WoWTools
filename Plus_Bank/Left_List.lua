@@ -134,7 +134,7 @@ local function Set_Label()
             btn.Text:SetTextColor(1,0.82,0)
             btn:SetAlpha(1)
         end
-        
+
         width= btn.Text:GetWidth()+btn.Label:GetWidth()
         btn:SetWidth(width+4)
         maxWidth= math.max(width, maxWidth)
