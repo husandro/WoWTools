@@ -81,7 +81,7 @@ function WoWTools_BagMixin:GetItems(all)
     local num= NUM_BAG_FRAMES+ (all and NUM_REAGENTBAG_FRAMES or 0)
     for bag= BACKPACK_CONTAINER, num do--0-5
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+            local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID then
                 table.insert(Tabs, 1, {
                     info=info,
@@ -91,4 +91,5 @@ function WoWTools_BagMixin:GetItems(all)
             end
         end
     end
+    return Tabs
 end

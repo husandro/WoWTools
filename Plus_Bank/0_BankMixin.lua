@@ -43,9 +43,18 @@ function WoWTools_BankMixin:GetFree(index)
 end
 
 
+
+function WoWTools_BankMixin:GetBagAndSlot(button)
+    return button.isBag and Enum.BagIndex.Bankbag
+        or button:GetParent():GetID(),
+
+        button:GetID()
+end
+
+
 function WoWTools_BankMixin:GetItemInfo(button)
     if button then
-        local bag, slot= C_Container.GetContainerItemInfo(self:GetBagAndSlot(button))
+        local bag, slot= self:GetBagAndSlot(button)
         if bag and slot then
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID then
@@ -56,12 +65,6 @@ function WoWTools_BankMixin:GetItemInfo(button)
 end
 
 
-function WoWTools_BankMixin:GetBagAndSlot(button)
-    return button.isBag and Enum.BagIndex.Bankbag
-        or button:GetParent():GetID(),
-
-        button:GetID()
-end
 
 
 function WoWTools_BankMixin:GetItems(index)--从最后，到第一

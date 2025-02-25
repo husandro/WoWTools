@@ -20,8 +20,9 @@ local function Take_Item(isOutItem, classID, subClassID)
     isRun= true
 
     local free= isOutItem
-            and WoWTools_BagMixin:GetFree(ListButton.isReagent)--背包，空位
-            or WoWTools_BankMixin:GetFree()--银行，空位
+            and WoWTools_BankMixin:GetFree()--银行，空位
+            or WoWTools_BagMixin:GetFree(true)--背包，空位
+
 
     if free==0 then
         isRun=nil
@@ -29,10 +30,11 @@ local function Take_Item(isOutItem, classID, subClassID)
     end
 
     local Tabs= isOutItem
-            and WoWTools_BankMixin:GetItems(nil)
-            or WoWTools_BagMixin:GetItems(ListButton.isReagent)
+            and WoWTools_BankMixin:GetItems(BankFrame.activeTabIndex)
+            WoWTools_BagMixin:GetItems(true)
 
-    for _, data in pairs(Tabs) do
+    for _, data in pairs(Tabs or {}) do
+
         if IsModifierKeyDown() or free<=0 then
             isRun=nil
             return
@@ -43,7 +45,7 @@ local function Take_Item(isOutItem, classID, subClassID)
                 if classID== classID2
                     and (
                         subClassID==subClassID2
-                        or not subClassID2
+                        or not subClassID
                     )
                 then
                     C_Container.UseContainerItem(data.bag, data.slot)
@@ -237,12 +239,14 @@ local function Set_Label()
     local Tabs
     if isBank then
         Tabs= WoWTools_BankMixin:GetItems(1)
+
     elseif isReagent then
         Tabs= WoWTools_BankMixin:GetItems(2)
 --战团银行
     elseif isAccount  then
         Tabs= WoWTools_BankMixin:GetItems(3)
     end
+
 
     for _, data in pairs(Tabs or {}) do
         if not data.info.isLocked then
@@ -256,13 +260,15 @@ local function Set_Label()
             end
         end
     end
-    
+
     --背包+材料包
     if isBank or isReagent or isAccount then
         Tabs= WoWTools_BagMixin:GetItems(true)
+
         for _, data in pairs(Tabs or {}) do
             if not data.info.isLocked then
                 local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+
                 if isReagent then--材料银行
                     if classID==7 and subClassID then
                         bagClass[subClassID]= (bagClass[subClassID] or 0)+ (data.info.stackCount or 1)
