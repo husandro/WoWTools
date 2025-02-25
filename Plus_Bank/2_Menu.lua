@@ -68,6 +68,16 @@ local function Init_Menu(self, root)
         WoWTools_BankMixin:Init_Left_List()
     end)
 
+--左边列表
+    sub=root:CreateCheckbox(e.onlyChinese and '物品列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, TYPE), function()
+        return Save().left_List
+    end, function()
+        Save().left_List= not Save().left_List and true or nil
+        WoWTools_BankMixin:Init_Left_List()--分类，存取,
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine('ItemClassID List')
+    end)
 
     local isEnabled= BankFrame.activeTabIndex==1
     local function settings(desc)
@@ -82,7 +92,7 @@ local function Init_Menu(self, root)
 
 --银行背包
     sub=root:CreateCheckbox(
-        '1 '..(e.onlyChinese and '银行背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BANK,BAGSLOT)),
+        '1 '..(e.onlyChinese and '银行背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BANK, BAGSLOT)),
     function()
         return not Save().disabledBankBag
     end, function()
@@ -122,14 +132,7 @@ local function Init_Menu(self, root)
     settings(sub)
 
 
---行数
-    sub=root:CreateCheckbox(e.onlyChinese and '左边列表' or 'Left List', function()
-        return Save().left_List
-    end, function()
-        Save().left_List= not Save().left_List and true or nil
-        WoWTools_BankMixin:Init_Left_List()--分类，存取,
-    end)
-    sub:SetEnabled(isEnabled)
+
 
 --行数
     root:CreateSpacer()

@@ -1,6 +1,11 @@
-WoWTools_BankMixin={
-
-}
+--[[
+	Enum.BankType = {
+		Character = 0,
+		Guild = 1,
+		Account = 2,
+	},
+]]
+WoWTools_BankMixin={}
 
 
 

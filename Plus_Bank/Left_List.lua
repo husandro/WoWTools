@@ -1,8 +1,10 @@
-local e= select(2, ...)
 
+--存取，分类，按钮
+local e= select(2, ...)
 local function Save()
     return WoWTools_BankMixin.Save
 end
+
 local ListButton
 local Buttons={}
 local isRun
@@ -24,7 +26,6 @@ local function Take_Item(isOutItem, classID, subClassID)
             and WoWTools_BankMixin:GetFree()--银行，空位
             or WoWTools_BagMixin:GetFree(isBagAllItem)--背包，空位
 
-
     if free==0 then
         isRun=nil
         return
@@ -34,6 +35,13 @@ local function Take_Item(isOutItem, classID, subClassID)
             and WoWTools_BankMixin:GetItems(BankFrame.activeTabIndex)
             or WoWTools_BagMixin:GetItems(isBagAllItem)
 
+    if not Tabs then
+        isRun=nil
+        return
+    end
+
+    local bankType= ListButton.isAccount and Enum.BankType.Account or Enum.BankType.Character
+    local reagentBankOpen= ListButton.isReagent and true or false
 
     for _, data in pairs(Tabs or {}) do
 
@@ -50,7 +58,10 @@ local function Take_Item(isOutItem, classID, subClassID)
                         or not subClassID
                     )
                 then
-                    C_Container.UseContainerItem(data.bag, data.slot)
+
+                    do
+                        C_Container.UseContainerItem(data.bag, data.slot, nil, bankType, reagentBankOpen)
+                    end
                     free= free-1
                 end
             end
@@ -102,11 +113,13 @@ local function Create_ListButton(index)
         local name= self.subClassID
             and C_Item.GetItemSubClassInfo(self.classID, self.subClassID)
             or C_Item.GetItemClassInfo(self.classID)
-        self.Text:SetText(e.cn(name) or (self.classID..(self.subClassID and '-'..self.subClassID or '')))
+        name= e.cn(name)
+        name= name..' '..(self.subClassID or self.classID)
+        self.Text:SetText(name or '')
     end
 
     function btn:set_tooltip()
-        e.tips:SetOwner(self.Label, "ANCHOR_LEFT")
+        e.tips:SetOwner(self:GetParent().Background, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
         e.tips:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
@@ -175,26 +188,29 @@ local function Init_Button_List(isBank, isReagent, isAccount)
     local num=0
     if isBank or isAccount then
         for index, classID in pairs({0, 1, 2, 3, 4, 5, 7, 8, 9, 12, 13, 15, 16, 17}) do
+            num= index
             local btn= Buttons[index] or Create_ListButton(index)
             btn.classID= classID
             btn.subClassID= nil
             btn:set_text()
             btn:SetShown(true)
-            num= index
         end
     elseif isReagent then
         for index= 0, 19 do
-            local btn= Buttons[index] or Create_ListButton(index)
+            num= num+1
+            local btn= Buttons[num] or Create_ListButton(num)
             btn.classID= 7
             btn.subClassID= index
             btn:set_text()
             btn:SetShown(true)
-            num= index
         end
     end
 
 --背景,设置右下角 frame.Background
-    ListButton.frame.Background:SetPoint('BOTTOMRIGHT', Buttons[num] or ListButton, 2, -2)
+    --ListButton.frame.Background:SetPoint('BOTTOMRIGHT', Buttons[num] or ListButton, 2, -2)
+    ListButton.frame.Background:SetHeight(num*23+4)
+    ListButton.frame.Background:SetShown(num>0)
+    
 
 --隐藏，并清除数据
     for index= num+1, #Buttons do
@@ -263,7 +279,7 @@ local function Set_Label()
         end
     end
 
-    --背包+材料包
+--背包+材料包
     if isBank or isReagent or isAccount then
         Tabs= WoWTools_BagMixin:GetItems(true)
 
@@ -282,7 +298,8 @@ local function Set_Label()
         end
     end
 
-    local maxWidth= 0--背景
+--背景
+    local maxWidth= 0
     local bank,bag,width
     for _, btn in pairs(Buttons) do
         if btn.subClassID then
@@ -312,7 +329,7 @@ local function Set_Label()
     end
 
 --背景,设置左边
-    ListButton.frame.Background:SetWidth(maxWidth+8)
+    ListButton.frame.Background:SetWidth(maxWidth==0 and 0 or maxWidth+8)
 
     ListButton.isBank= isBank
     ListButton.isReagent= isReagent
@@ -346,39 +363,10 @@ end
 
 
 
-local function Init_Menu(self, root)
-    local sub
-    root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
-    function()
-        return Save().showLeftList
-    end, function()
-        Save().showLeftList= not Save().showLeftList and true or nil
-        self:Settings()
-        self:set_tooltip()
-    end)
-
-    root:CreateDivider()
---打开选项界面
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
-
---缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save().leftListScale or 1
-    end, function(value)
-        Save().leftListScale= value
-        self:Settings()
-    end)
-end
 
 
 
 
-
-
-
-
---大包时，显示，存取，分类，按钮
 
 local function Init()
     --ListButton= WoWTools_ButtonMixin:Cbtn(BankFrame, {size=23, icon='hide', name='WoWTools_BankMixinLeftListButton'})
@@ -386,12 +374,24 @@ local function Init()
         name='WoWToolsBankLeftListButton',
         hideIcon=true,
         atlas='NPE_ArrowDownGlow',
-        color=true,
     })
 
-    ListButton.Text= WoWTools_LabelMixin:Create(ListButton, {justifyH='RIGHT'})
+--提示，当前银行，类型
+    ListButton.Text= WoWTools_LabelMixin:Create(ListButton, {justifyH='RIGHT', color=true})
     ListButton.Text:SetPoint('RIGHT', -2,0)
 
+--控制Frame
+    ListButton.frame=CreateFrame('Frame', nil, ListButton)
+    ListButton.frame:SetPoint('BOTTOMRIGHT')
+    ListButton.frame:SetSize(1,1)
+    ListButton.frame:Hide()
+
+--显示背景 frame.Background
+    ListButton.frame.Background= ListButton.frame:CreateTexture(nil, 'BACKGROUND')
+    ListButton.frame.Background:SetPoint('TOPRIGHT', 2, 1)--右上角
+    ListButton.frame.Background:EnableMouse(true)
+
+--提示，当前银行，类型
     function ListButton:set_bank_type()
         if not self.frame:IsVisible() then
             self.Text:SetText('')
@@ -410,19 +410,13 @@ local function Init()
 
 
 
-    ListButton.frame=CreateFrame('Frame', nil, ListButton)
-    ListButton.frame:SetPoint('BOTTOMRIGHT')
-    ListButton.frame:SetSize(1,1)
-    ListButton.frame:Hide()
-
-
     function ListButton:Settings()
         local show= Save().left_List
         local showLeftList= Save().showLeftList
         if show and showLeftList then
             local showBackground= Save().showBackground
             self.frame.Background:SetAtlas(showBackground and 'bank-frame-background' or 'UI-Frame-DialogBox-BackgroundTile')
-            self.frame.Background:SetAlpha(showBackground and 1 or 0.3)
+            self.frame.Background:SetAlpha(showBackground and 1 or 0.7)
             self.frame:SetScale(Save().leftListScale or 1)
         else
             self.Text:SetText('')
@@ -457,7 +451,6 @@ local function Init()
         self:SetAlpha(1)
     end)
 
-    ListButton:SetupMenu(Init_Menu)
 
 
 
@@ -465,10 +458,40 @@ local function Init()
 
 
 
---显示背景 frame.Background
-    ListButton.frame.Background= ListButton.frame:CreateTexture(nil, 'BACKGROUND')
-    ListButton.frame.Background:SetPoint('TOPRIGHT', 2, 1)--右上角
-    ListButton.frame.Background:EnableMouse(true)
+
+
+--菜单
+    ListButton:SetupMenu(function(self, root)
+        local sub
+        root:CreateCheckbox(
+            e.onlyChinese and '显示' or SHOW,
+        function()
+            return Save().showLeftList
+        end, function()
+            Save().showLeftList= not Save().showLeftList and true or nil
+            self:Settings()
+            self:set_tooltip()
+            if Save().showLeftList then
+                Set_Label()
+            end
+        end)
+
+        root:CreateDivider()
+    --打开选项界面
+        sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
+
+    --缩放
+        WoWTools_MenuMixin:Scale(self, sub, function()
+            return Save().leftListScale or 1
+        end, function(value)
+            Save().leftListScale= value
+            self:Settings()
+        end)
+    end)
+
+
+
+
 
 
 
@@ -503,11 +526,16 @@ end
 
 
 
---分类，存取,
+
+
+
+
+--存取，分类，按钮
 function WoWTools_BankMixin:Init_Left_List()
     if self.Save.left_List and not ListButton then
         Init()
     elseif ListButton then
         ListButton:Settings()
+        Set_Label()
     end
 end

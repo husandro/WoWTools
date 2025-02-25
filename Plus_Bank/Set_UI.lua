@@ -33,9 +33,9 @@ local function Init_BankSlotsFrame()
                     self:show_tooltips()
                     return
                 end
-                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
-                if info.itemID then
-                    C_Container.UseContainerItem(bag, slot)
+                local info = C_Container.GetContainerItemInfo(bag, slot)
+                if info and info.itemID and not info.isLocked then
+                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
                     free= free-1
                 end
             end
@@ -48,9 +48,9 @@ local function Init_BankSlotsFrame()
             end
             local bag, slot= WoWTools_BankMixin:GetBagAndSlot(BankSlotsFrame["Item"..i])
             if bag and slot then
-                local info= C_Container.GetContainerItemInfo(bag, slot) or {}
-                if info.itemID then
-                    C_Container.UseContainerItem(bag, slot)
+                local info= C_Container.GetContainerItemInfo(bag, slot)
+                if info and info.itemID and not info.isLocked then
+                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
                     free= free-1
                 end
             end
@@ -92,8 +92,8 @@ local function Init_BankSlotsFrame()
                     return
                 end
                 local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.hyperlink and not select(17, C_Item.GetItemInfo(info.hyperlink)) then
-                    C_Container.UseContainerItem(bag, slot)
+                if info and info.hyperlink and not info.isLocked and not select(17, C_Item.GetItemInfo(info.hyperlink)) then
+                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
                     free= free-1
                 end
             end
@@ -230,9 +230,9 @@ local function Init_ReagentBankFrame()
             end
             local bag, slot= WoWTools_BankMixin:GetBagAndSlot(frame)
             if bag and slot then
-                local info= C_Container.GetContainerItemInfo(bag, slot) or {}
-                if info.itemID then
-                    C_Container.UseContainerItem(bag, slot)
+                local info= C_Container.GetContainerItemInfo(bag, slot)
+                if info and info.itemID and not info.isLocked then
+                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
                     free= free-1
                 end
             end
@@ -331,9 +331,9 @@ local function Init_AccountBankPanel()
                 local bag, slot= btn:GetBankTabID(), btn:GetContainerSlotID()
                 if bag and slot then
                     local info= C_Container.GetContainerItemInfo(bag, slot)
-                    if info and info.itemID and (isAll or not select(10, C_Item.GetItemInfo(info.itemID))) then
+                    if info and info.itemID and (isAll or not select(17, C_Item.GetItemInfo(info.itemID))) then
                         do
-                            C_Container.UseContainerItem(bag, slot)
+                            C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Account, false)
                         end
                         free= free-1
                     end
@@ -459,6 +459,8 @@ local function Init_AccountBankPanel()
     icon:SetPoint('RIGHT', AccountBankPanelGoldButton, 'LEFT', 0,2)
     icon:SetSize(16,16)
     icon:SetAtlas('questlog-questtypeicon-account')
+
+    --C_Bank.DepositMoney(Enum.BankType.Account, 1000)
 end
 
 
