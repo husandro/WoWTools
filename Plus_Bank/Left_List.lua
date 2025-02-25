@@ -243,7 +243,7 @@ local function Set_Label()
 
     local isBank= index==1
     local isReagent= index==2 and IsReagentBankUnlocked()
-    local isAccount= index==3 and AccountBankPanel.PurchaseTab:IsSelected() and not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
+    local isAccount= index==3 and not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
 
     Init_Button_List(isBank, isReagent, isAccount)
 

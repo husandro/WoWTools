@@ -188,15 +188,10 @@ end
 
 
 
-
---self.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(self.bankType)
-
-
 --AccountBankPanel.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(2)
 
 local function Set_AccountBankPanel(index)
-
-    if Save().disabledAccountBag  or (AccountBankPanel.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(Enum.BankType.Account)) then
+    if Save().disabledAccountBag or C_Bank.CanPurchaseBankTab(Enum.BankType.Account) then
         return
     end
 
