@@ -250,8 +250,10 @@ local function Init_Menu_Toy(_, root)
                 return ToyButton.itemID==data.itemID
             end, function(data)
                 if data.has then
-                    local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
-                    ToyButton:Set_SelectValue_Random(toy)
+                    if not Save.lockedToy then
+                        local toy= ToyButton.Selected_Value~=data.itemID and data.itemID or nil
+                        ToyButton:Set_SelectValue_Random(toy)
+                    end
                 end
                 return MenuResponse.Refresh
             end,
@@ -267,9 +269,8 @@ local function Init_Menu_Toy(_, root)
             return Save.lockedToy==data.itemID
         end, function(data)
             if data.has then
-                local toy= Save.lockedToy~=data.itemID and itemID or nil
-                Save.lockedToy= toy
-                ToyButton:Set_LockedValue_Random(toy)
+                Save.lockedToy= Save.lockedToy~=data.itemID and itemID or nil
+                ToyButton:Init_Random(Save.lockedToy)
             end
             return MenuResponse.Refresh
         end, {itemID=itemID, name=toyName, has=has})
@@ -277,12 +278,13 @@ local function Init_Menu_Toy(_, root)
 
 --设置
         sub2=sub:CreateButton(
-            '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+            '|A:common-icon-zoomin:0:0|a'
+            ..MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"),
             set_ToggleCollectionsJournal,
             {itemID=itemID, name=toyName}
         )
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+            tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
         end)
 
         Set_Alt_Menu(sub, itemID)
@@ -299,8 +301,8 @@ local function Init_Menu_Toy(_, root)
         )
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
-    --WoWTools_MenuMixin:SetGridMode(root, index)
-    WoWTools_MenuMixin:SetScrollMode(root, Save.numButton)
+
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
@@ -382,12 +384,12 @@ local function Init_Menu(self, root)
 --设置
     sub:CreateDivider()
     sub2=sub:CreateButton(
-        '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
-        set_ToggleCollectionsJournal,
-        {}
+        '|A:common-icon-zoomin:0:0|a'
+        ..MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"),
+        set_ToggleCollectionsJournal
     )
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+        tooltip:AddLine((e.onlyChinese and '设置' or SETTINGS))
     end)
 
 --设置捷键
@@ -404,24 +406,7 @@ local function Init_Menu(self, root)
         end,
     })
 
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save.numButton or 35
-        end, setValue=function(value)
-            Save.numButton= math.floor(value)
-            WoWTools_MenuMixin:SetScrollMode(root, Save.numButton)
-        end,
-        name= e.onlyChinese and '按钮' or 'Button',
-        minValue=5,
-        maxValue=50,
-        step=1,
-        bit=nil,
-        tooltip=function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '按钮数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Button', AUCTION_HOUSE_QUANTITY_LABEL))
-        end,
-    })
-    sub:CreateSpacer()
+
 
 
     root:CreateDivider()
@@ -668,7 +653,7 @@ local function Init()
             end
         end)
         if self:CanChangeAttribute() then
-            local itemID= get_not_cooldown_toy()--发现就绪
+            local itemID= Save.lockedToy or get_not_cooldown_toy()--发现就绪
             if itemID then
                 self.Selected_Value=itemID
                 self:Set_Random_Value(itemID)
@@ -743,7 +728,7 @@ local function Init()
         self.text:SetText(self.Random_Numeri>0 and self.Random_Numeri or '')
     end
     function ToyButton:Set_OnlyOneValue_Random()--当数据 <=1 时，设置值
-        self:Set_Random_Value(self.Selected_Value or self.Locked_Value or self.Random_List[1] or 6948)
+        self:Set_Random_Value( self.Locked_Value or self.Selected_Value or self.Random_List[1] or 6948)
     end
 
     ToyButton:Init_Random(Save.lockedToy)--初始
