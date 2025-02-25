@@ -637,6 +637,7 @@ ChatButton\1_HyperLink.lua
 ChatButton\2_Roll.lua
 
 ##标记
+ChatButton_3_Markers\0_MarkerMixin.lua
 ChatButton_3_Markers\3_Markers.lua
 ChatButton_3_Markers\AutoReady.lua
 ChatButton_3_Markers\Tank_Healer.lua

@@ -10,10 +10,9 @@ end
 local function Init()
 
     WoWTools_MoveMixin:Setup(BankFrame, {setSize=true, needSize=true, needMove=true, minW=80, minH=140,
-        sizeUpdateFunc= function()
+        sizeUpdateFunc= function(...)
             local h= math.ceil((BankFrame:GetHeight()-108)/(Save().line+37))
             Save().num= h
-            print(h)
         end, sizeRestFunc= function()
             Save().num=15
             WoWTools_BankMixin:Init_Plus()

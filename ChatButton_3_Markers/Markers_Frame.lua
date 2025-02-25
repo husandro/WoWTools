@@ -714,13 +714,14 @@ local function Init()--设置标记, 框架
             if self.index==0 then
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
             else
+                local color= WoWTools_MarkerMixin:SetColor(self.index2)
                 e.tips:AddLine(
-                    WoWTools_MarkerMixin.Color[self.index2].col
+                    color.col
                     ..e.Icon.left
                     ..(e.onlyChinese and '设置' or SETTINGS)
                     ..e.Get_RaidTargetTexture(self.index2))
 
-                    e.tips:AddLine(e.Icon.right..WoWTools_MarkerMixin.Color[self.index2].col
+                    e.tips:AddLine(e.Icon.right..color.col
                     ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     ..'|A:bags-button-autosort-up:0:0|a'
                 )
@@ -735,7 +736,9 @@ local function Init()--设置标记, 框架
             btn:SetPushedAtlas('Forge-ColorSwatchHighlight')
             btn.texture=btn:CreateTexture(nil,'BACKGROUND')
             btn.texture:SetAllPoints()
-            btn.texture:SetColorTexture(WoWTools_MarkerMixin.Color[index].r, WoWTools_MarkerMixin.Color[index].g, WoWTools_MarkerMixin.Color[index].b)
+
+            local col= WoWTools_MarkerMixin:SetColor(index)
+            btn.texture:SetColorTexture(col.r, col.g, col.b)
             btn.texture:SetAlpha(0.3)
 
             btn.elapsed=2

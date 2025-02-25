@@ -13,7 +13,7 @@ end
 
 
 
-local function Init_RaidTarget_Menu(self, root)
+local function Init_RaidTarget_Menu(_, root)
     local sub
 
     local function restGroup()
@@ -94,7 +94,7 @@ local function Init_RaidTarget_Menu(self, root)
         sub:AddInitializer(function(button, desc)
             local index=Save()[desc.data.type]
             button.fontString:SetText(
-                (index and WoWTools_MarkerMixin.Color[index].col or '')
+                (index and WoWTools_MarkerMixin:SetColor(index).col or '')
                 ..desc.data.text
                 ..(index and '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t' or '')
             )
@@ -105,6 +105,7 @@ local function Init_RaidTarget_Menu(self, root)
         for i=1, NUM_RAID_ICONS do
             sub=root:CreateRadio(
                 '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..i..':0|t'
+                ..WoWTools_MarkerMixin:SetColor(i).col
                 ..e.cn(_G['RAID_TARGET_'..i]),
             function(data)
                 return Save()[data.type]==data.index
@@ -130,11 +131,6 @@ local function Init_RaidTarget_Menu(self, root)
             sub:AddInitializer(function(button, desc)
                 local index= desc.data.index
                 button.fontString:SetAlpha(desc.data.check(index) and 1 or 0.3)
-                --[[if desc.data.check(index) then
-                    button.fontString:SetTextColor(WoWTools_MarkerMixin.Color[index].r, WoWTools_MarkerMixin.Color[index].g, WoWTools_MarkerMixin.Color[index].b)
-                else
-                    button.fontString:SetTextColor(0.62, 0.62, 0.62)
-                end]]
             end)
         end
     end
@@ -175,58 +171,6 @@ local function Init_Menu(self, root)
 
 
     Init_RaidTarget_Menu(self, sub)
-
-
-
-
-
-
-
-
---我
-    --[[sub2=sub:CreateButton(
-    '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), function()
-        Save().isSelf= 4
-        WoWTools_MarkerMixin.TankHealerFrame:on_click()
-        WoWTools_MarkerMixin.MarkerButton:settings()
-        return MenuResponse.Refresh
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '重置' or RESET)
-        tooltip:AddLine(e.onlyChinese and '不在队伍' or PARTY_LEAVE)
-    end)
-    sub:CreateDivider()
-    for i=1, NUM_RAID_ICONS do
-        sub2=sub:CreateCheckbox(
-            WoWTools_MarkerMixin.Color[i].col
-            ..'|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..i..':0|t'..e.cn(_G['RAID_TARGET_'..i]),
-        function(data)
-            return Save().isSelf==data.index
-        end, function(data)
-            Save().isSelf= Save().isSelf~= data.index and data.index or nil
-            if not Save().isSelf then
-                WoWTools_MarkerMixin:Set_Taget('player', 0)
-            else
-                WoWTools_MarkerMixin.TankHealerFrame:on_click()
-            end
-            WoWTools_MarkerMixin.MarkerButton:settings()
-            return MenuResponse.Refresh
-        end, {index=i})
-        sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(e.onlyChinese and '不在队伍' or PARTY_LEAVE)
-            tooltip:AddLine(description.data.index)
-        end)
-    end]]
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -386,6 +386,7 @@ local function Init()
         name='WoWToolsBankLeftListButton',
         hideIcon=true,
         atlas='NPE_ArrowDownGlow',
+        color=true,
     })
 
     ListButton.Text= WoWTools_LabelMixin:Create(ListButton, {justifyH='RIGHT'})
