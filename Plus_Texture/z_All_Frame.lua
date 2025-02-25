@@ -391,10 +391,10 @@ C_Timer.After(1, function()
     mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
 
 
-    --ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    --ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    ContainerFrameCombinedBags.Bg.BottomLeft:Hide()
-    ContainerFrameCombinedBags.Bg.BottomRight:Hide()
+    ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.BottomLeft)
+    mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.BottomRight)
     mixin:SetFrame(ContainerFrameCombinedBags.Bg)
     mixin:SetAlphaColor(BagItemSearchBox.Middle)
     mixin:SetAlphaColor(BagItemSearchBox.Left)
@@ -403,9 +403,6 @@ C_Timer.After(1, function()
      for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
          local frame= _G['ContainerFrame'..i]
          if frame then
-            --mixin:SetAlphaColor(frame.Bg.TopSection, true)
-            --frame.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-            --frame.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
             mixin:SetColorTexture(frame.Bg.BottomLeft)
             mixin:SetColorTexture(frame.Bg.BottomRight)
             frame.Bg:SetFrameStrata('LOW')
@@ -413,15 +410,7 @@ C_Timer.After(1, function()
             mixin:SetFrame(frame.Bg)
          end
     end
-    end)
-     --[[for i=1,  NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES do--10.25 出现错误
-        local frame= _G['ContainerFrame'..i]
-        if frame and frame.Bg and frame.Bg:GetObjectType()=='Frame' then
-            frame.Bg:SetFrameStrata('BACKGROUND')
-            mixin:SetFrame(frame.Bg)
-        end
-    end]]
-
+end)
 
 
 

@@ -11,23 +11,6 @@ local NumLeftButton=0
 local NumReagentLeftButton=0
 local NumAccountLeftButton=0
 
---[[local function Get_Frame_Size(index)
-    index= index or BankFrame.activeTabIndex or 1
-    if index==1 then
-        local x= NumLeftButton + NumReagentLeftButton+ NumAccountLeftButton
-        local line= Save().line
-        local y =Save().num
-
-        return x*(37+line)+14, y*(37+line) + 108
-    else
-        return 738, 460
-    end
-end
-
-
-local function Set_Frame_Size(index)
-    BankFrame:SetSize(Get_Frame_Size(index))
-end]]
 
 
 local function Set_Frame_Size(index)
@@ -83,9 +66,6 @@ local function Set_BankSlotsFrame(index)
         return
     end
 
-
-
---btn:SetPoint('TOPLEFT', 8,-60)
     local tab={}
 
 --基础包
@@ -97,7 +77,6 @@ local function Set_BankSlotsFrame(index)
             table.insert(tab, btn)
         end
     end
-
 
 --背包
     if not Save().disabledBankBag then
@@ -140,7 +119,6 @@ local function Set_BankSlotsFrame(index)
         end
         Set_IndexLabel(btn, i)--索引，提示
     end
-
 end
 
 

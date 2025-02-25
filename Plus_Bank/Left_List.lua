@@ -3,7 +3,8 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_BankMixin.Save
 end
-
+local ListButton
+local Buttons={}
 
 
 
@@ -24,7 +25,7 @@ local function take_out_item(classID)
                 return
             end
             local info = C_Container.GetContainerItemInfo(bag, slot) or {}
-            if info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
+            if info.itemID  and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
                 C_Container.UseContainerItem(bag, slot)
                 free= free-1
             end
@@ -63,7 +64,7 @@ local function desposit_item(classID)
                 return
             end
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
+            if info and info.itemID and not info.isLocked and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
                 C_Container.UseContainerItem(bag, slot)
                 free= free-1
             end
@@ -76,11 +77,83 @@ end
 
 
 
+local function Set_Label(self)
+    if self.isRun then return end
+
+    self.isRun=true
+
+    local bankClass={}
+    for i=1, NUM_BANKGENERIC_SLOTS do--28
+        local itemInfo= WoWTools_BankMixin:GetItemInfo(BankSlotsFrame["Item"..i])
+        if itemInfo then
+            local classID = select(6, C_Item.GetItemInfoInstant(itemInfo.itemID))
+            bankClass[classID]= (bankClass[classID] or 0)+ (itemInfo.stackCount or 1)
+        end
+    end
+
+    for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
+        for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
+            local info = C_Container.GetContainerItemInfo(bag, slot)
+            if info and info.itemID then
+                local classID = select(6, C_Item.GetItemInfoInstant(info.itemID))
+                bankClass[classID]= (bankClass[classID] or 0)+ (info.stackCount or 1)
+            end
+        end
+    end
+
+    local bagClass={}
+    for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES do
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+            local classID = info.itemID and not info.isLocked and select(6, C_Item.GetItemInfoInstant(info.itemID))
+            if classID then
+                bagClass[classID]= (bagClass[classID] or 0)+ (info.stackCount or 1)
+            end
+        end
+    end
+
+
+    local maxWidth= 0--背景
+    for _, btn in pairs(Buttons) do
+        local bank= bankClass[btn.classID] or 0
+        local bag= bagClass[btn.classID] or 0
+
+        btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a'
+        btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a'
+
+        if bank==0 and bag==0 then
+            btn.Label:SetText('')
+            btn.Text:SetTextColor(0.62, 0.62, 0.62)
+            btn:SetAlpha(0.5)
+        else
+            btn.Label:SetText(btn.bankNumText..btn.bagNumText)
+            btn.Text:SetTextColor(1,0.82,0)
+            btn:SetAlpha(1)
+        end
+
+        maxWidth= math.max(btn.Text:GetWidth()+btn.Label:GetWidth(), maxWidth)
+    end
+
+--背景,设置左边
+    self.Background:SetWidth(maxWidth+8)
+
+    self.isRun=nil
+end
 
 
 
 
-local function Init_Menu(self, root)
+
+
+
+
+
+
+
+
+
+
+local function Init_btn_Menu(self, root)
     local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(self.bankNumText or ''), function(data)
         take_out_item(data.classID)
     end, {classID=self.classID})
@@ -96,7 +169,7 @@ local function Init_Menu(self, root)
     end)
 
     root:CreateDivider()
-    root:CreateTitle(self.Text:GetText())
+    root:CreateTitle(self.Text:GetText()..' '..self:GetID())
 end
 
 
@@ -111,60 +184,96 @@ end
 
 
 
+local function Init_Menu(self, root)
+    local sub
+    root:CreateCheckbox(
+        e.onlyChinese and '显示' or SHOW,
+    function()
+        return Save().showLeftList
+    end, function()
+        Save().showLeftList= not Save().showLeftList and true or nil
+        self:Settings()
+        self:set_tooltip()
+    end)
+
+    root:CreateDivider()
+--打开选项界面
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save().leftListScale or 1
+    end, function(value)
+        Save().leftListScale= value
+        self:Settings()
+    end)
+end
+
+
+
+
+
+
+
 
 --大包时，显示，存取，分类，按钮
-local ListButton
+
 local function Init()
     --ListButton= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide', name='WoWTools_BankMixinLeftListButton'})
     ListButton=WoWTools_ButtonMixin:CreateMenu(BankSlotsFrame, {
-        name='WoWTools_BankMixinLeftListButton',
+        name='WoWToolsBankLeftListButton',
         hideIcon=true,
+        atlas='NPE_ArrowDownGlow',
     })
+    --ListButton:SetPushedAtlas('NPE_ArrowDown')
     ListButton:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
 
     ListButton.frame=CreateFrame('Frame', nil, ListButton)
     ListButton.frame:SetPoint('BOTTOMRIGHT')
     ListButton.frame:SetSize(1,1)
+    ListButton.frame:Hide()
 
-    function ListButton:settings()
-        if Save().showLeftList then
+
+    function ListButton:Settings()
+        local show= Save().left_List
+        local showLeftList= Save().showLeftList
+        if show and showLeftList then
+            local showBackground= Save().showBackground
+            self.frame.Background:SetAtlas(showBackground and 'bank-frame-background' or 'UI-Frame-DialogBox-BackgroundTile')
+            self.frame.Background:SetAlpha(showBackground and 1 or 0.3)
+            self.frame:SetScale(Save().leftListScale or 1)
+
+        end
+        self.frame:SetShown(showLeftList and show)
+        self:SetAlpha(showLeftList and 1 or 0.3)
+        if showLeftList then
             self:SetNormalTexture(0)
         else
             self:SetNormalAtlas('NPE_ArrowRightGlow')
         end
-        self:SetAlpha(Save().showLeftList and 1 or 0.3)
-        self.frame:SetShown(Save().showLeftList)
-        self.frame:SetScale(Save().leftListScale or 1)
+
+        self:SetShown(show)
     end
-    function ListButton:set_tooltips()
+    function ListButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(Save().showLeftList), e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..': |cnGREEN_FONT_COLOR:'..(Save().leftListScale or 1), e.Icon.mid)
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         e.tips:Show()
     end
-    ListButton:SetScript('OnClick', function(self)
-        Save().showLeftList= not Save().showLeftList and true or nil
-        self:settings()
-        self:set_tooltips()
+
+
+    ListButton:SetScript('OnLeave', function (self)
+        self:Settings()
+        e.tips:Hide()
     end)
-    ListButton:SetScript('OnMouseWheel', function(self, d)
-        local n
-        n= Save().leftListScale or 1
-        n= d==1 and n-0.05 or n
-        n= d==-1 and n+0.05 or n
-        n= n>4 and 4 or n
-        n= n<0.4 and 0.4 or n
-        if n==1 then n=nil end
-        Save().leftListScale= n
-        self:settings()
-        self:set_tooltips()
+    ListButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+        self:SetAlpha(1)
     end)
-    ListButton:SetScript('OnLeave', GameTooltip_Hide)
-    ListButton:SetScript('OnEnter', ListButton.set_tooltips)
-    ListButton:settings()
+
+    ListButton:SetupMenu(Init_Menu)
 
 
 
@@ -172,115 +281,83 @@ local function Init()
 
 
 
+--显示背景 frame.Background
+    ListButton.frame.Background= ListButton.frame:CreateTexture(nil, 'BACKGROUND')
+    ListButton.frame.Background:SetPoint('TOPRIGHT', 2, 1)--右上角
+    ListButton.frame.Background:EnableMouse(true)
 
-
-
-
-
-
-    ListButton.buttons={}
-
-
-    local last= ListButton.frame
+    local last
 --生成,物品列表
-    for classID=0, 20 do
+    for classID=0, Enum.ItemClassMeta.NumValues-1 do
         if classID~=6--弹药 Projectile
+        and classID~=11--Quiver
         and classID~=10--货币代币 CurrencyTokenObsolete
         and classID~=14--PermanentObsolete
-        and classID~=11--Quiver
+        and classID~=18--时光徽章
         --and classID~=7 绷带
     then
             local className=C_Item.GetItemClassInfo(classID)
             if className then
-                local frame= WoWTools_ButtonMixin:Cbtn(ListButton.frame, {icon='hide'})
-                frame.Text= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
-                frame.Text:SetPoint('RIGHT', -2,0)
-                frame.Text:SetText(e.cn(className)..' '..classID)
-                frame.Label= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
-                frame.Label:SetPoint('RIGHT', frame, 'LEFT', -4, 0)
-                frame:SetSize(frame.Text:GetWidth()+4, 18)
-                frame:SetPoint('TOPRIGHT', last, 'BOTTOMRIGHT')
-                frame:SetScript('OnClick', function(self)
-                    MenuUtil.CreateContextMenu(self, Init_Menu)
-                end)
-                frame:SetScript('OnLeave', GameTooltip_Hide)
-                frame:SetScript('OnEnter', function(self)
+
+                local btn=WoWTools_ButtonMixin:CreateMenu(ListButton.frame, {
+                    name='WoWToolsBankLeftListClass'..classID..'Button',
+                    hideIcon=true,
+                    setID= classID,
+                })
+
+                btn.Text= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
+                btn.Text:SetPoint('RIGHT', -2,0)
+                btn.Text:SetText(e.cn(className))--..' '..classID)
+
+                btn.Label= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
+                btn.Label:SetPoint('RIGHT', btn.Text, 'LEFT', -2, 0)
+
+                function btn:set_tooltip()
                     e.tips:SetOwner(self.Label, "ANCHOR_LEFT")
                     e.tips:ClearLines()
                     e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
                     e.tips:AddLine('classID '..self.classID)
                     e.tips:Show()
-                end)
-                frame.classID= classID
-                last=frame
-                table.insert(ListButton.buttons, frame)
+                end
+
+                btn:SetScript('OnLeave', GameTooltip_Hide)
+                btn:SetScript('OnEnter', btn.set_tooltip)
+                btn:SetScript('OnMouseDown', btn.set_tooltip)
+                btn:SetPoint('TOPRIGHT', last or ListButton.frame, 'BOTTOMRIGHT')
+                btn:SetupMenu(Init_btn_Menu)
+                btn:SetSize(btn.Text:GetWidth()+4, 18)
+
+                btn.classID= classID
+                table.insert(Buttons, btn)
+
+                last=btn
             end
         end
     end
+
+--背景,设置右下角 frame.Background
+    ListButton.frame.Background:SetPoint('BOTTOMRIGHT', last, 2, -2)
+
+
+
 
 --事件
-    function ListButton:set_event()
-        if self:IsShown() then
+    function ListButton.frame:set_event()
+        if self:IsVisible() then
             self:RegisterEvent('BAG_UPDATE_DELAYED')
-            self:set_label()
+            Set_Label(self)
         else
-            self:UnregisterAllEvents()
+            self:UnregisterEvent('BAG_UPDATE_DELAYED')
         end
     end
 
---设置，label
-    function ListButton:set_label()
-        if not self:IsShown() or self.isRun then return end
-        self.isRun=true
+    ListButton.frame:SetScript('OnShow', ListButton.frame.set_event)
+    ListButton.frame:SetScript('OnHide', ListButton.frame.set_event)
+    ListButton.frame:SetScript('OnEvent', Set_Label)
 
-        local bankClass={}
-        for i=1, NUM_BANKGENERIC_SLOTS do--28
-            local itemInfo= WoWTools_BankMixin:GetItemInfo(BankSlotsFrame["Item"..i])
-            if itemInfo then
-                local classID = select(6, C_Item.GetItemInfoInstant(itemInfo.itemID))
-                bankClass[classID]= (bankClass[classID] or 0)+ (itemInfo.stackCount or 1)
-            end
-        end
+    ListButton:Settings()
 
-        for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
-            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID then
-                    local classID = select(6, C_Item.GetItemInfoInstant(info.itemID))
-                    bankClass[classID]= (bankClass[classID] or 0)+ (info.stackCount or 1)
-                end
-            end
-        end
-
-        local bagClass={}
-        for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
-                local classID = info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))
-                if classID then
-                    bagClass[classID]= (bagClass[classID] or 0)+ (info.stackCount or 1)
-                end
-            end
-        end
-        for _, frame in pairs(self.buttons) do
-            local bank= bankClass[frame.classID] or 0
-            local bag= bagClass[frame.classID] or 0
-
-            frame.bankNumText= '|A:Banker:0:0|a'..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)
-            frame.bagNumText= '|A:bag-main:0:0|a'..( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)
-
-            if bank==0 and bag==0 then
-                frame.Label:SetText('')
-            else
-                frame.Label:SetText(frame.bankNumText..' '..frame.bagNumText)
-            end
-        end
-        self.isRun=nil
-    end
-
-    ListButton:SetScript('OnShow', ListButton.set_event)
-    ListButton:SetScript('OnHide', ListButton.set_event)
-    ListButton:SetScript('OnEvent', ListButton.set_label)
+    --hooksecurefunc('BankFrame_ShowPanel', Settings)
 end
 
 
@@ -296,6 +373,6 @@ function WoWTools_BankMixin:Init_Left_List()
     if self.Save.left_List and not ListButton then
         Init()
     elseif ListButton then
-        ListButton:SetShown(self.Save.left_List)
+        ListButton:Settings()
     end
 end

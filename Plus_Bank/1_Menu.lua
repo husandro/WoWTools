@@ -65,6 +65,7 @@ local function Init_Menu(self, root)
         Save().showBackground= not Save().showBackground and true or nil
         WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
         WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
+        WoWTools_BankMixin:Init_Left_List()
     end)
 
 
