@@ -19,9 +19,10 @@ local function Take_Item(isOutItem, classID, subClassID)
     end
     isRun= true
 
+    local isBagAllItem= classID==7 or subClassID
     local free= isOutItem
             and WoWTools_BankMixin:GetFree()--银行，空位
-            or WoWTools_BagMixin:GetFree(true)--背包，空位
+            or WoWTools_BagMixin:GetFree(isBagAllItem)--背包，空位
 
 
     if free==0 then
@@ -31,7 +32,8 @@ local function Take_Item(isOutItem, classID, subClassID)
 
     local Tabs= isOutItem
             and WoWTools_BankMixin:GetItems(BankFrame.activeTabIndex)
-            WoWTools_BagMixin:GetItems(true)
+            or WoWTools_BagMixin:GetItems(isBagAllItem)
+
 
     for _, data in pairs(Tabs or {}) do
 
