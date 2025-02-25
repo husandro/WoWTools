@@ -384,9 +384,10 @@ Plus_SellBuy\Plus_StackSplitFrame.lua
 
 
 ##银行
-Plus_Bank\0_Bank.lua
-Plus_Bank\1_Menu.lua
-Plus_Bank\2_MoveFrame.lua
+Plus_Bank\0_BankMixin.lua
+Plus_Bank\1_Init_Bank.lua
+Plus_Bank\2_Menu.lua
+Plus_Bank\3_MoveFrame.lua
 Plus_Bank\Left_List.lua
 Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua

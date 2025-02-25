@@ -191,7 +191,7 @@ end
 --AccountBankPanel.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(2)
 --AccountBankPanel.PurchaseTab:IsPurchaseTab()
 local function Set_AccountBankPanel(index)
-    if Save().disabledAccountBag or not AccountBankPanel.PurchaseTab:IsPurchaseTab() then
+    if Save().disabledAccountBag or AccountBankPanel.PurchaseTab:IsPurchaseTab() then
         return
     end
 

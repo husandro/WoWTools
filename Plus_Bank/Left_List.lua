@@ -5,7 +5,7 @@ local function Save()
 end
 local ListButton
 local Buttons={}
-
+local isRun
 
 
 
@@ -13,63 +13,51 @@ local Buttons={}
 
 
 --取出，ClassID 物品
-local function take_out_item(classID)
-    local free= WoWTools_BagMixin:GetFree()--背包，空位
-    if free==0 then
+local function Take_Item(isOutItem, classID, subClassID)
+    if isRun then
         return
     end
-    for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
-        for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
-            if IsModifierKeyDown() or free<=0 then
-                return
-            end
-            local info = C_Container.GetContainerItemInfo(bag, slot) or {}
-            if info.itemID  and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
-                C_Container.UseContainerItem(bag, slot)
-                free= free-1
-            end
-        end
+    isRun= true
+
+    local free= isOutItem
+            and WoWTools_BagMixin:GetFree(ListButton.isReagent)--背包，空位
+            or WoWTools_BankMixin:GetFree()--银行，空位
+
+    if free==0 then
+        isRun=nil
+        return
     end
-    for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
+
+    local Tabs= isOutItem
+            and WoWTools_BankMixin:GetItems(nil)
+            or WoWTools_BagMixin:GetItems(ListButton.isReagent)
+
+    for _, data in pairs(Tabs) do
         if IsModifierKeyDown() or free<=0 then
+            isRun=nil
             return
         end
-        local bag, slot= WoWTools_BankMixin:GetBagAndSlot(BankSlotsFrame["Item"..i])
-        if bag and slot then
-            local info= C_Container.GetContainerItemInfo(bag, slot) or {}
-            if info.itemID and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
-                C_Container.UseContainerItem(bag, slot)
-                free= free-1
+        do
+            if not data.info.isLocked then
+                local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+                if classID== classID2
+                    and (
+                        subClassID==subClassID2
+                        or not subClassID2
+                    )
+                then
+                    C_Container.UseContainerItem(data.bag, data.slot)
+                    free= free-1
+                end
             end
         end
     end
+    isRun=nil
 end
 
 
 
 
-
-
-
---存放，ClassID 物品
-local function desposit_item(classID)
-    local free= WoWTools_BankMixin:GetFree()--银行，空位
-    if free==0 then
-        return
-    end
-    for bag= NUM_BAG_FRAMES, BACKPACK_CONTAINER, -1 do-- + NUM_REAGENTBAG_FRAMES do--NUM_TOTAL_EQUIPPED_BAG_SLOTS
-        for slot= C_Container.GetContainerNumSlots(bag), 1, -1 do
-            if IsModifierKeyDown() or free==0 then
-                return
-            end
-            local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID and not info.isLocked and select(6, C_Item.GetItemInfoInstant(info.itemID))==classID then
-                C_Container.UseContainerItem(bag, slot)
-                free= free-1
-            end
-        end
-    end
-end
 
 
 
@@ -133,14 +121,14 @@ local function Create_ListButton(index)
             return
         end
         local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(self.bankNumText or ''), function(data)
-            take_out_item(data.classID)
+            Take_Item(true, data.classID, data.subClassID)
         end, {classID=self.classID, subClassID=self.subClassID})
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
         end)
 
         sub=root:CreateButton('|A:Cursor_buy_32:0:0|a'..(e.onlyChinese and '存放' or DEPOSIT)..' '..(self.bagNumText or ''), function(data)
-            desposit_item(data.classID)
+            Take_Item(false, data.classID, data.subClassID)
         end, {classID=self.classID, subClassID=self.subClassID})
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
@@ -226,7 +214,7 @@ end
 
 
 
-local isRun
+
 local function Set_Label()
     if not ListButton.frame:IsVisible() or isRun then
         return
@@ -246,65 +234,45 @@ local function Set_Label()
 
     Init_Button_List(isBank, isReagent, isAccount)
 
-    if isBank or isAccount then
---银行
-        for i=1, NUM_BANKGENERIC_SLOTS do--28
-            local info= WoWTools_BankMixin:GetItemInfo(BankSlotsFrame["Item"..i])
-            if info and info.itemID and not info.isLocked then
-                local classID = select(6, C_Item.GetItemInfoInstant(info.itemID))
-                bankClass[classID]= (bankClass[classID] or 0)+ (info.stackCount or 1)
-            end
-        end
-
---银行，背包
-        for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
-            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID and not info.isLocked then
-                    local classID = select(6, C_Item.GetItemInfoInstant(info.itemID))
-                    bankClass[classID]= (bankClass[classID] or 0)+ (info.stackCount or 1)
-                end
-            end
-        end
-
---背包+材料包
-        for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info = C_Container.GetContainerItemInfo(bag, slot) or {}
-                if info and info.itemID and not info.isLocked then
-                    local classID = select(6, C_Item.GetItemInfoInstant(info.itemID))
-                    if classID then
-                        bagClass[classID]= (bagClass[classID] or 0)+ (info.stackCount or 1)
-                    end
-                end
-            end
-        end
-
+    local Tabs
+    if isBank then
+        Tabs= WoWTools_BankMixin:GetItems(1)
     elseif isReagent then
+        Tabs= WoWTools_BankMixin:GetItems(2)
+--战团银行
+    elseif isAccount  then
+        Tabs= WoWTools_BankMixin:GetItems(3)
+    end
 
-        for _, btn in ReagentBankFrame:EnumerateItems() do
-            local info= WoWTools_BankMixin:GetItemInfo(btn)
-            if info and info.itemID then
-                local classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.itemID))
+    for _, data in pairs(Tabs or {}) do
+        if not data.info.isLocked then
+            local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+            if isReagent then--材料银行
                 if classID==7 and subClassID then
-                    bankClass[subClassID]= (bankClass[subClassID] or 0)+ (info.stackCount or 1)
+                    bankClass[subClassID]= (bankClass[subClassID] or 0)+ (data.info.stackCount or 1)
                 end
+            elseif classID then
+                bankClass[classID]= (bankClass[classID] or 0)+ (data.info.stackCount or 1)
             end
         end
-        for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-            for slot=1, C_Container.GetContainerNumSlots(bag) do
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID and not info.isLocked then
-                    local classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.itemID))
+    end
+    
+    --背包+材料包
+    if isBank or isReagent or isAccount then
+        Tabs= WoWTools_BagMixin:GetItems(true)
+        for _, data in pairs(Tabs or {}) do
+            if not data.info.isLocked then
+                local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+                if isReagent then--材料银行
                     if classID==7 and subClassID then
-                        bagClass[classID]= (bagClass[classID] or 0)+ (info.stackCount or 1)
+                        bagClass[subClassID]= (bagClass[subClassID] or 0)+ (data.info.stackCount or 1)
                     end
+                elseif classID then
+                    bagClass[classID]= (bagClass[classID] or 0)+ (data.info.stackCount or 1)
                 end
             end
         end
     end
-
-
 
     local maxWidth= 0--背景
     local bank,bag,width
@@ -337,6 +305,11 @@ local function Set_Label()
 
 --背景,设置左边
     ListButton.frame.Background:SetWidth(maxWidth+8)
+
+    ListButton.isBank= isBank
+    ListButton.isReagent= isReagent
+    ListButton.isAccount= isAccount
+
 
     isRun=nil
 end

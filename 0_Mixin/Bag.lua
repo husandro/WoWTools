@@ -68,7 +68,7 @@ end
 --背包，空位, all 包含材料
 function WoWTools_BagMixin:GetFree(all)
     local free= 0--CalculateTotalNumberOfFreeBagSlots() MainMenuBarBagButtons.lua
-    local num= NUM_BAG_FRAMES+(all and NUM_REAGENTBAG_FRAMES or 0)
+    local num= NUM_BAG_FRAMES+ (all and NUM_REAGENTBAG_FRAMES or 0)
     for i = BACKPACK_CONTAINER, num do
         free= free+ (C_Container.GetContainerNumFreeSlots(i) or 0)
     end
@@ -76,4 +76,19 @@ function WoWTools_BagMixin:GetFree(all)
 end
 
 
-
+function WoWTools_BagMixin:GetItems(all)
+    local Tabs={}
+    local num= NUM_BAG_FRAMES+ (all and NUM_REAGENTBAG_FRAMES or 0)
+    for bag= BACKPACK_CONTAINER, num do--0-5
+        for slot=1, C_Container.GetContainerNumSlots(bag) do
+            local info = C_Container.GetContainerItemInfo(bag, slot) or {}
+            if info and info.itemID then
+                table.insert(Tabs, 1, {
+                    info=info,
+                    bag=bag,
+                    slot=slot,
+                })
+            end
+        end
+    end
+end
