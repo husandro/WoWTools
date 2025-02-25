@@ -60,7 +60,7 @@ end
 
 
 
---local index= BankFrame.activeTabIndex
+
 local function Set_BankSlotsFrame(index)
     if index~=1 then
         return

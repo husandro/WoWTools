@@ -5282,7 +5282,8 @@
         "AuctionHouseFrameCloseButton",
         "AUCTION_HOUSE_BUY_TAB",
         "AUCTION_HOUSE_AUCTIONS_SUB_TAB",
-        "StaticPopup2"
+        "StaticPopup2",
+        "BANK_TAB_ASSIGN_REAGENTS_CHECKBOX"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
