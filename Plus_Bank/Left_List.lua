@@ -77,8 +77,12 @@ end
 
 
 
-local function Set_Label(self)
-    if self.isRun then return end
+local function Set_Label()
+    local self= ListButton.frame
+    print(self:IsVisible(), self.isRun)
+    if not self:IsVisible() or self.isRun then
+        return
+    end
 
     self.isRun=true
 
@@ -114,9 +118,10 @@ local function Set_Label(self)
 
 
     local maxWidth= 0--背景
+    local bank,bag,width
     for _, btn in pairs(Buttons) do
-        local bank= bankClass[btn.classID] or 0
-        local bag= bagClass[btn.classID] or 0
+        bank= bankClass[btn.classID] or 0
+        bag= bagClass[btn.classID] or 0
 
         btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a'
         btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a'
@@ -130,8 +135,10 @@ local function Set_Label(self)
             btn.Text:SetTextColor(1,0.82,0)
             btn:SetAlpha(1)
         end
-
-        maxWidth= math.max(btn.Text:GetWidth()+btn.Label:GetWidth(), maxWidth)
+        
+        width= btn.Text:GetWidth()+btn.Label:GetWidth()
+        btn:SetWidth(width+4)
+        maxWidth= math.max(width, maxWidth)
     end
 
 --背景,设置左边
@@ -357,7 +364,16 @@ local function Init()
 
     ListButton:Settings()
 
-    --hooksecurefunc('BankFrame_ShowPanel', Settings)
+    function ListButton:set_parent()
+        --local frame= _G[BANK_PANELS[BankFrame.activeTabIndex].name]
+       --self:SetParent(frame or )
+    end
+
+    if e.Player.husandro then
+        C_Timer.After(0.3, function()
+            hooksecurefunc('BankFrame_ShowPanel', Set_Label)
+        end)
+    end
 end
 
 
