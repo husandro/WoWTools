@@ -127,7 +127,7 @@ local function Create_ListButton(index)
     btn:SetScript('OnEnter', btn.set_tooltip)
     btn:SetScript('OnMouseDown', btn.set_tooltip)
     btn:SetScript('OnHide', btn.rest)
-    
+
     btn:SetupMenu(function(self, root)
         if not self.classID then
             return
@@ -233,7 +233,7 @@ local function Set_Label()
         return
     end
     ListButton:set_bank_type()
-  
+
     isRun=true
 
 
@@ -243,7 +243,7 @@ local function Set_Label()
 
     local isBank= index==1
     local isReagent= index==2 and IsReagentBankUnlocked()
-    local isAccount= index==3 and not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
+    local isAccount= index==3 and not AccountBankPanel.PurchaseTab:IsPurchaseTab()--not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
 
     Init_Button_List(isBank, isReagent, isAccount)
 
@@ -256,6 +256,7 @@ local function Set_Label()
                 bankClass[classID]= (bankClass[classID] or 0)+ (info.stackCount or 1)
             end
         end
+
 --银行，背包
         for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
             for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
@@ -266,6 +267,7 @@ local function Set_Label()
                 end
             end
         end
+
 --背包+材料包
         for bag= BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do
@@ -303,7 +305,7 @@ local function Set_Label()
         end
     end
 
-  
+
 
     local maxWidth= 0--背景
     local bank,bag,width
@@ -488,7 +490,7 @@ local function Init()
     ListButton.frame.Background:EnableMouse(true)
 
 
-    
+
 
 
 
