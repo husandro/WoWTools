@@ -228,7 +228,6 @@ end
 
 local isRun
 local function Set_Label()
-    print('Set_Label', ListButton.frame:IsVisible() , isRun)
     if not ListButton.frame:IsVisible() or isRun then
         return
     end
