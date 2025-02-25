@@ -535,44 +535,33 @@ end
 
 
 local function Set_Init_Frame(btn, target, size, initFunc)
-    if not btn:CanChangeAttribute() then
-        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, btn2, target2, size2, initFunc2)
-            if size2 then
-                target2:SetSize(size2[1], size2[2])
+    if target:IsProtected() then--not InCombatLockdown() or not sel:IsProtected() 
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
+            if tab.size then
+                tab.target:SetSize(tab.size[1], tab.size[2])
             end
             if initFunc then
-                initFunc(btn2)
+                initFunc(btn)
             end
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
-        end, nil, btn, target, size, initFunc)
-
-        --[[btn.notInCombatFrame= CreateFrame("Frame", nil, btn)
-        btn.notInCombatFrame.size=size
-        btn.notInCombatFrame.targetFrame=target
-        btn.notInCombatFrame.initFunc=initFunc
-        btn:SetScript("OnEvent", function(self)
-            if self.size then
-                do
-                    self.targetFrame:SetSize(self.size[1], self.size[2])
-                end
-                self.size=nil
-                self.frame=nil
-            end
-            if self.initFunc then
-                do
-                    self.initFunc(self:GetParent())
-                end
-                self.initFunc=nil
-            end
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        end)
-        btn:RegisterEvent('PLAYER_REGEN_ENABLED')]]
+        end, nil, {
+            btn=btn,
+            target=target,
+            size=size,
+            initFunc=initFunc
+        })
+        if e.Player.husandro then
+            print(target:GetName(), '|cnRED_FONT_COLOR:不能执行')
+        end
     else
         if size then
             target:SetSize(size[1], size[2])
         end
         if initFunc then
             initFunc(btn)
+        end
+        if e.Player.husandro then
+            print(target:GetName(), '|cnGREEN_FONT_COLOR:执行')
         end
     end
 end
@@ -648,7 +637,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
     btn.sizeTooltip= tab.sizeTooltip
     btn.alpha= tab.alpha
-    
 
     --btn.hideButton= tab.hideButton--隐藏按钮，移过时，才显示
 

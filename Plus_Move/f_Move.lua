@@ -29,8 +29,19 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
     local p= Save().point[name]
     if p and p[1] and p[3] and p[4] and p[5] then
         local target= frame.targetFrame or frame
-        target:ClearAllPoints()
-        target:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        if target:IsProtected() then
+            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
+                target:ClearAllPoints()
+                target:SetPoint(tab.p[1], UIParent, tab.p[3], tab.p[4], tab.p[5])
+                EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+            end, nil, {
+                target=target,
+                p=p,
+            })
+        else
+            target:ClearAllPoints()
+            target:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        end
     end
 end
 
