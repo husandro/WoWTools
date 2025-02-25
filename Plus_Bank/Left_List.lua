@@ -79,7 +79,6 @@ end
 
 local function Set_Label()
     local self= ListButton.frame
-    print(self:IsVisible(), self.isRun)
     if not self:IsVisible() or self.isRun then
         return
     end
