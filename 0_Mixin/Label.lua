@@ -39,7 +39,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
     local alpha= tab.alpha
     local font= tab.changeFont
     local layer= tab.layer or 'OVERLAY'--BACKGROUND BORDER ARTWORK OVERLAY HIGHLIGHT
-    local fontName= tab.fontName or 'GameFontNormal'
+    local fontName= tab.fontName or 'ChatFontNormal'--'GameFontNormal'
     local copyFont= tab.copyFont
     local size= tab.size or 12
     local justifyH= tab.justifyH
@@ -61,7 +61,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
     else
         if e.onlyChinese or size then--THICKOUTLINE
             local fontName2, size2, fontFlag2= font:GetFont()
-            if e.onlyChinese then
+            if e.onlyChinese and not LOCALE_zhCN then
                 fontName2= 'Interface\\AddOns\\WoWTools\\Sesource\\ARHei.TTF'--黑体字
             end
             font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')
