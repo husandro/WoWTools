@@ -14,6 +14,10 @@ local isRun
 
 
 
+
+
+
+
 --取出，ClassID 物品
 local function Take_Item(isOutItem, classID, subClassID)
     if isRun then
@@ -96,9 +100,11 @@ local function Create_ListButton(index)
         hideIcon=true,
     })
 
+--名称
     btn.Text= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
     btn.Text:SetPoint('RIGHT', -2,0)
 
+--数量
     btn.Label= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
     btn.Label:SetPoint('RIGHT', btn.Text, 'LEFT', -2, 0)
 
@@ -107,6 +113,8 @@ local function Create_ListButton(index)
         self.Label:SetText('')
         self.classID= nil
         self.subClassID= nil
+        self.bankItems= nil
+        self.bagItems= nil
     end
 
     function btn:set_text()
@@ -121,8 +129,30 @@ local function Create_ListButton(index)
     function btn:set_tooltip()
         e.tips:SetOwner(self:GetParent().Background, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
-        e.tips:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
+        local find=0
+        for itemID, count in pairs(self.bankItems or {}) do
+            if find==0 then
+                e.tips:AddDoubleLine(' ', (e.onlyChinese and '银行' or BANK)..'|A:Banker:0:0|a')
+            end
+            e.tips:AddLine(
+                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
+            )
+            find=find+1
+        end
+        local find2=0
+        for itemID, count in pairs(self.bagItems or {}) do
+            if find2==0 then
+                e.tips:AddDoubleLine(' ', (e.onlyChinese and '背包' or INVTYPE_BAG)..'|A:bag-main:0:0|a')
+            end
+            e.tips:AddLine(
+                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
+            )
+            find2=find2+1
+        end
+        if find==0 and find2==0 then
+            e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
+            e.tips:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
+        end
         e.tips:Show()
     end
 
@@ -181,10 +211,8 @@ for classID=0, Enum.ItemClassMeta.NumValues-1 do
     and classID~=18--时光徽章
     --and classID~=7 绷带
 ]]
-
-local function Init_Button_List(isBank, isReagent, isAccount)
-
 --生成,物品列表
+local function Init_Button_List(isBank, isReagent, isAccount)
     local num=0
     if isBank or isAccount then
         for index, classID in pairs({0, 1, 2, 3, 4, 5, 7, 8, 9, 12, 13, 15, 16, 17}) do
@@ -210,7 +238,6 @@ local function Init_Button_List(isBank, isReagent, isAccount)
     --ListButton.frame.Background:SetPoint('BOTTOMRIGHT', Buttons[num] or ListButton, 2, -2)
     ListButton.frame.Background:SetHeight(num*23+4)
     ListButton.frame.Background:SetShown(num>0)
-    
 
 --隐藏，并清除数据
     for index= num+1, #Buttons do
@@ -225,6 +252,19 @@ end
 
 
 
+
+
+
+local function Get_Item_Data(tab, class, info)
+    tab[class]= tab[class] or
+                {
+                    num=0,
+                    items={}
+                }
+    tab[class].num= tab[class].num+ (info.stackCount or 1)
+    tab[class].items[info.itemID]= (tab[class].items[info.itemID] or 0) +(info.stackCount or 1)
+    return tab
+end
 
 
 
@@ -254,45 +294,39 @@ local function Set_Label()
 
     Init_Button_List(isBank, isReagent, isAccount)
 
-    local Tabs
-    if isBank then
-        Tabs= WoWTools_BankMixin:GetItems(1)
-
-    elseif isReagent then
-        Tabs= WoWTools_BankMixin:GetItems(2)
---战团银行
-    elseif isAccount  then
-        Tabs= WoWTools_BankMixin:GetItems(3)
-    end
-
-
-    for _, data in pairs(Tabs or {}) do
+    for _, data in pairs(
+        isBank and WoWTools_BankMixin:GetItems(1)--银行
+        or (isReagent and WoWTools_BankMixin:GetItems(2))--材料银行
+        or (isAccount and WoWTools_BankMixin:GetItems(3))--战团银行
+    ) do
         if not data.info.isLocked then
             local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
             if isReagent then--材料银行
                 if classID==7 and subClassID then
-                    bankClass[subClassID]= (bankClass[subClassID] or 0)+ (data.info.stackCount or 1)
+                    --bankClass[subClassID]= (bankClass[subClassID] or 0)+ (data.info.stackCount or 1)
+                    bankClass= Get_Item_Data(bankClass, subClassID, data.info)
                 end
             elseif classID then
-                bankClass[classID]= (bankClass[classID] or 0)+ (data.info.stackCount or 1)
+                --bankClass[classID]= (bankClass[classID] or 0)+ (data.info.stackCount or 1)
+                bankClass= Get_Item_Data(bankClass, classID, data.info)
             end
         end
     end
 
 --背包+材料包
     if isBank or isReagent or isAccount then
-        Tabs= WoWTools_BagMixin:GetItems(true)
-
-        for _, data in pairs(Tabs or {}) do
+        for _, data in pairs(WoWTools_BagMixin:GetItems(true) or {}) do
             if not data.info.isLocked then
                 local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
 
                 if isReagent then--材料银行
                     if classID==7 and subClassID then
-                        bagClass[subClassID]= (bagClass[subClassID] or 0)+ (data.info.stackCount or 1)
+                        --bagClass[subClassID]= (bagClass[subClassID] or 0)+ (data.info.stackCount or 1)
+                        bagClass= Get_Item_Data(bagClass, subClassID, data.info)
                     end
                 elseif classID then
-                    bagClass[classID]= (bagClass[classID] or 0)+ (data.info.stackCount or 1)
+                    bagClass= Get_Item_Data(bagClass, classID, data.info)
+                    --bagClass[classID]= (bagClass[classID] or 0)+ (data.info.stackCount or 1)
                 end
             end
         end
@@ -300,15 +334,18 @@ local function Set_Label()
 
 --背景
     local maxWidth= 0
-    local bank,bag,width
+    local bank, bag, width, class, bankData, bagData
     for _, btn in pairs(Buttons) do
-        if btn.subClassID then
-            bank= bankClass[btn.subClassID] or 0
-            bag= bagClass[btn.subClassID] or 0
-        else
-            bank= bankClass[btn.classID] or 0
-            bag= bagClass[btn.classID] or 0
-        end
+        class= btn.subClassID or btn.classID
+
+        bankData= bankClass[class] or {num=0, items={}}
+        bagData= bagClass[class] or {num=0, items={}}
+
+        bank= bankData.num
+        bag= bagData.num
+
+        btn.bankItems= bankData.items
+        btn.bagItems= bagData.items
 
         btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a'
         btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a'

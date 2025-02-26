@@ -141,7 +141,9 @@ function WoWTools_ItemMixin:GetColor(quality, tab)
     tab= tab or {}
 
     quality= quality
-        or (tab.itemID and C_Item.GetItemQualityByID(tab.itemID))
+        or ((tab.itemID or tab.itemLink)
+            and C_Item.GetItemQualityByID(tab.itemLink or tab.itemID)
+        )
         or (tab.itemLocation and C_Item.GetItemQuality(tab.itemLocation))
 
     local color= ITEM_QUALITY_COLORS[quality] or ITEM_QUALITY_COLORS[Enum.ItemQuality.Common]
@@ -191,8 +193,12 @@ end
 
 
 
-function WoWTools_ItemMixin:GetName(itemID, itemLink)--取得物品，名称
-    itemID= itemID or self:GetItemID(itemLink)
+function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得物品，名称
+    tab= tab or {}
+
+    local disableCount= tab.notCount
+
+    itemID= itemID or self:GetItemID(itemLink) or (itemLocation and itemLocation:GetItemID())
     if not itemID then
         return
     end
@@ -208,19 +214,23 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink)--取得物品，名称
             cool= e.GetSpellItemCooldown(nil, itemID)
         end
     else
-        local num= C_Item.GetItemCount(itemID, true, false, true, true) or 0
-        if num==0 then
-            col='|cff9e9e9e'
-        else
-            cool= e.GetSpellItemCooldown(nil, itemID)
+        if not disableCount then
+            local num= C_Item.GetItemCount(itemID, true, false, true, true) or 0
+            if num==0 then
+                col='|cff9e9e9e'
+            else
+                cool= e.GetSpellItemCooldown(nil, itemID)
+            end
+
+            desc= ' x'..num..' '
         end
-        desc= ' x'..num..' '
     end
 
     name= e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID '..itemID)
+
     if name then
         if not name:find('|c') then
-            local col2= select(4, self:GetColor(itemID))
+            local col2= select(4, self:GetColor(nil, {itemID=itemID, itemLink=itemLink}))
             if col2 then
                 name= col2..name..'|r'
             end
