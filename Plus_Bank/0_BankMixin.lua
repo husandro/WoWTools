@@ -8,14 +8,22 @@
 ]]
 WoWTools_BankMixin={}
 
+--local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
+function WoWTools_BankMixin:GetActive(index)
+    index= index or BankFrame.activeTabIndex
 
+    local isBank= index==1
+    local isReagent= index==2 and IsReagentBankUnlocked()
+    local isAccount= index==3 and not AccountBankPanel.PurchaseTab:IsPurchaseTab()--not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
+    return isBank, isReagent, isAccount
+end
 
 --银行，空位
 function WoWTools_BankMixin:GetFree(index)
     local free= 0
-    index= index or BankFrame.activeTabIndex
+    local isBank, isReagent, isAccount= self:GetActive(index)
 
-    if index==1 then
+    if isBank then
 --银行
         for i=1, NUM_BANKGENERIC_SLOTS do--28
             if not self:GetItemInfo(BankSlotsFrame["Item"..i]) then
@@ -29,7 +37,7 @@ function WoWTools_BankMixin:GetFree(index)
         end
 
 --材料银行       
-    elseif index==2 then
+    elseif isReagent then
         for _, btn in ReagentBankFrame:EnumerateValidItems() do
             if not self:GetItemInfo(btn) then
                 free=free+1
@@ -37,7 +45,7 @@ function WoWTools_BankMixin:GetFree(index)
         end
 
 --战团银行   
-    elseif index==3 then
+    elseif isAccount then
         for btn in AccountBankPanel:EnumerateValidItems() do
             if not self:GetItemInfo(btn) then
                 free=free+1
@@ -75,9 +83,9 @@ end
 
 function WoWTools_BankMixin:GetItems(index)--从最后，到第一
     local Tabs={}
-    index= index or BankFrame.activeTabIndex
+    local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 
-    if index==1 then
+    if isBank then
 --银行
         for i=1, NUM_BANKGENERIC_SLOTS do--28
             local info, bag, slot= self:GetItemInfo(BankSlotsFrame["Item"..i])
@@ -105,7 +113,7 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
         end
 
 --材料银行       
-    elseif index==2 then
+    elseif isReagent then
         for _, btn in ReagentBankFrame:EnumerateValidItems() do
             local info, bag, slot= self:GetItemInfo(btn)
             if info then
@@ -118,7 +126,7 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
         end
 
 --战团银行   
-    elseif index==3 then
+    elseif isAccount then
         for btn in AccountBankPanel:EnumerateValidItems() do
             local info, bag, slot= self:GetItemInfo(btn)
             if info then
@@ -179,24 +187,31 @@ function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, activeTabI
 
     activeTabIndex= activeTabIndex or BankFrame.activeTabIndex
 
-    local isBagAllItem= activeTabIndex==2 or classID==7 or subClassID
+    local isBank= activeTabIndex==1
+    local isReagent= activeTabIndex==2
+    local isAccount= activeTabIndex==3
+    local bankAutoDepositReagents= C_CVar.GetCVarBool('bankAutoDepositReagents')
+
+    local reagentBankOpen= classID==7
+                        or isReagent
+                        or (bankAutoDepositReagents and isAccount)
+                        or (isBank and isOutItem)
+
+    local bankType= isAccount and Enum.BankType.Account or Enum.BankType.Character
 
     local free= isOutItem
-            and WoWTools_BankMixin:GetFree()--银行，空位
-            or WoWTools_BagMixin:GetFree(isBagAllItem)--背包，空位
+            and WoWTools_BagMixin:GetFree(reagentBankOpen)--背包，空位
+            or WoWTools_BankMixin:GetFree(activeTabIndex)--银行，空位
 
     local Tabs= isOutItem
-        and WoWTools_BankMixin:GetItems(activeTabIndex)
-        or WoWTools_BagMixin:GetItems(isBagAllItem)
+        and WoWTools_BankMixin:GetItems(activeTabIndex)--取出银行
+        or WoWTools_BagMixin:GetItems(reagentBankOpen)--放入物品
 
-    if free==0 or not Tabs or IsModifierKeyDown() then
+    if free==0 or not Tabs then
         self.isRun=nil
         return
     end
 
-
-    local bankType= activeTabIndex== 3 and Enum.BankType.Account or Enum.BankType.Character
-    local reagentBankOpen= activeTabIndex==2
 
     for _, data in pairs(Tabs) do
         if IsModifierKeyDown() or free<=0 then
@@ -205,13 +220,20 @@ function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, activeTabI
         end
         do
             if not data.info.isLocked then
-                local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
-                if (classID== classID2 or not classID)
-                    and (subClassID==subClassID2 or not subClassID)
-                then
-                    do
-                        C_Container.UseContainerItem(data.bag, data.slot, nil, bankType, reagentBankOpen)
+                local bag, slot
+                --local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+                local classID2, subClassID2, _, _, _, isCraftingReagent2 = select(12, C_Item.GetItemInfo(data.info.hyperlink or data.info.itemID))
+                if isCraftingReagent2 then
+                    if reagentBankOpen then
+                        bag, slot= data.bag, data.slot
                     end
+                elseif not isReagent then
+                    if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
+                        bag, slot= data.bag, data.slot
+                    end
+                end
+                if bag and slot then
+                    C_Container.UseContainerItem(bag, slot, nil, bankType, reagentBankOpen)
                     free= free-1
                 end
             end

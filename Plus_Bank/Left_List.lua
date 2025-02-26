@@ -20,6 +20,33 @@ local isRun
 
 
 
+local function Set_Tooltip(self, tooltip, type)
+    local find=0
+    if type==0 or type==1 then
+        for itemID, count in pairs(self.bankItems or {}) do
+            if find==0 then
+                tooltip:AddDoubleLine(' ', (e.onlyChinese and '银行' or BANK)..'|A:Banker:0:0|a')
+            end
+            tooltip:AddLine(
+                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
+            )
+            find=find+1
+        end
+    end
+    local find2=0
+    if type==0 or type==2 then
+        for itemID, count in pairs(self.bagItems or {}) do
+            if find2==0 then
+                tooltip:AddDoubleLine(' ', (e.onlyChinese and '背包' or INVTYPE_BAG)..'|A:bag-main:0:0|a')
+            end
+            tooltip:AddLine(
+                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
+            )
+            find2=find2+1
+        end
+    end
+    return find, find2
+end
 
 
 
@@ -28,8 +55,62 @@ local isRun
 
 
 
+local function Init_Button_Menu(self, root)
+    if not self.classID then
+        return
+    end
+
+--提取             
+    local sub=root:CreateButton(
+        '|A:Cursor_OpenHand_32:0:0|a'
+        ..(e.onlyChinese and '提取' or WITHDRAW)
+        ..' '..(self.bankNumText or '')
+        ..'  '..WoWTools_BagMixin:GetFree(self.classID==7),
+    function(data)
+        WoWTools_BankMixin:Take_Item(true, data.classID, data.subClassID)
+        --return MenuResponse.Refresh
+    end, {classID=self.classID, subClassID=self.subClassID})
+    sub:SetTooltip(function(tooltip)
+        local find, find2= Set_Tooltip(self, tooltip, 1)
+        if find==0 and find2==0 then
+            tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
+        end
+    end)
+
+--存放
+    sub=root:CreateButton(
+        '|A:Cursor_buy_32:0:0|a'
+        ..(e.onlyChinese and '存放' or DEPOSIT)
+        ..' '..(self.bagNumText or '')
+        ..'  '..WoWTools_BankMixin:GetFree(),
+    function(data)
+        WoWTools_BankMixin:Take_Item(false, data.classID, data.subClassID)
+        --return MenuResponse.Refresh
+    end, {classID=self.classID, subClassID=self.subClassID})
+    sub:SetTooltip(function(tooltip)
+        local find, find2= Set_Tooltip(self, tooltip, 2)
+        if find==0 and find2==0 then
+            tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
+        end
+    end)
+
+    --root:CreateDivider()
+    --root:CreateTitle(self.Text:GetText())--..' '..(self.classID..(self.subClassID and '-'..self.subClassID or '')))
+end
 
 
+
+
+
+
+local function Set_Button_Text(self)
+    local name= self.subClassID
+        and C_Item.GetItemSubClassInfo(self.classID, self.subClassID)
+        or C_Item.GetItemClassInfo(self.classID)
+    name= e.cn(name)
+    name= name..' '..(self.subClassID or self.classID)
+    self.Text:SetText(name or '')
+end
 
 
 
@@ -58,40 +139,18 @@ local function Create_ListButton(index)
         self.subClassID= nil
         self.bankItems= nil
         self.bagItems= nil
+        self.bankNumText=nil
+        self.bagNumText=nil
     end
 
-    function btn:set_text()
-        local name= self.subClassID
-            and C_Item.GetItemSubClassInfo(self.classID, self.subClassID)
-            or C_Item.GetItemClassInfo(self.classID)
-        name= e.cn(name)
-        name= name..' '..(self.subClassID or self.classID)
-        self.Text:SetText(name or '')
-    end
 
     function btn:set_tooltip()
+        if not self.classID then
+            return
+        end
         e.tips:SetOwner(self:GetParent().Background, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        local find=0
-        for itemID, count in pairs(self.bankItems or {}) do
-            if find==0 then
-                e.tips:AddDoubleLine(' ', (e.onlyChinese and '银行' or BANK)..'|A:Banker:0:0|a')
-            end
-            e.tips:AddLine(
-                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
-            )
-            find=find+1
-        end
-        local find2=0
-        for itemID, count in pairs(self.bagItems or {}) do
-            if find2==0 then
-                e.tips:AddDoubleLine(' ', (e.onlyChinese and '背包' or INVTYPE_BAG)..'|A:bag-main:0:0|a')
-            end
-            e.tips:AddLine(
-                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
-            )
-            find2=find2+1
-        end
+        local find, find2= Set_Tooltip(self, e.tips, 0)
         if find==0 and find2==0 then
             e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
             e.tips:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
@@ -106,27 +165,8 @@ local function Create_ListButton(index)
     btn:SetScript('OnMouseDown', btn.set_tooltip)
     btn:SetScript('OnHide', btn.rest)
 
-    btn:SetupMenu(function(self, root)
-        if not self.classID then
-            return
-        end
---提取
-        local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(self.bankNumText or ''), function(data)
-            WoWTools_BankMixin:Take_Item(true, data.classID, data.subClassID)
-        end, {classID=self.classID, subClassID=self.subClassID})
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
-        end)
---存放
-        sub=root:CreateButton('|A:Cursor_buy_32:0:0|a'..(e.onlyChinese and '存放' or DEPOSIT)..' '..(self.bagNumText or ''), function(data)
-            WoWTools_BankMixin:Take_Item(false, data.classID, data.subClassID)
-        end, {classID=self.classID, subClassID=self.subClassID})
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
-        end)
-
-        root:CreateDivider()
-        root:CreateTitle(self.Text:GetText()..' '..(self.classID..(self.subClassID and '-'..self.subClassID or '')))
+    btn:SetupMenu(function(...)
+        Init_Button_Menu(...)
     end)
 
     table.insert(Buttons, btn)
@@ -164,7 +204,7 @@ local function Init_Button_List(isBank, isReagent, isAccount)
             local btn= Buttons[index] or Create_ListButton(index)
             btn.classID= classID
             btn.subClassID= nil
-            btn:set_text()
+            Set_Button_Text(btn)
             btn:SetShown(true)
         end
     elseif isReagent then
@@ -173,7 +213,7 @@ local function Init_Button_List(isBank, isReagent, isAccount)
             local btn= Buttons[num] or Create_ListButton(num)
             btn.classID= 7
             btn.subClassID= index
-            btn:set_text()
+            Set_Button_Text(btn)
             btn:SetShown(true)
         end
     end
@@ -229,11 +269,8 @@ local function Set_Label()
 
     local bankClass={}
     local bagClass={}
-    local index= BankFrame.activeTabIndex
 
-    local isBank= index==1
-    local isReagent= index==2 and IsReagentBankUnlocked()
-    local isAccount= index==3 and not AccountBankPanel.PurchaseTab:IsPurchaseTab()--not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
+    local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive()
 
     local Tabs
     if isBank then
@@ -299,8 +336,8 @@ local function Set_Label()
             btn.bankItems= bankData.items
             btn.bagItems= bagData.items
 
-            btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a'
-            btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a'
+            btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a|r'
+            btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a|r'
 
             if bank==0 and bag==0 then
                 btn.Label:SetText('')

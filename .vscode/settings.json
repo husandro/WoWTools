@@ -5283,7 +5283,10 @@
         "AUCTION_HOUSE_BUY_TAB",
         "AUCTION_HOUSE_AUCTIONS_SUB_TAB",
         "StaticPopup2",
-        "BANK_TAB_ASSIGN_REAGENTS_CHECKBOX"
+        "BANK_TAB_ASSIGN_REAGENTS_CHECKBOX",
+        "GARRISON_FOLLOWER_NAME",
+        "ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT",
+        "BANK_DEPOSIT_MONEY_BUTTON_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

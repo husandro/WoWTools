@@ -71,8 +71,6 @@ end
 
 
 
-
-
 --[[local DIFFICULTY_NAMES = {
 	[DifficultyUtil.ID.DungeonNormal] = PLAYER_DIFFICULTY1,
 	[DifficultyUtil.ID.DungeonHeroic] = PLAYER_DIFFICULTY2,

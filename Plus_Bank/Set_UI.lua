@@ -132,11 +132,11 @@ local function Init_BankSlotsFrame()
     BankFrame.Background:ClearAllPoints()
     BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
     BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-    WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
+    --WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
 
 
 --背景
-    BankFrameBg:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    BankFrameBg:SetAtlas('UI-Frame-DialogBox-BackgroundTile',true, 'NEAREST')
     BankFrameBg:SetAlpha(0.5)
 
 --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
@@ -304,10 +304,11 @@ end
 local function Init_AccountBankPanel()
 
 --添加，取出所有物品
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, icon='hide'})
+    --local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, icon='hide'})
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel, {size=23, icon='hide'})
     btnAllOut:SetNormalAtlas('Cursor_OpenHandGlow_64')
     btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -26)
-    
+
     btnAllOut:SetScript('OnClick', function(self)
         if self.isDoing then
             return
@@ -333,7 +334,7 @@ local function Init_AccountBankPanel()
                     local info= C_Container.GetContainerItemInfo(bag, slot)
                     if info and info.itemID and (isAll or not select(17, C_Item.GetItemInfo(info.itemID))) then
                         do
-                            C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Account, false)
+                            C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Account, isAll)
                         end
                         free= free-1
                     end
@@ -346,6 +347,13 @@ local function Init_AccountBankPanel()
     function btnAllOut:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        
+        local selectedBankTabData = AccountBankPanel:GetTabData(AccountBankPanel.selectedTabID);
+        if selectedBankTabData and selectedBankTabData.name then
+            e.tips:AddLine(selectedBankTabData.name)
+            e.tips:AddLine(" ")
+        end
+
         local free= WoWTools_BagMixin:GetFree(C_CVar.GetCVarBool('bankAutoDepositReagents'))
         e.tips:AddDoubleLine(e.onlyChinese and '取出所有战团物品' or 'Take out all account bank',
             format('|A:4549254:0:0|a%s #%s%d',
@@ -353,6 +361,7 @@ local function Init_AccountBankPanel()
                 free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
                 free)
         )
+        
         e.tips:Show()
     end
     function btnAllOut:show_tooltips()
@@ -381,7 +390,7 @@ local function Init_AccountBankPanel()
     end)
 
 --添加，整理
-    local btnSort= CreateFrame("Button", nil, AccountBankPanel.ItemDepositFrame, 'BankAutoSortButtonTemplate')
+    local btnSort= CreateFrame("Button", nil,btnAllOut, 'BankAutoSortButtonTemplate')
     btnSort:SetSize(32, 32)
     btnSort:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.DepositButton, 'LEFT', -2, 0)--整理材料银行
     btnSort:SetScript('OnEnter', function(self)

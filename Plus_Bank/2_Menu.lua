@@ -20,7 +20,7 @@ end
 --设置菜单
 --#######
 local function Init_Menu(self, root)
-    local sub
+    local sub, sub2
 
 
 --自动打开背包栏位
@@ -43,11 +43,7 @@ local function Init_Menu(self, root)
         end)
     end
 
-
---整合
-
 --索引
-
     root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex
     end, function()
@@ -79,6 +75,43 @@ local function Init_Menu(self, root)
         tooltip:AddLine('ItemClassID List')
     end)
 
+--CVar
+    sub=root:CreateCheckbox('CVar', function() return MenuResponse.Open end)
+
+    for _, info in pairs({
+        {name='bankConfirmTabCleanUp',
+        text=e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK,
+        tooltip=function(tooltip, desc)
+            tooltip:AddLine(desc.data.name)
+            tooltip:AddLine(' ')
+            tooltip:AddLine(e.onlyChinese and '确认清理战团银行' or format(GARRISON_FOLLOWER_NAME, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
+            tooltip:AddLine(e.onlyChinese and "你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。" or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT)
+        end},
+        {name='bankAutoDepositReagents',
+        text=e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL,
+        tooltip=function(tooltip, desc)
+            tooltip:AddLine(desc.data.name)
+            tooltip:AddLine(' ')
+            tooltip:AddLine(e.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
+            tooltip:AddLine(e.onlyChinese and '存放: 包括可交易的材料' or (BANK_DEPOSIT_MONEY_BUTTON_LABEL..': '..BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL))
+        end},
+    }) do
+
+        sub2=sub:CreateCheckbox(
+            info.text or info.name,
+        function(data)
+            return C_CVar.GetCVarBool(data.name)
+        end, function(data)
+            if InCombatLockdown() then
+                print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            else
+                C_CVar.SetCVar(data.name, C_CVar.GetCVarBool(data.name) and '0' or '1')
+            end
+        end, {name=info.name})
+        sub2:SetTooltip(info.tooltip)
+    end
+
+
     local isEnabled= BankFrame.activeTabIndex==1
     local function settings(desc)
         desc:SetTooltip(function(tooltip)
@@ -88,7 +121,6 @@ local function Init_Menu(self, root)
     end
 
     root:CreateTitle(e.onlyChinese and '银行' or BANK)
-
 
 --银行背包
     sub=root:CreateCheckbox(
