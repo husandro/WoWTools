@@ -48,7 +48,6 @@ local function Take_Item(isOutItem, classID, subClassID)
     local reagentBankOpen= ListButton.isReagent and true or false
 
     for _, data in pairs(Tabs or {}) do
-
         if IsModifierKeyDown() or free<=0 then
             isRun=nil
             return
@@ -62,7 +61,6 @@ local function Take_Item(isOutItem, classID, subClassID)
                         or not subClassID
                     )
                 then
-
                     do
                         C_Container.UseContainerItem(data.bag, data.slot, nil, bankType, reagentBankOpen)
                     end
