@@ -378,7 +378,7 @@ local function Init_TimeManager()
 
     --设置，时间，颜色
     TimeManagerClockTicker:SetShadowOffset(1, -1)
-    WoWTools_ColorMixin:SetLabelTexture(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+    WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
 
     --[[小时图，使用服务器, ServerTime
@@ -557,9 +557,9 @@ local function Init_StopwatchFrame()
     end)
     hooksecurefunc('Stopwatch_Play', function()
         StopwatchTitle:SetText(e.Player.col..(e.onlyChinese and '开始' or START))
-        WoWTools_ColorMixin:SetLabelTexture(StopwatchTickerHour, {type='FontString'})
-        WoWTools_ColorMixin:SetLabelTexture(StopwatchTickerMinute, {type='FontString'})
-        WoWTools_ColorMixin:SetLabelTexture(StopwatchTickerSecond, {type='FontString'})
+        WoWTools_ColorMixin:Setup(StopwatchTickerHour, {type='FontString'})
+        WoWTools_ColorMixin:Setup(StopwatchTickerMinute, {type='FontString'})
+        WoWTools_ColorMixin:Setup(StopwatchTickerSecond, {type='FontString'})
     end)
     hooksecurefunc('Stopwatch_Clear', function()
         StopwatchTitle:SetText((e.onlyChinese and '重置' or RESET))

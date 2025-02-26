@@ -120,9 +120,9 @@ local function Init()
         return
     end
 
-    WoWTools_ColorMixin:SetLabelTexture(btn.Default.Border, {type='Texture'})
-    WoWTools_ColorMixin:SetLabelTexture(btn.Guild.Border, {type='Texture'})
-    WoWTools_ColorMixin:SetLabelTexture(btn.ChallengeMode.Border, {type='Texture'})
+    WoWTools_ColorMixin:Setup(btn.Default.Border, {type='Texture'})
+    WoWTools_ColorMixin:Setup(btn.Guild.Border, {type='Texture'})
+    WoWTools_ColorMixin:Setup(btn.ChallengeMode.Border, {type='Texture'})
 
     WoWTools_LabelMixin:Create(nil,{size=14, copyFont=btn.Text, changeFont= btn.Default.Text})--字体，大小
     btn.Default.Text:SetShadowOffset(1,-1)

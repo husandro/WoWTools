@@ -132,7 +132,7 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
 
 
 
-    WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha= 0.3})
+    WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha= 0.3})
 
     table.insert(self.Buttons, btn)
     self.numButton= self.numButton+1

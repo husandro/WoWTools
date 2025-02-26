@@ -97,7 +97,7 @@ local function Init(mixin)
         end
         for i=1,NUM_BATTLE_PETS_IN_BATTLE do
             if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
-                WoWTools_ColorMixin:SetLabelTexture(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
+                WoWTools_ColorMixin:Setup(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
             end
         end
 

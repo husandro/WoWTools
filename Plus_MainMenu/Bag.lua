@@ -135,7 +135,7 @@ local function Init()
 
 
     MainMenuBarBackpackButtonCount:SetShadowOffset(1, -1)
-    WoWTools_ColorMixin:SetLabelTexture(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
+    WoWTools_ColorMixin:Setup(MainMenuBarBackpackButtonCount, {type='FontString'})--设置颜色
 
     hooksecurefunc(MainMenuBarBackpackButton, 'UpdateFreeSlots', function(self)
         local freeSlots=self.freeSlots

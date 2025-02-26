@@ -21,20 +21,17 @@ local function SetTooltip(frame, pet)
 
     e.tips:SetOwner(frame, "ANCHOR_LEFT", -12, 0)
     e.tips:ClearLines()
-    --e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName)
-    --e.tips:AddLine(' ')
     local i=1
     for indexType, name in pairs(pet) do
-        --local col= --indexType=='slotID' and '|cffff00ff'
-                --or (indexType=='name' and '|cnGREEN_FONT_COLOR:')
         local col= (select(2, math.modf(i/2))==0 and '|cffffffff') or '|cff00ccff'
         if type(name)=='table' then
-            if indexType=='abilities' or indexType=='petAbilities' or indexType=='specAbilities' then--11.1 abilities
+            if indexType=='petAbilities' or indexType=='specAbilities' then
                 e.tips:AddDoubleLine(
                     col
-                    ..(indexType=='petAbilities' and (e.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
-                        or (indexType=='specAbilities' and (e.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES)))
-                    or indexType),
+                    ..(indexType=='petAbilities'
+                        and (e.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
+                        or (e.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES))
+                    ),
                     WoWTools_StableFrameMixin:GetAbilitieIconForTab(name, false)
                 )
             end
@@ -89,18 +86,3 @@ end
 function WoWTools_StableFrameMixin:Set_Tooltips(frame, petInfo)
     SetTooltip(frame, petInfo)
 end
-
-
-function WoWTools_StableFrameMixin:GetAbilitieIconForTab(tab, line)
-    local text=''
-    for _, spellID in pairs(tab or {}) do
-        e.LoadData({id=spellID, type='spell'})
-        local texture= C_Spell.GetSpellTexture(spellID)
-        if texture and texture>0 then
-            text= format('%s%s|T%d:14|t', text, line and text~='' and '|n' or '', texture)
-        end
-    end
-    return text
-end
-
-

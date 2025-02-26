@@ -587,7 +587,8 @@ Plus_Professions\TrainerUI.lua
 
 
 ##仅限猎人加载，专门，宠物管理，增强
-Plus_StableFrame\0_StableFrame.lua
+Plus_StableFrame\0_StableFrameMixin.lua
+Plus_StableFrame\1_StableFrame.lua
 Plus_StableFrame\All_List.lua
 Plus_StableFrame\Menu.lua
 Plus_StableFrame\Plus.lua

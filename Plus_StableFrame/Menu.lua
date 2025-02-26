@@ -80,7 +80,7 @@ local function Init_Menu(_, root)
                     if AllListFrame then
                         AllListFrame:Settings()
                     end
-                    
+
                 end,
                 name=e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
                 minValue=8,
@@ -107,7 +107,7 @@ local function Init_Menu(_, root)
         end, function()
             Save().HideTips= not Save().HideTips and true or nil
         end)
-        
+
 
     --选项
         root:CreateDivider()
@@ -165,7 +165,7 @@ local function Init()
         value= max(value, 8)
 
         Save().all_List_Size=value
-        
+
         AllListFrame:Settings()
 
         self:set_tooltips()

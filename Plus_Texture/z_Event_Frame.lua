@@ -28,7 +28,7 @@ function Events:Blizzard_TimeManager(mixin)
     mixin:SetAlphaColor(TimeManagerFrameBg)
     mixin:HideTexture(TimeManagerFrameInset.Bg)
     mixin:SetSearchBox(TimeManagerAlarmMessageEditBox)
-    WoWTools_ColorMixin:SetLabelTexture(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
+    WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
     --秒表 Blizzard_TimeManager.lua
     mixin:HideTexture(StopwatchFrameBackgroundLeft)

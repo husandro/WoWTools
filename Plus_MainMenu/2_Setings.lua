@@ -137,7 +137,7 @@ local function Set_Alpha()
             if not IsHookAlpha then
                 btn:HookScript('OnEnter', Set_Bag_OnEnter_Alpha)
                 btn:HookScript('OnLeave', Set_Bag_OnLeave_Alpha)
-                WoWTools_ColorMixin:SetLabelTexture(_G[name..'NormalTexture'], {type='Texture'})
+                WoWTools_ColorMixin:Setup(_G[name..'NormalTexture'], {type='Texture'})
                 _G[name..'NormalTexture']:SetVertexColor(0,1,0)
             end
             Set_Bag_OnLeave_Alpha(btn)

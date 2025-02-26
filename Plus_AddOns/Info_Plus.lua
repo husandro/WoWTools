@@ -67,18 +67,13 @@ local function Create_Check(frame)
     frame.check=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
 
     frame.check:SetSize(20,20)--Fast，选项
-
-    if frame.Status then--11.1
-        frame.check:SetPoint('RIGHT', frame.Status, 'LEFT')
-    else
-        frame.check:SetPoint('RIGHT', frame)
-    end
+    frame.check:SetPoint('RIGHT', frame.Status, 'LEFT')
 
     frame.check:SetScript('OnClick', function(self)
         Save().fast[self.name]= not Save().fast[self.name] and self:GetID() or nil
         WoWTools_AddOnsMixin:Set_Left_Buttons()
     end)
-    
+
 
     frame.check.dep= frame:CreateLine()--依赖，提示
     frame.check.dep:Hide()
@@ -191,7 +186,7 @@ end
 
 
 
-   
+
 --列表，内容
 local function Init_Set_List(frame, addonIndex)
     Create_Check(frame)
@@ -255,23 +250,14 @@ end
 
 
 local function Init()
-    if AddonList_InitAddon then--11.1
-        hooksecurefunc('AddonList_InitAddon', function(entry, treeNode)
-            local addonIndex = treeNode:GetData().addonIndex
-            Init_Set_List(entry, addonIndex)--列表，内容
-        end)
-    else
-        hooksecurefunc('AddonList_InitButton', function(frame, addonIndex)
-            frame.Title:SetPoint('RIGHT', -220, 0 )
-            Init_Set_List(frame, addonIndex)--列表，内容
-        end)
-    end
 
-
+    hooksecurefunc('AddonList_InitAddon', function(entry, treeNode)
+        local addonIndex = treeNode:GetData().addonIndex
+        Init_Set_List(entry, addonIndex)--列表，内容
+    end)
 
     hooksecurefunc('AddonTooltip_Update', function(frame)
         --WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
-
         local index= frame:GetID()
         local va= WoWTools_AddOnsMixin:Get_MenoryValue(index, true)
         if va then

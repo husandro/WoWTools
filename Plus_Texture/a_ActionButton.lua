@@ -111,7 +111,7 @@ local function Init()
 
     WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
     WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
-    WoWTools_ColorMixin:SetLabelTexture(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
+    WoWTools_ColorMixin:Setup(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
 
     if MainMenuBar.EndCaps then
         WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)

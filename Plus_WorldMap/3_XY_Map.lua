@@ -147,7 +147,7 @@ local function Init()
 
     MapXYButton.edit= CreateFrame("EditBox", nil, MapXYButton, 'InputBoxTemplate')
     MapXYButton.edit:SetHeight(22)
-    WoWTools_ColorMixin:SetLabelTexture(MapXYButton.edit, {type='EditBox'})
+    WoWTools_ColorMixin:Setup(MapXYButton.edit, {type='EditBox'})
     MapXYButton.edit:SetAutoFocus(false)
     MapXYButton.edit:ClearFocus()
     MapXYButton.edit:SetPoint('LEFT', MapXYButton, 'RIGHT',2,0)
@@ -156,7 +156,7 @@ local function Init()
     MapXYButton.edit.Right:SetAlpha(0.3)
 
     MapXYButton.edit:SetScript('OnEditFocusLost', function(self)
-        WoWTools_ColorMixin:SetLabelTexture(self, {type='EditBox'})
+        WoWTools_ColorMixin:Setup(self, {type='EditBox'})
     end)
 
     MapXYButton.edit:SetScript('OnEditFocusGained', function(self)

@@ -178,34 +178,51 @@ end
 
 
 
---猎人，兽栏 Plus 10.2.7 Blizzard_StableUI.lua
-local function Init()
-    hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)--宠物，列表，提示
-        if not btn.set_list_button_settings then
-            btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
-            btn.Portrait2:SetSize(20, 20)
-            btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
-            btn.Portrait2:SetAlpha(0.5)
-            btn.abilitiesText= WoWTools_LabelMixin:Create(btn)--宠物，技能，提示
-            btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
-            btn.indexText= WoWTools_LabelMixin:Create(btn)--, {color={r=1,g=0,b=1}})--SlotID
-            btn.indexText:SetPoint('TOPRIGHT', -9,-6)
-            btn.indexText:SetAlpha(0.5)
-            function btn:set_list_button_settings()
-                self.abilitiesText:SetText(GetAbilitiesIcons(self.petData, false))--宠物，技能，提示
-                local data= self.petData or {}--宠物，类型，图标
-                self.Portrait2:SetTexture(data.icon or nil)
-                self.indexText:SetText(data.slotID or '')
-            end
-            btn:HookScript('OnEnter', function(self)--信息，提示
-                if self.petData then
-                    WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
-                    e.tips:Show()
-                end
-            end)
-        end
+
+
+
+--宠物，列表，提示
+local function Set_SetPet(btn)
+    if btn.set_list_button_settings then
         btn:set_list_button_settings()
+        return
+    end
+
+    btn.Portrait2= btn:CreateTexture(nil, 'OVERLAY')--宠物，类型，图标
+    btn.Portrait2:SetSize(20, 20)
+    btn.Portrait2:SetPoint('RIGHT', btn.Portrait,'LEFT')
+    btn.Portrait2:SetAlpha(0.5)
+    btn.abilitiesText= WoWTools_LabelMixin:Create(btn)--宠物，技能，提示
+    btn.abilitiesText:SetPoint('BOTTOMRIGHT', btn.Background, -9, 8)
+    btn.indexText= WoWTools_LabelMixin:Create(btn)--, {color={r=1,g=0,b=1}})--SlotID
+    btn.indexText:SetPoint('TOPRIGHT', -9,-6)
+    btn.indexText:SetAlpha(0.5)
+
+    function btn:set_list_button_settings()
+        self.abilitiesText:SetText(GetAbilitiesIcons(self.petData, false))--宠物，技能，提示
+        local data= self.petData or {}--宠物，类型，图标
+        self.Portrait2:SetTexture(data.icon or nil)
+        self.indexText:SetText(data.slotID or '')
+    end
+    btn:HookScript('OnEnter', function(self)--信息，提示
+        if self.petData then
+            WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
+            e.tips:Show()
+        end
     end)
+end
+
+
+
+
+
+--猎人，兽栏 Plus Blizzard_StableUI.lua
+local function Init()
+--宠物，列表，提示
+    hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', Set_SetPet)
+    for _, btn in pairs(StableFrame.StabledPetList.ScrollBox:GetFrames() or {}) do
+        Set_SetPet(btn)
+    end
 
 
     for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示

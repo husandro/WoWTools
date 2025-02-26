@@ -39,7 +39,7 @@ function WoWTools_PlusTextureMixin:SetColorTexture(object, tab)
         tab.isColorTexture=true
         tab.type=object:GetObjectType()
         tab.alpha= tab.alpha or self.alpha or self.min or Save().alpha or 0.5
-        WoWTools_ColorMixin:SetLabelTexture(object, tab)
+        WoWTools_ColorMixin:Setup(object, tab)
     end
 end
 
@@ -63,7 +63,7 @@ end
 function WoWTools_PlusTextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaORmin)
     if object then
         if not notColor and e.Player.useColor then
-            WoWTools_ColorMixin:SetLabelTexture(object, {type=object:GetObjectType()})
+            WoWTools_ColorMixin:Setup(object, {type=object:GetObjectType()})
         end
         if not notAlpha then
             if alphaORmin==true then
@@ -130,7 +130,7 @@ function WoWTools_PlusTextureMixin:SetFrame(frame, tab)
             if indexTexture then
                 if indexTexture== index then
                     if not notColor then
-                        WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+                        WoWTools_ColorMixin:Setup(icon, {type='Texture'})
                     end
                     if alpha then
                         icon:SetAlpha(alpha)
@@ -139,7 +139,7 @@ function WoWTools_PlusTextureMixin:SetFrame(frame, tab)
                 end
             else
                 if not notColor then
-                    WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+                    WoWTools_ColorMixin:Setup(icon, {type='Texture'})
                 end
                 if alpha then
                     icon:SetAlpha(alpha)
@@ -232,7 +232,7 @@ function WoWTools_PlusTextureMixin:SetSlider(frame)
     if back then
         for _, icon in pairs({back:GetRegions()}) do
             if icon:GetObjectType()=="Texture" then
-                WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+                WoWTools_ColorMixin:Setup(icon, {type='Texture'})
             end
         end
     end
@@ -240,7 +240,7 @@ function WoWTools_PlusTextureMixin:SetSlider(frame)
     if forward then
         for _, icon in pairs({forward:GetRegions()}) do
             if icon:GetObjectType()=="Texture" then
-                WoWTools_ColorMixin:SetLabelTexture(icon, {type='Texture'})
+                WoWTools_ColorMixin:Setup(icon, {type='Texture'})
             end
         end
     end
@@ -248,9 +248,9 @@ function WoWTools_PlusTextureMixin:SetSlider(frame)
     local middle= frame.Slider.Slider and frame.Slider.Slider.Middle or frame.Slider.Middle
     local right= frame.Slider.Slider and frame.Slider.Slider.Right or frame.Slider.Right
     local left= frame.Slider.Slider and frame.Slider.Slider.Left or frame.Slider.Left
-    WoWTools_ColorMixin:SetLabelTexture(middle, {type='Texture'})
-    WoWTools_ColorMixin:SetLabelTexture(right, {type='Texture'})
-    WoWTools_ColorMixin:SetLabelTexture(left, {type='Texture'})
+    WoWTools_ColorMixin:Setup(middle, {type='Texture'})
+    WoWTools_ColorMixin:Setup(right, {type='Texture'})
+    WoWTools_ColorMixin:Setup(left, {type='Texture'})
 end
 
 
@@ -261,9 +261,9 @@ function WoWTools_PlusTextureMixin:SetButton(btn, tab)
     end
     tab= tab or {}
     if tab.all then
-        WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=tab.alpha})
+        WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 1})
     else
-        WoWTools_ColorMixin:SetLabelTexture(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha})
+        WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha or 1})
     end
 end
 

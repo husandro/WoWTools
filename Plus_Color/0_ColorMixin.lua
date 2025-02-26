@@ -21,10 +21,10 @@ WoWTools_ColorMixin={
 
 local function set_Frame_Color(frame, r, g, b, setA, hex)
     if frame then
-        local type= frame:GetObjectType()
-        if type=='FontString' then
+        local Type= frame:GetObjectType()
+        if Type=='FontString' then
             frame:SetTextColor(r, g, b,setA)
-        elseif type=='Texture' then
+        elseif Type=='Texture' then
             --frame:SetVertexColor(r, g, b, setA)
             frame:SetColorTexture(r, g, b,setA)
         end
@@ -114,43 +114,47 @@ end
 
 
 --设置颜色
-function WoWTools_ColorMixin:SetLabelTexture(frame, tab)--设置颜色
-    if frame and (e.Player.useColor or tab.color) then
-        local type= tab.type or type(frame)-- FontString Texture String
-        local alpha= tab.alpha
-        local col= tab.color or e.Player.useColor
-        local isColorTexture= tab.isColorTexture
+function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
+    tab = tab or {}
+    if not object or not (e.Player.useColor or tab.color) then
+        return
+    end
 
-        local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
-        if type=='FontString' or type=='EditBox' then
-            frame:SetTextColor(r, g, b, a)
+    local Type= tab.type or (object.GetObjectType and object:GetObjectType()) or type(object)-- FontString Texture String
 
-        elseif type=='Texture' then
-            if isColorTexture then
-                frame:SetColorTexture(r,g,b,a)
-            else
-                frame:SetVertexColor(r, g, b, a)
-            end
-        elseif type=='Button' then
-            local texture= frame:GetNormalTexture()
-            if texture then
-                texture:SetVertexColor(r, g, b, a)
-            end
-            texture= frame:GetPushedTexture()
-            if texture then
-                texture:SetVertexColor(r, g, b, a)
-            end
-            texture= frame:GetHighlightTexture()
-            if texture then
-                texture:SetVertexColor(r, g, b, a)
-            end
+    local alpha= tab.alpha
+    local col= tab.color or e.Player.useColor
+    local isColorTexture= tab.isColorTexture
 
-        elseif type=='String' then
-            local hex= tab.color and tab.color.hex or e.Player.useColor.hex
-            return hex..frame
+    local r,g,b,a= col.r, col.g, col.b, alpha or col.a or 1
+
+    if Type=='FontString' or Type=='EditBox' then
+        object:SetTextColor(r, g, b, a)
+
+    elseif Type=='Texture' then
+        if isColorTexture then
+            object:SetColorTexture(r, g, b, a)
+        else
+            object:SetVertexColor(r, g, b, a)
         end
-    elseif type=='String' then
-        return frame
+    
+    elseif Type=='Button' then
+        local icon= object:GetNormalTexture()
+        if icon then
+            icon:SetVertexColor(r, g, b, a)
+        end
+        icon= object:GetPushedTexture()
+        if icon then
+            icon:SetVertexColor(r, g, b, a)
+        end
+        icon= object:GetHighlightTexture()
+        if icon then
+            icon:SetVertexColor(r, g, b, a)
+        end
+
+    elseif Type=='String' then
+        local hex= tab.color and tab.color.hex or e.Player.useColor.hex
+        return hex..object
     end
 end
 

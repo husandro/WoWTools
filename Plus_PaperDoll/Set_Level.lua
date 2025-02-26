@@ -12,7 +12,7 @@ end
 
 
 local function Init()
-    WoWTools_ColorMixin:SetLabelTexture(CharacterLevelText, {type='FontString'})
+    WoWTools_ColorMixin:Setup(CharacterLevelText, {type='FontString'})
 
     CharacterLevelText:SetJustifyH('LEFT')
     CharacterLevelText:EnableMouse(true)

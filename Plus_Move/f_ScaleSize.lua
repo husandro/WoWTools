@@ -674,7 +674,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         end
     end
 
-    WoWTools_ColorMixin:SetLabelTexture(btn, {type='Button', alpha=1})--设置颜色
+    WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=1})--设置颜色
 
     btn:SetClampedToScreen(true)
     Set_Enter(btn)

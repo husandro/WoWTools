@@ -359,11 +359,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
 
-                if SpellFlyoutPopupButtonMixin then--11.1
-                    hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
-                else
-                    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
-                end
+                hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+
                 hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
             end
 

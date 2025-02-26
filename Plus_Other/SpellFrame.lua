@@ -150,13 +150,8 @@ local function Init_Spec_Button()
         end
 
         function btn:Set_Active()
-            if self:IsActive() or UnitAffectingCombat('player') or PlayerSpellsFrame.TalentsFrame:IsCommitInProgress() then
-                return
-            end
-            if C_SpecializationInfo and C_SpecializationInfo.SetSpecialization then--11.1
+            if not self:IsActive() and InCombatLockdown() then--PlayerSpellsFrame.TalentsFrame:IsCommitInProgress()
                 C_SpecializationInfo.SetSpecialization(self.specIndex)
-            else
-                SetSpecialization(self.specIndex)
             end
         end
 
@@ -267,17 +262,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
                 frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-                if frame.Button.Arrow then--11.1
-                    if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
-                        frame.Button.Arrow:SetVertexColor(1,0,1)
-                        frame.Button.Border:SetVertexColor(1,0,1)
-                    else
-                        frame.Button.Arrow:SetVertexColor(1,1,1)
-                        frame.Button.Border:SetVertexColor(1,1,1)
-                    end
+                if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
+                    frame.Button.Arrow:SetVertexColor(1,0,1)
+                    frame.Button.Border:SetVertexColor(1,0,1)
+                else
+                    frame.Button.Arrow:SetVertexColor(1,1,1)
+                    frame.Button.Border:SetVertexColor(1,1,1)
                 end
             end)
-
             self:UnregisterEvent(event)
         end
 

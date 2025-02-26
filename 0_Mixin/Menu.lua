@@ -698,16 +698,11 @@ function WoWTools_MenuMixin:Set_Specialization(root)
             local sub2= sub:CreateButton(
                 '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..e.cn(name),
             function(data)
-                if GetSpecialization(nil, false, 1)==data.specIndex
-                    or UnitAffectingCombat('player')
-                    or (PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsCommitInProgress())
+                if GetSpecialization(nil, false, 1)~=data.specIndex
+                    and not InCombatLockdown()
+                    --and not(PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsCommitInProgress())
                 then
-                    return MenuResponse.Open
-                end
-                if C_SpecializationInfo and C_SpecializationInfo.SetSpecialization then--11.1
                     C_SpecializationInfo.SetSpecialization(data.specIndex)
-                else
-                    SetSpecialization(data.specIndex)
                 end
                 return MenuResponse.Open
             end, {

@@ -231,7 +231,7 @@ end
 --不禁用，本插件
 local function Init_NotDisabled_Button()
     local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size={18,18}, icon= Save().enableAllButtn})
-    btn:SetPoint('LEFT', AddonListDisableAllButton or AddonList.DisableAllButton, 'RIGHT', 2,0)--11.1
+    btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
     btn:SetAlpha(0.3)
     function btn:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -244,11 +244,7 @@ local function Init_NotDisabled_Button()
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
         self:SetAlpha(0.3)
-        if AddonList.DisableAllButton then--11.1
-            AddonList.DisableAllButton:SetAlpha(1)
-        else
-            AddonListDisableAllButton:SetAlpha(1)
-        end
+        AddonList.DisableAllButton:SetAlpha(1)
         if self.findFrame then
             if self.findFrame.check then
                 self.findFrame.check:set_leave_alpha()
@@ -258,11 +254,7 @@ local function Init_NotDisabled_Button()
     end)
     btn:SetScript('OnEnter', function(self)
         self:set_tooltips()
-        if AddonList.DisableAllButton then--11.1
-            AddonList.DisableAllButton:SetAlpha(0.3)
-        else
-            AddonListDisableAllButton:SetAlpha(0.3)
-        end
+        AddonList.DisableAllButton:SetAlpha(0.3)
         if not self.index then
             for i=1, C_AddOns.GetNumAddOns() do
                 if C_AddOns.GetAddOnInfo(i)== id then
@@ -290,21 +282,12 @@ local function Init_NotDisabled_Button()
         self:set_tooltips()
     end)
 
-    if AddonListDisableAllButton then--11.1
-        AddonListDisableAllButton:HookScript('OnClick', function()
-            if Save().enableAllButtn then
-                C_AddOns.EnableAddOn(id)
-                e.call(AddonList_Update)
-            end
-        end)
-    else
-        AddonList.DisableAllButton:HookScript('OnClick', function()
-            if Save().enableAllButtn then
-                C_AddOns.EnableAddOn(id)
-                e.call(AddonList_Update)
-            end
-        end)
-    end
+    AddonList.DisableAllButton:HookScript('OnClick', function()
+        if Save().enableAllButtn then
+            C_AddOns.EnableAddOn(id)
+            e.call(AddonList_Update)
+        end
+    end)
 end
 
 

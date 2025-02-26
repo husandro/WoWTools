@@ -52,7 +52,7 @@ local function SetType2Texture(btn)
 
     btn.border:SetAtlas('bag-reagent-border')
 
-    WoWTools_ColorMixin:SetLabelTexture(btn.border, {type='Texture', alpha=0.3})
+    WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
 end
 
 
@@ -65,8 +65,8 @@ function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
         btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
         btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
     end
-    WoWTools_ColorMixin:SetLabelTexture(btn:GetHighlightTexture() , {type='Texture', alpha=1})
-    WoWTools_ColorMixin:SetLabelTexture(btn:GetPushedTexture(), {type='Texture', alpha=1})
+    WoWTools_ColorMixin:Setup(btn:GetHighlightTexture() , {type='Texture', alpha=1})
+    WoWTools_ColorMixin:Setup(btn:GetPushedTexture(), {type='Texture', alpha=1})
 end
 
 
@@ -201,7 +201,7 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     local setID= tab.setID
     local size= tab.size or 23
     local template= tab.template--UIPanelButtonTemplate
-    local hideIcon= tab.hideIcon
+    local hideIcon= tab.hideIcon or tab.icon=='hide'
     local isType2= tab.isType2--圆形按钮
     local atlas= tab.atlas
     local texture= tab.texture
@@ -224,6 +224,7 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
         btn:SetNormalAtlas('ui-questtrackerbutton-filter')
         btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
         btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+        WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
     else
         if atlas then
             btn:SetNormalAtlas(atlas)

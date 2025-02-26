@@ -131,7 +131,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
         local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
         if label then
-            WoWTools_ColorMixin:SetLabelTexture(label, {type='FontString'})--设置颜色
+            WoWTools_ColorMixin:Setup(label, {type='FontString'})--设置颜色
             label:ClearAllPoints()
             label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
         end
@@ -171,7 +171,7 @@ end)
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER',1,-1)
     portrait:SetSize(21,21)
-    WoWTools_ColorMixin:SetLabelTexture(portrait, {type='Texture'})--设置颜色
+    WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色
 
     local lootTipsTexture= PlayerFrame.lootButton:CreateTexture(nil, "OVERLAY")
     lootTipsTexture:SetSize(10,10)
@@ -285,7 +285,7 @@ end)
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER', PlayerFrame.instanceFrame.dungeon,1,0)
     portrait:SetSize(20,20)
-    WoWTools_ColorMixin:SetLabelTexture(portrait, {type='Texture'})--设置颜色
+    WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色
     --提示
     PlayerFrame.instanceFrame.dungeon:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
     function PlayerFrame.instanceFrame.dungeon:set_tooltips()
@@ -2005,7 +2005,7 @@ local function Init_CastingBar(frame)
         self.Icon:SetShown(true)
     end)
 
-    --WoWTools_ColorMixin:SetLabelTexture(frame.CastTimeText, {type='FontString'})--设置颜色    
+    --WoWTools_ColorMixin:Setup(frame.CastTimeText, {type='FontString'})--设置颜色    
     if not frame.CastTimeText then
         Create_CastTimeTexte(frame)
     else
@@ -2015,7 +2015,7 @@ local function Init_CastingBar(frame)
             frame.CastTimeText:SetPoint('RIGHT', frame.ChargeFlash, 'RIGHT')
         end
     end
-    --WoWTools_ColorMixin:SetLabelTexture(frame.Text, {type='FontString'})--设置颜色
+    --WoWTools_ColorMixin:Setup(frame.Text, {type='FontString'})--设置颜色
     frame.Text:SetTextColor(1, 0.82, 0, 1)
     frame.Text:SetShadowOffset(1, -1)
 
@@ -2081,8 +2081,8 @@ local function Init()
                 activeTimer.valueText=WoWTools_LabelMixin:Create(activeTimer, {justifyH='RIGHT'})
                 activeTimer.valueText:SetPoint('BOTTOMRIGHT',-7, 4)
 
-                WoWTools_ColorMixin:SetLabelTexture(activeTimer.valueText, {type='FontString'})--设置颜色
-                WoWTools_ColorMixin:SetLabelTexture(activeTimer.Text, {type='FontString'})--设置颜色
+                WoWTools_ColorMixin:Setup(activeTimer.valueText, {type='FontString'})--设置颜色
+                WoWTools_ColorMixin:Setup(activeTimer.Text, {type='FontString'})--设置颜色
 
                 hooksecurefunc(activeTimer, 'UpdateStatusBarValue', function(self)
                     self.valueText:SetText(format('%i', self.StatusBar:GetValue()))
