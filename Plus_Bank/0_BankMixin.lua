@@ -1,4 +1,5 @@
 --[[
+    local index= BankFrame.activeTabIndex
 	Enum.BankType = {
 		Character = 0,
 		Guild = 1,
@@ -166,3 +167,56 @@ function WoWTools_BankMixin:Set_Background_Texture(texture)
         end
     end
 end
+
+
+
+--取出，物品
+function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, activeTabIndex)
+    if self.isRun then
+        return
+    end
+    self.isRun= true
+
+    activeTabIndex= activeTabIndex or BankFrame.activeTabIndex
+
+    local isBagAllItem= activeTabIndex==2 or classID==7 or subClassID
+
+    local free= isOutItem
+            and WoWTools_BankMixin:GetFree()--银行，空位
+            or WoWTools_BagMixin:GetFree(isBagAllItem)--背包，空位
+
+    local Tabs= isOutItem
+        and WoWTools_BankMixin:GetItems(activeTabIndex)
+        or WoWTools_BagMixin:GetItems(isBagAllItem)
+
+    if free==0 or not Tabs or IsModifierKeyDown() then
+        self.isRun=nil
+        return
+    end
+
+
+    local bankType= activeTabIndex== 3 and Enum.BankType.Account or Enum.BankType.Character
+    local reagentBankOpen= activeTabIndex==2
+
+    for _, data in pairs(Tabs) do
+        if IsModifierKeyDown() or free<=0 then
+            self.isRun=nil
+            return
+        end
+        do
+            if not data.info.isLocked then
+                local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+                if (classID== classID2 or not classID)
+                    and (subClassID==subClassID2 or not subClassID)
+                then
+                    do
+                        C_Container.UseContainerItem(data.bag, data.slot, nil, bankType, reagentBankOpen)
+                    end
+                    free= free-1
+                end
+            end
+        end
+    end
+    self.isRun=nil
+end
+

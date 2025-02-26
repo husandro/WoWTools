@@ -20,7 +20,7 @@ WoWTools_BankMixin.Save={
     disabledAccountBag= not e.Player.husandro,--战团银行
 }
 
---local index= BankFrame.activeTabIndex
+
 
 local function Save()
     return WoWTools_BankMixin.Save

@@ -18,61 +18,6 @@ local isRun
 
 
 
---取出，ClassID 物品
-local function Take_Item(isOutItem, classID, subClassID)
-    if isRun then
-        return
-    end
-    isRun= true
-
-    local isBagAllItem= classID==7 or subClassID
-    local free= isOutItem
-            and WoWTools_BankMixin:GetFree()--银行，空位
-            or WoWTools_BagMixin:GetFree(isBagAllItem)--背包，空位
-
-    if free==0 then
-        isRun=nil
-        return
-    end
-
-    local Tabs= isOutItem
-            and WoWTools_BankMixin:GetItems(BankFrame.activeTabIndex)
-            or WoWTools_BagMixin:GetItems(isBagAllItem)
-
-    if not Tabs then
-        isRun=nil
-        return
-    end
-
-    local bankType= ListButton.isAccount and Enum.BankType.Account or Enum.BankType.Character
-    local reagentBankOpen= ListButton.isReagent and true or false
-
-    for _, data in pairs(Tabs or {}) do
-        if IsModifierKeyDown() or free<=0 then
-            isRun=nil
-            return
-        end
-        do
-            if not data.info.isLocked then
-                local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
-                if classID== classID2
-                    and (
-                        subClassID==subClassID2
-                        or not subClassID
-                    )
-                then
-                    do
-                        C_Container.UseContainerItem(data.bag, data.slot, nil, bankType, reagentBankOpen)
-                    end
-                    free= free-1
-                end
-            end
-        end
-    end
-    isRun=nil
-end
-
-
 
 
 
@@ -165,15 +110,16 @@ local function Create_ListButton(index)
         if not self.classID then
             return
         end
+--提取
         local sub=root:CreateButton('|A:Cursor_OpenHand_32:0:0|a'..(e.onlyChinese and '提取' or WITHDRAW)..' '..(self.bankNumText or ''), function(data)
-            Take_Item(true, data.classID, data.subClassID)
+            WoWTools_BankMixin:Take_Item(true, data.classID, data.subClassID)
         end, {classID=self.classID, subClassID=self.subClassID})
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
         end)
-
+--存放
         sub=root:CreateButton('|A:Cursor_buy_32:0:0|a'..(e.onlyChinese and '存放' or DEPOSIT)..' '..(self.bagNumText or ''), function(data)
-            Take_Item(false, data.classID, data.subClassID)
+            WoWTools_BankMixin:Take_Item(false, data.classID, data.subClassID)
         end, {classID=self.classID, subClassID=self.subClassID})
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
@@ -281,7 +227,6 @@ local function Set_Label()
 
     isRun=true
 
-
     local bankClass={}
     local bagClass={}
     local index= BankFrame.activeTabIndex
@@ -290,13 +235,16 @@ local function Set_Label()
     local isReagent= index==2 and IsReagentBankUnlocked()
     local isAccount= index==3 and not AccountBankPanel.PurchaseTab:IsPurchaseTab()--not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
 
-    Init_Button_List(isBank, isReagent, isAccount)
+    local Tabs
+    if isBank then
+        Tabs=WoWTools_BankMixin:GetItems(1)--银行
+    elseif isReagent then
+        Tabs=WoWTools_BankMixin:GetItems(2)--材料银行
+    elseif isAccount then
+        Tabs=WoWTools_BankMixin:GetItems(3)--战团银行
+    end
 
-    for _, data in pairs(
-        isBank and WoWTools_BankMixin:GetItems(1)--银行
-        or (isReagent and WoWTools_BankMixin:GetItems(2))--材料银行
-        or (isAccount and WoWTools_BankMixin:GetItems(3))--战团银行
-    ) do
+    for _, data in pairs(Tabs or {}) do
         if not data.info.isLocked then
             local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
             if isReagent then--材料银行
@@ -330,37 +278,44 @@ local function Set_Label()
         end
     end
 
+--生成,物品列表
+    do
+        Init_Button_List(isBank, isReagent, isAccount)
+    end
+
 --背景
     local maxWidth= 0
     local bank, bag, width, class, bankData, bagData
     for _, btn in pairs(Buttons) do
-        class= btn.subClassID or btn.classID
+        if btn:IsShown() then
+            class= btn.subClassID or btn.classID
 
-        bankData= bankClass[class] or {num=0, items={}}
-        bagData= bagClass[class] or {num=0, items={}}
+            bankData= bankClass[class] or {num=0, items={}}
+            bagData= bagClass[class] or {num=0, items={}}
 
-        bank= bankData.num
-        bag= bagData.num
+            bank= bankData.num
+            bag= bagData.num
 
-        btn.bankItems= bankData.items
-        btn.bagItems= bagData.items
+            btn.bankItems= bankData.items
+            btn.bagItems= bagData.items
 
-        btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a'
-        btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a'
+            btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a'
+            btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a'
 
-        if bank==0 and bag==0 then
-            btn.Label:SetText('')
-            btn.Text:SetTextColor(0.62, 0.62, 0.62)
-            btn:SetAlpha(0.5)
-        else
-            btn.Label:SetText(btn.bankNumText..btn.bagNumText)
-            btn.Text:SetTextColor(1,0.82,0)
-            btn:SetAlpha(1)
+            if bank==0 and bag==0 then
+                btn.Label:SetText('')
+                btn.Text:SetTextColor(0.62, 0.62, 0.62)
+                btn:SetAlpha(0.5)
+            else
+                btn.Label:SetText(btn.bankNumText..btn.bagNumText)
+                btn.Text:SetTextColor(1,0.82,0)
+                btn:SetAlpha(1)
+            end
+
+            width= btn.Text:GetWidth()+btn.Label:GetWidth()
+            btn:SetWidth(width+4)
+            maxWidth= math.max(width, maxWidth)
         end
-
-        width= btn.Text:GetWidth()+btn.Label:GetWidth()
-        btn:SetWidth(width+4)
-        maxWidth= math.max(width, maxWidth)
     end
 
 --背景,设置左边
@@ -369,7 +324,6 @@ local function Set_Label()
     ListButton.isBank= isBank
     ListButton.isReagent= isReagent
     ListButton.isAccount= isAccount
-
 
     isRun=nil
 end
