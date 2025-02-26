@@ -78,11 +78,16 @@ end
 
 function WoWTools_BagMixin:GetItems(all)
     local Tabs={}
+    local context= ItemButtonUtil.GetItemContext()
+
     local num= NUM_BAG_FRAMES+ (all and NUM_REAGENTBAG_FRAMES or 0)
+
     for bag= BACKPACK_CONTAINER, num do--0-5
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID then
+            if info and info.itemID and
+                (context and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot)) or not context)
+            then
                 table.insert(Tabs, 1, {
                     info=info,
                     bag=bag,

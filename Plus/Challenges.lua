@@ -460,7 +460,9 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                 return
             end
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
+
             if ItemButtonUtil.GetItemContext() == nil then return end
+            
             local itemLocation = ItemLocation:CreateEmpty()
             for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--ContainerFrame.lua
                 for slotIndex = 1, ContainerFrame_GetContainerNumSlots(bagID) do

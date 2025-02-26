@@ -304,8 +304,8 @@ end
 local function Init_AccountBankPanel()
 
 --添加，取出所有物品
-    --local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, icon='hide'})
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel, {size=23, icon='hide'})
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, icon='hide'})
+    --local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel, {size=23, icon='hide'})
     btnAllOut:SetNormalAtlas('Cursor_OpenHandGlow_64')
     btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -26)
 
@@ -493,19 +493,12 @@ end
 
 --打开，银行，背包
 local function Init_OpenAllBag_Button()
-    local parent= BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS]
-
-
-
-    local up= CreateFrame("Button", ('WoWToolsBankOpenAllBagButton'), parent)
-    up:SetSize(23,23)
-    up:SetNormalAtlas('128-RedButton-ArrowUpGlow')
-    up:SetPushedAtlas('128-RedButton-ArrowUpGlow-Pressed')
-    up:SetHighlightAtlas('Callings-BackHighlight')
-    up:SetDisabledAtlas('128-RedButton-ArrowUpGlow-Disabled')
-    up:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-
-    up:SetPoint('BOTTOMLEFT', parent, 'RIGHT', 4, -3)
+    local up= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], {
+        name='WoWToolsBankOpenAllBagButton',
+        atlas='NPE_ArrowDown',
+        size=22,
+    })
+    up:SetPoint('TOPLEFT', BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], 'TOPRIGHT', 0,2)
     up:SetScript('OnLeave', GameTooltip_Hide)
     up:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -520,16 +513,13 @@ local function Init_OpenAllBag_Button()
         WoWTools_BankMixin:Init_Plus()
     end)
 
+    local down= WoWTools_ButtonMixin:Cbtn(up, {
+        name='WoWToolsBankCloseAllBagButton',
+        size=22,
+        atlas='NPE_ArrowUp',
+    })
 
-    local down= CreateFrame("Button", ('WoWToolsBankCloseAllBagButton'), parent)--ObjectiveTrackerContainerFilterButtonTemplate
-    down:SetSize(23,23)
-    down:SetNormalAtlas('128-RedButton-ArrowDown')
-    down:SetPushedAtlas('128-RedButton-ArrowDown-Pressed')
-    down:SetHighlightAtlas('128-RedButton-ArrowDown-Highlight')
-    down:SetDisabledAtlas('128-RedButton-ArrowDown-Disabled')
-    down:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-
-    down:SetPoint('TOPLEFT', parent, 'RIGHT', 4, -3)
+    down:SetPoint('TOP', up, 'BOTTOM')
     down:SetScript('OnLeave', GameTooltip_Hide)
     down:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
