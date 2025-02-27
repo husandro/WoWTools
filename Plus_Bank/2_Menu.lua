@@ -76,7 +76,7 @@ local function Init_Menu(self, root)
     end)
 
 --CVar
-    sub=root:CreateCheckbox('CVar', function() return MenuResponse.Open end)
+    sub=root:CreateButton('CVar', function() return MenuResponse.Open end)
 
     for _, info in pairs({
         {name='bankConfirmTabCleanUp',

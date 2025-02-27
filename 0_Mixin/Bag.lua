@@ -79,7 +79,6 @@ end
 function WoWTools_BagMixin:GetItems(all)
     local Tabs={}
     local context= ItemButtonUtil.GetItemContext()
-
     local num= NUM_BAG_FRAMES+ (all and NUM_REAGENTBAG_FRAMES or 0)
 
     for bag= BACKPACK_CONTAINER, num do--0-5

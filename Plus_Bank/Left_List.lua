@@ -21,14 +21,19 @@ local isRun
 
 
 local function Set_Tooltip(self, tooltip, type)
+    local name, col
     local find=0
     if type==0 or type==1 then
         for itemID, count in pairs(self.bankItems or {}) do
             if find==0 then
                 tooltip:AddDoubleLine(' ', (e.onlyChinese and '银行' or BANK)..'|A:Banker:0:0|a')
             end
-            tooltip:AddLine(
-                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
+            name= WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})
+            
+          
+            tooltip:AddDoubleLine(
+                name..(' x'..count),
+                (col or '').. find
             )
             find=find+1
         end
@@ -39,8 +44,11 @@ local function Set_Tooltip(self, tooltip, type)
             if find2==0 then
                 tooltip:AddDoubleLine(' ', (e.onlyChinese and '背包' or INVTYPE_BAG)..'|A:bag-main:0:0|a')
             end
-            tooltip:AddLine(
-                WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})..(' x'..count)
+            name= WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})
+            col= select(4, WoWTools_ItemMixin:GetColor(nil, {itemID=itemID}))
+            tooltip:AddDoubleLine(
+                name..(' x'..count),
+                (col or '').. find2
             )
             find2=find2+1
         end
@@ -62,14 +70,14 @@ local function Init_Button_Menu(self, root)
 
 --提取             
     local sub=root:CreateButton(
-        '|A:Cursor_OpenHand_32:0:0|a'
+        (self.bankNum==0 and '|cff828282' or '')
+        ..'|A:Cursor_OpenHand_32:0:0|a'
         ..(e.onlyChinese and '提取' or WITHDRAW)
         ..' '..(self.bankNumText or '')
         ..'  '..WoWTools_BagMixin:GetFree(self.classID==7),
-    function(data)
-        WoWTools_BankMixin:Take_Item(true, data.classID, data.subClassID)
-        --return MenuResponse.Refresh
-    end, {classID=self.classID, subClassID=self.subClassID})
+    function()
+        WoWTools_BankMixin:Take_Item(true, self.classID, self.subClassID)
+    end)
     sub:SetTooltip(function(tooltip)
         local find, find2= Set_Tooltip(self, tooltip, 1)
         if find==0 and find2==0 then
@@ -79,14 +87,15 @@ local function Init_Button_Menu(self, root)
 
 --存放
     sub=root:CreateButton(
-        '|A:Cursor_buy_32:0:0|a'
+        (self.bagNum==0 and '|cff828282' or '')
+        ..'|A:Cursor_buy_32:0:0|a'
         ..(e.onlyChinese and '存放' or DEPOSIT)
         ..' '..(self.bagNumText or '')
         ..'  '..WoWTools_BankMixin:GetFree(),
-    function(data)
-        WoWTools_BankMixin:Take_Item(false, data.classID, data.subClassID)
-        --return MenuResponse.Refresh
-    end, {classID=self.classID, subClassID=self.subClassID})
+    function()
+        WoWTools_BankMixin:Take_Item(false, self.classID, self.subClassID)
+        
+    end)
     sub:SetTooltip(function(tooltip)
         local find, find2= Set_Tooltip(self, tooltip, 2)
         if find==0 and find2==0 then
@@ -141,6 +150,8 @@ local function Create_ListButton(index)
         self.bagItems= nil
         self.bankNumText=nil
         self.bagNumText=nil
+        self.bankNum=nil
+        self.bagNum=nil
     end
 
 
@@ -208,7 +219,7 @@ local function Init_Button_List(isBank, isReagent, isAccount)
             btn:SetShown(true)
         end
     elseif isReagent then
-        for index= 0, 19 do
+        for index= 1, 19 do
             num= num+1
             local btn= Buttons[num] or Create_ListButton(num)
             btn.classID= 7
@@ -247,6 +258,7 @@ local function Get_Item_Data(tab, class, info)
                 }
     tab[class].num= tab[class].num+ (info.stackCount or 1)
     tab[class].items[info.itemID]= (tab[class].items[info.itemID] or 0) +(info.stackCount or 1)
+
     return tab
 end
 
@@ -263,37 +275,32 @@ local function Set_Label()
     if not ListButton.frame:IsVisible() or isRun then
         return
     end
-    ListButton:set_bank_type()
-
     isRun=true
 
-    local bankClass={}
-    local bagClass={}
+--提示，当前银行，类型
+    ListButton:set_bank_type()
 
     local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive()
 
-    local Tabs
-    if isBank then
-        Tabs=WoWTools_BankMixin:GetItems(1)--银行
-    elseif isReagent then
-        Tabs=WoWTools_BankMixin:GetItems(2)--材料银行
-    elseif isAccount then
-        Tabs=WoWTools_BankMixin:GetItems(3)--战团银行
+    --生成,物品列表
+    do
+        Init_Button_List(isBank, isReagent, isAccount)
     end
 
-    for _, data in pairs(Tabs or {}) do
-        if not data.info.isLocked then
-            local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
-            if isReagent then--材料银行
-                if classID==7 and subClassID then
-                    --bankClass[subClassID]= (bankClass[subClassID] or 0)+ (data.info.stackCount or 1)
-                    bankClass= Get_Item_Data(bankClass, subClassID, data.info)
-                end
-            elseif classID then
-                --bankClass[classID]= (bankClass[classID] or 0)+ (data.info.stackCount or 1)
-                bankClass= Get_Item_Data(bankClass, classID, data.info)
-            end
-        end
+    --local bankClass2= --isOutItem, classID, subClassID, index, onlyTab
+    local bankClass={}
+    local bagClass={}
+--[[NewTab={
+    info=,
+    bag=,
+    slot=,
+    classID=
+    subClassID=
+}]]
+
+    for _, data in pairs(WoWTools_BankMixin:Take_Item(true, nil, nil, nil, true)) do
+        bankClass= Get_Item_Data(bankClass, isReagent and data.subClassID or data.classID, data.info)
+
     end
 
 --背包+材料包
@@ -301,23 +308,9 @@ local function Set_Label()
         for _, data in pairs(WoWTools_BagMixin:GetItems(true) or {}) do
             if not data.info.isLocked then
                 local classID, subClassID = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
-
-                if isReagent then--材料银行
-                    if classID==7 and subClassID then
-                        --bagClass[subClassID]= (bagClass[subClassID] or 0)+ (data.info.stackCount or 1)
-                        bagClass= Get_Item_Data(bagClass, subClassID, data.info)
-                    end
-                elseif classID then
-                    bagClass= Get_Item_Data(bagClass, classID, data.info)
-                    --bagClass[classID]= (bagClass[classID] or 0)+ (data.info.stackCount or 1)
-                end
+                bagClass= Get_Item_Data(bagClass, isReagent and subClassID or classID, data.info)
             end
         end
-    end
-
---生成,物品列表
-    do
-        Init_Button_List(isBank, isReagent, isAccount)
     end
 
 --背景
@@ -325,8 +318,8 @@ local function Set_Label()
     local bank, bag, width, class, bankData, bagData
     for _, btn in pairs(Buttons) do
         if btn:IsShown() then
-            class= btn.subClassID or btn.classID
-
+            class= isReagent and btn.subClassID or btn.classID
+            
             bankData= bankClass[class] or {num=0, items={}}
             bagData= bagClass[class] or {num=0, items={}}
 
@@ -338,6 +331,9 @@ local function Set_Label()
 
             btn.bankNumText= (bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|A:Banker:0:0|a|r'
             btn.bagNumText= ( bag==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a|r'
+
+            btn.bankNum=bank
+            btn.bagNum=bag
 
             if bank==0 and bag==0 then
                 btn.Label:SetText('')
@@ -454,7 +450,7 @@ local function Init()
         else
             self:SetNormalAtlas('NPE_ArrowRightGlow')
         end
-        self:set_bank_type()
+        self:set_bank_type()--提示，当前银行，类型
         self:SetShown(show)
     end
     function ListButton:set_tooltip()

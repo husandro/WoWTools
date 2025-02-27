@@ -8,9 +8,13 @@
 ]]
 WoWTools_BankMixin={}
 
+function WoWTools_BankMixin:GetIndex(index)
+    return index or BankFrame.activeTabIndex
+end
+
 --local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 function WoWTools_BankMixin:GetActive(index)
-    index= index or BankFrame.activeTabIndex
+    index= self:GetIndex(index)
 
     local isBank= index==1
     local isReagent= index==2 and IsReagentBankUnlocked()
@@ -20,6 +24,7 @@ end
 
 --银行，空位
 function WoWTools_BankMixin:GetFree(index)
+    index= self:GetIndex(index)
     local free= 0
     local isBank, isReagent, isAccount= self:GetActive(index)
 
@@ -82,6 +87,8 @@ end
 
 
 function WoWTools_BankMixin:GetItems(index)--从最后，到第一
+    index= self:GetIndex(index)
+
     local Tabs={}
     local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 
@@ -145,6 +152,88 @@ end
 
 
 
+
+
+
+
+--取出，物品
+function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onlyTab)
+    index= self:GetIndex(index)
+
+    local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
+
+    local bankAutoDepositReagents= C_CVar.GetCVarBool('bankAutoDepositReagents')
+
+    local reagentBankOpen= isReagent or isOutItem--材料银行
+                        or (
+                            (classID==7 and subClassID~=11)--仅限商业技能
+                            --or (isBank and not isOutItem)--银行
+                            or (isAccount and bankAutoDepositReagents)
+                        )
+
+    local bankType= isAccount and Enum.BankType.Account or Enum.BankType.Character
+
+    local free= isOutItem
+                and WoWTools_BagMixin:GetFree(reagentBankOpen)--背包，空位
+                or WoWTools_BankMixin:GetFree(index)--银行，空位
+
+    local Tabs= isOutItem
+                and WoWTools_BankMixin:GetItems(index)--取出银行
+                or WoWTools_BagMixin:GetItems(reagentBankOpen)--放入物品
+
+    local NewTab= {}
+
+    for _, data in pairs(Tabs) do
+        if not data.info.isLocked then
+            local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
+            if select(17, C_Item.GetItemInfo(data.info.itemID)) then--商业技能
+                if reagentBankOpen and (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
+                    data.classID= classID2
+                    data.subClassID= subClassID2
+                    table.insert(NewTab, data)
+                    --table.insert(NewTab, {info=data.info, bag=data.bag, slot=data.slot, classID= classID2, subClassID=subClassID2})
+                end
+            elseif not isReagent then
+                if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
+                    data.classID= classID2
+                    data.subClassID= subClassID2
+                    table.insert(NewTab, data)
+                    --table.insert(NewTab, {info=data.info, bag=data.bag, slot=data.slot, classID= classID2, subClassID=subClassID2})
+                end
+            end
+        end
+    end
+
+    if onlyTab then
+        return NewTab
+    end
+
+
+    for _, data in pairs(NewTab) do
+        if free==0 then
+            return
+        end
+        do
+            C_Container.UseContainerItem(data.bag, data.slot, nil, bankType, reagentBankOpen)
+        end
+        free= free-1
+    end
+end
+--[[NewTab={
+    info=,
+    bag=,
+    slot=,
+    classID=
+    subClassID=
+}]]
+
+
+
+
+
+
+
+
 function WoWTools_BankMixin:OpenBag(bagID)
     if bagID then
         ToggleBag(bagID)
@@ -175,70 +264,3 @@ function WoWTools_BankMixin:Set_Background_Texture(texture)
         end
     end
 end
-
-
-
---取出，物品
-function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, activeTabIndex)
-    if self.isRun then
-        return
-    end
-    self.isRun= true
-
-    activeTabIndex= activeTabIndex or BankFrame.activeTabIndex
-
-    local isBank= activeTabIndex==1
-    local isReagent= activeTabIndex==2
-    local isAccount= activeTabIndex==3
-    local bankAutoDepositReagents= C_CVar.GetCVarBool('bankAutoDepositReagents')
-
-    local reagentBankOpen= classID==7
-                        or isReagent
-                        or (bankAutoDepositReagents and isAccount)
-                        or (isBank and isOutItem)
-
-    local bankType= isAccount and Enum.BankType.Account or Enum.BankType.Character
-
-    local free= isOutItem
-            and WoWTools_BagMixin:GetFree(reagentBankOpen)--背包，空位
-            or WoWTools_BankMixin:GetFree(activeTabIndex)--银行，空位
-
-    local Tabs= isOutItem
-        and WoWTools_BankMixin:GetItems(activeTabIndex)--取出银行
-        or WoWTools_BagMixin:GetItems(reagentBankOpen)--放入物品
-
-    if free==0 or not Tabs then
-        self.isRun=nil
-        return
-    end
-
-
-    for _, data in pairs(Tabs) do
-        if IsModifierKeyDown() or free<=0 then
-            self.isRun=nil
-            return
-        end
-        do
-            if not data.info.isLocked then
-                local bag, slot
-                --local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
-                local classID2, subClassID2, _, _, _, isCraftingReagent2 = select(12, C_Item.GetItemInfo(data.info.hyperlink or data.info.itemID))
-                if isCraftingReagent2 then
-                    if reagentBankOpen then
-                        bag, slot= data.bag, data.slot
-                    end
-                elseif not isReagent then
-                    if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
-                        bag, slot= data.bag, data.slot
-                    end
-                end
-                if bag and slot then
-                    C_Container.UseContainerItem(bag, slot, nil, bankType, reagentBankOpen)
-                    free= free-1
-                end
-            end
-        end
-    end
-    self.isRun=nil
-end
-
