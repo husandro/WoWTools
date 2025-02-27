@@ -133,11 +133,11 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
                 text= format('|T%d:0|t%s%s', info.iconFileID or 0, showName and info.name or '', text)
             end
         elseif tab.type=='item' and tab.id then
-            e.LoadData({id=tab.id, type='item'})
+            WoWTools_Mixin:Load({id=tab.id, type='item'})
             local num= C_Item.GetItemCount(tab.id, true, false, true)
             local itemQuality= C_Item.GetItemQualityByID(tab.id)
             if (showAll or tab.show or num>0) and itemQuality>=1 then
-                e.LoadData({id=tab.id, type='item'})
+                WoWTools_Mixin:Load({id=tab.id, type='item'})
                 local icon= C_Item.GetItemIconByID(tab.id)
                 local name=showName and C_Item.GetItemNameByID(tab.id)
                 text= ((icon and icon>0) and '|T'..icon..':0|t' or '')

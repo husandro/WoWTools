@@ -560,7 +560,7 @@ local function Get_Info_Challenge()--挑战
     C_MythicPlus.RequestMapInfo()
     C_MythicPlus.RequestRewards()
     for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
-        e.LoadData({type='mapChallengeModeID',mapChallengeModeID })
+        WoWTools_Mixin:Load({type='mapChallengeModeID',mapChallengeModeID })
     end
 end
 --[[

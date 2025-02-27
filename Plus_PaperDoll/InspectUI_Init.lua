@@ -21,7 +21,7 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
 
     local slot= frame:GetID()
 	local link= (UnitExists(unit) and not Save().hide) and GetInventoryItemLink(unit, slot) or nil
-	e.LoadData({id=link, type='item'})--加载 item quest spell
+	WoWTools_Mixin:Load({id=link, type='item'})--加载 item quest spell
 
     --set_Gem(frame, slot, link)
 

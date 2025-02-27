@@ -205,7 +205,7 @@ end
 
 local function Init_Menu_Mount(root, type, name)
     local tab2=WoWTools_MountMixin:Get_MountTab(type)
-    e.LoadData({id=tab2[1], type='spell'})
+    WoWTools_Mixin:Load({id=tab2[1], type='spell'})
     local num= WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
     local col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
 
@@ -214,7 +214,7 @@ local function Init_Menu_Mount(root, type, name)
 
     local index=0
     for spellID, _ in pairs(Save().Mounts[type] or {}) do
-        e.LoadData({id=spellID, type='spell'})
+        WoWTools_Mixin:Load({id=spellID, type='spell'})
         index= index +1
         Set_Mount_Menu(sub, type, spellID, nil, index)
     end
@@ -232,7 +232,7 @@ end
 
 local function Init_Menu_ShiftAltCtrl(root, type)
     local tab2=WoWTools_MountMixin:Get_MountTab(type)
-    e.LoadData({id=tab2[1], type='spell'})
+    WoWTools_Mixin:Load({id=tab2[1], type='spell'})
     local num= WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
     local col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
 
@@ -247,7 +247,7 @@ local function Init_Menu_ShiftAltCtrl(root, type)
 
     local index=0
     for spellID, _ in pairs(Save().Mounts[type] or {}) do
-        e.LoadData({id=spellID, type='spell'})
+        WoWTools_Mixin:Load({id=spellID, type='spell'})
         index= index +1
         Set_Mount_Menu(sub, type, spellID, nil, index)
     end
@@ -273,7 +273,7 @@ local function Init_Menu_Spell(_, sub)
     local sub2, icon, col
     local index=0
     for spellID, _ in pairs(Save().Mounts[SPELLS]) do
-        e.LoadData({id=spellID, type='spell'})
+        WoWTools_Mixin:Load({id=spellID, type='spell'})
         index= index+1
 
         icon='|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
@@ -334,7 +334,7 @@ local function Init_Menu_Item(_, sub)
     local sub2, num, icon
     local index= 0
     for itemID, _ in pairs(Save().Mounts[ITEMS]) do
-        e.LoadData({id=itemID, type='item'})
+        WoWTools_Mixin:Load({id=itemID, type='item'})
         index= index+1
 
         icon='|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'

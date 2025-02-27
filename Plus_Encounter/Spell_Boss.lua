@@ -85,7 +85,7 @@ local function UpdateButtonState(frame)--技能提示
 
     frame:HookScript("OnEnter", function(self)
         local spellID= self:GetParent().spellID--self3.link
-        e.LoadData({id=spellID, type='spell'})
+        WoWTools_Mixin:Load({id=spellID, type='spell'})
         if not Save().hideEncounterJournal and spellID and spellID>0 then
             e.tips:SetOwner(self, "ANCHOR_RIGHT")
             e.tips:ClearLines()

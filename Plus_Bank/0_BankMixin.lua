@@ -11,14 +11,14 @@ WoWTools_BankMixin={}
 function WoWTools_BankMixin:GetIndex(index)
     return index or BankFrame.activeTabIndex
 end
-
+--/dump AccountBankPanel.selectedTabID
 --local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 function WoWTools_BankMixin:GetActive(index)
     index= self:GetIndex(index)
 
     local isBank= index==1
     local isReagent= index==2 and IsReagentBankUnlocked()
-    local isAccount= index==3 and not AccountBankPanel.PurchaseTab:IsPurchaseTab()--not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
+    local isAccount= index==3 --and (not AccountBankPanel.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(Enum.BankType.Account)--AccountBankPanel.PurchaseTab:IsPurchaseTab()--not C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
     return isBank, isReagent, isAccount
 end
 
@@ -63,24 +63,26 @@ end
 
 
 
-function WoWTools_BankMixin:GetBagAndSlot(button)
-    return button.isBag and Enum.BagIndex.Bankbag
-        or button:GetParent():GetID(),
+function WoWTools_BankMixin:GetBagAndSlot(btn)
+    if btn then
+        if btn.GetBankTabID then
+            return btn:GetBankTabID(), btn:GetContainerSlotID()
+        else
+            return btn.isBag and Enum.BagIndex.Bankbag
+                or btn:GetParent():GetID(),
 
-        button:GetID()
+                btn:GetID()
+        end
+    end
 end
 
 
-function WoWTools_BankMixin:GetItemInfo(button)
-    if button then
-        local bag, slot= self:GetBagAndSlot(button)
-        if bag and slot then
-            local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID then
-                return info, bag, slot
-            end
+function WoWTools_BankMixin:GetItemInfo(btn)
+        local bag, slot= self:GetBagAndSlot(btn)
+        local info= bag and slot and C_Container.GetContainerItemInfo(bag, slot)
+        if info and info.itemID then
+            return info, bag, slot
         end
-    end
 end
 
 
@@ -105,7 +107,7 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
             end
         end
 
-        --银行，背包
+--银行，背包
         for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do--6-12
             for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -121,7 +123,7 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
 
 --材料银行       
     elseif isReagent then
-        for _, btn in ReagentBankFrame:EnumerateValidItems() do
+        for _, btn in ReagentBankFrame:EnumerateItems() do
             local info, bag, slot= self:GetItemInfo(btn)
             if info then
                 table.insert(Tabs, 1, {
@@ -162,52 +164,50 @@ function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onl
 
     local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 
-    local bankAutoDepositReagents= C_CVar.GetCVarBool('bankAutoDepositReagents')
+    local bankAutoDepositReagents =C_CVar.GetCVarBool('bankAutoDepositReagents')
 
-    local reagentBankOpen= isReagent or isOutItem--材料银行
-                        or (
-                            (classID==7 and subClassID~=11)--仅限商业技能
-                            --or (isBank and not isOutItem)--银行
-                            or (isAccount and bankAutoDepositReagents)
-                        )
-
-    local bankType= isAccount and Enum.BankType.Account or Enum.BankType.Character
+    local isAllBag= bankAutoDepositReagents and isAccount or isReagent
 
     local free= isOutItem
-                and WoWTools_BagMixin:GetFree(reagentBankOpen)--背包，空位
+                and WoWTools_BagMixin:GetFree(isAllBag)--背包，空位
                 or WoWTools_BankMixin:GetFree(index)--银行，空位
 
     local Tabs= isOutItem
                 and WoWTools_BankMixin:GetItems(index)--取出银行
-                or WoWTools_BagMixin:GetItems(reagentBankOpen)--放入物品
+                or WoWTools_BagMixin:GetItems(isAllBag)--放入物品
 
     local NewTab= {}
+
+    local checkReagent= (bankAutoDepositReagents and isAccount or isReagent) and not classID
 
     for _, data in pairs(Tabs) do
         if not data.info.isLocked then
             local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
-            if select(17, C_Item.GetItemInfo(data.info.itemID)) then--商业技能
-                if reagentBankOpen and (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
-                    data.classID= classID2
-                    data.subClassID= subClassID2
-                    table.insert(NewTab, data)
-                    --table.insert(NewTab, {info=data.info, bag=data.bag, slot=data.slot, classID= classID2, subClassID=subClassID2})
-                end
-            elseif not isReagent then
-                if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
-                    data.classID= classID2
-                    data.subClassID= subClassID2
-                    table.insert(NewTab, data)
-                    --table.insert(NewTab, {info=data.info, bag=data.bag, slot=data.slot, classID= classID2, subClassID=subClassID2})
+
+                if select(17, C_Item.GetItemInfo(data.info.itemID)) then--商业技能
+                    if checkReagent
+                    or (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID)
+                    then
+                        data.classID= classID2
+                        data.subClassID= subClassID2
+                        table.insert(NewTab, data)
+                    end
+                elseif not isReagent then
+                    if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
+                        data.classID= classID2
+                        data.subClassID= subClassID2
+                        table.insert(NewTab, data)
+                    end
                 end
             end
         end
-    end
 
     if onlyTab then
         return NewTab
     end
 
+    local bankType= isAccount and Enum.BankType.Account or Enum.BankType.Character
+    local reagentBankOpen= isOutItem or isReagent
 
     for _, data in pairs(NewTab) do
         if free==0 then

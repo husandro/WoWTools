@@ -256,7 +256,7 @@ local function setClickAtt()--设置 Click属性
                 end
             end
         else
-            e.LoadData({id=spellID, type='spell'})
+            WoWTools_Mixin:Load({id=spellID, type='spell'})
             MountButton.Combat=true
         end
 

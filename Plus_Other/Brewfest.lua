@@ -7,7 +7,7 @@ local Save={
 }
 
 local button
-e.LoadData({id=33976, type='item'})--美酒节赛羊
+WoWTools_Mixin:Load({id=33976, type='item'})--美酒节赛羊
 
 
 

@@ -171,10 +171,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not class then
                 Save().spells[e.Player.class]= {}
             else
-                e.LoadData({id=class.item, type='item'})
-                e.LoadData({id=class.alt, type='spell'})
-                e.LoadData({id=class.shift, type='spell'})
-                e.LoadData({id=class.ctrl, type='spell'})
+                WoWTools_Mixin:Load({id=class.item, type='item'})
+                WoWTools_Mixin:Load({id=class.alt, type='spell'})
+                WoWTools_Mixin:Load({id=class.shift, type='spell'})
+                WoWTools_Mixin:Load({id=class.ctrl, type='spell'})
             end
 
             local addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)

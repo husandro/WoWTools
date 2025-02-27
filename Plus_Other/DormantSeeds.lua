@@ -23,7 +23,7 @@ local ItemTab={
    -- 210014
 }
 for _, itemID in pairs(ItemTab) do
-    e.LoadData({id=itemID, type='item'})
+    WoWTools_Mixin:Load({id=itemID, type='item'})
 end
 
 

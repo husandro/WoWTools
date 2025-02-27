@@ -159,7 +159,7 @@ function WoWTools_ItemMixin:GetLink(itemID)
     if itemID then
         link= select(2, C_Item.GetItemInfo(itemID))
         if not link then
-            e.LoadData({id=itemID, type='item'})
+            WoWTools_Mixin:Load({id=itemID, type='item'})
             local name= e.cn(nil, {itemID=itemID, isName=true})
             link= '|Hitem:'..itemID..'::::::::::::::::::|h['..(name or itemID)..']|h'
             if not name then
@@ -204,7 +204,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
     end
 
     local col, name, desc, cool
-    e.LoadData({id=itemID, type='item'})
+    WoWTools_Mixin:Load({id=itemID, type='item'})
 
     if C_ToyBox.GetToyInfo(itemID) then
         if not PlayerHasToy(itemID) then

@@ -43,10 +43,10 @@ local ModifiedMenuTab={
     {type='Shift', itemID=134032},]]
 }
 for itemID in pairs(ModifiedTab) do
-    e.LoadData({id=itemID, type='item'})
+    WoWTools_Mixin:Load({id=itemID, type='item'})
 end
 for itemID in pairs(P_Items) do
-    e.LoadData({id=itemID, type='item'})
+    WoWTools_Mixin:Load({id=itemID, type='item'})
 end
 
 local Save={
@@ -219,7 +219,7 @@ local function Init_Menu_Toy(_, root)
     local sub, sub2, name, toyName, icon
     local index=0
     for itemID in pairs(Save.items) do
-        e.LoadData({id=itemID, type='item'})
+        WoWTools_Mixin:Load({id=itemID, type='item'})
 
         toyName, icon = select(2, C_ToyBox.GetToyInfo(itemID))
         index= index+ 1
@@ -526,7 +526,7 @@ local function Init()
     WoWTools_KeyMixin:Init(ToyButton, function() return Save.KEY end)
 
     for itemID, _ in pairs(Save.items) do
-        e.LoadData({id=itemID, type='item'})
+        WoWTools_Mixin:Load({id=itemID, type='item'})
     end
 
     ToyButton:SetAttribute("type1", "item")

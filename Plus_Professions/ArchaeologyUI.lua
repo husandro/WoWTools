@@ -11,7 +11,7 @@ end
 
 
 local ArcheologyButton
-e.LoadData({id=87399, type='item'})
+WoWTools_Mixin:Load({id=87399, type='item'})
 
 
 

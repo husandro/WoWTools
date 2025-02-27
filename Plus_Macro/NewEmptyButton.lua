@@ -54,8 +54,8 @@ local function Save_Macro_Menu(frame, root)
         spellID= GetMacroSpell(index)
         local spellName= spellID and C_Spell.GetSpellName(spellID)
 
-        e.LoadData({id=itemLink, type='item'})
-        e.LoadData({id=spellID, type='spell'})
+        WoWTools_Mixin:Load({id=itemLink, type='item'})
+        WoWTools_Mixin:Load({id=spellID, type='spell'})
 
         header= '|T'..(icon or 134400)..':0|t'.. (name and name:gsub(' ', '') or '')..(spellName or spellID or '')..(itemName or itemLink or '')
         sub=root:CreateCheckbox(

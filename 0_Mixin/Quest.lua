@@ -28,7 +28,7 @@ function WoWTools_QuestMixin:GetLink(questID)
     end
     local link= GetQuestLink(questID)
     if not link then
-        e.LoadData({id=questID, type='quest'})
+        WoWTools_Mixin:Load({id=questID, type='quest'})
         local index= C_QuestLog.GetLogIndexForQuestID(questID)
         local info= index and C_QuestLog.GetInfo(index) or {}
         local name= e.cn(info.title or questID, {questID=questID, isName=true})
@@ -122,7 +122,7 @@ questRewardContextFlags	Enum.QuestRewardContextFlags?
         local spells= C_QuestInfoSystem.GetQuestRewardSpells(questID)
         for _, spellID in pairs(spells or {}) do
             info = C_QuestInfoSystem.GetQuestRewardSpellInfo(questID, spellID)
-            e.LoadData({id=spellID, type='spell'})
+            WoWTools_Mixin:Load({id=spellID, type='spell'})
             if info and info.texture and info.texture>0 then
                 data= {
                     texture= info.texture,--fileID

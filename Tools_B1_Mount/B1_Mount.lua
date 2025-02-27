@@ -111,7 +111,7 @@ end
 local function Init()
     for type, tab in pairs(WoWTools_MountMixin.Save.Mounts) do
         for ID in pairs(tab) do
-            e.LoadData({id=ID, type= type==ITEMS and 'item' or 'spell'})
+            WoWTools_Mixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
         end
     end
 

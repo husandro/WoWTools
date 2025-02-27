@@ -166,7 +166,7 @@ local useText, noText
 
 
 if e.Player.class=='ROGUE' then
-    e.LoadData({id=1804, type='spell'})--开锁 Pick Lock
+    WoWTools_Mixin:Load({id=1804, type='spell'})--开锁 Pick Lock
 end
 
 
@@ -274,7 +274,7 @@ local function get_Items()--取得背包物品信息
                 and ((itemMinLevel and itemMinLevel<=e.Player.level) or not itemMinLevel)--使用等级
                 and classID~=13
             then
-                --e.LoadData({id=info.itemID, type='item'})
+                --WoWTools_Mixin:Load({id=info.itemID, type='item'})
                 if Save.use[info.itemID] then--自定义
                     if Save.use[info.itemID]<=info.stackCount then
                         setAtt(bag, slot, info.iconFileID, info.itemID)
@@ -507,7 +507,7 @@ end
 
 
 local function Remove_NoUse_Menu(root, itemID, type, numUse)
-    e.LoadData({type='item', id=itemID})
+    WoWTools_Mixin:Load({type='item', id=itemID})
     local tab=  {itemID=itemID, type=type}
     local sub=root:CreateButton(
         (numUse and '|cnGREEN_FONT_COLOR:'..numUse..'=|r ' or '')

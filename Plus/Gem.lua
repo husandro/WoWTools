@@ -27,7 +27,7 @@ local SpellsTab={
 
 
 for _, spellID in pairs(SpellsTab) do
-    e.LoadData({id=spellID, type='spell'})
+    WoWTools_Mixin:Load({id=spellID, type='spell'})
 end
 local AUCTION_CATEGORY_GEMS= AUCTION_CATEGORY_GEMS
 local CurTypeGemTab={}--当前，宝石，类型

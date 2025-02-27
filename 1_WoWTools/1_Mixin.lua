@@ -1,17 +1,17 @@
 local e= select(2, ...)
 
 
-function e.LoadData(tab)--e.LoadData({id=, type=''})--加载 item quest spell, uiMapID
+function WoWTools_Mixin:Load(tab)--WoWTools_Mixin:Load({id=, type=''})--加载 item quest spell, uiMapID
     if not tab or not tab.id then
         return
     end
-    if tab.type=='quest' then --e.LoadData({id=, type='quest'})
+    if tab.type=='quest' then --WoWTools_Mixin:Load({id=, type='quest'})
         C_QuestLog.RequestLoadQuestByID(tab.id)
         if not HaveQuestRewardData(tab.id) then
             C_TaskQuest.RequestPreloadRewardData(tab.id)
         end
 
-    elseif tab.type=='spell' then--e.LoadData({id=, type='spell'})
+    elseif tab.type=='spell' then--WoWTools_Mixin:Load({id=, type='spell'})
         local spellID= tab.id
         if type(tab.id)=='string' then
             spellID= (C_Spell.GetSpellInfo(tab.id) or {}).spellID
@@ -20,7 +20,7 @@ function e.LoadData(tab)--e.LoadData({id=, type=''})--加载 item quest spell, u
             C_Spell.RequestLoadSpellData(spellID)
         end
 
-    elseif tab.type=='item' then--e.LoadData({id=, type='item'})
+    elseif tab.type=='item' then--WoWTools_Mixin:Load({id=, type='item'})
         local item= tab.itemLink or tab.id-- tab.id or (tab.itemLink and tab.itemLink:match('|Hitem:(%d+):'))
         if item and not C_Item.IsItemDataCachedByID(item) then
             C_Item.RequestLoadItemDataByID(item)
@@ -30,14 +30,13 @@ function e.LoadData(tab)--e.LoadData({id=, type=''})--加载 item quest spell, u
             C_Item.RequestLoadItemData(tab.id)
         end
 
-    elseif tab.type=='mapChallengeModeID' then--e.LoadData({id=, type='mapChallengeModeID'})
+    elseif tab.type=='mapChallengeModeID' then--WoWTools_Mixin:Load({id=, type='mapChallengeModeID'})
         C_ChallengeMode.RequestLeaders(tab.id)
 
-    elseif tab.typ=='club' then--e.LoadData({id=, type='club'})
+    elseif tab.typ=='club' then--WoWTools_Mixin:Load({id=, type='club'})
         C_Club.RequestTickets(tab.id)
     end
 end
-
 
 
 local itemLoadTab={--加载法术,或物品数据
@@ -68,10 +67,10 @@ local spellLoadTab={
 
 
 for _, itemID in pairs(itemLoadTab) do
-    e.LoadData({id=itemID, type='item'})
+    WoWTools_Mixin:Load({id=itemID, type='item'})
 end
 for _, spellID in pairs(spellLoadTab) do
-    e.LoadData({id=spellID, type='spell'})
+    WoWTools_Mixin:Load({id=spellID, type='spell'})
 end
 
 
@@ -165,7 +164,8 @@ end
 
 
 function WoWTools_Mixin:Reload(isControlKeyDown)
-    if not (UnitAffectingCombat('player') and e.IsEncouter_Start) or not IsInInstance() then
+    --if not (UnitAffectingCombat('player') and e.IsEncouter_Start) or not IsInInstance() then
+    if not issecure() then
         if isControlKeyDown and IsControlKeyDown() or not isControlKeyDown then
             C_UI.Reload()
         end

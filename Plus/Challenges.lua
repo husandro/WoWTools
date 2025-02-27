@@ -103,7 +103,7 @@ if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
 end
 
 for _, tab in pairs(e.ChallengesSpellTabs) do
-    e.LoadData({id=tab.spell, type='spell'})
+    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
 end
 
 

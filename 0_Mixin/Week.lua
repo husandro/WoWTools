@@ -201,7 +201,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                         link= C_WeeklyRewards.GetExampleRewardItemHyperlinks(self.id)
                     end
                     if link and link~='' then
-                        e.LoadData({id=link, type='item'})
+                        WoWTools_Mixin:Load({id=link, type='item'})
                         return link
                     end
                 end

@@ -833,7 +833,7 @@ local function Init_Menu(self, root)--菜单
     local num=0
     for questID in pairs(Save().questIDs) do
         num= num+1
-        e.LoadData({id=questID, type=='quest'})
+        WoWTools_Mixin:Load({id=questID, type=='quest'})
     end
     sub=root:CreateButton(
         (e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)

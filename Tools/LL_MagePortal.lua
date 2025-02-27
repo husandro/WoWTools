@@ -59,8 +59,8 @@ local Buttons
 
 
 for _, tab in pairs(Tab) do
-    e.LoadData({id=tab.spell, type='spell'})
-    e.LoadData({id=tab.spell2, type='spell'})
+    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
+    WoWTools_Mixin:Load({id=tab.spell2, type='spell'})
 end
 
 

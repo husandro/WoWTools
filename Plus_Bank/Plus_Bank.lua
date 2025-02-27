@@ -191,13 +191,14 @@ end
 --AccountBankPanel.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(2)
 --AccountBankPanel.PurchaseTab:IsPurchaseTab()
 local function Set_AccountBankPanel(index)
-    if Save().disabledAccountBag or AccountBankPanel.PurchaseTab:IsPurchaseTab() then
+    if Save().disabledAccountBag  then--or AccountBankPanel.PurchaseTab:IsPurchaseTab() then
         return
     end
 
     do AccountBankPanel:SetShown(index==1 or index==3) end
 
     if index==1 then
+      --  AccountBankPanel:SetShown(true)
         local line= Save().line
         local num= Save().num
         local i=1
@@ -218,7 +219,17 @@ local function Set_AccountBankPanel(index)
         end
 
     elseif index==3 then
+       -- AccountBankPanel:Reset()
+        --self.itemButtonPool:
+        --AccountBankPanel:Clean()
+        --if AccountBankPanel:IsShown() then
+        --    AccountBankPanel:Hide()
+        --end
+        --AccountBankPanel:SetShown(true)
         AccountBankPanel:GenerateItemSlotsForSelectedTab()
+        ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged);
+   -- else
+        --AccountBankPanel:SetShown(false)
     end
 end
 
@@ -321,7 +332,9 @@ end
 
 
 local function Init()
-
+    if not Save().disabledAccountBag then
+        AccountBankPanel:Clean()
+    end
 --背包，需要这个函数 ContainerFrame7 - 13 <Frame name="ContainerFrame7" inherits="ContainerFrameBankTemplate"/>
     function BankSlotsFrame:IsCombinedBagContainer()
         return false

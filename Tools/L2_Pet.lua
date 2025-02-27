@@ -19,7 +19,7 @@ local PetsList={
  }
 
 for _, info in pairs(PetsList) do
-    e.LoadData({id=info.auraID, type='spell'})
+    WoWTools_Mixin:Load({id=info.auraID, type='spell'})
 end
 
 

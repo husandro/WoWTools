@@ -242,7 +242,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             else
                 for questID in pairs(Save().questIDs or {}) do
-                    e.LoadData({id= questID, type=='quest'})
+                    WoWTools_Mixin:Load({id= questID, type=='quest'})
                 end
 
                 WoWTools_MinimapMixin:Init_InstanceDifficulty()--副本，难度，指示

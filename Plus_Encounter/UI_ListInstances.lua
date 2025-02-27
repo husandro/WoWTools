@@ -57,7 +57,7 @@ local function Init()
             local challengeText, challengeText2
 
             for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do--挑战地图 mapChallengeModeID
-                e.LoadData({type='mapChallengeModeID',mapChallengeModeID })
+                WoWTools_Mixin:Load({type='mapChallengeModeID',mapChallengeModeID })
                 local name= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
                 if name==instanceName or name:find(instanceName) then
                     button.mapChallengeModeID= mapChallengeModeID--挑战,地图ID

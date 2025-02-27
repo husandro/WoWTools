@@ -62,7 +62,7 @@ local Save={
 
 
 local function Is_Completed(tab)
-    e.LoadData({type='item', id=tab.itemID})
+    WoWTools_Mixin:Load({type='item', id=tab.itemID})
 
     local num= 0
     local isNotChecked
@@ -273,7 +273,7 @@ end
 
 local function Init()
     for _, info in pairs(Tab) do
-        e.LoadData({id=info.itemID, type='item'})
+        WoWTools_Mixin:Load({id=info.itemID, type='item'})
         for _, achievementID in pairs(info.achievements) do
             GetAchievementCategory(achievementID)
         end
