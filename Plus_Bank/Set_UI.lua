@@ -19,8 +19,7 @@ local function Init_BankSlotsFrame()
 
 
 --添加，取出所有
-    local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
-    btnOutAll:SetNormalAtlas('Cursor_OpenHandGlow_64')
+    local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Cursor_OpenHand_64'})    
     btnOutAll:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     btnOutAll:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 1, false)
@@ -171,8 +170,7 @@ local function Init_ReagentBankFrame()
     end)
 
 --取出所有物品
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame.DespositButton, {size=23, icon='hide'})
-    btnAllOut:SetNormalAtlas('Cursor_OpenHandGlow_64')
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame.DespositButton, {size=23, atlas='Cursor_OpenHand_64'})
     btnAllOut:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
     btnAllOut:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 2, false)
@@ -244,9 +242,7 @@ end
 local function Init_AccountBankPanel()
 
 --添加，取出所有物品
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, icon='hide'})
-    --local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel, {size=23, icon='hide'})
-    btnAllOut:SetNormalAtlas('Cursor_OpenHandGlow_64')
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, atlas='Cursor_OpenHand_64'})
     btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -26)
 
     btnAllOut:SetScript('OnClick', function(self)

@@ -2,12 +2,8 @@ local e= select(2, ...)
 --[[
 Cbtn(frame, tab)
 Ctype2(frame, tab)--圆形按钮
-
 CreateSecureButton(tab)
 CreateMenu(frame, tab)
-CreateOptionButton(frame, name, setID)
-
-Settings(btn)
 ]]
 
 WoWTools_ButtonMixin={}
@@ -30,53 +26,76 @@ local function get_size(value)
 end
 
 
-local function SetType2Texture(btn)
-    btn.mask= btn:CreateMaskTexture()
-    btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
-
-    btn.background= btn:CreateTexture(nil, 'BACKGROUND')
-    btn.background:SetAllPoints(btn)
-    btn.background:SetAtlas('bag-reagent-border-empty')
-    btn.background:SetAlpha(0.3)
-    btn.background:AddMaskTexture(btn.mask)
-
-    btn.texture=btn:CreateTexture(nil, 'BORDER')
-    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 3, -3)
-    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
-    btn.texture:AddMaskTexture(btn.mask)
-
-    btn.border=btn:CreateTexture(nil, 'ARTWORK')
-    btn.border:SetAllPoints(btn)
-
-    btn.border:SetAtlas('bag-reagent-border')
-
-    WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
-end
 
 
 
-function WoWTools_ButtonMixin:SetPushedTexture(btn, isType2)
-    if isType2 then
-        btn:SetPushedAtlas('bag-border-highlight')
-        btn:SetHighlightAtlas('bag-border')
+
+function WoWTools_ButtonMixin:Settings(btn, isType2, atlas, texture)
+    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    btn:EnableMouseWheel(true)
+
+
+    if isType2 then--圆形按钮
+        btn.mask= btn:CreateMaskTexture()
+        btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
+        btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
+        btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
+
+        btn.background= btn:CreateTexture(nil, 'BACKGROUND')
+        btn.background:SetAllPoints(btn)
+        btn.background:SetAtlas('bag-reagent-border-empty')
+        btn.background:SetAlpha(0.3)
+        btn.background:AddMaskTexture(btn.mask)
+
+        btn.texture=btn:CreateTexture(nil, 'BORDER')
+        btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
+        btn.texture:AddMaskTexture(btn.mask)
+
+        btn.border=btn:CreateTexture(nil, 'ARTWORK')
+        btn.border:SetAllPoints(btn)
+
+        btn.border:SetAtlas('bag-reagent-border')
+
+        WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
+    end
+
+
+    local isOpenHand= atlas and atlas:match('Cursor_OpenHand_(%d+)')
+
+    if atlas=='ui-questtrackerbutton-filter' then--菜单按钮
+        btn:SetNormalAtlas('ui-questtrackerbutton-filter')
+        btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
+        btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+        WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
+
+    elseif isType2 then
+            btn:SetPushedAtlas('bag-border-highlight')
+            btn:SetHighlightAtlas('bag-border')
+
+    elseif isOpenHand then
+        btn:SetNormalAtlas('Cursor_OpenHand_'..isOpenHand)
+        btn:SetHighlightAtlas('Cursor_OpenHandGlow_'..isOpenHand)
+        btn:SetDisabledAtlas('Cursor_unableOpenHand_'..isOpenHand)
+        btn:SetPushedAtlas('auctionhouse-nav-button-select')
+
     else
         btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
         btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
     end
-    WoWTools_ColorMixin:Setup(btn:GetHighlightTexture() , {type='Texture', alpha=1})
-    WoWTools_ColorMixin:Setup(btn:GetPushedTexture(), {type='Texture', alpha=1})
-end
 
+    if isType2 then
+        if atlas then
+            btn.texture:SetAtlas(atlas)
+        elseif texture then
+            btn.texture:SetTexture(texture)
+        end
 
-function WoWTools_ButtonMixin:Settings(btn, isType2)
-    self:SetPushedTexture(btn, isType2)
-    if isType2 then--圆形按钮
-        SetType2Texture(btn)
+    elseif atlas then
+        btn:SetNormalAtlas(atlas)
+    elseif texture then
+        btn:SetNormalTexture(texture)
     end
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
 end
 
 
@@ -131,31 +150,34 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
             btn:SetNormalAtlas(atlas)
         end
     else
-        self:SetPushedTexture(btn, isType2)
-        if icon~='hide' then
+        if icon=='hide' then
+            atlas=nil
+            texture=nil
+        else
             if texture then
-                btn:SetNormalTexture(texture)
+                atlas=nil
             elseif atlas then
-                btn:SetNormalAtlas(atlas)
+                texture=nil
             elseif icon==true then
-                btn:SetNormalAtlas(e.Icon.icon)
+                atlas= e.Icon.icon
             else
-                btn:SetNormalAtlas(e.Icon.disabled)
+                atlas= e.Icon.disabled
             end
-        elseif frameType=='ItemButton' then
+        --elseif frameType=='ItemButton' then
             --btn.NormalTexture:SetTexture(0)
             --btn.NormalTexture:Hide()
+            
         end
+        self:Settings(btn, isType2, atlas, texture)
     end
 
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-
-    if alpha then btn:SetAlpha(alpha) end
+    if alpha then
+        btn:SetAlpha(alpha)
+    end
     return btn, template
 end
 
---圆形按钮
+--[[圆形按钮
 function WoWTools_ButtonMixin:Ctype2(frame, tab)
     tab= tab or {}
 
@@ -168,16 +190,11 @@ function WoWTools_ButtonMixin:Ctype2(frame, tab)
 
     local btn= CreateFrame('Button', name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, template, setID)
     btn:SetSize(get_size(size))
-    self:Settings(btn, true)
+    self:Settings(btn, true, atlas, texture)
 
-    if atlas then
-        btn.texture:SetAtlas(atlas)
-    elseif texture then
-        btn.texture:SetTexture(texture)
-    end
 
     return btn
-end
+end]]
 
 --安全按钮
 function WoWTools_ButtonMixin:CreateSecureButton(frame, tab)
@@ -186,10 +203,12 @@ function WoWTools_ButtonMixin:CreateSecureButton(frame, tab)
     local name= tab.name
     local setID= tab.setID
     local size= tab.size
+    local atlas= tab.atlas
+    local texture= tab.texture
 
     local btn= CreateFrame("Button", name or ('WoWToolsSecureButton'..get_index()), frame or UIParent, "SecureActionButtonTemplate", setID)
     btn:SetSize(get_size(size))
-    self:Settings(btn, true)
+    self:Settings(btn, true, atlas, texture)
     return btn
 end
 
@@ -213,25 +232,20 @@ function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     btn:SetFrameStrata(frame:GetFrameStrata())
     btn:SetFrameLevel(frame:GetFrameLevel()+7)
     btn:SetSize(get_size(size))
-    self:Settings(btn, isType2)
 
-    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+
+
     function btn:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
     end
 
     if not hideIcon then
-        btn:SetNormalAtlas('ui-questtrackerbutton-filter')
-        btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
-        btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
-        WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
-    else
-        if atlas then
-            btn:SetNormalAtlas(atlas)
-        elseif texture then
-            btn:SetNormalTexture(texture)
-        end
+        atlas='ui-questtrackerbutton-filter'
    end
+
+   btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+
+   self:Settings(btn, isType2, atlas, texture)
     return btn
 end
 --local btn=WoWTools_ButtonMixin:CreateMenu(OptionButton, {name=''})

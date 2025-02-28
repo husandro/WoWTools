@@ -371,7 +371,8 @@ local function Init_TimeManager()
 
 
 --PushedTexture
-    WoWTools_ButtonMixin:SetPushedTexture(btn, false)
+    btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
+    btn:SetPushedAtlas('auctionhouse-nav-button-select')
     btn:HookScript('OnLeave', ResetCursor)
     btn:HookScript('OnEnter', TimeManagerClockButton_UpdateTooltip)
 

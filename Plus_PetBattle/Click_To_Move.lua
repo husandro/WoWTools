@@ -327,7 +327,7 @@ local function Init_Button()
     ClickToMoveButton= WoWTools_ButtonMixin:CreateMenu(PlayerFrame,
         {
             atlas= 'transmog-nav-slot-feet',
-            size= 19,
+            size= 23,
             isType2= true,
             hideIcon= true,
             name='WoWToolsClickToMoveButton',
@@ -376,13 +376,13 @@ local function Init_Button()
 
 
     function ClickToMoveButton:set_State()
-        local icon= self:GetNormalTexture()
+        --local icon= self:GetNormalTexture()
         if C_CVar.GetCVarBool("autoInteract") then
-            self:UnlockHighlight()
-            icon:SetVertexColor(1,1,1)
+          --  self:UnlockHighlight()
+            self.texture:SetVertexColor(1,1,1)
         else
-            self:LockHighlight()
-            icon:SetVertexColor(1,0,0)
+            --self:LockHighlight()
+            self.texture:SetVertexColor(1,0,0)
         end
     end
 
