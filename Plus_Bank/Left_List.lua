@@ -7,7 +7,6 @@ end
 
 local ListButton
 local Buttons={}
-local isRun
 
 
 
@@ -21,6 +20,11 @@ local isRun
 
 
 local function Set_Tooltip(self, tooltip, type)
+    if Save().hideLeftListTooltip then
+        return 1,1
+    end
+    tooltip:SetOwner(ListButton.frame.Background, "ANCHOR_LEFT")
+    tooltip:ClearLines()
     local name, col
     local find=0
     if type==0 or type==1 then
@@ -96,12 +100,12 @@ local function Init_Button_Menu(self, root)
         ..'  '..WoWTools_BankMixin:GetFree(),
     function()
         WoWTools_BankMixin:Take_Item(false, self.classID, self.subClassID)
-        
+
     end)
     sub:SetTooltip(function(tooltip)
         local find, find2= Set_Tooltip(self, tooltip, 2)
         if find==0 and find2==0 then
-            tooltip:AddLine('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
+            tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
         end
     end)
 
@@ -161,8 +165,7 @@ local function Create_ListButton(index)
         if not self.classID then
             return
         end
-        e.tips:SetOwner(self:GetParent().Background, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+
         local find, find2= Set_Tooltip(self, e.tips, 0)
         if find==0 and find2==0 then
             e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
@@ -272,15 +275,10 @@ end
 
 
 
-
 local function Set_Label()
-    if not ListButton.frame:IsVisible() or isRun then
+    if not ListButton.frame:IsVisible() then
         return
     end
-    isRun=true
-
---提示，当前银行，类型
-    ListButton:set_bank_type()
 
     local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive()
 
@@ -291,7 +289,7 @@ local function Set_Label()
 
     local bankClass={}
     local bagClass={}
-
+    local bagItems, bankFree
     for _, data in pairs(WoWTools_BankMixin:Take_Item(true, nil, nil, nil, true)) do
         if isReagent and data.classID==7 or not isReagent then
             bankClass= Get_Item_Data(bankClass, isReagent and data.subClassID or data.classID, data.info)
@@ -300,7 +298,8 @@ local function Set_Label()
 
 --背包+材料包
     if isBank or isReagent or isAccount then
-        for _, data in pairs(WoWTools_BankMixin:Take_Item(false, nil, nil, nil, true)) do
+        bagItems, bankFree= WoWTools_BankMixin:Take_Item(false, nil, nil, nil, true)
+        for _, data in pairs(bagItems) do
             if isReagent and data.classID==7 or not isReagent then
                 bagClass= Get_Item_Data(bagClass, isReagent and data.subClassID or data.classID, data.info)
             end
@@ -313,7 +312,7 @@ local function Set_Label()
     for _, btn in pairs(Buttons) do
         if btn:IsShown() then
             class= isReagent and btn.subClassID or btn.classID
-            
+
             bankData= bankClass[class] or {num=0, items={}}
             bagData= bagClass[class] or {num=0, items={}}
 
@@ -348,11 +347,14 @@ local function Set_Label()
 --背景,设置左边
     ListButton.frame.Background:SetWidth(maxWidth==0 and 0 or maxWidth+8)
 
-    ListButton.isBank= isBank
-    ListButton.isReagent= isReagent
-    ListButton.isAccount= isAccount
+--提示，当前银行，类型
+    ListButton.bankSlotFree= bankFree--空栏位
+    ListButton:set_bank_type()
 
-    isRun=nil
+
+    --[[ListButton.isBank= isBank
+    ListButton.isReagent= isReagent
+    ListButton.isAccount= isAccount]]
 end
 
 
@@ -391,6 +393,7 @@ local function Init()
         hideIcon=true,
         atlas='NPE_ArrowDownGlow',
     })
+    ListButton:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -20)
 
 --提示，当前银行，类型
     ListButton.Text= WoWTools_LabelMixin:Create(ListButton, {justifyH='RIGHT', color=true})
@@ -398,7 +401,7 @@ local function Init()
 
 --控制Frame
     ListButton.frame=CreateFrame('Frame', nil, ListButton)
-    ListButton.frame:SetPoint('BOTTOMRIGHT')
+    ListButton.frame:SetPoint('BOTTOMRIGHT', 0, -12)
     ListButton.frame:SetSize(1,1)
     ListButton.frame:Hide()
 
@@ -415,12 +418,15 @@ local function Init()
             return
         end
 
-        local index= BankFrame.activeTabIndex or 1
+        local index= WoWTools_BankMixin:GetIndex()
         local text=
             index==1 and (e.onlyChinese and '银行' or BANK)
             or index==2 and (e.onlyChinese and '材料' or BANK_TAB_ASSIGN_REAGENTS_CHECKBOX)
             or index==3 and (e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
-        self.Text:SetText(text or '')
+--空栏位
+        text= (self.bankSlotFree)..' '..(text or '')
+
+        self.Text:SetText(text)
         self:SetWidth(text and self.Text:GetWidth()+8 or 23)
     end
 
@@ -456,7 +462,6 @@ local function Init()
         e.tips:Show()
     end
 
-    ListButton:SetPoint('TOPRIGHT', BankFrame, 'TOPLEFT', -2, -32)
 
     ListButton:SetScript('OnLeave', function (self)
         self:Settings()
@@ -503,6 +508,14 @@ local function Init()
             Save().leftListScale= value
             self:Settings()
         end)
+
+        sub:CreateCheckbox(
+            e.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
+        function()
+            return not Save().hideLeftListTooltip
+        end, function()
+            Save().hideLeftListTooltip= not Save().hideLeftListTooltip and true or nil
+        end)
     end)
 
 
@@ -532,6 +545,7 @@ local function Init()
 
     hooksecurefunc('BankFrame_ShowPanel', Set_Label)
     hooksecurefunc(BankPanelTabMixin, 'OnClick', Set_Label)
+    --AccountBankPanel.PurchaseTab:HookScript('OnClick', Set_Label)
 end
 
 

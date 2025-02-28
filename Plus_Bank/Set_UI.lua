@@ -23,40 +23,10 @@ local function Init_BankSlotsFrame()
     btnOutAll:SetNormalAtlas('Cursor_OpenHandGlow_64')
     btnOutAll:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     btnOutAll:SetScript('OnClick', function(self)
-        local free= WoWTools_BagMixin:GetFree()--背包，空位
-        if free==0 then
-            return
-        end
-        for bag=(NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS), NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, -1 do
-            for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
-                if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
-                    self:show_tooltips()
-                    return
-                end
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID and not info.isLocked then
-                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
-                    free= free-1
-                end
-            end
-        end
-
-        for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
-            if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
-                self:show_tooltips()
-                return
-            end
-            local bag, slot= WoWTools_BankMixin:GetBagAndSlot(BankSlotsFrame["Item"..i])
-            if bag and slot then
-                local info= C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID and not info.isLocked then
-                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
-                    free= free-1
-                end
-            end
-        end
+        WoWTools_BankMixin:Take_Item(true, nil, nil, 1, false)
         self:show_tooltips()
     end)
+
     function btnOutAll:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -81,24 +51,10 @@ local function Init_BankSlotsFrame()
     btnInAll:SetNormalAtlas('Crosshair_buy_64')
     btnInAll:SetPoint('RIGHT', btnOutAll, 'LEFT', -2, 0)
     btnInAll:SetScript('OnClick', function(self)
-        local free= WoWTools_BankMixin:GetFree()--银行，空位
-        if free==0 then
-            return
-        end
-        for bag= NUM_BAG_FRAMES,  BACKPACK_CONTAINER, -1 do
-            for slot= C_Container.GetContainerNumSlots(bag), 1, -1 do
-                if not self:IsVisible() or IsModifierKeyDown() or free==0 then
-                    self:show_tooltips()
-                    return
-                end
-                local info = C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.hyperlink and not info.isLocked and not select(17, C_Item.GetItemInfo(info.hyperlink)) then
-                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
-                    free= free-1
-                end
-            end
-        end
+        WoWTools_BankMixin:Take_Item(false, nil, nil, 1, false)
+        self:show_tooltips()
     end)
+
     function btnInAll:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -121,6 +77,10 @@ local function Init_BankSlotsFrame()
     local label= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=18})
     label:SetPoint('RIGHT', btnInAll, 'LEFT', 4,0)
     label:SetText(e.onlyChinese and '银行' or BANK)
+
+--空栏位，数量
+    --local label2= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=12, name='WoWToolsBankFreeSlotLabel'})
+    --label2:SetPoint('RIGHT', label, 'LEFT', -2,0)
 
 
 
@@ -215,30 +175,10 @@ local function Init_ReagentBankFrame()
     btnAllOut:SetNormalAtlas('Cursor_OpenHandGlow_64')
     btnAllOut:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
     btnAllOut:SetScript('OnClick', function(self)
-        local free= WoWTools_BagMixin:GetFree(true)
-        if free==0 or not IsReagentBankUnlocked() then
-            return
-        end
-        local tabs={}
-        for _, frame in ReagentBankFrame:EnumerateItems() do
-            table.insert(tabs, 1, frame)
-        end
-        for _, frame in pairs(tabs) do
-            if not self:IsVisible() or IsModifierKeyDown() or free<=0 then
-                self:show_tooltips()
-                return
-            end
-            local bag, slot= WoWTools_BankMixin:GetBagAndSlot(frame)
-            if bag and slot then
-                local info= C_Container.GetContainerItemInfo(bag, slot)
-                if info and info.itemID and not info.isLocked then
-                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Character, false)
-                    free= free-1
-                end
-            end
-        end
+        WoWTools_BankMixin:Take_Item(true, nil, nil, 2, false)
         self:show_tooltips()
     end)
+
     function btnAllOut:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -310,44 +250,14 @@ local function Init_AccountBankPanel()
     btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -26)
 
     btnAllOut:SetScript('OnClick', function(self)
-        if self.isDoing then
-            return
-        end
-
-        local isAll= C_CVar.GetCVarBool('bankAutoDepositReagents')--包括可交易的材料
-        local free= WoWTools_BagMixin:GetFree(isAll)
-
-        if free==0 then--or not C_PlayerInfo.HasAccountInventoryLock() then
-            return
-        end
-        self.isDoing=true
-
-        do
-            for btn in AccountBankPanel:EnumerateValidItems() do
-                if not self.isDoing or not self:IsVisible() or IsModifierKeyDown() or free<=0 then
-                    self:show_tooltips()
-                    return
-                end
-
-                local bag, slot= btn:GetBankTabID(), btn:GetContainerSlotID()
-                if bag and slot then
-                    local info= C_Container.GetContainerItemInfo(bag, slot)
-                    if info and info.itemID and (isAll or not select(17, C_Item.GetItemInfo(info.itemID))) then
-                        do
-                            C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Account, isAll)
-                        end
-                        free= free-1
-                    end
-                end
-            end
-        end
-        self.isDoing=nil
+        WoWTools_BankMixin:Take_Item(true, nil, nil, 3, false)
         self:show_tooltips()
     end)
+
     function btnAllOut:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        
+
         local selectedBankTabData = AccountBankPanel:GetTabData(AccountBankPanel.selectedTabID);
         if selectedBankTabData and selectedBankTabData.name then
             e.tips:AddLine(selectedBankTabData.name)
@@ -361,7 +271,7 @@ local function Init_AccountBankPanel()
                 free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
                 free)
         )
-        
+
         e.tips:Show()
     end
     function btnAllOut:show_tooltips()
@@ -390,19 +300,26 @@ local function Init_AccountBankPanel()
     end)
 
 --添加，整理
-    local btnSort= CreateFrame("Button", nil,btnAllOut, 'BankAutoSortButtonTemplate')
+    local btnSort= CreateFrame("Button", 'WoWToolsAutoSortAccountBankButton', btnAllOut, 'BankAutoSortButtonTemplate')
     btnSort:SetSize(32, 32)
     btnSort:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.DepositButton, 'LEFT', -2, 0)--整理材料银行
     btnSort:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
+        local cvar= C_CVar.GetCVarBool('bankConfirmTabCleanUp')
+        e.tips:AddLine(
+            (cvar and '|cnGREEN_FONT_COLOR:' or '|cff828282')
+            ..(e.onlyChinese and '确认清理战团银行' or format(GARRISON_FOLLOWER_NAME, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
+        )
+
         e.tips:Show()
     end)
-    btnSort:SetScript('OnClick', function()
+    btnSort:SetScript('OnClick', BankFrame_AutoSortButtonOnClick)
+        --BankFrame_AutoSortButtonOnClick()
 		    --StaticPopup_Show("BANK_CONFIRM_CLEANUP", nil, nil, { bankType = 2 });
-        C_Container.SortAccountBankBags()
-    end)
+        --C_Container.SortAccountBankBags()
+    --end)
 
 
 

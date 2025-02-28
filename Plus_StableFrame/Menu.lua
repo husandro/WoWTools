@@ -101,7 +101,7 @@ local function Init_Menu(_, root)
         end)
 
         root:CreateCheckbox(
-            'Tooltips',
+            e.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
         function()
             return not Save().HideTips
         end, function()

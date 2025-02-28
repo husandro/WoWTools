@@ -86,7 +86,8 @@ local function Init_Menu(self, root)
             tooltip:AddLine(' ')
             tooltip:AddLine(e.onlyChinese and '确认清理战团银行' or format(GARRISON_FOLLOWER_NAME, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
             tooltip:AddLine(e.onlyChinese and "你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。" or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT)
-        end},
+        end,
+        func=nil},
         {name='bankAutoDepositReagents',
         text=e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL,
         tooltip=function(tooltip, desc)
@@ -94,11 +95,19 @@ local function Init_Menu(self, root)
             tooltip:AddLine(' ')
             tooltip:AddLine(e.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
             tooltip:AddLine(e.onlyChinese and '存放: 包括可交易的材料' or (BANK_DEPOSIT_MONEY_BUTTON_LABEL..': '..BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL))
+        end,
+        func=function()
+            local check= AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox
+            if check:IsShown() then
+                check:Hide()
+                check:Show()
+            end
         end},
     }) do
 
         sub2=sub:CreateCheckbox(
-            info.text or info.name,
+            (InCombatLockdown() and '|cff828282' or '')
+            ..(info.text or info.name),
         function(data)
             return C_CVar.GetCVarBool(data.name)
         end, function(data)
@@ -106,8 +115,11 @@ local function Init_Menu(self, root)
                 print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 C_CVar.SetCVar(data.name, C_CVar.GetCVarBool(data.name) and '0' or '1')
+                if data.func then
+                    data.func()
+                end
             end
-        end, {name=info.name})
+        end, {name=info.name, func=info.func})
         sub2:SetTooltip(info.tooltip)
     end
 
@@ -205,6 +217,16 @@ local function Init_Menu(self, root)
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
     WoWTools_MenuMixin:Reload(sub, false)
 end
+
+
+
+
+
+
+
+
+
+
 
 
 

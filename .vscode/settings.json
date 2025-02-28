@@ -5286,7 +5286,8 @@
         "BANK_TAB_ASSIGN_REAGENTS_CHECKBOX",
         "GARRISON_FOLLOWER_NAME",
         "ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT",
-        "BANK_DEPOSIT_MONEY_BUTTON_LABEL"
+        "BANK_DEPOSIT_MONEY_BUTTON_LABEL",
+        "BankFrame_AutoSortButtonOnClick"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

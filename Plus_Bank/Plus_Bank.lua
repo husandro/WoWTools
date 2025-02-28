@@ -226,8 +226,9 @@ local function Set_AccountBankPanel(index)
         --    AccountBankPanel:Hide()
         --end
         --AccountBankPanel:SetShown(true)
+        
+        ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged)
         AccountBankPanel:GenerateItemSlotsForSelectedTab()
-        ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged);
    -- else
         --AccountBankPanel:SetShown(false)
     end

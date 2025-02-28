@@ -12,6 +12,7 @@ WoWTools_BankMixin.Save={
     left_List= true,
     showLeftList=true,--大包时，显示，存取，分类，按钮
     --leftListScale=1,
+    --hideLeftListTooltip=true,
 
     openBagInBank=e.Player.husandro,
 

@@ -9,7 +9,7 @@
 WoWTools_BankMixin={}
 
 function WoWTools_BankMixin:GetIndex(index)
-    return index or BankFrame.activeTabIndex
+    return index or BankFrame.activeTabIndex or 1
 end
 --/dump AccountBankPanel.selectedTabID
 --local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
@@ -48,12 +48,13 @@ function WoWTools_BankMixin:GetFree(index)
                 free=free+1
             end
         end
-
 --战团银行   
     elseif isAccount then
-        for btn in AccountBankPanel:EnumerateValidItems() do
-            if not self:GetItemInfo(btn) then
-                free=free+1
+        if AccountBankPanel.itemButtonPool:GetNumActive() > 0 then
+            for btn in AccountBankPanel:EnumerateValidItems() do
+                if not self:GetItemInfo(btn) then
+                    free=free+1
+                end
             end
         end
     end
@@ -136,14 +137,16 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
 
 --战团银行   
     elseif isAccount then
-        for btn in AccountBankPanel:EnumerateValidItems() do
-            local info, bag, slot= self:GetItemInfo(btn)
-            if info then
-                table.insert(Tabs, 1, {
-                    info=info,
-                    bag=bag,
-                    slot=slot,
-                })
+        if AccountBankPanel.itemButtonPool:GetNumActive() > 0 then
+            for btn in AccountBankPanel:EnumerateValidItems() do
+                local info, bag, slot= self:GetItemInfo(btn)
+                if info then
+                    table.insert(Tabs, 1, {
+                        info=info,
+                        bag=bag,
+                        slot=slot,
+                    })
+                end
             end
         end
     end
@@ -159,10 +162,11 @@ end
 
 
 --取出，物品
+
 function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onlyTab)
     index= self:GetIndex(index)
 
-    local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
+    local isReagent, isAccount= select(2, WoWTools_BankMixin:GetActive(index))
 
     local bankAutoDepositReagents =C_CVar.GetCVarBool('bankAutoDepositReagents')
 
@@ -184,26 +188,26 @@ function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onl
         if not data.info.isLocked then
             local classID2, subClassID2 = select(6, C_Item.GetItemInfoInstant(data.info.itemID))
 
-                if select(17, C_Item.GetItemInfo(data.info.itemID)) then--商业技能
-                    if checkReagent
-                    or (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID)
-                    then
-                        data.classID= classID2
-                        data.subClassID= subClassID2
-                        table.insert(NewTab, data)
-                    end
-                elseif not isReagent then
-                    if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
-                        data.classID= classID2
-                        data.subClassID= subClassID2
-                        table.insert(NewTab, data)
-                    end
+            if select(17, C_Item.GetItemInfo(data.info.itemID)) then--商业技能
+                if checkReagent
+                or (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID)
+                then
+                    data.classID= classID2
+                    data.subClassID= subClassID2
+                    table.insert(NewTab, data)
+                end
+            elseif not isReagent then
+                if (classID==classID2 or not classID) and (subClassID==subClassID2 or not subClassID) then
+                    data.classID= classID2
+                    data.subClassID= subClassID2
+                    table.insert(NewTab, data)
                 end
             end
         end
+    end
 
     if onlyTab then
-        return NewTab
+        return NewTab, free
     end
 
     local bankType= isAccount and Enum.BankType.Account or Enum.BankType.Character

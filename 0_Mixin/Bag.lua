@@ -87,7 +87,9 @@ function WoWTools_BagMixin:GetItems(all)
             if info and info.itemID and
                 (context and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot)) or not context)
             then
+
                 WoWTools_Mixin:Load({id=info.itemID, type='item'})
+
                 table.insert(Tabs, 1, {
                     info=info,
                     bag=bag,
