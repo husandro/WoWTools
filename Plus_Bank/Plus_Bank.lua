@@ -14,7 +14,9 @@ local NumAccountLeftButton=0
 
 
 local function Set_Frame_Size(index)
-    if index==1 then
+    if index==1
+        or (index==3 and Save().allAccountBag)
+    then
         local line= Save().line
         local x= NumLeftButton + NumReagentLeftButton+ NumAccountLeftButton
         local y = Save().num
@@ -55,7 +57,15 @@ end
 
 
 
-
+local function Get_AccountBankButton()
+    local tab={}
+    for btn in AccountBankPanel:EnumerateValidItems() do
+        btn:ClearAllPoints()
+        Set_IndexLabel(btn, btn:GetContainerSlotID())--索引，提示
+        table.insert(tab, 1, btn)
+    end
+    return tab
+end
 
 
 
@@ -187,6 +197,58 @@ end
 
 
 
+
+
+
+
+
+
+local function Init_All_AccountBankPanel()
+    local Data= AccountBankPanel.purchasedBankTabData
+    local selectedTabID= AccountBankPanel.selectedTabID
+
+    if not Save().allAccountBag or not Data or #Data<=1 or not selectedTabID or selectedTabID==-1 then
+        return
+    end
+
+    local Tab=Get_AccountBankButton()
+    local maxButton= C_Container.GetContainerNumSlots(AccountBankPanel.selectedTabID) or 98
+
+    for _, data in pairs(Data) do
+        if data.ID~= selectedTabID then
+            for containerSlotID = 1, maxButton do
+                local btn = AccountBankPanel.itemButtonPool:Acquire()
+                btn:Init(data.ID, containerSlotID)
+                btn:Show()
+                table.insert(Tab, btn)
+            end
+        end
+    end
+
+    local line= Save().line
+    local num= Save().num
+    local last, leftButton
+
+    for index, btn in pairs(Tab) do
+        if index==1 then
+			btn:SetPoint("TOPLEFT", AccountBankPanel, "TOPLEFT", 8, -60)
+            leftButton=btn
+            NumAccountLeftButton=NumAccountLeftButton+1
+
+        elseif select(2, math.modf((index-1)/num))==0 then
+            btn:SetPoint('LEFT', leftButton, 'RIGHT', line, 0)
+            leftButton= btn
+            NumAccountLeftButton=NumAccountLeftButton+1
+
+        else
+            btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
+        end
+        last= btn
+    end
+
+end
+
+
 --C_Bank.CanPurchaseBankTab(Enum.BankType.Account)
 --AccountBankPanel.PurchaseTab:IsSelected() and C_Bank.CanPurchaseBankTab(2)
 --AccountBankPanel.PurchaseTab:IsPurchaseTab()
@@ -195,17 +257,17 @@ local function Set_AccountBankPanel(index)
         return
     end
 
-    do AccountBankPanel:SetShown(index==1 or index==3) end
+    --do AccountBankPanel:SetShown(index==1 or index==3) end
 
     if index==1 then
-      --  AccountBankPanel:SetShown(true)
+        AccountBankPanel:SetShown(true)
         local line= Save().line
         local num= Save().num
-        local i=1
+        --local i=1
         local last
+        for i, btn in pairs(Get_AccountBankButton())do
+        --for btn in AccountBankPanel:EnumerateValidItems() do
 
-        for btn in AccountBankPanel:EnumerateValidItems() do
-            btn:ClearAllPoints()
             if select(2, math.modf((i-1)/num))==0 then
                 btn:SetPoint('LEFT', LastButton, 'RIGHT', line, 0)
                 LastButton= btn
@@ -214,28 +276,25 @@ local function Set_AccountBankPanel(index)
                 btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
             end
             last= btn
-            Set_IndexLabel(btn, i)--索引，提示
-            i=i+1
         end
 
     elseif index==3 then
        -- AccountBankPanel:Reset()
         --self.itemButtonPool:
         --AccountBankPanel:Clean()
-        --if AccountBankPanel:IsShown() then
-        --    AccountBankPanel:Hide()
-        --end
-        --AccountBankPanel:SetShown(true)
-        
-        ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged)
-        AccountBankPanel:GenerateItemSlotsForSelectedTab()
+        if AccountBankPanel:IsShown() then
+            AccountBankPanel:Hide()
+        end
+        AccountBankPanel:Show()
+
+        --ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged)
+        --AccountBankPanel:GenerateItemSlotsForSelectedTab()
+        --AccountBankPanel:Show()
+        Init_All_AccountBankPanel()
    -- else
         --AccountBankPanel:SetShown(false)
     end
 end
-
-
-
 
 
 
@@ -319,6 +378,7 @@ end
 
 
 local function Settings()
+    NumLeftButton=0
     NumReagentLeftButton= 0
     NumAccountLeftButton= 0
     local index= BankFrame.activeTabIndex or 1
@@ -333,9 +393,10 @@ end
 
 
 local function Init()
-    if not Save().disabledAccountBag then
+    --[[if not Save().disabledAccountBag then
         AccountBankPanel:Clean()
-    end
+    end]]
+
 --背包，需要这个函数 ContainerFrame7 - 13 <Frame name="ContainerFrame7" inherits="ContainerFrameBankTemplate"/>
     function BankSlotsFrame:IsCombinedBagContainer()
         return false
@@ -370,6 +431,23 @@ local function Init()
     BankFramePurchaseInfo:ClearAllPoints()
     BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
     WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
+
+--整合，战团事件
+    BankFrame:HookScript('OnEvent', function(self, event, ...)
+        local index= self:GetSelectedTabID()
+        if not Save().allAccountBag and index~=3 then
+            return
+        end
+        if event == "ITEM_LOCK_CHANGED" then
+            local bankTabID, containerSlotID = ...;
+            if bankTabID~= index then
+                local itemButton = self:FindItemButtonByContainerSlotID(containerSlotID);
+                if itemButton then
+                    itemButton:Refresh();
+                end
+            end
+        end
+    end)
 
     return true
 end

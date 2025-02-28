@@ -19,6 +19,8 @@ WoWTools_BankMixin.Save={
     --disabledBankBag=true,--银行背包
     disabledReagentFrame= not e.Player.husandro,--材料银行
     disabledAccountBag= not e.Player.husandro,--战团银行
+
+    allAccountBag=e.Player.husandro,--战团银行,整合
 }
 
 

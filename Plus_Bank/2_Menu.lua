@@ -21,7 +21,7 @@ end
 --#######
 local function Init_Menu(self, root)
     local sub, sub2
-
+    local isBank, _, isAccount= WoWTools_BankMixin:GetActive()
 
 --自动打开背包栏位
     sub=root:CreateCheckbox(
@@ -124,15 +124,16 @@ local function Init_Menu(self, root)
     end
 
 
-    local isEnabled= BankFrame.activeTabIndex==1
-    local function settings(desc)
+    local function settings(desc, type)
         desc:SetTooltip(function(tooltip)
             tooltip:AddLine(e.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED)
         end)
-        desc:SetEnabled(isEnabled)
+        desc:SetEnabled(type)
     end
-
+    
+--银行
     root:CreateTitle(e.onlyChinese and '银行' or BANK)
+    --sub= root:CreateButton(e.onlyChinese and '银行' or BANK, function() return MenuResponse.Open end)
 
 --银行背包
     sub=root:CreateCheckbox(
@@ -147,7 +148,7 @@ local function Init_Menu(self, root)
         end
         WoWTools_BankMixin:Init_Plus()
     end)
-    settings(sub)
+    settings(sub, isBank)
 
 --材料银行
     sub=root:CreateCheckbox(
@@ -159,7 +160,7 @@ local function Init_Menu(self, root)
         ReagentBankFrame:SetShown(false)
         WoWTools_BankMixin:Init_Plus()
     end)
-    settings(sub)
+    settings(sub, isBank)
 
 
 
@@ -173,12 +174,24 @@ local function Init_Menu(self, root)
         AccountBankPanel:SetShown(false)
         WoWTools_BankMixin:Init_Plus()
     end)
-    settings(sub)
+    settings(sub, isBank)
 
 
-
+--战团银行,整合
+    root:CreateTitle(e.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
+    sub= root:CreateCheckbox(
+        e.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE,
+    function()
+        return Save().allAccountBag
+    end, function()
+        Save().allAccountBag= not Save().allAccountBag and true or nil
+        e.call(BankFrame_ShowPanel, AccountBankPanel, (BANK_PANELS[3].name))
+    end)
+    settings(sub, isAccount)
 
 --行数
+
+root:CreateDivider()
     root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
