@@ -62,7 +62,7 @@ end
 
 local function Init_Button()
 --未收集
-    Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame.TitleManagerPane, {hideIcon=true})
+    Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame.TitleManagerPane, {icon='hide'})
     Button.Text= WoWTools_LabelMixin:Create(Button)
     Button.Text:SetPoint('CENTER')
     Button:SetFrameLevel(PaperDollFrame.TitleManagerPane.ScrollBox:GetFrameLevel()+1)

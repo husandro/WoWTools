@@ -20,7 +20,7 @@ local Button, Frame, Tab
 
 
 local function created_button(index)
-    local btn= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 14}, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 14}})
     btn:SetPoint('TOPRIGHT', Frame, 'BOTTOMRIGHT', 0, -(index-1)*14)
     btn.Text= WoWTools_LabelMixin:Create(btn, {justifyH='RIGHT'})
     btn.Text:SetPoint('RIGHT', -2, 0)
@@ -278,7 +278,7 @@ end
 local function Init()
     Tab={}
 
-    Button= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, icon='hide', 'WoWToolsMailHistorySendNameListButton'})
+    Button= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, 'WoWToolsMailHistorySendNameListButton'})
     Button:SetPoint('TOPRIGHT', SendMailFrame, 'TOPLEFT', 0, -22)
 
     function Button:Settings()

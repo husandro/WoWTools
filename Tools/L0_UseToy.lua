@@ -459,7 +459,7 @@ end
 --#############
 local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
     if not btn.useToy then
-        btn.useToy= WoWTools_ButtonMixin:Cbtn(btn,{size={16,16}, texture=133567})
+        btn.useToy= WoWTools_ButtonMixin:Cbtn(btn,{size=16, texture=133567})
         btn.useToy:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 16, 0)
 
         function btn.useToy:get_itemID()

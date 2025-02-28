@@ -17,7 +17,7 @@ local NewButton
 
 --新建按钮
 local function Init()
-    NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {size={26,26}, atlas='communities-chat-icon-plus'})
+    NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {size=26, atlas='communities-chat-icon-plus'})
     WoWTools_AddOnsMixin.NewButton= NewButton
 
 
@@ -230,7 +230,7 @@ end
 
 --不禁用，本插件
 local function Init_NotDisabled_Button()
-    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size={18,18}, icon= Save().enableAllButtn})
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18})
     btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
     btn:SetAlpha(0.3)
     function btn:set_tooltips()
@@ -276,9 +276,12 @@ local function Init_NotDisabled_Button()
             end
         end
     end)
+    function btn:set_icon()
+        self:SetNormalAtlas(Save().enableAllButtn and e.Icon.icon or e.Icon.disabled)
+    end
     btn:SetScript('OnClick', function(self)
         Save().enableAllButtn= not Save().enableAllButtn and true or nil
-        self:SetNormalAtlas(Save().enableAllButtn and e.Icon.icon or e.Icon.disabled)
+        self:set_icon()
         self:set_tooltips()
     end)
 
@@ -288,6 +291,7 @@ local function Init_NotDisabled_Button()
             e.call(AddonList_Update)
         end
     end)
+    btn:set_icon()
 end
 
 

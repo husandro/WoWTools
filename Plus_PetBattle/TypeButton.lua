@@ -104,8 +104,8 @@ local function Init_Buttons()
     TypeButton.frame:SetPoint('RIGHT')
 
     for petType=1, C_PetJournal.GetNumPetTypes() do
-        local btn= WoWTools_ButtonMixin:Ctype2(TypeButton.frame, {
-            size={38,38},
+        local btn= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
+            size=38,
             texture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType],
             isType2=true,
         })
@@ -119,7 +119,11 @@ local function Init_Buttons()
             btn.indicatoUp:SetSize(10,10)
             btn.indicatoUp:SetPoint('BOTTOM', btn,'TOP', 0, -2)
 
-            btn.strong= WoWTools_ButtonMixin:Ctype2(TypeButton.frame, {texture=strongTexture,size={25,25}, isType2=true})
+            btn.strong= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
+                texture=strongTexture,
+                size=25,
+                isType2=true
+            })
             btn.strong:SetPoint('BOTTOM', btn.indicatoUp, 'TOP', 0, -2)
             Set_Button_Script(btn.strong, stringIndex)
         end
@@ -129,7 +133,11 @@ local function Init_Buttons()
             btn.indicatoDown:SetSize(10,10)
             btn.indicatoDown:SetPoint('TOP', btn, 'BOTTOM', 0, 6)
 
-            btn.weakHints= WoWTools_ButtonMixin:Ctype2(TypeButton.frame, {texture=weakHintsTexture, size={25,25}, isType2=true})
+            btn.weakHints= WoWTools_ButtonMixin:Cbtn(TypeButton.frame, {
+                texture=weakHintsTexture,
+                size=25,
+                isType2=true
+            })
             btn.weakHints:SetPoint('TOP', btn.indicatoDown, 'BOTTOM', 0, 2)
             Set_Button_Script(btn.weakHints, weakHintsIndex)
         end
@@ -276,8 +284,6 @@ end
 local function Init(isShow)
     TypeButton= WoWTools_ButtonMixin:Cbtn(nil, {
         name='WoWToolsPetBattleTypeButton',
-        icon='hide',
-        --atlas='WildBattlePetCapturable',
         size=23,
         isType2=true
     })

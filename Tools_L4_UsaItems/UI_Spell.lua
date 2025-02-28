@@ -10,7 +10,7 @@ local e= select(2, ...)
 
 local function set_Use_Spell_Button(btn, spellID)
     if not btn.useSpell then
-        btn.useSpell= WoWTools_ButtonMixin:Cbtn(btn, {size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+        btn.useSpell= WoWTools_ButtonMixin:Cbtn(btn, {size=16, atlas='soulbinds_tree_conduit_icon_utility'})
         btn.useSpell:SetPoint('TOP', btn, 'BOTTOM', 8,0)
         function btn.useSpell:set_alpha()
             if self.spellID then

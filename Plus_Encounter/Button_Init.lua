@@ -73,7 +73,7 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon=not Save().hideEncounterJournal, size={22,22}})--按钮, 总开关
+    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--按钮, 总开关
     Button:SetPoint('RIGHT',-22, -2)
     function Button:set_Tooltips()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -84,14 +84,17 @@ local function Init()
         e.tips:Show()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
+    function Button:set_icon()
+        self:SetNormalAtlas(Save().hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
+    end
     Button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
             self:set_Shown()
-            self:SetNormalAtlas(Save().hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
+
             WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
             e.call(EncounterJournal_ListInstances)
-
+            self:set_icon()
         elseif d=='RightButton' then
             Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
@@ -99,9 +102,11 @@ local function Init()
         self:set_Tooltips()
     end)
     Button:SetScript("OnLeave",GameTooltip_Hide)
+    Button:set_icon()
+
     Button.btn={}
 
-    Button.btn.instance =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色副本
+    Button.btn.instance =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色副本
     Button.btn.instance:SetPoint('RIGHT', Button, 'LEFT')
     Button.btn.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
     Button.btn.instance:SetScript('OnEnter',function(self2)
@@ -147,7 +152,7 @@ local function Init()
     end)
 
 
-    Button.btn.Worldboss =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色已击杀世界BOSS
+    Button.btn.Worldboss =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色已击杀世界BOSS
     Button.btn.Worldboss:SetPoint('RIGHT', Button.btn.instance, 'LEFT')
     Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
 
@@ -176,7 +181,7 @@ local function Init()
 
 
     if e.Player.IsMaxLevel then
-        Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--所有角色,挑战
+        Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色,挑战
         Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
         Button.btn.keystones:SetNormalTexture(4352494)
         Button.btn.keystones:SetScript('OnEnter', set_EncounterJournal_Keystones_Tips)
@@ -187,14 +192,14 @@ local function Init()
     end
 
 
-    Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {icon='hide', size={22,22}})--钱
+    Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--钱
     Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
     Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
     Button.btn.money:SetScript('OnEnter', function(self)
         Set_Money(self, true)
     end)
     Button.btn.money:SetScript("OnLeave", GameTooltip_Hide)
-        
+
     Button.btn.money.label= WoWTools_LabelMixin:Create(Button.btn.money, {size=14})
     Button.btn.money.label:SetPoint('RIGHT', Button.btn.money, 'LEFT')
     function Button.btn.money.label:settings()

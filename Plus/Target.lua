@@ -344,7 +344,7 @@ local function Init_Num()
     --怪物数量
     if not NumFrame then
         if Save.creatureUIParent or not targetFrame then
-            NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size={18, 18}, icon='hide'})
+            NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size=18})
 
             NumFrame.Text= WoWTools_LabelMixin:Create(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
             NumFrame.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)

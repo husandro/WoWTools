@@ -183,7 +183,7 @@ end
 
 
 local function Set_Ability_Button(button, index, isEnemy)
-    local btn= WoWTools_ButtonMixin:Cbtn(button.frame, {icon='hide', size=size})
+    local btn= WoWTools_ButtonMixin:Cbtn(button.frame, {size=size})
 
     btn.petOwner= button.petOwner
     btn.getPetIndex= button.getPetIndex
@@ -924,10 +924,10 @@ end
 
 local function Init_Button(tab)
     local isEnemy, s, height
-    local btn= WoWTools_ButtonMixin:Ctype2(PetBattleFrame, {
+    local btn= WoWTools_ButtonMixin:Cbtn(PetBattleFrame, {
         name='WoWTools'..tab.name..'AbilityButton',
         atlas='summon-random-pet-icon_64',
-        size=32, 32,
+        size=32,
         isType2=true,
     })
 

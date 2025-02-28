@@ -10,7 +10,7 @@ end
 
 
 local function Init()
-    local button= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={22,22}, isType2=true, name='WoWTools_AttributesButton'})
+    local button= WoWTools_ButtonMixin:Cbtn(nil, {size=22, isType2=true, name='WoWTools_AttributesButton'})
     WoWTools_AttributesMixin.Button= button
 
     button.frame= CreateFrame("Frame",nil,button)

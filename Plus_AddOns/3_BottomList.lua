@@ -37,7 +37,7 @@ local function Set_Load_Button()--LoadButtons
     for i, info in pairs(newTab) do
        local btn= BottomFrame.buttons[i]
        if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(BottomFrame, {icon='hide'})
+            btn= WoWTools_ButtonMixin:Cbtn(BottomFrame)
             btn.texture= btn:CreateTexture(nil, 'BORDER')
             btn.texture:SetAllPoints(btn)
             btn.texture2= btn:CreateTexture(nil, 'OVERLAY')

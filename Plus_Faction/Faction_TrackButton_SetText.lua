@@ -119,7 +119,7 @@ end
 
 
 local function Crated_Button(index, last)
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_ReputationMixin.TrackButton.Frame, {size={14,14}, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_ReputationMixin.TrackButton.Frame, {size=14})
     if Save().toTopTrack then
         btn:SetPoint('BOTTOM', last or WoWTools_ReputationMixin.TrackButton, 'TOP')
     else

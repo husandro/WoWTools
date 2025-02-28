@@ -157,7 +157,7 @@ end
 local ListButton
 local function Init_ClassListButton()
 
-    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {size={22,22}, icon=true, name='WoWTools_PlusHeirloomsClassListButton'})
+    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {size=22, icon=e.Icon.icon, name='WoWTools_PlusHeirloomsClassListButton'})
 
     function ListButton:set_tooltips()
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -210,7 +210,7 @@ local function Init_ClassListButton()
     ListButton.specButton={}
 
     function ListButton:cereate_button(classID, specID, texture, atlas)
-        local btn= WoWTools_ButtonMixin:Ctype2(self.frame, {
+        local btn= WoWTools_ButtonMixin:Cbtn(self.frame, {
             size=26,
             text=texture,
             atlas=atlas,

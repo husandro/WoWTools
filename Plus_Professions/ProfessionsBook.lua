@@ -17,7 +17,7 @@ local function Init()
         return
     end]]
 
-    local btn2= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrame, {size={22,22}, icon='hide'})
+    local btn2= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrame, {size=22})
     btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')
     function btn2:set_alpha()
         self:SetAlpha(Save().wangquePrefessionText and 1 or 0.3)

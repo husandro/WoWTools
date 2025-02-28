@@ -141,7 +141,7 @@ end
 
 --建立，按钮
 local function Create_Button(index)
-    local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {icon='hide',size=22})
+    local btn=WoWTools_ButtonMixin:Cbtn(TrackButton, {size=22})
     btn.texture= btn:CreateTexture(nil, 'OVERLAY', nil, 2)
     btn.texture:SetSize(28,28)
     btn.texture:SetPoint('CENTER')
@@ -293,7 +293,7 @@ end
 --装备管理
 --#######
 local function Init_TrackButton()--添加装备管理框
-    TrackButton=WoWTools_ButtonMixin:Cbtn(UIParent, {icon='hide', size={23, 16}})--添加移动按钮
+    TrackButton=WoWTools_ButtonMixin:Cbtn(UIParent, {size={23, 16}})--添加移动按钮
     TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {size=Save().trackButtonFontSize or 10, color=true, justifyH='CENTER'})
     TrackButton.text:SetPoint('CENTER')
     TrackButton:Hide()
@@ -523,7 +523,7 @@ end
 --装备管理, 总开关, 显示/隐藏装备管理框选项
 function Init_EquipButton()
     --PaperDollFrame.EquipmentManagerPane
-    EquipButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame, {size={20,20},icon='hide'})
+    EquipButton = WoWTools_ButtonMixin:Cbtn(PaperDollFrame, {size=20})
     EquipButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     EquipButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     EquipButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)

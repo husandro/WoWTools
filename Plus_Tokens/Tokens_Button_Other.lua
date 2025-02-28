@@ -89,7 +89,7 @@ end
 
 local function Init()
 --展开,合起	
-	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
 	WoWTools_TokensMixin.Button.down= down
 	if TokenFrame.filterDropdown then--11.05
 		down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
@@ -116,7 +116,7 @@ local function Init()
 
 
 --展开所有
-	local up= WoWTools_ButtonMixin:Cbtn(down, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	local up= WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	up:SetPoint('RIGHT', down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do

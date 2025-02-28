@@ -21,7 +21,7 @@ local function Init()
         return
     end
 
-    FramerateButton= WoWTools_ButtonMixin:Cbtn(FramerateFrame, {size={14,14}, icon='hide', name='WoWToolsPlusFramerateButton'})
+    FramerateButton= WoWTools_ButtonMixin:Cbtn(FramerateFrame, {size=14, name='WoWToolsPlusFramerateButton'})
     FramerateButton:SetPoint('RIGHT',FramerateFrame.FramerateText)
 
     FramerateButton:SetMovable(true)

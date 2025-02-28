@@ -101,7 +101,7 @@ end
 
 
 local function Init()
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={18,18}, isType2=true, name='WoWToolsHolidayTrackButton'})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {size=18, isType2=true, name='WoWToolsHolidayTrackButton'})
     WoWTools_HolidayMixin.TrackButton= TrackButton
 
     TrackButton.texture=TrackButton:CreateTexture()

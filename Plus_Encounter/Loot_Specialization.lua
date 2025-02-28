@@ -208,7 +208,7 @@ end
 
 local function set_Loot_Spec(button)
     if not button.LootButton then
-        button.LootButton= WoWTools_ButtonMixin:CreateMenu(button, {hideIcon=true, isType2=true, size=26})
+        button.LootButton= WoWTools_ButtonMixin:CreateMenu(button, {isType2=true, size=26, icon='hide'})
         button.LootButton:SetPoint('LEFT', button, 'RIGHT', -3, 0)
         button.LootButton:SetupMenu(Init_Menu)
 

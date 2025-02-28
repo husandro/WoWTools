@@ -34,7 +34,7 @@ local function get_InviteButton_Frame(index)
         end
 
 
-        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20, 20}, atlas= e.Icon.select})
+        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, atlas=e.Icon.select})
         frame.InviteButton:SetAllPoints()
         --frame.InviteButton:SetPoint('TOPLEFT')
         frame.InviteButton.Size=20
@@ -60,7 +60,7 @@ local function get_InviteButton_Frame(index)
             e.tips:Show()
         end)
 
-        frame.ChatButton= WoWTools_ButtonMixin:Cbtn(frame, {size={size,size}, atlas= 'transmog-icon-chat'})
+        frame.ChatButton= WoWTools_ButtonMixin:Cbtn(frame, {size=size, atlas='transmog-icon-chat'})
         frame.ChatButton:SetPoint('BOTTOMLEFT', frame.InviteButton, 'BOTTOMRIGHT')
         frame.ChatButton:SetScript('OnClick', function(self2)
             WoWTools_ChatMixin:Say(nil, self2:GetParent().name)
@@ -76,7 +76,7 @@ local function get_InviteButton_Frame(index)
 
 
 
-        frame.DeclineButton= WoWTools_ButtonMixin:Cbtn(frame, {size={size, size}, atlas= 'communities-icon-redx'})
+        frame.DeclineButton= WoWTools_ButtonMixin:Cbtn(frame, {size=size, atlas='communities-icon-redx'})
         frame.DeclineButton:SetPoint('BOTTOMLEFT', frame.ChatButton, 'BOTTOMRIGHT')
         frame.DeclineButton:SetScript('OnClick', function(self2)
             --C_LFGList.RemoveApplicant(self2:GetParent().applicantID)
@@ -552,7 +552,7 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=23, atlas= 'UI-HUD-MicroMenu-Groupfinder-Mouseover'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=23, atlas='UI-HUD-MicroMenu-Groupfinder-Mouseover'})
 
     function Button:set_Point()
         self:ClearAllPoints()

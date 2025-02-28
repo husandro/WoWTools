@@ -297,7 +297,7 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         local btn=itemFrame['btn'..i]
         if not btn then
-            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {icon=true, size={26,10}})
+            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {icon=e.Icon.icon, size={26,10}})
             btn:SetNormalAtlas('adventure-missionend-line')
             itemFrame['btn'..i]=btn
             if i==1 then

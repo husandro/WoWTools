@@ -26,7 +26,7 @@ local function Setttings(btn)
 
     
     if not btn.setID and not btn.createButton  then
-        btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {size={30,30}, atlas='groupfinder-eye-highlight'})
+        btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {size=30, atlas='groupfinder-eye-highlight'})
         btn.createButton.str= e.onlyChinese and '空' or EMPTY
         btn.createButton:SetPoint('RIGHT', 0,-4)
         btn.createButton:SetScript('OnLeave', GameTooltip_Hide)

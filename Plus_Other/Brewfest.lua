@@ -21,7 +21,7 @@ WoWTools_Mixin:Load({id=33976, type='item'})--美酒节赛羊
 --初始
 --####
 local function Init()
-    button= WoWTools_ButtonMixin:Cbtn(UIParent, {size={48, 48}, texture=132248})
+    button= WoWTools_ButtonMixin:Cbtn(UIParent, {size=48, texture=132248})
     button:SetShown(false)
 
     button.topText= WoWTools_LabelMixin:Create(button, {size=22})--debuff

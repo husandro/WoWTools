@@ -9,7 +9,7 @@ local function Init()
     --C_CVar.GetCVarBool('displayQuestID')
     QuestScrollFrame.SearchBox:SetWidth(301- 20*2)
 
-    local btnCollapse= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowUp'})--campaign_headericon_closed
+    local btnCollapse= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size=22, atlas='NPE_ArrowUp'})--campaign_headericon_closed
     btnCollapse:SetPoint('LEFT', QuestScrollFrame.SearchBox, 'RIGHT')
     btnCollapse:SetScript('OnLeave', GameTooltip_Hide)
     btnCollapse:SetScript('OnEnter', function(self)
@@ -25,7 +25,7 @@ local function Init()
         end
     end)
 
-    local btnExpand= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size={20,20}, atlas='NPE_ArrowDown'})
+    local btnExpand= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size=20, atlas='NPE_ArrowDown'})
     btnExpand:SetPoint('LEFT', btnCollapse, 'RIGHT')
     btnExpand:SetScript('OnLeave', GameTooltip_Hide)
     btnExpand:SetScript('OnEnter', function(self)

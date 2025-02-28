@@ -226,7 +226,6 @@ local function Init()
     GossipButton= WoWTools_ButtonMixin:Cbtn(--闲话图标
         nil,
         {
-            icon='hide',
             size=22,
             name='WoWTools_GossipButton'}
         )
@@ -237,7 +236,7 @@ local function Init()
 
 
     --打开，自定义，对话，文本，按钮
-    GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {size={20,20}, icon='hide'})
+    GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {size=20})
     GossipButton.gossipFrane_Button:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
     GossipButton.gossipFrane_Button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then

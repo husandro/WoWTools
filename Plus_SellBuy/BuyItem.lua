@@ -129,7 +129,7 @@ local function Add_BuyItem(itemID, itemLink)
         return
     end
 
-    
+
         local icon
         icon= C_Item.GetItemIconByID(itemLink)
         icon= icon and '|T'..icon..':0|t' or ''
@@ -144,10 +144,10 @@ local function Add_BuyItem(itemID, itemLink)
             whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
             OnAccept=function(s)
                 local num= s.editBox:GetNumber()
-                if num==0 then                            
+                if num==0 then
                     SaveBuyItem(itemID, nil)
                     print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
-                else                            
+                else
                     SaveBuyItem(itemID, num)
                     Save().Sell[itemID]=nil
                     print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
@@ -174,7 +174,7 @@ local function Add_BuyItem(itemID, itemLink)
             end,
         }
         StaticPopup_Show('WoWTools_AutoBuy')
-    
+
 end
 
 
@@ -197,11 +197,11 @@ end
 
 
 local function Init()
-    BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {size={22,22}, icon='hide', name='WoWTools_BuyItemButton'})
+    BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {size=22, name='WoWTools_BuyItemButton'})
     BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
 
     BuyItemButton.texture= BuyItemButton:CreateTexture(nil, 'BORDER')
-    BuyItemButton.texture:SetAllPoints()    
+    BuyItemButton.texture:SetAllPoints()
     function BuyItemButton:set_texture()
         self.texture:SetTexture(236994)
     end
@@ -228,7 +228,7 @@ local function Init()
             local info= C_MerchantFrame.GetItemInfo(itemIDorIndex)
             local icon= info and info.texture
             itemLink= GetMerchantItemLink(itemIDorIndex)
-            
+
             if itemID and itemLink then
                 local name = '|T'..(icon or 0)..':0|t'..itemLink
                 local num= GetBuyNum(itemID)
@@ -278,7 +278,7 @@ local function Init()
                 print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 Save().Sell[itemID]=true
-                Save().noSell[itemID]=nil                
+                Save().noSell[itemID]=nil
                 SaveBuyItem(itemID, nil)
                 print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 if _G['WoWTools_AutoSellJunkCheck'] then
@@ -291,14 +291,14 @@ local function Init()
         elseif infoType=='merchant' and itemID then--购买物品, itemID 为 index
             Add_BuyItem(GetMerchantItemID(itemID), GetMerchantItemLink(itemID))
             ClearCursor()
-            
+
         else
             --WoWTools_SellBuyMixin:Init_Menu(self)
             MenuUtil.CreateContextMenu(self,  function(f, root)
                 root:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
                 root:CreateDivider()
                 WoWTools_SellBuyMixin:Player_Sell_Menu(f, root)
-                   
+
                 WoWTools_SellBuyMixin:BuyItem_Menu(f, root)
             end)
 
@@ -313,7 +313,7 @@ local function Init()
 
 
 --购买物品
-    
+
     BuyItemButton:RegisterEvent('MERCHANT_SHOW')
     BuyItemButton:SetScript('OnEvent', set_buy_item)--购买物品
 

@@ -1123,7 +1123,7 @@ local function add_Button_OpenOption(frame)
     if not frame then
         return
     end
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {atlas='charactercreate-icon-customize-body-selected', size={40,40}})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {atlas='charactercreate-icon-customize-body-selected', size=40})
     btn:SetPoint('TOPRIGHT',-5,-25)
     btn:SetScript('OnClick', function()
         ToggleCharacter("PaperDollFrame")

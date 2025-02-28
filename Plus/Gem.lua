@@ -143,7 +143,7 @@ end
 
 
 local function creatd_button(index, parent)
-    local btn= WoWTools_ButtonMixin:Cbtn(parent or Frame, {button='ItemButton', icon='hide'})--34, 34
+    local btn= WoWTools_ButtonMixin:Cbtn(parent or Frame, {frameType='ItemButton'})
 
     btn.level=WoWTools_LabelMixin:Create(btn)
     btn.level:SetPoint('TOPRIGHT')
@@ -470,7 +470,7 @@ local function Init_Spell_Button()
     if Save.disableSpell then
         return
     end
-    SpellButton= WoWTools_ButtonMixin:Cbtn(Frame, {size={32,32}, icon='hide', type=true})
+    SpellButton=WoWTools_ButtonMixin:Cbtn(Frame, {size=32, isSecure=true})
     SpellButton:Hide()
     --SpellButton:SetPoint('LEFT', ItemSocketingSocket3, 'RIGHT', 4,0)
     --SpellButton:SetPoint('BOTTOMRIGHT', -4, 42)--, ItemSocketingSocketButton, 'TOPRIGHT', 20, 10)
@@ -666,7 +666,7 @@ local function Init_ItemSocketingFrame_Update()
                 btn.rightText=WoWTools_LabelMixin:Create(btn)
                 btn.rightText:SetPoint('TOPRIGHT', btn, 'BOTTOMRIGHT')
 
-                btn.gemButton=WoWTools_ButtonMixin:Cbtn(btn, {button='ItemButton', icon='hide'})--使用过宝石，提示
+                btn.gemButton=WoWTools_ButtonMixin:Cbtn(btn, {frameType='ItemButton'})--使用过宝石，提示
                 btn.gemButton:SetPoint('BOTTOMLEFT', btn, 'BOTTOMRIGHT', 6, 0)
                 btn.gemButton:Hide()
                 function btn.gemButton:set_event()
@@ -902,7 +902,7 @@ end
 
 --总开关
 local function Init_Button_All()
-    local btn= WoWTools_ButtonMixin:Cbtn(ItemSocketingFrame.TitleContainer, {size=22, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(ItemSocketingFrame.TitleContainer, {size=22})
     btn:SetPoint('LEFT', 26)
     function btn:set_texture()
         btn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)

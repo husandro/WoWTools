@@ -47,7 +47,7 @@ end
 local function Init_Cancel_Button()
 
     local cancelButton= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrameAuctionsFrame.CancelAuctionButton, {
-        type=false,
+        isUI=true,
         size={100,22},
         text= WoWTools_Mixin.onlyChinese and '取消' or CANCEL
     })

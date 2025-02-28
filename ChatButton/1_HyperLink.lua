@@ -1342,7 +1342,7 @@ local function Init_Blizzard_DebugTools()
     if not LinkButton then
         return
     end
-    local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {icon='hide', size={28,28}})
+    local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {size=28})
     btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
     btn:SetNormalAtlas(e.Icon.icon)
     btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)

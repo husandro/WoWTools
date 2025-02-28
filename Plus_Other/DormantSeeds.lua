@@ -36,7 +36,7 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=22, icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(nil, {size=22})
 
     function Button:set_Point()
         if not self:CanChangeAttribute() then
@@ -219,7 +219,10 @@ local function Init()
             if num>0 or show then
                 local btn= self.btn[index]
                 if not btn then
-                    btn= WoWTools_ButtonMixin:Cbtn(self, {type=true, button='ItemButton', icon='hide'})
+                    btn= WoWTools_ButtonMixin:Cbtn(self, {
+                        isSecure=true,
+                        frameType='ItemButton',
+                    })
                     btn:SetAttribute('type*', 'item')
                     btn:SetPoint('TOP', index==1 and Button or self.btn[index-1], 'BOTTOM', 0, -6)
                     btn:SetScript('OnEnter', function(self2)

@@ -20,7 +20,7 @@ end
 local function Set_Covenant_Button(frame, covenantID)
     local info = C_Covenants.GetCovenantData(covenantID) or {}
 
-    local btn=WoWTools_ButtonMixin:Cbtn(frame , {size={32,32}, atlas=format('SanctumUpgrades-%s-32x32', info.textureKit or '')})
+    local btn=WoWTools_ButtonMixin:Cbtn(frame , {size=32, atlas=format('SanctumUpgrades-%s-32x32', info.textureKit or '')})
 
     btn:SetHighlightAtlas('ChromieTime-Button-HighlightForge-ColorSwatchHighlight')
 

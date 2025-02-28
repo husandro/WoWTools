@@ -135,7 +135,7 @@ local function Init()
             btn:SetScript('OnLeave', function(self) self.delete:SetAlpha(0) end)
             btn:SetScript('OnEnter', function(self) self.delete:SetAlpha(1) end)
 
-            btn.delete= WoWTools_ButtonMixin:Cbtn(btn, {size={18,18}, atlas='common-icon-redx'})
+            btn.delete= WoWTools_ButtonMixin:Cbtn(btn, {size=18, atlas='common-icon-redx'})
             btn.delete:SetPoint('RIGHT')
             btn.delete:SetScript('OnLeave', function(self) self:SetAlpha(0) end)
             btn.delete:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
@@ -456,7 +456,7 @@ local function Init()
 
 
     --查找，图标，按钮
-    Menu.FindIcon= WoWTools_ButtonMixin:Cbtn(Frame, {size={22,22}, atlas='mechagon-projects'})
+    Menu.FindIcon= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='mechagon-projects'})
     Menu.FindIcon:SetPoint('LEFT', Menu.Icon, 'RIGHT', 2,0)
     Menu.FindIcon:SetScript('OnLeave', GameTooltip_Hide)
     Menu.FindIcon:SetScript('OnEnter', function(self)
@@ -548,7 +548,7 @@ local function Init()
 
 
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
-        Menu.tav= WoWTools_ButtonMixin:Cbtn(Frame, {size={22,22}, atlas='communities-icon-searchmagnifyingglass'})
+        Menu.tav= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
         Menu.tav:SetPoint('TOP', Menu.FindIcon, 'BOTTOM', 0, -2)
         Menu.tav:SetScript('OnClick', function() _G['TAV_CoreFrame']:SetShown(not _G['TAV_CoreFrame']:IsShown()) end)
         Menu.tav:SetScript('OnLeave', GameTooltip_Hide)
@@ -599,7 +599,7 @@ local function Init()
     end)
 
     --添加
-    Menu.Add= WoWTools_ButtonMixin:Cbtn(Frame, {size={22,22}, icon='hide'})
+    Menu.Add= WoWTools_ButtonMixin:Cbtn(Frame, {size=22})
     Menu.Add:SetPoint('LEFT', Menu.Color, 'RIGHT', 2, 0)
     Menu.Add:SetScript('OnLeave', GameTooltip_Hide)
     Menu.Add:SetScript('OnEnter', function(self)
@@ -624,7 +624,7 @@ local function Init()
     end)
 
     --删除，内容
-    Menu.Delete= WoWTools_ButtonMixin:Cbtn(Frame, {size={22,22}, atlas='common-icon-redx'})
+    Menu.Delete= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='common-icon-redx'})
     Menu.Delete:SetPoint('BOTTOM', Menu.Add, 'TOP', 0,2)
     Menu.Delete:Hide()
     Menu.Delete:SetScript('OnLeave', GameTooltip_Hide)
@@ -641,7 +641,7 @@ local function Init()
     end)
 
     --删除，玩家数据
-    Menu.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Frame, {size={22,22}, atlas='bags-button-autosort-up'})
+    Menu.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-button-autosort-up'})
     Menu.DeleteAllPlayerData:SetPoint('BOTTOMLEFT', Menu, 'TOPLEFT', -3, 2)
     Menu.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
     Menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
@@ -726,8 +726,7 @@ local function Init()
     --end
 
     --已打开，对话，列表
-    Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='transmog-icon-chat'})
-    --Menu.chat=WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true})
+    Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='transmog-icon-chat'})
     Menu.chat:SetNormalAtlas('transmog-icon-chat')
     Menu.chat:SetPoint('LEFT', Menu.Name, 'RIGHT', 2, 0)
     Menu.chat:SetScript('OnLeave', GameTooltip_Hide)
@@ -751,7 +750,7 @@ local function Init()
 
 
     --默认，自定义，列表
-    Menu.System= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, icon='hide'})
+    Menu.System= WoWTools_ButtonMixin:Cbtn(Frame, {size=22})
     Menu.System:SetPoint('BOTTOMRIGHT', Menu.ID, 'TOPRIGHT', 0, 2)
     Menu.System.Text= WoWTools_LabelMixin:Create(Menu.System)
     Menu.System.Text:SetPoint('CENTER')
@@ -801,7 +800,7 @@ local function Init()
         frame:SetText("")
     end)
 
-    Menu.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(Menu.DataFrame, {size={100, 23}, type=false})
+    Menu.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(Menu.DataFrame, {size={100, 23}, isUI=true})
     Menu.DataFrame.enter:SetPoint('BOTTOM', Menu.DataFrame, 'TOP', 0, 5)
     Menu.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
     Menu.DataFrame.enter:Hide()
@@ -875,7 +874,7 @@ local function Init()
 
     end)
 
-    Menu.DataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='bags-greenarrow'})
+    Menu.DataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
     Menu.DataUscita:SetPoint('LEFT', Menu.DeleteAllPlayerData, 'RIGHT', 22, 0)
     Menu.DataUscita:SetScript('OnLeave', GameTooltip_Hide)
     Menu.DataUscita:SetScript('OnEnter', function(self)
@@ -916,7 +915,7 @@ local function Init()
         frame:SetInstructions(e.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
-    Menu.DataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size={22, 22}, atlas='Professions_Specialization_arrowhead'})
+    Menu.DataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
     Menu.DataEnter:SetPoint('LEFT', Menu.DataUscita, 'RIGHT')
     Menu.DataEnter:SetScript('OnLeave', GameTooltip_Hide)
     Menu.DataEnter:SetScript('OnEnter', function(self)
@@ -978,7 +977,7 @@ local function Init()
 --插件
     local tavFrame= _G['TAV_InfoPanel']
     if tavFrame and tavFrame.Name then
-        local btn= WoWTools_ButtonMixin:Cbtn(Frame, {atlas='SpecDial_LastPip_BorderGlow', size=23})
+        local btn= WoWTools_ButtonMixin:Cbtn(Frame, {atlas='SpecDial_LastPip_BorderGlow'})
         btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
         btn.edit= tavFrame.Name
         btn:SetScript('OnClick', function(self)

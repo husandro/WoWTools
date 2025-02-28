@@ -85,7 +85,7 @@ end
 
 
 local function Create_Button(index)
-    local btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 32}, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 32}})
     btn:SetPoint('TOPLEFT', Buttons[index-1] or Button.frame, 'BOTTOMLEFT')
     btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
     btn:SetScript('OnLeave', function()
@@ -206,7 +206,7 @@ end
 
 --派系，列表 MajorFactionRenownFrame
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame.CloseButton, {size={22,22}, icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(MajorFactionRenownFrame.CloseButton, {size=22})
 
     function Button:set_scale()
         self.frame:SetScale(Save().MajorFactionRenownFrame_Button_Scale or 1)

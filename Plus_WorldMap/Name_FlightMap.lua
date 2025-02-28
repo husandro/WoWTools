@@ -38,7 +38,7 @@ end
 
 
 local function Init()
-    btn= WoWTools_ButtonMixin:Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size={20,20}, icon='hide'})
+    btn= WoWTools_ButtonMixin:Cbtn(FlightMapFrame.BorderFrame.TitleContainer, {size=20})
     btn:SetPoint('LEFT')
 
     btn:SetAlpha(0.5)

@@ -185,8 +185,12 @@ end
 
 
 
-local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)    
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.TrackButton.Frame, {size={14,14}, icon='hide', type=itemButtonUse, pushe=itemButtonUse})
+local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.TrackButton.Frame, {
+		size=14,
+		isSecure=itemButtonUse,
+		isType2=itemButtonUse
+	})
     btn.itemButtonUse= itemButtonUse
     if itemButtonUse then
         btn.texture= btn:CreateTexture(nil,'BORDER')
@@ -387,8 +391,8 @@ function WoWTools_TokensMixin:Set_TrackButton_Text()
 	for index, tables in pairs(tab) do
         local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
 		local btn= self.TrackButton.btn[index] or Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
-		
-		
+
+
 
 		btn.itemID= tables.itemID
 		btn.index= tables.index

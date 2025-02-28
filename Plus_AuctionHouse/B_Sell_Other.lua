@@ -79,7 +79,11 @@ end
 local function Init_ShowCommoditiesButton()
     local levelFrame= AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.MaxButton:GetFrameLevel()
 
-    local showCommoditiesButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '物品' or ITEMS})
+    local showCommoditiesButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame, {
+        isUI=true,
+        size={100,22},
+        text=e.onlyChinese and '物品' or ITEMS
+    })
     showCommoditiesButton:SetPoint('BOTTOMRIGHT', -15,15)
     showCommoditiesButton:SetFrameLevel(levelFrame)
     showCommoditiesButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -102,7 +106,11 @@ local function Init_ShowCommoditiesButton()
 
 
 --转到，出售商品，按钮
-    local showSellButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {type=false, size={100,22}, text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS})
+    local showSellButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {
+        isUI=true,
+        size={100,22},
+        text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS
+    })
     showSellButton:SetPoint('BOTTOMRIGHT',  -15,15)
     showSellButton:SetFrameLevel(levelFrame)
     showSellButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -121,7 +129,7 @@ local function Init_ShowCommoditiesButton()
     end)
 
 --取消拍卖
-    local cancelButton2= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame.PostButton, {size={32,32}, texture='Interface\\Buttons\\CancelButton-Up'})
+    local cancelButton2= WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame.PostButton, {size=32, texture='Interface\\Buttons\\CancelButton-Up'})
     cancelButton2:SetHighlightTexture('Interface\\Buttons\\CancelButton-Highlight')
     cancelButton2:SetPushedTexture('Interface\\Buttons\\CancelButton-Down')
     cancelButton2:SetFrameLevel(1501)

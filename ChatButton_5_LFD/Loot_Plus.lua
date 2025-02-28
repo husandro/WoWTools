@@ -31,7 +31,7 @@ local function Init()
 
 
         if not btn.chatTexure then
-            btn.chatTexure= WoWTools_ButtonMixin:Cbtn(btn, {size={18,18}, atlas='transmog-icon-chat'})
+            btn.chatTexure= WoWTools_ButtonMixin:Cbtn(btn, {size=18, atlas='transmog-icon-chat'})
             btn.chatTexure:SetPoint('BOTTOMRIGHT', btn, 6, 4)
             btn.chatTexure:SetScript('OnLeave', GameTooltip_Hide)
             function btn.chatTexure:get_playerinfo()
@@ -153,7 +153,7 @@ local function Init()
     end)
 
 
-    local btn= WoWTools_ButtonMixin:Cbtn(GroupLootHistoryFrame.TitleContainer, {size={18,18}, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(GroupLootHistoryFrame.TitleContainer, {size=18})
     if _G['MoveZoomInButtonPerGroupLootHistoryFrame'] then
         btn:SetPoint('RIGHT', _G['MoveZoomInButtonPerGroupLootHistoryFrame'], 'LEFT')
     else

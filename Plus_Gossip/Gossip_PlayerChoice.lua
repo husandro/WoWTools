@@ -126,7 +126,7 @@ local function Init()
             and info2.buttons[2] and info2.buttons[2].id
         then
             if not PlayerChoiceFrame.allButton then
-                PlayerChoiceFrame.allButton= WoWTools_ButtonMixin:Cbtn(PlayerChoiceFrame, {size={60,22}, type=false, icon='hide'})
+                PlayerChoiceFrame.allButton= WoWTools_ButtonMixin:Cbtn(PlayerChoiceFrame, {size={60,22}, isUI=true})
                 PlayerChoiceFrame.allButton:SetPoint('BOTTOMRIGHT')
                 PlayerChoiceFrame.allButton:SetFrameStrata('DIALOG')
                 PlayerChoiceFrame.allButton:SetScript('OnLeave', GameTooltip_Hide)

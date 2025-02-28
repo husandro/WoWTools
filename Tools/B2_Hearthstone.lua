@@ -402,7 +402,7 @@ end
 --#############
 local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
     if not btn.hearthstone then
-        btn.hearthstone= WoWTools_ButtonMixin:Cbtn(btn,{size={16,16}, texture=134414})
+        btn.hearthstone= WoWTools_ButtonMixin:Cbtn(btn,{size=16, texture=134414})
         btn.hearthstone:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT')
 
         function btn.hearthstone:get_itemID()

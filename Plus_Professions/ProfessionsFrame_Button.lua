@@ -64,7 +64,11 @@ end
 
 --烹饪用火
 local function Init_Fuoco_Button(button)
-    local btn= WoWTools_ButtonMixin:Cbtn(button, {type= true, texture=135805 ,size={32, 32}})
+    local btn= WoWTools_ButtonMixin:Cbtn(button, {
+        isSecure=true,
+        texture=135805,
+        size=32
+    })
     btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
     function btn:set_event()
@@ -125,7 +129,7 @@ local function Init_Buttons()
     for k , index in pairs(tab) do
         local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
         if icon and skillLine then
-            local button= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide',size={32, 32}})
+            local button= WoWTools_ButtonMixin:Cbtn(Frame, {size=32})
             button:SetNormalTexture(icon)
 
             if not last then

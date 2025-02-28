@@ -168,7 +168,7 @@ end
 --创建，目标，功击，按钮
 --####################
 local function Create_Button(name)
-    local btn= WoWTools_ButtonMixin:Cbtn(TargetButton or MacroFrameSelectedMacroButton, {size={60,22}, type=false})
+    local btn= WoWTools_ButtonMixin:Cbtn(TargetButton or MacroFrameSelectedMacroButton, {size={60,22}, isUI=true})
     function btn:find_text(right)
         return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
     end
@@ -291,9 +291,7 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size={23,23}, atlas='ui-questtrackerbutton-filter'})--icon='hide'})
-    Button:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
-    Button:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+    Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size=23, atlas='ui-questtrackerbutton-filter'})
     Button:SetPoint('RIGHT', MacroFrameCloseButton, 'LEFT', -2, 0)
 
 

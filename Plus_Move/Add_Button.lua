@@ -106,7 +106,7 @@ local function SetupButton(frame, tab)
 
     tab= tab or {}
     local setZoom= not tab.notZoom and not Save().disabledZoom
-    local click= tab.click
+    --local click= tab.click
     local setPoint= tab.setPoint
     local size= tab.size or 23
     local alpha= tab.alpha or 0.3

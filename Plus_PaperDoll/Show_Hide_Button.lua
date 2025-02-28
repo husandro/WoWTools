@@ -100,6 +100,11 @@ end
 
 
 
+
+
+
+
+
 local function Init(frame)
     if not frame or frame.ShowHideButton then
         return
@@ -107,7 +112,7 @@ local function Init(frame)
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, atlas= not Save().hide and e.Icon.icon or e.Icon.disabled})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas= not Save().hide and e.Icon.icon or e.Icon.disabled})
     btn:SetPoint('LEFT', title)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)

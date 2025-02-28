@@ -60,7 +60,7 @@ end
 
 
 local function Create_WorldBoss_Button(frame)
-    local btn= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterInstanceBossButton', icon='hide', size={14,14}})
+    local btn= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_EncounterInstanceBossButton', size=14})
     btn:SetPoint('CENTER', -100, -100)
     WoWTools_MoveMixin:Setup(btn, {notZoom=true})
 

@@ -278,7 +278,7 @@ local function Init_TrackButton()--设置显示内容, 父框架TrackButton, 内
         return
     end
 
-    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {icon='hide', size={22,22}, isType2=true})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {size=22, isType2=true})
 
     function TrackButton:set_evnet()
         self:RegisterEvent('PLAYER_FLAGS_CHANGED')--AFK

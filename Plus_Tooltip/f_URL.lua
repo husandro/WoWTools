@@ -87,8 +87,8 @@ end
 
 local function Create_Button(tooltip)
     tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
-        size={24,24},
-        type=false,
+        size=24,
+        isUI=true,
         name=tooltip:GetName()..'_WoWToolsURLButton',
         atlas='questlegendary',
     })
@@ -117,8 +117,8 @@ local function Create_Button(tooltip)
 
 
     tooltip.AchievementButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
-        size={24,24},
-        type=false,
+        size=24,
+        isUI=true,
         name=tooltip:GetName()..'_WoWToolsAchievementButton',
         atlas='UI-HUD-MicroMenu-Achievements-Mouseover',
     })

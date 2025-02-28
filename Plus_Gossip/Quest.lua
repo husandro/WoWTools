@@ -168,14 +168,10 @@ end
 --###########
 local function Init_Quest()
 
-    QuestButton= WoWTools_ButtonMixin:Cbtn(
-        WoWTools_GossipMixin.GossipButton,
-        {
-            icon='hide',
-            size=22,
-            name='WoWTools_GossipQuestButton',
-        }
-    )
+    QuestButton= WoWTools_ButtonMixin:Cbtn(WoWTools_GossipMixin.GossipButton, {
+        size=22,
+        name='WoWTools_GossipQuestButton',
+    })
     WoWTools_GossipMixin.QuestButton= QuestButton
 
     QuestButton.Text=WoWTools_LabelMixin:Create(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量

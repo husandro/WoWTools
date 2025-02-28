@@ -26,7 +26,7 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', atlas='hide', size={18,18}, isType2=true})
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', size=18, isType2=true})
 	WoWTools_TokensMixin.TrackButton= TrackButton
 
 	TrackButton.texture= TrackButton:CreateTexture()

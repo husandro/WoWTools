@@ -1,7 +1,6 @@
 local e= select(2, ...)
 --[[
 Cbtn(frame, tab)
-Ctype2(frame, tab)--圆形按钮
 CreateSecureButton(tab)
 CreateMenu(frame, tab)
 ]]
@@ -14,7 +13,7 @@ local function get_index()
     return buttonIndex
 end
 
-local function get_size(value)
+local function get_size(value, isMenu)
     local w, h
     local t= type(value)
     if t=='table' then
@@ -22,20 +21,41 @@ local function get_size(value)
     elseif t=='number' then
         w, h= value, value
     end
-    return w or 30, h or 30
+    w=w or (isMenu and 23) or 30
+    h=h or (isMenu and 23) or 30
+    return w, h
 end
 
+function WoWTools_ButtonMixin:Cbtn(frame, tab)
+    local text= tab.text
+    local alpha= tab.alpha
+    local setWheel= not tab.notWheel
+    local atlas, texture= tab.atlas, tab.texture
+    local isMenu= tab.isMenu or tab.frameType=='DropdownButton'
+    local width, height= get_size(tab.size, isMenu)
+    local isSecure= tab.isSecure
 
+    local name= tab.name or ('WoWToolsMenuButton'..get_index())
+    local frameType= tab.frameType
+                    or (isMenu and 'DropdownButton')
+                    or 'Button'
+    local template= tab.template
+                    or (isSecure and 'SecureActionButtonTemplate')
+                    or (tab.isUI and 'UIPanelButtonTemplate')
 
+    local setID= tab.setID
+    local isType2= tab.isType2
 
+--提示，已存在
+    if _G[name] and e.Player.husandro then
+        print('Cbtn', '已存在', name)
+    end
 
+--建立
+    local btn= CreateFrame(frameType, name, frame or UIParent, template, setID)
 
-function WoWTools_ButtonMixin:Settings(btn, isType2, atlas, texture)
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-
-
-    if isType2 then--圆形按钮
+--圆形按钮
+    if isType2 then
         btn.mask= btn:CreateMaskTexture()
         btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
         btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
@@ -56,276 +76,108 @@ function WoWTools_ButtonMixin:Settings(btn, isType2, atlas, texture)
         btn.border:SetAllPoints(btn)
 
         btn.border:SetAtlas('bag-reagent-border')
-
         WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
     end
 
+--SetPushedAtlas, SetHighlightAtlas  
+    local pushedAtlas= 'auctionhouse-nav-button-select'
+    local highlightAtlas= 'auctionhouse-nav-button-select'
 
-    local isOpenHand= atlas and atlas:match('Cursor_OpenHand_(%d+)')
+    if isType2 then
+        pushedAtlas, highlightAtlas= 'bag-border-highlight', 'bag-border'
+        
+    elseif atlas then
+        if atlas:find('Cursor_OpenHand_(%d+)') then--提取(手)按钮
+            highlightAtlas= 'Cursor_OpenHandGlow_'..atlas:match('Cursor_OpenHand_(%d+)')
 
-    if atlas=='ui-questtrackerbutton-filter' then--菜单按钮
-        btn:SetNormalAtlas('ui-questtrackerbutton-filter')
-        btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
-        btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
-        WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
-
-    elseif isType2 then
-            btn:SetPushedAtlas('bag-border-highlight')
-            btn:SetHighlightAtlas('bag-border')
-
-    elseif isOpenHand then
-        btn:SetNormalAtlas('Cursor_OpenHand_'..isOpenHand)
-        btn:SetHighlightAtlas('Cursor_OpenHandGlow_'..isOpenHand)
-        btn:SetDisabledAtlas('Cursor_unableOpenHand_'..isOpenHand)
-        btn:SetPushedAtlas('auctionhouse-nav-button-select')
-
-    else
-        btn:SetHighlightAtlas('auctionhouse-nav-button-select')--Forge-ColorSwatchSelection')
-        btn:SetPushedAtlas('auctionhouse-nav-button-select')--UI-HUD-MicroMenu-Highlightalert')
+        elseif atlas=='ui-questtrackerbutton-filter' then--菜单按钮
+            pushedAtlas='ui-questtrackerbutton-filter-pressed'
+            highlightAtlas= 'ui-questtrackerbutton-red-highlight'
+        end
     end
+    btn:SetPushedAtlas(pushedAtlas)
+    btn:SetHighlightAtlas(highlightAtlas)
 
+
+
+--设置 Atlas or Texture    
     if isType2 then
         if atlas then
             btn.texture:SetAtlas(atlas)
         elseif texture then
             btn.texture:SetTexture(texture)
         end
-
-    elseif atlas then
-        btn:SetNormalAtlas(atlas)
-    elseif texture then
-        btn:SetNormalTexture(texture)
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_ButtonMixin:Cbtn(frame, tab)
-    tab=tab or {}
-
-    local frameType= tab.button or 'Button'
-    local name= tab.name
-    local setID= tab.setID
-    local size= tab.size or (frameType=='ItemButton' and 34)
-    local isType2= tab.isType2--true, 圆形按钮
-    local icon= tab.icon--'hide', false, true
-    local texture= tab.texture
-    local atlas= tab.atlas
-    local text= tab.text--仅限 UIPanelButtonTemplate
-    local alpha= tab.alpha
-
-    local template
-    if tab.type==false then
-        template= 'UIPanelButtonTemplate'
-    elseif tab.type==true then
-        template= 'SecureActionButtonTemplate'
-    end
-    template= template or tab.type
-
-    local btn= CreateFrame(frameType, name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, template, setID)
-    btn:SetSize(get_size(size))
-
-    if template=='UIPanelButtonTemplate' then
-        if text then
-            btn:SetText(text)
-        end
-        if texture then
-            btn:SetNormalTexture(texture)
-        elseif atlas then
-            btn:SetNormalAtlas(atlas)
-        end
     else
-        if icon=='hide' then
-            atlas=nil
-            texture=nil
-        else
-            if texture then
-                atlas=nil
-            elseif atlas then
-                texture=nil
-            elseif icon==true then
-                atlas= e.Icon.icon
-            else
-                atlas= e.Icon.disabled
-            end
-        --elseif frameType=='ItemButton' then
-            --btn.NormalTexture:SetTexture(0)
-            --btn.NormalTexture:Hide()
-            
+        if atlas then
+            btn:SetNormalAtlas(atlas)
+        elseif texture then
+            btn:SetNormalTexture(texture)
         end
-        self:Settings(btn, isType2, atlas, texture)
     end
 
+--设置大小
+    btn:SetSize(width, height)
+
+--RegisterForMouse , RegisterForClicks
+    if isMenu then
+        btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    else
+        btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    end
+
+--EnableMouseWheel
+    if setWheel then
+        btn:EnableMouseWheel(true)
+    end
+
+--SetText
+    if text and btn.SetText then
+        btn:SetText(text)
+    end
+
+--alpha
     if alpha then
         btn:SetAlpha(alpha)
     end
-    return btn, template
-end
-
---[[圆形按钮
-function WoWTools_ButtonMixin:Ctype2(frame, tab)
-    tab= tab or {}
-
-    local name= tab.name
-    local setID= tab.setID
-    local size= tab.size
-    local template= tab.template--UIPanelButtonTemplate
-    local atlas= tab.atlas
-    local texture= tab.texture
-
-    local btn= CreateFrame('Button', name or ('WoWToolsToolsButton'..get_index()), frame or UIParent, template, setID)
-    btn:SetSize(get_size(size))
-    self:Settings(btn, true, atlas, texture)
-
-
-    return btn
-end]]
-
---安全按钮
-function WoWTools_ButtonMixin:CreateSecureButton(frame, tab)
-    tab= tab or {}
-
-    local name= tab.name
-    local setID= tab.setID
-    local size= tab.size
-    local atlas= tab.atlas
-    local texture= tab.texture
-
-    local btn= CreateFrame("Button", name or ('WoWToolsSecureButton'..get_index()), frame or UIParent, "SecureActionButtonTemplate", setID)
-    btn:SetSize(get_size(size))
-    self:Settings(btn, true, atlas, texture)
     return btn
 end
+
+
+
+
+
+
 
 --菜单按钮 DropdownButtonMixin
 function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     tab= tab or {}
+    tab.isMenu=true
+    
+    local hideIcon= tab.icon=='hide'
 
-    local name= tab.name
-    local setID= tab.setID
-    local size= tab.size or 23
-    local template= tab.template--UIPanelButtonTemplate
-    local hideIcon= tab.hideIcon or tab.icon=='hide'
-    local isType2= tab.isType2--圆形按钮
-    local atlas= tab.atlas
-    local texture= tab.texture
-    --local mouseEvent= tab.mouseEvent
-
-    local btn= CreateFrame('DropdownButton', name or ('WoWToolsMenuButton'..get_index()), frame or UIParent, template, setID)
-    btn.mouseEvent= tab.mouseEvent
-
-    btn:SetFrameStrata(frame:GetFrameStrata())
-    btn:SetFrameLevel(frame:GetFrameLevel()+7)
-    btn:SetSize(get_size(size))
+    if tab.icon~='hide' then
+        tab.atlas= tab.atlas or 'ui-questtrackerbutton-filter'
+    end
 
 
+    local btn= self:Cbtn(frame, tab)
 
+    if tab.atlas== 'ui-questtrackerbutton-filter' then
+        WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
+    end
+    --btn:SetFrameLevel(frame:GetFrameLevel()+7)
+    
     function btn:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
     end
 
-    if not hideIcon then
-        atlas='ui-questtrackerbutton-filter'
-   end
-
-   btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-
-   self:Settings(btn, isType2, atlas, texture)
-    return btn
-end
---local btn=WoWTools_ButtonMixin:CreateMenu(OptionButton, {name=''})
-
-
---[[打开菜单按钮
-function WoWTools_ButtonMixin:CreateOptionButton(frame, name, setID)
-    local btn= CreateFrame("Button", name or ('WoWToolsOptionButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
-    btn:SetSize(23,23)
-    btn:SetNormalAtlas('ui-questtrackerbutton-filter')
-    btn:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
-    btn:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-    return btn
-end
-]]
-
-
-
---[[向上
-function WoWTools_ButtonMixin:CreateUpButton(frame, name, setID)
-    local btn= CreateFrame("Button", name or ('WoWToolsUpButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
-    btn:SetSize(23,23)
-    btn:SetNormalAtlas('128-RedButton-ArrowUpGlow')
-    btn:SetPushedAtlas('128-RedButton-ArrowUpGlow-Pressed')
-    btn:SetHighlightAtlas('Callings-BackHighlight')
-    btn:SetDisabledAtlas('128-RedButton-ArrowUpGlow-Disabled')
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
     return btn
 end
 
---向下
-function WoWTools_ButtonMixin:CreateDownButton(frame, name, setID)
-    local btn= CreateFrame("Button", name or ('WoWToolsDownButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
-    btn:SetSize(23,23)
-    btn:SetNormalAtlas('128-RedButton-ArrowDown')
-    btn:SetPushedAtlas('128-RedButton-ArrowDown-Pressed')
-    btn:SetHighlightAtlas('128-RedButton-ArrowDown-Highlight')
-    btn:SetDisabledAtlas('128-RedButton-ArrowDown-Disabled')
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-    return btn
-end
-
-
---拿取
-function WoWTools_ButtonMixin:CreatePrendButton(frame, name, setID)
-    local btn= CreateFrame("Button", name or ('WoWToolsPrendButton'..get_index()), frame or UIParent, nil, setID)--ObjectiveTrackerContainerFilterButtonTemplate
-    btn:SetSize(23,23)
-    btn:SetNormalAtlas('Cursor_OpenHandGlow_64')
-    btn:SetPushedAtlas('Cursor_cast_64')
-    btn:SetHighlightAtlas('auctionhouse-nav-button-select')
-    btn:SetDisabledAtlas('Cursor_unableOpenHandGlow_64')
-    btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
-    btn:EnableMouseWheel(true)
-    return btn
-end]]
-
-
-
-
-
-
-
-
---[[SharedUIPanelTemplates.xml
-SecureTemplates
-SecureActionButtonTemplate	Button	Perform protected actions.
-SecureUnitButtonTemplate	Button	Unit frames.
-SecureAuraHeaderTemplate	Frame	Managing buffs and debuffs.
-SecureGroupHeaderTemplate	Frame	Managing group members.
-SecurePartyHeaderTemplate	Frame	Managing party members.
-SecureRaidGroupHeaderTemplate	Frame	Managing raid group members.
-SecureGroupPetHeaderTemplate	Frame	Managing group pets.
-SecurePartyPetHeaderTemplate	Frame	Managing party pets.
-SecureRaidPetHeaderTemplate
-btn:RegisterForClicks("AnyDown", "AnyUp")
-
-ObjectiveTrackerContainerFilterButtonTemplate
+--[[
+local btn=WoWTools_ButtonMixin:CreateMenu(OptionButton, {
+    name='',
+    isType2=true
+})
 ]]
 

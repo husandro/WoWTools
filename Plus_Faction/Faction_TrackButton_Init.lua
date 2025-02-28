@@ -149,7 +149,7 @@ local function Init()
 	if not Save().btn or TrackButton then
 		return
 	end
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={22,22}, isType2=true})
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {size=22, isType2=true})
 	WoWTools_ReputationMixin.TrackButton= TrackButton
 
 	--TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})

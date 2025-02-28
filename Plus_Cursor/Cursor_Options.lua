@@ -129,9 +129,9 @@ local function Init(Frame)
 
 
     local dropDown = CreateFrame("DropdownButton", nil, Frame, "WowStyle1DropdownTemplate")--下拉，菜单
-    local delColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide', size={20,20}})--删除, 按钮
+    local delColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {size=20})--删除, 按钮
     local addColorEdit= CreateFrame("EditBox", nil, Frame, 'InputBoxTemplate')--EditBox
-    local addColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {icon='hide', size={20,20}})--添加, 按钮
+    local addColorButton= WoWTools_ButtonMixin:Cbtn(Frame, {size=20})--添加, 按钮
     local numColorText= WoWTools_LabelMixin:Create(Frame, {justifyH='RIGHT'})--nil, nil, nil, nil, nil, 'RIGHT')--颜色，数量
     numColorText:SetPoint('RIGHT', dropDown, 'LEFT')
 

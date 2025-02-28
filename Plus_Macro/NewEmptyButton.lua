@@ -194,7 +194,7 @@ end
 --创建，空，按钮
 --#############
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size={22,22}, name='WoWTools_MacroNewEmptyButton', icon='hide'})
+    Button= WoWTools_ButtonMixin:Cbtn(MacroFrame, {size=22, name='WoWTools_MacroNewEmptyButton'})
     WoWTools_MacroMixin.NewEmptyButton= Button
     Button.texture= Button:CreateTexture(nil, 'ARTWORK')
     Button.texture:SetAtlas('communities-chat-icon-plus')

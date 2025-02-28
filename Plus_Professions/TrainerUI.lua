@@ -19,7 +19,7 @@ end
 
 --添一个,全学,专业, 按钮, 插件 TrainAll 
 local function Init()
-    ClassTrainerFrame.BuyAll= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame, {type=false, size={ClassTrainerTrainButton:GetSize()}})
+    ClassTrainerFrame.BuyAll= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame, {isUI=true, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
     ClassTrainerFrame.BuyAll.name= e.onlyChinese and '全部' or ALL
     ClassTrainerFrame.BuyAll.all= 0
@@ -111,14 +111,20 @@ local function Init()
         ClassTrainerFrame.BuyAll:SetShown(not Save().disabledClassTrainer)
 	end)
 
-    local btn2= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame.TitleContainer, {icon= not Save().disabledClassTrainer})
+    local btn2= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame.TitleContainer)
+
+    function btn2:set_icon()
+        self:SetNormalAtlas(Save().disabledClassTrainer and e.Icon.disabled or e.Icon.icon)
+    end
+    btn2:set_icon()
+
     btn2:SetPoint('LEFT', ClassTrainerFrame.TitleContainer, -5, -1)
     btn2:SetSize(20,20)
     btn2:SetAlpha(0.5)
     btn2:SetScript('OnClick', function(self)
         Save().disabledClassTrainer= not Save().disabledClassTrainer and true or nil
         ClassTrainerFrame.BuyAll:SetShown(not Save().disabledClassTrainer)
-        self:SetNormalAtlas(Save().disabledClassTrainer and e.Icon.disabled or e.Icon.icon)
+        self:set_icon()
         self:set_tooltip()
     end)
 

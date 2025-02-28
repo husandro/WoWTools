@@ -9,7 +9,7 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
         return
     end
 
-    btn.useItem= WoWTools_ButtonMixin:Cbtn(btn,{size={16,16}, atlas='soulbinds_tree_conduit_icon_utility'})
+    btn.useItem= WoWTools_ButtonMixin:Cbtn(btn,{size=16, atlas='soulbinds_tree_conduit_icon_utility'})
     btn.useItem:SetPoint('TOPLEFT',btn.name,'BOTTOMLEFT', 32, 0)
     function btn.useItem:get_itemID()
         return self:GetParent().itemID

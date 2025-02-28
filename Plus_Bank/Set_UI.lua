@@ -19,7 +19,7 @@ local function Init_BankSlotsFrame()
 
 
 --添加，取出所有
-    local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Cursor_OpenHand_64'})    
+    local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Cursor_OpenHand_64'})
     btnOutAll:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     btnOutAll:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 1, false)
@@ -46,8 +46,7 @@ local function Init_BankSlotsFrame()
 
 
 --存放物品
-    local btnInAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, icon='hide'})
-    btnInAll:SetNormalAtlas('Crosshair_buy_64')
+    local btnInAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Crosshair_buy_64'})
     btnInAll:SetPoint('RIGHT', btnOutAll, 'LEFT', -2, 0)
     btnInAll:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(false, nil, nil, 1, false)

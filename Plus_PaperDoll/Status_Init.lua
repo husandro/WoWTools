@@ -21,8 +21,12 @@ local function Init_Button()
     end
 
     --CharacterStatsPane
-    --Button= WoWTools_ButtonMixin:Cbtn(PaperDollFrame, {size={20,20}, icon='hide'})--显示/隐藏装备管理框选项
-    Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame, {size=20, name='WoWTools_PlsuPaperDollStatusButton', hideIcon=true})
+--显示/隐藏装备管理框选项
+    Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame, {
+        size=20,
+        name='WoWTools_PlsuPaperDollStatusButton',
+        icon='hide',
+    })
     WoWTools_PaperDollMixin.StatusPlusButton= Button
 
     Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -22, 0)

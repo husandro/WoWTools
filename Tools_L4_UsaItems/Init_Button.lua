@@ -38,7 +38,7 @@ local function Init()
 
     local btn= WoWTools_ToolsButtonMixin:GetButton()
 
-    button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size={22,22}})
+    button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size=22})
     button:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
 
     button:SetScript('OnMouseDown',function(self, d)--添加, 移除

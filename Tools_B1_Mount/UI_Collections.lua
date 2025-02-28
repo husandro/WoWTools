@@ -248,7 +248,7 @@ local function Init()
             end
         end
          if not frame.WoWToolsButton then--建立，图标，菜单
-            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {icon=true, size={22,22}})
+            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {icon=e.Icon.icon, size=22})
             frame.WoWToolsButton:SetPoint('BOTTOMRIGHT')
             frame.WoWToolsButton:SetAlpha(0)
             frame.WoWToolsButton:SetScript('OnEnter', function(self)

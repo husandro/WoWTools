@@ -639,7 +639,7 @@ local function set_Button_Text()
     for index, info in pairs(allTable) do
         local btn = TrackButton.buttons[index]
         if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size={12,12}, icon='hdie'})
+            btn= WoWTools_ButtonMixin:Cbtn(TrackButton.Frame, {size=12})
             btn.nameText= WoWTools_LabelMixin:Create(btn)
             btn.nameText:SetPoint('LEFT', btn, 'RIGHT')
             btn.onMinimap= btn:CreateTexture(nil, 'ARTWORK')
@@ -1017,10 +1017,14 @@ end
 
 --小地图, 标记, 文本
 local function Init_Button()
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size=22, isType2=true, name='WoWTools_Minimap_TrackButton'})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
+        size=22,
+        isType2=true,
+        name='WoWTools_Minimap_TrackButton'
+    })
     TrackButton.texture=TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAllPoints()
-    --TrackButton= WoWTools_ButtonMixin:Ctype2(nil, {name='WoWTools_Minimap_TrackButton', size=22})
+
 
     TrackButton.buttons={}
 
@@ -1303,7 +1307,7 @@ end
 
 --世界地图，添加一个按钮
 local function Init_WorldFrame_Button()
-    WorldMapButton= WoWTools_ButtonMixin:Cbtn(WorldMapFrame, {size={20,20}, icon='hide', name='WoWTools_Minimap_WorldTrackButton'})
+    WorldMapButton= WoWTools_ButtonMixin:Cbtn(WorldMapFrame, {size=20, name='WoWTools_Minimap_WorldTrackButton'})
     function WorldMapButton:set_texture()
         local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
         if not uiMapID then

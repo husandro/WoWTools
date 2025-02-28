@@ -32,10 +32,10 @@ end
 local function Init_PetJournal_InitPetButton(frame, elementData)
 	local index = elementData.index;
 	local _, speciesID, _, _, _, _, _, name = C_PetJournal.GetPetInfoByIndex(index)
-	--local needsFanfare = petID and C_PetJournal.PetNeedsFanfare(petID);
+	
 
     if not frame.sumButton then
-        frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")--WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon=true})
+        frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")
         frame.sumButton:SetPoint('BOTTOMRIGHT')
 
         function frame.sumButton:set_alpha()

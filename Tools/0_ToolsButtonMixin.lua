@@ -56,9 +56,7 @@ function WoWTools_ToolsButtonMixin:Init(save)
     self:SetSaveData(save)
 
     self.Button= WoWTools_ButtonMixin:Cbtn(nil, {
-        --button='DropdownButton',
         name='WoWTools_ToolsButton',
-        icon='hide',
         size={30, save.height or 10}
     })
 
@@ -103,9 +101,11 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
 
     self.setID= self.setID+1
 
-    local btn= WoWTools_ButtonMixin:CreateSecureButton(self:GetParent(tab), {
+    local btn= WoWTools_ButtonMixin:Cbtn(self:GetParent(tab), {
         name='WoWTools_Tools_'..(tab.name or self.setID),
         setID= self.setID,
+        isType2=true,
+        isSecure=true,
     })
 
     function btn:GetData()
@@ -216,15 +216,6 @@ button= WoWTools_ToolsButtonMixin:CreateButton({
     end,
 })
 ]]
-
---[[function WoWTools_ToolsButtonMixin:Create(tab)
-    tab= tab or {}
-    self.setID= self.setID+1
-    return WoWTools_ButtonMixin:CreateSecureButton(parent, {
-        name='WoWTools_Tools_'..(tab.name or self.setID),
-        setID= self.setID,
-    })
-end]]
 
 function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
     local frame= CreateFrame('Frame', name, parent or UIParent)

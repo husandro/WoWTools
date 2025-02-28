@@ -652,7 +652,7 @@ local function Init()--设置 panel
     sliderButtonScale:SetPoint("TOPLEFT", sliderButtonAlpha, 'BOTTOMLEFT', 0,-24)
 
 
-    local restPosti= WoWTools_ButtonMixin:Cbtn(panel, {size={20,20}, atlas='characterundelete-RestoreButton'})--重置
+    local restPosti= WoWTools_ButtonMixin:Cbtn(panel, {size=20, atlas='characterundelete-RestoreButton'})--重置
     restPosti:SetPoint('BOTTOMRIGHT')
     restPosti:SetScript('OnClick', function()
         Save().point=nil

@@ -31,7 +31,7 @@ WoWTools_Mixin:Load({id=87399, type='item'})
 
 local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     if not frame.tipsButton then
-        frame.tipsButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
+        frame.tipsButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20})
         frame.tipsButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
         function frame.tipsButton:set_atlas()
             self:SetNormalAtlas(Save().ArcheologySound and 'chatframe-button-icon-voicechat' or 'chatframe-button-icon-speaker-off')
@@ -94,7 +94,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
     end
 
     if ArcheologyButton and not ArcheologyButton.keyButton then
-        ArcheologyButton.keyButton= WoWTools_ButtonMixin:Cbtn(frame, {size={20,20}, icon='hide'})
+        ArcheologyButton.keyButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20})
         ArcheologyButton.keyButton:SetPoint('LEFT', frame, 'RIGHT', 0, -4)
         ArcheologyButton.keyButton.text=WoWTools_LabelMixin:Create(ArcheologyButton.keyButton, {color={r=0, g=1, b=0}, size=14})
         ArcheologyButton.keyButton.text:SetPoint('CENTER')
@@ -166,13 +166,14 @@ local function Init()
     end)
 
     --增加一个按钮， 提示物品
-
     hooksecurefunc('ArchaeologyFrame_CurrentArtifactUpdate', function()
         local itemID= select(3, GetArchaeologyRaceInfo(ArchaeologyFrame.artifactPage.raceID))
         local btn= ArchaeologyFrame.artifactPage.tipsButton
         if itemID then
             if not btn then
-                btn= WoWTools_ButtonMixin:Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
+                btn= WoWTools_ButtonMixin:Cbtn(ArchaeologyFrame.artifactPage, {
+                    frameType='ItemButton',
+                })
                 btn:SetPoint('RIGHT', ArchaeologyFrameArtifactPageSolveFrameStatusBar, 'LEFT', -39, 0)
                 btn:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn:SetScript('OnEnter', function(frame)
@@ -185,7 +186,9 @@ local function Init()
                     e.tips:Show()
                 end)
 
-                btn.btn2= WoWTools_ButtonMixin:Cbtn(ArchaeologyFrame.artifactPage, {button='ItemButton', icon='hide'})
+                btn.btn2= WoWTools_ButtonMixin:Cbtn(ArchaeologyFrame.artifactPage, {
+                    frameType='ItemButton',
+                })
                 btn.btn2:SetPoint('BOTTOM', btn, 'TOP', 0, 7)
                 btn.btn2:SetScript('OnLeave', function() e.tips:Hide() end)
                 btn.btn2:SetScript('OnEnter', function(frame)

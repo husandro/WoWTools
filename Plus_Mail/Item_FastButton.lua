@@ -334,7 +334,11 @@ local function Init_Button()
     local x, y=0, 0
     for _, tab in pairs(fast) do
         if tab~='-' then
-            local btn= WoWTools_ButtonMixin:Cbtn(fastButton.frame, {size=22, texture=tab[1], name='WoWToolsFastItemClass'..tab[2]..'SubClass'..(tab[3] or '')..'Button'})
+            local btn= WoWTools_ButtonMixin:Cbtn(fastButton.frame, {
+                size=22,
+                texture=tab[1],
+                name='WoWToolsFastItemClass'..tab[2]..'SubClass'..(tab[3] or '')..'Button'
+            })
             btn:SetPoint('TOPLEFT', fastButton.frame,'BOTTOMLEFT', x, y)
 
             btn.classID= tab[2]
@@ -453,7 +457,7 @@ end
 
 --快速，加载，物品，按钮
 local function Init()
-    fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size={22, 22}, icon='hide', name='WoWToolsMailFastItemListButton'})
+    fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, name='WoWToolsMailFastItemListButton'})
     fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
     
     fastButton.frame= CreateFrame('Frame', nil, fastButton)

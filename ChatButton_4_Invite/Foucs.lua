@@ -17,7 +17,10 @@ local ClearFoucsFrame
 local function Init()
     local key= strlower(Save().focusKey)
 
-    ClearFoucsFrame= WoWTools_ButtonMixin:Cbtn(nil, {type=true, name='WoWToolsClearFocusButton'})--清除，焦点
+    ClearFoucsFrame= WoWTools_ButtonMixin:Cbtn(nil, {
+        isSecure=true,
+        name='WoWToolsClearFocusButton'
+    })--清除，焦点
     --ClearFoucsFrame:SetAttribute('type1','macro')
     --ClearFoucsFrame:SetAttribute('macrotext','/clearfocus')
 
@@ -138,7 +141,10 @@ local function Init()
 
 
     --设置单位焦点
-    local btn= WoWTools_ButtonMixin:Cbtn(nil, {type=true, name='WoWToolsOverFocusButton'})
+    local btn= WoWTools_ButtonMixin:Cbtn(nil, {
+        isSecure=true,
+        name='WoWToolsOverFocusButton'
+    })
     btn:SetAttribute("type1", "focus")
     btn:SetAttribute('unit', 'mouseover')
     e.SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键

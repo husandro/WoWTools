@@ -8,7 +8,7 @@ local e= select(2, ...)
 --堆叠,数量,框架 StackSplitFrame.lua
 local function Init()
     local frame= StackSplitFrame
-    frame.restButton=WoWTools_ButtonMixin:Cbtn(frame, {size={22,22}})--重置
+    frame.restButton=WoWTools_ButtonMixin:Cbtn(frame, {size=22})--重置
     frame.restButton:SetPoint('TOP')
     frame.restButton:SetNormalAtlas('characterundelete-RestoreButton')
     frame.restButton:SetScript('OnMouseDown', function(self)
@@ -28,7 +28,7 @@ local function Init()
     end)
     frame.restButton:SetScript('OnLeave', GameTooltip_Hide)
 
-    frame.MaxButton=WoWTools_ButtonMixin:Cbtn(frame, {icon='hide', size={40,20}})
+    frame.MaxButton=WoWTools_ButtonMixin:Cbtn(frame, {size={40,20}})
     frame.MaxButton:SetNormalFontObject('NumberFontNormalYellow')
     frame.MaxButton:SetPoint('LEFT', frame.restButton, 'RIGHT')
     frame.MaxButton:SetScript('OnMouseDown', function(self)
@@ -38,7 +38,7 @@ local function Init()
         f:UpdateStackSplitFrame(f.maxStack)
     end)
 
-    frame.MetaButton=WoWTools_ButtonMixin:Cbtn(frame, {icon='hide', size={40,20}})
+    frame.MetaButton=WoWTools_ButtonMixin:Cbtn(frame, {size={40,20}})
     frame.MetaButton:SetNormalFontObject('NumberFontNormalYellow')
     frame.MetaButton:SetPoint('RIGHT', frame.restButton, 'LEFT')
     frame.MetaButton:SetScript('OnMouseDown', function(self)

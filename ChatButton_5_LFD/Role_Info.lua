@@ -123,7 +123,7 @@ local function get_Role_Info(env, Name, isT, isH, isD)
         end
 
         if m~='' and not Button then
-            Button=WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={20,20}})
+            Button=WoWTools_ButtonMixin:Cbtn(nil, {size=20})
             if Save().RoleInfoPoint then
                 Button:SetPoint(Save().RoleInfoPoint[1], UIParent, Save().RoleInfoPoint[3], Save().RoleInfoPoint[4], Save().RoleInfoPoint[5])
             else

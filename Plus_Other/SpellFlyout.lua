@@ -247,9 +247,10 @@ local function Init_All_Flyout()
     local y= -145
     for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
 
-        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame,
-            {texture=519384, size=32}--, alpha=isKnown and 0.1 or 0.5}
-        )
+        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {
+            texture=519384,
+            size=32
+        })
 
         btn:SetPoint('TOPLEFT', 22, y)
 

@@ -823,8 +823,11 @@ local function Init()
     for i=1, 12 do
         local data= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
         if data and data.name and not data.shouIdHide then
-            --btn= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, texture=data.iconID})
-            btn= WoWTools_ButtonMixin:Ctype2(Frame, {texture=data.iconID})
+            btn= WoWTools_ButtonMixin:Cbtn(Frame, {
+                texture=data.iconID,
+                name='WoWToolsMacroBottomListButton'..i,
+                isType2=true,
+            })
             btn:SetPoint('LEFT', last, 'RIGHT')
             btn.name= data.name
             btn.index= i
@@ -838,11 +841,13 @@ local function Init()
     end
 
 --PVP，天赋，法术
-    --local pvpButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='pvptalents-warmode-swords'})
-    local pvpButton= WoWTools_ButtonMixin:Ctype2(Frame, {atlas='pvptalents-warmode-swords'})
+    local pvpButton= WoWTools_ButtonMixin:Cbtn(Frame, {
+            atlas='pvptalents-warmode-swords',
+            isType2=true,
+            name='WoWToolsMacroBottomListPVPButton'
+        })
     pvpButton:SetNormalAtlas('')
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
-    --pvpButton:SetupMenu(Init_PvP_Menu)
     pvpButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_PvP_Menu)
     end)
@@ -851,10 +856,12 @@ local function Init()
     last=pvpButton
 
 --角色，装备
-    --local equipButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true})})
-    local equipButton= WoWTools_ButtonMixin:Ctype2(Frame, {atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true})})
+    local equipButton= WoWTools_ButtonMixin:Cbtn(Frame, {
+        atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true}),
+        isType2=true,
+        name='WoWToolsMacroBottomListEquipButton',
+    })
     equipButton:SetPoint('LEFT', last, 'RIGHT')
-    --equipButton:SetupMenu(Init_Equip_Menu)
     equipButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Equip_Menu)
     end)
@@ -863,12 +870,13 @@ local function Init()
     last=equipButton
 
 --谈话
-    --local spellchButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='voicechat-icon-textchat-silenced'})
-    local spellchButton= WoWTools_ButtonMixin:Ctype2(Frame, {atlas='voicechat-icon-textchat-silenced'})
+    local spellchButton= WoWTools_ButtonMixin:Cbtn(Frame, {
+        atlas='voicechat-icon-textchat-silenced',
+        isType2=true,
+        name='WoWToolsMacroBottomListVoiceChatButton'
+    })
     spellchButton:SetPoint('LEFT', last, 'RIGHT')
-    --[[spellchButton:SetupMenu(function(_, root)
-        Init_Chat_Menu(root, TextEmoteSpeechList)
-    end)]]
+
     spellchButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(_, root)
             Init_Chat_Menu(root, TextEmoteSpeechList)
@@ -879,12 +887,13 @@ local function Init()
     last=spellchButton
 
 --表情
-    --local emoteButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, texture='Interface\\ChatFrame\\UI-ChatIcon-Chat-Up'})
-    local emoteButton= WoWTools_ButtonMixin:Ctype2(Frame, {atlas='transmog-icon-chat'})
+    local emoteButton= WoWTools_ButtonMixin:Cbtn(Frame, {
+            atlas='transmog-icon-chat',
+            isType2=true,
+            name='WoWToolsMacroBottomListEmoteButton'
+        })
     emoteButton:SetPoint('LEFT', last, 'RIGHT')
-    --[[emoteButton:SetupMenu(function(_, root)
-        Init_Chat_Menu(root, EmoteList)
-    end)]]
+
     emoteButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(_, root)
             Init_Chat_Menu(root, EmoteList)
@@ -897,8 +906,11 @@ local function Init()
 
 
 --常用，宏
-    --local macroListButton= WoWTools_ButtonMixin:CreateMenu(Frame, {hideIcon=true, atlas='PetJournal-FavoritesIcon'})
-    local macroListButton= WoWTools_ButtonMixin:Ctype2(Frame, {atlas='PetJournal-FavoritesIcon'})
+    local macroListButton= WoWTools_ButtonMixin:Cbtn(Frame, {
+        atlas='PetJournal-FavoritesIcon',
+        isType2=true,
+        name='WoWToolsMacroBottomListNormalButton'
+    })
     macroListButton:SetPoint('LEFT', last, 'RIGHT')
     --macroListButton:SetupMenu(Init_MacroList_Menu)
     macroListButton:SetScript('OnMouseDown', function(self)

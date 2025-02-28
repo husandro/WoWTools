@@ -20,7 +20,7 @@ local function UpdateMountDisplay()
     end
     
     if not MountJournal.MountDisplay.tipButton then
-        MountJournal.MountDisplay.tipButton= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size={22,22}, atlas='QuestNormal'})
+        MountJournal.MountDisplay.tipButton= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size=22, atlas='QuestNormal'})
         MountJournal.MountDisplay.tipButton:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
         MountJournal.MountDisplay.tipButton.text= WoWTools_LabelMixin:Create(MountJournal.MountDisplay, {copyFont= MountJournal.MountCount.Label, color=false, justifyH='LEFT'})
         MountJournal.MountDisplay.tipButton.text:SetPoint('BOTTOMLEFT', 2, 2)

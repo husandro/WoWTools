@@ -137,7 +137,10 @@ local function Init()
 
         local btn= self.enchantSlot.btn
         if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {size={16,16}, icon= not Save().disabledEnchant})
+            btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {
+                size=16,
+                atlas= Save().disabledEnchant and e.Icon.disabled or e.Icon.icon
+            })
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
             btn:SetScript('OnClick', function(self2)
@@ -184,7 +187,7 @@ local function Init()
     hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(self, setLocked)
         local button=self.DetailedView.SpendAllPointsButton
         if not button then
-            button= WoWTools_ButtonMixin:Cbtn(self.DetailedView.SpendPointsButton, {type=false, size={80, 22}})
+            button= WoWTools_ButtonMixin:Cbtn(self.DetailedView.SpendPointsButton, {isUI=true, size={80, 22}})
             button:SetPoint('LEFT', self.DetailedView.SpendPointsButton, 'RIGHT',40,0)
             button:SetText(e.onlyChinese and '全部' or ALL)
             button:SetScript('OnClick', function(self2)

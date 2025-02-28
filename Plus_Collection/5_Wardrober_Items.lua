@@ -277,7 +277,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                 for index, tab in pairs(itemLinks) do
                     local btn= model.itemButton[index]
                     if not btn then
-                        btn=WoWTools_ButtonMixin:Cbtn(model, {icon='hide', size=index==1 and {14.4, 14.4} or {h,h}})
+                        btn=WoWTools_ButtonMixin:Cbtn(model, {size=index==1 and {14.4, 14.4} or h})
                         if index==1 then
                             btn:SetPoint('BOTTOMLEFT', -4, -4)
                         else

@@ -72,7 +72,7 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWTools_PlusCurrencyButton', icon='hide', size=23})
+    Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWTools_PlusCurrencyButton', size=23})
 	WoWTools_TokensMixin.Button= Button
 	
 	Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -2, 0)
@@ -107,7 +107,7 @@ local function Init()
 	Button:SetScript('OnEnter', enter)
 	Button:SetScript('OnLeave', leave)
 
-	Button.bagButton= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags, {icon='hide', size={18,18, name='WoWToolsTokensTrackItemBagButton'}})--背包中, 增加一个图标, 用来添加或移除
+	Button.bagButton= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags, {size=18, name='WoWToolsTokensTrackItemBagButton'})--背包中, 增加一个图标, 用来添加或移除
 	Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-2,0)
 	Button.bagButton:SetFrameStrata(ContainerFrameCombinedBags.CloseButton:GetFrameStrata())
 	Button.bagButton:SetFrameLevel(ContainerFrameCombinedBags.CloseButton:GetFrameLevel()+1)
@@ -123,7 +123,7 @@ local function Init()
 
 	
 
-	--[[Button.bag=WoWTools_ButtonMixin:Cbtn(Button, {icon='hide', size={18,18}})
+	--[[Button.bag=WoWTools_ButtonMixin:Cbtn(Button, {size={18,18}})
 	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-4,0)
 	Button.bag:SetNormalAtlas('bag-main')
 	Button.bag:SetScript("OnClick", function(self)

@@ -11,7 +11,7 @@ end
 
 local function set_Use_Spell_Button(btn, spellID)
     if not btn.mountSpell then
-        btn.mountSpell= WoWTools_ButtonMixin:Cbtn(btn, {size={16,16}, atlas='hud-microbutton-Mounts-Down'})
+        btn.mountSpell= WoWTools_ButtonMixin:Cbtn(btn, {size=16, atlas='hud-microbutton-Mounts-Down'})
         btn.mountSpell:SetPoint('TOP', btn, 'BOTTOM', -8, 0)
         function btn.mountSpell:set_alpha()
             if self.spellID then

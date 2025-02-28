@@ -235,7 +235,7 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
             end
             if itemID and itemLink and C_Item.IsItemKeystoneByID(itemID) then
                 if not self['key'..i] then
-                    self['key'..i]= WoWTools_ButtonMixin:Cbtn(parent or self, {size={16,16}, texture=icon})
+                    self['key'..i]= WoWTools_ButtonMixin:Cbtn(parent or self, {size=16, texture=icon})
                     --[[CreateFrame("Button", nil, parent or self)
 ,                   self['key'..i]:SetHighlightAtlas('Forge-ColorSwatchSelection')
                     self['key'..i]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
@@ -686,7 +686,7 @@ local function Init_Affix()
     one= one>max and 1 or one
 
     for i=1, 3 do
-        local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={22,22}, isType2=true, icon='hide'})--建立 Affix 按钮
+        local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={22,22}, isType2=true})--建立 Affix 按钮
         local affixID= affixSchedule[one][i]
         btn.affixInfo= affixID
         btn:SetSize(24, 24)
@@ -856,7 +856,7 @@ local function All_Player_Info()--所以角色信息
             local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
             if namePlayer and namePlayer~='' then
                 local classColor = englishClass and C_ClassColor.GetClassColor(englishClass)
-                local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={36,36}, atlas=WoWTools_UnitMixin:GetRaceIcon({guid=guid, reAtlas=true})})
+                local btn= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size=36, atlas=WoWTools_UnitMixin:GetRaceIcon({guid=guid, reAtlas=true})})
                 if not last then
                     btn:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', -4, 0)
                 else
@@ -965,7 +965,7 @@ local function set_All_Text()--所有记录
     local last
     if not ChallengesFrame.runHistoryLable then
         ChallengesFrame.runHistoryLable= WoWTools_LabelMixin:Create(TipsFrame, {mouse=true, size=14})--最右边, 数据
-        ChallengesFrame.moveRightTipsButton= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size={22,22}, atlas='common-icon-rotateright'})
+        ChallengesFrame.moveRightTipsButton= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size=22, atlas='common-icon-rotateright'})
         ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
         ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
         ChallengesFrame.moveRightTipsButton:SetAlpha(0.3)
@@ -1561,7 +1561,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
                         local texture= C_Spell.GetSpellTexture(frame.spellID)
-                        frame.spellPort= WoWTools_ButtonMixin:Cbtn(frame, {type=true, size={h, h}, texture=texture, atlas='WarlockPortal-Yellow-32x32', pushe=not texture})
+                        frame.spellPort= WoWTools_ButtonMixin:Cbtn(frame, {
+                            isSecure=true,
+                            size=h,
+                            texture= texture,
+                            atlas=not texture and 'WarlockPortal-Yellow-32x32',
+                            --pushe=not texture
+                        })
                         frame.spellPort:SetPoint('BOTTOMRIGHT', frame)--, 4,-4)
                         frame.spellPort:SetScript("OnEnter",function(self2)
                             local parent= self2:GetParent()
@@ -1646,7 +1652,7 @@ end
 --#############
 local function Init_Blizzard_WeeklyRewards()
     --添加一个按钮，打开挑战界面
-    WeeklyRewardsFrame.showChallenges =WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size={42,42}})--所有角色,挑战
+    WeeklyRewardsFrame.showChallenges =WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size=42})--所有角色,挑战
     WeeklyRewardsFrame.showChallenges:SetPoint('RIGHT',-4,-42)
     WeeklyRewardsFrame.showChallenges:SetFrameStrata('HIGH')
 
@@ -1840,7 +1846,7 @@ local function Init_Blizzard_ChallengesUI()
     TipsFrame:SetShown(not Save.hideTips)
     TipsFrame:SetScale(Save.tipsScale or 1)
 
-    local check= WoWTools_ButtonMixin:Cbtn(ChallengesFrame, {size={18,18}, icon='hide'})-- not Save.hideIns})
+    local check= WoWTools_ButtonMixin:Cbtn(ChallengesFrame, {size=18})
     check.texture= check:CreateTexture()
     check.texture:SetAllPoints()
     check.texture:SetAlpha(0.3)
@@ -1893,7 +1899,7 @@ local function Init_Blizzard_ChallengesUI()
     end)
 
 
-    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size={18,18}, atlas=not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled})
+    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size=18, atlas=not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled})
     if _G['MoveZoomInButtonPerPVEFrame'] then
         tipsButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
     else

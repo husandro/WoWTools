@@ -154,7 +154,7 @@ local function set_Button()
         return
     end
     if not button then
-        button= WoWTools_ButtonMixin:Cbtn(nil, {icon='hide', size={35,35}})
+        button= WoWTools_ButtonMixin:Cbtn(nil, {size=35})
         if Save.point then
             button:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
         else

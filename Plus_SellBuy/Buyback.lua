@@ -146,7 +146,7 @@ end
 
 
 local function Init()
-    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {name='WoWTools_BuybackButton', size={22,22}, icon='hide'})--nil, false)--购回
+    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {name='WoWTools_BuybackButton', size=22})--购回
     BuybackButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,18)
 
     BuybackButton.texture= BuybackButton:CreateTexture(nil, 'BORDER')

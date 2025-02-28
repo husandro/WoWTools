@@ -298,7 +298,7 @@ end
 
 
 local function Create_Button(index, last)
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_HolidayMixin.TrackButton.Frame, {size={14,14}, icon='hide'})
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_HolidayMixin.TrackButton.Frame, {size=14})
     if Save().toTopTrack then
         btn:SetPoint('BOTTOM', last or WoWTools_HolidayMixin.TrackButton, 'TOP')
     else

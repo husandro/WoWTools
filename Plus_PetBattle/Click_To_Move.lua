@@ -329,7 +329,6 @@ local function Init_Button()
             atlas= 'transmog-nav-slot-feet',
             size= 23,
             isType2= true,
-            hideIcon= true,
             name='WoWToolsClickToMoveButton',
         }
     )

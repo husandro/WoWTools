@@ -118,7 +118,12 @@ end
 
 
 local function Create_Button(index)
-    local btn= WoWTools_ButtonMixin:CreateSecureButton(WoWTools_FoodMixin.UseButton, {setID=index})
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_FoodMixin.UseButton, {
+        setID=index,
+        name= 'WoWToolsFoodListButton'..index,
+        isType2=true,
+        isSecure=true,
+    })
 
     Set_Button_Function(btn)
 

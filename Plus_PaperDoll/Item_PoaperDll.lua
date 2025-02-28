@@ -70,8 +70,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
 
     if not self.engineering then
         local h=self:GetHeight()/3
-        self.engineering=WoWTools_ButtonMixin:Cbtn(self, {icon='hide',size={h,h}})
-        self.engineering:SetNormalTexture(136243)
+        self.engineering=WoWTools_ButtonMixin:Cbtn(self, {size=h, texture='136243'})
         if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
             self.engineering:SetPoint('TOPLEFT', self, 'TOPRIGHT', 8, 0)
         else
@@ -148,7 +147,7 @@ local function get_no_Enchant_Bag(slot)--取得，物品，bag, slot
     end
 end
 local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，按钮
-    if not subClassToSlot[slot] or not self:CanChangeAttribute() then
+    if not subClassToSlot[slot] then
         return
     end
     local tab
@@ -156,7 +155,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
         tab=get_no_Enchant_Bag(slot)--取得，物品，bag, slot
         if tab and not self.noEnchant then
             local h=self:GetHeight()/3
-            self.noEnchant= WoWTools_ButtonMixin:Cbtn(self, {size={h, h}, type=true, icon='hide'})
+            self.noEnchant= WoWTools_ButtonMixin:Cbtn(self, {size=h, isSecure=true})
             self.noEnchant:SetAttribute("type", "item")
             self.noEnchant.slot= slot
             if WoWTools_PaperDollMixin:Is_Left_Slot(slot) then
@@ -210,7 +209,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
 
         end
     end
-    if self.noEnchant then
+    if self.noEnchant and not self.noEnchant:CanChangeAttribute() then
         self.noEnchant.tab=tab
         self.noEnchant:SetShown(tab and true or false)
         if tab then

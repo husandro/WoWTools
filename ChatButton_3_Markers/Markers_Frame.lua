@@ -133,9 +133,9 @@ local function Init()--设置标记, 框架
 
     for setIndex, index in pairs({8, 0, 1, 3, 2}) do
         btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.ping, {
-            size={size,size},
+            size=size,
             atlas= MakerFrame.ping.tab[index].atlas,
-            type=true,
+            isSecure=true,
             setID=setIndex,
         })
 
@@ -675,8 +675,8 @@ local function Init()--设置标记, 框架
     local markerTab={5,6,3,2,7,1,4,8}
     for index=0,  NUM_WORLD_RAID_MARKERS do
         btn= WoWTools_ButtonMixin:Cbtn(MakerFrame.marker, {
-            type=true,
-            size={size,size},
+            isSecure=true,
+            size=size,
             atlas= index==0 and 'auctionhouse-itemicon-border-orange',
             texture= index~=0 and 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index,
             setID= index

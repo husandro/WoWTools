@@ -216,7 +216,7 @@ end
 --删除所有信，按钮
 local function Create_DeleteAllButton()
     InboxFrame.DeleteAllButton= WoWTools_ButtonMixin:Cbtn(InboxFrame, {
-        size={25,25},
+        size=25,
         atlas='xmarksthespot',
         name='WoWToolsInboxDeleteAllButton'
     })

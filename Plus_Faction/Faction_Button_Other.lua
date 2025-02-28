@@ -114,7 +114,7 @@ end
 local function Init()
 
 
-	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_ReputationMixin.Button, {size={22,22}, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_ReputationMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
     WoWTools_ReputationMixin.down= down
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
@@ -129,7 +129,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	local up= WoWTools_ButtonMixin:Cbtn(down, {size={22,22}, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
+	local up= WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	up:SetPoint("RIGHT", down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
 		set_expand_collapse(false)
