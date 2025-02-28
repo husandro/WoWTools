@@ -3,6 +3,7 @@ local id, e = ...
 WoWTools_PlusTextureMixin={
     Save={
         --disabled=true,
+        --disabledTexture=true,
         alpha= 0.5,
 
         --disabledChatBubble=true,--禁用，聊天泡泡
@@ -344,15 +345,17 @@ local function Init()
     WoWTools_PlusTextureMixin:Init_HelpTip()--隐藏教程
     WoWTools_PlusTextureMixin:Init_Action_Button()
 
-    WoWTools_PlusTextureMixin:Init_All_Frame()
-    WoWTools_PlusTextureMixin:Init_Event()
+    if not Save().disabledTexture then
+        WoWTools_PlusTextureMixin:Init_All_Frame()
+        WoWTools_PlusTextureMixin:Init_Event()
 
-    hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
-        WoWTools_PlusTextureMixin:SetMenu(self)
-    end)
-    hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
-        WoWTools_PlusTextureMixin:SetMenu(self)
-    end)
+        hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
+            WoWTools_PlusTextureMixin:SetMenu(self)
+        end)
+        hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
+            WoWTools_PlusTextureMixin:SetMenu(self)
+        end)
+    end
 end
 
 
@@ -370,17 +373,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
             WoWTools_PlusTextureMixin.addName= addName
 
-            WoWTools_PlusTextureMixin:Init_Category()
+            WoWTools_PlusTextureMixin:Init_Options()
 
             if Save().disabled then
-                WoWTools_PlusTextureMixin:Blizzard_Settings()
                 self:UnregisterEvent(event)
             else
                 Init()
+                if Save().disabledTexture then
+                    self:UnregisterEvent(event)
+                end
             end
 
-        elseif arg1=='Blizzard_Settings' then
-            WoWTools_PlusTextureMixin:Blizzard_Settings()
         else
             WoWTools_PlusTextureMixin:Set_Event(arg1)
         end

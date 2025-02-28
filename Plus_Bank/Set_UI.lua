@@ -74,7 +74,7 @@ local function Init_BankSlotsFrame()
     btnInAll:HookScript('OnEnter', btnInAll.set_tooltips)
 
 --提示，标签
-    local label= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=18})
+    local label= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=14})
     label:SetPoint('RIGHT', btnInAll, 'LEFT', 4,0)
     label:SetText(e.onlyChinese and '银行' or BANK)
 
@@ -198,7 +198,7 @@ local function Init_ReagentBankFrame()
     btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)
 
 --提示，标签
-    local label= WoWTools_LabelMixin:Create(btnAllOut, {color=true, size=18})
+    local label= WoWTools_LabelMixin:Create(btnAllOut, {color=true, size=14})
     label:SetPoint('LEFT', btnAllOut, 'RIGHT')
     label:SetText(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
 
@@ -315,7 +315,13 @@ local function Init_AccountBankPanel()
 
         e.tips:Show()
     end)
-    btnSort:SetScript('OnClick', BankFrame_AutoSortButtonOnClick)
+    btnSort:SetScript('OnClick', function()
+        if GetCVarBool("bankConfirmTabCleanUp") then
+			StaticPopupSpecial_Show(BankCleanUpConfirmationPopup);
+		else
+			C_Container.SortAccountBankBags();
+		end
+    end)
         --BankFrame_AutoSortButtonOnClick()
 		    --StaticPopup_Show("BANK_CONFIRM_CLEANUP", nil, nil, { bankType = 2 });
         --C_Container.SortAccountBankBags()

@@ -1049,7 +1049,22 @@ end
 
 
 
+function Events:Blizzard_Settings(mixin)
+    mixin:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
+    mixin:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
+    mixin:SetScrollBar(SettingsPanel.Container.SettingsList)
+    mixin:SetScrollBar(SettingsPanel.CategoryList)
 
+    mixin:SetNineSlice(PingSystemTutorial, true)
+    mixin:SetNineSlice(PingSystemTutorialInset, nil, true)
+
+    mixin:HideTexture(PingSystemTutorialBg)
+
+    mixin:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
+    mixin:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
+    mixin:SetSearchBox(SettingsPanel.SearchBox)
+    mixin:SetFrame(SettingsPanel, {index=1})
+end
 
 
 

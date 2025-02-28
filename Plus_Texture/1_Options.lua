@@ -21,12 +21,30 @@ end
 
 
 local function Init_Options()
-    e.AddPanel_Header(Layout, e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
-    local initializer2= e.AddPanel_Check_Button({
-        checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+    GetMinValueAlpha()--min，透明度，最小值
+
+    Category, Layout= e.AddPanel_Sub_Category({
+        name= WoWTools_PlusTextureMixin.addName,
+        disabled= Save().disabled,
+    })
+
+    e.AddPanel_Check({
+        name= e.onlyChinese and '启用' or ENABLE,
+        tooltip= WoWTools_PlusTextureMixin.addName,
+        category= Category,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    })
+
+    e.AddPanel_Header(Layout, e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+    local initializer2= e.AddPanel_Check_Button({
+        checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+        GetValue= function() return not Save().disabledTexture end,
+        SetValue= function()
+            Save().disabledTexture= not Save().disabledTexture and true or nil
             print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
@@ -152,22 +170,6 @@ end
 
 
 
-local function Init(mixin)
-    mixin:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
-    mixin:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
-    mixin:SetScrollBar(SettingsPanel.Container.SettingsList)
-    mixin:SetScrollBar(SettingsPanel.CategoryList)
-
-    mixin:SetNineSlice(PingSystemTutorial, true)
-    mixin:SetNineSlice(PingSystemTutorialInset, nil, true)
-
-    mixin:HideTexture(PingSystemTutorialBg)
-
-    mixin:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
-    mixin:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
-    mixin:SetSearchBox(SettingsPanel.SearchBox)
-    mixin:SetFrame(SettingsPanel, {index=1})
-end
 
 
 
@@ -178,39 +180,6 @@ end
 
 
 
-local function Init_Category()
-    GetMinValueAlpha()--min，透明度，最小值
-
-    Category, Layout= e.AddPanel_Sub_Category({
-        name= WoWTools_PlusTextureMixin.addName,
-        disabled= Save().disabled,
-    })
-
-    e.AddPanel_Check({
-        name= e.onlyChinese and '启用' or ENABLE,
-        tooltip= WoWTools_PlusTextureMixin.addName,
-        category= Category,
-        GetValue= function() return not Save().disabled end,
-        SetValue= function()
-            Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_PlusTextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
-    })
-end
-
-
-
-
-
-
-
-function WoWTools_PlusTextureMixin:Init_Category()
-    Init_Category()
-end
-
-
-function WoWTools_PlusTextureMixin:Blizzard_Settings()
-    Init(self)
+function WoWTools_PlusTextureMixin:Init_Options()
     Init_Options()
-    
 end
