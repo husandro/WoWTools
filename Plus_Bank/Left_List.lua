@@ -424,7 +424,7 @@ local function Init()
             or index==2 and (e.onlyChinese and '材料' or BANK_TAB_ASSIGN_REAGENTS_CHECKBOX)
             or index==3 and (e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
 --空栏位
-        text= (self.bankSlotFree)..' '..(text or '')
+        text= (self.bankSlotFree and self.bankSlotFree..' ' or '')..(text or '')
 
         self.Text:SetText(text)
         self:SetWidth(text and self.Text:GetWidth()+8 or 23)
