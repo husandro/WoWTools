@@ -432,7 +432,7 @@ local function Init()
     BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
     WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
 
---整合，战团事件
+--[[整合，战团事件
     BankFrame:HookScript('OnEvent', function(self, event, ...)
         local index= self:GetSelectedTabID()
         if not Save().allAccountBag and index~=3 then
@@ -447,7 +447,7 @@ local function Init()
                 end
             end
         end
-    end)
+    end)]]
 
     return true
 end
