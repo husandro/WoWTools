@@ -185,7 +185,10 @@ local function Init_Menu(self, root)
         return Save().allAccountBag
     end, function()
         Save().allAccountBag= not Save().allAccountBag and true or nil
-        e.call(BankFrame_ShowPanel, AccountBankPanel, (BANK_PANELS[3].name))
+        
+        e.call(BankFrame_ShowPanel, AccountBankPanel, (BANK_PANELS[3].name))--缩放按钮， 需要
+        AccountBankPanel:GenerateItemSlotsForSelectedTab()
+        WoWTools_BankMixin:Init_Plus()
     end)
     settings(sub, isAccount)
 
@@ -206,7 +209,7 @@ root:CreateDivider()
         step=1,
         bit=nil,
     })
-    sub:SetEnabled(isEnabled)
+    sub:SetEnabled(isBank or isAccount)
 
 --间隔
     root:CreateSpacer()
@@ -223,7 +226,7 @@ root:CreateDivider()
         step=1,
         bit=nil,
     })
-    sub:SetEnabled(isEnabled)
+    sub:SetEnabled(isBank or isAccount)
     root:CreateSpacer()
 
     root:CreateDivider()

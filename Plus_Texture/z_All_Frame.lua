@@ -11,8 +11,10 @@ local function set_BagTexture(frame)
             WoWTools_PlusTextureMixin:HideTexture(btn.icon)
             WoWTools_PlusTextureMixin:HideTexture(btn.ItemSlotBackground)
             WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, true)
+
+            WoWTools_PlusTextureMixin:HideTexture(btn.Background)
         end
-        btn.NormalTexture:SetAlpha(not btn.hasItem and 0.3 or 1)
+        btn.NormalTexture:SetAlpha(btn.hasItem and 1 or 0.3)
     end
 end
 
@@ -425,7 +427,7 @@ end)
             end
         end
     end)
-
+    --hooksecurefunc(AccountBankPanel, 'GenerateItemSlotsForSelectedTab'
 
     for _, text in pairs({
         'CharacterBag0Slot',
@@ -988,6 +990,10 @@ end
 
 
 
+
+
+
+
 function WoWTools_PlusTextureMixin:Init_All_Frame()
     do
         Init(self)
@@ -995,4 +1001,5 @@ function WoWTools_PlusTextureMixin:Init_All_Frame()
     end
     Init=function()end
     Blizzard_Communities=function()end
+
 end

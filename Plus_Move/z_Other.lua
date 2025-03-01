@@ -115,28 +115,32 @@ local function Init()
         btn.targetFrame:SetSize(800, 537)
     end})
 
-    if WoWTools_MailMixin.Save.disabled then--MailFrame
-        WoWTools_MoveMixin:Setup(MailFrame)
-        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-        WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
-    end
 
-    if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame
-        WoWTools_MoveMixin:Setup(StableFrame)
-    end
 
-    if WoWTools_SellBuyMixin.Save.disabled then
-        WoWTools_MoveMixin:Setup(MerchantFrame)
-    end
---插件
-    if WoWTools_AddOnsMixin.Save.disabled then
-        WoWTools_MoveMixin:Setup(AddonList)
-    end
---银行
-    if WoWTools_BankMixin.Save.disabled then
-        WoWTools_MoveMixin:Setup(BankFrame)
-    WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
-    end
+    C_Timer.After(0.3, function()
+        if WoWTools_MailMixin.Save.disabled then--MailFrame
+            WoWTools_MoveMixin:Setup(MailFrame)
+            WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+            WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
+        end
+
+        if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame
+            WoWTools_MoveMixin:Setup(StableFrame)
+        end
+
+        if WoWTools_SellBuyMixin.Save.disabled then
+            WoWTools_MoveMixin:Setup(MerchantFrame)
+        end
+    --插件
+        if WoWTools_AddOnsMixin.Save.disabled then
+            WoWTools_MoveMixin:Setup(AddonList)
+        end
+    --银行
+        if WoWTools_BankMixin.Save.disabled then
+            WoWTools_MoveMixin:Setup(BankFrame)
+            WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
+        end
+    end)
 end
 
 

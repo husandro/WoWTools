@@ -29,7 +29,10 @@ local function Init()
 
     hooksecurefunc('BankFrame_ShowPanel', function()
         local index= BankFrame.activeTabIndex
-        BankFrame.ResizeButton.setSize= (index==1 or index==3) and true or false
+        local enable= index==1
+                    or (index==3 and Save().allAccountBag)
+
+        BankFrame.ResizeButton.setSize= enable or false
     end)
 end
 

@@ -90,7 +90,7 @@ local function Init_BankSlotsFrame()
     BankFrame.Background:ClearAllPoints()
     BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
     BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-    --WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
+    WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
 
 
 --背景
@@ -368,9 +368,9 @@ local function Init_AccountBankPanel()
     AccountBankPanel.MoneyFrame.MoneyDisplay:SetPoint('BOTTOM', AccountBankPanel.MoneyFrame.DepositButton, 'TOPLEFT', 6, -2)
 
 --背景    
-    --[[AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
+    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
     AccountBankPanel.Background:SetAllPoints()
-    WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)]]
+    --WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()

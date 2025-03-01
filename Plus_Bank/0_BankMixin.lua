@@ -31,7 +31,8 @@ function WoWTools_BankMixin:GetFree(index)
     if isBank then
 --银行
         for i=1, NUM_BANKGENERIC_SLOTS do--28
-            if not self:GetItemInfo(BankSlotsFrame["Item"..i]) then
+        
+            if not BankSlotsFrame["Item"..i].hasItem then--not self:GetItemInfo(BankSlotsFrame["Item"..i]) then
                 free=free+1
             end
         end
@@ -44,7 +45,7 @@ function WoWTools_BankMixin:GetFree(index)
 --材料银行       
     elseif isReagent then
         for _, btn in ReagentBankFrame:EnumerateValidItems() do
-            if not self:GetItemInfo(btn) then
+            if not btn.hasItem then--not self:GetItemInfo(btn) then
                 free=free+1
             end
         end
@@ -52,7 +53,7 @@ function WoWTools_BankMixin:GetFree(index)
     elseif isAccount then
         if AccountBankPanel.itemButtonPool:GetNumActive() > 0 then
             for btn in AccountBankPanel:EnumerateValidItems() do
-                if not self:GetItemInfo(btn) then
+                if not btn.hasItem then--not self:GetItemInfo(btn) then
                     free=free+1
                 end
             end
@@ -230,6 +231,14 @@ end
     classID=
     subClassID=
 }]]
+
+
+
+
+
+
+
+
 
 
 
