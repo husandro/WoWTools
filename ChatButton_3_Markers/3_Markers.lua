@@ -1,6 +1,7 @@
 local id, e = ...
 WoWTools_MarkerMixin.Save={
     autoSet=true,
+
     tank= 2,
     tank2= 6,
     healer= 1,
@@ -98,21 +99,52 @@ local function Init()
         WoWTools_MarkerMixin.TankHealerFrame:on_click()
     end
 
+    function MarkerButton:tooltip()
+        local autoSet, tank, tank2, healer, isSelf, target= Save().autoSet, Save().tank, Save().tank2, Save().healer, Save().isSelf, Save().target
+        e.tips:AddDoubleLine(
+            (autoSet and '|cnGREEN_FONT_COLOR:' or '|cff828282')
+            ..(e.onlyChinese and '自动标记' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, EVENTTRACE_MARKER)),
+            e.GetEnabeleDisable(autoSet)
+        )
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(
+            (tank and WoWTools_MarkerMixin:SetColor(tank).col or '|cff828282')
+            ..e.Icon.TANK..(e.onlyChinese and '坦克' or TANK),
+           tank and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank) or ''
+        )
+        e.tips:AddDoubleLine(
+            (tank2 and WoWTools_MarkerMixin:SetColor(tank2).col or '|cff828282')
+            ..e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..' 2',
+           tank2 and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank2) or ''
+        )
+        e.tips:AddDoubleLine(
+            (healer and WoWTools_MarkerMixin:SetColor(healer).col or '|cff828282')
+            ..e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER),
+           healer and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', healer) or ''
+        )
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(
+            (isSelf and WoWTools_MarkerMixin:SetColor(isSelf).col or '|cff828282')
+            ..'|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+            isSelf and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', isSelf) or ''
+        )
+        e.tips:AddDoubleLine(
+            (target and WoWTools_MarkerMixin:SetColor(target).col or '|cff828282')
+            ..'|A:Target:0:0|a'..(e.onlyChinese and '目标' or TARGET),
+            target and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', target) or ''
+        )
+        e.tips:AddDoubleLine()
+    end
+
+     
+    
 
     function MarkerButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
+        self:tooltip()
+        e.tips:AddLine(' ')
         e.tips:AddDoubleLine(WoWTools_MarkerMixin.addName, (e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.left)
-        if IsInGroup() then
-            e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().tank))
-            if not IsInRaid() then
-                e.tips:AddLine(e.Icon.HEALER..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().healer))
-            else
-                e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().tank2))
-            end
-        elseif Save().isSelf then
-            e.tips:AddLine('|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().isSelf))
-        end
         e.tips:Show()
     end
 

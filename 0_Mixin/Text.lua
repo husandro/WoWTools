@@ -147,14 +147,14 @@ function e.GetShowHide(sh, all)
         if sh then
             return e.onlyChinese and '|cnGREEN_FONT_COLOR:显示|r/隐藏' or ('|cnGREEN_FONT_COLOR:'..SHOW..'|r/'..HIDE)
         elseif sh==false then
-            return e.onlyChinese and '显示/|cnRED_FONT_COLOR:隐藏|r' or (SHOW..'/|cnRED_FONT_COLOR:'..HIDE..'|r')
+            return e.onlyChinese and '显示/|cff828282隐藏|r' or (SHOW..'/|cff828282'..HIDE..'|r')
         else
             return e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE)
         end
     elseif sh then
 		return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '显示' or SHOW)..'|r'
 	else
-		return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
+		return '|cff828282'..(e.onlyChinese and '隐藏' or HIDE)..'|r'
 	end
 end
 
@@ -165,13 +165,13 @@ function e.GetEnabeleDisable(ed, all)--启用或禁用字符
         elseif ed==true then
             return e.onlyChinese and '|cnGREEN_FONT_COLOR:启用|r/禁用' or ('|cnGREEN_FONT_COLOR:'..ENABLE..'|r/'..DISABLE)
         else
-            return e.onlyChinese and '启用/|cnRED_FONT_COLOR:禁用|r' or (ENABLE..'/|cnRED_FONT_COLOR:'..DISABLE..'|r')
+            return e.onlyChinese and '启用/|cff828282禁用|r' or (ENABLE..'/|cff828282'..DISABLE..'|r')
         end
     else
         if ed then
             return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '启用' or ENABLE)..'|r'
         else
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
+            return '|cff828282'..(e.onlyChinese and '禁用' or DISABLE)..'|r'
         end
     end
 end
@@ -188,7 +188,7 @@ function e.GetYesNo(yesno, notColor)
         if yesno then
             return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '是' or YES)..'|r'
         else
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '否' or NO)..'|r'
+            return '|cff828282'..(e.onlyChinese and '否' or NO)..'|r'
         end
     end
 end

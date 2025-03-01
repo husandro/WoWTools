@@ -550,14 +550,7 @@ local function Init()--设置标记, 框架
                 MakerFrame:set_Tooltips_Point()
                 e.tips:ClearLines()
                 e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
-                e.tips:AddLine(' ')
                 e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER), e.Icon.right)
-                e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().tank))
-                if not IsInRaid() then
-                    e.tips:AddLine(e.Icon.HEALER..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().healer))
-                else
-                    e.tips:AddLine(e.Icon.TANK..format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', Save().tank2))
-                end
                 e.tips:Show()
                 self:SetAlpha(1)
             end)
