@@ -26,12 +26,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING)] then
-                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING)]
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING)]=nil
-            else
-                Save= WoWToolsSave['Other_VoiceTalking'] or Save
-            end
+            Save= WoWToolsSave['Other_VoiceTalking'] or Save
 
             addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(e.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
 
@@ -52,12 +47,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             e.AddPanel_Check({
-                name= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
-                tooltip= addName,
+                name= e.onlyChinese and '文本' or LOCALE_TEXT_LABEL,                
                 GetValue= function() return not Save.notPrint end,
+                tooltip= e.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',
                 SetValue= function()
                     Save.notPrint= not Save.notPrint and true or nil
-                end
+                end,
+                layout= WoWTools_OtherMixin.Layout,
+                category= WoWTools_OtherMixin.Category,
             }, initializer2)
 
 

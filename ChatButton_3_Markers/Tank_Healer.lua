@@ -175,7 +175,9 @@ local function Init()
         --end
     end
 
-    C_Timer.After(2, Set_TankHealer)
+    C_Timer.After(2, function()
+        Set_TankHealer()
+    end)
 end
 
 
