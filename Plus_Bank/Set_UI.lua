@@ -5,12 +5,32 @@ local e= select(2, ...)
 
 
 
+local function Set_Button_Tooltip(self)
+    e.tips:SetOwner(self, "ANCHOR_LEFT")
+    e.tips:ClearLines()
 
+    local free, all, regentsFree= WoWTools_BagMixin:GetFree(true)--背包，空位
+
+    e.tips:AddLine(self.name)
+    e.tips:AddLine(' ')
+    e.tips:AddDoubleLine(
+        '|A:bag-main:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL)
+        ..' |cnGREEN_FONT_COLOR:'..free..'|r (|cnRED_FONT_COLOR:'..(all-free)..'|r) / '..all,
+        '(|cnGREEN_FONT_COLOR:'..(free-regentsFree)..'|r+|cnGREEN_FONT_COLOR:'..regentsFree..'|r)'
+    )
+
+    free, all= WoWTools_BankMixin:GetFree(1)
+    e.tips:AddLine(
+        '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
+        ..' |cnGREEN_FONT_COLOR:'..free..'|r (|cnRED_FONT_COLOR:'..(all-free)..'|r) / '..all
+    )
+
+    e.tips:Show()
+end
 
 
 
 local function Init_BankSlotsFrame()
-
 --移动，整理按钮, 系统自带
     BankItemAutoSortButton:ClearAllPoints()
     BankItemAutoSortButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -6, 0)
@@ -19,31 +39,46 @@ local function Init_BankSlotsFrame()
 
 
 --添加，取出所有
-    local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Cursor_OpenHand_64'})
+    local btnOutAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {
+        size=23,
+        atlas='Cursor_OpenHand_64',
+        name='WoWToolsBankSlotFrameOutAllItemButton'
+    })
+    btnOutAll.name= '|A:Cursor_OpenHand_64:0:0|a'..(
+        e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS)
+    )
     btnOutAll:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     btnOutAll:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 1, false)
-        self:show_tooltips()
     end)
 
-    function btnOutAll:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        local free= WoWTools_BagMixin:GetFree()--背包，空位
-        e.tips:AddDoubleLine(e.onlyChinese and '取出所有物品' or 'Take out all items',
-            format('|A:bag-main:0:0|a%s #%s%d',
-                e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
-                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
-                free)
-        )
-        e.tips:Show()
-    end
-    function btnOutAll:show_tooltips()
-        C_Timer.After(1.5, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
-    end
-    btnOutAll:HookScript('OnLeave', GameTooltip_Hide)
-    btnOutAll:HookScript('OnEnter', btnOutAll.set_tooltips)
+    btnOutAll:SetScript('OnLeave', GameTooltip_Hide)
+    btnOutAll:SetScript('OnEnter', Set_Button_Tooltip)
 
+    btnOutAll.Text= WoWTools_LabelMixin:Create(btnOutAll, {color={1,1,1}})
+    btnOutAll.Text:SetPoint('BOTTOM', btnOutAll, 'TOP', 0, -2)
+    function btnOutAll:set_text()
+        local  free, all= WoWTools_BankMixin:GetFree(1)
+        local num= all-free
+        self.Text:SetText((num==0 and '|cff828282' or '')..num)
+        if GameTooltip:IsOwned(self) then
+            Set_Button_Tooltip(self)
+        end
+    end
+    function btnOutAll:set_event()
+        if self:IsVisible() then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:set_text()
+        else
+            self:UnregisterEvent('BAG_UPDATE_DELAYED')
+        end
+    end
+    btnOutAll:SetScript('OnShow', btnOutAll.set_event)
+    btnOutAll:SetScript('OnHide', btnOutAll.set_event)
+    btnOutAll:SetScript('OnEvent', btnOutAll.set_text)
+    C_Timer.After(1, function()
+        btnOutAll:set_text()
+    end)
 
 --存放物品
     local btnInAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Crosshair_buy_64'})
@@ -242,7 +277,7 @@ local function Init_AccountBankPanel()
 
 --添加，取出所有物品
     local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, atlas='Cursor_OpenHand_64'})
-    btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -26)
+    btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -31)
 
     btnAllOut:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 3, false)
@@ -305,7 +340,7 @@ local function Init_AccountBankPanel()
         local cvar= C_CVar.GetCVarBool('bankConfirmTabCleanUp')
         e.tips:AddLine(
             (cvar and '|cnGREEN_FONT_COLOR:' or '|cff828282')
-            ..(e.onlyChinese and '确认清理战团银行' or format(GARRISON_FOLLOWER_NAME, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
+            ..(e.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
         )
 
         e.tips:Show()

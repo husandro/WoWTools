@@ -290,6 +290,7 @@ local function Set_Label()
     local bankClass={}
     local bagClass={}
     local bagItems, bankFree
+--银行
     for _, data in pairs(WoWTools_BankMixin:Take_Item(true, nil, nil, nil, true)) do
         if isReagent and data.classID==7 or not isReagent then
             bankClass= Get_Item_Data(bankClass, isReagent and data.subClassID or data.classID, data.info)

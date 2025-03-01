@@ -84,7 +84,7 @@ local function Init_Menu(self, root)
         tooltip=function(tooltip, desc)
             tooltip:AddLine(desc.data.name)
             tooltip:AddLine(' ')
-            tooltip:AddLine(e.onlyChinese and '确认清理战团银行' or format(GARRISON_FOLLOWER_NAME, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
+            tooltip:AddLine(e.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
             tooltip:AddLine(e.onlyChinese and "你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。" or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT)
         end,
         func=nil},

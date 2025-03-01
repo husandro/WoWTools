@@ -11,7 +11,7 @@ WoWTools_BankMixin={}
 function WoWTools_BankMixin:GetIndex(index)
     return index or BankFrame.activeTabIndex or 1
 end
---/dump AccountBankPanel.selectedTabID
+
 --local isBank, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 function WoWTools_BankMixin:GetActive(index)
     index= self:GetIndex(index)
@@ -25,43 +25,46 @@ end
 --银行，空位
 function WoWTools_BankMixin:GetFree(index)
     index= self:GetIndex(index)
-    local free= 0
+    local free, all= 0, 0
+    
     local isBank, isReagent, isAccount= self:GetActive(index)
-
+    
     if isBank then
 --银行
         for i=1, NUM_BANKGENERIC_SLOTS do--28
-        
             if not BankSlotsFrame["Item"..i].hasItem then--not self:GetItemInfo(BankSlotsFrame["Item"..i]) then
                 free=free+1
             end
+            all=all+1
         end
 
         --银行，背包
         for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do--6-12
             free= free+ (C_Container.GetContainerNumFreeSlots(bag) or 0)
+            all= all+ C_Container.GetContainerNumSlots(bag)
         end
 
 --材料银行       
     elseif isReagent then
         for _, btn in ReagentBankFrame:EnumerateValidItems() do
-
             if not btn.hasItem then--not self:GetItemInfo(btn) then
                 free=free+1
             end
+            all=all+1
         end
 --战团银行   
     elseif isAccount then
         if AccountBankPanel.itemButtonPool:GetNumActive() > 0 then
             for btn in AccountBankPanel:EnumerateValidItems() do
-                if not self:GetItemInfo(btn) then
+                if not btn.itemInfo then-- not self:GetItemInfo(btn) then
                     free=free+1
                 end
+                all=all+1
             end
         end
     end
 
-    return free
+    return free, all
 end
 
 
