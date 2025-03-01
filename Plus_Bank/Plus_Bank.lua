@@ -67,9 +67,7 @@ end
 local function Get_AccountBankButton()
     local tab={}
     for btn in AccountBankPanel:EnumerateValidItems() do
-        btn:ClearAllPoints()
-        Set_IndexLabel(btn, btn:GetContainerSlotID())--索引，提示
-        
+        btn:ClearAllPoints()        
         table.insert(tab, 1, btn)
     end
     return tab
@@ -91,7 +89,7 @@ local function Set_BankSlotsFrame(index)
         local btn= BankSlotsFrame["Item"..i]
         if btn then
             btn.index=i
-            Set_IndexLabel(btn, i)--索引，提示
+            --Set_IndexLabel(btn, i)--索引，提示
             table.insert(tab, btn)
         end
     end
@@ -227,7 +225,7 @@ local function Init_All_AccountBankPanel()
             for containerSlotID = 1, maxButton do
                 local btn = AccountBankPanel.itemButtonPool:Acquire()
                 btn:Init(data.ID, containerSlotID)
-                Set_IndexLabel(btn, btn:GetContainerSlotID())--索引，提示
+
                 btn:Show()
                 table.insert(Tab, btn)
             end
@@ -253,7 +251,7 @@ local function Init_All_AccountBankPanel()
         else
             btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
         end
-       
+        Set_IndexLabel(btn, index)--btn:GetContainerSlotID())--索引，提示
         last= btn
     end
 
@@ -285,6 +283,7 @@ local function Set_AccountBankPanel(index)
             else
                 btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
             end
+            Set_IndexLabel(btn, i)--btn:GetContainerSlotID())--索引，提示
             last= btn
         end
 

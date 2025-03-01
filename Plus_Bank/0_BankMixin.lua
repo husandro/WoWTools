@@ -45,6 +45,7 @@ function WoWTools_BankMixin:GetFree(index)
 --材料银行       
     elseif isReagent then
         for _, btn in ReagentBankFrame:EnumerateValidItems() do
+
             if not btn.hasItem then--not self:GetItemInfo(btn) then
                 free=free+1
             end
@@ -53,7 +54,7 @@ function WoWTools_BankMixin:GetFree(index)
     elseif isAccount then
         if AccountBankPanel.itemButtonPool:GetNumActive() > 0 then
             for btn in AccountBankPanel:EnumerateValidItems() do
-                if not btn.hasItem then--not self:GetItemInfo(btn) then
+                if not self:GetItemInfo(btn) then
                     free=free+1
                 end
             end
