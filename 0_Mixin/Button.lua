@@ -86,7 +86,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 
     if isType2 then
         pushedAtlas, highlightAtlas= 'bag-border-highlight', 'bag-border'
-        
+
     elseif atlas then
         if atlas:find('Cursor_OpenHand_(%d+)') then--提取(手)按钮
             highlightAtlas= 'Cursor_OpenHandGlow_'..atlas:match('Cursor_OpenHand_(%d+)')
@@ -140,6 +140,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if alpha then
         btn:SetAlpha(alpha)
     end
+
     return btn
 end
 
@@ -153,32 +154,22 @@ end
 function WoWTools_ButtonMixin:CreateMenu(frame, tab)
     tab= tab or {}
     tab.isMenu=true
-    
-    local hideIcon= tab.icon=='hide'
 
     if tab.icon~='hide' then
         tab.atlas= tab.atlas or 'ui-questtrackerbutton-filter'
     end
-
 
     local btn= self:Cbtn(frame, tab)
 
     if tab.atlas== 'ui-questtrackerbutton-filter' then
         WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
     end
-    --btn:SetFrameLevel(frame:GetFrameLevel()+7)
-    
+
+    btn:SetFrameLevel(frame:GetFrameLevel()+7)
+
     function btn:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
     end
 
     return btn
 end
-
---[[
-local btn=WoWTools_ButtonMixin:CreateMenu(OptionButton, {
-    name='',
-    isType2=true
-})
-]]
-
