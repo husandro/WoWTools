@@ -561,9 +561,12 @@ end
 
 
 local function AccountBankPanel_RefreshBankTabs(frame)
+    frame= frame or AccountBankPanel
     if not frame.purchasedBankTabData then
         return
     end
+
+    local allAccountBag= Save().allAccountBag and BankFrame.activeTabIndex==3
 
     for btn in frame.bankTabPool:EnumerateActive() do
         if not btn.nameLabel then
@@ -582,9 +585,9 @@ local function AccountBankPanel_RefreshBankTabs(frame)
             end)
             btn:HookScript('OnLeave', btn.Settings)
             btn:Settings()
+            btn.Border:SetTexture(0)
         end
-        btn.Border:SetShown(false)
-        btn.nameLabel:SetText(btn.tabData and btn.tabData.name or '')
+        btn.nameLabel:SetText( (not allAccountBag and btn.tabData and btn.tabData.name)  or '')
     end
 end
 
@@ -620,12 +623,16 @@ local function Init()
         BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
     end)
+    BankFrameTab3:HookScript('OnMouseUp', function()
+        AccountBankPanel_RefreshBankTabs()
+    end)
 
 --战团，Tabs
     AccountBankPanel.PurchaseTab.Border:Hide()
     hooksecurefunc(AccountBankPanel, 'RefreshBankTabs', AccountBankPanel_RefreshBankTabs)
     hooksecurefunc(BankPanelTabMixin, 'RefreshVisuals', function(self)
         if self.Settings then self:Settings() end
+
     end)
 
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
