@@ -5,13 +5,29 @@ local e= select(2, ...)
 
 
 
+
+--[[local function Get_Bank_Name(index)
+    return
+        (index==1 and '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK))
+        or (index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
+        or (index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
+        or ''
+end]]
+
+
+
 local function Set_Button_Tooltip(self)
     e.tips:SetOwner(self, "ANCHOR_LEFT")
     e.tips:ClearLines()
 
     local free, all, regentsFree= WoWTools_BagMixin:GetFree(true)--背包，空位
 
-    e.tips:AddLine(self.name)
+    local name=   (self.index==1 and '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK))
+                or (self.index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
+                or (self.index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
+                or ''
+    e.tips:AddDoubleLine(self.name, name)
+
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(
         '|A:bag-main:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL)
@@ -19,14 +35,75 @@ local function Set_Button_Tooltip(self)
         '(|cnGREEN_FONT_COLOR:'..(free-regentsFree)..'|r+|cnGREEN_FONT_COLOR:'..regentsFree..'|r)'
     )
 
-    free, all= WoWTools_BankMixin:GetFree(1)
+    free, all= WoWTools_BankMixin:GetFree(self.index)
+
     e.tips:AddLine(
-        '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
-        ..' |cnGREEN_FONT_COLOR:'..free..'|r (|cnRED_FONT_COLOR:'..(all-free)..'|r) / '..all
+        name
+        ..' |cnGREEN_FONT_COLOR:'..free..'|r'
+        ..' (|cnRED_FONT_COLOR:'..(all-free)..'|r)'
+        ..' / '..all
     )
 
     e.tips:Show()
 end
+
+
+
+
+
+local function Set_Button(btn)
+
+
+    btn.Text= WoWTools_LabelMixin:Create(btn, {color=true})
+    btn.Text:SetPoint('BOTTOM', btn, 'TOP', 0, -3)
+
+    function btn:set_text()
+
+        local Tabs=  WoWTools_BankMixin:Take_Item(self.isOutItem, nil, nil, self.index, true)
+        local num= #Tabs
+
+        self.Text:SetText((num==0 and '|cff828282' or '')..num)
+        if GameTooltip:IsOwned(self) then
+            Set_Button_Tooltip(self)
+        end
+    end
+
+    function btn:set_event()
+        if self:IsVisible() then
+            self:RegisterEvent('BAG_UPDATE_DELAYED')
+            self:set_text()
+        else
+            self:UnregisterEvent('BAG_UPDATE_DELAYED')
+        end
+    end
+
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', Set_Button_Tooltip)
+    btn:SetScript('OnClick', function(self)
+        WoWTools_BankMixin:Take_Item(self.isOutItem, nil, nil, self.index, false)
+    end)
+
+    C_Timer.After(0.7, function()
+        btn:SetScript('OnShow', btn.set_event)
+        btn:SetScript('OnHide', btn.set_event)
+        btn:SetScript('OnEvent', btn.set_text)
+        btn:set_event()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -44,67 +121,30 @@ local function Init_BankSlotsFrame()
         atlas='Cursor_OpenHand_64',
         name='WoWToolsBankSlotFrameOutAllItemButton'
     })
-    btnOutAll.name= '|A:Cursor_OpenHand_64:0:0|a'..(
-        e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS)
-    )
     btnOutAll:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
-    btnOutAll:SetScript('OnClick', function(self)
-        WoWTools_BankMixin:Take_Item(true, nil, nil, 1, false)
-    end)
+    btnOutAll.index=1
+    btnOutAll.isOutItem=true
+    btnOutAll.name='|A:Cursor_OpenHand_64:0:0|a'..(e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
+    Set_Button(btnOutAll)
 
-    btnOutAll:SetScript('OnLeave', GameTooltip_Hide)
-    btnOutAll:SetScript('OnEnter', Set_Button_Tooltip)
+    --[[btnOutAll:SetScript('OnClick', function(self)
+        WoWTools_BankMixin:Take_Item(true, nil, nil, self.index, false)
+    end)]]
 
-    btnOutAll.Text= WoWTools_LabelMixin:Create(btnOutAll, {color={1,1,1}})
-    btnOutAll.Text:SetPoint('BOTTOM', btnOutAll, 'TOP', 0, -2)
-    function btnOutAll:set_text()
-        local  free, all= WoWTools_BankMixin:GetFree(1)
-        local num= all-free
-        self.Text:SetText((num==0 and '|cff828282' or '')..num)
-        if GameTooltip:IsOwned(self) then
-            Set_Button_Tooltip(self)
-        end
-    end
-    function btnOutAll:set_event()
-        if self:IsVisible() then
-            self:RegisterEvent('BAG_UPDATE_DELAYED')
-            self:set_text()
-        else
-            self:UnregisterEvent('BAG_UPDATE_DELAYED')
-        end
-    end
-    btnOutAll:SetScript('OnShow', btnOutAll.set_event)
-    btnOutAll:SetScript('OnHide', btnOutAll.set_event)
-    btnOutAll:SetScript('OnEvent', btnOutAll.set_text)
-    C_Timer.After(1, function()
-        btnOutAll:set_text()
-    end)
 
 --存放物品
     local btnInAll= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame, {size=23, atlas='Crosshair_buy_64'})
     btnInAll:SetPoint('RIGHT', btnOutAll, 'LEFT', -2, 0)
-    btnInAll:SetScript('OnClick', function(self)
+    btnInAll.index=1
+    btnInAll.isOutItem=false
+    btnInAll.name= '|A:Banker:0:0|a'
+        ..(e.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))
+        ..'(|cff828282'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)..'|r)'
+    Set_Button(btnInAll)
+    --[[btnInAll:SetScript('OnClick', function()
         WoWTools_BankMixin:Take_Item(false, nil, nil, 1, false)
-        self:show_tooltips()
-    end)
+    end)]]
 
-    function btnInAll:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        local free=WoWTools_BankMixin:GetFree()--银行，空位
-        e.tips:AddDoubleLine(e.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GUILDCONTROL_DEPOSIT_ITEMS, ' ('..ALL..')'),
-            format('|A:Banker:0:0|a%s #%s%d',
-                e.onlyChinese and '银行' or BANK,
-                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
-                free)
-        )
-        e.tips:Show()
-    end
-    function btnInAll:show_tooltips()
-        C_Timer.After(1.5, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
-    end
-    btnInAll:HookScript('OnLeave', GameTooltip_Hide)
-    btnInAll:HookScript('OnEnter', btnInAll.set_tooltips)
 
 --提示，标签
     local label= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=14})
@@ -180,33 +220,46 @@ local function Init_ReagentBankFrame()
         e.tips:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
         e.tips:Show()
     end)
-    btnSort:SetScript('OnClick', function()
-        C_Container.SortReagentBankBags()
-    end)
+    btnSort:SetScript('OnClick', C_Container.SortReagentBankBags)
 
 --存放各种材料,系统自带
-    ReagentBankFrame.DespositButton:ClearAllPoints()
-    ReagentBankFrame.DespositButton:SetSize(26, 26)
-    ReagentBankFrame.DespositButton:SetPoint('LEFT', btnSort, 'RIGHT', 2, 2)
-    ReagentBankFrame.DespositButton:SetText('')
-    ReagentBankFrame.DespositButton.Middle:Hide()
-    ReagentBankFrame.DespositButton.Right:Hide()
-    ReagentBankFrame.DespositButton.Left:Hide()
-    ReagentBankFrame.DespositButton:SetNormalAtlas('Crosshair_buy_64')
-    ReagentBankFrame.DespositButton:SetHighlightAtlas('auctionhouse-nav-button-select')
-    ReagentBankFrame.DespositButton:SetPushedAtlas('auctionhouse-nav-button-select')
-    ReagentBankFrame.DespositButton:HookScript('OnLeave', GameTooltip_Hide)
-    ReagentBankFrame.DespositButton:HookScript('OnEnter', function(s)
+    local despButton= ReagentBankFrame.DespositButton
+    despButton:ClearAllPoints()
+    despButton:SetSize(26, 26)
+    despButton:SetPoint('LEFT', btnSort, 'RIGHT', 2, 2)
+    despButton:SetText('')
+    despButton.Middle:Hide()
+    despButton.Right:Hide()
+    despButton.Left:Hide()
+    despButton:SetNormalAtlas('Crosshair_buy_64')
+    despButton:SetHighlightAtlas('auctionhouse-nav-button-select')
+    despButton:SetPushedAtlas('auctionhouse-nav-button-select')
+    --despButton:HookScript('OnLeave', GameTooltip_Hide)
+    --[[despButton:HookScript('OnEnter', function(s)
         e.tips:SetOwner(s, "ANCHOR_LEFT")
         e.tips:ClearLines()
         e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
         e.tips:Show()
-    end)
+    end)]]
+    despButton.index=2
+    despButton.isOutItem=false
+    despButton.name= '|A:Banker:0:0|a'
+    ..(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
+    ..'(|cff828282'..(e.onlyChinese and '物品' or ITEMS)..'|r)'
+    Set_Button(despButton)
+
 
 --取出所有物品
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame.DespositButton, {size=23, atlas='Cursor_OpenHand_64'})
-    btnAllOut:SetPoint('LEFT', ReagentBankFrame.DespositButton, 'RIGHT', 2, 0)
-    btnAllOut:SetScript('OnClick', function(self)
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(despButton, {size=23, atlas='Cursor_OpenHand_64'})
+    btnAllOut:SetPoint('LEFT', despButton, 'RIGHT', 2, 0)
+    btnAllOut.index=2
+    btnAllOut.isOutItem=true
+    btnAllOut.name= '|A:Cursor_OpenHand_64:0:0|a'
+        ..(e.onlyChinese and '取出所有材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), BAG_FILTER_REAGENTS))
+        ..'(|cff828282'..(e.onlyChinese and '物品' or ITEMS)..'|r)'
+        Set_Button(btnAllOut)
+
+    --[[btnAllOut:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 2, false)
         self:show_tooltips()
     end)
@@ -227,7 +280,7 @@ local function Init_ReagentBankFrame()
         C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
     end
     btnAllOut:HookScript('OnLeave', GameTooltip_Hide)
-    btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)
+    btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)]]
 
 --提示，标签
     local label= WoWTools_LabelMixin:Create(btnAllOut, {color=true, size=14})
@@ -278,8 +331,12 @@ local function Init_AccountBankPanel()
 --添加，取出所有物品
     local btnAllOut= WoWTools_ButtonMixin:Cbtn(AccountBankPanel.ItemDepositFrame, {size=23, atlas='Cursor_OpenHand_64'})
     btnAllOut:SetPoint('TOPRIGHT', AccountBankPanel, -16, -31)
-
-    btnAllOut:SetScript('OnClick', function(self)
+    btnAllOut:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
+    btnAllOut.index=3
+    btnAllOut.isOutItem=true
+    btnAllOut.name='|A:Cursor_OpenHand_64:0:0|a'..(e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
+    Set_Button(btnAllOut)
+    --[[btnAllOut:SetScript('OnClick', function(self)
         WoWTools_BankMixin:Take_Item(true, nil, nil, 3, false)
         self:show_tooltips()
     end)
@@ -308,7 +365,7 @@ local function Init_AccountBankPanel()
         C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
     end
     btnAllOut:HookScript('OnLeave', GameTooltip_Hide)
-    btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)
+    btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)]]
 
 --存放所有战团绑定物品    
     AccountBankPanel.ItemDepositFrame.DepositButton:ClearAllPoints()

@@ -67,7 +67,7 @@ end
 
 --背包，空位, all 包含材料 C_Container.GetContainerNumSlots(i)
 function WoWTools_BagMixin:GetFree(isRegentBag)
-    
+
     local free, all, regentsFree= 0, 0, 0--CalculateTotalNumberOfFreeBagSlots() MainMenuBarBagButtons.lua
 
     local num= NUM_BAG_FRAMES+ (isRegentBag and NUM_REAGENTBAG_FRAMES or 0)
@@ -84,25 +84,41 @@ function WoWTools_BagMixin:GetFree(isRegentBag)
 end
 
 
-function WoWTools_BagMixin:GetItems(all)
+function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents)
     local Tabs={}
+
     local context= ItemButtonUtil.GetItemContext()
-    local num= NUM_BAG_FRAMES+ (all and NUM_REAGENTBAG_FRAMES or 0)
+    local num= NUM_BAG_FRAMES+ ((checkAllBag or onlyRegents) and NUM_REAGENTBAG_FRAMES or 0)
+    local isCraftingReagent
 
     for bag= BACKPACK_CONTAINER, num do--0-5
         for slot=1, C_Container.GetContainerNumSlots(bag) do
+
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID and
                 (context and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot)) or not context)
             then
 
                 WoWTools_Mixin:Load({id=info.itemID, type='item'})
+--仅物品，仅材料    
+                if onlyItem or onlyRegents then
 
-                table.insert(Tabs, 1, {
-                    info=info,
-                    bag=bag,
-                    slot=slot,
-                })
+                    isCraftingReagent= select(17, C_Item.GetItemInfo(info.itemID))
+
+                    if onlyRegents and isCraftingReagent or (onlyItem and isCraftingReagent==false) then
+                        table.insert(Tabs, 1, {
+                            info=info,
+                            bag=bag,
+                            slot=slot,
+                        })
+                    end
+                else
+                    table.insert(Tabs, 1, {
+                        info=info,
+                        bag=bag,
+                        slot=slot,
+                    })
+                end
             end
         end
     end

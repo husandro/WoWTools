@@ -171,19 +171,21 @@ end
 function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onlyTab)
     index= self:GetIndex(index)
 
-    local isReagent, isAccount= select(2, WoWTools_BankMixin:GetActive(index))
+    local _, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
 
     local bankAutoDepositReagents =C_CVar.GetCVarBool('bankAutoDepositReagents')
 
-    local isAllBag= bankAutoDepositReagents and isAccount or isReagent
+    local checkAllBag= bankAutoDepositReagents and isAccount or isReagent
+    local onlyItem= not checkAllBag
+    local onlyRegents= isReagent
 
     local free= isOutItem
-                and WoWTools_BagMixin:GetFree(isAllBag)--背包，空位
+                and WoWTools_BagMixin:GetFree(checkAllBag)--背包，空位
                 or WoWTools_BankMixin:GetFree(index)--银行，空位
 
     local Tabs= isOutItem
                 and WoWTools_BankMixin:GetItems(index)--取出银行
-                or WoWTools_BagMixin:GetItems(isAllBag)--放入物品
+                or WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents)--放入物品
 
     local NewTab= {}
 
