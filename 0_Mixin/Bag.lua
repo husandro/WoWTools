@@ -28,7 +28,7 @@ function WoWTools_BagMixin:Find(find, tab)
         itemName= C_Item.GetItemName(tab.itemLocation)
 
     elseif tab.merchantIndex then--商人
-        local info = C_MerchantFrame.GetItemInfo(tab.merchantIndex);
+        local info = C_MerchantFrame.GetItemInfo(tab.merchantIndex)
         if info then
             itemName= info.name
         end
@@ -84,7 +84,7 @@ function WoWTools_BagMixin:GetFree(isRegentBag)
 end
 
 
-function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents)
+function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBagFunc)
     local Tabs={}
 
     local context= ItemButtonUtil.GetItemContext()
@@ -96,7 +96,11 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents)
 
             local info = C_Container.GetContainerItemInfo(bag, slot)
             if info and info.itemID and
-                (context and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot)) or not context)
+                (context
+                    and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot))
+                    or (checkBagFunc and checkBagFunc(bag, slot, info))
+                    or not checkBagFunc
+                )
             then
 
                 WoWTools_Mixin:Load({id=info.itemID, type='item'})
@@ -124,3 +128,28 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents)
     end
     return Tabs
 end
+--[[
+ItemButtonUtil.ItemContextEnum = {
+	Scrapping = 1,
+	CleanseCorruption = 2,
+	PickRuneforgeBaseItem = 3,
+	ReplaceBonusTree = 4,
+	SelectRuneforgeItem = 5,
+	SelectRuneforgeUpgradeItem = 6,
+	Soulbinds = 7,
+	MythicKeystone = 8,
+	UpgradableItem = 9,
+	RunecarverScrapping = 10,
+	ItemConversion = 11,
+	ItemRecrafting = 12,
+	JumpUpgradeTrack = 13,
+	AccountBankDepositing = 14,
+	Enchanting = 15,
+}
+
+ItemButtonUtil.ItemContextMatchResult = {
+	Match = 1,
+	Mismatch = 2,
+	DoesNotApply = 3,
+}
+]]

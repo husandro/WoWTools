@@ -1,18 +1,11 @@
 local e= select(2, ...)
 
+local function Save()
+    return WoWTools_BankMixin.Save
+end
 
 
 
-
-
-
---[[local function Get_Bank_Name(index)
-    return
-        (index==1 and '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK))
-        or (index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
-        or (index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
-        or ''
-end]]
 
 
 
@@ -22,11 +15,14 @@ local function Set_Button_Tooltip(self)
 
     local free, all, regentsFree= WoWTools_BagMixin:GetFree(true)--背包，空位
 
-    local name=   (self.index==1 and '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK))
+    local name= (self.index==1 and '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK))
                 or (self.index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
                 or (self.index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
                 or ''
     e.tips:AddDoubleLine(self.name, name)
+    if self.tooltip then
+        self.tooltip(e.tips)
+    end
 
     e.tips:AddLine(' ')
     e.tips:AddDoubleLine(
@@ -51,6 +47,10 @@ end
 
 
 
+
+
+
+
 local function Set_Button(btn)
 
 
@@ -59,7 +59,7 @@ local function Set_Button(btn)
 
     function btn:set_text()
 
-        local Tabs=  WoWTools_BankMixin:Take_Item(self.isOutItem, nil, nil, self.index, true)
+        local Tabs=  WoWTools_BankMixin:Take_Item(self.isOutItem, nil, nil, self.index, true, self.checkBagFunc)
         local num= #Tabs
 
         self.Text:SetText((num==0 and '|cff828282' or '')..num)
@@ -78,9 +78,27 @@ local function Set_Button(btn)
     end
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', Set_Button_Tooltip)
-    btn:SetScript('OnClick', function(self)
-        WoWTools_BankMixin:Take_Item(self.isOutItem, nil, nil, self.index, false)
+    btn:SetScript('OnEnter', function(self)
+        --[[if self.index==3 and WoWTools_BankMixin:GetIndex()==1 then
+            ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged)
+            print('a')
+        end]]
+        Set_Button_Tooltip(self)
+    end)
+
+
+    btn:SetScript('OnClick', function(self, d)
+        if btn.index==3 and not btn.isOutItem and--系统自带，存放所有战团绑定物品，增强
+            (
+                d=='LeftButton'
+                or self:GetItemDepositConfirmationPopup()
+            )
+        then
+            self:OnClick()
+        else
+
+            WoWTools_BankMixin:Take_Item(self.isOutItem, nil, nil, self.index, false)
+        end
     end)
 
     C_Timer.After(0.7, function()
@@ -250,7 +268,7 @@ local function Init_ReagentBankFrame()
 
 
 --取出所有物品
-    local btnAllOut= WoWTools_ButtonMixin:Cbtn(despButton, {size=23, atlas='Cursor_OpenHand_64'})
+    local btnAllOut= WoWTools_ButtonMixin:Cbtn(ReagentBankFrame, {size=23, atlas='Cursor_OpenHand_64'})
     btnAllOut:SetPoint('LEFT', despButton, 'RIGHT', 2, 0)
     btnAllOut.index=2
     btnAllOut.isOutItem=true
@@ -304,6 +322,9 @@ local function Init_ReagentBankFrame()
 
     ReagentBankFrame.NineSlice:Hide()
     ReagentBankFrame.EdgeShadows:Hide()
+    ReagentBankFrameUnlockInfo:ClearAllPoints()
+    ReagentBankFrameUnlockInfo:SetPoint('TOPLEFT', 0,-20)
+    ReagentBankFrameUnlockInfo:SetPoint('BOTTOMRIGHT', 0, 8)
 end
 
 
@@ -335,61 +356,61 @@ local function Init_AccountBankPanel()
     btnAllOut.index=3
     btnAllOut.isOutItem=true
     btnAllOut.name='|A:Cursor_OpenHand_64:0:0|a'..(e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
-    Set_Button(btnAllOut)
-    --[[btnAllOut:SetScript('OnClick', function(self)
-        WoWTools_BankMixin:Take_Item(true, nil, nil, 3, false)
-        self:show_tooltips()
-    end)
-
-    function btnAllOut:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-
-        local selectedBankTabData = AccountBankPanel:GetTabData(AccountBankPanel.selectedTabID);
-        if selectedBankTabData and selectedBankTabData.name then
-            e.tips:AddLine(selectedBankTabData.name)
-            e.tips:AddLine(" ")
+    btnAllOut.tooltip=function(tooltip)
+        local activeTabIndex= WoWTools_BankMixin:GetIndex()
+        local tabIndex= AccountBankPanel.selectedTabID
+        if (Save().allAccountBag and activeTabIndex==3) or tabIndex==-1 then
+            return
         end
+        local data = AccountBankPanel:GetTabData(tabIndex)
+        if data and data.name then
+            tooltip:AddLine('|cnGREEN_FONT_COLOR:'..data.name)
+        end
+    end
+    Set_Button(btnAllOut)
 
-        local free= WoWTools_BagMixin:GetFree(C_CVar.GetCVarBool('bankAutoDepositReagents'))
-        e.tips:AddDoubleLine(e.onlyChinese and '取出所有战团物品' or 'Take out all account bank',
-            format('|A:4549254:0:0|a%s #%s%d',
-                e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
-                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
-                free)
+--存放所有战团绑定物品, 增强
+    local despButton= AccountBankPanel.ItemDepositFrame.DepositButton
+    despButton:ClearAllPoints()
+    despButton:SetPoint('RIGHT', btnAllOut, 'LEFT', -2, 0)
+    despButton:SetSize(24, 24)
+    despButton:SetText('')
+    despButton.Middle:Hide()
+    despButton.Right:Hide()
+    despButton.Left:Hide()
+    despButton:SetNormalAtlas('Crosshair_buy_64')
+    despButton:SetHighlightAtlas('auctionhouse-nav-button-select')
+    despButton:SetPushedAtlas('auctionhouse-nav-button-select')
+
+    despButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    despButton.index=3
+    despButton.isOutItem=false
+    despButton.name= '|A:Banker:0:0|a'..(e.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)..e.Icon.left
+    despButton.tooltip= function(tooltip)
+        local bankAutoDepositReagents =C_CVar.GetCVarBool('bankAutoDepositReagents')
+        tooltip:AddDoubleLine(
+            '|A:Banker:0:0|a'
+            ..(e.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))..e.Icon.right,
+
+            (bankAutoDepositReagents and '|cnGREEN_FONT_COLOR:' or '|cff828282')..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
         )
-
-        e.tips:Show()
     end
-    function btnAllOut:show_tooltips()
-        C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
+    function despButton.checkBagFunc(bag, slot)
+        if WoWTools_BankMixin:GetIndex()~=1 then
+            return
+        end
+        return C_Bank.IsItemAllowedInBankType(Enum.BankType.Account, ItemLocation:CreateFromBagAndSlot(bag, slot))
     end
-    btnAllOut:HookScript('OnLeave', GameTooltip_Hide)
-    btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)]]
+    Set_Button(despButton)
 
---存放所有战团绑定物品    
-    AccountBankPanel.ItemDepositFrame.DepositButton:ClearAllPoints()
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetPoint('RIGHT', btnAllOut, 'LEFT', -2, 0)
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetSize(24, 24)
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetText('')
-    AccountBankPanel.ItemDepositFrame.DepositButton.Middle:Hide()
-    AccountBankPanel.ItemDepositFrame.DepositButton.Right:Hide()
-    AccountBankPanel.ItemDepositFrame.DepositButton.Left:Hide()
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetNormalAtlas('Crosshair_buy_64')
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetHighlightAtlas('auctionhouse-nav-button-select')
-    AccountBankPanel.ItemDepositFrame.DepositButton:SetPushedAtlas('auctionhouse-nav-button-select')
-    AccountBankPanel.ItemDepositFrame.DepositButton:HookScript('OnLeave', GameTooltip_Hide)
-    AccountBankPanel.ItemDepositFrame.DepositButton:HookScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)
-        e.tips:Show()
+    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnLeave', function()
+        AccountBankPanel.ItemDepositFrame.DepositButton:set_text()
     end)
 
 --添加，整理
     local btnSort= CreateFrame("Button", 'WoWToolsAutoSortAccountBankButton', btnAllOut, 'BankAutoSortButtonTemplate')
     btnSort:SetSize(32, 32)
-    btnSort:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.DepositButton, 'LEFT', -2, 0)--整理材料银行
+    btnSort:SetPoint('RIGHT', despButton, 'LEFT', -2, 0)--整理材料银行
     btnSort:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
@@ -406,53 +427,37 @@ local function Init_AccountBankPanel()
         if GetCVarBool("bankConfirmTabCleanUp") then
 			StaticPopupSpecial_Show(BankCleanUpConfirmationPopup);
 		else
-			C_Container.SortAccountBankBags();
+			C_Container.SortAccountBankBags()
 		end
     end)
-        --BankFrame_AutoSortButtonOnClick()
-		    --StaticPopup_Show("BANK_CONFIRM_CLEANUP", nil, nil, { bankType = 2 });
-        --C_Container.SortAccountBankBags()
-    --end)
 
 
 
 
 
 --包括可交易的材料
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:ClearAllPoints()
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:SetPoint('RIGHT', btnSort, 'LEFT')
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnLeave', GameTooltip_Hide)
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox:HookScript('OnEnter', function(self)
+    local check= AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox
+    check:ClearAllPoints()
+    check:SetPoint('RIGHT', btnSort, 'LEFT')
+    check:HookScript('OnLeave', GameTooltip_Hide)
+    check:HookScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
         e.tips:AddLine(e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
         e.tips:Show()
     end)
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:SetText('')
-    AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox.Text:Hide()
-
-
-
---标签，名称
-    AccountBankPanel.Header:ClearAllPoints()
-    AccountBankPanel.Header:SetPoint('RIGHT', AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox, 'LEFT')
-
-    AccountBankPanel.Header.Text:ClearAllPoints()
-    AccountBankPanel.Header.Text:SetPoint('RIGHT')
-    WoWTools_LabelMixin:Create(nil, {changeFont=AccountBankPanel.Header.Text, size=14, color=true, justifyH='RIGHT'})
-
-    local texture= AccountBankPanel.Header:CreateTexture()
-    texture:SetSize(22,22)
-    texture:SetPoint('RIGHT', AccountBankPanel.Header.Text, 'LEFT',3,0)
-    texture:SetAtlas('questlog-questtypeicon-account')
+    check.Text:SetText('')
+    check.Text:Hide()
 
 --标签，战团银行
-    if AccountBankPanel.selectedTabID and AccountBankPanel.selectedTabID>=0 then
-        local label= WoWTools_LabelMixin:Create(BankSlotsFrame, {size=14})
-        label:SetPoint('TOP', AccountBankPanel, 0, -6)
-        label:SetText(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
-    end
+    local label= WoWTools_LabelMixin:Create(AccountBankPanel.ItemDepositFrame, {size=14, color=true})
+    label:SetPoint('RIGHT', check, 'LEFT')
+    label:SetText('|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
 
+--清除，标签，名称
+    AccountBankPanel.Header:ClearAllPoints()
+    function AccountBankPanel:RefreshHeaderText()
+    end
 
 --钱    
     AccountBankPanel.MoneyFrame.Border:Hide()
@@ -462,7 +467,6 @@ local function Init_AccountBankPanel()
 --背景    
     AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
     AccountBankPanel.Background:SetAllPoints()
-    --WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()
@@ -556,6 +560,43 @@ end
 
 
 
+local function AccountBankPanel_RefreshBankTabs(frame)
+    if not frame.purchasedBankTabData then
+        return
+    end
+
+    for btn in frame.bankTabPool:EnumerateActive() do
+        if not btn.nameLabel then
+            btn.nameLabel= WoWTools_LabelMixin:Create(btn, {color=true})
+            btn.nameLabel:SetPoint('TOPLEFT', btn.Icon, 'BOTTOMLEFT', 0, 1)
+
+            function btn:Settings()
+                local enabled = self:IsEnabled()
+                local isSelected= self:IsSelected() or GameTooltip:IsOwned(self)
+                self.nameLabel:SetAlpha(enabled and 1 or 0)
+                self:SetAlpha(enabled and isSelected and 1 or 0.5)
+            end
+            btn:HookScript('OnEnter', function(self)
+                self.nameLabel:SetAlpha(1)
+                self:SetAlpha(1)
+            end)
+            btn:HookScript('OnLeave', btn.Settings)
+        end
+        btn.Border:SetShown(false)
+        btn.nameLabel:SetText(btn.tabData and btn.tabData.name or '')
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -576,6 +617,14 @@ local function Init()
         BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
     end)
+
+--战团，Tabs
+    AccountBankPanel.PurchaseTab.Border:Hide()
+    hooksecurefunc(AccountBankPanel, 'RefreshBankTabs', AccountBankPanel_RefreshBankTabs)
+    hooksecurefunc(BankPanelTabMixin, 'RefreshVisuals', function(self)
+        if self.Settings then self:Settings() end
+    end)
+    C_Timer.After(0.3, function() AccountBankPanel:RefreshBankTabs() end)
 
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})

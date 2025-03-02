@@ -37,10 +37,13 @@ end
 
 
  --索引，提示
- local function Set_IndexLabel(btn, index)
+ local function Set_IndexLabel(btn, index, frameIndex)
     local showIndex= Save().showIndex
     if not btn.indexLable and showIndex then
-        btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color={r=1,g=1,b=1}})
+        local color= frameIndex==2 and {r=0.93,g=0.82,b=0}
+                    or (frameIndex==3 and {r=0,g=0.82,b=1})
+                    or {r=1,g=1,b=1}
+        btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
         btn.indexLable:SetPoint('CENTER')
         btn.indexLable:SetAlpha(0.2)
     end
@@ -89,7 +92,6 @@ local function Set_BankSlotsFrame(index)
         local btn= BankSlotsFrame["Item"..i]
         if btn then
             btn.index=i
-            --Set_IndexLabel(btn, i)--索引，提示
             table.insert(tab, btn)
         end
     end
@@ -118,7 +120,7 @@ local function Set_BankSlotsFrame(index)
     LastButton:ClearAllPoints()
     LastButton:SetPoint('TOPLEFT', 8, -60)
     NumLeftButton= 1
-    Set_IndexLabel(LastButton, 1)--索引，提示
+    Set_IndexLabel(LastButton, 1, 1)--索引，提示
 
     local line= Save().line
     local num= Save().num
@@ -133,7 +135,7 @@ local function Set_BankSlotsFrame(index)
         else
             btn:SetPoint('TOP', tab[i-1], 'BOTTOM', 0, -line)
         end
-        Set_IndexLabel(btn, i)--索引，提示
+        Set_IndexLabel(btn, i, 1)--索引，提示
     end
 end
 
@@ -164,7 +166,7 @@ local function Set_BankReagent(tabIndex)
                 for row = 0, ReagentBankFrame.numRow-1 do
                     local button=ReagentBankFrame["Item"..index]
                     if button then
-                        Set_IndexLabel(button, index)--索引，提示
+                        Set_IndexLabel(button, index, tabIndex)--索引，提示
                         button:ClearAllPoints()
                         button:SetPoint("TOPLEFT", ReagentBankFrame["BG"..column], "TOPLEFT", leftOffset, -(3+row*slotOffsetY));
                         index = index + 1;
@@ -193,7 +195,7 @@ local function Set_BankReagent(tabIndex)
             end
 
             last= btn
-            Set_IndexLabel(btn, index)--索引，提示
+            Set_IndexLabel(btn, index, tabIndex)--索引，提示
         end
     end
 end
@@ -251,7 +253,7 @@ local function Init_All_AccountBankPanel()
         else
             btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
         end
-        Set_IndexLabel(btn, index)--btn:GetContainerSlotID())--索引，提示
+        Set_IndexLabel(btn, index, 3)--btn:GetContainerSlotID())--索引，提示
         last= btn
     end
 
@@ -283,7 +285,7 @@ local function Set_AccountBankPanel(index)
             else
                 btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
             end
-            Set_IndexLabel(btn, i)--btn:GetContainerSlotID())--索引，提示
+            Set_IndexLabel(btn, i, 3)--btn:GetContainerSlotID())--索引，提示
             last= btn
         end
 

@@ -101,6 +101,9 @@ local function Init_Menu(self, root)
             if check:IsShown() then
                 check:Hide()
                 check:Show()
+                if AccountBankPanel.ItemDepositFrame.DepositButton.set_text then
+                    AccountBankPanel.ItemDepositFrame.DepositButton:set_text()
+                end
             end
         end},
     }) do

@@ -82,6 +82,11 @@ function WoWTools_BankMixin:GetBagAndSlot(btn)
     end
 end
 
+--[[if btn.itemLocation then
+            if C_Item.DoesItemExist(btn.itemLocation) then
+                btn.itemLocation:Get
+            end
+        end]]
 
 function WoWTools_BankMixin:GetItemInfo(btn)
         local bag, slot= self:GetBagAndSlot(btn)
@@ -142,6 +147,7 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
 
 --战团银行   
     elseif isAccount then
+        --if not C_PlayerInfo.HasAccountInventoryLock() then
         if AccountBankPanel.itemButtonPool:GetNumActive() > 0 then
             for btn in AccountBankPanel:EnumerateValidItems() do
                 local info, bag, slot= self:GetItemInfo(btn)
@@ -168,7 +174,7 @@ end
 
 --取出，物品
 
-function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onlyTab)
+function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onlyTab, checkBagFunc)
     index= self:GetIndex(index)
 
     local _, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)
@@ -185,7 +191,7 @@ function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onl
 
     local Tabs= isOutItem
                 and WoWTools_BankMixin:GetItems(index)--取出银行
-                or WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents)--放入物品
+                or WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBagFunc)--放入物品
 
     local NewTab= {}
 

@@ -5287,7 +5287,8 @@
         "CLUB_FINDER_LOOKING_FOR_CLASS_SPEC",
         "ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT",
         "BANK_DEPOSIT_MONEY_BUTTON_LABEL",
-        "BankFrame_AutoSortButtonOnClick"
+        "BankFrame_AutoSortButtonOnClick",
+        "ReagentBankFrameUnlockInfo"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
