@@ -754,32 +754,6 @@ end
 
 
 
-local function set_BankFrameItemButton_Update(self)--银行, BankFrame.lua
-    if not self.isBag then
-        e.Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
-    else
-        C_Timer.After(0.3, function()
-            local slot = self:GetBagID()
-            local numFreeSlots
-            numFreeSlots = C_Container.GetContainerNumFreeSlots(slot)
-            if not numFreeSlots or numFreeSlots==0 then
-                numFreeSlots= nil
-            end
-            if numFreeSlots and not self.numFreeSlots then
-                self.numFreeSlots=WoWTools_LabelMixin:Create(self, {color=true, justifyH='CENTER'})
-                self.numFreeSlots:SetPoint('BOTTOM',0 ,6)
-            end
-            if self.numFreeSlots then
-                self.numFreeSlots:SetText(numFreeSlots or '')
-            end
-        end)
-    end
-end
-
-
-
-
-
 
 
 
@@ -848,21 +822,38 @@ local function Init_Bag()
                 end
             end
         end)
+        --[[
+            local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
+            for i=NUM_BANKBAGSLOTS, 1, -1 do
+                local frame= _G['ContainerFrame'..(i+numBag)]
+                if frame then
+                    hooksecurefunc(frame,'UpdateItems', function(self)
+                        self:GetBagID()
+                    end)
+                end
+            end
+        ]]
 
 --打开公会银行时, 打开背包
         EventRegistry:RegisterFrameEventAndCallback("GUILDBANKBAGSLOTS_CHANGED", setGuildBank)
         EventRegistry:RegisterFrameEventAndCallback("GUILDBANK_ITEM_LOCK_CHANGED", setGuildBank)
     end
 
-    hooksecurefunc('BankFrameItemButton_Update', set_BankFrameItemButton_Update)--银行
-    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(self)--战团银行
+--银行, BankFrame.lua
+    hooksecurefunc('BankFrameItemButton_Update', function(self)
+        if not self.isBag then
+            local bag, slot= WoWTools_BankMixin:GetBagAndSlot(self)
+            e.Set_Item_Info(self, {bag={bag=bag, slot=slot}})
+            --e.Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
+        end
+    end)
+
+--战团银行
+    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(self)
         local info= self.itemInfo or {}
         info.isShow=true
         e.Set_Item_Info(self, info)
     end)
-
-
-
 end
 
 

@@ -4,6 +4,7 @@ WoWTools_BankMixin.Save={
 
     line=2,
     num=15,
+    scale=0.85,
 
     --showIndex=true,--显示，索引
     showBackground= true,--设置，背景

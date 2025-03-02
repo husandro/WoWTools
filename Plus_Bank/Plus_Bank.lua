@@ -38,26 +38,19 @@ end
 
  --索引，提示
  local function Set_IndexLabel(btn, index, frameIndex)
-    local showIndex= Save().showIndex
-    if not btn.indexLable and showIndex then
+    if not btn.indexLable then
         local color= frameIndex==2 and {r=1,g=0.5,b=0}
                     or (frameIndex==3 and {r=0,g=0.82,b=1})
                     or {r=1,g=1,b=1}
         btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
         btn.indexLable:SetPoint('CENTER')
-        btn.indexLable:SetAlpha(0.25)
-    end
-    if btn.indexLable then
-        btn.indexLable:SetText(showIndex and index or '')
-    end
+        btn.indexLable:SetAlpha(0.2)
+        WoWTools_PlusTextureMixin:HideTexture(btn.ItemSlotBackground)
+        WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.2)
 
-    --[[if btn.Background then
-        btn.Background:SetShown(false)
-    elseif btn.icon then
-        if not btn.hasItem then
-            btn.icon:SetShown(false)
-        end
-    end]]
+        WoWTools_PlusTextureMixin:HideTexture(btn.Background)
+    end
+    btn.indexLable:SetText( Save().showIndex and index or '')
 end
 
 
@@ -139,8 +132,8 @@ local function Set_BankSlotsFrame(index)
         else
             btn:SetPoint('TOP', tab[i-1], 'BOTTOM', 0, -line)
         end
-        --Set_IndexLabel(btn, i, 1)--索引，提示
-        Set_IndexLabel(btn, btn:GetID(), 1)--索引，提示
+        Set_IndexLabel(btn, i, 1)--索引，提示
+        --Set_IndexLabel(btn, btn:GetID(), 1)--索引，提示
         
     end
 end
@@ -360,6 +353,7 @@ local function Init()
         if self.isBag and self.set_point_toleft then
             C_Timer.After(0.3, self.set_point_toleft)
         end
+        --self.icon:SetShown(self.hasItem)
     end)
 
 --整合，战团事件
@@ -386,9 +380,20 @@ local function Init()
         end
     end)
 
+--去掉，基础银行，背影
+    BankSlotsFrame:DisableDrawLayer('BORDER')
+
+    for i=1, NUM_BANKBAGSLOTS do
+        local btn= BankSlotsFrame['Bag'..i]
+        if btn then
+            
+            WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, nil, 0.2)
+            WoWTools_PlusTextureMixin:SetAlphaColor(btn.icon, nil, nil, nil, 0.2)
+            
+        end
+    end
     return true
 end
-
 
 
 

@@ -348,7 +348,7 @@ local function Init()
     end
 
 
-    hooksecurefunc('CopyToClipboard', function(text)
+    --[[hooksecurefunc('CopyToClipboard', function(text)
         if text then
             print(
                 WoWTools_TooltipMixin.addName,
@@ -356,7 +356,7 @@ local function Init()
                 text
             )
         end
-    end)
+    end)]]
 
 
 end

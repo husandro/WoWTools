@@ -261,20 +261,30 @@ end
 
 function WoWTools_BankMixin:OpenBag(bagID)
     if bagID then
-        ToggleBag(bagID)
+        if not IsBagOpen(bagID) then
+            ToggleBag(bagID)
+        end
     else
         for i=1, 7 do
-            ToggleBag(i+NUM_TOTAL_EQUIPPED_BAG_SLOTS);
+            bagID= i+NUM_TOTAL_EQUIPPED_BAG_SLOTS
+            if not IsBagOpen(bagID) then
+                ToggleBag(bagID)
+            end
         end
     end
 end
 
 function WoWTools_BankMixin:CloseBag(bagID)
     if bagID then
-        CloseBag(bagID)
+        if IsBagOpen(bagID) then
+            CloseBag(bagID)
+        end
     else
         for i=1, 7 do
-            CloseBag(i+NUM_TOTAL_EQUIPPED_BAG_SLOTS);
+            bagID= i+NUM_TOTAL_EQUIPPED_BAG_SLOTS
+            if IsBagOpen(bagID) then
+                CloseBag(bagID)
+            end
         end
     end
 end

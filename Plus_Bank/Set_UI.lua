@@ -509,10 +509,10 @@ end
 local function Init_OpenAllBag_Button()
     local up= WoWTools_ButtonMixin:Cbtn(BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], {
         name='WoWToolsBankOpenAllBagButton',
-        atlas='NPE_ArrowDown',
-        size=22,
+        atlas='NPE_ArrowUp',
+        size={18, 23},
     })
-    up:SetPoint('TOPLEFT', BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], 'TOPRIGHT', 0,2)
+    up:SetPoint('TOPLEFT', BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], 'TOPRIGHT', 0,4)
     up:SetScript('OnLeave', GameTooltip_Hide)
     up:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
@@ -529,8 +529,8 @@ local function Init_OpenAllBag_Button()
 
     local down= WoWTools_ButtonMixin:Cbtn(up, {
         name='WoWToolsBankCloseAllBagButton',
-        size=22,
-        atlas='NPE_ArrowUp',
+        size={18, 23},
+        atlas='NPE_ArrowDown',
     })
 
     down:SetPoint('TOP', up, 'BOTTOM')
@@ -657,9 +657,59 @@ local function Init()
     BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
     WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
 
+
+--银行 1-7 背包 Free, BankFrame.lua
+    local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
+    for i=NUM_BANKBAGSLOTS, 1, -1 do
+        local button= BankSlotsFrame['Bag'..i]
+        if button then
+
+            button.numFreeSlots=WoWTools_LabelMixin:Create(button, {color=true, justifyH='CENTER'})
+            button.numFreeSlots:SetPoint('TOP', 0, 2)
+            button.numMaxSlots=WoWTools_LabelMixin:Create(button, {justifyH='CENTER', color={r=0.82,g=0.82,b=0.82, a=0.7}})
+            button.numMaxSlots:SetPoint('BOTTOM')
+
+            button.NormalTexture:SetAlpha(0.2)
+
+            function button:set_free()
+                local hasItem = GameTooltip:SetInventoryItem("player", self:GetInventorySlot())
+                local numFreeSlots, maxSlot
+
+                if hasItem then
+                    local bagID= self:GetBagID()
+                    numFreeSlots= C_Container.GetContainerNumFreeSlots(bagID)
+                    maxSlot= C_Container.GetContainerNumSlots(bagID)
+                end
+
+                self.numFreeSlots:SetText(numFreeSlots or '')
+                self.numMaxSlots:SetText(maxSlot or '')
+                self.icon:SetAlpha(hasItem and 1 or 0.2)
+            end
+
+        end
+
+        local frame= _G['ContainerFrame'..(i+numBag)]
+        if frame then
+            hooksecurefunc(frame,'UpdateItems', function(self)
+                local bagID= self:GetBagID()-NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES-1
+                local btn= BankSlotsFrame['Bag'..bagID]
+                if btn and btn.set_free then
+                    btn:set_free()
+                end
+            end)
+        end
+
+    end
+
+    hooksecurefunc('BankFrameItemButton_Update', function(btn)
+        if btn.set_free then
+            btn:set_free()
+        end
+    end)
+
+
+
 end
-
-
 
 
 

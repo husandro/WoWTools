@@ -269,7 +269,7 @@ function Events:Blizzard_GuildBankUI(mixin)
                 local button = self2.Columns[column].Buttons[index];
                 if button and button.NormalTexture then
                     local texture= GetGuildBankItemInfo(tab, i)
-                    button.NormalTexture:SetAlpha(texture and 1 or 0.1)
+                    button.NormalTexture:SetAlpha(texture and 1 or 0.2)
                 end
             end
         end

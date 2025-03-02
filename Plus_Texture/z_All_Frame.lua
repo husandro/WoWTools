@@ -14,7 +14,7 @@ local function set_BagTexture(frame)
 
             WoWTools_PlusTextureMixin:HideTexture(btn.Background)
         end
-        btn.NormalTexture:SetAlpha(btn.hasItem and 1 or 0.3)
+        btn.NormalTexture:SetAlpha(btn.hasItem and 1 or 0.2)
     end
 end
 
