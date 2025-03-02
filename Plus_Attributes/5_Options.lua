@@ -587,7 +587,7 @@ local function Init()--设置 panel
     checkStrupper:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddeLine(e.onlyChinese and '大写' or 'Uppercase')
+        e.tips:AddLine(e.onlyChinese and '大写' or 'Uppercase')
         e.tips:Show()
     end)
 
@@ -606,7 +606,7 @@ local function Init()--设置 panel
     checkStrlower:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddeLine(e.onlyChinese and '小写' or 'Lowercase')
+        e.tips:AddLine(e.onlyChinese and '小写' or 'Lowercase')
         e.tips:Show()
     end)
 
