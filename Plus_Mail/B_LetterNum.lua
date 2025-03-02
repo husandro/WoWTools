@@ -63,7 +63,7 @@ local function Init()--字数
     SendMailSubjectEditBox.clearButton= WoWTools_ButtonMixin:Cbtn(SendMailSubjectEditBox, {
         size=22,
         atlas='bags-button-autosort-up',
-        name= 'WoWToolsClearSendMailNameButton'
+        name= 'WoWToolsClearSendMailSubjectButton'
     })
 
     SendMailSubjectEditBox.clearButton:SetPoint('RIGHT', SendMailSubjectEditBox, 'LEFT', -4, 0)
