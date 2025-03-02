@@ -863,36 +863,6 @@ local function Init_Bag()
 
 
 
-    --############
-    --排序:从右到左
-    --############
-    Menu.ModifyMenu("MENU_CONTAINER_FRAME_COMBINED", function(_, root)
-        root:CreateDivider()
-        local check= root:CreateCheckbox(e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT, function()
-                return not C_Container.GetSortBagsRightToLeft()
-            end, function()
-                C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft() and true or false)
-                return MenuResponse.Close
-            end)
-        check:SetTooltip(function(tooltip, elementDescription)
-            GameTooltip_SetTitle(tooltip, id..' '..addName)
-            tooltip:AddDoubleLine(MenuUtil.GetElementText(elementDescription), e.GetEnabeleDisable(not C_Container.GetSortBagsRightToLeft()))
-            tooltip:AddDoubleLine('C_Container.SetSortBagsRightToLeft')
-        end)
-
-        check= root:CreateCheckbox(e.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
-            C_Container.GetBackpackAutosortDisabled,
-            function()
-                C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
-                return MenuResponse.Close
-            end)
-        check:SetTooltip(function(tooltip, elementDescription)
-            GameTooltip_SetTitle(tooltip, id..' '..addName)
-            tooltip:AddDoubleLine(MenuUtil.GetElementText(elementDescription), e.GetEnabeleDisable(C_Container.GetBackpackAutosortDisabled()))
-            tooltip:AddLine('C_Container.SetBackpackAutosortDisabled')
-        end)
-
-    end)
 end
 
 
@@ -1302,14 +1272,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
-            if WoWToolsSave['ItemInfo_Lua'] then
-                Save= WoWToolsSave['ItemInfo_Lua']
-                WoWToolsSave['ItemInfo_Lua']= nil
-            else
-                Save= WoWToolsSave['Plus_ItemInfo'] or Save
-            end
-
-            addName= '|A:bag-main:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
+            Save= WoWToolsSave['Plus_ItemInfo'] or Save
+            addName= '|A:Barbershop-32x32:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
             --添加控制面板
             e.AddPanel_Check({

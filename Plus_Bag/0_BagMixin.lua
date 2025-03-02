@@ -1,7 +1,4 @@
-
-WoWTools_BagMixin={
-    --Find
-}
+WoWTools_BagMixin={}
 
 --查询，背包里物品，itemName，itemLink，itemID，itemLocation，merchantIndex，BuybackIndex，itemKey，bag，guidBank，lootIndex
 function WoWTools_BagMixin:Find(find, tab)

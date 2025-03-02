@@ -581,11 +581,14 @@ local function AccountBankPanel_RefreshBankTabs(frame)
                 self:SetAlpha(1)
             end)
             btn:HookScript('OnLeave', btn.Settings)
+            btn:Settings()
         end
         btn.Border:SetShown(false)
         btn.nameLabel:SetText(btn.tabData and btn.tabData.name or '')
     end
 end
+
+
 
 
 
@@ -624,12 +627,32 @@ local function Init()
     hooksecurefunc(BankPanelTabMixin, 'RefreshVisuals', function(self)
         if self.Settings then self:Settings() end
     end)
-    C_Timer.After(0.3, function() AccountBankPanel:RefreshBankTabs() end)
 
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
     WoWTools_PlusTextureMixin:SetNineSlice(BankFrame, true, false, false, false)
+
+
+--背包位
+    for index=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
+        local btn= BankSlotsFrame['Bag'..index]
+        if btn then
+            btn:ClearAllPoints()
+            if index==1 then
+                btn:SetPoint('BOTTOMLEFT',6,6)
+            else
+                btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(index-1)], 'RIGHT', Save().line, 0)
+            end
+        end
+    end
+
+
+--购买，背包栏
+    BankFramePurchaseInfo:ClearAllPoints()
+    BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
+    WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
+
 end
 
 

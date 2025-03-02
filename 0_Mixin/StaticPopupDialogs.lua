@@ -413,6 +413,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     if arg1~= id then
         return
     end
-    if Init() then Init=function()end end
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+
+    C_Timer.After(1, function()
+        if Init() then Init=function()end end
+        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    end)
 end)

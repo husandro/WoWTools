@@ -133,24 +133,6 @@ local function Init()
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
     --WoWTools_TooltipMixin:Set_Init_Item(GlueTooltip)
-
-    EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEAVING_WORLD", function()
-        if Save().setCVar then
-            if not UnitAffectingCombat('player') then
-                Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
-                SetCVar("graphicsViewDistance", 0)
-            else
-                Save().graphicsViewDistance=nil
-            end
-        end
-    end)
-    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()--https://wago.io/ZtSxpza28
-        if Save().setCVar and Save().graphicsViewDistance and not UnitAffectingCombat('player') then
-            C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)
-            Save().graphicsViewDistance=nil
-        end
-    end)
-
 end
 
 
@@ -164,6 +146,8 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -176,6 +160,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 Load_Addon= function()end
+                self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+                self:UnregisterEvent('PLAYER_LEAVING_WORLD')
                 self:UnregisterEvent(event)
                 return
             end
@@ -183,6 +169,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Init()--初始
         else
             Load_Addon(arg1)
+        end
+
+
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if Save().setCVar and Save().graphicsViewDistance and not InCombatLockdown() then
+            C_CVar.SetCVar('graphicsViewDistance', Save().graphicsViewDistance)--https://wago.io/ZtSxpza28
+            Save().graphicsViewDistance=nil
+        end
+
+    elseif event=='PLAYER_LEAVING_WORLD' then
+        if Save().setCVar then
+            if not InCombatLockdown() then
+                Save().graphicsViewDistance= C_CVar.GetCVar('graphicsViewDistance')
+                SetCVar("graphicsViewDistance", 0)
+            else
+                Save().graphicsViewDistance=nil
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

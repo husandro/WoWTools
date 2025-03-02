@@ -150,6 +150,7 @@ local function Init_Menu(self, root)
             WoWTools_BankMixin:OpenBag()
         end
         WoWTools_BankMixin:Init_Plus()
+        WoWTools_BankMixin:Set_PortraitButton()
     end)
     settings(sub, isBank)
 

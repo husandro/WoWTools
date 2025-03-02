@@ -55,6 +55,8 @@ local function Init()
     WoWTools_BankMixin:Init_UI()--存放，取出，所有
     WoWTools_BankMixin:Init_Left_List()
 
+
+    WoWTools_BankMixin:Set_PortraitButton()
     return true
 end
 
@@ -68,16 +70,6 @@ end
 
 
 
-
-
-
-
-EventRegistry:RegisterFrameEventAndCallback('BANKFRAME_OPENED', function(owner)
-    if not Save().disabled and Init() then
-        Init=function() end
-        EventRegistry:UnregisterCallback('BANKFRAME_OPENED', owner)
-    end
-end)
 
 
 

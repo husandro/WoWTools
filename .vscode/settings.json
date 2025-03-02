@@ -5288,7 +5288,14 @@
         "ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT",
         "BANK_DEPOSIT_MONEY_BUTTON_LABEL",
         "BankFrame_AutoSortButtonOnClick",
-        "ReagentBankFrameUnlockInfo"
+        "ReagentBankFrameUnlockInfo",
+        "ContainerFrame_CanContainerUseFilterMenu",
+        "ENABLE_ALL_ADDONS",
+        "ContainerFrameUtil_EnumerateBagGearFilters",
+        "BAG_FILTER_LABELS",
+        "BAG_FILTER_PROFESSION_GOODS",
+        "ITEM_CONTAINER",
+        "ContainerFrame7"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -40,12 +40,12 @@ end
  local function Set_IndexLabel(btn, index, frameIndex)
     local showIndex= Save().showIndex
     if not btn.indexLable and showIndex then
-        local color= frameIndex==2 and {r=0.93,g=0.82,b=0}
+        local color= frameIndex==2 and {r=1,g=0.5,b=0}
                     or (frameIndex==3 and {r=0,g=0.82,b=1})
                     or {r=1,g=1,b=1}
         btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
         btn.indexLable:SetPoint('CENTER')
-        btn.indexLable:SetAlpha(0.2)
+        btn.indexLable:SetAlpha(0.25)
     end
     if btn.indexLable then
         btn.indexLable:SetText(showIndex and index or '')
@@ -87,32 +87,36 @@ local function Set_BankSlotsFrame(index)
 
     local tab={}
 
---基础包
-    for i=1, NUM_BANKGENERIC_SLOTS do--28
-        local btn= BankSlotsFrame["Item"..i]
-        if btn then
-            btn.index=i
-            table.insert(tab, btn)
-        end
-    end
+
 
 --背包
     if not Save().disabledBankBag then
         local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
-        for i=1, NUM_BANKBAGSLOTS do
+        for i=NUM_BANKBAGSLOTS, 1, -1 do
             local frame= _G['ContainerFrame'..(i+numBag)]
             if frame then
                 local isShow= frame:IsShown()
-                frame:bank_settings()
+                if frame.bank_settings then
+                    frame:bank_settings()
+                end
                 for _, btn in frame:EnumerateValidItems()  do
                     if btn then
                         if isShow then
-                            table.insert(tab, btn)
+                            table.insert(tab, 1, btn)
                         end
                         btn:SetShown(isShow)
                     end
                 end
             end
+        end
+    end
+
+    --基础包
+    for i=NUM_BANKGENERIC_SLOTS, 1, -1 do--28
+        local btn= BankSlotsFrame["Item"..i]
+        if btn then
+            btn.index=i
+            table.insert(tab, 1, btn)
         end
     end
 
@@ -135,7 +139,9 @@ local function Set_BankSlotsFrame(index)
         else
             btn:SetPoint('TOP', tab[i-1], 'BOTTOM', 0, -line)
         end
-        Set_IndexLabel(btn, i, 1)--索引，提示
+        --Set_IndexLabel(btn, i, 1)--索引，提示
+        Set_IndexLabel(btn, btn:GetID(), 1)--索引，提示
+        
     end
 end
 
@@ -166,7 +172,7 @@ local function Set_BankReagent(tabIndex)
                 for row = 0, ReagentBankFrame.numRow-1 do
                     local button=ReagentBankFrame["Item"..index]
                     if button then
-                        Set_IndexLabel(button, index, tabIndex)--索引，提示
+                        Set_IndexLabel(button, index, 2)--索引，提示
                         button:ClearAllPoints()
                         button:SetPoint("TOPLEFT", ReagentBankFrame["BG"..column], "TOPLEFT", leftOffset, -(3+row*slotOffsetY));
                         index = index + 1;
@@ -195,7 +201,7 @@ local function Set_BankReagent(tabIndex)
             end
 
             last= btn
-            Set_IndexLabel(btn, index, tabIndex)--索引，提示
+            Set_IndexLabel(btn, index, 2)--索引，提示
         end
     end
 end
@@ -286,6 +292,7 @@ local function Set_AccountBankPanel(index)
                 btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
             end
             Set_IndexLabel(btn, i, 3)--btn:GetContainerSlotID())--索引，提示
+            
             last= btn
         end
 
@@ -355,28 +362,7 @@ local function Init()
         end
     end)
 
---背包位
-    for index=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
-        local btn= BankSlotsFrame['Bag'..index]
-        if btn then
-            btn:ClearAllPoints()
-            if index==1 then
-                --btn:SetPoint('TOPLEFT', _G['BankFrameItem'..Save().num], 'BOTTOMLEFT', 0,-8)
-                btn:SetPoint('BOTTOMLEFT',6,6)
-            else
-                btn:SetPoint('LEFT', BankSlotsFrame['Bag'..(index-1)], 'RIGHT', Save().line, 0)
-            end
-        end
-    end
-
-
---购买，背包栏
-    BankFramePurchaseInfo:ClearAllPoints()
-    BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
-    WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
-
 --整合，战团事件
-    
     AccountBankPanel:HookScript('OnEvent', function(self, event, ...)
         if not Save().allAccountBag and BankFrame.activeTabIndex~=3 then
             self.selectedTabIDs={}
@@ -417,91 +403,8 @@ end
 
 
 
-
-local function Set_PortraitButton()
-    local isReagentFrame = not Save().disabledBankBag
-    local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
-    for index=1, NUM_BANKBAGSLOTS do
-        local bag= index+ numBag
-        local frame= _G['ContainerFrame'..bag]
-        local btn= BankSlotsFrame['Bag'..index]
-        if frame and btn then
-
-            for _, button in frame:EnumerateValidItems()  do
-                if button then
-                    button:SetParent(isReagentFrame and BankSlotsFrame or frame)
-                    button:SetShown(true)
-                end
-            end
-
-            frame.PortraitButton:ClearAllPoints()
-
-            if not isReagentFrame then
-                function frame:bank_settings() end
-                frame.PortraitButton:SetParent(frame)
-                frame.PortraitButton:SetShown(true)
-                frame:SetAlpha(1)
-                if frame.ResizeButton then
-                    frame.ResizeButton:SetClampedToScreen(true)
-                end
-                frame.PortraitButton:SetPoint('LEFT', frame.PortraitContainer.portrait, 'RIGHT', 2,0)
-            else
-                function frame:bank_settings()
-                    self:ClearAllPoints()
-                    self:SetPoint('RIGHT', UIParent, 'LEFT', -60, 0)
-                    self:SetAlpha(0)
-                    self.PortraitButton:SetShown(self:IsShown())
-                end
-                frame:SetParent(frame.BankSlotButton)
-                if frame.ResizeButton then
-                    frame.ResizeButton:SetClampedToScreen(false)
-                end
-                frame.PortraitButton:SetPoint('TOPLEFT', btn,-2,2)
-            end
-
-
-            if not frame.BankSlotButton then
-                frame:HookScript('OnEnter', function(self)
-                    self:bank_settings()
-                end)
-                frame:HookScript('OnShow', function(self)
-                    self:bank_settings()
-                end)
-                frame:HookScript('OnHide', function(self)
-                    self:bank_settings()
-                end)
-
-
-                btn.MatchesBagID= frame.PortraitButton:GetParent().MatchesBagID
-
-                frame.BankSlotButton= btn
-
-
-
-                frame.PortraitButton:SetSize(20,20)--37
-                frame.PortraitButton:SetNormalAtlas(e.Icon.icon)
-                frame.PortraitButton:SetPushedAtlas('bag-border-highlight')
-                frame.PortraitButton:SetHighlightAtlas('bag-border')
-
-                frame.FilterIcon.Icon:SetParent(frame.PortraitButton)
-                frame.FilterIcon.Icon:ClearAllPoints()
-                frame.FilterIcon.Icon:SetAllPoints()
-            end
-
-            frame:bank_settings()
-        end
-    end
-end
-
-
-
-
-
-
-
 --整合
 function WoWTools_BankMixin:Init_Plus()
-    Set_PortraitButton()
     if Init() then
         Init= function() end
     else

@@ -29,7 +29,6 @@ Init.xml
 
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Aura.lua
-0_Mixin\Bag.lua
 0_Mixin\Button.lua
 0_Mixin\Chat.lua
 0_Mixin\Collected.lua
@@ -391,11 +390,14 @@ Plus_Bank\3_MoveFrame.lua
 Plus_Bank\Left_List.lua
 Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua
+Plus_Bank\z_PortraitButton.lua
 
 
-
-
-
+##容器
+Plus_Bag\0_BagMixin.lua
+Plus_Bag\1_Init_Bag.lua
+Plus_Bag\z_Container_Menu.lua
+##Plus_Bag\z_PortraitButton.lua
 
 ##自动对话，任务
 Plus_Gossip\0_Init.lua
