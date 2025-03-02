@@ -566,7 +566,7 @@ local function AccountBankPanel_RefreshBankTabs(frame)
         return
     end
 
-    local allAccountBag= Save().allAccountBag and BankFrame.activeTabIndex==3
+   -- local allAccountBag= Save().allAccountBag and BankFrame.activeTabIndex==3
 
     for btn in frame.bankTabPool:EnumerateActive() do
         if not btn.nameLabel then
@@ -587,7 +587,7 @@ local function AccountBankPanel_RefreshBankTabs(frame)
             btn:Settings()
             btn.Border:SetTexture(0)
         end
-        btn.nameLabel:SetText( (not allAccountBag and btn.tabData and btn.tabData.name)  or '')
+        btn.nameLabel:SetText(btn.tabData and btn.tabData.name  or '')
     end
 end
 
@@ -622,9 +622,6 @@ local function Init()
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
         BankItemSearchBox:ClearAllPoints()
         BankItemSearchBox:SetPoint('TOP', 0,-33)
-    end)
-    BankFrameTab3:HookScript('OnMouseUp', function()
-        AccountBankPanel_RefreshBankTabs()
     end)
 
 --战团，Tabs
