@@ -238,7 +238,6 @@ function WoWTools_BankMixin:Init_Guild()
     if e.Player.husandro then
         Init()
     else
-       
-    WoWTools_MoveMixin:Setup(GuildBankFrame)
+        WoWTools_MoveMixin:Setup(GuildBankFrame)
     end
 end
