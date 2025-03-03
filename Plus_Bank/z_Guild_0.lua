@@ -11,6 +11,20 @@ local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 local Buttons={}
 local NumLeftButton=0
 
+local function Set_Item(btn)
+    local tabID, slotID= btn.tabID, btn:GetID()
+    local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tabID, slotID)
+
+    SetItemButtonTexture(btn, texture)
+    SetItemButtonCount(btn, itemCount)
+    SetItemButtonDesaturated(btn, locked)
+    btn:SetMatchesSearch(not isFiltered)
+    SetItemButtonQuality(btn, quality, GetGuildBankItemLink(tabID, slotID))
+end
+
+
+
+
 
 local function Set_Frame_Size(frame)
     local x= NumLeftButton
@@ -92,7 +106,7 @@ local function Create_Button(index)--需要 GetCurrentGuildBankTab() 修改成 s
     btn:SetScript('OnReceiveDrag', function(self)
         PickupGuildBankItem(self.tabID, self:GetID())
     end)
-    
+
     Set_IndexLabel(btn, index)
     Buttons[index]= btn
     return btn
@@ -117,8 +131,7 @@ local function Init_Button(self)
     local num= Save().num
     local line= Save().line
     local index=MAX_GUILDBANK_SLOTS_PER_TAB--98
-    local texture, itemCount, locked, isFiltered, quality
-
+  
     for tab=1, numTab do
         if currentIndex~=tab then
             for slot=1, MAX_GUILDBANK_SLOTS_PER_TAB do
@@ -128,14 +141,8 @@ local function Init_Button(self)
 
                 btn.tabID= tab
                 btn:SetID(slot)
-
-                texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, slot)
-
-                SetItemButtonTexture(btn, texture)
-                SetItemButtonCount(btn, itemCount)
-                SetItemButtonDesaturated(btn, locked)
-                btn:SetMatchesSearch(not isFiltered)
-                SetItemButtonQuality(btn, quality, GetGuildBankItemLink(tab, slot))
+            
+                Set_Item(btn)
             end
         end
     end
