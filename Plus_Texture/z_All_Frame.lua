@@ -8,11 +8,11 @@ local function set_BagTexture(frame)
     end
     for _, btn in frame:EnumerateValidItems() do
         if not btn.hasItem then
-            WoWTools_PlusTextureMixin:HideTexture(btn.icon)
-            WoWTools_PlusTextureMixin:HideTexture(btn.ItemSlotBackground)
-            WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, true)
+            WoWTools_TextureMixin:HideTexture(btn.icon)
+            WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
+            WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, true)
 
-            WoWTools_PlusTextureMixin:HideTexture(btn.Background)
+            WoWTools_TextureMixin:HideTexture(btn.Background)
         end
         btn.NormalTexture:SetAlpha(btn.hasItem and 1 or 0.2)
     end
@@ -773,10 +773,10 @@ end)
 
      C_Timer.After(2, function()
 
-        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.Start)
-        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.End)
-        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.HorizontalMiddle)
-        WoWTools_PlusTextureMixin:HideTexture(SpellFlyout.Background.VerticalMiddle)
+        WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.Start)
+        WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.End)
+        WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.HorizontalMiddle)
+        WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.VerticalMiddle)
 
 
          local libDBIcon = LibStub("LibDBIcon-1.0", true)
@@ -978,6 +978,75 @@ local function Blizzard_Communities(mixin)
         mixin:SetInset(AccountStoreFrame.RightInset)
         mixin:SetInset(AccountStoreFrame.LeftInset)
     end
+
+--新建，公会, 签名
+    mixin:SetAlphaColor(PetitionFrame.Bg, nil, true, true)
+    mixin:SetNineSlice(PetitionFrame)
+    mixin:SetAlphaColor(PetitionFrameBg, nil, nil,true)
+    mixin:HideTexture(PetitionFrameInset.Bg)
+    mixin:SetInset(PetitionFrameInset)
+    mixin:SetNineSlice(PetitionFrameInset)
+    mixin:SetScrollBar(PetitionFrame)
+
+--公会，可以使用的服务
+    mixin:SetNineSlice(GuildRegistrarFrame)
+    mixin:SetAlphaColor(GuildRegistrarFrameBg, nil, nil,true)
+    mixin:HideTexture(GuildRegistrarFrameInset.Bg)
+    mixin:SetInset(GuildRegistrarFrameInset)
+    mixin:SetNineSlice(GuildRegistrarFrameInset)
+    mixin:SetScrollBar(GuildRegistrarFrame)
+    
+--设计，公会战袍
+    --mixin:SetNineSlice(TabardFrameInset)
+    TabardFrameInset:Hide()
+    mixin:SetNineSlice(TabardFrame)
+    TabardFrameBg:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+
+    mixin:SetAlphaColor(TabardFrameBg, nil, nil, true)
+
+    mixin:HideTexture(TabardFrameMoneyBgMiddle)
+    mixin:HideTexture(TabardFrameMoneyBgLeft)
+    mixin:HideTexture(TabardFrameMoneyBgRight)
+    mixin:HideTexture(TabardFrameMoneyInset.Bg)
+
+    TabardFrameMoneyInset.NineSlice:Hide()
+    TabardFrameCostFrame.NineSlice:Hide()
+    TabardFrameOuterFrameTopLeft:Hide()
+    TabardFrameOuterFrameTopRight:Hide()
+    TabardFrameOuterFrameBottomLeft:Hide()
+    TabardFrameOuterFrameBottomRight:Hide()
+    TabardFrameOuterFrameLeftTop:Hide()
+    TabardFrameOuterFrameLeftBottom:Hide()
+    TabardFrameOuterFrameRightTop:Hide()
+    TabardFrameOuterFrameRightBottom:Hide()
+    TabardFrameOuterFrameBottom:Hide()
+    TabardFrameOuterFrameTop:Hide()
+
+    TabardFrameCustomization1Middle:Hide()
+    TabardFrameCustomization1Left:Hide()
+    TabardFrameCustomization1Right:Hide()
+
+    TabardFrameCustomization2Middle:Hide()
+    TabardFrameCustomization2Left:Hide()
+    TabardFrameCustomization2Right:Hide()
+
+    TabardFrameCustomization3Middle:Hide()
+    TabardFrameCustomization3Left:Hide()
+    TabardFrameCustomization3Right:Hide()
+
+    TabardFrameCustomization4Middle:Hide()
+    TabardFrameCustomization4Left:Hide()
+    TabardFrameCustomization4Right:Hide()
+
+    TabardFrameCustomization5Middle:Hide()
+    TabardFrameCustomization5Left:Hide()
+    TabardFrameCustomization5Right:Hide()
+
+
+    mixin:SetButton(TabardCharacterModelRotateLeftButton, {alpha=0.5})
+    mixin:SetButton(TabardCharacterModelRotateRightButton, {alpha=0.5})
+
+
 end
 
 
@@ -994,7 +1063,7 @@ end
 
 
 
-function WoWTools_PlusTextureMixin:Init_All_Frame()
+function WoWTools_TextureMixin:Init_All_Frame()
     do
         Init(self)
         Blizzard_Communities(self)

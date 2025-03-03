@@ -1,5 +1,5 @@
 local function Save()
-    return WoWTools_PlusTextureMixin.Save
+    return WoWTools_TextureMixin.Save
 end
 
 local Events={}
@@ -76,7 +76,7 @@ function Events:Blizzard_PlayerSpells(mixin)
             Set_TalentsFrameBg()
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_PlusTextureMixin.addName)
+            tooltip:AddLine(WoWTools_TextureMixin.addName)
         end)
     end)
     Set_TalentsFrameBg()
@@ -1075,7 +1075,7 @@ end
 
 
 
-function WoWTools_PlusTextureMixin:Init_Event()
+function WoWTools_TextureMixin:Init_Event()
     for name, func in pairs(Events) do
         if C_AddOns.IsAddOnLoaded(name) then
             do
@@ -1087,7 +1087,7 @@ function WoWTools_PlusTextureMixin:Init_Event()
 end
 
 
-function WoWTools_PlusTextureMixin:Set_Event(name)
+function WoWTools_TextureMixin:Set_Event(name)
     local func=Events[name]
     if func then
         do

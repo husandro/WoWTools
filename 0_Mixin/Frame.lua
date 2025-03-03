@@ -89,8 +89,8 @@ function WoWTools_FrameMixin:Create(parent, tab)
     frame.CloseButton=CreateFrame('Button', nil, frame, 'UIPanelCloseButton')
     frame.CloseButton:SetPoint('TOPRIGHT')
 
-    WoWTools_PlusTextureMixin:SetFrame(frame.Border, {alpha=0.5})
-    WoWTools_PlusTextureMixin:SetFrame(frame.Header, {alpha=0.7})
+    WoWTools_TextureMixin:SetFrame(frame.Border, {alpha=0.5})
+    WoWTools_TextureMixin:SetFrame(frame.Header, {alpha=0.7})
 
     frame.width= w
     frame.height= h

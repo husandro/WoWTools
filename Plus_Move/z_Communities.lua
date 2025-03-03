@@ -142,10 +142,62 @@ local function Init()
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
     WoWTools_MoveMixin:Setup(CommunitiesGuildNewsFiltersFrame)
     WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame)
+
+
+
+
+--新建，公会, 签名
+    WoWTools_MoveMixin:Setup(PetitionFrame, {setSize=true, initFunc=function(btn)
+        PetitionFrame.Bg:SetPoint('BOTTOMRIGHT',-32,30)
+    end, sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(338, 424)
+    end})
+--公会，可以使用的服务
+    WoWTools_MoveMixin:Setup(GuildRegistrarFrame)
+--设计，公会战袍
+    WoWTools_MoveMixin:Setup(TabardFrame, {setSize=true, initFunc=function()
+        TabardFrameCancelButton:ClearAllPoints()
+        TabardFrameCancelButton:SetPoint('BOTTOMRIGHT', -20, 8)
+        TabardFrameAcceptButton:ClearAllPoints()
+        TabardFrameAcceptButton:SetPoint('RIGHT', TabardFrameCancelButton, 'LEFT')
+        TabardFrameNameText:ClearAllPoints()
+        TabardFrameNameText:SetParent(TabardFrame.TitleContainer)
+        TabardFrameNameText:SetPoint('CENTER',TabardFrame.TitleContainer)
+        TabardFrameNameText:SetDrawLayer('BORDER', 7)
+
+        TabardFrameCostFrame:ClearAllPoints()
+        TabardFrameCostFrame:SetPoint('TOPRIGHT', -8, -50)
+
+        TabardFrameEmblemTopRight:ClearAllPoints()
+        TabardFrameEmblemTopRight:SetPoint('BOTTOMRIGHT', 0, 240)
+
+        TabardModel:SetPoint('TOPLEFT', 2, 0)
+        TabardModel:SetPoint('TOPRIGHT', -2, 0)
+        TabardModel:SetPoint('BOTTOM', TabardFrame, 'BOTTOM', 0, 2)
+
+        TabardModel:HookScript('OnMouseWheel', function(self, d)--ModelFrameMixin.lua
+            local rotationsPerSecond = ROTATIONS_PER_SECOND;
+            local elapsedTime= 0.05
+            if d==-1 then
+                self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
+                if ( self.rotation > (2 * PI) ) then
+                    self.rotation = self.rotation - (2 * PI);
+                end
+                self:SetRotation(self.rotation);
+
+            else
+                self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
+                if ( self.rotation < 0 ) then
+                    self.rotation = self.rotation + (2 * PI);
+                end
+                self:SetRotation(self.rotation);
+            end
+        end)
+    end, sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(338, 424)
+    end})
+    
 end
-
-
-
 
 
 

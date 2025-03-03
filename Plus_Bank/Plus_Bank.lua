@@ -45,10 +45,10 @@ end
         btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
         btn.indexLable:SetPoint('CENTER')
         btn.indexLable:SetAlpha(0.2)
-        WoWTools_PlusTextureMixin:HideTexture(btn.ItemSlotBackground)
-        WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.2)
+        WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
+        WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.2)
 
-        WoWTools_PlusTextureMixin:HideTexture(btn.Background)
+        WoWTools_TextureMixin:HideTexture(btn.Background)
     end
     btn.indexLable:SetText( Save().showIndex and index or '')
 end
@@ -387,8 +387,8 @@ local function Init()
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
             
-            WoWTools_PlusTextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, nil, 0.2)
-            WoWTools_PlusTextureMixin:SetAlphaColor(btn.icon, nil, nil, nil, 0.2)
+            WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, nil, 0.2)
+            WoWTools_TextureMixin:SetAlphaColor(btn.icon, nil, nil, nil, 0.2)
             
         end
     end

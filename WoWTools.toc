@@ -16,6 +16,7 @@
 ####AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
 
+##以Mixin.lua为结尾，请不要关，其它功能可能会调用
 
 ##调用库，不能删除
 Init.xml
@@ -50,7 +51,6 @@ Init.xml
 0_Mixin\Random.lua
 0_Mixin\Spell.lua
 0_Mixin\Text.lua
-0_Mixin\Texture.lua
 0_Mixin\Time.lua
 0_Mixin\SetTooltip.lua
 0_Mixin\SetTooltip_Faction.lua
@@ -149,8 +149,10 @@ Plus_Move\z_WorldMapFrame.lua
 
 
 ##隐藏材质，透明度
-Plus_Texture\0_Texture.lua
-Plus_Texture\1_Options.lua
+Plus_Texture\0_TextureMixin.lua
+Plus_Texture\1_Setup_Mixin.lua
+Plus_Texture\2_Init.lua
+Plus_Texture\3_Options.lua
 Plus_Texture\a_ActionButton.lua
 Plus_Texture\a_ChatBubbles.lua
 Plus_Texture\a_ClassPower.lua

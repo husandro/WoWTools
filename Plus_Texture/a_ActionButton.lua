@@ -21,9 +21,9 @@ end
 
 
 local function Set_Texture(btn)
-    WoWTools_PlusTextureMixin:HideTexture(btn.SlotArt)
-    WoWTools_PlusTextureMixin:HideTexture(btn.NormalTexture)--外框，方块
-    WoWTools_PlusTextureMixin:HideTexture(btn.SlotBackground, true)--背景
+    WoWTools_TextureMixin:HideTexture(btn.SlotArt)
+    WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块
+    WoWTools_TextureMixin:HideTexture(btn.SlotBackground, true)--背景
 end
 
 
@@ -94,7 +94,7 @@ local function Init()
         if dividersPool then
             for i, actionButton in pairs(self.actionButtons) do
                 for pool in dividersPool:EnumerateActive() do
-                    WoWTools_PlusTextureMixin:SetFrame(pool)
+                    WoWTools_TextureMixin:SetFrame(pool)
                 end
             end
         end
@@ -104,20 +104,20 @@ local function Init()
     if dividersPool then
         for i, actionButton in pairs(MainMenuBar.actionButtons) do
             for pool in dividersPool:EnumerateActive() do
-                WoWTools_PlusTextureMixin:SetFrame(pool)
+                WoWTools_TextureMixin:SetFrame(pool)
             end
         end
     end]]
 
-    WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
-    WoWTools_PlusTextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
+    WoWTools_TextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
+    WoWTools_TextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
     WoWTools_ColorMixin:Setup(MainMenuBar.ActionBarPageNumber.Text, {type='FontString'})
 
     if MainMenuBar.EndCaps then
-        WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)
-        WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
+        WoWTools_TextureMixin:SetAlphaColor(MainMenuBar.EndCaps.LeftEndCap, true, nil, nil)
+        WoWTools_TextureMixin:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
     end
-    WoWTools_PlusTextureMixin:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.3)
+    WoWTools_TextureMixin:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.3)
 
 
 
@@ -136,6 +136,6 @@ end
 
 
 
-function WoWTools_PlusTextureMixin:Init_Action_Button()
+function WoWTools_TextureMixin:Init_Action_Button()
     Init()
 end

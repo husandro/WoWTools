@@ -470,7 +470,7 @@ local function Init_AccountBankPanel()
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()
-    WoWTools_PlusTextureMixin:SetNineSlice(AccountBankPanel, true, false, false, false)
+    WoWTools_TextureMixin:SetNineSlice(AccountBankPanel, true, false, false, false)
 
 --边框
     AccountBankPanel.NineSlice.LeftEdge:Hide()
@@ -616,7 +616,7 @@ local function Init()
     Init_OpenAllBag_Button()
 
 --搜索框
-    WoWTools_PlusTextureMixin:SetSearchBox(BankItemSearchBox)
+    WoWTools_TextureMixin:SetSearchBox(BankItemSearchBox)
 
 --移动，搜索框
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
@@ -632,10 +632,10 @@ local function Init()
 
     end)
 
-    WoWTools_PlusTextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
-    WoWTools_PlusTextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
-    WoWTools_PlusTextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
-    WoWTools_PlusTextureMixin:SetNineSlice(BankFrame, true, false, false, false)
+    WoWTools_TextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
+    WoWTools_TextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
+    WoWTools_TextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
+    WoWTools_TextureMixin:SetNineSlice(BankFrame, true, false, false, false)
 
 
 --背包位

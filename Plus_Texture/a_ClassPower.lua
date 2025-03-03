@@ -1,6 +1,6 @@
 --职业
 local function Save()
-    return WoWTools_PlusTextureMixin.Save
+    return WoWTools_TextureMixin.Save
 end
 
 local IsHook
@@ -22,7 +22,7 @@ local function set_Num_Texture(self, num, color, parent)
         self.numTexture:SetAtlas('services-number-'..(num or self.layoutIndex))
         if color~=false then
             if not color then
-                WoWTools_PlusTextureMixin:SetAlphaColor(self.numTexture, true)
+                WoWTools_TextureMixin:SetAlphaColor(self.numTexture, true)
             else
                 self.numTexture:SetVertexColor(color.r, color.g, color.b)
             end
@@ -32,9 +32,9 @@ end
 
 local function set_MonkHarmonyBarFrame(btn)
     if btn then
-        WoWTools_PlusTextureMixin:HideTexture(btn.Chi_BG_Active)
-        WoWTools_PlusTextureMixin:HideTexture(btn.BGInactive)
-        WoWTools_PlusTextureMixin:SetAlphaColor(btn.Chi_BG, nil, nil, 0.2)
+        WoWTools_TextureMixin:HideTexture(btn.Chi_BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BGInactive)
+        WoWTools_TextureMixin:SetAlphaColor(btn.Chi_BG, nil, nil, 0.2)
         set_Num_Texture(btn, nil, false)
     end
 end
@@ -42,8 +42,8 @@ end
 
 local function set_DruidComboPointBarFrame(frame)
     for btn, _ in pairs(frame or {}) do
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Inactive)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
         set_Num_Texture(btn)
     end
 end
@@ -65,15 +65,15 @@ local function QS()
         return
     end
 
-    WoWTools_PlusTextureMixin:SetAlphaColor(PaladinPowerBarFrame.Background, nil, nil,0.3)
-    WoWTools_PlusTextureMixin:SetAlphaColor(PaladinPowerBarFrame.ActiveTexture, nil, nil, 0.3)
+    WoWTools_TextureMixin:SetAlphaColor(PaladinPowerBarFrame.Background, nil, nil,0.3)
+    WoWTools_TextureMixin:SetAlphaColor(PaladinPowerBarFrame.ActiveTexture, nil, nil, 0.3)
     PaladinPowerBarFrame.Background:SetShown(false)
     PaladinPowerBarFrame.ActiveTexture:SetShown(false)
 
-    WoWTools_PlusTextureMixin:HideTexture(PaladinPowerBarFrame.ActiveTexture, true)
+    WoWTools_TextureMixin:HideTexture(PaladinPowerBarFrame.ActiveTexture, true)
     if ClassNameplateBarPaladinFrame then
-        WoWTools_PlusTextureMixin:HideTexture(ClassNameplateBarPaladinFrame.Background)
-        WoWTools_PlusTextureMixin:HideTexture(ClassNameplateBarPaladinFrame.ActiveTexture)
+        WoWTools_TextureMixin:HideTexture(ClassNameplateBarPaladinFrame.Background)
+        WoWTools_TextureMixin:HideTexture(ClassNameplateBarPaladinFrame.ActiveTexture)
     end
     local maxHolyPower = UnitPowerMax('player', Enum.PowerType.HolyPower)--UpdatePower
     for i=1,maxHolyPower do
@@ -106,12 +106,12 @@ local function FS()
     end
 
     for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
-        WoWTools_PlusTextureMixin:HideTexture(mage.ArcaneBG)
+        WoWTools_TextureMixin:HideTexture(mage.ArcaneBG)
     end
 
     if ClassNameplateBarMageFrame and ClassNameplateBarMageFrame.classResourceButtonTable then
         for _, mage in pairs(ClassNameplateBarMageFrame.classResourceButtonTable) do
-            WoWTools_PlusTextureMixin:HideTexture(mage.ArcaneBG)
+            WoWTools_TextureMixin:HideTexture(mage.ArcaneBG)
         end
     end
 end
@@ -128,8 +128,8 @@ local function XD()
     set_DruidComboPointBarFrame(DruidComboPointBarFrame.classResourceButtonPool.activeObjects)
 
     for _, btn in pairs(ClassNameplateBarFeralDruidFrame.classResourceButtonTable) do
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Inactive)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
         set_Num_Texture(btn)
     end
 
@@ -158,16 +158,16 @@ local function DZ()
     hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
         C_Timer.After(0.5, function()
             for _, btn in pairs(self.classResourceButtonTable or {}) do
-                WoWTools_PlusTextureMixin:HideTexture(btn.BGActive)
-                WoWTools_PlusTextureMixin:HideTexture(btn.BGInactive)
-                WoWTools_PlusTextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
+                WoWTools_TextureMixin:HideTexture(btn.BGActive)
+                WoWTools_TextureMixin:HideTexture(btn.BGInactive)
+                WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
                 set_Num_Texture(btn)
             end
             if ClassNameplateBarRogueFrame and ClassNameplateBarRogueFrame.classResourceButtonTable then
                 for _, btn in pairs(ClassNameplateBarRogueFrame.classResourceButtonTable) do
-                    WoWTools_PlusTextureMixin:HideTexture(btn.BGActive)
-                    WoWTools_PlusTextureMixin:HideTexture(btn.BGInactive)
-                    WoWTools_PlusTextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
+                    WoWTools_TextureMixin:HideTexture(btn.BGActive)
+                    WoWTools_TextureMixin:HideTexture(btn.BGInactive)
+                    WoWTools_TextureMixin:SetAlphaColor(btn.BGShadow, nil, nil, 0.3)
                     set_Num_Texture(btn)
                 end
             end
@@ -234,13 +234,13 @@ local function DK()
     end
 
     for _, btn in pairs(RuneFrame.Runes or {}) do
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Inactive)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
     end
 
     for _, btn in pairs(DeathKnightResourceOverlayFrame.Runes or {}) do
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_PlusTextureMixin:HideTexture(btn.BG_Inactive)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
     end
 end
 
@@ -256,7 +256,7 @@ local function SM()
     end
 
     for btn in TotemFrame.totemPool:EnumerateActive() do
-        WoWTools_PlusTextureMixin:SetAlphaColor(btn.Border, nil, nil, 0.3)
+        WoWTools_TextureMixin:SetAlphaColor(btn.Border, nil, nil, 0.3)
     end
 
     if IsHook then
@@ -264,7 +264,7 @@ local function SM()
     end
 
     hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
-        WoWTools_PlusTextureMixin:SetAlphaColor(self.Border, nil, nil, 0.3)
+        WoWTools_TextureMixin:SetAlphaColor(self.Border, nil, nil, 0.3)
     end)
 end
 
@@ -282,7 +282,7 @@ local function EV()
     end
 
     for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable or {}) do
-        WoWTools_PlusTextureMixin:SetAlphaColor(btn.EssenceFillDone.CircBGActive, true)
+        WoWTools_TextureMixin:SetAlphaColor(btn.EssenceFillDone.CircBGActive, true)
         set_Num_Texture(btn, nil, false)
     end
 end
@@ -319,6 +319,6 @@ end
 
 
 
-function WoWTools_PlusTextureMixin:Init_Class_Power()
+function WoWTools_TextureMixin:Init_Class_Power()
     Init()
 end

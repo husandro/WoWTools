@@ -1,10 +1,8 @@
 --[[
 CreateBackground(frame, tab)
 ]]
-
-WoWTools_TextureMixin={}
-
 local e= select(2, ...)
+WoWTools_TextureMixin={}
 
 function WoWTools_TextureMixin:CreateBackground(frame, tab)
     if frame.Background then
@@ -307,7 +305,7 @@ local ExpansionIcon = {
 
 
 
-function WoWTools_TextureMixin:GetWoWLog(expacID, tab)
+function WoWTools_TextureMixin:GetWoWLog(expacID)
     local info= ExpansionIcon[expacID]
     if not info then
         return

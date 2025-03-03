@@ -106,8 +106,8 @@ local function Init()
     WoWTools_MoveMixin:Setup(OverrideActionBarExpBar, {notZoom=true})
     WoWTools_MoveMixin:Setup(ReportFrame)
 
-
-    WoWTools_MoveMixin:MoveAlpha(BagsBar)--背包
+--背包
+    WoWTools_MoveMixin:MoveAlpha(BagsBar)
 
     WoWTools_MoveMixin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800, initFunc=function(btn)
 

@@ -113,10 +113,10 @@ end
 local function Init_Texture()
     local show= WoWTools_StableFrameMixin.Save.showTexture
 
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
-    WoWTools_PlusTextureMixin:SetNineSlice(StableFrame, true, nil, nil)
+    WoWTools_TextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
+    WoWTools_TextureMixin:SetNineSlice(StableFrame, true, nil, nil)
 
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, show and 1 or 0)
+    WoWTools_TextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, show and 1 or 0)
 
     for _, object in pairs({StableFrame:GetRegions()}) do
         if object~=StableFrameBg and object:GetObjectType()=='Texture' then
@@ -124,15 +124,15 @@ local function Init_Texture()
         end
     end
 
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, show and 1 or 0)
-    WoWTools_PlusTextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, show and 1 or 0)
+    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, show and 1 or 0)
+    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, show and 1 or 0)
 
-    WoWTools_PlusTextureMixin:SetSearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
-    WoWTools_PlusTextureMixin:SetScrollBar(StableFrame.StabledPetList)
-    WoWTools_PlusTextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
-    WoWTools_PlusTextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
+    WoWTools_TextureMixin:SetSearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
+    WoWTools_TextureMixin:SetScrollBar(StableFrame.StabledPetList)
+    WoWTools_TextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
+    WoWTools_TextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
 
-    WoWTools_PlusTextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
+    WoWTools_TextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
 end
 
 
