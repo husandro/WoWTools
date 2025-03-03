@@ -131,7 +131,7 @@ local function Init_Button(self)
     local num= Save().num
     local line= Save().line
     local index=MAX_GUILDBANK_SLOTS_PER_TAB--98
-  
+
     for tab=1, numTab do
         if currentIndex~=tab then
             for slot=1, MAX_GUILDBANK_SLOTS_PER_TAB do
