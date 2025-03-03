@@ -6,7 +6,9 @@
 		Account = 2,
 	},
 ]]
-WoWTools_BankMixin={}
+WoWTools_BankMixin={
+    Init_Guild_Texture=function()end
+}
 
 function WoWTools_BankMixin:GetIndex(index)
     return index or BankFrame.activeTabIndex or 1

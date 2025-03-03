@@ -233,50 +233,7 @@ end
 
 --公会银行
 function Events:Blizzard_GuildBankUI(mixin)
-    mixin:SetAlphaColor(GuildBankFrame.BlackBG)
-    mixin:HideTexture(GuildBankFrame.TitleBg)
-    mixin:HideTexture(GuildBankFrame.RedMarbleBG)
-    mixin:SetAlphaColor(GuildBankFrame.MoneyFrameBG)
-
-    mixin:SetAlphaColor(GuildBankFrame.TabLimitBG)
-    mixin:SetAlphaColor(GuildBankFrame.TabLimitBGLeft)
-    mixin:SetAlphaColor(GuildBankFrame.TabLimitBGRight)
-    mixin:SetSearchBox(GuildItemSearchBox)
-
-    mixin:SetAlphaColor(GuildBankFrame.TabTitleBG)
-    mixin:SetAlphaColor(GuildBankFrame.TabTitleBGLeft)
-    mixin:SetAlphaColor(GuildBankFrame.TabTitleBGRight)
-
-    for i=1, 7 do
-        local frame= GuildBankFrame['Column'..i]
-        if frame then
-            mixin:HideTexture(frame.Background)
-        end
-        mixin:SetFrame(_G['GuildBankFrameTab'..i], {notAlpha=true})
-    end
-
-    local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
-    local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
-    hooksecurefunc(GuildBankFrame,'Update', function(self2)--Blizzard_GuildBankUI.lua
-        if ( self2.mode == "bank" ) then
-            local tab = GetCurrentGuildBankTab() or 1
-            for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-                local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
-                if ( index == 0 ) then
-                    index = NUM_SLOTS_PER_GUILDBANK_GROUP;
-                end
-                local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
-                local button = self2.Columns[column].Buttons[index];
-                if button and button.NormalTexture then
-                    local texture= GetGuildBankItemInfo(tab, i)
-                    button.NormalTexture:SetAlpha(texture and 1 or 0.2)
-                end
-            end
-        end
-    end)
-
-    mixin:SetScrollBar(GuildBankFrame.Log)
-    mixin:SetScrollBar(GuildBankInfoScrollFrame)
+    WoWTools_BankMixin:Init_Guild_Texture(mixin)
 end
 
 

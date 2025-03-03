@@ -22,6 +22,11 @@ WoWTools_BankMixin.Save={
     --disabledAccountBag= true,--战团银行
 
     allAccountBag=true,--战团银行,整合
+
+    guild={
+        line=2,
+        num=15,
+    }
 }
 
 
@@ -35,29 +40,16 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 --银行
 --BankFrame.lua
 local function Init()
     WoWTools_BankMixin:Init_Menu()
     WoWTools_BankMixin:Init_MoveFrame()
-
     WoWTools_BankMixin:Init_Plus()--整合，一起
     WoWTools_BankMixin:Init_UI()--存放，取出，所有
     WoWTools_BankMixin:Init_Left_List()
-
-
     WoWTools_BankMixin:Set_PortraitButton()
+
     return true
 end
 
@@ -84,6 +76,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
 
+            Save().guild= Save().guild or {
+                line=2,
+                num=15,
+            }
+
             local addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
             WoWTools_BankMixin.addName= addName
 
@@ -101,12 +98,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             else
                 self:RegisterEvent('BANKFRAME_OPENED')
+
+                if not IsInGuild() then
+                    self:UnregisterEvent(event)
+                end
             end
+
+        elseif arg1=='Blizzard_GuildBankUI' then
+            WoWTools_BankMixin:Init_Guild()
+            WoWTools_BankMixin:Init_Guild_Texture()
+            self:UnregisterEvent(event)
         end
 
     elseif event=='BANKFRAME_OPENED' then
         Init()
         self:UnregisterEvent(event)
+
+    elseif event=='GUILDBANK_UPDATE_TABS' then
+
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

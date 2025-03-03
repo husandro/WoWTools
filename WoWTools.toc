@@ -392,8 +392,9 @@ Plus_Bank\3_MoveFrame.lua
 Plus_Bank\Left_List.lua
 Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua
-Plus_Bank\z_PortraitButton.lua
-
+Plus_Bank\PortraitButton.lua
+Plus_Bank\z_Guild_0.lua
+Plus_Bank\z_Guild_Texture.lua
 
 ##容器
 Plus_Bag\0_BagMixin.lua
