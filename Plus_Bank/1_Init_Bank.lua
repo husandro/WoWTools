@@ -94,8 +94,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if  Save().disabled then
-                --self:UnregisterEvent(event)
+            if Save().disabled then
+                self:UnregisterEvent(event)
             else
                 self:RegisterEvent('BANKFRAME_OPENED')
 
@@ -105,7 +105,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_GuildBankUI' then
-            --WoWTools_BankMixin:Init_Guild()
+            WoWTools_BankMixin:Init_Guild()
             WoWTools_BankMixin:Init_Guild_Texture()
             self:UnregisterEvent(event)
         end
@@ -113,9 +113,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='BANKFRAME_OPENED' then
         Init()
         self:UnregisterEvent(event)
-
-    elseif event=='GUILDBANK_UPDATE_TABS' then
-
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
