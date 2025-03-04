@@ -28,9 +28,6 @@ e.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提�
 
 
 
-
-
-
 --挑战数据 Challenges.lua
 local function Level_Text(text)
     local tab={

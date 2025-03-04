@@ -5375,7 +5375,9 @@
         "SetItemButtonDesaturated",
         "SetItemButtonQuality",
         "HandleModifiedItemClick",
-        "GuildBankItemButtonMixin"
+        "GuildBankItemButtonMixin",
+        "GUILD_FACTION_TITLE_REVERED",
+        "DECLENSION_SET"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
