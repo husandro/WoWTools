@@ -95,7 +95,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if  Save().disabled then
-                self:UnregisterEvent(event)
+                --self:UnregisterEvent(event)
             else
                 self:RegisterEvent('BANKFRAME_OPENED')
 
@@ -105,7 +105,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_GuildBankUI' then
-            WoWTools_BankMixin:Init_Guild()
+            --WoWTools_BankMixin:Init_Guild()
             WoWTools_BankMixin:Init_Guild_Texture()
             self:UnregisterEvent(event)
         end

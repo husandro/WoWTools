@@ -5377,7 +5377,14 @@
         "HandleModifiedItemClick",
         "GuildBankItemButtonMixin",
         "GUILD_FACTION_TITLE_REVERED",
-        "DECLENSION_SET"
+        "DECLENSION_SET",
+        "SetDesaturation",
+        "GuildControlUINavigationDropdown",
+        "GuildControlUIRankBankFrame",
+        "GuildControlUIRankBankFrameInsetScrollFrame",
+        "GuildControlUIRankBankFrameRankDropdown",
+        "GuildControlUIRankBankFrameInset",
+        "GuildControlUIRankSettingsFrameRankDropdown"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

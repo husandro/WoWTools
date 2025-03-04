@@ -196,7 +196,14 @@ local function Init()
     end, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 424)
     end})
-    
+
+--公会设置
+    WoWTools_MoveMixin:Setup(GuildControlUI, {setSize=true, notFuori=true, initFunc=function()
+        GuildControlUIRankBankFrameInset:SetPoint('LEFT', 2, 0)
+        GuildControlUIRankBankFrameInset:SetPoint('BOTTOMRIGHT', -2, 2)
+    end, sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(338, 444)
+    end})
 end
 
 

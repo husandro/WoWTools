@@ -1,9 +1,13 @@
+local e= select(2, ...)
+
+
 local function Init(mixin)
     --[[GuildBankFrame.Emblem:SetPoint('BOTTOMLEFT', GuildBankFrame, 'TOPLEFT')
     GuildBankFrame.Emblem:SetPoint('BOTTOMRIGHT', GuildBankFrame, 'TOPRIGHT')
     GuildBankFrame.Emblem.Left:SetPoint('TOPRIGHT', GuildBankFrame.Emblem, 'TOP')]]
     GuildBankFrame.Emblem.Left:Hide()
     GuildBankFrame.Emblem.Right:Hide()
+
     mixin= mixin or WoWTools_TextureMixin
 
     mixin:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, true)
@@ -25,8 +29,6 @@ local function Init(mixin)
     GuildBankFrame.MoneyFrameBG:DisableDrawLayer('BACKGROUND')
 
     GuildBankFrame.TabTitle:SetPoint('CENTER', GuildBankFrame.TabTitleBG, 0,8)
-    GuildBankFrame.LimitLabel:ClearAllPoints()
-    GuildBankFrame.LimitLabel:SetPoint('TOP', GuildBankFrame.TabTitle, 'BOTTOM', 0,-2)
 
     mixin:HideTexture(GuildBankFrameBottomOuter)
     mixin:HideTexture(GuildBankFrameTopOuter)
@@ -91,15 +93,37 @@ local function Init(mixin)
 
     for i=1, MAX_GUILDBANK_TABS do
 		local btn= GuildBankFrame.BankTabs[i].Button
-        btn.NormalTexture:Hide()
+        btn.NormalTexture:SetTexture(0)
 
         btn= _G['GuildBankTab'..i]
         if btn then
             WoWTools_TextureMixin:SetFrame(btn, {alpha=0})
         end
     end
+
+
+--"%s的每日提取额度剩余：|cffffffff%s|r"
+GuildBankFrame.LimitLabel:ClearAllPoints()
+--GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
+GuildBankFrame.LimitLabel:SetPoint('TOP', GuildBankFrame.TabTitle, 'BOTTOM', 0, -2)
+
+
+
     return true
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function WoWTools_BankMixin:Init_Guild_Texture(mixin)
     if Init(mixin) then

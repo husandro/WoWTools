@@ -260,12 +260,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save.disabledADD= Save.disabledADD or {}
 
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
-
+                      
             Category, Layout= e.AddPanel_Sub_Category({
                 name=addName,
                 disabled=Save.disabled
             })
+            
             WoWTools_ChatButtonMixin.Category= Category
+            WoWTools_ChatButtonMixin.addName= addName
 
             e.AddPanel_Check_Button({
                 checkName= e.onlyChinese and '启用' or ENABLE,

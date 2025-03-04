@@ -50,9 +50,8 @@ end
 
 --公会银行
 WoWTools_MoveMixin.ADDON_LOADED['Blizzard_GuildBankUI']= function()
-    if WoWTools_BankMixin.Save.disabled then
-        WoWTools_MoveMixin:Setup(GuildBankFrame)
-    end
+    --if WoWTools_BankMixin.Save.disabled then
+    WoWTools_MoveMixin:Setup(GuildBankFrame)
 end
 
 --飞行地图

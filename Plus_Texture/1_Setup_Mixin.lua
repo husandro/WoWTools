@@ -276,6 +276,20 @@ function WoWTools_TextureMixin:SetInset(frame, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderTopLeft, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderBottomRight, nil, nil, alphaORmin)
     self:SetAlphaColor(frame.InsetBorderBottomLeft, nil, nil, alphaORmin)
+
+
+    self:SetAlphaColor(frame.LeftBorder, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.RightBorder, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.TopBorder, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.BottomBorder, nil, nil, alphaORmin)
+
+    self:SetAlphaColor(frame.TopRightCorner, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.TopLeftCorner, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.BotRightCorner, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.BotLeftCorner, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.BottomRightCorner, nil, nil, alphaORmin)
+    self:SetAlphaColor(frame.BottomLeftCorner, nil, nil, alphaORmin)
+
 end
 
 --[[function WoWTools_TextureMixin:SetUIFrame(frame)

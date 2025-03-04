@@ -953,9 +953,14 @@ local function Blizzard_Communities(mixin)
     mixin:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
     mixin:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
 
-
+--公会设置
     mixin:SetFrame(GuildControlUI)
     mixin:SetFrame(GuildControlUIHbar)
+    mixin:SetMenu(GuildControlUINavigationDropdown)
+    mixin:SetMenu(GuildControlUIRankBankFrameRankDropdown)
+    mixin:SetInset(GuildControlUIRankBankFrameInset)
+    mixin:SetScrollBar(GuildControlUIRankBankFrameInsetScrollFrame)
+    mixin:SetMenu(GuildControlUIRankSettingsFrameRankDropdown)
 
     mixin:SetFrame(CommunitiesGuildLogFrame)
     mixin:SetNineSlice(CommunitiesGuildLogFrame.Container, true)

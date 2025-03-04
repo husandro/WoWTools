@@ -682,8 +682,18 @@ ChatButton_5_LFD\Roll.lua
 
 ##世界频道
 ChatButton\6_World.lua
+
+
 ##公会
-ChatButton\7_Guild.lua
+ChatButton_7_Guild\0_GuildMixin.lua
+ChatButton_7_Guild\7_Guild_Init.lua
+ChatButton_7_Guild\Button.lua
+ChatButton_7_Guild\Button_Menu.lua
+ChatButton_7_Guild\z_ClubFinder.lua
+ChatButton_7_Guild\z_CommunitiesFrame.lua
+ChatButton_7_Guild\z_PetitionFrame.lua
+
+
 ##队伍
 ChatButton\8_Group.lua
 ##说
