@@ -53,21 +53,17 @@ end
 
 
 --GuildBankItemButtonMixin 
-local function Create_Button(index, tabID, slotID)--需要 GetCurrentGuildBankTab() 修改成 self.tabID
+--需要 GetCurrentGuildBankTab() 修改成 self.tabID
+local function Create_Button(index, tabID, slotID)
     local btn= CreateFrame('ItemButton', 'WoWToolsGuildItemButton'..tabID..'_'..slotID, Buttons[1], 'GuildBankItemButtonTemplate')
 
+    btn.SplitStack = function(button, split)
+        SplitGuildBankItem(button.tabID, button:GetID(), split)
+    end
 
 
-    
-        btn.SplitStack = function(button, split)
-            SplitGuildBankItem(button.tabID, button:GetID(), split)
-            print('SplitStack', button.tabID, button:GetID())
-        end
 
-
-    
     btn:SetScript('OnClick', function(self, d)
-        print('OnClick', self.tabID, self:GetID())
         if HandleModifiedItemClick(GetGuildBankItemLink(self.tabID, self:GetID())) then
             return
         end
@@ -96,7 +92,7 @@ local function Create_Button(index, tabID, slotID)--需要 GetCurrentGuildBankTa
             end
         end
     end)
-    
+
     function btn:OnEnter()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetGuildBankItem(self.tabID, self:GetID())
@@ -114,15 +110,6 @@ local function Create_Button(index, tabID, slotID)--需要 GetCurrentGuildBankTa
         PickupGuildBankItem(self.tabID, self:GetID())
     end)
 
-    btn:HookScript('OnEvent', function(self, ...)
-        print(' OnEvent',self.tabID, self:GetID(), ...)
-        if GameTooltip:IsOwned(self)  then
-            
-        
-            self:OnEnter()
-        end
-    end)
-
     function btn:set_item()
         local tab, slot= self.tabID, self:GetID()
         local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, slot)
@@ -130,15 +117,10 @@ local function Create_Button(index, tabID, slotID)--需要 GetCurrentGuildBankTa
         SetItemButtonTexture(self, texture)
         SetItemButtonCount(self, itemCount)
         SetItemButtonDesaturated(self, locked)
-        
+
         self:SetMatchesSearch(not isFiltered)
 
         SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, slot))
-
-        if texture then
-            print('set', texture, tab, slot, '|T'..(texture or 0)..':0|t',self.icon:IsShown())
-         end
-        --self.icon:SetShown(texture)
     end
 
     Set_IndexLabel(btn, tabID, slotID)
@@ -162,7 +144,7 @@ local function Init_Button(self)
         self:SetSize(750, 428)
         return
     end
-print('|cnGREEN_FONT_COLOR:Init_Button')
+
     local num= Save().num
     local line= Save().line
     local index= MAX_GUILDBANK_SLOTS_PER_TAB--98
@@ -202,7 +184,7 @@ print('|cnGREEN_FONT_COLOR:Init_Button')
         end
     end
 
-  
+
     Set_Frame_Size(self)
 end
 

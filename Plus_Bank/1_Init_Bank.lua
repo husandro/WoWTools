@@ -28,40 +28,9 @@ WoWTools_BankMixin.Save={
         num=15,
     }
 }
-
-
-
 local function Save()
     return WoWTools_BankMixin.Save
 end
-
-
-
-
-
-
---银行
---BankFrame.lua
-local function Init()
-    WoWTools_BankMixin:Init_Menu()
-    WoWTools_BankMixin:Init_MoveFrame()
-    WoWTools_BankMixin:Init_Plus()--整合，一起
-    WoWTools_BankMixin:Init_UI()--存放，取出，所有
-    WoWTools_BankMixin:Init_Left_List()
-    WoWTools_BankMixin:Set_PortraitButton()
-
-    return true
-end
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -111,7 +80,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BANKFRAME_OPENED' then
-        Init()
+        WoWTools_BankMixin:Init_Menu()
+        WoWTools_BankMixin:Init_MoveFrame()
+        WoWTools_BankMixin:Init_Plus()--整合，一起
+        WoWTools_BankMixin:Init_UI()--存放，取出，所有
+        WoWTools_BankMixin:Init_Left_List()
+        WoWTools_BankMixin:Set_PortraitButton()
         self:UnregisterEvent(event)
 
     elseif event == "PLAYER_LOGOUT" then
