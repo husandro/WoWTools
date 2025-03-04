@@ -9,6 +9,7 @@ end
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 local Buttons={}
+local MainButtons={}
 local NumLeftButton=0
 
 local Items={
@@ -48,17 +49,21 @@ end
     btn.indexLable:SetAlpha(0.2)
     btn.indexLable:SetText(slotID)
     btn.NormalTexture:SetAlpha(0.2)
-
-
 end
+
+
+
+
+
+
+
 
 
 
 --GuildBankItemButtonMixin 
 --需要 GetCurrentGuildBankTab() 修改成 self.tabID
-local function Create_Button(index, tabID, slotID)
-    local btn= CreateFrame('ItemButton', 'WoWToolsGuildItemButton'..tabID..'_'..slotID, Buttons[1], 'GuildBankItemButtonTemplate')
-
+local function Create_Button(btn, index, tabID, slotID)
+    
     btn.SplitStack = function(button, split)
         SplitGuildBankItem(button.tabID, button:GetID(), split)
     end
@@ -127,7 +132,6 @@ local function Create_Button(index, tabID, slotID)
 
     Set_IndexLabel(btn, tabID, slotID)
 
-    Buttons[index]= btn
     return btn
 end
 
@@ -160,29 +164,48 @@ local function Init_Button(self)
         return
     end
 
+    local newTab={}
+
     local num= Save().num
     local line= Save().line
-    local index= MAX_GUILDBANK_SLOTS_PER_TAB--98
+    local index= 1--MAX_GUILDBANK_SLOTS_PER_TAB--98
     local lableIndex=2
     for tab=1, numTab do
-        if currentIndex~=tab and select(3, GetGuildBankTabInfo(tab)) then
-            
+        if currentIndex~=tab then
             for slot=1, MAX_GUILDBANK_SLOTS_PER_TAB do
                 index= index+1
-                local btn= Buttons[index] or Create_Button(index, lableIndex, slot)
+                local btn= Buttons[index] 
+                if not btn then
+                    btn= CreateFrame('ItemButton', 'WoWToolsGuildItemButton'..tab..'_'..slot, Buttons[1], 'GuildBankItemButtonTemplate', slot)
+                    Create_Button(btn, index, lableIndex, slot)
+                    Buttons[index]= btn
+                end
 
                 btn.tabID= tab
-                btn:SetID(slot)
-                C_Timer.After(0.3, function() btn:set_item() end)
+               -- btn:SetID(slot)
+                if select(3, GetGuildBankTabInfo(tab)) then
+                    table.insert(newTab, btn)
+                end
             end
             lableIndex= lableIndex+1
+
+        else
+            for _, btn in pairs(MainButtons) do
+
+                btn.tabID= tab
+                --btn:SetID(slot)
+                
+                table.insert(newTab, btn)
+            end
+                
         end
     end
+
 
     local leftButton
     NumLeftButton=0
     index=0
-    for i, btn in pairs(Buttons) do
+    for i, btn in pairs(newTab) do
         btn:ClearAllPoints()
         index= index+1
         if select(2, math.modf((i-1)/MAX_GUILDBANK_SLOTS_PER_TAB))==0 or select(2, math.modf((index-1)/num))==0 then
@@ -213,6 +236,7 @@ end
 local function New_Items()
     Items={}
     C_Timer.After(0.5, function()
+        local i=1
 
     for tab= GetNumGuildBankTabs(), 1, -1 do
         Items[tab]={}
@@ -228,10 +252,12 @@ local function New_Items()
                             item={GetGuildBankItemInfo(tab, slot)},
                             link= GetGuildBankItemLink(tab, slot),
                     }
-                    print(Items[tab][slot].item[1], Items[tab][slot].link)
+                    print(i, Items[tab][slot].item[1], Items[tab][slot].link)
+                    i=i+1
                 end
-                
+
             end
+            print(i)
         end
     end
 
@@ -243,7 +269,7 @@ end
 local function Init()
 
     New_Items()
-        
+
 
     for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
         local btnIndex = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
@@ -253,9 +279,12 @@ local function Init()
         local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
         local btn=GuildBankFrame.Columns[column].Buttons[btnIndex]
         if btn then
-            Set_IndexLabel(btn, 1, i)
+            btn.tabID=1
+            --Set_IndexLabel(btn, 1, i)
             btn.NormalTexture:SetAlpha(0.2)
-            Buttons[i]= btn
+            MainButtons[i]= btn
+            Create_Button(btn, i, 1, i)
+            --Buttons[i]= btn
         end
     end
 
@@ -286,7 +315,7 @@ local function Init()
         end
     end)
 
-    
+
     local function Set_UpdateTabs(self)
         if not self.LimitLabel:IsShown() then
             return
@@ -307,10 +336,6 @@ local function Init()
         Set_UpdateTabs(self)
     end)
 
-    for tabID= 1, GetNumGuildBankTabs() do
-        
-        print(GetGuildBankTabInfo(tabID))
-    end
 
 
 end

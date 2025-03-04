@@ -71,5 +71,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
-    Init()
+    C_Timer.After(1, Init)
 end

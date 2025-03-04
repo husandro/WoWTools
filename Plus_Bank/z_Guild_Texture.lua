@@ -22,7 +22,7 @@ local function Init(mixin)
 
     GuildBankFrame.BlackBG:ClearAllPoints()
     GuildBankFrame.BlackBG:SetAllPoints()
-    mixin:SetAlphaColor(GuildBankFrame.BlackBG, nil, nil, true)
+    --mixin:SetAlphaColor(GuildBankFrame.BlackBG, nil, nil, true)
 
     mixin:HideTexture(GuildBankFrame.TitleBg)
     mixin:HideTexture(GuildBankFrame.RedMarbleBG)

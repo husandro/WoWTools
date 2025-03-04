@@ -118,12 +118,12 @@ local function Init()
         end
     end)
 
-    GuildButton:settings()
-
     GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
     GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
 
-    return GuildButton
+    C_Timer.After(0.3, function()
+        GuildButton:settings()
+    end)
 end
 
 
@@ -137,5 +137,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_Button()
-    return Init()
+    Init()
 end

@@ -40,6 +40,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('BANKFRAME_OPENED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -65,12 +66,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 self:UnregisterEvent(event)
-            else
-                self:RegisterEvent('BANKFRAME_OPENED')
-
-                if not IsInGuild() then
-                    self:UnregisterEvent(event)
-                end
+                self:UnregisterEvent('BANKFRAME_OPENED')
             end
 
         elseif arg1=='Blizzard_GuildBankUI' then
