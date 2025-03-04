@@ -54,7 +54,7 @@ local function Init_Search(self)
 		end
 	end
 
-	local findHeader=true
+	--local findHeader=true
 	local find, find2
 	local cur1, cur2
 

@@ -15,6 +15,7 @@ e.SetItemCurrencyID=nil
 e.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
     {type='currency', id=3008},--神勇石
     {type='currency', id=3109},--符文安德麦纹章
+    {type='currency', id=3110},--鎏金安德麦纹章
 
     --{type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
@@ -44,17 +45,18 @@ function e.GetChallengesWeekItemLevel(level, limitMaxKeyLevel)--LimitMaxKeyLevel
     level= min(limitMaxKeyLevel or 20, level)
     level= max(2, level)
     local tab={
-        [2]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6',
-        [3]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6',
-        [4]='642'..Level_Text('Champion')..'3/8  652'..Level_Text('Hero')..'2/6',
-        [5]='645'..Level_Text('Champion')..'4/8  652'..Level_Text('Hero')..'2/6',
-        [6]='649'..Level_Text('Hero')..'1/6  655'..Level_Text('Hero')..'3/6',
-        [7]='649'..Level_Text('Hero')..'1/6  658'..Level_Text('Hero')..'4/6',
-        [8]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6',
-        [9]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6',
-        [10]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6',
-        [11]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6',
-        [12]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6',
+        [2]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t10',
+        [3]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t12',
+        [4]='642'..Level_Text('Champion')..'3/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t14',
+        [5]='645'..Level_Text('Champion')..'4/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t16',
+        [6]='649'..Level_Text('Hero')..'1/6  655'..Level_Text('Hero')..'3/6|T5872051:0|t18',
+
+        [7]='649'..Level_Text('Hero')..'1/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t10',
+        [8]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t12',
+        [9]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t14',
+        [10]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t16',
+        [11]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t18',
+        [12]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t20',
     }
     return tab[level] or tab[10]
 end
