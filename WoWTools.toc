@@ -26,6 +26,7 @@ Init.xml
 1_WoWTools\1_Mixin.lua
 1_WoWTools\API_Panel.lua
 1_WoWTools\API_WoWDate.lua
+1_WoWTools\NeedUpdate_Data.lua
 1_WoWTools\z_Init_Panel.lua
 
 0_Mixin\StaticPopupDialogs.lua

@@ -118,7 +118,6 @@ end
 
 
 
-
 --GetInfo
 function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     local info

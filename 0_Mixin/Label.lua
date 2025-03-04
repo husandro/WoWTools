@@ -1,18 +1,4 @@
 
-local ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
-    --{type='currency', id=2812},--守护巨龙的觉醒纹章
-    --{type='currency', id=2809},--魔龙的觉醒纹章
-    --{type='currency', id=2807},--幼龙的觉醒纹章
-    --{type='currency', id=2806},--雏龙的觉醒纹章
-    {type='currency', id=2916},--符文先驱纹章
-    {type='currency', id=2915},--蚀刻先驱纹章
-    {type='currency', id=2914},--风化先驱纹章
-    {type='currency', id=3008},--神勇石
-
-    --{type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
-    {type='currency', id=1602, line=true},--征服点数
-    {type='currency', id=1191},--勇气点数
-}
 
 
 
@@ -117,7 +103,7 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
     local showTooltip= settings.showTooltip
 
     local R={}
-    for _, tab in pairs(ItemCurrencyTips) do
+    for _, tab in pairs(e.ItemCurrencyTips) do
         local text=''
         if tab.type=='currency' and tab.id and tab.id>0 then
             local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(tab.id)

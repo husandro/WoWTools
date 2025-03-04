@@ -20,7 +20,12 @@ local function Init(self)
 
     local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 	local currencyID= itemInfo.currencyTypeId or self.chargeCurrencyTypeId
-	currencyID= currencyID or e.SetItemCurrencyID--套装，转换，货币
+	if currencyID then
+		e.SetItemCurrencyID= currencyID
+	else
+		currencyID= e.SetItemCurrencyID--套装，转换，货币
+	end
+	
 
 	if not currencyID then
 		return
