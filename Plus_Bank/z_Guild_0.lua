@@ -11,7 +11,9 @@ local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 local Buttons={}
 local NumLeftButton=0
 
-
+local Items={
+    --[tab]=slot=itemLink,
+}
 
 
 
@@ -43,7 +45,7 @@ end
     end
     btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
     btn.indexLable:SetPoint('CENTER')
-    --btn.indexLable:SetAlpha(0.2)
+    btn.indexLable:SetAlpha(0.2)
     btn.indexLable:SetText(slotID)
     btn.NormalTexture:SetAlpha(0.2)
 
@@ -101,12 +103,12 @@ local function Create_Button(index, tabID, slotID)
     btn:SetScript('OnEnter', btn.OnEnter)
 
     btn:SetScript('OnDragStart', function(self)
-        print('OnDragStart', self.tabID, self:GetID())
         PickupGuildBankItem(self.tabID, self:GetID())
+        print('|cnGREEN_FONT_COLOR:OnDragStart|r',self.tabID, self:GetID())
     end)
 
     btn:SetScript('OnReceiveDrag', function(self)
-        print('OnReceiveDrag', self.tabID, self:GetID())
+        print('OnReceiveDrag',self.tabID, self:GetID())
         PickupGuildBankItem(self.tabID, self:GetID())
     end)
 
@@ -132,6 +134,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+--local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, filtered = GetGuildBankTabInfo(tab)
+
+
 local function Init_Button(self)
     self.ResizeButton.setSize= self.mode == "bank"
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
@@ -150,7 +165,8 @@ local function Init_Button(self)
     local index= MAX_GUILDBANK_SLOTS_PER_TAB--98
     local lableIndex=2
     for tab=1, numTab do
-        if currentIndex~=tab then
+        if currentIndex~=tab and select(3, GetGuildBankTabInfo(tab)) then
+            
             for slot=1, MAX_GUILDBANK_SLOTS_PER_TAB do
                 index= index+1
                 local btn= Buttons[index] or Create_Button(index, lableIndex, slot)
@@ -190,29 +206,45 @@ end
 
 
 
-local function Set_UpdateTabs(self)
-    if self.LimitLabel:IsShown() then
-        local name, icon, _, _, _, remainingWithdrawals = GetGuildBankTabInfo(GetCurrentGuildBankTab())
-        local stackString
-        if ( remainingWithdrawals > 0 ) then
-            stackString = '#|cffffffff'..remainingWithdrawals
-        elseif ( remainingWithdrawals == 0 ) then
-            stackString = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)
-        else
-            stackString = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '无限制' or UNLIMITED)
+
+
+
+
+local function New_Items()
+    Items={}
+    C_Timer.After(0.5, function()
+
+    for tab= GetNumGuildBankTabs(), 1, -1 do
+        Items[tab]={}
+        print(GetGuildBankTabInfo(tab))
+        if select(3, GetGuildBankTabInfo(tab)) then
+            do
+                SetCurrentGuildBankTab(tab)
+            end
+            for slot= 1, MAX_GUILDBANK_SLOTS_PER_TAB do
+                local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, slot)
+                if texture then
+                    Items[tab][slot]={
+                            item={GetGuildBankItemInfo(tab, slot)},
+                            link= GetGuildBankItemLink(tab, slot),
+                    }
+                    print(Items[tab][slot].item[1], Items[tab][slot].link)
+                end
+                
+            end
         end
-        self.LimitLabel:SetText('|T'..(icon or 0)..':0|t'..stackString)
     end
+
+    end)
 end
 
 
 
-
-
-
-
-
 local function Init()
+
+    New_Items()
+        
+
     for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
         local btnIndex = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
         if ( btnIndex == 0 ) then
@@ -254,10 +286,32 @@ local function Init()
         end
     end)
 
---"%s的每日提取额度剩余：|cffffffff%s|r"
-    GuildBankFrame.LimitLabel:ClearAllPoints()
-    GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
-    hooksecurefunc(GuildBankFrame, 'UpdateTabs', Set_UpdateTabs)
+    
+    local function Set_UpdateTabs(self)
+        if not self.LimitLabel:IsShown() then
+            return
+        end
+        local name, icon, _, _, _, remainingWithdrawals = GetGuildBankTabInfo(GetCurrentGuildBankTab())
+        local stackString
+        if ( remainingWithdrawals > 0 ) then
+            stackString = '#|cffffffff'..remainingWithdrawals
+        elseif ( remainingWithdrawals == 0 ) then
+            stackString = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)
+        else
+            stackString = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '无限制' or UNLIMITED)
+        end
+        self.LimitLabel:SetText('|T'..(icon or 0)..':0|t'..stackString)
+    end
+
+    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)
+        Set_UpdateTabs(self)
+    end)
+
+    for tabID= 1, GetNumGuildBankTabs() do
+        
+        print(GetGuildBankTabInfo(tabID))
+    end
+
 
 end
 

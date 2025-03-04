@@ -5384,7 +5384,8 @@
         "GuildControlUIRankBankFrameInsetScrollFrame",
         "GuildControlUIRankBankFrameRankDropdown",
         "GuildControlUIRankBankFrameInset",
-        "GuildControlUIRankSettingsFrameRankDropdown"
+        "GuildControlUIRankSettingsFrameRankDropdown",
+        "GuildBankTabMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
