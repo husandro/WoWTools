@@ -5391,7 +5391,9 @@
         "GUILDBANK_TAB_WITHDRAW_ONLY",
         "GUILDBANK_TAB_DEPOSIT_ONLY",
         "GUILDBANK_TAB_FULL_ACCESS",
-        "GuildBankMoneyFrame"
+        "GuildBankMoneyFrame",
+        "GUILD_BANK",
+        "GuildBankTab6"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

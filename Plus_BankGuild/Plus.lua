@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-    return WoWTools_BankMixin.Save.guild
+    return WoWTools_GuildBankMixin.Save
 end
 --Blizzard_GuildBankUI.lua
 
@@ -18,17 +18,25 @@ local TabNameLabels={}--创建，索引标签
 
 
 
-local function Set_Frame_Size(frame)
+local function Set_Frame_Size(frame, currentIndex, numTab)
     local x= NumLeftButton
     if frame.mode=='bank' then
-        local line= Save().line
-        local y = Save().num
+        currentIndex= currentIndex or GetCurrentGuildBankTab()--当前 Tab
+        numTab= numTab or GetNumGuildBankTabs()--总计Tab
+        if currentIndex<= numTab then
+            local line= Save().line
+            local y = Save().num
 
-        frame:SetSize(
-            x*(37+line) + 14,
+            frame:SetSize(
+                x*(37+line) + 14,
 
-            y*(37+line) + 112
-        )
+                y*(37+line) + 90
+            )
+        else
+            frame:SetSize(750, 428)
+        end
+    elseif Save().otherSize then
+        frame:SetSize(Save().otherSize[1], Save().otherSize[2])
     else
         frame:SetSize(750, 428)
     end
@@ -41,7 +49,7 @@ end
     btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND'})
     btn.indexLable:SetPoint('CENTER')
     btn.indexLable:SetText(btn:GetID())
-    btn.indexLable:SetAlpha(0.2)
+    btn.indexLable:SetAlpha(0.3)
     btn.NormalTexture:SetAlpha(0.2)
 end
 
@@ -179,13 +187,14 @@ end
 local function Init_Button(self)
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
+    local isEnable= self.mode== "bank" and currentIndex<= numTab
 
-    if self.mode~= "bank" and currentIndex> numTab then
-        self:SetSize(750, 428)
-        self.ResizeButton.setSize= false--缩放按钮
+
+    if not isEnable then
+        Set_Frame_Size(self, currentIndex, numTab)
         return
     end
-    self.ResizeButton.setSize=true
+
 
     local newTab={}
 
@@ -252,8 +261,80 @@ local function Init_Button(self)
     end
 
 
-    Set_Frame_Size(self)
+    Set_Frame_Size(self, currentIndex, numTab)
 end
+
+
+
+
+
+
+
+--缩放按钮
+local function Update_ResizeButton(self, currentIndex, numTab)
+    currentIndex= currentIndex or GetCurrentGuildBankTab()--当前 Tab
+    numTab= numTab or GetNumGuildBankTabs()--总计Tab
+    self.ResizeButton.setSize= self.mode~= "bank" or currentIndex<= numTab
+
+end
+
+
+
+
+
+
+
+local function Set_UpdateTabs(self)
+    local currentIndex= GetCurrentGuildBankTab()--当前 Tab
+    local numTab= GetNumGuildBankTabs()--总计Tab
+
+    Update_ResizeButton(self, currentIndex, numTab)--缩放按钮
+
+    local name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals, label, access
+
+    for tabID= 1, GetNumGuildBankTabs(), 1 do
+        name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(tabID)
+--Tab 名称
+        local btn= _G['GuildBankTab'..tabID]
+        if btn then
+            if not btn.indexLable then
+                btn.indexLable= WoWTools_LabelMixin:Create(btn)
+                btn.indexLable:SetPoint('TOPLEFT', btn.Button, 'BOTTOMLEFT')
+            end
+            btn.indexLable:SetText(name or '')
+            btn.indexLable:SetAlpha(currentIndex==tabID and 1 or 0.3)
+            Set_IndexLabel_Color(btn, tabID, currentIndex==tabID)
+        end
+
+--标签，提示
+        label= currentIndex==tabID and self.LimitLabel or TabNameLabels[tabID]
+        if label then
+            access= ( not canDeposit and numWithdrawals==0 and '|A:Monuments-Lock:0:0|a' )--锁定
+                or ( not canDeposit and '|A:Cursor_OpenHand_32:0:0|a' )--只能提取
+                or ( numWithdrawals==0 and '|A:Banker:0:0|a' )--只能存放 --or GUILDBANK_TAB_FULL_ACCESS--全部权限
+
+            label:SetText(
+                '|T'..(icon or 0)..':0|t'
+                ..(
+                    remainingWithdrawals > 0  and remainingWithdrawals
+                    or ( (remainingWithdrawals==0 and access) and (e.onlyChinese and '无' or NONE) )
+                    or ( e.onlyChinese and '无限制' or UNLIMITED )
+                )
+                ..(access or '')
+            )
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -279,14 +360,24 @@ local function Init()
 
 
     WoWTools_MoveMixin:Setup(GuildBankFrame, {setSize=true, needSize=true, needMove=true, minW=80, minH=140,
-        sizeUpdateFunc= function()
-            local h= math.ceil((GuildBankFrame:GetHeight()-112)/(Save().line+37))
-            Save().num= h
+        sizeUpdateFunc= function(btn)
+           
         end, sizeRestFunc= function(btn)
+            Save().otherSize= nil
             Save().num=15
-            Init_Button(btn.target)
+            if btn.target.mode== "bank" then
+                Init_Button(btn.target)
+            else
+                Set_Frame_Size(btn.target, nil, nil)
+            end
         end, sizeStopFunc= function(btn)
-            Init_Button(btn.target)
+            if btn.target.mode== "bank" then
+                local h= math.ceil((GuildBankFrame:GetHeight()-90)/(Save().line+37))
+                Save().num= h
+                Init_Button(btn.target)
+            else
+                Save().otherSize= {btn.target:GetSize()}
+            end
         end
     })
 
@@ -306,40 +397,12 @@ local function Init()
 
 
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)
-        if not self.LimitLabel:IsShown() then
-            return
-        end
-
-        local currentIndex= GetCurrentGuildBankTab()--当前 Tab
-        local icon, _, canDeposit, numWithdrawals, remainingWithdrawals, label, access
-
-        for tabID= 1, GetNumGuildBankTabs(), 1 do
-            label= currentIndex==tabID and self.LimitLabel or TabNameLabels[tabID]
-
-            if label then
-                _, icon, _, canDeposit, numWithdrawals, remainingWithdrawals  = GetGuildBankTabInfo(tabID)
-
-                access= ( not canDeposit and numWithdrawals==0 and '|A:Monuments-Lock:0:0|a' )--锁定
-                    or ( not canDeposit and '|A:Cursor_OpenHand_32:0:0|a' )--只能提取
-                    or ( numWithdrawals==0 and '|A:Banker:0:0|a' )--只能存放 --or GUILDBANK_TAB_FULL_ACCESS--全部权限
-
-                label:SetText(
-                    '|T'..(icon or 0)..':0|t'
-                    ..(
-                        remainingWithdrawals > 0  and remainingWithdrawals
-                        or ( (remainingWithdrawals==0 and access) and (e.onlyChinese and '无' or NONE) )
-                        or ( e.onlyChinese and '无限制' or UNLIMITED )
-                    )
-                    ..(access or '')
-                )
-            end
-        end
-
-    end)
+    hooksecurefunc(GuildBankFrame, 'UpdateTabs', Set_UpdateTabs)
 
 
 --更改UI位置
+    GuildBankFrame.TabTitle:SetPoint('CENTER', GuildBankFrame.TabTitleBG, 0, 10)
+
     --"%s的每日提取额度剩余：|cffffffff%s|r"
     GuildBankFrame.LimitLabel:ClearAllPoints()
     GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
@@ -359,6 +422,15 @@ local function Init()
 
     GuildBankMoneyLimitLabel:ClearAllPoints()
     GuildBankMoneyLimitLabel:SetPoint('RIGHT', GuildBankWithdrawMoneyFrame, 'LEFT')
+
+
+--信息，标签
+
+    GuildBankInfoScrollFrame:SetPoint('TOPLEFT', GuildBankFrame, 24, -54)
+    GuildBankInfoScrollFrame:SetPoint('BOTTOMRIGHT', GuildBankFrame, -30, 54)
+    --GuildBankInfoScrollFrame:SetPoint('BOTTOMRIGHT')
+
+    return true
 end
 
 
@@ -376,10 +448,13 @@ end
 
 
 
-function WoWTools_BankMixin:Init_Guild()
-    if e.Player.husandro then
-        Init()
-    else
-        WoWTools_MoveMixin:Setup(GuildBankFrame)
+function WoWTools_GuildBankMixin:Init_Plus()
+    if Init() then
+        Init=function () end
     end
+end
+
+
+function WoWTools_GuildBankMixin:Init_Button()
+    Init_Button(GuildBankFrame)
 end

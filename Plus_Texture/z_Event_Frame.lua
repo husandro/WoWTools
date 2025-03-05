@@ -231,10 +231,12 @@ end
 
 
 
---公会银行
+--[[公会银行
 function Events:Blizzard_GuildBankUI(mixin)
-    WoWTools_BankMixin:Init_Guild_Texture(mixin)
-end
+    if WoWTools_GuildBankMixin.Save.disabled then
+        WoWTools_GuildBankMixin:Init_Guild_Texture(mixin)
+    end
+end]]
 
 
 

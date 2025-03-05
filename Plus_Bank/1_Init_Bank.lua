@@ -28,10 +28,6 @@ WoWTools_BankMixin.Save={
         num=20,
     }
 }
-local function Save()
-    return WoWTools_BankMixin.Save
-end
-
 
 
 
@@ -40,16 +36,12 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent('BANKFRAME_OPENED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
 
-            Save().guild= Save().guild or {
-                line=2,
-                num=20,
-            }
+            WoWTools_BankMixin.Save.guild= nil
 
             local addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)
             WoWTools_BankMixin.addName= addName
@@ -57,21 +49,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             e.AddPanel_Check({
                 name= addName,
-                GetValue=function() return not Save().disabled end,
+                GetValue=function() return not WoWTools_BankMixin.Save.disabled end,
                 SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    WoWTools_BankMixin.Save.disabled= not WoWTools_BankMixin.Save.disabled and true or nil
+                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not WoWTools_BankMixin.Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
-            if Save().disabled then
-                self:UnregisterEvent(event)
-                self:UnregisterEvent('BANKFRAME_OPENED')
+            if not WoWTools_BankMixin.Save.disabled then
+                self:RegisterEvent('BANKFRAME_OPENED')
             end
 
-        elseif arg1=='Blizzard_GuildBankUI' then
-            WoWTools_BankMixin:Init_Guild()
-            WoWTools_BankMixin:Init_Guild_Texture()
             self:UnregisterEvent(event)
         end
 
@@ -86,7 +74,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Bank']=Save()
+            WoWToolsSave['Plus_Bank']= WoWTools_BankMixin.Save
         end
     end
 end)

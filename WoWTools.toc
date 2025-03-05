@@ -382,9 +382,6 @@ Plus_SellBuy\Plus_WidthX2.lua
 Plus_SellBuy\Plus_StackSplitFrame.lua
 
 
-
-
-
 ##银行
 Plus_Bank\0_BankMixin.lua
 Plus_Bank\1_Init_Bank.lua
@@ -394,8 +391,13 @@ Plus_Bank\Left_List.lua
 Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua
 Plus_Bank\PortraitButton.lua
-Plus_Bank\z_Guild_0.lua
-Plus_Bank\z_Guild_Texture.lua
+
+
+##公会银行
+Plus_BankGuild\0_Init.lua
+Plus_BankGuild\Menu.lua
+Plus_BankGuild\Plus.lua
+Plus_BankGuild\Texture.lua
 
 ##容器
 Plus_Bag\0_BagMixin.lua
