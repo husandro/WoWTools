@@ -169,6 +169,8 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
             end
         end
         self:HookInstructions(frame.editBox)
+    else
+        self:HookInstructions(editBox)
     end
 end
 

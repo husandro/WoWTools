@@ -5393,7 +5393,10 @@
         "GUILDBANK_TAB_FULL_ACCESS",
         "GuildBankMoneyFrame",
         "GUILD_BANK",
-        "GuildBankTab6"
+        "GuildBankTab6",
+        "GuildBankTabInfoEditBox",
+        "GUILDBANK_TAB_NUMBER",
+        "GuildBankMessageFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

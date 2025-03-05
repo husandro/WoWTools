@@ -345,7 +345,7 @@ local function Init_Menu(self, root)
     end
 
 --背景
-    sub:CreateCheckbox(e.onlyChinese and '背景' or 'Background', function()
+    sub:CreateCheckbox(e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
         return Save.show_background
     end, function()
         Save.show_background= not Save.show_background and true or nil

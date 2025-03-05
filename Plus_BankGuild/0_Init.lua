@@ -3,6 +3,8 @@ WoWTools_GuildBankMixin={
     Save={
         line=2,
         num=20,
+        --BgAplha=1,背景ALPHA
+        showIndex=true,
     }
 }
 
@@ -17,7 +19,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             WoWTools_GuildBankMixin.Save= WoWToolsSave['Plus_GuildBank'] or WoWTools_GuildBankMixin.Save
 
-            local addName= '|A:ChallengeMode-Chest:0:0|a'..(e.onlyChinese and '公会银行' or GUILD_BANK)
+            local addName= '|A:VignetteLoot:0:0|a'..(e.onlyChinese and '公会银行' or GUILD_BANK)
             WoWTools_GuildBankMixin.addName= addName
 
             --添加控制面板
