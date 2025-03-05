@@ -21,9 +21,6 @@ local NumLeftButton=0
 local function Set_Frame_Size(frame, currentIndex, numTab)
     local x= NumLeftButton
     if frame.mode=='bank' then
-        currentIndex= currentIndex or GetCurrentGuildBankTab()--当前 Tab
-        numTab= numTab or GetNumGuildBankTabs()--总计Tab
-
         if currentIndex<= numTab and x>0 then
             local line= Save().line
             local y = Save().num
@@ -258,24 +255,23 @@ local function Init_Button(self)
     local numTab= GetNumGuildBankTabs()--总计Tab
     local isEnable= self.mode== "bank" and currentIndex<= numTab
 
-
     if not isEnable then
         Set_Frame_Size(self, currentIndex, numTab)
         return
     end
 
-
-
     local newTab={}
     local index= 1
 
     for tabID=1, numTab do
-        if select(3, GetGuildBankTabInfo(tabID)) then
+        --if select(3, GetGuildBankTabInfo(tabID)) then
+            print(tabID, self.BankTabs[tabID].Button:IsEnabled())
+        if self.BankTabs[tabID].Button:IsEnabled() then
             if currentIndex~=tabID then
                 for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
                     local btn= Buttons[index] or Create_Button(index, tabID, slotID)
                     btn.tabID= tabID
-                    btn.isCurrent= false
+                    --btn.isCurrent= false
 
                 --物品，信息
                     btn:set_item()
@@ -287,7 +283,7 @@ local function Init_Button(self)
             else
                 for slotID, btn in pairs(MainButtons) do
                     btn.tabID= tabID
-                    btn.isCurrent=true
+                   
 
                 --物品，信息
                     e.Set_Item_Info(btn, {guidBank={tab=tabID, slot=slotID}})
@@ -324,15 +320,16 @@ local function Init_Button(self)
 
 --设置，索引颜色
        Set_Label(btn)
+       btn:SetShown(true)
     end
 
---print (#newTab, #MainButtons, #Buttons)
-
-    if #newTab<=MAX_GUILDBANK_SLOTS_PER_TAB then
-        self:SetSize(750, 428)
-    else
-        Set_Frame_Size(self, currentIndex, numTab)
+--print( #newTab, #MainButtons, #Buttons)
+--新登入，会出现BUG
+    for i= #newTab-#MainButtons+1, #Buttons, 1 do
+        Buttons[i]:SetShown(false)
     end
+
+    Set_Frame_Size(self, currentIndex, numTab)
 end
 
 
@@ -375,39 +372,23 @@ end
 local function Set_UpdateTabs(self)
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
+    local isCurrent, isEnable
 
     Update_ResizeButton(self, currentIndex, numTab)--缩放按钮
 
-    local name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals, label, access, isCurrent, isEnable
-    --local showIndex= Save().showIndex
-
-
 
     for tabID= 1, GetNumGuildBankTabs(), 1 do
-
-        --name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(tabID)
+        local btn= self.BankTabs[tabID].Button
 
         isCurrent= currentIndex==tabID
---Tab 名称
-        local btn= _G['GuildBankTab'..tabID] and _G['GuildBankTab'..tabID].Button
-        if btn and btn.nameLabel then
-            btn.isCurrent= isCurrent
-            --btn.tabID= tabID
+        isEnable= btn:IsEnabled() and currentIndex<= numTab
 
-            isEnable= btn:IsEnabled() and currentIndex<= numTab
-
-            if isEnable then
-                btn.nameLabel:SetAlpha(isCurrent and 1 or 0.3)
-
-                Set_Label(btn)
-            end
-            btn.nameLabel:SetShown(isEnable)
+        btn.isCurrent= isCurrent
+        if isEnable then
+            btn.nameLabel:SetAlpha(isCurrent and 1 or 0.3)
+            Set_Label(btn)
         end
-
- --信息，标签
-        if isCurrent then
-            GuildBankTabInfoEditBox.Instructions:SetText(name and name~='' and name or format(e.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID))
-        end
+        btn.nameLabel:SetShown(isEnable)
     end
 end
 
@@ -521,6 +502,7 @@ local function Init()
         local btn= GuildBankFrame.Columns[column].Buttons[btnIndex]
 
         MainButtons[slotID]= btn
+        btn.isCurrent=true
         --btn.nameLabel:SetTextColor(0.62, 0.62, 0.62)
         Create_IndexLabel(btn, false)
     end
@@ -541,7 +523,7 @@ local function Init()
 
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
             btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
-            
+
         else
             break
         end
@@ -554,15 +536,15 @@ local function Init()
 
 --移动，大小
     WoWTools_MoveMixin:Setup(GuildBankFrame, {setSize=true, needSize=true, needMove=true, minW=80, minH=140,
-        sizeUpdateFunc= function(btn)
+       --sizeUpdateFunc= function(btn)
 
-        end, sizeRestFunc= function(btn)
+        sizeRestFunc= function(btn)
             Save().otherSize= nil
             Save().num=15
             if btn.target.mode== "bank" then
                 Init_Button(btn.target)
             else
-                Set_Frame_Size(btn.target, nil, nil)
+                Set_Frame_Size(btn.target, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
             end
         end, sizeStopFunc= function(btn)
             if btn.target.mode== "bank" then
