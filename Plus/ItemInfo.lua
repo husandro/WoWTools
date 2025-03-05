@@ -719,7 +719,7 @@ end
 
 
 
---hooksecurefunc(GuildBankFrame,'Update', function(self)--Blizzard_GuildBankUI.lua
+--[[hooksecurefunc(GuildBankFrame,'Update', function(self)--Blizzard_GuildBankUI.lua
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 local function setGuildBank()--公会银行,设置
@@ -737,7 +737,7 @@ local function setGuildBank()--公会银行,设置
             end
         end
     end
-end
+end]]
 
 
 
@@ -835,8 +835,8 @@ local function Init_Bag()
         ]]
 
 --打开公会银行时, 打开背包
-        EventRegistry:RegisterFrameEventAndCallback("GUILDBANKBAGSLOTS_CHANGED", setGuildBank)
-        EventRegistry:RegisterFrameEventAndCallback("GUILDBANK_ITEM_LOCK_CHANGED", setGuildBank)
+        --EventRegistry:RegisterFrameEventAndCallback("GUILDBANKBAGSLOTS_CHANGED", setGuildBank)
+        --EventRegistry:RegisterFrameEventAndCallback("GUILDBANK_ITEM_LOCK_CHANGED", setGuildBank)
     end
 
 --银行, BankFrame.lua

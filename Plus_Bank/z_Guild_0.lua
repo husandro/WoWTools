@@ -4,17 +4,16 @@ local function Save()
 end
 --Blizzard_GuildBankUI.lua
 
-
-
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
-local Buttons={}
-local MainButtons={}
+
+local Buttons={}--新建按钮
+local MainButtons={}--自带按钮
 local NumLeftButton=0
 
-local Items={
-    --[tab]=slot=itemLink,
-}
+local TabNameLabels={}--创建，索引标签
+
+--local Items={  --[tabID][slotID]=itemLink,}
 
 
 
@@ -36,25 +35,46 @@ local function Set_Frame_Size(frame)
 end
 
 
+
  --索引，提示
- local function Set_IndexLabel(btn, tabID, slotID)
-    local color
-    if select(2, math.modf(tabID/2))~=0 then
-        color= {r=1,g=0.5,b=0}--金色
-    else
-        color= {r=0,g=0.82,b=1}
-    end
-    btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
+ local function Set_IndexLabel(btn)
+    btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND'})
     btn.indexLable:SetPoint('CENTER')
+    btn.indexLable:SetText(btn:GetID())
     btn.indexLable:SetAlpha(0.2)
-    btn.indexLable:SetText(slotID)
     btn.NormalTexture:SetAlpha(0.2)
+end
+
+--设置，索引颜色
+local function Set_IndexLabel_Color(btn, lableColor, isCurrent)
+    if isCurrent then
+        btn.indexLable:SetTextColor(1, 0, 1)
+    elseif select(2, math.modf(lableColor/2))==0 then
+        btn.indexLable:SetTextColor(1, 0.82, 0)
+    else
+        btn.indexLable:SetTextColor(0, 0.68, 1)
+    end
+end
+
+--创建，索引标签
+local function Creater_TabName_ForButton(btn, tabID)
+    local label= WoWTools_LabelMixin:Create(btn)
+    label:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT', 0, 4)
+    label:SetTextColor(0.62, 0.62, 0.62)
+    TabNameLabels[tabID]= label
 end
 
 
 
 
-
+local function Click_Tab(self)
+    local btn = _G['GuildBankTab'..self.tabID]
+    if btn then
+        btn:OnClick('LeftButton')
+    else
+        SetCurrentGuildBankTab(self.tabID)
+    end
+end
 
 
 
@@ -62,13 +82,12 @@ end
 
 --GuildBankItemButtonMixin 
 --需要 GetCurrentGuildBankTab() 修改成 self.tabID
-local function Create_Button(btn, index, tabID, slotID)
-    
+local function Create_Button(tabID, slotID)
+    local btn= CreateFrame('ItemButton', 'WoWToolsGuildItemButton'..tabID..'_'..slotID, MainButtons[1], 'GuildBankItemButtonTemplate', slotID)
+
     btn.SplitStack = function(button, split)
         SplitGuildBankItem(button.tabID, button:GetID(), split)
     end
-
-
 
     btn:SetScript('OnClick', function(self, d)
         if HandleModifiedItemClick(GetGuildBankItemLink(self.tabID, self:GetID())) then
@@ -105,15 +124,17 @@ local function Create_Button(btn, index, tabID, slotID)
         GameTooltip:SetGuildBankItem(self.tabID, self:GetID())
     end
     btn.UpdateTooltip = btn.OnEnter
-    btn:SetScript('OnEnter', btn.OnEnter)
+    btn:SetScript('OnEnter', function(self)
+        Click_Tab(self)
+        self:OnEnter()
+    end)
 
     btn:SetScript('OnDragStart', function(self)
         PickupGuildBankItem(self.tabID, self:GetID())
-        print('|cnGREEN_FONT_COLOR:OnDragStart|r',self.tabID, self:GetID())
     end)
 
     btn:SetScript('OnReceiveDrag', function(self)
-        print('OnReceiveDrag',self.tabID, self:GetID())
+        Click_Tab(self)
         PickupGuildBankItem(self.tabID, self:GetID())
     end)
 
@@ -128,9 +149,15 @@ local function Create_Button(btn, index, tabID, slotID)
         self:SetMatchesSearch(not isFiltered)
 
         SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, slot))
+
+        e.Set_Item_Info(btn, {guidBank={tab=tab, slot=slot}})
     end
 
-    Set_IndexLabel(btn, tabID, slotID)
+    Set_IndexLabel(btn)
+
+    if slotID==1 then
+        Creater_TabName_ForButton(btn, tabID)
+    end
 
     return btn
 end
@@ -149,66 +176,63 @@ end
 
 
 --local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, filtered = GetGuildBankTabInfo(tab)
-
-
 local function Init_Button(self)
-    self.ResizeButton.setSize= self.mode == "bank"
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
-    local isBank= self.mode== "bank"
 
-    self.ResizeButton.setSize= isBank--缩放，按钮
-
-    if not isBank and currentIndex> numTab then
+    if self.mode~= "bank" and currentIndex> numTab then
         self:SetSize(750, 428)
+        self.ResizeButton.setSize= false--缩放按钮
         return
     end
+    self.ResizeButton.setSize=true
 
     local newTab={}
 
     local num= Save().num
     local line= Save().line
     local index= 1--MAX_GUILDBANK_SLOTS_PER_TAB--98
-    local lableIndex=2
-    for tab=1, numTab do
-        if currentIndex~=tab then
-            for slot=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-                index= index+1
-                local btn= Buttons[index] 
-                if not btn then
-                    btn= CreateFrame('ItemButton', 'WoWToolsGuildItemButton'..tab..'_'..slot, Buttons[1], 'GuildBankItemButtonTemplate', slot)
-                    Create_Button(btn, index, lableIndex, slot)
-                    Buttons[index]= btn
-                end
 
-                btn.tabID= tab
-               -- btn:SetID(slot)
-                if select(3, GetGuildBankTabInfo(tab)) then
+    for tabID=1, numTab do
+        --Items[tabID]= Items[tabID] or {}
+        if select(3, GetGuildBankTabInfo(tabID)) then
+            if currentIndex~=tabID then
+                for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+                    local btn= Buttons[index]
+                    if not btn then
+                        btn= Create_Button(tabID, slotID)
+                        Buttons[index]= btn
+                    end
+
+                    btn.tabID= tabID
+                    btn:set_item()
+                    index= index+1
                     table.insert(newTab, btn)
+
+                end
+            else
+                for slotID, btn in pairs(MainButtons) do
+                    btn.tabID= tabID
+                    table.insert(newTab, btn)
+                    --Items[tabID][slotID]=GetGuildBankItemLink(tabID, slotID)
+
+                    e.Set_Item_Info(btn,{guidBank={tab=tabID, slot=slotID}})
                 end
             end
-            lableIndex= lableIndex+1
-
-        else
-            for _, btn in pairs(MainButtons) do
-
-                btn.tabID= tab
-                --btn:SetID(slot)
-                
-                table.insert(newTab, btn)
-            end
-                
         end
     end
 
 
-    local leftButton
+    local leftButton,  lableColor, newLine
+
     NumLeftButton=0
     index=0
+
     for i, btn in pairs(newTab) do
         btn:ClearAllPoints()
         index= index+1
-        if select(2, math.modf((i-1)/MAX_GUILDBANK_SLOTS_PER_TAB))==0 or select(2, math.modf((index-1)/num))==0 then
+        lableColor, newLine= math.modf((i-1)/MAX_GUILDBANK_SLOTS_PER_TAB)
+        if newLine==0 or select(2, math.modf((index-1)/num))==0 then
             if i==1 then
                 btn:SetPoint("TOPLEFT", self, "TOPLEFT", 8, -60)
             else
@@ -217,10 +241,14 @@ local function Init_Button(self)
             end
             leftButton= btn
             NumLeftButton=NumLeftButton+1
-
         else
-            btn:SetPoint('TOP', Buttons[i-1], 'BOTTOM', 0, -line)
+            btn:SetPoint('TOP', newTab[i-1], 'BOTTOM', 0, -line)
         end
+
+--设置，索引颜色
+        Set_IndexLabel_Color(btn, lableColor, btn.tabID==currentIndex)
+
+
     end
 
 
@@ -233,59 +261,20 @@ end
 
 
 
-local function New_Items()
-    Items={}
-    C_Timer.After(0.5, function()
-        local i=1
-
-    for tab= GetNumGuildBankTabs(), 1, -1 do
-        Items[tab]={}
-        print(GetGuildBankTabInfo(tab))
-        if select(3, GetGuildBankTabInfo(tab)) then
-            do
-                SetCurrentGuildBankTab(tab)
-            end
-            for slot= 1, MAX_GUILDBANK_SLOTS_PER_TAB do
-                local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, slot)
-                if texture then
-                    Items[tab][slot]={
-                            item={GetGuildBankItemInfo(tab, slot)},
-                            link= GetGuildBankItemLink(tab, slot),
-                    }
-                    print(i, Items[tab][slot].item[1], Items[tab][slot].link)
-                    i=i+1
-                end
-
-            end
-            print(i)
-        end
-    end
-
-    end)
-end
-
 
 
 local function Init()
-
-    New_Items()
-
-
-    for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-        local btnIndex = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP)
+    for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+        local btnIndex = mod(slotID, NUM_SLOTS_PER_GUILDBANK_GROUP)
         if ( btnIndex == 0 ) then
             btnIndex = NUM_SLOTS_PER_GUILDBANK_GROUP
         end
-        local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
+        local column = ceil((slotID-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
         local btn=GuildBankFrame.Columns[column].Buttons[btnIndex]
-        if btn then
-            btn.tabID=1
-            --Set_IndexLabel(btn, 1, i)
-            btn.NormalTexture:SetAlpha(0.2)
-            MainButtons[i]= btn
-            Create_Button(btn, i, 1, i)
-            --Buttons[i]= btn
-        end
+
+        MainButtons[slotID]= btn
+
+        Set_IndexLabel(btn)
     end
 
 
@@ -316,28 +305,60 @@ local function Init()
     end)
 
 
-    local function Set_UpdateTabs(self)
+
+    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)
         if not self.LimitLabel:IsShown() then
             return
         end
-        local name, icon, _, _, _, remainingWithdrawals = GetGuildBankTabInfo(GetCurrentGuildBankTab())
-        local stackString
-        if ( remainingWithdrawals > 0 ) then
-            stackString = '#|cffffffff'..remainingWithdrawals
-        elseif ( remainingWithdrawals == 0 ) then
-            stackString = '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)
-        else
-            stackString = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '无限制' or UNLIMITED)
-        end
-        self.LimitLabel:SetText('|T'..(icon or 0)..':0|t'..stackString)
-    end
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(self)
-        Set_UpdateTabs(self)
+        local currentIndex= GetCurrentGuildBankTab()--当前 Tab
+        local icon, _, canDeposit, numWithdrawals, remainingWithdrawals, label, access
+
+        for tabID= 1, GetNumGuildBankTabs(), 1 do
+            label= currentIndex==tabID and self.LimitLabel or TabNameLabels[tabID]
+
+            if label then
+                _, icon, _, canDeposit, numWithdrawals, remainingWithdrawals  = GetGuildBankTabInfo(tabID)
+
+                access= ( not canDeposit and numWithdrawals==0 and '|A:Monuments-Lock:0:0|a' )--锁定
+                    or ( not canDeposit and '|A:Cursor_OpenHand_32:0:0|a' )--只能提取
+                    or ( numWithdrawals==0 and '|A:Banker:0:0|a' )--只能存放 --or GUILDBANK_TAB_FULL_ACCESS--全部权限
+
+                label:SetText(
+                    '|T'..(icon or 0)..':0|t'
+                    ..(
+                        remainingWithdrawals > 0  and remainingWithdrawals
+                        or ( (remainingWithdrawals==0 and access) and (e.onlyChinese and '无' or NONE) )
+                        or ( e.onlyChinese and '无限制' or UNLIMITED )
+                    )
+                    ..(access or '')
+                )
+            end
+        end
+
     end)
 
 
+--更改UI位置
+    --"%s的每日提取额度剩余：|cffffffff%s|r"
+    GuildBankFrame.LimitLabel:ClearAllPoints()
+    GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
+    GuildBankFrame.LimitLabel:SetTextColor(1,0,1)
 
+    GuildBankFrame.DepositButton:ClearAllPoints()
+    GuildBankFrame.DepositButton:SetPoint('BOTTOMRIGHT', -8, 8)
+
+    GuildBankMoneyFrame:ClearAllPoints()
+    GuildBankMoneyFrame:SetPoint('RIGHT', GuildBankFrame.WithdrawButton, 'LEFT')
+
+    GuildItemSearchBox:ClearAllPoints()
+    GuildItemSearchBox:SetPoint('RIGHT', GuildBankMoneyFrame, 'LEFT', -6, 0)
+
+    GuildBankWithdrawMoneyFrame:ClearAllPoints()
+    GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildItemSearchBox, 'LEFT', -2, 0)
+
+    GuildBankMoneyLimitLabel:ClearAllPoints()
+    GuildBankMoneyLimitLabel:SetPoint('RIGHT', GuildBankWithdrawMoneyFrame, 'LEFT')
 end
 
 

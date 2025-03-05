@@ -5385,7 +5385,13 @@
         "GuildControlUIRankBankFrameRankDropdown",
         "GuildControlUIRankBankFrameInset",
         "GuildControlUIRankSettingsFrameRankDropdown",
-        "GuildBankTabMixin"
+        "GuildBankTabMixin",
+        "GuildBankTab2",
+        "GUILDBANK_TAB_LOCKED",
+        "GUILDBANK_TAB_WITHDRAW_ONLY",
+        "GUILDBANK_TAB_DEPOSIT_ONLY",
+        "GUILDBANK_TAB_FULL_ACCESS",
+        "GuildBankMoneyFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

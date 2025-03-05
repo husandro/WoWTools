@@ -25,7 +25,7 @@ WoWTools_BankMixin.Save={
 
     guild={
         line=2,
-        num=15,
+        num=20,
     }
 }
 local function Save()
@@ -48,7 +48,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().guild= Save().guild or {
                 line=2,
-                num=15,
+                num=20,
             }
 
             local addName= '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK)

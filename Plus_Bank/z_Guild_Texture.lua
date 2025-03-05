@@ -102,16 +102,14 @@ local function Init(mixin)
     end
 
 
-  
+
 
     --[[--"%s的每日提取额度剩余：|cffffffff%s|r"
     GuildBankFrame.LimitLabel:ClearAllPoints()
     --GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
     GuildBankFrame.LimitLabel:SetPoint('TOP', GuildBankFrame.TabTitle, 'BOTTOM', 0, -2)]]
 
-    --"%s的每日提取额度剩余：|cffffffff%s|r"
-    GuildBankFrame.LimitLabel:ClearAllPoints()
-    GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
+
 
 
     return true
