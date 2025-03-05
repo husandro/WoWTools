@@ -52,16 +52,19 @@ end
 local function Set_Label(self)
     local showIndex= Save().showIndex
     local r, g, b= 0, 0.68, 1
+    if showIndex then
+        if self.isCurrent then
+            r,g,b= 1, 0, 1
+        elseif select(2, math.modf(self.tabID/2))==0 then
+            r,g,b= 1, 0.82, 0
+        else
+            r,g,b= 0, 0.68, 1
+        end
+    end
 
     if self.indexLable then
         if showIndex then
-            if self.isCurrent then
-                self.indexLable:SetTextColor(0, 1, 0)
-            elseif select(2, math.modf(self.tabID/2))==0 then
-                self.indexLable:SetTextColor(1, 0.82, 0)
-            else
-                self.indexLable:SetTextColor(0, 0.68, 1)
-            end
+            self.indexLable:SetTextColor(r,g,b)
         end
         self.indexLable:SetShown(showIndex)
     end
@@ -88,8 +91,10 @@ local function Set_Label(self)
                     ..(access or '')
                 )
             end
+
+            self.nameLabel:SetTextColor(r,g,b)
         end
-        self.indexLable:SetShown(showIndex)
+        self.nameLabel:SetShown(showIndex)
     end
 end
 
@@ -109,7 +114,7 @@ end
     if isName then--创建，TabName标签
         btn.nameLabel= WoWTools_LabelMixin:Create(btn)
         btn.nameLabel:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT', 0, 4)
-        btn.nameLabel:SetTextColor(0.62, 0.62, 0.62)
+       -- btn.nameLabel:SetTextColor(0.62, 0.62, 0.62)
     end
 end
 
@@ -215,7 +220,7 @@ local function Create_Button(index, tabID, slotID)
         SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, slot))
     end
 
-    Create_IndexLabel(btn, tabID==1)
+    Create_IndexLabel(btn, slotID==1)
 
 
 
@@ -318,7 +323,7 @@ local function Init_Button(self)
         end
 
 --设置，索引颜色
-        Set_Label(btn)
+       Set_Label(btn)
     end
 
 --print (#newTab, #MainButtons, #Buttons)
@@ -379,7 +384,7 @@ local function Set_UpdateTabs(self)
 
 
     for tabID= 1, GetNumGuildBankTabs(), 1 do
-        
+
         --name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(tabID)
 
         isCurrent= currentIndex==tabID
@@ -387,36 +392,17 @@ local function Set_UpdateTabs(self)
         local btn= _G['GuildBankTab'..tabID] and _G['GuildBankTab'..tabID].Button
         if btn and btn.nameLabel then
             btn.isCurrent= isCurrent
-            btn.tabID= tabID
+            --btn.tabID= tabID
 
             isEnable= btn:IsEnabled() and currentIndex<= numTab
-            
+
             if isEnable then
-                --btn.nameLabel:SetText(isEnable and name or '')
                 btn.nameLabel:SetAlpha(isCurrent and 1 or 0.3)
-                Set_Label(self)
+
+                Set_Label(btn)
             end
             btn.nameLabel:SetShown(isEnable)
         end
-
---标签，提示
-        --label= isCurrent and self.LimitLabel or TabNameLabels[tabID]
-
-        --[[if label then
-            access= ( not canDeposit and numWithdrawals==0 and '|A:Monuments-Lock:0:0|a' )--锁定
-                or ( not canDeposit and '|A:Cursor_OpenHand_32:0:0|a' )--只能提取
-                or ( numWithdrawals==0 and '|A:Banker:0:0|a' )--只能存放 --or GUILDBANK_TAB_FULL_ACCESS--全部权限
-
-            label:SetText(
-                '|T'..(icon or 0)..':0|t'
-                ..(
-                    remainingWithdrawals > 0  and remainingWithdrawals
-                    or ( (remainingWithdrawals==0 and access) and (e.onlyChinese and '无' or NONE) )
-                    or ( e.onlyChinese and '无限制' or UNLIMITED )
-                )
-                ..(access or '')
-            )
-        end]]
 
  --信息，标签
         if isCurrent then
@@ -447,7 +433,7 @@ local function Init_UI()
 --"%s的每日提取额度剩余：|cffffffff%s|r"
     GuildBankFrame.LimitLabel:ClearAllPoints()
     GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
-    GuildBankFrame.LimitLabel:SetTextColor(0,1,0)
+    GuildBankFrame.LimitLabel:SetTextColor(1,0,1)
 
     GuildBankFrame.DepositButton:ClearAllPoints()
     GuildBankFrame.DepositButton:SetPoint('BOTTOMRIGHT', -8, 8)
@@ -474,11 +460,13 @@ local function Init_UI()
 
     GuildBankTabInfoEditBox.Instructions=WoWTools_LabelMixin:Create(GuildBankTabInfoEditBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     GuildBankTabInfoEditBox.Instructions:SetPoint('TOPLEFT')
+    GuildBankTabInfoEditBox.Instructions:Hide()
+    --WoWTools_EditBoxMixn:SetInstructions(GuildBankTabInfoEditBox, '', nil)
 
-    WoWTools_EditBoxMixn:SetInstructions(GuildBankTabInfoEditBox, '', nil)
     GuildBankTabInfoEditBox.maxNumLetters= WoWTools_LabelMixin:Create(GuildBankTabInfoEditBox, {layer='BORDER', color=true})
     GuildBankTabInfoEditBox.maxNumLetters:SetPoint('BOTTOMRIGHT', GuildBankInfoScrollFrame, -8,8)
     GuildBankTabInfoEditBox.maxNumLetters:Hide()
+
     function GuildBankTabInfoEditBox:settings()
         self.maxNumLetters:SetText(self:GetNumLetters()..'/'..self:GetMaxLetters())
     end
@@ -493,7 +481,12 @@ local function Init_UI()
         self.Instructions:SetShown(self:GetText() == "")
         self:settings()
     end)
-
+    hooksecurefunc(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
+        GuildBankTabInfoEditBox.Instructions:SetText(
+            GetGuildBankTabInfo(tabID)
+            or format(e.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)
+        )
+    end)
 
 end
 
@@ -515,39 +508,46 @@ end
 
 -- bank, log, moneylog, tabinfo
 local function Init()
+--"%s的每日提取额度剩余：|cffffffff%s|r";
+    GuildBankFrame.Column1.Button1.nameLabel=  GuildBankFrame.LimitLabel
 
-    GuildBankFrame.Column1.Button1.nameLabel=  GuildBankFrame.Column1.Button1.LimitLabel
-
+--自带按钮
     for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
         local btnIndex = mod(slotID, NUM_SLOTS_PER_GUILDBANK_GROUP)
         if ( btnIndex == 0 ) then
             btnIndex = NUM_SLOTS_PER_GUILDBANK_GROUP
         end
         local column = ceil((slotID-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
-        local btn=GuildBankFrame.Columns[column].Buttons[btnIndex]
+        local btn= GuildBankFrame.Columns[column].Buttons[btnIndex]
 
         MainButtons[slotID]= btn
+        --btn.nameLabel:SetTextColor(0.62, 0.62, 0.62)
         Create_IndexLabel(btn, false)
     end
-    
+
 --右边标签，提示
-    for i=1, MAX_GUILDBANK_TABS do--MAX_GUILDBANK_TABS
-        if _G['GuildBankTab'..i] then
-            local btn= _G['GuildBankTab'..i].Button
+    for tabID=1, MAX_GUILDBANK_TABS do--MAX_GUILDBANK_TABS
+        if _G['GuildBankTab'..tabID] then
+            local btn= _G['GuildBankTab'..tabID].Button
+            btn.onlyName= true
+            btn.tabID= tabID
+
             btn:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                GameTooltip:SetText(GetGuildBankText(self:GetParent():GetID()), nil, nil, nil, true)
+                GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true)
+                GameTooltip:AddLine(GetGuildBankText(self.tabID))
+                GameTooltip:Show()
             end)
+
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
-            btn.nameLabel:SetPoint('TOPLEFT', btn.Button, 'BOTTOMLEFT')
-            btn.nameLabel.onlyName= true
+            btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
+            
         else
             break
         end
     end
 
---调整，UI
-    Init_UI()
+
 
 --背景
     GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha or 1)
@@ -592,6 +592,9 @@ local function Init()
 
     hooksecurefunc(GuildBankFrame, 'UpdateTabs', Set_UpdateTabs)
 
+
+--调整，UI
+    Init_UI()
     return true
 end
 
