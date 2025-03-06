@@ -119,6 +119,9 @@ end
 
 
 
+
+
+
 --提取
 local function Init_Out_Menu(self, root, tabID)
     local sub
@@ -318,6 +321,9 @@ local function Get_Bag(classID, subClassID, onlyItem)
 
     return index
 end
+
+
+
 
 
 

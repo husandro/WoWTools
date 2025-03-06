@@ -351,12 +351,11 @@ local function Set_Label()
 --提示，当前银行，类型
     ListButton.bankSlotFree= bankFree--空栏位
     ListButton:set_bank_type()
-
-
+end
     --[[ListButton.isBank= isBank
     ListButton.isReagent= isReagent
     ListButton.isAccount= isAccount]]
-end
+
 
 
 
