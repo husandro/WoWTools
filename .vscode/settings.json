@@ -5398,7 +5398,8 @@
         "GUILDBANK_TAB_NUMBER",
         "GuildBankMessageFrame",
         "GUILDCONTROL_WITHDRAW_GOLD",
-        "INTERRUPT"
+        "INTERRUPT",
+        "ERR_BANK_FULL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

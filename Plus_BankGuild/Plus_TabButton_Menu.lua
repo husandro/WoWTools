@@ -56,9 +56,10 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem)
         self.isInRun=true--停止，已运行
         return
     end
-
-    local freeSlots =  WoWTools_BagMixin:GetFree(false)
+    
     WoWTools_GuildBankMixin.isInRun= true
+    local freeSlots =  WoWTools_BagMixin:GetFree(false)
+    local itemIndex= 0
 
     local function withdrawItems()
         if 
@@ -68,6 +69,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem)
         then
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
+            print(itemIndex..')', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '中断' or INTERRUPT  )
             return
         end
 
@@ -78,15 +80,23 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem)
             if itemLink then
 
                 AutoStoreGuildBankItem(tabID, slotID)
+
                 print(e.onlyChinese and '提取' or WITHDRAW, itemLink)
 
                 freeSlots = freeSlots - 1
+                itemIndex= itemIndex+ 1
+
                 find=true
                 break
             end
         end
-
+     
         if not find or freeSlots <= 0 then
+            if freeSlots <= 0  then
+                print(itemIndex..')', '|cffff00ff'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '背包已满' or SPELL_FAILED_CUSTOM_ERROR_1059 )
+            else
+                print(itemIndex..')', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '完成' or COMPLETE )
+            end
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
             return
@@ -262,7 +272,7 @@ local function In_Bags(self, tabID, classID, subClassID, onlyItem)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(itemIndex..')', '|cffff00ff'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '完成' or COMPLETE )
+                print(itemIndex..')', '|cffff00ff'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '你的银行已满' or ERR_BANK_FULL )
             else
                 print(itemIndex..')', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '完成' or COMPLETE )
             end
