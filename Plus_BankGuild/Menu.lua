@@ -30,6 +30,12 @@ local function Init_Menu(self, root)
         return Save().autoOpenBags
     end, function()
         Save().autoOpenBags= not Save().autoOpenBags and true or nil
+        if Save().autoOpenBags then
+            do
+                WoWTools_BagMixin:OpenBag(nil, false)
+            end
+            GuildBankFrame:Raise()
+        end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '打开/关闭所有的背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
@@ -121,8 +127,9 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
+    WoWTools_MenuMixin:Reload(root, false)
+    root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
-    WoWTools_MenuMixin:Reload(sub, false)
 end
 
 

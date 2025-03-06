@@ -5397,7 +5397,8 @@
         "GuildBankTabInfoEditBox",
         "GUILDBANK_TAB_NUMBER",
         "GuildBankMessageFrame",
-        "GUILDCONTROL_WITHDRAW_GOLD"
+        "GUILDCONTROL_WITHDRAW_GOLD",
+        "INTERRUPT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

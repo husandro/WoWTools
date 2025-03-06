@@ -3,34 +3,8 @@ local MAX_GUILDBANK_SLOTS_PER_TAB= 96
 
 
 
-local function Check_Bag_Item(itemInfo, classID, onlyItem)
-    local itemClassID = itemInfo and itemInfo.itemID and select(12, C_Item.GetItemInfo(itemInfo.itemID))
-
-    return itemClassID
-        and itemClassID ~= Enum.ItemClass.Questitem
-        and not itemInfo.isFiltered
-        and not itemInfo.isLocked
-        and not itemInfo.isBound
-        and (classID==itemClassID or not classID)
-        and (not onlyItem and select(17, C_Item.GetItemInfo(itemInfo.itemID)) or onlyItem)
-end
 
 
-
-local function Check_Bank_Item(tabID, slotID, classID, onlyItem)
-    local itemClassID, _, isCraftingReagent
-    local itemLink= GetGuildBankItemLink(tabID, slotID)
-    local locked, isFiltered = select(3, GetGuildBankItemInfo(tabID, slotID))
-    if locked or isFiltered or not itemLink then
-        return
-    end
-
-    itemClassID, _, _, _, _, isCraftingReagent = select(12, C_Item.GetItemInfo(itemLink))
-
-    if (classID==itemClassID or not classID) and (not onlyItem and isCraftingReagent or onlyItem) then
-        return itemLink
-    end
-end
 
 
 
@@ -49,13 +23,35 @@ end
 
 
 
+--提取
+local function Check_Bank(tabID, slotID, classID, subClassID, onlyItem)
+    local itemClassID, itemSubclassID, _, isCraftingReagent
+    local itemLink= GetGuildBankItemLink(tabID, slotID)
+    local locked, isFiltered = select(3, GetGuildBankItemInfo(tabID, slotID))
+    if locked or isFiltered or not itemLink then
+        return
+    end
+
+    itemClassID, itemSubclassID, _, _, _, isCraftingReagent = select(12, C_Item.GetItemInfo(itemLink))
+
+    if
+        (classID==itemClassID or not classID)
+        and (subClassID==subClassID or not subClassID)
+        and (onlyItem and not isCraftingReagent or not onlyItem)
+        
+    then
+        return itemLink, itemClassID, itemSubclassID
+    end
+end
+
+
 
 
 
 
 
 --提取
-local function Out_Bank(self, tabID, classID, onlyItem)
+local function Out_Bank(self, tabID, classID, subClassID, onlyItem)
     if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
         self.isInRun=true--停止，已运行
         return
@@ -65,9 +61,8 @@ local function Out_Bank(self, tabID, classID, onlyItem)
     WoWTools_GuildBankMixin.isInRun= true
 
     local function withdrawItems()
-        if
-            freeSlots <= 0
-            or not self:IsVisible()
+        if 
+            not self:IsVisible()
             or self.isInRun
             or GetCurrentGuildBankTab()~= tabID
         then
@@ -79,7 +74,7 @@ local function Out_Bank(self, tabID, classID, onlyItem)
         local find
 
         for slotID= MAX_GUILDBANK_SLOTS_PER_TAB, 1, -1 do
-            local itemLink= Check_Bank_Item(tabID, slotID, classID, onlyItem)
+            local itemLink= Check_Bank(tabID, slotID, classID, subClassID, onlyItem)
             if itemLink then
 
                 AutoStoreGuildBankItem(tabID, slotID)
@@ -91,7 +86,7 @@ local function Out_Bank(self, tabID, classID, onlyItem)
             end
         end
 
-        if not find then
+        if not find or freeSlots <= 0 then
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
             return
@@ -117,7 +112,7 @@ end
 --提取
 local function Init_Out_Menu(self, root, tabID)
     local sub
-   
+
     local bankItems= select(2, WoWTools_GuildBankMixin:GetFree(tabID))
     local numBankItem= 0
     local numReagent= 0
@@ -134,7 +129,7 @@ local function Init_Out_Menu(self, root, tabID)
         ..' #'..numBankItem,
     function(data)
         Out_Bank(self, data.tabID, nil, true)
-        return MenuResponse.Open
+        --return MenuResponse.Open
     end, {tabID= tabID})
     sub:SetTooltip(Set_Tooltip)
 
@@ -143,10 +138,13 @@ local function Init_Out_Menu(self, root, tabID)
         ..' #'..numReagent,
     function(data)
         Out_Bank(self, data.tabID, nil, false)
-        return MenuResponse.Open
+        --return MenuResponse.Open
     end, {tabID= tabID})
     sub:SetTooltip(Set_Tooltip)
 end
+
+
+
 
 
 
@@ -165,60 +163,126 @@ end
 
 
 --存放
-local function In_Bags(self, tabID, classID, onlyItem)
+local function Check_Bag(itemInfo, classID, subClassID, onlyItem)
+    if not itemInfo or not itemInfo.itemID then
+        return
+    end
+    local itemClassID, itemSubClass= select(12, C_Item.GetItemInfo(itemInfo.itemID))
+
+    if itemClassID
+        and itemClassID ~= Enum.ItemClass.Questitem
+        and not itemInfo.isFiltered
+        and not itemInfo.isLocked
+        and not itemInfo.isBound
+        and (classID==itemClassID or not classID)
+        and (subClassID== itemSubClass or not subClassID)
+        and (onlyItem and not select(17, C_Item.GetItemInfo(itemInfo.itemID)) or not onlyItem)
+    then
+        return itemClassID, itemSubClass
+    end
+end
+
+
+
+--存放
+local function In_Bags(self, tabID, classID, subClassID, onlyItem)
     if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
         self.isInRun=true--停止，已运行
         return
     end
 
-    local freeSlots = WoWTools_GuildBankMixin:GetFree(tabID)
-    local num= NUM_BAG_FRAMES+ (onlyItem and 0 or NUM_REAGENTBAG_FRAMES)
     WoWTools_GuildBankMixin.isInRun= true
+
+    local freeSlots = WoWTools_GuildBankMixin:GetFree(tabID)
+    local itemInfo, itemClassID, itemSubclassID
+    local items={}
+    local itemIndex=0
+
+    for bag =0, NUM_BAG_FRAMES+ (onlyItem and 0 or NUM_REAGENTBAG_FRAMES) do
+        for slot = C_Container.GetContainerNumSlots(bag), 1, -1 do
+
+            itemInfo= C_Container.GetContainerItemInfo(bag, slot)
+
+            itemClassID, itemSubclassID= Check_Bag(itemInfo, classID, subClassID, onlyItem)
+
+            if itemClassID then
+                table.insert(items, {
+                    info= itemInfo,
+                    bag= bag,
+                    slot= slot,
+                    classID= itemClassID,
+                    subClassID= itemSubclassID
+                })
+            end
+        end
+    end
+
+    table.sort(items, function(a, b)
+        if a.classID== b.classID then
+            if a.subClassID== b.subClassID then
+                if a.info.quality== b.info.quality then
+                    return a.info.iconFileID> b.info.iconFileID
+                else
+                    return a.info.quality<b.info.quality
+                end
+            else
+                return a.subClassID < b.subClassID
+            end
+        else
+            return a.classID<b.classID
+        end
+    end)
+
 
     local function depositItems()
         if
-            freeSlots <= 0
-            or not self:IsVisible()
+           not self:IsVisible()
             or self.isInRun
             or GetCurrentGuildBankTab()~= tabID
         then
+            print(itemIndex..')', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '中断' or INTERRUPT  )
             self.isInRun=nil
             WoWTools_GuildBankMixin.isInRun= nil
             return
         end
 
         local find
-        for bag = num, 0, -1 do
-            for slot = C_Container.GetContainerNumSlots(bag), 1, -1 do
-                local itemInfo= C_Container.GetContainerItemInfo(bag, slot)
-                if Check_Bag_Item(itemInfo, classID, onlyItem) then
+        for index, info in pairs(items) do
+            C_Container.UseContainerItem(info.bag, info.slot, nil, Enum.BankType.Guild)
 
-                    C_Container.UseContainerItem(bag, slot, nil, Enum.BankType.Guild)
-                    print(e.onlyChinese and '存放' or DEPOSIT, itemInfo.hyperlink)
+            print(itemIndex, e.onlyChinese and '存放' or DEPOSIT, info.info.hyperlink)
 
-                    freeSlots = freeSlots - 1
-                    find=true
-                    break
-                end
-            end
-            if find then
-                break
-            end
+            freeSlots = freeSlots- 1
+            itemIndex= itemIndex+ 1
+            table.remove(items, index)
+
+            find=true
+            break
         end
 
-        if not find then
+        if not find or freeSlots <= 0 then
+            if freeSlots <= 0  then
+                print(itemIndex..')', '|cffff00ff'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '完成' or COMPLETE )
+            else
+                print(itemIndex..')', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '完成' or COMPLETE )
+            end
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
+
             return
         end
 
-        C_Timer.After(0.6, function()
+        C_Timer.After(0.8, function()
             depositItems()
         end)
     end
 
     depositItems()
 end
+
+
+
+
 
 
 
@@ -243,10 +307,10 @@ local function Init_In_Menu(self, root, tabID)
 
 
     local items= WoWTools_BagMixin:GetItems(false, true, false, function(_, _, itemInfo)
-        return Check_Bag_Item(itemInfo, nil )
+        return Check_Bag(itemInfo, nil )
     end)
     local regents= WoWTools_BagMixin:GetItems(true, false, true, function(_, _, itemInfo)
-        return Check_Bag_Item(itemInfo)
+        return Check_Bag(itemInfo)
     end)
 
 
@@ -255,7 +319,7 @@ local function Init_In_Menu(self, root, tabID)
         ..' #'..#items,
     function(data)
         In_Bags(self, data.tabID, nil, true)
-        return MenuResponse.Open
+        --return MenuResponse.Open
     end, {tabID= tabID, items=items})
     sub:SetTooltip(Set_Tooltip)
 
@@ -265,11 +329,20 @@ local function Init_In_Menu(self, root, tabID)
         ..' #'..#regents,
     function(data)
         In_Bags(self, data.tabID, nil, false)
-        return MenuResponse.Open
+        --return MenuResponse.Open
 
     end, {tabID= tabID, items=items})
     sub:SetTooltip(Set_Tooltip)
 end
+
+
+
+
+
+
+
+
+
 
 
 
