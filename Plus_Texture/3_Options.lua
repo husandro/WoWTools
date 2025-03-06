@@ -131,11 +131,18 @@ local function Init_Options()
             Save().classPowerNum= not Save().classPowerNum and true or false
             print(WoWTools_Mixin.addName, WoWTools_TextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        sliderGetValue= function() return Save().classPowerNumSize or 12 end,
+        sliderGetValue= function()
+            local s= Save().classPowerNumSize
+            if type(s)~='number' then
+                s= 12
+                Save().classPowerNumSize=12
+            end
+            return s or 12
+        end,
         minValue= 6,
         maxValue= 64,
         step= 1,
-        sliderSetValue= function(a, info, value2)
+        sliderSetValue= function(_, _, value2)
             if value2 then
                 local value3= e.GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
