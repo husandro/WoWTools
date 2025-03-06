@@ -15,7 +15,17 @@ local function Init_Menu(self, root)
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
     local isEnabled= frame.mode== "bank" and currentIndex<= numTab
-        
+
+
+
+
+
+
+
+
+
+
+
 --索引
     root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex
@@ -45,6 +55,13 @@ local function Init_Menu(self, root)
     sub:SetEnabled(isEnabled)
     root:CreateSpacer()
 
+
+
+
+
+
+
+
 --行数
     root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
@@ -63,6 +80,13 @@ local function Init_Menu(self, root)
     sub:SetEnabled(isEnabled)
     root:CreateSpacer()
 
+
+
+
+
+
+
+
 --间隔
     root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
@@ -80,6 +104,11 @@ local function Init_Menu(self, root)
     })
     sub:SetEnabled(isEnabled)
     root:CreateSpacer()
+
+
+
+
+
 
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
