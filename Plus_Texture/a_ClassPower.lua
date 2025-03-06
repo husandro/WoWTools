@@ -17,7 +17,8 @@ local IsHook
 local function set_Num_Texture(self, num, color, parent)
     if self and not self.numTexture and (self.layoutIndex or num) then
         self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY', nil, 7)
-        self.numTexture:SetSize(Save().classPowerNumSize or 12, Save().classPowerNumSize or 12)
+        local size= Save().classPowerNumSize or 12
+        self.numTexture:SetSize(size, size)
         self.numTexture:SetPoint('CENTER', self, 'CENTER')
         self.numTexture:SetAtlas('services-number-'..(num or self.layoutIndex))
         if color~=false then

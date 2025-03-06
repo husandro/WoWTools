@@ -61,7 +61,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             WoWTools_TextureMixin.Save= WoWToolsSave['Plus_Texture'] or Save()
-
+            WoWTools_TextureMixin.Save.classPowerNumSize= WoWTools_TextureMixin.Save.classPowerNumSize or 12
+            
             local addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
             WoWTools_TextureMixin.addName= addName
 

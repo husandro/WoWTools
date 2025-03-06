@@ -125,7 +125,7 @@ local function Init_Options()
 
     e.AddPanel_Check_Sider({
         checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
-        checkGetValue= function() return Save().classPowerNum or 12 end,
+        checkGetValue= function() return Save().classPowerNum end,
         checkTooltip= WoWTools_TextureMixin.addName,
         checkSetValue= function()
             Save().classPowerNum= not Save().classPowerNum and true or false
