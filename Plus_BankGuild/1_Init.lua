@@ -18,7 +18,7 @@ local function Init_Other()
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function()
         if WoWTools_GuildBankMixin.Save.autoOpenBags then
-            WoWTools_BagMixin:OpenBag(false, false)
+            WoWTools_BagMixin:OpenBag(nil, false)
         end
     end)
 end

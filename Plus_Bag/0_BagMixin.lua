@@ -164,11 +164,18 @@ function WoWTools_BagMixin:OpenBag(bagID, isBank)
             ToggleBag(bagID)
         end
     else
-        --ToggleAllBags()
-        for i=BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-            bagID= i+ (isBank and NUM_TOTAL_EQUIPPED_BAG_SLOTS or 0)
-            if not IsBagOpen(bagID) then
-                ToggleBag(bagID)
+        if isBank then--打开， 银行背包
+            for i=1, 7 do
+                bagID= i+NUM_TOTAL_EQUIPPED_BAG_SLOTS
+                if not IsBagOpen(bagID) then
+                    ToggleBag(bagID)
+                end
+            end
+        else
+            for i=BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+                if not IsBagOpen(i) then
+                    ToggleBag(i)
+                end
             end
         end
     end
@@ -181,10 +188,18 @@ function WoWTools_BagMixin:CloseBag(bagID, isBank)
             CloseBag(bagID)
         end
     else
-        for i=BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
-            bagID= i+ (isBank and NUM_TOTAL_EQUIPPED_BAG_SLOTS or 0)
-            if IsBagOpen(bagID) then
-                CloseBag(bagID)
+        if isBank then--关闭， 银行背包
+            for i=1, 7 do
+                bagID= i+NUM_TOTAL_EQUIPPED_BAG_SLOTS
+                if IsBagOpen(bagID) then
+                    CloseBag(bagID)
+                end
+            end
+        else
+            for i=BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+                if IsBagOpen(i) then
+                    CloseBag(i)
+                end
             end
         end
     end
