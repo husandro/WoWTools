@@ -11,6 +11,15 @@ local Buttons={}--新建按钮
 local MainButtons={}--自带按钮
 local NumLeftButton=0
 
+local function Click_Tab(self)
+    local btn =GuildBankFrame.BankTabs[self.tabID]-- _G['GuildBankTab'..self.tabID]
+    if btn then
+        btn:OnClick('LeftButton')
+    else
+        SetCurrentGuildBankTab(self.tabID)
+    end
+end
+
 
 
 
@@ -37,6 +46,30 @@ local function Set_Frame_Size(frame, currentIndex, numTab)
         frame:SetSize(750, 428)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -98,6 +131,28 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  --索引，提示
  local function Create_IndexLabel(btn, isName)
     btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND'})
@@ -108,28 +163,38 @@ end
 
     if isName then--创建，TabName标签
         btn.nameLabel= WoWTools_LabelMixin:Create(btn)
-        btn.nameLabel:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT', 0, 4)
+        btn.nameLabel:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT', 22, 5)
     end
 end
 
 
 
 
+local function Create_SortButton(frame, isFunc)
+    if not C_GuildInfo.IsGuildOfficer() and not IsGuildLeader() then
+        return
+    end
 
+    --local btn= CreateFrame("Button", 'WoWToolsAutoSortGuildBankButton'..frame:GetID(), frame, 'BankAutoSortButtonTemplate')
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {
+       -- name= 'WoWToolsAutoSortGuildBankButton'..frame:GetID(),
+        isMenu= true,
+        template='BankAutoSortButtonTemplate',
+    })
+    btn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0,0)
+    btn:SetSize(23,23)
 
-local function Click_Tab(self)
-    local btn = _G['GuildBankTab'..self.tabID]
-    if btn then
-        btn:OnClick('LeftButton')
+    btn:SetAlpha(isFunc and 1 or 0.5)
+    if isFunc then
+        --btn:SetupMenu(Init_Button_Menu)
+        --btn:SetScript('OnMouseDown', Sort_Items)
+        WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
     else
-        SetCurrentGuildBankTab(self.tabID)
+        btn:SetScript('OnEnter', function(self)
+            Click_Tab(self:GetParent())
+        end)
     end
 end
-
-
-
-
-
 
 
 
@@ -187,17 +252,26 @@ local function Create_Button(index, tabID, slotID)
         GameTooltip:SetGuildBankItem(self.tabID, self:GetID())
     end
     btn.UpdateTooltip = btn.OnEnter
-    btn:SetScript('OnEnter', function(self)
-        Click_Tab(self)
-        self:OnEnter()
-    end)
+
 
     btn:SetScript('OnDragStart', function(self)
+        Click_Tab(self)
         PickupGuildBankItem(self.tabID, self:GetID())
     end)
 
     btn:SetScript('OnReceiveDrag', function(self)
+        Click_Tab(self)
         PickupGuildBankItem(self.tabID, self:GetID())
+    end)
+
+    btn:SetScript('OnEnter', function(self)
+        if not WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
+            Click_Tab(self)
+        end
+        self:OnEnter()
+    end)
+    btn:SetScript('OnMouseDown', function(self)
+        Click_Tab(self)
     end)
 
     function btn:set_item()
@@ -213,8 +287,14 @@ local function Create_Button(index, tabID, slotID)
         SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, slot))
     end
 
-    Create_IndexLabel(btn, slotID==1)
 
+    local one= slotID==1
+
+    Create_IndexLabel(btn, one)
+
+    if one then
+        Create_SortButton(btn, false)
+    end
 
 
 
@@ -279,7 +359,7 @@ local function Init_Button(self)
             else
                 for slotID, btn in pairs(MainButtons) do
                     btn.tabID= tabID
-                   
+
 
                 --物品，信息
                     e.Set_Item_Info(btn, {guidBank={tab=tabID, slot=slotID}})
@@ -409,7 +489,7 @@ local function Init_UI()
 
 --"%s的每日提取额度剩余：|cffffffff%s|r"
     GuildBankFrame.LimitLabel:ClearAllPoints()
-    GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 0, 4)
+    GuildBankFrame.LimitLabel:SetPoint('BOTTOMLEFT', GuildBankFrame.Column1.Button1, 'TOPLEFT', 22, 4)
     GuildBankFrame.LimitLabel:SetTextColor(1,0,1)
 
     GuildBankFrame.DepositButton:ClearAllPoints()
@@ -501,7 +581,11 @@ local function Init()
 
         MainButtons[slotID]= btn
         btn.isCurrent=true
+
         Create_IndexLabel(btn, false)
+        if slotID==1 then
+            Create_SortButton(btn, true)
+        end
     end
 
 
@@ -574,7 +658,9 @@ local function Init()
 --调整，UI
     Init_UI()
 
-
+    GuildBankFrame:HookScript('OnHide', function()
+        WoWTools_GuildBankMixin.isInRun= nil
+    end)
     return true
 end
 

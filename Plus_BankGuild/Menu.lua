@@ -23,9 +23,19 @@ local function Init_Menu(self, root)
 
 
 
-
-
-
+--打开，背包
+    sub= root:CreateCheckbox(
+        e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
+    function()
+        return Save().autoOpenBags
+    end, function()
+        Save().autoOpenBags= not Save().autoOpenBags and true or nil
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '打开/关闭所有的背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
+    )
+    end)
+   
 --索引
     root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex

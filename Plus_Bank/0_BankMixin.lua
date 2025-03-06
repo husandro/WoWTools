@@ -256,17 +256,14 @@ end
 
 
 
-
-
-
-
-
+--[[打开， 银行背包
 function WoWTools_BankMixin:OpenBag(bagID)
     if bagID then
         if not IsBagOpen(bagID) then
             ToggleBag(bagID)
         end
     else
+        --ToggleAllBags()
         for i=1, 7 do
             bagID= i+NUM_TOTAL_EQUIPPED_BAG_SLOTS
             if not IsBagOpen(bagID) then
@@ -276,6 +273,7 @@ function WoWTools_BankMixin:OpenBag(bagID)
     end
 end
 
+--关闭， 银行背包
 function WoWTools_BankMixin:CloseBag(bagID)
     if bagID then
         if IsBagOpen(bagID) then
@@ -289,7 +287,12 @@ function WoWTools_BankMixin:CloseBag(bagID)
             end
         end
     end
-end
+end]]
+
+
+
+
+
 
 
 function WoWTools_BankMixin:Set_Background_Texture(texture)

@@ -89,6 +89,7 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
     local isCraftingReagent
 
     for bag= BACKPACK_CONTAINER, num do--0-5
+    
         for slot=1, C_Container.GetContainerNumSlots(bag) do
 
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -111,6 +112,7 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
                             info=info,
                             bag=bag,
                             slot=slot,
+                            isRegent=true,
                         })
                     end
                 else
@@ -150,3 +152,40 @@ ItemButtonUtil.ItemContextMatchResult = {
 	DoesNotApply = 3,
 }
 ]]
+
+
+
+
+
+--打开， 背包
+function WoWTools_BagMixin:OpenBag(bagID, isBank)
+    if bagID then
+        if not IsBagOpen(bagID) then
+            ToggleBag(bagID)
+        end
+    else
+        --ToggleAllBags()
+        for i=BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+            bagID= i+ (isBank and NUM_TOTAL_EQUIPPED_BAG_SLOTS or 0)
+            if not IsBagOpen(bagID) then
+                ToggleBag(bagID)
+            end
+        end
+    end
+end
+
+--关闭， 背包
+function WoWTools_BagMixin:CloseBag(bagID, isBank)
+    if bagID then
+        if IsBagOpen(bagID) then
+            CloseBag(bagID)
+        end
+    else
+        for i=BACKPACK_CONTAINER, NUM_BAG_FRAMES+ NUM_REAGENTBAG_FRAMES do
+            bagID= i+ (isBank and NUM_TOTAL_EQUIPPED_BAG_SLOTS or 0)
+            if IsBagOpen(bagID) then
+                CloseBag(bagID)
+            end
+        end
+    end
+end

@@ -522,7 +522,7 @@ local function Init_OpenAllBag_Button()
     end)
     up:SetScript('OnClick', function()
         do
-            WoWTools_BankMixin:OpenBag()
+            WoWTools_BagMixin:OpenBag(nil, true)
         end
         WoWTools_BankMixin:Init_Plus()
     end)
@@ -543,7 +543,7 @@ local function Init_OpenAllBag_Button()
     end)
     down:SetScript('OnClick', function()
         do
-            WoWTools_BankMixin:CloseBag()
+            WoWTools_BagMixin:CloseBag(nil, true)
         end
         WoWTools_BankMixin:Init_Plus()
     end)

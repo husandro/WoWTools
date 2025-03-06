@@ -48,7 +48,7 @@ local function Init_Menu(self, root)
         return Save().showIndex
     end, function()
         Save().showIndex= not Save().showIndex and true or nil--显示，索引
-        WoWTools_BankMixin:CloseBag()
+        WoWTools_BagMixin:CloseBag(nil, true)
         WoWTools_BankMixin:Init_Plus()
     end)
 
@@ -145,9 +145,9 @@ local function Init_Menu(self, root)
         return not Save().disabledBankBag
     end, function()
         Save().disabledBankBag= not Save().disabledBankBag and true or nil
-        WoWTools_BankMixin:CloseBag()
+        WoWTools_BagMixin:CloseBag(nil, true)
         if not Save().disabledBankBag then
-            WoWTools_BankMixin:OpenBag()
+            WoWTools_BagMixin:OpenBag(nil, true)
         end
         WoWTools_BankMixin:Init_Plus()
         WoWTools_BankMixin:Set_PortraitButton()
@@ -257,7 +257,7 @@ local function Init()
 
     function OptionButton:Open_Bag()
         do
-            WoWTools_BankMixin:OpenBag()
+            WoWTools_BagMixin:OpenBag(nil, true)
         end
     end
     OptionButton:SetupMenu(Init_Menu)

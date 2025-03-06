@@ -394,9 +394,11 @@ Plus_Bank\PortraitButton.lua
 
 
 ##公会银行
-Plus_BankGuild\0_Init.lua
+Plus_BankGuild\0_GuildBankMixin.lua
+Plus_BankGuild\1_Init.lua
 Plus_BankGuild\Menu.lua
 Plus_BankGuild\Plus.lua
+Plus_BankGuild\Plus_TabButton_Menu.lua
 Plus_BankGuild\Texture.lua
 
 ##容器
