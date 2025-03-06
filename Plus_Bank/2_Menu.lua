@@ -259,6 +259,7 @@ local function Init()
         do
             WoWTools_BagMixin:OpenBag(nil, true)
         end
+        BankFrame:Raise()
     end
     OptionButton:SetupMenu(Init_Menu)
 

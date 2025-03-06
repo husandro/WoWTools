@@ -16,9 +16,12 @@ WoWTools_GuildBankMixin.Save={
 
 local function Init_Other()
 --自动，打开背包 
-    GuildBankFrame:HookScript('OnShow', function()
+    GuildBankFrame:HookScript('OnShow', function(self)
         if WoWTools_GuildBankMixin.Save.autoOpenBags then
-            WoWTools_BagMixin:OpenBag(nil, false)
+            do
+                WoWTools_BagMixin:OpenBag(nil, false)
+            end
+            self:Raise()
         end
     end)
 end
@@ -36,6 +39,7 @@ end
 
 
 local panel= CreateFrame("Frame")
+
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
