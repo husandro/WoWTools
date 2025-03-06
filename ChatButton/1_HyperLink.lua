@@ -1496,6 +1496,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1 == id then
             Save= WoWToolsSave['ChatButton_HyperLink'] or Save
+            
             addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatButtonMixin:CreateButton('HyperLink', addName)
 
