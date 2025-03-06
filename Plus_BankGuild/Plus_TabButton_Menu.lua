@@ -8,17 +8,6 @@ local MAX_GUILDBANK_SLOTS_PER_TAB= 96
 
 
 
-local function Set_Tooltip(tooltip, desc)
-    --for _, info in pairs(desc.data.items or {}) do
-
-    --end
-end
-
-
-
-
-
-
 
 
 
@@ -140,7 +129,6 @@ local function Init_Out_Menu(self, root, tabID)
     function(data)
         Out_Bank(self, data.tabID, nil, true)
     end, {tabID= tabID})
-    sub:SetTooltip(Set_Tooltip)
 
 
     sub= root:CreateButton(
@@ -149,7 +137,6 @@ local function Init_Out_Menu(self, root, tabID)
     function(data)
         Out_Bank(self, data.tabID, nil, false)
     end, {tabID= tabID})
-    sub:SetTooltip(Set_Tooltip)
 end
 
 
@@ -341,29 +328,19 @@ local function Init_In_Menu(self, root, tabID)
     local sub
 
     sub= root:CreateButton(
-
         (e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
         ..' #'..Get_Bag(nil, nil, true),
-
     function(data)
-
         In_Bags(self, data.tabID, nil, true)
-
     end, {tabID= tabID})
-    sub:SetTooltip(Set_Tooltip)
 
 
     sub= root:CreateButton(
-
         (e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
         ..' #'..Get_Bag(nil, nil, false),
-
     function(data)
-
         In_Bags(self, data.tabID, nil, false)
-
     end, {tabID= tabID})
-    sub:SetTooltip(Set_Tooltip)
 end
 
 
