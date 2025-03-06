@@ -2,7 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_GuildBankMixin.Save
 end
---Blizzard_GuildBankUI.lua
+--Blizzard_GuildBankUI.lua  bank, log, moneylog, tabinfo
 
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98
 local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
@@ -12,8 +12,6 @@ local MainButtons={}--自带按钮
 local NumLeftButton=0
 
 
-
---local Items={  --[tabID][slotID]=itemLink,}
 
 
 
@@ -111,7 +109,6 @@ end
     if isName then--创建，TabName标签
         btn.nameLabel= WoWTools_LabelMixin:Create(btn)
         btn.nameLabel:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT', 0, 4)
-       -- btn.nameLabel:SetTextColor(0.62, 0.62, 0.62)
     end
 end
 
@@ -200,7 +197,6 @@ local function Create_Button(index, tabID, slotID)
     end)
 
     btn:SetScript('OnReceiveDrag', function(self)
-        Click_Tab(self)
         PickupGuildBankItem(self.tabID, self:GetID())
     end)
 
@@ -265,7 +261,7 @@ local function Init_Button(self)
 
     for tabID=1, numTab do
         --if select(3, GetGuildBankTabInfo(tabID)) then
-            print(tabID, self.BankTabs[tabID].Button:IsEnabled())
+           -- print(tabID, self.BankTabs[tabID].Button:IsEnabled())
         if self.BankTabs[tabID].Button:IsEnabled() then
             if currentIndex~=tabID then
                 for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
@@ -487,10 +483,12 @@ end
 
 
 
--- bank, log, moneylog, tabinfo
+
 local function Init()
+
 --"%s的每日提取额度剩余：|cffffffff%s|r";
     GuildBankFrame.Column1.Button1.nameLabel=  GuildBankFrame.LimitLabel
+
 
 --自带按钮
     for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
@@ -503,9 +501,9 @@ local function Init()
 
         MainButtons[slotID]= btn
         btn.isCurrent=true
-        --btn.nameLabel:SetTextColor(0.62, 0.62, 0.62)
         Create_IndexLabel(btn, false)
     end
+
 
 --右边标签，提示
     for tabID=1, MAX_GUILDBANK_TABS do--MAX_GUILDBANK_TABS
@@ -530,14 +528,11 @@ local function Init()
     end
 
 
-
 --背景
     GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha or 1)
 
 --移动，大小
     WoWTools_MoveMixin:Setup(GuildBankFrame, {setSize=true, needSize=true, needMove=true, minW=80, minH=140,
-       --sizeUpdateFunc= function(btn)
-
         sizeRestFunc= function(btn)
             Save().otherSize= nil
             Save().num=15
@@ -560,6 +555,7 @@ local function Init()
 
     hooksecurefunc(GuildBankFrame, 'Update', Init_Button)
 
+
     hooksecurefunc(GuildBankFrame, 'UpdateFiltered', function(self)
         if self.mode ~= "bank" then
             return
@@ -577,6 +573,8 @@ local function Init()
 
 --调整，UI
     Init_UI()
+
+
     return true
 end
 
