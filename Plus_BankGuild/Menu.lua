@@ -8,6 +8,14 @@ local MenuButton
 
 
 
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     local sub
 
@@ -43,6 +51,14 @@ local function Init_Menu(self, root)
     end
 
     
+
+
+
+
+
+
+
+
     root:CreateDivider()
 
 --打开，背包

@@ -538,6 +538,7 @@ local function Init_UI()
         self.Instructions:SetShown(self:GetText() == "")
         self:settings()
     end)
+
     hooksecurefunc(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
         GuildBankTabInfoEditBox.Instructions:SetText(
             GetGuildBankTabInfo(tabID)
@@ -569,6 +570,9 @@ local function Init()
         Save().plusOnlyOfficerAndLeader--仅限公会官员
         and not (WoWTools_GuildMixin:IsLeaderOrOfficer())--会长或官员
     then
+        if not GuildBankFrame.ResizeButton then
+            WoWTools_MoveMixin:Setup(GuildBankFrame)
+        end
         return
     end
 
@@ -696,6 +700,5 @@ end
 
 
 function WoWTools_GuildBankMixin:Update_Button()
-
     Init_Button(GuildBankFrame)
 end
