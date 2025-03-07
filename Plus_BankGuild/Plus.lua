@@ -565,6 +565,13 @@ end
 
 
 local function Init()
+    if
+        Save().plusOnlyOfficerAndLeader--仅限公会官员
+        and not (WoWTools_GuildMixin:IsLeaderOrOfficer())--会长或官员
+    then
+        return
+    end
+
 
 --"%s的每日提取额度剩余：|cffffffff%s|r";
     GuildBankFrame.Column1.Button1.nameLabel=  GuildBankFrame.LimitLabel
@@ -661,6 +668,7 @@ local function Init()
     GuildBankFrame:HookScript('OnHide', function()
         WoWTools_GuildBankMixin.isInRun= nil
     end)
+
     return true
 end
 
@@ -682,10 +690,12 @@ end
 function WoWTools_GuildBankMixin:Init_Plus()
     if Init() then
         Init=function () end
+        return true
     end
 end
 
 
 function WoWTools_GuildBankMixin:Update_Button()
+
     Init_Button(GuildBankFrame)
 end

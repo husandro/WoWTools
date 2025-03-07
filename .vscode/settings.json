@@ -5403,7 +5403,8 @@
         "SPELL_FAILED_CUSTOM_ERROR_1059",
         "CLUB_FINDER_INVITED",
         "SPIRIT_HEALER_RELEASE_RED",
-        "ReadyCheckFrame_OnHide"
+        "ReadyCheckFrame_OnHide",
+        "CHAT_MSG_OFFICER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

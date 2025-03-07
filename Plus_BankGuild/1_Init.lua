@@ -5,8 +5,8 @@ WoWTools_GuildBankMixin.Save={
     --BgAplha=1,背景ALPHA
     showIndex=true,
     autoOpenBags=e.Player.husandro,--自动，打开背包
+    plusOnlyOfficerAndLeader=true,
 }
-
 
 
 

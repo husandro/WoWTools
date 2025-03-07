@@ -17,11 +17,33 @@ local function Init_Menu(self, root)
     local isEnabled= frame.mode== "bank" and currentIndex<= numTab
 
 
+--仅限公会官员
+    root:CreateCheckbox(
+        e.onlyChinese and '仅限公会官员' or  format(LFG_LIST_CROSS_FACTION, CHAT_MSG_OFFICER),
+    function()
+        return Save().plusOnlyOfficerAndLeader
+    end, function()
+        Save().plusOnlyOfficerAndLeader= not Save().plusOnlyOfficerAndLeader and true or nil
+        if not WoWTools_GuildBankMixin:Init_Plus() then
+            print(WoWTools_GuildBankMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+        return MenuButton.CloseButton
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
 
+    if
+        Save().plusOnlyOfficerAndLeader--仅限公会官员
+        and not (WoWTools_GuildMixin:IsLeaderOrOfficer())--会长或官员
+    then
+        root:CreateDivider()
+        WoWTools_MenuMixin:Reload(root, false)
+        return
+    end
 
-
-
-
+    
+    root:CreateDivider()
 
 --打开，背包
     sub= root:CreateCheckbox(
@@ -41,7 +63,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '打开/关闭所有的背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
     )
     end)
-   
+
 --索引
     root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex
@@ -128,8 +150,10 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     WoWTools_MenuMixin:Reload(root, false)
+
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
+
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
 end
 
 
