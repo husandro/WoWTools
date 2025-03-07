@@ -5401,7 +5401,8 @@
         "INTERRUPT",
         "ERR_BANK_FULL",
         "SPELL_FAILED_CUSTOM_ERROR_1059",
-        "CLUB_FINDER_INVITED"
+        "CLUB_FINDER_INVITED",
+        "SPIRIT_HEALER_RELEASE_RED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

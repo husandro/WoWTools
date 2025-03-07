@@ -815,23 +815,31 @@ local function Init_Menu(_, root)
     )
 
 --释放, 复活    
-    sub2=sub:CreateCheckbox('|A:poi-soulspiritghost:0:0|a'..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)), function()
+    sub2=sub:CreateCheckbox(
+        (Save().ReMe_AllZone and '|cnRED_FONT_COLOR:' or '')
+        ..'|A:poi-soulspiritghost:0:0|a'
+        ..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)),
+    function()
         return Save().ReMe
     end, function()
         Save().ReMe= not Save().ReMe and true or nil
-        WoWTools_LFDMixin:RepopMe_SetEvent()
+        WoWTools_LFDMixin:Init_RepopMe()
     end)
+
 
 --所有地区
     sub3=sub2:CreateCheckbox(
-        e.onlyChinese and '所有地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_EVERYTHING, ZONE),
+        '|cnRED_FONT_COLOR:'
+        ..(e.onlyChinese and '所有地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_EVERYTHING, ZONE)),
     function()
-        return WoWTools_LFDMixin.ReMe_AllZone
+        return Save().ReMe_AllZone
     end, function()
-        WoWTools_LFDMixin.ReMe_AllZone= not WoWTools_LFDMixin.ReMe_AllZone and true or false
+        Save().ReMe_AllZone= not Save().ReMe_AllZone and true or false
+        WoWTools_LFDMixin:Init_RepopMe()
     end)
     sub3:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '不保存' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NO, SAVE))
+        tooltip:AddLine('|cnRED_FONT_COLOR:'
+        ..(e.onlyChinese and '危险！' and VOICEMACRO_1_Ni_0_FEMALE))
     end)
 
 
