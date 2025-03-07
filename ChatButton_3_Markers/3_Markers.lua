@@ -17,7 +17,9 @@ WoWTools_MarkerMixin.Save={
     showMakerFrameBackground=true,
     FrameStrata='MEDIUM',
     pingTime= e.Player.husandro,--显示ping冷却时间
-    autoReady=0,
+
+    --autoReady=nil, 1,就绪， 2未就绪， nil禁用
+    autoReadySeconds=3,
 }
 
 local function Save()
@@ -40,31 +42,17 @@ local MarkerButton
 
 
 
-
 --初始
 local function Init()
     WoWTools_MarkerMixin.MarkerButton= MarkerButton
 
-    --自动就绪, 主图标, 提示
-    MarkerButton.ReadyTextrueTips=MarkerButton:CreateTexture(nil,'OVERLAY')
-    MarkerButton.ReadyTextrueTips:SetPoint('TOP')
-
-    local size=MarkerButton:GetWidth()/2
-    MarkerButton.ReadyTextrueTips:SetSize(size, size)
-    function MarkerButton.ReadyTextrueTips:settings()
-        if Save().autoReady==1 then
-            MarkerButton.ReadyTextrueTips:SetAtlas(e.Icon.select)
-        elseif Save().autoReady==2 then
-            MarkerButton.ReadyTextrueTips:SetAtlas('auctionhouse-ui-filter-redx')
-        else
-            MarkerButton.ReadyTextrueTips:SetTexture(0)
-        end
-    end
-    MarkerButton.ReadyTextrueTips:settings()
-
-
-
-
+    --[[自动就绪, 主图标, 提示
+    ReadyCheckFrame.readyLabel= WoWTools_LabelMixin:Create(ReadyCheckFrame)
+    ReadyCheckFrame.readyLabel:SetPoint('BOTTOM', ReadyCheckFrame, 'TOP')
+]]
+    MarkerButton.ready=MarkerButton:CreateTexture(nil,'OVERLAY')
+    MarkerButton.ready:SetPoint('TOP', -6, 6)
+    MarkerButton.ready:SetSize(MarkerButton:GetWidth()/2, MarkerButton:GetWidth()/2)
 
     function MarkerButton:settings()--主图标,是否有权限
         local index
@@ -84,8 +72,18 @@ local function Init()
         end
         self.texture:SetShown(index)
         self.texture:SetDesaturated(not Save().autoSet)
+
+--就绪，图标
+        local _, atlas= WoWTools_MarkerMixin:Get_ReadyTextIcon()
+        if atlas then
+            self.ready:SetAtlas(atlas)
+        else
+            self.ready:SetTexture(0)
+        end
+
+        --ReadyCheckFrame.readyLabel:SetText(text or '')
     end
-    --MarkerButton:settings()--主图标,是否有权限
+
 
     MarkerButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     MarkerButton:RegisterEvent('GROUP_ROSTER_UPDATE')
@@ -96,7 +94,7 @@ local function Init()
      WoWTools_MarkerMixin:Setup_Menu()
 
     function MarkerButton:set_OnMouseDown()
-        WoWTools_MarkerMixin.TankHealerFrame:on_click()
+        WoWTools_MarkerMixin:Set_TankHealer(true)
     end
 
     function MarkerButton:tooltip()
@@ -190,6 +188,11 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1 == id then
             WoWTools_MarkerMixin.Save= WoWToolsSave['ChatButton_Markers'] or WoWTools_MarkerMixin.Save
+
+            if WoWTools_MarkerMixin.Save.autoReady==0 then
+                WoWTools_MarkerMixin.Save.autoReady= nil
+            end
+            WoWTools_MarkerMixin.Save.autoReadySeconds= WoWTools_MarkerMixin.Save.autoReadySeconds or 0.3
 
             WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
 

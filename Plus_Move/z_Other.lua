@@ -115,6 +115,8 @@ local function Init()
         btn.targetFrame:SetSize(800, 537)
     end})
 
+--就绪
+    WoWTools_MoveMixin:Setup(ReadyCheckFrame, {notFuori=true})
 
 
     C_Timer.After(0.3, function()

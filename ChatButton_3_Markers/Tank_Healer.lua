@@ -118,8 +118,8 @@ local function Init()
     local frame=CreateFrame("Frame", nil, WoWTools_MarkerMixin.MarkerButton)
     WoWTools_MarkerMixin.TankHealerFrame= frame
 
-    frame:SetPoint('BOTTOMLEFT',4, 4)
-    frame:SetSize(12,12)
+    frame:SetPoint('BOTTOMLEFT',2, 2)
+    frame:SetSize(14,14)
     frame:SetFrameLevel(WoWTools_MarkerMixin.MarkerButton:GetFrameLevel()+1)
 
     frame.autoSetTexture= frame:CreateTexture()
@@ -167,14 +167,6 @@ local function Init()
     frame:set_Enabel_Event()
 
 
-    function frame:on_click()
-        Set_TankHealer(true)
-            --print(WoWTools_Mixin.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER)
-        --else
-          --  print(WoWTools_Mixin.addName, WoWTools_MarkerMixin.addName, e.onlyChinese and '设置' or SETTINGS, e.onlyChinese and '坦克' or TANK, e.onlyChinese and '治疗' or HEALER, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE))
-        --end
-    end
-
     C_Timer.After(2, function()
         Set_TankHealer()
     end)
@@ -189,4 +181,8 @@ end
 --设置队伍标记
 function WoWTools_MarkerMixin:Init_Tank_Healer()
     Init()
+end
+
+function WoWTools_MarkerMixin:Set_TankHealer(set)
+    Set_TankHealer(set)
 end

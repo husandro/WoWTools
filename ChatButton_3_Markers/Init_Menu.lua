@@ -79,9 +79,7 @@ local function Init_RaidTarget_Menu(_, root)
         function(data)
             data.rest()
             WoWTools_MarkerMixin.MarkerButton:settings()
-            if Save().autoSet then
-                WoWTools_MarkerMixin.TankHealerFrame:on_click()
-            end
+            WoWTools_MarkerMixin:Set_TankHealer(true)
             return MenuResponse.Refresh
         end, {
             text= info.text, type=info.type, rest=info.rest
@@ -117,10 +115,9 @@ local function Init_RaidTarget_Menu(_, root)
                     Save()[data.type]=data.index
                 end
                 WoWTools_MarkerMixin.MarkerButton:settings()
-                if Save().autoSet then
-                    WoWTools_MarkerMixin.TankHealerFrame:on_click()
-                end
+                WoWTools_MarkerMixin:Set_TankHealer(true)
                 return MenuResponse.Refresh
+
             end, {text=info.text, index=i, type=info.type, tip=info.tip, check=info.check})
 
             sub:SetTooltip(function(tooltip, desc)
@@ -150,7 +147,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub
+    local sub, sub2
 
     sub=root:CreateCheckbox(
         (Save().tank==0 and Save().healer==0 and '|cff9e9e9e' or '')
@@ -162,9 +159,7 @@ local function Init_Menu(self, root)
     end, function ()
         Save().autoSet= not Save().autoSet and true or nil
         WoWTools_MarkerMixin.TankHealerFrame:set_Enabel_Event()
-        if Save().autoSet then
-            WoWTools_MarkerMixin.TankHealerFrame:on_click()
-        end
+        WoWTools_MarkerMixin:Set_TankHealer()
     end)
 
 
@@ -227,25 +222,58 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    for value, text in pairs({
-        [1]= format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', e.onlyChinese and '就绪' or READY),
-        [2]= format('|cffff0000%s|r|A:auctionhouse-ui-filter-redx:0:0|a', e.onlyChinese and '未就绪' or NOT_READY_FEMALE),
-        [0]= e.onlyChinese and '无' or NONE
-    }) do
-        sub=root:CreateCheckbox(text, function(data)
-                return (data==0 and (Save().autoReady==0 or not Save().autoReady))
-                        or Save().autoReady==data
-            end, function(data)
-                Save().autoReady=data
-                WoWTools_MarkerMixin.MarkerButton.ReadyTextrueTips:settings()--自动就绪, 主图标, 提示
-            end, value)
-        sub:SetTooltip(function(tooltip, data)
-            if data.data==1 or data.data==2 then
-                tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
-            end
+
+    sub= root:CreateButton(
+        WoWTools_MarkerMixin:Get_ReadyTextIcon()
+        or (e.onlyChinese and '无' or NONE),
+    function()
+        local show= ReadyCheckFrame:IsShown()
+        ReadyCheckFrame:SetShown(show)
+        ReadyCheckListenerFrame:SetShown(show)
+        return MenuResponse.Refresh
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine(e.onlyChinese and '显示就绪框' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, READY))
+        tooltip:AddLine('ReadyCheckFrame')
+    end)
+
+
+ --自动, 就绪  
+    for value= 0, 2 do
+
+        sub2=sub:CreateRadio(
+            WoWTools_MarkerMixin:Get_ReadyTextIcon(value)
+            or (e.onlyChinese and '无' or NONE),
+        function(data)
+            return data==Save().autoReady
+        end, function(data)
+            Save().autoReady=data
+            WoWTools_MarkerMixin.MarkerButton:settings()
+            return MenuResponse.Refresh
+        end, value>0 and value or nil)
+
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
         end)
     end
 
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().autoReadySeconds or 3
+        end, setValue=function(value)
+            Save().autoReadySeconds=value
+        end,
+        name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        minValue=1,
+        maxValue=25,
+        step=1,
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
+        end
+    
+    })
+    sub:CreateSpacer()
 end
 
 

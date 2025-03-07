@@ -650,9 +650,10 @@ ChatButton\2_Roll.lua
 ##标记
 ChatButton_3_Markers\0_MarkerMixin.lua
 ChatButton_3_Markers\3_Markers.lua
-ChatButton_3_Markers\AutoReady.lua
+
 ChatButton_3_Markers\Tank_Healer.lua
-ChatButton_3_Markers\Ready_Tips.lua
+ChatButton_3_Markers\Ready_Info.lua
+ChatButton_3_Markers\Ready_Auto.lua
 ChatButton_3_Markers\Init_Menu.lua
 ChatButton_3_Markers\Markers_Frame.lua
 ChatButton_3_Markers\Markers_Frame_Menu.lua

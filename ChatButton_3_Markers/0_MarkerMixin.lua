@@ -1,3 +1,5 @@
+local e= select(2, ...)
+
 WoWTools_MarkerMixin={}
 
 
@@ -11,6 +13,9 @@ function WoWTools_MarkerMixin:Set_Taget(unit, index)--设置,目标,标记
     end
 end
 
+
+
+
 local Color={
     [1]={r=1, g=1, b=0, col='|cffffff00'},--星星, 黄色
     [2]={r=1, g=0.45, b=0.04, col='|cffff7f3f'},--圆形, 橙色
@@ -23,4 +28,13 @@ local Color={
 }
 function WoWTools_MarkerMixin:SetColor(index)
     return Color[index]
+end
+
+function WoWTools_MarkerMixin:Get_ReadyTextIcon(autoReady)
+    autoReady= autoReady or self.Save.autoReady
+    if autoReady==1 then
+        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', e.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
+    elseif autoReady==2 then
+        return format('|cffff0000%s|r|A:XMarksTheSpot:0:0|a', e.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
+    end
 end

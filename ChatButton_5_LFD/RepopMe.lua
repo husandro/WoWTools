@@ -54,10 +54,10 @@ local function Event(self, event)
             print(WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r')
 
         else
-            local time= GetCorpseRecoveryDelay()
+
             print(
                 WoWTools_LFDMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r', SecondsToTime(time)
+                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r', SecondsToTime(GetCorpseRecoveryDelay() or 0)
             )
         end
 
@@ -77,7 +77,7 @@ local function Event(self, event)
         local time= GetCorpseRecoveryDelay()
         if time==0 then
 
-            C_Timer.After(0.5, function()
+            C_Timer.After(1, function()
                 RetrieveCorpse()--当玩家站在它的尸体附近时复活。
                 print(
                     WoWTools_LFDMixin.addName,
@@ -124,8 +124,10 @@ end
 
 
 local function Init()
-    if Frame then
-        Settings(Frame)
+    if Frame or not Save().ReMe then
+        if Frame then
+            Settings(Frame)
+        end
     else
         Frame= CreateFrame('Frame')
         Frame:Hide()

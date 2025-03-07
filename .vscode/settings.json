@@ -5402,7 +5402,8 @@
         "ERR_BANK_FULL",
         "SPELL_FAILED_CUSTOM_ERROR_1059",
         "CLUB_FINDER_INVITED",
-        "SPIRIT_HEALER_RELEASE_RED"
+        "SPIRIT_HEALER_RELEASE_RED",
+        "ReadyCheckFrame_OnHide"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

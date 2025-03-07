@@ -539,7 +539,7 @@ local function Init()--设置标记, 框架
                 if d=='LeftButton' then
                     self:GetParent():set_Clear()--取消标记标    
                 elseif d=='RightButton' then
-                    WoWTools_MarkerMixin.TankHealerFrame:on_click()
+                    WoWTools_MarkerMixin:Set_TankHealer(true)
                 end
             end)
             btn:SetScript('OnLeave', function(self)
