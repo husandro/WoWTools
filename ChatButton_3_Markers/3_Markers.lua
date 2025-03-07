@@ -192,7 +192,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if WoWTools_MarkerMixin.Save.autoReady==0 then
                 WoWTools_MarkerMixin.Save.autoReady= nil
             end
-            WoWTools_MarkerMixin.Save.autoReadySeconds= WoWTools_MarkerMixin.Save.autoReadySeconds or 0.3
+            WoWTools_MarkerMixin.Save.autoReadySeconds= WoWTools_MarkerMixin.Save.autoReadySeconds or 3
 
             WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
 

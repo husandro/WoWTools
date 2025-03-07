@@ -146,6 +146,10 @@ end
 
 
 
+
+
+
+
 local function Init_Menu(self, root)
     local sub, sub2
 
@@ -241,9 +245,9 @@ local function Init_Menu(self, root)
  --自动, 就绪  
     for value= 0, 2 do
 
-        sub2=sub:CreateRadio(
+        sub2= sub:CreateRadio(
             WoWTools_MarkerMixin:Get_ReadyTextIcon(value)
-            or (e.onlyChinese and '无' or NONE),
+            or (e.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
         function(data)
             return data==Save().autoReady
         end, function(data)
