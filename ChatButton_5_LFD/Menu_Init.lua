@@ -816,8 +816,7 @@ local function Init_Menu(_, root)
 
 --释放, 复活    
     sub2=sub:CreateCheckbox(
-        (Save().ReMe_AllZone and '|cnRED_FONT_COLOR:' or '')
-        ..'|A:poi-soulspiritghost:0:0|a'
+        '|A:poi-soulspiritghost:0:0|a'
         ..(e.onlyChinese and '释放, 复活' or (BATTLE_PET_RELEASE..', '..RESURRECT)),
     function()
         return Save().ReMe
@@ -826,11 +825,9 @@ local function Init_Menu(_, root)
         WoWTools_LFDMixin:Init_RepopMe()
     end)
 
-
 --所有地区
     sub3=sub2:CreateCheckbox(
-        '|cnRED_FONT_COLOR:'
-        ..(e.onlyChinese and '所有地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_EVERYTHING, ZONE)),
+        e.onlyChinese and '其它' or OTHER,
     function()
         return Save().ReMe_AllZone
     end, function()
@@ -838,8 +835,7 @@ local function Init_Menu(_, root)
         WoWTools_LFDMixin:Init_RepopMe()
     end)
     sub3:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnRED_FONT_COLOR:'
-        ..(e.onlyChinese and '危险！' and VOICEMACRO_1_Ni_0_FEMALE))
+       tooltip:AddLine(e.onlyChinese and '有队伍副本除外' or  'Except for group instance')
     end)
 
 

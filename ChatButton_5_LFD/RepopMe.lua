@@ -14,13 +14,19 @@ local function Settings(self)
 
     if Save().ReMe then
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:RegisterEvent('PLAYER_DEAD')
+
 
         if WoWTools_MapMixin:IsInPvPArea() then
+            self:RegisterEvent('PLAYER_DEAD')
             self:RegisterEvent('AREA_SPIRIT_HEALER_IN_RANGE')
 
-        elseif  Save().ReMe_AllZone then
+        elseif
+            Save().ReMe_AllZone and
+            (not IsInInstance() or not IsInGroup('LE_PARTY_CATEGORY_HOME'))
+        then
+            self:RegisterEvent('PLAYER_DEAD')
             self:RegisterEvent('CORPSE_IN_RANGE')
+            self:RegisterEvent('CORPSE_OUT_OF_RANGE')
         end
     end
 end
@@ -48,11 +54,10 @@ local function Event(self, event)
             print(WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r')
 
         else
-            local time= GetReleaseTimeRemaining() or 0
+            local time= GetCorpseRecoveryDelay()
             print(
                 WoWTools_LFDMixin.addName,
-                '|cnRED_FONT_COLOR:'..(e.onlyChinese and '所有地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_EVERYTHING, ZONE))..'|r',
-                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复活' or RESURRECT)..'|r', WoWTools_TimeMixin:SecondsToClock(time)
+                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '释放' or BATTLE_PET_RELEASE)..'|r', SecondsToTime(time)
             )
         end
 
@@ -65,27 +70,36 @@ local function Event(self, event)
 
         local time= GetAreaSpiritHealerTime()
         if time>0 then
-            print(e.onlyChinese and '|cffff2020灵魂医者|r' or SPIRIT_HEALER_RELEASE_RED, WoWTools_TimeMixin:SecondsToClock(time))
+            print(e.onlyChinese and '|cffff2020灵魂医者|r' or SPIRIT_HEALER_RELEASE_RED, SecondsToTime(time))
         end
 
     elseif event=='CORPSE_IN_RANGE' then
-        local time= GetReleaseTimeRemaining() or 0
+        local time= GetCorpseRecoveryDelay()
         if time==0 then
-            RetrieveCorpse()--当玩家站在它的尸体附近时复活。
-            print(
-                WoWTools_ChatButtonMixin.addName,
-                WoWTools_LFDMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复活' or RESURRECT)
-            )
+
+            C_Timer.After(0.5, function()
+                RetrieveCorpse()--当玩家站在它的尸体附近时复活。
+                print(
+                    WoWTools_LFDMixin.addName,
+                    '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复活' or RESURRECT)
+                )
+            end)
+            self:SetShown(false)
+
         else
+
             print(
                 WoWTools_LFDMixin.addName,
-                '|cnRED_FONT_COLOR:'..(e.onlyChinese and '所有地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIDEO_OPTIONS_EVERYTHING, ZONE))..'|r',
-                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复活' or RESURRECT)..'|r', WoWTools_TimeMixin:SecondsToClock(time)
+                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复活' or RESURRECT)..'|r', SecondsToTime(time)
             )
             print('|cffff00ffAlt', e.onlyChinese and '取消' or  CANCEL)
+            self:SetShown(true)
+
         end
-        self:SetShown(time>0)
+
+    elseif event=='CORPSE_OUT_OF_RANGE' then
+        self:SetShown(false)
+
     end
 end
 
@@ -93,11 +107,15 @@ end
 
 local function Set_Updata(self)
     if IsModifierKeyDown() then
-        print(WoWTools_LFDMixin.addName, e.onlyChinese and '取消' or  CANCEL, e.onlyChinese and '复活' or RESURRECT)
+        print(
+            WoWTools_LFDMixin.addName,
+            '|cnGREEN_FONT_COLOR:'..((e.onlyChinese and '取消复活' or CANCEL)..'|r' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, RESURRECT))
+        )
         self:Hide()
 
-    elseif GetReleaseTimeRemaining()==0 then
-        RetrieveCorpse()--当玩家站在它的尸体附近时复活。
+    elseif GetCorpseRecoveryDelay()==0 then
+        C_Timer.After(1, function() RetrieveCorpse() end)--当玩家站在它的尸体附近时复活。
+        self:Hide()
     end
 end
 
