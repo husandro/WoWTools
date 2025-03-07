@@ -214,7 +214,7 @@ local function Init()
     WoWTools_LFDMixin:Init_LFG_Plus()--
     WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息    
     WoWTools_LFDMixin:Init_Holiday()--节日, 提示, button.texture
-    WoWTools_LFDMixin:Init_RepopMe()--仅限战场，释放, 复活
+    WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
 
 
 

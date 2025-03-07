@@ -1,4 +1,4 @@
---仅限战场，释放, 复活
+--释放, 复活
 local e= select(2, ...)
 local function Save()
     return WoWTools_LFDMixin.Save
@@ -141,6 +141,6 @@ end
 
 
 
-function WoWTools_LFDMixin:Init_RepopMe()--仅限战场，释放, 复活
+function WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
     Init()
 end
