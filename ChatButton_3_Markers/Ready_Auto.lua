@@ -35,13 +35,13 @@ local function Set_Ready(timeLeft)
             WoWTools_MarkerMixin:Get_ReadyTextIcon(),
             '|cffff00ffAlt', e.onlyChinese and '取消' or CANCEL
         )
+        
+        timeLeft= Save().autoReadySeconds or 3
 
-        AutoReadyTime= C_Timer.NewTimer(Save().autoReadySeconds or 3, function()
+        AutoReadyTime= C_Timer.NewTimer(timeLeft, function()
             ConfirmReadyCheck(Save().autoReady==1 and 1 or nil)
             ReadyCheckFrame:SetShown(false)
         end)
-
-        timeLeft= 3
     end
 
     e.Ccool(ReadyCheckListenerFrame, nil, timeLeft or Get_LeftTime() or 35, nil, true, true)--冷却条
