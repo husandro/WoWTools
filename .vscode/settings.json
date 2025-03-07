@@ -5400,7 +5400,8 @@
         "GUILDCONTROL_WITHDRAW_GOLD",
         "INTERRUPT",
         "ERR_BANK_FULL",
-        "SPELL_FAILED_CUSTOM_ERROR_1059"
+        "SPELL_FAILED_CUSTOM_ERROR_1059",
+        "CLUB_FINDER_INVITED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

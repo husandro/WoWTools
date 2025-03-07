@@ -36,15 +36,28 @@ local function Init()
     end)
 
     function check:OfferPetition()
+        local guid= UnitGUID('target')
         if not UnitIsPlayer('target')
-            or IsPlayerInGuildFromGUID(UnitGUID('target'))
+            or IsPlayerInGuildFromGUID(guid)
             or UnitIsUnit('player', 'target')
             or UnitIsEnemy('player', 'target')
             or not UnitIsConnected('target')
         then
             return
         end
+
+        if self.guid then
+            if self.guid[guid] then
+                print(WoWTools_GuildMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '已邀请' or CLUB_FINDER_INVITED))
+                return
+            end
+        else
+            self.guid= {}
+        end
+
         OfferPetition()
+
+        self.guid[guid]= true
     end
 
     function check:set_event()
@@ -59,9 +72,11 @@ local function Init()
     check:SetScript('OnEvent', check.OfferPetition)
 
     PetitionFrame:HookScript('OnHide', function(self)
+        self.guid=nil
         self.targetCheckBox:set_event()
     end)
     PetitionFrame:HookScript('OnShow', function(self)
+        self.guid={}
         self.targetCheckBox:set_event()
     end)
 end
