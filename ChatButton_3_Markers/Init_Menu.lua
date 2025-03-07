@@ -224,8 +224,8 @@ local function Init_Menu(self, root)
         end
     end)
 
-
     root:CreateDivider()
+
 
     sub= root:CreateButton(
         WoWTools_MarkerMixin:Get_ReadyTextIcon()
@@ -260,7 +260,8 @@ local function Init_Menu(self, root)
             tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
         end)
     end
-
+    
+    sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()

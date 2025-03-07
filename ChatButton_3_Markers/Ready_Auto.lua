@@ -170,7 +170,9 @@ local function Init()
 
 
     ReadyCheckListenerFrame:HookScript('OnHide', function(self)
-        PlayerNameText:SetText("")
+        if PlayerNameText then
+            PlayerNameText:SetText("")
+        end
         if AutoReadyTime then
             AutoReadyTime:Cancel()
         end
