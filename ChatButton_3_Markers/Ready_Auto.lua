@@ -107,6 +107,17 @@ local function Init_UI()
             end
             AltCanellText:set_shown()
         end)
+
+        check:SetScript('OnLeave', GameTooltip_Hide)
+        check:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(WoWTools_Mixin.addName)
+            GameTooltip:AddLine(WoWTools_MarkerMixin.addName)
+            
+            GameTooltip:Show()
+        end)
+
         table.insert(Checks, check)
     end
 

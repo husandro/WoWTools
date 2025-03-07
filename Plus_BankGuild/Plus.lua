@@ -170,14 +170,8 @@ end
 
 
 
-local function Create_SortButton(frame, isFunc)
-    if not C_GuildInfo.IsGuildOfficer() and not IsGuildLeader() then
-        return
-    end
-
-    --local btn= CreateFrame("Button", 'WoWToolsAutoSortGuildBankButton'..frame:GetID(), frame, 'BankAutoSortButtonTemplate')
+local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLeaderOrOfficer() then--会长或官员
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
-       -- name= 'WoWToolsAutoSortGuildBankButton'..frame:GetID(),
         isMenu= true,
         template='BankAutoSortButtonTemplate',
     })
@@ -186,8 +180,6 @@ local function Create_SortButton(frame, isFunc)
 
     btn:SetAlpha(isFunc and 1 or 0.5)
     if isFunc then
-        --btn:SetupMenu(Init_Button_Menu)
-        --btn:SetScript('OnMouseDown', Sort_Items)
         WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
     else
         btn:SetScript('OnEnter', function(self)
@@ -656,7 +648,7 @@ local function Init()
             return
         end
         local isFiltered
-        for index=MAX_GUILDBANK_SLOTS_PER_TAB+1, #Buttons do
+        for index= MAX_GUILDBANK_SLOTS_PER_TAB+1, #Buttons do
             local btn=Buttons[index]
             isFiltered= select(4, GetGuildBankItemInfo(btn.tabID, btn:GetID()))
             btn:SetMatchesSearch(not isFiltered)

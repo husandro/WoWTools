@@ -64,25 +64,6 @@ local function Init()
         mixin:SetFrame(_G['GuildBankFrameTab'..i], {notAlpha=true})
     end
 
-    --[[local MAX_GUILDBANK_SLOTS_PER_TAB = 98;
-    local NUM_SLOTS_PER_GUILDBANK_GROUP = 14;
-    hooksecurefunc(GuildBankFrame,'Update', function(self2)--Blizzard_GuildBankUI.lua
-        if ( self2.mode == "bank" ) then
-            local tab = GetCurrentGuildBankTab() or 1
-            for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-                local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
-                if ( index == 0 ) then
-                    index = NUM_SLOTS_PER_GUILDBANK_GROUP;
-                end
-                local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
-                local button = self2.Columns[column].Buttons[index];
-                if button and button.NormalTexture then
-                    local texture= GetGuildBankItemInfo(tab, i)
-                    button.NormalTexture:SetAlpha(texture and 1 or 0.2)
-                end
-            end
-        end
-    end)]]
 
     mixin:SetScrollBar(GuildBankFrame.Log)
     mixin:SetScrollBar(GuildBankInfoScrollFrame)
@@ -97,8 +78,6 @@ local function Init()
             WoWTools_TextureMixin:SetFrame(btn, {alpha=0})
         end
     end
-
-    return true
 end
 
 
@@ -115,7 +94,5 @@ end
 
 
 function WoWTools_GuildBankMixin:Init_Guild_Texture()
-    if Init() then
-        Init=function() end
-    end
+    Init()
 end

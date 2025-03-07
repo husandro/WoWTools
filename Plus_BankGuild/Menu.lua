@@ -39,6 +39,9 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        tooltip:AddLine(' ')
+        tooltip:AddLine(e.onlyChinese and '公会领袖' or GUILD_RANK0_DESC)
+        tooltip:AddLine(e.onlyChinese and '公会官员' or GUILD_RANK1_DESC)
     end)
 
     if

@@ -5404,7 +5404,9 @@
         "CLUB_FINDER_INVITED",
         "SPIRIT_HEALER_RELEASE_RED",
         "ReadyCheckFrame_OnHide",
-        "CHAT_MSG_OFFICER"
+        "CHAT_MSG_OFFICER",
+        "GUILD_RANK0_DESC",
+        "GUILD_RANK1_DESC"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
