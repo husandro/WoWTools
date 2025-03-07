@@ -35,8 +35,14 @@ local function Set_Ready(timeLeft)
             WoWTools_MarkerMixin:Get_ReadyTextIcon(),
             '|cffff00ffAlt', e.onlyChinese and '取消' or CANCEL
         )
-        
+
         timeLeft= Save().autoReadySeconds or 3
+        if not timeLeft then
+            local time= Get_LeftTime()
+            if time then
+                timeLeft= math.mix(timeLeft, time)
+            end
+        end
 
         AutoReadyTime= C_Timer.NewTimer(timeLeft, function()
             ConfirmReadyCheck(Save().autoReady==1 and 1 or nil)
