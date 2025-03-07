@@ -114,7 +114,6 @@ local function Init_UI()
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_Mixin.addName)
             GameTooltip:AddLine(WoWTools_MarkerMixin.addName)
-            
             GameTooltip:Show()
         end)
 
