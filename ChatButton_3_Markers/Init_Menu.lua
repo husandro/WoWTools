@@ -260,7 +260,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
         end)
     end
-    
+
     sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -276,7 +276,7 @@ local function Init_Menu(self, root)
         tooltip=function(tooltip)
             tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
         end
-    
+
     })
     sub:CreateSpacer()
 end
