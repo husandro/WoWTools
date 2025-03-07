@@ -229,7 +229,7 @@ local function Init_Menu(self, root)
 
     sub= root:CreateButton(
         WoWTools_MarkerMixin:Get_ReadyTextIcon()
-        or (e.onlyChinese and '无' or NONE),
+        or (e.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
     function()
         local show= ReadyCheckFrame:IsShown()
         ReadyCheckFrame:SetShown(show)
@@ -247,7 +247,7 @@ local function Init_Menu(self, root)
 
         sub2= sub:CreateRadio(
             WoWTools_MarkerMixin:Get_ReadyTextIcon(value)
-            or (e.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
+            or (e.onlyChinese and '无' or NONE),
         function(data)
             return data==Save().autoReady
         end, function(data)
