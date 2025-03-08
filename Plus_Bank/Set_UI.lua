@@ -79,10 +79,6 @@ local function Set_Button(btn)
 
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
-        --[[if self.index==3 and WoWTools_BankMixin:GetIndex()==1 then
-            ItemButtonUtil.TriggerEvent(ItemButtonUtil.Event.ItemContextChanged)
-            print('a')
-        end]]
         Set_Button_Tooltip(self)
     end)
 
