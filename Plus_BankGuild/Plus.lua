@@ -606,6 +606,7 @@ local function Init()
             btn.tabID= tabID
 
             btn:SetScript('OnEnter', function(self)
+                QueryGuildBankText(self.tabID)
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true)
                 GameTooltip:AddLine(GetGuildBankText(self.tabID))
@@ -615,6 +616,7 @@ local function Init()
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
             btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
 
+            QueryGuildBankText(tabID)
             QueryGuildBankTab(tabID)
         end
 
