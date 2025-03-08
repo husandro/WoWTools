@@ -99,6 +99,8 @@ local function Set_Label(self)
 
     if self.nameLabel then
         if showIndex then
+            QueryGuildBankTab(self.tabID)
+
             local name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(self.tabID)
 
             if self.onlyName then
@@ -334,6 +336,8 @@ local function Init_Button(self)
     for tabID=1, numTab do
         --if select(3, GetGuildBankTabInfo(tabID)) then
            -- print(tabID, self.BankTabs[tabID].Button:IsEnabled())
+        QueryGuildBankTab(tabID)
+
         if self.BankTabs[tabID].Button:IsEnabled() then
             if currentIndex~=tabID then
                 for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
@@ -532,6 +536,8 @@ local function Init_UI()
     end)
 
     hooksecurefunc(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
+        QueryGuildBankTab(tabID)
+
         GuildBankTabInfoEditBox.Instructions:SetText(
             GetGuildBankTabInfo(tabID)
             or format(e.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)
@@ -608,7 +614,11 @@ local function Init()
 
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
             btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
+
+            QueryGuildBankTab(tabID)
         end
+
+
     end
 
 

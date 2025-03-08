@@ -21,7 +21,10 @@ end
 --numIn 是否放入：true, false
 function WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
 
-    local _, _, isViewable, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(tabID or GetCurrentGuildBankTab())
+    tabID= tabID or GetCurrentGuildBankTab()
+    QueryGuildBankTab(tabID)
+
+    local _, _, isViewable, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(tabID)
 
     if not isViewable then
         return

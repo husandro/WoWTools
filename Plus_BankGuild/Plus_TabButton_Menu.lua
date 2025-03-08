@@ -401,13 +401,11 @@ function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
             frame.isInRun=true--停止，已运行
         end
 
-
-
         local tabID= GetCurrentGuildBankTab()
-        
         local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
 
         Init_Out_Menu(frame, root, tabID, numOut)
+
         root:CreateDivider()
         Init_In_Menu(frame, root, tabID, numIn)
     end)
