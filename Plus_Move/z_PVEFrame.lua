@@ -10,9 +10,10 @@ end
 local function Init()
     LFGListPVEStub:SetPoint('BOTTOMRIGHT')
     LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
+    
     hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
         local btn= PVEFrame.ResizeButton
-        if not btn or btn.disabledSize or not PVEFrame:CanChangeAttribute() then
+        if not btn or btn.disabledSize or not PVEFrame:IsProtected() then
             return
         end
         if index==3 then
