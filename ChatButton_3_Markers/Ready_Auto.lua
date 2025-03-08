@@ -110,7 +110,7 @@ local function Init_UI()
 
         check:SetScript('OnLeave', GameTooltip_Hide)
         check:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(self.Text, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_Mixin.addName)
             GameTooltip:AddLine(WoWTools_MarkerMixin.addName)
@@ -184,6 +184,9 @@ local function Init()
         Set_Ready(timeLeft)--设置，就绪，未就绪
     end)
 
+
+
+    
 
     ReadyCheckListenerFrame:HookScript('OnHide', function(self)
         if PlayerNameText then

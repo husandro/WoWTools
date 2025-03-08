@@ -232,8 +232,8 @@ local function Init_Menu(self, root)
         or (e.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
     function()
         local show= ReadyCheckFrame:IsShown()
-        ReadyCheckFrame:SetShown(show)
-        ReadyCheckListenerFrame:SetShown(show)
+        ReadyCheckFrame:SetShown(not show)
+        ReadyCheckListenerFrame:SetShown(not show)
         return MenuResponse.Refresh
     end)
     sub:SetTooltip(function (tooltip)
