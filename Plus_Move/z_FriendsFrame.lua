@@ -80,6 +80,11 @@ local function Init()
     RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
+
+
+    RaidFrameRaidDescription:SetPoint('BOTTOMRIGHT', -15, 35)
+
+
     hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return
