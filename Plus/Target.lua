@@ -1604,7 +1604,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             set_Option()
-            self:UnregisterEvent(event)
 
         end
 

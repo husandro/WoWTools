@@ -2041,16 +2041,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
-            if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
-                self:UnregisterEvent(event)
-            end
 
 
         elseif arg1=='Blizzard_WeeklyRewards' then
             Init_Blizzard_WeeklyRewards()
-            if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                self:UnregisterEvent(event)
-            end
         end
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then

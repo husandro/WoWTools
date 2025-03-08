@@ -51,7 +51,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化,物品 5
             WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
             WoWTools_CollectionMixin:Init_Options()
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

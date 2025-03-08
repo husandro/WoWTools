@@ -145,15 +145,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_PlayerChoice' then
             WoWTools_GossipMixin:Init_PlayerChoice()
-            if C_AddOns.IsAddOnLoaded('Blizzard_DelvesDifficultyPicker') then
-                self:UnregisterEvent(event)
-            end
 
         elseif arg1=='Blizzard_DelvesDifficultyPicker' then--地下堡
             WoWTools_GossipMixin:Init_Delves()
-            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerChoice') then
-                self:UnregisterEvent(event)
-            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

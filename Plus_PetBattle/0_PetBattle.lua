@@ -200,9 +200,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_PetBattleMixin:Set_Options()
-            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                self:UnregisterEvent(event)
-            end
         end
 
     elseif event=='PET_BATTLE_OPENING_DONE' then

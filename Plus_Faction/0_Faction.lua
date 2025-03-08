@@ -57,15 +57,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 		elseif arg1=='Blizzard_MajorFactions' then
 			WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
-			if C_AddOns.IsAddOnLoaded('Blizzard_CovenantRenown') then
-				self:UnregisterEvent(event)
-			end
 
 		elseif arg1=='Blizzard_CovenantRenown' then
 			WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
-			if C_AddOns.IsAddOnLoaded('Blizzard_MajorFactions') then
-				self:UnregisterEvent(event)
-			end
 		end
 
     elseif event == "PLAYER_LOGOUT" then

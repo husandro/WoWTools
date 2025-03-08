@@ -162,7 +162,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_FlightMap' then--飞行点，加名称
             WoWTools_WorldMapMixin:Init_FlightMap_Name()--飞行点，加名称
-            self:UnregisterEvent(event)
+
         end
 
     elseif event == "PLAYER_LOGOUT" then

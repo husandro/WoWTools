@@ -367,7 +367,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_PlayerSpells' then--天赋
             Init_All_Flyout()
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

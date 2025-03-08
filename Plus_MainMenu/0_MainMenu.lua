@@ -52,7 +52,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-            self:UnregisterEvent(event)
 
         end
 

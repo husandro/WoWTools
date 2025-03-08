@@ -132,7 +132,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
             Init_EncounterJournal()--冒险指南界面
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

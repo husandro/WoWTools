@@ -215,7 +215,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_CursorMixin:Init_Options()
             WoWTools_CursorMixin:Init_Cursor_Options()
             WoWTools_CursorMixin:Init_GCD_Options()
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -254,7 +254,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_TimeManager' then
             WoWTools_MinimapMixin:Init_TimeManager()--秒表
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

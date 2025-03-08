@@ -270,7 +270,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     frame.Button.Border:SetVertexColor(1,1,1)
                 end
             end)
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

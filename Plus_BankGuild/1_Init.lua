@@ -70,8 +70,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_GuildBankMixin:Init_GuildMenu()
 
             Init_Other()
-
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

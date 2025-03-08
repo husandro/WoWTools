@@ -498,7 +498,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

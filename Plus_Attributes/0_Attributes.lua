@@ -139,7 +139,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_AttributesMixin:Init_Options()
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

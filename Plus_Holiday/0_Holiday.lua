@@ -88,7 +88,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_HolidayMixin:Init_CreateEventFrame()
             WoWTools_HolidayMixin:Init_Calendar_Uptate()
             WoWTools_HolidayMixin:Init_TrackButton()
-            self:UnregisterEvent(event)
+
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then

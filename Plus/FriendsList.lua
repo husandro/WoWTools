@@ -1010,7 +1010,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end)
 
-            self:UnregisterEvent(event)
         end
 
     elseif event=='SOCIAL_QUEUE_UPDATE' then

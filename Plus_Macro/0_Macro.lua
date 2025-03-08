@@ -204,7 +204,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Init()
             end
-            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_REGEN_ENABLED' then
