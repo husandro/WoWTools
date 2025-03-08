@@ -95,7 +95,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 				WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)
 			end)
-			
+
 		end
 
     elseif event == "PLAYER_LOGOUT" then
