@@ -6,11 +6,11 @@ end
 
 
 
-
+--GroupFinderFrame
 local function Init()
-    LFGListPVEStub:SetPoint('BOTTOMRIGHT')
+   LFGListPVEStub:SetPoint('BOTTOMRIGHT')
     LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
-    
+
     hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
         local btn= PVEFrame.ResizeButton
         if not btn or btn.disabledSize or not PVEFrame:IsProtected() then
@@ -33,7 +33,6 @@ local function Init()
 
     WoWTools_MoveMixin:Setup(PVEFrame, {
         setSize=true,
-        --notInCombat=true,
         minW=563,
         minH=428,
         sizeUpdateFunc=function()
