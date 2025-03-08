@@ -542,7 +542,7 @@ local function Init()
         if find then
             GossipButton.selectGissipIDTab[index]=true
             print(
-                e.Icon.icon2..WoWTools_UnitMixin:Get_NPC_Name()
+                '|A:SpecDial_LastPip_BorderGlow:0:0|a'..WoWTools_UnitMixin:Get_NPC_Name()
                 ..'|T'..(info.overrideIconID or info.icon or 0)..':0|t|cff00ff00'..(name or '')
                 --, index
             )
