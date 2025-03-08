@@ -14,3 +14,37 @@ function WoWTools_GuildBankMixin:GetFree(tabID)
     end
     return numFreeSlots, items
 end
+
+
+
+--numOut 可提取：数字，true无限，false禁用
+--numIn 是否放入：true, false
+function WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
+
+    local _, _, isViewable, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(tabID or GetCurrentGuildBankTab())
+
+    if not isViewable then
+        return
+    end
+
+    local numOut
+    local numIn= true
+
+    if
+        (canDeposit and numWithdrawals==0) --锁定
+        or not canDeposit--只能提取
+        or numWithdrawals==0 --只能存放
+    then
+        numIn= false
+    end
+
+    if remainingWithdrawals > 0  and remainingWithdrawals then
+        numOut= remainingWithdrawals
+    elseif (remainingWithdrawals==0 and numOut==false) then--'无'
+        numOut=false
+    else --'无限制'
+        numOut=true
+    end
+
+    return numOut, numIn
+end

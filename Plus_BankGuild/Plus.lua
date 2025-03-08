@@ -608,9 +608,6 @@ local function Init()
 
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
             btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
-
-        else
-            break
         end
     end
 

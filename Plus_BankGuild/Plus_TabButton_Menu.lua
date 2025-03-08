@@ -50,15 +50,21 @@ end
 
 
 --提取
-local function Out_Bank(self, tabID, classID, subClassID, onlyItem)
+--numOut 可提取：数字，true无限，false禁用
+local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
     if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
         self.isInRun=true--停止，已运行
         return
     end
 
     WoWTools_GuildBankMixin.isInRun= true
-    local freeSlots =  WoWTools_BagMixin:GetFree(false)
     local itemIndex= 0
+
+    local freeSlots =  WoWTools_BagMixin:GetFree(false)
+
+    if type(numOut)=='number' then
+        freeSlots= math.min(freeSlots, numOut)
+    end
 
     local function withdrawItems()
         if
@@ -134,23 +140,26 @@ end
 
 
 --提取
-local function Init_Out_Menu(self, root, tabID)
+--numOut 可提取：数字，true无限，false禁用
+local function Init_Out_Menu(self, root, tabID, numOut)
     local sub
 
     sub= root:CreateButton(
         (e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
         ..' #'..Get_Bank(tabID, nil, nil, true),
     function(data)
-        Out_Bank(self, data.tabID, nil, true)
-    end, {tabID= tabID})
+        Out_Bank(self, data.tabID, nil, true, data.numOut)
+    end, {tabID= tabID, numOut=numOut})
+    sub:SetEnabled(numOut)
 
 
     sub= root:CreateButton(
         (e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
         ..' #'..Get_Bank(tabID, nil, nil, false),
     function(data)
-        Out_Bank(self, data.tabID, nil, false)
-    end, {tabID= tabID})
+        Out_Bank(self, data.tabID, nil, false, numOut)
+    end, {tabID=tabID, numOut=numOut})
+    sub:SetEnabled(numOut)
 end
 
 
@@ -341,7 +350,8 @@ end
 
 
 --存放
-local function Init_In_Menu(self, root, tabID)
+--numIn 是否放入：true, false
+local function Init_In_Menu(self, root, tabID, numIn)
     local sub
 
     sub= root:CreateButton(
@@ -350,7 +360,7 @@ local function Init_In_Menu(self, root, tabID)
     function(data)
         In_Bags(self, data.tabID, nil, true)
     end, {tabID= tabID})
-
+    sub:SetEnabled(numIn)
 
     sub= root:CreateButton(
         (e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
@@ -358,6 +368,8 @@ local function Init_In_Menu(self, root, tabID)
     function(data)
         In_Bags(self, data.tabID, nil, false)
     end, {tabID= tabID})
+    sub:SetEnabled(numIn)
+
 end
 
 
@@ -389,9 +401,14 @@ function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
             frame.isInRun=true--停止，已运行
         end
 
+
+
         local tabID= GetCurrentGuildBankTab()
-        Init_Out_Menu(frame, root, tabID)
+        
+        local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
+
+        Init_Out_Menu(frame, root, tabID, numOut)
         root:CreateDivider()
-        Init_In_Menu(frame, root, tabID)
+        Init_In_Menu(frame, root, tabID, numIn)
     end)
 end
