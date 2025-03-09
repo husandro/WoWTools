@@ -24,40 +24,38 @@ end
 local function Set_Tooltip(tooltip, desc)
     local dungeonName= desc.data.dungeonName
     local dungeonID= desc.data.dungeonID
-    local scenarioID= desc.data.scenarioID
     local num= WoWTools_LFDMixin:Get_Instance_Num(dungeonName)
 
     local bossKillText= desc.data.bossKillText
     local bossTab= desc.data.bossTab
     local modifiedDesc= desc.data.modifiedDesc
+    
 
     local rewardID, rewardType, rewardArg= desc.data.rewardIndex, desc.data.rewardType, desc.data.rewardArg
-    local findMoneyOrXP
 
-	if  not rewardType then
-        local _, moneyAmount, _, experienceGained = GetLFGDungeonRewards(dungeonID)
-        if experienceGained>0 and moneyAmount>0 then
-            tooltip:AddDoubleLine(
-                experienceGained> 0 and experienceGained..'|A:GarrMission_CurrencyIcon-Xp:0:0|a' or ' ',
-                moneyAmount > 0 and SetTooltipMoney(tooltip, moneyAmount, nil)
-            )
-            findMoneyOrXP=true
-        end
-
-	elseif ( rewardType == "reward" ) then
+    if ( rewardType == "reward" ) then
 		tooltip:SetLFGDungeonReward(dungeonID, rewardID)
 
 	elseif ( rewardType == "shortage" ) then
 		tooltip:SetLFGDungeonShortageReward(dungeonID, rewardArg, rewardID)
 	end
 
-    if rewardType or findMoneyOrXP then
+    if rewardType then
         tooltip:AddLine(' ')
     end
-    
+
+    local _, moneyAmount, _, experienceGained = GetLFGDungeonRewards(dungeonID)
+    if experienceGained>0 and moneyAmount>0 then
+        
+        tooltip:AddDoubleLine(
+            experienceGained> 0 and experienceGained..'|A:GarrMission_CurrencyIcon-Xp:0:0|a' or ' ',
+            moneyAmount > 0 and SetTooltipMoney(tooltip, moneyAmount, nil)
+        )
+    end
+
     if bossKillText then
-        tooltip:AddLine(bossKillText)
         tooltip:AddLine(' ')
+        tooltip:AddLine(bossKillText)
     end
     if bossTab then
         for index, text in pairs(bossTab) do
@@ -69,10 +67,19 @@ local function Set_Tooltip(tooltip, desc)
         tooltip:AddLine(modifiedDesc, nil,nil,nil, true)
     end
 
+    if rewardType
+        or experienceGained>0
+        or moneyAmount>0
+        or bossKillText
+        or bossTab
+        or modifiedDesc
+    then
+        tooltip:AddLine(' ')
+    end
+    tooltip:AddLine(e.cn(dungeonName))
     tooltip:AddDoubleLine(
-        e.cn(dungeonName)..' # '..num,
-        dungeonID and 'dungeonID '..dungeonID
-        or (scenarioID and 'scenarioID '..scenarioID)
+        (num and (e.onlyChinese and '完成' or COMPLETE)..' '..num or ''),
+        (dungeonID and 'dungeonID '..dungeonID or nil)
     )
 end
 
@@ -103,6 +110,10 @@ local function Add_Initializer(button, desc)
             end
             if self.leftTexture then
                 self.leftTexture:SetShown(isInQueue)
+            end
+
+            if GameTooltip:IsOwned(self) then
+                self:GetButtonState('PUSHED')
             end
         end
     end)
@@ -369,14 +380,14 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
 
     for i=1, numScenario do
         --local id, name, typeID, subtype, minLevel, maxLevel= GetRandomScenarioInfo(i)
-        local scenarioID, name = GetRandomScenarioInfo(i)
-        if scenarioID and name then
-            local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(scenarioID)
-            local dungeonID = GetRandomScenarioInfo(i)
+        local dungeonID, name = GetRandomScenarioInfo(i)
+        if dungeonID and name then
+            local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(dungeonID)
+
             if isAvailableForAll and isAvailableForPlayer then
-                reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID, scenarioID)
+                reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                 sub2=sub:CreateButton(
-                    e.cn(name, {scenarioID=scenarioID, isName=true})..reward,
+                    e.cn(name, {scenarioID=dungeonID, isName=true})..reward,
                 function(data)
                     if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
                         LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
@@ -387,7 +398,6 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                     return MenuResponse.Open
 
                 end, {
-                    scenarioID= scenarioID,
                     dungeonID= dungeonID,
                     dungeonName= name,
                     type= LE_LFG_CATEGORY_SCENARIO,
@@ -399,7 +409,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 --[[sub2:SetTooltip(function(tooltip, desc)
                     tooltip:AddLine(desc.data.dungeonName)
                     tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine('scenarioID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
+                    tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
                 end)]]
 
                 sub2:AddInitializer(Add_Initializer)
@@ -408,7 +418,6 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                 sub2=sub:CreateButton('     |cff9e9e9e'..e.cn(name)..' |r', function()
                     return MenuResponse.Open
                 end, {
-                    scenarioID= scenarioID,
                     dungeonID= dungeonID,
                     dungeonName=name,
                 })
@@ -422,7 +431,7 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
                         tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(text))
                     end
                     tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine('scenarioID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
+                    tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
                 end)
             end
         end
@@ -553,7 +562,7 @@ local function set_Raid_Menu_List(root)
                 bossKillText = format(e.onlyChinese and '已消灭 |cnGREEN_FONT_COLOR:%d|r/%d 个首领' or BOSSES_KILLED, killNum, bossNum)
                 isKillAll= bossNum==killNum
             end
-            
+
             reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
             sub=root:CreateButton(
                 ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
