@@ -1,24 +1,18 @@
 local id, e = ...
 --local addName
-WoWTools_LFDMixin={
-    Save={
-        leaveInstance=e.Player.husandro,--自动离开,指示图标
-        autoROLL= e.Player.husandro,--自动,战利品掷骰
-        --disabledLootPlus=true,--禁用，战利品Plus
-        ReMe=true,--仅限战场，释放，复活
-        autoSetPvPRole=e.Player.husandro,--自动职责确认， 排副本
-        LFGPlus= e.Player.husandro,--预创建队伍增强
-        tipsScale=1,--提示内容,缩放
-        sec=3,--时间 timer
-        wow={
-            --['island']=0,
-            --[副本名称]=0,
-        }
-    },
-    LFDButton=nil,
-    TipsButton=nil,--小眼睛, 更新信息
-
-    ReMe_AllZone=false,--所有地方，释放, 复活
+WoWTools_LFDMixin.Save={
+    leaveInstance=e.Player.husandro,--自动离开,指示图标
+    autoROLL= e.Player.husandro,--自动,战利品掷骰
+    --disabledLootPlus=true,--禁用，战利品Plus
+    ReMe=true,--仅限战场，释放，复活
+    autoSetPvPRole=e.Player.husandro,--自动职责确认， 排副本
+    LFGPlus= e.Player.husandro,--预创建队伍增强
+    tipsScale=1,--提示内容,缩放
+    sec=3,--时间 timer
+    wow={
+        --['island']=0,
+        --[副本名称]=0,
+    }
 }
 
 local LFDButton

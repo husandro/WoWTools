@@ -298,7 +298,7 @@ end
 
 
 
-
+--Cooldown.xml
 
 function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, setSwipeTexture, hideDrawBling)--冷却条
     if not self then
@@ -311,7 +311,7 @@ function e.Ccool(self, start, duration, modRate, HideCountdownNumbers, Reverse, 
     end
     if not self.cooldown then
         self.cooldown= CreateFrame("Cooldown", nil, self, 'CooldownFrameTemplate')
-        self.cooldown:SetFrameLevel(self:GetFrameLevel()+5)
+         self.cooldown:SetFrameLevel(self:GetFrameLevel()+5)
         self.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
         self.cooldown:SetDrawBling(not hideDrawBling)--闪光
         self.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线

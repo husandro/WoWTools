@@ -671,6 +671,7 @@ ChatButton_4_Invite\Resting.lua
 ChatButton_4_Invite\Foucs.lua
 
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
+ChatButton_5_LFD\0_LFDMixin.lua
 ChatButton_5_LFD\5_LFD.lua
 ChatButton_5_LFD\Exit_Instance.lua
 ChatButton_5_LFD\GetQueuedList.lua

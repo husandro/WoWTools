@@ -952,17 +952,23 @@ local function Init_Menu(_, root)
 
 
 
-    root:CreateDivider()
---副本，列表
-    Set_LFGFollower_Dungeon_List(root)--追随者，副本
-    set_Party_Menu_List(root)--随机
-    Init_Scenarios_Menu(root)--场景
-    if cooldowntext then
-        root:CreateTitle('|cnGREEN_FONT_COLOR:'..cooldowntext)
+    
+--显示 LFGDungeonReadyDialog
+    if not WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root) then
+        
+        root:CreateDivider()
+    --副本，列表
+        Set_LFGFollower_Dungeon_List(root)--追随者，副本
+        set_Party_Menu_List(root)--随机
+        Init_Scenarios_Menu(root)--场景
+        if cooldowntext then
+            root:CreateTitle('|cnGREEN_FONT_COLOR:'..cooldowntext)
+            root:CreateDivider()
+        end
+        set_Raid_Menu_List(root)--团本
+    else
         root:CreateDivider()
     end
-    set_Raid_Menu_List(root)--团本
-
 --[[离开列队
     WoWTools_MenuMixin:SetGridMode(root, num)
 

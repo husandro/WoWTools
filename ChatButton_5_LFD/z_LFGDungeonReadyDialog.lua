@@ -18,11 +18,12 @@ local function Init()
     if LFGDungeonReadyDialog.bossTipsLabel then
         Show_LFGDungeonReadyPopup()
         return
+
     end
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
         e.PlaySound()--播放, 声音
-        e.Ccool(self, nil, 38, nil, true, true)
+        e.Ccool(self, nil, LFGInvitePopup.timeOut and LFGInvitePopup.timeOut or 38, nil, true, true)
     end)
 
 --禁用
@@ -32,14 +33,13 @@ local function Init()
 
 
 --确定，进入副本
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {notFuori=true,
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {notFuori=true, setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
     sizeRestFunc=function(btn)
         btn:SetSize(306, 130)
         e.call('LFGDungeonReadyPopup_Update')
     end})
-
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyDialog, {frame=LFGDungeonReadyPopup})
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyStatus, {frame=LFGDungeonReadyPopup})
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyDialog, {frame=LFGDungeonReadyPopup, notFuori=true})
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyStatus, {frame=LFGDungeonReadyPopup, notFuori=true})
 
     LFGDungeonReadyDialog.bossTipsLabel= WoWTools_LabelMixin:Create(LFGDungeonReadyDialog)
     LFGDungeonReadyDialog.bossTipsLabel:SetPoint('LEFT', LFGDungeonReadyDialog, 'RIGHT', 4, 0)
@@ -94,10 +94,21 @@ local function Init()
         GameTooltip:SetText(e.onlyChinese and '隐藏' or HIDE)
         GameTooltip:Show()
     end)
-    
+
+    Menu.ModifyMenu("MENU_QUEUE_STATUS_FRAME", function(_, root)
+        WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root)--显示 LFGDungeonReadyDialog
+    end)
+
 
     Show_LFGDungeonReadyPopup()
 end
+
+
+
+
+
+
+
 
 function WoWTools_LFDMixin:Init_LFGDungeonReadyDialog()
     Init()

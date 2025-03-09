@@ -617,7 +617,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     local btn= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
     btn:SetFrameStrata('DIALOG')
-    btn:SetFrameLevel(9999)
+    btn:SetFrameLevel(frame:GetFrameLevel()+7)
     btn:SetSize(16, 16)
 
     if setResizeButtonPoint then
