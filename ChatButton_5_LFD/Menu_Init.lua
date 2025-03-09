@@ -29,7 +29,7 @@ local function Set_Tooltip(tooltip, desc)
     local bossKillText= desc.data.bossKillText
     local bossTab= desc.data.bossTab
     local modifiedDesc= desc.data.modifiedDesc
-    
+
 
     local rewardID, rewardType, rewardArg= desc.data.rewardIndex, desc.data.rewardType, desc.data.rewardArg
 
@@ -46,7 +46,7 @@ local function Set_Tooltip(tooltip, desc)
 
     local _, moneyAmount, _, experienceGained = GetLFGDungeonRewards(dungeonID)
     if experienceGained>0 and moneyAmount>0 then
-        
+
         tooltip:AddDoubleLine(
             experienceGained> 0 and experienceGained..'|A:GarrMission_CurrencyIcon-Xp:0:0|a' or ' ',
             moneyAmount > 0 and SetTooltipMoney(tooltip, moneyAmount, nil)
@@ -88,46 +88,49 @@ end
 
 
 
-local function Add_Initializer(button, desc)
-    if not button.leftTexture then
-        button.leftTexture = button:AttachTexture()
-        button.leftTexture:SetSize(20, 20)
-        button.leftTexture:SetAtlas(e.Icon.toRight)
-        button.leftTexture:SetPoint("LEFT")
-        button.leftTexture:Hide()
-        button.fontString:SetPoint('LEFT', button.leftTexture, 'RIGHT')
-    end
 
-    button:SetScript("OnUpdate", function(self, elapsed)
+local function Add_Initializer(btn, desc)
+    if not btn.leftTexture then
+        btn.leftTexture = btn:AttachTexture()
+        btn.leftTexture:SetSize(20, 20)
+        btn.leftTexture:SetAtlas(e.Icon.toRight)
+        btn.leftTexture:SetPoint("LEFT")
+        btn.leftTexture:SetAlpha(0)
+        btn.fontString:SetPoint('LEFT', btn.leftTexture, 'RIGHT')
+    end
+    btn.dungeonID= desc.data.dungeonID
+
+    btn:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed= (self.elapsed or 0.5) +elapsed
         if self.elapsed>0.5 then
             self.elapsed=0
-            local isInQueue= GetLFGQueueStats(desc.data.type, desc.data.dungeonID)
-            if isInQueue then
-                self.fontString:SetTextColor(0,1,0)
-            else
-                self.fontString:SetTextColor(1,1,1)
+            local r,g,b= 1, 1, 1
+            local atlas
+
+            if select(2, GetLFGProposal())==self.dungeonID then
+                r,g,b= 1,0,1
+                atlas= 'quest-legendary-turnin'
+
+            elseif GetLFGQueueStats(desc.data.type, self.dungeonID) then
+                r,g,b= 0,1,0
+                atlas= e.Icon.toRight
             end
-            if self.leftTexture then
-                self.leftTexture:SetShown(isInQueue)
+            if atlas then
+                self.leftTexture:SetAtlas(atlas)
             end
+            self.leftTexture:SetAlpha(atlas and 1 or 0)
+            self.fontString:SetTextColor(r,g,b)
 
             if GameTooltip:IsOwned(self) then
-                self:GetButtonState('PUSHED')
+                self:SetButtonState('PUSHED')
             end
         end
     end)
 
-    button:SetScript('OnHide', function(self)
+    btn:SetScript('OnHide', function(self)
         self:SetScript('OnUpdate', nil)
+        self.dungeonID= nil
         self.elapsed=nil
-        if self.fontString then
-            self.fontString:SetTextColor(1,1,1)
-            self.fontString:SetPoint('LEFT')
-        end
-        if self.leftTexture then
-            self.leftTexture:SetShown(false)
-        end
     end)
 end
 

@@ -5,7 +5,7 @@ local e= select(2, ...)
 local function Show_LFGDungeonReadyPopup()
     if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
         StaticPopupSpecial_Show(LFGDungeonReadyPopup)
-        e.call('LFGDungeonReadyPopup_Update')
+        e.call(LFGDungeonReadyPopup_Update)
     end
 end
 
