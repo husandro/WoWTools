@@ -5413,7 +5413,9 @@
         "SPECIFIC_INSTANCE_IS_READY",
         "RANDOM_DUNGEON_IS_READY",
         "LFGDungeonReadyPopup_Update",
-        "LFGDungeonReadyDialogCloseButton"
+        "LFGDungeonReadyDialogCloseButton",
+        "REWARD_ITEMS_ONLY",
+        "GAIN_EXPERIENCE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

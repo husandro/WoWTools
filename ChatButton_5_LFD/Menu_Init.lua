@@ -21,14 +21,67 @@ end
 
 
 
+local function Set_Tooltip(tooltip, desc)
+    local dungeonName= desc.data.dungeonName
+    local dungeonID= desc.data.dungeonID
+    local scenarioID= desc.data.scenarioID
+    local num= WoWTools_LFDMixin:Get_Instance_Num(dungeonName)
+
+    local bossKillText= desc.data.bossKillText
+    local bossTab= desc.data.bossTab
+    local modifiedDesc= desc.data.modifiedDesc
+
+    local rewardID, rewardType, rewardArg= desc.data.rewardIndex, desc.data.rewardType, desc.data.rewardArg
+    local findMoneyOrXP
+
+	if  not rewardType then
+        local _, moneyAmount, _, experienceGained = GetLFGDungeonRewards(dungeonID)
+        if experienceGained>0 and moneyAmount>0 then
+            tooltip:AddDoubleLine(
+                experienceGained> 0 and experienceGained..'|A:GarrMission_CurrencyIcon-Xp:0:0|a' or ' ',
+                moneyAmount > 0 and SetTooltipMoney(tooltip, moneyAmount, nil)
+            )
+            findMoneyOrXP=true
+        end
+
+	elseif ( rewardType == "reward" ) then
+		tooltip:SetLFGDungeonReward(dungeonID, rewardID)
+
+	elseif ( rewardType == "shortage" ) then
+		tooltip:SetLFGDungeonShortageReward(dungeonID, rewardArg, rewardID)
+	end
+
+    if rewardType or findMoneyOrXP then
+        tooltip:AddLine(' ')
+    end
+    
+    if bossKillText then
+        tooltip:AddLine(bossKillText)
+        tooltip:AddLine(' ')
+    end
+    if bossTab then
+        for index, text in pairs(bossTab) do
+            tooltip:AddLine(index..') '..text)
+        end
+    end
+    if modifiedDesc then
+        tooltip:AddLine(' ')
+        tooltip:AddLine(modifiedDesc, nil,nil,nil, true)
+    end
+
+    tooltip:AddDoubleLine(
+        e.cn(dungeonName)..' # '..num,
+        dungeonID and 'dungeonID '..dungeonID
+        or (scenarioID and 'scenarioID '..scenarioID)
+    )
+end
 
 
 
 
 
 
-
-local function Add_Initializer(button, description)
+local function Add_Initializer(button, desc)
     if not button.leftTexture then
         button.leftTexture = button:AttachTexture()
         button.leftTexture:SetSize(20, 20)
@@ -42,7 +95,7 @@ local function Add_Initializer(button, description)
         self.elapsed= (self.elapsed or 0.5) +elapsed
         if self.elapsed>0.5 then
             self.elapsed=0
-            local isInQueue= GetLFGQueueStats(description.data.type, description.data.dungeonID)
+            local isInQueue= GetLFGQueueStats(desc.data.type, desc.data.dungeonID)
             if isInQueue then
                 self.fontString:SetTextColor(0,1,0)
             else
@@ -84,12 +137,12 @@ end
 
 
 local function GetLFGLockList()
-	local lockInfo = C_LFGInfo.GetLFDLockStates();
-	local lockMap = {};
+	local lockInfo = C_LFGInfo.GetLFDLockStates()
+	local lockMap = {}
 	for _, lock in ipairs(lockInfo) do
-		lockMap[lock.lfgID] = lock;
+		lockMap[lock.lfgID] = lock
 	end
-	return lockMap;
+	return lockMap
 end
 
 
@@ -121,6 +174,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
         return
     end
     local sub, sub2
+    local reward, rewardIndex, rewardType, rewardArg
 
     sub= root:CreateButton(e.onlyChinese and '追随者地下城' or LFG_TYPE_FOLLOWER_DUNGEON, function()
         return MenuResponse.Open
@@ -134,37 +188,41 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
 
 
                 if isAvailableForPlayer then
+                    reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                     sub2= sub:CreateButton(
                             (info.iconID and '|T'..info.iconID..':0|t' or '')
                             ..e.cn(info.name)
-                            ..WoWTools_LFDMixin:GetRewardInfo(dungeonID)
+                            ..reward
                             ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', e.Icon.select) or ''),
 
-                        function(description)
-                            if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, description.dungeonID) then
-                                LeaveSingleLFG(LE_LFG_CATEGORY_LFD, description.dungeonID)
+                        function(data)
+                            if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
+                                LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
                             else
                                 LFDQueueFrame_SetTypeInternal('follower')
-                                LFDQueueFrame_SetType(description.dungeonID)
+                                LFDQueueFrame_SetType(data.dungeonID)
                                 LFDQueueFrame_Join()
-                                WoWTools_LFDMixin:Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, e.cn(description.dungeonName), nil)--设置图标, 点击,提示
+                                WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, e.cn(data.dungeonName), nil)--设置图标, 点击,提示
                             end
                             return MenuResponse.Open
                         end, {
                             dungeonID=dungeonID,
                             dungeonName=info.name,
-                            type=LE_LFG_CATEGORY_LFD
+                            type=LE_LFG_CATEGORY_LFD,
+                            rewardIndex= rewardIndex,
+                            rewardType= rewardType,
+                            rewardArg= rewardArg,
                         })
-
-                    sub2:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
+                        sub2:SetTooltip(Set_Tooltip)
+                    --[[sub2:SetTooltip(function(tooltip, desc)
+                        tooltip:AddLine(e.cn(desc.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
                         tooltip:AddDoubleLine(
-                            'dungeonID '..description.data.dungeonID,
-                            WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName),''
+                            'dungeonID '..desc.data.dungeonID,
+                            WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName)
                         )
 
-                    end)
+                    end)]]
 
                     sub2:AddInitializer(Add_Initializer)
                 end
@@ -200,7 +258,7 @@ end
 --副本， 菜单列表
 --5人，随机 LFDFrame.lua
 local function set_Party_Menu_List(root)
-    local sub, find
+    local sub, find, reward, rewardIndex, rewardType, rewardArg
     for i=1, GetNumRandomDungeons() do
         local dungeonID, name = GetLFGRandomDungeonInfo(i)
         if dungeonID and name then
@@ -208,20 +266,20 @@ local function set_Party_Menu_List(root)
             if (isAvailableForAll or not hid2eIfNotJoinable) then
                 if isAvailableForPlayer then
 
-
+                    reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                     sub=root:CreateButton(
                         e.cn(name)
-                        ..WoWTools_LFDMixin:GetRewardInfo(dungeonID)
+                        ..reward
                         ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', e.Icon.select) or ''),
 
-                    function(description)
-                        if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, description.dungeonID) then
-                            LeaveSingleLFG(LE_LFG_CATEGORY_LFD, description.dungeonID)
+                    function(data)
+                        if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
+                            LeaveSingleLFG(LE_LFG_CATEGORY_LFD, data.dungeonID)
                         else
                             LFDQueueFrame_SetTypeInternal('specific')
-                            LFDQueueFrame_SetType(description.dungeonID)
+                            LFDQueueFrame_SetType(data.dungeonID)
                             LFDQueueFrame_Join()
-                            WoWTools_LFDMixin:Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, e.cn(description.dungeonName), nil)--设置图标, 点击,提示
+                            WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, e.cn(data.dungeonName), nil)--设置图标, 点击,提示
                         end
                         return MenuResponse.Open
 
@@ -229,14 +287,17 @@ local function set_Party_Menu_List(root)
                         dungeonID=dungeonID,
                         dungeonName=name,
                         type=LE_LFG_CATEGORY_LFD,
-
+                        rewardIndex= rewardIndex,
+                        rewardType= rewardType,
+                        rewardArg= rewardArg,
                     })
 
-                    sub:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
+                    sub:SetTooltip(Set_Tooltip)
+                    --[[sub:SetTooltip(function(tooltip, desc)
+                        tooltip:AddLine(e.cn(desc.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
-                        tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName),nil)
-                    end)
+                        tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName),nil)
+                    end)]]
 
                     sub:AddInitializer(Add_Initializer)
 
@@ -248,16 +309,16 @@ local function set_Party_Menu_List(root)
                         dungeonName=name
                     })
 
-                    sub:SetTooltip(function(tooltip, description)
-                        tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
+                    sub:SetTooltip(function(tooltip, desc)
+                        tooltip:AddLine(e.cn(desc.data.dungeonName)..' ')
                         tooltip:AddLine(' ')
                         tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
-                        local declined= LFGConstructDeclinedMessage(description.data.dungeonID)
+                        local declined= LFGConstructDeclinedMessage(desc.data.dungeonID)
                         if declined and declined~='' then
                             tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(declined), nil,nil,nil, true)
                         end
                         tooltip:AddLine(' ')
-                        tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName),nil)
+                        tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName),nil)
                     end)
                 end
                 find=true
@@ -288,67 +349,83 @@ end
 
 
 
---场景
+--场景战役 SCENARIOS
 local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
-    if not PlayerGetTimerunningSeasonID() then
+    local sub, sub2, reward, rewardIndex, rewardType, rewardArg
+    --[[if not PlayerGetTimerunningSeasonID() then
        return
+    end]]
+    local numScenario= GetNumRandomScenarios() or 0
+    if numScenario==0 then
+        return
     end
 
-    local sub, find
-    for i=1, GetNumRandomScenarios() do
+    sub= root:CreateButton(
+        (e.onlyChinese and '场景战役' or SCENARIOS)..' #'..numScenario,
+    function()
+        return MenuResponse.Open
+    end)
+
+
+    for i=1, numScenario do
         --local id, name, typeID, subtype, minLevel, maxLevel= GetRandomScenarioInfo(i)
         local scenarioID, name = GetRandomScenarioInfo(i)
         if scenarioID and name then
             local isAvailableForAll, isAvailableForPlayer = IsLFGDungeonJoinable(scenarioID)
+            local dungeonID = GetRandomScenarioInfo(i)
             if isAvailableForAll and isAvailableForPlayer then
-                sub=root:CreateButton(e.cn(name, {scenarioID=scenarioID, isName=true}), function(description)
+                reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID, scenarioID)
+                sub2=sub:CreateButton(
+                    e.cn(name, {scenarioID=scenarioID, isName=true})..reward,
+                function(data)
                     if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
                         LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
                     else
-                        LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, description.dungeonID, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
-                        WoWTools_LFDMixin:Set_LFDButton_Data(description.dungeonID, LE_LFG_CATEGORY_LFD, description.dungeonName, nil)--设置图标, 点击,提示
+                        LFG_JoinDungeon(LE_LFG_CATEGORY_SCENARIO, data.dungeonID, ScenariosList, ScenariosHiddenByCollapseList)--ScenarioQueueFrame_Join() 
+                        WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_LFD, data.dungeonName, nil)--设置图标, 点击,提示
                     end
                     return MenuResponse.Open
 
                 end, {
-                    dungeonID=scenarioID,
-                    dungeonName=name,
-                    type=LE_LFG_CATEGORY_SCENARIO,
+                    scenarioID= scenarioID,
+                    dungeonID= dungeonID,
+                    dungeonName= name,
+                    type= LE_LFG_CATEGORY_SCENARIO,
+                    rewardIndex= rewardIndex,
+                    rewardType= rewardType,
+                    rewardArg= rewardArg,
                 })
-
-                sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(description.data.dungeonName)
+                sub2:SetTooltip(Set_Tooltip)
+                --[[sub2:SetTooltip(function(tooltip, desc)
+                    tooltip:AddLine(desc.data.dungeonName)
                     tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine('scenarioID '..description.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName), nil)
-                end)
+                    tooltip:AddDoubleLine('scenarioID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
+                end)]]
 
-                sub:AddInitializer(Add_Initializer)
+                sub2:AddInitializer(Add_Initializer)
 
             else
-                sub=root:CreateButton('     |cff9e9e9e'..e.cn(name)..' |r', function()
+                sub2=sub:CreateButton('     |cff9e9e9e'..e.cn(name)..' |r', function()
                     return MenuResponse.Open
                 end, {
-                    dungeonID=scenarioID,
+                    scenarioID= scenarioID,
+                    dungeonID= dungeonID,
                     dungeonName=name,
                 })
 
-                sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(e.cn(description.data.dungeonName))
+                sub2:SetTooltip(function(tooltip, desc)
+                    tooltip:AddLine(e.cn(desc.data.dungeonName))
                     tooltip:AddLine(' ')
                     tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
-                    local text= LFGConstructDeclinedMessage(description.data.dungeonID)
+                    local text= LFGConstructDeclinedMessage(desc.data.dungeonID)
                     if text and text~='' then
                         tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(text))
                     end
                     tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine('scenarioID '..description.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName), nil)
+                    tooltip:AddDoubleLine('scenarioID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
                 end)
             end
-            find=true
         end
-    end
-    if find then
-        root:CreateDivider()
     end
 end
 
@@ -419,7 +496,7 @@ local function set_Raid_Menu_List(root)
     end
 
 
-    local currentMapName, find, sub, icon
+    local currentMapName, find, sub, icon, reward, rewardIndex, rewardType, rewardArg
     local scenarioInfo = C_ScenarioInfo.GetScenarioInfo() or {}
     local scenarioName= scenarioInfo.name--场景名称
     if scenarioName then
@@ -476,13 +553,14 @@ local function set_Raid_Menu_List(root)
                 bossKillText = format(e.onlyChinese and '已消灭 |cnGREEN_FONT_COLOR:%d|r/%d 个首领' or BOSSES_KILLED, killNum, bossNum)
                 isKillAll= bossNum==killNum
             end
-
+            
+            reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
             sub=root:CreateButton(
                 ((LfgDungeonID==dungeonID or scenarioName== strlower(dungeonName)) and '|A:auctionhouse-icon-favorite:0:0|a' or '')--在当前副本
                 ..(modifiedIcon or '')
                 ..(isKillAll and '|cff9e9e9e' or '')
-                ..e.cn(dungeonName)
-                ..WoWTools_LFDMixin:GetRewardInfo(dungeonID)--名称
+                ..e.cn(dungeonName)--名称
+                ..reward
                 ..killText,
             function(data)
                 if GetLFGQueueStats(LE_LFG_CATEGORY_RF, data.dungeonID) then
@@ -505,22 +583,26 @@ local function set_Raid_Menu_List(root)
 
                 bossKillText=bossKillText,
                 bossTab=bossTab,
-            })
 
-            sub:SetTooltip(function(tooltip, description)
-                tooltip:AddLine(e.cn(description.data.dungeonName)..' ')
-                tooltip:AddLine(description.data.bossKillText)
+                rewardIndex= rewardIndex,
+                rewardType= rewardType,
+                rewardArg= rewardArg,
+            })
+            sub2:SetTooltip(Set_Tooltip)
+            --[[sub:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine(e.cn(desc.data.dungeonName)..' ')
+                tooltip:AddLine(desc.data.bossKillText)
                 tooltip:AddLine(' ')
-                for index, text in pairs(description.data.bossTab) do
+                for index, text in pairs(desc.data.bossTab) do
                     tooltip:AddLine(index..') '..text)
                 end
-                if description.data.modifiedDesc then
+                if desc.data.modifiedDesc then
                     tooltip:AddLine(' ')
-                    tooltip:AddLine(description.data.modifiedDesc, nil,nil,nil, true)
+                    tooltip:AddLine(desc.data.modifiedDesc, nil,nil,nil, true)
                 end
                 tooltip:AddLine(' ')
-                tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName), nil)
-            end)
+                tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName), nil)
+            end)]]
 
             sub:AddInitializer(Add_Initializer)
 
@@ -529,18 +611,18 @@ local function set_Raid_Menu_List(root)
                 return MenuResponse.Open
              end, {modifiedDesc=modifiedDesc, dungeonID=dungeonID}
             )
-            sub:SetTooltip(function(tooltip, description)
+            sub:SetTooltip(function(tooltip, desc)
                 tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你不能进入此队列。' or YOU_MAY_NOT_QUEUE_FOR_THIS))
-                local msg= LFGConstructDeclinedMessage(description.data.dungeonID)
+                local msg= LFGConstructDeclinedMessage(desc.data.dungeonID)
                 if msg then
                     tooltip:AddLine('|cnRED_FONT_COLOR:'..e.cn(msg), 0.62, 0.62, 0.62, true)
                 end
-                if description.data.modifiedDesc then
+                if desc.data.modifiedDesc then
                     tooltip:AddLine(' ')
-                    tooltip:AddLine(e.cn(description.data.modifiedDesc), nil, nil, nil, true)
+                    tooltip:AddLine(e.cn(desc.data.modifiedDesc), nil, nil, nil, true)
                 end
                 tooltip:AddLine(' ')
-                tooltip:AddDoubleLine('dungeonID '..description.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(description.data.dungeonName),nil)
+                tooltip:AddDoubleLine('dungeonID '..desc.data.dungeonID, WoWTools_LFDMixin:Get_Instance_Num(desc.data.dungeonName),nil)
             end)
 
         end
@@ -586,12 +668,12 @@ end
 
 --职责，可选列表
 local function Init_All_Role(_, root)
-    local sub, isLeader, isTank, isHealer, isDPS, tank, healer, dps
+    local sub, isLeader, isTank, isHealer, isDPS, tank, healer, dps, num
     local canBeTank, canBeHealer, canBeDamager = UnitGetAvailableRoles("player")
     local cursorRole = select(5, GetSpecializationInfo(GetSpecialization() or 0))
 
     sub=root:CreateButton('PvE', function()
-        PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame);
+        PVEFrame_ToggleFrame("GroupFinderFrame", LFDParentFrame)
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
@@ -829,15 +911,8 @@ local function Init_Menu(_, root)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('LFGDungeonReadyDialog')
-        tooltip:AddLine(e.onlyChinese and '你的随机地下城小队已经整装待发！' or RANDOM_DUNGEON_IS_READY)
+        tooltip:AddLine(e.onlyChinese and '已经建好了一个副本，准备前往：' or SPECIFIC_INSTANCE_IS_READY)
     end)
-
-
-
-
-
-
-
 
 
 --设置,战场
@@ -873,6 +948,66 @@ local function Init_Menu(_, root)
     sub3:SetTooltip(function(tooltip)
        tooltip:AddLine(e.onlyChinese and '有队伍副本除外' or  'Except for group instance')
     end)
+
+
+
+
+
+
+
+
+
+
+    sub:CreateDivider()
+--副本， 次数
+    num= 0
+    for _, complete in pairs(Save().wow) do
+        num= complete+ num
+    end
+    sub2= sub:CreateButton(
+        (e.onlyChinese and '副本次数' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, COMPLETE))..' #'..num,
+    function()
+        return MenuResponse.Open
+    end)
+
+    if num>0 then
+        if num>3 then
+            sub3= sub2:CreateButton(
+                e.onlyChinese and '全部清除' or CLEAR_ALL,
+            function()
+                if IsControlKeyDown() then
+                    Save().wow={}
+                    return MenuResponse.CloseAll
+                end
+            end)
+            sub3:SetTooltip(function (tooltip)
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r+'..e.Icon.left..(e.onlyChinese and '全部清除' or CLEAR_ALL))
+            end)
+            sub3:CreateDivider()
+        end
+        for name, complete in pairs(Save().wow) do
+            sub3=sub2:CreateCheckbox(
+                name=='island' and (e.onlyChinese and '海岛探险' or ISLANDS_HEADER) or e.cn(name)..' #|cnGREEN_FONT_COLOR:'..complete,
+            function(data)
+                return Save().wow[data.name]
+            end, function(data)
+                Save().wow[name]= not Save().wow[name] and data.complete or nil
+            end, {name=name, complete=complete})
+            sub3:SetTooltip(function (tooltip)
+                tooltip:AddLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+            end)
+        end
+        WoWTools_MenuMixin:SetScrollMode(sub2)
+    end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -952,15 +1087,16 @@ local function Init_Menu(_, root)
 
 
 
-    
+
 --显示 LFGDungeonReadyDialog
     if not WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root) then
-        
+
         root:CreateDivider()
     --副本，列表
         Set_LFGFollower_Dungeon_List(root)--追随者，副本
-        set_Party_Menu_List(root)--随机
         Init_Scenarios_Menu(root)--场景
+        set_Party_Menu_List(root)--随机
+
         if cooldowntext then
             root:CreateTitle('|cnGREEN_FONT_COLOR:'..cooldowntext)
             root:CreateDivider()
@@ -969,45 +1105,7 @@ local function Init_Menu(_, root)
     else
         root:CreateDivider()
     end
---[[离开列队
-    WoWTools_MenuMixin:SetGridMode(root, num)
 
-    sub=root:CreateButton(
-        (e.onlyChinese and '离开列队' or LEAVE_QUEUE),
-    function()
-        for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-            LeaveLFG(i)
-        end
-        return MenuResponse.Open
-    end, tab)
-    sub:SetTooltip(function(tooltip, data)
-        tooltip:AddLine(e.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)
-        for _, text in pairs(data.data or {}) do
-            tooltip:AddLine(text)
-        end
-    end)
-    sub:AddInitializer(function(btn)
-        btn:SetScript("OnUpdate", function(self, elapsed)
-            self.elapsed= (self.elapsed or 1.2) +elapsed
-            if self.elapsed>1.2 then
-                self.elapsed=0
-                local queueNum= 0
-                for i=1, NUM_LE_LFG_CATEGORYS do--列表信息
-                    if GetLFGQueueStats(i) then
-                        for _ in pairs(GetLFGQueuedList(i) or {}) do
-                            queueNum= queueNum+1
-                        end
-                    end
-                end
-                self.fontString:SetText((queueNum==0 and '|cff9e9e9e' or '')..(e.onlyChinese and '离开列队' or LEAVE_QUEUE)..' '..queueNum)
-            end
-        end)
-        btn:SetScript('OnHide', function(self)
-            self:SetScript('OnUpdate', nil)
-            self.elapsed= nil
-        end)
-    end)
-]]
 
 --离开所有队列
     sub=root:CreateButton(

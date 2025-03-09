@@ -8,7 +8,7 @@ WoWTools_LFDMixin.Save={
     autoSetPvPRole=e.Player.husandro,--自动职责确认， 排副本
     LFGPlus= e.Player.husandro,--预创建队伍增强
     tipsScale=1,--提示内容,缩放
-    sec=3,--时间 timer
+    sec=5,--时间 timer
     wow={
         --['island']=0,
         --[副本名称]=0,
@@ -16,128 +16,6 @@ WoWTools_LFDMixin.Save={
 }
 
 local LFDButton
-
-local function Save()
-    return WoWTools_LFDMixin.Save
-end
-
-
-
-
-
-
-
-
---离开所有队列
-function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
-    local isInGroup= IsInGroup()
-    local isLeavel= not isCheck and (isInGroup and UnitIsGroupLeader("player") or not isInGroup)
-    local num=0
-    if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then
-        if isLeavel then
-            LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
-        end
-        num= num+1
-    end
-
-    --pve
-    for i=1, NUM_LE_LFG_CATEGORYS do
-        if GetLFGQueueStats(i) then
-            for _ in pairs(GetLFGQueuedList(i) or {}) do
-                num= num+1
-            end
-        end
-        if isLeavel then
-            LeaveLFG(i)
-        end
-    end
-
-    if C_PetBattles.GetPVPMatchmakingInfo() then--Pet Battles
-        if isLeavel then
-            C_PetBattles.StopPVPMatchmaking()--PetC_PetBattles.DeclineQueuedPVPMatch()
-        end
-        num= num+1
-    end
-
-    if isLeavel then
-        RejectProposal()--拒绝 LFG 邀请并离开队列
-    end
-
-    for i=1, MAX_WORLD_PVP_QUEUES or 2 do --World PvP
-        local queueID = select(3, GetWorldPVPQueueStatus(i))
-        if queueID and queueID>0 then
-            if isLeavel then
-                BattlefieldMgrExitRequest(queueID)
-            end
-            num= num+1
-        end
-    end
-
---自己，创建
-    if C_LFGList.HasActiveEntryInfo() then
-        num= num+1
-        if isLeavel then
-            C_LFGList.RemoveListing()
-            C_LFGList.ClearSearchResults()
-        end
-    end
-
-    --申请，列表
-    local apps= C_LFGList.GetApplications() or {}
-    if isLeavel then
-        for _, resultID in pairs(apps) do
-            C_LFGList.CancelApplication(resultID)
-        end
-    end
-    num= num+ #apps
-
-
-    return num
-end
-
-
-
-
-
-
-
-
-function WoWTools_LFDMixin:Get_Instance_Num(name)
-    name= name or GetInstanceInfo()
-    local num = Save().wow[name] or 0
-    local text
-    if num >0 then
-        text= '|cnGREEN_FONT_COLOR:#'..num..'|r '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-    else
-        text= '0 '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-    end
-    return text , num
-end
-
-
-
-
-
-
-function WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, type, name, texture, atlas)--设置图标, 点击,提示
-    LFDButton.dungeonID=dungeonID
-    LFDButton.name=name
-    LFDButton.type=type--LE_LFG_CATEGORY_LFD LE_LFG_CATEGORY_RF LE_LFG_CATEGORY_SCENARIO
-    if atlas then
-        LFDButton.texture:SetAtlas(atlas)
-    elseif texture then
-        LFDButton.texture:SetTexture(texture)
-    else
-        if not Save().hideQueueStatus then
-            LFDButton.texture:SetAtlas('groupfinder-eye-frame')
-        else
-            LFDButton.texture:SetAtlas('UI-HUD-MicroMenu-Groupfinder-Mouseover')
-        end
-    end
-end
-
-
-
 
 
 
@@ -148,7 +26,6 @@ end
 
 
 local function Init()
-    WoWTools_LFDMixin.LFDButton= LFDButton
 
     --自动离开,指示图标
     LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK')
@@ -229,6 +106,9 @@ end
 
 
 
+
+
+
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
@@ -236,16 +116,17 @@ panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1 == id then
             WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
-            WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 3
+            WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 5
 
             WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
             LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 
             if LFDButton then--禁用Chat Button                
+                WoWTools_LFDMixin.LFDButton= LFDButton
                 Init()
             end
-            self:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_LOGOUT' then

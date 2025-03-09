@@ -3,13 +3,11 @@ local e= select(2, ...)
 
 
 local function Show_LFGDungeonReadyPopup()
-    local proposalExists, _, _, _, _, _, _, _, _, _, _, _, _, _, isSilent = GetLFGProposal()
-    if proposalExists or isSilent then
+    if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
         StaticPopupSpecial_Show(LFGDungeonReadyPopup)
+        e.call('LFGDungeonReadyPopup_Update')
     end
 end
-
-
 
 
 
@@ -21,6 +19,11 @@ local function Init()
 
     end
 
+    LFGInvitePopup:HookScript("OnShow", function(self)--自动进入FB
+        e.PlaySound()--播放, 声音
+        e.Ccool(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
+    end)
+
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
         e.PlaySound()--播放, 声音
         e.Ccool(self, nil, LFGInvitePopup.timeOut and LFGInvitePopup.timeOut or 38, nil, true, true)
@@ -31,12 +34,13 @@ local function Init()
         return
     end
 
-
 --确定，进入副本
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {notFuori=true, setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
-    sizeRestFunc=function(btn)
-        btn:SetSize(306, 130)
-        e.call('LFGDungeonReadyPopup_Update')
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {
+        notFuori=true,
+        setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
+    restPointFunc=function(btn)
+        btn.targetFrame:ClearAllPoints()
+        btn.targetFrame:SetPoint('TOP', UIParent, 'TOP', 0, -135)
     end})
     WoWTools_MoveMixin:Setup(LFGDungeonReadyDialog, {frame=LFGDungeonReadyPopup, notFuori=true})
     WoWTools_MoveMixin:Setup(LFGDungeonReadyStatus, {frame=LFGDungeonReadyPopup, notFuori=true})

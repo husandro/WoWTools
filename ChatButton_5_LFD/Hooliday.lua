@@ -66,14 +66,15 @@ end
 
 
 
-local function Init_Frame()
-    local frame= CreateFrame('Frame')
-    frame:RegisterEvent('LFG_UPDATE_RANDOM_INFO')
-    frame:SetScript('OnEvent', Set_Holiday)
-end
 
 
-function WoWTools_LFDMixin:Init_Holiday()--节日, 提示, LFDButton.texture
-    Init_Frame()
+
+
+
+
+--节日, 提示, LFDButton.texture
+
+function WoWTools_LFDMixin:Init_Holiday()
+    EventRegistry:RegisterFrameEventAndCallback("LFG_UPDATE_RANDOM_INFO", Set_Holiday)
     C_Timer.After(2, Set_Holiday)
 end

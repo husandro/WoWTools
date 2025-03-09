@@ -674,8 +674,6 @@ ChatButton_4_Invite\Foucs.lua
 ChatButton_5_LFD\0_LFDMixin.lua
 ChatButton_5_LFD\5_LFD.lua
 ChatButton_5_LFD\Exit_Instance.lua
-ChatButton_5_LFD\GetQueuedList.lua
-ChatButton_5_LFD\GetRewardInfo.lua
 ChatButton_5_LFD\Hooliday.lua
 ChatButton_5_LFD\LFG_Plus.lua
 ChatButton_5_LFD\Loot_Plus.lua
