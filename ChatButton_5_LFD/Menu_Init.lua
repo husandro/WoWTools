@@ -37,7 +37,7 @@ local function Add_Initializer(button, description)
         button.leftTexture:Hide()
         button.fontString:SetPoint('LEFT', button.leftTexture, 'RIGHT')
     end
-    
+
     button:SetScript("OnUpdate", function(self, elapsed)
         self.elapsed= (self.elapsed or 0.5) +elapsed
         if self.elapsed>0.5 then
@@ -598,7 +598,7 @@ local function Init_All_Role(_, root)
         tooltip:AddLine(MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"))
     end)
 
-    root:CreateDivider()    
+    root:CreateDivider()
     for _, role in pairs({'TANK', 'HEALER', 'DAMAGER'}) do
         sub= root:CreateCheckbox(
             e.Icon[role]
@@ -643,7 +643,7 @@ local function Init_All_Role(_, root)
     end)
 
     root:CreateDivider()
-    
+
     tank, healer, dps = GetPVPRoles()--检测是否选定角色PVP
 
     for _, role in pairs({'TANK', 'HEALER', 'DAMAGER'}) do
@@ -702,26 +702,32 @@ local function Init_Menu(_, root)
 
 
 --设置
-    local roleText
+    local text=''
     if (isTank or isHealer or isDPS) then
-        roleText= (isTank and e.Icon.TANK or '')
+        text= (isTank and e.Icon.TANK or '')
                 ..(isHealer and e.Icon.HEALER or '')
                 ..(isDPS and e.Icon.DAMAGER or '')
                 ..(isLeader and '|A:UI-HUD-UnitFrame-Player-Group-GuideIcon:0:0|a' or '')
     else
-        roleText= format('|A:QuestLegendaryTurnin:0|a'..'|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '无职责' or NO_ROLE)
+        text='|A:QuestLegendaryTurnin:0|a|cnRED_FONT_COLOR:'..(e.onlyChinese and '无职责' or NO_ROLE)..'|r'
+    end
+
+--离开副本
+    if Save().leaveInstance then
+        text= text..'|A:common-icon-rotateleft:0:0|a'
+    end
+--释放, 复活
+    if Save().ReMe and (Save().ReMe_AllZone and (not IsInInstance() or not IsInGroup('LE_PARTY_CATEGORY_HOME'))) then
+        text= text..'|A:poi-soulspiritghost:0:0|a'
     end
 
     sub=root:CreateButton(
-        (e.onlyChinese and '设置' or SETTINGS)..roleText,
+        (e.onlyChinese and '设置' or SETTINGS)..text,
     function()
         PVEFrame_ToggleFrame("GroupFinderFrame")
         return MenuResponse.Open
-    end, roleText)
-    sub:SetTooltip(function(tooltip, data)
-        tooltip:AddLine('PVE '..( e.onlyChinese and '职责' or ROLE))
-        tooltip:AddLine(data.data)
-        tooltip:AddLine(' ')
+    end)
+    sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"))
     end)
 
@@ -731,7 +737,7 @@ local function Init_Menu(_, root)
 
 
 --设置, 小眼睛, 信息
-    sub2=sub:CreateCheckbox(format('|A:%s:0:0|a', e.Icon.toLeft)..(e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE)), function()
+    sub2=sub:CreateCheckbox('|A:common-icon-rotateleft:0:0|a'..(e.onlyChinese and '离开副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,LEAVE, INSTANCE)), function()
         return Save().leaveInstance
     end, function()
         Save().leaveInstance= not Save().leaveInstance and true or nil
@@ -1032,7 +1038,7 @@ local function Init_Menu(_, root)
         return MenuResponse.Open
     end)
 
-    
+
 
 
 --离开载具

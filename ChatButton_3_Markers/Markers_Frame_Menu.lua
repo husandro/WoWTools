@@ -8,7 +8,7 @@ end
 
 
 
-                        
+
 
 --队伍标记工具, 选项，菜单
 local function Init(self, root)

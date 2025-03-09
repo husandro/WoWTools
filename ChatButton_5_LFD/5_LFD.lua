@@ -65,7 +65,9 @@ function WoWTools_LFDMixin:Leave_All_LFG(isCheck)
         num= num+1
     end
 
-    RejectProposal()--拒绝 LFG 邀请并离开队列
+    if isLeavel then
+        RejectProposal()--拒绝 LFG 邀请并离开队列
+    end
 
     for i=1, MAX_WORLD_PVP_QUEUES or 2 do --World PvP
         local queueID = select(3, GetWorldPVPQueueStatus(i))
@@ -215,7 +217,6 @@ local function Init()
     WoWTools_LFDMixin:Init_Role_CheckInfo()--职责确认，信息    
     WoWTools_LFDMixin:Init_Holiday()--节日, 提示, button.texture
     WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
-
 
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB

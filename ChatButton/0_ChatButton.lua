@@ -5,10 +5,10 @@ local Save={
         ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
     },
     scale= 1,
-    strata='MEDIUM'
+    strata='MEDIUM',
     --isVertical=nil,--方向, 竖
     --isShowBackground=nil,--是否显示背景 bool
-    --isEnterShowMenu 移过图标，显示菜单
+    isEnterShowMenu= e.Player.husandro,-- 移过图标，显示菜单
 }
 
 local addName

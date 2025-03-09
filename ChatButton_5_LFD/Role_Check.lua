@@ -135,8 +135,7 @@ end
 
 
 
-
-
+--确定，进入副本
 local function Init_LFGDungeon()
     C_Timer.After(2, Set_PvERoles)
     
@@ -168,13 +167,17 @@ local function Init_LFGDungeon()
         end
         if not self.bossTips and text then
             self.bossTips= WoWTools_LabelMixin:Create(self)
-            self.bossTips:SetPoint('BOTTOMLEFT', self, 'BOTTOMRIGHT', 4, 4)
+            self.bossTips:SetPoint('LEFT', self, 'RIGHT', 4, 0)
         end
 
         if self.bossTips then
-            text= text and '|cff9e9e9e'..(e.onlyChinese and '首领：' or BOSSES)..'|r'
+            text= (numBosses==dead and '|cff9e9e9e' or '|cffffffff')
+                ..(e.onlyChinese and '首领：' or BOSSES)
                 ..format(e.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
-                ..'|n|n'..text..'|n|n|cff9e9e9e'..WoWTools_Mixin.addName..' '..WoWTools_LFDMixin.addName..' ' or ''
+                ..'|r|n|n'
+                ..text
+                ..'|n|n'..WoWTools_ChatButtonMixin.addName..' '..WoWTools_LFDMixin.addName
+
             self.bossTips:SetText(text)
         end
     end)

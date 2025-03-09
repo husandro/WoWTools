@@ -5406,7 +5406,8 @@
         "ReadyCheckFrame_OnHide",
         "CHAT_MSG_OFFICER",
         "GUILD_RANK0_DESC",
-        "GUILD_RANK1_DESC"
+        "GUILD_RANK1_DESC",
+        "LFGDungeonReadyPopup"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

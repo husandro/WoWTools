@@ -118,6 +118,9 @@ local function Init()
 --就绪
     WoWTools_MoveMixin:Setup(ReadyCheckFrame, {notFuori=true})
 
+--确定，进入副本
+    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {notFuori=true})
+    
 
     C_Timer.After(0.3, function()
         if WoWTools_MailMixin.Save.disabled then--MailFrame
