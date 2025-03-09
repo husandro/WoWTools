@@ -218,11 +218,8 @@ local function Init()
     WoWTools_LFDMixin:Init_Holiday()--节日, 提示, button.texture
     WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
 
+    WoWTools_LFDMixin:Init_LFGDungeonReadyDialog()--确定，进入副本
 
-    LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
-        e.PlaySound()--播放, 声音
-        e.Ccool(self, nil, 38, nil, true, true)
-    end)
 
     PVPTimerFrame:HookScript('OnShow', function(self2)
         e.PlaySound()--播放, 声音

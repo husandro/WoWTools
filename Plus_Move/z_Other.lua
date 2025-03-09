@@ -109,18 +109,16 @@ local function Init()
 --背包
     WoWTools_MoveMixin:MoveAlpha(BagsBar)
 
-    WoWTools_MoveMixin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800, initFunc=function(btn)
-
-    end, sizeRestFunc=function(btn)
+--商店
+    WoWTools_MoveMixin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(800, 537)
     end})
 
 --就绪
     WoWTools_MoveMixin:Setup(ReadyCheckFrame, {notFuori=true})
 
---确定，进入副本
-    WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {notFuori=true})
-    
+
 
     C_Timer.After(0.3, function()
         if WoWTools_MailMixin.Save.disabled then--MailFrame

@@ -597,6 +597,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         or tab.notZoom
         or frame.ResizeButton
         or tab.frame
+        or _G['WoWToolsResizeButton'..name]
     then
         return
     end
@@ -613,23 +614,20 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local rotationDegrees= tab.rotationDegrees--旋转度数
     local initFunc= tab.initFunc--初始
 
-    local btn=_G['WoWToolsResizeButton'..name]
-    if not btn then
-        btn= CreateFrame('Button','WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
-        btn:SetFrameStrata('DIALOG')
-        btn:SetFrameLevel(frame:GetFrameLevel()+7)---9999)
-        btn:Raise()
-        btn:SetSize(16, 16)
 
-        if setResizeButtonPoint then
-            btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
-        else
-            btn:SetPoint('BOTTOMRIGHT', frame)--m, 6,-6)
-        end
+    local btn= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+    btn:SetFrameStrata('DIALOG')
+    btn:SetFrameLevel(9999)
+    btn:SetSize(16, 16)
 
-        function btn:IsCanChange()
-            return not self.targetFrame:IsProtected() or not InCombatLockdown()
-        end
+    if setResizeButtonPoint then
+        btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
+    else
+        btn:SetPoint('BOTTOMRIGHT', frame)--m, 6,-6)
+    end
+
+    function btn:IsCanChange()
+        return not self.targetFrame:IsProtected() or not InCombatLockdown()
     end
 
     frame.ResizeButton= btn

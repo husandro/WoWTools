@@ -684,6 +684,7 @@ ChatButton_5_LFD\RepopMe.lua
 ChatButton_5_LFD\Role_Check.lua
 ChatButton_5_LFD\Role_Info.lua
 ChatButton_5_LFD\Roll.lua
+ChatButton_5_LFD\z_LFGDungeonReadyDialog.lua
 
 ##世界频道
 ChatButton\6_World.lua

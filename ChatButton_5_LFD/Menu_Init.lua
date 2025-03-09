@@ -694,6 +694,16 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
 --初始菜单
 local function Init_Menu(_, root)
     local sub, sub2, sub3, tab, line, num
@@ -805,9 +815,29 @@ local function Init_Menu(_, root)
     end, function()
         Save().autoSetPvPRole= not Save().autoSetPvPRole and true or nil
     end)
-
 --职责，可选列表
     Init_All_Role(_, sub2)
+
+--前往副本 Plus
+    sub2= sub:CreateCheckbox(
+        e.onlyChinese and '前往副本 Plus' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_ACTION_MOVE_TO, INSTANCE)..' Plus'),
+    function()
+        return not Save().disabledLFGDungeonReadyDialog
+    end, function()
+        Save().disabledLFGDungeonReadyDialog= not Save().disabledLFGDungeonReadyDialog and true or nil
+        WoWTools_LFDMixin:Init_LFGDungeonReadyDialog()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('LFGDungeonReadyDialog')
+        tooltip:AddLine(e.onlyChinese and '你的随机地下城小队已经整装待发！' or RANDOM_DUNGEON_IS_READY)
+    end)
+
+
+
+
+
+
+
 
 
 --设置,战场

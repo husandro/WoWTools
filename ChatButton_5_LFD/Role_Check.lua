@@ -10,7 +10,7 @@ end
 
 
 local function Set_PvERoles()
-    
+
     if not Save().autoSetPvPRole then
         return
     end
@@ -19,7 +19,7 @@ local function Set_PvERoles()
         return
     end
 
-    
+
     local role = select(5, GetSpecializationInfo(GetSpecialization() or 0))
     if role=='TANK' then
         isTank, isHealer, isDPS=true, false, false
@@ -135,55 +135,6 @@ end
 
 
 
---确定，进入副本
-local function Init_LFGDungeon()
-    C_Timer.After(2, Set_PvERoles)
-    
-    LFGDungeonReadyDialog:HookScript('OnHide', function(self)
-        if self.bossTips then
-            self.bossTips:SetText('')
-        end
-    end)
-    LFGDungeonReadyDialog:HookScript('OnShow', function(self)
-        local numBosses = select(9, GetLFGProposal()) or 0
-        local isHoliday = select(13, GetLFGProposal())
-        if ( numBosses == 0 or isHoliday) then
-            return
-        end
-        local text
-        local dead=0
-        for i=1, numBosses do
-            local bossName, _, isKilled = GetLFGProposalEncounter(i)
-            if bossName then
-                text= (text and text..'|n' or '')..i..') '
-                if ( isKilled ) then
-                    text= text..'|A:common-icon-redx:0:0|a|cnRED_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '已消灭' or BOSS_DEAD)
-                    dead= dead+1
-                else
-                    text= text..format('|A:%s:0:0|a', e.Icon.select)..'|cnGREEN_FONT_COLOR:'..e.cn(bossName)..' '..(e.onlyChinese and '可消灭' or BOSS_ALIVE)
-                end
-                text= text..'|r'
-            end
-        end
-        if not self.bossTips and text then
-            self.bossTips= WoWTools_LabelMixin:Create(self)
-            self.bossTips:SetPoint('LEFT', self, 'RIGHT', 4, 0)
-        end
-
-        if self.bossTips then
-            text= (numBosses==dead and '|cff9e9e9e' or '|cffffffff')
-                ..(e.onlyChinese and '首领：' or BOSSES)
-                ..format(e.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
-                ..'|r|n|n'
-                ..text
-                ..'|n|n'..WoWTools_ChatButtonMixin.addName..' '..WoWTools_LFDMixin.addName
-
-            self.bossTips:SetText(text)
-        end
-    end)
-
-   
-end
 
 
 
@@ -191,9 +142,7 @@ end
 
 
 
-
-
---RolePoll.lua
+--职责确认 RolePoll.lua
 local function Init_RolePollPopup()
      RolePollPopup:HookScript('OnShow', function(self)
         e.PlaySound()--播放, 声音
@@ -216,7 +165,7 @@ local function Init_RolePollPopup()
             btn2= RolePollPopupRoleButtonHealer
             icon= e.Icon['HEALER']
         end
-        
+
 
         if btn2 then
             btn2.checkButton:SetChecked(true)
@@ -267,7 +216,7 @@ end
 
 
 function WoWTools_LFDMixin:Init_RolePollPopup()
-    Init_LFGDungeon()
+    C_Timer.After(2, Set_PvERoles)
     Init_LFD()
     Init_PvP()
     Init_RolePollPopup()

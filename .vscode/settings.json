@@ -5407,7 +5407,13 @@
         "CHAT_MSG_OFFICER",
         "GUILD_RANK0_DESC",
         "GUILD_RANK1_DESC",
-        "LFGDungeonReadyPopup"
+        "LFGDungeonReadyPopup",
+        "StaticPopupSpecial_Hide",
+        "PET_ACTION_MOVE_TO",
+        "SPECIFIC_INSTANCE_IS_READY",
+        "RANDOM_DUNGEON_IS_READY",
+        "LFGDungeonReadyPopup_Update",
+        "LFGDungeonReadyDialogCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
