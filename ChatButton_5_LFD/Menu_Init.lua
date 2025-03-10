@@ -600,7 +600,7 @@ local function set_Raid_Menu_List(root)
                 rewardType= rewardType,
                 rewardArg= rewardArg,
             })
-            sub2:SetTooltip(Set_Tooltip)
+            sub:SetTooltip(Set_Tooltip)
             --[[sub:SetTooltip(function(tooltip, desc)
                 tooltip:AddLine(e.cn(desc.data.dungeonName)..' ')
                 tooltip:AddLine(desc.data.bossKillText)
