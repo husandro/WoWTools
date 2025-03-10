@@ -275,7 +275,7 @@ local function Init_KeyButton(index, type)
     end)
     button:SetScript('OnMouseWheel', function(self, d)
         if not self:CanChangeAttribute() then
-            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         self:set_key(d==1)-- 1上, -1下

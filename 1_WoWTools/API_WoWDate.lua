@@ -1,5 +1,5 @@
 local id, e = ...
-
+local week
 
 
 
@@ -12,7 +12,7 @@ e.WoWDate[e.Player.guid]={
     Keystone={
         score= score,
         all= all,
-        week= e.Player.week,
+        week= week,
         weekNum= weekNum,
         weekLevel= weekLevel,
         weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
@@ -281,7 +281,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
     e.WoWDate[e.Player.guid].Keystone={
         score= score,
         all= all,
-        week= e.Player.week,
+        week= week,
         weekNum= weekNum,
         weekLevel= weekLevel,
 
@@ -441,7 +441,7 @@ local function Update_Instance()--encounterID, encounterName)
     end
 
     e.WoWDate[e.Player.guid].Worldboss={
-        week=e.Player.week,
+        week=week,
         day= date('%x'),
         boss=tab
     }
@@ -458,7 +458,7 @@ local function Update_Instance()--encounterID, encounterName)
         end
     end
     e.WoWDate[e.Player.guid].Instance = {
-        week=e.Player.week,
+        week=week,
         day=date('%x'),
         ins=tab
     }
@@ -732,7 +732,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     if arg1~=id then
         return
     end
-
+    week= week
     WoWToolsSave= WoWToolsSave or {}
     WoWTools_WoWDate= WoWTools_WoWDate or {}
     e.WoWDate= WoWTools_WoWDate or {}
@@ -744,10 +744,10 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             Item={},--{itemID={bag=包, bank=银行}},
             Currency={},--{currencyID = 数量}
 
-            Keystone={week=e.Player.week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+            Keystone={week=week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
-            Instance={ins={}, week=e.Player.week, day=day},--ins={[名字]={[难度]=已击杀数}}
-            Worldboss={boss={}, week=e.Player.week, day=day},--{week=周数, boss=table}
+            Instance={ins={}, week=week, day=day},--ins={[名字]={[难度]=已击杀数}}
+            Worldboss={boss={}, week=week, day=day},--{week=周数, boss=table}
             Rare={day=day, boss={}},--稀有
             Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
             --Money=钱
@@ -766,13 +766,13 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
 
     for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
-        if tab.Keystone.week ~=e.Player.week then
-            e.WoWDate[guid].Keystone={week=e.Player.week}
+        if tab.Keystone.week ~=week then
+            e.WoWDate[guid].Keystone={week=week}
         end
-        if tab.Instance.week~=e.Player.week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
+        if tab.Instance.week~=week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
             e.WoWDate[guid].Instance={ins={}, day=day}
         end
-        if (tab.Worldboss.week~=e.Player.week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
+        if (tab.Worldboss.week~=week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
             e.WoWDate[guid].Worldboss={boss={}, day=day}
         end
 

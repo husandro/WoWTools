@@ -1840,7 +1840,7 @@ local function Init_Blizzard_ChallengesUI()
     end)
     spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if not self:CanChangeAttribute() then
-            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         local scale= Save.portScale or 1

@@ -115,7 +115,7 @@ local function Init_Menu(self, root)
             return C_CVar.GetCVarBool(data.name)
         end, function(data)
             if InCombatLockdown() then
-                print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 C_CVar.SetCVar(data.name, C_CVar.GetCVarBool(data.name) and '0' or '1')
                 if data.func then

@@ -48,7 +48,7 @@ local function Init_Panel()
         GetValue= function() return not Save.disabled end,
         SetValue= function()
             Save.disabled= not Save.disabled and true or nil
-            print(e.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
@@ -56,7 +56,7 @@ local function Init_Panel()
             if Button then
                 Button:set_point()
             end
-            print(e.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= addName,
         layout= Layout,
@@ -272,7 +272,7 @@ local function Init_Menu(self, root)
             Save.scale=data
             self:set_scale()
         else
-            print(e.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(WoWTools_Mixin.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
     sub2:SetEnabled(self:CanChangeAttribute())
@@ -335,7 +335,7 @@ local function Init()
 
     function Button:set_point()
         if not self:CanChangeAttribute() then
-           print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+           print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
             self:ClearAllPoints()
             if Save.point then
@@ -352,7 +352,7 @@ local function Init()
         if self:CanChangeAttribute() then
             self:SetScale(Save.scale or 1)
         else
-            print(e.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end
 
