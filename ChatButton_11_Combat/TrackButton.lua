@@ -264,10 +264,17 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         return
     end
 
-    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {size=23, icon='hide'})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(WoWToolsChatButtonFrame, {size=22, icon='hide'})
     WoWTools_CombatMixin.TrackButton= TrackButton
-  
 
+    TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    TrackButton.texture:SetAlpha(0.3)
+    TrackButton.texture:SetPoint('BOTTOMLEFT')
+    TrackButton.texture:SetSize(22,10)
+
+    TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})
+    TrackButton.text:SetPoint('BOTTOMLEFT', 0,8)
 
     function TrackButton:set_instance_evnet()
         if IsInInstance() then
@@ -330,11 +337,12 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
 
     TrackButton:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        WoWTools_CombatMixin:Set_Button_State()
+        WoWTools_CombatMixin.CombatButton:SetButtonState('PUSHED')
     end)
     TrackButton:SetScript("OnLeave", function()
-        WoWTools_CombatMixin:Set_Button_State()
+        WoWTools_CombatMixin.CombatButton:SetButtonState('NORMAL')
     end)
+
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if IsAltKeyDown() then
             local sacle=Save().textScale or 1
@@ -401,8 +409,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         end
     end)
 
-    TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})
-    TrackButton.text:SetPoint('BOTTOMLEFT')
+ 
     function TrackButton:set_text_scale()
         self.text:SetScale(Save().textScale or 1)
     end

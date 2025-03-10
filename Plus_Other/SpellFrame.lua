@@ -1,8 +1,16 @@
 local id, e = ...
 local addName
-local Save={}
-
-
+local Save={
+    SpecButton={
+    --isUIParent=true
+    --scale=1
+    --isToTOP=true
+    --point={}
+    --strata='MEDIUM'
+    --hideInCombat=true
+    }
+}
+local SpecFrame
 
 
 
@@ -41,10 +49,6 @@ local function set_UpdateSpendText(btn)
         btn.maxText:SetText(text or '')
     end
 end
-
-
-
-
 
 
 
@@ -111,95 +115,328 @@ end
 
 
 
+
+
+
+local function Init_Spec_Menu(self, root)
+    local sub, sub2
+--激活
+    sub= root:CreateButton(
+        '|T'..(select(4, GetSpecializationInfo(self.specIndex, false, false, nil, UnitSex("player"))) or 0)..':0|t'
+        ..(self.isActive and '|cnGREEN_FONT_COLOR:'
+            or (InCombatLockdown() and '|cff828282')
+            or '|cffffffff'
+        )
+        ..(e.onlyChinese and '激活' or SPEC_ACTIVE),
+    function()
+        self:Set_Active()
+        return MenuResponse.Open
+    end, {specIndex= self.specIndex})
+    WoWTools_SetTooltipMixin:Set_Menu(sub)
+
+    root:CreateDivider()
+
+--打开选项界面
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=addName, category=WoWTools_OtherMixin.Category})
+
+--向上
+    WoWTools_MenuMixin:ToTop(sub, {GetValue=function()
+        return Save.specButton.isToTOP
+    end, SetValue=function ()
+        Save.specButton.isToTOP= not Save.specButton.isToTOP and true or nil
+        self:GetParent():Settings()
+    end})
+
+--SetParent
+    sub2=sub:CreateCheckbox(
+        (PlayerSpellsFrame and '' or '|cff828282')
+        ..(e.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON),
+    function()
+        return not Save.specButton.isUIParent
+    end, function()
+        Save.specButton.isUIParent= not Save.specButton.isUIParent and true or nil
+        self:GetParent():Settings()
+
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('SetParent')
+        tooltip:AddDoubleLine(' ', 'UIParent')
+        tooltip:AddDoubleLine(' ', 'PlayerSpellsFrame')
+    end)
+
+    if Save.specButton.isUIParent then
+--FrameStrata
+        WoWTools_MenuMixin:FrameStrata(sub2, function(data)
+            return self:GetParent():GetFrameStrata()==data
+        end, function(data)
+            Save.specButton.strata= data
+            self:GetParent():set_strata()
+        end)
+
+--战斗中隐藏
+        sub2:CreateCheckbox(
+            e.onlyChinese and '战斗中隐藏'
+            or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
+        function()
+            return Save.SpecButton.hideInCombat
+        end, function()
+            Save.SpecButton.hideInCombat= not Save.SpecButton.hideInCombat and true or nil
+            self:GetParent():Settings()
+        end)
+    end
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub2)
+
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save.specButton.scale or 1
+    end, function(value)
+        Save.specButton.scale= value
+        self:GetParent():Settings()
+    end)
+
+
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Create_Spec_Button(index)
+    local specID, _, _, texture= GetSpecializationInfo(index, false, false, nil, UnitSex("player"))
+    local btn= WoWTools_ButtonMixin:Cbtn(SpecFrame, {
+        texture= texture,
+        name='WoWToolsPlayerSpellsFrameSpecButton'..index,
+        size=32,
+    })
+
+    btn.specIndex= index
+    btn.specID= specID
+
+    btn.LootIcon= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
+    btn.LootIcon:SetSize(14,14)
+    btn.LootIcon:SetPoint('TOPLEFT', -1, 1)
+    btn.LootIcon:SetAtlas('VignetteLoot')
+
+    btn.RoleIcon= btn:CreateTexture(nil, 'OVERLAY')
+    btn.RoleIcon:SetSize(16,16)
+    btn.RoleIcon:SetPoint('BOTTOMRIGHT', 1, -1)
+    btn.RoleIcon:SetAtlas(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(index, false, false)), TextureKitConstants.IgnoreAtlasSize)
+
+    btn.SelectIcon= btn:CreateTexture(nil, 'OVERLAY')
+    btn.SelectIcon:SetAllPoints()
+    btn.SelectIcon:SetAtlas('ChromieTime-Button-Selection')
+    btn.SelectIcon:SetVertexColor(0,1,0)
+
+
+
+
+    function btn:Get_Active()
+        return GetSpecialization(nil, false, 1)==self.specIndex
+    end
+
+    function btn:Set_Active()
+        if InCombatLockdown() then
+            return
+        end
+        if self.isActive then
+            if PlayerSpellsFrame and not PlayerSpellsFrame:IsVisible() then
+                PlayerSpellsUtil.OpenToClassSpecializationsTab()
+            end
+        else
+            C_SpecializationInfo.SetSpecialization(self.specIndex)
+        end
+    end
+
+
+    btn:RegisterForDrag("RightButton")
+    btn:SetScript('OnDragStart', function(self, d)
+        if d=='RightButton' and IsAltKeyDown() then
+            self:GetParent():StartMoving()
+        end
+    end)
+    btn:SetScript("OnDragStop", function(self)
+        self:GetParent():StopMovingOrSizing()
+        ResetCursor()
+        Save.SpecButton.point= {self:GetParent():GetPoint(1)}
+        Save.SpecButton.point[2]= nil
+    end)
+
+
+    btn:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            self:Set_Active()
+        elseif d=='RightButton' and self:GetParent():IsMovable() and IsAltKeyDown() then
+            SetCursor('UI_MOVE_CURSOR')
+        else
+            MenuUtil.CreateContextMenu(self, Init_Spec_Menu)
+        end
+    end)
+
+
+    btn:SetScript('OnLeave', function()
+        e.tips:Hide()
+        ResetCursor()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
+            specIndex= self.specIndex,
+            tooltip= function(tooltip)
+                tooltip:AddLine(' ')
+                tooltip:AddDoubleLine(
+                    (self.isActive and '|cnGREEN_FONT_COLOR:'
+                        or (InCombatLockdown() and '|cff828282')
+                        or '|cffffffff'
+                    )
+                    ..(self.isActive and (e.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
+                    or (e.onlyChinese and '激活' or SPEC_ACTIVE))
+                    ..e.Icon.left,
+
+                    e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+                )
+            end
+        })
+    end)
+
+
+    function btn:settings()
+        local spec= GetSpecialization(nil, false, 1)
+        local loot= GetLootSpecialization()
+        local isActive= spec==self.specIndex
+        local isLoot= loot==0 and isActive or self.specID==loot
+
+        self.isActive= isActive
+        self.isLoot= isLoot
+
+        self.SelectIcon:SetShown(isActive)
+        self.LootIcon:SetShown(isLoot)
+    end
+    btn:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+    btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
+    btn:SetScript('OnEvent',  btn.settings)
+    btn:settings()
+
+    table.insert(SpecFrame.Buttons, btn)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --天赋，添加专精按钮
 local function Init_Spec_Button()
     local numSpec= GetNumSpecializations(false, false) or 0
-    if not C_SpecializationInfo.IsInitialized() or numSpec==0 then
+    if SpecFrame or numSpec==0 or (not Save.specButton.isUIParent and not PlayerSpellsFrame) then--not C_SpecializationInfo.IsInitialized() or
         return
     end
 
+    SpecFrame= CreateFrame('Frame', 'WoWToolsOtherSpecFrame', Save.specButton.isUIParent and UIParent or PlayerSpellsFrame)
+    SpecFrame:SetSize(1,1)
+
+    SpecFrame.numSpec= numSpec
+    SpecFrame.Buttons={}
+
     for index=1, numSpec do
-        local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.TalentsFrame, {
-                texture= select(4, GetSpecializationInfo(index, false, false, nil, UnitSex("player"))),
-                size=164/numSpec,
-                name='WoWTools_Other_SpecButton'..index
-            })
-
-        btn:SetFrameStrata('HIGH')
-        if index==1 then
-            btn:SetPoint('BOTTOMLEFT', PlayerSpellsFrame.TalentsFrame.ApplyButton, 'TOPLEFT', 0, 4)
-        else
-            btn:SetPoint('LEFT', _G['WoWTools_Other_SpecButton'..(index-1)], 'RIGHT')
-        end
-
-        btn.RoleIcon= btn:CreateTexture(nil, 'OVERLAY')
-        btn.RoleIcon:SetSize(18,18)
-        btn.RoleIcon:SetPoint('BOTTOMRIGHT',-1, 1)
-        btn.RoleIcon:SetAtlas(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(index, false, false)), TextureKitConstants.IgnoreAtlasSize)
-
-        btn.SelectIcon= btn:CreateTexture(nil, 'OVERLAY')
-        btn.SelectIcon:SetAllPoints()
-        btn.SelectIcon:SetAtlas('ChromieTime-Button-Selection')
-        btn.SelectIcon:SetVertexColor(0,1,0)
-
-        function btn:IsActive()
-            return GetSpecialization(nil, false, 1)==self.specIndex
-        end
-        function btn:Settings()
-            self.SelectIcon:SetShown(self:IsActive())
-        end
-
-        function btn:Set_Active()
-            if not self:IsActive() and InCombatLockdown() then--PlayerSpellsFrame.TalentsFrame:IsCommitInProgress()
-                C_SpecializationInfo.SetSpecialization(self.specIndex)
-            end
-        end
-
-        btn:SetScript('OnMouseDown', function(self, d)
-            if d=='LeftButton' then
-                self:Set_Active()
-            elseif d=='RightButton' then
-                MenuUtil.CreateContextMenu(self, function(_, root)
-                    local sub= root:CreateButton(
-                        '|T'..(select(4, GetSpecializationInfo(self.specIndex, false, false, nil, UnitSex("player"))) or 0)..':0|t'
-                        ..((self:IsActive() or UnitAffectingCombat('player')) and '|cff828282' or '')
-                        ..(e.onlyChinese and '激活' or SPEC_ACTIVE),
-                    function()
-                        self:Set_Active()
-                    end, {specIndex= self.specIndex})
-                    WoWTools_SetTooltipMixin:Set_Menu(sub)
-
-                    root:CreateDivider()
---打开选项界面
-                    WoWTools_MenuMixin:OpenOptions(root, {name=addName, category=WoWTools_OtherMixin.Category})
-                end)
-            end
-        end)
-
-        btn:SetScript('OnLeave', GameTooltip_Hide)
-        btn:SetScript('OnEnter', function(self)
-            WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
-                specIndex= self.specIndex,
-                tooltip= function(tooltip)
-                    tooltip:AddLine(' ')
-                    local col= ((UnitAffectingCombat('player') or self:IsActive()) and '|cff828282' or '|cffffffff')
-                    tooltip:AddDoubleLine(
-                        col..(e.onlyChinese and '激活' or SPEC_ACTIVE)
-                        ..e.Icon.left,
-
-                        col..e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..addName
-                    )
-                end
-            })
-        end)
-
-        btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
-        btn:SetScript('OnEvent', btn.Settings)
-
-        btn.specIndex= index
-        btn:Settings()
+        Create_Spec_Button(index)
     end
+
+
+
+    function SpecFrame:Settings()
+        local specToTop= Save.specButton.isToTOP
+        local isSpecUIParent= Save.specButton.isUIParent
+        for index, btn in pairs(self.Buttons) do
+            btn:ClearAllPoints()
+            if specToTop then
+                btn:SetPoint('BOTTOMLEFT', self.Buttons[index-1] or self, 'TOPLEFT', 0, 1)
+            else
+                btn:SetPoint('TOPLEFT', self.Buttons[index-1] or self, 'TOPRIGHT', 1, 0)
+            end
+        end
+
+        self:ClearAllPoints()
+        if Save.specButton.isUIParent then
+            local p= Save.specButton.point
+            if p then
+                self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+            elseif PlayerSpellsFrame then
+                SpecFrame:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -self.numSpec*10-2, 0)
+            else
+                self:SetPoint('CENTER', -150, 150)
+            end
+
+            self:SetParent(UIParent)
+            self:set_strata()
+
+        elseif PlayerSpellsFrame then
+            self:SetParent(PlayerSpellsFrame)
+            self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -numSpec*10-2, 0)
+            self:SetFrameStrata('HIGH')
+        end
+
+        self:SetMovable(isSpecUIParent and true or false)
+        self:SetClampedToScreen(isSpecUIParent and true or false)
+        self:SetScale(Save.specButton.scale or 1)
+
+        if isSpecUIParent then
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+        else
+            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
+            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        end
+    end
+
+    function SpecFrame:set_strata()
+        self:SetFrameStrata(Save.specButton.strata or 'MEDIUM')
+    end
+
+    SpecFrame:SetScript('OnEvent', function(self, event)
+        local hide= Save.SpecButton.hideInCombat
+        local show= event=='PLAYER_REGEN_ENABLED'
+        if hide then
+            self:SetShown(show)
+        else
+            for _, btn in pairs(self.Button) do
+                btn:SetShown(self.Se)
+            end
+        end
+    end)
+
+    SpecFrame:Settings()
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -227,6 +464,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame')]= nil
             Save= WoWToolsSave['Other_SpellFrame'] or Save
+            Save.specButton= Save.specButton or {}
 
             addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(e.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
 
@@ -251,6 +489,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save.disabled then
                 self:UnregisterEvent(event)
             else
+                C_Timer.After(1, Init_Spec_Button)
+
     --法术按键, 颜色
                 hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
             end

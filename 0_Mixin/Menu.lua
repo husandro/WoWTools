@@ -416,8 +416,8 @@ end
 
 function WoWTools_MenuMixin:ToTop(root, tab)
     local sub=root:CreateCheckbox(
-        (tab.name or (
-            '|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP))),
+        (tab.name or ('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION))),
+        --('|A:editmode-up-arrow:16:11:0:3|a'..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP))),
         tab.GetValue,
         tab.SetValue,
         {isReload=tab.isReload, tooltip=tab.tooltip}

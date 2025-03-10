@@ -5415,7 +5415,8 @@
         "LFGDungeonReadyPopup_Update",
         "LFGDungeonReadyDialogCloseButton",
         "REWARD_ITEMS_ONLY",
-        "GAIN_EXPERIENCE"
+        "GAIN_EXPERIENCE",
+        "COVENANT_SANCTUM_UPGRADE_ACTIVE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

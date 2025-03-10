@@ -51,7 +51,36 @@ end
 
 
 
-local function Set_Move_Frame_Script(frame)
+
+
+--移动 Frame
+local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
+    frame.targetFrame= target--要移动的Frame
+    frame.setMoveFrame=true
+    frame.click= click
+    frame.notSave= notSave
+    frame.isAltKeyDown= isAltKeyDown
+
+    if notFuori then
+        frame:SetClampedToScreen(true)
+        if target then
+            target:SetClampedToScreen(true)
+        end
+    end
+
+    frame:SetMovable(true)
+    if target then
+        target:SetMovable(true)
+    end
+
+    if click=='RightButton' then
+        frame:RegisterForDrag("RightButton")
+    elseif click=='LeftButton' then
+        frame:RegisterForDrag("LeftButton")
+    else
+        frame:RegisterForDrag("LeftButton", "RightButton")
+    end
+
     frame:HookScript("OnDragStart", function(self, d)
         if
             (d=='RightButton' or d=='LeftButton')
@@ -86,45 +115,6 @@ local function Set_Move_Frame_Script(frame)
 
     frame:HookScript("OnMouseUp", ResetCursor)--停止移动
     frame:HookScript("OnLeave", ResetCursor)
-end
-
-
-
-
-
-
-
-
-
---移动 Frame
-local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
-    frame.targetFrame= target--要移动的Frame
-    frame.setMoveFrame=true
-    frame.click= click
-    frame.notSave= notSave
-    frame.isAltKeyDown= isAltKeyDown
-
-    if notFuori then
-        frame:SetClampedToScreen(true)
-        if target then
-            target:SetClampedToScreen(true)
-        end
-    end
-
-    frame:SetMovable(true)
-    if target then
-        target:SetMovable(true)
-    end
-
-    if click=='RightButton' then
-        frame:RegisterForDrag("RightButton")
-    elseif click=='LeftButton' then
-        frame:RegisterForDrag("LeftButton")
-    else
-        frame:RegisterForDrag("LeftButton", "RightButton")
-    end
-
-    Set_Move_Frame_Script(frame)
 end
 
 
