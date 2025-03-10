@@ -364,7 +364,7 @@ local function Init_Menu(self, root)
     end)
 
 --打开选项界面
-    WoWTools_ToolsButtonMixin:OpenMenu(sub, WoWTools_FoodMixin.addName)--打开, 选项界面，菜单
+    WoWTools_ToolsMixin:OpenMenu(sub, WoWTools_FoodMixin.addName)--打开, 选项界面，菜单
 
 --自定义
     sub=root:CreateButton(e.onlyChinese and '自定义' or CUSTOM, function() return MenuResponse.Open end)

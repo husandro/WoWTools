@@ -25,7 +25,7 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
         end
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
         e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         e.tips:AddLine(' ')
 

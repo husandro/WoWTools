@@ -135,7 +135,7 @@ local function Init_Menu(self, root)
     })
 
 --选项
-    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+    WoWTools_ToolsMixin:OpenMenu(root, addName)
 end
 
 
@@ -239,7 +239,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|T134863:0|t'..(e.onlyChinese and '诺格弗格药剂' or ItemName)
 
             Save= WoWToolsSave['NoggenfoggerElixir'] or Save
-            button= WoWTools_ToolsButtonMixin:CreateButton({
+            button= WoWTools_ToolsMixin:CreateButton({
                 name='NoggenfoggerElixir',
                 tooltip=addName,
             })

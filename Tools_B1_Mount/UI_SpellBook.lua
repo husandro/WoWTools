@@ -21,7 +21,7 @@ local function set_Use_Spell_Button(btn, spellID)
         function btn.mountSpell:set_tooltips()
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), WoWTools_MountMixin.addName)
+            e.tips:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_MountMixin.addName)
             e.tips:AddLine(' ')
             if self.spellID then
                 e.tips:AddDoubleLine(

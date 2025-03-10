@@ -321,7 +321,7 @@ local function Init_Menu(self, root)
     local sub, sub2
 --选项
 
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+    sub=WoWTools_ToolsMixin:OpenMenu(root, addName)
 
 
 --移除未收集
@@ -641,7 +641,7 @@ local function Init()
 
 
     ToyButton:SetScript("OnEnter",function(self)
-        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
+        WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -810,7 +810,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
 
-            ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+
+            ToyButton= WoWTools_ToolsMixin:CreateButton({
                 name='UseToy',
                 tooltip=addName,
             })

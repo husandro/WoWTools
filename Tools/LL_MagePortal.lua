@@ -125,7 +125,7 @@ local function Init_Options(category, layout)
         GetValue= function() return Save.isLeft end,
         SetValue= function()
             Save.isLeft= not Save.isLeft and true or nil
-            WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
+            WoWTools_ToolsMixin:RestAllPoint()--重置所有按钮位置
             Set_Button_All_Label()
         end
     }, initializer)
@@ -158,7 +158,7 @@ local function Init()
         name= C_Spell.GetSpellName(tab.spell)
         icon= C_Spell.GetSpellTexture(tab.spell)
 
-        btn=WoWTools_ToolsButtonMixin:CreateButton({
+        btn=WoWTools_ToolsMixin:CreateButton({
             name='MagePortal_Spell_'..tab.spell,
             tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID=tab.spell, isName=true}) or tab.spell),
             isLeftOnlyLine=function()
@@ -348,7 +348,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save= WoWToolsSave['Tools_MagePortal'] or Save
 
-            if not Save.disabled and  WoWTools_ToolsButtonMixin:GetButton() then
+            if not Save.disabled and  WoWTools_ToolsMixin.Button then
                 addName= '|T626001:0|t|cff3fc6ea'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
                 Init()
             else
@@ -356,7 +356,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             self:UnregisterEvent('ADDON_LOADED')
 
-            WoWTools_ToolsButtonMixin:AddOptions(Init_Options)
+            WoWTools_ToolsMixin:AddOptions(Init_Options)
 
         end
 

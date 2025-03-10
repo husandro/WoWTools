@@ -1,8 +1,8 @@
 local e= select(2, ...)
 
-WoWTools_ToolsButtonMixin={
+WoWTools_ToolsMixin={
     AddList={},--所有, 按钮 {name}=true
-    Save={disabledADD={}, lineNum=10, isHideBackground=nil},
+    --Save={disabledADD={}, lineNum=10, isHideBackground=nil},
 
     LeftButtons={},--按钮 {btn1, btn2,}
     LeftButtons2={},
@@ -10,29 +10,40 @@ WoWTools_ToolsButtonMixin={
     BottomButtons={},
 
     leftNewLineButton=nil,
-    setID=0
+    setID=0,
+    addName='|A:Professions-Crafting-Orders-Icon:0:0|aTools',
 }
 
 
-function WoWTools_ToolsButtonMixin:GetName()
-    return '|A:Professions-Crafting-Orders-Icon:0:0|aTools'
+
+
+
+
+
+function WoWTools_ToolsMixin:Set_Shown_Background(frame)
+    if frame and frame.Background then
+        frame.Background:SetShown(WoWTools_ToolsMixin.Save.isShowBackground)
+    end
 end
 
-function WoWTools_ToolsButtonMixin:SetLeftPoint(frame)
+
+
+
+function WoWTools_ToolsMixin:Set_Left_Point(frame)
     frame:SetPoint('BOTTOMRIGHT', self.Button.Frame, 'TOPRIGHT', 0, 30)
 end
-function WoWTools_ToolsButtonMixin:SetLeft2Point(frame)
+function WoWTools_ToolsMixin:Set_Left2_Point(frame)
     frame:SetPoint('BOTTOMRIGHT', self.Button.LeftFrame, 'BOTTOMLEFT')
 end
-function WoWTools_ToolsButtonMixin:SetRightPoint(frame)
+function WoWTools_ToolsMixin:Set_Right_Point(frame)
     frame:SetPoint('BOTTOMLEFT', self.Button, 'TOPRIGHT')
 end
-function WoWTools_ToolsButtonMixin:SetBottomPoint(frame)
+function WoWTools_ToolsMixin:Set_Bottom_Point(frame)
     frame:SetPoint('BOTTOMRIGHT', self.Button, 'TOPRIGHT')
 end
 
 
-function WoWTools_ToolsButtonMixin:GetParent(tab)--取得 Parent
+function WoWTools_ToolsMixin:GetParent(tab)--取得 Parent
     if tab.parentFrame then--指定
         return tab.parentFrame
 
@@ -48,28 +59,26 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:Init(save)
-    if save.disabled then
+function WoWTools_ToolsMixin:Init()
+    if self.Save.disabled then
         return
     end
 
-    self:SetSaveData(save)
-
     self.Button= WoWTools_ButtonMixin:Cbtn(nil, {
-        name='WoWTools_ToolsButton',
-        size={30, save.height or 10}
+        name='WoWToolsMainToolsButton',
+        size={30, self.Save.height or 10}
     })
 
     self.Button.Frame= CreateFrame('Frame', nil, self.Button)
     self.Button.Frame:SetAllPoints()
-    self.Button.Frame:SetShown(save.show)
+    self.Button.Frame:SetShown(self.Save.show)
 --为显示Frame用
     self.Button.IsShownFrameEnterButton=true
 
     self.Button.texture=self.Button:CreateTexture(nil, 'BORDER')
     self.Button.texture:SetPoint('CENTER')
     self.Button.texture:SetSize(10,10)
-    self.Button.texture:SetShown(save.showIcon)
+    self.Button.texture:SetShown(self.Save.showIcon)
     self.Button.texture:SetAtlas(e.Icon.icon)
 
     --底部,需要，设置高 宽
@@ -79,17 +88,17 @@ function WoWTools_ToolsButtonMixin:Init(save)
     --需要，设置 LEFT
     self.Button.BottomFrame= self:CreateBackgroundFrame(self.Button, 'WoWTools_ButtomFrame')
 
-    self:SetLeftPoint(self.Button.LeftFrame)
-    self:SetLeft2Point(self.Button.LeftFrame2)
-    self:SetRightPoint(self.Button.RightFrame)
-    self:SetBottomPoint(self.Button.BottomFrame)
+    self:Set_Left_Point(self.Button.LeftFrame)
+    self:Set_Left2_Point(self.Button.LeftFrame2)
+    self:Set_Right_Point(self.Button.RightFrame)
+    self:Set_Bottom_Point(self.Button.BottomFrame)
 
     self.last= self.Button
     return self.Button
 end
 
 
-function WoWTools_ToolsButtonMixin:CreateButton(tab)
+function WoWTools_ToolsMixin:CreateButton(tab)
     tab= tab or {}
 
     if not tab.disabledOptions then
@@ -102,7 +111,7 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
     self.setID= self.setID+1
 
     local btn= WoWTools_ButtonMixin:Cbtn(self:GetParent(tab), {
-        name='WoWTools_Tools_'..(tab.name or self.setID),
+        name='WoWTools_Tools_'..(tab.name or self.setID)..'_Button',
         setID= self.setID,
         isType2=true,
         isSecure=true,
@@ -116,7 +125,7 @@ function WoWTools_ToolsButtonMixin:CreateButton(tab)
     end
     btn:SetData(tab)
 
-    WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
+    WoWTools_ToolsMixin:SetPoint(btn, tab)
 
     return btn
 end
@@ -124,7 +133,7 @@ end
 
 
 
-function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
+function WoWTools_ToolsMixin:SetPoint(btn, tab)
     btn.IsShownFrameEnterButton=nil--为显示/隐藏Frame用
 
 --最左(右)边，一行，给法师传送门用
@@ -133,9 +142,9 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
         if tab.isLeftOnlyLine() then
             local num= #self.LeftButtons2
             if num==0 then
-                self:SetLeft2Point(btn)
+                self:Set_Left2_Point(btn)
                 self.Button.LeftFrame2:SetWidth(30)
-                self:SetBackground(self.Button.LeftFrame2)
+                self:Set_Shown_Background(self.Button.LeftFrame2)
             else
                 btn:SetPoint('BOTTOM', self.LeftButtons2[num], 'TOP')
             end
@@ -145,9 +154,9 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
 --右边
             local num= #self.RightButtons
             if num==0 then
-                self:SetRightPoint(btn)
+                self:Set_Right_Point(btn)
                 self.Button.RightFrame:SetWidth(30)
-                self:SetBackground(self.Button.RightFrame)
+                self:Set_Shown_Background(self.Button.RightFrame)
             else
                 btn:SetPoint('BOTTOM', self.RightButtons[num], 'TOP')
             end
@@ -162,9 +171,9 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             if num==0 then
 --为显示/隐藏Frame用
                 btn.IsShownFrameEnterButton=true
-                self:SetBottomPoint(btn)
+                self:Set_Bottom_Point(btn)
                 self.Button.BottomFrame:SetHeight(30)
-                self:SetBackground(self.Button.BottomFrame)
+                self:Set_Shown_Background(self.Button.BottomFrame)
             else
                 btn:SetPoint('RIGHT', self.BottomButtons[num], 'LEFT')
             end
@@ -177,10 +186,10 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
             local num=#self.LeftButtons
             if num==0 then
                 self.leftNewLineButton=btn
-                self:SetLeftPoint(btn)
+                self:Set_Left_Point(btn)
                 self.Button.LeftFrame:SetPoint('TOP', btn)
                 self.Button.LeftFrame:SetPoint('LEFT', btn)
-                self:SetBackground(self.Button.LeftFrame)
+                self:Set_Shown_Background(self.Button.LeftFrame)
 
             else
                 local numLine= self.Save.lineNum or 10
@@ -202,7 +211,7 @@ function WoWTools_ToolsButtonMixin:SetPoint(btn, tab)
 
 end
 --[[
-button= WoWTools_ToolsButtonMixin:CreateButton({
+button= WoWTools_ToolsMixin:CreateButton({
     name='',
     tooltip=',
     point='BOTTOM',
@@ -217,7 +226,7 @@ button= WoWTools_ToolsButtonMixin:CreateButton({
 })
 ]]
 
-function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
+function WoWTools_ToolsMixin:CreateBackgroundFrame(parent, name)
     local frame= CreateFrame('Frame', name, parent or UIParent)
     WoWTools_TextureMixin:CreateBackground(frame, {isAllPoint=true})
     --[[frame.texture=frame:CreateTexture(nil, 'BACKGROUND')
@@ -226,25 +235,17 @@ function WoWTools_ToolsButtonMixin:CreateBackgroundFrame(parent, name)
     return frame
 end
 
-function WoWTools_ToolsButtonMixin:SetBackground(frame)
-    frame.Background:SetShown(self.Save.isShowBackground)
-    --[[if self.Save.isShowBackground then
-        frame.texture:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    else
-        frame.texture:SetTexture(0)
-    end]]
-end
 
 --显示背景
-function WoWTools_ToolsButtonMixin:ShowBackground()
-    self:SetBackground(self.Button.LeftFrame)
-    self:SetBackground(self.Button.LeftFrame2)
-    self:SetBackground(self.Button.RightFrame)
-    self:SetBackground(self.Button.BottomFrame)
+function WoWTools_ToolsMixin:ShowBackground()
+    self:Set_Shown_Background(self.Button.LeftFrame)
+    self:Set_Shown_Background(self.Button.LeftFrame2)
+    self:Set_Shown_Background(self.Button.RightFrame)
+    self:Set_Shown_Background(self.Button.BottomFrame)
 end
 
 --重置所有按钮位置
-function WoWTools_ToolsButtonMixin:RestAllPoint()
+function WoWTools_ToolsMixin:RestAllPoint()
     if not self.Button:CanChangeAttribute() then
         return
     end
@@ -279,10 +280,10 @@ function WoWTools_ToolsButtonMixin:RestAllPoint()
         self.Button.LeftFrame2:ClearAllPoints()
         self.Button.RightFrame:ClearAllPoints()
         self.Button.BottomFrame:ClearAllPoints()
-        self:SetLeftPoint(self.Button.LeftFrame)
-        self:SetLeft2Point(self.Button.LeftFrame2)
-        self:SetRightPoint(self.Button.RightFrame)
-        self:SetBottomPoint(self.Button.BottomFrame)
+        self:Set_Left_Point(self.Button.LeftFrame)
+        self:Set_Left2_Point(self.Button.LeftFrame2)
+        self:Set_Right_Point(self.Button.RightFrame)
+        self:Set_Bottom_Point(self.Button.BottomFrame)
     end
 
 
@@ -296,118 +297,29 @@ end
 
 
 --用户，自定义设置，选项
-function WoWTools_ToolsButtonMixin:AddOptions(option)
+function WoWTools_ToolsMixin:AddOptions(option)
     table.insert(self.AddList, {isPlayerSetupOptions=true, option=option})
 end
 
-function WoWTools_ToolsButtonMixin:GetAllAddList()
-    return self.AddList
-end
-
---[[function WoWTools_ToolsButtonMixin:GetSaveData()
-    return self.Save
-end]]
-
-function WoWTools_ToolsButtonMixin:SetSaveData(save)
-    self.Save= save or {}
-end
-
-function WoWTools_ToolsButtonMixin:GetButton()
-    return self.Button
-end
-
-function WoWTools_ToolsButtonMixin:SetCategory(category, layout)
-    self.Category= category
-    self.Layout= layout
-end
-
-function WoWTools_ToolsButtonMixin:GetCategory()
-    return self.Category, self.Layout
-end
 
 
 --当Enter图标是，显示Tools Frame
-function WoWTools_ToolsButtonMixin:EnterShowFrame(btn)
+function WoWTools_ToolsMixin:EnterShowFrame(btn)
     if btn.IsShownFrameEnterButton and self.Save.isEnterShow and not self.Button.Frame:IsShown() then
         self.Button:set_shown()
     end
 end
 
 
---[[function WoWTools_ToolsButtonMixin:OpenOptions(name)--打开,Tools选项界面，选项
-    do
-        if not self.Category then
-            e.OpenPanelOpting()
-        end
-    end
-    e.OpenPanelOpting(self.Category, name)
-end]]
+
 
 --打开选项界面
-function WoWTools_ToolsButtonMixin:OpenMenu(root, name, showText)--打开, 选项界面，菜单
+function WoWTools_ToolsMixin:OpenMenu(root, name, showText)--打开, 选项界面，菜单
     return WoWTools_MenuMixin:OpenOptions(root, {
-        name=name or self:GetName(),
+        name=name or self.addName,
         name2=showText,
-        GetCategory=function()
-            local category= WoWTools_ToolsButtonMixin:GetCategory()
-            do
-                if not category then
-                    e.OpenPanelOpting()
-                    category= WoWTools_ToolsButtonMixin:GetCategory()
-                end
-            end
-            return WoWTools_ToolsButtonMixin:GetCategory()
-        end
+        category= self.Category
     })
 end
-    --[[local sub=root:CreateButton(name2 or name or self:GetName(),
-        function(data)
-            if SettingsPanel:IsShown() then--ToggleGameMenu()
-                SettingsPanel:Close()
-            else
-                self:OpenOptions(data.name)
-            end
-            return MenuResponse.Open
-        end, {name=name, name2=name2})
-
-    sub:SetTooltip(function(tooltip, description)
-        tooltip:AddDoubleLine(self:GetName(), description.data.name)
-        tooltip:AddDoubleLine(
-            description.data.name2 or ' ',
-            e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
-        )
-    end)
-    return sub]]
 
 
-
-
-
-
-
-
---[[
-EventRegistry:TriggerEvent("GenericTraitFrame.SetSystemID", systemID, configID);
-
-function DragonflightLandingOverlayMixin.HandleUnlockEvent(event, ...)
-end
-
-function DragonflightLandingOverlayMixin.HandleMinimapAnimationEvent(event, ...)
-	if event == "QUEST_TURNED_IN" then
-		local questID, xpReward, moneyReward = ...;
-		if questID == DRAGONRIDING_INTRO_QUEST_ID then
-			EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerAlert", DRAGONFLIGHT_LANDING_PAGE_ALERT_DRAGONRIDING_UNLOCKED);
-			EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerPulseLock", minimapPulseLocks.DragonridingUnlocked);
-		end
-	elseif event == "MAJOR_FACTION_UNLOCKED" then
-		EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerAlert", DRAGONFLIGHT_LANDING_PAGE_ALERT_MAJOR_FACTION_UNLOCKED);
-		EventRegistry:TriggerEvent("ExpansionLandingPage.TriggerPulseLock", minimapPulseLocks.MajorFactionUnlocked);
-	end
-end
-
-
-
-function WoWTools_ToolsButtonMixin:GetData(btn)
-    GET_ITEM_INFO_RECEIVED: itemID, success
-    SPELL_DATA_LOAD_RESULT: spellID, success
-end]]

@@ -132,7 +132,7 @@ local function Init_Menu(self, root)
     if num>0 then
         root:CreateDivider()
     end
-    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)--打开, 选项界面，菜单
+    WoWTools_ToolsMixin:OpenMenu(root, addName)--打开, 选项界面，菜单
 
 --SetScrollMod
     WoWTools_MenuMixin:SetScrollMode(root, nil)
@@ -385,7 +385,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName= '|T3150958:0|t'..(e.onlyChinese and '黛西' or 'Daisy')
 
-            button= WoWTools_ToolsButtonMixin:CreateButton({
+            button= WoWTools_ToolsMixin:CreateButton({
                 name='SummonPet',
                 tooltip=addName,
             })

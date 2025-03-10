@@ -679,7 +679,7 @@ local OptionsList={{
     root:CreateDivider()
 
 --打开, 选项界面，菜单
-    sub= WoWTools_ToolsButtonMixin:OpenMenu(root, addName, Save.KEY)
+    sub= WoWTools_ToolsMixin:OpenMenu(root, addName, Save.KEY)
 
 --设置捷键
     WoWTools_KeyMixin:SetMenu(self, sub, {
@@ -783,7 +783,7 @@ local function Init()
     OpenButton:SetScript("OnEnter",  function(self)
         get_Items()
         WoWTools_KeyMixin:SetTexture(self)
-        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
+        WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -1016,7 +1016,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             Save= WoWToolsSave['Tools_OpenItems'] or Save
             addName= '|A:BonusLoot-Chest:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
-            OpenButton= WoWTools_ToolsButtonMixin:CreateButton({
+            OpenButton= WoWTools_ToolsMixin:CreateButton({
                 name='OpenItems',
                 tooltip=addName,
             })

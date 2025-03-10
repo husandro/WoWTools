@@ -1,7 +1,7 @@
 local id, e = ...
 
 
-local Save={
+WoWTools_ToolsMixin.Save={
     --disabled=true,
 
     disabledADD={},
@@ -14,12 +14,13 @@ local Save={
     scale=1,
     strata='MEDIUM',
     height=10,
+    lineNum=10,
 
     isEnterShow=true,
     isCombatHide=true,
     isMovingHide=true,
     isMainMenuHide=true,
-    --showIcon=false,
+    showIcon=true,
     --loadCollectionUI=nil,
     --show=false,
     --point
@@ -28,31 +29,31 @@ local Save={
 }
 
 
-local Button
-local addName= WoWTools_ToolsButtonMixin:GetName()
 
+local Button, Category, Layout
+local addName= WoWTools_ToolsMixin.addName
+
+local function Save()
+    return WoWTools_ToolsMixin.Save
+end
 
 
 
 
 local function Init_Panel()
-    local Category, Layout= e.AddPanel_Sub_Category({
-        name=addName,
-        disabled= not Button,
-    })
-    WoWTools_ToolsButtonMixin:SetCategory(Category, Layout)
+
 
 
     local initializer=e.AddPanel_Check_Button({
         checkName= e.onlyChinese and '启用' or ENABLE,
-        GetValue= function() return not Save.disabled end,
+        GetValue= function() return not Save().disabled end,
         SetValue= function()
-            Save.disabled= not Save.disabled and true or nil
-            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            Save().disabled= not Save().disabled and true or nil
+            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
-            Save.point=nil
+            Save().point=nil
             if Button then
                 Button:set_point()
             end
@@ -70,50 +71,39 @@ local function Init_Panel()
                 ..(e.onlyChinese and '登入游戏时|n建议：开启' or
                 (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..': '..ENABLE)
         ),
-        GetValue= function() return Save.loadCollectionUI end,
+        GetValue= function() return Save().loadCollectionUI end,
         SetValue= function()
-            Save.loadCollectionUI= not Save.loadCollectionUI and true or nil
+            Save().loadCollectionUI= not Save().loadCollectionUI and true or nil
             Button:load_wow_ui()
-            Button:save_data()
         end
     }, initializer)
 
-    --[[e.AddPanel_Check({
-        category= Category,
-        name= e.onlyChinese and '加载专业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Load', PROFESSIONS_BUTTON),
-        tooltip= '|nProfessionsFrame_LoadUI',
-        GetValue= function() return Save.loadProfessionsUI end,
-        SetValue= function()
-            Save.loadProfessionsUI= not Save.loadProfessionsUI and true or nil
-            Button:load_wow_ui()
-            Button:save_data()
-        end
-    }, initializer)]]
 
 
     e.AddPanel_Button({
         category= Category,
         layout=Layout,
-        title= WoWTools_ToolsButtonMixin:GetName(),
+        title= WoWTools_ToolsMixin.addName,
         buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '重置' or RESET),
         addSearchTags= e.onlyChinese and '重置' or RESET,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                WoWTools_ToolsButtonMixin:GetName()
+                WoWTools_ToolsMixin.addName
                 ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
-                    Save=nil
+                    WoWTools_ToolsMixin.Save=nil
                     WoWTools_Mixin:Reload()
                 end
             )
-        end
+        end,
+        tooltip=e.onlyChinese and '全部清除' or CLEAR_ALL
     })
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
 
-    for _, data in pairs (WoWTools_ToolsButtonMixin:GetAllAddList()) do
+    for _, data in pairs (WoWTools_ToolsMixin.AddList) do
         initializer=nil
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
 
@@ -122,9 +112,9 @@ local function Init_Panel()
                     category= Category,
                     name= data.tooltip,
                     tooltip= data.name,
-                    GetValue= function() return not Save.disabledADD[data.name] end,
+                    GetValue= function() return not Save().disabledADD[data.name] end,
                     SetValue= function()
-                        Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                        Save().disabledADD[data.name]= not Save().disabledADD[data.name] and true or nil
                     end
                 })
 
@@ -135,18 +125,18 @@ local function Init_Panel()
                     layout=Layout,
                     name=data.tooltip,
                     tooltip=data.name,
-                    GetValue= function() return not Save.disabledADD[data.name] end,
+                    GetValue= function() return not Save().disabledADD[data.name] end,
                     SetValue= function()
-                        Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                        Save().disabledADD[data.name]= not Save().disabledADD[data.name] and true or nil
                     end,
 
                     DropDownGetValue=function(...)
-                        return Save.BottomPoint[data.name] and 2 or 1
+                        return Save().BottomPoint[data.name] and 2 or 1
                     end,
                     DropDownSetValue=function(value)
-                        Save.BottomPoint[data.name]= value==2 and true or nil
-                        WoWTools_ToolsButtonMixin:SetSaveData(Save)
-                        WoWTools_ToolsButtonMixin:RestAllPoint()--重置所有按钮位置
+                        Save().BottomPoint[data.name]= value==2 and true or nil
+                        WoWTools_ToolsMixin:SetSaveData(Save)
+                        WoWTools_ToolsMixin:RestAllPoint()--重置所有按钮位置
                     end,
                     GetOptions=function()
                         local container = Settings.CreateControlTextContainer()
@@ -198,25 +188,24 @@ local function Init_Menu(self, root)
 --显示
     sub:CreateTitle(e.onlyChinese and '显示' or SHOW)
     sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
-        return Save.isEnterShow
+        return Save().isEnterShow
     end, function()
-        Save.isEnterShow = not Save.isEnterShow and true or nil
-        self:save_data()
+        Save().isEnterShow = not Save().isEnterShow and true or nil
     end)
 
 --隐藏
     sub:CreateTitle(e.onlyChinese and '隐藏' or HIDE)
     sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
-        return Save.isCombatHide
+        return Save().isCombatHide
     end, function()
-        Save.isCombatHide = not Save.isCombatHide and true or nil
+        Save().isCombatHide = not Save().isCombatHide and true or nil
         self:set_event()
     end)
 
     sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '移动' or NPE_MOVE), function()
-        return Save.isMovingHide
+        return Save().isMovingHide
     end, function()
-        Save.isMovingHide = not Save.isMovingHide and true or nil
+        Save().isMovingHide = not Save().isMovingHide and true or nil
         self:set_event()
     end)
 
@@ -224,20 +213,20 @@ local function Init_Menu(self, root)
         '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'
         ..(e.onlyChinese and '显示主菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MAINMENU_BUTTON)),
     function()
-        return Save.isMainMenuHide
+        return Save().isMainMenuHide
     end, function()
-        Save.isMainMenuHide= not Save.isMainMenuHide and true or nil
+        Save().isMainMenuHide= not Save().isMainMenuHide and true or nil
     end)
 
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root)
+    sub=WoWTools_ToolsMixin:OpenMenu(root)
 
     sub2=sub:CreateCheckbox('30x30', function()
-        return Save.height==30
+        return Save().height==30
     end, function()
-        Save.height= Save.height==10 and 30 or 10
+        Save().height= Save().height==10 and 30 or 10
         self:set_size()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -245,9 +234,9 @@ local function Init_Menu(self, root)
     end)
 
     sub2=sub:CreateCheckbox('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
-        return Save.showIcon
+        return Save().showIcon
     end, function()
-        Save.showIcon= not Save.showIcon and true or nil
+        Save().showIcon= not Save().showIcon and true or nil
         self:set_icon()
     end)
     sub2:SetTooltip(function(tooltip)
@@ -257,19 +246,18 @@ local function Init_Menu(self, root)
 --显示背景
     WoWTools_MenuMixin:ShowBackground(sub,
     function()
-        return Save.isShowBackground
+        return Save().isShowBackground
     end, function()
-        Save.isShowBackground= not Save.isShowBackground and true or nil
-        self:save_data()
-        WoWTools_ToolsButtonMixin:ShowBackground()--显示背景
+        Save().isShowBackground= not Save().isShowBackground and true or nil
+        WoWTools_ToolsMixin:ShowBackground()--显示背景
     end)
 
 
     sub2= WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save.scale
+        return Save().scale
     end, function(data)
         if self:CanChangeAttribute() then
-            Save.scale=data
+            Save().scale=data
             self:set_scale()
         else
             print(WoWTools_Mixin.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
@@ -280,15 +268,15 @@ local function Init_Menu(self, root)
    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
-        Save.strata= data
+        Save().strata= data
         self:set_strata()
     end)
     
     
 
     sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, sub, Save.point, function()
-        Save.point=nil
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
+        Save().point=nil
         self:set_point()
     end)
 
@@ -314,32 +302,30 @@ end
 
 local function Init()
     function Button:load_wow_ui()
-        if Save.loadCollectionUI then
+        if Save().loadCollectionUI then
             WoWTools_LoadUIMixin:Journal()
         end
     end
 
     function Button:set_size()
-        self:SetHeight(Save.height)
+        self:SetHeight(Save().height)
     end
 
     Button.texture:SetAlpha(0.5)
 
     function Button:set_icon()
-        self.texture:SetShown(Save.showIcon)
+        self.texture:SetShown(Save().showIcon)
     end
 
-    function Button:save_data()
-        WoWTools_ToolsButtonMixin:SetSaveData(Save)
-    end
 
     function Button:set_point()
-        if not self:CanChangeAttribute() then
+        if self:IsProtected() then
            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
             self:ClearAllPoints()
-            if Save.point then
-                self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+            local p=Save().point
+            if Save().point then
+                self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
             elseif e.Player.husandro then
                 self:SetPoint('BOTTOMRIGHT', -420, 10)
             else
@@ -350,14 +336,14 @@ local function Init()
 
     function Button:set_scale()
         if self:CanChangeAttribute() then
-            self:SetScale(Save.scale or 1)
+            self:SetScale(Save().scale or 1)
         else
             print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end
 
     function Button:set_strata()
-        self:SetFrameStrata(Save.strata or 'MEDIUM')
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
 
     function Button:set_tooltip()
@@ -365,7 +351,7 @@ local function Init()
         e.tips:ClearLines()
         e.tips:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..e.GetShowHide(nil, true), e.Icon.left)
         e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
+        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
         e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         e.tips:Show()
@@ -384,8 +370,8 @@ local function Init()
     Button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save.point={self:GetPoint(1)}
-        Save.point[2]=nil
+        Save().point={self:GetPoint(1)}
+        Save().point[2]=nil
     end)
 
     Button:SetScript("OnLeave",function(self)
@@ -394,7 +380,7 @@ local function Init()
     end)
 
     Button:SetScript('OnEnter', function(self)
-        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
+        WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltip()
     end)
 
@@ -406,7 +392,7 @@ local function Init()
     end)
 
     Button:SetScript('OnMouseWheel', function(self, d)
-        Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
+        Save().scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().scale, nil)
     end)
 
     Button:SetScript("OnClick", function(self, d)
@@ -435,10 +421,10 @@ local function Init()
 
     function Button:set_event()
         self.Frame:UnregisterAllEvents()
-        if Save.isCombatHide then
+        if Save().isCombatHide then
             self.Frame:RegisterEvent('PLAYER_REGEN_DISABLED')
         end
-        if Save.isMovingHide then
+        if Save().isMovingHide then
             self.Frame:RegisterEvent('PLAYER_STARTED_MOVING')
         end
     end
@@ -457,7 +443,7 @@ local function Init()
     Button:set_event()
 
     GameMenuFrame:HookScript('OnShow', function()
-        if Button.Frame:IsShown() and Save.isMainMenuHide then
+        if Button.Frame:IsShown() and Save().isMainMenuHide then
             Button:set_shown()
         end
     end)
@@ -483,14 +469,23 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            Save= WoWToolsSave['WoWTools_ToolsButton'] or Save
-            Save.BottomPoint= Save.BottomPoint or {
+            WoWTools_ToolsMixin.Save= WoWToolsSave['WoWTools_ToolsButton'] or WoWTools_ToolsMixin.Save
+            Save().BottomPoint= Save().BottomPoint or {
                 Mount=true,
                 Hearthstone=true,
                 OpenItems=true,
+                MapToy=true,
             }
 
-            Button= WoWTools_ToolsButtonMixin:Init(Save)
+            Button= WoWTools_ToolsMixin:Init()
+
+            Category, Layout= e.AddPanel_Sub_Category({
+                name=addName,
+                disabled= not Button,
+            })
+
+            WoWTools_ToolsMixin.Category= Category
+            WoWTools_ToolsMixin.Layout= Layout
 
             if Button then
                 Init()
@@ -502,10 +497,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            if Save then
-                Save.show= Button and Button.Frame:IsShown()
-            end
-            WoWToolsSave['WoWTools_ToolsButton']=Save
+            Save().show= Button and Button.Frame:IsShown()
+            
+            WoWToolsSave['WoWTools_ToolsButton']= Save()
         end
     end
 end)

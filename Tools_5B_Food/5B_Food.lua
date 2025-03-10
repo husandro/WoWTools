@@ -180,7 +180,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
             WoWTools_FoodMixin.addName= addName
 
-            UseButton= WoWTools_ToolsButtonMixin:CreateButton({
+            UseButton= WoWTools_ToolsMixin:CreateButton({
                 name='Food',
                 tooltip=addName,
                 isMoveButton=true,

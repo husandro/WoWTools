@@ -88,7 +88,7 @@ local function Init_UI_Menu(self, root)
     end
 
     root:CreateDivider()
-    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_SpellMixin:GetName(spellID) or ('|T'..(icon or 0)..':0|t'..name))
+    WoWTools_ToolsMixin:OpenMenu(root, WoWTools_SpellMixin:GetName(spellID) or ('|T'..(icon or 0)..':0|t'..name))
 end
 
 
@@ -190,7 +190,7 @@ local function Init_UI_List_Menu(self, root)
     end)
 
     root:CreateDivider()
-    WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_MountMixin.addName)
+    WoWTools_ToolsMixin:OpenMenu(root, WoWTools_MountMixin.addName)
 end
 
 

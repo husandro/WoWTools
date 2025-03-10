@@ -79,7 +79,7 @@ local function Init()
         if info.itemLevel or info.skillLineAbilityID then
             e.tips:AddDoubleLine(info.skillLineAbilityID and 'skillLineAbilityID '..info.skillLineAbilityID,  info.itemLevel and info.itemLevel>1 and format(e.onlyChinese and '物品等级%d' or ITEM_LEVEL, info.itemLevel))
         end
-        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), WoWTools_ProfessionMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_ProfessionMixin.addName)
         e.tips:Show()
     end)
 

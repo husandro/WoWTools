@@ -141,7 +141,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MountMixin.Save.Mounts= P_Mouts_Tab
             end
 
-            WoWTools_MountMixin.MountButton= WoWTools_ToolsButtonMixin:CreateButton({
+            WoWTools_MountMixin.MountButton= WoWTools_ToolsMixin:CreateButton({
                 name='Mount',
                 tooltip=WoWTools_MountMixin.addName,
             })

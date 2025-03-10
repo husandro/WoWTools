@@ -20,11 +20,11 @@ local function Init_Dia()
         end,
         OnAccept = function(_, data)
             table.insert(WoWTools_UseItemsMixin.Save[data.type], data.ID)
-            print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         OnAlt = function(_, data)
             table.remove(WoWTools_UseItemsMixin.Save[data.type], data.index)
-            print(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '完成' or COMPLETE, data.name, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
 
@@ -35,11 +35,8 @@ end
 
 local function Init()
 
-
-    local btn= WoWTools_ToolsButtonMixin:GetButton()
-
-    button=WoWTools_ButtonMixin:Cbtn(btn.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size=22})
-    button:SetPoint('TOPLEFT', btn, 'TOPRIGHT')
+    button=WoWTools_ButtonMixin:Cbtn(WoWTools_ToolsMixin.Button.Frame, {atlas='Soulbinds_Tree_Conduit_Icon_Utility', size=22})
+    button:SetPoint('TOPLEFT', WoWTools_ToolsMixin.Button, 'TOPRIGHT')
 
     button:SetScript('OnMouseDown',function(self, d)--添加, 移除
         local infoType, itemID, itemLink ,spellID= GetCursorInfo()
@@ -65,7 +62,7 @@ local function Init()
     button:SetScript('OnEnter',function (self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_ToolsButtonMixin:GetName(), WoWTools_UseItemsMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddLine(e.onlyChinese and '拖曳: 添加' or (DRAG_MODEL..': '..ADD))
         e.tips:AddLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '法术, 物品, 装备' or (SPELLS..', '..ITEMS..', '..EQUIPSET_EQUIP)))

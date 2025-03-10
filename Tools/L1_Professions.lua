@@ -12,7 +12,7 @@ local function Create_Button(index)
 
     if not skillLine or not icon then return end
 
-    local button= WoWTools_ToolsButtonMixin:CreateButton({
+    local button= WoWTools_ToolsMixin:CreateButton({
         name='WoWToolsToolsProfession'..index,
         tooltip='|T'..icon..':0|t'..e.cn(name),
     })
@@ -369,7 +369,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             Save= WoWToolsSave['Tools_Professions'] or Save
-            if WoWTools_ToolsButtonMixin:GetButton() then
+            if WoWTools_ToolsMixin.Button then
                 --Init()
                 C_Timer.After(2, function()
                     if UnitAffectingCombat('player') then

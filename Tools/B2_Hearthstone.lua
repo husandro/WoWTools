@@ -269,7 +269,7 @@ local function Init_Menu(self, root)
 
 --选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+    sub=WoWTools_ToolsMixin:OpenMenu(root, addName)
 
     sub2=sub:CreateCheckbox(e.onlyChinese and '绑定位置' or SPELL_TARGET_CENTER_LOC, function()
         return Save.showBindName
@@ -645,7 +645,7 @@ local function Init()
 
 
     ToyButton:SetScript("OnEnter",function(self)
-        WoWTools_ToolsButtonMixin:EnterShowFrame(self)
+        WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltips()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
@@ -816,7 +816,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             addName='|A:delves-bountiful:0:0|a'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
-            ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+            ToyButton= WoWTools_ToolsMixin:CreateButton({
                 name='Hearthstone',
                 tooltip=addName,
             })

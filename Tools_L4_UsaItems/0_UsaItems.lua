@@ -99,17 +99,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
 
-            if WoWToolsSave[USE_ITEM..'Tools'] then
-                WoWTools_UseItemsMixin.Save= WoWToolsSave[USE_ITEM..'Tools']
-                WoWTools_UseItemsMixin.Save.flyout= WoWTools_UseItemsMixin.Save.flyout or {}
-                WoWToolsSave[USE_ITEM..'Tools']=nil
-            else
-                WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
-            end
+            WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
 
 --禁用，Tools模块，退出
-            if not WoWTools_ToolsButtonMixin:GetButton() then
-                self:UnregisterEvent('ADDON_LOADED')
+            if not WoWTools_ToolsMixin.Button then
+                self:UnregisterEvent(event)
                 return
             end
 

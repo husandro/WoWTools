@@ -105,7 +105,7 @@ local function Init_Menu(_, root)
 
 --打开，选项
     root:CreateDivider()
-    sub=WoWTools_ToolsButtonMixin:OpenMenu(root, WoWTools_UseItemsMixin.addName)
+    sub=WoWTools_ToolsMixin:OpenMenu(root, WoWTools_UseItemsMixin.addName)
 
 --全部重置
     sub:CreateButton(

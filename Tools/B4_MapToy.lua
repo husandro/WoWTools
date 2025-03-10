@@ -248,7 +248,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetGridMode(sub, num)
 
 
-    WoWTools_ToolsButtonMixin:OpenMenu(root, addName)
+    WoWTools_ToolsMixin:OpenMenu(root, addName)
 end
 
 
@@ -390,7 +390,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(e.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
-            WoWTools_ToolsButtonMixin:AddOptions(function(category, layout)
+            WoWTools_ToolsMixin:AddOptions(function(category, layout)
                  e.AddPanel_Check_Button({
                      checkName= addName,
                      GetValue= function() return not Save.disabled end,
@@ -408,7 +408,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if not Save.disabled
                 and not Save.no[e.Player.guid]
-                and WoWTools_ToolsButtonMixin:GetButton()
+                and WoWTools_ToolsMixin.Button
             then
 
                 local find
@@ -435,7 +435,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
 
-                ToyButton= WoWTools_ToolsButtonMixin:CreateButton({
+                ToyButton= WoWTools_ToolsMixin:CreateButton({
                     name='MapToy',
                     tooltip=addName,
                     disabledOptions=true

@@ -59,8 +59,6 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                     WoWTools_CombatMixin.Save.SayTime=120
                 end
 
-              
-
                 Init()
             end
             self:UnregisterEvent(event)
