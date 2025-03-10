@@ -156,7 +156,7 @@ local function Init_Spec_Menu(self, root)
     end, function()
         Save.specButton.isUIParent= not Save.specButton.isUIParent and true or nil
         self:GetParent():Settings()
-
+        return MenuResponse.Close
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('SetParent')
@@ -183,8 +183,9 @@ local function Init_Spec_Menu(self, root)
             Save.SpecButton.hideInCombat= not Save.SpecButton.hideInCombat and true or nil
             self:GetParent():Settings()
         end)
+        sub2:CreateDivider()
     end
-
+    
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub2)
 
