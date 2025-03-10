@@ -134,12 +134,7 @@ local function Init_Spec_Menu(self, root)
 
 --激活
     sub= root:CreateCheckbox(
-        (   (InCombatLockdown() and '|cff828282')
-            or self.isActive and '|cnGREEN_FONT_COLOR:'
-            or '|cffffffff'
-        )
-        ..(e.onlyChinese and '激活' or SPEC_ACTIVE)
-        ..'|A:ChromieTime-Button-Selection:0:0|a',
+        e.onlyChinese and '激活' or SPEC_ACTIVE,
     function()
         return self.isActive
     end, function()
@@ -151,10 +146,7 @@ local function Init_Spec_Menu(self, root)
 
 --拾取
     sub= root:CreateCheckbox(
-        (self.isLoot and '|cnGREEN_FONT_COLOR:'
-            or '|cffffffff'
-        )
-        ..(e.onlyChinese and '拾取' or PLUNDERSTORM_INTERACT_PICK_UP_REMINDER_TEXT)
+        (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
         ..'|A:VignetteLoot:0:0|a',
     function()
         return self.isLoot
@@ -169,7 +161,6 @@ local function Init_Spec_Menu(self, root)
 if isInCombat then
     return
 end
-
 
 
 
