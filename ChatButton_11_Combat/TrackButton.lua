@@ -471,7 +471,7 @@ function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
     local tab=e.WoWDate[e.Player.guid].Time
     tooltip:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
     tooltip:AddDoubleLine(
-        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(e.onlyChinese and '%d周' or WEEKS_ABBR, date('%W'))..')',
+        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(e.onlyChinese and '%d周' or WEEKS_ABBR, e.Player.week)..')',
         SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
     )
 end

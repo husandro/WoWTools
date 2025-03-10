@@ -42,7 +42,7 @@ local baseClass= UnitClassBase('player')
 local playerRealm= GetRealmName():gsub(' ', '')
 local currentRegion= GetCurrentRegion()
 
---[[local function GetWeek()--周数
+local function GetWeek()--周数
     local region= currentRegion
     local d = date("*t")
     local cd= region==1 and 2 or (region==3 and 3) or 4--1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
@@ -57,7 +57,7 @@ local currentRegion= GetCurrentRegion()
         week=52
     end
     return week
-end]]
+end
 
 
 
@@ -76,7 +76,7 @@ e.Player={
     cn= currentRegion==5 or currentRegion==4,
     region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
     --Lo= GetLocale(),
-    --week= date('%W'),--周数
+    week= GetWeek(),--周数 date('%W')
     guid= UnitGUID('player'),
     IsMaxLevel= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
     level= UnitLevel('player') or 1,--UnitEffectiveLevel('player')
