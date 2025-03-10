@@ -236,21 +236,14 @@ local function Create_Spec_Button(index)
     btn.SelectIcon:SetAtlas('ChromieTime-Button-Selection')
     btn.SelectIcon:SetVertexColor(0,1,0)
 
-
-
-
-    function btn:Get_Active()
-        return GetSpecialization(nil, false, 1)==self.specIndex
-    end
-
     function btn:Set_Active()
         if InCombatLockdown() then
             return
         end
         if self.isActive then
-            if PlayerSpellsFrame and not PlayerSpellsFrame:IsVisible() then
-                PlayerSpellsUtil.OpenToClassSpecializationsTab()
-            end
+            WoWTools_LoadUIMixin:SpellBook(2)
+            --if PlayerSpellsFrame then
+                --PlayerSpellsUtil.OpenToClassSpecializationsTab()
         else
             C_SpecializationInfo.SetSpecialization(self.specIndex)
         end
@@ -418,7 +411,7 @@ local function Init_Spec_Button()
             self:SetShown(show)
         else
             for _, btn in pairs(self.Button) do
-                btn:SetShown(self.Se)
+                btn:SetShown(show or btn.isActive)
             end
         end
     end)
