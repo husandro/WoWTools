@@ -296,6 +296,9 @@ local function Create_Spec_Button(index)
 
                     e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
                 )
+                if self:GetParent():IsMovable() then
+                    tooltip:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
+                end
             end
         })
     end)
