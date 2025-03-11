@@ -34,12 +34,9 @@ local function Init_Menu(self, root)
             EquipButton:set_show_hide()
         end)
     else
-        root:CreateCheckbox(
+        root:CreateButton(
             e.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
         function()
-            local frame = GetPaperDollSideBarFrame(3)
-            return frame and frame:IsShown()
-        end, function()
             WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)
         end)
     end
@@ -49,7 +46,7 @@ local function Init_Menu(self, root)
 
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '装等2' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
+        e.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
     function()
         return Save().trackButtonShowItemLeve
     end, function()
