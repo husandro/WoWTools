@@ -225,16 +225,14 @@ local function Init()
 	end
 
 	function TrackButton:set_Texture()
-		self.texture:SetAlpha(Save().btnstr and 0.1 or 0.5)
+		self.texture:SetAlpha(Save().btnstr and 0.3 or 0.7)
 	end
 
 	function TrackButton:set_Point()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
-		elseif e.Player.husandro then
-			self:SetPoint('TOPLEFT', 110,0)
 		else
-			self:SetPoint('TOPLEFT', ReputationFrame, 'TOPRIGHT', 0, -40)
+			self:SetPoint('TOPLEFT', 250, e.Player.husandro and 0 or -100)
 		end
 	end
 
@@ -271,7 +269,7 @@ local function Init()
 	TrackButton:SetScript("OnLeave", function(self)
 		ResetCursor()
 		e.tips:Hide()
-		self.texture:SetAlpha(0.5)
+		self:set_Texture()
 	end)
 	TrackButton:SetScript("OnEnter", function(self)
 		self:set_Tooltips()

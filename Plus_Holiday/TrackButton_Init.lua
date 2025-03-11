@@ -178,7 +178,7 @@ local function Init()
             or UnitAffectingCombat('player')
 
         self:SetShown(not hide)
-        self.texture:SetAlpha(Save().hide and 0.5 or 0.2)
+        self.texture:SetAlpha(Save().hide and 0.7 or 0.3)
         self.Frame:SetShown(not hide and not Save().hide)
     end
 
@@ -244,10 +244,8 @@ local function Init()
         self:ClearAllPoints()
         if Save().point then
             self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
-        elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 250, 0)
         else
-            self:SetPoint('BOTTOMRIGHT', _G['!KalielsTrackerFrame'] or ObjectiveTrackerBlocksFrame, 'TOPLEFT', -35, -10)
+            self:SetPoint('TOPLEFT', 400, e.Player.husandro and 0 or -100)
         end
     end
 

@@ -29,9 +29,9 @@ local function Init_TrackButton()
 	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', size=23})
 	WoWTools_CurrencyMixin.TrackButton= TrackButton
 
-	
+
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-   
+
     TrackButton.texture:SetPoint('CENTER')
     TrackButton.texture:SetSize(12,10)
 
@@ -39,10 +39,8 @@ local function Init_TrackButton()
 		self:ClearAllPoints()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
-		elseif e.Player.husandro then
-			self:SetPoint('TOPLEFT')
 		else
-			self:SetPoint('TOPLEFT', TokenFrame, 'TOPRIGHT',0, -35)
+			self:SetPoint('TOPLEFT', 150, e.Player.husandro and 0 or -100)
 		end
 	end
 
@@ -55,7 +53,7 @@ local function Init_TrackButton()
 			self.texture:SetAtlas('Adventure-MissionEnd-Line')
 			self.texture:SetPoint('TOPLEFT', 6,-6)
 			self.texture:SetPoint('BOTTOMRIGHT',-6,6)
-			self.texture:SetAlpha(Save().str and 0.1 or 0.5)
+			self.texture:SetAlpha(Save().str and 0.3 or 0.7)
 		end
 	end
 
@@ -189,7 +187,6 @@ local function Init_TrackButton()
 	TrackButton:SetScript("OnLeave", function(self)
 		e.tips:Hide()
 		self:set_texture()
-		self.texture:SetAlpha(0.5)
 	end)
 	TrackButton:SetScript('OnMouseWheel', function(self, d)
 		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then

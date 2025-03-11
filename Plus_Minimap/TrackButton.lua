@@ -1043,16 +1043,14 @@ local function Init_Button()
 
 
     function TrackButton:set_texture()
-        self:GetNormalTexture():SetAlpha(Save().vigentteButtonShowText and 0.1 or 0.5)
+        self:GetNormalTexture():SetAlpha(Save().vigentteButtonShowText and 0.3 or 0.7)
     end
 
     function TrackButton:set_point()--设置，位置
         if Save().pointVigentteButton then
             self:SetPoint(Save().pointVigentteButton[1], UIParent, Save().pointVigentteButton[3], Save().pointVigentteButton[4], Save().pointVigentteButton[5])
-        elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 250, 0)
         else
-            self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
+            self:SetPoint('TOPLEFT', 550, e.Player.husandro and 0 or -100)
         end
     end
 
