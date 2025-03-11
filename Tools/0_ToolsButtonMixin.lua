@@ -18,6 +18,46 @@ WoWTools_ToolsMixin={
 
 
 
+function WoWTools_ToolsMixin:CreateButton(tab)
+    tab= tab or {}
+
+    if not tab.disabledOptions then
+        table.insert(self.AddList, tab)
+    end
+    if not self.Button or self.Save.disabledADD[tab.name] then
+        return
+    end
+
+    self.setID= self.setID+1
+
+    local btn= WoWTools_ButtonMixin:Cbtn(self:GetParent(tab), {
+        name='WoWTools_Tools_'..(tab.name or self.setID)..'_Button',
+        setID= self.setID,
+        isType2=true,
+        isSecure=true,
+        size=30,
+    })
+
+    function btn:GetData()
+        return self.ToolsData
+    end
+    function btn:SetData(data)
+        self.ToolsData=data
+    end
+    btn:SetData(tab)
+
+    WoWTools_ToolsMixin:SetPoint(btn, tab)
+
+    return btn
+end
+
+
+
+
+
+
+
+
 
 
 function WoWTools_ToolsMixin:Set_Shown_Background(frame)
@@ -98,37 +138,10 @@ function WoWTools_ToolsMixin:Init()
 end
 
 
-function WoWTools_ToolsMixin:CreateButton(tab)
-    tab= tab or {}
 
-    if not tab.disabledOptions then
-        table.insert(self.AddList, tab)
-    end
-    if not self.Button or self.Save.disabledADD[tab.name] then
-        return
-    end
 
-    self.setID= self.setID+1
 
-    local btn= WoWTools_ButtonMixin:Cbtn(self:GetParent(tab), {
-        name='WoWTools_Tools_'..(tab.name or self.setID)..'_Button',
-        setID= self.setID,
-        isType2=true,
-        isSecure=true,
-    })
 
-    function btn:GetData()
-        return self.ToolsData
-    end
-    function btn:SetData(data)
-        self.ToolsData=data
-    end
-    btn:SetData(tab)
-
-    WoWTools_ToolsMixin:SetPoint(btn, tab)
-
-    return btn
-end
 
 
 

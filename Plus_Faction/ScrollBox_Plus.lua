@@ -1,7 +1,7 @@
 --界面, 增强
 local e= select(2, ...)
 local function Save()
-	return WoWTools_ReputationMixin.Save
+	return WoWTools_FactionMixin.Save
 end
 
 
@@ -166,7 +166,7 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 			end
 			e.tips:SetOwner(self, "ANCHOR_LEFT")
 			e.tips:ClearLines()
-			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
+			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.cn(info.name), info.factionID, 0,1,0,0,1,0)
@@ -200,7 +200,7 @@ end
 
 
 
-function WoWTools_ReputationMixin:Init_ScrollBox_Plus()
+function WoWTools_FactionMixin:Init_ScrollBox_Plus()
     hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return

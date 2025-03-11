@@ -79,14 +79,14 @@ end
 
 
 local function Init()
-    local btn=WoWTools_ButtonMixin:CreateMenu(CollectionsJournalCloseButton)
+    local btn=WoWTools_ButtonMixin:Menu(CollectionsJournalCloseButton)
     btn:SetPoint('RIGHT', CollectionsJournalCloseButton, 'LEFT')
 
     btn:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
 
-    local btn2=WoWTools_ButtonMixin:CreateMenu(WardrobeFrameCloseButton)
+    local btn2=WoWTools_ButtonMixin:Menu(WardrobeFrameCloseButton)
     btn2:SetPoint('RIGHT', WardrobeFrameCloseButton, 'LEFT')
 
     btn2:SetScript('OnMouseDown', function(self)

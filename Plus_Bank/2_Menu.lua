@@ -252,7 +252,7 @@ end
 
 
 local function Init()
-    local OptionButton= WoWTools_ButtonMixin:CreateMenu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
+    local OptionButton= WoWTools_ButtonMixin:Menu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
     function OptionButton:Open_Bag()

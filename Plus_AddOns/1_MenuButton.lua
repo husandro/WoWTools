@@ -199,7 +199,7 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:CreateMenu(AddonListCloseButton, {name='WoWTool_AddOnsOptionsButton'})
+    local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {name='WoWTool_AddOnsOptionsButton'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
 
     btn:SetScript('OnLeave', GameTooltip_Hide)

@@ -48,7 +48,7 @@ local function Init_Search(self)
 		end
 	end
 
-	WoWTools_TokensMixin:UpdateTokenFrame()
+	WoWTools_CurrencyMixin:UpdateTokenFrame()
 
 
 	find= find or find2
@@ -84,8 +84,8 @@ end
 
 local function Init()
 --展开,合起	
-	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-	WoWTools_TokensMixin.Button.down= down
+	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_CurrencyMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	WoWTools_CurrencyMixin.Button.down= down
 
 	down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
 
@@ -94,7 +94,7 @@ local function Init()
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info and info.isHeader and not info.isHeaderExpanded then
 				C_CurrencyInfo.ExpandCurrencyList(i, true)
-				WoWTools_TokensMixin:UpdateTokenFrame()
+				WoWTools_CurrencyMixin:UpdateTokenFrame()
 			end
 		end
 	end)
@@ -103,7 +103,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 		e.tips:Show()
 	end)
 
@@ -118,14 +118,14 @@ local function Init()
 				C_CurrencyInfo.ExpandCurrencyList(i, false)
 			end
 		end
-		WoWTools_TokensMixin:UpdateTokenFrame()
+		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
 	up:SetScript("OnLeave", GameTooltip_Hide)
 	up:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ',e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 		e.tips:Show()
 	end)
 
@@ -142,7 +142,7 @@ local function Init()
 	WoWTools_EditBoxMixn:HookInstructions(edit)
 	edit:SetSize(180, 23)
 
-	WoWTools_TokensMixin.Button:settings()
+	WoWTools_CurrencyMixin.Button:settings()
 end
 
 
@@ -150,6 +150,6 @@ end
 
 
 
-function WoWTools_TokensMixin:Init_Other_Button()
+function WoWTools_CurrencyMixin:Init_Other_Button()
     Init()
 end

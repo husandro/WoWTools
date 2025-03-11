@@ -13,7 +13,14 @@ local function get_index()
     return buttonIndex
 end
 
-local function get_size(value, isMenu)
+
+local TemplateSizeTab={
+    ['DropdownButton']= 23,
+    ['ItemButton']=36,
+}
+
+
+local function get_size(value, template)
     local w, h
     local t= type(value)
     if t=='table' then
@@ -21,10 +28,27 @@ local function get_size(value, isMenu)
     elseif t=='number' then
         w, h= value, value
     end
-    w=w or (isMenu and 23) or 30
-    h=h or (isMenu and 23) or 30
+    w=w or TemplateSizeTab[template] or 30
+    h=h or TemplateSizeTab[template] or 30
     return w, h
 end
+
+
+
+--[[ItemButton ItemButtonTemplate.xml
+CircularItemButtonTemplate 圆
+CircularGiantItemButtonTemplate 大圆 <Size x="54" y="54"/>
+GiantItemButtonTemplate <Size x="54" y="54"/>
+LargeItemButtonTemplate <Size x="147" y="41" /> 
+SmallItemButtonTemplate <Size x="134" y="30"/>
+<CheckButton name="SimplePopupButtonTemplate Size x="36" y="36"/>
+
+
+ItemButtonTemplate.xml
+]]
+
+
+
 
 function WoWTools_ButtonMixin:Cbtn(frame, tab)
     tab= tab or {}
@@ -32,18 +56,21 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local alpha= tab.alpha
     local setWheel= not tab.notWheel
     local atlas, texture= tab.atlas, tab.texture
+
     local isMenu= tab.isMenu or tab.frameType=='DropdownButton'
-    local width, height= get_size(tab.size, isMenu)
+    local isItem= tab.isItem
+
     local isSecure= tab.isSecure
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
                     or (isMenu and 'DropdownButton')
+                    or (isItem and 'ItemButton')
                     or 'Button'
     local template= tab.template
                     or (isSecure and 'SecureActionButtonTemplate')
                     or (tab.isUI and 'UIPanelButtonTemplate')
-
+    local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
     local isType2= tab.isType2
 
@@ -58,9 +85,11 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 --圆形按钮
     if isType2 then
         btn.mask= btn:CreateMaskTexture()
-        btn.mask:SetTexture('Interface\\CHARACTERFRAME\\TempPortraitAlphaMask')
-        btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
-        btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
+        btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+
+        btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+        btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
+        
 
         btn.background= btn:CreateTexture(nil, 'BACKGROUND')
         btn.background:SetAllPoints(btn)
@@ -151,7 +180,7 @@ end
 
 
 --菜单按钮 DropdownButtonMixin
-function WoWTools_ButtonMixin:CreateMenu(frame, tab)
+function WoWTools_ButtonMixin:Menu(frame, tab)
     tab= tab or {}
     tab.isMenu=true
 

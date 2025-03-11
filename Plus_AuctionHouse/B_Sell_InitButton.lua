@@ -16,7 +16,7 @@ local AuctionHouseButton
 
 
 local function Create_Button()
-    local btn= WoWTools_ButtonMixin:Cbtn(AuctionHouseButton.frame, {frameType='ItemButton'})
+    local btn= WoWTools_ButtonMixin:Cbtn(AuctionHouseButton.frame, {frameType='ItemButton', size=36})
     btn.selectTexture= btn:CreateTexture(nil, 'OVERLAY')
     btn.selectTexture:SetAtlas('Forge-ColorSwatchSelection')
     btn.selectTexture:SetPoint('CENTER')
@@ -211,7 +211,7 @@ end
 
 
 local function Init()
-    AuctionHouseButton= WoWTools_ButtonMixin:CreateMenu(AuctionHouseFrame, {name='WoWToolsAuctionHouseSellListButton'})
+    AuctionHouseButton= WoWTools_ButtonMixin:Menu(AuctionHouseFrame, {name='WoWToolsAuctionHouseSellListButton', icon='hide'})
 
     AuctionHouseButton:SetPoint('TOPLEFT', AuctionHouseFrame, 'TOPRIGHT',4,0)
     AuctionHouseButton.frame= CreateFrame('Frame', nil, AuctionHouseButton)

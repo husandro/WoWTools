@@ -37,7 +37,6 @@ Init.xml
 0_Mixin\Currency.lua
 0_Mixin\Durabiliy.lua
 0_Mixin\EditBox.lua
-0_Mixin\Faction.lua
 0_Mixin\Frame.lua
 0_Mixin\Group.lua
 0_Mixin\Item_Stats.lua
@@ -268,7 +267,8 @@ Plus_Attributes\Speed_Vehicle.lua
 
 
 ##声望面板
-Plus_Faction\0_Faction.lua
+Plus_Faction\0_FactionMixin.lua
+Plus_Faction\1_Faction.lua
 Plus_Faction\Faction_Button_Init.lua
 Plus_Faction\Faction_Button_Other.lua
 Plus_Faction\Faction_TrackButton_Init.lua
@@ -286,16 +286,17 @@ Plus_Faction\z_MajorFactionRenownFrame.lua
 
 
 ##货币面板
-Plus_Tokens\0_Tokens.lua
-Plus_Tokens\Tokens_Button_Init.lua
-Plus_Tokens\Tokens_Button_Other.lua
-Plus_Tokens\Tokens_Button_Menu.lua
-Plus_Tokens\TrackButton_Currency_Init.lua
-Plus_Tokens\TrackButton_Currency_SetText.lua
-Plus_Tokens\z_CurrencyTransferMenu.lua
-Plus_Tokens\z_ItemInteractionFrame.lua
-Plus_Tokens\z_Max_Tooltip.lua
-Plus_Tokens\z_ScrollBox.lua
+Plus_Currency\0_CurrencyMixin.lua
+Plus_Currency\1_Currency.lua
+Plus_Currency\Tokens_Button_Init.lua
+Plus_Currency\Tokens_Button_Other.lua
+Plus_Currency\Tokens_Button_Menu.lua
+Plus_Currency\TrackButton_Currency_Init.lua
+Plus_Currency\TrackButton_Currency_SetText.lua
+Plus_Currency\z_CurrencyTransferMenu.lua
+Plus_Currency\z_ItemInteractionFrame.lua
+Plus_Currency\z_Max_Tooltip.lua
+Plus_Currency\z_ScrollBox.lua
 
 
 

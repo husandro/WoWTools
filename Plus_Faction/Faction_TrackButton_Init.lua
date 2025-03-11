@@ -1,7 +1,7 @@
 
 local e= select(2, ...)
 local function Save()
-    return WoWTools_ReputationMixin.Save
+    return WoWTools_FactionMixin.Save
 end
 local TrackButton
 
@@ -79,7 +79,7 @@ local function Init_Menu(self, root)
 		return Save().onlyIcon
 	end, function()
 		Save().onlyIcon= not Save().onlyIcon and true or nil
-		WoWTools_ReputationMixin.onlyIcon= Save().onlyIcon
+		WoWTools_FactionMixin.onlyIcon= Save().onlyIcon
 		e.call(ReputationFrame.Update, ReputationFrame)
 	end)
 	sub:SetTooltip(function(tooltip)
@@ -124,7 +124,7 @@ local function Init_Menu(self, root)
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()
-		print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 end
 
@@ -149,14 +149,16 @@ local function Init()
 	if not Save().btn or TrackButton then
 		return
 	end
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {size=22, isType2=true})
-	WoWTools_ReputationMixin.TrackButton= TrackButton
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
+		size=22,
+		name='WoWToolsFactionTrackListMainButton'
+	})
+	WoWTools_FactionMixin.TrackButton= TrackButton
 
-	--TrackButton.text= WoWTools_LabelMixin:Create(TrackButton, {color=true})
-
-	TrackButton.texture= TrackButton:CreateTexture()
-	TrackButton.texture:SetAllPoints()
-	TrackButton.texture:SetAlpha(0.5)
+	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    TrackButton.texture:SetPoint('CENTER')
+    TrackButton.texture:SetSize(12,10)
 
 	TrackButton.btn= {}
 	TrackButton.Frame= CreateFrame('Frame', nil, TrackButton)
@@ -175,7 +177,7 @@ local function Init()
 	   )
 	   	self:SetShown(not hide)
 		self.Frame:SetShown(not hide and Save().btnstr)
-		WoWTools_ReputationMixin:TrackButton_Settings()
+		WoWTools_FactionMixin:TrackButton_Settings()
 		self:set_Texture()
 	end
 
@@ -198,7 +200,7 @@ local function Init()
 
 	TrackButton:SetScript('OnEvent', function(self, event)
 		if event=='UPDATE_FACTION' then
-			WoWTools_ReputationMixin:TrackButton_Settings()
+			WoWTools_FactionMixin:TrackButton_Settings()
 		else
 			self:set_Shown()
 		end
@@ -208,7 +210,7 @@ local function Init()
 	function TrackButton:set_Tooltips()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
-		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
+		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
 		e.tips:AddLine(' ')
 		e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
 		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
@@ -223,11 +225,7 @@ local function Init()
 	end
 
 	function TrackButton:set_Texture()
-		if Save().btnstr then
-			self.texture:SetTexture(0)
-		else
-			self.texture:SetAtlas(e.Icon.icon)
-		end
+		self.texture:SetAlpha(Save().btnstr and 0.1 or 0.5)
 	end
 
 	function TrackButton:set_Point()
@@ -278,7 +276,7 @@ local function Init()
 	TrackButton:SetScript("OnEnter", function(self)
 		self:set_Tooltips()
 		self.texture:SetAlpha(1)
-		WoWTools_ReputationMixin:TrackButton_Settings()
+		WoWTools_FactionMixin:TrackButton_Settings()
 	end)
 
 
@@ -287,7 +285,7 @@ local function Init()
 	TrackButton:set_Event()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
-	WoWTools_ReputationMixin:TrackButton_Settings()
+	WoWTools_FactionMixin:TrackButton_Settings()
 
 
 
@@ -307,7 +305,7 @@ local function Init()
     end)
 
 	hooksecurefunc(ReputationFrame, 'Update', function()
-		WoWTools_ReputationMixin:TrackButton_Settings()--更新, 监视, 文本
+		WoWTools_FactionMixin:TrackButton_Settings()--更新, 监视, 文本
 	end)
 end
 
@@ -321,7 +319,7 @@ end
 
 
 
-function WoWTools_ReputationMixin:Init_TrackButton()
+function WoWTools_FactionMixin:Init_TrackButton()
 	if PlayerGetTimerunningSeasonID() then--隐藏名称
 		self.onlyIcon=nil
 	else

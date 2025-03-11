@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_TokensMixin.Save
+    return WoWTools_CurrencyMixin.Save
 end
 local TrackButton
 
@@ -27,11 +27,12 @@ local function Init_TrackButton()
 
 
 	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', size=18, isType2=true})
-	WoWTools_TokensMixin.TrackButton= TrackButton
+	WoWTools_CurrencyMixin.TrackButton= TrackButton
 
-	TrackButton.texture= TrackButton:CreateTexture()
-	TrackButton.texture:SetAllPoints()
-	TrackButton.texture:SetAlpha(0.5)
+	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    TrackButton.texture:SetPoint('CENTER')
+    TrackButton.texture:SetSize(12,10)
 
 	function TrackButton:set_point()
 		self:ClearAllPoints()
@@ -115,7 +116,7 @@ local function Init_TrackButton()
 			self:set_texture(C_Item.GetItemIconByID(itemID))
 		else
 			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
-			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 			e.tips:AddLine(' ')
 			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
 			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
@@ -154,27 +155,27 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save().item[itemID]= not Save().item[itemID] and true or nil
-			print(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName, e.onlyChinese and '追踪' or TRACKING,
+			print(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName, e.onlyChinese and '追踪' or TRACKING,
 					Save().item[itemID] and
 					('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 					or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
 			ClearCursor()
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 
 		elseif d=='LeftButton' and not IsModifierKeyDown() then
 			ToggleCharacter("TokenFrame")--打开货币
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
-			WoWTools_TokensMixin:Init_Menu(self)
-			--WoWTools_TokensMixin:Init_TrackButton_Menu(self)
+			WoWTools_CurrencyMixin:Init_Menu(self)
+			--WoWTools_CurrencyMixin:Init_TrackButton_Menu(self)
 		end
 	end)
 
 
 	TrackButton:SetScript("OnEnter", function(self)
 		if (Save().itemButtonUse and not UnitAffectingCombat('player')) or not Save().itemButtonUse then
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			self:set_shown()
 		end
 		self:set_Tooltip()
@@ -210,7 +211,7 @@ local function Init_TrackButton()
 
 
 	TrackButton.Frame:SetScript('OnShow', function()
-		WoWTools_TokensMixin:Set_TrackButton_Text()
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	end)
 
 	TrackButton.Frame:RegisterEvent('BAG_UPDATE_DELAYED')
@@ -219,7 +220,7 @@ local function Init_TrackButton()
 		if event=='PLAYER_REGEN_ENABLED' then
 			self:UnregisterEvent('PLAYER_REGEN_ENABLED')
 		end
-		WoWTools_TokensMixin:Set_TrackButton_Text()
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	end)
 	function TrackButton.Frame:set_shown()
 		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
@@ -239,13 +240,13 @@ local function Init_TrackButton()
 	TrackButton:set_texture()
 
 
-	WoWTools_TokensMixin:Set_TrackButton_Text()
+	WoWTools_CurrencyMixin:Set_TrackButton_Text()
 
 	hooksecurefunc(TokenFrame, 'Update', function(frame)
-		if WoWTools_TokensMixin.TrackButton then
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+		if WoWTools_CurrencyMixin.TrackButton then
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		else
-			WoWTools_TokensMixin:Init_TrackButton()
+			WoWTools_CurrencyMixin:Init_TrackButton()
 		end
 	end)
 end
@@ -267,7 +268,7 @@ end
 
 
 
-function WoWTools_TokensMixin:Init_TrackButton()
+function WoWTools_CurrencyMixin:Init_TrackButton()
     Init_TrackButton()
 end
 

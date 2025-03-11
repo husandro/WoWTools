@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-    return WoWTools_TokensMixin.Save
+    return WoWTools_CurrencyMixin.Save
 end
 
 
@@ -15,7 +15,7 @@ end
 
 
 --物品，菜单
-function WoWTools_TokensMixin:MenuList_Item(_, root)
+function WoWTools_CurrencyMixin:MenuList_Item(_, root)
 	local sub, sub2, num
 	sub=root:CreateCheckbox(
 		(Save().Hide and '|cff9e9e9e' or'')..(e.onlyChinese and '物品' or ITEMS),
@@ -23,7 +23,7 @@ function WoWTools_TokensMixin:MenuList_Item(_, root)
 		return not Save().disabledItemTrack
 	end, function()
 		Save().disabledItemTrack = not Save().disabledItemTrack and true or nil
-		WoWTools_TokensMixin:Set_TrackButton_Text()
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	end)
 
 
@@ -36,7 +36,7 @@ function WoWTools_TokensMixin:MenuList_Item(_, root)
 			return Save().item[data.itemID]
 		end, function(data)
 			Save().item[data.itemID]= not Save().item[data.itemID] and true or nil
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end, {itemID=itemID})
 		WoWTools_SetTooltipMixin:Set_Menu(sub2)
 	end
@@ -45,7 +45,7 @@ function WoWTools_TokensMixin:MenuList_Item(_, root)
 
 	if num>1 then
 --全部清除
-		WoWTools_MenuMixin:ClearAll(sub, function() Save().item={} WoWTools_TokensMixin:Set_TrackButton_Text() end)
+		WoWTools_MenuMixin:ClearAll(sub, function() Save().item={} WoWTools_CurrencyMixin:Set_TrackButton_Text() end)
 --GridMode
 		WoWTools_MenuMixin:SetGridMode(sub, num)
 	end
@@ -88,7 +88,7 @@ end
 --追踪
 local function Init_TrackButton_Menu(self, root)
     if Save().itemButtonUse and WoWTools_MenuMixin:CheckInCombat(root)
-		or not WoWTools_TokensMixin.TrackButton
+		or not WoWTools_CurrencyMixin.TrackButton
 	then
         return
     end
@@ -103,8 +103,8 @@ local function Init_TrackButton_Menu(self, root)
     end, function ()
 		if Save().itemButtonUse and not UnitAffectingCombat('player') or not Save().itemButtonUse then
 			Save().str= not Save().str and true or false
-			WoWTools_TokensMixin.TrackButton:set_texture()
-			WoWTools_TokensMixin.TrackButton.Frame:set_shown()
+			WoWTools_CurrencyMixin.TrackButton:set_texture()
+			WoWTools_CurrencyMixin.TrackButton.Frame:set_shown()
 		end
     end)
 
@@ -116,7 +116,7 @@ local function Init_TrackButton_Menu(self, root)
         return Save().nameShow
     end, function ()
         Save().nameShow= not Save().nameShow and true or nil
-        WoWTools_TokensMixin:Set_TrackButton_Text()
+        WoWTools_CurrencyMixin:Set_TrackButton_Text()
     end)
 
 --向右平移
@@ -126,7 +126,7 @@ local function Init_TrackButton_Menu(self, root)
         return Save().toRightTrackText
     end, function ()
         Save().toRightTrackText = not Save().toRightTrackText and true or nil
-        for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn) do
+        for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn) do
             btn.text:ClearAllPoints()
             btn:set_Text_Point()
         end
@@ -153,8 +153,8 @@ local function Init_TrackButton_Menu(self, root)
 		return not Save().notAutoHideTrack
 	end, function()
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		if WoWTools_TokensMixin.TrackButton then
-			WoWTools_TokensMixin.TrackButton:set_shown()
+		if WoWTools_CurrencyMixin.TrackButton then
+			WoWTools_CurrencyMixin.TrackButton:set_shown()
 		end
 	end)
 	sub:SetTooltip(function(tooltip)
@@ -173,23 +173,23 @@ local function Init_TrackButton_Menu(self, root)
         return Save().scaleTrackButton
     end, function(value)
         Save().scaleTrackButton= value
-        WoWTools_TokensMixin.TrackButton:set_scale()
+        WoWTools_CurrencyMixin.TrackButton:set_scale()
     end)
 
 --FrameStrata
     WoWTools_MenuMixin:FrameStrata(root, function(data)
-        return WoWTools_TokensMixin.TrackButton:GetFrameStrata()==data
+        return WoWTools_CurrencyMixin.TrackButton:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
-        WoWTools_TokensMixin.TrackButton:set_strata()
+        WoWTools_CurrencyMixin.TrackButton:set_strata()
     end)
 
 --重置位置
 	root:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
-		if WoWTools_TokensMixin.TrackButton then
-			WoWTools_TokensMixin.TrackButton:set_point()
+		if WoWTools_CurrencyMixin.TrackButton then
+			WoWTools_CurrencyMixin.TrackButton:set_point()
 		end
 	end)
 end
@@ -229,8 +229,8 @@ local function Init_Menu(self, root)
 		return not Save().Hide
 	end, function()
 		Save().Hide= not Save().Hide and true or nil
-		WoWTools_TokensMixin:Init_TrackButton()
-		WoWTools_TokensMixin.Button:set_texture()
+		WoWTools_CurrencyMixin:Init_TrackButton()
+		WoWTools_CurrencyMixin.Button:set_texture()
 	end)
 
 --TrackButton 选项
@@ -251,7 +251,7 @@ local function Init_Menu(self, root)
 		return Save().indicato
 	end, function()
 		Save().indicato= not Save().indicato and true or nil
-		WoWTools_TokensMixin:Set_TrackButton_Text()
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	end)
 
 
@@ -265,7 +265,7 @@ local function Init_Menu(self, root)
 		end, function(data)
 			Save().tokens[data.currencyID]= not Save().tokens[data.currencyID] and true or nil
 			TokenFrame:Update()
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end, {currencyID=currencyID})
 		sub2:SetTooltip(function(tooltip, description)
 			tooltip:SetCurrencyByID(description.data.currencyID)
@@ -292,7 +292,7 @@ local function Init_Menu(self, root)
 			)
 		end, SetValue=function(currencyID)
 			Save().tokens[currencyID]=true
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end})
 	end)
 
@@ -301,7 +301,7 @@ local function Init_Menu(self, root)
 		sub:CreateDivider()
 		WoWTools_MenuMixin:ClearAll(sub, function()
 			Save().tokens={}
-			WoWTools_TokensMixin:Set_TrackButton_Text()
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			TokenFrame:Update()
 		end)
 --SetGridMode
@@ -310,7 +310,7 @@ local function Init_Menu(self, root)
 
 
 --物品
-	WoWTools_TokensMixin:MenuList_Item(self, root)
+	WoWTools_CurrencyMixin:MenuList_Item(self, root)
 
 --达到上限
 	root:CreateDivider()
@@ -320,10 +320,10 @@ local function Init_Menu(self, root)
 		return not Save().hideCurrencyMax
 	end, function ()
 		Save().hideCurrencyMax= not Save().hideCurrencyMax and true or nil
-		if WoWTools_TokensMixin.MaxFrame then
-			WoWTools_TokensMixin.MaxFrame:settings()
+		if WoWTools_CurrencyMixin.MaxFrame then
+			WoWTools_CurrencyMixin.MaxFrame:settings()
 			if not Save().hideCurrencyMax then
-				print(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
+				print(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName, 'Test', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248))
 			end
 		end
 	end)
@@ -339,19 +339,19 @@ local function Init_Menu(self, root)
 		return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		WoWTools_TokensMixin:UpdateTokenFrame()
-		WoWTools_TokensMixin.Button:settings()
+		WoWTools_CurrencyMixin:UpdateTokenFrame()
+		WoWTools_CurrencyMixin.Button:settings()
 	end)
 
 	root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_TokensMixin.addName})
+    WoWTools_MenuMixin:OpenOptions(root, {name= WoWTools_CurrencyMixin.addName})
 end
 
 
 
 
 
-function WoWTools_TokensMixin:Init_Menu(frame)
+function WoWTools_CurrencyMixin:Init_Menu(frame)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 

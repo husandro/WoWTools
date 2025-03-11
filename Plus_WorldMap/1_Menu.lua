@@ -400,7 +400,7 @@ end
 
 
 local function Init()--显示地图ID
-    local MenuButton= WoWTools_ButtonMixin:CreateMenu(WorldMapFrame.BorderFrame.TitleContainer, {name='WoWTools_PlusWorldMap_MenuButton'})
+    local MenuButton= WoWTools_ButtonMixin:Menu(WorldMapFrame.BorderFrame.TitleContainer, {name='WoWTools_PlusWorldMap_MenuButton'})
 
     if C_AddOns.IsAddOnLoaded('Mapster') then
         C_Timer.After(2, function()

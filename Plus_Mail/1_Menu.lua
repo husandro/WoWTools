@@ -117,7 +117,7 @@ end
 
 
 local function Init()
-    local btn=WoWTools_ButtonMixin:CreateMenu(MailFrameCloseButton, {name='WoWToolsMailMenuButton'})
+    local btn=WoWTools_ButtonMixin:Menu(MailFrameCloseButton, {name='WoWToolsMailMenuButton'})
     btn:SetPoint('RIGHT', MailFrameCloseButton, 'LEFT')
 
     btn:SetScript('OnLeave', GameTooltip_Hide)

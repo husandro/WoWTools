@@ -1,6 +1,6 @@
 local e=select(2, ...)
 local function Save()
-	return WoWTools_TokensMixin.Save
+	return WoWTools_CurrencyMixin.Save
 end
 local Button
 
@@ -15,15 +15,15 @@ local function click(self)
 	local infoType, itemID, itemLink = GetCursorInfo()
 	if infoType == "item" and itemID then
 		Save().item[itemID]= not Save().item[itemID] and true or nil
-		print(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName, e.onlyChinese and '追踪' or TRACKING,
+		print(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName, e.onlyChinese and '追踪' or TRACKING,
 				Save().item[itemID] and
 				('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 				or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 				itemLink or itemID)
 		ClearCursor()
-		WoWTools_TokensMixin:Set_TrackButton_Text()
+		WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	else
-		WoWTools_TokensMixin:Init_Menu(self)
+		WoWTools_CurrencyMixin:Init_Menu(self)
 	end
 end
 
@@ -46,15 +46,15 @@ local function enter(self)
 	end
 	e.tips:AddLine(' ')
 
-	e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+	e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 	e.tips:Show()
-	WoWTools_TokensMixin:Set_TrackButton_Pushed(true)--提示
+	WoWTools_CurrencyMixin:Set_TrackButton_Pushed(true)--提示
 end
 
 local function leave()
 	e.tips:Hide()
 	Button:set_texture()
-	WoWTools_TokensMixin:Set_TrackButton_Pushed(false)--提示
+	WoWTools_CurrencyMixin:Set_TrackButton_Pushed(false)--提示
 end
 
 
@@ -73,7 +73,7 @@ end
 
 local function Init()
     Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWTools_PlusCurrencyButton', size=23})
-	WoWTools_TokensMixin.Button= Button
+	WoWTools_CurrencyMixin.Button= Button
 
 	Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -2, 0)
 	Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
@@ -133,7 +133,7 @@ local function Init()
 			end
 		end
 		ToggleAllBags()
-		WoWTools_TokensMixin:UpdateTokenFrame()
+		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
 	Button.bag:SetScript('OnEnter', function(self2)
 		e.tips:SetOwner(self2, "ANCHOR_LEFT")
@@ -166,6 +166,6 @@ end
 
 
 
-function WoWTools_TokensMixin:Init_Button()
+function WoWTools_CurrencyMixin:Init_Button()
     Init()
 end

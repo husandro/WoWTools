@@ -110,7 +110,7 @@ end
 
 
 local function Init()
-	local btn=WoWTools_ButtonMixin:CreateMenu(ColorPickerFrame, {name='WoWToolsColorPickerFrameButton'})
+	local btn=WoWTools_ButtonMixin:Menu(ColorPickerFrame, {name='WoWToolsColorPickerFrameButton'})
 	btn:SetPoint("TOPLEFT", ColorPickerFrame.Border, 7, -7)
 
 	function btn:set_alpha()

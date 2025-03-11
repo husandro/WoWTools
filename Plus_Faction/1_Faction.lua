@@ -1,6 +1,5 @@
 local id, e = ...
-WoWTools_ReputationMixin={
-Save={
+WoWTools_FactionMixin.Save={
 	btn=e.Player.husandro,--启用，TrackButton
 	factions={},--指定,显示,声望
 	btnstr=true,--文本
@@ -13,12 +12,10 @@ Save={
 	--indicato=true,--指定
 	onlyIcon=e.Player.husandro,--隐藏名称， 仅显示有图标
 	--notPlus=true,
-},
 }
 
-
 local function Save()
-	return WoWTools_ReputationMixin.Save
+	return WoWTools_FactionMixin.Save
 end
 
 
@@ -29,11 +26,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
 		if arg1==id then
 
-			WoWTools_ReputationMixin.Save= WoWToolsSave['Plus_Reputation'] or Save()
-			Save().factions= Save().factions or {}
+			if WoWToolsSave['Plus_Reputation'] then
+				WoWTools_FactionMixin.Save= WoWToolsSave['Plus_Reputation']
+				Save().factions= Save().factions or {}
+				WoWToolsSave['Plus_Reputation']= nil
+			else
+				WoWTools_FactionMixin.Save= WoWToolsSave['Plus_Faction'] or Save()
+			end
+			
 
 			local addName= format('|A:%s:0:0|a%s', e.Icon[e.Player.faction] or 'ParagonReputation_Glow', e.onlyChinese and '声望' or REPUTATION)
-			WoWTools_ReputationMixin.addName= addName
+			WoWTools_FactionMixin.addName= addName
 
 			--添加控制面板
 			e.AddPanel_Check({
@@ -48,23 +51,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			if Save().disabled then
 				self:UnregisterEvent(event)
 			else
-				WoWTools_ReputationMixin:Init_Button()
-				WoWTools_ReputationMixin:Init_ScrollBox_Plus()
-				WoWTools_ReputationMixin:Init_Chat_MSG()
-				WoWTools_ReputationMixin:Init_TrackButton()
-				WoWTools_ReputationMixin:Init_Other_Button()
+				WoWTools_FactionMixin:Init_Button()
+				WoWTools_FactionMixin:Init_ScrollBox_Plus()
+				WoWTools_FactionMixin:Init_Chat_MSG()
+				WoWTools_FactionMixin:Init_TrackButton()
+				WoWTools_FactionMixin:Init_Other_Button()
 			end
 
 		elseif arg1=='Blizzard_MajorFactions' then
-			WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()--名望
+			WoWTools_FactionMixin:Init_MajorFactionRenownFrame()--名望
 
 		elseif arg1=='Blizzard_CovenantRenown' then
-			WoWTools_ReputationMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
+			WoWTools_FactionMixin:Init_CovenantRenown(CovenantRenownFrame)--盟约 9.0
 		end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Reputation']=Save()
+            WoWToolsSave['Plus_Faction']=Save()
         end
     end
 end)

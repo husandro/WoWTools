@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-	return WoWTools_TokensMixin.Save
+	return WoWTools_CurrencyMixin.Save
 end
 
 
@@ -99,6 +99,6 @@ end
 
 
 
-function WoWTools_TokensMixin:Init_Currency_Transfer()
+function WoWTools_CurrencyMixin:Init_Currency_Transfer()
     Init()
 end

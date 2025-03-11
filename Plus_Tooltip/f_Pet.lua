@@ -15,7 +15,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip.text2Left:SetText(CollectedText or '')
         tooltip.textRight:SetText(AllCollected or '')
 
-        tooltip:AddDoubleLine('speciesID '..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and 'displayID '..creatureDisplayID..' ' or '')..(companionID and 'companionID'..companionID or ''))--ID
+        tooltip:AddDoubleLine('speciesID'..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and 'displayID'..creatureDisplayID..' ' or '')..(companionID and 'companionID'..companionID or ''))--ID
 
         local tab = C_PetJournal.GetPetAbilityListTable(speciesID) or {}--技能图标
         table.sort(tab, function(a,b) return a.level< b.level end)

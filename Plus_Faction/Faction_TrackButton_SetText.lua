@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-    return WoWTools_ReputationMixin.Save
+    return WoWTools_FactionMixin.Save
 end
 
 
@@ -33,7 +33,7 @@ local function get_Faction_Info(index, factionID)
 
 
 	if (isCapped and not isParagon and index)--声望已满，没有奖励
-		or (WoWTools_ReputationMixin.onlyIcon and not atlas and not texture)
+		or (WoWTools_FactionMixin.onlyIcon and not atlas and not texture)
 	then
 		return
 	end
@@ -44,7 +44,7 @@ local function get_Faction_Info(index, factionID)
 	end
 
 	local text
-	if WoWTools_ReputationMixin.onlyIcon then--仅显示有图标
+	if WoWTools_FactionMixin.onlyIcon then--仅显示有图标
 		name=nil
 	else
 		name= e.cn(name)
@@ -119,21 +119,21 @@ end
 
 
 local function Crated_Button(index, last)
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_ReputationMixin.TrackButton.Frame, {size=14})
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_FactionMixin.TrackButton.Frame, {size=14})
     if Save().toTopTrack then
-        btn:SetPoint('BOTTOM', last or WoWTools_ReputationMixin.TrackButton, 'TOP')
+        btn:SetPoint('BOTTOM', last or WoWTools_FactionMixin.TrackButton, 'TOP')
     else
-        btn:SetPoint('TOP', last or WoWTools_ReputationMixin.TrackButton, 'BOTTOM')
+        btn:SetPoint('TOP', last or WoWTools_FactionMixin.TrackButton, 'BOTTOM')
     end
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
         if EmbeddedItemTooltip then EmbeddedItemTooltip:Hide() end
-        WoWTools_ReputationMixin:Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
+        WoWTools_FactionMixin:Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
 		WoWTools_FactionMixin:Find(nil, nil)
     end)
     btn:SetScript('OnEnter', function(self)
         WoWTools_SetTooltipMixin:Faction(self)
-        WoWTools_ReputationMixin:Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
+        WoWTools_FactionMixin:Set_TrackButton_Pushed(true, self.text)--TrackButton，提示
 		WoWTools_FactionMixin:Find(self.factionID)
     end)
 
@@ -148,7 +148,7 @@ local function Crated_Button(index, last)
     end
 
     btn:set_text_point()
-    WoWTools_ReputationMixin.TrackButton.btn[index]=btn
+    WoWTools_FactionMixin.TrackButton.btn[index]=btn
 
     return btn
 end
@@ -168,7 +168,7 @@ end
 
 
 --设置 Text
-function WoWTools_ReputationMixin:TrackButton_Settings()
+function WoWTools_FactionMixin:TrackButton_Settings()
 	if not self.TrackButton or not self.TrackButton:IsShown() or not self.TrackButton.Frame:IsShown() then
 		return
 	end
@@ -232,7 +232,7 @@ end
 
 
 
-function WoWTools_ReputationMixin:Set_TrackButton_Pushed(show, label)--TrackButton，提示
+function WoWTools_FactionMixin:Set_TrackButton_Pushed(show, label)--TrackButton，提示
 	if self.TrackButton then
         self.TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
         if label then

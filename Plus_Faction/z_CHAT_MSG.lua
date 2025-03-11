@@ -21,7 +21,7 @@ local FACTION_STANDING_INCREASED_ACCOUNT_WIDE = FACTION_STANDING_INCREASED_ACCOU
 --声望更新, 提示
 --#############
 local function EventFilter(_, _, text, ...)
-	if not WoWTools_ReputationMixin.Save.factionUpdateTips then
+	if not WoWTools_FactionMixin.Save.factionUpdateTips then
 		return
 	end
 
@@ -97,7 +97,7 @@ local function Init_Check()
         end
     end
     if text then
-        print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+        print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
     end
 end
 
@@ -118,7 +118,7 @@ end
 
 
 
-function WoWTools_ReputationMixin:Init_Chat_MSG()
+function WoWTools_FactionMixin:Init_Chat_MSG()
 	FACTION_STANDING_INCREASED= LOCALE_zhCN and '你在(.+)中的声望值提高了.+点。' or WoWTools_TextMixin:Magic(FACTION_STANDING_INCREASED)
 	FACTION_STANDING_INCREASED_ACCOUNT_WIDE= LOCALE_zhCN and '你的战团在(.+)中的声望值提高了.+点。' or WoWTools_TextMixin:Magic(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
 
@@ -130,6 +130,6 @@ function WoWTools_ReputationMixin:Init_Chat_MSG()
 end
 
 
-function WoWTools_ReputationMixin:Check_Chat_MSG()
+function WoWTools_FactionMixin:Check_Chat_MSG()
 	Init_Check()
 end

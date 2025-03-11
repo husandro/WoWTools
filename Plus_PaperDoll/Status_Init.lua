@@ -22,7 +22,7 @@ local function Init_Button()
 
     --CharacterStatsPane
 --显示/隐藏装备管理框选项
-    Button= WoWTools_ButtonMixin:CreateMenu(PaperDollFrame, {
+    Button= WoWTools_ButtonMixin:Menu(PaperDollFrame, {
         size=20,
         name='WoWTools_PlsuPaperDollStatusButton',
         icon='hide',

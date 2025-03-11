@@ -324,7 +324,7 @@ end
 local function Init_Button()
     Init_Camera_Tabs()
 
-    ClickToMoveButton= WoWTools_ButtonMixin:CreateMenu(PlayerFrame,
+    ClickToMoveButton= WoWTools_ButtonMixin:Menu(PlayerFrame,
         {
             atlas= 'transmog-nav-slot-feet',
             size= 23,

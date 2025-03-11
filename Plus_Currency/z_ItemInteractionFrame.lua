@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-	return WoWTools_TokensMixin.Save
+	return WoWTools_CurrencyMixin.Save
 end
 
 
@@ -51,7 +51,7 @@ local function Init(self)
 					e.tips:ClearLines()
 					e.tips:SetCurrencyByID(self2.chargeCurrencyTypeId)
 					e.tips:AddLine(' ')
-					e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+					e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 					e.tips:Show()
 				end
 			end)
@@ -86,6 +86,6 @@ end
 
 
 
-function WoWTools_TokensMixin:Set_ItemInteractionFrame(frame)
+function WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
     Init(frame)
 end

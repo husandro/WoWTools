@@ -13,8 +13,8 @@ local Category, Layout
 
 
 local function set_Cursor_Tips(self)
-    WoWTools_TooltipMixin:Set_Init_Item(GameTooltip, true)
-    WoWTools_TooltipMixin:Set_Init_Item(ItemRefTooltip, true)
+    WoWTools_TooltipMixin:Set_Rest_Item(GameTooltip)
+    WoWTools_TooltipMixin:Set_Rest_Item(ItemRefTooltip)
 
     WoWTools_TooltipMixin:Set_PlayerModel(GameTooltip)
     WoWTools_TooltipMixin:Set_PlayerModel(ItemRefTooltip)

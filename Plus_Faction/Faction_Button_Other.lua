@@ -74,7 +74,7 @@ local function Init_Search(self)
 
 		if data.isHeader and data.isCollapsed then
 			C_Reputation.ExpandFactionHeader(index)
-			WoWTools_TokensMixin:UpdateTokenFrame()
+			WoWTools_CurrencyMixin:UpdateTokenFrame()
 		end
 	end
 
@@ -114,8 +114,8 @@ end
 local function Init()
 
 
-	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_ReputationMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-    WoWTools_ReputationMixin.down= down
+	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_FactionMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+    WoWTools_FactionMixin.down= down
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
 		set_expand_collapse(true)
@@ -125,7 +125,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '展开选项|A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
-		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
+		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
 		e.tips:Show()
 	end)
 
@@ -139,7 +139,7 @@ local function Init()
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
 		e.tips:ClearLines()
 		e.tips:AddDoubleLine(' ', e.onlyChinese and '收起选项|A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
+		e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
 		e.tips:Show()
 	end)
 
@@ -156,7 +156,7 @@ local function Init()
 	--edit.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
     WoWTools_EditBoxMixn:HookInstructions(edit)
 
-    WoWTools_ReputationMixin.Button:settings()
+    WoWTools_FactionMixin.Button:settings()
 end
 
 
@@ -164,6 +164,6 @@ end
 
 
 
-function WoWTools_ReputationMixin:Init_Other_Button()
+function WoWTools_FactionMixin:Init_Other_Button()
     Init()
 end

@@ -134,7 +134,7 @@ end
 
 
 local function Create_ListButton(index)
-    local btn=WoWTools_ButtonMixin:CreateMenu(ListButton.frame, {
+    local btn=WoWTools_ButtonMixin:Menu(ListButton.frame, {
         name='WoWToolsBankLeftListClassButton'..index,
         icon='hide',
     })
@@ -387,7 +387,7 @@ end
 
 
 local function Init()
-    ListButton=WoWTools_ButtonMixin:CreateMenu(BankFrame, {
+    ListButton=WoWTools_ButtonMixin:Menu(BankFrame, {
         name='WoWToolsBankLeftListButton',
         atlas='NPE_ArrowDownGlow',
     })

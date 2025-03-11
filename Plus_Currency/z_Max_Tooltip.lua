@@ -1,6 +1,6 @@
 local e=select(2, ...)
 local function Save()
-	return WoWTools_TokensMixin.Save
+	return WoWTools_CurrencyMixin.Save
 end
 
 local MaxTabs={}
@@ -41,7 +41,7 @@ local function Currency_Max(curID)--已达到资源上限
     end
 
     if num>0 then
-        print(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+        print(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
         for currencyID, info in pairs(tab) do
             print(
                 (WoWTools_CurrencyMixin:GetLink(currencyID) or currencyID)
@@ -60,7 +60,7 @@ end
 
 local function Init()
     local Frame= CreateFrame('Frame')
-    WoWTools_TokensMixin.MaxFrame= Frame
+    WoWTools_CurrencyMixin.MaxFrame= Frame
 
     function Frame:settings()
         MaxTabs={}
@@ -90,6 +90,6 @@ end
 
 
 
-function WoWTools_TokensMixin:Init_MaxTooltip()
+function WoWTools_CurrencyMixin:Init_MaxTooltip()
     Init()
 end

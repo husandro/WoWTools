@@ -120,7 +120,7 @@ local function Init_Menu(_, root)
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:CreateMenu(StableFrameCloseButton)
+    local btn= WoWTools_ButtonMixin:Menu(StableFrameCloseButton)
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
 
 

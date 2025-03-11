@@ -182,7 +182,7 @@ end
 
 
 function WoWTools_GuildBankMixin:Init_GuildMenu()
-    MenuButton= WoWTools_ButtonMixin:CreateMenu(GuildBankFrame.CloseButton, {
+    MenuButton= WoWTools_ButtonMixin:Menu(GuildBankFrame.CloseButton, {
         name='WoWToolsGuildBankMenuButton',
     })
     MenuButton:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT')

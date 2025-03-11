@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return WoWTools_TokensMixin.Save
+    return WoWTools_CurrencyMixin.Save
 end
 
 
@@ -162,7 +162,7 @@ end
 
 
 
-function WoWTools_TokensMixin:Set_TrackButton_Pushed(show, label)--提示
+function WoWTools_CurrencyMixin:Set_TrackButton_Pushed(show, label)--提示
     if self.TrackButton then
 		self.TrackButton:SetButtonState(show and 'PUSHED' or "NORMAL")
 	end
@@ -186,7 +186,7 @@ end
 
 
 local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_TokensMixin.TrackButton.Frame, {
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_CurrencyMixin.TrackButton.Frame, {
 		size=14,
 		isSecure=itemButtonUse,
 		isType2=itemButtonUse
@@ -209,9 +209,9 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
 
 
     if Save().toTopTrack then
-        btn:SetPoint("BOTTOM", last or WoWTools_TokensMixin.TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 10 or 0) --货物，物品，分开
+        btn:SetPoint("BOTTOM", last or WoWTools_CurrencyMixin.TrackButton, 'TOP', 0,  (endTokenIndex>1 and index==endTokenIndex) and 10 or 0) --货物，物品，分开
     else
-        btn:SetPoint("TOP", last or WoWTools_TokensMixin.TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -10 or 0) --货物，物品，分开
+        btn:SetPoint("TOP", last or WoWTools_CurrencyMixin.TrackButton, 'BOTTOM', 0,  (endTokenIndex>1 and index==endTokenIndex) and -10 or 0) --货物，物品，分开
     end
 
 
@@ -226,7 +226,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
 
     btn:SetScript('OnLeave', function(self)
         e.tips:Hide()
-        WoWTools_TokensMixin:Set_TrackButton_Pushed(false, self.text)--提示
+        WoWTools_CurrencyMixin:Set_TrackButton_Pushed(false, self.text)--提示
         if self.itemID then
             WoWTools_BagMixin:Find(false)--查询，背包里物品
 		elseif self.currencyID then
@@ -261,7 +261,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
         end
         e.tips:Show()
 		self:set_item_cool()
-        WoWTools_TokensMixin:Set_TrackButton_Pushed(true, self.text)--提示
+        WoWTools_CurrencyMixin:Set_TrackButton_Pushed(true, self.text)--提示
     end)
 
     btn:SetScript("OnMouseDown", function(self)
@@ -308,7 +308,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
     end
     btn.itemButtonUse= itemButtonUse--使用物品
 
-    WoWTools_TokensMixin.TrackButton.btn[index]= btn
+    WoWTools_CurrencyMixin.TrackButton.btn[index]= btn
     return btn
 end
 
@@ -327,7 +327,7 @@ end
 
 
 
-function WoWTools_TokensMixin:Set_TrackButton_Text()
+function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 	if not self.TrackButton then
         return
     elseif not self.TrackButton:IsShown() or not Save().str then

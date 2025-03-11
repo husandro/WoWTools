@@ -1,5 +1,5 @@
 local function Save()
-	return WoWTools_ReputationMixin.Save
+	return WoWTools_FactionMixin.Save
 end
 
 
@@ -116,6 +116,6 @@ end
 
 
 --盟约 9.0
-function WoWTools_ReputationMixin:Init_CovenantRenown(frame)
+function WoWTools_FactionMixin:Init_CovenantRenown(frame)
     Init(frame)
 end

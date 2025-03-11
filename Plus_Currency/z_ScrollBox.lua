@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-    return WoWTools_TokensMixin.Save
+    return WoWTools_CurrencyMixin.Save
 end
 
 
@@ -55,7 +55,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			if self.currencyID then
 				Save().tokens[self.currencyID]= not Save().tokens[self.currencyID] and true or nil
 				frame.check:SetAlpha(Save().tokens[self.currencyID] and 1 or 0.5)
-				WoWTools_TokensMixin:Set_TrackButton_Text()
+				WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
@@ -66,23 +66,23 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 				e.tips:AddLine(" ")
 			end
 			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TokensMixin.addName)
+			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 			e.tips:Show()
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(18,18)
 
 		frame:HookScript('OnEnter', function(self)
-			if WoWTools_TokensMixin.TrackButton then
-				for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn or {}) do
+			if WoWTools_CurrencyMixin.TrackButton then
+				for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn or {}) do
 					local show= self.check.currencyID and self.check.currencyID== btn.currencyID
 					btn:SetButtonState(self.check.currencyID== btn.currencyID and 'PUSHED' or 'NORMAL')
 				end
 			end
 		end)
 		frame:HookScript('OnLeave', function()
-			if WoWTools_TokensMixin.TrackButton then
-				for _, btn in pairs(WoWTools_TokensMixin.TrackButton.btn or {}) do
+			if WoWTools_CurrencyMixin.TrackButton then
+				for _, btn in pairs(WoWTools_CurrencyMixin.TrackButton.btn or {}) do
 					btn:SetButtonState('NORMAL')
 				end
 			end
@@ -146,7 +146,7 @@ end
 
 
 
-function WoWTools_TokensMixin:Init_ScrollBox_Plus()
+function WoWTools_CurrencyMixin:Init_ScrollBox_Plus()
     hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
             return

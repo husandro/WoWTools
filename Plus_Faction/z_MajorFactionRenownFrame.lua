@@ -296,7 +296,7 @@ end
 
 
 
-function WoWTools_ReputationMixin:Init_MajorFactionRenownFrame()
+function WoWTools_FactionMixin:Init_MajorFactionRenownFrame()
     self:Init_CovenantRenown(MajorFactionRenownFrame)--盟约 9.0
     Init()
 end

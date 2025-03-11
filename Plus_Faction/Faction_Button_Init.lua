@@ -1,6 +1,6 @@
 local e= select(2, ...)
 local function Save()
-    return WoWTools_ReputationMixin.Save
+    return WoWTools_FactionMixin.Save
 end
 
 
@@ -22,12 +22,12 @@ local function Init_Menu(self, root)
 		return Save().btn
 	end, function()
 		Save().btn= not Save().btn and true or nil
-		if WoWTools_ReputationMixin.TrackButton then
-			WoWTools_ReputationMixin.TrackButton:set_Shown()
+		if WoWTools_FactionMixin.TrackButton then
+			WoWTools_FactionMixin.TrackButton:set_Shown()
 		else
-			WoWTools_ReputationMixin:Init_TrackButton()--监视, 文本
+			WoWTools_FactionMixin:Init_TrackButton()--监视, 文本
 		end
-		print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
+		print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
 	end)
 
 --自动隐藏
@@ -37,8 +37,8 @@ local function Init_Menu(self, root)
 		return not Save().notAutoHideTrack
 	end, function()
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
-		if WoWTools_ReputationMixin.TrackButton then
-			WoWTools_ReputationMixin.TrackButton:set_Shown()
+		if WoWTools_FactionMixin.TrackButton then
+			WoWTools_FactionMixin.TrackButton:set_Shown()
 		end
 	end)
 	sub2:SetTooltip(function(tooltip)
@@ -53,11 +53,11 @@ local function Init_Menu(self, root)
 	sub:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
-		if WoWTools_ReputationMixin.TrackButton then
-			WoWTools_ReputationMixin.TrackButton:ClearAllPoints()
-			WoWTools_ReputationMixin.TrackButton:set_Point()
+		if WoWTools_FactionMixin.TrackButton then
+			WoWTools_FactionMixin.TrackButton:ClearAllPoints()
+			WoWTools_FactionMixin.TrackButton:set_Point()
 		end
-		print(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
 --指定
@@ -120,7 +120,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().factionUpdateTips= not Save().factionUpdateTips and true or nil
 		if Save().factionUpdateTips then
-			WoWTools_ReputationMixin:Check_Chat_MSG()
+			WoWTools_FactionMixin:Check_Chat_MSG()
 			print(FACTION_STANDING_INCREASED)
 			print(FACTION_STANDING_INCREASED_ACCOUNT_WIDE)
 		end
@@ -164,8 +164,8 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:CreateMenu(ReputationFrame, {name='WoWTools_PlusReputationButton'})
-	WoWTools_ReputationMixin.Button= btn
+    local btn= WoWTools_ButtonMixin:Menu(ReputationFrame, {name='WoWTools_PlusReputationButton'})
+	WoWTools_FactionMixin.Button= btn
 
     btn:SetupMenu(Init_Menu)
 
@@ -176,23 +176,23 @@ local function Init()
 	btn:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ReputationMixin.addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         e.tips:Show()
-		WoWTools_ReputationMixin:Set_TrackButton_Pushed(true)--TrackButton，提示
+		WoWTools_FactionMixin:Set_TrackButton_Pushed(true)--TrackButton，提示
 	end)
 
 	btn:SetScript('OnLeave', function()
 		e.tips:Hide()
-		WoWTools_ReputationMixin:Set_TrackButton_Pushed(false)--TrackButton，提示
+		WoWTools_FactionMixin:Set_TrackButton_Pushed(false)--TrackButton，提示
 	end)
 
 	
 
 	function btn:settings()
 		if self.down then
-			local show= not WoWTools_ReputationMixin.Save.notPlus
+			local show= not WoWTools_FactionMixin.Save.notPlus
 			self.down:SetShown(show)
 		end
 	end
@@ -210,6 +210,6 @@ end
 
 
 
-function WoWTools_ReputationMixin:Init_Button()
+function WoWTools_FactionMixin:Init_Button()
     Init()
 end
