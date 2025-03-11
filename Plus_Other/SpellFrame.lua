@@ -145,6 +145,15 @@ local function Init_Spec_Menu(self, root)
     end, {specIndex= self.specIndex})
     WoWTools_SetTooltipMixin:Set_Menu(sub)
 
+    sub= root:CreateCheckbox(
+        e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE,
+    function()
+        return C_PvP.IsWarModeDesired()
+    end,function()
+        C_PvP.ToggleWarMode()
+        return MenuResponse.Close
+    end)
+    sub:SetEnabled(C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()))
 
 if isInCombat then
     return
