@@ -984,7 +984,7 @@ local function Init_Menu(self, root)--菜单
         Save().trackButtonStrata= data
         self:set_strata()
     end)
-    sub2:SetEnabled(self:CanChangeAttribute())
+    sub2:SetEnabled(not self:IsProtected())
     --if UnitAffectingCombat('player') then
       --  sub2:SetEnabled(false)
     --end
@@ -1022,7 +1022,7 @@ local function Init_Button()
         name='WoWTools_Minimap_TrackButton',
         atlas='VignetteKillElite',
     })
-    
+
 
 
     TrackButton.buttons={}
@@ -1050,7 +1050,7 @@ local function Init_Button()
         if Save().pointVigentteButton then
             self:SetPoint(Save().pointVigentteButton[1], UIParent, Save().pointVigentteButton[3], Save().pointVigentteButton[4], Save().pointVigentteButton[5])
         else
-            self:SetPoint('TOPLEFT', 550, e.Player.husandro and 0 or -100)
+            self:SetPoint('TOPLEFT', 600, e.Player.husandro and 0 or -100)
         end
     end
 

@@ -88,6 +88,22 @@ local function Init_Menu(self, root)
         self:set_Scale()
         self:set_Tooltips()
     end)
+
+--FrameStrata    
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().strata= data
+        self:set_strata()
+    end)
+
+    --重置位置
+	root:CreateDivider()
+	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+		Save().point=nil
+		self:set_point()
+		print(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+	end)
 end
 
 
@@ -250,7 +266,11 @@ local function Init()
     end
 
 
+	function TrackButton:set_strata()
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+    end
 
+    TrackButton:set_strata()
     TrackButton:set_point()
     TrackButton:set_Scale()
     TrackButton:set_Shown()

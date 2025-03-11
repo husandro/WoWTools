@@ -40,7 +40,7 @@ local function Init_TrackButton()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
 		else
-			self:SetPoint('TOPLEFT', 150, e.Player.husandro and 0 or -100)
+			self:SetPoint('TOPLEFT', 200, e.Player.husandro and 0 or -100)
 		end
 	end
 

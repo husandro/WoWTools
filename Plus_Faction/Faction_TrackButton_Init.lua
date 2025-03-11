@@ -99,6 +99,13 @@ local function Init_Menu(self, root)
 		self:set_Scale()
 	end)
 
+--FrameStrata    
+	WoWTools_MenuMixin:FrameStrata(root, function(data)
+		return self:GetFrameStrata()==data
+	end, function(data)
+		Save().strata= data
+		self:set_strata()
+	end)
 
 
 --自动隐藏
@@ -118,7 +125,7 @@ local function Init_Menu(self, root)
 		tooltip:AddLine(e.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
 	end)
 
-	--重置位置
+--重置位置
 	root:CreateDivider()
 	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
 		Save().point=nil
@@ -232,9 +239,13 @@ local function Init()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
 		else
-			self:SetPoint('TOPLEFT', 250, e.Player.husandro and 0 or -100)
+			self:SetPoint('TOPLEFT', 0, e.Player.husandro and 0 or -100)
 		end
 	end
+
+	function TrackButton:set_strata()
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
+    end
 
 	TrackButton:RegisterForDrag("RightButton")
 	TrackButton:SetClampedToScreen(true);
@@ -283,6 +294,7 @@ local function Init()
 	TrackButton:set_Event()
 	TrackButton:set_Shown()
 	TrackButton:set_Texture()
+	TrackButton:set_strata()
 	WoWTools_FactionMixin:TrackButton_Settings()
 
 
