@@ -150,8 +150,8 @@ local function Init()
 		return
 	end
 	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
-		size=22,
-		name='WoWToolsFactionTrackListMainButton'
+		size=23,
+		name='WoWToolsFactionTrackListMainButton',
 	})
 	WoWTools_FactionMixin.TrackButton= TrackButton
 

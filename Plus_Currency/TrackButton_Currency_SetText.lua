@@ -193,12 +193,14 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
 	})
     btn.itemButtonUse= itemButtonUse
     if itemButtonUse then
-        btn.texture= btn:CreateTexture(nil,'BORDER')
-        btn.texture:SetSize(14,14)
-        btn.texture:SetPoint('CENTER',-0.5,0.5)
-        btn.border=btn:CreateTexture(nil, 'ARTWORK')
-        btn.border:SetSize(18,18)
-        btn.border:SetPoint('CENTER',-0.5,0.3)
+		if not btn.texture then
+			btn.texture= btn:CreateTexture(nil,'BORDER')
+			btn.texture:SetSize(14,14)
+			btn.texture:SetPoint('CENTER',-0.5,0.5)
+			btn.border=btn:CreateTexture(nil, 'ARTWORK')
+			btn.border:SetSize(18,18)
+			btn.border:SetPoint('CENTER',-0.5,0.3)
+		end
 
     elseif tables.itemID then
         btn.border=btn:CreateTexture(nil, 'ARTWORK')

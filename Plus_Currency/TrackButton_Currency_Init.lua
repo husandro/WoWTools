@@ -26,11 +26,12 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', size=18, isType2=true})
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', size=23})
 	WoWTools_CurrencyMixin.TrackButton= TrackButton
 
+	
 	TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
-    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+   
     TrackButton.texture:SetPoint('CENTER')
     TrackButton.texture:SetSize(12,10)
 
@@ -48,10 +49,13 @@ local function Init_TrackButton()
 	function TrackButton:set_texture(icon)
 		if icon and icon>0 then
 			self.texture:SetTexture(icon)
-		elseif Save().str then
-			self.texture:SetTexture(0)
+			self.texture:SetPoint('TOPLEFT',0,0)
+			self.texture:SetPoint('BOTTOMRIGHT',0,0)
 		else
-			self.texture:SetAtlas(e.Icon.icon)
+			self.texture:SetAtlas('Adventure-MissionEnd-Line')
+			self.texture:SetPoint('TOPLEFT', 6,-6)
+			self.texture:SetPoint('BOTTOMRIGHT',-6,6)
+			self.texture:SetAlpha(Save().str and 0.1 or 0.5)
 		end
 	end
 
