@@ -122,7 +122,7 @@ local function Init_Spec_Menu(self, root)
 
 --激活
     sub= root:CreateCheckbox(
-        e.onlyChinese and '激活' or SPEC_ACTIVE,
+        self.icon..(e.onlyChinese and '激活' or SPEC_ACTIVE),
     function()
         return self.isActive
     end, function()
@@ -134,8 +134,7 @@ local function Init_Spec_Menu(self, root)
 
 --拾取
     sub= root:CreateCheckbox(
-        (e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
-        ..'|A:VignetteLoot:0:0|a',
+        '|A:VignetteLoot:0:0|a'..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
     function()
         return self.isLoot
 
@@ -146,7 +145,7 @@ local function Init_Spec_Menu(self, root)
     WoWTools_SetTooltipMixin:Set_Menu(sub)
 
     sub= root:CreateCheckbox(
-        e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE,
+        '|A:pvptalents-warmode-swords:0:0|a'..(e.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE),
     function()
         return C_PvP.IsWarModeDesired()
     end,function()
@@ -257,7 +256,8 @@ local function Create_Spec_Button(index)
 
     btn.specIndex= index
     btn.specID= specID
-    btn.name= '|T'..(texture or 0)..':0|t'..e.cn(name)
+    btn.icon='|T'..(texture or 0)..':0|t'
+    btn.name= e.cn(name)
 
     btn.LootIcon= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
     btn.LootIcon:SetSize(14,14)
