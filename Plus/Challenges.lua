@@ -50,7 +50,7 @@ local TipsFrame
 
 
 --[[(资料来自)：
-ttps://www.wowhead.com/guide/mythic-plus-dungeons/dragonflight-season-4/overview#mythic-affixes
+https://www.wowhead.com/guide/mythic-plus-dungeons/dragonflight-season-4/overview#mythic-affixes
 AngryKeystones Schedule
 
 

@@ -83,6 +83,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end
 			})
 
+			e.SetItemCurrencyID= Save().ItemInteractionID--套装，转换，货币
+
 			if Save().disabled then
 				self:UnregisterEvent(event)
 			else
@@ -93,10 +95,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end
 
 		elseif arg1=='Blizzard_ItemInteractionUI' then
-			hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
-				WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
-			end)
-
+			if not Save().disabled then
+				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
+					WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
+				end)
+			else--记录，套装，转换，货币
+				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
+					local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
+					Save().ItemInteractionID= itemInfo.currencyTypeId
+					e.SetItemCurrencyID= itemInfo.currencyTypeId
+				end)
+				C_ItemInteraction.GetChargeInfo()
+			end
 		end
 
     elseif event == "PLAYER_LOGOUT" then

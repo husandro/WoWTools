@@ -319,11 +319,11 @@ local function Init_Menu(self, root)
     function()
         return C_CVar.GetCVarBool("movieSubtitle")
     end, function()
-        if not UnitAffectingCombat('player') then
+        if not InCombatLockdown() then
             C_CVar.SetCVar('movieSubtitle', C_CVar.GetCVarBool("movieSubtitle") and '0' or '1')
         end
     end)
-    sub2:SetEnabled(not UnitAffectingCombat('player'))
+    sub2:SetEnabled(not InCombatLockdown())
 
 --WoW
     sub2=sub:CreateButton('WoW', function() return MenuResponse.Open end)

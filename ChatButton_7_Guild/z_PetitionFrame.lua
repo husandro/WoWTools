@@ -5,15 +5,15 @@ local function Save()
 end
 
 
-
+local check
 
 local function Init()
     if IsInGuild() then
         return
     end
 
-    local check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
-    --PetitionFrame.targetCheckBox= check
+    check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
+   
 
     check:SetPoint('TOPLEFT', 50, -33)
     check.Text:SetText(e.onlyChinese and '目标' or TARGET)
@@ -57,11 +57,11 @@ local function Init()
 
     check:SetScript('OnEvent', check.OfferPetition)
 
-    PetitionFrame:HookScript('OnHide', function(self)
-        self.targetCheckBox:set_event()
+    PetitionFrame:HookScript('OnHide', function()
+        check:set_event()
     end)
-    PetitionFrame:HookScript('OnShow', function(self)
-        self.targetCheckBox:set_event()
+    PetitionFrame:HookScript('OnShow', function()
+        check:set_event()
     end)
 end
 

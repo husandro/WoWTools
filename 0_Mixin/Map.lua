@@ -61,10 +61,21 @@ end
 
 
 function WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
-    return C_PvP.IsArena() or C_PvP.IsBattleground()
+    return C_PvP.IsArena()
+        or C_PvP.IsBattleground()--战场
+        or C_PvP.IsSoloShuffle()--闪电战
+        or C_PvP.IsInBrawl()--乱斗
 end
-
-
+--PVPMatchUtil.lua
+--[[
+        C_PvP.IsSoloRBG() or
+			C_PvP.IsRatedBattleground() or
+			(C_PvP.IsRatedArena() and not IsArenaSkirmish());
+         --or C_PvP.IsSoloRBG()
+        --or C_PvP.IsRatedBattleground()
+        --or C_PvP.IsRatedSoloShuffle()
+        --or C_PvP.IsRatedArena()
+]]
 
 
 

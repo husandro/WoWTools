@@ -73,7 +73,6 @@ local MovieList= {--CinematicsMenu.lua
 		title = WARWITHIN_TITLE2,
 		disableAutoPlay = true,
 	},
-
 	-- Movie sequence 12 = WarWithin
 
 }

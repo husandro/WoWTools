@@ -2,7 +2,7 @@ local e= select(2, ...)
 
 --z_ItemInteractionFrame.lua
 --套装，转换，货币, 不指定, 值可能是nil
-e.SetItemCurrencyID=nil
+--e.SetItemCurrencyID=nil
 
 
 
@@ -14,10 +14,13 @@ e.SetItemCurrencyID=nil
 --WoWTools_LabelMixin:ItemCurrencyTips
 e.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
     {type='currency', id=3008},--神勇石
-    {type='currency', id=3109},--符文安德麦纹章
-    {type='currency', id=3110},--鎏金安德麦纹章
 
-    --{type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
+    {type='currency', id=3107},--风化安德麦纹章
+    {type='currency', id=3112},--蚀刻安德麦纹章
+    {type='currency', id=3113},--符文安德麦纹章
+    {type='currency', id=3114},--鎏金安德麦纹章
+
+    {type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }
