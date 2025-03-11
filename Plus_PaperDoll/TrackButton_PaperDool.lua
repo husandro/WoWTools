@@ -38,6 +38,7 @@ local function Init_Menu(self, root)
             e.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
         function()
             WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)
+            return MenuResponse.Open
         end)
     end
     root:CreateDivider()
