@@ -104,18 +104,6 @@ end
 
 
 
-local function Get_Loot_Spec(self)
-    local spec= GetSpecialization(nil, false, 1)
-    local loot= GetLootSpecialization()
-    local isActive= spec==self.specIndex
-    local isLoot= loot==0 and isActive or self.specID==loot
-
-    self.isActive= isActive
-    self.isLoot= isLoot
-
-end
-
-
 
 
 
@@ -152,7 +140,7 @@ local function Init_Spec_Menu(self, root)
         return self.isLoot
 
     end, function()
-        SetLootSpecialization(self.isLoot and 0 or self.specID)
+        SetLootSpecialization(self.lootID~=self.specID and self.specID or 0)
         return MenuResponse.Close
     end, {specIndex= self.specIndex})
     WoWTools_SetTooltipMixin:Set_Menu(sub)
@@ -300,7 +288,7 @@ local function Create_Spec_Button(index)
             end
         end
     end)
-    btn:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStop", function()
         SpecFrame:StopMovingOrSizing()
         ResetCursor()
         Save.specButton.point= {SpecFrame:GetPoint(1)}
@@ -348,9 +336,25 @@ local function Create_Spec_Button(index)
 
 
     function btn:settings()
-        Get_Loot_Spec(self)
-        self.SelectIcon:SetShown(self.isActive)
-        self.LootIcon:SetShown(self.isLoot)
+        local spec= GetSpecialization(nil, false, 1)
+        local lootID= GetLootSpecialization()
+        local isActive= spec==self.specIndex
+        local isLoot= lootID==0 and isActive or self.specID==lootID
+
+        self.isActive= isActive
+        self.isLoot= isLoot
+        self.lootID= lootID
+
+        self.SelectIcon:SetShown(isActive)
+
+        if isLoot then
+            if lootID==0 then
+                self.LootIcon:SetVertexColor(0,1,0)
+            else
+                self.LootIcon:SetVertexColor(1,1,1)
+            end
+        end
+        self.LootIcon:SetShown(isLoot)
     end
     btn:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
     btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
