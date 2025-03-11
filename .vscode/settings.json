@@ -5416,7 +5416,12 @@
         "LFGDungeonReadyDialogCloseButton",
         "REWARD_ITEMS_ONLY",
         "GAIN_EXPERIENCE",
-        "COVENANT_SANCTUM_UPGRADE_ACTIVE"
+        "COVENANT_SANCTUM_UPGRADE_ACTIVE",
+        "GuildRenameFrame",
+        "CurrencyTransferLogCloseButton",
+        "TokenFrameMixin",
+        "GuildRenameFrameBg",
+        "GuildRenameFrameInset"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

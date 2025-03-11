@@ -89,7 +89,7 @@ local function Init()
     WoWTools_MoveMixin:Setup(GameMenuFrame, {notSave=true})--菜单
     WoWTools_MoveMixin:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
     WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags)
-    WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
+    --WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
 
     WoWTools_MoveMixin:Setup(ColorPickerFrame, {click='RightButton'})--颜色选择器
     WoWTools_MoveMixin:Setup(ColorPickerFrame.Header, {frame=ColorPickerFrame})
@@ -118,13 +118,14 @@ local function Init()
 --就绪
     WoWTools_MoveMixin:Setup(ReadyCheckFrame, {notFuori=true})
 
+    WoWTools_MoveMixin:Setup(GuildRenameFrame)
 
 
     C_Timer.After(0.3, function()
         if WoWTools_MailMixin.Save.disabled then--MailFrame
             WoWTools_MoveMixin:Setup(MailFrame)
             WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-            WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
+            --WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
         end
 
         if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame

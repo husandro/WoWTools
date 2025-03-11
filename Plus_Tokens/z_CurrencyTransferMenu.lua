@@ -10,6 +10,11 @@ end
 
 --货币，转移
 local function Init()
+	--不能点击，关闭按钮
+	CurrencyTransferLogCloseButton:SetFrameLevel(CurrencyTransferLog.TitleContainer:GetFrameLevel()+2)
+	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
+
+
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
 		if not self:GetView() or Save().notPlus then
             return
@@ -28,8 +33,7 @@ local function Init()
 
 		end
 	end)
-	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenuCloseButton:GetFrameLevel()+1)--原始，不好点击
-	CurrencyTransferMenuCloseButton:SetFrameStrata('HIGH')
+
 
 	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		if not Save().notPlus then

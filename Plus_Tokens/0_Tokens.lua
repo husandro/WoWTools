@@ -24,8 +24,10 @@ local function Save()
 end
 
 function WoWTools_TokensMixin:UpdateTokenFrame()
-	e.call(TokenFrame.Update, TokenFrame)
-	e.call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
+	if not TokenFrame:IsProtected() then
+		e.call(TokenFrame.Update, TokenFrame)
+		e.call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
+	end
 end
 
 

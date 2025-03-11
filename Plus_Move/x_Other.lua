@@ -189,8 +189,15 @@ end
 
 WoWTools_MoveMixin.ADDON_LOADED['Blizzard_HelpFrame']= function()
     WoWTools_MoveMixin:Setup(HelpFrame)
-    WoWTools_MoveMixin:Setup(HelpFrame.TitleContainer, {frame=HelpFrame})
+    --WoWTools_MoveMixin:Setup(HelpFrame.TitleContainer, {frame=HelpFrame})
 end
+
+
+
+WoWTools_MoveMixin.ADDON_LOADED['Blizzard_GuildRename']= function()--11.1.5
+    WoWTools_MoveMixin:Setup(GuildRenameFrame)
+end
+
 
 
 --[[邮箱，信件  Mail.lua，有操作

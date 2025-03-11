@@ -4,9 +4,6 @@ local e= select(2, ...)
 
 local function Init_Search(self)
 	local numList= C_CurrencyInfo.GetCurrencyListSize()
-	if numList==0 then
-		return
-	end
 
 	local currencyID, name
 
@@ -30,7 +27,6 @@ local function Init_Search(self)
 		end
 	end
 
-	local findHeader=true
 	local find, find2
 	local cur1, cur2
 
@@ -41,7 +37,6 @@ local function Init_Search(self)
 		if currencyID== data.currencyID or data.name==name then
 			find= index
 			cur1= data.currencyID
-			--break
 
 		elseif name and data.name:find(name) then
 			find2= index
@@ -50,9 +45,10 @@ local function Init_Search(self)
 
 		if data.isHeader and not data.isHeaderExpanded then
 			C_CurrencyInfo.ExpandCurrencyList(index, true)
-			WoWTools_TokensMixin:UpdateTokenFrame()
 		end
 	end
+
+	WoWTools_TokensMixin:UpdateTokenFrame()
 
 
 	find= find or find2
@@ -62,7 +58,6 @@ local function Init_Search(self)
 	if find and cur1 then
 
 		TokenFrame.ScrollBox:ScrollToElementDataIndex(find)
-
 
 		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
 			if frame.Content and frame.elementData then
@@ -93,7 +88,7 @@ local function Init()
 	WoWTools_TokensMixin.Button.down= down
 
 	down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
-	
+
 	down:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)

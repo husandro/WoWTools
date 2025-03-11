@@ -130,7 +130,7 @@ local function Init()
     WoWTools_MoveMixin:Setup(ReputationFrame, {frame=CharacterFrame})
     WoWTools_MoveMixin:Setup(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
     WoWTools_MoveMixin:Setup(CurrencyTransferMenu)
-    WoWTools_MoveMixin:Setup(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
+    --WoWTools_MoveMixin:Setup(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
 
 
 

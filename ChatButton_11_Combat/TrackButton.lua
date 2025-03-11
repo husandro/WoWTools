@@ -48,6 +48,36 @@ local InstanceEventTab={
 
 
 
+function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
+    tooltip:AddDoubleLine(
+        (e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(self.Save.bat.time),
+        self.Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+    )
+    tooltip:AddDoubleLine(
+        (e.onlyChinese and '宠物' or PET)..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num..' |T646379:0|t'..self.Save.pet.capture,
+        PetAll.win..'/'..PetAll.num
+    )
+        --(PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num,
+        --self.Save.pet.capture..' |T646379:0|t'
+  
+    tooltip:AddDoubleLine(
+        (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(self.Save.afk.time),
+        self.Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+    )
+    tooltip:AddDoubleLine(
+        (e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..self.Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..self.Save.ins.dead,
+        self.Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(self.Save.ins.time)
+    )
+    tooltip:AddLine(' ')
+    tooltip:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
+    local tab=e.WoWDate[e.Player.guid].Time
+    tooltip:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
+    tooltip:AddDoubleLine(
+        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(e.onlyChinese and '%d周' or WEEKS_ABBR, e.Player.week)..')',
+        SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
+    )
+end
+
 
 
 
@@ -409,7 +439,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         end
     end)
 
- 
+
     function TrackButton:set_text_scale()
         self.text:SetScale(Save().textScale or 1)
     end
@@ -454,31 +484,3 @@ function WoWTools_CombatMixin:Init_TrackButton()
 end
 
 
-
-
-function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
-    tooltip:AddDoubleLine(
-        (e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(self.Save.bat.time),
-        self.Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-    )
-    tooltip:AddDoubleLine(
-        (PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num,
-        self.Save.pet.capture..' |T646379:0|t'
-    )
-    tooltip:AddDoubleLine(
-        (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(self.Save.afk.time),
-        self.Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
-    )
-    tooltip:AddDoubleLine(
-        (e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..self.Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..self.Save.ins.dead,
-        self.Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(self.Save.ins.time)
-    )
-    tooltip:AddLine(' ')
-    tooltip:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
-    local tab=e.WoWDate[e.Player.guid].Time
-    tooltip:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
-    tooltip:AddDoubleLine(
-        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(e.onlyChinese and '%d周' or WEEKS_ABBR, e.Player.week)..')',
-        SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
-    )
-end

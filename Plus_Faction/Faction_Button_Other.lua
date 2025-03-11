@@ -143,7 +143,7 @@ local function Init()
 		e.tips:Show()
 	end)
 
-	local edit= WoWTools_EditBoxMixn:Create(up, {name='WoWTools_PlusTokensSearchBox', instructions= 'text', Template='SearchBoxTemplate'})
+	local edit= WoWTools_EditBoxMixn:Create(up, {name='WoWTools_PlusFactionSearchBox', instructions= e.onlyChinese and '搜索' or SEARCH, Template='SearchBoxTemplate'})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
 	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
@@ -153,7 +153,7 @@ local function Init()
 	edit:HookScript('OnEditFocusGained', function(self) self:SetAlpha(1) end)
 	edit:SetSize(180, 23)
 
-	edit.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
+	--edit.Instructions:SetText(e.onlyChinese and '搜索' or SEARCH)
     WoWTools_EditBoxMixn:HookInstructions(edit)
 
     WoWTools_ReputationMixin.Button:settings()

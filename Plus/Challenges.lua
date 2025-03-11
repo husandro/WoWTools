@@ -3,13 +3,6 @@ if PlayerGetTimerunningSeasonID() then
 end
 local id, e = ...
 
-local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
-
-
-
-
-
-
 if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
     return
 end
@@ -17,6 +10,9 @@ end
 for _, tab in pairs(e.ChallengesSpellTabs) do
     WoWTools_Mixin:Load({id=tab.spell, type='spell'})
 end
+
+local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
+
 
 
 

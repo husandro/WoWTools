@@ -74,14 +74,13 @@ end
 local function Init()
     Button= WoWTools_ButtonMixin:Cbtn(TokenFrame, {name='WoWTools_PlusCurrencyButton', size=23})
 	WoWTools_TokensMixin.Button= Button
-	
+
 	Button:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT', -2, 0)
 	Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
 	Button:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
-	--Button:SetPushedAtlas('ui-questtrackerbutton-filter-pressed')
-	--Button:SetHighlightAtlas('ui-questtrackerbutton-red-highlight')
+	WoWTools_ColorMixin:Setup(Button.texture, {type='Texture'})--设置颜色
 
 
 
@@ -121,7 +120,7 @@ local function Init()
 	Button:set_texture()--设置,按钮, 图标
 
 
-	
+
 
 	--[[Button.bag=WoWTools_ButtonMixin:Cbtn(Button, {size={18,18}})
 	Button.bag:SetPoint('RIGHT', Button.up, 'LEFT',-4,0)
@@ -154,7 +153,7 @@ local function Init()
 		if self.down then
 			self.down:SetShown(not Save().notPlus)
 		end
-		
+
 	end
 end
 

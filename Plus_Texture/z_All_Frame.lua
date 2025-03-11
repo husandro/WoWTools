@@ -240,10 +240,10 @@ local function Init(mixin)
     mixin:SetNineSlice(CurrencyTransferMenuInset)
     mixin:SetFrame(TokenFramePopup.Border, {alpha=0.3})
     mixin:SetMenu(TokenFrame.filterDropdown)
-
-
-
+--货币转移
     mixin:SetSearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
+    mixin:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
+
 
     --世界地图
     mixin:SetNineSlice(WorldMapFrame.BorderFrame, true)
@@ -1050,8 +1050,6 @@ local function Blizzard_Communities(mixin)
 
     mixin:SetButton(TabardCharacterModelRotateLeftButton, {alpha=0.5})
     mixin:SetButton(TabardCharacterModelRotateRightButton, {alpha=0.5})
-
-
 end
 
 

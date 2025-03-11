@@ -238,8 +238,13 @@ function Events:Blizzard_GuildBankUI(mixin)
     end
 end]]
 
-
-
+function Events:Blizzard_GuildRename(mixin)--11.1.5
+    mixin:SetNineSlice(GuildRenameFrame)
+    mixin:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
+    mixin:HideTexture(GuildRenameFrameInset.Bg)
+    --mixin:SetInset(GuildRenameFrameInset)
+    mixin:SetNineSlice(GuildRenameFrameInset)
+end
 
 
 

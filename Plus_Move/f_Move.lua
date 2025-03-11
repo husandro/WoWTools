@@ -168,6 +168,9 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
 
+    if frame.TitleContainer then
+        Set_Move_Frame(frame.TitleContainer, frame, click, notSave, notFuori, isAltKeyDown)
+    end
 
     Set_Frame_Point(frame, name)--设置, 移动, 位置
 end
