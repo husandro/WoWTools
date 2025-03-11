@@ -771,7 +771,7 @@ end
 local function Init_Menu(self, root)--菜单
     local sub, sub2
 --显示
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         e.onlyChinese and '显示' or SHOW,
     function()
         return Save().vigentteButtonShowText
@@ -781,6 +781,45 @@ local function Init_Menu(self, root)--菜单
         self:set_texture()
         self:set_state()
     end)
+
+    
+    sub:CreateCheckbox(
+        e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
+    function()
+        return Save().textToDown
+    end, function()
+        Save().textToDown= not Save().textToDown and true or nil
+        for _, btn in pairs(self.buttons) do
+            btn:ClearAllPoints()
+            btn.text:ClearAllPoints()
+            btn:set_point()
+        end
+    end)
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save().vigentteButtonTextScale
+    end, function(value)
+        Save().vigentteButtonTextScale= value
+        self:set_scale()
+    end)
+
+
+--FrameStrata    
+    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().trackButtonStrata= data
+        self:set_strata()
+    end)
+    sub2:SetEnabled(not self:IsProtected())
+    --if UnitAffectingCombat('player') then
+      --  sub2:SetEnabled(false)
+    --end
+
+--重置位置
+    sub:CreateDivider()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
 
 --当前
     root:CreateDivider()
@@ -941,57 +980,7 @@ local function Init_Menu(self, root)--菜单
 
 --打开选项
     root:CreateDivider()
-    --[[
-    sub=root:CreateButton(
-        addName2,
-    function()
-        e.OpenPanelOpting(nil, addName)
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(addName, addName2)
-        tooltip:AddLine(' ')
-        tooltip:AddLine(e.onlyChinese and '打开选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS))
-    end)]]
-    sub=WoWTools_MinimapMixin:OpenPanel(root)
-
-    sub:CreateCheckbox(
-        e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
-    function()
-        return Save().textToDown
-    end, function()
-        Save().textToDown= not Save().textToDown and true or nil
-        for _, btn in pairs(self.buttons) do
-            btn:ClearAllPoints()
-            btn.text:ClearAllPoints()
-            btn:set_point()
-        end
-    end)
-
---缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save().vigentteButtonTextScale
-    end, function(value)
-        Save().vigentteButtonTextScale= value
-        self:set_scale()
-    end)
-
-
---FrameStrata    
-    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
-        return self:GetFrameStrata()==data
-    end, function(data)
-        Save().trackButtonStrata= data
-        self:set_strata()
-    end)
-    sub2:SetEnabled(not self:IsProtected())
-    --if UnitAffectingCombat('player') then
-      --  sub2:SetEnabled(false)
-    --end
-
---重置位置
-    sub:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, sub, Save().pointVigentteButton, WoWTools_MinimapMixin.Rest_TrackButton_Point)
+    WoWTools_MinimapMixin:OpenPanel(root)
 end
 
 

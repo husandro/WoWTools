@@ -15,12 +15,12 @@ local function Init()
 
     button.frame= CreateFrame("Frame",nil,button)
 
-    button.texture= button:CreateTexture(nil, 'BORDER')
+    --[[button.texture= button:CreateTexture(nil, 'BORDER')
     button.texture:SetSize(18,18)
-    button.texture:SetPoint('CENTER')
+    button.texture:SetPoint('CENTER')]]
 
     button.classPortrait= button:CreateTexture(nil, 'OVERLAY', nil)--加个外框
-    button.classPortrait:SetPoint('CENTER',1,-1)
+    button.classPortrait:SetPoint('CENTER')
     button.classPortrait:SetSize(24,24)
     button.classPortrait:SetAtlas('bag-reagent-border')
     button.classPortrait:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)

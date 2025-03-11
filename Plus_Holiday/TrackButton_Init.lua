@@ -15,7 +15,7 @@ local TrackButton
 local function Init_Menu(self, root)
     local sub
 
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         e.onlyChinese and '显示' or SHOW,
     function()
         return not Save().hide
@@ -26,8 +26,8 @@ local function Init_Menu(self, root)
         TrackButton:set_Shown()
     end)
 
-    root:CreateDivider()
-    root:CreateCheckbox(
+
+    sub:CreateCheckbox(
         e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
     function()
         return not Save().left
@@ -40,7 +40,7 @@ local function Init_Menu(self, root)
         WoWTools_HolidayMixin:TrackButtonSetText()
     end)
 
-    root:CreateCheckbox(
+    sub:CreateCheckbox(
         e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
     function()
         return Save().toTopTrack
@@ -60,7 +60,7 @@ local function Init_Menu(self, root)
         WoWTools_HolidayMixin:TrackButtonSetText()
     end)
 
-    root:CreateCheckbox(
+    sub:CreateCheckbox(
         e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
     function()
         return Save().onGoing
@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
         WoWTools_HolidayMixin:TrackButtonSetText()
     end)
 
-    root:CreateCheckbox(
+    sub:CreateCheckbox(
         e.onlyChinese and '时间' or TIME_LABEL,
     function()
         return Save().showDate
@@ -78,9 +78,8 @@ local function Init_Menu(self, root)
         WoWTools_HolidayMixin:TrackButtonSetText()
     end)
 
---打开选项界面
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HolidayMixin.addName})
-    --缩放
+    sub:CreateDivider()
+--缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
@@ -97,13 +96,17 @@ local function Init_Menu(self, root)
         self:set_strata()
     end)
 
-    --重置位置
-	root:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+--重置位置
+	sub:CreateDivider()
+	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		self:set_point()
 		print(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
+
+    root:CreateDivider()
+    --打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HolidayMixin.addName})
 end
 
 

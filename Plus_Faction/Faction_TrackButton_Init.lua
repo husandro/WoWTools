@@ -20,7 +20,7 @@ local TrackButton
 
 
 local function Init_Menu(self, root)
-	local sub
+	local sub, sub2
 --显示
 	sub=root:CreateCheckbox(
 		e.onlyChinese and '显示' or SHOW,
@@ -36,8 +36,8 @@ local function Init_Menu(self, root)
 	end)
 
 --向右平移
-	root:CreateDivider()
-	root:CreateCheckbox(
+	sub:CreateDivider()
+	sub:CreateCheckbox(
 		e.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 	function()
 		return Save().toRightTrackText
@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
 	end)
 
 --上
-	root:CreateCheckbox(
+	sub:CreateCheckbox(
 		'|A:bags-greenarrow:0:0|a'
 		..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
 	function()
@@ -73,7 +73,7 @@ local function Init_Menu(self, root)
 	end)
 
 --隐藏名称
-	sub=root:CreateCheckbox(
+	sub2=sub:CreateCheckbox(
 		e.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
 	function()
 		return Save().onlyIcon
@@ -82,17 +82,17 @@ local function Init_Menu(self, root)
 		WoWTools_FactionMixin.onlyIcon= Save().onlyIcon
 		e.call(ReputationFrame.Update, ReputationFrame)
 	end)
-	sub:SetTooltip(function(tooltip)
+	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(
 			e.onlyChinese and '仅显示有图标声望'
 			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
 		)
 		e.call(ReputationFrame.Update, ReputationFrame)
 	end)
-	sub:SetEnabled(not PlayerGetTimerunningSeasonID())
+	sub2:SetEnabled(not PlayerGetTimerunningSeasonID())
 
 --缩放
-	WoWTools_MenuMixin:Scale(self, root, function()
+	WoWTools_MenuMixin:Scale(self, sub, function()
 		return Save().scaleTrackButton or 1
 	end, function(value)
 		Save().scaleTrackButton= value
@@ -100,7 +100,7 @@ local function Init_Menu(self, root)
 	end)
 
 --FrameStrata    
-	WoWTools_MenuMixin:FrameStrata(root, function(data)
+	WoWTools_MenuMixin:FrameStrata(sub, function(data)
 		return self:GetFrameStrata()==data
 	end, function(data)
 		Save().strata= data
@@ -109,7 +109,7 @@ local function Init_Menu(self, root)
 
 
 --自动隐藏
-	sub=root:CreateCheckbox(
+	sub2=sub:CreateCheckbox(
 		e.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
 	function()
 		return not Save().notAutoHideTrack
@@ -117,7 +117,7 @@ local function Init_Menu(self, root)
 		Save().notAutoHideTrack= not Save().notAutoHideTrack and true or nil
 		self:set_Shown()
 	end)
-	sub:SetTooltip(function(tooltip)
+	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(e.onlyChinese and '隐藏' or HIDE)
 		tooltip:AddLine(' ')
 		tooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
@@ -126,13 +126,17 @@ local function Init_Menu(self, root)
 	end)
 
 --重置位置
-	root:CreateDivider()
-	WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+	sub:CreateDivider()
+	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()
 		print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
+
+	--打开选项界面
+	root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_FactionMixin.addName})
 end
 
 

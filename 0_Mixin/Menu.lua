@@ -592,25 +592,19 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
 
     local name= tab.name
     local name2= tab.name2
-    local GetCategory= tab.GetCategory
-    local category= tab.category
+
+    local category= tab.GetCategory and tab.GetCategory() or tab.category
 
     local showText= name2 or name
     showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
 
     local sub=root:CreateButton(showText, function(data)
-        if SettingsPanel:IsShown() then--ToggleGameMenu()
+        if SettingsPanel:IsVisible() and not SettingsPanel:IsProtected() and not issecure() then--ToggleGameMenu()
             SettingsPanel:Close()
-        else
-            do
-                if not category and GetCategory then
-                    category= GetCategory()
-                end
-            end
-            e.OpenPanelOpting(category, name)
         end
-        return MenuResponse.Refresh
-    end, {name=name, name2=name2, GetCategory=GetCategory})
+        e.OpenPanelOpting(data.category, data.name)
+        return MenuResponse.Open
+    end, {name=name, category=category})
 
     sub:SetTooltip(function(tooltip, description)
         tooltip:AddDoubleLine(description.data.name or WoWTools_Mixin.addName, description.data.name2)
