@@ -164,14 +164,14 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(ReputationFrame, {name='WoWTools_PlusReputationButton'})
+    local btn= WoWTools_ButtonMixin:Menu(ReputationFrame, {name='WoWTools_PlusReputationMenuButton'})
 	WoWTools_FactionMixin.Button= btn
 
     btn:SetupMenu(Init_Menu)
 
 	btn:SetPoint("RIGHT", CharacterFrameCloseButton, 'LEFT', -2, 0)
     btn:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
-    btn:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel())
+    btn:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+2)
 
 	btn:SetScript('OnEnter', function(self)
 		e.tips:SetOwner(self, "ANCHOR_LEFT")

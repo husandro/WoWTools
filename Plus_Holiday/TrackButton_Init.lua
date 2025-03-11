@@ -101,13 +101,13 @@ end
 
 
 local function Init()
-    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {size=18, isType2=true, name='WoWToolsHolidayTrackButton'})
+    TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {size=23,  name='WoWToolsHolidayTrackButton'})
     WoWTools_HolidayMixin.TrackButton= TrackButton
 
-    TrackButton.texture=TrackButton:CreateTexture()
-    TrackButton.texture:SetAllPoints()
-    TrackButton.texture:SetAlpha(0.5)
-    TrackButton.texture:SetAtlas(e.Icon.icon)
+    TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
+    TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
+    TrackButton.texture:SetPoint('CENTER')
+    TrackButton.texture:SetSize(12,10)
 
     TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
     TrackButton.Frame:SetPoint('BOTTOM')
@@ -178,7 +178,7 @@ local function Init()
             or UnitAffectingCombat('player')
 
         self:SetShown(not hide)
-        self.texture:SetShown(Save().hide and true or false)
+        self.texture:SetAlpha(Save().hide and 0.5 or 0.2)
         self.Frame:SetShown(not hide and not Save().hide)
     end
 
@@ -237,14 +237,8 @@ local function Init()
             self:set_Tooltips()
         end
     end)
-    TrackButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
-        --self.texture:SetAlpha(0.5)
-    end)
-    TrackButton:SetScript('OnEnter', function(self)
-        self:set_Tooltips()
-        --self.texture:SetAlpha(1)
-    end)
+    TrackButton:SetScript('OnLeave', GameTooltip_Hide)
+    TrackButton:SetScript('OnEnter', TrackButton.set_Tooltips)
 
     function TrackButton:set_point()--设置, 位置
         self:ClearAllPoints()

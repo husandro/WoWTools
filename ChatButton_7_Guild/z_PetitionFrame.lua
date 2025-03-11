@@ -7,16 +7,13 @@ end
 
 
 
-
-
-
 local function Init()
     if IsInGuild() then
         return
     end
 
     local check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
-    PetitionFrame.targetCheckBox= check
+    --PetitionFrame.targetCheckBox= check
 
     check:SetPoint('TOPLEFT', 50, -33)
     check.Text:SetText(e.onlyChinese and '目标' or TARGET)
@@ -35,7 +32,8 @@ local function Init()
         e.tips:Show()
     end)
 
-    function check:OfferPetition()
+    function check:OfferPetition(unit)
+        unit= unit or 'player'
         local guid= UnitGUID('target')
         if not UnitIsPlayer('target')
             or IsPlayerInGuildFromGUID(guid)
@@ -45,19 +43,7 @@ local function Init()
         then
             return
         end
-
-        if self.guid then
-            if self.guid[guid] then
-                print(WoWTools_GuildMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '已邀请' or CLUB_FINDER_INVITED))
-                return
-            end
-        else
-            self.guid= {}
-        end
-
         OfferPetition()
-
-        self.guid[guid]= true
     end
 
     function check:set_event()
@@ -72,11 +58,9 @@ local function Init()
     check:SetScript('OnEvent', check.OfferPetition)
 
     PetitionFrame:HookScript('OnHide', function(self)
-        self.guid=nil
         self.targetCheckBox:set_event()
     end)
     PetitionFrame:HookScript('OnShow', function(self)
-        self.guid={}
         self.targetCheckBox:set_event()
     end)
 end

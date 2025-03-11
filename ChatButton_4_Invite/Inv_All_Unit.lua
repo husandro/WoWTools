@@ -67,7 +67,7 @@ function WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
             end end
         end
 
-        if not p and not UnitAffectingCombat('player') then
+        if not p and not InCombatLockdown() then
             C_CVar.SetCVar('nameplateShowFriends', '0')
         end
         if n==1 then

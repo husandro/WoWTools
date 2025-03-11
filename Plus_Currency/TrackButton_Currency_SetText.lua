@@ -203,9 +203,13 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
 		end
 
     elseif tables.itemID then
-        btn.border=btn:CreateTexture(nil, 'ARTWORK')
-        btn.border:SetAllPoints()
+		if not btn.border then
+			btn.border=btn:CreateTexture(nil, 'ARTWORK')
+			btn.border:SetAllPoints()
+		end
     end
+
+
 
     btn.text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
 
@@ -388,12 +392,14 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end
 	end
 
-	local last
+	local last,size
 
 	for index, tables in pairs(tab) do
         local itemButtonUse=(Save().itemButtonUse and tables.itemID) and true or nil--使用物品
 		local btn= self.TrackButton.btn[index] or Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
-
+		
+		size= itemButtonUse and 22 or 14
+		btn:SetSize(size, size)
 
 
 		btn.itemID= tables.itemID

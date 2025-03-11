@@ -1018,12 +1018,11 @@ end
 --小地图, 标记, 文本
 local function Init_Button()
     TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
-        size=22,
-        isType2=true,
-        name='WoWTools_Minimap_TrackButton'
+        size=23,
+        name='WoWTools_Minimap_TrackButton',
+        atlas='VignetteKillElite',
     })
-    TrackButton.texture=TrackButton:CreateTexture(nil, 'BORDER')
-    TrackButton.texture:SetAllPoints()
+    
 
 
     TrackButton.buttons={}
@@ -1044,18 +1043,14 @@ local function Init_Button()
 
 
     function TrackButton:set_texture()
-        if Save().vigentteButtonShowText then
-            self.texture:SetTexture(0)
-        else
-            self.texture:SetAtlas('VignetteKillElite')
-        end
+        self:GetNormalTexture():SetAlpha(Save().vigentteButtonShowText and 0.1 or 0.5)
     end
 
     function TrackButton:set_point()--设置，位置
         if Save().pointVigentteButton then
             self:SetPoint(Save().pointVigentteButton[1], UIParent, Save().pointVigentteButton[3], Save().pointVigentteButton[4], Save().pointVigentteButton[5])
         elseif e.Player.husandro then
-            self:SetPoint('TOPLEFT', 300, 0)
+            self:SetPoint('TOPLEFT', 250, 0)
         else
             self:SetPoint('BOTTOMLEFT', QuickJoinToastButton, 'TOPLEFT', 4, 2)
         end
@@ -1114,12 +1109,10 @@ local function Init_Button()
 
     TrackButton:SetScript('OnEnter',function(self)
         self:set_tooltip()
-        self.texture:SetAlpha(1)
     end)
     TrackButton:SetScript('OnLeave',function(self)
         e.tips:Hide()
         ResetCursor()
-        self.texture:SetAlpha(0.5)
     end)
 
 

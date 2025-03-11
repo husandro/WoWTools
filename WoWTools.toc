@@ -34,7 +34,6 @@ Init.xml
 0_Mixin\Button.lua
 0_Mixin\Chat.lua
 0_Mixin\Collected.lua
-0_Mixin\Currency.lua
 0_Mixin\Durabiliy.lua
 0_Mixin\EditBox.lua
 0_Mixin\Frame.lua
