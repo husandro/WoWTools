@@ -142,7 +142,7 @@ end
 function WoWTools_MoveMixin:Setup(frame, tab)
     tab= tab or {}
 
-    local SavePoint= self.Save.SavePoint
+    local SavePoint= self.Save.SavePoint or tab.savePoint
     local moveToScreenFuori= self.Save.moveToScreenFuori
     local disabledMove= self.Save.disabledMove
 

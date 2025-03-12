@@ -97,17 +97,6 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 
 
 
-local function get_Bag_Key()--查找，包的key
-    for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ,Constants.InventoryConstants.NumBagSlots
-        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
-            local info = C_Container.GetContainerItemInfo(bagID, slotID)
-            if info and info.itemID and C_Item.IsItemKeystoneByID(info.itemID) and info.hyperlink then
-                return info.hyperlink, info, bagID, slotID
-            end
-        end
-    end
-end
-
 local function getBagKey(self, point, x, y, parent) --KEY链接
     local find=point:find('LEFT')
     local i=1
@@ -349,7 +338,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
 
             if ItemButtonUtil.GetItemContext() == nil then return end
-            
+
             local itemLocation = ItemLocation:CreateEmpty()
             for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--ContainerFrame.lua
                 for slotIndex = 1, ContainerFrame_GetContainerNumSlots(bagID) do
@@ -440,8 +429,8 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         e.tips:ClearLines()
         e.tips:AddLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
         e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-        e.tips:AddLine(e.onlyChinese and '完成' or COMPLETE)
+        e.tips:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+        e.tips:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
         e.tips:Show()
         self2:SetAlpha(1)
     end)
@@ -1423,7 +1412,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.currentKey:SetScript('OnEnter', function(self2)
                     e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                     e.tips:ClearLines()
-                    local bagID, slotID= select(3, get_Bag_Key())--查找，包的key
+                    local bagID, slotID= select(2, WoWTools_BagMixin:Ceca(nil, {isKeystone=true}))--查找，包的key
                     if bagID and slotID then
                         e.tips:SetBagItem(bagID, slotID)
                     end
@@ -1986,21 +1975,132 @@ end
 
 local SayButton
 local function Say_ChallengeComplete()
-    if not Save.slotKeystoneSay then
-        return
-    elseif SayButton then
-        SayButton:Settings()
+    if not Save.slotKeystoneSay or SayButton then
+        if SayButton then
+            SayButton:SetShown(Save.slotKeystoneSay)
+        end
         return
     end
 
     SayButton= WoWTools_ButtonMixin:Cbtn(nil, {
         isItem=true,
-        size=32,
-        atlas= e.Icon.icon
+        size=36,
+        name='WoWToolsPlusChallengesSayItemLinkButton',
     })
-    SayButton:IsMovable(true)
-    SayButton:RegisterForDrag("LeftButton")
+    SayButton.Text= WoWTools_LabelMixin:Create(SayButton)
+    SayButton.Text:SetPoint('LEFT', SayButton, 'RIGHT')
+
+    SayButton:Hide()
+
+    SayButton:SetMovable(true)
+    SayButton:RegisterForDrag("RightButton")
     SayButton:SetClampedToScreen(true)
+    SayButton:SetFrameStrata('HIGH')
+
+    SayButton:SetScript("OnDragStart", function(self,d )
+        if d=='RightButton' and IsAltKeyDown() then
+            self:StartMoving()
+        end
+    end)
+
+    SayButton:SetScript("OnDragStop", function(self)
+        ResetCursor()
+        self:StopMovingOrSizing()
+        Save.sayButtonPoint={self:GetPoint(1)}
+        Save.sayButtonPoint[2]=nil
+    end)
+
+    SayButton:SetScript("OnMouseUp", ResetCursor)
+    SayButton:SetScript("OnMouseDown", function(self, d)
+        if IsAltKeyDown() and d=='RightButton' then--移动光标
+            SetCursor('UI_MOVE_CURSOR')
+        elseif d=='LeftButton' then
+            self:Settings(true)
+        else
+             MenuUtil.CreateContextMenu(self, function(_, root)
+                local sub, sub2
+                root:CreateButton(
+                    ( WoWTools_BagMixin:Ceca(nil, {isKeystone=true}) and '' or '|cff828282')
+                    ..('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)),
+                function()
+                    self:Settings(true)
+                    return MenuResponse.Open
+                end)
+
+                root:CreateDivider()
+                root:CreateButton(
+                    e.onlyChinese and '隐藏' or HIDE,
+                self.Hide)
+
+                root:CreateDivider()
+                sub= WoWTools_MenuMixin:OpenOptions(root, {name=addName})
+                sub2=sub:CreateCheckbox(
+                    e.onlyChinese and '启用' or ENABLE,
+                function()
+                    return Save.slotKeystoneSay
+                end, function()
+                    Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
+                end)
+                sub2:SetTooltip(function(tooltip)
+                    e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
+                    e.tips:AddLine(' ')
+                    e.tips:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+                    e.tips:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
+                end)
+             end)
+        end
+    end)
+    SayButton:SetScript('OnLeave', GameTooltip_Hide)
+    SayButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+        e.tips:AddLine(' ')
+        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        e.tips:Show()
+    end)
+
+    if Save.sayButtonPoint then
+        SayButton:SetPoint(Save.sayButtonPoint[1], UIParent, Save.sayButtonPoint[3], Save.sayButtonPoint[4], Save.sayButtonPoint[5])
+    else
+        SayButton:SetPoint('CENTER', 100, 100)
+    end
+
+
+    function SayButton:Settings(isSay)
+        local info, bagID, slotID= WoWTools_BagMixin:Ceca(6948, {isKeystone=true})
+        local level= C_MythicPlus.GetOwnedKeystoneLevel()
+        if bagID and slotID then
+
+           self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
+        else
+            self:Reset()
+            self:SetItemButtonTexture(e.Icon.icon)
+        end
+        self:SetItemButtonCount(level)
+        self.Text:SetText(info and info.hyperlink or '')
+        if isSay and info.hyperlink then
+            WoWTools_ChatMixin:Chat(info.hyperlink, nil, nil)
+        end
+    end
+
+    SayButton:SetScript('OnHide', SayButton.UnregisterAllEvents)
+    SayButton:SetScript('OnShow', function(self)
+        self:RegisterEvent('BAG_UPDATE_DELAYED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:Settings()
+    end)
+    SayButton:SetScript('OnEvent', function(self, event)
+        if event=='PLAYER_ENTERING_WORLD' then
+            if not IsInInstance() then
+                --self:Hide()
+            end
+        else
+            self:Settings()
+        end
+    end)
+    SayButton:Show()
 end
 
 
@@ -2027,19 +2127,13 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            if WoWToolsSave[CHALLENGES] then
-                Save= WoWToolsSave[CHALLENGES]
-                Save.rightX= Save.rightX or 2--右边，提示，位置
-                Save.rightY= Save.rightY or -22
-                WoWToolsSave[CHALLENGES]=nil
-            else
-                Save= WoWToolsSave['Plus_Challenges'] or Save
-            end
 
-            if PlayerGetTimerunningSeasonID() then
+            Save= WoWToolsSave['Plus_Challenges'] or Save
+
+            --[[if PlayerGetTimerunningSeasonID() then
                 self:UnregisterEvent(event)
                 return
-            end
+            end]]
 
             addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or CHALLENGES)
 
@@ -2059,6 +2153,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('CHALLENGE_MODE_COMPLETED')
                 C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
+
             Say_ChallengeComplete()
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面

@@ -59,8 +59,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 
     local isMenu= tab.isMenu or tab.frameType=='DropdownButton'
     local isItem= tab.isItem
-
     local isSecure= tab.isSecure
+    local isType2= tab.isType2
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
@@ -70,9 +70,10 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local template= tab.template
                     or (isSecure and 'SecureActionButtonTemplate')
                     or (tab.isUI and 'UIPanelButtonTemplate')
+                    or (isType2 and isItem and 'CircularItemButtonTemplate')
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
-    local isType2= tab.isType2
+    
 
 --提示，已存在
     if _G[name] and e.Player.husandro then

@@ -1,5 +1,31 @@
 WoWTools_BagMixin={}
 
+
+--得到包里物品
+function WoWTools_BagMixin:Ceca(itemID, tab)
+    tab= tab or {}
+    local isKeystone= tab.isKeystone
+    local check= tab.check
+    local findAll= tab.findAll
+    for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + (findAll and NUM_REAGENTBAG_FRAMES or 0) do--Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES ,Constants.InventoryConstants.NumBagSlots
+        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
+            local info = C_Container.GetContainerItemInfo(bagID, slotID)
+            if info
+                and info.itemID
+                and info.hyperlink
+                and (
+                    isKeystone and C_Item.IsItemKeystoneByID(info.itemID)
+                    or itemID==info.itemID
+                    or (check and check(info, bagID, slotID))
+                )
+            then
+                return info, bagID, slotID
+            end
+        end
+    end
+end
+
+
 --查询，背包里物品，itemName，itemLink，itemID，itemLocation，merchantIndex，BuybackIndex，itemKey，bag，guidBank，lootIndex
 function WoWTools_BagMixin:Find(find, tab)
     if not IsBagOpen(Enum.BagIndex.Backpack) and not IsBagOpen(NUM_TOTAL_EQUIPPED_BAG_SLOTS) then
