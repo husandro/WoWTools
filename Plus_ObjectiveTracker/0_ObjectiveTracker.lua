@@ -2,7 +2,7 @@ local id, e = ...
 
 WoWTools_ObjectiveTrackerMixin={
 Save={
-    --disabled=not e.Player.husandro,
+    disabled= not e.Player.husandro,
     scale= e.Player.husandro and 0.85 or 1,
     autoHide= e.Player.husandro and true or nil
 },
@@ -22,6 +22,9 @@ end
 
 --清除，全部，按钮
 function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func)
+    if e.LockFrame(frame) then
+        return
+    end
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.3})
     btn:SetPoint('RIGHT', frame.Header.MinimizeButton, 'LEFT', -2, 0)
     btn:SetScript('OnLeave', function(f) f:SetAlpha(0.3) e.tips:Hide() end)
@@ -46,6 +49,9 @@ end
 
 
 function WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, icon, type)
+    if e.LockFrame(block) then
+        return
+    end
     if icon and not block.Icon2 then
         block.Icon2= block:CreateTexture(nil, 'OVERLAY')
         if block.poiButton then
@@ -118,13 +124,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             WoWTools_ObjectiveTrackerMixin.Save= WoWToolsSave['ObjectiveTracker'] or WoWTools_ObjectiveTrackerMixin.Save
 
-           addName= '|A:Objective-Nub:0:0|a'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)
+           addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
            WoWTools_ObjectiveTrackerMixin.addName= addName
 
             --添加控制面板
             e.AddPanel_Check({
                 name=addName,
-                tooltip=addName,
+                tooltip='|cnRED_FONT_COLOR:Bug',
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil

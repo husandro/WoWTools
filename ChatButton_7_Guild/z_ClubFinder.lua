@@ -16,7 +16,7 @@ end
 --自动选取当前专精
 --###############
 local function set_RequestToJoinFrame(frame)
-    if frame:IsProtected() then
+    if e.LockFrame(frame) then
         return
     end
 

@@ -26,8 +26,7 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
     if p and p[1] and p[3] and p[4] and p[5] then
         local target= frame.targetFrame or frame
 
-        if target:IsProtected() and InCombatLockdown() then
-
+        if target:IsProtected() or InCombatLockdown() or issecure() then
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)
                 target:ClearAllPoints()
                 target:SetPoint(tab.p[1], UIParent, tab.p[3], tab.p[4], tab.p[5])

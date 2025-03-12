@@ -599,7 +599,7 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(e.onlyChinese and '选项' or OPTIONS))
 
     local sub=root:CreateButton(showText, function(data)
-        if SettingsPanel:IsVisible() and not SettingsPanel:IsProtected() and not issecure() then--ToggleGameMenu()
+        if SettingsPanel:IsVisible() and not e.LockFrame(SettingsPanel) then--ToggleGameMenu()
             SettingsPanel:Close()
         end
         e.OpenPanelOpting(data.category, data.name)

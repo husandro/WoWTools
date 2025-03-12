@@ -24,7 +24,14 @@ function e.call(func, ...)
     end
 end
 
-
+function e.LockFrame(frame)
+    local disabled= frame:IsProtected() or issecure()
+    if e.Player.husandro and disabled then
+        local name= frame.GetName and frame:GetName()
+        print(name, 'IsProtected', frame:IsProtected() , 'issecure', issecure() )
+    end
+    return disabled
+end
 
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'

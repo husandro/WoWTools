@@ -13,6 +13,10 @@ local function set_scale(isInit)
 end
 
 local function set_frames_show(collapse)
+    if issecure() then
+        return
+    end
+
     for _, frame in pairs({
         'QuestObjectiveTracker',
         'CampaignQuestObjectiveTracker',
@@ -23,7 +27,7 @@ local function set_frames_show(collapse)
     }) do
         frame= _G[frame]
         if frame then
-            if frame:IsCollapsed()~=collapse then
+            if frame:IsCollapsed()~=collapse and not frame:IsProtected() then
                 frame:SetCollapsed(collapse)
             end
         end
@@ -61,7 +65,10 @@ local function Init_Menu(self, root)
         set_scale()
     end)
 
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveTrackerMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveTrackerMixin.addName})
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
+    end)
 end
 
 

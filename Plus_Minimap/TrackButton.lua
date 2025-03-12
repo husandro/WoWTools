@@ -812,7 +812,7 @@ local function Init_Menu(self, root)--菜单
         Save().trackButtonStrata= data
         self:set_strata()
     end)
-    sub2:SetEnabled(not self:IsProtected())
+    sub2:SetEnabled(not e.LockFrame(self))
     --if UnitAffectingCombat('player') then
       --  sub2:SetEnabled(false)
     --end

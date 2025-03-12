@@ -236,7 +236,7 @@ end
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
 function e.OpenPanelOpting(category, name)
-    if SettingsPanel:IsVisible() and not SettingsPanel:IsProtected() and not issecure() then--ToggleGameMenu()
+    if SettingsPanel:IsVisible() and not e.LockFrame(SettingsPanel) then--ToggleGameMenu()
         SettingsPanel:Close()
     end
     category= (category and category.GetID) and category or Category

@@ -38,6 +38,9 @@ function WoWTools_ToolsMixin:CreateButton(tab)
         size=30,
     })
 
+    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
+
     function btn:GetData()
         return self.ToolsData
     end
@@ -289,10 +292,10 @@ function WoWTools_ToolsMixin:RestAllPoint()
 
         self.leftNewLineButton=nil
 
-        self.Button.LeftFrame:ClearAllPoints()
-        self.Button.LeftFrame2:ClearAllPoints()
-        self.Button.RightFrame:ClearAllPoints()
-        self.Button.BottomFrame:ClearAllPoints()
+        --self.Button.LeftFrame:ClearAllPoints()
+        --self.Button.LeftFrame2:ClearAllPoints()
+        --self.Button.RightFrame:ClearAllPoints()
+        --self.Button.BottomFrame:ClearAllPoints()
         self:Set_Left_Point(self.Button.LeftFrame)
         self:Set_Left2_Point(self.Button.LeftFrame2)
         self:Set_Right_Point(self.Button.RightFrame)

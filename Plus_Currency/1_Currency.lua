@@ -23,7 +23,7 @@ local function Save()
 end
 
 function WoWTools_CurrencyMixin:UpdateTokenFrame()
-	if not TokenFrame:IsProtected() then
+	if not e.LockFrame(TokenFrame) then
 		e.call(TokenFrame.Update, TokenFrame)
 		e.call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
 	end
