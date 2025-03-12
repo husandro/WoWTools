@@ -1981,6 +1981,9 @@ end
 
 
 
+
+
+
 local SayButton
 local function Say_ChallengeComplete()
     if not Save.slotKeystoneSay then
@@ -1989,14 +1992,18 @@ local function Say_ChallengeComplete()
         SayButton:Settings()
         return
     end
+
     SayButton= WoWTools_ButtonMixin:Cbtn(nil, {
         isItem=true,
-        size=32,32
+        size=32,
+        atlas= e.Icon.icon
     })
     SayButton:IsMovable(true)
-    SayButton:Set
-    
+    SayButton:RegisterForDrag("LeftButton")
+    SayButton:SetClampedToScreen(true)
 end
+
+
 
 
 
