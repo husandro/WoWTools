@@ -2086,7 +2086,11 @@ local function Say_ChallengeComplete()
         end
     end
 
-    SayButton:SetScript('OnHide', SayButton.UnregisterAllEvents)
+    SayButton:SetScript('OnHide', function(self)
+        self:UnregisterAllEvents()
+        self:Reset()
+        self.Text:SeText('')
+    end)
     SayButton:SetScript('OnShow', function(self)
         self:RegisterEvent('BAG_UPDATE_DELAYED')
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
