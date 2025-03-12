@@ -69,7 +69,12 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         for i=1, tooltip:NumLines() do
             local lineLeft=_G[tooltipName.."TextLeft"..i]
             if lineLeft then
-                lineLeft:SetTextColor(r, g, b)
+                if lineLeft:GetText()==UNIT_POPUP_RIGHT_CLICK then
+                    lineLeft:SetText("")
+                    lineLeft:Hide()
+                else
+                    lineLeft:SetTextColor(r, g, b)
+                end
             end
             local lineRight=_G[tooltipName.."TextRight"..i]
             if lineRight and lineRight:IsShown() then
@@ -82,10 +87,11 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         tooltip.text2Right:SetTextColor(r, g, b)
         if tooltip.StatusBar then
             tooltip.StatusBar:SetStatusBarColor(r,g,b)
+        else
+            self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
         end
     end
 
-    self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
     self:Set_Width(tooltip)--设置，宽度

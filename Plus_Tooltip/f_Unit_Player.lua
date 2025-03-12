@@ -228,9 +228,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                     lineRight:SetTextColor(r,g,b)
                 end
             else
+                lineLeft:SetText('""')
                 lineLeft:SetShown(false)
                 local lineRight= _G[tooltipName..'TextRight'..i]
                 if lineRight then
+                    lineRight:SetText('')
                     lineRight:SetShown(false)
                 end
             end
@@ -238,6 +240,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     end
     if isInCombat then
         if hideLine then
+            hideLine:SetText('')
             hideLine:SetShown(false)
         end
     else

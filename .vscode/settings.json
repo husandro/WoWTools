@@ -5425,7 +5425,8 @@
         "PetitionFrameCloseButton",
         "ChatEdit_UpdateHeader",
         "ChatFrame_ReplyTell",
-        "ChatEdit_GetNextTellTarget"
+        "ChatEdit_GetNextTellTarget",
+        "UNIT_POPUP_RIGHT_CLICK"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
