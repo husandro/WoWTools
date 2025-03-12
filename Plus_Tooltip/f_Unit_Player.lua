@@ -246,11 +246,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     else
         self:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
     end
-    if tooltip.StatusBar then
+    --[[if tooltip.StatusBar then
         tooltip.StatusBar:SetStatusBarColor(r,g,b)
     else
         self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-    end
+    end]]
 
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 

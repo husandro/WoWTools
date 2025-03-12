@@ -23,6 +23,7 @@ WoWTools_TooltipMixin={
         --WidgetSetID=848,--自定义，监视 WidgetSetID
         --disabledNPCcolor=true,--禁用NPC颜色
         --hideHealth=true,----生命条提示
+        --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体>
     },
     addName=addName,
     WoWHead= 'https://www.wowhead.com/',
@@ -133,6 +134,31 @@ local function Init()
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
     --WoWTools_TooltipMixin:Set_Init_Item(GlueTooltip)
+
+    --[[hooksecurefunc("UnitFrame_UpdateTooltip", function(self)
+        for i = GameTooltip:NumLines(), 3, -1 do
+            local line = _G["GameTooltipTextLeft"..i]
+            local text = line and line:GetText()
+            if text == UNIT_POPUP_RIGHT_CLICK then
+                GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip)
+                line= _G["GameTooltipTextLeft"..(i-1)]
+                print(line:GetText()==' ')
+                break
+            end
+        end
+    end)]]
+
+--移除，<右键点击设置框体> 替换原生
+    if not Save().UNIT_POPUP_RIGHT_CLICK then
+        function UnitFrame_UpdateTooltip (self)
+            GameTooltip_SetDefaultAnchor(GameTooltip, self);
+            if ( GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) ) then    
+                self.UpdateTooltip = UnitFrame_UpdateTooltip;
+            else
+                self.UpdateTooltip = nil;
+            end
+        end
+    end
 end
 
 

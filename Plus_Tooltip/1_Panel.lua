@@ -232,6 +232,19 @@ local function Init_Panel()
             print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
+
+--<右键点击设置框体>
+    e.AddPanel_Check({
+        name= e.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK,
+        tooltip=  e.GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK),
+        GetValue= function() return Save().UNIT_POPUP_RIGHT_CLICK end,
+        category= Category,
+        SetValue= function()
+            Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
+            print(WoWTools_TooltipMixin.addName,  e.GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+        end
+    })
+    
     e.AddPanel_Check({
         name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
@@ -242,6 +255,7 @@ local function Init_Panel()
             set_Cursor_Tips()
         end
     })
+
 
 
     e.AddPanel_Header(Layout, 'CVar')

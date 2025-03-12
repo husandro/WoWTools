@@ -5426,7 +5426,8 @@
         "ChatEdit_UpdateHeader",
         "ChatFrame_ReplyTell",
         "ChatEdit_GetNextTellTarget",
-        "UNIT_POPUP_RIGHT_CLICK"
+        "UNIT_POPUP_RIGHT_CLICK",
+        "UnitFrame_UpdateTooltip"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
