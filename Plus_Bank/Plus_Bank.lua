@@ -63,7 +63,7 @@ end
 local function Get_AccountBankButton()
     local tab={}
     for btn in AccountBankPanel:EnumerateValidItems() do
-        btn:ClearAllPoints()        
+        btn:ClearAllPoints()
         table.insert(tab, 1, btn)
     end
     return tab
@@ -134,7 +134,7 @@ local function Set_BankSlotsFrame(index)
         end
         Set_IndexLabel(btn, i, 1)--索引，提示
         --Set_IndexLabel(btn, btn:GetID(), 1)--索引，提示
-        
+
     end
 end
 
@@ -212,9 +212,9 @@ end
 --整合，战团事件
 local function Init_All_AccountBankPanel()
     local Data= AccountBankPanel.purchasedBankTabData
-    local selectedTabID= AccountBankPanel.selectedTabID
+    local selectedTabID= AccountBankPanel.selectedTabID or -1
 
-    if not Save().allAccountBag or not Data or #Data<=1 or not selectedTabID or selectedTabID==-1 then
+    if not Save().allAccountBag or not Data or #Data<=1 or selectedTabID==-1 then
         return
     end
 
@@ -271,7 +271,16 @@ local function Set_AccountBankPanel(index)
 
 
     if index==1 then
+        --AccountBankPanel:GenerateItemSlotsForSelectedTab()
+
+        local Data= AccountBankPanel.purchasedBankTabData
+        local selectedTabID= AccountBankPanel.selectedTabID or -1
+        if not Data or #Data<=1 or selectedTabID==-1 then
+            return
+        end
+
         AccountBankPanel:SetShown(true)
+    
         local line= Save().line
         local num= Save().num
         local last
@@ -285,7 +294,7 @@ local function Set_AccountBankPanel(index)
                 btn:SetPoint('TOP', last, 'BOTTOM', 0, -line)
             end
             Set_IndexLabel(btn, i, 3)--btn:GetContainerSlotID())--索引，提示
-            
+
             last= btn
         end
 
@@ -321,7 +330,7 @@ local function Settings()
     do Set_BankSlotsFrame(index) end
     do Set_BankReagent(index) end
     do Set_AccountBankPanel(index) end
-    Set_Frame_Size()--index)
+    Set_Frame_Size()
 end
 
 
@@ -386,10 +395,10 @@ local function Init()
     for i=1, NUM_BANKBAGSLOTS do
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
-            
+
             WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, nil, 0.2)
             WoWTools_TextureMixin:SetAlphaColor(btn.icon, nil, nil, nil, 0.2)
-            
+
         end
     end
     return true
