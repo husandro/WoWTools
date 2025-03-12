@@ -428,7 +428,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     local check= CreateFrame("CheckButton", nil, self.keyFrame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
     check:SetPoint('RIGHT', self.ins, 'LEFT')
     check:SetChecked(Save.slotKeystoneSay)
-    check:SetAlpha(0.5)
+    --check:SetAlpha(0.5)
     check:SetScript('OnMouseDown', function()
         Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
     end)
