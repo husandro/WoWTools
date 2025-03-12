@@ -1606,9 +1606,12 @@ end
 --########################
 local WeekRewardLookFrame
 local function set_Week_Reward_Look_Specialization()
-    if not C_WeeklyRewards.HasAvailableRewards() or WeekRewardLookFrame then
+
+    local hasReward= C_WeeklyRewards.HasAvailableRewards()
+
+    if not hasReward or WeekRewardLookFrame then
         return
-    elseif C_WeeklyRewards.HasAvailableRewards() then
+    elseif hasReward then
         print(WoWTools_Mixin.addName, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
