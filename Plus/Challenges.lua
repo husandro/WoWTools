@@ -1,11 +1,9 @@
 local id, e = ...
 
---[[if PlayerGetTimerunningSeasonID() then
+if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
+    e.ChallengesSpellTabs={}
     return
 end
-if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
-    return
-end]]
 
 
 
@@ -2133,10 +2131,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save= WoWToolsSave['Plus_Challenges'] or Save
 
-            --[[if PlayerGetTimerunningSeasonID() then
+            if PlayerGetTimerunningSeasonID() then
                 self:UnregisterEvent(event)
+                e.ChallengesSpellTabs={}
                 return
-            end]]
+            end
 
             addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or CHALLENGES)
 
@@ -2167,15 +2166,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         Say_ChallengeComplete()
-        --[[if not Save.slotKeystoneSay then
-            return
-        end
-        local itemLink= get_Bag_Key()--查找，包的key
-        if itemLink then
-            C_Timer.After(3, function()
-                WoWTools_ChatMixin:Chat(itemLink, nil, nil)
-            end)
-        end]]
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
