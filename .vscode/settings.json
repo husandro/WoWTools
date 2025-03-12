@@ -5422,7 +5422,10 @@
         "TokenFrameMixin",
         "GuildRenameFrameBg",
         "GuildRenameFrameInset",
-        "PetitionFrameCloseButton"
+        "PetitionFrameCloseButton",
+        "ChatEdit_UpdateHeader",
+        "ChatFrame_ReplyTell",
+        "ChatEdit_GetNextTellTarget"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
