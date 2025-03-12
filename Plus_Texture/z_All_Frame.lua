@@ -921,6 +921,7 @@ local function Blizzard_Communities(mixin)
     mixin:SetAlphaColor(CommunitiesFrameMiddle)
 
     mixin:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
+    mixin:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
     mixin:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
     hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
