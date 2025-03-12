@@ -2091,11 +2091,14 @@ local function Say_ChallengeComplete()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
         self:Settings()
     end)
+
     SayButton:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_ENTERING_WORLD' then
-            if not IsInInstance() then
-                --self:Hide()
-            end
+            C_Timer.After(2, function()
+                if not IsInInstance() then
+                    self:Hide()
+                end
+            end)
         else
             self:Settings()
         end
@@ -2154,7 +2157,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
 
-            Say_ChallengeComplete()
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
 
