@@ -80,6 +80,9 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         tooltip.text2Left:SetTextColor(r, g, b)
         tooltip.textRight:SetTextColor(r, g, b)
         tooltip.text2Right:SetTextColor(r, g, b)
+        if tooltip.StatusBar then
+            tooltip.StatusBar:SetStatusBarColor(r,g,b)
+        end
     end
 
     self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
@@ -89,3 +92,15 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 end
 
 
+--[[
+hooksecurefunc("UnitFrame_UpdateTooltip", function(self)
+for i = GameTooltip:NumLines(), 3, -1 do
+    local line = _G["GameTooltipTextLeft"..i]
+    local text = line and line:GetText()
+    if text and text == UNIT_POPUP_RIGHT_CLICK then
+        GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip)
+        break
+    end
+end
+end)
+]]
