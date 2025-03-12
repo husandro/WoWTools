@@ -1,11 +1,14 @@
-if PlayerGetTimerunningSeasonID() then
-    return
-end
 local id, e = ...
 
-if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
+--[[if PlayerGetTimerunningSeasonID() then
     return
 end
+if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
+    return
+end]]
+
+
+
 
 for _, tab in pairs(e.ChallengesSpellTabs) do
     WoWTools_Mixin:Load({id=tab.spell, type='spell'})
@@ -40,7 +43,7 @@ local Save= {
     portScale=e.Player.husandro and 0.85 or 1,--传送门, 缩放
 
     --hideKeyUI=true,--挑战,钥石,插入界面
-    --slotKeystoneSay=true,--插入, KEY时, 说
+    slotKeystoneSay=e.Player.husandro,--插入, KEY时, 说
 }
 
 local TipsFrame
@@ -1978,8 +1981,22 @@ end
 
 
 
-
-
+local SayButton
+local function Say_ChallengeComplete()
+    if not Save.slotKeystoneSay then
+        return
+    elseif SayButton then
+        SayButton:Settings()
+        return
+    end
+    SayButton= WoWTools_ButtonMixin:Cbtn(nil, {
+        isItem=true,
+        size=32,32
+    })
+    SayButton:IsMovable(true)
+    SayButton:Set
+    
+end
 
 
 
@@ -2035,7 +2052,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:RegisterEvent('CHALLENGE_MODE_COMPLETED')
                 C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
             end
-
+            Say_ChallengeComplete()
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
 
@@ -2045,15 +2062,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
-        if not Save.slotKeystoneSay then
+        Say_ChallengeComplete()
+        --[[if not Save.slotKeystoneSay then
             return
         end
         local itemLink= get_Bag_Key()--查找，包的key
         if itemLink then
-            C_Timer.After(2, function()
+            C_Timer.After(3, function()
                 WoWTools_ChatMixin:Chat(itemLink, nil, nil)
             end)
-        end
+        end]]
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

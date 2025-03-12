@@ -166,7 +166,7 @@ local function Init()
         TabardFrameNameText:SetDrawLayer('BORDER', 7)
 
         TabardFrameCostFrame:ClearAllPoints()
-        TabardFrameCostFrame:SetPoint('TOPRIGHT', -8, -50)
+        TabardFrameCostFrame:SetPoint('TOPRIGHT', -8, -60)
 
         TabardFrameEmblemTopRight:ClearAllPoints()
         TabardFrameEmblemTopRight:SetPoint('BOTTOMRIGHT', 0, 240)
