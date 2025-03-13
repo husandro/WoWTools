@@ -491,6 +491,7 @@ local function Init()
 --显示拍卖行时，转到出售物品
     C_Timer.After(0.3, function()
         AuctionHouseFrame:HookScript('OnShow', OnShowToSellFrame)
+        OnShowToSellFrame()
     end)
 
 

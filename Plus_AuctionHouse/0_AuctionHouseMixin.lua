@@ -58,6 +58,7 @@ function WoWTools_AuctionHouseMixin:SetPostNextSellItem()
     if not C_AuctionHouse.IsThrottledMessageSystemReady()
         or (isCommoditiesSellFrame and AuctionHouseFrame.CommoditiesSellFrame:GetItem())
         or (isItemSellFrame and AuctionHouseFrame.ItemSellFrame:GetItem())
+        or not AuctionHouseFrame:IsShown()
     then
         return
     end
