@@ -253,7 +253,7 @@ local function Init_Menu(self, root)
     end)
 
 
-    sub2= WoWTools_MenuMixin:Scale(self, sub, function()
+   WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale
     end, function(data)
         if self:CanChangeAttribute() then
@@ -263,7 +263,7 @@ local function Init_Menu(self, root)
             print(WoWTools_Mixin.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
-    sub2:SetEnabled(self:CanChangeAttribute())
+    
 
    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data

@@ -12,7 +12,7 @@ WoWTools_CombatMixin={
     afk={num= 0, time= 0},
 
 
-    --inCombatScale=nil,--战斗中缩放
+    inCombatScale=1,--战斗中缩放
 }
 }
 

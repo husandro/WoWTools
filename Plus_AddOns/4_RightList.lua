@@ -137,7 +137,7 @@ local function Init_Button_Menu(self, root)
 
 --缩放
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:Scale(self, root, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return Save().rightListScale or 1
     end, function(value)
         Save().rightListScale= value

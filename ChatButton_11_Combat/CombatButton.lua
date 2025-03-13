@@ -35,7 +35,6 @@ local function Init(btn)
 
     function btn:set_Sacle_InCombat(bat)--提示，战斗中
         self.texture2:SetShown(bat)
-        --if Save().combatScale then
         self:SetScale(bat and Save().inCombatScale or 1)
     end
 

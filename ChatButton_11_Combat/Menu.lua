@@ -122,15 +122,19 @@ local function Init_Menu(self, root)
         return Save().inCombatScale or 1
     end, function(value)
         Save().inCombatScale= value
+
         self:set_Sacle_InCombat(true)
-        C_Timer.After(3, function()
-            self:set_Sacle_InCombat(UnitAffectingCombat('player'))
-        end)
+        self:SetButtonState('NORMAL')
+        if self:GetScale()==value then
+            C_Timer.After(3, function()
+                self:set_Sacle_InCombat(UnitAffectingCombat('player'))
+            end)
+        end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '战斗中缩放'
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE)
-        ) 
+        )
     end)
 
 --总游戏时间

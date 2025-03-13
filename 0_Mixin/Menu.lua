@@ -233,7 +233,7 @@ function WoWTools_MenuMixin:Scale(frame, root, GetValue, SetValue, ResetValue)
     end)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
-    return sub2, sub
+    return sub, sub2
 end
 --[[
 --缩放

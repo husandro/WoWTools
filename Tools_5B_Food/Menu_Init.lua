@@ -321,7 +321,7 @@ local function Init_Menu(self, root)
         self:set_background()
     end)
 
-    sub2=WoWTools_MenuMixin:Scale(self, sub, function()
+    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale or 1
     end, function(value)
         Save().scale= value
@@ -330,7 +330,7 @@ local function Init_Menu(self, root)
 
 
 
-    sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
