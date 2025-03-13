@@ -11,8 +11,8 @@ end
 
 local function Init(btn)
 
-    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
+    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -2)
+    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 2)
 
     btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask')
     btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 6.5, -6.5)
