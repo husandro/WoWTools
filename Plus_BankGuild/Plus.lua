@@ -317,13 +317,18 @@ end
 
 
 
-
+local IsRun
 
 --local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, filtered = GetGuildBankTabInfo(tab)
 local function Init_Button(self)
+    if IsRun then
+        return
+    end
+
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
     local isEnable= self.mode== "bank" and currentIndex<= numTab
+
 
     if not isEnable then
         Set_Frame_Size(self, currentIndex, numTab)
@@ -402,6 +407,7 @@ local function Init_Button(self)
     end
 
     Set_Frame_Size(self, currentIndex, numTab)
+    IsRun=nil
 end
 
 
