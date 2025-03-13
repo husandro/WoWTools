@@ -150,7 +150,7 @@ end
 
 
 local function Init_EmojiFrame()
-    Frame=WoWTools_ButtonMixin:Cbtn(UIParent, {size={10, 30}, name='WoWToolsChatButtonEmojiFrame'})--控制图标,显示,隐藏
+    Frame=WoWTools_ButtonMixin:Cbtn(UIParent, {size={15, 30}, name='WoWToolsChatButtonEmojiButton'})--控制图标,显示,隐藏
     Frame:SetFrameStrata('HIGH')
 
     function Frame:set_point()

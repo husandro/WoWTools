@@ -191,7 +191,7 @@ end
 
 
 
---缩放, 加check
+--[[缩放, 加check
 function WoWTools_MenuMixin:ScaleCheck(frame, root, GetValue, SetValue, ResetValue, checkGetValue, checkSetValue)
     local sub
     if not frame:CanChangeAttribute() then
@@ -214,7 +214,7 @@ function WoWTools_MenuMixin:ScaleCheck(frame, root, GetValue, SetValue, ResetVal
         tooltip:AddLine(e.GetEnabeleDisable(nil, true))
     end)
     return sub2, sub
-end
+end]]
 
 
 --缩放

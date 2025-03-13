@@ -26,6 +26,11 @@ local LFDButton
 
 
 local function Init()
+    LFDButton.mask:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 5, -5)
+    LFDButton.mask:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -7, 7)
+
+    --LFDButton.texture:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 4, -4)
+    --LFDButton.texture:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -6, 6)
 
     --自动离开,指示图标
     LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK')
@@ -33,6 +38,7 @@ local function Init()
     LFDButton.leaveInstance:SetSize(12,12)
     LFDButton.leaveInstance:SetAtlas(e.Icon.toLeft)
     LFDButton.leaveInstance:Hide()
+
 
     function LFDButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
