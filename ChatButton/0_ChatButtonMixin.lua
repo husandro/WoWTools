@@ -110,7 +110,7 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
 
     btn.mask= btn:CreateMaskTexture()
     btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
-    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, -0)
+    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
     btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
 
     btn.background= btn:CreateTexture(nil, 'BACKGROUND')

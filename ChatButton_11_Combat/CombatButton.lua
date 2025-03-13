@@ -10,9 +10,18 @@ end
 
 
 local function Init(btn)
-    
+
+    btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
+
+    btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask')
+    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 6.5, -6.5)
+    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -8.5, 8.5)
+
     btn.texture2=btn:CreateTexture(nil, 'OVERLAY')
-    btn.texture2:SetAllPoints(btn)
+    --btn.texture2:SetAllPoints(btn)
+    btn.texture2:SetPoint("TOPLEFT", btn, "TOPLEFT", -2,2)
+    btn.texture2:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 2,-2)
     btn.texture2:AddMaskTexture(btn.mask)
     btn.texture2:SetColorTexture(1,0,0)
     btn.texture2:SetShown(false)
