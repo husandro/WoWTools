@@ -21,8 +21,14 @@ local function Init()
     end
     WoWTools_GuildMixin.GuildButton= GuildButton
 
-    GuildButton.texture:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 2, -2)
-    GuildButton.texture:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -4, 4)
+    GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
+    GuildButton.texture2:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
+    GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
+    GuildButton.texture2:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", 14, -14)
+
+    GuildButton.mask:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 5.5, -5.5)
+    GuildButton.mask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
+    GuildButton.texture2:AddMaskTexture(GuildButton.mask)
 
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
@@ -46,22 +52,24 @@ local function Init()
         end
 
 --图标
-        if IsInGuild() then--GuildUtil.lua
+
+        if isInGuild then--GuildUtil.lua
             self.texture:ClearAllPoints()
             self.texture:SetPoint('CENTER', -1.5, 1)
             self.texture:SetSize(18,18)
 
-            SetSmallGuildTabardTextures(
+           -- SetSmallGuildTabardTextures(
+            SetLargeGuildTabardTextures(
                 'player',
                 self.texture,
-                nil,--self.background2,
-                nil,--self.border,
+                self.texture2,--self.background2,
+                nil, --self.border,
                 C_GuildInfo.GetGuildTabardInfo('player')
             )
-
-        else
-            self.texture:SetAtlas('UI-HUD-MicroMenu-GuildCommunities-Up')
         end
+        self.texture:SetShown(isInGuild)
+
+
 
 --在线人数
         local online=1

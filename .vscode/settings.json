@@ -5427,7 +5427,9 @@
         "ChatFrame_ReplyTell",
         "ChatEdit_GetNextTellTarget",
         "UNIT_POPUP_RIGHT_CLICK",
-        "UnitFrame_UpdateTooltip"
+        "UnitFrame_UpdateTooltip",
+        "SetLargeGuildTabardTexture",
+        "SetLargeGuildTabardTextures"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

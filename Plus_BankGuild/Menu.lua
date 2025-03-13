@@ -26,7 +26,7 @@ local function Init_Menu(self, root)
 
 
 --仅限公会官员
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         e.onlyChinese and '仅限公会官员' or  format(LFG_LIST_CROSS_FACTION, CHAT_MSG_OFFICER),
     function()
         return Save().plusOnlyOfficerAndLeader
