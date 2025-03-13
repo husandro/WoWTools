@@ -12,7 +12,7 @@ end
 local function Init(btn)
 
     btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -2)
-    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 2)
+    btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 4)
 
     btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask')
     btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 6.5, -6.5)
@@ -31,7 +31,7 @@ local function Init(btn)
         self.texture:SetDesaturated(Save().disabledText and true or false)--禁用/启用 TrackButton, 提示
     end
 
-   
+
 
     function btn:set_Sacle_InCombat(bat)--提示，战斗中
         self.texture2:SetShown(bat)
