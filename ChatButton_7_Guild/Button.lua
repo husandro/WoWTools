@@ -19,8 +19,10 @@ local function Init()
     if not GuildButton then
         return
     end
-
     WoWTools_GuildMixin.GuildButton= GuildButton
+
+    GuildButton.texture:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 2, -2)
+    GuildButton.texture:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -4, 4)
 
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
