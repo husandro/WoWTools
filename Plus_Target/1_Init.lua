@@ -48,33 +48,59 @@ WoWTools_TargetMixin={
 
 
 
+
+local isHooked
+function WoWTools_TargetMixin:Set_All_Init()
+    if not isHooked then
+        hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
+            if WoWTools_TargetMixin.isMeFrame then
+                WoWTools_TargetMixin.isMeFrame:hide_plate(plate)
+            end
+            if WoWTools_TargetMixin.questFrame then
+                WoWTools_TargetMixin.questFrame:hide_plate(plate)
+            end
+        end)
+        isHooked=true
+    end
+
+    WoWTools_TargetMixin:Init_targetFrame()
+    WoWTools_TargetMixin:Init_numFrame()
+    WoWTools_TargetMixin:Init_questFrame()
+    WoWTools_TargetMixin:Init_isMeFrame()
+end
+
+
+
+
+
+
+
+
+
+
+
+
 local panel= CreateFrame('Frame')
-
-
-
-
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
+            WoWTools_TargetMixin.Save= WoWToolsSave['Plus_Target'] or WoWTools_TargetMixin.Save
 
-            Save= WoWToolsSave['Plus_Target'] or Save
-  
-            
             local addName= '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET)
             WoWTools_TargetMixin.addName= addName
 
-          
+            WoWTools_TargetMixin:Init_Options()
 
-            if not Save.disabled then
-                Init()
+            if not WoWTools_TargetMixin.Save.disabled then
+                WoWTools_TargetMixin:Set_All_Init()
             end
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_TargetMixin:Blizzard_Settings()
-            
+
             if WoWTools_TargetMixin.addName then
                 self:UnregisterEvent(event)
             end
@@ -82,7 +108,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Target']=Save
+            WoWToolsSave['Plus_Target']= WoWTools_TargetMixin.Save
         end
     end
 end)

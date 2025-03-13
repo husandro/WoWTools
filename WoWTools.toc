@@ -15,7 +15,6 @@
 ####AddonCompartmentFunc: WowTools_OnAddonCompartmentClick
 ####AddonCompartmentFuncOnEnter: WowTools_OnAddonCompartmentFuncOnEnter
 
-
 ##以Mixin.lua为结尾，请不要关，其它功能可能会调用
 
 ##调用库，不能删除
@@ -28,7 +27,6 @@ Init.xml
 1_WoWTools\API_WoWDate.lua
 1_WoWTools\NeedUpdate_Data.lua
 1_WoWTools\z_Init_Panel.lua
-
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Aura.lua
 0_Mixin\Button.lua
@@ -57,11 +55,10 @@ Init.xml
 0_Mixin\Week.lua
 
 
-
-
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua
 Tools\1_Init.lua
+
 
 ##坐骑
 Tools_B1_Mount\B1_Mount.lua
@@ -90,6 +87,7 @@ Tools\L2_Pet.lua
 ##诺格弗格药剂 Noggenfogger Elixir
 Tools\L3_NoggenfoggerElixir.lua
 
+
 ##各种专送门,物品，玩具
 Tools_L4_UsaItems\0_UsaItems.lua
 Tools_L4_UsaItems\All_Buttons.lua
@@ -98,6 +96,7 @@ Tools_L4_UsaItems\Menu.lua
 Tools_L4_UsaItems\UI_Spell.lua
 Tools_L4_UsaItems\UI_Toy.lua
 
+
 ##食物
 Tools_5B_Food\5B_Food.lua
 Tools_5B_Food\Button_Init.lua
@@ -105,14 +104,9 @@ Tools_5B_Food\Button_AltKey.lua
 Tools_5B_Food\Create_Button.lua
 Tools_5B_Food\Menu_Init.lua
 
+
 ##法师传送门
 Tools\LL_MagePortal.lua
-
-
-
-
-
-
 
 
 ##WoWPlus
@@ -145,8 +139,6 @@ Plus_Move\z_QuestFrame.lua
 Plus_Move\z_WorldMapFrame.lua
 
 
-
-
 ##隐藏材质，透明度
 Plus_Texture\0_TextureMixin.lua
 Plus_Texture\1_Setup_Mixin.lua
@@ -159,13 +151,9 @@ Plus_Texture\a_HelpTip.lua
 Plus_Texture\z_All_Frame.lua
 Plus_Texture\z_Event_Frame.lua
 
+
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus\ItemInfo.lua
-
-
-
-
-
 
 
 ##颜色选择器
@@ -175,9 +163,6 @@ Plus_Color\2_Options.lua
 Plus_Color\Log.lua
 Plus_Color\Edit.lua
 Plus_Color\Select_Color.lua
-
-
-
 
 
 ##鼠标，提示
@@ -216,8 +201,6 @@ Plus_Tooltip\z_Professions.lua
 Plus_Tooltip\z_EventTrace.lua
 
 
-
-
 ##小地图，增强
 Plus_Minimap\0_Minimap.lua
 Plus_Minimap\Icon.lua
@@ -228,8 +211,6 @@ Plus_Minimap\Menu_Garrison.lua
 Plus_Minimap\Menu_Faction.lua
 Plus_Minimap\ExpansionLanding.lua
 Plus_Minimap\Zoom.lua
-
-
 
 
 ##角色面板
@@ -251,7 +232,6 @@ Plus_PaperDoll\Tab3.lua
 Plus_PaperDoll\TrackButton_PaperDool.lua
 
 
-
 ##角色，属性
 Plus_Attributes\0_Attributes.lua
 Plus_Attributes\1_Init.lua
@@ -262,7 +242,6 @@ Plus_Attributes\5_Options.lua
 Plus_Attributes\Speed_Dragonriding.lua
 Plus_Attributes\Speed_Target.lua
 Plus_Attributes\Speed_Vehicle.lua
-
 
 
 ##声望面板
@@ -276,12 +255,6 @@ Plus_Faction\ScrollBox_Plus.lua
 Plus_Faction\z_CHAT_MSG.lua
 Plus_Faction\z_CovenantRenown.lua
 Plus_Faction\z_MajorFactionRenownFrame.lua
-
-
-
-
-
-
 
 
 ##货币面板
@@ -298,13 +271,6 @@ Plus_Currency\z_Max_Tooltip.lua
 Plus_Currency\z_ScrollBox.lua
 
 
-
-
-
-
-
-
-
 ##任务框，增强
 ##Plus\ObjectiveTracker.lua
 Plus_ObjectiveTracker\0_ObjectiveTracker.lua
@@ -319,13 +285,6 @@ Plus_ObjectiveTracker\ScenarioObjective.lua
 Plus_ObjectiveTracker\World_Quest.lua
 
 
-
-
-
-
-
-
-
 ##战团藏品
 Plus_Collection\0_Collections.lua
 Plus_Collection\1_Mount.lua
@@ -336,10 +295,6 @@ Plus_Collection\5_Wardrober_Items.lua
 Plus_Collection\5_Wardrober_Sets.lua
 Plus_Collection\a_DressUpFrames.lua
 Plus_Collection\Options.lua
-
-
-
-
 
 
 ##世界地图，增强
@@ -355,17 +310,11 @@ Plus_WorldMap\Name_WorldQuest.lua
 Plus_WorldMap\z_Plus_Menu.lua
 Plus_WorldMap\z_Plus_SearchBox.lua
 
+
 ##单位框, 最好放在ChatButton_4_Invite前，Shift+点击=焦点
 Plus\UnitFrame.lua
 ##好友，面板
 Plus\FriendsList.lua
-
-
-
-
-
-
-
 
 
 ##卖买
@@ -407,6 +356,7 @@ Plus_Bag\1_Init_Bag.lua
 Plus_Bag\z_Container_Menu.lua
 ##Plus_Bag\z_PortraitButton.lua
 
+
 ##自动对话，任务
 Plus_Gossip\0_Init.lua
 Plus_Gossip\1_Gossip.lua
@@ -420,7 +370,6 @@ Plus_Gossip\Gossip_PlayerData.lua
 Plus_Gossip\Quest_Menu.lua
 Plus_Gossip\Quest_QuestInfo.lua
 Plus_Gossip\Quest.lua
-
 
 
 
@@ -443,16 +392,8 @@ Plus_Encounter\Spell_Boss.lua
 Plus_Encounter\UI_ListInstances.lua
 
 
-
-
-
 ##史诗钥石地下城, 挑战增强
 Plus\Challenges.lua
-
-
-
-
-
 
 
 ##邮件，增加
@@ -465,9 +406,6 @@ Plus_Mail\B_Set_UI.lua
 Plus_Mail\History_SendNameList.lua
 Plus_Mail\Item_FastButton.lua
 Plus_Mail\PlayerName_List.lua
-
-
-
 
 
 ##拍卖行
@@ -489,6 +427,7 @@ Plus_PetBattle\Click_To_Move.lua
 Plus_PetBattle\TypeButton.lua
 Plus_PetBattle\PetBattle_AbilityButton.lua
 
+
 ##插件，方案
 Plus_AddOns\0_AddOns.lua
 Plus_AddOns\1_MenuButton.lua
@@ -499,16 +438,6 @@ Plus_AddOns\NewButton.lua
 Plus_AddOns\Info_Plus.lua
 
 
-
-
-
-
-
-
-
-
-
-
 ##日历, 显示
 Plus_Holiday\0_Holiday.lua
 Plus_Holiday\Calendar_Uptate.lua
@@ -517,17 +446,17 @@ Plus_Holiday\TrackButton_Init.lua
 Plus_Holiday\TrackButton_Text.lua
 
 
-
-
 ##镶嵌宝石
 Plus\Gem.lua
+
+
 ##目标指示
-Plus\Target.lua
-
-
-
-
-
+Plus_Target\1_Init.lua
+Plus_Target\2_Options.lua
+Plus_Target\targetFrame.lua
+Plus_Target\questFrame.lua
+Plus_Target\isMeFrame.lua
+Plus_Target\numFrame.lua
 
 
 ##主菜单，增强
@@ -549,14 +478,6 @@ Plus_MainMenu\Quest.lua
 Plus_MainMenu\Store.lua
 
 
-
-
-
-
-
-
-
-
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
 Plus_Cursor\0_Cursor.lua
 Plus_Cursor\1_Options.lua
@@ -564,9 +485,6 @@ Plus_Cursor\Cursor_Init.lua
 Plus_Cursor\Cursor_Options.lua
 Plus_Cursor\GCD_Init.lua
 Plus_Cursor\GCD_Options.lua
-
-
-
 
 
 ##宏增强
@@ -580,10 +498,6 @@ Plus_Macro\Select_Button.lua
 Plus_Macro\Set_UI.lua
 
 
-
-
-
-
 ##专业按钮
 Plus_Professions\0_Professions.lua
 Plus_Professions\ArchaeologyUI.lua
@@ -591,9 +505,6 @@ Plus_Professions\ProfessionsBook.lua
 Plus_Professions\ProfessionsFrame_Button.lua
 Plus_Professions\ProfessionsFrame.lua
 Plus_Professions\TrainerUI.lua
-
-
-
 
 
 ##仅限猎人加载，专门，宠物管理，增强
@@ -604,14 +515,6 @@ Plus_StableFrame\Menu.lua
 Plus_StableFrame\Plus.lua
 Plus_StableFrame\Tooltips.lua
 Plus_StableFrame\UI.lua
-
-
-
-
-
-
-
-
 
 
 ##其它
@@ -633,11 +536,6 @@ Plus_Other\Talking.lua
 Plus_Other\Realm.lua
 
 
-
-
-
-
-
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
 ChatButton\0_ChatButtonMixin.lua
@@ -650,7 +548,6 @@ ChatButton\2_Roll.lua
 ##标记
 ChatButton_3_Markers\0_MarkerMixin.lua
 ChatButton_3_Markers\3_Markers.lua
-
 ChatButton_3_Markers\Tank_Healer.lua
 ChatButton_3_Markers\Ready_Info.lua
 ChatButton_3_Markers\Ready_Auto.lua
@@ -669,6 +566,7 @@ ChatButton_4_Invite\Inv_All_Unit.lua
 ChatButton_4_Invite\Summon.lua
 ChatButton_4_Invite\Resting.lua
 ChatButton_4_Invite\Foucs.lua
+
 
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton_5_LFD\0_LFDMixin.lua
