@@ -283,8 +283,6 @@ local function Init()
         Save().scale= value
         if value==1 then
             print(WoWTools_Mixin.addName,WoWTools_TargetMixin.addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
-        else
-            print(WoWTools_Mixin.addName,WoWTools_TargetMixin.addName, '|cnGREEN_FONT_COLOR:', value)
         end
         WoWTools_TargetMixin:Set_All_Init()
     end})
@@ -478,7 +476,6 @@ local function Init()
         if not Save().creatureUIParent and not Save().target then
             print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', e.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', e.Icon.toRight)..WoWTools_TargetMixin.addName..'\"'))
         end
-        print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.GetEnabeleDisable(Save().creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 

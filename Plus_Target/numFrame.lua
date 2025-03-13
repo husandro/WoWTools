@@ -230,11 +230,13 @@ local function Init()
         numButton:UnregisterAllEvents()
         numButton.Text:SetText("")
         numButton:SetShown(false)
+        numButton.isPvPArena= nil
     end
     if numFrame then
         numFrame:UnregisterAllEvents()
         numFrame.Text:SetText("")
         numFrame:SetShown(false)
+        numFrame.isPvPArena= nil
     end
 
     if Save().creature then
