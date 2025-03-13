@@ -214,6 +214,9 @@ local function OnShowToSellFrame()
     if not Save().intShowSellItem then
         return
     end
+    if not AuctionHouseFrame:IsShown() then
+        return
+    end
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             if select(2, WoWTools_AuctionHouseMixin:GetItemSellStatus(bag, slot, true)) then
@@ -488,7 +491,6 @@ local function Init()
 --显示拍卖行时，转到出售物品
     C_Timer.After(0.3, function()
         AuctionHouseFrame:HookScript('OnShow', OnShowToSellFrame)
-        OnShowToSellFrame()
     end)
 
 
