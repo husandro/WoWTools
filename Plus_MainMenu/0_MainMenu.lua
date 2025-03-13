@@ -52,7 +52,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-
+            if WoWTools_MainMenuMixin.addName then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

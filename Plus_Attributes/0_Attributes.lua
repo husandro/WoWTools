@@ -139,6 +139,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_AttributesMixin:Init_Options()
+            if WoWTools_AttributesMixin.Category then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

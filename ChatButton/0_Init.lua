@@ -295,6 +295,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
+            if WoWTools_ChatButtonMixin.addName then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then

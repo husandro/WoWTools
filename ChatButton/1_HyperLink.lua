@@ -1510,9 +1510,15 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
+            if addName and C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+                self:UnregisterEvent(event)
+            end
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
             Init_Blizzard_DebugTools()
+            if addName and C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event=='PLAYER_LOGOUT' then

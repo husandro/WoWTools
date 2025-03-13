@@ -271,8 +271,8 @@ local function Init_Menu(self, root)
         Save().strata= data
         self:set_strata()
     end)
-    
-    
+
+
 
     sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
@@ -470,6 +470,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
             WoWTools_ToolsMixin.Save= WoWToolsSave['WoWTools_ToolsButton'] or WoWTools_ToolsMixin.Save
+
             Save().BottomPoint= Save().BottomPoint or {
                 Mount=true,
                 Hearthstone=true,
@@ -493,12 +494,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
+
+            if Category then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             Save().show= Button and Button.Frame:IsShown()
-            
+
             WoWToolsSave['WoWTools_ToolsButton']= Save()
         end
     end

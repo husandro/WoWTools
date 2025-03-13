@@ -194,12 +194,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             PetJournal:HookScript('OnHide', function()
                 WoWTools_PetBattleMixin:TypeButton_SetShown()
             end)
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+
+            if WoWTools_PetBattleMixin.addName and C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_PetBattleMixin:Set_Options()
+
+            if WoWTools_PetBattleMixin.addName and C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event=='PET_BATTLE_OPENING_DONE' then

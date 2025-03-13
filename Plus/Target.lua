@@ -1,42 +1,3 @@
-local id, e= ...
-local addName
-local Save= {
-    target= true,
-    targetTextureNewTab={},
-    targetTextureName='common-icon-rotateright',
-
-    targetColor= {r=1,g=1,b=1,a=1},--颜色
-    targetInCombat=true,--战斗中，提示
-    targetInCombatColor={r=1, g=0, b=0, a=1},--战斗中，颜色
-    w=40,
-    h=20,
-    x=0,
-    y=0,
-    scale=1.5,
-    elapsed=0.5,
-    TargetFramePoint='LEFT',--'TOP', 'HEALTHBAR','LEFT'
-    --top=true,--位于，目标血条，上方
-
-    creature= true,--怪物数量
-    creatureFontSize=10,
-    --creatureNotParentTarget=true,--自定义位置
-    --creatureUIParent=true,--放在UIPrent
-    --creaturePoint={},--位置
-
-    unitIsMe=true,--提示， 目标是你
-    unitIsMeTextrue= 'auctionhouse-icon-favorite',
-    unitIsMeSize=12,
-    unitIsMePoint='TOPLEFT',
-    unitIsMeParent='healthBar',--name
-    unitIsMeX=0,
-    unitIsMeY=-2,
-    unitIsMeColor={r=1,g=1,b=1,a=1},
-
-    quest= true,
-    --questShowAllFaction=nil,--显示， 所有玩家派系
-    questShowPlayerClass=true,--显示，玩家职业
-    questShowInstance=e.Player.husandro,--在副本显示
-}
 
 
 
@@ -48,7 +9,6 @@ local Save= {
 
 
 
-local panel= CreateFrame('Frame')
 
 local targetFrame
 local questFrame
@@ -127,9 +87,9 @@ local function get_texture_tab()
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\Arrows_FocusAway.tga']='t',
         ['Interface\\AddOns\\WoWTools\\Sesource\\Mouse\\green_arrow_down_11384.tga']='t',
     }
-    for name, _ in pairs(Save.targetTextureNewTab) do
+    for name, _ in pairs(Save().targetTextureNewTab) do
         if tab[name] then
-            Save.targetTextureNewTab[name]=nil
+            Save().targetTextureNewTab[name]=nil
         else
             tab[name]= 'use'
         end
@@ -144,9 +104,9 @@ end
 local function set_Target_Color(self, isInCombat)--设置，颜色
     if self then
         if isInCombat then
-            self:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+            self:SetVertexColor(Save().targetInCombatColor.r, Save().targetInCombatColor.g, Save().targetInCombatColor.b, Save().targetInCombatColor.a)
         else
-            self:SetVertexColor(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
+            self:SetVertexColor(Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a)
         end
     end
 end
@@ -167,7 +127,7 @@ function Init_Target()
     if targetFrame then
         targetFrame:UnregisterAllEvents()
     end
-    if not Save.target then
+    if not Save().target then
         if targetFrame then
             targetFrame:SetShown(false)
         end
@@ -180,33 +140,37 @@ function Init_Target()
 
         function targetFrame:set_color(isInCombat)
             if isInCombat then
-                self.Texture:SetVertexColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+                self.Texture:SetVertexColor(Save().targetInCombatColor.r, Save().targetInCombatColor.g, Save().targetInCombatColor.b, Save().targetInCombatColor.a)
             else
-                self.Texture:SetVertexColor(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
+                self.Texture:SetVertexColor(Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a)
             end
         end
         function targetFrame:set_texture()
-            self:SetSize(Save.w, Save.h)--设置大小
-            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.targetTextureName)--设置，图片
+            self:SetSize(Save().w, Save().h)--设置大小
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save().targetTextureName)--设置，图片
             if isAtlas then
                 self.Texture:SetAtlas(texture)
             else
                 self.Texture:SetTexture(texture or 0)
             end
 
-            if Save.scale~=1 then
+            if Save().scale~=1 then
+
                 self:SetScript('OnUpdate', function(frame, elapsed)
-                    frame.elapsed= (frame.elapsed or Save.elapsed) + elapsed
-                    if frame.elapsed> Save.elapsed then
+                    frame.elapsed= (frame.elapsed or Save().elapsed) + elapsed
+                    
+                    if frame.elapsed> Save().elapsed then
+
                         frame.elapsed=0
-                        frame:SetScale(frame:GetScale()==1 and Save.scale or 1)
+                        frame:SetScale(frame:GetScale()==1 and Save().scale or 1)
                     end
                 end)
+
             else
                 self:SetScript('OnUpdate', nil)
             end
             self:SetScale(1)--缩放
-            self:set_color(Save.targetInCombat and UnitAffectingCombat('player') or false)
+            self:set_color(Save().targetInCombat and UnitAffectingCombat('player') or false)
             self:set_target()
         end
 
@@ -220,19 +184,19 @@ function Init_Target()
             local UnitFrame = plate.UnitFrame
             local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
             self:ClearAllPoints()
-            if Save.TargetFramePoint=='TOP' then
+            if Save().TargetFramePoint=='TOP' then
                 if UnitFrame.SoftTargetFrame.Icon:IsShown() then
                     frame= UnitFrame.SoftTargetFrame
                 else
                     frame= UnitFrame.name or UnitFrame.healthBar
                 end
-                self:SetPoint('BOTTOM', frame or UnitFrame, 'TOP', Save.x, Save.y)
+                self:SetPoint('BOTTOM', frame or UnitFrame, 'TOP', Save().x, Save().y)
 
-            elseif Save.TargetFramePoint=='HEALTHBAR' then
+            elseif Save().TargetFramePoint=='HEALTHBAR' then
                 frame= UnitFrame.healthBar or UnitFrame.name or UnitFrame
                 local w, h= frame:GetSize()
-                w= w+ Save.w
-                h= h+ Save.h
+                w= w+ Save().w
+                h= h+ Save().h
                 local n, p
                 if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
                     n= UnitFrame.RaidTargetFrame.RaidTargetIcon:GetWidth()+ UnitFrame.ClassificationFrame.classificationIndicator:GetWidth()
@@ -249,7 +213,7 @@ function Init_Target()
                 end
                 n, p= n or 0, p or 0
                 self:SetSize(w+ n+ p, h)
-                self:SetPoint('CENTER', UnitFrame, Save.x+ (-n+p)/2, Save.y)
+                self:SetPoint('CENTER', UnitFrame, Save().x+ (-n+p)/2, Save().y)
             else
 
                 if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
@@ -263,13 +227,13 @@ function Init_Target()
                 else
                     frame= UnitFrame.healthBar or UnitFrame.name
                 end
-                self:SetPoint('RIGHT', frame or UnitFrame, 'LEFT',Save.x, Save.y)
+                self:SetPoint('RIGHT', frame or UnitFrame, 'LEFT',Save().x, Save().y)
             end
             self:SetShown(true)
         end
 
         hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
-            if Save.TargetFramePoint=='TOP' then
+            if Save().TargetFramePoint=='TOP' then
                 targetFrame:set_target()
             end
         end)
@@ -298,7 +262,7 @@ function Init_Target()
     targetFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
     targetFrame:RegisterEvent('RAID_TARGET_UPDATE')
     targetFrame:RegisterUnitEvent('UNIT_FLAGS', 'target')
-    if Save.targetInCombat then
+    if Save().targetInCombat then
         targetFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         targetFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
     end
@@ -335,7 +299,7 @@ local function Init_Num()
     if NumFrame then
         NumFrame:UnregisterAllEvents()
     end
-    if not Save.creature then
+    if not Save().creature then
         if NumFrame then
             NumFrame.Text:SetText("")
         end
@@ -343,18 +307,18 @@ local function Init_Num()
     end
     --怪物数量
     if not NumFrame then
-        if Save.creatureUIParent or not targetFrame then
+        if Save().creatureUIParent or not targetFrame then
             NumFrame= WoWTools_ButtonMixin:Cbtn(nil, {size=18})
 
-            NumFrame.Text= WoWTools_LabelMixin:Create(NumFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})
+            NumFrame.Text= WoWTools_LabelMixin:Create(NumFrame, {size=Save().creatureFontSize, color={r=1,g=1,b=1}})
             NumFrame.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)
             NumFrame.Text:SetScript('OnEnter', function(self) self:GetParent():SetButtonState('PUSHED') end)
             NumFrame.Text:SetPoint('LEFT', NumFrame, 'RIGHT')
 
             function NumFrame:set_point()
                 self:ClearAllPoints()
-                if Save.creaturePoint then
-                    self:SetPoint(Save.creaturePoint[1], UIParent, Save.creaturePoint[3], Save.creaturePoint[4], Save.creaturePoint[5])
+                if Save().creaturePoint then
+                    self:SetPoint(Save().creaturePoint[1], UIParent, Save().creaturePoint[3], Save().creaturePoint[4], Save().creaturePoint[5])
                 elseif e.Player.husandro then
                     self:SetPoint('BOTTOM', _G['PlayerFrame'], 'TOP', 0,24)
                 else
@@ -381,14 +345,14 @@ local function Init_Num()
             NumFrame:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
-                Save.creaturePoint={self:GetPoint(1)}
-                Save.creaturePoint[2]=nil
+                Save().creaturePoint={self:GetPoint(1)}
+                Save().creaturePoint[2]=nil
             end)
             NumFrame:SetScript("OnClick", function(self, d)
                 if d=='RightButton' and IsControlKeyDown() then--还原
-                    Save.creaturePoint=nil
+                    Save().creaturePoint=nil
                     self:set_point()
-                    print(WoWTools_Mixin.addName , addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_Mixin.addName , WoWTools_TargetMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 elseif d=='RightButton' and IsAltKeyDown() then
                     SetCursor('UI_MOVE_CURSOR')
                 end
@@ -397,7 +361,7 @@ local function Init_Num()
                 if not IsAltKeyDown() then
                     return
                 end
-                local n=Save.creatureFontSize or 10
+                local n=Save().creatureFontSize or 10
                 if d==1 then
                     n=n+1
                 elseif d==-1 then
@@ -405,16 +369,16 @@ local function Init_Num()
                 end
                 n= n>72 and 72 or n
                 n= n<8 and 8 or n
-                Save.creatureFontSize=n
+                Save().creatureFontSize=n
                 WoWTools_LabelMixin:Create(nil, {changeFont=self.Text, size=n})
                 self:set_tooltip()
-                print(WoWTools_Mixin.addName, addName, (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save.creatureFontSize)
+                print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
             end)
 
             function NumFrame:set_tooltip()
                 e.tips:SetOwner(self, "ANCHOR_LEFT")
                 e.tips:ClearLines()
-                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName)
                 e.tips:AddLine(' ')
                 if e.onlyChinese then
                     e.tips:AddLine(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
@@ -424,17 +388,17 @@ local function Init_Num()
                 e.tips:AddLine(' ')
                 e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
                 e.tips:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
-                e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save.creatureFontSize, 'Alt+'..e.Icon.mid)
+                e.tips:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save().creatureFontSize, 'Alt+'..e.Icon.mid)
                 e.tips:Show()
             end
             NumFrame:SetScript('OnLeave', GameTooltip_Hide)
             NumFrame:SetScript("OnEnter", NumFrame.set_tooltip)
         else
             NumFrame= CreateFrame('Frame')
-            NumFrame.Text= WoWTools_LabelMixin:Create(targetFrame, {size=Save.creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+            NumFrame.Text= WoWTools_LabelMixin:Create(targetFrame, {size=Save().creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
             function NumFrame:set_text_point()
                 self.Text:ClearAllPoints()
-                if Save.TargetFramePoint=='LEFT' then
+                if Save().TargetFramePoint=='LEFT' then
                     self.Text:SetPoint('CENTER')
                     self.Text:SetJustifyH('RIGHT')
                 else
@@ -485,7 +449,7 @@ local function Init_Num()
         NumFrame:set_pvp()
 
     elseif NumFrame then
-        WoWTools_LabelMixin:Create(nil, {changeFont=NumFrame.Text, size= Save.creatureFontSize})
+        WoWTools_LabelMixin:Create(nil, {changeFont=NumFrame.Text, size= Save().creatureFontSize})
     end
 
     local eventTab= {
@@ -534,7 +498,7 @@ end
 --任务，数量
 --#########
 local function Init_Quest()
-    if not Save.quest then
+    if not Save().quest then
         if questFrame then
             questFrame:UnregisterAllEvents()
             questFrame:rest_all()
@@ -581,9 +545,9 @@ local function Init_Quest()
                 end
             elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then
                 local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, UnitGUID(unit), nil)--检测, 是否好友
-                local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save.questShowAllFaction)--检查, 是否同一阵营
+                local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save().questShowAllFaction)--检查, 是否同一阵营
                 local text
-                if Save.questShowPlayerClass then
+                if Save().questShowPlayerClass then
                     text= WoWTools_UnitMixin:GetClassIcon(unit)
                 end
                 if wow or faction then
@@ -628,7 +592,7 @@ local function Init_Quest()
 
             local isPvPArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
             local isIns= isPvPArena
-                    or (not Save.questShowInstance and IsInInstance()
+                    or (not Save().questShowInstance and IsInInstance()
                         and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
                     )
             if not isIns then
@@ -699,7 +663,7 @@ local function Init_Unit_Is_Me()
     if IsMeFrame then
         IsMeFrame:UnregisterAllEvents()
     end
-    if not Save.unitIsMe then
+    if not Save().unitIsMe then
         if IsMeFrame then
             for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 IsMeFrame:hide_plate(plate)
@@ -714,26 +678,26 @@ local function Init_Unit_Is_Me()
             if not frame.UnitIsMe then
                 frame.UnitIsMe= frame:CreateTexture(nil, 'OVERLAY')
             end
-            local parent= Save.unitIsMeParent=='name' and frame.name or frame.healthBar
-            if Save.unitIsMePoint=='TOP' then
-                frame.UnitIsMe:SetPoint("BOTTOM", parent, 'TOP', Save.unitIsMeX,Save.unitIsMeY)
-            elseif Save.unitIsMePoint=='TOPRIGHT' then
-                frame.UnitIsMe:SetPoint("BOTTOMRIGHT", parent, 'TOPRIGHT', Save.unitIsMeX,Save.unitIsMeY)
-            elseif Save.unitIsMePoint=='LEFT' then
-                frame.UnitIsMe:SetPoint("RIGHT", parent, 'LEFT', Save.unitIsMeX,Save.unitIsMeY)
-            elseif Save.unitIsMePoint=='RIGHT' then
-                frame.UnitIsMe:SetPoint("LEFT", parent, 'RIGHT', Save.unitIsMeX,Save.unitIsMeY)
+            local parent= Save().unitIsMeParent=='name' and frame.name or frame.healthBar
+            if Save().unitIsMePoint=='TOP' then
+                frame.UnitIsMe:SetPoint("BOTTOM", parent, 'TOP', Save().unitIsMeX,Save().unitIsMeY)
+            elseif Save().unitIsMePoint=='TOPRIGHT' then
+                frame.UnitIsMe:SetPoint("BOTTOMRIGHT", parent, 'TOPRIGHT', Save().unitIsMeX,Save().unitIsMeY)
+            elseif Save().unitIsMePoint=='LEFT' then
+                frame.UnitIsMe:SetPoint("RIGHT", parent, 'LEFT', Save().unitIsMeX,Save().unitIsMeY)
+            elseif Save().unitIsMePoint=='RIGHT' then
+                frame.UnitIsMe:SetPoint("LEFT", parent, 'RIGHT', Save().unitIsMeX,Save().unitIsMeY)
             else--TOPLEFT
-                frame.UnitIsMe:SetPoint("BOTTOMLEFT", parent, 'TOPLEFT', Save.unitIsMeX,Save.unitIsMeY)
+                frame.UnitIsMe:SetPoint("BOTTOMLEFT", parent, 'TOPLEFT', Save().unitIsMeX,Save().unitIsMeY)
             end
-            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.unitIsMeTextrue)
+            local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save().unitIsMeTextrue)
             if isAtlas or not texture then
                 frame.UnitIsMe:SetAtlas(texture or 'auctionhouse-icon-favorite')
             else
                 frame.UnitIsMe:SetTexture(texture)
             end
-            frame.UnitIsMe:SetVertexColor(Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a)
-            frame.UnitIsMe:SetSize(Save.unitIsMeSize, Save.unitIsMeSize)
+            frame.UnitIsMe:SetVertexColor(Save().unitIsMeColor.r, Save().unitIsMeColor.g, Save().unitIsMeColor.b, Save().unitIsMeColor.a)
+            frame.UnitIsMe:SetSize(Save().unitIsMeSize, Save().unitIsMeSize)
         end
         function IsMeFrame:set_plate(plate, unit)--设置, Plate
             plate= UnitExists(unit) and C_NamePlate.GetNamePlateForUnit(unit, issecure()) or plate
@@ -889,31 +853,31 @@ end
 --选项, 添加控制面板      
 --#################
 local function set_Option()
-    if panel.tipTargetTexture or Save.disabled then
+    if panel.tipTargetTexture or Save().disabled then
         return
     end
 
     local sel=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel:SetPoint('TOPLEFT', 0, -40)
-    sel:SetChecked(Save.target)
+    sel:SetChecked(Save().target)
     sel:SetScript('OnClick', function()
-        Save.target= not Save.target and true or nil
+        Save().target= not Save().target and true or nil
         set_All_Init()
     end)
-    sel.Text:SetText('1) '..format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '目标' or addName))
-    sel.Text:SetTextColor( Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a)
+    sel.Text:SetText('1) '..format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '目标' or TARGET))
+    sel.Text:SetTextColor( Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a)
     sel.Text:EnableMouse(true)
     sel.Text:SetScript('OnMouseDown', function(self2, d)
         if d=='LeftButton' then
             local setR, setG, setB, setA
-            local R,G,B,A= Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a
+            local R,G,B,A= Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a
             local function func()
-                Save.targetColor={r=setR, g=setG, b=setB, a=setA}
+                Save().targetColor={r=setR, g=setG, b=setB, a=setA}
                 self2:SetTextColor(setR, setG, setB, setA)
                 set_Target_Color(panel.tipTargetTexture, false)
                 set_All_Init()
             end
-            WoWTools_ColorMixin:ShowColorFrame(Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a, function()
+            WoWTools_ColorMixin:ShowColorFrame(Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a, function()
                     setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                     func()
                 end, function()
@@ -922,7 +886,7 @@ local function set_Option()
                 end
             )
         elseif d=='RightButton' then
-            Save.targetColor={r=1, g=1, b=1, a=1}
+            Save().targetColor={r=1, g=1, b=1, a=1}
             self2:SetTextColor(1, 1, 1, 1)
             set_Target_Color(panel.tipTargetTexture, false)
             set_All_Init()
@@ -933,7 +897,7 @@ local function set_Option()
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:AddDoubleLine(e.onlyChinese and '显示敌方姓名板' or BINDING_NAME_NAMEPLATES, e.GetEnabeleDisable(C_CVar.GetCVarBool("nameplateShowEnemies")))
         e.tips:AddLine(' ')
-        local r,g,b,a= Save.targetColor.r, Save.targetColor.g, Save.targetColor.b, Save.targetColor.a
+        local r,g,b,a= Save().targetColor.r, Save().targetColor.g, Save().targetColor.b, Save().targetColor.a
         e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), (e.onlyChinese and '默认' or DEFAULT)..e.Icon.right, r,g,b, 1,1,1)
         e.tips:AddDoubleLine('r='..r..' g='..g..' b='..b, 'a='..a, r,g,b, r,g,b)
         e.tips:AddLine(' ')
@@ -944,30 +908,30 @@ local function set_Option()
     panel.tipTargetTexture= panel:CreateTexture()--目标，图片，提示
     panel.tipTargetTexture:SetPoint("TOP")
     --set_Target_Texture(panel.tipTargetTexture)--设置，图片
-    panel.tipTargetTexture:SetSize(Save.w, Save.h)--设置，大小
+    panel.tipTargetTexture:SetSize(Save().w, Save().h)--设置，大小
     set_Target_Color(panel.tipTargetTexture, false)--设置，颜色
 
     local combatCheck=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     combatCheck:SetPoint('LEFT', sel.Text, 'RIGHT', 15,0)
-    combatCheck:SetChecked(Save.targetInCombat)
+    combatCheck:SetChecked(Save().targetInCombat)
     combatCheck:SetScript('OnClick', function()
-        Save.targetInCombat= not Save.targetInCombat and true or nil
+        Save().targetInCombat= not Save().targetInCombat and true or nil
         set_All_Init()
     end)
     combatCheck.Text:EnableMouse(true)
     combatCheck.Text:SetText(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-    combatCheck.Text:SetTextColor(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a)
+    combatCheck.Text:SetTextColor(Save().targetInCombatColor.r, Save().targetInCombatColor.g, Save().targetInCombatColor.b, Save().targetInCombatColor.a)
     combatCheck.Text:SetScript('OnMouseDown', function(self2, d)
         if d=='LeftButton' then
             local setR, setG, setB, setA
-            local R,G,B,A= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
+            local R,G,B,A= Save().targetInCombatColor.r, Save().targetInCombatColor.g, Save().targetInCombatColor.b, Save().targetInCombatColor.a
             local function func()
-                Save.targetInCombatColor={r=setR, g=setG, b=setB, a=setA}
+                Save().targetInCombatColor={r=setR, g=setG, b=setB, a=setA}
                 self2:SetTextColor(setR, setG, setB, setA)
                 set_Target_Color(panel.tipTargetTexture, true)
                 set_All_Init()
             end
-            WoWTools_ColorMixin:ShowColorFrame(Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a, function()
+            WoWTools_ColorMixin:ShowColorFrame(Save().targetInCombatColor.r, Save().targetInCombatColor.g, Save().targetInCombatColor.b, Save().targetInCombatColor.a, function()
                     setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
                     func()
                 end, function()
@@ -976,7 +940,7 @@ local function set_Option()
                 end
             )
         elseif d=='RightButton' then
-            Save.targetInCombatColor={r=1, g=0, b=0, a=1}
+            Save().targetInCombatColor={r=1, g=0, b=0, a=1}
             self2:SetTextColor(1, 0, 0, 1)
             set_Target_Color(panel.tipTargetTexture, false)
             set_All_Init()
@@ -984,7 +948,7 @@ local function set_Option()
     end)
     combatCheck.Text:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
     combatCheck.Text:SetScript('OnEnter', function(self2)
-        local r,g,b,a= Save.targetInCombatColor.r, Save.targetInCombatColor.g, Save.targetInCombatColor.b, Save.targetInCombatColor.a
+        local r,g,b,a= Save().targetInCombatColor.r, Save().targetInCombatColor.g, Save().targetInCombatColor.b, Save().targetInCombatColor.a
         e.tips:SetOwner(self2, "ANCHOR_LEFT")
         e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COLOR)), (e.onlyChinese and '默认' or DEFAULT)..e.Icon.right, r,g,b, 1,1,1)
         e.tips:AddDoubleLine('r='..r..' g='..g..' b='..b, 'a='..a, r,g,b, r,g,b)
@@ -998,7 +962,7 @@ local function set_Option()
     menuPoint:SetWidth(195)
     menuPoint.Text:ClearAllPoints()
     menuPoint.Text:SetPoint('CENTER')
-    menuPoint:SetDefaultText(Save.TargetFramePoint)
+    menuPoint:SetDefaultText(Save().TargetFramePoint)
     menuPoint:SetupMenu(function(self, root)
         for _, name in pairs({
             'TOP',
@@ -1008,9 +972,9 @@ local function set_Option()
             root:CreateCheckbox(
                 name,
             function(data)
-                return Save.TargetFramePoint==data.name
+                return Save().TargetFramePoint==data.name
             end, function(data)
-                Save.TargetFramePoint= data.name
+                Save().TargetFramePoint= data.name
                 self:SetDefaultText(data.name)
                 set_All_Init()
             end, {name=name})
@@ -1018,74 +982,74 @@ local function set_Option()
     end)
 
 
-    local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save.x, setp=1, w= 100,
+    local sliderX = e.CSlider(panel, {min=-250, max=250, value=Save().x, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.x= value
+        Save().x= value
         set_All_Init()
     end})
     sliderX:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT',0, -12)
-    local sliderY = e.CSlider(panel, {min=-250, max=250, value=Save.y, setp=1, w= 100, color=true,
+    local sliderY = e.CSlider(panel, {min=-250, max=250, value=Save().y, setp=1, w= 100, color=true,
     text= 'Y',
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.y= value
+        Save().y= value
         set_All_Init()
     end})
     sliderY:SetPoint("LEFT", sliderX, 'RIGHT',15,0)
-    local sliderW = e.CSlider(panel, {min=10, max=100, value=Save.w, setp=1, w= 100,
+    local sliderW = e.CSlider(panel, {min=10, max=100, value=Save().w, setp=1, w= 100,
     text= 'W',
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.w= value
-        panel.tipTargetTexture:SetSize(Save.w, Save.h)--设置，大小
+        Save().w= value
+        panel.tipTargetTexture:SetSize(Save().w, Save().h)--设置，大小
         set_All_Init()
     end})
     sliderW:SetPoint("LEFT", sliderY, 'RIGHT',15,0)
-    local sliderH = e.CSlider(panel, {min=10, max=100, value=Save.h, setp=1, w= 100, color=true,
+    local sliderH = e.CSlider(panel, {min=10, max=100, value=Save().h, setp=1, w= 100, color=true,
     text= 'H',
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.h= value
-        panel.tipTargetTexture:SetSize(Save.w, Save.h)--设置，大小
+        Save().h= value
+        panel.tipTargetTexture:SetSize(Save().w, Save().h)--设置，大小
         set_All_Init()
     end})
     sliderH:SetPoint("LEFT", sliderW, 'RIGHT',15,0)
 
 
 
-    local sliderScale = e.CSlider(panel, {min=0.4, max=2, value=Save.scale or 1, setp=0.1, w= 100,
+    local sliderScale = e.CSlider(panel, {min=0.4, max=2, value=Save().scale or 1, setp=0.1, w= 100,
     text= e.onlyChinese and '缩放' or UI_SCALE,
     func=function(self2, value)
         value= tonumber(format('%.1f', value))
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.scale= value
+        Save().scale= value
         if value==1 then
-            print(WoWTools_Mixin.addName,addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
+            print(WoWTools_Mixin.addName,WoWTools_TargetMixin.addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
         else
-            print(WoWTools_Mixin.addName,addName, '|cnGREEN_FONT_COLOR:', value)
+            print(WoWTools_Mixin.addName,WoWTools_TargetMixin.addName, '|cnGREEN_FONT_COLOR:', value)
         end
         set_All_Init()
     end})
     sliderScale:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0,-16)
 
-    local sliderElapsed = e.CSlider(panel, {min=0.3, max=1.5, value=Save.elapsed or 0.5, setp=0.1, w= 100, color=true,
+    local sliderElapsed = e.CSlider(panel, {min=0.3, max=1.5, value=Save().elapsed or 0.5, setp=0.1, w= 100, color=true,
     text= e.onlyChinese and '速度' or SPEED,
     func=function(self2, value)
         value= tonumber(format('%.1f', value))
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.elapsed= value
+        Save().elapsed= value
     end})
     sliderElapsed:SetPoint("LEFT", sliderScale, 'RIGHT',15, 0)
 
@@ -1093,7 +1057,7 @@ local function set_Option()
     local menu= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menu:SetPoint("TOPLEFT", sel, 'BOTTOMRIGHT', -16,-82)
     menu:SetWidth(445)
-    menu:SetDefaultText(Save.targetTextureName)
+    menu:SetDefaultText(Save().targetTextureName)
     menu.Text:ClearAllPoints()
     menu.Text:SetPoint('CENTER')
     menu:SetupMenu(function(self, root)
@@ -1104,9 +1068,9 @@ local function set_Option()
                 sub=root:CreateRadio(
                     icon,
                 function(data)
-                    return Save.targetTextureName== data.name
+                    return Save().targetTextureName== data.name
                 end, function(data)
-                    Save.targetTextureName= data.name
+                    Save().targetTextureName= data.name
                     self:SetDefaultText(data.icon)
                     self.edit:SetText(data.name)
                     set_All_Init()
@@ -1134,7 +1098,7 @@ local function set_Option()
     menu.edit.Label= WoWTools_LabelMixin:Create(menu.edit)
     menu.edit.Label:SetPoint('RIGHT', menu.edit, 'LEFT', -4, 0)
     menu.edit:SetScript('OnShow', function(self)
-        self:SetText(Save.targetTextureName)
+        self:SetText(Save().targetTextureName)
     end)
     menu.edit:SetScript('OnTextChanged', function(self)
         local name, isAtlas
@@ -1154,8 +1118,8 @@ local function set_Option()
                 panel.tipTargetTexture:SetTexture(0)
             end
         end
-        self.del:SetShown(name and Save.targetTextureNewTab[name])
-        self.add:SetShown(name and not Save.targetTextureNewTab[name])
+        self.del:SetShown(name and Save().targetTextureNewTab[name])
+        self.add:SetShown(name and not Save().targetTextureNewTab[name])
     end)
 
     --删除，图片
@@ -1164,9 +1128,9 @@ local function set_Option()
     menu.edit.del:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
-        if name and Save.targetTextureNewTab[name] then
-            Save.targetTextureNewTab[name]= nil
-            print(WoWTools_Mixin.addName, addName,
+        if name and Save().targetTextureNewTab[name] then
+            Save().targetTextureNewTab[name]= nil
+            print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName,
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r',
                 (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
             )
@@ -1181,11 +1145,11 @@ local function set_Option()
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtlas, icon= WoWTools_TextureMixin:IsAtlas(parent:GetText())
-        if icon and not Save.targetTextureNewTab[icon] then
-            Save.targetTextureNewTab[icon]= isAtlas and 'a' or 't'
+        if icon and not Save().targetTextureNewTab[icon] then
+            Save().targetTextureNewTab[icon]= isAtlas and 'a' or 't'
             parent:SetText('')
             print(WoWTools_Mixin.addName,
-                addName,
+                WoWTools_TargetMixin.addName,
                 '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r',
                 (isAtlas and '|A:'..icon..':0:0|a' or ('|T'..icon..':0|t'))..icon
             )
@@ -1229,7 +1193,7 @@ local function set_Option()
     local sel2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     sel2.Text:SetText('2) '..(e.onlyChinese and '怪物数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)))
     sel2:SetPoint('TOPLEFT', menu.edit, 'BOTTOMLEFT', -32, -32)
-    sel2:SetChecked(Save.creature)
+    sel2:SetChecked(Save().creature)
     sel2:SetScript('OnLeave', GameTooltip_Hide)
     sel2:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -1242,17 +1206,17 @@ local function set_Option()
         e.tips:Show()
     end)
     sel2:SetScript('OnClick', function()
-        Save.creature= not Save.creature and true or nil
+        Save().creature= not Save().creature and true or nil
         set_All_Init()
     end)
 
-    local numSize = e.CSlider(panel, {min=8, max=72, value=Save.creatureFontSize, setp=1, w=100, color=true,
+    local numSize = e.CSlider(panel, {min=8, max=72, value=Save().creatureFontSize, setp=1, w=100, color=true,
     text= e.onlyChinese and '字体大小' or FONT_SIZE,
     func=function(self2, value)--字体大小
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.creatureFontSize= value
+        Save().creatureFontSize= value
         set_All_Init()
     end})
     numSize:SetPoint("LEFT", sel2.Text, 'RIGHT',15,0)
@@ -1260,14 +1224,14 @@ local function set_Option()
     local numPostionCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     numPostionCheck.Text:SetText(e.onlyChinese and '自定义位置' or SPELL_TARGET_CENTER_LOC)
     numPostionCheck:SetPoint('LEFT', numSize, 'RIGHT', 10,0)
-    numPostionCheck:SetChecked(Save.creatureUIParent)
+    numPostionCheck:SetChecked(Save().creatureUIParent)
     numPostionCheck:SetScript('OnClick', function()
-        Save.creatureUIParent= not Save.creatureUIParent and true or nil
+        Save().creatureUIParent= not Save().creatureUIParent and true or nil
         set_All_Init()
-        if not Save.creatureUIParent and not Save.target then
-            print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', e.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', e.Icon.toRight)..addName..'\"'))
+        if not Save().creatureUIParent and not Save().target then
+            print('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要启用‘1) '..format('|A:%s:0:0|a', e.Icon.toRight)..'目标’' or 'Need to enable the \"1) '..format('|A:%s:0:0|a', e.Icon.toRight)..WoWTools_TargetMixin.addName..'\"'))
         end
-        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.GetEnabeleDisable(Save().creatureUIParent), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 
@@ -1295,10 +1259,10 @@ local function set_Option()
     local unitIsMeCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     unitIsMeCheck.Text:SetText('3) '..(e.onlyChinese and '目标是'..e.Player.col..'你|r' or 'Target is '..e.Player.col..'You|r'))
     unitIsMeCheck:SetPoint('TOP', sel2, 'BOTTOM', 0, -24)
-    unitIsMeCheck:SetChecked(Save.unitIsMe)
+    unitIsMeCheck:SetChecked(Save().unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()
-        Save.unitIsMe= not Save.unitIsMe and true or false
-        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        Save().unitIsMe= not Save().unitIsMe and true or false
+        print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.GetEnabeleDisable(Save().unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         set_All_Init()
     end)
 
@@ -1306,7 +1270,7 @@ local function set_Option()
     local menuUnitIsMePoint= CreateFrame("DropdownButton", nil, panel, "WowStyle1DropdownTemplate")--下拉，菜单
     menuUnitIsMePoint:SetPoint("LEFT", unitIsMeCheck.Text, 'RIGHT', 15, 0)
     menuUnitIsMePoint:SetWidth(230)
-    menuUnitIsMePoint:SetDefaultText(Save.unitIsMePoint)
+    menuUnitIsMePoint:SetDefaultText(Save().unitIsMePoint)
     menuUnitIsMePoint.Text:ClearAllPoints()
     menuUnitIsMePoint.Text:SetPoint('CENTER')
     menuUnitIsMePoint:SetupMenu(function(self, root)
@@ -1320,9 +1284,9 @@ local function set_Option()
             root:CreateRadio(
                 name,
             function(data)
-                return Save.unitIsMePoint==data.name
+                return Save().unitIsMePoint==data.name
             end, function(data)
-                Save.unitIsMePoint= data.name
+                Save().unitIsMePoint= data.name
                 --self:SetDefaultText(data.name)
                 set_All_Init()
             end, {name=name})
@@ -1335,9 +1299,9 @@ local function set_Option()
             root:CreateCheckbox(
                 tab2[2],
             function(data)
-                return  Save.unitIsMeParent== data.name
+                return  Save().unitIsMeParent== data.name
             end, function(data)
-                Save.unitIsMeParent= data.name
+                Save().unitIsMeParent= data.name
                 set_All_Init()
             end, {name= tab2[1]})
         end
@@ -1356,9 +1320,9 @@ local function set_Option()
                 sub=root:CreateRadio(
                     icon,
                 function(data)
-                    return Save.unitIsMeTextrue== data.name
+                    return Save().unitIsMeTextrue== data.name
                 end, function(data)
-                    Save.unitIsMeTextrue= data.name
+                    Save().unitIsMeTextrue= data.name
                     self:set_icon()
                     set_All_Init()
                 end, {name=name, icon=icon})
@@ -1379,13 +1343,13 @@ local function set_Option()
     end)
 
     function menuUnitIsMe:set_icon()
-        local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save.unitIsMeTextrue)
+        local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save().unitIsMeTextrue)
         if isAtlas or not texture then
             self.Icon:SetAtlas(texture or 'auctionhouse-icon-favorite')
         else
             self.Icon:SetTexture(texture)
         end
-        self.Icon:SetVertexColor(Save.unitIsMeColor.r or 1, Save.unitIsMeColor.g or 1, Save.unitIsMeColor.b or 1, Save.unitIsMeColor.a or 1)
+        self.Icon:SetVertexColor(Save().unitIsMeColor.r or 1, Save().unitIsMeColor.g or 1, Save().unitIsMeColor.b or 1, Save().unitIsMeColor.a or 1)
     end
 
     menuUnitIsMe.Icon= menuUnitIsMe:CreateTexture()
@@ -1393,33 +1357,33 @@ local function set_Option()
     menuUnitIsMe.Icon:SetPoint('LEFT', menuUnitIsMe, 'RIGHT', 2)
     menuUnitIsMe.Icon:Show()
     menuUnitIsMe.Icon:EnableMouse(true)
-    menuUnitIsMe.Icon:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
+    menuUnitIsMe.Icon:SetScript("OnLeave", function(self) self:SetAlpha(1) e.tips:Hide() end)
     menuUnitIsMe.Icon:SetScript('OnEnter', function(self)
         e.tips:SetOwner(self, "ANCHOR_RIGHT")
         e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName)
         e.tips:AddLine(' ')
         e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR)),
-                            'r'..Save.unitIsMeColor.r..' g'..Save.unitIsMeColor.g..' b'..Save.unitIsMeColor.b..' a'..Save.unitIsMeColor.a)
+                            'r'..Save().unitIsMeColor.r..' g'..Save().unitIsMeColor.g..' b'..Save().unitIsMeColor.b..' a'..Save().unitIsMeColor.a)
         e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '默认' or DEFAULT), 'r1 g1 b1 a1' )
         e.tips:Show()
         self:SetAlpha(0.7)
     end)
     menuUnitIsMe.Icon:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-            Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= 1,1,1,1
+            Save().unitIsMeColor.r, Save().unitIsMeColor.g, Save().unitIsMeColor.b, Save().unitIsMeColor.a= 1,1,1,1
             self:GetParent():set_icon()
             set_All_Init()
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '默认' or DEFAULT)
+            print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.onlyChinese and '默认' or DEFAULT)
         else
-            local r,g,b,a= Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a
+            local r,g,b,a= Save().unitIsMeColor.r, Save().unitIsMeColor.g, Save().unitIsMeColor.b, Save().unitIsMeColor.a
             WoWTools_ColorMixin:ShowColorFrame(r,g,b,a,
                 function()
-                    Save.unitIsMeColor=  select(5, WoWTools_ColorMixin:Get_ColorFrameRGBA())--取得, ColorFrame, 颜色
+                    Save().unitIsMeColor=  select(5, WoWTools_ColorMixin:Get_ColorFrameRGBA())--取得, ColorFrame, 颜色
                     self:GetParent():set_icon()
                     set_All_Init()
                 end, function()
-                    Save.unitIsMeColor.r, Save.unitIsMeColor.g, Save.unitIsMeColor.b, Save.unitIsMeColor.a= r, g, b, a
+                    Save().unitIsMeColor.r, Save().unitIsMeColor.g, Save().unitIsMeColor.b, Save().unitIsMeColor.a= r, g, b, a
                     self:GetParent():set_icon()
                     set_All_Init()
                 end
@@ -1430,34 +1394,34 @@ local function set_Option()
 
     menuUnitIsMe:set_icon()
 
-    local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeX, setp=1, w= 100,
+    local unitIsMeX = e.CSlider(panel, {min=-250, max=250, value=Save().unitIsMeX, setp=1, w= 100,
     text= 'X',
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.unitIsMeX= value
+        Save().unitIsMeX= value
         set_All_Init()
     end})
     unitIsMeX:SetPoint("TOPLEFT", unitIsMeCheck, 'BOTTOMRIGHT',0, -12)
-    local unitIsMeY = e.CSlider(panel, {min=-250, max=250, value=Save.unitIsMeY, setp=1, w= 100, color=true,
+    local unitIsMeY = e.CSlider(panel, {min=-250, max=250, value=Save().unitIsMeY, setp=1, w= 100, color=true,
     text= 'Y',
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.unitIsMeY= value
+        Save().unitIsMeY= value
         set_All_Init()
     end})
     unitIsMeY:SetPoint("LEFT", unitIsMeX, 'RIGHT',15,0)
 
-    local unitIsMeSize = e.CSlider(panel, {min=2, max=64, value=Save.unitIsMeSize, setp=1, w= 100, color=false,
+    local unitIsMeSize = e.CSlider(panel, {min=2, max=64, value=Save().unitIsMeSize, setp=1, w= 100, color=false,
     text= e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
     func=function(self2, value)
         value= math.floor(value)
         self2:SetValue(value)
         self2.Text:SetText(value)
-        Save.unitIsMeSize= value
+        Save().unitIsMeSize= value
         set_All_Init()
     end})
     unitIsMeSize:SetPoint("LEFT", unitIsMeY, 'RIGHT',15,0)
@@ -1484,9 +1448,9 @@ local function set_Option()
     local questCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     questCheck.Text:SetText('4) '..(e.onlyChinese and '任务进度' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, PVP_PROGRESS_REWARDS_HEADER))))
     questCheck:SetPoint('TOPLEFT', unitIsMeCheck, 'BOTTOMLEFT',0,-64)
-    questCheck:SetChecked(Save.quest)
+    questCheck:SetChecked(Save().quest)
     questCheck:SetScript('OnClick', function()
-        Save.quest= not Save.quest and true or nil
+        Save().quest= not Save().quest and true or nil
         set_All_Init()
     end)
 
@@ -1497,27 +1461,27 @@ local function set_Option()
         e.onlyChinese and '所有阵营' or TRANSMOG_SHOW_ALL_FACTIONS or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, FACTION),
         e.Icon.Horde, e.Icon.Alliance)
     questAllFactionCheck:SetPoint('LEFT', questCheck.Text, 'RIGHT',2,0)
-    questAllFactionCheck:SetChecked(Save.questShowAllFaction)
+    questAllFactionCheck:SetChecked(Save().questShowAllFaction)
     questAllFactionCheck:SetScript('OnClick', function()
-        Save.questShowAllFaction= not Save.questShowAllFaction and true or nil
+        Save().questShowAllFaction= not Save().questShowAllFaction and true or nil
         set_All_Init()
     end)
 
     local classCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     classCheck.Text:SetText(e.onlyChinese and '职业' or CLASS)
     classCheck:SetPoint('LEFT', questAllFactionCheck.Text, 'RIGHT',2,0)
-    classCheck:SetChecked(Save.questShowPlayerClass)
+    classCheck:SetChecked(Save().questShowPlayerClass)
     classCheck:SetScript('OnClick', function()
-        Save.questShowPlayerClass= not Save.questShowPlayerClass and true or nil
+        Save().questShowPlayerClass= not Save().questShowPlayerClass and true or nil
         set_All_Init()
     end)
 
     local instanceCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     instanceCheck.Text:SetText(e.onlyChinese and '在副本里显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INSTANCE))
     instanceCheck:SetPoint('TOPLEFT', questCheck, 'BOTTOMRIGHT')
-    instanceCheck:SetChecked(Save.questShowInstance)
+    instanceCheck:SetChecked(Save().questShowInstance)
     instanceCheck:SetScript('OnClick', function()
-        Save.questShowInstance= not Save.questShowInstance and true or nil
+        Save().questShowInstance= not Save().questShowInstance and true or nil
         set_All_Init()
     end)
 end
@@ -1540,76 +1504,3 @@ end
 
 
 
-
-
-
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1==id then
-
-            if WoWToolsSave[TARGET]  then
-                Save= WoWToolsSave[TARGET]
-                WoWToolsSave[TARGET]= nil
-
-                Save.targetTextureTab= nil
-                Save.targetTextureNewTab= Save.targetTextureNewTab or {}
-
-                Save.targetTextureName= Save.targetTextureName or 'common-icon-rotateright'
-                Save.targetColor= Save.targetColor or {r=1,g=1,b=1,a=1}
-                Save.targetInCombatColor= Save.targetInCombatColor or {r=1, g=0, b=0, a=1}
-
-                Save.unitIsMe= Save.unitIsMe==nil and true or Save.unitIsMe
-                Save.unitIsMeTextrue= Save.unitIsMeTextrue or 'auctionhouse-icon-favorite'
-                Save.unitIsMeSize= Save.unitIsMeSize or 12
-                Save.unitIsMePoint= Save.unitIsMePoint or 'TOPLEFT'
-                Save.unitIsMeX= Save.unitIsMeX or 0
-                Save.unitIsMeY= Save.unitIsMeY or -2
-                Save.unitIsMeColor= Save.unitIsMeColor or {r=1,g=1,b=1,a=1}
-
-                Save.scale= Save.scale or 1.5
-                Save.elapsed= Save.elapsed or 0.5
-
-                Save.TargetFramePoint= Save.TargetFramePoint or 'LEFT'
-                WoWToolsSave[TARGET]=nil
-            else
-                Save= WoWToolsSave['Plus_Target'] or Save
-            end
-
-            addName= '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET)
-
-            --添加控制面板
-            e.AddPanel_Sub_Category({
-                name= addName,
-                frame= self,
-                disabled= Save.disabled
-            })
-
-            e.ReloadPanel({panel=self, addName= addName, restTips=nil, checked=not Save.disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
-                disabledfunc=function()
-                    Save.disabled= not Save.disabled and true or nil
-                    if not targetFrame and not Save.disabled  then
-                        set_Option()
-                        Init()
-                    end
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), Save.disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
-                end,
-                clearfunc= function() Save=nil WoWTools_Mixin:Reload() end}
-            )
-
-            if not Save.disabled then
-                Init()
-            end
-
-        elseif arg1=='Blizzard_Settings' then
-            set_Option()
-
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Plus_Target']=Save
-        end
-    end
-end)
