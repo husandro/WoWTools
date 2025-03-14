@@ -370,7 +370,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders(mixin)
     mixin:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
     mixin:SetFrame(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=1})
     mixin:SetFrame(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=1})
-    
+
     mixin:SetFrame(ProfessionsCustomerOrdersFrame.MoneyFrameBorder)
     mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
     mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
@@ -1035,10 +1035,3 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings(mixin)
     mixin:SetSearchBox(SettingsPanel.SearchBox)
     mixin:SetFrame(SettingsPanel, {index=1})
 end
-
-
-
-
-
-
-
