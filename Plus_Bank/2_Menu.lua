@@ -256,10 +256,8 @@ local function Init()
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
     function OptionButton:Open_Bag()
-        do
-            WoWTools_BagMixin:OpenBag(nil, true)
-        end
-        BankFrame:Raise()
+        WoWTools_BagMixin:OpenBag(nil, true)
+        C_Timer.After(0.3, function() BankFrame:Raise() end)
     end
     OptionButton:SetupMenu(Init_Menu)
 
