@@ -170,4 +170,8 @@
     mixin:SetFrame(CommunitiesGuildLogFrame)
     mixin:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, nil, nil, true)
     mixin:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
+
+        
+--新闻过滤
+    mixin:SetFrame(CommunitiesGuildNewsFiltersFrame, {isMinAlpha=true})
 end

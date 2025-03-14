@@ -30,15 +30,6 @@ end
 
 
 
-local function Setup(name)
-    if WoWTools_MoveMixin.Events[name] then
-        do
-            WoWTools_MoveMixin.Events[name]()
-        end
-        WoWTools_MoveMixin.Events[name]= nil
-    end
-end
-
 
 
 
@@ -55,9 +46,16 @@ local function Init()
 
     for name in pairs(WoWTools_MoveMixin.Events) do
         if C_AddOns.IsAddOnLoaded(name) then
-            Setup(name)
+            WoWTools_MoveMixin.Events[name]()
+            WoWTools_MoveMixin.Events[name]=nil
         end
     end
+
+    hooksecurefunc('UpdateUIPanelPositions', function(currentFrame)
+        if Save().SavePoint then
+            WoWTools_MoveMixin:SetPoint(currentFrame)
+        end
+    end)
 end
 
 
@@ -71,7 +69,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
 
-            WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or WoWTools_MoveMixin.Save
+            WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or Save()
 
             local addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE)
             WoWTools_MoveMixin.addName= addName
@@ -85,13 +83,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()--初始, 移动
             end
 
-        else
-            Setup(arg1)
+        elseif WoWTools_MoveMixin.Events[arg1] then
+            WoWTools_MoveMixin.Events[arg1]()
+            WoWTools_MoveMixin.Events[arg1]= nil
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Move']= WoWTools_MoveMixin.Save
+            WoWToolsSave['Plus_Move']= Save()
         end
     end
 end)

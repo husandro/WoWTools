@@ -152,9 +152,4 @@ end
 
 function WoWTools_MoveMixin:Init_Other()
     Init()
-    hooksecurefunc('UpdateUIPanelPositions',function(currentFrame)
-        if Save().SavePoint then
-            WoWTools_MoveMixin:SetPoint(currentFrame)
-        end
-    end)
 end

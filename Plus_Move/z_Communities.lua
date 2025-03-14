@@ -146,15 +146,40 @@ local function Init()
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog)
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
-    WoWTools_MoveMixin:Setup(CommunitiesGuildNewsFiltersFrame)
+
+
+
+
+--信息, 左边信息
+    CommunitiesFrameGuildDetailsFrameInfo:SetPoint('TOPRIGHT', CommunitiesFrameGuildDetailsFrame, 'TOP', -48, 0)
+--今日信息
+    CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame:SetPoint('RIGHT', -14, -48)
+    CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame.MOTD:SetPoint('BOTTOMRIGHT', 0, 4)
+
+--公会信息
+    CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:SetPoint('RIGHT')
+    local frame= CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:GetChildren()
+    if frame and frame.Details then
+        frame:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
+        frame.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
+    end
+
+--信息, 右边信息
+    CommunitiesFrameGuildDetailsFrameNews:SetPoint('TOPLEFT', CommunitiesFrameGuildDetailsFrame, 'TOP', -32, 0)
+    CommunitiesFrameGuildDetailsFrameNews.ScrollBox:SetPoint('BOTTOMRIGHT')
+
+--新闻过滤
+    WoWTools_MoveMixin:Setup(CommunitiesGuildNewsFiltersFrame, {notFuori=true})
+
+
 
 --信息，查看记录
-    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {setSize=true, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {setSize=true, notFuori=true, sizeRestFunc=function(btn)
         btn.target:SetSize(384, 432)
     end})
 
 --公会信息， 点击以编辑
-    WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {setSize=true, onShowFunc=true,
+    WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {setSize=true, notFuori=true,
     initFunc=function()
 
         CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')

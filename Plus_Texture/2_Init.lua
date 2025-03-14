@@ -45,7 +45,6 @@ local function Init()
 
         for name in pairs(WoWTools_TextureMixin.Events) do
             if C_AddOns.IsAddOnLoaded(name) then
-                print(name,'b')
                 WoWTools_TextureMixin.Events[name](nil, WoWTools_TextureMixin)
                 WoWTools_TextureMixin.Events[name]= nil
             end
