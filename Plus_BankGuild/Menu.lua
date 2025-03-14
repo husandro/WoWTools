@@ -170,7 +170,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     WoWTools_MenuMixin:Reload(root, false)
 
-    root:CreateDivider()
+   -- root:CreateDivider()
 
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
 end
