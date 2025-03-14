@@ -4,7 +4,7 @@
 
 
 
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOM')
 
     EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
@@ -47,5 +47,3 @@ local function Init()
     })
 end
 
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_EncounterJournal']= Init

@@ -5,6 +5,28 @@ end
 
 
 
+function WoWTools_MoveMixin:Set_SizeScale(frame)
+    local name= frame and frame:GetName()
+    if not name
+        or (frame:IsProtected() and InCombatLockdown())
+        or issecure()
+        or not frame.ResizeButton
+    then
+        return
+    end
+
+    local scale= Save().scale[name]
+    if scale then
+        frame:SetScale(scale)
+    end
+
+    if frame.ResizeButton.setSize then
+        local size= Save().size[name]
+        if size then
+            frame:SetSize(size[1], size[2])
+        end
+    end
+end
 
 
 
@@ -187,7 +209,7 @@ local function Init_Menu(self, root)
     end
 
 --清除，位置，数据
-    if not Save().disabledMove then
+    --if not Save().disabledMove then
         root:CreateDivider()
         root:CreateRadio(
             (Save().point[self.name] and '' or '|cff9e9e9e')
@@ -205,7 +227,7 @@ local function Init_Menu(self, root)
             end
             return MenuResponse.Refresh
         end)
-    end
+   -- end
 
 --打开，选项
     root:CreateDivider()
@@ -516,30 +538,14 @@ end
 
 
 
-
-
-local function set_sizescale_on_show(self)
-    local name2= self:GetName()
-    local scale2= Save().scale[name2]
-    if scale2 then
-        self:SetScale(scale2)
-    end
-    if self.ResizeButton.setSize then
-        local size= Save().size[name2]
-        if size then
-            self:SetSize(size[1], size[2])
-        end
-    end
-end
-
 local function Set_OnShow(self)
     if self:IsProtected() and InCombatLockdown() then
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, frame)
-            set_sizescale_on_show(frame)
+            WoWTools_MoveMixin:Set_SizeScale(frame)
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
         end, nil, self)
     else
-        set_sizescale_on_show(self)
+        WoWTools_MoveMixin:Set_SizeScale(self)
     end
 end
 
@@ -591,9 +597,10 @@ end
 
 function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local name= tab.name or frame:GetName()
+    tab= tab or {}
 
     if not name
-        or (Save().disabledZoom and not tab.needSize)
+        --or (Save().disabledZoom and not tab.needSize)
         or tab.notZoom
         or frame.ResizeButton
         or tab.frame

@@ -64,12 +64,13 @@ local function Init()
             end
         end
     end
-    if not Save().disabledZoom and not Save().disabledMove then
+    --if not Save().disabledZoom and not Save().disabledMove then
         hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
             for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
                 local name= frame:GetName()
                 if name then
-                    if not Save().disabledZoom and Save().scale[name] and Save().scale[name]~=1 then--缩放
+                    --if not Save().disabledZoom and Save().scale[name] and Save().scale[name]~=1 then--缩放
+                    if Save().scale[name] and Save().scale[name]~=1 then--缩放
                         frame:SetScale(Save().scale[name])
                     end
                     if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
@@ -78,7 +79,7 @@ local function Init()
                 end
             end
         end)
-    end
+    --end
 
     WoWTools_MoveMixin:Setup(LootFrame, {save=false})--物品拾取
     WoWTools_MoveMixin:Setup(ChatConfigFrame)

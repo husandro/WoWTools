@@ -1,5 +1,5 @@
 --成就
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     AchievementFrameCategories:ClearAllPoints()
     AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
     AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
@@ -11,8 +11,8 @@ local function Init()
         maxW=768,
         minH=500,
         setSize=true,
-        sizeRestFunc= function(self)
-            self.targetFrame:SetSize(768, 500)
+        sizeRestFunc= function(btn)
+            btn.targetFrame:SetSize(768, 500)
         end,
     })
 
@@ -20,6 +20,3 @@ local function Init()
     WoWTools_MoveMixin:Setup(AchievementFrameComparison, {frame=AchievementFrame})
     WoWTools_MoveMixin:Setup(AchievementFrame.Header, {frame=AchievementFrame})
 end
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_AchievementUI']= Init

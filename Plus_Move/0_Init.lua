@@ -19,7 +19,7 @@ Save={
     alpha=0.5,
     disabledAlpha={},
 },
-ADDON_LOADED={}
+Events={}
 }
 
 local function Save()
@@ -31,10 +31,10 @@ end
 
 
 local function Setup(name)
-    local func= WoWTools_MoveMixin.ADDON_LOADED[name]
+    local func= WoWTools_MoveMixin.Events[name]
     if func then
         func()
-        WoWTools_MoveMixin.ADDON_LOADED[name]=nil
+        WoWTools_MoveMixin.Events[name]=nil
     end
 end
 
@@ -52,7 +52,7 @@ local function Init()
     WoWTools_MoveMixin:Init_Other()
     WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
 
-    for name in pairs(WoWTools_MoveMixin.ADDON_LOADED) do
+    for name in pairs(WoWTools_MoveMixin.Events) do
         if C_AddOns.IsAddOnLoaded(name) then
             Setup(name)
         end
@@ -78,6 +78,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MoveMixin:Init_Options()
 
             if Save().disabled then
+                WoWTools_MoveMixin.Events={}
                 self:UnregisterEvent(event)
             else
                 Init()--初始, 移动

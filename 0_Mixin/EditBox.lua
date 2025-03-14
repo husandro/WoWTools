@@ -27,6 +27,27 @@ end
 
 
 
+local function Create_Label(self, isInstructions, isMaxLetter)
+    local isMultiLine= self:IsMultiLine()
+
+    if isInstructions and not self.Instructions then
+        self.Instructions=WoWTools_LabelMixin:Create(self, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+        if isMultiLine then
+            self.Instructions:SetPoint('TOPLEFT')
+        else
+            self.Instructions:SetPoint('LEFT')
+        end
+    end
+
+    if isMaxLetter and not self.MaxLetterLabel then
+        self.MaxLetterLabel=WoWTools_LabelMixin:Create(self, {color=true})
+        if isMultiLine then
+            self.MaxLetterLabel:SetPoint('BOTTOMRIGHT')
+        else
+            self.MaxLetterLabel:SetPoint('RIGHT')
+        end
+    end
+end
 
 
 
@@ -34,7 +55,7 @@ end
 
 function WoWTools_EditBoxMixn:Create(frame, tab)
     self.index= self.index+1
-    local name= tab.name or format('%s%d', 'WoWTools_Edit', self.index)
+    local name= tab.name or format('%s%d', 'WoWTools_EditBox', self.index)
     local font= tab.font or 'ChatFontNormal'
     local template= tab.Template--SearchBoxTemplate
     local setID= tab.setID
@@ -70,7 +91,7 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     local name= tab.name or format('%s%d', 'WoWTools_EditScrollFrame', self.index)--名称
     --local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
     local isShowLinkTooltip= tab.isShowLinkTooltip--超链接
-    local instructions= tab.instructions--使用说明
+    local isInstructions= tab.isInstructions--使用说明
 
     local scrollFrame= CreateFrame('ScrollFrame', name, frame, 'ScrollFrameTemplate')--InputScrollFrameTemplate
 
@@ -88,13 +109,6 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     scrollFrame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     scrollFrame.bg:SetFrameLevel(level+1)
     WoWTools_TextureMixin:SetNineSlice(scrollFrame.bg, true, nil, nil, true)
-
-    --[[scrollFrame.editBox= CreateFrame('EditBox', name..'Edit', scrollFrame)
-    scrollFrame.editBox:SetAutoFocus(false)
-    scrollFrame.editBox:ClearFocus()
-    
-    
-    scrollFrame.editBox:SetFontObject(font)]]
 
     scrollFrame.editBox= self:Create(scrollFrame, tab)
     scrollFrame.editBox:SetMultiLine(true)
@@ -125,7 +139,7 @@ function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
     end
 
 --使用说明
-    self:SetInstructions(scrollFrame.editBox, instructions, scrollFrame)
+    self:SetInstructions(scrollFrame.editBox, isInstructions, scrollFrame)
 
     Settings(scrollFrame)
 
@@ -140,8 +154,8 @@ function WoWTools_EditBoxMixn:HookInstructions(editBox)
     end)
 end
 
-function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
-    if not instructions then
+function WoWTools_EditBoxMixn:SetInstructions(editBox, isInstructions, frame)
+    if not isInstructions then
         return
     end
 
@@ -151,16 +165,9 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
         return
     end
 
-    if not editBox.Instructions then
-        editBox.Instructions=WoWTools_LabelMixin:Create(editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
-        if editBox:IsMultiLine() then
-            editBox.Instructions:SetPoint('TOPLEFT')
-        else
-            editBox.Instructions:SetPoint('LEFT')
-        end
-    end
+    Create_Label(editBox, true, false)
 
-    editBox.Instructions:SetText(instructions)
+    editBox.Instructions:SetText(isInstructions)
 
     if frame then
         function frame:SetInstructions(text)
@@ -173,6 +180,48 @@ function WoWTools_EditBoxMixn:SetInstructions(editBox, instructions, frame)
         self:HookInstructions(editBox)
     end
 end
+
+
+
+
+
+function WoWTools_EditBoxMixn:Setup(edit,  tab)
+    tab= tab or {}
+
+    local isInstructions= tab.isInstructions
+    local isMaxLetter= tab.isMaxLetter
+
+
+    Create_Label(edit, isInstructions, isMaxLetter)
+
+    if type(isInstructions)=='string' then
+        edit.Instructions:SetText(isInstructions)
+    end
+
+    if isMaxLetter then
+        edit:HookScript('OnEditFocusGained', function(frame)
+            frame.MaxLetterLabel:SetText(frame:GetNumLetters()..'/'..frame:GetMaxLetters())
+        end)
+
+        edit:HookScript('OnEditFocusLost', function(frame)
+            frame.MaxLetterLabel:SetText("")
+        end)
+    end
+
+    if isInstructions or isMaxLetter then
+        edit:HookScript('OnTextChanged', function(frame)
+            if frame.MaxLetterLabel then
+                frame.MaxLetterLabel:SetText(frame:GetNumLetters()..'/'..frame:GetMaxLetters())
+            end
+            if frame.Instructions then
+                frame.Instructions:SetShown(frame:GetText()=='')
+            end
+        end)
+    end
+
+    return edit
+end
+
 
 --[[scrollFrame.bg:SetScript('OnMouseDown', function(s, d)
         if d=='LeftButton' then

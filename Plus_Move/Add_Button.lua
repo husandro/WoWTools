@@ -97,7 +97,8 @@ end
 local function SetupButton(frame, tab)
     tab= tab or {}
     local name
-    if frame and not Save().disabledMove and not frame.WoWToolsMoveButton then
+    --if frame and not Save().disabledMove and not frame.WoWToolsMoveButton then
+    if frame and not frame.WoWToolsMoveButton then
         name= tab.name or frame:GetName()
     end
     if not name then
@@ -105,7 +106,7 @@ local function SetupButton(frame, tab)
     end
 
     tab= tab or {}
-    local setZoom= not tab.notZoom and not Save().disabledZoom
+    local setZoom= not tab.notZoom-- and not Save().disabledZoom
     --local click= tab.click
     local setPoint= tab.setPoint
     local size= tab.size or 23

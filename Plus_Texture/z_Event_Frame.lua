@@ -2,11 +2,11 @@ local function Save()
     return WoWTools_TextureMixin.Save
 end
 
-local Events={}
 
 
 
-function Events:Blizzard_TrainerUI(mixin)
+
+function WoWTools_TextureMixin.Events:Blizzard_TrainerUI(mixin)
     mixin:SetFrame(ClassTrainerFrame, {alpha=0.3})
     mixin:SetScrollBar(ClassTrainerFrame)
     mixin:SetNineSlice(ClassTrainerFrame, true)
@@ -23,7 +23,7 @@ end
 
 
 --小时图，时间
-function Events:Blizzard_TimeManager(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_TimeManager(mixin)
     mixin:SetNineSlice(TimeManagerFrame, true)
     mixin:SetAlphaColor(TimeManagerFrameBg)
     mixin:HideTexture(TimeManagerFrameInset.Bg)
@@ -56,7 +56,7 @@ local function Set_TalentsFrameBg()
 end
 
 --天赋和法术书
-function Events:Blizzard_PlayerSpells(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells(mixin)
     mixin:SetAlphaColor(PlayerSpellsFrameBg)
     mixin:SetNineSlice(PlayerSpellsFrame, 0.3)
     mixin:SetTabSystem(PlayerSpellsFrame)
@@ -94,7 +94,7 @@ end
 
 
 
-function Events:Blizzard_AchievementUI(mixin)--成就
+function WoWTools_TextureMixin.Events:Blizzard_AchievementUI(mixin)--成就
     mixin:HideFrame(AchievementFrame)
     mixin:HideFrame(AchievementFrame.Header)
     mixin:HideFrame(AchievementFrameSummary)
@@ -135,7 +135,7 @@ end
 
 
 --地下城和团队副本, PVP
-function Events:Blizzard_PVPUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_PVPUI(mixin)
     mixin:HideTexture(HonorFrame.Inset.Bg)
     mixin:HideTexture(HonorFrame.BonusFrame.ShadowOverlay)
     mixin:HideTexture(HonorFrame.BonusFrame.WorldBattlesTexture)
@@ -172,7 +172,7 @@ end
 
 
 --冒险指南
-function Events:Blizzard_EncounterJournal(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal(mixin)
     mixin:SetNineSlice(EncounterJournal, true)
 
     mixin:HideTexture(EncounterJournalBg)
@@ -232,13 +232,13 @@ end
 
 
 --[[公会银行
-function Events:Blizzard_GuildBankUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(mixin)
     if WoWTools_GuildBankMixin.Save.disabled then
         WoWTools_GuildBankMixin:Init_Guild_Texture(mixin)
     end
 end]]
 
-function Events:Blizzard_GuildRename(mixin)--11.1.5
+function WoWTools_TextureMixin.Events:Blizzard_GuildRename(mixin)--11.1.5
     mixin:SetNineSlice(GuildRenameFrame)
     mixin:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
     mixin:HideTexture(GuildRenameFrameInset.Bg)
@@ -249,7 +249,7 @@ end
 
 
 --拍卖行
-function Events:Blizzard_AuctionHouseUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI(mixin)
     mixin:SetAlphaColor(AuctionHouseFrameBg)
     mixin:SetNineSlice(AuctionHouseFrame, true)
     mixin:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
@@ -333,7 +333,7 @@ end
 
 
 --专业书
-function Events:Blizzard_ProfessionsBook(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook(mixin)
     mixin:SetNineSlice(ProfessionsBookFrame, nil, nil, 0.3)
     mixin:SetNineSlice(ProfessionsBookFrameInset, nil, nil, 0.3)
     mixin:HideTexture(ProfessionsBookFrameBg)
@@ -346,7 +346,7 @@ end
 
 
 --专业定制
-function Events:Blizzard_ProfessionsCustomerOrders(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders(mixin)
     mixin:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
 
     mixin:SetSearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
@@ -396,7 +396,7 @@ end
 
 
 --黑市
-function Events:Blizzard_BlackMarketUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_BlackMarketUI(mixin)
     mixin:SetAlphaColor(BlackMarketFrameTitleBg)
     mixin:SetAlphaColor(BlackMarketFrameBg)
     mixin:SetAlphaColor(BlackMarketFrame.LeftBorder)
@@ -410,7 +410,7 @@ end
 
 
 --收藏
-function Events:Blizzard_Collections(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_Collections(mixin)
     mixin:SetNineSlice(CollectionsJournal, true)
     mixin:SetAlphaColor(CollectionsJournalBg)
 
@@ -604,7 +604,7 @@ end
 
 
 --日历
-function Events:Blizzard_Calendar(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_Calendar(mixin)
     mixin:SetAlphaColor(CalendarFrameTopMiddleTexture)
     mixin:SetAlphaColor(CalendarFrameTopLeftTexture)
     mixin:SetAlphaColor(CalendarFrameTopRightTexture)
@@ -645,7 +645,7 @@ end
 
 
 --飞行地图
-function Events:Blizzard_FlightMap(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_FlightMap(mixin)
     mixin:SetNineSlice(FlightMapFrame.BorderFrame, true)
     mixin:HideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
     mixin:HideTexture(FlightMapFrameBg)
@@ -658,7 +658,7 @@ end
 
 
 --镶嵌宝石，界面
-function Events:Blizzard_ItemSocketingUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ItemSocketingUI(mixin)
     mixin:SetNineSlice(ItemSocketingFrame, true)
     mixin:SetNineSlice(ItemSocketingFrameInset, nil, true)
     mixin:SetAlphaColor(ItemSocketingFrameBg)
@@ -698,7 +698,7 @@ end
 
 
 
-function Events:Blizzard_ChallengesUI(mixin)--挑战, 钥匙插入， 界面
+function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI(mixin)--挑战, 钥匙插入， 界面
     mixin:SetAlphaColor(ChallengesFrameInset.Bg)
 
     hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(self2)--钥匙插入， 界面
@@ -712,7 +712,7 @@ end
 
 
 
-function Events:Blizzard_WeeklyRewards(mixin)--周奖励提示
+function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards(mixin)--周奖励提示
     mixin:SetAlphaColor(WeeklyRewardsFrame.BackgroundTile)
     mixin:SetSearchBox(WeeklyRewardsFrame.HeaderFrame)
     mixin:SetAlphaColor(WeeklyRewardsFrame.RaidFrame.Background)
@@ -730,7 +730,7 @@ end
 
 
 
-function Events:Blizzard_ItemInteractionUI(mixin)--套装, 转换
+function WoWTools_TextureMixin.Events:Blizzard_ItemInteractionUI(mixin)--套装, 转换
     mixin:SetNineSlice(ItemInteractionFrame, true)
     mixin:SetAlphaColor(ItemInteractionFrameBg)
     mixin:SetAlphaColor(ItemInteractionFrame.Inset.Bg)
@@ -747,7 +747,7 @@ end
 
 
 --玩家, 观察角色, 界面
-function Events:Blizzard_InspectUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_InspectUI(mixin)
     mixin:SetNineSlice(InspectFrame, true)
     mixin:SetAlphaColor(InspectFrameBg)
     mixin:HideTexture(InspectFrameInset.Bg)
@@ -765,7 +765,7 @@ end
 
 
 --装备升级,界面 
-function Events:Blizzard_ItemUpgradeUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ItemUpgradeUI(mixin)
     mixin:SetNineSlice(ItemUpgradeFrame, true)
     mixin:SetAlphaColor(ItemUpgradeFrameBg)
     mixin:HideTexture(ItemUpgradeFrame.TopBG)
@@ -785,7 +785,7 @@ end
 
 
 --宏
-function Events:Blizzard_MacroUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_MacroUI(mixin)
     mixin:SetFrame(MacroFrame, {notAlpha=true})
     mixin:SetNineSlice(MacroFrameInset, true)
     mixin:SetNineSlice(MacroFrame, true)
@@ -807,7 +807,7 @@ end
 
 
 --要塞
-function Events:Blizzard_GarrisonUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI(mixin)
     mixin:SetNineSlice(GarrisonCapacitiveDisplayFrame, true)
     if GarrisonCapacitiveDisplayFrame then--要塞订单
         mixin:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
@@ -829,7 +829,7 @@ end
 
 
 --欲龙术
-function Events:Blizzard_GenericTraitUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_GenericTraitUI(mixin)
     mixin:SetAlphaColor(GenericTraitFrame.Background)
     mixin:SetNineSlice(GenericTraitFrame, true)
 end
@@ -841,7 +841,7 @@ end
 
 
 --任务选择
-function Events:Blizzard_PlayerChoice(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice(mixin)
     hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self2)
         if self2.Background then
             mixin:SetAlphaColor(self2.Background.BackgroundTile, nil, nil, 0)
@@ -861,7 +861,7 @@ end
 
 
 --派系声望
-function Events:Blizzard_MajorFactions(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_MajorFactions(mixin)
     mixin:SetAlphaColor(MajorFactionRenownFrame.Background)
     mixin:SetAlphaColor(MajorFactionRenownFrame.NineSlice, nil, nil, true)
 end
@@ -874,7 +874,7 @@ end
 
 
 --专业, 初始化, 透明
-function Events:Blizzard_Professions(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_Professions(mixin)
     mixin:SetNineSlice(ProfessionsFrame, true)
     mixin:SetAlphaColor(ProfessionsFrameBg)
     mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.3)
@@ -939,7 +939,7 @@ end
 
 
 --点击，施法
-function Events:Blizzard_ClickBindingUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI(mixin)
     mixin:SetNineSlice(ClickBindingFrame, true)
     mixin:SetScrollBar(ClickBindingFrame)
     mixin:SetAlphaColor(ClickBindingFrameBg)
@@ -957,7 +957,7 @@ end
 
 
 
-function Events:Blizzard_ArchaeologyUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI(mixin)
     mixin:SetNineSlice(ArchaeologyFrame, true)
     mixin:SetNineSlice(ArchaeologyFrameInset, nil, true)
     mixin:HideTexture(ArchaeologyFrameBg)
@@ -976,7 +976,7 @@ end
 
 
 --分解 ScrappingMachineFrame
-function Events:Blizzard_ScrappingMachineUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI(mixin)
     mixin:SetNineSlice(ScrappingMachineFrame, true)
     mixin:SetAlphaColor(ScrappingMachineFrameBg, nil, nil, 0.3)
     mixin:HideTexture(ScrappingMachineFrame.Background)
@@ -993,7 +993,7 @@ end
 
 
 --地下堡
-function Events:Blizzard_DelvesDashboardUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI(mixin)
     mixin:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
     mixin:SetAlphaColor(DelvesCompanionConfigurationFrame.Background, nil, nil, 0.3)
     mixin:HideTexture(DelvesCompanionConfigurationFrame.Bg)
@@ -1011,7 +1011,7 @@ end
 
 
 
-function Events:Blizzard_CovenantRenown(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_CovenantRenown(mixin)
     mixin:HideTexture(CovenantRenownFrame.Background)
 end
 
@@ -1019,7 +1019,7 @@ end
 
 
 
-function Events:Blizzard_Settings(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_Settings(mixin)
     mixin:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
     mixin:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
     mixin:SetScrollBar(SettingsPanel.Container.SettingsList)
@@ -1046,23 +1046,23 @@ end
 
 
 function WoWTools_TextureMixin:Init_Event()
-    for name, func in pairs(Events) do
+    for name, func in pairs(self.Events) do
         if C_AddOns.IsAddOnLoaded(name) then
             do
                 func(nil, self)
             end
-            Events[name]= nil
+            self.Events[name]= nil
         end
     end
 end
 
 
 function WoWTools_TextureMixin:Set_Event(name)
-    local func=Events[name]
+    local func=self.Events[name]
     if func then
         do
             func(nil, self)
         end
-        Events[name]= nil
+        self.Events[name]= nil
     end
 end

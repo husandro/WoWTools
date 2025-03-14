@@ -1,6 +1,6 @@
 --FSTACK
 
-local function initFunc()
+function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
     TableAttributeDisplay.LinesScrollFrame:ClearAllPoints()
     TableAttributeDisplay.LinesScrollFrame:SetPoint('TOPLEFT', 6, -62)
     TableAttributeDisplay.LinesScrollFrame:SetPoint('BOTTOMRIGHT', -36, 22)
@@ -26,29 +26,16 @@ local function initFunc()
             end
         end
     end)
-end
 
-local function sizeUpdateFunc()
-    TableAttributeDisplay:UpdateLines()--RefreshAllData()
-end
-
-local function sizeRestFunc(btn)
-    btn.targetFrame:SetSize(500, 400)
-end
-
-
-
-local function Init()
-    initFunc()
     WoWTools_MoveMixin:Setup(TableAttributeDisplay, {
         minW=476,
         minH=150,
         setSize=true,
-        sizeUpdateFunc=sizeUpdateFunc,
-        sizeRestFunc=sizeRestFunc,
+        sizeUpdateFunc=function(btn)
+            btn.targetFrame:UpdateLines()--RefreshAllData()
+        end,
+        sizeRestFunc=function(btn)
+            btn.targetFrame:SetSize(500, 400)
+        end,
     })
 end
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_DebugTools']= Init

@@ -6,10 +6,10 @@ end
 
 
 
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
     WoWTools_MoveMixin:Setup(ChallengesKeystoneFrame)
 
-    if not Save().disabledZoom then
+    --if not Save().disabledZoom then
         ChallengesFrame.WeeklyInfo:SetPoint('BOTTOMRIGHT')
         ChallengesFrame.WeeklyInfo.Child:SetPoint('BOTTOMRIGHT')
         ChallengesFrame.WeeklyInfo.Child.RuneBG:SetPoint('BOTTOMRIGHT')
@@ -19,22 +19,17 @@ local function Init()
             end
         end
         ChallengesFrame:HookScript('OnShow', function()
-            local self= PVEFrame
-            if not self.ResizeButton or self.ResizeButton.disabledSize or not self:CanChangeAttribute() then
+            local frame= PVEFrame
+            if not frame.ResizeButton or frame.ResizeButton.disabledSize or not frame:CanChangeAttribute() then
                 return
             end
             local size= Save().size['PVEFrame_KEY']
-            self.ResizeButton.setSize= true
+            frame.ResizeButton.setSize= true
             if size then
-                self:SetSize(size[1], size[2])
+                frame:SetSize(size[1], size[2])
             else
-                self:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+                frame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
             end
         end)
-    end
+    --end
 end
-
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_ChallengesUI']= Init

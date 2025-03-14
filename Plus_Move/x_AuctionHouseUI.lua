@@ -6,7 +6,7 @@ end
 
 
 
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
     AuctionHouseFrame.CategoriesList:SetPoint('BOTTOM', AuctionHouseFrame.MoneyFrameBorder.MoneyFrame, 'TOP',0,2)
     AuctionHouseFrame.BrowseResultsFrame.ItemList.Background:SetPoint('BOTTOMRIGHT')
     AuctionHouseFrameAuctionsFrame.SummaryList.Background:SetPoint('BOTTOM')
@@ -21,21 +21,21 @@ local function Init()
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay:SetPoint('RIGHT',-3, 0)
     AuctionHouseFrame.ItemBuyFrame.ItemDisplay.Background:SetPoint('RIGHT')
 
-    hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(self, mode)
-        local size= Save().size[self:GetName()]
-        local btn= self.ResizeButton
+    hooksecurefunc(AuctionHouseFrame, 'SetDisplayMode', function(frame, mode)
+        local size= Save().size[frame:GetName()]
+        local btn= frame.ResizeButton
         if not size or not btn then
             return
         end
         
         if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
-            self:SetSize(800, 538)
+            frame:SetSize(800, 538)
             btn.minWidth = 800
             btn.minHeight = 538
             btn.maxWidth = 800
             btn.maxHeight = 538
         else
-            self:SetSize(size[1], size[2])
+            frame:SetSize(size[1], size[2])
             btn.minWidth = 600
             btn.minHeight = 320
             btn.maxWidth = nil
@@ -61,8 +61,3 @@ local function Init()
     WoWTools_MoveMixin:Setup(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
     WoWTools_MoveMixin:Setup(AuctionHouseFrameAuctionsFrame.ItemDisplay, {frame=AuctionHouseFrame, save=true})
 end
-
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_AuctionHouseUI']= Init

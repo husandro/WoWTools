@@ -1,12 +1,9 @@
-local e= select(2, ...)
 
 
-local function Init()
 
+function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(mixin)--成就
     GuildBankFrame.Emblem.Left:Hide()
     GuildBankFrame.Emblem.Right:Hide()
-
-    local mixin= WoWTools_TextureMixin
 
     mixin:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, true)
     mixin:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, true)
@@ -87,12 +84,3 @@ end
 
 
 
-
-
-
-
-
-
-function WoWTools_GuildBankMixin:Init_Guild_Texture()
-    Init()
-end

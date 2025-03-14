@@ -1017,7 +1017,10 @@ local function Init()
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
 
-    WoWTools_MoveMixin:Setup(ItemSocketingFrame, {needSize=true, needMove=true, setSize=true, minW=338, minH=424, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(ItemSocketingFrame, {
+        --needSize=true, needMove=true,
+        setSize=true, minW=338, minH=424,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 424)
         set_point()
         Func.Set_Gem()

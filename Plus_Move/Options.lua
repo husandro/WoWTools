@@ -15,7 +15,8 @@ local function Init_Options()
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
     --移动
-    local initializer2= e.AddPanel_Check({
+    local initializer2
+    --[[= e.AddPanel_Check({
         name= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(e.onlyChinese and '移动' or NPE_MOVE),
         tooltip= WoWTools_MoveMixin.addName,
         GetValue= function() return not Save().disabledMove end,
@@ -24,9 +25,9 @@ local function Init_Options()
             Save().disabledMove= not Save().disabledMove and true or nil
             print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
-    })
+    })]]
 
-    local initializer= e.AddPanel_Check_Button({
+    e.AddPanel_Check_Button({
         checkName= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '保存位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0),
         GetValue= function() return Save().SavePoint end,
@@ -50,10 +51,10 @@ local function Init_Options()
         end,
         layout= Layout,
         category=Category,
-    }, initializer2)
+    })
 
 
-    initializer= e.AddPanel_Check({
+    e.AddPanel_Check({
         name= e.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
         tooltip= WoWTools_MoveMixin.addName,
         GetValue= function() return Save().moveToScreenFuori end,
@@ -62,10 +63,10 @@ local function Init_Options()
             Save().moveToScreenFuori= not Save().moveToScreenFuori and true or nil
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save().disabledMove then return false else return true end end)
+    --initializer:SetParentInitializer(initializer2, function() if Save().disabledMove then return false else return true end end)
 
-    --缩放
-    initializer2= e.AddPanel_Check_Button({
+    --[[缩放
+    e.AddPanel_Check_Button({
         checkName= '|A:UI-HUD-Minimap-Zoom-In:0:0|a'..(e.onlyChinese and '缩放' or UI_SCALE),
         GetValue= function() return not Save().disabledZoom end,
         SetValue= function()
@@ -98,9 +99,9 @@ local function Init_Options()
         tooltip= WoWTools_MoveMixin.addName,
         layout= Layout,
         category= Category
-    })
+    })]]
 
-    initializer= e.AddPanel_Check_Sider({
+    e.AddPanel_Check_Sider({
         checkName= e.onlyChinese and '移动时Frame透明' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame'),
         checkGetValue= function() return not Save().notMoveAlpha end,
         checkTooltip= e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
@@ -121,7 +122,7 @@ local function Init_Options()
         layout= Layout,
         category= Category,
     })
-    initializer:SetParentInitializer(initializer2, function() if Save().disabledZoom then return false else return true end end)
+   -- initializer:SetParentInitializer(initializer2, function() if Save().disabledZoom then return false else return true end end)
 end
 
 

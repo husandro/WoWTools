@@ -16,7 +16,10 @@ local function Init_UI()
     StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
     StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
     WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
-    WoWTools_MoveMixin:Setup(StableFrame, {needSize=true, needMove=true, setSize=true, minW=860, minH=440, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(StableFrame, {
+        --needSize=true, needMove=true,
+        setSize=true, minW=860, minH=440,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(1040, 638)
     end})
 

@@ -150,10 +150,11 @@ Plus_Texture\a_ClassPower.lua
 Plus_Texture\a_HelpTip.lua
 Plus_Texture\z_All_Frame.lua
 Plus_Texture\z_Event_Frame.lua
-
+Plus_Texture\t_Blizzard_Communities.lua
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus\ItemInfo.lua
+ 
 
 
 ##颜色选择器
@@ -348,7 +349,7 @@ Plus_BankGuild\1_Init.lua
 Plus_BankGuild\Menu.lua
 Plus_BankGuild\Plus.lua
 Plus_BankGuild\Plus_TabButton_Menu.lua
-Plus_BankGuild\Texture.lua
+Plus_BankGuild\t_Blizzard_GuildBankUI.lua
 
 ##容器
 Plus_Bag\0_BagMixin.lua

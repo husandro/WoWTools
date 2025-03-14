@@ -18,6 +18,7 @@ WoWTools_TextureMixin.Save={
     HideTalentsBG=true,--隐藏，天赋，背景
 }
 
+
 local function Save()
     return WoWTools_TextureMixin.Save
 end
@@ -38,6 +39,8 @@ local function Init()
     WoWTools_TextureMixin:Init_Action_Button()
 
     if not Save().disabledTexture then
+
+
         WoWTools_TextureMixin:Init_All_Frame()
         WoWTools_TextureMixin:Init_Event()
 
@@ -69,6 +72,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_TextureMixin:Init_Options()
 
             if Save().disabled then
+                WoWTools_TextureMixin.Events={}
                 self:UnregisterEvent(event)
             else
                 Init()

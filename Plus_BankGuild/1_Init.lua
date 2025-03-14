@@ -68,7 +68,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_GuildBankUI' then
             WoWTools_GuildBankMixin:Init_Plus()
-            WoWTools_GuildBankMixin:Init_Guild_Texture()
+            if WoWTools_TextureMixin.Events.Blizzard_GuildBankUI then
+                do
+                    WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
+                end
+                WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
+            end
+            --WoWTools_GuildBankMixin:Init_Guild_Texture()
             WoWTools_GuildBankMixin:Init_GuildMenu()
 
             Init_Other()--自动，打开背包 

@@ -2,7 +2,10 @@
 CreateBackground(frame, tab)
 ]]
 local e= select(2, ...)
-WoWTools_TextureMixin={}
+
+WoWTools_TextureMixin={
+    Events={}
+}
 
 function WoWTools_TextureMixin:CreateBackground(frame, tab)
     if frame.Background then

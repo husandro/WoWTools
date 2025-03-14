@@ -79,6 +79,12 @@ end
 
 
 local function Init()
+
+
+
+
+
+
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
@@ -141,10 +147,29 @@ local function Init()
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
     WoWTools_MoveMixin:Setup(CommunitiesGuildNewsFiltersFrame)
-    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame)
 
+--信息，查看记录
+    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {setSize=true, sizeRestFunc=function(btn)
+        btn.target:SetSize(384, 432)
+    end})
 
+--公会信息， 点击以编辑
+    WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {setSize=true, onShowFunc=true,
+    initFunc=function()
 
+        CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
+        CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
+        
+        WoWTools_EditBoxMixn:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
+
+        hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
+            WoWTools_MoveMixin:Set_SizeScale(frame)
+            frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
+            --self.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", CommunitiesGuildTextEditFrame_OnAccept);
+        end)
+    end, sizeRestFunc=function(btn)
+        btn.target:SetSize(295, 295)
+    end})
 
 --新建，公会, 签名
     WoWTools_MoveMixin:Setup(PetitionFrame, {setSize=true, initFunc=function(btn)
@@ -154,6 +179,11 @@ local function Init()
     end})
 --公会，可以使用的服务
     WoWTools_MoveMixin:Setup(GuildRegistrarFrame)
+
+
+
+
+    
 --设计，公会战袍
     WoWTools_MoveMixin:Setup(TabardFrame, {setSize=true, initFunc=function()
         TabardFrameCancelButton:ClearAllPoints()

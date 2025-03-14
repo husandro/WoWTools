@@ -209,7 +209,10 @@ end
 local function Set_Move()
     if not Save().hideUIPlus then
 
-        WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, needSize=true, needMove=true, minW=338, minH=424, initFunc=function(btn)
+        WoWTools_MoveMixin:Setup(MailFrame, {
+            --needSize=true, needMove=true,
+            setSize=true, minW=338, minH=424,
+        initFunc=function(btn)
             if Save().INBOXITEMS_TO_DISPLAY then
                 INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
                 Set_Inbox_Button()--显示，隐藏，建立，收件，物品    

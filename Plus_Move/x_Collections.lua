@@ -359,13 +359,11 @@ end
 
 
 
-local function Init()
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_Collections()
     Init_CollectionsJournal()
     Init_WardrobeFrame()
 end
-
-
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_Collections']= Init

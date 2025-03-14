@@ -239,60 +239,62 @@ local function Init_WidthX2()
     MerchantFrameBottomLeftBorder:ClearAllPoints()--外框
     MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 
-    WoWTools_MoveMixin:Setup(MerchantFrame, {setSize=true, needSize=true, needMove=true, minW=329, minH=402, sizeUpdateFunc= function()
-            local w, h= MerchantFrame:GetSize()
-            Save().numLine= max(5, math.floor((h-144)/52))
-            MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save().numLine)
-            do
-                Create_ItemButton()
-            end
-            for i = 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
-                local btn= _G['MerchantItem'..i]
-                if i<=MERCHANT_ITEMS_PER_PAGE then
-                    btn:SetShown(true)
-                    if i>1 then
-                        btn:ClearAllPoints()
-                        btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
-                    end
-                    if not btn.ItemButton.hasItem then
-                        local info = C_MerchantFrame.GetItemInfo(i) or {}
-                        _G["MerchantItem"..i.."Name"]:SetText(info.name or '')
-                        SetItemButtonTexture(btn.ItemButton, info.texture or 0)
-                    end
-                else
-                    btn:Hide()
-                end
-            end
-            local line= Save().numLine
-            for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do
-                local btn= _G['MerchantItem'..i]
-                btn:ClearAllPoints()
-                btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
-            end
-
-            local numMerchantItems = GetMerchantNumItems()
-            MerchantPageText:SetFormattedText(e.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER, MerchantFrame.page, math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
-            -- Handle paging buttons
-            if ( numMerchantItems > MERCHANT_ITEMS_PER_PAGE ) then
-                MerchantPageText:SetShown(true)
-                MerchantPrevPageButton:SetShown(true)
-                MerchantNextPageButton:SetShown(true)
-            else
-                MerchantPageText:SetShown(false)
-                MerchantPrevPageButton:SetShown(false)
-                MerchantNextPageButton:SetShown(false)
-            end
-
-        end, sizeRestFunc= function()
-            MERCHANT_ITEMS_PER_PAGE= 10
-            Save().numLine= 5
+    WoWTools_MoveMixin:Setup(MerchantFrame, {
+        --needSize=true, needMove=true
+        setSize=true, minW=329, minH=402,
+    sizeUpdateFunc= function()
+        local w, h= MerchantFrame:GetSize()
+        Save().numLine= max(5, math.floor((h-144)/52))
+        MERCHANT_ITEMS_PER_PAGE= max(10, max(2, math.floor(((w-8)/161)))* Save().numLine)
+        do
             Create_ItemButton()
-            e.call(MerchantFrame_UpdateMerchantInfo)
-        end, sizeStopFunc= function()
-            Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
-            e.call(MerchantFrame_UpdateMerchantInfo)
         end
-    })
+        for i = 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
+            local btn= _G['MerchantItem'..i]
+            if i<=MERCHANT_ITEMS_PER_PAGE then
+                btn:SetShown(true)
+                if i>1 then
+                    btn:ClearAllPoints()
+                    btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
+                end
+                if not btn.ItemButton.hasItem then
+                    local info = C_MerchantFrame.GetItemInfo(i) or {}
+                    _G["MerchantItem"..i.."Name"]:SetText(info.name or '')
+                    SetItemButtonTexture(btn.ItemButton, info.texture or 0)
+                end
+            else
+                btn:Hide()
+            end
+        end
+        local line= Save().numLine
+        for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do
+            local btn= _G['MerchantItem'..i]
+            btn:ClearAllPoints()
+            btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
+        end
+
+        local numMerchantItems = GetMerchantNumItems()
+        MerchantPageText:SetFormattedText(e.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER, MerchantFrame.page, math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
+        -- Handle paging buttons
+        if ( numMerchantItems > MERCHANT_ITEMS_PER_PAGE ) then
+            MerchantPageText:SetShown(true)
+            MerchantPrevPageButton:SetShown(true)
+            MerchantNextPageButton:SetShown(true)
+        else
+            MerchantPageText:SetShown(false)
+            MerchantPrevPageButton:SetShown(false)
+            MerchantNextPageButton:SetShown(false)
+        end
+
+    end, sizeRestFunc= function()
+        MERCHANT_ITEMS_PER_PAGE= 10
+        Save().numLine= 5
+        Create_ItemButton()
+        e.call(MerchantFrame_UpdateMerchantInfo)
+    end, sizeStopFunc= function()
+        Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
+        e.call(MerchantFrame_UpdateMerchantInfo)
+    end})
 end
 
 

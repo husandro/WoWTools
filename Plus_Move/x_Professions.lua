@@ -281,7 +281,7 @@ end
 
 
 
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_Professions()
 
     initFunc()
 
@@ -294,8 +294,3 @@ local function Init()
         sizeRestFunc=sizeRestFunc
     })
 end
-
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_Professions']= Init

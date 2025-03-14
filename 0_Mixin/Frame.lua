@@ -95,7 +95,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     frame.width= w
     frame.height= h
     WoWTools_MoveMixin:Setup(frame, {
-        needMove=true,
+        --needMove=true,
         minW=minW or 370,
         minH=minH or 240,
         notFuori=true,

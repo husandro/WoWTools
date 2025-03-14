@@ -176,9 +176,9 @@ end
 local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLeaderOrOfficer() then--会长或官员
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         --isMenu= true,
-        atlas='Cursor_OpenHand_32',
+        --atlas='Cursor_OpenHand_32',
         size=23,
-        --template='BankAutoSortButtonTemplate',
+        template='BankAutoSortButtonTemplate',
     })
     btn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0,0)
 
@@ -510,11 +510,20 @@ local function Init_UI()
     GuildItemSearchBox:ClearAllPoints()
     GuildItemSearchBox:SetPoint('RIGHT', GuildBankMoneyFrame, 'LEFT', -6, 0)
 
+--可用数量
     GuildBankWithdrawMoneyFrame:ClearAllPoints()
-    GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildItemSearchBox, 'LEFT', -2, 0)
+    --GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildItemSearchBox, 'LEFT', -2, 0)
+    --GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildBankFrame.TabTitle, 'LEFT', 2, 0)
+    
+    GuildBankWithdrawMoneyFrame:SetScript('OnLeave', GameTooltip_Hide)
+    GuildBankWithdrawMoneyFrame:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(e.onlyChinese and '可用数量' or GUILDBANK_AVAILABLE_MONEY)
+        GameTooltip:Show()
+    end)
 
     GuildBankMoneyLimitLabel:ClearAllPoints()
-    GuildBankMoneyLimitLabel:SetPoint('RIGHT', GuildBankWithdrawMoneyFrame, 'LEFT',-4,0)
+    --GuildBankMoneyLimitLabel:SetPoint('RIGHT', GuildBankWithdrawMoneyFrame, 'LEFT',-4,0)
 
 --金币记录    
     GuildBankMessageFrame:SetPoint('TOPLEFT', GuildBankFrame, 24, -54)
@@ -643,25 +652,26 @@ local function Init()
     GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha or 1)
 
 --移动，大小
-    WoWTools_MoveMixin:Setup(GuildBankFrame, {setSize=true, needSize=true, needMove=true, minW=80, minH=140,
-        sizeRestFunc= function(btn)
-            Save().otherSize= nil
-            Save().num=15
-            if btn.target.mode== "bank" then
-                Init_Button(btn.target)
-            else
-                Set_Frame_Size(btn.target, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
-            end
-        end, sizeStopFunc= function(btn)
-            if btn.target.mode== "bank" then
-                local h= math.ceil((GuildBankFrame:GetHeight()-90)/(Save().line+37))
-                Save().num= h
-                Init_Button(btn.target)
-            else
-                Save().otherSize= {btn.target:GetSize()}
-            end
+    WoWTools_MoveMixin:Setup(GuildBankFrame, {
+        --needSize=true, needMove=true,
+        setSize=true, minW=80, minH=140,
+    sizeRestFunc= function(btn)
+        Save().otherSize= nil
+        Save().num=15
+        if btn.target.mode== "bank" then
+            Init_Button(btn.target)
+        else
+            Set_Frame_Size(btn.target, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
         end
-    })
+    end, sizeStopFunc= function(btn)
+        if btn.target.mode== "bank" then
+            local h= math.ceil((GuildBankFrame:GetHeight()-90)/(Save().line+37))
+            Save().num= h
+            Init_Button(btn.target)
+        else
+            Save().otherSize= {btn.target:GetSize()}
+        end
+    end})
 
 
    -- hooksecurefunc(GuildBankFrame, 'Update', Init_Button)

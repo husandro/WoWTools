@@ -87,7 +87,7 @@ local function sizeRestFunc(btn)
 end
 
 
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
     initFunc()
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame, {
         setSize=true,
@@ -101,8 +101,3 @@ local function Init()
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
     WoWTools_MoveMixin:Setup(InspectRecipeFrame)
 end
-
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_ProfessionsCustomerOrders']= Init

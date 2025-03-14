@@ -143,7 +143,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     local SavePoint= self.Save.SavePoint or tab.savePoint
     local moveToScreenFuori= self.Save.moveToScreenFuori
-    local disabledMove= self.Save.disabledMove
+    --local disabledMove= self.Save.disabledMove
 
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
@@ -161,7 +161,8 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     self:ScaleSize(frame, tab)
 
-    if (disabledMove and not tab.needMove) or tab.notMove  then
+    --if (disabledMove and not tab.needMove) or tab.notMove  then
+    if tab.notMove  then
         return
     end
 

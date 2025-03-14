@@ -100,7 +100,10 @@ local function Init()
 
     WoWTools_TextureMixin:SetFrame(border, {alpha=0.5})
     WoWTools_TextureMixin:SetFrame(Header, {alpha=0.7})
-    WoWTools_MoveMixin:Setup(Frame, {needMove=true, minW=370, minH=240, notFuori=true, setSize=true, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(Frame, {
+        --needMove=true,
+        minW=370, minH=240, notFuori=true, setSize=true,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(580, 370)
     end})
 
@@ -786,7 +789,7 @@ local function Init()
 
     --导入数据
     Menu.DataFrame=WoWTools_EditBoxMixn:CreateMultiLineFrame(Frame,{
-        instructions= 'text'
+        isInstructions= 'text'
     })
     Menu.DataFrame:Hide()
     Menu.DataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)

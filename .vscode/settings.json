@@ -5432,7 +5432,14 @@
         "SetLargeGuildTabardTextures",
         "BUTTON_LAG_LOOT_TOOLTIP",
         "REDUCED_LAG_TOLERANCE",
-        "LAG_TOLERANCE"
+        "LAG_TOLERANCE",
+        "GUILDBANK_AVAILABLE_MONEY",
+        "CommunitiesFrameGuildDetailsFrame",
+        "CommunitiesFrameGuildDetailsFrameInfoBar1Left",
+        "CommunitiesFrameGuildDetailsFrameInfoBar2Left",
+        "CommunitiesGuildTextEditFrame",
+        "CommunitiesGuildTextEditFrameBg",
+        "CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

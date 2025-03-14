@@ -6,10 +6,8 @@ end
 
 
 
-local function Init()
-    if Save().disabledZoom then
-        return
-    end
+function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
+    --if Save().disabledZoom then
     PVPUIFrame:SetPoint('BOTTOMRIGHT')
     LFGListPVPStub:SetPoint('BOTTOMRIGHT')
     LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
@@ -35,4 +33,3 @@ end
 
 
 
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_PVPUI']= Init

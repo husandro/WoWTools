@@ -3,7 +3,7 @@
 
 
 
-local function Init()
+function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
     WoWTools_MoveMixin:Setup(PlayerSpellsFrame, {onShowFunc=true})
     for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do
         WoWTools_MoveMixin:Setup(specContentFrame, {frame=PlayerSpellsFrame})
@@ -14,8 +14,3 @@ local function Init()
     WoWTools_MoveMixin:Setup(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
 
 end
-
-
-
-
-WoWTools_MoveMixin.ADDON_LOADED['Blizzard_PlayerSpells']= Init

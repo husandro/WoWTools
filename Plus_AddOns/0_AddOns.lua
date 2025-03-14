@@ -224,7 +224,10 @@ local function Init()
 
     WoWTools_AddOnsMixin:Init_Info_Plus()
 
-    WoWTools_MoveMixin:Setup(AddonList, {needSize=true, needMove=true, minW=430, minH=120, setSize=true, initFunc=function()
+    WoWTools_MoveMixin:Setup(AddonList, {
+        --needSize=true, needMove=true,
+        minW=430, minH=120, setSize=true,
+    initFunc=function()
         AddonList.ScrollBox:ClearAllPoints()
         AddonList.ScrollBox:SetPoint('LEFT', 7, 0)
         AddonList.ScrollBox:SetPoint('TOP', AddonList.Performance, 'BOTTOM')
