@@ -79,7 +79,7 @@ end
 
 
 local function Init()
-
+    local sub
 
 
 
@@ -153,15 +153,13 @@ local function Init()
 --信息, 左边信息
     CommunitiesFrameGuildDetailsFrameInfo:SetPoint('TOPRIGHT', CommunitiesFrameGuildDetailsFrame, 'TOP', -48, 0)
 --今日信息
-    CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame:SetPoint('RIGHT', -14, -48)
-    CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame.MOTD:SetPoint('BOTTOMRIGHT', 0, 4)
 
 --公会信息
     CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:SetPoint('RIGHT')
-    local frame= CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:GetChildren()
-    if frame and frame.Details then
-        frame:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
-        frame.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
+    sub= CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:GetChildren()
+    if sub and sub.Details then
+        sub:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
+        sub.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
     end
 
 --信息, 右边信息
