@@ -4,7 +4,7 @@ local MAX_GUILDBANK_SLOTS_PER_TAB= 96
 
 
 
---生成,物品列表
+--[[生成,物品列表
 local function Init_Button_List(isReagent)
     if not isReagent  then
         for index, classID in pairs({0, 1, 2, 3, 4, 5, 7, 8, 9, 12, 13, 15, 16, 17, 19}) do
@@ -14,7 +14,7 @@ local function Init_Button_List(isReagent)
         for index= 1, 19 do
         end
     end
-end
+end]]
 
 
 

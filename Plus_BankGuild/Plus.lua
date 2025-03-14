@@ -99,7 +99,7 @@ local function Set_Label(self)
 
     if self.nameLabel then
         if showIndex then
-            QueryGuildBankTab(self.tabID)
+            --QueryGuildBankTab(self.tabID)
 
             local name, icon, _, canDeposit, numWithdrawals, remainingWithdrawals= GetGuildBankTabInfo(self.tabID)
 
@@ -317,14 +317,8 @@ end
 
 
 
-local IsRun
-
 --local name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, filtered = GetGuildBankTabInfo(tab)
 local function Init_Button(self)
-    if IsRun then
-        return
-    end
-
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
     local isEnable= self.mode== "bank" and currentIndex<= numTab
@@ -341,7 +335,7 @@ local function Init_Button(self)
     for tabID=1, numTab do
         --if select(3, GetGuildBankTabInfo(tabID)) then
            -- print(tabID, self.BankTabs[tabID].Button:IsEnabled())
-        QueryGuildBankTab(tabID)
+        --QueryGuildBankTab(tabID)
 
         if self.BankTabs[tabID].Button:IsEnabled() then
             if currentIndex~=tabID then
@@ -407,7 +401,6 @@ local function Init_Button(self)
     end
 
     Set_Frame_Size(self, currentIndex, numTab)
-    IsRun=nil
 end
 
 
@@ -431,10 +424,7 @@ local function Update_ResizeButton(self, currentIndex, numTab)
     currentIndex= currentIndex or GetCurrentGuildBankTab()--当前 Tab
     numTab= numTab or GetNumGuildBankTabs()--总计Tab
     self.ResizeButton.setSize= self.mode~= "bank" or currentIndex<= numTab
-
 end
-
-
 
 
 
@@ -542,7 +532,7 @@ local function Init_UI()
     end)
 
     hooksecurefunc(GuildBankFrame, 'UpdateTabInfo', function(_, tabID)
-        QueryGuildBankTab(tabID)
+        --QueryGuildBankTab(tabID)
 
         GuildBankTabInfoEditBox.Instructions:SetText(
             GetGuildBankTabInfo(tabID)
@@ -622,8 +612,8 @@ local function Init()
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
             btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
 
-            QueryGuildBankText(tabID)
-            QueryGuildBankTab(tabID)
+            --QueryGuildBankText(tabID)
+            --QueryGuildBankTab(tabID)
         end
 
 
@@ -655,8 +645,8 @@ local function Init()
     })
 
 
-    hooksecurefunc(GuildBankFrame, 'Update', Init_Button)
-
+   -- hooksecurefunc(GuildBankFrame, 'Update', Init_Button)
+   hooksecurefunc(GuildBankFrame, 'Update', Init_Button)
 
     hooksecurefunc(GuildBankFrame, 'UpdateFiltered', function(self)
         if self.mode ~= "bank" then
