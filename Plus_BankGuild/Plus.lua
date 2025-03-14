@@ -183,6 +183,8 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
     btn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0,0)
 
     btn:SetAlpha(isFunc and 1 or 0.5)
+    btn:SetScale(isFunc and 1.1 or 1)
+
     if isFunc then
         --WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
         btn:SetScript('OnMouseDown', function(self)
@@ -225,62 +227,18 @@ end
 local function Create_Button(index, tabID, slotID)
     local btn= CreateFrame('ItemButton', 'WoWToolsGuildItemButton'..tabID..'_'..slotID, MainButtons[1], 'GuildBankItemButtonTemplate', slotID)
 
-    btn.SplitStack = function(button, split)
-        SplitGuildBankItem(button.tabID, button:GetID(), split)
-    end
-
-    btn:SetScript('OnClick', function(self, d)
-        if HandleModifiedItemClick(GetGuildBankItemLink(self.tabID, self:GetID())) then
-            return
-        end
-        if ( IsModifiedClick("SPLITSTACK") ) then
-            if ( not CursorHasItem() ) then
-                local _, count, locked = GetGuildBankItemInfo(self.tabID, self:GetID())
-                if ( not locked and count and count > 1) then
-                    StackSplitFrame:OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
-                end
-            end
-            return
-        end
-        local type, money = GetCursorInfo()
-        if ( type == "money" ) then
-            DepositGuildBankMoney(money)
-            ClearCursor()
-        elseif ( type == "guildbankmoney" ) then
-            DropCursorMoney()
-            ClearCursor()
-        else
-            if ( d == "RightButton" ) then
-                AutoStoreGuildBankItem(self.tabID, self:GetID())
-                self:OnLeave()
-            else
-                PickupGuildBankItem(self.tabID, self:GetID())
-            end
-        end
-    end)
-
     function btn:OnEnter()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetGuildBankItem(self.tabID, self:GetID())
     end
     btn.UpdateTooltip = btn.OnEnter
 
-
-    btn:SetScript('OnDragStart', function(self)
-        Click_Tab(self)
-        PickupGuildBankItem(self.tabID, self:GetID())
-    end)
-
-    btn:SetScript('OnReceiveDrag', function(self)
-        Click_Tab(self)
-        PickupGuildBankItem(self.tabID, self:GetID())
-    end)
-
     btn:SetScript('OnEnter', function(self)
         if not WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
             Click_Tab(self)
+        else
+            self:OnEnter()
         end
-        self:OnEnter()
     end)
     btn:SetScript('OnMouseDown', function(self)
         Click_Tab(self)
@@ -299,7 +257,6 @@ local function Create_Button(index, tabID, slotID)
         SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, slot))
     end
 
-
     local one= slotID==1
 
     Create_IndexLabel(btn, one)
@@ -307,8 +264,6 @@ local function Create_Button(index, tabID, slotID)
     if one then
         Create_SortButton(btn, false)
     end
-
-
 
     Buttons[index]= btn
 
@@ -318,7 +273,51 @@ end
 
 
 
+--[[
+btn.SplitStack = function(button, split)
+    SplitGuildBankItem(button.tabID, button:GetID(), split)
+end
 
+btn:SetScript('OnClick', function(self, d)
+    if HandleModifiedItemClick(GetGuildBankItemLink(self.tabID, self:GetID())) then
+        return
+    end
+    if ( IsModifiedClick("SPLITSTACK") ) then
+        if ( not CursorHasItem() ) then
+            local _, count, locked = GetGuildBankItemInfo(self.tabID, self:GetID())
+            if ( not locked and count and count > 1) then
+                StackSplitFrame:OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
+            end
+        end
+        return
+    end
+    local type, money = GetCursorInfo()
+    if ( type == "money" ) then
+        DepositGuildBankMoney(money)
+        ClearCursor()
+    elseif ( type == "guildbankmoney" ) then
+        DropCursorMoney()
+        ClearCursor()
+    else
+        if ( d == "RightButton" ) then
+            AutoStoreGuildBankItem(self.tabID, self:GetID())
+            self:OnLeave()
+        else
+            PickupGuildBankItem(self.tabID, self:GetID())
+        end
+    end
+end)
+
+btn:SetScript('OnDragStart', function(self)
+    Click_Tab(self)
+    PickupGuildBankItem(self.tabID, self:GetID())
+end)
+
+btn:SetScript('OnReceiveDrag', function(self)
+    Click_Tab(self)
+    PickupGuildBankItem(self.tabID, self:GetID())
+end)
+]]
 
 
 
