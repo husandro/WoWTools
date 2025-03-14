@@ -27,7 +27,7 @@ local function Check_Bank_Item(tabID, slotID, classID, subClassID, onlyItem)
 
     if
         (classID==itemClassID or not classID)
-        and (subClassID==subClassID or not subClassID)
+        and (subClassID==itemSubclassID or not subClassID)
         and (isCraftingReagent and onlyItem==false or onlyItem)
 
     then
@@ -400,6 +400,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
        name,
     function(data)
         Out_Bank(self, data.tabID, nil, nil, true, data.numOut)
+        return MenuResponse.Close
     end, {tabID= tabID, numOut=numOut})
     sub:SetEnabled(numOut)
 
@@ -416,6 +417,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
         name,
     function(data)
         Out_Bank(self, data.tabID, nil, nil, false, numOut)
+        return MenuResponse.Close
     end, {tabID=tabID, numOut=numOut})
     sub:SetEnabled(numOut)
 
@@ -445,6 +447,7 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
         name,
     function(data)
         Out_Bags(self, data.tabID, nil, nil, true)
+        return MenuResponse.Close
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
@@ -461,6 +464,7 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
         name,
     function(data)
         Out_Bags(self, data.tabID, nil, nil, false)
+        return MenuResponse.Close
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
