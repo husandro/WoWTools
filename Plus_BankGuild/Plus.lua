@@ -176,9 +176,9 @@ end
 local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLeaderOrOfficer() then--会长或官员
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         --isMenu= true,
-        --atlas='Cursor_OpenHand_32',
+        atlas='Cursor_OpenHand_32',
         size=23,
-        template='BankAutoSortButtonTemplate',
+        --template='BankAutoSortButtonTemplate',
     })
     btn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0,0)
 
@@ -190,6 +190,7 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
                 WoWTools_GuildBankMixin:Init_Button_Menu(...)
             end)
         end)
+        btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
@@ -514,6 +515,7 @@ local function Init_UI()
     GuildBankWithdrawMoneyFrame:ClearAllPoints()
     --GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildItemSearchBox, 'LEFT', -2, 0)
     --GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildBankFrame.TabTitle, 'LEFT', 2, 0)
+    GuildBankWithdrawMoneyFrame:SetPoint('TOPRIGHT', -2, -28)
     
     GuildBankWithdrawMoneyFrame:SetScript('OnLeave', GameTooltip_Hide)
     GuildBankWithdrawMoneyFrame:SetScript('OnEnter', function(self)
@@ -640,10 +642,9 @@ local function Init()
             btn.nameLabel= WoWTools_LabelMixin:Create(btn)
             btn.nameLabel:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT')
 
-            --QueryGuildBankText(tabID)
-            --QueryGuildBankTab(tabID)
+            QueryGuildBankText(tabID)
+            QueryGuildBankTab(tabID)
         end
-
 
     end
 
