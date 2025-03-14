@@ -72,7 +72,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             WoWTools_TextureMixin.Save= WoWToolsSave['Plus_Texture'] or Save()
             WoWTools_TextureMixin.Save.classPowerNumSize= WoWTools_TextureMixin.Save.classPowerNumSize or 12
-            
+
             local addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
             WoWTools_TextureMixin.addName= addName
 
@@ -88,19 +88,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end
 
-        else
-
-            if WoWTools_TextureMixin.Events[arg1] then
-                do
-                    WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
-                end
-                WoWTools_TextureMixin.Events[arg1]= nil
+        elseif WoWTools_TextureMixin.Events[arg1] then
+            do
+                WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
             end
+            WoWTools_TextureMixin.Events[arg1]= nil
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['Plus_Texture']=Save()
+            WoWToolsSave['Plus_Texture']= Save()
         end
     end
 end)
