@@ -31,10 +31,11 @@ end
 
 
 local function Setup(name)
-    local func= WoWTools_MoveMixin.Events[name]
-    if func then
-        func()
-        WoWTools_MoveMixin.Events[name]=nil
+    if WoWTools_MoveMixin.Events[name] then
+        do
+            WoWTools_MoveMixin.Events[name]()
+        end
+        WoWTools_MoveMixin.Events[name]= nil
     end
 end
 

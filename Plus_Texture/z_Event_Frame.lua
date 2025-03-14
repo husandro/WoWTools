@@ -1042,27 +1042,3 @@ end
 
 
 
-
-
-
-function WoWTools_TextureMixin:Init_Event()
-    for name, func in pairs(self.Events) do
-        if C_AddOns.IsAddOnLoaded(name) then
-            do
-                func(nil, self)
-            end
-            self.Events[name]= nil
-        end
-    end
-end
-
-
-function WoWTools_TextureMixin:Set_Event(name)
-    local func=self.Events[name]
-    if func then
-        do
-            func(nil, self)
-        end
-        self.Events[name]= nil
-    end
-end

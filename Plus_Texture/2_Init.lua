@@ -42,7 +42,15 @@ local function Init()
 
 
         WoWTools_TextureMixin:Init_All_Frame()
-        WoWTools_TextureMixin:Init_Event()
+
+        for name in pairs(WoWTools_TextureMixin.Events) do
+            if C_AddOns.IsAddOnLoaded(name) then
+                do
+                    WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
+                end
+                WoWTools_TextureMixin.Events[name]= nil
+            end
+        end
 
         hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
             WoWTools_TextureMixin:SetMenu(self)
@@ -52,7 +60,6 @@ local function Init()
         end)
     end
 end
-
 
 
 
@@ -82,7 +89,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         else
-            WoWTools_TextureMixin:Set_Event(arg1)
+
+            if WoWTools_TextureMixin.Events[arg1] then
+                do
+                    WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
+                end
+                WoWTools_TextureMixin.Events[arg1]= nil
+            end
         end
 
     elseif event == "PLAYER_LOGOUT" then
