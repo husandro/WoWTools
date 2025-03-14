@@ -331,7 +331,7 @@ end
 
 
 --生成,物品列表
-local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem)
+local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem, title)
     local num
 --物品
     if onlyItem  then
@@ -374,6 +374,9 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem)
             end, {subClassID=subClassID})
         end
     end
+
+    root:CreateDivider()
+    root:CreateTitle(title)
 end
 
 
@@ -385,29 +388,30 @@ end
 --提取
 --numOut 可提取：数字，true无限，false禁用
 local function Init_Out_Bank_Menu(self, root, tabID, numOut)
-    local sub
+    local sub, name
 
+    name=  (e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
+            ..' #'..Get_Bank_Num(tabID, nil, nil, true)
     sub= root:CreateButton(
-        (e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
-        ..' #'..Get_Bank_Num(tabID, nil, nil, true),
+       name,
     function(data)
         Out_Bank(self, data.tabID, nil, nil, true, data.numOut)
     end, {tabID= tabID, numOut=numOut})
     sub:SetEnabled(numOut)
 
-    Init_SubMenu(self, sub, tabID, true, numOut, true)
+    Init_SubMenu(self, sub, tabID, true, numOut, true, name)
 
 
-
+    name= (e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
+            ..' #'..Get_Bank_Num(tabID, nil, nil, false)
     sub= root:CreateButton(
-        (e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
-        ..' #'..Get_Bank_Num(tabID, nil, nil, false),
+        name,
     function(data)
         Out_Bank(self, data.tabID, nil, nil, false, numOut)
     end, {tabID=tabID, numOut=numOut})
     sub:SetEnabled(numOut)
 
-    Init_SubMenu(self, sub, tabID, true, numOut, false)
+    Init_SubMenu(self, sub, tabID, true, numOut, false, name)
 end
 
 
@@ -419,27 +423,29 @@ end
 --存放
 --numIn 是否放入：true, false
 local function Init_Out_Bag_Menu(self, root, tabID, numIn)
-    local sub
+    local sub, name
 
+    name= (e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
+            ..' #'..Get_Bag_Num(nil, nil, true)
     sub= root:CreateButton(
-        (e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
-        ..' #'..Get_Bag_Num(nil, nil, true),
+        name,
     function(data)
         Out_Bags(self, data.tabID, nil, nil, true)
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
-    Init_SubMenu(self, sub, tabID, false, numIn, true)
+    Init_SubMenu(self, sub, tabID, false, numIn, true, name)
 
+    name= (e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
+        ..' #'..Get_Bag_Num(nil, nil, false)
     sub= root:CreateButton(
-        (e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
-        ..' #'..Get_Bag_Num(nil, nil, false),
+        name,
     function(data)
         Out_Bags(self, data.tabID, nil, nil, false)
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
-    Init_SubMenu(self, sub, tabID, false, numIn, false)
+    Init_SubMenu(self, sub, tabID, false, numIn, false, name)
 end
 
 
@@ -467,7 +473,7 @@ local function Init_Menu(self, root)
 
     local tabID= GetCurrentGuildBankTab()
     local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
-    local sub
+    local sub, name, icon
 
 --物品
     Init_Out_Bank_Menu(self, root, tabID, numOut)
@@ -476,8 +482,13 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     Init_Out_Bag_Menu(self, root, tabID, numIn)
 
+--打开选项
+    name, icon= GetGuildBankTabInfo(tabID)
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
+        name= WoWTools_GuildBankMixin.addName,
+        name2= '|T'..(icon or 0)..':0|t'..(name  or format(e.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)),
+    })
 
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -508,6 +519,13 @@ end
 
 
 
-function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
-    btn:SetupMenu(Init_Menu)
+--[[function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
+    --btn:SetupMenu(Init_Menu)
+    btn:SetScript('OnMouseDown', function(frame)
+        MenuUtil.CreateContextMenu(frame, Init_Menu)
+    end)
+end]]
+
+function WoWTools_GuildBankMixin:Init_Button_Menu(...)
+    Init_Menu(...)
 end

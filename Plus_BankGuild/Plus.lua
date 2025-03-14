@@ -123,8 +123,9 @@ local function Set_Label(self)
             end
 
             self.nameLabel:SetTextColor(r,g,b)
+        else
+            self.nameLabel:SetText('')
         end
-        self.nameLabel:SetShown(showIndex)
     end
 end
 
@@ -174,18 +175,34 @@ end
 
 local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLeaderOrOfficer() then--会长或官员
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
-        isMenu= true,
-        template='BankAutoSortButtonTemplate',
+        --isMenu= true,
+        atlas='Cursor_OpenHand_32',
+        size=23,
+        --template='BankAutoSortButtonTemplate',
     })
     btn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0,0)
-    btn:SetSize(23,23)
 
     btn:SetAlpha(isFunc and 1 or 0.5)
     if isFunc then
-        WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
+        --WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
+        btn:SetScript('OnMouseDown', function(self)
+            MenuUtil.CreateContextMenu(self, function(...)
+                WoWTools_GuildBankMixin:Init_Button_Menu(...)
+            end)
+        end)
+        btn:SetScript('OnEnter', function(self)
+            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            e.tips:ClearLines()
+            e.tips:AddLine(WoWTools_GuildBankMixin.addName)
+            e.tips:AddLine(' ')
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+            e.tips:Show()
+        end)
     else
         btn:SetScript('OnEnter', function(self)
-            Click_Tab(self:GetParent())
+            if not WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
+                Click_Tab(self)
+            end
         end)
     end
 end
@@ -602,7 +619,9 @@ local function Init()
             btn.tabID= tabID
 
             btn:SetScript('OnEnter', function(self)
-                QueryGuildBankText(self.tabID)
+                --if not GuildBankTabInfoEditBox:IsVisible() then
+                    --QueryGuildBankText(self.tabID)
+                --end
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:SetText(self.tooltip, nil, nil, nil, nil, true)
                 GameTooltip:AddLine(GetGuildBankText(self.tabID))
@@ -698,4 +717,5 @@ end
 
 function WoWTools_GuildBankMixin:Update_Button()
     Init_Button(GuildBankFrame)
+    Set_UpdateTabs(GuildBankFrame)
 end
