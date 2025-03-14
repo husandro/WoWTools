@@ -201,7 +201,7 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
     else
         btn:SetScript('OnEnter', function(self)
             if not WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
-                Click_Tab(self)
+                Click_Tab(self:GetParent())
             end
         end)
     end

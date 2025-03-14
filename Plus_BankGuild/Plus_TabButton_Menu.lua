@@ -388,10 +388,14 @@ end
 --提取
 --numOut 可提取：数字，true无限，false禁用
 local function Init_Out_Bank_Menu(self, root, tabID, numOut)
-    local sub, name
+    local sub, name, num
+    local disabled= numOut==false
 
-    name=  (e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
-            ..' #'..Get_Bank_Num(tabID, nil, nil, true)
+--提取物品
+    num= Get_Bank_Num(tabID, nil, nil, true)
+    name= ((disabled or num==0) and '|cff828282' or '')
+        ..(e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
+        ..' #'..num
     sub= root:CreateButton(
        name,
     function(data)
@@ -399,11 +403,15 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
     end, {tabID= tabID, numOut=numOut})
     sub:SetEnabled(numOut)
 
-    Init_SubMenu(self, sub, tabID, true, numOut, true, name)
+    if not disabled and num>0 then
+        Init_SubMenu(self, sub, tabID, true, numOut, true, name)
+    end
 
-
-    name= (e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
-            ..' #'..Get_Bank_Num(tabID, nil, nil, false)
+--提取材料
+    num= Get_Bank_Num(tabID, nil, nil, false)
+    name= ((disabled or num==0) and '|cff828282' or '')
+        ..(e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
+        ..' #'..num
     sub= root:CreateButton(
         name,
     function(data)
@@ -411,7 +419,9 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
     end, {tabID=tabID, numOut=numOut})
     sub:SetEnabled(numOut)
 
-    Init_SubMenu(self, sub, tabID, true, numOut, false, name)
+    if not disabled and num>0 then
+        Init_SubMenu(self, sub, tabID, true, numOut, false, name)
+    end
 end
 
 
@@ -423,10 +433,14 @@ end
 --存放
 --numIn 是否放入：true, false
 local function Init_Out_Bag_Menu(self, root, tabID, numIn)
-    local sub, name
+    local sub, name, num
+    local disabled= numIn==false
 
-    name= (e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
-            ..' #'..Get_Bag_Num(nil, nil, true)
+--存放物品
+    num= Get_Bag_Num(nil, nil, true)
+    name= ((disabled or num==0) and '|cff828282' or '')
+        ..(e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
+        ..' #'..num
     sub= root:CreateButton(
         name,
     function(data)
@@ -434,10 +448,15 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
-    Init_SubMenu(self, sub, tabID, false, numIn, true, name)
+    if not disabled and num>0 then
+        Init_SubMenu(self, sub, tabID, false, numIn, true, name)
+    end
 
-    name= (e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
-        ..' #'..Get_Bag_Num(nil, nil, false)
+--存放材料
+    num= Get_Bag_Num(nil, nil, false)
+    name= ((disabled or num==0) and '|cff828282' or '')
+        ..(e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
+        ..' #'..num
     sub= root:CreateButton(
         name,
     function(data)
@@ -445,7 +464,9 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
-    Init_SubMenu(self, sub, tabID, false, numIn, false, name)
+    if not disabled and num>0 then
+        Init_SubMenu(self, sub, tabID, false, numIn, false, name)
+    end
 end
 
 
@@ -465,6 +486,8 @@ end
 
 
 
+--numOut 可提取：数字，true无限，false禁用
+--numIn 是否放入：true, false
 
 local function Init_Menu(self, root)
     if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
