@@ -1,7 +1,8 @@
 local e= select(2, ...)
+local function Save()
+    return WoWTools_GuildBankMixin.Save
+end
 local MAX_GUILDBANK_SLOTS_PER_TAB= 96
-
-
 
 
 
@@ -56,6 +57,8 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
         freeSlots= math.min(freeSlots, numOut)
     end
 
+    local saveItemSeconds= Save().saveItemSeconds or 0.8
+
     local function withdrawItems()
         if
             not self:IsVisible()
@@ -96,7 +99,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
             return
         end
 
-        C_Timer.After(0.8, function()
+        C_Timer.After(saveItemSeconds, function()
             withdrawItems()
         end)
     end
@@ -236,7 +239,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
         end
     end)
 
-
+    local saveItemSeconds= Save().saveItemSeconds or 0.8
     local function depositItems()
         if
            not self:IsVisible()
@@ -274,7 +277,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
             return
         end
 
-        C_Timer.After(0.8, function()
+        C_Timer.After(saveItemSeconds, function()
             depositItems()
         end)
     end
@@ -347,7 +350,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem)
                 else--存放
                     Out_Bags(self, tabID, data.classID, nil, onlyItem)
                 end
-                
+                return MenuResponse.Open
             end, {classID=classID})
         end
     else
@@ -367,6 +370,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem)
                 else--存放
                     Out_Bags(self, tabID, 7, data.subClassID, onlyItem)
                 end
+                return MenuResponse.Open
             end, {subClassID=subClassID})
         end
     end
@@ -456,7 +460,48 @@ end
 
 
 
+local function Init_Menu(self, root)
+    if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
+        self.isInRun=true--停止，已运行
+    end
 
+    local tabID= GetCurrentGuildBankTab()
+    local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
+    local sub
+
+--物品
+    Init_Out_Bank_Menu(self, root, tabID, numOut)
+
+--材料
+    root:CreateDivider()
+    Init_Out_Bag_Menu(self, root, tabID, numIn)
+
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().saveItemSeconds or 0.8
+        end, setValue=function(value)
+            Save().saveItemSeconds=value
+
+            if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
+                self.isInRun=true--停止，已运行
+            end
+
+        end,
+        name=e.onlyChinese and '延迟' or LAG_TOLERANCE,
+        minValue=0.5,
+        maxValue=1.5,
+        step=0.1,
+        bit='%.1f',
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '延迟' or LAG_TOLERANCE)
+        end
+    })
+    sub:CreateSpacer()
+end
 
 
 
@@ -464,19 +509,5 @@ end
 
 
 function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
-    btn:SetupMenu(function(frame, root)
-        if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
-            frame.isInRun=true--停止，已运行
-        end
-
-        local tabID= GetCurrentGuildBankTab()
-        local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
-
---物品
-        Init_Out_Bank_Menu(frame, root, tabID, numOut)
-
---材料
-        root:CreateDivider()
-        Init_Out_Bag_Menu(frame, root, tabID, numIn)
-    end)
+    btn:SetupMenu(Init_Menu)
 end

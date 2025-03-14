@@ -6,6 +6,8 @@ WoWTools_GuildBankMixin.Save={
     showIndex=true,
     autoOpenBags=e.Player.husandro,--自动，打开背包
     plusOnlyOfficerAndLeader=true,
+
+    saveItemSeconds=0.8--保存，提取物品，延迟
 }
 
 

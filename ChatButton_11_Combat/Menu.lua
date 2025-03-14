@@ -23,7 +23,7 @@ local function Init_Menu(self, root)
         self:set_Click()
     end)
 
-    sub:CreateCheckbox((e.onlyChinese and '时间类型' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TIME_LABEL:gsub(':',''), TYPE))..' '.. SecondsToTime(35), function()
+    sub:CreateCheckbox((e.onlyChinese and '时间类型' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TIME_LABEL:gsub(HEADER_COLON,''), TYPE))..' '.. SecondsToTime(35), function()
         return Save().timeTypeText
     end, function()
         Save().timeTypeText= not Save().timeTypeText and true or nil
@@ -139,7 +139,10 @@ local function Init_Menu(self, root)
 
 --总游戏时间
     local tab=e.WoWDate[e.Player.guid].Time
-    sub=root:CreateCheckbox(e.onlyChinese and '总游戏时间'..((tab and tab.totalTime) and ': '..SecondsToTime(tab.totalTime) or '') or TIME_PLAYED_TOTAL:format((tab and tab.totalTime) and SecondsToTime(tab.totalTime) or ''), function()
+    sub=root:CreateCheckbox(
+        tab.totalTime and SecondsToTime(tab.totalTime)
+        or (e.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, '')),
+    function()
         return Save().AllOnlineTime
     end, function ()
         Save().AllOnlineTime = not Save().AllOnlineTime and true or nil
@@ -148,6 +151,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(e.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, ''))
         tooltip:AddLine(format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, ''))
     end)
 
@@ -170,6 +174,19 @@ local function Init_Menu(self, root)
         sub:CreateTitle((e.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll))
 
     end
+
+    root:CreateDivider()
+    sub=root:CreateButton(
+        '|T'..FRIENDS_TEXTURE_AFK..':0|t'
+        ..(UnitIsAFK('player') and '|cff9e9e9e' or '')
+        ..(e.onlyChinese and '暂离' or 'AFK'),
+    function()
+        WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine(SLASH_CHAT_AFK1)
+    end)
 end
 
 

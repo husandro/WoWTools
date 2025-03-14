@@ -217,7 +217,7 @@ local function Create_Button(index, tabID, slotID)
         end
         if ( IsModifiedClick("SPLITSTACK") ) then
             if ( not CursorHasItem() ) then
-                local texture, count, locked = GetGuildBankItemInfo(self.tabID, self:GetID())
+                local _, count, locked = GetGuildBankItemInfo(self.tabID, self:GetID())
                 if ( not locked and count and count > 1) then
                     StackSplitFrame:OpenStackSplitFrame(count, self, "BOTTOMLEFT", "TOPLEFT")
                 end

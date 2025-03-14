@@ -5429,7 +5429,10 @@
         "UNIT_POPUP_RIGHT_CLICK",
         "UnitFrame_UpdateTooltip",
         "SetLargeGuildTabardTexture",
-        "SetLargeGuildTabardTextures"
+        "SetLargeGuildTabardTextures",
+        "BUTTON_LAG_LOOT_TOOLTIP",
+        "REDUCED_LAG_TOLERANCE",
+        "LAG_TOLERANCE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

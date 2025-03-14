@@ -36,7 +36,7 @@ local function MENU_CONTAINER_FRAME(self, root)
         return MenuResponse.Close
     end, {bagID=bagID})
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(':', ''))
+        tooltip:AddLine(e.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
         tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_Mixin.addName)
     end)
 
@@ -62,7 +62,7 @@ local function MENU_CONTAINER_FRAME(self, root)
         return MenuResponse.Close
     end, {bagID=bagID})
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(':', ''))
+        tooltip:AddLine(e.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
         tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_Mixin.addName)
     end)
 end

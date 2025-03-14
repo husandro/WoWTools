@@ -133,7 +133,7 @@ local Tab={
             end
             text=text:gsub(' ', '')
             text= text:match('|cn(.+)') or text
-            text= text:gsub(':', '')
+            text= text:gsub(HEADER_COLON, '')
             text= string.upper(text)
             local color= _G[text:gsub("_CODE", '')] or _G[text]
 
