@@ -4,17 +4,7 @@ local MAX_GUILDBANK_SLOTS_PER_TAB= 96
 
 
 
---[[生成,物品列表
-local function Init_Button_List(isReagent)
-    if not isReagent  then
-        for index, classID in pairs({0, 1, 2, 3, 4, 5, 7, 8, 9, 12, 13, 15, 16, 17, 19}) do
-            
-        end
-    else
-        for index= 1, 19 do
-        end
-    end
-end]]
+
 
 
 
@@ -24,7 +14,7 @@ end]]
 
 
 --提取
-local function Check_Bank(tabID, slotID, classID, subClassID, onlyItem)
+local function Check_Bank_Item(tabID, slotID, classID, subClassID, onlyItem)
     local itemClassID, itemSubclassID, _, isCraftingReagent
     local itemLink= GetGuildBankItemLink(tabID, slotID)
     local locked, isFiltered = select(3, GetGuildBankItemInfo(tabID, slotID))
@@ -37,7 +27,7 @@ local function Check_Bank(tabID, slotID, classID, subClassID, onlyItem)
     if
         (classID==itemClassID or not classID)
         and (subClassID==subClassID or not subClassID)
-        and (onlyItem and not isCraftingReagent or not onlyItem)
+        and (isCraftingReagent and onlyItem==false or onlyItem)
 
     then
         return itemLink, itemClassID, itemSubclassID
@@ -81,7 +71,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
         local find
 
         for slotID= MAX_GUILDBANK_SLOTS_PER_TAB, 1, -1 do
-            local itemLink= Check_Bank(tabID, slotID, classID, subClassID, onlyItem)
+            local itemLink= Check_Bank_Item(tabID, slotID, classID, subClassID, onlyItem)
             if itemLink then
 
                 AutoStoreGuildBankItem(tabID, slotID)
@@ -121,11 +111,11 @@ end
 
 
 
-local function Get_Bank(tabID, classID, subClassID, onlyItem)
+local function Get_Bank_Num(tabID, classID, subClassID, onlyItem)
     local index=0
 
     for slotID= MAX_GUILDBANK_SLOTS_PER_TAB, 1, -1 do
-        if Check_Bank(tabID, slotID, classID, subClassID, onlyItem) then
+        if Check_Bank_Item(tabID, slotID, classID, subClassID, onlyItem) then
             index= index+ 1
         end
     end
@@ -139,28 +129,6 @@ end
 
 
 
---提取
---numOut 可提取：数字，true无限，false禁用
-local function Init_Out_Menu(self, root, tabID, numOut)
-    local sub
-
-    sub= root:CreateButton(
-        (e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
-        ..' #'..Get_Bank(tabID, nil, nil, true),
-    function(data)
-        Out_Bank(self, data.tabID, nil, true, data.numOut)
-    end, {tabID= tabID, numOut=numOut})
-    sub:SetEnabled(numOut)
-
-
-    sub= root:CreateButton(
-        (e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
-        ..' #'..Get_Bank(tabID, nil, nil, false),
-    function(data)
-        Out_Bank(self, data.tabID, nil, false, numOut)
-    end, {tabID=tabID, numOut=numOut})
-    sub:SetEnabled(numOut)
-end
 
 
 
@@ -194,11 +162,11 @@ end
 
 
 --存放
-local function Check_Bag(itemInfo, classID, subClassID, onlyItem)
+local function Check_Bag_Item(itemInfo, classID, subClassID, onlyItem)
     if not itemInfo or not itemInfo.itemID then
         return
     end
-    local itemClassID, itemSubClass= select(12, C_Item.GetItemInfo(itemInfo.itemID))
+    local itemClassID, itemSubclassID, _, _, _, isCraftingReagent = select(12, C_Item.GetItemInfo(itemInfo.itemID))
 
     if itemClassID
         and itemClassID ~= Enum.ItemClass.Questitem
@@ -206,10 +174,10 @@ local function Check_Bag(itemInfo, classID, subClassID, onlyItem)
         and not itemInfo.isLocked
         and not itemInfo.isBound
         and (classID==itemClassID or not classID)
-        and (subClassID== itemSubClass or not subClassID)
-        and (onlyItem and not select(17, C_Item.GetItemInfo(itemInfo.itemID)) or not onlyItem)
+        and (subClassID== itemSubclassID or not subClassID)
+        and (isCraftingReagent and onlyItem==false or onlyItem)
     then
-        return itemClassID, itemSubClass
+        return itemClassID, itemSubclassID
     end
 end
 
@@ -219,12 +187,8 @@ end
 
 
 
-
-
-
-
 --存放
-local function In_Bags(self, tabID, classID, subClassID, onlyItem)
+local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
     if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
         self.isInRun=true--停止，已运行
         return
@@ -242,7 +206,7 @@ local function In_Bags(self, tabID, classID, subClassID, onlyItem)
 
             itemInfo= C_Container.GetContainerItemInfo(bag, slot)
 
-            itemClassID, itemSubclassID= Check_Bag(itemInfo, classID, subClassID, onlyItem)
+            itemClassID, itemSubclassID= Check_Bag_Item(itemInfo, classID, subClassID, onlyItem)
 
             if itemClassID then
                 table.insert(items, {
@@ -325,15 +289,14 @@ end
 
 
 
-local function Get_Bag(classID, subClassID, onlyItem)
+
+
+local function Get_Bag_Num(classID, subClassID, onlyItem)
     local index= 0
 
     for bag =0, NUM_BAG_FRAMES+ (onlyItem and 0 or NUM_REAGENTBAG_FRAMES) do
         for slot = C_Container.GetContainerNumSlots(bag), 1, -1 do
-            if Check_Bag(C_Container.GetContainerItemInfo(bag, slot),
-                    classID, subClassID, onlyItem
-                )
-            then
+            if Check_Bag_Item(C_Container.GetContainerItemInfo(bag, slot), classID, subClassID, onlyItem) then
                 index= index+1
             end
         end
@@ -349,28 +312,133 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--生成,物品列表
+local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem)
+    local num
+--物品
+    if onlyItem  then
+        for _, classID in pairs({0, 1, 2, 3, 4, 5, 7, 8, 9, 12, 13, 15, 16, 17, 19}) do
+            num= isOut and Get_Bank_Num(tabID, classID, nil, onlyItem)
+                        or Get_Bag_Num(classID, nil, onlyItem)
+            root:CreateButton(
+                (num==0 and '|cff828282' or '')
+                ..(classID<10 and ' ' or '')
+                ..classID..' '
+                ..e.cn(C_Item.GetItemClassInfo(classID))
+                ..' #'..num,
+            function(data)
+                if isOut then--提取
+                    Out_Bank(self, tabID, data.classID, nil, onlyItem, numOutorIn)
+                else--存放
+                    Out_Bags(self, tabID, data.classID, nil, onlyItem)
+                end
+                
+            end, {classID=classID})
+        end
+    else
+--材料
+        for subClassID= 1, 19 do
+            num= isOut and Get_Bank_Num(tabID, 7, subClassID, onlyItem)
+                        or Get_Bag_Num(7, subClassID, onlyItem)
+            root:CreateButton(
+                (num==0 and '|cff828282' or '')
+                ..(subClassID<10 and ' ' or '')
+                ..subClassID..' '
+                ..e.cn(C_Item.GetItemSubClassInfo(7, subClassID))
+                ..' #'..num,
+            function(data)
+                if isOut then--提取
+                    Out_Bank(self, tabID, 7, data.subClassID, onlyItem, numOutorIn)
+                else--存放
+                    Out_Bags(self, tabID, 7, data.subClassID, onlyItem)
+                end
+            end, {subClassID=subClassID})
+        end
+    end
+end
+
+
+
+
+
+
+
+--提取
+--numOut 可提取：数字，true无限，false禁用
+local function Init_Out_Bank_Menu(self, root, tabID, numOut)
+    local sub
+
+    sub= root:CreateButton(
+        (e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
+        ..' #'..Get_Bank_Num(tabID, nil, nil, true),
+    function(data)
+        Out_Bank(self, data.tabID, nil, nil, true, data.numOut)
+    end, {tabID= tabID, numOut=numOut})
+    sub:SetEnabled(numOut)
+
+    Init_SubMenu(self, sub, tabID, true, numOut, true)
+
+
+
+    sub= root:CreateButton(
+        (e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
+        ..' #'..Get_Bank_Num(tabID, nil, nil, false),
+    function(data)
+        Out_Bank(self, data.tabID, nil, nil, false, numOut)
+    end, {tabID=tabID, numOut=numOut})
+    sub:SetEnabled(numOut)
+
+    Init_SubMenu(self, sub, tabID, true, numOut, false)
+end
+
+
+
+
+
+
+
 --存放
 --numIn 是否放入：true, false
-local function Init_In_Menu(self, root, tabID, numIn)
+local function Init_Out_Bag_Menu(self, root, tabID, numIn)
     local sub
 
     sub= root:CreateButton(
         (e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
-        ..' #'..Get_Bag(nil, nil, true),
+        ..' #'..Get_Bag_Num(nil, nil, true),
     function(data)
-        In_Bags(self, data.tabID, nil, true)
+        Out_Bags(self, data.tabID, nil, nil, true)
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
+
+    Init_SubMenu(self, sub, tabID, false, numIn, true)
 
     sub= root:CreateButton(
         (e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
-        ..' #'..Get_Bag(nil, nil, false),
+        ..' #'..Get_Bag_Num(nil, nil, false),
     function(data)
-        In_Bags(self, data.tabID, nil, false)
+        Out_Bags(self, data.tabID, nil, nil, false)
     end, {tabID= tabID})
     sub:SetEnabled(numIn)
 
+    Init_SubMenu(self, sub, tabID, false, numIn, false)
 end
+
+
 
 
 
@@ -404,9 +472,11 @@ function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
         local tabID= GetCurrentGuildBankTab()
         local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
 
-        Init_Out_Menu(frame, root, tabID, numOut)
+--物品
+        Init_Out_Bank_Menu(frame, root, tabID, numOut)
 
+--材料
         root:CreateDivider()
-        Init_In_Menu(frame, root, tabID, numIn)
+        Init_Out_Bag_Menu(frame, root, tabID, numIn)
     end)
 end

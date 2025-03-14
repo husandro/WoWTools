@@ -103,8 +103,8 @@ local function Init_Menu(self, root)
         name=e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
         minValue=0,
         maxValue=1,
-        step=0.1,
-        bit='%.1f',
+        step=0.05,
+        bit='%.2f',
         tooltip=function(tooltip)
             tooltip:AddLine(e.onlyChinese and '改变透明度' or CHANGE_OPACITY)
         end

@@ -2,7 +2,7 @@ local id, e = ...
 WoWTools_GuildBankMixin.Save={
     line=2,
     num=20,
-    --BgAplha=1,背景ALPHA
+    BgAplha=0.3,--背景ALPHA
     showIndex=true,
     autoOpenBags=e.Player.husandro,--自动，打开背包
     plusOnlyOfficerAndLeader=true,
@@ -69,7 +69,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_GuildBankMixin:Init_Guild_Texture()
             WoWTools_GuildBankMixin:Init_GuildMenu()
 
-            Init_Other()
+            Init_Other()--自动，打开背包 
         end
 
     elseif event == "PLAYER_LOGOUT" then
