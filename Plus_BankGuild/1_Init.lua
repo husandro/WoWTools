@@ -1,6 +1,6 @@
 local id, e = ...
 WoWTools_GuildBankMixin.Save={
-    line=2,
+    line=0,
     num=20,
     BgAplha=1,--背景ALPHA
     showIndex=true,
