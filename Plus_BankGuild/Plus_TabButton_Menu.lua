@@ -67,7 +67,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
         then
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
-            print(itemIndex..')', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '中断' or INTERRUPT  )
+            print(WoWTools_GuildBankMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '中断' or INTERRUPT  )
             return
         end
 
@@ -90,9 +90,9 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(itemIndex..')', '|cffff00ff'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '背包已满' or SPELL_FAILED_CUSTOM_ERROR_1059)
+                print(WoWTools_GuildBankMixin.addName, '|cffff00ff'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '背包已满' or SPELL_FAILED_CUSTOM_ERROR_1059)
             else
-                print(itemIndex..')', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '完成' or COMPLETE )
+                print(WoWTools_GuildBankMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '提取' or WITHDRAW)..'|r', e.onlyChinese and '完成' or COMPLETE )
             end
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil

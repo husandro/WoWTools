@@ -187,10 +187,14 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
 
     if isFunc then
         --WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
-        btn:SetScript('OnMouseDown', function(self)
-            MenuUtil.CreateContextMenu(self, function(...)
-                WoWTools_GuildBankMixin:Init_Button_Menu(...)
-            end)
+        btn:SetScript('OnMouseDown', function(self, d)
+            if d=='RightButton' then
+                MenuUtil.CreateContextMenu(self, function(...)
+                    WoWTools_GuildBankMixin:Init_Button_Menu(...)
+                end)
+            elseif d=='LeftButton' then
+                WoWTools_GuildBankMixin:Init_Plus_Sort(self)
+            end
         end)
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
@@ -198,7 +202,7 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
             e.tips:ClearLines()
             e.tips:AddLine(WoWTools_GuildBankMixin.addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
             e.tips:Show()
         end)
     else
