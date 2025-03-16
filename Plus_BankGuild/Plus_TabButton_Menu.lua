@@ -508,7 +508,7 @@ local function Init_Menu(self, root)
 
 --排序
     sub=root:CreateButton(
-        (numOut==0 and '|cff828282' or '')
+        ((numOut==0 or not WoWTools_GuildMixin:IsLeaderOrOfficer()) and '|cff828282' or '')
         ..'|A:bags-button-autosort-up:0:0|a'
         ..(rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
         ..(e.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL)

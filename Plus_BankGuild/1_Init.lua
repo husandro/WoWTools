@@ -17,7 +17,16 @@ WoWTools_GuildBankMixin.Save={
 
 
 
-local function Init_Other()
+local function Init()
+    if WoWTools_TextureMixin.Events.Blizzard_GuildBankUI then
+        WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
+        WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
+    end
+
+    WoWTools_GuildBankMixin:Init_Plus()
+    WoWTools_GuildBankMixin:Init_GuildMenu()
+    WoWTools_GuildBankMixin:Init_Plus_Sort()
+
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)
         if WoWTools_GuildBankMixin.Save.autoOpenBags then
@@ -68,17 +77,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_GuildBankUI' then
-
-            if WoWTools_TextureMixin.Events.Blizzard_GuildBankUI then
-                WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
-                WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
-            end
-
-            WoWTools_GuildBankMixin:Init_Plus()
-            WoWTools_GuildBankMixin:Init_GuildMenu()
-            WoWTools_GuildBankMixin:Init_Plus_Sort()
-
-            Init_Other()--自动，打开背包 
+            Init()
         end
 
     elseif event == "PLAYER_LOGOUT" then
