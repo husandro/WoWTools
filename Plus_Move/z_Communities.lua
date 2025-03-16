@@ -82,9 +82,6 @@ local function Init()
     local sub
 
 
-
-
-
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
@@ -172,92 +169,112 @@ local function Init()
 
 
 --信息，查看记录
-    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {setSize=true, notFuori=true, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {
+        setSize=true, notFuori=true,
+    sizeRestFunc=function(btn)
         btn.target:SetSize(384, 432)
     end})
 
 --公会信息， 点击以编辑
-    WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {setSize=true, notFuori=true,
-    initFunc=function()
-
-        CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
-        CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
-        
-        WoWTools_EditBoxMixn:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
-
-        hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
-            WoWTools_MoveMixin:Set_SizeScale(frame)
-            frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
-            --self.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", CommunitiesGuildTextEditFrame_OnAccept);
-        end)
-    end, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {
+        setSize=true, notFuori=true,
+    sizeRestFunc=function(btn)
         btn.target:SetSize(295, 295)
     end})
+    CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
+    CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
+    WoWTools_EditBoxMixn:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
+    hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
+        WoWTools_MoveMixin:Set_SizeScale(frame)
+        frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
+    end)
 
 --新建，公会, 签名
-    WoWTools_MoveMixin:Setup(PetitionFrame, {setSize=true, initFunc=function(btn)
-        PetitionFrame.Bg:SetPoint('BOTTOMRIGHT',-32,30)
-    end, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(PetitionFrame, {
+        setSize=true,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 424)
     end})
+    PetitionFrame.Bg:SetPoint('BOTTOMRIGHT',-32,30)
+
 --公会，可以使用的服务
     WoWTools_MoveMixin:Setup(GuildRegistrarFrame)
 
 
 
 
-    
+
 --设计，公会战袍
-    WoWTools_MoveMixin:Setup(TabardFrame, {setSize=true, initFunc=function()
-        TabardFrameCancelButton:ClearAllPoints()
-        TabardFrameCancelButton:SetPoint('BOTTOMRIGHT', -20, 8)
-        TabardFrameAcceptButton:ClearAllPoints()
-        TabardFrameAcceptButton:SetPoint('RIGHT', TabardFrameCancelButton, 'LEFT')
-        TabardFrameNameText:ClearAllPoints()
-        TabardFrameNameText:SetParent(TabardFrame.TitleContainer)
-        TabardFrameNameText:SetPoint('CENTER',TabardFrame.TitleContainer)
-        TabardFrameNameText:SetDrawLayer('BORDER', 7)
-
-        TabardFrameCostFrame:ClearAllPoints()
-        TabardFrameCostFrame:SetPoint('TOPRIGHT', -8, -60)
-
-        TabardFrameEmblemTopRight:ClearAllPoints()
-        TabardFrameEmblemTopRight:SetPoint('BOTTOMRIGHT', 0, 240)
-
-        TabardModel:SetPoint('TOPLEFT', 2, 0)
-        TabardModel:SetPoint('TOPRIGHT', -2, 0)
-        TabardModel:SetPoint('BOTTOM', TabardFrame, 'BOTTOM', 0, 2)
-
-        TabardModel:HookScript('OnMouseWheel', function(self, d)--ModelFrameMixin.lua
-            local rotationsPerSecond = ROTATIONS_PER_SECOND;
-            local elapsedTime= 0.05
-            if d==-1 then
-                self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
-                if ( self.rotation > (2 * PI) ) then
-                    self.rotation = self.rotation - (2 * PI);
-                end
-                self:SetRotation(self.rotation);
-
-            else
-                self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
-                if ( self.rotation < 0 ) then
-                    self.rotation = self.rotation + (2 * PI);
-                end
-                self:SetRotation(self.rotation);
-            end
-        end)
-    end, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(TabardFrame, {
+        setSize=true,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 424)
     end})
 
+    TabardFrameCancelButton:ClearAllPoints()
+    TabardFrameCancelButton:SetPoint('BOTTOMRIGHT', -20, 8)
+    TabardFrameAcceptButton:ClearAllPoints()
+    TabardFrameAcceptButton:SetPoint('RIGHT', TabardFrameCancelButton, 'LEFT')
+    TabardFrameNameText:ClearAllPoints()
+    TabardFrameNameText:SetParent(TabardFrame.TitleContainer)
+    TabardFrameNameText:SetPoint('CENTER',TabardFrame.TitleContainer)
+    TabardFrameNameText:SetDrawLayer('BORDER', 7)
+
+    TabardFrameCostFrame:ClearAllPoints()
+    TabardFrameCostFrame:SetPoint('TOPRIGHT', -8, -60)
+
+    TabardFrameEmblemTopRight:ClearAllPoints()
+    TabardFrameEmblemTopRight:SetPoint('BOTTOMRIGHT', 0, 240)
+
+    TabardModel:SetPoint('TOPLEFT', 2, 0)
+    TabardModel:SetPoint('TOPRIGHT', -2, 0)
+    TabardModel:SetPoint('BOTTOM', TabardFrame, 'BOTTOM', 0, 2)
+
+    TabardModel:HookScript('OnMouseWheel', function(self, d)--ModelFrameMixin.lua
+        local rotationsPerSecond = ROTATIONS_PER_SECOND;
+        local elapsedTime= 0.05
+        if d==-1 then
+            self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
+            if ( self.rotation > (2 * PI) ) then
+                self.rotation = self.rotation - (2 * PI);
+            end
+            self:SetRotation(self.rotation);
+
+        else
+            self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
+            if ( self.rotation < 0 ) then
+                self.rotation = self.rotation + (2 * PI);
+            end
+            self:SetRotation(self.rotation);
+        end
+    end)
+
+
 --公会设置
-    WoWTools_MoveMixin:Setup(GuildControlUI, {setSize=true, notFuori=true, initFunc=function()
-        GuildControlUIRankBankFrameInset:SetPoint('LEFT', 2, 0)
-        GuildControlUIRankBankFrameInset:SetPoint('BOTTOMRIGHT', -2, 2)
-    end, sizeRestFunc=function(btn)
+    WoWTools_MoveMixin:Setup(GuildControlUI, {
+        setSize=true, notFuori=true,
+    sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 444)
     end})
+    GuildControlUIRankBankFrameInset:SetPoint('LEFT', 2, 0)
+    GuildControlUIRankBankFrameInset:SetPoint('BOTTOMRIGHT', -2, 2)
+
+--社区设置
+--[[修改，图标
+    WoWTools_MoveMixin:Setup(CommunitiesAvatarPickerDialog, {
+        setSize=true, notFuori=true,
+    sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(510, 480)
+    end})]]
 end
+
+
+
+
+
+
+
+
 
 
 

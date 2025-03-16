@@ -168,8 +168,6 @@ end
 
 
 
-
-
 function WoWTools_TextureMixin:Edit_Text_Icon(frame, tab)
     if not IconFrame then
         Create_IconSelectorPopupFrame()

@@ -5441,7 +5441,13 @@
         "CommunitiesGuildTextEditFrameBg",
         "CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame",
         "WoWTools_TextureMixin",
-        "AUCTION_HOUSE_REFRESH_BUTTON_TOOLTIP"
+        "AUCTION_HOUSE_REFRESH_BUTTON_TOOLTIP",
+        "COMMUNITIES_CREATE_DIALOG_DESCRIPTION_INSTRUCTIONS",
+        "COMMUNITIES_CREATE_DIALOG_DESCRIPTION_INSTRUCTIONS_BATTLE_NET",
+        "COMMUNITIES_INVITATION_FRAME_TYPE",
+        "CLUB_FINDER_COMMUNITY_TYPE",
+        "COMMUNITIES",
+        "CommunitiesAvatarPickerDialog"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

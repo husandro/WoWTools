@@ -19,11 +19,59 @@ local function Init(self)
 
     local find, itemLink, itemQuality, itemTexture, classID, subclassID
     local isRightToLeft= C_Container.GetSortBagsRightToLeft()
+
     local items = {}
 
-    local function sortItems()
-        items = {}
+    
 
+    for slot = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
+        itemLink = GetGuildBankItemLink(currentIndex, slot)
+        if itemLink then
+            _, _, itemQuality, _, _, _, _, _, _, itemTexture, _, classID, subclassID, _, _, _, _= C_Item.GetItemInfo(itemLink)
+            table.insert(items, {
+                slot = slot,
+                link = itemLink,
+                icon= itemTexture,
+                rarity = itemQuality,
+                type = classID,
+                subType = subclassID,
+            })
+        end
+    end
+
+    if #items==0 then
+        self.isInRun= nil
+        WoWTools_GuildBankMixin.isInRun= nil
+        print(
+            WoWTools_GuildBankMixin.addName,
+            '|cffff00ff'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
+            e.onlyChinese and '中断' or INTERRUPT
+        )
+        return
+    end
+
+    table.sort(items, function(a, b)
+        if a.type == b.type then
+            if a.subType == b.subType then
+                if a.rarity == b.rarity then
+                    return a.icon < b.icon
+                else
+                    return a.rarity > b.rarity
+                end
+            else
+                return a.subType < b.subType
+            end
+        else
+            return a.type < b.type
+        end
+    end)
+
+    for indexSlot, item in pairs(items) do
+        item.indexSlot= isRightToLeft and MAX_GUILDBANK_SLOTS_PER_TAB-indexSlot+1 or indexSlot
+    end
+
+
+    local function sortItems()
         if
             not self:IsVisible()
             or self.isInRun
@@ -40,70 +88,14 @@ local function Init(self)
             return
         end
 
-        for slot = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
-            itemLink = GetGuildBankItemLink(currentIndex, slot)
-            if itemLink then
-                _, _, itemQuality, _, _, _, _, _, _, itemTexture, _, classID, subclassID, _, _, _, _= C_Item.GetItemInfo(itemLink)
-            -- itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subClassID = C_Item.GetItemInfoInstant(itemLink)
-                table.insert(items, {
-
-                    slot = slot,
-                    link = itemLink,
-                    --id = C_Item.GetItemInfoInstant(itemLink),
-                    icon= itemTexture,
-                    rarity = itemQuality,
-                    type = classID,
-                    subType = subclassID,
-                })
-            end
-        end
-
-        if #items==0 then
-            self.isInRun= nil
-                WoWTools_GuildBankMixin.isInRun= nil
-                print(
-                    WoWTools_GuildBankMixin.addName,
-                    '|cffff00ff'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
-                    e.onlyChinese and '中断' or INTERRUPT
-                )
-            return
-        end
-
-        table.sort(items, function(a, b)
-            if a.type == b.type then
-                if a.subType == b.subType then
-                    if a.rarity == b.rarity then
-                        return a.icon < b.icon
-                    else
-                        return a.rarity > b.rarity
-                    end
-                else
-                    return a.subType < b.subType
-                end
-            else
-                return a.type < b.type
-            end
-        end)
-
-        for indexSlot, item in pairs(items) do
-            item.indexSlot= isRightToLeft and MAX_GUILDBANK_SLOTS_PER_TAB-indexSlot+1 or indexSlot
-        end
-
-
-
-
         find=false
         for _, item in pairs(items) do
-
             if item.slot ~= item.indexSlot and GetGuildBankItemLink(currentIndex, item.indexSlot)~=item.link then
-
                 PickupGuildBankItem(currentIndex, item.slot)
                 PickupGuildBankItem(currentIndex, item.indexSlot)
-
                 item.slot= item.indexSlot
-
                 find=true
-                print(item.indexSlot..')', item.link)
+                print(item.indexSlot, item.link)
                 break
             end
         end

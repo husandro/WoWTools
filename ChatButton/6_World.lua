@@ -104,7 +104,7 @@ end
 
 
 
-local function Set_LeftClick_Tooltip(name, channelNumber, texture)--设置点击提示,频道字符
+local function Set_LeftClick_Tooltip(name, channelNumber, texture, clubInfo)--设置点击提示,频道字符
     WorldButton.channelNumber=channelNumber
     WorldButton.channelName=name
 
@@ -118,7 +118,11 @@ local function Set_LeftClick_Tooltip(name, channelNumber, texture)--设置点击
     if name == Save.world then
         WorldButton.texture:SetAtlas('WildBattlePet')
     elseif texture then
-        WorldButton.texture:SetTexture(texture)
+        if clubInfo and clubInfo.clubId then
+            C_Club.SetAvatarTexture(WorldButton.texture, clubInfo.avatarId, clubInfo.clubType)
+        else
+            WorldButton.texture:SetTexture(texture)
+        end
     else
         WorldButton.texture:SetAtlas('128-Store-Main')
     end
@@ -888,7 +892,7 @@ local function Add_Menu(root, name, channelNumber)
     if clubId then
         WoWTools_Mixin:Load({id=clubId, type='club'})
     end
-    local communityName, communityTexture
+    local communityName, communityTexture, clubType
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
 
@@ -901,8 +905,8 @@ local function Add_Menu(root, name, channelNumber)
             end
         end
 
-        text=('|T'..(clubInfo.avatarId or 0)..':0|t')
-            ..'|cffff7f00'
+        text=('|T'..(clubInfo.avatarId==1 and 0 or clubInfo.avatarId or 0)..':0|t')
+            ..(clubInfo.clubType == Enum.ClubType.BattleNet and '|cff00ccff' or '|cffff8000')
             ..(clubInfo.shortName or clubInfo.name)
             ..' '.. (online..'/'..#members)
 
@@ -911,6 +915,7 @@ local function Add_Menu(root, name, channelNumber)
         communityName=clubInfo.shortName or clubInfo.name
         communityTexture=clubInfo.avatarId
     end
+
     text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
 
     local sub=root:CreateCheckbox(
@@ -923,7 +928,8 @@ local function Add_Menu(root, name, channelNumber)
         Set_LeftClick_Tooltip(--设置点击提示,频道字符
             data.communityName or data.name,
             data.channelNumber,
-            data.texture
+            data.texture,
+            data.clubInfo
         )
 
     end, {
@@ -932,23 +938,39 @@ local function Add_Menu(root, name, channelNumber)
         communityName=communityName,
         channelNumber= channelNumber,
         clubId= clubId,
+        clubInfo= clubInfo,
     })
+    --self.Description.EditBox.Instructions:SetText(self.clubType == Enum.ClubType.BattleNet and COMMUNITIES_CREATE_DIALOG_DESCRIPTION_INSTRUCTIONS_BATTLE_NET or COMMUNITIES_CREATE_DIALOG_DESCRIPTION_INSTRUCTIONS);
 
-
-    sub:SetTooltip(function(tooltip, description)
-        --tooltip:AddDoubleLine('Alt+'..e.Icon.left, e.onlyChinese and '屏蔽' or IGNORE)
-        --tooltip:AddLine(' ')
-        local value= Check_Channel(description.data.name)
+    sub:SetTooltip(function(tooltip, desc)
+        local value= Check_Channel(desc.data.name)
+        local t
         if value==0 then--不存在
-            tooltip:AddLine(Get_Channel_Color(nil, 0)..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE))
+            t= Get_Channel_Color(nil, 0)..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)
         elseif value==1 then
-            tooltip:AddLine(e.onlyChinese and '已加入' or CLUB_FINDER_JOINED)
+            t= e.onlyChinese and '已加入' or CLUB_FINDER_JOINED
         elseif value==2 then--屏蔽
-            tooltip:AddLine(Get_Channel_Color(name, 2)..(e.onlyChinese and '已屏蔽' or IGNORED))
+            t= Get_Channel_Color(name, 2)..(e.onlyChinese and '已屏蔽' or IGNORED)
         end
-        if description.data.clubId then
-            tooltip:AddLine(' ')
-            tooltip:AddLine('clubId '..description.data.clubId)
+
+        local club= desc.data.clubInfo
+
+        if club and club.clubId then
+            local isNet=  club.clubType == Enum.ClubType.BattleNet
+            tooltip:AddLine(club.name, club.shortName)
+            local col= isNet and '|cff00ccff' or '|cffff8000'
+            tooltip:AddDoubleLine(
+                t and col..t,
+                col
+                ..(
+                    isNet
+                    and (e.onlyChinese and '暴雪群组' or COMMUNITIES_INVITATION_FRAME_TYPE)
+                    or (e.onlyChinese and '社区' or CLUB_FINDER_COMMUNITY_TYPE)
+                )
+            )
+            tooltip:AddDoubleLine('clubId', club.clubId)
+        elseif t then
+            tooltip:AddLine(t)
         end
     end)
 
@@ -1137,7 +1159,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            
+
             Save= WoWToolsSave['ChatButtonWorldChannel'] or Save
             Save.myChatFilterPlayers= Save.myChatFilterPlayers or {}
             Save.userChatFilterTab= Save.userChatFilterTab or {}

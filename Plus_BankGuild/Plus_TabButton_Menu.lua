@@ -245,7 +245,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
             or self.isInRun
             or GetCurrentGuildBankTab()~= tabID
         then
-            print(itemIndex..')', '|cnRED_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '中断' or INTERRUPT  )
+            print(itemIndex, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '中断' or INTERRUPT  )
             self.isInRun=nil
             WoWTools_GuildBankMixin.isInRun= nil
             return
@@ -266,9 +266,9 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(itemIndex..')', '|cffff00ff'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '你的银行已满' or ERR_BANK_FULL )
+                print(itemIndex, '|cffff00ff'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '你的银行已满' or ERR_BANK_FULL )
             else
-                print(itemIndex..')', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '完成' or COMPLETE )
+                print(itemIndex, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '存放' or DEPOSIT)..'|r', e.onlyChinese and '完成' or COMPLETE )
             end
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
@@ -504,12 +504,14 @@ local function Init_Menu(self, root)
     local tabID= GetCurrentGuildBankTab()
     local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
     local sub, sub2, name, icon
+    local rightToleft= C_Container.GetSortBagsRightToLeft()
 
 --排序
     sub=root:CreateButton(
         (numOut==0 and '|cff828282' or '')
         ..'|A:bags-button-autosort-up:0:0|a'
-        ..(e.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL),
+        ..(e.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL)
+        ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or '|A:common-icon-rotateright:0:0|a'),
     function()
         WoWTools_GuildBankMixin:Init_Plus_Sort(self)
         return MenuResponse.Close
@@ -517,12 +519,14 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 
     sub2= sub:CreateCheckbox(
-        e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
+        (rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
+        ..(e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT)
+        ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or ''),
     function()
         return C_Container.GetSortBagsRightToLeft()
     end, function()
         C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft())
-        return MenuResponse.Close
+        return MenuResponse.CloseAll
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetSortBagsRightToLeft')

@@ -10,6 +10,7 @@ local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 local Buttons={}--新建按钮
 local MainButtons={}--自带按钮
 local NumLeftButton=0
+local PickupGuildBankItemTabID--刷新用
 
 local function Click_Tab(self)
     --if self.tabID~=GetCurrentGuildBankTab() then
@@ -196,6 +197,7 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
         end)
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
+            QueryGuildBankTab(GetCurrentGuildBankTab())
             e.tips:SetOwner(self, "ANCHOR_LEFT")
             e.tips:ClearLines()
             e.tips:AddLine(WoWTools_GuildBankMixin.addName)
@@ -259,6 +261,8 @@ local function Create_Button(index, tabID, slotID)
 
         SetItemButtonQuality(self, quality, GetGuildBankItemLink(tab, slot))
     end
+
+
 
     local one= slotID==1
 
@@ -618,6 +622,7 @@ local function Init()
         btn.isCurrent=true
 
         Create_IndexLabel(btn, false)
+
         if slotID==1 then
             Create_SortButton(btn, true)
         end
@@ -626,8 +631,33 @@ local function Init()
                 GuildBankFrame.Column1.Button1.SortButton.isInRun=true--停止，已运行
             end
         end)
+
+--刷新用
+        btn:HookScript('OnClick', function()
+            if PickupGuildBankItemTabID and PickupGuildBankItemTabID~=GetCurrentGuildBankTab() then
+                QueryGuildBankTab(PickupGuildBankItemTabID)
+            end
+            PickupGuildBankItemTabID= GetCurrentGuildBankTab()
+        end)
+
+        btn:HookScript('OnDragStart', function()
+            PickupGuildBankItemTabID= GetCursorInfo() == "item" and GetCurrentGuildBankTab() or nil
+        end)
+        btn:HookScript('OnReceiveDrag', function()
+            if PickupGuildBankItemTabID and PickupGuildBankItemTabID~=GetCurrentGuildBankTab() then
+                QueryGuildBankTab(PickupGuildBankItemTabID)
+            end
+            PickupGuildBankItemTabID= nil
+        end)
     end
 
+    C_Timer.After(1, function()
+        GuildBankFrame:HookScript('OnShow', function()
+            for tabID=1, MAX_GUILDBANK_TABS do
+                QueryGuildBankTab(tabID)
+            end
+        end)
+    end)
 
 --右边标签，提示
     for tabID=1, MAX_GUILDBANK_TABS do--MAX_GUILDBANK_TABS
