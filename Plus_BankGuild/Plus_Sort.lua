@@ -14,7 +14,7 @@ local function Init(self)
 
     WoWTools_GuildBankMixin.isInRun= true
 
-    local saveItemSeconds= math.min(Save().saveItemSeconds or 1, 1)
+    local saveItemSeconds= (Save().saveItemSeconds or 0.8)+0.2
     local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
 
     local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expansionID, setID, isCraftingReagent

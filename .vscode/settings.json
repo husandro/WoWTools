@@ -5439,7 +5439,8 @@
         "CommunitiesFrameGuildDetailsFrameInfoBar2Left",
         "CommunitiesGuildTextEditFrame",
         "CommunitiesGuildTextEditFrameBg",
-        "CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame"
+        "CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame",
+        "WoWTools_TextureMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

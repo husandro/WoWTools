@@ -12,11 +12,13 @@ local MainButtons={}--自带按钮
 local NumLeftButton=0
 
 local function Click_Tab(self)
-    local btn =GuildBankFrame.BankTabs[self.tabID]-- _G['GuildBankTab'..self.tabID]
-    if btn then
-        btn:OnClick('LeftButton')
-    else
-        SetCurrentGuildBankTab(self.tabID)
+    if self.tabID~=GetCurrentGuildBankTab() then
+        local btn = GuildBankFrame.BankTabs[self.tabID]-- _G['GuildBankTab'..self.tabID]
+        if btn then
+            btn:OnClick('LeftButton')
+        else
+            SetCurrentGuildBankTab(self.tabID)
+        end
     end
 end
 
