@@ -18,7 +18,7 @@ local function Init(self)
     local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
 
     local find, itemLink, itemQuality, itemTexture, classID, subclassID
-    local isRightToLeft= C_Container.GetSortBagsRightToLeft()
+    local isRightToLeft= Save().sortRightToLeft
 
     local items = {}
 

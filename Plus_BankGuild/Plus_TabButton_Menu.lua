@@ -504,14 +504,15 @@ local function Init_Menu(self, root)
     local tabID= GetCurrentGuildBankTab()
     local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
     local sub, sub2, name, icon
-    local rightToleft= C_Container.GetSortBagsRightToLeft()
+    local rightToleft= Save().sortRightToLeft
 
 --排序
     sub=root:CreateButton(
         (numOut==0 and '|cff828282' or '')
         ..'|A:bags-button-autosort-up:0:0|a'
+        ..(rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
         ..(e.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL)
-        ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or '|A:common-icon-rotateright:0:0|a'),
+        ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or ''),
     function()
         WoWTools_GuildBankMixin:Init_Plus_Sort(self)
         return MenuResponse.Close
@@ -520,18 +521,15 @@ local function Init_Menu(self, root)
 
     sub2= sub:CreateCheckbox(
         (rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
-        ..(e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT)
+        ..(e.onlyChinese and '反向整理公会仓库' or REVERSE_CLEAN_UP_BAGS_TEXT:gsub(HUD_EDIT_MODE_BAGS_LABEL, GUILD_BANK))
         ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or ''),
     function()
-        return C_Container.GetSortBagsRightToLeft()
+        return Save().sortRightToLeft
     end, function()
-        C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft())
+        Save().sortRightToLeft= not Save().sortRightToLeft and true or nil
         return MenuResponse.CloseAll
     end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('C_Container.SetSortBagsRightToLeft')
-    end)
-
+     
 --物品
     Init_Out_Bank_Menu(self, root, tabID, numOut)
 
