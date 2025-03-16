@@ -16,19 +16,18 @@ local MAX_GUILDBANK_SLOTS_PER_TAB= 96
 
 --提取
 local function Check_Bank_Item(tabID, slotID, classID, subClassID, onlyItem)
-    local itemClassID, itemSubclassID, _, isCraftingReagent
     local itemLink= GetGuildBankItemLink(tabID, slotID)
     local locked, isFiltered = select(3, GetGuildBankItemInfo(tabID, slotID))
+
     if locked or isFiltered or not itemLink then
         return
     end
 
-    itemClassID, itemSubclassID, _, _, _, isCraftingReagent = select(12, C_Item.GetItemInfo(itemLink))
-
+    local itemClassID, itemSubclassID, _, _, _, isCraftingReagent = select(12, C_Item.GetItemInfo(itemLink))
     if
         (classID==itemClassID or not classID)
         and (subClassID==itemSubclassID or not subClassID)
-        and (isCraftingReagent and onlyItem==false or onlyItem)
+        and ((isCraftingReagent and onlyItem==false) or (onlyItem and not isCraftingReagent))
 
     then
         return itemLink, itemClassID, itemSubclassID
@@ -117,7 +116,7 @@ end
 local function Get_Bank_Num(tabID, classID, subClassID, onlyItem)
     local index=0
 
-    for slotID= MAX_GUILDBANK_SLOTS_PER_TAB, 1, -1 do
+    for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
         if Check_Bank_Item(tabID, slotID, classID, subClassID, onlyItem) then
             index= index+ 1
         end
@@ -178,7 +177,7 @@ local function Check_Bag_Item(itemInfo, classID, subClassID, onlyItem)
         and not itemInfo.isBound
         and (classID==itemClassID or not classID)
         and (subClassID== itemSubclassID or not subClassID)
-        and (isCraftingReagent and onlyItem==false or onlyItem)
+        and ((isCraftingReagent and onlyItem==false) or (onlyItem and not isCraftingReagent))
     then
         return itemClassID, itemSubclassID
     end
@@ -407,7 +406,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, true, numOut, true, name)
     end
-
+        
 --提取材料
     num= Get_Bank_Num(tabID, nil, nil, false)
     name= ((disabled or num==0) and '|cff828282' or '')
@@ -501,6 +500,13 @@ local function Init_Menu(self, root)
     local tabID= GetCurrentGuildBankTab()
     local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
     local sub, name, icon
+
+    root:CreateButton(
+        e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL,
+    function()
+        WoWTools_GuildBankMixin:Init_Plus_Sort(self)
+    end)
+    root:CreateDivider()
 
 --物品
     Init_Out_Bank_Menu(self, root, tabID, numOut)

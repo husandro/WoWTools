@@ -12,13 +12,12 @@ local MainButtons={}--自带按钮
 local NumLeftButton=0
 
 local function Click_Tab(self)
-    if self.tabID~=GetCurrentGuildBankTab() then
-        local btn = GuildBankFrame.BankTabs[self.tabID]-- _G['GuildBankTab'..self.tabID]
-        if btn then
-            btn:OnClick('LeftButton')
-        else
-            SetCurrentGuildBankTab(self.tabID)
-        end
+    --if self.tabID~=GetCurrentGuildBankTab() then
+    local btn = GuildBankFrame.BankTabs[self.tabID]-- _G['GuildBankTab'..self.tabID]
+    if btn then
+        btn:OnClick('LeftButton')
+    else
+        SetCurrentGuildBankTab(self.tabID)
     end
 end
 
@@ -178,9 +177,9 @@ end
 local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLeaderOrOfficer() then--会长或官员
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         --isMenu= true,
-        atlas='Cursor_OpenHand_32',
+        --atlas='Cursor_OpenHand_32',
         size=23,
-        --template='BankAutoSortButtonTemplate',
+        template='BankAutoSortButtonTemplate',
     })
     btn:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0,0)
 
@@ -189,14 +188,10 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
 
     if isFunc then
         --WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
-        btn:SetScript('OnMouseDown', function(self, d)
-            if d=='RightButton' then
-                MenuUtil.CreateContextMenu(self, function(...)
-                    WoWTools_GuildBankMixin:Init_Button_Menu(...)
-                end)
-            elseif d=='LeftButton' then
-                WoWTools_GuildBankMixin:Init_Plus_Sort(self)
-            end
+        btn:SetScript('OnMouseDown', function(self)
+            MenuUtil.CreateContextMenu(self, function(...)
+                WoWTools_GuildBankMixin:Init_Button_Menu(...)
+            end)
         end)
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
@@ -204,9 +199,10 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
             e.tips:ClearLines()
             e.tips:AddLine(WoWTools_GuildBankMixin.addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
             e.tips:Show()
         end)
+        frame.SortButton= btn
     else
         btn:SetScript('OnEnter', function(self)
             if not WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
@@ -624,6 +620,11 @@ local function Init()
         if slotID==1 then
             Create_SortButton(btn, true)
         end
+        btn:HookScript('OnMouseDown', function()
+            if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
+                GuildBankFrame.Column1.Button1.SortButton.isInRun=true--停止，已运行
+            end
+        end)
     end
 
 
