@@ -6,7 +6,7 @@ end
 
 local function set_size(frame)
     local self= frame:GetParent()
-        if not self.ResizeButton then
+    if not self.ResizeButton or (frame:IsProtected() and InCombatLockdown()) or issecure() then
         return
     end
     local size, scale
@@ -35,7 +35,7 @@ end
 
 
 local function Init_Update(frame)
-    if not frame:GetView() then
+    if not frame:GetView() or (frame:IsProtected() and InCombatLockdown()) or issecure() then
         return
     end
     for _, btn in pairs(frame:GetFrames() or {}) do

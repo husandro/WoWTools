@@ -892,7 +892,7 @@ local function Add_Menu(root, name, channelNumber)
     if clubId then
         WoWTools_Mixin:Load({id=clubId, type='club'})
     end
-    local communityName, communityTexture, clubType
+    local communityName, communityTexture
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
 
@@ -908,7 +908,8 @@ local function Add_Menu(root, name, channelNumber)
         text=('|T'..(clubInfo.avatarId==1 and 0 or clubInfo.avatarId or 0)..':0|t')
             ..(clubInfo.clubType == Enum.ClubType.BattleNet and '|cff00ccff' or '|cffff8000')
             ..(clubInfo.shortName or clubInfo.name)
-            ..' '.. (online..'/'..#members)
+            ..(clubInfo.favoriteTimeStamp and '|A:recipetoast-icon-star:0:0|a' or ' ')
+            ..(online..'/'..#members)
 
 
 
@@ -968,6 +969,7 @@ local function Add_Menu(root, name, channelNumber)
                     or (e.onlyChinese and '社区' or CLUB_FINDER_COMMUNITY_TYPE)
                 )
             )
+            tooltip:AddLine(club.description, nil, nil, nil, true)
             tooltip:AddDoubleLine('clubId', club.clubId)
         elseif t then
             tooltip:AddLine(t)

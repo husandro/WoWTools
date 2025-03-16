@@ -5447,7 +5447,10 @@
         "COMMUNITIES_INVITATION_FRAME_TYPE",
         "CLUB_FINDER_COMMUNITY_TYPE",
         "COMMUNITIES",
-        "CommunitiesAvatarPickerDialog"
+        "CommunitiesAvatarPickerDialog",
+        "ClubFinderGetCurrentClubListingInfo",
+        "GetClubFinderLink",
+        "ERROR_CLUB_ACTION_INVITE_MEMBER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

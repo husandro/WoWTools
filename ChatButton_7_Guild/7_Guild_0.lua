@@ -3,6 +3,8 @@ local id, e = ...
 
 WoWTools_GuildMixin.Save={
     --disabledPetitionTarget=true,新建，自动要求签名目标
+    --guildInfo=true,公会信息
+    --showNotOnLine=true,
 }
 
 
@@ -19,10 +21,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             local addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(e.onlyChinese and '公会' or GUILD)
             WoWTools_GuildMixin.addName= addName
-
-            WoWTools_GuildMixin:Init_Button()
-
-            if WoWTools_GuildMixin.GuildButton then--禁用Chat Button
+           
+            if WoWTools_GuildMixin:Init_Button() then--禁用Chat Button
                 WoWTools_GuildMixin:Init_ClubFinder()
                 WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
                 WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus

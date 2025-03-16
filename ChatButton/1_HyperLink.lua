@@ -511,9 +511,24 @@ local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
 end
 
 
+--[[
+Guild Finder (8.2.5) invite link.
+clubFinder : clubFinderId
+Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
+See also: GetClubFinderLink()
+|HclubFinder:ClubFinder-1-6991-3299-447003|h[公会: Test Guild]|h'
 
-
-
+local function ClubFinder(text)--社区
+    local clubFinderGUID= text:match('|HclubFinder:(.-)|h[')
+    
+    local clubInfo = clubFinderGUID and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(clubFinderGUID)
+    print(text, clubInfo, clubFinderGUID)
+    if clubInfo then
+        info= clubFinderGUID
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+    end
+end
+]]
 
 
 
@@ -553,6 +568,9 @@ local function setAddMessageFunc(self, s, ...)
     s=s:gsub('|HdungeonScore:.-]|h', DungeonScore)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
+
+--社区 Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
+   -- s=s:gsub('|HclubFinder:-]|h', ClubFinder)
 
     s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
 

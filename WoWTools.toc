@@ -591,8 +591,8 @@ ChatButton\6_World.lua
 
 ##公会
 ChatButton_7_Guild\0_GuildMixin.lua
-ChatButton_7_Guild\7_Guild_Init.lua
-ChatButton_7_Guild\Button.lua
+ChatButton_7_Guild\7_Guild_0.lua
+ChatButton_7_Guild\Button_Init.lua
 ChatButton_7_Guild\Button_Menu.lua
 ChatButton_7_Guild\z_ClubFinder.lua
 ChatButton_7_Guild\z_CommunitiesFrame.lua
