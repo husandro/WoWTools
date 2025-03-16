@@ -97,7 +97,7 @@ local function Init_Menu(self, root)
 
         for index=1, total, 1 do
             local name, _, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-            if name and guid and (isOnline or showNotOnLine) then-- and guid~=e.Player.guid then
+            if name and guid and (isOnline or showNotOnLine) and guid~=e.Player.guid then
 
                 text= status==1 and format('|T%s:0|t', FRIENDS_TEXTURE_AFK)
                     or (status==2 and format('|T%s:0|t', FRIENDS_TEXTURE_DND))
