@@ -2,7 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_GuildBankMixin.Save
 end
-local MAX_GUILDBANK_SLOTS_PER_TAB= 96
+local MAX_GUILDBANK_SLOTS_PER_TAB= 98
 
 
 
@@ -393,6 +393,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
 --提取物品
     num= Get_Bank_Num(tabID, nil, nil, true)
     name= ((disabled or num==0) and '|cff828282' or '')
+        ..'|A:Cursor_OpenHand_32:0:0|a'
         ..(e.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
         ..' #'..num
     sub= root:CreateButton(
@@ -410,6 +411,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
 --提取材料
     num= Get_Bank_Num(tabID, nil, nil, false)
     name= ((disabled or num==0) and '|cff828282' or '')
+        ..'|A:Cursor_OpenHand_32:0:0|a'
         ..(e.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
         ..' #'..num
     sub= root:CreateButton(
@@ -440,6 +442,7 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
 --存放物品
     num= Get_Bag_Num(nil, nil, true)
     name= ((disabled or num==0) and '|cff828282' or '')
+        ..'|A:Banker:0:0|a'
         ..(e.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
         ..' #'..num
     sub= root:CreateButton(
@@ -457,6 +460,7 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
 --存放材料
     num= Get_Bag_Num(nil, nil, false)
     name= ((disabled or num==0) and '|cff828282' or '')
+        ..'|A:Banker:0:0|a'
         ..(e.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
         ..' #'..num
     sub= root:CreateButton(
@@ -499,14 +503,30 @@ local function Init_Menu(self, root)
 
     local tabID= GetCurrentGuildBankTab()
     local numOut, numIn= WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
-    local sub, name, icon
+    local sub, sub2, name, icon
 
-    root:CreateButton(
-        e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL,
+--排序
+    sub=root:CreateButton(
+        (numOut==0 and '|cff828282' or '')
+        ..'|A:bags-button-autosort-up:0:0|a'
+        ..(e.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL),
     function()
         WoWTools_GuildBankMixin:Init_Plus_Sort(self)
+        return MenuResponse.Close
     end)
     root:CreateDivider()
+
+    sub2= sub:CreateCheckbox(
+        e.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
+    function()
+        return C_Container.GetSortBagsRightToLeft()
+    end, function()
+        C_Container.SetSortBagsRightToLeft(not C_Container.GetSortBagsRightToLeft())
+        return MenuResponse.Close
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('C_Container.SetSortBagsRightToLeft')
+    end)
 
 --物品
     Init_Out_Bank_Menu(self, root, tabID, numOut)

@@ -14,6 +14,7 @@ local NumLeftButton=0
 local function Click_Tab(self)
     --if self.tabID~=GetCurrentGuildBankTab() then
     local btn = GuildBankFrame.BankTabs[self.tabID]-- _G['GuildBankTab'..self.tabID]
+    --QueryGuildBankTab(self.tabID)
     if btn then
         btn:OnClick('LeftButton')
     else
@@ -199,7 +200,7 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
             e.tips:ClearLines()
             e.tips:AddLine(WoWTools_GuildBankMixin.addName)
             e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+            e.tips:AddLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             e.tips:Show()
         end)
         frame.SortButton= btn

@@ -2,7 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_GuildBankMixin.Save
 end
-local MAX_GUILDBANK_SLOTS_PER_TAB= 96
+local MAX_GUILDBANK_SLOTS_PER_TAB= 98
 
 
 
@@ -17,8 +17,8 @@ local function Init(self)
     local saveItemSeconds= (Save().saveItemSeconds or 0.8)+0.2
     local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
 
-    local find, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, sellPrice, classID, subclassID, bindType, expansionID, setID, isCraftingReagent
-    --local itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subClassID, itemLink
+    local find, itemLink, itemQuality, itemTexture, classID, subclassID
+    local isRightToLeft= C_Container.GetSortBagsRightToLeft()
     local items = {}
 
     local function sortItems()
@@ -43,13 +43,14 @@ local function Init(self)
         for slot = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
             itemLink = GetGuildBankItemLink(currentIndex, slot)
             if itemLink then
-                _, _, itemQuality, _, _, itemType, itemSubType, _, _, itemTexture, _, classID, subclassID, _, expansionID, _, isCraftingReagent= C_Item.GetItemInfo(itemLink)
+                _, _, itemQuality, _, _, _, _, _, _, itemTexture, _, classID, subclassID, _, _, _, _= C_Item.GetItemInfo(itemLink)
             -- itemID, itemType, itemSubType, itemEquipLoc, icon, classID, subClassID = C_Item.GetItemInfoInstant(itemLink)
                 table.insert(items, {
 
                     slot = slot,
                     link = itemLink,
-                    id = C_Item.GetItemInfoInstant(itemLink),
+                    --id = C_Item.GetItemInfoInstant(itemLink),
+                    icon= itemTexture,
                     rarity = itemQuality,
                     type = classID,
                     subType = subclassID,
@@ -72,7 +73,7 @@ local function Init(self)
             if a.type == b.type then
                 if a.subType == b.subType then
                     if a.rarity == b.rarity then
-                        return a.id < b.id
+                        return a.icon < b.icon
                     else
                         return a.rarity > b.rarity
                     end
@@ -85,7 +86,7 @@ local function Init(self)
         end)
 
         for indexSlot, item in pairs(items) do
-            item.indexSlot= indexSlot
+            item.indexSlot= isRightToLeft and MAX_GUILDBANK_SLOTS_PER_TAB-indexSlot+1 or indexSlot
         end
 
 

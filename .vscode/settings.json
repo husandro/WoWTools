@@ -5440,7 +5440,8 @@
         "CommunitiesGuildTextEditFrame",
         "CommunitiesGuildTextEditFrameBg",
         "CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame",
-        "WoWTools_TextureMixin"
+        "WoWTools_TextureMixin",
+        "AUCTION_HOUSE_REFRESH_BUTTON_TOOLTIP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

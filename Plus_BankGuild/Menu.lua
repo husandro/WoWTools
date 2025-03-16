@@ -2,7 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_GuildBankMixin.Save
 end
-local MenuButton
+local MenuButton, RefreshButton
 
 
 
@@ -177,14 +177,40 @@ end
 
 
 
+local function Init()
+    MenuButton= WoWTools_ButtonMixin:Menu(GuildBankFrame.CloseButton, {
+        name='WoWToolsGuildBankMenuButton',
+    })
+    MenuButton:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT', -2, 0)
+    MenuButton:SetupMenu(Init_Menu)
 
+    RefreshButton=  WoWTools_ButtonMixin:Cbtn(MenuButton, {
+        name='WoWToolsGuildBankRefreshButton',
+        size=23,
+        atlas='UI-RefreshButton',
+    })
+    RefreshButton:SetPoint('RIGHT', MenuButton, 'LEFT',-2,0)
+    RefreshButton:SetScript('OnLeave', GameTooltip_Hide)
+    RefreshButton:SetScript('OnEnter', function(self)
+        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        e.tips:ClearLines()
+        e.tips:AddLine(WoWTools_GuildBankMixin.addName)
+        e.tips:AddLine(e.onlyChinese and '刷新' or REFRESH)
+        e.tips:Show()
+    end)
+    RefreshButton:SetScript('OnClick', function()
+        for tabID=1, MAX_GUILDBANK_TABS do
+            QueryGuildBankTab(tabID)
+        end
+        print(
+            WoWTools_GuildBankMixin.addName, e.onlyChinese and '刷新完成' or
+            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFRESH, COMPLETE)
+        )
+    end)
+end
 
 
 
 function WoWTools_GuildBankMixin:Init_GuildMenu()
-    MenuButton= WoWTools_ButtonMixin:Menu(GuildBankFrame.CloseButton, {
-        name='WoWToolsGuildBankMenuButton',
-    })
-    MenuButton:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT')
-    MenuButton:SetupMenu(Init_Menu)
+   Init()
 end
