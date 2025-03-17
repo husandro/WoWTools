@@ -42,4 +42,16 @@ function WoWTools_GuildMixin:GetClubLink(clubID, clubGUID)
         return GetClubFinderLink(club.clubFinderGUID, club.name)
     end
 end
+
+--Club,列出查找，过期时间
+function WoWTools_GuildMixin:GetClubFindDay(clubID)
+    if C_ClubFinder.IsEnabled() then
+        clubID= clubID or C_Club.GetGuildClubId()
+        local expirationTime = clubID and ClubFinderGetClubPostingExpirationTime(clubID)--CommunitiesFrameMixin:SetClubFinderPostingExpirationText(
+        if expirationTime and expirationTime>0 then
+            return expirationTime
+        end
+    end
+end
 --WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(data.clubID), nil, nil)
+

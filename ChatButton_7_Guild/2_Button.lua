@@ -48,12 +48,8 @@ local function Set_Text(self)
 --弹劾
         if CanReplaceGuildMaster() then--弹劾
             self.bottomText:SetText(e.onlyChinese and '弹' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))
-        elseif WoWTools_GuildMixin:IsLeaderOrOfficer() and CanGuildInvite() and C_ClubFinder.IsEnabled() then
-            local clubID= C_Club.GetGuildClubId()
-            local expirationTime = clubID and ClubFinderGetClubPostingExpirationTime(clubID)--CommunitiesFrameMixin:SetClubFinderPostingExpirationText(
-            if expirationTime and expirationTime>0 then
-                self.bottomText:SetText(expirationTime)
-            end
+        elseif WoWTools_GuildMixin:IsLeaderOrOfficer() and CanGuildInvite() then
+            self.bottomText:SetText(WoWTools_GuildMixin:GetClubFindDay(nil) or '')--Club,列出查找，过期时间
         end
     else
         self.bottomText:SetText('')
@@ -110,7 +106,7 @@ local function Init()
         end
     end
 
-   
+
 
     function GuildButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -126,7 +122,11 @@ local function Init()
 
 
     GuildButton:SetScript('OnEvent', function(self, event, arg1)
-        if event=='PLAYER_GUILD_UPDATE' or event=='GUILD_ROSTER_UPDATE' then
+        if
+            event=='PLAYER_GUILD_UPDATE'
+            or event=='GUILD_ROSTER_UPDATE'
+            or (event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED' and arg1==Enum.ClubFinderRequestType.Guild)
+        then
             Set_Text(self)
 
         elseif event=='CHAT_MSG_SYSTEM' then
@@ -160,16 +160,17 @@ local function Init()
 
         --if IsInGuild() then--请求，公会名单
             --C_GuildInfo.GuildRoster()
-           
-            
+
+
         --end
     C_Timer.After(2, function()
         GuildButton:set_guildinfo_event()
 
         Set_Text(GuildButton)
-        
+
         GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
         GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
+        GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
     end)
 
 --菜单

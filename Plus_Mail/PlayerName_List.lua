@@ -341,7 +341,10 @@ local function Init_Menu(_, root)
     for _, tab in pairs(C_Club.GetSubscribedClubs() or {}) do
         if tab.clubId and tab.clubType ~= Enum.ClubType.Guild then
             sub=root:CreateButton(
-                ('|T'..(tab.avatarId==1 and 0 or tab.avatarId or 0)..':0|t')
+                (tab.avatarId==1
+                    and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                    or ('|T'..(tab.avatarId or 0)..':0|t')
+                )
                 ..(tab.shortName or tab.name),
             function()
                 return MenuResponse.Open

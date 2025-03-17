@@ -303,7 +303,14 @@ function e.Get_Guild_Enter_Info()
                 all= all+1
             end
         end
-        local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T'..(tab.avatarId==1 and 0 or tab.avatarId or 0)..':0|t'
+        local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
+        
+            or (tab.avatarId==1
+                and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                or ('|T'..(tab.avatarId or 0)..':0|t')
+            )
+
+
         local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
         GameTooltip:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
     end
