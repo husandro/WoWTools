@@ -37,7 +37,7 @@ local function WoW_List(self, root)
             sub2= sub:CreateButton(
                 WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=false}),
             function(data)
-                WoWTools_ChatMixin:Chat(data.link, nil, nil)
+                WoWTools_ChatMixin:Chat(data.link, nil, ChatEdit_GetActiveWindow() and true or false)
                 return MenuResponse.Open
             end, {
                 link= info.Guild.link,
@@ -149,7 +149,7 @@ local function Init_Menu(self, root)
         if not data.clubID then
             return
         end
-        WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(data.clubID), nil, nil)
+        WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(data.clubID), nil, ChatEdit_GetActiveWindow() and true or false)
          --ToggleGuildFrame()
 
     end, {clubID= clubID})
