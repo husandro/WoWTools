@@ -74,7 +74,7 @@ local function WoW_List(self, root)
                     ..realm
                 )
 
-                local width = 20+btn.fontString:GetUnboundedStringWidth() + fontString2:GetUnboundedStringWidth()
+                local width = 20 + btn.fontString:GetUnboundedStringWidth() + fontString2:GetUnboundedStringWidth()
                 return width,  20
             end)
             sub2:SetTooltip(function(tooltip, desc)
@@ -86,7 +86,8 @@ local function WoW_List(self, root)
                     )
                 end
                 tooltip:AddLine(desc.data.text)
-                tooltip:AddLine( WoWTools_UnitMixin:GetPlayerInfo({guid=desc.data.guid, reName=true, reRealm=true}))
+                tooltip:AddLine(' ')
+                tooltip:AddLine( WoWTools_UnitMixin:GetPlayerInfo({guid=desc.data.playerGuid, reName=true, reRealm=true}))
                 tooltip:AddLine(
                     Get_Rank_Texture(desc.data.rankIndex, true)
                     ..desc.data.rankName
@@ -100,6 +101,24 @@ local function WoW_List(self, root)
 
     WoWTools_MenuMixin:SetScrollMode(sub)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
