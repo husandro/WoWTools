@@ -223,7 +223,7 @@ end
 
 local function Init_Created()
 --备注 EditBox
-    NoteEditBox=WoWTools_EditBoxMixn:CreateMultiLineFrame(MacroFrame, {
+    NoteEditBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(MacroFrame, {
         font='GameFontHighlightSmall',
         isInstructions= e.onlyChinese and '备注' or LABEL_NOTE
     })

@@ -131,7 +131,7 @@ Plus_Move\x_PVPUI.lua
 
 Plus_Move\z_CharacterFrame.lua
 Plus_Move\z_Class_Power.lua
-Plus_Move\z_Communities.lua
+
 Plus_Move\z_FriendsFrame.lua
 Plus_Move\z_Other.lua
 Plus_Move\z_PVEFrame.lua
@@ -150,7 +150,7 @@ Plus_Texture\a_ClassPower.lua
 Plus_Texture\a_HelpTip.lua
 Plus_Texture\z_All_Frame.lua
 Plus_Texture\z_Event_Frame.lua
-Plus_Texture\t_Blizzard_Communities.lua
+
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus\ItemInfo.lua
@@ -591,14 +591,14 @@ ChatButton\6_World.lua
 
 ##公会
 ChatButton_7_Guild\0_GuildMixin.lua
-ChatButton_7_Guild\7_Guild_0.lua
-ChatButton_7_Guild\Button_Init.lua
-ChatButton_7_Guild\Button_Menu.lua
+ChatButton_7_Guild\1_7_Guild.lua
+ChatButton_7_Guild\2_Button.lua
+ChatButton_7_Guild\3_Menu.lua
 ChatButton_7_Guild\z_ClubFinder.lua
 ChatButton_7_Guild\z_CommunitiesFrame.lua
 ChatButton_7_Guild\z_PetitionFrame.lua
-
-
+ChatButton_7_Guild\t_Blizzard_Communities.lua
+ChatButton_7_Guild\m_Blizzard_Communities.lua
 ##队伍
 ChatButton\8_Group.lua
 ##说

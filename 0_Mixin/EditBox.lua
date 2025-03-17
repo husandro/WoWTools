@@ -2,7 +2,7 @@ local e= select(2, ...)
 --SecureScrollTemplates.xml
 --SecureUIPanelTemplates.lua
 
-WoWTools_EditBoxMixn={
+WoWTools_EditBoxMixin={
     index=1
 }
 
@@ -53,7 +53,7 @@ end
 
 
 
-function WoWTools_EditBoxMixn:Create(frame, tab)
+function WoWTools_EditBoxMixin:Create(frame, tab)
     self.index= self.index+1
     local name= tab.name or format('%s%d', 'WoWTools_EditBox', self.index)
     local font= tab.font or 'ChatFontNormal'
@@ -84,7 +84,7 @@ end
 
 
 
-function WoWTools_EditBoxMixn:CreateMultiLineFrame(frame, tab)
+function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     self.index= self.index+1
     tab= tab or {}
 
@@ -148,13 +148,13 @@ end
 
 
 
-function WoWTools_EditBoxMixn:HookInstructions(editBox)
+function WoWTools_EditBoxMixin:HookInstructions(editBox)
     editBox:HookScript('OnTextChanged', function(s)
         s.Instructions:SetShown(s:GetText() == "")
     end)
 end
 
-function WoWTools_EditBoxMixn:SetInstructions(editBox, isInstructions, frame)
+function WoWTools_EditBoxMixin:SetInstructions(editBox, isInstructions, frame)
     if not isInstructions then
         return
     end
@@ -185,7 +185,7 @@ end
 
 
 
-function WoWTools_EditBoxMixn:Setup(edit,  tab)
+function WoWTools_EditBoxMixin:Setup(edit,  tab)
     tab= tab or {}
 
     local isInstructions= tab.isInstructions

@@ -20,9 +20,10 @@ local function Init()
         return
     end
 
-   GuildButton.texture:ClearAllPoints()
-   GuildButton.texture:SetPoint('CENTER', -1.5, 1)
-   GuildButton.texture:SetSize(18,18)
+
+    GuildButton.texture:ClearAllPoints()
+    GuildButton.texture:SetPoint('CENTER', -1.5, 1)
+    GuildButton.texture:SetSize(18,18)
 
     GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
     GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
@@ -35,9 +36,13 @@ local function Init()
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
 
+    GuildButton.bottomText= WoWTools_LabelMixin:Create(GuildButton, {size=10, color=true, justifyH='CENTER'})
+    GuildButton.bottomText:SetPoint('BOTTOM', 0, 2)
+
     function GuildButton:settings()
         local isInGuild= IsInGuild()
 
+--设置背景
         if isInGuild then
             self.texture2:SetAtlas(
                 isInGuild and 'UI-HUD-MicroMenu-GuildCommunities-Up'
@@ -49,14 +54,9 @@ local function Init()
             self.texture2:SetAtlas('honorsystem-prestige-laurel-bg-alliance')
         end
 
-      
-
 --图标
         if isInGuild then--GuildUtil.lua
-           
-
-           -- SetSmallGuildTabardTextures(
-            SetLargeGuildTabardTextures(
+            SetLargeGuildTabardTextures(-- SetSmallGuildTabardTextures(
                 'player',
                 self.texture,
                 self.texture2,--self.background2,
@@ -65,26 +65,26 @@ local function Init()
             )
         end
         self.texture:SetShown(isInGuild)
-
-
-
+    
 --在线人数
         local online=1
         if isInGuild then
             online = select(2, GetNumGuildMembers()) or 0
         end
-        self.membersText:SetText(online>1 and online-1 or '')
+        self.membersText:SetText(online>0 and online-1 or '')
     end
 
     function GuildButton:set_guild_info()
         self:UnregisterEvent('CHAT_MSG_SYSTEM')
-        if  IsInGuild() then
-            if Save().guildInfo then
-                self:RegisterEvent('CHAT_MSG_SYSTEM')
-                GuildInfo()
-            end
-        else
-            e.WoWDate[e.Player.guid].Guild={data={}}
+        if IsInGuild() and Save().guildInfo then
+            self:RegisterEvent('CHAT_MSG_SYSTEM')
+            GuildInfo()
+        end
+    end
+
+    function GuildButton:set_event()
+        if WoWTools_GuildMixin:IsLeaderOrOfficer() and CanGuildInvite() then
+
         end
     end
 
@@ -131,25 +131,16 @@ local function Init()
         end
     end)
 
-
-
---菜单
-    WoWTools_GuildMixin:Init_Menu(GuildButton)
-
-
-
 --弹劾
     C_Timer.After(2, function()
 
         if IsInGuild() then--请求，公会名单
-            C_GuildInfo.GuildRoster()
+            --C_GuildInfo.GuildRoster()
             GuildButton:set_guild_info()
         end
 
         if CanReplaceGuildMaster() then
-            local label= WoWTools_LabelMixin:Create(GuildButton, {size=10, color=true, justifyH='CENTER'})
-            label:SetPoint('TOP')
-            label:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹劾' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
+            GuildButton.bottomText:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '弹' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))..'|r')
         end
 
         GuildButton:settings()
@@ -157,6 +148,9 @@ local function Init()
         GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
         GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
     end)
+
+--菜单
+    WoWTools_GuildMixin:Init_Menu(GuildButton)
 
     return true
 end

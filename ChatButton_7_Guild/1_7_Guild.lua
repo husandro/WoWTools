@@ -45,16 +45,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
                 e.WoWDate[e.Player.guid].Guild= {
-                   guid= club.clubFinderGUID,
+                    guid= club.clubFinderGUID,
                     link= GetClubFinderLink(club.clubFinderGUID, club.name),
                     clubID= clubID,
                     data={guildName, guildRankName, guildRankIndex, realm or e.Player.realm},
                     text= e.WoWDate[e.Player.guid].Guild.text
                 }
             else
-                e.WoWDate[e.Player.guid].Guild= {
-                    data={},
-                }
+                e.WoWDate[e.Player.guid].Guild= {data={}}
             end
         end
 

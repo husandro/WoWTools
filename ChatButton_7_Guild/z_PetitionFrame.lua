@@ -13,7 +13,7 @@ local function Init()
     end
 
     check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
-   
+
 
     check:SetPoint('TOPLEFT', 50, -33)
     check.Text:SetText(e.onlyChinese and '目标' or TARGET)
@@ -70,5 +70,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
-    C_Timer.After(1, Init)
+    C_Timer.After(2, Init)
 end

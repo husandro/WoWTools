@@ -84,8 +84,9 @@ local function Init()
 
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
-    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
 
+--寻找社区
+    hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
 
     WoWTools_MoveMixin:Setup(CommunitiesFrame, {
         setSize=true,
@@ -175,15 +176,16 @@ local function Init()
         btn.target:SetSize(384, 432)
     end})
 
---公会信息， 点击以编辑
+--[[公会信息， 点击以编辑
     WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
         btn.target:SetSize(295, 295)
     end})
+    ]]
     CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
     CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
-    WoWTools_EditBoxMixn:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
+    WoWTools_EditBoxMixin:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
     hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
         WoWTools_MoveMixin:Set_SizeScale(frame)
         frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
@@ -279,6 +281,6 @@ end
 
 
 
-function WoWTools_MoveMixin:Init_Communities()--公会和社区
+function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     Init()
 end

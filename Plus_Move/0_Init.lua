@@ -34,7 +34,7 @@ end
 
 
 local function Init()
-    WoWTools_MoveMixin:Init_Communities()--公会和社区
+    --WoWTools_MoveMixin:Init_Communities()--公会和社区
     WoWTools_MoveMixin:Init_WorldMapFrame()--世界地图
     WoWTools_MoveMixin:Init_CharacterFrame()--角色
     WoWTools_MoveMixin:Init_FriendsFrame()--好友列表

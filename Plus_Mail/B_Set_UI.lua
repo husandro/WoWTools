@@ -169,8 +169,8 @@ local function Init()
             break
         end
     end
-    WoWTools_EditBoxMixn:SetInstructions(SendMailNameEditBox, e.onlyChinese and '收件人' or MAIL_TO_LABEL:gsub(HEADER_COLON,''))
-    WoWTools_EditBoxMixn:HookInstructions(SendMailNameEditBox)
+    WoWTools_EditBoxMixin:SetInstructions(SendMailNameEditBox, e.onlyChinese and '收件人' or MAIL_TO_LABEL:gsub(HEADER_COLON,''))
+    WoWTools_EditBoxMixin:HookInstructions(SendMailNameEditBox)
 
 --主题
     for _, region in pairs({SendMailSubjectEditBox:GetRegions()}) do
@@ -182,8 +182,8 @@ local function Init()
             end
         end
     end
-    WoWTools_EditBoxMixn:SetInstructions(SendMailSubjectEditBox, e.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
-    WoWTools_EditBoxMixn:HookInstructions(SendMailSubjectEditBox)
+    WoWTools_EditBoxMixin:SetInstructions(SendMailSubjectEditBox, e.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
+    WoWTools_EditBoxMixin:HookInstructions(SendMailSubjectEditBox)
 
     hooksecurefunc('SendMailRadioButton_OnClick', function(index)
         if ( index == 1 ) then

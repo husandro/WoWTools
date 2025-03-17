@@ -18,8 +18,8 @@ local function Init()
 --输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
     MacroFrameEnterMacroText:Hide()
-    WoWTools_EditBoxMixn:SetInstructions(MacroFrameText, e.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
-    WoWTools_EditBoxMixn:HookInstructions(MacroFrameText)
+    WoWTools_EditBoxMixin:SetInstructions(MacroFrameText, e.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
+    WoWTools_EditBoxMixin:HookInstructions(MacroFrameText)
 
 -- "已使用%d个字符，最多255个";
     MacroFrameCharLimitText:SetParent(MacroFrameScrollFrame.ScrollBar)

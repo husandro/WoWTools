@@ -905,13 +905,14 @@ local function Add_Menu(root, name, channelNumber)
             end
         end
 
-        text=('|T'..(clubInfo.avatarId==1 and 0 or clubInfo.avatarId or 0)..':0|t')
+        text= (clubInfo.avatarId==1
+                and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                or ('|T'..(clubInfo.avatarId or 0)..':0|t')
+            )
             ..(clubInfo.clubType == Enum.ClubType.BattleNet and '|cff00ccff' or '|cffff8000')
             ..(clubInfo.shortName or clubInfo.name)
             ..(clubInfo.favoriteTimeStamp and '|A:recipetoast-icon-star:0:0|a' or ' ')
             ..(online..'/'..#members)
-
-
 
         communityName=clubInfo.shortName or clubInfo.name
         communityTexture=clubInfo.avatarId

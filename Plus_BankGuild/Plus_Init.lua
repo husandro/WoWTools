@@ -544,7 +544,7 @@ local function Init_UI()
     GuildBankTabInfoEditBox.Instructions=WoWTools_LabelMixin:Create(GuildBankTabInfoEditBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     GuildBankTabInfoEditBox.Instructions:SetPoint('TOPLEFT')
     GuildBankTabInfoEditBox.Instructions:Hide()
-    --WoWTools_EditBoxMixn:SetInstructions(GuildBankTabInfoEditBox, '', nil)
+    --WoWTools_EditBoxMixin:SetInstructions(GuildBankTabInfoEditBox, '', nil)
 
     GuildBankTabInfoEditBox.maxNumLetters= WoWTools_LabelMixin:Create(GuildBankTabInfoEditBox, {layer='BORDER', color=true})
     GuildBankTabInfoEditBox.maxNumLetters:SetPoint('BOTTOMRIGHT', GuildBankInfoScrollFrame, -8,8)

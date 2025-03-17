@@ -7,7 +7,7 @@
     mixin:SetScrollBar(CommunitiesFrame.MemberList)
     mixin:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
     mixin:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
-    mixin:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
+
 
     mixin:SetAlphaColor(CommunitiesFrameBg)
     mixin:SetAlphaColor(CommunitiesFrame.MemberList.ColumnDisplay.Background)
@@ -24,8 +24,7 @@
     mixin:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
     mixin:SetAlphaColor(CommunitiesFrameMiddle)
 
-    mixin:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
-    mixin:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
+    
     mixin:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
     hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
@@ -40,7 +39,7 @@
         end)
     end)
 
-    mixin:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
+    
 
     mixin:HideFrame(CommunitiesFrame.ChatTab, {index=1})
     mixin:HideFrame(CommunitiesFrame.RosterTab, {index=1})
@@ -49,8 +48,6 @@
 
     mixin:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
-    mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
-    mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
     mixin:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
 
@@ -174,4 +171,14 @@
         
 --新闻过滤
     mixin:SetFrame(CommunitiesGuildNewsFiltersFrame, {isMinAlpha=true})
+
+--寻找社区
+    mixin:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
+    mixin:SetSearchBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
+    mixin:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
+    mixin:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
+    mixin:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
+    mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
+    mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
+
 end
