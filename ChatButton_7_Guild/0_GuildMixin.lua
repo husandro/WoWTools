@@ -100,7 +100,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     local icon, name, col, applicantList, num, info, members
     local guildClubId= C_Club.GetGuildClubId()
     local numApplicant= 0
-    local hasInvite
+    --local hasInvite
 
     for _, tab in pairs(clubs) do
         members= C_Club.GetClubMembers(tab.clubId) or {}
@@ -110,11 +110,9 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
             if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
                 online= online+1
                 all= all+1
-            elseif info.isSelf and info.guildRankOrde then
-                print(info.guildRank, info.guildRankOrde)
-                hasInvite= info.guildRankOrde<=2
+            --elseif info.isSelf and info.guildRankOrde then
+               -- hasInvite= info.guildRankOrde<=2
             end
-print(info.guildRankOrde)
         end
 
         icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
@@ -135,7 +133,7 @@ print(info.guildRankOrde)
         end
 
 --申请者
-        applicantList= hasInvite and self:GetApplicantList(tab.clubId)
+        applicantList= self:GetApplicantList(tab.clubId)
         num = applicantList and #applicantList
         if num then
             name= name..'|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
