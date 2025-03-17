@@ -32,7 +32,7 @@ local function WoW_List(self, root)
     sub= root:CreateButton('WoW', function()return MenuResponse.Open end)
 
     for guid, info in pairs(e.WoWDate) do
-        if info.Guild and info.Guild.link and info.Guild.clubID then
+        if info.Guild and info.Guild.link and info.Guild.clubID and guid~=e.Player.husandro then
             C_ClubFinder.RequestPostingInformationFromClubId(info.Guild.clubID)
             sub2= sub:CreateButton(
                 WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=false}),
