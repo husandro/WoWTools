@@ -37,8 +37,8 @@ local function WoW_List(self, root)
             sub2= sub:CreateButton(
                 WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=false}),
             function(data)
-
                 WoWTools_ChatMixin:Chat(data.link, nil, nil)
+                return MenuResponse.Open
             end, {
                 link= info.Guild.link,
                 name= info.Guild.data[1],
@@ -56,9 +56,10 @@ local function WoW_List(self, root)
                 end
                 local fontString2 = btn:AttachFontString()
                 fontString2:SetHeight(20);
-                fontString2:SetPoint("LEFT", btn.fontString, 'RIGHT', 5, 0)
+                fontString2:SetPoint("RIGHT")--, btn.fontString, 'RIGHT', 5, 0)
                 --fontString2:SetPoint("RIGHT")
-                --fontString2:SetJustifyH("LEFT")
+                fontString2:SetJustifyH("RIGHT")
+
                 local realm= desc.data.realm
                 if realm and realm~=desc.data.playerRealm then
                     realm= (e.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
@@ -67,13 +68,13 @@ local function WoW_List(self, root)
                 end
 
                 fontString2:SetText(
-                    (desc.data.link and e.Icon.left or '')
-                    ..Get_Rank_Texture(desc.data.rankIndex, true)
+                    --(desc.data.link and e.Icon.left or '')
+                    Get_Rank_Texture(desc.data.rankIndex, true)
                     ..name
                     ..realm
                 )
 
-                local width = 20+ btn.fontString:GetUnboundedStringWidth() + fontString2:GetUnboundedStringWidth()
+                local width = 20+btn.fontString:GetUnboundedStringWidth() + fontString2:GetUnboundedStringWidth()
                 return width,  20
             end)
             sub2:SetTooltip(function(tooltip, desc)
@@ -90,6 +91,9 @@ local function WoW_List(self, root)
                     Get_Rank_Texture(desc.data.rankIndex, true)
                     ..desc.data.rankName
                 )
+                
+                tooltip:AddLine(' ')
+                tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
             end)
         end
     end
