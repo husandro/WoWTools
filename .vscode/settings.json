@@ -5460,7 +5460,8 @@
         "DISPLAYED_COMMUNITIES_INVITATIONS",
         "CommunitiesUtil",
         "CreateCommunitiesIconNotificationMarkup",
-        "COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION"
+        "COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION",
+        "g_clubIdToSeenApplicants"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

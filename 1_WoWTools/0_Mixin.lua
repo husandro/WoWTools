@@ -76,7 +76,8 @@ function WoWTools_Mixin:Load(tab)--WoWTools_Mixin:Load({id=, type=''})--加载 i
         C_ChallengeMode.RequestLeaders(tab.id)
 
     elseif tab.typ=='club' then--WoWTools_Mixin:Load({id=, type='club'})
-        C_Club.RequestTickets(tab.id)
+        return C_ClubFinder.RequestPostingInformationFromClubId(tab.id)
+        --C_Club.RequestTickets(tab.id)
     end
 end
 
