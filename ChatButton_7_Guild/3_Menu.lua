@@ -150,10 +150,14 @@ local function Guild_Player_List(_, root)
                 rankName=rankName,
                 rankIndex=rankIndex,
                 zone=zone,
-
+                isOnline=isOnline,
             })
             sub:SetTooltip(function(tooltip, desc)
-                tooltip:AddLine((e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..' '..SLASH_WHISPER1..' '..desc.data.name)
+                local col= desc.data.isOnline and '' or '|cff828282'
+                tooltip:AddDoubleLine(
+                    col..(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER), 
+                    col..SLASH_WHISPER1..' '..desc.data.name
+                )
                 tooltip:AddLine(' ')
                 tooltip:AddDoubleLine(
                     desc.data.zone,

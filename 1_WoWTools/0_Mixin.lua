@@ -1,16 +1,13 @@
 local e= select(2, ...)
 e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
 e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-
-
 e.ExpansionLevel= GetExpansionLevel()--版本数据
 e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
 e.WoWDate={}--战网，数据
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
---e.tips=GameTooltip
 e.onlyChinese= LOCALE_zhCN and true or false
-
+--e.tips=GameTooltip
 
 WoWTools_Mixin={
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',

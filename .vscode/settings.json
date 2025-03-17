@@ -5450,7 +5450,10 @@
         "CommunitiesAvatarPickerDialog",
         "ClubFinderGetCurrentClubListingInfo",
         "GetClubFinderLink",
-        "ERROR_CLUB_ACTION_INVITE_MEMBER"
+        "ERROR_CLUB_ACTION_INVITE_MEMBER",
+        "BNET_CLIENT_CLNT",
+        "BNET_CLIENT_HEROES",
+        "BNET_CLIENT_APP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

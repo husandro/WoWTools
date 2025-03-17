@@ -122,17 +122,22 @@ e.Icon={
 }
 
 
---WoWTools_Mixin:GetWoWTexture()
-C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua    
-    if success and texture then
-        e.Icon.wow=texture
-    end
-end)
-C_Texture.GetTitleIconTexture('BSAp', Enum.TitleIconVersion.Small, function(success, texture)
-    if success and texture then
-        e.Icon.net2= '|T'..texture..':0|t'
-    end
-end)
+--[[WoWTools_Mixin:GetWoWTexture()
+C_Timer.After(1, function()
+    C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua    
+    print('BNET_CLIENT_WOW',success and texture)
+        if success and texture then
+            e.Icon.wow=texture
+        end
+    end)
+    C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, texture)
+        print(success, texture)
+        if success and texture then
+            e.Icon.net2= '|T'..texture..':0|t'
+            print(texture, e.Icon.net2)
+        end
+    end)
+end)]]
 
 if LOCALE_zhCN then
     e.Player.L= {
