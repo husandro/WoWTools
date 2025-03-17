@@ -27,9 +27,9 @@ end
 local function WoW_List(_, root)
     local sub, sub2
 
-    sub= root:CreateButton(e.Icon.net2..'WoW', function() return MenuResponse.Open end)
+    sub= root:CreateButton(e.Icon.net2..' |cff00ccffWoW', function() return MenuResponse.Open end)
 
-    local name, realm, rankIndex, rankName, text
+    local name, realm, rankIndex, rankName
     for guid, info in pairs(e.WoWDate) do
         if info.Guild and info.Guild.link and info.Guild.clubID and guid~=e.Player.husandro then
 
@@ -65,7 +65,7 @@ local function WoW_List(_, root)
 
             sub2:SetTooltip(function(tooltip, desc)
                 local data= desc.data.guid and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(desc.data.guid) or {}
-                
+
                 tooltip:AddDoubleLine(
                     '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
                     ..'|T'..(data.tabardInfo and data.tabardInfo.emblemFileID or 0)..':0|t'
@@ -85,16 +85,16 @@ local function WoW_List(_, root)
                     Get_Rank_Texture(desc.data.rankIndex, true)
                     ..desc.data.rankName
                 )
-               
-                
+
+
                 tooltip:AddDoubleLine(e.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS, data.numActiveMembers)
-                
+
                 tooltip:AddDoubleLine(
                     '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
                     ..(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
                     e.GetYesNo(data.isCrossFaction)
                 )
-               
+
 
                 tooltip:AddLine(' ')
                 tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
@@ -125,7 +125,8 @@ local function Guild_Player_List(_, root)
     local total, online = GetNumGuildMembers()
     local showNotOnLine= Save().showNotOnLine
 
-    if total<2 and (online<2 and not showNotOnLine) then
+    root:CreateDivider()
+    if total<2 or (online<2 and not showNotOnLine) then
         root:CreateTitle(
             (e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON)..(online-1)
         )
@@ -133,9 +134,7 @@ local function Guild_Player_List(_, root)
     end
 
     local sub
-
     C_GuildInfo.GuildRoster()
-    root:CreateDivider()
 
     local map=WoWTools_MapMixin:GetUnit('player')
     local maxLevel= GetMaxLevelForLatestExpansion()
@@ -304,10 +303,7 @@ local function Init_Menu(self, root)
         return Save().guildInfo
     end, function()
         Save().guildInfo= not Save().guildInfo and true or nil
-        if Save().guildInfo then
-            e.WoWDate[e.Player.guid].Guild.text= nil
-        end
-        self:set_guild_info()--事件, 公会新成员, 队伍新成员
+        self:set_guildinfo_event()--事件, 公会新成员, 队伍新成员
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine()
@@ -326,13 +322,8 @@ local function Init_Menu(self, root)
 --帐号，公会，数据
     WoW_List(self, root)
 
-    if canGuildInvite and clubID then
-        local invitationInfo= C_Club.GetInvitationInfo(clubID)
-        for _, data in pairs(C_Club.GetInvitationInfo(clubID) or {}) do
-            info= data
-            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-        end
-    end
+   
+
 --弹劾
     if CanReplaceGuildMaster() then
         root:CreateDivider()

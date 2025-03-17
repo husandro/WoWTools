@@ -887,7 +887,7 @@ end
 
 --添加菜单
 local function Add_Menu(root, name, channelNumber)
-    local text=name
+    local text
     local clubId=name:match('Community:(%d+)');
     if clubId then
         WoWTools_Mixin:Load({id=clubId, type='club'})
@@ -918,7 +918,7 @@ local function Add_Menu(root, name, channelNumber)
         communityTexture=clubInfo.avatarId
     end
 
-    text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..text--频道数字
+    text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..(text or name)--频道数字
 
     local sub=root:CreateCheckbox(
         text,
@@ -1064,13 +1064,33 @@ local function Init()
 
         GameTooltip:AddDoubleLine((e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))..' #'..find, e.GetEnabeleDisable(Save.myChatFilter))
         GameTooltip:AddLine(' ')
+
+        local clubID, channelNumber, name, disabled, clubInfo, col
         local channels = {GetChannelList()}
+        local value
         for i = 1, #channels, 3 do
-            local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
+            channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
             if not disabled and channelNumber and name then
+                value= Check_Channel(name)
+                col= Get_Channel_Color(name, value)
+
                 find= (channelNumber and WorldButton.channelNumber==channelNumber) and e.Icon.left or '   '
-                local value= Check_Channel(name)
-                local col= Get_Channel_Color(name, value)
+                
+                clubID=name:match('Community:(%d+)');
+                if clubID then
+                    WoWTools_Mixin:Load({id=clubID, type='club'})
+
+                    clubInfo= C_Club.GetClubInfo(clubID)
+
+                    if clubInfo and clubInfo.name then
+                        name= (clubInfo.avatarId==1
+                                and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
+                                or ('|T'..(clubInfo.avatarId or 0)..':0|t')
+                            )
+                            ..clubInfo.name
+                    end
+                end
+
                 GameTooltip:AddDoubleLine(col..channelNumber..')', col..name..find)
             end
         end

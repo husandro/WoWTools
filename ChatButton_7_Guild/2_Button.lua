@@ -65,12 +65,6 @@ end
 
 
 
-
-
-
-
-
-
 local function Init()
     GuildButton= WoWTools_ChatButtonMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
 
@@ -87,9 +81,16 @@ local function Init()
     GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
     GuildButton.texture2:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", 14, -14)
 
+
+
     GuildButton.mask:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 5.5, -5.5)
     GuildButton.mask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
     GuildButton.texture2:AddMaskTexture(GuildButton.mask)
+
+    GuildButton.messageTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
+    GuildButton.messageTexture:SetPoint('TOPLEFT',-2,2)
+    GuildButton.messageTexture:SetAtlas('communities-icon-notification')
+    GuildButton.messageTexture:SetSize(16,16)
 
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
@@ -116,24 +117,27 @@ local function Init()
         else
             WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end
-        e.Get_Guild_Enter_Info()--公会， 社区，信息
+        WoWTools_GuildMixin:OnEnter_GuildInfo()--公会，社区，信息
         GameTooltip:Show()
     end
 
 
-    GuildButton:SetScript('OnEvent', function(self, event, arg1)
+    GuildButton:SetScript('OnEvent', function(self, event, arg1, arg2, arg3)
         if
             event=='PLAYER_GUILD_UPDATE'
             or event=='GUILD_ROSTER_UPDATE'
             or (event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED' and arg1==Enum.ClubFinderRequestType.Guild)
         then
-            Set_Text(self)
+            Set_Text(self)--更新，数据
 
-        elseif event=='CHAT_MSG_SYSTEM' then
+        elseif event=='CHAT_MSG_SYSTEM' then--公会创立，信息
             if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
                 e.WoWDate[e.Player.guid].Guild.text= arg1
                 self:UnregisterEvent(event)
             end
+        elseif event=='CLUB_MESSAGE_UPDATED' or event=='CLUB_MESSAGE_ADDED' then--未读信息
+            self.messageTexture:SetShown(C_Club.DoesAnyCommunityHaveUnreadMessages())
+
         end
     end)
 
@@ -168,9 +172,28 @@ local function Init()
 
         Set_Text(GuildButton)
 
+
+
         GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
         GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
         GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
+
+        GuildButton:RegisterEvent('CLUB_MESSAGE_UPDATED')
+        GuildButton:RegisterEvent('CLUB_MESSAGE_ADDED')--未读信息
+
+
+--未读信息
+        if Save().guildInfo and C_Club.DoesAnyCommunityHaveUnreadMessages() then
+            print(
+                WoWTools_ChatButtonMixin.addName,
+                WoWTools_GuildMixin.addName,
+                CreateCommunitiesIconNotificationMarkup(
+                    '|cnGREEN_FONT_COLOR:'
+                    ..(e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION)
+                )
+            )
+        end
+        GuildButton.messageTexture:SetShown(C_Club.DoesAnyCommunityHaveUnreadMessages())
     end)
 
 --菜单

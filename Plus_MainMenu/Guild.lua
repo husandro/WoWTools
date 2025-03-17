@@ -43,6 +43,7 @@ local function Init()
         end
         self.Text2:SetText(online>0 and online or '')
     end
+    
     local COMMUNITIES_LIST_EVENTS = {
         "CLUB_ADDED",
         "CLUB_REMOVED",
@@ -64,7 +65,7 @@ local function Init()
         if IsInGuild() then
             GameTooltip:AddLine(' ')
         end
-        e.Get_Guild_Enter_Info()
+        WoWTools_GuildMixin:OnEnter_GuildInfo()--公会，社区，信息
         GameTooltip:Show()
         local all= GetNumGuildMembers() or 0
         self.Text2:SetText(all>0 and all or '')

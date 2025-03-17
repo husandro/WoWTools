@@ -130,7 +130,7 @@ local function Init_Options()
             GetValue= function() return Save.onlyChinese end,
             SetValue= function()
                 e.onlyChinese= not e.onlyChinese and true or nil
-                WoWTools_Mixin.isChinese= e.onlyChinese
+                WoWTools_Mixin.onlyChinese= e.onlyChinese
                 Save.onlyChinese = e.onlyChinese
                 print(WoWTools_Mixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
