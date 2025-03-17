@@ -108,7 +108,7 @@ local function Init()
     end
 
 --申请者
-    function GuildButton:set_new_application()
+    function GuildButton:set_new_application(isInit)
         local clubs= C_Club.GetSubscribedClubs()
         for _, data in pairs(clubs or {}) do
             if WoWTools_GuildMixin:GetApplicantList(data.clubId) then
@@ -132,7 +132,7 @@ local function Init()
     end
 
 
-    GuildButton:SetScript('OnEvent', function(self, event, arg1, arg2, arg3)
+    GuildButton:SetScript('OnEvent', function(self, event, arg1)
         if
             event=='PLAYER_GUILD_UPDATE'
             or event=='GUILD_ROSTER_UPDATE'
@@ -155,11 +155,6 @@ local function Init()
     end)
 
     GuildButton:SetScript('OnMouseDown',function(self, d)
-        --[[if not IsInGuild() then
-            ToggleGuildFrame()
-            self:CloseMenu()
-            self:set_tooltip()]]
-
         if d=='LeftButton' then
             if not IsInGuild() then-- and not InCombatLockdown() then
                 ToggleGuildFrame()
@@ -175,17 +170,14 @@ local function Init()
 
 
 
-        --if IsInGuild() then--请求，公会名单
-            --C_GuildInfo.GuildRoster()
+--if IsInGuild() then C_GuildInfo.GuildRoster()--请求，公会名单
 
-
-        --end
     C_Timer.After(2, function()
         GuildButton:set_guildinfo_event()
 
         Set_Text(GuildButton)
 
-        GuildButton:set_new_application()--申请者
+        GuildButton:set_new_application(true)--申请者
 
         GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
         GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
@@ -193,10 +185,11 @@ local function Init()
         GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
         GuildButton:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
         GuildButton:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
+    end)
 
         --GuildButton:RegisterEvent('CLUB_INVITATIONS_RECEIVED_FOR_CLUB')
 
---未读信息
+--[[未读信息
         if Save().guildInfo and C_Club.DoesAnyCommunityHaveUnreadMessages() then
             print(
                 WoWTools_ChatButtonMixin.addName,
@@ -204,8 +197,7 @@ local function Init()
                 '|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
                 ..(e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION)
             )
-        end
-    end)
+        end]]
 
 --菜单
     WoWTools_GuildMixin:Init_Menu(GuildButton)

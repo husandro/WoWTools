@@ -130,7 +130,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
         end
 
 --申请者
-        applicantList=  WoWTools_GuildMixin:GetApplicantList(tab.clubId)
+        applicantList=  self:GetApplicantList(tab.clubId)
         num = applicantList and #applicantList
         if num then
             name= name..'|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
