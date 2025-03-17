@@ -84,7 +84,7 @@ local function Init()
                 GuildInfo()
             end
         else
-            e.WoWDate[e.Player.guid].Guild.text=nil
+            e.WoWDate[e.Player.guid].Guild={data={}}
         end
     end
 
@@ -143,6 +143,7 @@ local function Init()
 
         if IsInGuild() then--请求，公会名单
             C_GuildInfo.GuildRoster()
+            GuildButton:set_guild_info()
         end
 
         if CanReplaceGuildMaster() then

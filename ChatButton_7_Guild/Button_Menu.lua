@@ -172,7 +172,7 @@ local function Init_Menu(self, root)
         if Save().guildInfo then
             e.WoWDate[e.Player.guid].Guild.text= nil
         end
-        self:settings()--事件, 公会新成员, 队伍新成员
+        self:set_guild_info()--事件, 公会新成员, 队伍新成员
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine()
