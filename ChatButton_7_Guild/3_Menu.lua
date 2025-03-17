@@ -27,7 +27,7 @@ end
 local function WoW_List(_, root)
     local sub, sub2
 
-    sub= root:CreateButton('WoW', function() return MenuResponse.Open end)
+    sub= root:CreateButton(e.Icon.net2..'WoW', function() return MenuResponse.Open end)
 
     local name, realm, rankIndex, rankName, text
     for guid, info in pairs(e.WoWDate) do

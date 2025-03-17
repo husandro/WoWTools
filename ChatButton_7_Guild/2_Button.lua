@@ -39,9 +39,9 @@ local function Set_Text(self)
 --在线人数
     local online=1
     if isInGuild then
-        online = select(2, GetNumGuildMembers()) or 0
+        online = select(2, GetNumGuildMembers()) or 1
     end
-    self.membersText:SetText(online>0 and online-1 or '')
+    self.membersText:SetText(online>1 and online-1 or '')
 
 
     if isInGuild then
