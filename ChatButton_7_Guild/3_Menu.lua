@@ -202,6 +202,14 @@ local function Init_Menu(self, root)
         return
     end
 
+--弹劾
+    if CanReplaceGuildMaster() then
+        root:CreateButton(
+            e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
+        ToggleGuildFrame)
+        root:CreateDivider()
+    end
+
     local clubID= C_Club.GetGuildClubId()
     local clubInfo = clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
 

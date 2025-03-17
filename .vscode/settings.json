@@ -5453,7 +5453,9 @@
         "ERROR_CLUB_ACTION_INVITE_MEMBER",
         "BNET_CLIENT_CLNT",
         "BNET_CLIENT_HEROES",
-        "BNET_CLIENT_APP"
+        "BNET_CLIENT_APP",
+        "ClubFinderGetClubPostingExpirationTime",
+        "CLUB_FINDER_DAYS_UNTIL_EXPIRE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
