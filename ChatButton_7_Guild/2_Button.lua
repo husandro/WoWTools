@@ -113,6 +113,11 @@ local function Init()
         for _, data in pairs(clubs or {}) do
             if WoWTools_GuildMixin:GetApplicantList(data.clubId) then
                 self.messageTexture:SetShown(true)
+                if isInit then
+                    print(WoWTools_GuildMixin.addName,
+                        (e.onlyChinese and '新' or NEW)..'|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
+                    )
+                end
                 return
             end
         end
@@ -177,7 +182,7 @@ local function Init()
 
         Set_Text(GuildButton)
 
-        GuildButton:set_new_application(true)--申请者
+        GuildButton:set_new_application(Save().guildInfo)--申请者
 
         GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
         GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')

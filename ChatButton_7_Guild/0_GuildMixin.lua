@@ -97,19 +97,24 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     GameTooltip:AddLine(' ')
 
     local all=0
-    local icon, name, col, applicantList, num
+    local icon, name, col, applicantList, num, info, members
     local guildClubId= C_Club.GetGuildClubId()
     local numApplicant= 0
+    local hasInvite
 
     for _, tab in pairs(clubs) do
-        local members= C_Club.GetClubMembers(tab.clubId) or {}
+        members= C_Club.GetClubMembers(tab.clubId) or {}
         local online= 0
         for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-            local info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
+             info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
             if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
                 online= online+1
                 all= all+1
+            elseif info.isSelf and info.guildRankOrde then
+                print(info.guildRank, info.guildRankOrde)
+                hasInvite= info.guildRankOrde<=2
             end
+print(info.guildRankOrde)
         end
 
         icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
@@ -130,7 +135,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
         end
 
 --申请者
-        applicantList=  self:GetApplicantList(tab.clubId)
+        applicantList= hasInvite and self:GetApplicantList(tab.clubId)
         num = applicantList and #applicantList
         if num then
             name= name..'|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
