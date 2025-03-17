@@ -887,19 +887,20 @@ end
 
 --添加菜单
 local function Add_Menu(root, name, channelNumber)
-    local text
-    local clubId=name:match('Community:(%d+)');
+    local text, sub, info, communityName, communityTexture, members, online
+    local clubId=name:match('Community:(%d+)')
+
     if clubId then
         WoWTools_Mixin:Load({id=clubId, type='club'})
     end
-    local communityName, communityTexture
+
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
 
-        local members= C_Club.GetClubMembers(clubInfo.clubId) or {}
-        local online= 0
+        members= C_Club.GetClubMembers(clubInfo.clubId) or {}
+        online= 0
         for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-            local info = C_Club.GetMemberInfo(clubInfo.clubId, memberID) or {}
+            info = C_Club.GetMemberInfo(clubInfo.clubId, memberID) or {}
             if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
                 online= online+1
             end
@@ -918,10 +919,10 @@ local function Add_Menu(root, name, channelNumber)
         communityTexture=clubInfo.avatarId
     end
 
-    text=((channelNumber and channelNumber>0) and channelNumber..' ' or '')..(text or name)--频道数字
 
-    local sub=root:CreateCheckbox(
-        text,
+
+    sub=root:CreateCheckbox(
+        ((channelNumber and channelNumber>0) and channelNumber..' ' or '')..(text or name),--频道数字
     function(data)
         return WorldButton.channelNumber == GetChannelName(data.communityName or data.name)
 
