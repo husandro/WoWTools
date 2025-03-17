@@ -750,14 +750,22 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             Worldboss={boss={}, week=e.Player.week, day=day},--{week=周数, boss=table}
             Rare={day=day, boss={}},--稀有
             Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+            Guild={
+                --text= text, GuildInfo() 公会信息,
+                --guid= guid, 公会 clubFinderGUID 
+                data={},-- {guildName, guildRankName, guildRankIndex, realm} = GetGuildInfo('player')
+            },
             --Money=钱
-            --GuildInfo=公会信息,
             Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
             region= e.Player.region
         }
-    else
-        e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
     end
+
+    e.WoWDate[e.Player.guid].Bank= e.WoWDate[e.Player.guid].Bank or {}--派系
+
+    e.WoWDate[e.Player.guid].Guild= e.WoWDate[e.Player.guid].Guild or {data={}}--公会信息
+    e.WoWDate[e.Player.guid].GuildInfo=nil--清除，旧版本数据
+    
 
     e.WoWDate[e.Player.guid].region= e.Player.region
     e.WoWDate[e.Player.guid].faction= e.Player.faction--派系
@@ -787,12 +795,11 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     C_FriendList.ShowFriends()
 
 
-    if IsInGuild() then--请求，公会名单
-        C_GuildInfo.GuildRoster()
-    end
     --C_PerksProgram.RequestPendingChestRewards()
 
     C_Timer.After(4, function()
+
+
         C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
         RequestRaidInfo()
 

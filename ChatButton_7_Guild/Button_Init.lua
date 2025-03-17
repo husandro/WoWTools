@@ -19,7 +19,10 @@ local function Init()
     if not GuildButton then
         return
     end
-   --WoWTools_GuildMixin.GuildButton= GuildButton
+
+   GuildButton.texture:ClearAllPoints()
+   GuildButton.texture:SetPoint('CENTER', -1.5, 1)
+   GuildButton.texture:SetSize(18,18)
 
     GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
     GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
@@ -46,26 +49,11 @@ local function Init()
             self.texture2:SetAtlas('honorsystem-prestige-laurel-bg-alliance')
         end
 
-        if isInGuild then
-            if Save().guildInfo or not e.WoWDate[e.Player.guid].GuildInfo then
-                self:RegisterEvent('CHAT_MSG_SYSTEM')
-                GuildInfo()
-            else
-                self:UnregisterEvent('CHAT_MSG_SYSTEM')
-            end
-        else
-            if e.WoWDate[e.Player.guid] then
-                e.WoWDate[e.Player.guid].GuildInfo=nil
-            end
-            self:UnregisterEvent('CHAT_MSG_SYSTEM')
-        end
+      
 
 --图标
-
         if isInGuild then--GuildUtil.lua
-            self.texture:ClearAllPoints()
-            self.texture:SetPoint('CENTER', -1.5, 1)
-            self.texture:SetSize(18,18)
+           
 
            -- SetSmallGuildTabardTextures(
             SetLargeGuildTabardTextures(
@@ -88,6 +76,17 @@ local function Init()
         self.membersText:SetText(online>1 and online-1 or '')
     end
 
+    function GuildButton:set_guild_info()
+        self:UnregisterEvent('CHAT_MSG_SYSTEM')
+        if  IsInGuild() then
+            if Save().guildInfo then
+                self:RegisterEvent('CHAT_MSG_SYSTEM')
+                GuildInfo()
+            end
+        else
+            e.WoWDate[e.Player.guid].Guild.text=nil
+        end
+    end
 
     function GuildButton:set_tooltip()
         e.tips:SetOwner(self, "ANCHOR_LEFT")
@@ -95,11 +94,7 @@ local function Init()
         if not IsInGuild() then
             e.tips:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD))
         else
---加载，数据
-            local clubID= C_Club.GetGuildClubId()
-            if clubID and not C_ClubFinder.RequestPostingInformationFromClubId(clubID) then
-                C_ClubFinder.RequestSubscribedClubPostingIDs()
-            end
+            WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end
         e.Get_Guild_Enter_Info()--公会， 社区，信息
         e.tips:Show()
@@ -112,7 +107,7 @@ local function Init()
 
         elseif event=='CHAT_MSG_SYSTEM' then
             if arg1:find(guildMS) then
-                e.WoWDate[e.Player.guid].GuildInfo= arg1
+                e.WoWDate[e.Player.guid].Guild.text= arg1
                 self:UnregisterEvent(event)
             end
         end
@@ -145,6 +140,11 @@ local function Init()
 
 --弹劾
     C_Timer.After(2, function()
+
+        if IsInGuild() then--请求，公会名单
+            C_GuildInfo.GuildRoster()
+        end
+
         if CanReplaceGuildMaster() then
             local label= WoWTools_LabelMixin:Create(GuildButton, {size=10, color=true, justifyH='CENTER'})
             label:SetPoint('TOP')

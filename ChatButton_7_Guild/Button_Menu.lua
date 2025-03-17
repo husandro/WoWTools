@@ -5,6 +5,97 @@ end
 
 
 
+local function Get_Rank_Texture(rankIndex, reColor)
+    local icon
+    if rankIndex ==0 then
+        icon= '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
+    elseif rankIndex == 1 then
+        icon= '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t'
+    end
+    if reColor and icon then
+        icon= icon..'|cffff00ff'
+    end
+    return icon or ''
+end
+
+
+
+
+--帐号，公会，数据  e.WoWDate[e.Player.guid].Guild.data[4]= e.Player.realm
+local function WoW_List(self, root)
+    if not e.Player.husandro then
+        return 
+    end
+    local sub, sub2
+
+
+    sub= root:CreateButton('WoW', function()return MenuResponse.Open end)
+
+    for guid, info in pairs(e.WoWDate) do
+        if info.Guild and info.Guild.link and info.Guild.clubID then
+            C_ClubFinder.RequestPostingInformationFromClubId(info.Guild.clubID)
+            sub2= sub:CreateButton(
+                WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=false}),
+            function(data)
+
+                WoWTools_ChatMixin:Chat(data.link, nil, nil)
+            end, {
+                link= info.Guild.link,
+                name= info.Guild.data[1],
+                rankName= info.Guild.data[2],
+                rankIndex= info.Guild.data[3],
+                realm= info.Guild.data[4],
+                text= info.Guild.text,
+                playerGuid= guid,
+            })
+        -- local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
+            sub2:AddInitializer(function(btn, desc)
+                local name= desc.data.name
+                if not name then
+                    return
+                end
+                local fontString2 = btn:AttachFontString()
+                fontString2:SetHeight(20);
+                fontString2:SetPoint("LEFT", btn.fontString, 'RIGHT', 5, 0)
+                --fontString2:SetPoint("RIGHT")
+                --fontString2:SetJustifyH("LEFT")
+                local realm= desc.data.realm
+                if realm and realm~=desc.data.playerRealm then
+                    realm= (e.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
+                else
+                    realm= ''
+                end
+
+                fontString2:SetText(
+                    (desc.data.link and e.Icon.left or '')
+                    ..Get_Rank_Texture(desc.data.rankIndex, true)
+                    ..name
+                    ..realm
+                )
+
+                local width = 20+ btn.fontString:GetUnboundedStringWidth() + fontString2:GetUnboundedStringWidth()
+                return width,  20
+            end)
+            sub2:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine(desc.data.name)
+                if desc.data.realm then
+                    tooltip:AddLine(
+                        (e.Player.Realms[desc.data.realm] and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')
+                        ..desc.data.realm
+                    )
+                end
+                tooltip:AddLine(desc.data.text)
+                tooltip:AddLine( WoWTools_UnitMixin:GetPlayerInfo({guid=desc.data.guid, reName=true, reRealm=true}))
+                tooltip:AddLine(
+                    Get_Rank_Texture(desc.data.rankIndex, true)
+                    ..desc.data.rankName
+                )
+            end)
+        end
+    end
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
+end
 
 
 
@@ -15,6 +106,8 @@ local function Init_Menu(self, root)
     local sub, sub2, text
 --无公会
     if not IsInGuild() then
+        WoW_List(self, root)
+
         root:CreateButton(
             MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB"),
         ToggleGuildFrame)
@@ -33,13 +126,9 @@ local function Init_Menu(self, root)
         if not data.clubID then
             return
         end
-        local club= C_ClubFinder.GetRecruitingClubInfoFromClubID(data.clubID)
-        if club and club.clubFinderGUID then
-            local link = GetClubFinderLink(club.clubFinderGUID, club.name)
-            WoWTools_ChatMixin:Chat(link, nil, nil)
-        else
-            ToggleGuildFrame()
-        end
+        WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(data.clubID), nil, nil)
+         --ToggleGuildFrame()
+
     end, {clubID= clubID})
     sub:SetTooltip(function(tooltip, desc)
         tooltip:AddLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT))
@@ -57,11 +146,14 @@ local function Init_Menu(self, root)
         return Save().guildInfo
     end, function()
         Save().guildInfo= not Save().guildInfo and true or nil
+        if Save().guildInfo then
+            e.WoWDate[e.Player.guid].Guild.text= nil
+        end
         self:settings()--事件, 公会新成员, 队伍新成员
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine()
-        tooltip:AddLine(e.WoWDate[e.Player.guid].GuildInfo)
+        tooltip:AddLine(e.WoWDate[e.Player.guid].Guild.text)
     end)
 
     sub2= sub:CreateCheckbox(
@@ -72,6 +164,8 @@ local function Init_Menu(self, root)
         Save().showNotOnLine= not Save().showNotOnLine and true or nil
         return MenuResponse.CloseAll
     end)
+
+    WoW_List(self, root)
 
 --弹劾
     if CanReplaceGuildMaster() then
@@ -105,13 +199,10 @@ local function Init_Menu(self, root)
                     or (isOnline and showNotOnLine and format('|T%s:0|t', FRIENDS_TEXTURE_ONLINE))
                     or '  '
 
-                if rankIndex ==0 then
-                    text= text..'|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
-                elseif rankIndex == 1 then
-                    text= text..'|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t'
-                end
 
-                text=text..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
+                text=text
+                    ..Get_Rank_Texture(rankIndex)
+                    ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})
                 text=(lv and lv~=maxLevel) and text..' |cnGREEN_FONT_COLOR:'..lv..'|r' or text--等级
                 if zone and zone==map then--地区
                     text= text..'|A:poi-islands-table:0:0|a'
