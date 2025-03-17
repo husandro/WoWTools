@@ -1053,8 +1053,8 @@ local function Init()
     WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
 
     function WorldButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
 
         local find
         find=0
@@ -1062,8 +1062,8 @@ local function Init()
             find= find+1
         end
 
-        e.tips:AddDoubleLine((e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))..' #'..find, e.GetEnabeleDisable(Save.myChatFilter))
-        e.tips:AddLine(' ')
+        GameTooltip:AddDoubleLine((e.onlyChinese and '屏蔽刷屏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, IGNORE, CLUB_FINDER_REPORT_SPAM))..' #'..find, e.GetEnabeleDisable(Save.myChatFilter))
+        GameTooltip:AddLine(' ')
         local channels = {GetChannelList()}
         for i = 1, #channels, 3 do
             local channelNumber, name, disabled = channels[i], channels[i+1], channels[i+2]
@@ -1071,10 +1071,10 @@ local function Init()
                 find= (channelNumber and WorldButton.channelNumber==channelNumber) and e.Icon.left or '   '
                 local value= Check_Channel(name)
                 local col= Get_Channel_Color(name, value)
-                e.tips:AddDoubleLine(col..channelNumber..')', col..name..find)
+                GameTooltip:AddDoubleLine(col..channelNumber..')', col..name..find)
             end
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     --[[WorldButton:SetScript("OnClick",function(self, d)
@@ -1084,7 +1084,7 @@ local function Init()
             self:set_tooltip()
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
-            e.tips:Hide()
+            GameTooltip:Hide()
         end
     end)]]
 
@@ -1108,7 +1108,7 @@ local function Init()
 
     --[[WorldButton:SetScript('OnLeave', function(self)
         self:state_leave()
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
     WorldButton:SetScript('OnEnter', function(self)
         self:state_enter()--Init_Menu)

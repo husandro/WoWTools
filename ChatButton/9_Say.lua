@@ -441,8 +441,8 @@ local function Init()
     SayButton.texture:SetAtlas('transmog-icon-chat')
 
     function SayButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if Save.type or Save.text or Save.name then
             local name
             if Save.type==SLASH_WHISPER1 then
@@ -450,16 +450,16 @@ local function Init()
             elseif Save.name then
                 name= Save.isWoW and e.Icon.net2..'|cff28a3ff'..Save.name or Save.name
             end
-            e.tips:AddDoubleLine((Save.text or '')..(Save.type and ' '..Save.type or ''),(name or '')..e.Icon.left)
+            GameTooltip:AddDoubleLine((Save.text or '')..(Save.type and ' '..Save.type or ''),(name or '')..e.Icon.left)
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '密语数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_WHISPER, AUCTION_HOUSE_QUANTITY_LABEL), Save.numWhisper)
-        e.tips:Show()
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '密语数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_WHISPER, AUCTION_HOUSE_QUANTITY_LABEL), Save.numWhisper)
+        GameTooltip:Show()
     end
 
     --[[SayButton:SetScript('OnLeave', function(self)
         self:state_leave()
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
     SayButton:SetScript('OnEnter', function(self)
         self:state_enter()--Init_Menu)
@@ -507,7 +507,7 @@ local function Init()
 
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
-            e.tips:Hide()
+            GameTooltip:Hide()
         end
     end)]]
 

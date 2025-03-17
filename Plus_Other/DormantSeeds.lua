@@ -57,10 +57,10 @@ local function Init()
         end
     end
     function Button:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= WoWTools_ItemMixin:GetLink(itemID)
             local icon
@@ -69,21 +69,21 @@ local function Init()
             local num
             num= C_Item.GetItemCount(itemID)
             num= num>0 and '|cnGREEN_FONT_COLOR:'..num or ('|cnRED_FONT_COLOR:'..num)
-            e.tips:AddDoubleLine(icon..link, num)
+            GameTooltip:AddDoubleLine(icon..link, num)
         end
         if CurrencyID and CurrencyID>0 then
             local info= C_CurrencyInfo.GetCurrencyInfo(CurrencyID)
             if info and info.quantity and info.name then
-                e.tips:AddDoubleLine((info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name, info.quantity)
+                GameTooltip:AddDoubleLine((info.iconFileID and '|T'..info.iconFileID..':0|t' or '')..info.name, info.quantity)
             end
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         local col= not self:CanChangeAttribute() and '|cff9e9e9e' or ''
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
+        GameTooltip:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
         col= not Save.point and '|cff9e9e9e' or ''
-        e.tips:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+        GameTooltip:Show()
     end
 
 
@@ -130,7 +130,7 @@ local function Init()
         self:set_Tooltips()
     end)
     Button:SetScript('OnLeave', function()
-        e.tips:Hide()
+        GameTooltip:Hide()
         ResetCursor()
         --self.texture:SetAlpha(0.5)
     end)
@@ -227,10 +227,10 @@ local function Init()
                     btn:SetPoint('TOP', index==1 and Button or self.btn[index-1], 'BOTTOM', 0, -6)
                     btn:SetScript('OnEnter', function(self2)
                         if self2.itemID  then
-                            e.tips:SetOwner(self, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:SetItemByID(self2.itemID)
-                            e.tips:Show()
+                            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetItemByID(self2.itemID)
+                            GameTooltip:Show()
                         end
                     end)
                     btn:SetScript('OnLeave', GameTooltip_Hide)

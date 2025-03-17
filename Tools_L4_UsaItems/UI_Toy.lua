@@ -23,20 +23,20 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
         if not itemID then
             return
         end
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
-        e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
+        GameTooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        GameTooltip:AddLine(' ')
 
         local icon= C_Item.GetItemIconByID(itemID)
         local find=WoWTools_UseItemsMixin:Find_Type('item', itemID)
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (icon and '|T'..icon..':0|t' or '')..(C_ToyBox.GetToyLink(itemID) or itemID)..' '..e.GetEnabeleDisable(find),
             e.Icon.left
         )
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:Show()
         self:SetAlpha(1)
     end
 
@@ -58,7 +58,7 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             WoWTools_UseItemsMixin:Init_Menu(self)
         end
     end)
-    btn.useItem:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
+    btn.useItem:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha() end)
     btn.useItem:SetScript('OnEnter', btn.useItem.set_tooltips)
     btn.useItem:set_alpha()
 

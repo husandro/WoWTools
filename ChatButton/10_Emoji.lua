@@ -87,11 +87,11 @@ local function Init_Buttons()--设置按钮
         local btn= WoWTools_ButtonMixin:Cbtn(Frame, {size=30, setID=index})
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(Frame.Buttons[#Frame.Buttons], "ANCHOR_TOP")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(self.text, '|T'..EmojiButton:get_texture(self:GetID())..':0|t')
-            e.tips:AddDoubleLine(e.Icon.left..(e.onlyChinese and '插入' or 'Insert'), (e.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
-            e.tips:Show()
+            GameTooltip:SetOwner(Frame.Buttons[#Frame.Buttons], "ANCHOR_TOP")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(self.text, '|T'..EmojiButton:get_texture(self:GetID())..':0|t')
+            GameTooltip:AddDoubleLine(e.Icon.left..(e.onlyChinese and '插入' or 'Insert'), (e.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
+            GameTooltip:Show()
         end)
         btn:SetScript('OnClick', function(self, d)
             send(self.text, d)
@@ -185,14 +185,14 @@ local function Init_EmojiFrame()
 
 
     function Frame:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('ChatButton', addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
-        --e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine('ChatButton', addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
+        --GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:Show()
     end
     Frame:SetScript("OnMouseUp", ResetCursor)
     Frame:SetScript("OnMouseDown", function(_, d)
@@ -202,7 +202,7 @@ local function Init_EmojiFrame()
     end)
     Frame:SetScript("OnLeave",function()
         ResetCursor()
-        e.tips:Hide()
+        GameTooltip:Hide()
         EmojiButton:SetButtonState('NORMAL')
     end)
     Frame:SetScript('OnEnter', function(self)
@@ -443,21 +443,21 @@ local function Init()
 
 
     function EmojiButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if Save.On_Click_Show then
-            e.tips:AddDoubleLine(e.GetShowHide(not Frame:IsShown()), e.Icon.left)
+            GameTooltip:AddDoubleLine(e.GetShowHide(not Frame:IsShown()), e.Icon.left)
         else
-            e.tips:AddDoubleLine(
+            GameTooltip:AddDoubleLine(
                 format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''),
                 (self.chatFrameEditBox and (e.onlyChinese and '插入' or 'Insert') or (e.onlyChinese and '发送' or SEND_LABEL))..e.Icon.left
             )
         end
         if self.numFilter==0 then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, self.numFilter)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '聊天频道' or CHAT_CHANNELS, self.numFilter)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
 

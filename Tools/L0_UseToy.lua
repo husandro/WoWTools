@@ -469,18 +469,18 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             self:SetAlpha(Save.items[self:get_itemID()] and 1 or 0.1)
         end
         function btn.useToy:set_tooltips()
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-            e.tips:AddLine(' ')
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddLine(' ')
             local itemID=self:get_itemID()
             local icon= C_Item.GetItemIconByID(itemID)
-            e.tips:AddDoubleLine(
+            GameTooltip:AddDoubleLine(
                 (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
                 e.GetEnabeleDisable(Save.items[itemID])..e.Icon.left
             )
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:Show()
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:Show()
             self:SetAlpha(1)
         end
         btn.useToy:SetScript('OnMouseDown', function(self, d)
@@ -492,7 +492,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 MenuUtil.CreateContextMenu(self, Init_Menu_Toy)
             end
         end)
-        btn.useToy:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha() end)
+        btn.useToy:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha() end)
         btn.useToy:SetScript('OnEnter', btn.useToy.set_tooltips)
     end
     btn.useToy:set_alpha()
@@ -609,19 +609,19 @@ local function Init()
 
 --Tooltip
     function ToyButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. e.Icon.left)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. e.Icon.left)
+        GameTooltip:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
             name, col=WoWTools_ItemMixin:GetName(data.itemID)
             col= col or ''
-            e.tips:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
+            GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(
             e.onlyChinese and '随机' or 'Random',
             (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
             ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
@@ -636,7 +636,7 @@ local function Init()
             ToyButton:Get_Random_Value()
         end
 
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
 
@@ -662,7 +662,7 @@ local function Init()
     end)
 
     ToyButton:SetScript("OnLeave",function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
     end)

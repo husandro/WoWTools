@@ -39,11 +39,11 @@ local function Create_Texture(r,g,b,a, atlas)
 	texture:SetScript('OnMouseUp', function(self) self:SetAlpha(0.7) end)
 	texture:SetScript('OnEnter', function(self)
 		local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r, self.g, self.b, self.a)
-		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(col..WoWTools_Mixin.addName, col..WoWTools_ColorMixin.addName)
+		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
+		GameTooltip:ClearLines()
+		GameTooltip:AddDoubleLine(col..WoWTools_Mixin.addName, col..WoWTools_ColorMixin.addName)
 
-		e.tips:AddDoubleLine(
+		GameTooltip:AddDoubleLine(
             '|cffff0000r|r|cffffffff=|r'..tonumber(format('%.2f',self.r))
             ..'  |cff00ff00g|r|cffffffff=|r'..tonumber(format('%.2f',self.g))
             ..'  |cff0000ffb|r|cffffffff=|r'..tonumber(format('%.2f',self.b)),
@@ -52,17 +52,17 @@ local function Create_Texture(r,g,b,a, atlas)
             ..(self.a and self.a<1 and '|cnGREEN_FONT_COLOR: / 1|r' or '')
         )
         if self.textCode then
-            e.tips:AddLine(self.textCode)
+            GameTooltip:AddLine(self.textCode)
         end
         if self.tooltip then
             if type(self.tooltip)=='function' then
                 self.tooltip(self)
             else
-                e.tips:AddLine(' ')
-                e.tips:AddLine(self.tooltip)
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddLine(self.tooltip)
             end
 		end
-		e.tips:Show()
+		GameTooltip:Show()
 		self:SetAlpha(0.7)
 	end)
 	texture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)

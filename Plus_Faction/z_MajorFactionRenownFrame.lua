@@ -223,13 +223,13 @@ local function Init()
     end
 
     function Button:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(not Save().hide_MajorFactionRenownFrame_Button), e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), e.Icon.mid)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide_MajorFactionRenownFrame_Button), e.Icon.left)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), e.Icon.mid)
+        GameTooltip:Show()
     end
 
     Button:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 8, 0)

@@ -126,7 +126,7 @@ local function Crated_Button(index, last)
         btn:SetPoint('TOP', last or WoWTools_FactionMixin.TrackButton, 'BOTTOM')
     end
     btn:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         if EmbeddedItemTooltip then EmbeddedItemTooltip:Hide() end
         WoWTools_FactionMixin:Set_TrackButton_Pushed(false, self.text)--TrackButton，提示
 		WoWTools_FactionMixin:Find(nil, nil)

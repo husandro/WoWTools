@@ -86,8 +86,8 @@ local function InstanceDifficulty_OnEnter(self)
         return
     end
 
-    e.tips:SetOwner(MinimapCluster, "ANCHOR_LEFT")
-    e.tips:ClearLines()
+    GameTooltip:SetOwner(MinimapCluster, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
     --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
     local instanceName, _, difficultyID, difficultyName, maxPlayers= GetInstanceInfo()
     difficultyName= e.cn(difficultyName)
@@ -95,15 +95,15 @@ local function InstanceDifficulty_OnEnter(self)
         difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
     end
 
-    e.tips:AddDoubleLine(e.cn(instanceName), difficultyName)
-    e.tips:AddLine(self.tooltip)
-    e.tips:AddLine(' ')
+    GameTooltip:AddDoubleLine(e.cn(instanceName), difficultyName)
+    GameTooltip:AddLine(self.tooltip)
+    GameTooltip:AddLine(' ')
    
-    InstanceDifficulty_Tooltip(e.tips, difficultyID)
+    InstanceDifficulty_Tooltip(GameTooltip, difficultyID)
 
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
-    e.tips:Show()
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
+    GameTooltip:Show()
     if self.labelType then
         self.labelType:SetAlpha(1)
     end
@@ -141,7 +141,7 @@ local function Init()
         if self.labelType then
             self.labelType:SetAlpha(0.5)
         end
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
 end
 

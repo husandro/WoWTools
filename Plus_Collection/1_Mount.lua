@@ -29,12 +29,12 @@ local function UpdateMountDisplay()
             self:SetAlpha(Save().ShowMountDisplayInfo and 0.2 or 1)
         end
         function MountJournal.MountDisplay.tipButton:set_Tooltips()
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(e.onlyChinese and '显示信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INFO), e.GetShowHide(not Save().ShowMountDisplayInfo))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(e.onlyChinese and '显示信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, INFO), e.GetShowHide(not Save().ShowMountDisplayInfo))
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
+            GameTooltip:Show()
         end
         function MountJournal.MountDisplay.tipButton:set_Text()
             local text

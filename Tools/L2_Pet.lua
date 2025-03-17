@@ -42,12 +42,12 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
             self:SetAlpha(Save.Pets[self.speciesID] and 1 or 0)
         end
 
-        frame.sumButton:SetScript('OnLeave', function(self) self:set_alpha() e.tips:Hide() end)
+        frame.sumButton:SetScript('OnLeave', function(self) self:set_alpha() GameTooltip:Hide() end)
         frame.sumButton:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:Show()
             self:SetAlpha(1)
         end)
 
@@ -298,19 +298,19 @@ local function Init()
 
    button:SetScript('OnEnter', function(self)
         local info= self:get_speciesID_data()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if info.petID then
-            e.tips:SetCompanionPet(info.petID)
+            GameTooltip:SetCompanionPet(info.petID)
         end
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         local name = e.onlyChinese and info.cn or info.name
         if name then
-            e.tips:AddDoubleLine(name, e.Icon.left)
+            GameTooltip:AddDoubleLine(name, e.Icon.left)
         end
-        e.tips:AddDoubleLine(e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), e.Icon.mid)
-        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), e.Icon.mid)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        GameTooltip:Show()
     end)
     button:SetScript('OnLeave', GameTooltip_Hide)
 

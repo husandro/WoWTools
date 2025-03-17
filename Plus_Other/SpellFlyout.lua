@@ -258,15 +258,15 @@ local function Init_All_Flyout()
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end)
 
-        btn:SetScript('OnLeave', GameTooltip_Hide)-- function(self) self:SetAlpha(isKnown and 0.1 or 0.5) e.tips:Hide() end)
+        btn:SetScript('OnLeave', GameTooltip_Hide)-- function(self) self:SetAlpha(isKnown and 0.1 or 0.5) GameTooltip:Hide() end)
         btn:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
 
             local name, description, numSlots2= GetFlyoutInfo(self.flyoutID)
-            e.tips:AddLine(name, 1,1,1)
-            e.tips:AddLine(description, nil,nil,nil,true)
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(name, 1,1,1)
+            GameTooltip:AddLine(description, nil,nil,nil,true)
+            GameTooltip:AddLine(' ')
 
             for slot= 1, numSlots2 do
                 local flyoutSpellID, overrideSpellID, isKnown2, spellName = GetFlyoutSlotInfo(self.flyoutID, slot)
@@ -276,16 +276,16 @@ local function Init_All_Flyout()
                     local name2= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
                     local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then
-                        e.tips:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
                     else
-                        e.tips:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(e.onlyChinese and '法术' or SPELLS)..'('..slot)
                     end
                 end
             end
 
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('flyoutID '..self.flyoutID, addName)
-            e.tips:Show()
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('flyoutID '..self.flyoutID, addName)
+            GameTooltip:Show()
         end)
 
         btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})

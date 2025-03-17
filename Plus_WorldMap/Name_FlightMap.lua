@@ -47,13 +47,13 @@ local function Init()
         CloseTaxiMap()
         self:Settings()
     end)
-    btn:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    btn:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
     btn:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
             '|A:FlightMaster:0:0|a'..(e.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
@@ -62,8 +62,8 @@ local function Init()
             )
             ..e.Icon.left
         )
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
+        GameTooltip:Show()
         self:SetAlpha(1)
     end)
 

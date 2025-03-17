@@ -207,18 +207,18 @@ local function Init()
     end
 
     function BuyItemButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
 
         local infoType, itemIDorIndex, itemLink = GetCursorInfo()
         if infoType=='item' and itemIDorIndex and itemLink then
             local icon= C_Item.GetItemIconByID(itemLink)
             local name= '|T'..(icon or 0)..':0|t'..itemLink
             if Save().Sell[itemIDorIndex] then
-                e.tips:AddDoubleLine(name, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB)))
+                GameTooltip:AddDoubleLine(name, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB)))
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
-                e.tips:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB)))
+                GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB)))
                 if icon then
                     self.texture:SetTexture(icon)
                 end
@@ -233,9 +233,9 @@ local function Init()
                 local name = '|T'..(icon or 0)..':0|t'..itemLink
                 local num= GetBuyNum(itemID)
                 if num then
-                    e.tips:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..num, '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..e.Icon.left)
+                    GameTooltip:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..num, '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..e.Icon.left)
                 else
-                    e.tips:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..e.Icon.left)
+                    GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..e.Icon.left)
                 end
                 if icon then
                     self.texture:SetTexture(icon)
@@ -243,17 +243,17 @@ local function Init()
             end
         else
 
-            --e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
+            --GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
             local num= self:set_text()--回购，数量，提示
-            e.tips:AddDoubleLine('|T236994:0|t|cffff00ff'..(e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+            GameTooltip:AddDoubleLine('|T236994:0|t|cffff00ff'..(e.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
-    BuyItemButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_texture() end)
+    BuyItemButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_texture() end)
     BuyItemButton:SetScript('OnEnter', BuyItemButton.set_tooltip)
     BuyItemButton:SetScript('OnMouseUp', BuyItemButton.set_texture)
 

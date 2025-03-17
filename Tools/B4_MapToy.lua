@@ -280,15 +280,15 @@ local function Init()
     end
 
     function ToyButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if self.itemID then
-            e.tips:SetItemByID(self.itemID)
+            GameTooltip:SetItemByID(self.itemID)
         else
-            e.tips:AddDoubleLine(' ', addName)
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+            GameTooltip:AddDoubleLine(' ', addName)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     --CD
@@ -337,7 +337,7 @@ local function Init()
     ToyButton:SetAttribute("type1", "item")
 
     ToyButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
     end)

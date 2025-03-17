@@ -45,10 +45,10 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
                 num= encounterProgress==numEncounters and '|cnGREEN_FONT_COLOR:'..num..'|r' or num
                 if showTips then
                     if find then
-                        e.tips:AddLine(' ')
+                        GameTooltip:AddLine(' ')
                     end
 
-                    e.tips:AddDoubleLine((difficultyName or e.cn(name) or '')..' '..(num or ''))
+                    GameTooltip:AddDoubleLine((difficultyName or e.cn(name) or '')..' '..(num or ''))
                     local t
                     for j=1,numEncounters do
                         local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j)
@@ -63,7 +63,7 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
                                 t=t2
                                 t2=nil
                             end
-                            e.tips:AddDoubleLine(t,t2)
+                            GameTooltip:AddDoubleLine(t,t2)
                             t=nil
                         else
                             t=t2

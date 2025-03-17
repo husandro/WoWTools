@@ -27,14 +27,14 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     end
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.3})
     btn:SetPoint('RIGHT', frame.Header.MinimizeButton, 'LEFT', -2, 0)
-    btn:SetScript('OnLeave', function(f) f:SetAlpha(0.3) e.tips:Hide() end)
+    btn:SetScript('OnLeave', function(f) f:SetAlpha(0.3) GameTooltip:Hide() end)
     btn:SetScript('OnEnter', function(f)
-        e.tips:SetOwner(f, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName,addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (e.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
-        e.tips:Show()
+        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName,addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine((e.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (e.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
+        GameTooltip:Show()
         f:SetAlpha(1)
     end)
     btn:SetScript('OnDoubleClick', func)
@@ -61,7 +61,7 @@ function WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, icon, type)
         end
         block.Icon2:SetSize(26,26)
         block.Icon2:EnableMouse()
-        block.Icon2:SetScript('OnLeave', function(f) e.tips:Hide() f:GetParent():SetAlpha(1) end)
+        block.Icon2:SetScript('OnLeave', function(f) GameTooltip:Hide() f:GetParent():SetAlpha(1) end)
         block.Icon2:SetScript('OnEnter', function(f)
             local parent= f:GetParent()
             parent:SetAlpha(0.5)
@@ -69,15 +69,15 @@ function WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, icon, type)
             if not typeID then
                 return
             end
-            e.tips:SetOwner(f, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(f, "ANCHOR_LEFT")
             if f.type=='isAchievement' then
-                e.tips:SetAchievementByID(typeID)
+                GameTooltip:SetAchievementByID(typeID)
             --elseif f.type=='isItem' then
-                --e.tips:SetItemByID(typeID)
+                --GameTooltip:SetItemByID(typeID)
             elseif f.type=='isRecipe' then
-                e.tips:SetRecipeResultItem(typeID)
+                GameTooltip:SetRecipeResultItem(typeID)
             end
-            e.tips:Show()
+            GameTooltip:Show()
         end)
     end
     if block.Icon2 then

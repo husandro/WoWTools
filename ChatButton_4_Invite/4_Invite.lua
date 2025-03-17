@@ -94,16 +94,16 @@ local function Init()
     end
 
     function InviteButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_InviteMixin.addName, e.Icon.left)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_InviteMixin.addName, e.Icon.left)
         if Save().InvTar then
-            e.tips:AddLine(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))
+            GameTooltip:AddLine(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))
         end
         if Save().Channel and Save().ChannelText then
-            e.tips:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save().ChannelText)
+            GameTooltip:AddLine((e.onlyChinese and '频道' or CHANNEL)..'|cnGREEN_FONT_COLOR: '..Save().ChannelText)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     InviteButton:SetupMenu(function(...)
@@ -131,7 +131,7 @@ local function Init()
     end)
 
     InviteButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:state_leave()
     end)
     InviteButton:SetScript('OnEnter', function(self)

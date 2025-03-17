@@ -149,32 +149,32 @@ local function Init()
 
 
     function UseButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT");
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+        GameTooltip:ClearLines()
         local itemID, itemLink = self:get_tooltip_item()
         if itemID and itemLink then
-            e.tips:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
+            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
         else
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            e.tips:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
 
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
             if self.alt then
-                e.tips:AddDoubleLine(WoWTools_SpellMixin:GetName(self.alt), 'Alt+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.alt), 'Alt+'..e.Icon.left)
             end
             if self.ctrl then
-                e.tips:AddDoubleLine(WoWTools_SpellMixin:GetName(self.ctrl), 'Ctrl+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.ctrl), 'Ctrl+'..e.Icon.left)
             end
             if self.shift then
-                e.tips:AddDoubleLine(WoWTools_SpellMixin:GetName(self.shift), 'Shift+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.shift), 'Shift+'..e.Icon.left)
             end
             if self.alt or self.ctrl or self.shift then
-                e.tips:AddLine(' ')
+                GameTooltip:AddLine(' ')
             end
-            e.tips:AddDoubleLine(
+            GameTooltip:AddDoubleLine(
                 (Save().onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
                 ..(e.onlyChinese and '仅当前版本物品'
                     or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL))
@@ -182,7 +182,7 @@ local function Init()
                 e.GetEnabeleDisable(Save().onlyMaxExpansion)
             )
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     UseButton:SetScript('OnLeave', function(self)

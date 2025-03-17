@@ -136,15 +136,15 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                             end
                     end)
                     self['key'..i]:SetScript("OnEnter",function(self2)
-                            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:SetHyperlink(self2.item)
-                            e.tips:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
-                            e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
-                            e.tips:Show()
+                            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetHyperlink(self2.item)
+                            GameTooltip:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                            GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                            GameTooltip:Show()
                     end)
                     self['key'..i]:SetScript("OnLeave",function()
-                            e.tips:Hide()
+                            GameTooltip:Hide()
                     end)
                     self['key'..i].bag=WoWTools_LabelMixin:Create(self['key'..i])
                     if point:find('LEFT') then
@@ -380,17 +380,17 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                 end)
                 self2.dungeonScoreLink:SetScript('OnEnter', function(self3)
                     self3:SetAlpha(0.7)
-                    e.tips:SetOwner(self3, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine(self3.link)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
-                    e.tips:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
-                    e.tips:Show()
+                    GameTooltip:SetOwner(self3, "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddLine(self3.link)
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                    GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                    GameTooltip:Show()
                 end)
                 self2.dungeonScoreLink:SetScript('OnLeave', function(self3)
                     self3:SetAlpha(1)
-                    e.tips:Hide()
+                    GameTooltip:Hide()
                 end)
                 self2.dungeonScoreLink:SetScript('OnMouseUp', function(self3)
                     self3:SetAlpha(0.7)
@@ -423,16 +423,16 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
         Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
     end)
     check:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-        e.tips:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
-        e.tips:Show()
+        GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+        GameTooltip:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
+        GameTooltip:Show()
         self2:SetAlpha(1)
     end)
-    check:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(0.5) end)
+    check:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(0.5) end)
     hooksecurefunc(self, 'OnKeystoneSlotted',function(self2)--插入, KEY时, 说
         if not Save.slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self2.inseSayTips then
             return
@@ -490,12 +490,12 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
     self.countdown2:SetScript('OnLeave', GameTooltip_Hide)
     self.countdown2:SetScript('OnEnter', function(frame)
-        e.tips:SetOwner(frame, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', '|A:transmog-icon-chat:0:0|a'..(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
-        e.tips:Show()
+        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(' ', '|A:transmog-icon-chat:0:0|a'..(e.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
+        GameTooltip:Show()
     end)
 end
 
@@ -589,10 +589,10 @@ local function Init_Affix()
             label.max= max
             label:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
             label:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(addName)
-                e.tips:AddLine(' ')
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(addName)
+                GameTooltip:AddLine(' ')
                 for idx=1, self.max do
                     local tab= self.affixSchedule[idx]
                     local text=''
@@ -602,9 +602,9 @@ local function Init_Affix()
                         text= text..'|T'..filedataid..':0|t'..e.cn(name)..'  '
                     end
                     local col= idx==self.currentWeek and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(idx/2))==0 and '|cffff8200') or '|cffffffff'
-                    e.tips:AddLine(col..(idx<10 and '  ' or '')..idx..') '..text)
+                    GameTooltip:AddLine(col..(idx<10 and '  ' or '')..idx..') '..text)
                 end
-                e.tips:Show()
+                GameTooltip:Show()
                 self:SetAlpha(0.3)
             end)
             --end
@@ -695,11 +695,11 @@ local function create_lable(btn, point, text, col, size)
 
     label:SetText(text or point)
     label.point= point
-    label:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+    label:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
     label:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(
             self.point==3 and (e.onlyChinese and '团队副本' or RAIDS)
             or self.point==1 and (e.onlyChinese and '地下城' or DUNGEONS)
             or self.point==2 and (e.onlyChinese and 'PvP' or PVP)
@@ -708,8 +708,8 @@ local function create_lable(btn, point, text, col, size)
             or self.point=='l' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
             or self.point=='r' and (e.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
         )
-        e.tips:AddLine('|cffffffff'..(self:GetText() or ''))
-        e.tips:Show()
+        GameTooltip:AddLine('|cffffffff'..(self:GetText() or ''))
+        GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
 end
@@ -743,10 +743,10 @@ local function All_Player_Info()--所以角色信息
                 btn:SetScript('OnLeave', GameTooltip_Hide)
                 btn:SetScript('OnEnter', function(self)
                     if self.link then
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:SetHyperlink(self.link)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetHyperlink(self.link)
+                        GameTooltip:Show()
                     end
                 end)
 
@@ -792,13 +792,13 @@ local function All_Player_Info()--所以角色信息
                     local keyLable= WoWTools_LabelMixin:Create(btn, {mouse=true})--KEY
                     keyLable.link=link
                     keyLable:SetPoint('RIGHT', nameLable, 'LEFT')
-                    keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+                    keyLable:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
                     keyLable:SetScript('OnEnter', function(self)
                         if self.link then
-                            e.tips:SetOwner(self, "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:SetHyperlink(self.link)
-                            e.tips:Show()
+                            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:SetHyperlink(self.link)
+                            GameTooltip:Show()
                         end
                     end)
                     keyLable:SetText(link)
@@ -845,14 +845,14 @@ local function set_All_Text()--所有记录
         ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
         ChallengesFrame.moveRightTipsButton:SetAlpha(0.3)
         function ChallengesFrame.moveRightTipsButton:set_tooltips()
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
-            e.tips:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
-            e.tips:AddDoubleLine('y: '..Save.rightY, 'Alt+'..e.Icon.mid)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
+            GameTooltip:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
+            GameTooltip:AddDoubleLine('y: '..Save.rightY, 'Alt+'..e.Icon.mid)
+            GameTooltip:Show()
             self:SetAlpha(1)
         end
         ChallengesFrame.moveRightTipsButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
@@ -879,8 +879,8 @@ local function set_All_Text()--所有记录
 
         ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
         ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
-            e.tips:SetOwner(self2, "ANCHOR_LEFT")
-            e.tips:ClearLines()
+            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
 
             local curMaps = {}
             for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
@@ -916,7 +916,7 @@ local function set_All_Text()--所有记录
                     table.insert(newTab, 1, tab)
                 end
             end
-            e.tips:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
 
             for _, tab in pairs(newTab) do
                 local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
@@ -935,10 +935,10 @@ local function set_All_Text()--所有记录
                         text='|cff828282'..text
                         text2='|cff828282'..text2
                     end
-                    e.tips:AddDoubleLine(text, text2)
+                    GameTooltip:AddDoubleLine(text, text2)
                 end
             end
-            e.tips:Show()
+            GameTooltip:Show()
             self2:SetAlpha(0.5)
         end)
     end
@@ -1040,15 +1040,15 @@ local function set_All_Text()--所有记录
             local curLevel= self.curLevel==level and format('|A:%s:0:0|a', e.Icon.select) or ''
             return week..curkey..curLevel
         end
-        ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) e.tips:Hide() end)
+        ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(self:GetText())
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(self:GetText())
             for level=2, LimitMaxKeyLevel do--限制，显示等级                
-                e.tips:AddLine(self:get_Loot_itemLevel(level))
+                GameTooltip:AddLine(self:get_Loot_itemLevel(level))
             end
-            e.tips:Show()
+            GameTooltip:Show()
             self:SetAlpha(0.5)
         end)
     end
@@ -1141,7 +1141,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                     local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self2.mapID)
                     if intimeInfo then
-                        e.tips:AddLine(' ')
+                        GameTooltip:AddLine(' ')
                         for index, info in pairs(intimeInfo.members) do
                             if info.name then
                                 if index==1 then
@@ -1153,7 +1153,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                             d=overtimeInfo.completionDate
                                             time2= format('|cffff0000%s %s:%s %d/%d/%d', '('..overtimeInfo.level..')', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
                                         end
-                                        e.tips:AddDoubleLine(time, time2)
+                                        GameTooltip:AddDoubleLine(time, time2)
                                     end
                                 end
 
@@ -1185,7 +1185,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                         end
                                     end
                                 end
-                                e.tips:AddDoubleLine(text, text2)
+                                GameTooltip:AddDoubleLine(text, text2)
 
                                 if index==#intimeInfo.members and intimeInfo.affixIDs then
                                     local affix, affix2='', ''
@@ -1202,24 +1202,24 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                         end
                                     end
                                     if affix ~='' then
-                                        e.tips:AddDoubleLine(affix, affix2)
+                                        GameTooltip:AddDoubleLine(affix, affix2)
                                     end
                                 end
                             end
                         end
                     end
 
-                    e.tips:AddLine(' ')
+                    GameTooltip:AddLine(' ')
                     local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self2.mapID))
                     local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
                     local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
-                    e.tips:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
+                    GameTooltip:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
                     if texture and backgroundTexture then
-                        e.tips:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
+                        GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                     end
-                    e.tips:Show()
+                    GameTooltip:Show()
                 end)
 
                 frame:EnableMouse(true)
@@ -1240,13 +1240,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if not frame.nameLable then
                     frame.nameLable=WoWTools_LabelMixin:Create(frame, {size=10, mouse= true, justifyH='CENTER'})
                     frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
-                    frame.nameLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                    frame.nameLable:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
                     frame.nameLable:SetScript('OnEnter', function(self2)
                         if self2.name then
-                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_LEFT")
-                            e.tips:ClearLines()
-                            e.tips:AddLine(self2.name..' ')
-                            e.tips:Show()
+                            GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_LEFT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:AddLine(self2.name..' ')
+                            GameTooltip:Show()
                         end
                         self2:SetAlpha(0.5)
                     end)
@@ -1280,13 +1280,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 if not frame.scoreLable then--分数
                     frame.scoreLable=WoWTools_LabelMixin:Create(frame, {size=10, mouse=true})
                     frame.scoreLable:SetPoint('BOTTOMLEFT', frame, 0, 24)
-                    frame.scoreLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                    frame.scoreLable:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
                     frame.scoreLable:SetScript('OnEnter', function(self2)
                         if self2.score then
-                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:AddLine(format(e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self2.score))
-                            e.tips:Show()
+                            GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:AddLine(format(e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self2.score))
+                            GameTooltip:Show()
                             self2:SetAlpha(0.5)
                         end
                     end)
@@ -1298,12 +1298,12 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.HighestLevel:ClearAllPoints()
                         frame.HighestLevel:SetPoint('LEFT', 0, 12)
                         frame.HighestLevel:EnableMouse(true)
-                        frame.HighestLevel:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                        frame.HighestLevel:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
                         frame.HighestLevel:SetScript('OnEnter', function(self2)
-                            e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                            e.tips:ClearLines()
-                            e.tips:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
-                            e.tips:Show()
+                            GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                            GameTooltip:ClearLines()
+                            GameTooltip:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
+                            GameTooltip:Show()
                             self2:SetAlpha(0.5)
                         end)
                     end
@@ -1326,14 +1326,14 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 else
                                     label:SetPoint('BOTTOMLEFT', frame, 0, 12)
                                 end
-                                label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                                label:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
                                 label:SetScript('OnEnter', function(self2)
-                                    e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                                    e.tips:ClearLines()
-                                    e.tips:AddDoubleLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
+                                    GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                                    GameTooltip:ClearLines()
+                                    GameTooltip:AddDoubleLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
                                                             self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, WoWTools_TimeMixin:SecondsToClock(self2.durationSec)) or WoWTools_TimeMixin:SecondsToClock(self2.durationSec)
                                                         )
-                                    e.tips:Show()
+                                    GameTooltip:Show()
                                     self2:SetAlpha(0.5)
                                 end)
                                 frame['affixInfo'..info.name]= label
@@ -1364,21 +1364,21 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         if not frame.completedLable then
                             frame.completedLable=WoWTools_LabelMixin:Create(frame, {mouse=true})
                             frame.completedLable:SetPoint('TOPLEFT', frame)
-                            frame.completedLable:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                            frame.completedLable:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
                             frame.completedLable:SetScript('OnEnter', function(self2)
                                 if self2.all or self2.week then
-                                    e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                                    e.tips:ClearLines()
-                                    e.tips:AddDoubleLine(
+                                    GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                                    GameTooltip:ClearLines()
+                                    GameTooltip:AddDoubleLine(
                                         e.onlyChinese and '历史 |cnGREEN_FONT_COLOR:完成|r/总计' or (HISTORY..' |cnGREEN_FONT_COLOR:'..COMPLETE..'|r/'..TOTAL) ,
                                         self2.all or (e.onlyChinese and '无' or NONE)
                                     )
-                                    e.tips:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week and '('..self2.week..')' or (e.onlyChinese and '无' or NONE))
+                                    GameTooltip:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week and '('..self2.week..')' or (e.onlyChinese and '无' or NONE))
                                     if self2.completed and self2.totale and self2.completed < self2.totale then
-                                        e.tips:AddLine(' ')
-                                        e.tips:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
+                                        GameTooltip:AddLine(' ')
+                                        GameTooltip:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
                                     end
-                                    e.tips:Show()
+                                    GameTooltip:Show()
                                     self2:SetAlpha(0.5)
                                 end
                             end)
@@ -1406,15 +1406,15 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.currentKey:SetAtlas('common-icon-checkmark')
                 frame.currentKey:SetSize(22,22)
                 frame.currentKey:EnableMouse(true)
-                frame.currentKey:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) self2.label:SetAlpha(1) end)
+                frame.currentKey:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) self2.label:SetAlpha(1) end)
                 frame.currentKey:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
+                    GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
+                    GameTooltip:ClearLines()
                     local bagID, slotID= select(2, WoWTools_BagMixin:Ceca(nil, {isKeystone=true}))--查找，包的key
                     if bagID and slotID then
-                        e.tips:SetBagItem(bagID, slotID)
+                        GameTooltip:SetBagItem(bagID, slotID)
                     end
-                    e.tips:Show()
+                    GameTooltip:Show()
                     self2:SetAlpha(0.3)
                     self2.label:SetAlpha(0.3)
                 end)
@@ -1447,18 +1447,18 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.spellPort:SetScript("OnEnter",function(self2)
                             local parent= self2:GetParent()
                             if parent.spellID then
-                                e.tips:SetOwner(parent, "ANCHOR_RIGHT")
-                                e.tips:ClearLines()
-                                e.tips:SetSpellByID(parent.spellID)
+                                GameTooltip:SetOwner(parent, "ANCHOR_RIGHT")
+                                GameTooltip:ClearLines()
+                                GameTooltip:SetSpellByID(parent.spellID)
                                 if not IsSpellKnownOrOverridesKnown(parent.spellID) then--没学会
-                                    e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
+                                    GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
                                 end
-                                e.tips:Show()
+                                GameTooltip:Show()
                                 self2:SetAlpha(1)
                             end
                         end)
                         frame.spellPort:SetScript("OnLeave",function(self2)
-                            e.tips:Hide()
+                            GameTooltip:Hide()
                             local spellID=self2:GetParent().spellID
                             self2:SetAlpha(spellID and IsSpellKnownOrOverridesKnown(spellID) and 1 or 0.3)
                         end)
@@ -1532,10 +1532,10 @@ local function Init_Blizzard_WeeklyRewards()
     WeeklyRewardsFrame.showChallenges:SetFrameStrata('HIGH')
 
     WeeklyRewardsFrame.showChallenges:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT");
-        e.tips:ClearLines();
-        e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
+        GameTooltip:ClearLines();
+        GameTooltip:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+        GameTooltip:Show()
         self2:SetButtonState('NORMAL')
     end)
     WeeklyRewardsFrame.showChallenges:SetScript("OnLeave",GameTooltip_Hide)
@@ -1722,7 +1722,7 @@ local function Init_Blizzard_ChallengesUI()
     TipsFrame:SetPoint('CENTER')
     TipsFrame:SetSize(1, 1)
     TipsFrame:SetShown(not Save.hideTips)
-    TipsFrame:SetScale(Save.tipsScale or 1)
+    TipsFrame:SetScale(SavGameTooltipScale or 1)
 
     local check= WoWTools_ButtonMixin:Cbtn(ChallengesFrame, {size=18})
     check.texture= check:CreateTexture()
@@ -1759,20 +1759,20 @@ local function Init_Blizzard_ChallengesUI()
         self:set_Tooltips()
     end)
     function check:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
+        GameTooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:Show()
     end
     check:SetScript("OnEnter",function(self)
         self:set_Tooltips()
         self.texture:SetAlpha(1)
     end)
     check:SetScript("OnLeave",function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self.texture:SetAlpha(0.3)
     end)
 
@@ -1790,7 +1790,7 @@ local function Init_Blizzard_ChallengesUI()
         self:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or e.Icon.disabled)
     end)
     tipsButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        local scale= Save.tipsScale or 1
+        local scale= SavGameTooltipScale or 1
         if d==1 then
             scale= scale-0.05
         else
@@ -1799,24 +1799,24 @@ local function Init_Blizzard_ChallengesUI()
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
         print(WoWTools_Mixin.addName, addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
-        Save.tipsScale= scale==1 and nil or scale
+        SavGameTooltipScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
     end)
     function tipsButton:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.tipsScale or 1)..'|r'.. e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
+        GameTooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(SavGameTooltipScale or 1)..'|r'.. e.Icon.mid)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:Show()
     end
     tipsButton:SetScript('OnEnter', function(self)
         self:set_Tooltips()
         self:SetAlpha(1)
     end)
-    tipsButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.5) end)
+    tipsButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
 
 
     --传送门
@@ -1847,34 +1847,34 @@ local function Init_Blizzard_ChallengesUI()
         self:set_Tooltips()
     end)
     function spellButton:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         if e.onlyChinese then
-            e.tips:AddDoubleLine('挑战20层','限时传送门')
-            e.tips:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
+            GameTooltip:AddDoubleLine('挑战20层','限时传送门')
+            GameTooltip:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
         else
-            e.tips:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
-            e.tips:AddDoubleLine(LABEL_NOTE, 'If you get error, please disable this')
+            GameTooltip:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
+            GameTooltip:AddDoubleLine(LABEL_NOTE, 'If you get error, please disable this')
         end
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         for _, tab in pairs(e.ChallengesSpellTabs) do
             local spellLink= C_Spell.GetSpellLink(tab.spell) or C_Spell.GetSpellName(tab.spell) or ('ID'.. tab.spell)
             local icon= C_Spell.GetSpellTexture(tab.spell)
-            e.tips:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
+            GameTooltip:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
                                 'spellID '..tab.spell..' '..
                                 (IsSpellKnownOrOverridesKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
                                                         or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
                                 )
                             )
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:Show()
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:Show()
     end
     spellButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:SetAlpha(0.5)
     end)
     spellButton:SetScript('OnEnter', function(self)
@@ -1945,15 +1945,15 @@ local function Init_Blizzard_ChallengesUI()
         self:SetNormalAtlas(not Save.hideKeyUI and e.Icon.icon or e.Icon.disabled)
     end)
     btn:SetScript("OnEnter",function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:Show()
         self:SetAlpha(1)
     end)
     btn:SetScript("OnLeave",function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:SetAlpha(0.5)
     end)
     if not Save.hideKeyUI then
@@ -2043,23 +2043,23 @@ local function Say_ChallengeComplete()
                     Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
                 end)
                 sub2:SetTooltip(function(tooltip)
-                    e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-                    e.tips:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
+                    GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+                    GameTooltip:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
                 end)
              end)
         end
     end)
     SayButton:SetScript('OnLeave', GameTooltip_Hide)
     SayButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:Show()
     end)
 
     if Save.sayButtonPoint then

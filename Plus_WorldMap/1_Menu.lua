@@ -30,20 +30,20 @@ end
 
 
 local function Init_OnEnter(self)
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.Player.L.layer, e.Player.Layer or (e.onlyChinese and '无' or NONE))--位面
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine(e.Player.L.layer, e.Player.Layer or (e.onlyChinese and '无' or NONE))--位面
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
     if uiMapID then
         local info = C_Map.GetMapInfo(uiMapID)
         if info then
-            e.tips:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
+            GameTooltip:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
-                e.tips:AddDoubleLine(e.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
+                GameTooltip:AddDoubleLine(e.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
             end
         end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
@@ -51,7 +51,7 @@ local function Init_OnEnter(self)
             for _,areaPoiID in pairs(areaPoiIDs) do
                 local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, areaPoiID)
                 if poiInfo and (poiInfo.areaPoiID or poiInfo.tooltipWidgetSet) then
-                    e.tips:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
+                    GameTooltip:AddDoubleLine((poiInfo.atlasName and '|A:'..poiInfo.atlasName..':0:0|a' or '')
                     .. poiInfo.name
                     ..(poiInfo.tooltipWidgetSet and ' widgetSetID '..poiInfo.tooltipWidgetSet or ''),
                     'areaPoiID '..(poiInfo.areaPoiID or NONE))
@@ -61,9 +61,9 @@ local function Init_OnEnter(self)
         if IsInInstance() then--副本数据
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
-                e.tips:AddDoubleLine(e.onlyChinese and '副本' or INSTANCE, instanceID)
+                GameTooltip:AddDoubleLine(e.onlyChinese and '副本' or INSTANCE, instanceID)
                 if LfgDungeonID then
-                    e.tips:AddDoubleLine(e.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
+                    GameTooltip:AddDoubleLine(e.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
                 end
             end
         end
@@ -75,15 +75,15 @@ local function Init_OnEnter(self)
                 local info2 = C_Map.GetMapInfo(uiMapIDPlayer)
                 playerCursorMapName=info2 and info2.name
             end
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
             if playerCursorMapName then
-                e.tips:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
             else
-                e.tips:AddDoubleLine(e.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(e.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
             end
         end
     end
-    e.tips:Show()
+    GameTooltip:Show()
 
     if _G['WoWTools_PlayerXY_Button'] then
         _G['WoWTools_PlayerXY_Button']:SetButtonState('PUSHED')
@@ -420,7 +420,7 @@ local function Init()--显示地图ID
 
 
     MenuButton:SetScript('OnLeave', function()
-        e.tips:Hide()
+        GameTooltip:Hide()
         if _G['WoWTools_PlayerXY_Button'] then
             _G['WoWTools_PlayerXY_Button']:SetButtonState('NORMAL')
         end

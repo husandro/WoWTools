@@ -332,28 +332,28 @@ end
 
 
 local function Set_Tooltip(self)
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-    e.tips:ClearLines()
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
 
     if not self:IsCanChange() then
-        e.tips:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
-        e.tips:Show()
+        GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
+        GameTooltip:Show()
         return
     end
 
-    e.tips:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
+    GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
     local parent= self.targetFrame:GetParent()
     if parent then
-        e.tips:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
+        GameTooltip:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
     end
 
     local scale
     scale= tonumber(format('%.2f', self.targetFrame:GetScale() or 1))
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
-    e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
+    GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
 
     if self.setSize then
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         local col
         if self.sizeRestTooltipColorFunc then
             col=self.sizeRestTooltipColorFunc(self)
@@ -367,7 +367,7 @@ local function Set_Tooltip(self)
         h= math.modf(self.targetFrame:GetHeight())
         h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             col..(e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
                 e.GetEnabeleDisable(not Save().disabledSize[self.name])..e.Icon.right
         )
@@ -376,21 +376,21 @@ local function Set_Tooltip(self)
             if type(self.sizeTooltip)=='function' then
                 self:sizeTooltip()
             else
-                e.tips:AddLine(self.sizeTooltip)
+                GameTooltip:AddLine(self.sizeTooltip)
             end
         end
     end
 
-    e.tips:AddLine(' ')
+    GameTooltip:AddLine(' ')
     if self.set_move_event then--Frame 移动时，设置透明度
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
             Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
         )
     end
 
-    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
-    e.tips:Show()
+    GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
+    GameTooltip:Show()
 end
 
 

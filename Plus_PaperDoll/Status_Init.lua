@@ -44,12 +44,12 @@ local function Init_Button()
 
 
     function Button:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, self.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, self.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:Show()
         self:set_alpha(false)
     end
     Button:SetScript('OnLeave', function(self)

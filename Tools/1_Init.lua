@@ -347,14 +347,14 @@ local function Init()
     end
 
     function Button:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..e.GetShowHide(nil, true), e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..e.GetShowHide(nil, true), e.Icon.left)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:Show()
     end
 
     Button:RegisterForDrag("RightButton")
@@ -375,7 +375,7 @@ local function Init()
     end)
 
     Button:SetScript("OnLeave",function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         ResetCursor()
     end)
 

@@ -84,21 +84,21 @@ local function Init()
     Frame.storyText:SetPoint('RIGHT', Frame.Text, 'LEFT', -2, 0)
     --Frame.storyText:SetPoint('BOTTOM', WoWTools_PlusWorldMap_MenuButton, 'TOP', 0, 2)
     Frame.storyText:EnableMouse(true)
-    Frame.storyText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+    Frame.storyText:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     Frame.storyText:SetScript('OnEnter', function(self)
         if not self.achievementID then
             return
         end
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetAchievementByID(self.achievementID)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '查看' or VIEW, e.Icon.left)
-        e.tips:AddDoubleLine(
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetAchievementByID(self.achievementID)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '查看' or VIEW, e.Icon.left)
+        GameTooltip:AddDoubleLine(
             e.onlyChinese and '发送链接' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SEND_LABEL, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK),
             e.Icon.right
         )
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(0.7)
     end)
     Frame.storyText:SetScript("OnMouseUp", function(self) self:SetAlpha(0.7) end)

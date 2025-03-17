@@ -14,28 +14,28 @@ end
 
 
 local function Set_Tooltip(self)
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName)
-    e.tips:AddLine(format('|cffff00ff%s|r', self.name))
-    e.tips:AddLine(' ')
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName)
+    GameTooltip:AddLine(format('|cffff00ff%s|r', self.name))
+    GameTooltip:AddLine(' ')
 
 
-    e.tips:AddDoubleLine(
+    GameTooltip:AddDoubleLine(
         e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
         e.Icon.right
     )
-    e.tips:AddDoubleLine(
+    GameTooltip:AddDoubleLine(
         e.onlyChinese and '移动' or NPE_MOVE,
         'Alt+'..e.Icon.right
     )
     if self.setZoom then
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
             'Alt+'..e.Icon.mid
         )
     end
-    e.tips:Show()
+    GameTooltip:Show()
 end
 
 
@@ -143,7 +143,7 @@ local function SetupButton(frame, tab)
 --提示
     btn:SetScript("OnLeave", function(self)
         ResetCursor()
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:set_alpha()
     end)
     btn:SetScript("OnEnter",function(self)

@@ -449,24 +449,24 @@ end
 local function Init_StopwatchFrame()
 --Tooltip
     function StopwatchFrame:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
         if Save().StopwatchOnClickPause then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(
                 (e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
                 e.Icon.left
             )
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
     StopwatchFrame:HookScript('OnLeave', function()
-        e.tips:Hide()
+        GameTooltip:Hide()
         StopwatchResetButton:SetAlpha(StopwatchResetButton.alpha or 1)
         ResetCursor()
 
@@ -571,25 +571,25 @@ local function Init_StopwatchFrame()
 
 
 --设置，提示
-    StopwatchPlayPauseButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(self.alpha or 1) end)
+    StopwatchPlayPauseButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(self.alpha or 1) end)
     StopwatchPlayPauseButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
         if Stopwatch_IsPlaying() then
-            e.tips:AddLine(e.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE)
+            GameTooltip:AddLine(e.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE)
         else
-            e.tips:AddLine(e.onlyChinese and '开始' or START)
+            GameTooltip:AddLine(e.onlyChinese and '开始' or START)
         end
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(1)
     end)
 
-    StopwatchResetButton:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(self.alpha or 1) end)
+    StopwatchResetButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(self.alpha or 1) end)
     StopwatchResetButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, Save().StopwatchOnClickPause and "ANCHOR_LEFT" or "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '重置' or RESET)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, Save().StopwatchOnClickPause and "ANCHOR_LEFT" or "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.onlyChinese and '重置' or RESET)
+        GameTooltip:Show()
         self:SetAlpha(1)
     end)
 
@@ -670,20 +670,20 @@ local function Init()
 
     hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
         if Save().disabledClockPlus then
-            e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+            GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
         else
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(GetServerTime())..e.Icon.left)
-            e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(GetServerTime())..e.Icon.left)
+            GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
 
-            --e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
-            --e.tips:AddLine(' ')
+            --GameTooltip:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
+            --GameTooltip:AddLine(' ')
 
-            e.tips:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
-            e.tips:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
-            --e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
+            GameTooltip:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
+            --GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 

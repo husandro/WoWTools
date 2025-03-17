@@ -34,12 +34,12 @@ local function set_UpdateSpendText(btn)
             btn.maxText:SetScript('OnLeave', GameTooltip_Hide)
             btn.maxText:SetScript('OnEnter', function(self)
                 if self.maxRanks then
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-                    e.tips:Show()
+                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddDoubleLine(e.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                    GameTooltip:Show()
                 end
             end)
         end
@@ -317,7 +317,7 @@ local function Create_Spec_Button(index)
 
 
     btn:SetScript('OnLeave', function()
-        e.tips:Hide()
+        GameTooltip:Hide()
         ResetCursor()
     end)
     btn:SetScript('OnEnter', function(self)

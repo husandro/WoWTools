@@ -62,10 +62,10 @@ local function Init()
             return
         end
         if IsInGuild() then
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
         end
         e.Get_Guild_Enter_Info()
-        e.tips:Show()
+        GameTooltip:Show()
         local all= GetNumGuildMembers() or 0
         self.Text2:SetText(all>0 and all or '')
     end)

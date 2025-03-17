@@ -138,16 +138,16 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
 
     if showTooltip then
         for _, tab in pairs(R) do
-            e.tips:AddLine(tab.text)
+            GameTooltip:AddLine(tab.text)
         end
     elseif frame then
-        frame.tipsLabels= frame.tipsLabels or {}
+        framGameTooltipLabels= framGameTooltipLabels or {}
         local index=0
         local last
 
         for _, tab in pairs(R) do
             index= index +1
-            local lable= frame.tipsLabels[index]
+            local lable= framGameTooltipLabels[index]
             if not lable then
                 lable=WoWTools_LabelMixin:Create(frame, {mouse=true})
                 if last then
@@ -156,21 +156,21 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
                     lable:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
                 end
                 lable:SetScript("OnEnter",function(self)
-                    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-                    e.tips:ClearLines()
+                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                    GameTooltip:ClearLines()
                     if self.type=='currency' then
-                        e.tips:SetCurrencyByID(self.id)
+                        GameTooltip:SetCurrencyByID(self.id)
                     elseif self.type=='item' then
-                        e.tips:SetItemByID(self.id)
+                        GameTooltip:SetItemByID(self.id)
                     end
-                    e.tips:Show()
+                    GameTooltip:Show()
                     self:SetAlpha(0.5)
                 end)
                 lable:SetScript("OnLeave",function(self)
-                    e.tips:Hide()
+                    GameTooltip:Hide()
                     self:SetAlpha(1)
                 end)
-                frame.tipsLabels[index]= lable
+                framGameTooltipLabels[index]= lable
                 last= lable
             end
             lable.id= tab.id
@@ -178,8 +178,8 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
             lable:SetText(tab.text)
         end
 
-        for i= index+1, #frame.tipsLabels do
-            local lable= frame.tipsLabels[i]
+        for i= index+1, #framGameTooltipLabels do
+            local lable= framGameTooltipLabels[i]
             if lable then
                 lable:SetText("")
             end

@@ -42,15 +42,15 @@ local function Init()
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,4), C_CurrencyInfo.GetCoinTextureString(price) )
+            GameTooltip:AddLine(' ')
         end
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
         for guid, info in pairs(e.WoWDate or {}) do
             local tab=info.Item[122284]
             if tab and guid then
-                e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
+                GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
                 bagAll=bagAll +tab.bag
                 bankAll=bankAll +tab.bank
                 numPlayer=numPlayer +1
@@ -58,13 +58,13 @@ local function Init()
         end
 
         local all= bagAll+ bankAll
-        e.tips:AddDoubleLine('|A:groupfinder-waitdot:0:0|a'..numPlayer, '|T1120721:0|t'..all)
+        GameTooltip:AddDoubleLine('|A:groupfinder-waitdot:0:0|a'..numPlayer, '|T1120721:0|t'..all)
 
         --AccountStoreFrame WOWLABS_BINDING_HEADER 
         --Constants.MajorFactionsConsts.PLUNDERSTORM_MAJOR_FACTION_ID
         if AccountStoreFrame then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(
                 (C_AccountStore.GetStoreFrontState(Constants.AccountStoreConsts.PlunderstormStoreFrontID) ~= Enum.AccountStoreState.Available and '|cff828282'
                     or (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:')
                     or '|cffffffff'
@@ -78,7 +78,7 @@ local function Init()
             )
         end
 
-        e.tips:Show()
+        GameTooltip:Show()
 
         self.Text2:SetText(all>0 and all or '')
     end)
@@ -101,7 +101,7 @@ local function Init()
     for guid, info in pairs(e.WoWDate or {}) do
         local tab=info.Item[122284]
         if tab and guid then
-            e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
+            GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
             all= all +tab.bag +tab.bank
         end
     end

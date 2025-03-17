@@ -18,11 +18,11 @@ local function create_Quest_Label(frame)
     frame.questIDLabel:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
     frame.questIDLabel:SetScript('OnEnter', function(self)
         if self.questID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
-            e.tips:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
+            GameTooltip:AddDoubleLine((e.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
+            GameTooltip:Show()
             self:SetAlpha(1)
         end
     end)
@@ -134,32 +134,32 @@ local function Init()
 
 --POI提示 AreaPOIDataProvider.lua
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         local uiMapID = self:GetMap() and self:GetMap():GetMapID()
         if self.areaPoiID then
-            e.tips:AddDoubleLine('areaPoiID', self.areaPoiID)
+            GameTooltip:AddDoubleLine('areaPoiID', self.areaPoiID)
         end
         if self.widgetSetID then
-            e.tips:AddDoubleLine('widgetSetID', self.widgetSetID)
+            GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
             for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
                 if widget and widget.widgetID and widget.shownState==1 then
-                    e.tips:AddDoubleLine('|A:characterupdate_arrow-bullet-point:0:0|awidgetID', widget.widgetID)
+                    GameTooltip:AddDoubleLine('|A:characterupdate_arrow-bullet-point:0:0|awidgetID', widget.widgetID)
                 end
             end
         end
         if uiMapID then
-            e.tips:AddDoubleLine('uiMapID', uiMapID)
+            GameTooltip:AddDoubleLine('uiMapID', uiMapID)
         end
         if self.factionID then
-            WoWTools_TooltipMixin:Set_Faction(e.tips, self.factionID)
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
         end
         if self.areaPoiID and uiMapID then
             local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
             if poiInfo and poiInfo.atlasName  then
-                e.tips:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
+                GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
             end
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 
@@ -209,7 +209,7 @@ local function Init()
 --DressUpFrames.lua
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
         if self.transmogID then
-            e.tips:AddDoubleLine('transmogID', self.transmogID)
+            GameTooltip:AddDoubleLine('transmogID', self.transmogID)
         end
     end)
 
@@ -249,7 +249,7 @@ local function Init()
             return
         end
 
-        WoWTools_TooltipMixin:Set_Quest(e.tips, info.questID, info)--任务
+        WoWTools_TooltipMixin:Set_Quest(GameTooltip, info.questID, info)--任务
 
         if IsInGroup() then
             local n=GetNumGroupMembers()
@@ -267,11 +267,11 @@ local function Init()
                         acceto=acceto+1
                     end
                 end
-                e.tips:AddDoubleLine((e.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
+                GameTooltip:AddDoubleLine((e.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
             end
         end
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 
@@ -304,16 +304,16 @@ local function Init()
                     local actionType, ID, subType = GetActionInfo(self.action)
                     if actionType and ID then
                         if actionType=='spell' or actionType =="companion" then
-                            WoWTools_TooltipMixin:Set_Spell(e.tips, ID)--法术
-                            e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
+                            WoWTools_TooltipMixin:Set_Spell(GameTooltip, ID)--法术
+                            GameTooltip:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
                         elseif actionType=='item' and ID then
-                            WoWTools_TooltipMixin:Set_Item(e.tips, nil, ID)
-                            e.tips:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
+                            WoWTools_TooltipMixin:Set_Item(GameTooltip, nil, ID)
+                            GameTooltip:AddDoubleLine('action '..self.action, subType and 'subType '..subType)
                         else
-                            e.tips:AddDoubleLine('action '..self.action, 'ID '..ID)
-                            e.tips:AddDoubleLine(actionType and 'actionType '..actionType, subType and 'subType '..subType)
+                            GameTooltip:AddDoubleLine('action '..self.action, 'ID '..ID)
+                            GameTooltip:AddDoubleLine(actionType and 'actionType '..actionType, subType and 'subType '..subType)
                         end
-                        e.tips:Show()
+                        GameTooltip:Show()
                     end
                 end
             end)

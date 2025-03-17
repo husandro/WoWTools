@@ -96,23 +96,23 @@ local function Init_Button()
         self:SetText("")
     end)
 
-    Title:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+    Title:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     Title:SetScript('OnEnter', function(self)
         self:settings()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
         local known= #GetKnownTitles()-1
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             '|cnGREEN_FONT_COLOR:'..known,
             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or  COLLECTED)
         )
 
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             '|cnRED_FONT_COLOR:'..(GetNumTitles()-known),
             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)
         )
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(0)
     end)
 

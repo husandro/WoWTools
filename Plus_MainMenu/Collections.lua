@@ -19,24 +19,24 @@ local function Init()
         end
 
         local bat= UnitAffectingCombat('player')
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '坐骑' or MOUNTS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '宠物手册' or PET_JOURNAL)..'|r'
             ..e.Icon.right
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '玩具箱' or TOY_BOX)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
     CollectionsMicroButton:HookScript('OnClick', function(_, d)

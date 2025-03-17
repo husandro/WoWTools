@@ -118,12 +118,13 @@ local function Guild_Player_List(_, root)
 
     local map=WoWTools_MapMixin:GetUnit('player')
     local maxLevel= GetMaxLevelForLatestExpansion()
-    local name, rankName, rankIndex, level, zone, publicNote, officerNote, isOnline, status, isMobile, guid
+    local name, rankName, rankIndex, level, zone, publicNote, officerNote, isOnline, status, guid
 
     for index=1, total, 1 do
-        name, rankName, rankIndex, level, _, zone, publicNote, officerNote, isOnline, status, _, _, _, isMobile, _, _, guid = GetGuildRosterInfo(index)
+        name, rankName, rankIndex, level, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         if name and guid and (isOnline or showNotOnLine) and guid~=e.Player.guid then
-
+            publicNote= publicNote~='' and publicNote or nil
+            officerNote= officerNote~='' and officerNote or nil
             sub=root:CreateButton(
                 (--状态
                     status==1 and format('|T%s:0|t', FRIENDS_TEXTURE_AFK)
@@ -134,8 +135,10 @@ local function Guild_Player_List(_, root)
                 )
                 ..Get_Rank_Texture(rankIndex)--官员
                 ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})--名称
-                ..(zone and zone==map and '|A:poi-islands-table:0:0|a' or '')--地区
-                ..(level and level~=maxLevel and ' |cnGREEN_FONT_COLOR:'..level..'|r' or ''),--等级
+                ..(level and level~=maxLevel and ' |cnGREEN_FONT_COLOR:'..level..'|r' or '')--等级
+                ..(isOnline and zone and (zone==map and '|A:poi-islands-table:0:0|a' or e.cn(zone)) or '')--地区
+                ..((publicNote or officerNote) and '|A:QuestLegendary:0:0|a' or ''),--提示有备注
+                
 
             function(data)
                 WoWTools_ChatMixin:Say(nil, data.name)
@@ -152,9 +155,20 @@ local function Guild_Player_List(_, root)
             sub:SetTooltip(function(tooltip, desc)
                 tooltip:AddLine((e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..' '..SLASH_WHISPER1..' '..desc.data.name)
                 tooltip:AddLine(' ')
-                tooltip:AddDoubleLine(desc.data.zone, Get_Rank_Texture(desc.data.rankIndex)..(desc.data.rankName or ''))
-                tooltip:AddLine(desc.data.publicNote, nil,nil,nil, true)
-                tooltip:AddLine(desc.data.officerNote, nil,nil,nil,true)
+                tooltip:AddDoubleLine(
+                    desc.data.zone,
+                    Get_Rank_Texture(desc.data.rankIndex)..(desc.data.rankName or '').. (desc.data.rankIndex and ' '..desc.data.rankIndex)
+                )
+
+                if desc.data.publicNote then
+                    tooltip:AddLine(' ')
+                    tooltip:AddLine(desc.data.publicNote, nil,nil,nil, true)
+                end
+                
+                if desc.data.officerNote then
+                    tooltip:AddLine(' ')
+                    tooltip:AddLine(desc.data.officerNote, nil,nil,nil,true)
+                end
             end)
         end
     end

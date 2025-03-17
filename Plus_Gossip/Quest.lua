@@ -66,11 +66,11 @@ local function select_Reward(questID)--自动:选择奖励
                 end)
                 frame.check:SetScript('OnEnter', function(self)
                     if self.questID then
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
-                        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
+                        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
+                        GameTooltip:Show()
                     end
                 end)
                 frame.check:SetScript('OnLeave', GameTooltip_Hide)
@@ -281,16 +281,16 @@ local function Init_Quest()
 
 
     function QuestButton:tooltip_Show()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
+        GameTooltip:AddLine(' ')
         WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetEnabeleDisable(Save().quest),e.Icon.left)
-        e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
-        --e.tips:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
-        e.tips:Show()
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.GetEnabeleDisable(Save().quest),e.Icon.left)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
+        --GameTooltip:AddDoubleLine(e.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
+        GameTooltip:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
         self:set_Quest_Num_Text()
@@ -376,7 +376,7 @@ local function Init_Quest()
         e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(e.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
     end)]]
 
-    QuestButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_Alpha() end)
+    QuestButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_Alpha() end)
     QuestButton:SetScript('OnEnter', QuestButton.tooltip_Show)
 
     QuestButton.questSelect={}--已选任务, 提示用
@@ -398,19 +398,19 @@ local function Init_Quest()
     QuestFrame.sel.questIDLabel:SetPoint('LEFT', QuestFrame.sel.Text, 'RIGHT', 12, 0)
     QuestFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
     QuestFrame.sel:SetScript('OnEnter',function (self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
         if self.npc and self.name then
-            e.tips:AddDoubleLine(self.name, 'NPC '..self.npc)
+            GameTooltip:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
-            e.tips:AddDoubleLine(NONE, 'NPC ID')
+            GameTooltip:AddDoubleLine(NONE, 'NPC ID')
         end
         local questID= WoWTools_QuestMixin:GetID()
         if questID then
-            e.tips:AddDoubleLine('questID', questID)
+            GameTooltip:AddDoubleLine('questID', questID)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
     QuestFrame.sel:SetScript("OnMouseDown", function (self, d)
         if not self.npc and self.name then
@@ -427,12 +427,12 @@ local function Init_Quest()
         if not questID then
             return
         end
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        GameTooltip_AddQuest(e.tips, questID)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip_AddQuest(GameTooltip, questID)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+        GameTooltip:Show()
     end)
     QuestFrame.sel.questIDLabel:SetScript('OnMouseDown',function(self)
         local questID= WoWTools_QuestMixin:GetID()

@@ -22,42 +22,42 @@ local function Init_Label()
     Label:SetPoint('LEFT')
     Label:SetAlpha(1)
 
-    Label:SetScript("OnLeave",function(self) e.tips:Hide() self:SetAlpha(1) end)
+    Label:SetScript("OnLeave",function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     Label:SetScript("OnEnter",function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+        GameTooltip:AddLine(' ')
         local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
-        e.tips:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
         local ok2
         for k, v in pairs(GetAutoCompleteRealms()) do
             if v==e.Player.realm then
-                e.tips:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
+                GameTooltip:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
             else
-                e.tips:AddDoubleLine(v, k)
+                GameTooltip:AddDoubleLine(v, k)
             end
             ok2=true
         end
         if not ok2 then
-            e.tips:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
         end
 
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('realmID', GetRealmID())
-        e.tips:AddDoubleLine('regionID: '..e.Player.region,  GetCurrentRegionName())
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine('realmID', GetRealmID())
+        GameTooltip:AddDoubleLine('regionID: '..e.Player.region,  GetCurrentRegionName())
 
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         if GameLimitedMode_IsActive() then
             local rLevel, rMoney, profCap = GetRestrictedAccountData()
-            e.tips:AddLine(e.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED, 1,0,0)
-            e.tips:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
-            e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
-            e.tips:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
+            GameTooltip:AddLine(e.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED, 1,0,0)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
 
         end
 
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
 end

@@ -402,12 +402,12 @@ local function Init_Button()
     end)
 
     function ClickToMoveButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName3)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName3)
+        GameTooltip:AddLine(' ')
         local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (Get_Lock_ClickToMove_Value() and '|cff828282' or col)
             ..CVarNameTabs['autoInteract']
             ..': |r'
@@ -416,23 +416,23 @@ local function Init_Button()
             e.Icon.left
         )
 
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
 
             e.Icon.right
         )
 
         if not Save().ClickMoveButton.PlayerFrame then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(
                 e.onlyChinese and '移动' or NPE_MOVE,
                 'Alt+'..e.Icon.right
             )
         end
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(1)
     end
-    ClickToMoveButton:SetScript('OnLeave', function(self) ResetCursor() e.tips:Hide() self:set_State() end)
+    ClickToMoveButton:SetScript('OnLeave', function(self) ResetCursor() GameTooltip:Hide() self:set_State() end)
     ClickToMoveButton:SetScript('OnEnter', ClickToMoveButton.set_tooltip)
 
     ClickToMoveButton:RegisterForDrag("RightButton")

@@ -204,10 +204,10 @@ local function Init()
     Button:SetScript('OnLeave', GameTooltip_Hide)
     function Button:set_Tooltips()
         local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff9e9e9e'
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '新建' or NEW)..e.Icon.left, e.Icon.right..col..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(e.onlyChinese and '新建' or NEW)..e.Icon.left, e.Icon.right..col..(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
+        GameTooltip:Show()
     end
 
     Button:SetScript('OnEnter', Button.set_Tooltips)

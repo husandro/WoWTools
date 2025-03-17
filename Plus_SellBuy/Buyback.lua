@@ -156,11 +156,11 @@ local function Init()
     end
 
     function BuybackButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         
-        e.tips:AddDoubleLine(e.onlyChinese and '回购' or BUYBACK, '|cnGREEN_FONT_COLOR: #'..(self:set_text() or ''))
-        e.tips:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '回购' or BUYBACK, '|cnGREEN_FONT_COLOR: #'..(self:set_text() or ''))
+        GameTooltip:AddLine(' ')
 
         local infoType, itemID= GetCursorInfo()
         if infoType=='merchant' and itemID then
@@ -170,10 +170,10 @@ local function Init()
         if (infoType=='item' or infoType=='merchant') and itemID then
             local name= WoWTools_ItemMixin:GetName(itemID)
             if Save().noSell[itemID] then
-                e.tips:AddDoubleLine(name, (e.onlyChinese and '移除' or REMOVE)..e.Icon.left)
+                GameTooltip:AddDoubleLine(name, (e.onlyChinese and '移除' or REMOVE)..e.Icon.left)
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
-                e.tips:AddDoubleLine(name, (e.onlyChinese and '添加' or ADD)..e.Icon.left)
+                GameTooltip:AddDoubleLine(name, (e.onlyChinese and '添加' or ADD)..e.Icon.left)
                 local icon= C_Item.GetItemIconByID(itemID)
                 if icon then
                     self.texture:SetTexture(icon)
@@ -181,10 +181,10 @@ local function Init()
             end
 
         else
-            e.tips:AddLine(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddLine(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
 
@@ -212,7 +212,7 @@ local function Init()
 
 
 
-    BuybackButton:SetScript('OnLeave', function(self) e.tips:Hide() self:set_texture() end)
+    BuybackButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_texture() end)
     BuybackButton:SetScript('OnEnter', BuybackButton.set_tooltip)
     BuybackButton:SetScript('OnMouseUp', BuybackButton.set_texture)
 

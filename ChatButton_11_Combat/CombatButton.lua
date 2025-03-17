@@ -45,10 +45,10 @@ local function Init(btn)
     end
 
     function btn:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        WoWTools_CombatMixin:Set_Combat_Tooltip(e.tips)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        WoWTools_CombatMixin:Set_Combat_Tooltip(GameTooltip)
+        GameTooltip:Show()
     end
 
     WoWTools_CombatMixin:Init_SetupMenu()

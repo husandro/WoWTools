@@ -174,17 +174,17 @@ local function Init()
     btn:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+2)
 
 	btn:SetScript('OnEnter', function(self)
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-        e.tips:Show()
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        GameTooltip:Show()
 		WoWTools_FactionMixin:Set_TrackButton_Pushed(true)--TrackButton，提示
 	end)
 
 	btn:SetScript('OnLeave', function()
-		e.tips:Hide()
+		GameTooltip:Hide()
 		WoWTools_FactionMixin:Set_TrackButton_Pushed(false)--TrackButton，提示
 	end)
 

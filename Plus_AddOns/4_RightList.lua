@@ -211,17 +211,17 @@ local function Create_Button(indexAdd)
     btn:SetScript('OnEnter', function(self)
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
 
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        Set_OnEnter_Tooltip(self, e.tips)
-        e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        Set_OnEnter_Tooltip(self, GameTooltip)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
+        GameTooltip:Show()
     end)
 
     btn:SetScript('OnLeave', function(self)
         self:set_settings()
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
 
     if indexAdd==1 then

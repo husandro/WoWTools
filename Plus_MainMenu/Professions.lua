@@ -37,17 +37,17 @@ local function Init()
         end
         
         if prof1Text or prof2Text or fishingText then
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
             if prof1Text then
-                e.tips:AddLine(prof1Text)
+                GameTooltip:AddLine(prof1Text)
             end
             if fishingText then
-                e.tips:AddLine(fishingText)
+                GameTooltip:AddLine(fishingText)
             end
             if prof2Text then
-                e.tips:AddLine(prof2Text)
+                GameTooltip:AddLine(prof2Text)
             end
-            e.tips:Show()
+            GameTooltip:Show()
         end
     end)
 

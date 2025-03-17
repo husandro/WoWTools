@@ -46,7 +46,7 @@ local function Init()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
         local numPlayer, allMoney= 0, 0
         local tab={}
@@ -66,7 +66,7 @@ local function Init()
             table.sort(tab, function(a,b) return a.num>b.num end)
 
             for index, info in pairs(tab) do
-                e.tips:AddDoubleLine(
+                GameTooltip:AddDoubleLine(
                     WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
                     C_CurrencyInfo.GetCoinTextureString(info.num)
                 )
@@ -75,7 +75,7 @@ local function Init()
                 end
             end
 
-            e.tips:AddDoubleLine(
+            GameTooltip:AddDoubleLine(
                 '|cnGREEN_FONT_COLOR:'..numPlayer..e.Icon.wow2..(e.onlyChinese and '角色' or CHARACTER),
                 --(e.onlyChinese and '总计' or TOTAL)
                 e.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
@@ -83,8 +83,8 @@ local function Init()
         end
 
         local account= C_Bank.FetchDepositedMoney(Enum.BankType.Account)
-        if account and account>0 and e.tips.textLeft then
-            e.tips.textLeft:SetText(
+        if account and account>0 and GameTooltip.textLeft then
+            GameTooltip.textLeft:SetText(
                 '|A:questlog-questtypeicon-account:0:0|a|cff00ccff'
                 ..(
                     account >=10000 and WoWTools_Mixin:MK(account/10000, 3)..'|A:Coin-Gold:8:8|a'
@@ -116,21 +116,21 @@ local function Init()
             end
         end
 
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         for i=1, #tab, 2 do
             local a= tab[i]
             local b= tab[i+1]
-            e.tips:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
+            GameTooltip:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
         end
 
-        if e.tips.textRight then
-            e.tips.textRight:SetText(
+        if GameTooltip.textRight then
+            GameTooltip.textRight:SetText(
                 '|A:bags-button-autosort-up:18:18|a'
                 ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
                 ..use..'|r/'..num
             )
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 

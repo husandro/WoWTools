@@ -75,37 +75,37 @@ local function Init()
             return
         end
 
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
         local cur, max, info= Get_Perks_Info()
         if cur then
             info= info or {}
 
             if info.quantity then
-                e.tips:AddDoubleLine((info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..info.quantity, info.name)
+                GameTooltip:AddDoubleLine((info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..info.quantity, info.name)
             end
-            e.tips:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
-            e.tips:AddLine(' ')
+            GameTooltip:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), e.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
+            GameTooltip:AddLine(' ')
         end
 
         local bat= UnitAffectingCombat('player')
 
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '地下城' or DUNGEONS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
             ..e.Icon.right
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '团队副本' or RAIDS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 

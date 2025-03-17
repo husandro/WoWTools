@@ -119,10 +119,10 @@ end
 
 local function init_Item_Button(self, equip)--设置按钮
     self:SetScript('OnEnter', function()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetItemByID(self.itemID)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetItemByID(self.itemID)
+        GameTooltip:Show()
         WoWTools_BagMixin:Find(true, {itemID= self.itemID})--查询，背包里物品
     end)
     self:SetScript('OnLeave', function() WoWTools_BagMixin:Find(false) GameTooltip_Hide() end)
@@ -190,10 +190,10 @@ end
 
 local function init_Spell_Button(self)--设置按钮
     self:SetScript('OnEnter', function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:SetSpellByID(self2.spellID)
-        e.tips:Show()
+        GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetSpellByID(self2.spellID)
+        GameTooltip:Show()
     end)
     self:SetScript('OnLeave', GameTooltip_Hide)
     self:SetScript("OnEvent", function(self2, event)

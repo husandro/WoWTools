@@ -82,30 +82,30 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
     if index then
         local name, icon, body = GetMacroInfo(index)
         if name and body then
-            e.tips:SetOwner(frame, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
             local itemLink= select(2, GetMacroItem(index))
             local spellID= GetMacroSpell(index)
 
-            e.tips:ClearLines()
+            GameTooltip:ClearLines()
             if itemLink then
-                e.tips:AddLine(WoWTools_ItemMixin:GetName(nil, itemLink))--取得法术，名称
-                e.tips:AddLine(' ')
+                GameTooltip:AddLine(WoWTools_ItemMixin:GetName(nil, itemLink))--取得法术，名称
+                GameTooltip:AddLine(' ')
             elseif spellID then
-                e.tips:AddLine(WoWTools_SpellMixin:GetName(spellID))--取得法术，名称
-                e.tips:AddLine(' ')
+                GameTooltip:AddLine(WoWTools_SpellMixin:GetName(spellID))--取得法术，名称
+                GameTooltip:AddLine(' ')
             end
-            e.tips:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
-            e.tips:AddLine(body, nil,nil,nil, true)
-            e.tips:AddLine(' ')
+            GameTooltip:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
+            GameTooltip:AddLine(body, nil,nil,nil, true)
+            GameTooltip:AddLine(' ')
             if frame~=MacroFrameSelectedMacroButton then
                 local col= InCombatLockdown() and '|cff9e9e9e' or '|cffffffff'
-                e.tips:AddDoubleLine(
+                GameTooltip:AddDoubleLine(
                     col..(e.onlyChinese and '删除' or DELETE),
                     col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
                 )
             end
 
-            e.tips:Show()
+            GameTooltip:Show()
 
             return icon
         end

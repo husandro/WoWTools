@@ -18,31 +18,31 @@ local function Init()
     AutoRepairCheck:SetPoint('BOTTOMLEFT', -4,-5)
 
     function AutoRepairCheck:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
         
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
-        e.tips:AddDoubleLine(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave().num or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine('|cffff00ff'..(e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave().num or 0)..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         local guild= RepairSave().guild or 0
         local player= RepairSave().player or 0
-        e.tips:AddDoubleLine(e.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
-        e.tips:AddDoubleLine(e.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
+        GameTooltip:AddDoubleLine(e.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
+        GameTooltip:AddDoubleLine(e.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
         if guild>0 and player>0 then
-            e.tips:AddDoubleLine(e.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
+            GameTooltip:AddDoubleLine(e.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
         end
         
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save().notAutoRepairAll))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), e.GetEnabeleDisable(not Save().notAutoRepairAll))
         if CanGuildBankRepair() then
             local m= GetGuildBankMoney() or 0
             local col= m==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
+            GameTooltip:AddDoubleLine(col..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
         else
-            e.tips:AddDoubleLine('|cff9e9e9e'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(e.onlyChinese and '禁用' or DISABLE))
+            GameTooltip:AddDoubleLine('|cff9e9e9e'..(e.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(e.onlyChinese and '禁用' or DISABLE))
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
     AutoRepairCheck:SetScript('OnClick', function(self)
         Save().notAutoRepairAll= not Save().notAutoRepairAll and true or nil

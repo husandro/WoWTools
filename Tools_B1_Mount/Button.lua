@@ -461,8 +461,8 @@ local function Init()
     end)
 
     function MountButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         local infoType, itemID, _, spellID= GetCursorInfo()
         local name, col, exits
         if infoType == "item" and itemID then
@@ -475,7 +475,7 @@ local function Init()
         end
 
         if name and exits~=nil then
-            e.tips:AddDoubleLine(name,
+            GameTooltip:AddDoubleLine(name,
                 (col or '')
                 ..(exits and
                     (e.onlyChinese and '修改' or EDIT)
@@ -484,23 +484,23 @@ local function Init()
 
         else
             local key= WoWTools_KeyMixin:IsKeyValid(self)
-            e.tips:AddDoubleLine(
+            GameTooltip:AddDoubleLine(
                 WoWTools_ItemMixin:GetName(self.itemID) or WoWTools_SpellMixin:GetName(self.spellID),
                 (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
             )
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
 
-            e.tips:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
-            e.tips:AddDoubleLine(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '坐骑秀' or 'Mount show', '|A:bags-greenarrow:0:0|a')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
 
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     MountButton:SetScript("OnLeave",function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         setClickAtt()--设置属性
         ResetCursor()
         self.border:SetAtlas('bag-reagent-border')

@@ -185,7 +185,7 @@ end
 
     if self.typeID then
         local key= WoWTools_KeyMixin:IsKeyValid(self)
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             self.typeSpell and WoWTools_SpellMixin:GetName(self.typeID) or WoWTools_ItemMixin:GetName(self.typeID),
             (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
         )
@@ -193,7 +193,7 @@ end
 
     local key= WoWTools_KeyMixin:IsKeyValid(self)
     if key then
-        e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
+        GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
     end
 ]]
 

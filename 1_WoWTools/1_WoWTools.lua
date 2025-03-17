@@ -1,9 +1,5 @@
 local e = select(2, ...)
 
-WoWTools_Mixin={
-    addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
-    isChinese= e.onlyChinese,
-}
 
 --[[
 e.Is_PTR= IsPublicBuild() or IsTestBuild()
@@ -12,10 +8,7 @@ local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 ]]
 
-e.WoWDate={}--战网，数据
-e.StausText={}--属性，截取表 API_Panel.lua
-e.ChallengesSpellTabs={}--Challenges.lua
-e.tips=GameTooltip
+
 
 --local securecallfunction= securecallfunction
 function e.call(func, ...)
@@ -32,15 +25,6 @@ function e.LockFrame(frame)
     end
     return disabled
 end
-
-e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-e.onlyChinese= LOCALE_zhCN and true or false
-WoWTools_Mixin.onlyChinese= e.onlyChinese
-
-e.ExpansionLevel= GetExpansionLevel()--版本数据
-e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
-
 
 
 
@@ -115,7 +99,7 @@ e.Icon={
     left='|A:NPE_LeftClick:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
     wow2='|A:glues-characterSelect-iconShop-hover:0:0|a',--'|A:tokens-WoW-generic-regular:0:0|a',
-    net2= '|A:Battlenet-ClientIcon-App:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32), questlog-questtypeicon-account
+    net2= '|A:gmchat-icon-blizz:0:0|a',--'|A:Battlenet-ClientIcon-App:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32)
     toLeft='common-icon-rotateleft',--向左
     toRight='common-icon-rotateright',--向右
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
@@ -138,8 +122,8 @@ e.Icon={
 }
 
 
---[[
-C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Medium, function(success, texture)--FriendsFrame.lua BnetShared.lua    
+--WoWTools_Mixin:GetWoWTexture()
+C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua    
     if success and texture then
         e.Icon.wow=texture
     end
@@ -148,10 +132,7 @@ C_Texture.GetTitleIconTexture('BSAp', Enum.TitleIconVersion.Small, function(succ
     if success and texture then
         e.Icon.net2= '|T'..texture..':0|t'
     end
-end)]]
-
-
-
+end)
 
 if LOCALE_zhCN then
     e.Player.L= {

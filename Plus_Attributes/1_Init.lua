@@ -900,7 +900,7 @@ local function Frame_Init(rest)
 
                 frame.label:SetScript('OnLeave', function(self)
                     local prent= self:GetParent()
-                    e.tips:Hide()
+                    GameTooltip:Hide()
                     prent:SetAlpha(1)
                 end)
                 if frame.onEnterFunc then

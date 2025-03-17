@@ -3,7 +3,7 @@ local function Save()
     return WoWTools_GuildMixin.Save
 end
 local GuildButton
-local guildMS= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
+local G_GUILD_INFO_TEMPLATE= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
 
 
 
@@ -74,9 +74,9 @@ local function Init()
         self.membersText:SetText(online>0 and online-1 or '')
     end
 
-    function GuildButton:set_guild_info()
+    function GuildButton:set_guildinfo_event()
         self:UnregisterEvent('CHAT_MSG_SYSTEM')
-        if IsInGuild() and Save().guildInfo then
+        if IsInGuild() and (Save().guildInfo or not e.WoWDate[e.Player.guid].Guild.text) then
             self:RegisterEvent('CHAT_MSG_SYSTEM')
             GuildInfo()
         end
@@ -89,15 +89,15 @@ local function Init()
     end
 
     function GuildButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if not IsInGuild() then
-            e.tips:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD))
+            GameTooltip:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD))
         else
             WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end
         e.Get_Guild_Enter_Info()--公会， 社区，信息
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
 
@@ -106,7 +106,7 @@ local function Init()
             self:settings()
 
         elseif event=='CHAT_MSG_SYSTEM' then
-            if arg1:find(guildMS) then
+            if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
                 e.WoWDate[e.Player.guid].Guild.text= arg1
                 self:UnregisterEvent(event)
             end
@@ -120,7 +120,7 @@ local function Init()
             self:set_tooltip()]]
 
         if d=='LeftButton' then
-            if not IsInGuild() and not InCombatLockdown() then
+            if not IsInGuild() then-- and not InCombatLockdown() then
                 ToggleGuildFrame()
                 self:CloseMenu()
                 self:set_tooltip()
@@ -136,7 +136,7 @@ local function Init()
 
         if IsInGuild() then--请求，公会名单
             --C_GuildInfo.GuildRoster()
-            GuildButton:set_guild_info()
+            GuildButton:set_guildinfo_event()
         end
 
         if CanReplaceGuildMaster() then

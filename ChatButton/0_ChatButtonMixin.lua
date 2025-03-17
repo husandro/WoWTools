@@ -70,7 +70,7 @@ function WoWTools_ChatButtonMixin:CreateButton(name, tooltip)
     end)
 
     btn:SetScript('OnLeave', function(frame)
-        e.tips:Hide()
+        GameTooltip:Hide()
         frame:GetParent():SetButtonState('NORMAL')
         if frame.set_OnLeave then
             frame:set_OnLeave()

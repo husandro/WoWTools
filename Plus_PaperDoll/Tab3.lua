@@ -13,20 +13,20 @@ local NameLabel, SetTexture, SpecTexture, NumLabel
 
 local function Set_Tooltip(frame)
     frame:EnableMouse(true)
-    frame:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+    frame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     frame:SetScript('OnMouseDown', function()
         e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
     end)
     frame:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if self.setID then
-            e.tips:SetEquipmentSet(self.setID)
-            e.tips:AddLine(' ')
+            GameTooltip:SetEquipmentSet(self.setID)
+            GameTooltip:AddLine(' ')
         end
-        e.tips:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
-        --e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+        GameTooltip:Show()
         self:SetAlpha(0)
     end)
 end

@@ -464,18 +464,18 @@ local function set_OnEnter_btn_tips(self)
         end
     end
     if self.areaPoiID and self.uiMapID then
-        e.tips:AddDoubleLine('areaPoiID |cnGREEN_FONT_COLOR:'..self.areaPoiID, 'uiMapID |cnGREEN_FONT_COLOR:'..self.uiMapID..'|r')
+        GameTooltip:AddDoubleLine('areaPoiID |cnGREEN_FONT_COLOR:'..self.areaPoiID, 'uiMapID |cnGREEN_FONT_COLOR:'..self.uiMapID..'|r')
     elseif vignetteID then
-        e.tips:AddLine('vignetteID |cnGREEN_FONT_COLOR:'..vignetteID)
+        GameTooltip:AddLine('vignetteID |cnGREEN_FONT_COLOR:'..vignetteID)
     elseif self.questID then
-        e.tips:AddLine('questID |cnGREEN_FONT_COLOR:'..self.questID)
+        GameTooltip:AddLine('questID |cnGREEN_FONT_COLOR:'..self.questID)
     end
     if widgetSetID then
         local info= self.uiMapID and C_Map.GetMapInfo(self.uiMapID) or {}
-        e.tips:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, e.cn(info.name))
+        GameTooltip:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, e.cn(info.name))
     end
     if self.rewardQuestID then
-        e.tips:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
+        GameTooltip:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
     end
 end
 
@@ -710,22 +710,22 @@ local function set_Button_Text()
                 end
             end)
             btn:SetScript("OnLeave", function(self)
-                e.tips:Hide()
+                GameTooltip:Hide()
                 TrackButton:SetButtonState('NORMAL')
                 self.nameText:SetAlpha(1)
                 self.text:SetAlpha(1)
             end)
             btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self.nameText or self.text or self, "ANCHOR_RIGHT")
-                e.tips:ClearLines()
+                GameTooltip:SetOwner(self.nameText or self.text or self, "ANCHOR_RIGHT")
+                GameTooltip:ClearLines()
 
                 set_OnEnter_btn_tips(self)
 
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
-                e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
+                GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
 
-                e.tips:Show()
+                GameTooltip:Show()
                 TrackButton:SetButtonState('PUSHED')
                 self.nameText:SetAlpha(0.5)
                 self.text:SetAlpha(0.5)
@@ -1079,15 +1079,15 @@ local function Init_Button()
 
 
     function TrackButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(addName, addName2)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..e.Icon.mid)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(addName, addName2)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:Show()
     end
 
     TrackButton:SetScript('OnMouseWheel', function(self, d)--缩放
@@ -1098,7 +1098,7 @@ local function Init_Button()
         self:set_tooltip()
     end)
     TrackButton:SetScript('OnLeave',function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         ResetCursor()
     end)
 
@@ -1314,11 +1314,11 @@ local function Init_WorldFrame_Button()
     WorldMapButton:SetScript('OnEnter', function(self)
         local uiMapID= WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")
         if uiMapID then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', e.Icon.select) or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', e.Icon.select) or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:Show()
         end
     end)
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', function() WorldMapButton:set_texture() end)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
@@ -1344,8 +1344,8 @@ end
 local function Init_WorldFrame_Event()
     hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
         if self.questID and self.OnMouseClickAction then
-            e.tips:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
-            e.tips:Show()
+            GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
+            GameTooltip:Show()
         end
     end)
     hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', function(self)--世界任务，添加/移除 WorldQuestDataProvider.lua self.tagInfo
@@ -1366,8 +1366,8 @@ local function Init_WorldFrame_Event()
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
         if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-            e.tips:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
-            e.tips:Show()
+            GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
+            GameTooltip:Show()
         end
     end)
     hooksecurefunc(AreaPOIPinMixin,'OnAcquired', function(self)---areaPoiID, 添加/移除 AreaPOIDataProvider.lua

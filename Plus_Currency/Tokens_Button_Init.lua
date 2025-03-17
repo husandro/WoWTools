@@ -29,30 +29,30 @@ end
 
 local function enter(self)
 	local infoType, itemID, itemLink = GetCursorInfo()
-	e.tips:SetOwner(self, "ANCHOR_LEFT")
-	e.tips:ClearLines()
+	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+	GameTooltip:ClearLines()
 	if infoType== "item"  and itemID then
-		e.tips:SetItemByID(itemID)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
+		GameTooltip:SetItemByID(itemID)
+		GameTooltip:AddLine(' ')
+		GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 				Save().item[itemID] and
 					('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 				or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 		)
 		Button:set_texture(C_Item.GetItemIconByID(itemID))
 	else
-		e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-		e.tips:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
+		GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+		GameTooltip:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 	end
-	e.tips:AddLine(' ')
+	GameTooltip:AddLine(' ')
 
-	e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
-	e.tips:Show()
+	GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
+	GameTooltip:Show()
 	WoWTools_CurrencyMixin:Set_TrackButton_Pushed(true)--提示
 end
 
 local function leave()
-	e.tips:Hide()
+	GameTooltip:Hide()
 	Button:set_texture()
 	WoWTools_CurrencyMixin:Set_TrackButton_Pushed(false)--提示
 end
@@ -136,16 +136,16 @@ local function Init()
 		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
 	Button.bag:SetScript('OnEnter', function(self2)
-		e.tips:SetOwner(self2, "ANCHOR_LEFT")
-		e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
+		GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+		GameTooltip:ClearLines()
+		GameTooltip:AddDoubleLine(e.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
 		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 			if info and info.name and info.iconFileID then
-				e.tips:AddDoubleLine(info.name, '|T'..info.iconFileID..':0|t')
+				GameTooltip:AddDoubleLine(info.name, '|T'..info.iconFileID..':0|t')
 			end
 		end
-		e.tips:Show()
+		GameTooltip:Show()
 	end)
 	Button.bag:SetScript('OnLeave', GameTooltip_Hide)]]
 

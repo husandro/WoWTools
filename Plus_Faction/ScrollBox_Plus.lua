@@ -164,16 +164,16 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 			if not info.factionID then
 				return
 			end
-			e.tips:SetOwner(self, "ANCHOR_LEFT")
-			e.tips:ClearLines()
-			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
-			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.cn(info.name), info.factionID, 0,1,0,0,1,0)
-			e.tips:Show()
+			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+			GameTooltip:ClearLines()
+			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
+			GameTooltip:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(e.cn(info.name), info.factionID, 0,1,0,0,1,0)
+			GameTooltip:Show()
 			self:SetAlpha(1)
 		end)
-		frame.check:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
+		frame.check:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.3) end)
 		frame.check:SetSize(18,22)
 		frame.check:SetCheckedTexture(e.Icon.icon)
 	end

@@ -59,15 +59,15 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 			end
 		end)
 		frame.check:SetScript('OnEnter', function(self)
-			e.tips:SetOwner(self, "ANCHOR_LEFT")
-			e.tips:ClearLines()
+			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+			GameTooltip:ClearLines()
 			if self.currencyID then
-				e.tips:SetCurrencyByID(self.currencyID)
-				e.tips:AddLine(" ")
+				GameTooltip:SetCurrencyByID(self.currencyID)
+				GameTooltip:AddLine(" ")
 			end
-			e.tips:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
-			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
-			e.tips:Show()
+			GameTooltip:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
+			GameTooltip:Show()
 		end)
 		frame.check:SetScript('OnLeave', GameTooltip_Hide)
 		frame.check:SetSize(18,18)

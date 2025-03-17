@@ -118,31 +118,31 @@ local function Init()
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript("OnMouseDown", function(self) self:SetAlpha(0.3) end)
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript("OnMouseUp", function(self) self:SetAlpha(0.5) end)
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript('OnLeave', function(self)
-		e.tips:Hide()
+		GameTooltip:Hide()
 		self:SetAlpha(1)
 	end)
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript('OnEnter', function(self)
-		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-		e.tips:AddLine(e.onlyChinese and "当前颜色" or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, COLOR))
-		e.tips:Show()
+		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+		GameTooltip:AddLine(e.onlyChinese and "当前颜色" or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, COLOR))
+		GameTooltip:Show()
 		self:SetAlpha(0.5)
 	end)
 
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript("OnMouseDown", function(self) self:SetAlpha(0.3) end)
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript("OnMouseUp", function(self) self:SetAlpha(0.5) end)
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript('OnLeave', function(self)
-		e.tips:Hide()
+		GameTooltip:Hide()
 		self:SetAlpha(1)
 	end)
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript('OnEnter', function(self)
 		local r,g,b,a= ColorPickerFrame:GetPreviousValues()
-		e.tips:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-		e.tips:AddDoubleLine(e.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, e.Icon.left)
+		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+		GameTooltip:AddDoubleLine(e.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, e.Icon.left)
 		if r and g and b then
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(
 				format(
 					'r='..tonumber(format('%.2f', r))
 					..'  g='..tonumber(format('%.2f', g))
@@ -151,7 +151,7 @@ local function Init()
             	a and tonumber(format('%.2f', a)) or 1
 			)
 		end
-		e.tips:Show()
+		GameTooltip:Show()
 		self:SetAlpha(0.5)
 	end)
 	ColorPickerFrame.Content.ColorSwatchOriginal:HookScript('OnMouseDown', function()
@@ -219,8 +219,8 @@ local function Init()
 		end
 		icon.index= index
 		icon.tooltip= function(self)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(
 				(e.onlyChinese and '常用颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, COLOR))..' '..self.index,
 				(e.onlyChinese and '替换' or REPLACE)..e.Icon.right
 			)

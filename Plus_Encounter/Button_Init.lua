@@ -13,12 +13,12 @@ local Button
 
 
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
     for guid, info in pairs(e.WoWDate or {}) do
         if guid and  info.Keystone.link then
-            e.tips:AddDoubleLine(
+            GameTooltip:AddDoubleLine(
                 (info.Keystone.weekNum or 0)
                 .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                 ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
@@ -26,19 +26,19 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
                 info.Keystone.link)
         end
     end
-    e.tips:Show()
+    GameTooltip:Show()
 end
 
 local function Set_Money(self, isTooltip)--险指南界面, 钱
     local numPlayer, allMoney  = 0, 0
     if isTooltip then
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
     end
     for guid, info in pairs(e.WoWDate or {}) do
         if info.Money then
             if isTooltip then
-                e.tips:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
+                GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
             end
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
@@ -46,12 +46,12 @@ local function Set_Money(self, isTooltip)--险指南界面, 钱
     end
     if isTooltip then
         if allMoney==0 then
-            e.tips:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
         else
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
     return numPlayer, allMoney
 end
@@ -76,12 +76,12 @@ local function Init()
     Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--按钮, 总开关
     Button:SetPoint('RIGHT',-22, -2)
     function Button:set_Tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
+        GameTooltip:Show()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
     function Button:set_icon()
@@ -110,10 +110,10 @@ local function Init()
     Button.btn.instance:SetPoint('RIGHT', Button, 'LEFT')
     Button.btn.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
     Button.btn.instance:SetScript('OnEnter',function(self2)
-        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
+        GameTooltip:AddLine(' ')
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and info then
                 local find
@@ -122,18 +122,18 @@ local function Init()
                     for difficultyName, killed in pairs(tab) do
                         text= (text and text..' ' or '')..difficultyName..killed
                     end
-                    e.tips:AddDoubleLine(bossName, text)
+                    GameTooltip:AddDoubleLine(bossName, text)
                     find= true
                 end
                 if find then
-                    e.tips:AddLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
+                    GameTooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
                 end
             end
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
     Button.btn.instance:SetScript("OnLeave", function ()
-       e.tips:Hide()
+       GameTooltip:Hide()
        if WoWTools_EncounterMixin.InstanceBossButton then
             WoWTools_EncounterMixin.InstanceBossButton:SetButtonState('NORMAL')
         end
@@ -157,7 +157,7 @@ local function Init()
     Button.btn.Worldboss:SetNormalAtlas('poi-soulspiritghost')
 
     Button.btn.Worldboss:SetScript("OnLeave", function()
-        e.tips:Hide()
+        GameTooltip:Hide()
         if WoWTools_EncounterMixin.WorldBossButton then
             WoWTools_EncounterMixin.WorldBossButton:SetButtonState('NORMAL')
         end

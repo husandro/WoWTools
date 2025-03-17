@@ -26,13 +26,13 @@ local function Init()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        e.tips:AddLine(' ')
-        e.tips:AddLine((GetTotalAchievementPoints() or 0)..' '..(e.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine((GetTotalAchievementPoints() or 0)..' '..(e.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
         if IsInGuild() then
             local guid= GetTotalAchievementPoints(true) or 0
-            e.tips:AddLine(guid..' '..(e.onlyChinese and '公会成就' or GUILD_ACHIEVEMENTS_TITLE))
+            GameTooltip:AddLine(guid..' '..(e.onlyChinese and '公会成就' or GUILD_ACHIEVEMENTS_TITLE))
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 end
 

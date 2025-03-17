@@ -47,13 +47,13 @@ local function Init_Professions(index)
         end
     end)
     button:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
             '|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left,
             e.Icon.right..MicroButtonTooltipText(e.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
         )
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 end
 
@@ -114,23 +114,23 @@ local function Init_Cooking(index)
     end
 
     button:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine('|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine('|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left)
         if self.tooltip then
-            e.tips:AddLine(' ')
-            e.tips:AddLine(self.tooltip..e.Icon.right)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(self.tooltip..e.Icon.right)
 
             local data= C_Spell.GetSpellCooldown(818)
             if data and data.duration>0 then
                 local spellName= WoWTools_SpellMixin:GetName(818)
                 if spellName then
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(spellName)
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddLine(spellName)
                 end
             end
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 end
@@ -235,24 +235,24 @@ local function Init_KeyButton(index, type)
 
     button:SetScript('OnLeave', GameTooltip_Hide)
     function button:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
             WoWTools_SpellMixin:GetName(self.spellID)..e.Icon.left,
             e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
         local isKeyValid= WoWTools_KeyMixin:IsKeyValid(self)
         local isInCombat= not self:CanChangeAttribute()
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
             ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKey()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(e.onlyChinese and '解除键位' or UNBIND)
         )
-        e.tips:Show()
+        GameTooltip:Show()
     end
     function button:set_key(isSetup)
         if isSetup then

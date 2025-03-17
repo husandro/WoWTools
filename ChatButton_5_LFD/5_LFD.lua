@@ -41,18 +41,18 @@ local function Init()
 
 
     function LFDButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
 
         if self.name and (self.dungeonID or self.RaidID) then
-            e.tips:AddLine(' ')
-            e.tips:AddLine(self.name..e.Icon.left)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(self.name..e.Icon.left)
         end
         if WoWTools_LFDMixin.TipsButton and WoWTools_LFDMixin.TipsButton:IsShown() then
             WoWTools_LFDMixin.TipsButton:SetButtonState('PUSHED')
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     LFDButton:SetupMenu(function(...)

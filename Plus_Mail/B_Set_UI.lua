@@ -141,12 +141,12 @@ local function Init()
     end)
     SendMailCostMoneyFrame:SetScript('OnLeave', GameTooltip_Hide)--隐藏， 邮资：，文本
     SendMailCostMoneyFrame:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
-        e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '邮资：' or SEND_MAIL_COST)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(e.onlyChinese and '邮资：' or SEND_MAIL_COST)
+        GameTooltip:Show()
     end)
     if SendMailCostMoneyFrame then
         local frames= {SendMailCostMoneyFrame:GetRegions()}

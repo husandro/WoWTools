@@ -314,7 +314,7 @@ local function Create_Button(index, last)
     end)
 
     btn:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         WoWTools_HolidayMixin:SetTrackButtonState(false, self.text)--TrackButton，提示
     end)
 
@@ -324,7 +324,7 @@ local function Create_Button(index, last)
         else
             GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT")
         end
-        e.tips:ClearLines()
+        GameTooltip:ClearLines()
         local title, description
         if (self.monthOffset and self.day and self.index) then
             local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
@@ -351,18 +351,18 @@ local function Create_Button(index, last)
             end
             if title or description then
                 if title then
-                    e.tips:AddLine(e.cn(title))
+                    GameTooltip:AddLine(e.cn(title))
                 end
                 if description and description~='' then
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(e.cn(description), nil,nil,nil,true)
-                    e.tips:AddLine(' ')
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddLine(e.cn(description), nil,nil,nil,true)
+                    GameTooltip:AddLine(' ')
                 end
             end
         end
-        e.tips:AddDoubleLine('eventID', self.eventID)
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine('eventID', self.eventID)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
+        GameTooltip:Show()
         WoWTools_HolidayMixin:SetTrackButtonState(true, self.text)--TrackButton，提示
     end)
 

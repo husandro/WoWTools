@@ -157,9 +157,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
             if Save().hideItems then
                 return
             end
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
             local slotID= self.transmogLocation:GetSlotID()
-            e.tips:AddLine('slotID '..slotID..' '..self.slot)
+            GameTooltip:AddLine('slotID '..slotID..' '..self.slot)
             if self.transmogLocation:IsIllusion() then--武器，附魔            
                 local collected, all= 0, 0
                 for _, illusion in ipairs(C_TransmogCollection.GetIllusions() or {}) do
@@ -169,7 +169,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     all= all+ 1
                 end
                 if all>0 then
-                    e.tips:AddLine(
+                    GameTooltip:AddLine(
                         (collected==all and '|cnGREEN_FONT_COLOR:' or '')
                         ..format('|A:transmog-nav-slot-enchant:0:0|a%i%%  %d/%d', collected/all*100, collected, all)
                     )
@@ -185,21 +185,21 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                         local col= collected==all and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(n/2))==0 and '|cffff7f00' or '|cffffffff')
                         local icon= SlotsIcon[category] or ''
                         local name= e.cn(C_TransmogCollection.GetCategoryInfo(category)) or ''
-                        e.tips:AddLine(
+                        GameTooltip:AddLine(
                             format('%s%s%s %i%%  %s/%s%s', col, icon, name, collected/all*100, WoWTools_Mixin:MK(collected, 3), WoWTools_Mixin:MK(all, 3), e.Icon.player)
                         )
                         n=n+1
                     end
                 end
             elseif self.Text and self.Text.category then
-                e.tips:AddLine('category '..self.Text.category)
+                GameTooltip:AddLine('category '..self.Text.category)
                 local collected= C_TransmogCollection.GetCategoryCollectedCount(self.Text.category) or 0
                 local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
                 local icon= SlotsIcon[self.Text.category] or ''
-                e.tips:AddLine(
+                GameTooltip:AddLine(
                     format('%s%i%%  %s/%s', icon, collected/all*100, WoWTools_Mixin:MK(collected, 3), (WoWTools_Mixin:MK(all, 3) ) or '')..e.Icon.player)
             end
-            e.tips:Show()
+            GameTooltip:Show()
         end)
     end
 end
@@ -289,30 +289,30 @@ local function set_Items_Tooltips(self)--UpdateItems
                             local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
                             if link2 then
                                 self2:SetAlpha(1)
-                                e.tips:ClearLines()
-                                e.tips:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
+                                GameTooltip:ClearLines()
+                                GameTooltip:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
                                 if self2.illusionID then
                                     local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self2.illusionID)
-                                    e.tips:AddLine(name)
-                                    e.tips:AddLine(' ')
-                                    e.tips:AddLine(sourceText, 1,1,1, true)
-                                    e.tips:AddLine(' ')
+                                    GameTooltip:AddLine(name)
+                                    GameTooltip:AddLine(' ')
+                                    GameTooltip:AddLine(sourceText, 1,1,1, true)
+                                    GameTooltip:AddLine(' ')
                                     local info = C_TransmogCollection.GetIllusionInfo(self2.illusionID)
                                     if info then
-                                        e.tips:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
-                                        e.tips:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
-                                        e.tips:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
+                                        GameTooltip:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
+                                        GameTooltip:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
+                                        GameTooltip:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
                                                             info.isUsable and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
-                                        e.tips:AddLine(' '
+                                        GameTooltip:AddLine(' '
                                     )
                                     end
                                 else
-                                    e.tips:SetHyperlink(link2)
+                                    GameTooltip:SetHyperlink(link2)
                                 end
-                                e.tips:AddLine(' ')
-                                e.tips:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
-                                e.tips:Show()
-                               e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
+                                GameTooltip:AddLine(' ')
+                                GameTooltip:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
+                                GameTooltip:Show()
+                               GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
                              end
                              self2:SetAlpha(1)
                         end)
@@ -322,7 +322,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                         end)
                         btn:SetScript("OnLeave",function(self2)
                             self2:SetAlpha(0.5)
-                            e.tips:Hide()
+                            GameTooltip:Hide()
                         end)
                         model.itemButton[index]=btn
                     end

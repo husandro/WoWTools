@@ -169,33 +169,33 @@ local function Create_Button(index)
             return
         end
 
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:SetEquipmentSet(self.setID)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetEquipmentSet(self.setID)
 
         local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)--装备管理，能否装备
         if notCan then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(' ', notCan)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(' ', notCan)
         end
 
         local specIndex=C_EquipmentSet.GetEquipmentSetAssignedSpec(self.setID)
         if specIndex then
             local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
             if icon3 and specName2 then
-                e.tips:AddLine(' ')
-                e.tips:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
             end
         end
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        e.tips:Show()
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:Show()
         EquipButton:SetButtonState('PUSHED')
         EquipButton:SetAlpha(1)
         self:SetAlpha(1)
     end)
 
     btn:SetScript("OnLeave",function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:set_alpha()
     end)
     btn:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -445,26 +445,26 @@ local function Init_TrackButton()--添加装备管理框
     end)
 
     TrackButton:SetScript("OnEnter", function (self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
+        GameTooltip:AddLine(' ')
 
         WoWTools_DurabiliyMixin:OnEnter()--耐久度, 提示
 
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
             MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")..e.Icon.left,
             e.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
-        e.tips:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
+        GameTooltip:Show()
         EquipButton:SetButtonState('PUSHED')
     end)
 
     TrackButton:SetScript("OnLeave", function()
         ResetCursor()
-        e.tips:Hide()
+        GameTooltip:Hide()
         EquipButton:SetButtonState('NORMAL')
     end)
 
@@ -552,12 +552,12 @@ function Init_EquipButton()
     end)
 
     EquipButton:SetScript("OnEnter", function (self)
-        e.tips:SetOwner(self, "ANCHOR_TOPLEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
+        GameTooltip:Show()
         self:SetAlpha(1)
         TrackButton:SetButtonState('PUSHED')
     end)

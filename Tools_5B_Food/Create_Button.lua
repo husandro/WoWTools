@@ -137,7 +137,7 @@ local function Create_Button(index)
     end)
     btn:SetScript('OnEnter', function(self)
         local can= self:CanChangeAttribute()
-        WoWTools_SetTooltipMixin:Frame(self, e.tips, {
+        WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
                 ..(can and '' or '|cff9e9e9e')

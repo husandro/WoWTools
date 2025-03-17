@@ -13,7 +13,7 @@ WoWTools_GuildMixin.Save={
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
-panel:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
+panel:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')--保存公会数据，到WOW
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -37,6 +37,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == 'CLUB_FINDER_RECRUITMENT_POST_RETURNED' then--保存公会数据，到WOW
+
         if arg1==Enum.ClubFinderRequestType.Guild or arg1==Enum.ClubFinderRequestType.All then
             if IsInGuild() then
                 local clubID= C_Club.GetGuildClubId()

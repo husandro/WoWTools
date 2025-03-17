@@ -210,21 +210,21 @@ local function Init()
     function TrackButton:set_Tooltips()
         if self.monthOffset and self.day then
             CalendarDayButton_OnEnter(self)
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
         else
             if Save().left then
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             else
-                e.tips:SetOwner(self, "ANCHOR_RIGHT")
+                GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             end
-            e.tips:ClearLines()
+            GameTooltip:ClearLines()
         end
-        e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
-        e.tips:Show()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
+        GameTooltip:Show()
     end
     TrackButton:SetScript('OnMouseUp', ResetCursor)
     TrackButton:SetScript('OnMouseDown', function(self, d)

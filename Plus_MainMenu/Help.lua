@@ -49,14 +49,14 @@ local function Init()
         if not MainMenuMicroButton.hover or KeybindFrames_InQuickKeybindMode() then
             return
         end
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
-        e.tips:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)
+        GameTooltip:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)
         if localizedVersion and localizedVersion~='' then
-            e.tips:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
+            GameTooltip:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
         end
-        e.tips:AddLine('realmID '..(GetRealmID() or '')..' '..(GetNormalizedRealmName() or ''), 1,0.82,0)
-        e.tips:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
+        GameTooltip:AddLine('realmID '..(GetRealmID() or '')..' '..(GetNormalizedRealmName() or ''), 1,0.82,0)
+        GameTooltip:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
 
         local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
         if info and info.wowProjectID then
@@ -64,29 +64,29 @@ local function Init()
             if info.regionID and info.regionID~=e.Player.region then
                 region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
             end
-            e.tips:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
+            GameTooltip:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end
 
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
         local bat= UnitAffectingCombat('player')
 
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '插件' or ADDONS)..'|r'
             ..e.Icon.right
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '宏命令设置' or MACROS)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
     --Blizzard_GameMenu/Standard/GameMenuFrame.lua

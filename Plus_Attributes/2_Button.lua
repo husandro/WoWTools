@@ -125,17 +125,17 @@ local function Init()
 
 
     function button:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        e.tips:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.mid)
-        e.tips:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.mid)
+        GameTooltip:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:Show()
     end
 
 
@@ -173,7 +173,7 @@ local function Init()
         self:set_tooltip()
     end)
 
-    button:SetScript("OnLeave",function(self) ResetCursor() e.tips:Hide() self:set_Show_Hide() end)
+    button:SetScript("OnLeave",function(self) ResetCursor() GameTooltip:Hide() self:set_Show_Hide() end)
 
     button:SetScript('OnEnter', function(self)
         self:set_tooltip()

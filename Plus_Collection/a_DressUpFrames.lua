@@ -94,15 +94,15 @@ local function Set_SetDetails(frame)
         if not link then
             return
         end
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:SetHyperlink(link)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetHyperlink(link)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
         if p.name then
-            e.tips:AddDoubleLine(e.onlyChinese and '搜索' or SEARCH, e.Icon.right)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '搜索' or SEARCH, e.Icon.right)
         end
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
 

@@ -166,12 +166,12 @@ local function Create_ListButton(index)
             return
         end
 
-        local find, find2= Set_Tooltip(self, e.tips, 0)
+        local find, find2= Set_Tooltip(self, GameTooltip, 0)
         if find==0 and find2==0 then
-            e.tips:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
-            e.tips:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
+            GameTooltip:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
+            GameTooltip:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     btn:SetPoint('TOPRIGHT', index==1 and ListButton.frame or Buttons[index-1], 'BOTTOMRIGHT')
@@ -452,18 +452,18 @@ local function Init()
         self:SetShown(show)
     end
     function ListButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:Show()
     end
 
 
     ListButton:SetScript('OnLeave', function (self)
         self:Settings()
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
     ListButton:SetScript('OnEnter', function(self)
         self:set_tooltip()

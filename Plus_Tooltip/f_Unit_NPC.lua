@@ -38,7 +38,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
     local uiWidgetSet= UnitWidgetSet(unit)
     if uiWidgetSet and uiWidgetSet>0 then
-        e.tips:AddDoubleLine('WidgetSetID', uiWidgetSet)
+        GameTooltip:AddDoubleLine('WidgetSetID', uiWidgetSet)
     end
 
     local zone, npc

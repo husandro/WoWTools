@@ -10,12 +10,12 @@ end
 local function Settings(btn)
     btn:HookScript('OnEnter', function(self3)
         if self3.id and not Save().hideEncounterJournal then
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine('perksActivityID', self3.id)
-            e.tips:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
-            e.tips:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-            e.tips:Show()
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('perksActivityID', self3.id)
+            GameTooltip:AddDoubleLine((self3.completed and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '追踪' or TRACKING), e.Icon.left)
+            GameTooltip:AddDoubleLine((not C_PerksActivities.GetPerksActivityChatLink(self3.id) and '|cff9e9e9e' or '|cff00ff00')..(e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK), e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+            GameTooltip:Show()
         end
     end)
 

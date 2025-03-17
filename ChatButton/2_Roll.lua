@@ -255,16 +255,16 @@ local function Init()
 
 
     function RollButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(addName, e.Icon.left)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(addName, e.Icon.left)
         if #RollTab>0 then
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
             local tabNew={}
             for _, tab in pairs(RollTab) do
                 local col=tabNew[tab.name] and '|cff9e9e9e' or ''
                 local icon=tab.roll==Max and '|A:auctionhouse-icon-checkmark:0:0|a' or (tab.roll==Min and '|T450905:0|a') or ''
-                e.tips:AddLine(
+                GameTooltip:AddLine(
                     col
                     ..'|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
                     ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})
@@ -272,7 +272,7 @@ local function Init()
                 tabNew[tab.name]=true
             end
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     function RollButton:set_OnMouseDown()

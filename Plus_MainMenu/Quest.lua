@@ -33,9 +33,9 @@ local function Init()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 end
 

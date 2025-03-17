@@ -16,23 +16,23 @@ local function Init()
 
     CharacterLevelText:SetJustifyH('LEFT')
     CharacterLevelText:EnableMouse(true)
-    CharacterLevelText:HookScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) end)
+    CharacterLevelText:HookScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     CharacterLevelText:HookScript('OnEnter', function(self)
         local info = C_PlayerInfo.GetPlayerCharacterData()
         if Save().hide or not info then
             return
         end
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
-        e.tips:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
-        e.tips:AddLine('sex |cnGREEN_FONT_COLOR:'..info.sex)
-        e.tips:AddLine('displayID |cnGREEN_FONT_COLOR:'..C_PlayerInfo.GetDisplayID())
-        e.tips:AddDoubleLine((info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..'createScreenIconAtlas', info.createScreenIconAtlas)
-        e.tips:AddDoubleLine('GUID', UnitGUID('player'))
-        e.tips:AddLine(' ')
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
+        GameTooltip:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
+        GameTooltip:AddLine('sex |cnGREEN_FONT_COLOR:'..info.sex)
+        GameTooltip:AddLine('displayID |cnGREEN_FONT_COLOR:'..C_PlayerInfo.GetDisplayID())
+        GameTooltip:AddDoubleLine((info.createScreenIconAtlas and '|A:'..info.createScreenIconAtlas..':0:0|a' or '')..'createScreenIconAtlas', info.createScreenIconAtlas)
+        GameTooltip:AddDoubleLine('GUID', UnitGUID('player'))
+        GameTooltip:AddLine(' ')
 
         local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
         local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID)
@@ -41,19 +41,19 @@ local function Init()
             expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
         end
         local text= format(e.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
-        e.tips:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
+        GameTooltip:AddDoubleLine((e.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..e.GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
                                 text
                             )
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
             local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-            e.tips:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info2.completed))
-            --e.tips:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
-            --e.tips:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
-            --e.tips:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
+            GameTooltip:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', e.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info2.completed))
+            --GameTooltip:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
+            --GameTooltip:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
+            --GameTooltip:AddDoubleLine(' ', col..(e.onlyChinese and '完成' or COMPLETE)..': '..e.GetYesNo(info.completed))
         end
 
-        e.tips:Show()
+        GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
 end

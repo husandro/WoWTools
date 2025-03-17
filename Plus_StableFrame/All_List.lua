@@ -118,7 +118,7 @@ local function created_button(index)
     btn:HookScript('OnEnter', function(self)
         if self.petData then
             WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
-            e.tips:Show()
+            GameTooltip:Show()
         end
     end)
     --set_button_size(btn)

@@ -52,29 +52,29 @@ local function Init()
     end)
 
     function PlayerButton:set_tooltip()
-        e.tips:ClearLines()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.Icon.player..' XY')
-        e.tips:AddLine(' ')
+        GameTooltip:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, e.Icon.player..' XY')
+        GameTooltip:AddLine(' ')
 
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
 
         --[[local mapID= C_Map.GetBestMapForUnit("player")
         local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             e.Icon.right
             ..(can and '' or '|cnRED_FONT_COLOR:')
             ..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL))
             ..'|A:Waypoint-MapPin-ChatIcon:0:0|a'
         )]]
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
 
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     PlayerButton:SetScript("OnEnter", PlayerButton.set_tooltip)
     PlayerButton:SetScript("OnLeave", function()
-        e.tips:Hide()
+        GameTooltip:Hide()
         ResetCursor()
     end)
 

@@ -784,23 +784,23 @@ local function Set_Move_Button(btn)
 
     function btn:set_tooltip()
         if self.isEnemy then
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         else
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         end
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_PetBattleMixin.addName5, WoWTools_PetBattleMixin.addName6)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:Show()
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName5, WoWTools_PetBattleMixin.addName6)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:Show()
     end
 
 
     btn:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         ResetCursor()
         self:set_alpha()
         btn.parent:SetAlpha(1)

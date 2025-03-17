@@ -9,17 +9,17 @@ local function Init()
         if not name then
             return
         end
-        e.tips:SetOwner(self3, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(link or name, (dungeonAreaMapID and 'UiMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
-        e.tips:AddLine(' ')
-        e.tips:AddLine(description, nil,nil,nil, true)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
-        e.tips:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-        e.tips:Show()
+        GameTooltip:SetOwner(self3, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(link or name, (dungeonAreaMapID and 'UiMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(description, nil,nil,nil, true)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(bgImage and '|T'..bgImage..':26|t'..bgImage, loreImage and '|T'..loreImage..':26|t'..loreImage)
+        GameTooltip:AddDoubleLine(buttonImage1 and '|T'..buttonImage1..':26|t'..buttonImage1, buttonImage2 and '|T'..buttonImage2..':26|t'..buttonImage2)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:Show()
     end)
 end
 

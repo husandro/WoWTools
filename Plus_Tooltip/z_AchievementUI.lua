@@ -17,13 +17,13 @@ local function Blizzard_AchievementUI()
                 frame.Shield:SetScript('OnEnter', function(self)
                     local achievementID= self:GetParent().id
                     if achievementID then
-                        e.tips:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
-                        e.tips:ClearLines()
-                        e.tips:SetAchievementByID(achievementID)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
-                        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetAchievementByID(achievementID)
+                        GameTooltip:AddLine(' ')
+                        GameTooltip:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+                        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
+                        GameTooltip:Show()
                     end
                     self:SetAlpha(0.5)
                 end)
@@ -59,10 +59,10 @@ local function Blizzard_AchievementUI()
                 button:SetScript('OnLeave', GameTooltip_Hide)
                 button:SetScript('OnEnter', function(self3)
                     if self3.id then
-                        e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                        e.tips:ClearLines()
-                        e.tips:SetAchievementByID(self3.id)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetAchievementByID(self3.id)
+                        GameTooltip:Show()
                     end
                 end)
                 if button.Player and button.Player.Icon and not button.Player.idText then
@@ -92,10 +92,10 @@ local function Blizzard_AchievementUI()
         AchievementFrameComparisonHeader:HookScript('OnEnter', function()
             local unit= AchievementFrameComparisonHeaderPortrait.unit
             if unit then
-                e.tips:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
-                e.tips:ClearLines()
-                e.tips:SetUnit(unit)
-                e.tips:Show()
+                GameTooltip:SetOwner(AchievementFrameComparison, "ANCHOR_RIGHT",0,-250)
+                GameTooltip:ClearLines()
+                GameTooltip:SetUnit(unit)
+                GameTooltip:Show()
             end
         end)
     end

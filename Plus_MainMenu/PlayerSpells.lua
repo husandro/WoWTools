@@ -89,33 +89,33 @@ local function Init()
         end
         a= a or ''
         b= b or a or ''
-        e.tips:AddLine(' ')
-        e.tips:AddLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a)
-        e.tips:AddLine(
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine((e.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION)..a)
+        GameTooltip:AddLine(
             (lootSpecID==specID and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
             ..(e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             ..b
         )
 
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         local bat= UnitAffectingCombat('player')
 
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..e.Icon.right
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
     PlayerSpellsMicroButton:HookScript('OnClick', function(_, d)

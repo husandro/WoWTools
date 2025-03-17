@@ -256,7 +256,12 @@ end
 
 
 
-
+--[[
+BNET_CLIENT_WOW = "WoW";
+BNET_CLIENT_APP = "App";
+BNET_CLIENT_HEROES = "Hero";
+BNET_CLIENT_CLNT = "CLNT";
+]]
 
 --e.WoWDate[e.Player.guid].region= e.Player.region
 --e.WoWDate[e.Player.guid].battleTag= e.Player.battleTag or e.WoWDate[e.Player.guid].battleTag
@@ -278,14 +283,25 @@ function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好
                     return '|A:auctionhouse-icon-favorite:0:0|a'
                 end
 
-            elseif C_BattleNet.GetGameAccountInfoByGUID(guid) then--C_BattleNet.GetAccountInfoByGUID(guid)
-                return e.Icon.net2
+            else
+                local gameAccountInfo = C_BattleNet.GetGameAccountInfoByGUID(guid)
+                if gameAccountInfo then--C_BattleNet.GetAccountInfoByGUID(guid)
+                    local text
+                    if C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small) then
+                        C_Texture.GetTitleIconTexture(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)
+                            if success then
+                                text = BNet_GetClientEmbeddedTexture(texture, 32, 32, 0).." ";
+                            end
+                        end);
+                    end
+                    return text or e.Icon.net2
 
-            elseif C_FriendList.IsFriend(guid) then
-                return '|A:groupfinder-icon-friend:0:0|a'--好友
+                elseif C_FriendList.IsFriend(guid) then
+                    return '|A:groupfinder-icon-friend:0:0|a'--好友
 
-            elseif IsGuildMember(guid) then--IsPlayerInGuildFromGUID
-                return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
+                elseif IsGuildMember(guid) then--IsPlayerInGuildFromGUID
+                    return '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'--公会
+                end
             end
         end
 

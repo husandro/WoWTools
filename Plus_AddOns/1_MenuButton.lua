@@ -205,15 +205,15 @@ local function Init()
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
         if Save().load_list_top  then
-            e.tips:SetOwner(AddonList, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(AddonList, "ANCHOR_RIGHT")
         else
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         end
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
-        e.tips:Show()
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(' ', (e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
+        GameTooltip:Show()
     end)
 
     btn:SetupMenu(Init_Menu)

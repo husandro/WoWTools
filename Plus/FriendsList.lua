@@ -71,12 +71,12 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                     nameObj:EnableMouse(true)
                     nameObj:SetScript('OnLeave', GameTooltip_Hide)
                     nameObj:SetScript('OnEnter', function(self2)
-                        e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
+                        GameTooltip:AddLine(' ')
+                        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                        GameTooltip:Show()
                     end)
                     nameObj:SetScript('OnMouseDown',function(self2)
                         WoWTools_ChatMixin:Say(nil, self2.name, self2.guid2 and C_BattleNet.GetGameAccountInfoByGUID(self2.guid))
@@ -796,30 +796,30 @@ local function set_WhoList_Update()--查询, 名单列表
                 end
             end)
             btn:HookScript('OnEnter', function(self)--FriendsFrame.lua
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
                 local index= self.index
                 local info = index and C_FriendList.GetWhoInfo(index)
                 if info and info.fullName then
-                    e.tips:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', e.Icon.toRight))
+                    GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', e.Icon.toRight))
                                 ..(WoWTools_UnitMixin:GetClassIcon(nil, info.filename) or '')
                                 ..self.col
                                 ..info.fullName
                                 ..(WoWTools_UnitMixin:GetIsFriendIcon(info.fullName) or '')
                                 ..(info.level and ' '..(info.level~=GetMaxLevelForLatestExpansion() and '|cnGREEN_FONT_COLOR:' or '')..info.level or '')
                             )
-                    e.tips:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
-                    e.tips:AddLine('|A:groupfinder-waitdot:0:0|a'..self.col..(info.raceStr or ''))
-                    e.tips:AddLine('|A:poi-islands-table:0:0|a'..self.col..(info.area or ''))
+                    GameTooltip:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
+                    GameTooltip:AddLine('|A:groupfinder-waitdot:0:0|a'..self.col..(info.raceStr or ''))
+                    GameTooltip:AddLine('|A:poi-islands-table:0:0|a'..self.col..(info.area or ''))
                 end
 
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(self.col..'index', self.index)
-                e.tips:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-                e.tips:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(WoWTools_Mixin.addName, addName)
-                e.tips:Show()
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(self.col..'index', self.index)
+                GameTooltip:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+                GameTooltip:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                GameTooltip:Show()
             end)
             btn.setOnDoubleClick= true
         end

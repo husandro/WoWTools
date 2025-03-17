@@ -82,10 +82,10 @@ local function Create_Fast_Button(indexAdd)
             if not findIndex then
                 local name, atlas, texture= self:get_add_info()
                 local icon= atlas and format('|A:%s:26:26|a', atlas) or (texture and format('|T%d:26|t', texture)) or ''
-                e.tips:SetOwner(self.Text, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(icon..name)
-                e.tips:Show()
+                GameTooltip:SetOwner(self.Text, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddDoubleLine(icon..name)
+                GameTooltip:Show()
             else
                 index=findIndex
             end

@@ -198,12 +198,12 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
         btn:SetScript('OnLeave', GameTooltip_Hide)
         btn:SetScript('OnEnter', function(self)
             QueryGuildBankTab(GetCurrentGuildBankTab())
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddLine(WoWTools_GuildBankMixin.addName)
-            e.tips:AddLine(' ')
-            e.tips:AddLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(WoWTools_GuildBankMixin.addName)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            GameTooltip:Show()
         end)
         frame.SortButton= btn
     else

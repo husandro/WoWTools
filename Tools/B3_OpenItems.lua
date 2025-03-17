@@ -741,23 +741,23 @@ local function Init()
     Mixin(OpenButton, WoWTools_ItemLocationMixin)
 
     function OpenButton:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         local bagID, slotIndex= self:GetBagAndSlot()
         if self:IsBagAndSlot() then
             local itemLink= C_Container.GetContainerItemLink(bagID, slotIndex)
             if itemLink and itemLink:find('Hbattlepet:%d+') then
                 BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
-                e.tips:Hide()
+                GameTooltip:Hide()
             else
-                e.tips:SetBagItem(bagID, slotIndex)
+                GameTooltip:SetBagItem(bagID, slotIndex)
                 if self:CanChangeAttribute() then
-                    e.tips:AddLine(' ')
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), noText)
-                    e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..e.Icon.left)
-                    e.tips:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
-                    e.tips:Show()
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), noText)
+                    GameTooltip:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..e.Icon.left)
+                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
+                    GameTooltip:Show()
                 end
 
                 if (BattlePetTooltip) then
@@ -766,11 +766,11 @@ local function Init()
             end
             WoWTools_BagMixin:Find(true, {itemLink= itemLink})--查询，背包里物品
         else
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
-            e.tips:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
-            e.tips:Show()
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
+            GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
+            GameTooltip:Show()
             if (BattlePetTooltip) then
                 BattlePetTooltip:Hide()
             end

@@ -120,18 +120,18 @@ local function Init()
 
     MapXYButton:SetScript('OnLeave', GameTooltip_Hide)
     MapXYButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
 
-        --e.tips:AddLine(' ')
+        --GameTooltip:AddLine(' ')
         --local can
         --can= C_Map.GetBestMapForUnit("player")
         --can= can and C_Map.CanSetUserWaypointOnMap(can)
-        --e.tips:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
-        --e.tips:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
-        e.tips:Show()
+        --GameTooltip:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
+        --GameTooltip:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
+        GameTooltip:Show()
     end)
     MapXYButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -180,9 +180,9 @@ local function Init()
     MapXYButton.edit:SetScript("OnEnterPressed", Set_Map_Waypoint)--自定义，地图标记，XY
     MapXYButton.edit:SetScript('OnLeave', GameTooltip_Hide)
     MapXYButton.edit:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(
             '|A:Waypoint-MapPin-Untracked:0:0|a'
             ..(e.onlyChinese and '地图标记' or MAP_PIN)
             ..'|A:NPE_Icon:0:0|aEnter'
@@ -190,12 +190,12 @@ local function Init()
 
         local mapID = WorldMapFrame.mapID
         if not mapID then
-            e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有找到MapID' or "Not found MapID"))
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有找到MapID' or "Not found MapID"))
         elseif not C_Map.CanSetUserWaypointOnMap(mapID) then
-            e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
         end
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
     MapXYButton.Text=WoWTools_LabelMixin:Create(MapXYButton, {copyFont=WorldMapFrameTitleText})--玩家当前坐标

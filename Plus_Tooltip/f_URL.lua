@@ -100,13 +100,13 @@ local function Create_Button(tooltip)
     end)
     tooltip.WoWHeadButton:SetScript('OnLeave', GameTooltip_Hide)
     tooltip.WoWHeadButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self:GetParent(), "ANCHOR_TOPRIGHT", 0, 18)
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(
+        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_TOPRIGHT", 0, 18)
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
             WoWTools_TooltipMixin.addName,
             'WoWHead URL'
         )
-        e.tips:Show()
+        GameTooltip:Show()
     end)
     function tooltip.WoWHeadButton:rest()
         self.type=nil
@@ -130,13 +130,13 @@ local function Create_Button(tooltip)
     end)
     tooltip.AchievementButton:SetScript('OnLeave', GameTooltip_Hide)
     tooltip.AchievementButton:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self:GetParent(), "ANCHOR_TOPRIGHT", 0, 18)
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(
+        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_TOPRIGHT", 0, 18)
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
             WoWTools_TooltipMixin.addName,
             e.onlyChinese and '打开成就' or OBJECTIVES_VIEW_ACHIEVEMENT
         )
-        e.tips:Show()
+        GameTooltip:Show()
     end)
     function tooltip.AchievementButton:rest()
         self.type=nil
@@ -200,7 +200,7 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
                 if tooltip then
                     BattlePetTooltipTemplate_AddTextLine(tooltip, (tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
                 end
-            elseif tooltip== e.tips then
+            elseif tooltip== GameTooltip then
                 tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
             end
         end
@@ -213,8 +213,8 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
                 tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
                 tooltip:Show(true)
             else
-                e.tips:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
-                e.tips:Show(true)
+                GameTooltip:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
+                GameTooltip:Show(true)
             end
         end
 

@@ -1,4 +1,46 @@
 local e= select(2, ...)
+e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+
+
+e.ExpansionLevel= GetExpansionLevel()--版本数据
+e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
+e.WoWDate={}--战网，数据
+e.StausText={}--属性，截取表 API_Panel.lua
+e.ChallengesSpellTabs={}--Challenges.lua
+--e.tips=GameTooltip
+e.onlyChinese= LOCALE_zhCN and true or false
+
+
+WoWTools_Mixin={
+    addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
+    isChinese= e.onlyChinese,
+}
+
+
+
+--[[
+AccountUtil.lua
+FriendsFrame.lua
+BnetShared.lua 
+BNET_CLIENT_WOW = "WoW";
+BNET_CLIENT_APP = "App";
+BNET_CLIENT_HEROES = "Hero";
+BNET_CLIENT_CLNT = "CLNT";
+
+function WoWTools_Mixin:GetWoWTexture()
+    local texture
+    C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, icon)
+        if success and texture then
+            texture= icon
+        end
+    end)
+    return texture
+end
+]]
+
+
+
 
 --[[
 QueryGuildBankLog(tab)
@@ -134,7 +176,7 @@ function WoWTools_Mixin:GetExpansionText(expacID, questID)
     if not expacID and questID then
         expacID= GetQuestExpansion(questID)
     end
-    
+
     local text= expacID and e.cn(_G['EXPANSION_NAME'..expacID])
     if text then
         text= (WoWTools_TextureMixin:GetWoWLog(expacID) or '')..' '..text..' '..(expacID+1)
@@ -237,19 +279,19 @@ function e.Get_Guild_Enter_Info()
     if IsInGuild() then
         local all, online, app = GetNumGuildMembers()
         local guildName, guildRankName, _, realm = GetGuildInfo('player')
-        e.tips:AddDoubleLine(guildName..(realm and realm~=e.Player.realm and '-'..realm or ' ')..' ('..all..')', guildRankName)
+        GameTooltip:AddDoubleLine(guildName..(realm and realm~=e.Player.realm and '-'..realm or ' ')..' ('..all..')', guildRankName)
         local day= GetGuildRosterMOTD()--今天信息
         if day and day~='' then
-            e.tips:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
+            GameTooltip:AddLine('|cffff00ff'..day..'|r', nil,nil, nil, true)
         end
         local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON),
             col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r'
             ..(app and app>1 and '/|A:UI-ChatIcon-App:0:0|a'..(app-1) or '')
         )
         if #clubs>0 then
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
         end
     end
     local guildClubId= C_Club.GetGuildClubId()
@@ -266,7 +308,7 @@ function e.Get_Guild_Enter_Info()
         end
         local icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a' or '|T'..(tab.avatarId==1 and 0 or tab.avatarId or 0)..':0|t'
         local col= online>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-        e.tips:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
+        GameTooltip:AddDoubleLine(icon..col..tab.name, col..online..icon)--..tab.memberCount
     end
 end
 

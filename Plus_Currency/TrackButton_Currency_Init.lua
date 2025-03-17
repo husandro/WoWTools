@@ -100,17 +100,17 @@ local function Init_TrackButton()
 
 	function TrackButton:set_Tooltip()
 		if Save().toRightTrackText then
-			e.tips:SetOwner(self, "ANCHOR_RIGHT")
+			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		else
-			e.tips:SetOwner(self, "ANCHOR_LEFT")
+			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		end
-		e.tips:ClearLines()
+		GameTooltip:ClearLines()
 
 		local infoType, itemID, itemLink = GetCursorInfo()
 		if infoType=='item' and itemID then
-			e.tips:SetItemByID(itemID)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(itemLink or ('itemID'..itemID),
+			GameTooltip:SetItemByID(itemID)
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 					Save().item[itemID] and
 						('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
 					or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
@@ -118,16 +118,16 @@ local function Init_TrackButton()
 			self:set_texture(C_Item.GetItemIconByID(itemID))
 		else
 			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
-			e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
-			e.tips:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
-			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
-			e.tips:AddDoubleLine(e.GetShowHide(Save().str, true), e.Icon.mid)
-			e.tips:AddLine(' ')
-			e.tips:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
+			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(e.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
+			GameTooltip:AddDoubleLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+			GameTooltip:AddDoubleLine(canFrame..(e.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
+			GameTooltip:AddDoubleLine(e.GetShowHide(Save().str, true), e.Icon.mid)
+			GameTooltip:AddLine(' ')
+			GameTooltip:AddDoubleLine(canFrame..(e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
 		end
-		e.tips:Show()
+		GameTooltip:Show()
 	end
 
 
@@ -185,7 +185,7 @@ local function Init_TrackButton()
 	end)
 	TrackButton:SetScript('OnMouseUp', ResetCursor)
 	TrackButton:SetScript("OnLeave", function(self)
-		e.tips:Hide()
+		GameTooltip:Hide()
 		self:set_texture()
 	end)
 	TrackButton:SetScript('OnMouseWheel', function(self, d)

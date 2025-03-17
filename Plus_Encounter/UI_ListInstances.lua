@@ -120,27 +120,27 @@ local function Init()
                         return
                     end
                     local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
+                    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
                     if name then
                         local cnName=e.cn(name, true)
-                        e.tips:AddDoubleLine(cnName or name, cnName and name..' ')
+                        GameTooltip:AddDoubleLine(cnName or name, cnName and name..' ')
                     end
 
-                    e.tips:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
-                    e.tips:AddDoubleLine(
+                    GameTooltip:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
+                    GameTooltip:AddDoubleLine(
                         dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
                         mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
                     )
                     if self.mapChallengeModeID then
-                        e.tips:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
+                        GameTooltip:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
                     end
-                    e.tips:AddLine(' ')
+                    GameTooltip:AddLine(' ')
                     if WoWTools_EncounterMixin:GetInstanceData(self, true) then--界面,击杀,数据
-                        e.tips:AddLine(' ')
+                        GameTooltip:AddLine(' ')
                     end
-                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-                    e.tips:Show()
+                    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+                    GameTooltip:Show()
                 end)
                 button:SetScript('OnLeave', GameTooltip_Hide)
             end
@@ -157,18 +157,18 @@ local function Init()
                     button.KeyTexture:SetPoint('TOPLEFT', -4, 0)
                     button.KeyTexture:SetSize(26,26)
                     button.KeyTexture:SetAtlas('common-icon-checkmark')
-                    button.KeyTexture:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
+                    button.KeyTexture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
                     button.KeyTexture:SetScript('OnEnter', function(self)
-                        e.tips:SetOwner(self, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:ClearLines()
                         local link= e.WoWDate[e.Player.guid].Keystone.link
                         if link then
-                            e.tips:SetHyperlink(link)
+                            GameTooltip:SetHyperlink(link)
                         else
-                            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-                            e.tips:AddLine(e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
+                            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+                            GameTooltip:AddLine(e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
                         end
-                        e.tips:Show()
+                        GameTooltip:Show()
                         self:SetAlpha(0.3)
                         self.label:SetAlpha(0.3)
                     end)
@@ -191,16 +191,16 @@ local function Init()
                 button.Favorites2:EnableMouse(true)
                 button.Favorites2:SetScript('OnLeave', function(self)
                     self:settings(false)
-                    e.tips:Hide()
+                    GameTooltip:Hide()
                 end)
                 button.Favorites2:SetScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
-                    e.tips:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
-                    e.tips:Show()
+                    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
+                    GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+                    GameTooltip:Show()
                     self:settings(true)
                 end)
                 button.Favorites2:SetScript('OnClick', function(self, d)

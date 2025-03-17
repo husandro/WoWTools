@@ -96,7 +96,7 @@ if overrideSpellID and overrideSpellID~=spellID then
     link= link and link..overrideSpellID or ('overrideSpellID '..overrideSpellID)
     if link then
         spellTexture=  originalIcon2 or icon2 or C_Spell.GetSpellTexture(overrideSpellID)
-        e.tips:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+        GameTooltip:AddDoubleLine(format(e.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     end
 end]]
 

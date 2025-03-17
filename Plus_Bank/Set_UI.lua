@@ -10,8 +10,8 @@ end
 
 
 local function Set_Button_Tooltip(self)
-    e.tips:SetOwner(self, "ANCHOR_LEFT")
-    e.tips:ClearLines()
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
 
     local free, all, regentsFree= WoWTools_BagMixin:GetFree(true)--背包，空位
 
@@ -19,13 +19,13 @@ local function Set_Button_Tooltip(self)
                 or (self.index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
                 or (self.index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
                 or ''
-    e.tips:AddDoubleLine(self.name, name)
+    GameTooltip:AddDoubleLine(self.name, name)
     if self.tooltip then
-        self.tooltip(e.tips)
+        self.tooltip(GameTooltip)
     end
 
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine(
         '|A:bag-main:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL)
         ..' |cnGREEN_FONT_COLOR:'..free..'|r (|cnRED_FONT_COLOR:'..(all-free)..'|r) / '..all,
         '(|cnGREEN_FONT_COLOR:'..(free-regentsFree)..'|r+|cnGREEN_FONT_COLOR:'..regentsFree..'|r)'
@@ -33,14 +33,14 @@ local function Set_Button_Tooltip(self)
 
     free, all= WoWTools_BankMixin:GetFree(self.index)
 
-    e.tips:AddLine(
+    GameTooltip:AddLine(
         name
         ..' |cnGREEN_FONT_COLOR:'..free..'|r'
         ..' (|cnRED_FONT_COLOR:'..(all-free)..'|r)'
         ..' / '..all
     )
 
-    e.tips:Show()
+    GameTooltip:Show()
 end
 
 
@@ -229,10 +229,10 @@ local function Init_ReagentBankFrame()
     btnSort:SetSize(32,32)
     btnSort:SetPoint('LEFT', BankItemSearchBox, 'RIGHT', 2, 0)--整理材料银行
     btnSort:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
+        GameTooltip:Show()
     end)
     btnSort:SetScript('OnClick', C_Container.SortReagentBankBags)
 
@@ -250,10 +250,10 @@ local function Init_ReagentBankFrame()
     despButton:SetPushedAtlas('auctionhouse-nav-button-select')
     --despButton:HookScript('OnLeave', GameTooltip_Hide)
     --[[despButton:HookScript('OnEnter', function(s)
-        e.tips:SetOwner(s, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
-        e.tips:Show()
+        GameTooltip:SetOwner(s, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
+        GameTooltip:Show()
     end)]]
     despButton.index=2
     despButton.isOutItem=false
@@ -279,16 +279,16 @@ local function Init_ReagentBankFrame()
     end)
 
     function btnAllOut:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         local free= WoWTools_BagMixin:GetFree(true)--self:get_free()
-        e.tips:AddDoubleLine(e.onlyChinese and '取出所有材料' or 'Take out all reagents',
+        GameTooltip:AddDoubleLine(e.onlyChinese and '取出所有材料' or 'Take out all reagents',
             format('|A:4549254:0:0|a%s #%s%d',
                 e.onlyChinese and '材料' or AUCTION_CATEGORY_TRADE_GOODS,
                 free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
                 free)
         )
-        e.tips:Show()
+        GameTooltip:Show()
     end
     function btnAllOut:show_tooltips()
         C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
@@ -408,16 +408,16 @@ local function Init_AccountBankPanel()
     btnSort:SetSize(32, 32)
     btnSort:SetPoint('RIGHT', despButton, 'LEFT', -2, 0)--整理材料银行
     btnSort:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
         local cvar= C_CVar.GetCVarBool('bankConfirmTabCleanUp')
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (cvar and '|cnGREEN_FONT_COLOR:' or '|cff828282')
             ..(e.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
         )
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
     btnSort:SetScript('OnClick', function()
         if GetCVarBool("bankConfirmTabCleanUp") then
@@ -437,10 +437,10 @@ local function Init_AccountBankPanel()
     check:SetPoint('RIGHT', btnSort, 'LEFT')
     check:HookScript('OnLeave', GameTooltip_Hide)
     check:HookScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
+        GameTooltip:Show()
     end)
     check.Text:SetText('')
     check.Text:Hide()
@@ -511,10 +511,10 @@ local function Init_OpenAllBag_Button()
     up:SetPoint('TOPLEFT', BankSlotsFrame['Bag'..NUM_BANKBAGSLOTS], 'TOPRIGHT', 0,4)
     up:SetScript('OnLeave', GameTooltip_Hide)
     up:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '打开背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOT))
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '打开背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOT))
+        GameTooltip:Show()
     end)
     up:SetScript('OnClick', function()
         do
@@ -532,10 +532,10 @@ local function Init_OpenAllBag_Button()
     down:SetPoint('TOP', up, 'BOTTOM')
     down:SetScript('OnLeave', GameTooltip_Hide)
     down:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(e.onlyChinese and '关闭背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLOSE, BAGSLOT))
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(e.onlyChinese and '关闭背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLOSE, BAGSLOT))
+        GameTooltip:Show()
     end)
     down:SetScript('OnClick', function()
         do

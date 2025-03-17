@@ -156,14 +156,14 @@ local function created_model(btn, setBg)
         end
         if self.petData and not self.locked and self:IsEnabled() then
             WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
-            e.tips:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
             if self:GetID()==EXTRA_PET_STABLE_SLOT_LUA_INDEX then
-                e.tips:AddDoubleLine(
+                GameTooltip:AddDoubleLine(
                     format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
                     format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or C_Spell.GetSpellName(267116) or 'Animal Companion')
                 )
             end
-            e.tips:Show()
+            GameTooltip:Show()
         end
     end)
 
@@ -207,7 +207,7 @@ local function Set_SetPet(btn)
     btn:HookScript('OnEnter', function(self)--信息，提示
         if self.petData then
             WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
-            e.tips:Show()
+            GameTooltip:Show()
         end
     end)
 end

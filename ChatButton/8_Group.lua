@@ -482,38 +482,38 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     table.sort(tabN, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
     table.sort(tabDPS, function(a, b) if a and b then  return a.maxHP> b.maxHP end return false end)
 
-    --[[e.tips:SetOwner(GroupButton, "ANCHOR_LEFT")
-    e.tips:ClearLines()]]
-    e.tips:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), WoWTools_Mixin:MK(totaleHP,3))
+    --[[GameTooltip:SetOwner(GroupButton, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()]]
+    GameTooltip:AddDoubleLine(format(e.onlyChinese and '%s玩家' or COMMUNITIES_CROSS_FACTION_BUTTON_TOOLTIP_TITLE, playerNum), WoWTools_Mixin:MK(totaleHP,3))
     if playerNum>0 then
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
     end
     local find
     for _, info in pairs(tabT) do
-        e.tips:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_TANK_ICON)
+        GameTooltip:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_TANK_ICON)
         find=true
     end
     if find then
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         find=nil
     end
     for _, info in pairs(tabN) do
-        e.tips:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_HEALER_ICON)
+        GameTooltip:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_HEALER_ICON)
         find=true
     end
     if find then
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
         find=nil
     end
     for _, info in pairs(tabDPS) do
-        e.tips:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
+        GameTooltip:AddDoubleLine(info.name, info.col..WoWTools_Mixin:MK(info.maxHP, 3)..INLINE_DAMAGER_ICON)
         find= true
     end
     if find then
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
     end
 
-    --e.tips:Show()
+    --GameTooltip:Show()
 
     e.GetNotifyInspect(UnitTab)--取得装等
     return find
@@ -561,28 +561,28 @@ local function Init()
     GroupButton.textureNotInstance:SetAtlas('socket-punchcard-red-background')
 
     function GroupButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
 
         local find= show_Group_Info_Toolstip()--玩家,信息, 提示
 
         if find then
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
         end
 
-        e.tips:AddDoubleLine(self.text, self.type and self.type..e.Icon.left)
+        GameTooltip:AddDoubleLine(self.text, self.type and self.type..e.Icon.left)
 
         if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
             if Save.mouseUP then
-                e.tips:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
+                GameTooltip:AddDoubleLine(Save.mouseUP, (e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
             end
             if Save.mouseDown then
-                e.tips:AddDoubleLine(Save.mouseDown, (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
+                GameTooltip:AddDoubleLine(Save.mouseDown, (e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
             end
 
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
 
     GroupButton:SetupMenu(Init_Menu)
@@ -607,7 +607,7 @@ local function Init()
             WoWTools_ChatMixin:Say(self.type)
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
-            e.tips:Hide()
+            GameTooltip:Hide()
         end
     end)]]
 
@@ -632,7 +632,7 @@ local function Init()
 
 
     --[[GroupButton:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:state_leave()
     end)
     GroupButton:SetScript('OnEnter', function(self)

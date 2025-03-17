@@ -142,7 +142,7 @@ end
 
 --提示，当前，选中
 function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
-    tooltip= tooltip or e.tips
+    tooltip= tooltip or GameTooltip
     tab= tab or select(4, WoWTools_AddOnsMixin:Get_AddListInfo())
 
     local index, newTab, allMemo= 0, {}, 0
@@ -238,10 +238,10 @@ local function Init()
                 text:SetText('')
                 text:ClearAllPoints()
                 AddonList.ForceLoad:HookScript('OnEnter', function(self)
-                    e.tips:SetOwner(self, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine(e.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
-                    e.tips:Show()
+                    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddLine(e.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+                    GameTooltip:Show()
                 end)
                 AddonList.ForceLoad:HookScript('OnLeave', GameTooltip_Hide)
 

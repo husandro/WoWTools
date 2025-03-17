@@ -103,13 +103,13 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
             end
         end)
         self.engineering:SetScript('OnEnter' ,function(frame)
-                e.tips:SetOwner(frame, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetSpellByID(frame.spell)
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '商业技能' or TRADESKILLS), e.Icon.right)
-                e.tips:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), (e.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(e.onlyChinese and '打开' or UNWRAP)..')')
-                e.tips:Show()
+                GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(frame.spell)
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '商业技能' or TRADESKILLS), e.Icon.right)
+                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需求' or NEED), (e.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(e.onlyChinese and '打开' or UNWRAP)..')')
+                GameTooltip:Show()
         end)
         self.engineering:SetScript('OnLeave',GameTooltip_Hide)
     end
@@ -171,17 +171,17 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
                     MailFrame:SetShown(false)
                 end
             end)
-            self.noEnchant:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            self.noEnchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
             self.noEnchant:SetScript('OnEnter' ,function(self2)
                 if self2.tab then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:SetBagItem(self2.tab.bag, self2.tab.slot)
+                    GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:SetBagItem(self2.tab.bag, self2.tab.slot)
                     if not self:CanChangeAttribute() then
-                        e.tips:AddLine(' ')
-                        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                        GameTooltip:AddLine(' ')
+                        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
-                    e.tips:Show()
+                    GameTooltip:Show()
                     self2:SetAlpha(0.3)
                 end
             end)
@@ -255,13 +255,13 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
         self.enchant:SetTexture(463531)
         self.enchant:EnableMouse(true)
-        self.enchant:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        self.enchant:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
         self.enchant:SetScript('OnEnter' ,function(self2)
             if self2.tips then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(self2.tips)
-                e.tips:Show()
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(self2.tips)
+                GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
         end)
@@ -291,13 +291,13 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 WoWTools_LoadUIMixin:Professions(info.recipeID)
             end
         end)]]
-        self.use:SetScript('OnLeave',function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        self.use:SetScript('OnLeave',function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
         self.use:SetScript('OnEnter' ,function(self2)
             if self2.spellID then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetSpellByID(self2.spellID)
-                e.tips:Show()
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(self2.spellID)
+                GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
         end)
@@ -319,13 +319,13 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
         self.pvpItem:SetAtlas('pvptalents-warmode-swords')
         self.pvpItem:EnableMouse(true)
-        self.pvpItem:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        self.pvpItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
         self.pvpItem:SetScript('OnEnter', function(self2)
             if self2.tips then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine((e.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
-                e.tips:Show()
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine((e.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
+                GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
         end)
@@ -345,14 +345,14 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
         self.upgradeItem:SetScript('OnEnter', function(self2)
             if self2.tips then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
-                e.tips:Show()
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
         end)
-        self.upgradeItem:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        self.upgradeItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     end
     if self.upgradeItem then
         self.upgradeItem.tips=upgradeItem
@@ -386,14 +386,14 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             end
             self.upgradeItemText:SetScript('OnEnter', function(self2)
                 if self2.tips then
-                    e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                    e.tips:ClearLines()
-                    e.tips:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
-                    e.tips:Show()
+                    GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
+                    GameTooltip:AddLine((e.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                    GameTooltip:Show()
                     self2:SetAlpha(0.3)
                 end
             end)
-            self.upgradeItemText:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+            self.upgradeItemText:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
         end
         self.upgradeItemText.tips= upgradeItem
         local quality = GetInventoryItemQuality(unit, slot)--颜色
@@ -419,14 +419,14 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
         end
         self.createItem:SetScript('OnEnter', function(self2)
             if self2.tips then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddLine(format(e.onlyChinese and '|cff00ff00<由%s制造>|r' or ITEM_CREATED_BY, self2.tips))
-                e.tips:Show()
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine(format(e.onlyChinese and '|cff00ff00<由%s制造>|r' or ITEM_CREATED_BY, self2.tips))
+                GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
         end)
-        self.createItem:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+        self.createItem:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
     end
     if self.createItem then
         self.createItem.tips=createItem
@@ -448,13 +448,13 @@ if not PlayerGetTimerunningSeasonID() then
                 gem.index= n
                 gem:SetSize(12.3, 12.3)--local h=self:GetHeight()/3 37 12.3
                 gem:EnableMouse(true)
-                gem:SetScript('OnLeave',function(frame) e.tips:Hide() frame:SetAlpha(1) end)
+                gem:SetScript('OnLeave',function(frame) GameTooltip:Hide() frame:SetAlpha(1) end)
                 gem:SetScript('OnEnter' ,function(frame)
                     if frame.gemLink then
-                        e.tips:SetOwner(frame, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:SetHyperlink(frame.gemLink)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetHyperlink(frame.gemLink)
+                        GameTooltip:Show()
                         frame:SetAlpha(0.3)
                     end
                 end)
@@ -510,13 +510,13 @@ elseif not Save().hide and self.SocketDisplay:IsShown() and link then
             frame.gemID= gemID
             if not frame:IsMouseEnabled() then
                 frame:EnableMouse(true)
-                frame:SetScript('OnLeave', function(f) e.tips:Hide() f:SetScale(1) end)
+                frame:SetScript('OnLeave', function(f) GameTooltip:Hide() f:SetScale(1) end)
                 frame:SetScript('OnEnter', function(f)
                     if f.gemID then
-                        e.tips:SetOwner(f, "ANCHOR_LEFT")
-                        e.tips:ClearLines()
-                        e.tips:SetItemByID(f.gemID)
-                        e.tips:Show()
+                        GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+                        GameTooltip:ClearLines()
+                        GameTooltip:SetItemByID(f.gemID)
+                        GameTooltip:Show()
                     end
                     f:SetScale(1.3)
                 end)
@@ -576,13 +576,13 @@ end
         self.du:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')
         self.du:EnableMouse(true)
         self.du:SetMinMaxValues(0, 100)
-        self.du:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
+        self.du:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(self2. du and 1 or 0) end)
         self.du:SetScript('OnEnter', function(self2)
             if self2.du then
-                e.tips:SetOwner(self2, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:AddDoubleLine(format(e.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
-                e.tips:Show()
+                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:AddDoubleLine(format(e.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
+                GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
         end)
@@ -615,19 +615,19 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText:EnableMouse(true)
         frame.slotText:SetAlpha(0.3)
         frame.slotText:SetScript('OnEnter', function(self)
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
             local name= self:GetParent():GetName()
             if name then
-                e.tips:AddDoubleLine(_G[strupper(strsub(name, 10))], name)
+                GameTooltip:AddDoubleLine(_G[strupper(strsub(name, 10))], name)
             end
-            e.tips:Show()
+            GameTooltip:Show()
             self:SetAlpha(1)
         end)
-        frame.slotText:SetScript('OnLeave', function(self) e.tips:Hide() self:SetAlpha(0.3) end)
+        frame.slotText:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.3) end)
         frame.slotText:SetPoint('CENTER')
     end
     if frame.slotText then

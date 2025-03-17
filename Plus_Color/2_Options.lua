@@ -118,19 +118,19 @@ local function Init()
 	end
 
 	function btn:set_tooltip()
-		e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ColorMixin.addName)
-		e.tips:AddLine(' ')
-		e.tips:AddDoubleLine(
+		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ColorMixin.addName)
+		GameTooltip:AddLine(' ')
+		GameTooltip:AddDoubleLine(
 			e.GetShowHide(self.frame:IsShown()),
 			(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left
 		)
-        e.tips:Show()
+        GameTooltip:Show()
 	end
 
 	btn:SetScript('OnLeave', function(self)
-		e.tips:Hide()
+		GameTooltip:Hide()
 		self:set_alpha()
 	end)
 	btn:SetScript('OnEnter', function(self)

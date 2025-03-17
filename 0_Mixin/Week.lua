@@ -112,18 +112,18 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
     if showTooltip then
         local find
         for head, tab in pairs(R) do
-            e.tips:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..head)
+            GameTooltip:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..head)
             for index, info in pairs(tab) do
                 if info.unlocked then
                     local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
                     local texture= itemLink and C_Item.GetItemIconByID(itemLink)
                     local itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink)
-                    e.tips:AddLine(
+                    GameTooltip:AddLine(
                         '   '..index..') '
                         ..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)
                         ..format('|A:%s:0:0|a', e.Icon.select)..((info.level and info.level>0) and info.level or ''))
                 else
-                    e.tips:AddLine('    |cff828282'..index..') '
+                    GameTooltip:AddLine('    |cff828282'..index..') '
                         ..info.difficulty
                         .. ' '..(info.progress>0 and '|cnGREEN_FONT_COLOR:'..info.progress..'|r' or info.progress)
                         .."/"..info.threshold..'|r')
@@ -149,7 +149,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                     text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
                 end
                 text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
-                e.tips:AddLine(text)
+                GameTooltip:AddLine(text)
                 find=true
             end
         end
@@ -178,19 +178,19 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
             if not label then
                 label= WoWTools_LabelMixin:Create(frame, {mouse= true})
                 label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-                label:SetScript('OnLeave', function(self2) e.tips:Hide() self2:SetAlpha(1) end)
+                label:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(1) end)
                 label:SetScript('OnEnter', function(self2)
-                    e.tips:SetOwner(self2,  self2.anchor or "ANCHOR_LEFT")
-                    e.tips:ClearLines()
+                    GameTooltip:SetOwner(self2,  self2.anchor or "ANCHOR_LEFT")
+                    GameTooltip:ClearLines()
                     local link= self2:Get_ItemLink()
                     if link then
-                        e.tips:SetHyperlink(link)
+                        GameTooltip:SetHyperlink(link)
                     else
-                        e.tips:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
-                        e.tips:AddLine(' ')
-                        e.tips:AddDoubleLine('Activities Type '..self2.type, 'id '..self2.id)
+                        GameTooltip:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
+                        GameTooltip:AddLine(' ')
+                        GameTooltip:AddDoubleLine('Activities Type '..self2.type, 'id '..self2.id)
                     end
-                    e.tips:Show()
+                    GameTooltip:Show()
                     self2:SetAlpha(0.5)
                 end)
                 function label:Get_ItemLink()

@@ -71,15 +71,15 @@ local function Init()--设置标记, 框架
 
     function btn:set_tooltip()
         self:GetParent():set_Tooltips_Point()
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        e.tips:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
-        e.tips:Show()
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, EVENTTRACE_MARKER))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:Show()
     end
     btn:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:set_Alpha()
         WoWTools_MarkerMixin.MarkerButton:SetButtonState('NORMAL')
     end)
@@ -199,14 +199,14 @@ local function Init()--设置标记, 框架
         end)
         btn:SetAlpha(0.5)
 
-        btn:SetScript('OnLeave', function() e.tips:Hide() ResetCursor() end)
+        btn:SetScript('OnLeave', function() GameTooltip:Hide() ResetCursor() end)
         btn:SetScript('OnEnter', function(self)
             self:GetParent():GetParent():set_Tooltips_Point()
-            e.tips:ClearLines()
+            GameTooltip:ClearLines()
             if self.action then
-                e.tips:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
-                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(e.onlyChinese and '设置' or SETTINGS), 1,1,1)
-                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), 1,1,1)
+                GameTooltip:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
+                GameTooltip:AddLine(e.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(e.onlyChinese and '设置' or SETTINGS), 1,1,1)
+                GameTooltip:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), 1,1,1)
             else
                 local find
                 local pingTab= self:GetParent().tab
@@ -214,26 +214,26 @@ local function Init()--设置标记, 框架
                     local name= pingTab[pingIndex].name
                     local text= MicroButtonTooltipText(name, pingTab[pingIndex].action)
                     if text and text~=name then
-                        e.tips:AddLine('|A:'..pingTab[pingIndex].atlas..':0:0|a'..text, 1,1,1)
+                        GameTooltip:AddLine('|A:'..pingTab[pingIndex].atlas..':0:0|a'..text, 1,1,1)
                         find=true
                     end
                 end
                 if find then
-                    e.tips:AddLine(' ')
+                    GameTooltip:AddLine(' ')
                 end
                 local guid= UnitExists('target') and UnitGUID('target')
                 local type=guid and C_Ping.GetContextualPingTypeForUnit(guid)
-                e.tips:AddLine(e.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(e.onlyChinese and '设置' or SETTINGS)
+                GameTooltip:AddLine(e.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(e.onlyChinese and '设置' or SETTINGS)
                             ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
                 )
 
                 type= C_Ping.GetContextualPingTypeForUnit(e.Player.guid)
-                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                GameTooltip:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
                             ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
                 )
 
             end
-            e.tips:Show()
+            GameTooltip:Show()
         end)
 
 --快捷键
@@ -301,13 +301,13 @@ local function Init()--设置标记, 框架
     end)
     MakerFrame.countdown:SetScript('OnEnter', function(self)
         self:GetParent():set_Tooltips_Point()
-        e.tips:ClearLines()
-        e.tips:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save().countdown or 7))
-        e.tips:AddLine(e.Icon.right..(e.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
-        e.tips:AddLine(' ')
-        e.tips:AddLine(e.onlyChinese and '备注：不要太快了' or (LABEL_NOTE..': '..ERR_GENERIC_THROTTLE), 1,0,0)
-        e.tips:AddLine(e.Icon.mid..(e.onlyChinese and '设置' or SETTINGS))
-        e.tips:Show()
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.Icon.left..(e.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save().countdown or 7))
+        GameTooltip:AddLine(e.Icon.right..(e.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(e.onlyChinese and '备注：不要太快了' or (LABEL_NOTE..': '..ERR_GENERIC_THROTTLE), 1,0,0)
+        GameTooltip:AddLine(e.Icon.mid..(e.onlyChinese and '设置' or SETTINGS))
+        GameTooltip:Show()
     end)
     MakerFrame.countdown:SetScript('OnLeave', GameTooltip_Hide)
     function MakerFrame.countdown:set_Event()
@@ -397,9 +397,9 @@ local function Init()--设置标记, 框架
     end)
     MakerFrame.check:SetScript('OnEnter', function(self)
         self:GetParent():set_Tooltips_Point()
-        e.tips:ClearLines()
-        e.tips:AddLine(EMOTE127_CMD3, e.onlyChinese and '就绪' or READY)
-        e.tips:Show()
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(EMOTE127_CMD3, e.onlyChinese and '就绪' or READY)
+        GameTooltip:Show()
     end)
     MakerFrame.check:SetScript('OnLeave', GameTooltip_Hide)
     function MakerFrame.check:set_Event()
@@ -437,9 +437,9 @@ local function Init()--设置标记, 框架
     end)
     MakerFrame.RolePoll:SetScript('OnEnter', function(self)
         self:GetParent():set_Tooltips_Point()
-        e.tips:ClearLines()
-        e.tips:AddLine(e.onlyChinese and '职责选定' or CRF_ROLE_POLL)
-        e.tips:Show()
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(e.onlyChinese and '职责选定' or CRF_ROLE_POLL)
+        GameTooltip:Show()
     end)
     MakerFrame.RolePoll:SetScript('OnLeave', GameTooltip_Hide)--RolePollPopup
 
@@ -544,14 +544,14 @@ local function Init()--设置标记, 框架
             end)
             btn:SetScript('OnLeave', function(self)
                 self:SetAlpha(0.5)
-                e.tips:Hide()
+                GameTooltip:Hide()
             end)
             btn:SetScript('OnEnter', function(self)
                 MakerFrame:set_Tooltips_Point()
-                e.tips:ClearLines()
-                e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
-                e.tips:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER), e.Icon.right)
-                e.tips:Show()
+                GameTooltip:ClearLines()
+                GameTooltip:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
+                GameTooltip:AddDoubleLine((e.onlyChinese and '标记' or EVENTTRACE_MARKER), e.Icon.right)
+                GameTooltip:Show()
                 self:SetAlpha(1)
             end)
             btn:SetAlpha(0.5)
@@ -571,24 +571,24 @@ local function Init()--设置标记, 框架
                 end
             end)
             btn:SetScript('OnLeave', function(self)
-                e.tips:Hide()
+                GameTooltip:Hide()
                 self:set_Active()
             end)
             btn:SetScript('OnEnter', function(self)
                 self:GetParent():GetParent():set_Tooltips_Point()
-                e.tips:ClearLines()
+                GameTooltip:ClearLines()
                 local can= CanBeRaidTarget('target')
-                e.tips:AddLine(MicroButtonTooltipText(e.Get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
-                e.tips:AddLine(' ')
-                e.tips:AddDoubleLine(
+                GameTooltip:AddLine(MicroButtonTooltipText(e.Get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddDoubleLine(
                     e.Icon.left..(e.onlyChinese and '目标' or TARGET),
                     not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用' or DISABLE)
                 )
-                e.tips:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
-                e.tips:AddLine(' ')
-                e.tips:AddLine(MicroButtonTooltipText('Alt+'..e.Icon.left..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), 'RAIDTARGETNONE'))
+                GameTooltip:AddLine(e.Icon.right..e.Icon.player..e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddLine(MicroButtonTooltipText('Alt+'..e.Icon.left..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), 'RAIDTARGETNONE'))
 
-                e.tips:Show()
+                GameTooltip:Show()
                 self:SetButtonState('NORMAL')
                 self:SetAlpha(1)
             end)
@@ -700,26 +700,26 @@ local function Init()--设置标记, 框架
         btn:SetAttribute("type2", "worldmarker")
         btn:SetAttribute("marker2", index==0 and 0 or markerTab[index])
         btn:SetAttribute("action2", "clear")
-        btn:SetScript('OnLeave', function(self) e.tips:Hide() if self.index==0 then self:SetAlpha(0.5) end  end)
+        btn:SetScript('OnLeave', function(self) GameTooltip:Hide() if self.index==0 then self:SetAlpha(0.5) end  end)
         btn:SetScript('OnEnter', function(self)
             self:GetParent():GetParent():set_Tooltips_Point()
-            e.tips:ClearLines()
+            GameTooltip:ClearLines()
             if self.index==0 then
-                e.tips:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
+                GameTooltip:AddLine('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..e.Icon.left)
             else
                 local color= WoWTools_MarkerMixin:SetColor(self.index2)
-                e.tips:AddLine(
+                GameTooltip:AddLine(
                     color.col
                     ..e.Icon.left
                     ..(e.onlyChinese and '设置' or SETTINGS)
                     ..e.Get_RaidTargetTexture(self.index2))
 
-                    e.tips:AddLine(e.Icon.right..color.col
+                    GameTooltip:AddLine(e.Icon.right..color.col
                     ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     ..'|A:bags-button-autosort-up:0:0|a'
                 )
             end
-            e.tips:Show()
+            GameTooltip:Show()
             self:SetAlpha(1)
         end)
         btn.index= index==0 and 0 or markerTab[index]
@@ -848,7 +848,7 @@ local function Init()--设置标记, 框架
     end
 
     function MakerFrame:set_Tooltips_Point()
-        e.tips:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     end
 
     MakerFrame:SetScript('OnEvent', function(self, event, arg1)

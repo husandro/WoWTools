@@ -87,13 +87,13 @@ local function UpdateButtonState(frame)--技能提示
         local spellID= self:GetParent().spellID--self3.link
         WoWTools_Mixin:Load({id=spellID, type='spell'})
         if not Save().hideEncounterJournal and spellID and spellID>0 then
-            e.tips:SetOwner(self, "ANCHOR_RIGHT")
-            e.tips:ClearLines()
-            e.tips:SetSpellByID(spellID)
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-            e.tips:Show()
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:ClearLines()
+            GameTooltip:SetSpellByID(spellID)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+            GameTooltip:Show()
         end
     end)
     frame:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)

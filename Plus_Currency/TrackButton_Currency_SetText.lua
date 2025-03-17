@@ -231,7 +231,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
     btn:set_Text_Point()
 
     btn:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         WoWTools_CurrencyMixin:Set_TrackButton_Pushed(false, self.text)--提示
         if self.itemID then
             WoWTools_BagMixin:Find(false)--查询，背包里物品
@@ -242,30 +242,30 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
 
     btn:SetScript('OnEnter', function(self)
         if Save().toRightTrackText then
-            e.tips:SetOwner(self.text, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self.text, "ANCHOR_RIGHT")
         else
-            e.tips:SetOwner(self.text, "ANCHOR_LEFT")
+            GameTooltip:SetOwner(self.text, "ANCHOR_LEFT")
         end
-        e.tips:ClearLines()
+        GameTooltip:ClearLines()
         if self.itemID then
-            e.tips:SetItemByID(self.itemID)
-            e.tips:AddLine(' ')
+            GameTooltip:SetItemByID(self.itemID)
+            GameTooltip:AddLine(' ')
             local col= C_Item.GetItemCount(self.itemID)==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
             if self.itemButtonUse then
-                e.tips:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
+                GameTooltip:AddDoubleLine(col..(e.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
             end
-            e.tips:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
+            GameTooltip:AddDoubleLine(col..(e.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
             WoWTools_BagMixin:Find(true, {itemID=self.itemID})--查询，背包里物品
         elseif self.currencyID then
-            e.tips:SetCurrencyByID(self.currencyID)
+            GameTooltip:SetCurrencyByID(self.currencyID)
             local link= C_CurrencyInfo.GetCurrencyLink(self.currencyID) or (e.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)
-            e.tips:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', e.Icon.left)
+            GameTooltip:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', e.Icon.left)
 			WoWTools_CurrencyMixin:Find(self.currencyID, nil)--选中提示
 
         elseif self.index then
-            e.tips:SetCurrencyToken(self.index)
+            GameTooltip:SetCurrencyToken(self.index)
         end
-        e.tips:Show()
+        GameTooltip:Show()
 		self:set_item_cool()
         WoWTools_CurrencyMixin:Set_TrackButton_Pushed(true, self.text)--提示
     end)

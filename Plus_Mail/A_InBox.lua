@@ -105,9 +105,9 @@ end
 local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提示
     set_btn_enterTipTexture_Hide_All()--隐藏，所有，选中提示
 
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
     local num=0
     local findReTips--显示第一个，退回信里，的物品
     for i=1, select(2, GetInboxNumItems()) do
@@ -117,7 +117,7 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
         local moneyGet= (money and money>0) and money or nil
         local itemLink= find_itemLink(itemCount, i, firstItemLink)--查找，信件里的第一个物品，超链接
         if (canDelete and del and not moneyPaga and not moneyGet and not itemLink) or (not del and not canDelete) then
-            e.tips:AddDoubleLine((i<10 and ' ' or '')
+            GameTooltip:AddDoubleLine((i<10 and ' ' or '')
                                     ..i..') |T'..(packageIcon or stationeryIcon)..':0|t'
                                     ..WoWTools_MailMixin:GetNameInfo(sender)
                                     ..(not wasRead and ' |cnRED_FONT_COLOR:'..(e.onlyChinese and '未读' or COMMUNITIES_FRAME_JUMP_TO_UNREAD) or '')
@@ -130,13 +130,13 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
                     if itemIndexLink then
                         local texture, count = select(3, GetInboxItem(i, itemIndex))
                         allCount= allCount+ (count or 1)
-                        e.tips:AddDoubleLine(' ','|cnGREEN_FONT_COLOR:'..(count or 1)..'x|r '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..' ('..itemIndex)
+                        GameTooltip:AddDoubleLine(' ','|cnGREEN_FONT_COLOR:'..(count or 1)..'x|r '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..' ('..itemIndex)
                     end
                 end
                 if allCount>1 then
-                    e.tips:AddDoubleLine(' ', '#'..WoWTools_Mixin:MK(allCount, 3))
+                    GameTooltip:AddDoubleLine(' ', '#'..WoWTools_Mixin:MK(allCount, 3))
                 end
-                e.tips:AddLine(' ')
+                GameTooltip:AddLine(' ')
             end
 
             if not findReTips then--显示，所有，选中提示
@@ -153,20 +153,20 @@ local function set_Tooltips_DeleteAll(self, del)--所有，删除，退信，提
             num=num+1
         end
     end
-    e.tips:AddDoubleLine(' ',
+    GameTooltip:AddDoubleLine(' ',
                         del and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r |cnGREEN_FONT_COLOR:#'..num
                         or ('|cFFFF00FF'..(e.onlyChinese and '退信' or MAIL_RETURN)..'|r |cnGREEN_FONT_COLOR:#'..num)
                     )
-    e.tips:Show()
+    GameTooltip:Show()
 end
 
 
 
 local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
-    e.tips:SetOwner(self, "ANCHOR_RIGHT")
-    e.tips:ClearLines()
-    e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
-    e.tips:AddLine(' ')
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
+    GameTooltip:AddLine(' ')
     local packageIcon, stationeryIcon, _, _, _, _, _, itemCount = GetInboxHeaderInfo(self.openMailID)
     local allCount=0
     if itemCount then
@@ -176,15 +176,15 @@ local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
                 local texture, count = select(3, GetInboxItem(self.openMailID, itemIndex))
                 texture = texture or C_Item.GetItemIconByID(itemIndexLink)
                 allCount= allCount+ (count or 1)
-                e.tips:AddLine((itemIndex<10 and ' ' or '')..itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
+                GameTooltip:AddLine((itemIndex<10 and ' ' or '')..itemIndex..') '..(texture and '|T'..texture..':0|t' or '')..itemIndexLink..'|cnGREEN_FONT_COLOR: x'..(count or 1)..'|r')
             end
         end
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
     end
     local text= GetInboxText(self.openMailID)
     if text and text:gsub(' ', '')~='' then
-        e.tips:AddLine(text, nil,nil,nil, true)
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(text, nil,nil,nil, true)
+        GameTooltip:AddLine(' ')
     end
 
     local text2
@@ -196,8 +196,8 @@ local function eventEnter(self, get)--enter 提示，删除，或退信，按钮
         text2= e.onlyChinese and '退信' or MAIL_RETURN
     end
     local icon= packageIcon or stationeryIcon
-    e.tips:AddLine('|cffff00ff'..self.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
-    e.tips:Show()
+    GameTooltip:AddLine('|cffff00ff'..self.openMailID..' |r'..(icon and '|T'..icon..':0|t')..text2..(allCount>1 and ' |cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(allCount,3)..'|r'..(e.onlyChinese and '物品' or ITEMS) or ''))
+    GameTooltip:Show()
 end
 
 
@@ -231,7 +231,7 @@ local function Create_DeleteAllButton()
     end)
     InboxFrame.DeleteAllButton:SetScript('OnLeave', function(self)
         set_btn_enterTipTexture_Hide_All()--隐藏，所有，选中提示
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
 
     --删除信
@@ -286,7 +286,7 @@ local function Create_ReAllButton()
     end)
     InboxFrame.ReAllButton:SetScript('OnLeave', function(self)
         set_btn_enterTipTexture_Hide_All()--隐藏，所有，选中提示
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
 
     --删除信
@@ -366,16 +366,16 @@ local function Create_Unit_Button(btn, i)
     end)
     lable:SetScript('OnEnter', function(self)
         if (self.playerName or self.sender) and self.canReply  then
-            e.tips:SetOwner(self:GetParent(), "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
-            e.tips:AddDoubleLine(e.onlyChinese and '回复' or REPLY_MESSAGE, self.playerName or self.sender)
-            e.tips:Show()
+            GameTooltip:SetOwner(self:GetParent(), "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '收件箱' or INBOX)..' Plus')
+            GameTooltip:AddDoubleLine(e.onlyChinese and '回复' or REPLY_MESSAGE, self.playerName or self.sender)
+            GameTooltip:Show()
         end
         self:SetAlpha(0.3)
     end)
     lable:SetScript('OnLeave', function(self)
-        e.tips:Hide()
+        GameTooltip:Hide()
         self:SetAlpha(1)
     end)
 
@@ -412,7 +412,7 @@ local function Create_Unit_Button(btn, i)
     end)
     btn.DeleteButton:SetScript('OnLeave', function(self)
         self:GetParent().enterTipTexture:SetShown(false)
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
 
     --移过时，提示，选中，信件
@@ -432,7 +432,7 @@ local function Create_Unit_Button(btn, i)
     end)
     btn.outItemOrMoney:SetScript('OnLeave' ,function(self)
         self:GetParent().enterTipTexture:SetShown(false)
-        e.tips:Hide()
+        GameTooltip:Hide()
     end)
     btn.outItemOrMoney:SetScript('OnEnter', function(self)
         eventEnter(self, true)

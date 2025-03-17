@@ -288,19 +288,19 @@ local function Init()
 
 
             btn:SetScript('OnLeave', function(self)
-                e.tips:Hide()
+                GameTooltip:Hide()
                 self:set_alpha()
             end)
             btn:SetScript('OnEnter', function(self)
-                e.tips:SetOwner(self, "ANCHOR_LEFT")
-                e.tips:ClearLines()
-                e.tips:SetSpellByID(self.spellID)
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(self.spellID)
                 if not IsSpellKnownOrOverridesKnown(self.spellID) then
-                    e.tips:AddLine(format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
+                    GameTooltip:AddLine(format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
                 end
                 if self.spellID2 then
-                    e.tips:AddLine(' ')
-                    e.tips:AddDoubleLine(
+                    GameTooltip:AddLine(' ')
+                    GameTooltip:AddDoubleLine(
                         '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
                         ..(e.cn(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
                         ..(e.GetSpellItemCooldown(self.spellID2, nil) or ''),
@@ -309,7 +309,7 @@ local function Init()
                             e.Icon.right)
                         )
                 end
-                e.tips:Show()
+                GameTooltip:Show()
                 self:set_alpha()
                 self:set_cool()
             end)

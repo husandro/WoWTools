@@ -99,51 +99,51 @@ local function Init()
 
     function MarkerButton:tooltip()
         local autoSet, tank, tank2, healer, isSelf, target= Save().autoSet, Save().tank, Save().tank2, Save().healer, Save().isSelf, Save().target
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (autoSet and '|cnGREEN_FONT_COLOR:' or '|cff828282')
             ..(e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER)),
             e.GetEnabeleDisable(autoSet)
         )
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
             (tank and WoWTools_MarkerMixin:SetColor(tank).col or '|cff828282')
             ..e.Icon.TANK..(e.onlyChinese and '坦克' or TANK),
            tank and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank) or ''
         )
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (tank2 and WoWTools_MarkerMixin:SetColor(tank2).col or '|cff828282')
             ..e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..' 2',
            tank2 and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank2) or ''
         )
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (healer and WoWTools_MarkerMixin:SetColor(healer).col or '|cff828282')
             ..e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER),
            healer and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', healer) or ''
         )
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
             (isSelf and WoWTools_MarkerMixin:SetColor(isSelf).col or '|cff828282')
             ..'|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
             isSelf and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', isSelf) or ''
         )
-        e.tips:AddDoubleLine(
+        GameTooltip:AddDoubleLine(
             (target and WoWTools_MarkerMixin:SetColor(target).col or '|cff828282')
             ..'|A:Target:0:0|a'..(e.onlyChinese and '目标' or TARGET),
             target and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', target) or ''
         )
-        e.tips:AddDoubleLine()
+        GameTooltip:AddDoubleLine()
     end
 
      
     
 
     function MarkerButton:set_tooltip()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         self:tooltip()
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(WoWTools_MarkerMixin.addName, (e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.left)
-        e.tips:Show()
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, (e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.left)
+        GameTooltip:Show()
     end
 
 

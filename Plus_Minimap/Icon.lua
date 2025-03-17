@@ -16,13 +16,13 @@ local function OnEnter_Tooltip(self)
         if UnitAffectingCombat('player') then return end
     else
         if UnitAffectingCombat('player') then return end
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
     end
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-    e.tips:AddDoubleLine(e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'), e.Icon.mid)
-    e.tips:Show()
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+    GameTooltip:AddDoubleLine(e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'), e.Icon.mid)
+    GameTooltip:Show()
 end
 
 
@@ -112,25 +112,25 @@ end]]
     local expButton=ExpansionLandingPageMinimapButton
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
         expButton:OnEnter()
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
     else
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
     end
 
 
-    e.tips:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.mid)
+    GameTooltip:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.mid)
 
     if self and type(self)=='table' then
         if _G['LibDBIcon10_WoWTools'] and _G['LibDBIcon10_WoWTools']:IsMouseWheelEnabled() then
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         else
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
         end
     end
-    e.tips:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
+    GameTooltip:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
 
-    e.tips:AddLine(' ')
-    e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
-    e.tips:Show()
+    GameTooltip:AddLine(' ')
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
+    GameTooltip:Show()
 end]]

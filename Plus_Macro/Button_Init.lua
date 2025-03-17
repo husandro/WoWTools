@@ -173,23 +173,23 @@ local function Create_Button(name)
         return (MacroFrameText:GetText() or ''):find(WoWTools_TextMixin:Magic(right and self.text2 or self.text))
     end
    function btn:set_tooltips()
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
 
         if InCombatLockdown() then
-            e.tips:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            GameTooltip:AddLine(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         else
-            e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
             local col= self:find_text() and '|cff9e9e9e' or ''
-            e.tips:AddLine(' ')
-            e.tips:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
             if self.text2 then
-                e.tips:AddLine(' ')
+                GameTooltip:AddLine(' ')
                 col= self:find_text(true) and '|cff9e9e9e' or ''
             end
-            e.tips:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
+            GameTooltip:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
         end
-        e.tips:Show()
+        GameTooltip:Show()
     end
     btn:SetScript('OnClick', function(self, d)
         if InCombatLockdown() then return end
@@ -297,14 +297,14 @@ local function Init()
 
     Button:SetScript('OnLeave', GameTooltip_Hide)
     Button:SetScript('OnEnter', function(self)
-        e.tips:SetOwner(self, "ANCHOR_LEFT")
-        e.tips:ClearLines()
-        e.tips:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
-        e.tips:AddLine(' ')
-        e.tips:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
-        e.tips:AddLine(' ')
-        e.tips:AddDoubleLine(' ', (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left)
-        e.tips:Show()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(' ', (e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left)
+        GameTooltip:Show()
     end)
     Button:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)

@@ -18,13 +18,13 @@ local function set_Use_Spell_Button(btn, spellID)
             end
         end
         function btn.useSpell:set_tooltips()
-            e.tips:SetOwner(self, "ANCHOR_LEFT")
-            e.tips:ClearLines()
-            e.tips:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
-            e.tips:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            e.tips:AddLine(' ')
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
+            GameTooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            GameTooltip:AddLine(' ')
             if self.spellID then
-                e.tips:AddDoubleLine(
+                GameTooltip:AddDoubleLine(
                     '|T'..(C_Spell.GetSpellTexture(self.spellID) or 0)..':0|t'
                     ..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
                     ..' '..e.GetEnabeleDisable(WoWTools_UseItemsMixin:Find_Type('spell', self.spellID)),
@@ -32,11 +32,11 @@ local function set_Use_Spell_Button(btn, spellID)
                     e.Icon.left
                 )
             end
-            e.tips:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            e.tips:Show()
+            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:Show()
             self:SetAlpha(1)
         end
-        btn.useSpell:SetScript('OnLeave', function(self) e.tips:Hide() self:set_alpha()  end)
+        btn.useSpell:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha()  end)
         btn.useSpell:SetScript('OnEnter', btn.useSpell.set_tooltips)
         btn.useSpell:SetScript('OnMouseDown', function(self, d)
             if d=='LeftButton' then

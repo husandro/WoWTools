@@ -30,36 +30,36 @@ local function Init()
         end
 
         self.setTextFrame:settings()
-        e.tips:AddLine(' ')
+        GameTooltip:AddLine(' ')
 
         local find= WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
         local link= e.WoWDate[e.Player.guid].Keystone.link
         if link then
-            e.tips:AddLine('|T4352494:0|t'..link)
+            GameTooltip:AddLine('|T4352494:0|t'..link)
         end
 
         if find or link then
-            e.tips:AddLine(' ')
+            GameTooltip:AddLine(' ')
         end
 
         local bat= UnitAffectingCombat('player')
 
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '地下城和团队副本' or GROUP_FINDER)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and 'PvP' or PVP)..'|r'
             ..e.Icon.right
         )
-        e.tips:AddLine(
+        GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '地下堡' or DELVES_LABEL)..'|r'
             ..e.Icon.mid
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
-        e.tips:Show()
+        GameTooltip:Show()
     end)
 
 
