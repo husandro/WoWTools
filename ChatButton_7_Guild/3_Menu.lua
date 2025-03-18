@@ -51,14 +51,7 @@ local function Init_Guild_Menu(self, root)
 
 
     sub= root:CreateButton(
-        Get_Guild_Name()
-    --[['|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
-        ..(canGuildInvite and '|cff00ccff' or '|cff828282')
-        ..WoWTools_GuildMixin:Get_Rank_Texture(guildRankIndex, false)
-        ..(guildName or clubInfo.name or (e.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER))
-        ..'|r'
-        ..(guildRankName and guildRankIndex and guildRankIndex>1 and ' '.. guildRankName or '')
-        ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or '')]],
+        Get_Guild_Name(),
     function()
         WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(),
             nil,
@@ -106,7 +99,7 @@ local function Init_Guild_Menu(self, root)
         end
     end)
 
-   
+
 
 
 
@@ -132,6 +125,7 @@ local function Init_Guild_Menu(self, root)
         return MenuResponse.CloseAll
     end)
 
+    sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -173,7 +167,16 @@ end
 local function WoW_List(_, root)
     local sub, sub2
 
-    sub= root:CreateButton(e.Icon.net2..' |cff00ccffWoW', function() return MenuResponse.Open end)
+    sub=root:CreateButton(
+        e.Icon.net2..MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB"),
+    function()
+        ToggleGuildFrame()
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine(e.onlyChinese and '打开/关闭公会和社区' or BINDING_NAME_TOGGLEGUILDTAB)
+    end)
+
 
     local name, realm, rankIndex, rankName
     for guid, info in pairs(e.WoWDate) do
@@ -364,10 +367,6 @@ local function Init_Menu(self, root)
 --无公会
     if not IsInGuild() then
         WoW_List(self, root)
-
-        root:CreateButton(
-            MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB"),
-        ToggleGuildFrame)
         return
     end
 
