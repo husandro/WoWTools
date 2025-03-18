@@ -94,9 +94,9 @@ function e.cn(text, tab)--{gossipOptionID=, questID=}
 end
 
 
-
+--截取, 字符
 function WoWTools_TextMixin:sub(text, size, letterSize, lower)
-    if not text or text=='' then
+    if not text or text=='' or not size or size==0  then
         return text
     end
     local le = strlenutf8(text)

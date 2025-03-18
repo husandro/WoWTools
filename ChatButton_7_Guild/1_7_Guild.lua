@@ -5,6 +5,7 @@ WoWTools_GuildMixin.Save={
     --disabledPetitionTarget=true,新建，自动要求签名目标
     --guildInfo=true,公会信息
     --showNotOnLine=true,
+    --subGuildName= number or nil,截取公会名称
 }
 
 

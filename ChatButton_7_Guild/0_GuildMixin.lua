@@ -2,6 +2,20 @@ local e= select(2, ...)
 --CommunitiesUtil.lua
 WoWTools_GuildMixin = {}
 
+--图标会长或官员
+function WoWTools_GuildMixin:Get_Rank_Texture(rankIndex, reColor)
+    local icon
+    if rankIndex ==0 then
+        icon= '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
+    elseif rankIndex == 1 then
+        icon= '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t'
+    end
+    if reColor and icon then
+        icon= icon..'|cffff00ff'
+    end
+    return icon or ''
+end
+
 --会长或官员
 function WoWTools_GuildMixin:IsLeaderOrOfficer()
     return C_GuildInfo.IsGuildOfficer() or IsGuildLeader()
@@ -13,49 +27,46 @@ function WoWTools_GuildMixin:CanInit_Invite(clubId)
     return CanGuildInvite()
         --and C_ClubFinder.IsEnabled()
         --and (self:IsLeaderOrOfficer())
-end]]
-
-function WoWTools_GuildMixin:GetGuildClubID(clubID)
-    if C_ClubFinder.IsEnabled() then
-        clubID= clubID or C_Club.GetGuildClubId()
-        WoWTools_Mixin:Load({id=clubID, type='club'})
-        return clubID
-    end
 end
 
+function WoWTools_GuildMixin:GetGuildClubID(clubID)
+    --if C_ClubFinder.IsEnabled() then
+    return clubID or C_Club.GetGuildClubId()
+    --WoWTools_Mixin:Load({id=clubID, type='club'})
+    ---end
+end
+]]
 
 --加载，Club,数据 CommunitiesFrameMixin:RequestSubscribedClubFinderPostingInfo()
 function WoWTools_GuildMixin:Load_Club(clubID)--加载，Club,数据
-    clubID= self:GetGuildClubID(clubID)
+    clubID= clubID or C_Club.GetGuildClubId()
     if clubID and not C_ClubFinder.RequestPostingInformationFromClubId(clubID) then
         C_ClubFinder.RequestSubscribedClubPostingIDs()
     end
 end
---C_ClubFinder.RequestPostingInformationFromClubId(clubID) then--加载，Club，信息
---C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID)--Club，信息
-
 
 --Club, 超链接
 function WoWTools_GuildMixin:GetClubLink(clubID, clubGUID)
-    clubID= self:GetGuildClubID(clubID)
+    clubID= clubID or C_Club.GetGuildClubId()
     local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID)
-            or (clubGUID and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(clubGUID))
-    if club and club.clubFinderGUID then
-        return GetClubFinderLink(club.clubFinderGUID, club.name)
+                or (clubGUID and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(clubGUID))
+    clubGUID= club and club.clubFinderGUID or clubGUID
+
+    if clubGUID then
+        return GetClubFinderLink(clubGUID, club and club.name or COMMUNITIES_INVITE_MEMBERS)--不查用中文
     end
 end
 
+
+
 --Club,列出查找，过期时间
 function WoWTools_GuildMixin:GetClubFindDay(clubID)
-    clubID= self:GetGuildClubID(clubID)
+    clubID= clubID or C_Club.GetGuildClubId()
     local expirationTime = clubID and ClubFinderGetClubPostingExpirationTime(clubID)--CommunitiesFrameMixin:SetClubFinderPostingExpirationText(
     if expirationTime and expirationTime>0 then
         return expirationTime
     end
 end
---WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(data.clubID), nil, nil)
-
-
 
 
 
@@ -66,13 +77,20 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
 
     if IsInGuild() then
         local all, online, app = GetNumGuildMembers()
-        local guildName, guildRankName, _, realm = GetGuildInfo('player')
+        local guildName, guildRankName, guildRankIndex, realm = GetGuildInfo('player')
 --在线成员：
-        GameTooltip:AddDoubleLine(
+        GameTooltip:AddLine(
             guildName
             ..(realm and realm~=e.Player.realm and '-'..realm or ' ')
             ..' ('..all..')',
-            guildRankName
+            nil, nil, nil, true
+        )
+--会长或官员
+        GameTooltip:AddLine(
+            self:Get_Rank_Texture(guildRankIndex, false)
+            ..guildRankName
+            ..(guildRankIndex>1 and ' '..guildRankIndex or '')
+            , nil, nil, nil, true
         )
 
 --今天信息
@@ -174,7 +192,7 @@ end
 
 
 function WoWTools_GuildMixin:GetApplicantList(clubID)
-    clubID= self:GetGuildClubID(clubID)
+    clubID= clubID or C_Club.GetGuildClubId()
     if clubID then
         local data = C_Club.GetClubPrivileges(clubID)
         if data and data.canGetInvitation then

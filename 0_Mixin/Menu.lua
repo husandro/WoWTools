@@ -80,13 +80,13 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             f.Text:SetTextColor(1,0,1)
         end]]
 
-        f:SetScript('OnValueChanged', function(s, value)
+        f:SetScript('OnValueChanged', function(s, value,...)
             if s.bit then
                 value= tonumber(format(s.bit, value))
             else
                 value= math.ceil(value)
             end
-            s.setValue(value)
+            s.setValue(value, s)
             s.Text:SetText(value)
         end)
 
@@ -100,7 +100,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             end
             value= value> s.maxValue and s.maxValue or value
             value= value< s.minValue and s.minValue or value
-            s:SetValue(value)
+            s:SetValue(value, s)
         end)
         f:SetScript('OnHide', function(s)
             f.getValue=nil
@@ -111,6 +111,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             f.bit=nil
             f:SetScript('OnMouseWheel', nil)
             f:SetScript('OnValueChanged', nil)
+            f:SetScript('OnHide', nil)
         end)
     end)
 

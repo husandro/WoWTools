@@ -5,18 +5,36 @@ end
 
 
 
-local function Get_Rank_Texture(rankIndex, reColor)
-    local icon
-    if rankIndex ==0 then
-        icon= '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
-    elseif rankIndex == 1 then
-        icon= '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t'
-    end
-    if reColor and icon then
-        icon= icon..'|cffff00ff'
-    end
-    return icon or ''
+
+
+
+
+
+
+
+
+--公会，名称
+local function Get_Guild_Name()
+    local clubID= C_Club.GetGuildClubId()
+    local clubInfo = clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
+    local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
+    local canGuildInvite= CanGuildInvite()
+    local findDay= canGuildInvite and WoWTools_GuildMixin:GetClubFindDay(clubID)
+
+
+    local name= guildName or clubInfo.name or (e.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER)
+
+    name= WoWTools_TextMixin:sub(name, Save().subGuildName, nil, nil)
+
+    return  '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+    ..(canGuildInvite and '|cff00ccff' or '|cff828282')
+    ..WoWTools_GuildMixin:Get_Rank_Texture(guildRankIndex, false)
+    ..(name)
+    ..'|r'
+    ..(guildRankName and guildRankIndex and guildRankIndex>1 and ' '.. guildRankName or '')
+    ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or '')
 end
+
 
 
 
@@ -30,59 +48,57 @@ end
 --分享链接至聊天栏 ToggleGuildFrame()
 local function Init_Guild_Menu(self, root)
     local sub, sub2
-    local clubID= C_Club.GetGuildClubId()
-    local clubInfo = clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
-    local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
-    local canGuildInvite= CanGuildInvite()
-    local findDay= canGuildInvite and WoWTools_GuildMixin:GetClubFindDay(clubID)
+
 
     sub= root:CreateButton(
-    '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+        Get_Guild_Name()
+    --[['|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
         ..(canGuildInvite and '|cff00ccff' or '|cff828282')
-        ..Get_Rank_Texture(guildRankIndex, false)
+        ..WoWTools_GuildMixin:Get_Rank_Texture(guildRankIndex, false)
         ..(guildName or clubInfo.name or (e.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER))
         ..'|r'
         ..(guildRankName and guildRankIndex and guildRankIndex>1 and ' '.. guildRankName or '')
-        ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or ''),
-    function(data)
-        WoWTools_ChatMixin:Chat(
-            data.clubID and WoWTools_GuildMixin:GetClubLink(data.clubID),
+        ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or '')]],
+    function()
+        WoWTools_ChatMixin:Chat(WoWTools_GuildMixin:GetClubLink(),
             nil,
             ChatEdit_GetActiveWindow() and true or false
         )
         return MenuResponse.Open
-    end, {
-        clubID= clubID,
-        realm= realm,
-        description=clubInfo.description,
-        findDay= findDay,
-        isCrossFaction= clubInfo.isCrossFaction,
-    })
-    sub:SetTooltip(function(tooltip, desc)
-        if desc.data.description and desc.data.description~='' then
-            tooltip:AddLine(desc.data.description, nil, nil, nil,true)
+    end)
+    sub:SetTooltip(function(tooltip)
+        local clubID= C_Club.GetGuildClubId()
+        local clubInfo = clubID and C_Club.GetClubInfo(clubID)
+        if not clubInfo or not clubID then
+            return
+        end
+        local canGuildInvite= CanGuildInvite()
+        local findDay= canGuildInvite and clubID and WoWTools_GuildMixin:GetClubFindDay(clubID)
+
+        if clubInfo.description and clubInfo.description~='' then
+            tooltip:AddLine(clubInfo.description, nil, nil, nil,true)
             tooltip:AddLine(' ')
         end
 
         tooltip:AddDoubleLine(
-            '|A:'..(desc.data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+            '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
             ..(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
-            e.GetYesNo(desc.data.isCrossFaction)
+            e.GetYesNo(clubInfo.isCrossFaction)
         )
 
-        if desc.data.findDay then
+        if findDay then
             tooltip:AddDoubleLine(
                 '|A:characterupdate_clock-icon:0:0|a'
                 ..(e.onlyChinese and '公会查找器信息过期剩余时间：' or GUILD_FINDER_POSTING_GOING_TO_EXPIRE),
-                format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , desc.data.findDay)
+                format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay)
             )
         end
 
-        tooltip:AddDoubleLine('clubID', desc.data.clubID)
+        tooltip:AddDoubleLine('clubID', clubID)
 
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
-        if not CanGuildInvite() then
+        if not canGuildInvite then
             tooltip:AddLine(
                 '|cff828282'
                 ..(e.onlyChinese and '无法邀请成员' or format(ERROR_CLUB_ACTION_INVITE_MEMBER, ''))..'|r'
@@ -90,6 +106,7 @@ local function Init_Guild_Menu(self, root)
         end
     end)
 
+   
 
 
 
@@ -115,22 +132,24 @@ local function Init_Guild_Menu(self, root)
         return MenuResponse.CloseAll
     end)
 
-    --[[sub:CreateSpacer()
+    sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-        end, setValue=function(value)
-            
+            return Save().subGuildName or 0
+        end, setValue=function(value, frame)
+            Save().subGuildName= value~=0 and value or nil
+            frame.Low:SetText(Get_Guild_Name())
         end,
         name=e.onlyChinese and '截取' or 'sub' ,
-        minValue=1,
-        maxValue=10,
+        minValue=0,
+        maxValue=93,--最长31英文字符
         step=1,
-        bit='%.2f',
         tooltip=function(tooltip)
             tooltip:AddLine(e.onlyChinese and '公会名称' or CLUB_FINDER_REPORT_REASON_GUILD_NAME)
+            tooltip:AddLine('0 = '..(e.onlyChinese and '禁用' or DISABLE))
         end
     })
-    sub:CreateSpacer()]]
+    sub:CreateSpacer()
 end
 
 
@@ -170,7 +189,7 @@ local function WoW_List(_, root)
             sub2= sub:CreateButton(
                 WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=false})
                 ..' '
-                ..Get_Rank_Texture(rankIndex, true)
+                ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex, true)
                 ..name
                 ..(realm and realm~=e.Player.realm
                     and (e.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
@@ -209,7 +228,7 @@ local function WoW_List(_, root)
                 tooltip:AddLine(' ')
                 tooltip:AddLine( WoWTools_UnitMixin:GetPlayerInfo({guid=desc.data.playerGuid, reName=true, reRealm=true}))
                 tooltip:AddLine(
-                    Get_Rank_Texture(desc.data.rankIndex, true)
+                    WoWTools_GuildMixin:Get_Rank_Texture(desc.data.rankIndex, true)
                     ..desc.data.rankName
                 )
 
@@ -282,7 +301,7 @@ local function Guild_Player_List(_, root)
                     or (isOnline and showNotOnLine and format('|T%s:0|t', FRIENDS_TEXTURE_ONLINE))
                     or '  '
                 )
-                ..Get_Rank_Texture(rankIndex)--官员
+                ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex)--官员
                 ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})--名称
                 ..(level and level~=maxLevel and ' |cnGREEN_FONT_COLOR:'..level..'|r' or '')--等级
                 ..(isOnline and zone and (zone==map and '|A:poi-islands-table:0:0|a' or e.cn(zone)) or '')--地区
@@ -310,7 +329,7 @@ local function Guild_Player_List(_, root)
                 tooltip:AddLine(' ')
                 tooltip:AddDoubleLine(
                     desc.data.zone,
-                    Get_Rank_Texture(desc.data.rankIndex)..(desc.data.rankName or '').. (desc.data.rankIndex and ' '..desc.data.rankIndex)
+                    WoWTools_GuildMixin:Get_Rank_Texture(desc.data.rankIndex)..(desc.data.rankName or '').. (desc.data.rankIndex and ' '..desc.data.rankIndex)
                 )
 
                 if desc.data.publicNote then
