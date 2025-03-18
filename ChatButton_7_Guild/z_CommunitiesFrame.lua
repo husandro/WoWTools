@@ -78,6 +78,7 @@ end
 
 
 --公会，社区，在线人数
+
 local function CommunitiesList_ScrollBox(self)
     if not self:GetView() then
         return
@@ -95,7 +96,7 @@ local function CommunitiesList_ScrollBox(self)
 
             local elementData = clubID and btn:GetElementData()
             local clubInfo= elementData.clubInfo or {}
-                                   
+
             faction= clubInfo.crossFaction and 'CrossedFlags' or e.Icon[e.Player.faction]
 
             Create_Texture(btn)
