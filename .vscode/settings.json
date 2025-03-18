@@ -5463,7 +5463,8 @@
         "COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION",
         "g_clubIdToSeenApplicants",
         "CLUB_FINDER_REPORT_REASON_GUILD_NAME",
-        "COMMUNITIES_INVITE_MEMBERS"
+        "COMMUNITIES_INVITE_MEMBERS",
+        "GUILD_MEMBERS_ONLINE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

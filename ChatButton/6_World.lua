@@ -887,7 +887,7 @@ end
 
 --添加菜单
 local function Add_Menu(root, name, channelNumber)
-    local text, sub, info, communityName, communityTexture, members, online
+    local text, sub, communityName, communityTexture, online
     local clubId=name:match('Community:(%d+)')
 
     if clubId then
@@ -895,26 +895,18 @@ local function Add_Menu(root, name, channelNumber)
     end
 
     local clubInfo= clubId and C_Club.GetClubInfo(clubId)--社区名称
+
     if clubInfo and (clubInfo.shortName or clubInfo.name) then
-
-        members= C_Club.GetClubMembers(clubInfo.clubId) or {}
-        online= 0
-        for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-            info = C_Club.GetMemberInfo(clubInfo.clubId, memberID) or {}
-            if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
-                online= online+1
-            end
-        end
-
+        online= WoWTools_GuildMixin:GetNumOnline(clubInfo.clubId)--在线成员
         text= (clubInfo.avatarId==1
                 and '|A:plunderstorm-glues-queueselector-trio-selected:0:0|a'
                 or ('|T'..(clubInfo.avatarId or 0)..':0|t')
             )
             ..(clubInfo.clubType == Enum.ClubType.BattleNet and '|cff00ccff' or '|cffff8000')
             ..(clubInfo.shortName or clubInfo.name)
+            ..'|r'
             ..(clubInfo.favoriteTimeStamp and '|A:recipetoast-icon-star:0:0|a' or ' ')
-            ..(online..'/'..#members)
-
+            ..((online==0 and '|cff828282' or '|cffffffff')..online)
         communityName=clubInfo.shortName or clubInfo.name
         communityTexture=clubInfo.avatarId
     end

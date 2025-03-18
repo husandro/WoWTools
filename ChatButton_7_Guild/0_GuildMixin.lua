@@ -22,20 +22,7 @@ function WoWTools_GuildMixin:IsLeaderOrOfficer()
 end
 
 
---[[是否是公会领袖或官员
-function WoWTools_GuildMixin:CanInit_Invite(clubId)
-    return CanGuildInvite()
-        --and C_ClubFinder.IsEnabled()
-        --and (self:IsLeaderOrOfficer())
-end
 
-function WoWTools_GuildMixin:GetGuildClubID(clubID)
-    --if C_ClubFinder.IsEnabled() then
-    return clubID or C_Club.GetGuildClubId()
-    --WoWTools_Mixin:Load({id=clubID, type='club'})
-    ---end
-end
-]]
 
 --加载，Club,数据 CommunitiesFrameMixin:RequestSubscribedClubFinderPostingInfo()
 function WoWTools_GuildMixin:Load_Club(clubID)--加载，Club,数据
@@ -61,14 +48,40 @@ end
 
 --Club,列出查找，过期时间
 function WoWTools_GuildMixin:GetClubFindDay(clubID)
-    clubID= clubID or C_Club.GetGuildClubId()
-    local expirationTime = clubID and ClubFinderGetClubPostingExpirationTime(clubID)--CommunitiesFrameMixin:SetClubFinderPostingExpirationText(
-    if expirationTime and expirationTime>0 then
-        return expirationTime
+    if C_ClubFinder.IsEnabled() then
+        clubID= clubID or C_Club.GetGuildClubId()
+        local expirationTime = clubID and ClubFinderGetClubPostingExpirationTime(clubID)--CommunitiesFrameMixin:SetClubFinderPostingExpirationText(
+        if expirationTime and expirationTime>0 then
+            return expirationTime
+        end
     end
 end
 
+--在线成员
+--CommunitiesUtil.GetOnlineMembers
+function WoWTools_GuildMixin:GetNumOnline(clubID)
+    local online, all, onlineTab= 0, 0, {}
+    local memberInfo
+    clubID= clubID or C_Club.GetGuildClubId()
 
+    local members= clubID and C_Club.GetClubMembers(clubID) or {}
+    for _, memberID in ipairs(members) do
+        memberInfo = C_Club.GetMemberInfo(clubID, memberID)
+        if memberInfo and memberInfo.name and not memberInfo.isSelf then
+
+            if
+                memberInfo.presence == Enum.ClubMemberPresence.Online--在线
+                or memberInfo.presence == Enum.ClubMemberPresence.Away--离开
+                or memberInfo.presence == Enum.ClubMemberPresence.Busy--忙碌
+            then
+                online= online+1
+                table.insert(onlineTab, memberInfo)
+            end
+            all= all+1
+        end
+    end
+    return online, all, onlineTab
+end
 
 
 
@@ -114,24 +127,14 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     end
     GameTooltip:AddLine(' ')
 
-    local all=0
-    local icon, name, col, applicantList, num, info, members
+
+    local icon, name, col, applicantList, num, info, members, online, all
     local guildClubId= C_Club.GetGuildClubId()
     local numApplicant= 0
-    local hasInvite
 
     for _, tab in pairs(clubs) do
-        members= C_Club.GetClubMembers(tab.clubId) or {}
-        local online= 0
-        for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-             info = C_Club.GetMemberInfo(tab.clubId, memberID) or {}
-            if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
-                online= online+1
-                all= all+1
-            elseif info.isSelf and info.guildRankOrde then
-                hasInvite= info.guildRankOrde<=2
-            end
-        end
+
+        online, all= self:GetNumOnline(tab.clubId)--在线成员
 
         icon=(tab.clubId==guildClubId) and '|A:auctionhouse-icon-favorite:0:0|a'
 
@@ -147,18 +150,18 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
 
 --未读信息
         if CommunitiesUtil.DoesCommunityHaveUnreadMessages(tab.clubId) then
-            name= name..'|A:communities-icon-invitemail:0:0|a'
+            name= name..'|A:communities-icon-notification:0:0|a'
         end
 
 --申请者
         applicantList= self:GetApplicantList(tab.clubId)
         num = applicantList and #applicantList
         if num then
-            name= name..'|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
+            name= name..'|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'..num..'|r'
             numApplicant= numApplicant + num
         end
 
-        GameTooltip:AddDoubleLine(icon..name, col..online..icon)
+        GameTooltip:AddDoubleLine(icon..name, col..online..'/'..all..icon)
     end
 
 
@@ -170,19 +173,16 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
             hasPlayer and
                 '|cnGREEN_FONT_COLOR:'
                 ..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
-                ..'|r|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..numApplicant
+                ..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'..numApplicant
             or ' ',
 
             hasMsg and
                 '|cnGREEN_FONT_COLOR:'
                 ..(e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION)
-                ..'|A:communities-icon-invitemail:0:0|a'
+                ..'|A:communities-icon-notification:0:0|a'
         )
     end
 end
-
---CreateCommunitiesIconNotificationMarkup(name)
-
 
 
 
@@ -192,15 +192,17 @@ end
 
 
 function WoWTools_GuildMixin:GetApplicantList(clubID)
-    clubID= clubID or C_Club.GetGuildClubId()
-    if clubID then
-        local data = C_Club.GetClubPrivileges(clubID)
-        if data and data.canGetInvitation then
-            data= C_ClubFinder.ReturnClubApplicantList(clubID)
-            if not data or #data==0 then
-                return
+    if C_ClubFinder.IsEnabled() then
+        clubID= clubID or C_Club.GetGuildClubId()
+        if clubID then
+            local data = C_Club.GetClubPrivileges(clubID)
+            if data and data.canGetInvitation then
+                data= C_ClubFinder.ReturnClubApplicantList(clubID)
+                if not data or #data==0 then
+                    return
+                end
+                return data
             end
-            return data
         end
     end
 end

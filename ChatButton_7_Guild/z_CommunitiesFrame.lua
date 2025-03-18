@@ -1,9 +1,78 @@
 --社区 Plus
+local e= select(2, ...)
+
+
+local function Set_Sctipt(object)
+    object:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    object:SetScript('OnEnter', function(self)
+        self:SetAlpha(0.3)
+        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_GuildMixin.addName, e.Icon.icon2..self.tooltip)
+        if self.isCrossFaction then
+            GameTooltip:AddDoubleLine(' ', e.GetYesNo(self.crossFaction))
+        end
+        GameTooltip:Show()
+    end)
+end
 
 
 
+local function Create_Texture(btn)
+    if btn.allText then
+        return
+    end
+--总人数
+    btn.allText= WoWTools_LabelMixin:Create(btn, {color={r=0.62,g=0.62,b=0.62}})
+    btn.allText:SetPoint('TOP', btn.Icon, 'BOTTOM')
+    btn.allText.tooltip= e.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS
+    Set_Sctipt(btn.allText)
 
+--在线人数
+    btn.onlineText=WoWTools_LabelMixin:Create(btn, {color=true})
+    btn.onlineText:SetPoint('BOTTOM', 0, 2)
+    btn.onlineText.tooltip= e.onlyChinese and '在线成员' or GUILD_MEMBERS_ONLINE
+    Set_Sctipt(btn.onlineText)
 
+--是否有申请人
+    btn.inviteTexture= btn:CreateTexture(nil, 'BORDER',nil, 2)
+    btn.inviteTexture:SetPoint('RIGHT',-6,0)
+    btn.inviteTexture:SetSize(20,20)
+    btn.inviteTexture:SetAtlas('communities-icon-invitemail')
+    btn.inviteTexture.tooltip= e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS
+    Set_Sctipt(btn.inviteTexture)
+
+--是否有未读信息
+    btn.msgTexture= btn:CreateTexture(nil, 'BORDER', nil, 2)
+    btn.msgTexture:SetPoint('RIGHT',-6,-20)
+    btn.msgTexture:SetSize(20,20)
+    btn.msgTexture:SetAtlas('communities-icon-notification')
+    btn.msgTexture.tooltip= e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION
+    Set_Sctipt(btn.msgTexture)
+
+--是否跨派系
+    btn.factionTexture= btn:CreateTexture(nil, 'BORDER', nil, 2)
+    btn.factionTexture:SetPoint('RIGHT',-6,20)
+    btn.factionTexture:SetSize(20,20)
+    btn.factionTexture.tooltip= e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION
+    btn.factionTexture.isCrossFaction= true
+    Set_Sctipt(btn.factionTexture)
+
+    function btn:settings(online, all, hasInvite, hasMessage, faction)
+        self.allText:SetText(all and all>0 and all or '')
+        self.onlineText:SetText(online or '')
+        self.inviteTexture:SetShown(hasInvite)
+        self.msgTexture:SetShown(hasMessage)
+        local crossFaction= faction and true or false
+        self.factionTexture:SetShown(crossFaction)
+        if self.isCrossFaction then
+            self.crossFaction= crossFaction
+        end
+    end
+end
 
 
 
@@ -14,25 +83,27 @@ local function CommunitiesList_ScrollBox(self)
         return
     end
     for _, btn in pairs(self:GetFrames() or {}) do
-        local online, all= 0, 0
-        if btn.clubId then
-            local members= C_Club.GetClubMembers(btn.clubId) or {}
-            all= #members
-            for _, memberID in pairs(members) do--CommunitiesUtil.GetOnlineMembers
-                local info = C_Club.GetMemberInfo(btn.clubId, memberID) or {}
-                if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
-                    online= online+1
-                end
-            end
+
+        local clubID= btn.clubId
+
+        local online, all, hasInvite, hasMessage, faction
+        if clubID then
+            online, all= WoWTools_GuildMixin:GetNumOnline(clubID)
+
+            hasInvite=  WoWTools_GuildMixin:GetApplicantList(clubID) and true or false
+            hasMessage= CommunitiesUtil.DoesCommunityHaveUnreadMessages(clubID)
+
+            local elementData = clubID and btn:GetElementData()
+            local clubInfo= elementData.clubInfo or {}
+                                   
+            faction= clubInfo.crossFaction and 'CrossedFlags' or e.Icon[e.Player.faction]
+
+            Create_Texture(btn)
+
+            btn.factionTexture:SetAtlas(faction)
         end
-        if not btn.onlineText then
-            btn.onlineText=WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-            btn.onlineText:SetPoint('TOP', btn.Icon, 'BOTTOM')
-        end
-        if all>0 then
-            btn.onlineText:SetFormattedText('%d/%s%d|r', all, online==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', online)
-        else
-            btn.onlineText:SetText('')
+        if btn.settings then
+            btn:settings(online, all, hasInvite, hasMessage, faction)
         end
     end
 end

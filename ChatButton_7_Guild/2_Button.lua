@@ -87,10 +87,15 @@ local function Init()
     GuildButton.mask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
     GuildButton.texture2:AddMaskTexture(GuildButton.mask)
 
-    GuildButton.messageTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
-    GuildButton.messageTexture:SetPoint('TOPLEFT',-2,2)
-    GuildButton.messageTexture:SetAtlas('communities-icon-notification')
-    GuildButton.messageTexture:SetSize(16,16)
+    GuildButton.inviteTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
+    GuildButton.inviteTexture:SetPoint('TOPLEFT',1,-1)
+    GuildButton.inviteTexture:SetAtlas('communities-icon-invitemail')
+    GuildButton.inviteTexture:SetSize(12,12)
+
+    GuildButton.msgTexture= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
+    GuildButton.msgTexture:SetPoint('LEFT',-3,0)
+    GuildButton.msgTexture:SetSize(12,12)
+    GuildButton.msgTexture:SetAtlas('communities-icon-notification')
 
     GuildButton.membersText=WoWTools_LabelMixin:Create(GuildButton, {color={r=1,g=1,b=1}})-- 10, nil, nil, true, nil, 'CENTER')
     GuildButton.membersText:SetPoint('TOPRIGHT', -3, 0)
@@ -109,21 +114,33 @@ local function Init()
 
 --申请者
     function GuildButton:set_new_application(isInit)
-        local clubs= C_Club.GetSubscribedClubs()
-        for _, data in pairs(clubs or {}) do
-            if WoWTools_GuildMixin:GetApplicantList(data.clubId) then
-                self.messageTexture:SetShown(true)
-                if isInit then
-                    print(e.Icon.icon2..WoWTools_GuildMixin.addName,
-                        '|cnGREEN_FONT_COLOR:'
-                        ..(e.onlyChinese and '新' or NEW)..'|A:communities-icon-notification:0:0|a'
-                        ..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
-                    )
+        local isInviete, isMessage= false, false
+        local clubs= C_ClubFinder.IsEnabled() and C_Club.GetSubscribedClubs()
+        if clubs then
+            for _, data in pairs(clubs or {}) do
+                if not isInviete and WoWTools_GuildMixin:GetApplicantList(data.clubId) then
+                    isInviete=true
+
+                    if isInit then
+                        print(e.Icon.icon2..WoWTools_GuildMixin.addName,
+                            '|cffff00ff'
+                            ..(e.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
+                            ..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
+                        )
+                    end
                 end
-                return
+
+                if not isMessage and CommunitiesUtil.DoesCommunityHaveUnreadMessages(data.clubId) then
+                    isMessage= true
+                end
+
+                if isMessage and isInviete then
+                    break
+                end
             end
         end
-        self.messageTexture:SetShown(false)
+        self.inviteTexture:SetShown(isInviete)
+        self.msgTexture:SetShown(isMessage)
     end
 
     function GuildButton:set_tooltip()
@@ -161,6 +178,8 @@ local function Init()
     WoWTools_GuildMixin:Init_Menu(GuildButton)
 
 --事件
+    GuildButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+
     GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
     GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
 
@@ -168,16 +187,19 @@ local function Init()
     GuildButton:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
     GuildButton:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
     GuildButton:RegisterEvent('CLUB_FINDER_POST_UPDATED')--C_ClubFinder.RequestPostingInformationFromClubId
+    GuildButton:RegisterEvent('CLUB_MESSAGE_UPDATED')
 
-    GuildButton:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     GuildButton:SetScript('OnEvent', function(self, event, arg1)
 --初始
         if event=='PLAYER_ENTERING_WORLD' then
             C_ClubFinder.RequestSubscribedClubPostingIDs()
-            self:set_guildinfo_event()
+
             Set_Text(self)
+
+            self:set_guildinfo_event()
             self:set_new_application(Save().guildInfo)--申请者
+
             self:UnregisterEvent(event)
 
         elseif
@@ -196,11 +218,11 @@ local function Init()
                 self:UnregisterEvent(event)
             end
 
-        elseif--申请者
+        else--[[if--申请者
             event == 'CLUB_FINDER_RECRUITS_UPDATED'
             or event == 'CLUB_FINDER_APPLICATIONS_UPDATED'
             or event=='CLUB_FINDER_POST_UPDATED'
-        then
+        then]]
 
             GuildButton:set_new_application()
 

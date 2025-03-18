@@ -55,6 +55,7 @@ local function Init()
         "PLAYER_GUILD_UPDATE",
     }
     FrameUtil.RegisterFrameForEvents(frame, COMMUNITIES_LIST_EVENTS)
+
     frame:SetScript('OnEvent', frame.settings)
     C_Timer.After(2, function() frame:settings() end)
 
