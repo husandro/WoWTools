@@ -19,6 +19,9 @@ WoWTools_GuildMixin.Save={
 local function Save_WoWGuild()
     if IsInGuild() then
         local clubID= C_Club.GetGuildClubId()
+        if clubID then
+            WoWTools_GuildMixin:Load_Club(clubID)
+        end
         local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID) or {}
         local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
 

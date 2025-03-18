@@ -112,7 +112,6 @@ local function Init_Guild_Menu(self, root)
         self:set_guildinfo_event()--事件, 公会新成员, 队伍新成员
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine()
         tooltip:AddLine(e.WoWDate[e.Player.guid].Guild.text)
     end)
 
@@ -180,7 +179,7 @@ local function WoW_List(_, root)
 
     local name, realm, rankIndex, rankName
     for guid, info in pairs(e.WoWDate) do
-        if info.Guild and info.Guild.link and info.Guild.clubID and guid~=e.Player.husandro then
+        if info.Guild and info.Guild.link and info.Guild.clubID and guid~=e.Player.guid then
 
             C_ClubFinder.RequestPostingInformationFromClubId(info.Guild.clubID)
 
