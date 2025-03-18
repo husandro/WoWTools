@@ -19,15 +19,17 @@ local GuildButton
 local function Save_WoWGuild()
     if IsInGuild() then
         local clubID= C_Club.GetGuildClubId()
+
         if clubID then
             WoWTools_GuildMixin:Load_Club(clubID)
         end
+
         local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID) or {}
         local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
 
         e.WoWDate[e.Player.guid].Guild= {
             guid= club.clubFinderGUID,
-            link= GetClubFinderLink(club.clubFinderGUID, club.name),
+            link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID),
             clubID= clubID,
             data={guildName, guildRankName, guildRankIndex, realm or e.Player.realm},
             text= e.WoWDate[e.Player.guid].Guild.text
@@ -47,6 +49,8 @@ local function Init()
     if not GuildButton then
         return
     end
+
+    C_ClubFinder.RequestSubscribedClubPostingIDs()
 
     WoWTools_GuildMixin:Init_Button()
     WoWTools_GuildMixin:Init_ClubFinder()
@@ -73,6 +77,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             GuildButton= WoWTools_ChatButtonMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
             WoWTools_GuildMixin.GuildButton= GuildButton
 
+            if not GuildButton  then
+                self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+            end
             self:UnregisterEvent(event)
         end
 
@@ -83,7 +90,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_GUILD_UPDATE' then
         Save_WoWGuild()--保存公会数据，到WOW
-
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

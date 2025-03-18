@@ -202,7 +202,7 @@ local function Init(GuildButton)
         end
     end)
 
-    C_ClubFinder.RequestSubscribedClubPostingIDs()
+
 
     Set_Text(GuildButton)
 
