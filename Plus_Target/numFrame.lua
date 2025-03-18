@@ -149,7 +149,7 @@ local function Init_Button()
         Save().creatureFontSize=n
         WoWTools_LabelMixin:Create(nil, {changeFont=self.Text, size=n})
         self:set_tooltip()
-        print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
+        print(e.Icon.icon2..WoWTools_TargetMixin.addName, (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
     end)
 
     function numButton:set_tooltip()

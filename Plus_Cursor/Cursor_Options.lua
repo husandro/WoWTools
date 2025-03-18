@@ -23,7 +23,7 @@ local function Init(Frame)
         self:SetValue(value)
         self.Text:SetText(value)
         Save().maxParticles= value
-        print(WoWTools_Mixin.addName, WoWTools_CursorMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
     Frame.sliderMaxParticles:SetPoint("TOPLEFT", Frame.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
@@ -195,7 +195,7 @@ local function Init(Frame)
         local icon = select(2, WoWTools_CursorMixin:GetTextureType(texture))
         table.remove(Save().Atlas, Save().atlasIndex)
         Save().atlasIndex=1
-        print(WoWTools_Mixin.addName, WoWTools_CursorMixin.addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:Cursor_Settings()
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultTexture)

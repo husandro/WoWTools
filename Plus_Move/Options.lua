@@ -1,8 +1,10 @@
 --添加控制面板
 local e= select(2, ...)
+
 local function Save()
     return WoWTools_MoveMixin.Save
 end
+
 local Category, Layout
 
 
@@ -23,7 +25,7 @@ local function Init_Options()
         category= Category,
         SetValue= function()
             Save().disabledMove= not Save().disabledMove and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
+            print(e.Icon.icon2..WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledMove), e.onlyChinese and '重新加载UI' or RELOADUI)
         end
     })]]
 
@@ -44,7 +46,7 @@ local function Init_Options()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save().point={}
-                    print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.Icon.icon2..WoWTools_MoveMixin.addName, e.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(WoWTools_MoveMixin.addName..'MoveZoomClearPoint')
@@ -71,7 +73,7 @@ local function Init_Options()
         GetValue= function() return not Save().disabledZoom end,
         SetValue= function()
             Save().disabledZoom= not Save().disabledZoom and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabledZoom), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
 
         buttonText= (e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
@@ -85,12 +87,12 @@ local function Init_Options()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 OnAccept=function()
                     Save().scale={}
-                    print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.Icon.icon2..WoWTools_MoveMixin.addName, (e.onlyChinese and '缩放' or UI_SCALE)..': 1', '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
                 OnAlt=function()
                     Save().size={}
                     Save().disabledSize={}
-                    print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+                    print(e.Icon.icon2..WoWTools_MoveMixin.addName, e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
                 end,
             }
             StaticPopup_Show(WoWTools_MoveMixin.addName..'MoveZoomClearZoom')
@@ -107,7 +109,7 @@ local function Init_Options()
         checkTooltip= e.onlyChinese and '当你开始移动时，Frame变为透明状态。' or OPTION_TOOLTIP_MAP_FADE:gsub(string.lower(WORLD_MAP), 'Frame'),
         checkSetValue= function()
             Save().notMoveAlpha= not Save().notMoveAlpha and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_MoveMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
 
         sliderGetValue= function() return Save().alpha or 0.5 end,
@@ -149,7 +151,7 @@ local function Init_Add()
         category= Category,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_MoveMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 

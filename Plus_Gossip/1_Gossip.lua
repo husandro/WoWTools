@@ -171,7 +171,7 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save().gossipOption[self.id]= not Save().gossipOption[self.id] and (self.name or '') or nil
                 if Save().gossipOption[self.id] and not IsModifierKeyDown() and Save().gossip then
-                    print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
+                    print(e.Icon.icon2..WoWTools_GossipMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
                 end
             end)
@@ -386,7 +386,7 @@ local function Init()
                 if Save().movie[arg1] then
                     if Save().stopMovie then
                         MovieFrame:StopMovie()
-                        print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
+                        print(e.Icon.icon2..WoWTools_GossipMixin.addName, e.onlyChinese and '对话' or ENABLE_DIALOG,
                             '|cnRED_FONT_COLOR:'..(e.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
@@ -396,7 +396,7 @@ local function Init()
                 else
                     Save().movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
+                print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
@@ -404,7 +404,7 @@ local function Init()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|n|cnRED_FONT_COLOR:',  format(e.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)
@@ -426,7 +426,7 @@ local function Init()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
+        print(e.Icon.icon2..WoWTools_GossipMixin.addName, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -602,7 +602,7 @@ local function Init()
                         C_GossipInfo.SelectAvailableQuest(frame.id)
                     end
                 else
-                    print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
+                    print(e.Icon.icon2..WoWTools_GossipMixin.addName2, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r', e.onlyChinese and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end

@@ -49,7 +49,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     end
                     self:set_tooltips()
                     self:set_alpha()
-                    print(WoWTools_Mixin.addName, WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
+                    print(e.Icon.icon2..WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
                 end
             else
                 WoWTools_UseItemsMixin:Init_Menu(self)

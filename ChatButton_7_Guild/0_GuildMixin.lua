@@ -100,7 +100,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
     local icon, name, col, applicantList, num, info, members
     local guildClubId= C_Club.GetGuildClubId()
     local numApplicant= 0
-    --local hasInvite
+    local hasInvite
 
     for _, tab in pairs(clubs) do
         members= C_Club.GetClubMembers(tab.clubId) or {}
@@ -110,8 +110,8 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
             if not info.isSelf and info.presence~=Enum.ClubMemberPresence.Offline and info.presence~=Enum.ClubMemberPresence.Unknown then--CommunitiesUtil.GetOnlineMembers()
                 online= online+1
                 all= all+1
-            --elseif info.isSelf and info.guildRankOrde then
-               -- hasInvite= info.guildRankOrde<=2
+            elseif info.isSelf and info.guildRankOrde then
+                hasInvite= info.guildRankOrde<=2
             end
         end
 

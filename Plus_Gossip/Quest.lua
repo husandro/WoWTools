@@ -1,11 +1,10 @@
 local e= select(2, ...)
 
-local IsQuestTrivialTracking
-
 local function Save()
     return WoWTools_GossipMixin.Save
 end
 
+local IsQuestTrivialTracking
 
 
 
@@ -417,7 +416,7 @@ local function Init_Quest()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
+        print(e.Icon.icon2..WoWTools_GossipMixin.addName2, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
     end)
 
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)

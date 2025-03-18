@@ -28,7 +28,7 @@ local function Init()
         SetValue= function()
             Save().Plus.disabled = not Save().Plus.disabled and true or nil
             if not WoWTools_PetBattleMixin:Set_Plus() then
-                print(WoWTools_Mixin.addName, WoWTools_PetBattleMixin.addName5, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.Icon.icon2..WoWTools_PetBattleMixin.addName5, e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end,
         layout= Layout,
@@ -47,7 +47,7 @@ local function Init()
         buttonFunc= function()
             Save().AbilityButton= {disabled= Save().AbilityButton.disabled}
             WoWTools_PetBattleMixin:Init_AbilityButton()
-            print(WoWTools_Mixin.addName, WoWTools_PetBattleMixin.addName6, e.onlyChinese and '重置' or RESET)
+            print(e.Icon.icon2..WoWTools_PetBattleMixin.addName6, e.onlyChinese and '重置' or RESET)
         end,
         tooltip= WoWTools_PetBattleMixin.addName,
         layout= Layout,
@@ -69,7 +69,7 @@ local function Init()
                 showBackground=true,
             }
             WoWTools_PetBattleMixin:Set_TypeButton()
-            print(WoWTools_Mixin.addName, WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.Icon.icon2..WoWTools_PetBattleMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= WoWTools_PetBattleMixin.addName,
         layout= Layout,
@@ -114,7 +114,7 @@ local function Init()
                 lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
             }
             WoWTools_PetBattleMixin:ClickToMove_Button()
-            print(WoWTools_Mixin.addName, WoWTools_PetBattleMixin.addName3, e.onlyChinese and '重置' or RESET)
+            print(e.Icon.icon2..WoWTools_PetBattleMixin.addName3, e.onlyChinese and '重置' or RESET)
         end,
         layout= Layout,
         category= Category,
@@ -158,7 +158,7 @@ local function Init_Panel()
         func= function()
             Save().disabled= not Save().disabled and true or nil
             WoWTools_PetBattleMixin:Set_Options()
-            print(WoWTools_Mixin.addName, WoWTools_PetBattleMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_PetBattleMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 

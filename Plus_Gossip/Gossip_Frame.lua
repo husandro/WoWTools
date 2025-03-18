@@ -371,14 +371,14 @@ local function Init()
                 icon= '|T'..texture2..':0|t'
             end
         end
-        print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)]]
+        print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)]]
     end
 
     function Menu:delete_gossip(gossipID)
         if gossipID and Save().Gossip_Text_Icon_Player[gossipID] then
             local info=Save().Gossip_Text_Icon_Player[gossipID]
             Save().Gossip_Text_Icon_Player[gossipID]=nil
-            print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
+            print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
         end
@@ -664,7 +664,7 @@ local function Init()
                 button2= e.onlyChinese and '取消' or CANCEL,
                 OnAccept = function()
                     Save().Gossip_Text_Icon_Player={}
-                    print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
+                    print(e.Icon.icon2..WoWTools_GossipMixin.addName, e.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', e.onlyChinese and '完成' or DONE))
                     Frame.Menu:set_list()
                 end,
             }
@@ -723,7 +723,7 @@ local function Init()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
             Frame.Menu:set_list()
             if not Save().Gossip_Text_Icon_cnFont then
-                print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
+                print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
             end
         end)
     --end
@@ -853,7 +853,7 @@ local function Init()
                     info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
             end
             Frame.Menu:set_list()
-            print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
+            print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
             frame:SetText(text)
             self:GetParent():SetInstructions(e.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         else

@@ -25,7 +25,7 @@ local function Init_Menu(self, root)
         '|A:characterundelete-RestoreButton:0:0|a'..(e.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE)),
     function()
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-        print(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE))
+        print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE))
         return MenuResponse.Open
     end)
 

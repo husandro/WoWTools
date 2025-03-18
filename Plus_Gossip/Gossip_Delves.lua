@@ -71,7 +71,7 @@ local function Init_OnShow(self)
                         ..'x'..(reward.quantity or 1)..' '
                 end
             end
-            print(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
+            print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
             if itemLink then
                 print(itemLink)
             end

@@ -96,7 +96,7 @@ local function Init_Menu(self, root)
         if WoWTools_CombatMixin.TrackButton then
             WoWTools_CombatMixin.TrackButton:set_Point()
         end
-        print(WoWTools_Mixin.addName, WoWTools_CombatMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(e.Icon.icon2..WoWTools_CombatMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
         return MenuResponse.Open
     end)
 

@@ -178,7 +178,7 @@ local function TrackButton_Frame_Init_Date(self)--初始, 数据
         LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
         save.afk.num= save.afk.num + 1
         save.afk.time= save.afk.time + sec
-        print(WoWTools_Mixin.addName, WoWTools_CombatMixin.addName, LastText)
+        print(e.Icon.icon2..WoWTools_CombatMixin.addName, LastText)
         OnAFKTime=nil
     end
 
@@ -386,7 +386,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             Save().textScale=sacle
             self:set_text_scale()
             self:set_tooltip()
-            print(WoWTools_Mixin.addName, WoWTools_CombatMixin.addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+            print(e.Icon.icon2..WoWTools_CombatMixin.addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 

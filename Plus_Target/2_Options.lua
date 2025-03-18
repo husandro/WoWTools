@@ -282,7 +282,7 @@ local function Init()
         self2.Text:SetText(value)
         Save().scale= value
         if value==1 then
-            print(WoWTools_Mixin.addName,WoWTools_TargetMixin.addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
+            print(e.Icon.icon2..WoWTools_TargetMixin.addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '禁用' or DISABLE)
         end
         WoWTools_TargetMixin:Set_All_Init()
     end})
@@ -375,7 +375,7 @@ local function Init()
         local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
         if name and Save().targetTextureNewTab[name] then
             Save().targetTextureNewTab[name]= nil
-            print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName,
+            print(e.Icon.icon2..WoWTools_TargetMixin.addName,
                 '|cnRED_FONT_COLOR:'..(e.onlyChinese and '删除' or DELETE)..'|r',
                 (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
             )
@@ -506,7 +506,7 @@ local function Init()
     unitIsMeCheck:SetChecked(Save().unitIsMe)
     unitIsMeCheck:SetScript('OnClick', function()
         Save().unitIsMe= not Save().unitIsMe and true or false
-        print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.GetEnabeleDisable(Save().unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2..WoWTools_TargetMixin.addName, e.GetEnabeleDisable(Save().unitIsMe), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
@@ -618,7 +618,7 @@ local function Init()
             Save().unitIsMeColor.r, Save().unitIsMeColor.g, Save().unitIsMeColor.b, Save().unitIsMeColor.a= 1,1,1,1
             self:GetParent():set_icon()
             WoWTools_TargetMixin:Set_All_Init()
-            print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.onlyChinese and '默认' or DEFAULT)
+            print(e.Icon.icon2..WoWTools_TargetMixin.addName, e.onlyChinese and '默认' or DEFAULT)
         else
             local r,g,b,a= Save().unitIsMeColor.r, Save().unitIsMeColor.g, Save().unitIsMeColor.b, Save().unitIsMeColor.a
             WoWTools_ColorMixin:ShowColorFrame(r,g,b,a,
@@ -761,7 +761,7 @@ local function Init_Options()
             Save().disabled= not Save().disabled and true or nil
             WoWTools_TargetMixin:Blizzard_Settings()
 
-            print(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName, e.GetEnabeleDisable(not Save().disabled), Save().disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+            print(e.Icon.icon2..WoWTools_TargetMixin.addName, e.GetEnabeleDisable(not Save().disabled), Save().disabled and (e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
         end,
         clearfunc= function() WoWTools_TargetMixin.Save=nil WoWTools_Mixin:Reload() end}
     )

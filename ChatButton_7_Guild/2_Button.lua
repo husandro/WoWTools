@@ -114,8 +114,10 @@ local function Init()
             if WoWTools_GuildMixin:GetApplicantList(data.clubId) then
                 self.messageTexture:SetShown(true)
                 if isInit then
-                    print(WoWTools_GuildMixin.addName,
-                        (e.onlyChinese and '新' or NEW)..'|A:communities-icon-notification:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
+                    print(e.Icon.icon2..WoWTools_GuildMixin.addName,
+                        '|cnGREEN_FONT_COLOR:'
+                        ..(e.onlyChinese and '新' or NEW)..'|A:communities-icon-notification:0:0|a'
+                        ..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
                     )
                 end
                 return

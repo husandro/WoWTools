@@ -12,7 +12,7 @@ function WoWTools_MinimapMixin:ExpansionLanding_Menu(_, root)
     end, function()
         self.Save.hideExpansionLandingPageMinimapButton= not self.Save.hideExpansionLandingPageMinimapButton and true or nil
         self.Save.moveExpansionLandingPageMinimapButton=nil
-        print(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2..WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     root:CreateCheckbox(
@@ -22,7 +22,7 @@ function WoWTools_MinimapMixin:ExpansionLanding_Menu(_, root)
     end, function()
         self.Save.moveExpansionLandingPageMinimapButton= not self.Save.moveExpansionLandingPageMinimapButton and true or nil
         self.Save.hideExpansionLandingPageMinimapButton=nil
-        print(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2..WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 

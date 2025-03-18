@@ -140,7 +140,7 @@ local function Init(Frame)
         local icon = texture and '|T'..texture..':0|t'
         table.remove(Save().GCDTexture, Save().gcdTextureIndex)
         Save().gcdTextureIndex=1
-        print(WoWTools_Mixin.addName, WoWTools_CursorMixin.addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultGCDTexture)

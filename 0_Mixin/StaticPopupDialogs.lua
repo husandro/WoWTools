@@ -289,7 +289,7 @@ StaticPopup_Show('WoWTools_OK',
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName,
+                    print(e.Icon.icon2..WoWTools_TooltipMixin.addName,
                             '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )

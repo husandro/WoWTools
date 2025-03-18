@@ -136,7 +136,7 @@ end
 缩放
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().scale= WoWTools_FrameMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save().scale, function()
-            print(WoWTools_Mixin.addName, WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)
         self:set_tooltip()

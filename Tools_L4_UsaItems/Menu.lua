@@ -81,7 +81,7 @@ local function Init_Menu(_, root)
 --全部清除
             WoWTools_MenuMixin:ClearAll(sub, function()
                 WoWTools_UseItemsMixin.Save[type]={}
-                print(WoWTools_Mixin.addName, WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
         end
         sub:CreateButton(
@@ -94,7 +94,7 @@ local function Init_Menu(_, root)
                    WoWTools_UseItemsMixin.Save[data.type]= WoWTools_UseItemsMixin.P_Tabs[data.type]
 
 
-                   print(WoWTools_Mixin.addName, WoWTools_UseItemsMixin.addName, data.text, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                   print(e.Icon.icon2..WoWTools_UseItemsMixin.addName, data.text, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end}
             )
         end, {type=type, text=text})
@@ -117,7 +117,7 @@ local function Init_Menu(_, root)
             {SetValue=function()
                 WoWTools_UseItemsMixin.Save= nil
                 WoWTools_Mixin:Reload()
-                print(WoWTools_Mixin.addName, WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end}
         )
     end)

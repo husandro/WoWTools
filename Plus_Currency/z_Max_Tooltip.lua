@@ -41,7 +41,7 @@ local function Currency_Max(curID)--已达到资源上限
     end
 
     if num>0 then
-        print(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
+        print(e.Icon.icon2..WoWTools_CurrencyMixin.addName)
         for currencyID, info in pairs(tab) do
             print(
                 (WoWTools_CurrencyMixin:GetLink(currencyID) or currencyID)

@@ -66,7 +66,7 @@ local function Init_Button()
     function Button:set_enabel_disable()
         Save().notStatusPlus= not Save().notStatusPlus and true or nil
         self:set_texture()
-        --print(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        --print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, e.GetEnabeleDisable(not Save().notStatusPlus), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 
     Button.addName= '|A:loottoast-arrow-orange:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)

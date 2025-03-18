@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
         Save().hideSellItem={}
         Save().hideSellPet={}
         self:Init_Sell_Item_Button()
-        print(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+        print(e.Icon.icon2..WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
         return MenuResponse.Refresh
     end)
 

@@ -27,7 +27,7 @@ local function Init_Menu(self, root)
 		else
 			WoWTools_FactionMixin:Init_TrackButton()--监视, 文本
 		end
-		print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
+		print(e.Icon.icon2..WoWTools_FactionMixin.addName, e.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
 	end)
 
 --自动隐藏
@@ -57,7 +57,7 @@ local function Init_Menu(self, root)
 			WoWTools_FactionMixin.TrackButton:ClearAllPoints()
 			WoWTools_FactionMixin.TrackButton:set_Point()
 		end
-		print(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(e.Icon.icon2..WoWTools_FactionMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
 --指定

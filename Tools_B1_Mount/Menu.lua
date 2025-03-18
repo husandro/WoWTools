@@ -58,7 +58,7 @@ local function ClearAll_Menu(root, type, index)
         local sub=root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function(data)
             if IsControlKeyDown() then
                 Save().Mounts[data]={}
-                print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, e.onlyChinese and '全部清除' or CLEAR_ALL, e.cn(type))
+                print(e.Icon.icon2..WoWTools_MountMixin.addName, e.onlyChinese and '全部清除' or CLEAR_ALL, e.cn(type))
                 WoWTools_MountMixin.MountButton:settings()
 
             else
@@ -126,7 +126,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
         function(info)
             Save().Mounts[info.type][info.itemID or info.spellID]=nil
 
-            print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE,
+            print(e.Icon.icon2..WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE,
                     WoWTools_ItemMixin:GetLink(info.itemID)
                     or (info.spellID and C_Spell.GetSpellLink(info.spellID)
                     or info.itemID or info.spellID
@@ -306,7 +306,7 @@ local function Init_Menu_Spell(_, sub)
     sub2=sub:CreateButton(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT, function()
         if IsControlKeyDown() then
             Save().Mounts[SPELLS]= WoWTools_MountMixin:P_Mouts_Tab()
-            print(WoWTools_Mixin.addName, WoWTools_MountMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(e.Icon.icon2..WoWTools_MountMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
             WoWTools_MountMixin.MountButton:settings()
         else
             return MenuResponse.Open

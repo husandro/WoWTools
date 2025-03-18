@@ -1,6 +1,5 @@
 --购买物品
 local e= select(2, ...)
-local BuyItemButton
 
 local function Save()
     return WoWTools_SellBuyMixin.Save
@@ -14,7 +13,7 @@ local function SaveBuyItem(itemID, num)--当num=nil时，会清除
     WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid][itemID]=num
 end
 
-
+local BuyItemButton
 
 
 
@@ -146,11 +145,11 @@ local function Add_BuyItem(itemID, itemLink)
                 local num= s.editBox:GetNumber()
                 if num==0 then
                     SaveBuyItem(itemID, nil)
-                    print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
+                    print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
                 else
                     SaveBuyItem(itemID, num)
                     Save().Sell[itemID]=nil
-                    print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
+                    print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
                     set_buy_item()--购买物品
                 end
                 BuyItemButton:set_text()--回购，数量，提示
@@ -275,12 +274,12 @@ local function Init()
         if infoType=='item' and itemID then
             if Save().Sell[itemID] then
                 Save().Sell[itemID]=nil
-                print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 Save().Sell[itemID]=true
                 Save().noSell[itemID]=nil
                 SaveBuyItem(itemID, nil)
-                print(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
+                print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 if _G['WoWTools_AutoSellJunkCheck'] then
                     _G['WoWTools_AutoSellJunkCheck']:set_sell_junk()--出售物品
                 end

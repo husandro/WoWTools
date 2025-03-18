@@ -15,7 +15,7 @@ local function Init()
                 button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
                 OnAccept = function()
                     local n=0
-                    print(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
+                    print(e.Icon.icon2..WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
                     for index=1 , C_QuestLog.GetNumQuestLogEntries() do
                         do
                             local questInfo=C_QuestLog.GetInfo(index)

@@ -62,7 +62,7 @@ local function Init()
         if guid then
             WoWTools_InviteMixin.InvPlateGuid[guid]=name--保存到已邀请列表
         end
-        print(WoWTools_Mixin.addName, WoWTools_InviteMixin.addName, e.onlyChinese and '目标' or TARGET, WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true}))
+        print(e.Icon.icon2..WoWTools_InviteMixin.addName, e.onlyChinese and '目标' or TARGET, WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true}))
     end
 
     frame:SetScript('OnEvent', frame.InviteTarget)

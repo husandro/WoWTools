@@ -101,7 +101,7 @@ local function Init_Menu(self, root)
 	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		self:set_point()
-		print(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(e.Icon.icon2..WoWTools_HolidayMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
     root:CreateDivider()
