@@ -114,6 +114,7 @@ local function Init()
     set_check(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
     hooksecurefunc(ClubFinderGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.RequestToJoinFrame, 'Initialize', set_RequestToJoinFrame)
+    return true
 end
 
 
@@ -122,5 +123,8 @@ end
 
 
 function WoWTools_GuildMixin:Init_ClubFinder()
-    Init()
+    if Init() then
+        Init=function()end
+        return true
+    end
 end

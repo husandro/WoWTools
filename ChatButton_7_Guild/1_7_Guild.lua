@@ -9,7 +9,7 @@ WoWTools_GuildMixin.Save={
 }
 
 
-
+local GuildButton
 
 
 
@@ -43,7 +43,16 @@ end
 
 
 
+local function Init()
+    if not GuildButton then
+        return
+    end
 
+    WoWTools_GuildMixin:Init_Button()
+    WoWTools_GuildMixin:Init_ClubFinder()
+    WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus
+    WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
+end
 
 
 local panel= CreateFrame('Frame')
@@ -61,19 +70,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(e.onlyChinese and '公会' or GUILD)
             WoWTools_GuildMixin.addName= addName
 
-            if WoWTools_GuildMixin:Init_Button() then--禁用Chat Button
-                WoWTools_GuildMixin:Init_ClubFinder()
-                WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
-                WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus
-            end
+            GuildButton= WoWTools_ChatButtonMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
+            WoWTools_GuildMixin.GuildButton= GuildButton
+
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_GUILD_UPDATE' or event=='PLAYER_ENTERING_WORLD' then
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        Init()
         Save_WoWGuild()--保存公会数据，到WOW
-        if event=='PLAYER_ENTERING_WORLD' then
-            self:UnregisterEvent(event)
-        end
+        self:UnregisterEvent(event)
+
+    elseif event=='PLAYER_GUILD_UPDATE' then
+        Save_WoWGuild()--保存公会数据，到WOW
+
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

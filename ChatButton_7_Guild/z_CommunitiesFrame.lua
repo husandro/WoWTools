@@ -112,10 +112,16 @@ end
 
 
 
-
+local function Init()
+    hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', CommunitiesList_ScrollBox)--公会，社区，在线人数
+    return true
+end
 
 
 
 function WoWTools_GuildMixin:Plus_CommunitiesFrame()
-    hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', CommunitiesList_ScrollBox)--公会，社区，在线人数
+    if Init() then
+        Init=function()end
+        return true
+    end
 end

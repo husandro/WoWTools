@@ -2,7 +2,7 @@ local e= select(2, ...)
 local function Save()
     return WoWTools_GuildMixin.Save
 end
-local GuildButton
+
 local G_GUILD_INFO_TEMPLATE= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
 
 
@@ -65,14 +65,7 @@ end
 
 
 
-local function Init()
-    GuildButton= WoWTools_ChatButtonMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
-
-    if not GuildButton then
-        return
-    end
-
-
+local function Init(GuildButton)
     GuildButton.texture:ClearAllPoints()
     GuildButton.texture:SetPoint('CENTER', -1.5, 1)
     GuildButton.texture:SetSize(18,18)
@@ -80,8 +73,6 @@ local function Init()
     GuildButton.texture2= GuildButton:CreateTexture(nil, 'BACKGROUND', nil, 2)
     GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
     GuildButton.texture2:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", 14, -14)
-
-
 
     GuildButton.mask:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 5.5, -5.5)
     GuildButton.mask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
@@ -178,7 +169,6 @@ local function Init()
     WoWTools_GuildMixin:Init_Menu(GuildButton)
 
 --事件
-    GuildButton:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
     GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
@@ -191,18 +181,7 @@ local function Init()
 
 
     GuildButton:SetScript('OnEvent', function(self, event, arg1)
---初始
-        if event=='PLAYER_ENTERING_WORLD' then
-            C_ClubFinder.RequestSubscribedClubPostingIDs()
-
-            Set_Text(self)
-
-            self:set_guildinfo_event()
-            self:set_new_application(Save().guildInfo)--申请者
-
-            self:UnregisterEvent(event)
-
-        elseif
+        if
 --更新，数据
             event=='PLAYER_GUILD_UPDATE'
             or event=='GUILD_ROSTER_UPDATE'
@@ -218,16 +197,18 @@ local function Init()
                 self:UnregisterEvent(event)
             end
 
-        else--[[if--申请者
-            event == 'CLUB_FINDER_RECRUITS_UPDATED'
-            or event == 'CLUB_FINDER_APPLICATIONS_UPDATED'
-            or event=='CLUB_FINDER_POST_UPDATED'
-        then]]
-
-            GuildButton:set_new_application()
-
+        else
+            self:set_new_application()
         end
     end)
+
+    C_ClubFinder.RequestSubscribedClubPostingIDs()
+
+    Set_Text(GuildButton)
+
+    GuildButton:set_guildinfo_event()
+    GuildButton:set_new_application(Save().guildInfo)--申请者
+
     return true
 end
 
@@ -242,7 +223,7 @@ end
 
 
 function WoWTools_GuildMixin:Init_Button()
-    if Init() then
+    if Init(self.GuildButton) then
         Init=function()end
         return true
     end
