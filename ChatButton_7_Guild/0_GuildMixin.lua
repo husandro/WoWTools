@@ -37,9 +37,7 @@ function WoWTools_GuildMixin:GetClubLink(clubID, clubGUID)
     clubID= clubID or C_Club.GetGuildClubId()
     local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID)
                 or (clubGUID and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(clubGUID))
-
     clubGUID= club and club.clubFinderGUID or clubGUID
-
 
     if clubGUID then
         return GetClubFinderLink(clubGUID, club and club.name or COMMUNITIES_INVITE_MEMBERS)--不查用中文
