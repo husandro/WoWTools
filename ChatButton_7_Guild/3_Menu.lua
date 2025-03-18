@@ -23,6 +23,133 @@ end
 
 
 
+
+
+
+--公会信息
+--分享链接至聊天栏 ToggleGuildFrame()
+local function Init_Guild_Menu(self, root)
+    local sub, sub2
+    local clubID= C_Club.GetGuildClubId()
+    local clubInfo = clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
+    local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
+    local canGuildInvite= CanGuildInvite()
+    local findDay= canGuildInvite and WoWTools_GuildMixin:GetClubFindDay(clubID)
+
+    sub= root:CreateButton(
+    '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+        ..(canGuildInvite and '|cff00ccff' or '|cff828282')
+        ..Get_Rank_Texture(guildRankIndex, false)
+        ..(guildName or clubInfo.name or (e.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER))
+        ..'|r'
+        ..(guildRankName and guildRankIndex and guildRankIndex>1 and ' '.. guildRankName or '')
+        ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or ''),
+    function(data)
+        WoWTools_ChatMixin:Chat(
+            data.clubID and WoWTools_GuildMixin:GetClubLink(data.clubID),
+            nil,
+            ChatEdit_GetActiveWindow() and true or false
+        )
+        return MenuResponse.Open
+    end, {
+        clubID= clubID,
+        realm= realm,
+        description=clubInfo.description,
+        findDay= findDay,
+        isCrossFaction= clubInfo.isCrossFaction,
+    })
+    sub:SetTooltip(function(tooltip, desc)
+        if desc.data.description and desc.data.description~='' then
+            tooltip:AddLine(desc.data.description, nil, nil, nil,true)
+            tooltip:AddLine(' ')
+        end
+
+        tooltip:AddDoubleLine(
+            '|A:'..(desc.data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+            ..(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
+            e.GetYesNo(desc.data.isCrossFaction)
+        )
+
+        if desc.data.findDay then
+            tooltip:AddDoubleLine(
+                '|A:characterupdate_clock-icon:0:0|a'
+                ..(e.onlyChinese and '公会查找器信息过期剩余时间：' or GUILD_FINDER_POSTING_GOING_TO_EXPIRE),
+                format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , desc.data.findDay)
+            )
+        end
+
+        tooltip:AddDoubleLine('clubID', desc.data.clubID)
+
+        tooltip:AddLine(' ')
+        tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
+        if not CanGuildInvite() then
+            tooltip:AddLine(
+                '|cff828282'
+                ..(e.onlyChinese and '无法邀请成员' or format(ERROR_CLUB_ACTION_INVITE_MEMBER, ''))..'|r'
+            )
+        end
+    end)
+
+
+
+
+
+    --公会信息
+    sub2=sub:CreateCheckbox(e.onlyChinese and '公会信息' or GUILD_INFORMATION, function()
+        return Save().guildInfo
+    end, function()
+        Save().guildInfo= not Save().guildInfo and true or nil
+        self:set_guildinfo_event()--事件, 公会新成员, 队伍新成员
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine()
+        tooltip:AddLine(e.WoWDate[e.Player.guid].Guild.text)
+    end)
+
+    sub2= sub:CreateCheckbox(
+        e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
+    function()
+        return Save().showNotOnLine
+    end, function()
+        Save().showNotOnLine= not Save().showNotOnLine and true or nil
+        return MenuResponse.CloseAll
+    end)
+
+    --[[sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+        end, setValue=function(value)
+            
+        end,
+        name=e.onlyChinese and '截取' or 'sub' ,
+        minValue=1,
+        maxValue=10,
+        step=1,
+        bit='%.2f',
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '公会名称' or CLUB_FINDER_REPORT_REASON_GUILD_NAME)
+        end
+    })
+    sub:CreateSpacer()]]
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --帐号，公会，数据  e.WoWDate[e.Player.guid].Guild.data[4]= e.Player.realm
 local function WoW_List(_, root)
     local sub, sub2
@@ -104,6 +231,8 @@ local function WoW_List(_, root)
 
     WoWTools_MenuMixin:SetScrollMode(sub)
 end
+
+
 
 
 
@@ -211,7 +340,8 @@ end
 
 --主菜单
 local function Init_Menu(self, root)
-    local sub, sub2
+    local sub
+
 --无公会
     if not IsInGuild() then
         WoW_List(self, root)
@@ -230,99 +360,11 @@ local function Init_Menu(self, root)
         root:CreateDivider()
     end
 
-
-
-
---分享链接至聊天栏 ToggleGuildFrame()
-    local clubID= C_Club.GetGuildClubId()
-    local clubInfo = clubID and C_Club.GetClubInfo(clubID) or {}--C_Club.GetClubInfo(clubID) C_ClubFinder.GetRecruitingClubInfoFromClubID() ClubFinderGetCurrentClubListingInfo(guildClubId)
-    local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
-    local canGuildInvite= CanGuildInvite()
-    local findDay= canGuildInvite and WoWTools_GuildMixin:GetClubFindDay(clubID)
-
-    sub= root:CreateButton(
-       '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
-        ..(canGuildInvite and '|cff00ccff' or '|cff828282')
-        ..Get_Rank_Texture(guildRankIndex, false)
-        ..(guildName or clubInfo.name or (e.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER))
-        ..'|r'
-        ..(guildRankName and guildRankIndex and guildRankIndex>1 and ' '.. guildRankName or '')
-        ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or ''),
-    function(data)
-        WoWTools_ChatMixin:Chat(
-            data.clubID and WoWTools_GuildMixin:GetClubLink(data.clubID),
-            nil,
-            ChatEdit_GetActiveWindow() and true or false
-        )
-        return MenuResponse.Open
-    end, {
-        clubID= clubID,
-        realm= realm,
-        description=clubInfo.description,
-        findDay= findDay,
-        isCrossFaction= clubInfo.isCrossFaction,
-    })
-    sub:SetTooltip(function(tooltip, desc)
-        if desc.data.description and desc.data.description~='' then
-            tooltip:AddLine(desc.data.description, nil, nil, nil,true)
-            tooltip:AddLine(' ')
-        end
-
-        tooltip:AddDoubleLine(
-            '|A:'..(desc.data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
-            ..(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
-            e.GetYesNo(desc.data.isCrossFaction)
-        )
-
-        if desc.data.findDay then
-            tooltip:AddDoubleLine(
-                '|A:characterupdate_clock-icon:0:0|a'
-                ..(e.onlyChinese and '公会查找器信息过期剩余时间：' or GUILD_FINDER_POSTING_GOING_TO_EXPIRE),
-                format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , desc.data.findDay)
-            )
-        end
-
-        tooltip:AddDoubleLine('clubID', desc.data.clubID)
-
-        tooltip:AddLine(' ')
-        tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
-        if not CanGuildInvite() then
-            tooltip:AddLine(
-                '|cff828282'
-                ..(e.onlyChinese and '无法邀请成员' or format(ERROR_CLUB_ACTION_INVITE_MEMBER, ''))..'|r'
-            )
-        end
-    end)
-
-
-
-
-
 --公会信息
-    sub2=sub:CreateCheckbox(e.onlyChinese and '公会信息' or GUILD_INFORMATION, function()
-        return Save().guildInfo
-    end, function()
-        Save().guildInfo= not Save().guildInfo and true or nil
-        self:set_guildinfo_event()--事件, 公会新成员, 队伍新成员
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine()
-        tooltip:AddLine(e.WoWDate[e.Player.guid].Guild.text)
-    end)
-
-    sub2= sub:CreateCheckbox(
-        e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
-    function()
-        return Save().showNotOnLine
-    end, function()
-        Save().showNotOnLine= not Save().showNotOnLine and true or nil
-        return MenuResponse.CloseAll
-    end)
+    Init_Guild_Menu(self, root)
 
 --帐号，公会，数据
     WoW_List(self, root)
-
-   
 
 --弹劾
     if CanReplaceGuildMaster() then

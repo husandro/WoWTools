@@ -8,12 +8,12 @@ function WoWTools_GuildMixin:IsLeaderOrOfficer()
 end
 
 
---是否是公会领袖或官员
-function WoWTools_GuildMixin:CanInit_Invite()
+--[[是否是公会领袖或官员
+function WoWTools_GuildMixin:CanInit_Invite(clubId)
     return CanGuildInvite()
-        and C_ClubFinder.IsEnabled()
-        and (self:IsLeaderOrOfficer())
-end
+        --and C_ClubFinder.IsEnabled()
+        --and (self:IsLeaderOrOfficer())
+end]]
 
 function WoWTools_GuildMixin:GetGuildClubID(clubID)
     if C_ClubFinder.IsEnabled() then
@@ -173,13 +173,16 @@ end
 
 
 
-
-
 function WoWTools_GuildMixin:GetApplicantList(clubID)
     clubID= self:GetGuildClubID(clubID)
-    local data= clubID and C_ClubFinder.ReturnClubApplicantList(clubID)
-    if not data or #data==0 then
-        return
+    if clubID then
+        local data = C_Club.GetClubPrivileges(clubID)
+        if data and data.canGetInvitation then
+            data= C_ClubFinder.ReturnClubApplicantList(clubID)
+            if not data or #data==0 then
+                return
+            end
+            return data
+        end
     end
-    return data
 end

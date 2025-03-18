@@ -5461,7 +5461,8 @@
         "CommunitiesUtil",
         "CreateCommunitiesIconNotificationMarkup",
         "COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION",
-        "g_clubIdToSeenApplicants"
+        "g_clubIdToSeenApplicants",
+        "CLUB_FINDER_REPORT_REASON_GUILD_NAME"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

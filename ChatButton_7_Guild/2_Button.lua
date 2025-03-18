@@ -130,7 +130,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         if not IsInGuild() then
-            GameTooltip:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD))
+            GameTooltip:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..e.Icon.left)
         else
             WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end
@@ -139,27 +139,7 @@ local function Init()
     end
 
 
-    GuildButton:SetScript('OnEvent', function(self, event, arg1)
-        if
-            event=='PLAYER_GUILD_UPDATE'
-            or event=='GUILD_ROSTER_UPDATE'
-            or (event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED' and arg1==Enum.ClubFinderRequestType.Guild)
-        then
-            Set_Text(self)--更新，数据
 
-        elseif event=='CHAT_MSG_SYSTEM' then--公会创立，信息
-            if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
-                e.WoWDate[e.Player.guid].Guild.text= arg1
-                self:UnregisterEvent(event)
-            end
-        elseif
-            event == "CLUB_FINDER_RECRUITS_UPDATED" or event == "CLUB_FINDER_APPLICATIONS_UPDATED"
-            or (event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED' and arg1==Enum.ClubFinderRequestType.All)
-            or event == 'CLUB_INVITATIONS_RECEIVED_FOR_CLUB'
-        then
-            GuildButton:set_new_application()--申请者
-        end
-    end)
 
     GuildButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' then
@@ -177,38 +157,55 @@ local function Init()
 
 
 
---if IsInGuild() then C_GuildInfo.GuildRoster()--请求，公会名单
-
-    C_Timer.After(2, function()
-        GuildButton:set_guildinfo_event()
-
-        Set_Text(GuildButton)
-
-        GuildButton:set_new_application(Save().guildInfo)--申请者
-
-        GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
-        GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
-
-        GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
-        GuildButton:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
-        GuildButton:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
-    end)
-
-        --GuildButton:RegisterEvent('CLUB_INVITATIONS_RECEIVED_FOR_CLUB')
-
---[[未读信息
-        if Save().guildInfo and C_Club.DoesAnyCommunityHaveUnreadMessages() then
-            print(
-                WoWTools_ChatButtonMixin.addName,
-                WoWTools_GuildMixin.addName,
-                '|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
-                ..(e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION)
-            )
-        end]]
-
 --菜单
     WoWTools_GuildMixin:Init_Menu(GuildButton)
 
+--事件
+    GuildButton:RegisterEvent('GUILD_ROSTER_UPDATE')
+    GuildButton:RegisterEvent('PLAYER_GUILD_UPDATE')
+
+    --GuildButton:RegisterEvent('CLUB_FINDER_RECRUITMENT_POST_RETURNED')
+    GuildButton:RegisterEvent('CLUB_FINDER_RECRUITS_UPDATED')
+    GuildButton:RegisterEvent('CLUB_FINDER_APPLICATIONS_UPDATED')
+    GuildButton:RegisterEvent('CLUB_FINDER_POST_UPDATED')--C_ClubFinder.RequestPostingInformationFromClubId
+
+    GuildButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+    GuildButton:SetScript('OnEvent', function(self, event, arg1)
+--初始
+        if event=='PLAYER_ENTERING_WORLD' then
+            C_ClubFinder.RequestSubscribedClubPostingIDs()
+            self:set_guildinfo_event()
+            Set_Text(self)
+            self:set_new_application(Save().guildInfo)--申请者
+            self:UnregisterEvent(event)
+
+        elseif
+--更新，数据
+            event=='PLAYER_GUILD_UPDATE'
+            or event=='GUILD_ROSTER_UPDATE'
+            or (event=='CLUB_FINDER_RECRUITMENT_POST_RETURNED' and arg1==Enum.ClubFinderRequestType.Guild)
+
+        then
+            Set_Text(self)
+
+--公会创立，信息
+        elseif event=='CHAT_MSG_SYSTEM' then
+            if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
+                e.WoWDate[e.Player.guid].Guild.text= arg1
+                self:UnregisterEvent(event)
+            end
+
+        elseif--申请者
+            event == 'CLUB_FINDER_RECRUITS_UPDATED'
+            or event == 'CLUB_FINDER_APPLICATIONS_UPDATED'
+            or event=='CLUB_FINDER_POST_UPDATED'
+        then
+
+            GuildButton:set_new_application()
+
+        end
+    end)
     return true
 end
 
