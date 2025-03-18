@@ -49,7 +49,6 @@
     mixin:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
 
-    mixin:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
 
     mixin:SetFrame(CommunitiesFrame.NotificationSettingsDialog.Selector)
     mixin:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
@@ -66,8 +65,7 @@
 
 
 
-    mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
-    mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
+
 
 
 --霸业风暴商店
@@ -181,4 +179,9 @@
     mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
     mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
+--公会查找器
+    mixin:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
+    mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
+    mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
+    mixin:SetSearchBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
 end
