@@ -253,8 +253,6 @@ local function Init()
     ChatButton:set_scale()
     ChatButton:set_size()
     ChatButton:SetupMenu(Init_Menu)
-
-    print(ChatButton.handlesGlobalMouseEventCallback)
 end
 
 

@@ -53,9 +53,9 @@ local function Init(btn)
 
     WoWTools_CombatMixin:Init_SetupMenu()
 
-    function btn:HandlesGlobalMouseEvent(_, event)
+    --[[function btn:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton";
-    end
+    end]]
 
 
     function btn:set_OnLeave()

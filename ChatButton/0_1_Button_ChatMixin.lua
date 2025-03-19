@@ -20,7 +20,6 @@ end
 
 
 
-
 function WoWTools_ChatMixin:Init()
     if not self.Save.disabled then
         ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
@@ -104,7 +103,7 @@ local function Set_Button(btn)
 
     btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     function btn:HandlesGlobalMouseEvent(buttonName, event)
-        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
+        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
     end
 
     function btn:set_state()

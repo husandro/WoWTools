@@ -1454,9 +1454,9 @@ local function Set_Button()
     LinkButton.setPlayerSoundTips:SetSize(12,12)
     LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
 
-    function LinkButton:HandlesGlobalMouseEvent(_, event)
+    --[[function LinkButton:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and buttonName == "RightButton"
-    end
+    end]]
     function LinkButton:Settings()
         self.texture:SetAtlas(not Save.disabed and e.Icon.icon or e.Icon.disabled)
         self.setPlayerSoundTips:SetShown(Save.setPlayerSound)
