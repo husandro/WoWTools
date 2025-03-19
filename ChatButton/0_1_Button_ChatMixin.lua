@@ -190,18 +190,13 @@ end
 
 
 
-
-
-function WoWTools_ChatMixin:RestHV()--Horizontal and vertical
-   
-end
-
-
 function WoWTools_ChatMixin:GetAllAddList()
     return AddList
 end
 
-
+function WoWTools_ChatMixin:Get_All_Buttons()
+    return Buttons
+end
 
 function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
     WoWTools_MenuMixin:OpenOptions(root, {category=self.Category, name=name or self.addName})

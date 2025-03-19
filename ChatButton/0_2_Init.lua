@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
             return Save().borderAlpha or 1
         end, setValue=function(value)
             Save().borderAlpha=value
-            for _, btn in pairs(WoWTools_ChatMixin:GetAllAddList()) do
+            for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
                 btn:set_border_alpha()
             end
         end,
@@ -85,7 +85,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().isVertical= not Save().isVertical and true or nil
         self:set_size()
-        for _, btn in pairs(WoWTools_ChatMixin:GetAllAddList()) do
+        for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
             btn:set_point()
         end
     end)
