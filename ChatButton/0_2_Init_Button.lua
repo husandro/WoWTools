@@ -11,6 +11,7 @@ WoWTools_ChatMixin.Save={
     isEnterShowMenu= e.Player.husandro,-- 移过图标，显示菜单
 
     borderAlpha=0.3,--外框，透明度
+    pointX=0,
 }
 
 local addName
@@ -62,7 +63,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
-    sub:CreateSpacer()
+
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
             return Save().borderAlpha or 1
@@ -78,6 +79,26 @@ local function Init_Menu(self, root)
         step=0.05,
         bit='%0.2f',
     })
+
+    sub:CreateSpacer()
+    sub:CreateSpacer()
+
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().pointX or 0
+        end, setValue=function(value)
+            Save().pointX=value
+            for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
+                btn:set_point()
+            end
+        end,
+        name=e.onlyChinese and 'X' or CHANGE_OPACITY,
+        minValue=-15,
+        maxValue=15,
+        step=1,
+    })
+
+
 
 --方向, 竖
     root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
@@ -122,6 +143,13 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
 end
+
+
+
+
+
+
+
 
 
 
@@ -196,10 +224,16 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR')
         end
     end)
-    ChatButton:SetScript("OnClick", function(self, d)
-        if d=='RightButton' and not IsAltKeyDown() then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
-        end
+
+    function ChatButton:HandlesGlobalMouseEvent(buttonName, event)
+        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
+    end
+    hooksecurefunc(ChatButton, 'OnMenuOpened', function(self)
+        self:SetButtonState('PUSHED')
+    end)
+
+    hooksecurefunc(ChatButton, 'OnMenuClosed', function(self)
+        self:SetButtonState('NORMAL')
     end)
 
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
@@ -216,6 +250,9 @@ local function Init()
     ChatButton:set_point()
     ChatButton:set_scale()
     ChatButton:set_size()
+    ChatButton:SetupMenu(Init_Menu)
+    
+    print(ChatButton.handlesGlobalMouseEventCallback)
 end
 
 

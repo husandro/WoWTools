@@ -18,7 +18,11 @@ end
 
 function WoWTools_ChatMixin:Init()
     if not self.Save.disabled then
-        ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWToolsChatButtonMainButton'})
+        ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
+            name='WoWToolsChatButtonMainButton',
+            icon='hide',
+            frameType='DropdownButton',
+        })
 
         ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
         ChatButton.Background:SetPoint('BOTTOMLEFT', Buttons[1])
@@ -32,6 +36,10 @@ function WoWTools_ChatMixin:Init()
         end
 
         self.ChatButton= ChatButton
+        info= ChatButton
+        for a, b in pairs(info) do
+            print(a, type)
+        end
 
         return ChatButton
     end
@@ -84,10 +92,11 @@ local function Set_Button(btn)
     function btn:set_point()
         local index= btn:GetID()
         self:ClearAllPoints()
+        local size= index==1 and 0 or Save().pointX or 0
         if Save().isVertical then--方向, 竖
-            self:SetPoint('BOTTOM', Buttons[index-1] or ChatButton, 'TOP')
+            self:SetPoint('BOTTOM', Buttons[index-1] or ChatButton, 'TOP', 0, size)
         else
-            self:SetPoint('LEFT', Buttons[index-1] or ChatButton, 'RIGHT')
+            self:SetPoint('LEFT', Buttons[index-1] or ChatButton, 'RIGHT', size, 0)
         end
     end
 
@@ -125,7 +134,7 @@ local function Set_Button(btn)
         if self.set_OnEnter then
             self:set_OnEnter()
         end
-        if Save().isEnterShowMenu then
+        if Save().isEnterShowMenu and not ChatButton:IsMenuOpen() and not self:IsMenuOpen() then
             self:OpenMenu()
         end
     end)

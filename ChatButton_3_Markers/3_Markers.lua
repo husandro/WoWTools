@@ -68,9 +68,11 @@ local function Init()
 
             if index then
                 self.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+            else
+                self.texture:SetAtlas('Bonus-Objective-Star')
             end
         end
-        self.texture:SetShown(index)
+        
         self.texture:SetDesaturated(not Save().autoSet)
 
 --就绪，图标
