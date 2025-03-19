@@ -93,8 +93,7 @@ end
 
 
 
-
-
+local framGameTooltipLabels
 function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，挑战界面，物品，货币提示
     local frame= settings.frame
     local point= settings.point
@@ -141,13 +140,13 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
             GameTooltip:AddLine(tab.text)
         end
     elseif frame then
-        framGameTooltipLabels= framGameTooltipLabels or {}
+        frame.framGameTooltipLabels= frame.framGameTooltipLabels or {}
         local index=0
         local last
 
         for _, tab in pairs(R) do
             index= index +1
-            local lable= framGameTooltipLabels[index]
+            local lable= frame.framGameTooltipLabels[index]
             if not lable then
                 lable=WoWTools_LabelMixin:Create(frame, {mouse=true})
                 if last then
@@ -170,7 +169,7 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
                     GameTooltip:Hide()
                     self:SetAlpha(1)
                 end)
-                framGameTooltipLabels[index]= lable
+                frame.framGameTooltipLabels[index]= lable
                 last= lable
             end
             lable.id= tab.id
@@ -178,8 +177,8 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
             lable:SetText(tab.text)
         end
 
-        for i= index+1, #framGameTooltipLabels do
-            local lable= framGameTooltipLabels[i]
+        for i= index+1, #frame.framGameTooltipLabels do
+            local lable= frame.framGameTooltipLabels[i]
             if lable then
                 lable:SetText("")
             end

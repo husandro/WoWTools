@@ -30,6 +30,7 @@ WoWTools_Mixin:Load({id=87399, type='item'})
 
 
 local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
+    local framGameTooltipButton= frame.framGameTooltipButton
     if not framGameTooltipButton then
         framGameTooltipButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20})
         framGameTooltipButton:SetPoint('RIGHT', frame, 'LEFT', 0, -4)
@@ -91,6 +92,8 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         ArcheologyDigsiteProgressBar:HookScript('OnHide', function(self)
             self.tipsButton:set_event()
         end)
+
+        frame.framGameTooltipButton= framGameTooltipButton
     end
 
     if ArcheologyButton and not ArcheologyButton.keyButton then

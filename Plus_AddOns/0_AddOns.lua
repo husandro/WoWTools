@@ -60,6 +60,7 @@ RightFrame=nil,--右边列表
 LeftFrame=nil,--左边列表
 }
 
+local addName
 local function Save()
     return WoWTools_AddOnsMixin.Save
 end
@@ -279,11 +280,12 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("PLAYER_LOGIN")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
             WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or Save()
-            local addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
+            addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
             WoWTools_AddOnsMixin.addName= addName
 
@@ -304,10 +306,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             self:UnregisterEvent(event)
         end
-
+    elseif event=='PLAYER_LOGIN' then
+        if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
+            C_CVar.RegisterCVar("addonProfilerEnabled", "1")
+            C_CVar.SetCVar("addonProfilerEnabled", "0")
+            if not C_AddOnProfiler.IsEnabled() then
+                print(e.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
+            end
+        end
+        
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
             WoWToolsSave['Plus_AddOns']=Save()
         end
     end
+    print(event)
 end)
