@@ -14,8 +14,6 @@ end
 
 
 
-
-
 function WoWTools_ChatMixin:Init()
     if not self.Save.disabled then
         ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
@@ -36,10 +34,7 @@ function WoWTools_ChatMixin:Init()
         end
 
         self.ChatButton= ChatButton
-        info= ChatButton
-        for a, b in pairs(info) do
-            print(a, type)
-        end
+
 
         return ChatButton
     end
