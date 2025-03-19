@@ -1360,22 +1360,32 @@ local function Init_Blizzard_DebugTools()
     if not LinkButton then
         return
     end
-    local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {size=28})
+
+    local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
+        size=26,
+        name='WoWToolsHyperLinkTableAttributeDisplayButton',
+    })
+
     btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
     btn:SetNormalAtlas(e.Icon.icon)
-    btn:SetScript('OnClick', FrameStackTooltip_ToggleDefaults)
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function(self2)
-        GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(true)..'/'..e.GetEnabeleDisable(false))
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
-        GameTooltip:Show()
+    btn:SetScript('OnClick', function(self)
+        FrameStackTooltip_ToggleDefaults()
+        self:set_tooltip()
     end)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    function btn:set_tooltip()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(FrameStackTooltip:IsVisible()))
+        GameTooltip:Show()
+    end
+    btn:SetScript('OnEnter',  btn.set_tooltip)
 
-    local edit= CreateFrame("EditBox", nil, TableAttributeDisplay, 'InputBoxTemplate')
+    local edit= CreateFrame("EditBox", 'WoWToolsHyperLinkTableAttributeDisplayEdit', TableAttributeDisplay, 'InputBoxTemplate')
+    WoWTools_TextureMixin:SetSearchBox(edit)
     edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
-    edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 10, 24 )
+    edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 36, 24 )
     edit:SetAutoFocus(false)
     edit:ClearFocus()
     edit:SetScript('OnUpdate', function(self2, elapsed)
@@ -1395,6 +1405,27 @@ local function Init_Blizzard_DebugTools()
             print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
         end
     end)
+
+    local check= CreateFrame('CheckButton', 'WoWToolsHyperLinkTableAttributeDisplayHideCheckBox', TableAttributeDisplay, 'UICheckButtonTemplate')
+    check:SetPoint('RIGHT', edit, 'LEFT')
+    check:SetChecked(Save.autoHideTableAttributeDisplay)
+    check:HookScript('OnClick', function()
+        Save.autoHideTableAttributeDisplay= not Save.autoHideTableAttributeDisplay and true or nil
+    end)
+    check:SetScript('OnLeave', GameTooltip_Hide)
+    check:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
+        GameTooltip:Show()
+    end)
+    TableAttributeDisplay:HookScript('OnHide', function()
+        if Save.autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
+            FrameStackTooltip_ToggleDefaults()
+        end
+    end)
+
 end
 
 

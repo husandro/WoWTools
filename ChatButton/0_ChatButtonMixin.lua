@@ -1,4 +1,4 @@
-local e= select(2, ...)
+--local e= select(2, ...)
 
 WoWTools_ChatButtonMixin= {
     AddList={},--所有, 按钮 {name}=true
