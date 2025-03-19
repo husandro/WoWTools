@@ -5465,7 +5465,8 @@
         "CLUB_FINDER_REPORT_REASON_GUILD_NAME",
         "COMMUNITIES_INVITE_MEMBERS",
         "GUILD_MEMBERS_ONLINE",
-        "FrameStackTooltip"
+        "FrameStackTooltip",
+        "EMBLEM_BORDER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

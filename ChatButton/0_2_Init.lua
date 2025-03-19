@@ -9,6 +9,8 @@ WoWTools_ChatMixin.Save={
     --isVertical=nil,--方向, 竖
     --isShowBackground=nil,--是否显示背景 bool
     isEnterShowMenu= e.Player.husandro,-- 移过图标，显示菜单
+
+    borderAlpha=0.3,--外框，透明度
 }
 
 local addName
@@ -43,27 +45,49 @@ local function Init_Menu(self, root)
         self:set_scale()
     end)
 
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().strata= data
+        self:set_strata()
+        print(e.Icon.icon2.. addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
+        return MenuResponse.Refresh
+    end)
 
-    sub=root:CreateButton('FrameStrata', function() return MenuResponse.Open end)
+--外框，透明度
+    sub=root:CreateButton(
+        '|A:bag-reagent-border:0:0|a'..(e.onlyChinese and '镶边' or EMBLEM_BORDER),
+    function()
+        return MenuResponse.Open
+    end)
 
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().borderAlpha or 1
+        end, setValue=function(value)
+            Save().borderAlpha=value
+            for _, btn in pairs(WoWTools_ChatMixin:GetAllAddList()) do
+                btn:set_border_alpha()
+            end
+        end,
+        name=e.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
 
-    for _, strata in pairs({'BACKGROUND','LOW','MEDIUM','HIGH','DIALOG','FULLSCREEN','FULLSCREEN_DIALOG'}) do
-        sub:CreateRadio((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, function(data)
-            return self:GetFrameStrata()== data
-        end, function(data)
-            Save().strata= data
-            self:set_strata()
-            print(e.Icon.icon2.. addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
-            return MenuResponse.Refresh
-        end, strata)
-    end
-
-
+--方向, 竖
     root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
         return Save().isVertical
     end, function()
         Save().isVertical= not Save().isVertical and true or nil
-        WoWTools_ChatMixin:RestHV()--方向, 竖
+        self:set_size()
+        for _, btn in pairs(WoWTools_ChatMixin:GetAllAddList()) do
+            btn:set_point()
+        end
     end)
 
 --显示背景
@@ -87,7 +111,8 @@ local function Init_Menu(self, root)
 
 
     --重置位置
-    WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+    root:CreateDivider()
+    WoWTools_MenuMixin:RestPoint(self, root, Save().Point, function()
         Save().Point=nil
         self:set_point()
         return MenuResponse.Open
@@ -115,7 +140,7 @@ local function Init()
     WoWTools_TextureMixin:SetSearchBox(SELECTED_DOCK_FRAME.editBox, {alpha=1})
 
     function ChatButton:set_size()
-        if self.isVertical then--方向, 竖
+        if Save().isVertical then--方向, 竖
             self:SetSize(30,10)
         else
             self:SetSize(10,30)
@@ -147,7 +172,6 @@ local function Init()
         GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         GameTooltip:Show()
     end
-
 
     ChatButton:RegisterForDrag("RightButton")
     ChatButton:SetMovable(true)
@@ -181,7 +205,6 @@ local function Init()
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
         Save().scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().scale, nil)
     end)
-
 
     ChatButton:SetScript("OnLeave",function()
         ResetCursor()
@@ -249,10 +272,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1==id then
             WoWTools_ChatMixin.Save= WoWToolsSave['ChatButton'] or Save()
             Save().disabledADD= Save().disabledADD or {}
-    
-            ChatButton= WoWTools_ChatMixin:Init()            
+            Save().borderAlpha= Save().borderAlpha or 0.3
+            ChatButton= WoWTools_ChatMixin:Init()
 
-            print(Save(), Save().disabledADD)
+
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
             Category, Layout= e.AddPanel_Sub_Category({

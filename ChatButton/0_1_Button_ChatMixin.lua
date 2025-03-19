@@ -4,6 +4,11 @@ local AddList={}--插件表，所有，选项用 {name=name, tooltip=tooltip})
 local Buttons={}--存放所有, 按钮 {btn1, btn2,}
 local ChatButton
 
+local function Save()
+    return WoWTools_ChatMixin.Save
+end
+
+
 
 
 
@@ -20,26 +25,17 @@ function WoWTools_ChatMixin:Init()
         ChatButton.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
         --ChatButton.Background:SetAlpha(0.7)
 
-
-
         function ChatButton:set_backgroud()
             self.Background:SetPoint('BOTTOMLEFT', Buttons[1])
             self.Background:SetPoint('TOPRIGHT', Buttons[#Buttons])
-            self.Background:SetShown(WoWTools_ChatMixin.Save.isShowBackground)
+            self.Background:SetShown(Save().isShowBackground)
         end
-
-
 
         self.ChatButton= ChatButton
 
         return ChatButton
     end
 end
-
-
-
-
-
 
 
 
@@ -78,14 +74,17 @@ local function Set_Button(btn)
     btn.border:SetAtlas('bag-reagent-border')
     --btn.border:AddMaskTexture(btn.mask)
     WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha= 0.3})
-    --btn.border:SetAlpha(0)
+    
     btn:SetSize(30, 30)
 
+    function btn:set_border_alpha()
+        self.border:SetAlpha(Save().borderAlpha or 1)
+    end
 
     function btn:set_point()
         local index= btn:GetID()
         self:ClearAllPoints()
-        if WoWTools_ChatMixin.Save.isVertical then--方向, 竖
+        if Save().isVertical then--方向, 竖
             self:SetPoint('BOTTOM', Buttons[index-1] or ChatButton, 'TOP')
         else
             self:SetPoint('LEFT', Buttons[index-1] or ChatButton, 'RIGHT')
@@ -126,7 +125,7 @@ local function Set_Button(btn)
         if self.set_OnEnter then
             self:set_OnEnter()
         end
-        if WoWTools_ChatMixin.Save.isEnterShowMenu then
+        if Save().isEnterShowMenu then
             self:OpenMenu()
         end
     end)
@@ -142,7 +141,7 @@ local function Set_Button(btn)
         end
     end)
 
-
+    btn:set_border_alpha()
     btn:set_point()
 end
 
@@ -193,14 +192,8 @@ end
 
 
 
-
-
 function WoWTools_ChatMixin:RestHV()--Horizontal and vertical
-    ChatButton:set_size()
-
-    for _, btn in pairs(Buttons) do
-        btn:set_point()
-    end
+   
 end
 
 
