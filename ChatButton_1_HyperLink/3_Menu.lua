@@ -20,7 +20,7 @@ local function Init_Menu(self, root)
     local isInBat= UnitAffectingCombat('player')
 
     --超链接图标
-    sub= root:CreateCheckbox(e.onlyChinese and '超链接图标'or addName, function()
+    sub= root:CreateCheckbox(WoWTools_HyperLink.addName, function()
         return not Save().disabed
     end, function()
         Save().disabed= not Save().disabed and true or nil
@@ -258,3 +258,17 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_HyperLink:Init_Button_Menu()
+    self.LinkButton:SetupMenu(Init_Menu)
+end

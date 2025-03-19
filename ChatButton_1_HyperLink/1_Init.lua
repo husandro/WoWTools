@@ -50,7 +50,13 @@ DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
+local function Init_Button()
+    LinkButton.setPlayerSoundTips= LinkButton:CreateTexture(nil,'OVERLAY')
+    LinkButton.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
+    LinkButton.setPlayerSoundTips:SetSize(12,12)
+    LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
 
+end
 
 
 
@@ -59,10 +65,11 @@ DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
 local function Init()
+    Init_Button()
 
     e.setPlayerSound= Save().setPlayerSound--播放, 声音
 
-    Set_Button()
+    WoWTools_HyperLink:Init_Button_Menu()
 
     --[[if not Save.disabed then--使用，禁用
         Set_HyperLlinkIcon()
@@ -103,10 +110,12 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', addName)
 
+            WoWTools_HyperLink.LinkButton= LinkButton
             WoWTools_HyperLink.addName= addName
 
             if LinkButton then
                 Init()
+
             else
                 DEFAULT_CHAT_FRAME.ADD= nil
                 self:UnregisterEvent(event)
@@ -114,13 +123,13 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_HyperLink:Init_Panel()
-            if addName and C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
             WoWTools_HyperLink:Blizzard_DebugTools()
-            if addName and C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 self:UnregisterEvent(event)
             end
         end

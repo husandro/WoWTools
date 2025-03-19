@@ -18,10 +18,7 @@ end
 
 local function Init(LinkButton)
     --事件, 声音, 提示图标
-    LinkButton.setPlayerSoundTips= LinkButton:CreateTexture(nil,'OVERLAY')
-    LinkButton.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
-    LinkButton.setPlayerSoundTips:SetSize(12,12)
-    LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
+
 
     --[[function LinkButton:HandlesGlobalMouseEvent(buttonName, event)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
@@ -61,7 +58,7 @@ local function Init(LinkButton)
         end
     end)
 
-    LinkButton:SetupMenu(Init_Menu)
+    
 
     LinkButton:Settings()
 end
@@ -73,9 +70,3 @@ end
 
 
 
-
-
-
-function WoWTools_HyperLink:Init_Button()
-    Init(self.LinkButton)
-end
