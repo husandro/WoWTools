@@ -471,9 +471,9 @@ local function Init()
     end
 
     ToyButton:SetAttribute("type1", "item")
-    ToyButton:SetAttribute("alt-type1", "item")
-    ToyButton:SetAttribute("shift-type1", "item")
-    ToyButton:SetAttribute("ctrl-type1", "item")
+    ToyButton:SetAttribute("Alt-type1", "item")
+    ToyButton:SetAttribute("Shift-type1", "item")
+    ToyButton:SetAttribute("Ctrl-type1", "item")
 
     ToyButton.alt= ToyButton:CreateTexture(nil,'OVERLAY')--达拉然炉石
     ToyButton.alt:SetSize(10, 10)
@@ -804,16 +804,13 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_LOGIN')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== id then
-            --旧版本
-            if WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)] then
-                Save= WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)]
-                WoWToolsSave[format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_RANDOM3:gsub('/',''), TUTORIAL_TITLE31)]=nil
-            else
-                Save= WoWToolsSave['Tools_Hearthstone'] or Save
-            end
+
+            Save= WoWToolsSave['Tools_Hearthstone'] or Save
             addName='|A:delves-bountiful:0:0|a'..(e.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
             ToyButton= WoWTools_ToolsMixin:CreateButton({
@@ -821,15 +818,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 tooltip=addName,
             })
 
-            if ToyButton then
-                Init()--初始
-            else
-                self:UnregisterEvent('ADDON_LOADED')
+            if not ToyButton then
+                self:UnregisterEvent(event)
+                self:UnregisterEvent('PLAYER_LOGIN')
             end
-
         elseif arg1=='Blizzard_Collections' then
             hooksecurefunc('ToySpellButton_UpdateButton', setToySpellButton_UpdateButton)
+            self:UnregisterEvent(event)
         end
+
+    elseif event=='PLAYER_LOGIN' then
+        Init()--初始
+        self:UnregisterEvent(event)
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
