@@ -276,11 +276,11 @@ function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好
 
                 elseif data.battleTag~=e.Player.battleTag then--不同战网
                     return '|A:tokens-guildRealmTransfer-small:0:0|a'
-                    
+
                 elseif data.faction~= e.Player.faction then
-                    
+                    return '|A:tokens-guildChangeFaction-small:0:0|a'
                 else
-                    return '|A:auctionhouse-icon-favorite:0:0|a'
+                    return '|A:wowlabs_spellbucketicon-sword:0:0|a'
                 end
 
             else
