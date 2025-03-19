@@ -43,7 +43,7 @@ local function Set_Text(self)
     end
     online= online-1
     self.membersText:SetText(online==0 and '|cff8282820' or online)
-
+    self.membersText:SetAlpha(online==0 and 0.3 or 1)
 
     if isInGuild then
 --弹劾

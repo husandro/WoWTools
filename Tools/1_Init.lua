@@ -318,7 +318,7 @@ local function Init()
 
 
     function Button:set_point()
-        if self:IsProtected() then
+        if self:IsProtected() and InCombatLockdown() then
            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
             self:ClearAllPoints()
