@@ -41,7 +41,8 @@ local function Set_Text(self)
     if isInGuild then
         online = select(2, GetNumGuildMembers()) or 1
     end
-    self.membersText:SetText(online>1 and online-1 or '')
+    online= online-1
+    self.membersText:SetText(online==0 and '|cff8282820' or online)
 
 
     if isInGuild then
