@@ -52,13 +52,13 @@ Save={
 
     --disabledInfoPlus=true,禁用plus
 },
-
-NewButton=nil,--新建按钮
-BottomFrame=nil,--插件，图标，列表
-MenuButton=nil,--菜单，按钮
-RightFrame=nil,--右边列表
-LeftFrame=nil,--左边列表
 }
+--NewButton=nil,--新建按钮
+--BottomFrame=nil,--插件，图标，列表
+--MenuButton=nil,--菜单，按钮
+--RightFrame=nil,--右边列表
+--LeftFrame=nil,--左边列表
+
 
 local addName
 local function Save()
@@ -280,7 +280,9 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent("PLAYER_LOGIN")
+--panel:RegisterEvent("PLAYER_LOGIN")
+--panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -306,8 +308,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
             self:UnregisterEvent(event)
         end
-    elseif event=='PLAYER_LOGIN' then
-        --[[if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
+    --[[elseif event=='PLAYER_LOGIN' then
+        if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
             C_CVar.RegisterCVar("addonProfilerEnabled", "1")
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             if not C_AddOnProfiler.IsEnabled() then
@@ -320,5 +322,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_AddOns']=Save()
         end
     end
-    print(event)
 end)
