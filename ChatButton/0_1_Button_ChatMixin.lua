@@ -14,6 +14,13 @@ end
 
 
 
+
+
+
+
+
+
+
 function WoWTools_ChatMixin:Init()
     if not self.Save.disabled then
         ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {

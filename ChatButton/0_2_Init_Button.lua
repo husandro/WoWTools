@@ -63,7 +63,8 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
-
+--Border 透明度
+    sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
             return Save().borderAlpha or 1
@@ -219,9 +220,10 @@ local function Init()
     end)
 
     ChatButton:SetScript("OnMouseUp", ResetCursor)
-    ChatButton:SetScript("OnMouseDown", function(_, d)
+    ChatButton:SetScript("OnMouseDown", function(self, d)
         if IsAltKeyDown() and d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
+            self:CloseMenu()
         end
     end)
 
@@ -251,7 +253,7 @@ local function Init()
     ChatButton:set_scale()
     ChatButton:set_size()
     ChatButton:SetupMenu(Init_Menu)
-    
+
     print(ChatButton.handlesGlobalMouseEventCallback)
 end
 
