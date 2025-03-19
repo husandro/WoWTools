@@ -16,6 +16,7 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
     local isInCombat= UnitAffectingCombat('player')
+--战斗信息
 
     sub=root:CreateCheckbox(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO), function()
         return not Save().disabledText
@@ -118,7 +119,7 @@ local function Init_Menu(self, root)
 --缩放
     root:CreateDivider()
 
-    sub=WoWTools_MenuMixin:Scale(self, root, function()
+    sub= WoWTools_MenuMixin:Scale(self, root, function()
         return Save().inCombatScale or 1
     end, function(value)
         Save().inCombatScale= value
