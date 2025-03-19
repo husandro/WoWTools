@@ -109,7 +109,7 @@ local function Init()
             if self:CanChangeAttribute() then
                 Save.point=nil
                 self:set_Point()
-                print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end
     end)
@@ -294,7 +294,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Button then
                             Button:set_Shown(not Save.disabled)
                             Button:set_button(not Save.disabled)
-                            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         elseif not Save.disabled then
                             if Init() then Init=function()end end
                         end
@@ -305,7 +305,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Button then
                             Button:set_Point()
                         end
-                        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                        print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                     end,
                     tooltip=function()
                         return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName

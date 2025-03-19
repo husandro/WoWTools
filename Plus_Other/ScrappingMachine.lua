@@ -247,7 +247,7 @@ local function Init_Disabled_Button()
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
             Save.items[itemID]= not Save.items[itemID] and true or nil
-            print(WoWTools_Mixin.addName, addName,
+            print(e.Icon.icon2.. addName,
                 Save.items[itemID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'
                     or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
@@ -461,7 +461,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,

@@ -84,7 +84,7 @@ local function Init_Button_Menu(self, root)
     end, function()
         Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
         self:set_favorite()
-        print(WoWTools_Mixin.addName, addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(e.Icon.icon2.. addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         Func.Set_Gem()
     end)
     root:CreateDivider()
@@ -805,7 +805,7 @@ local function Init_Menu(self, root)
         return not Save.disableSpell
     end, function()
         Save.disableSpell= not Save.disableSpell and true or nil
-        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end, {})
 
     root:CreateDivider()
@@ -1060,7 +1060,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

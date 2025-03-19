@@ -766,7 +766,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=WoWTools_LabelMixin:Create(frame)--频道名称替换
@@ -803,7 +803,7 @@ local function Init_Panel()
                 end
             end)
         end
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
@@ -981,7 +981,7 @@ local function Set_LFGListInviteDialog_OnShow(self)
     if status=="invited" then
         local info= C_LFGList.GetSearchResultInfo(self.resultID)
         if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-            print(WoWTools_Mixin.addName, addName,
+            print(e.Icon.icon2.. addName,
                 info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                 info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                 info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(WoWTools_UnitMixin:GetLink(info.leaderName)..' ') or '',--	%s邀请你加入
@@ -1011,20 +1011,20 @@ local function Set_PlayerSound()--事件, 声音
 
     if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
         C_CVar.SetCVar('Sound_EnableAllSound', '1')
-        print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
+        print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', e.onlyChinese and '开启声效' or ENABLE_SOUND)
     end
     if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
         C_CVar.SetCVar('Sound_MasterVolume', '1.0')
-        print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
+        print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', e.onlyChinese and '主音量' or MASTER_VOLUME, '1')
     end
 
     if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
         C_CVar.SetCVar('Sound_DialogVolume', '1.0')
-        print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
+        print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',e.onlyChinese and '对话' or DIALOG_VOLUME, '1')
     end
     if not C_CVar.GetCVarBool('Sound_EnableDialog') then
         C_CVar.SetCVar('Sound_EnableDialog', '1')
-        print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
+        print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
     end
     
 end
@@ -1112,7 +1112,7 @@ local function Init_Menu(self, root)
         return not Save.disabed
     end, function()
         Save.disabed= not Save.disabed and true or nil
-        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabed))
+        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabed))
         Set_HyperLlinkIcon()
     end)
 
@@ -1162,7 +1162,7 @@ local function Init_Menu(self, root)
             e.PlaySound()--播放, 声音
         end
         Set_PlayerSound()
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
+        print(e.Icon.icon2.. addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
     end)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND}))
@@ -1223,7 +1223,7 @@ local function Init_Menu(self, root)
                 SetValue= function(self)
                     local text= self.editBox:GetText()
                     Save.guildWelcomeText= text
-                    print(WoWTools_Mixin.addName, addName, text)
+                    print(e.Icon.icon2.. addName, text)
                 end
             }
         )
@@ -1266,7 +1266,7 @@ local function Init_Menu(self, root)
                 SetValue= function(frame)
                     local text= frame.editBox:GetText()
                     Save.groupWelcomeText=text
-                    print(WoWTools_Mixin.addName, addName, text)
+                    print(e.Icon.icon2.. addName, text)
                 end
             }
         )
@@ -1392,7 +1392,7 @@ local function Init_Blizzard_DebugTools()
     end)
     edit:SetScript("OnKeyUp", function(s, key)
         if IsControlKeyDown() and key == "C" then
-            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+            print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
         end
     end)
 end

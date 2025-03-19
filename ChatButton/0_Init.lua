@@ -55,7 +55,7 @@ local function Init_Menu(self, root)
         end, function(data)
             Save.strata= data
             self:set_strata()
-            print(WoWTools_Mixin.addName, addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
+            print(e.Icon.icon2.. addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
             return MenuResponse.Refresh
         end, strata)
     end
@@ -146,7 +146,7 @@ local function Init()
     function ChatButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(e.Icon.icon2.. addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
@@ -274,7 +274,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -282,7 +282,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if ChatButton then
                         ChatButton:set_point()
                     end
-                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= Layout,

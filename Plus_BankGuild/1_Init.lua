@@ -68,7 +68,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not WoWTools_GuildBankMixin.Save.disabled end,
                 SetValue= function()
                     WoWTools_GuildBankMixin.Save.disabled= not WoWTools_GuildBankMixin.Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not WoWTools_GuildBankMixin.Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not WoWTools_GuildBankMixin.Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

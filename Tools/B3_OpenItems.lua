@@ -449,7 +449,7 @@ local function Edit_Item(info)
             Save.use[data.itemID]=num
             Save.no[data.itemID]=nil
             get_Items()--取得背包物品信息                        
-            print(WoWTools_Mixin.addName, addName,
+            print(e.Icon.icon2.. addName,
                 WoWTools_ItemMixin:GetLink(data.itemID),
                 num>1 and
                     (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r'
@@ -491,7 +491,7 @@ end
 
 
 local function Remove_NoUse_Menu_SetValue(data)
-    print(WoWTools_Mixin.addName, addName,
+    print(e.Icon.icon2.. addName,
         Save[data.type][data.itemID]
         and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'
         or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
@@ -543,7 +543,7 @@ local function Remove_All_Menu(root, type, num)
     function(data)
         local index=0
         local type2= data.type=='no' and noText or useText
-        print(WoWTools_Mixin.addName, addName)
+        print(e.Icon.icon2.. addName)
         for itemID in pairs(Save[data.type]) do
             index= index+1
             print(

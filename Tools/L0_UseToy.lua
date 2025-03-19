@@ -129,7 +129,7 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save.lockedToy)
     end
-    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(e.Icon.icon2.. addName, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 
@@ -352,7 +352,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() then
             Save.items={}
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(e.Icon.icon2.. addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:Rest_Random()
         else
             return MenuResponse.Open
@@ -372,7 +372,7 @@ local function Init_Menu(self, root)
         if IsControlKeyDown() then
             Save.items= P_Items
             ToyButton:Rest_Random()
-            print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
         end

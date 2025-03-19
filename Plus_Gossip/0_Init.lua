@@ -120,7 +120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  GetValue= function() return not Save().disabled end,
                  SetValue= function()
                      Save().disabled = not Save().disabled and true or nil
-                     print(WoWTools_Mixin.addName, addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(e.Icon.icon2.. addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
                  end,
                  buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -130,7 +130,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         btn:ClearAllPoints()
                         btn:set_Point()
                      end
-                     print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
                  tooltip= addName,
                  layout= nil,

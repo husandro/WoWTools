@@ -63,7 +63,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(0.7, function()
             self:set_tooltips()
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
+            print(e.Icon.icon2.. addName, e.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, e.GetEnabeleDisable(IsEveryoneAssistant()))
         end)
     end)
     playerFrameTargetContextual.assisterIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
@@ -228,7 +228,7 @@ end)
         local currentSpec = GetSpecialization()
         local specID= currentSpec and GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
-        print(WoWTools_Mixin.addName, addName,  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
+        print(e.Icon.icon2.. addName,  e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
     end)
 
 
@@ -1340,7 +1340,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(WoWTools_Mixin.addName, addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+            print(e.Icon.icon2.. addName, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right, 'Alt+'..e.Icon.mid..(e.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
@@ -1349,7 +1349,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
             return
         end
         if not self:CanChangeAttribute() then
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
+            print(e.Icon.icon2.. addName, e.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or COMBAT))
             return
         end
         local sacle= Save.compactPartyFrameScale or 1
@@ -1363,7 +1363,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         elseif sacle<0.5 then
             sacle=0.5
         end
-        print(WoWTools_Mixin.addName, addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
+        print(e.Icon.icon2.. addName, (e.onlyChinese and '缩放' or UI_SCALE), sacle)
         CompactPartyFrame:SetScale(sacle)
         Save.compactPartyFrameScale=sacle
     end)
@@ -1857,7 +1857,7 @@ local function Init_RaidFrame()--设置,团队
         Save.raidFrameScale= num
         self:set_Scale()
         self:set_Tooltips()
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '缩放' or UI_SCALE, num)
+        print(e.Icon.icon2.. addName, e.onlyChinese and '缩放' or UI_SCALE, num)
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
         GameTooltip:Hide()
@@ -2155,7 +2155,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 func= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

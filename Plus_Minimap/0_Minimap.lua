@@ -141,7 +141,7 @@ local function Init_Menu(self, root)
         return not Save().disabledInstanceDifficulty
     end, function()
         Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
-            print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save().disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabledInstanceDifficulty), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     )
     sub2:SetTooltip(function(tooltip)
@@ -225,7 +225,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -234,7 +234,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                     WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
                     WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
-                    print(WoWTools_Mixin.addName, addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
 

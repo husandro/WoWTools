@@ -303,9 +303,9 @@ local function Init_Menu(_, root)
     end, function()
         if not UnitAffectingCombat('player') then
             C_CVar.SetCVar("chatBubblesParty", C_CVar.GetCVarBool("chatBubblesParty") and '0' or '1')
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
+            print(e.Icon.icon2.. addName, e.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
         else
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(e.Icon.icon2.. addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
 

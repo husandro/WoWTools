@@ -291,9 +291,9 @@ local function Init_Menu(self, root)
                 local findIndex= findWhisper(data)
                 if findIndex then
                     Save.WhisperTab[findIndex]=nil
-                    print(WoWTools_Mixin.addName, addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(data))
+                    print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(data))
                 else
-                    print(WoWTools_Mixin.addName, addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', WoWTools_UnitMixin:GetLink(data))
+                    print(e.Icon.icon2.. addName, '|cff9e9e9e'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', WoWTools_UnitMixin:GetLink(data))
                 end
                 return MenuResponse.Open
             end, tab.name)
@@ -373,7 +373,7 @@ local function Init_Menu(self, root)
         if not UnitAffectingCombat('player') then
             C_CVar.SetCVar("chatBubbles", not C_CVar.GetCVarBool("chatBubbles") and '1' or '0')
         else
-            print(WoWTools_Mixin.addName, addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(e.Icon.icon2.. addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
     sub2:SetTooltip(function(tooltip)

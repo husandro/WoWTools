@@ -330,7 +330,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     self.ins:SetScript("OnMouseDown",function()
             if UnitAffectingCombat('player') then
-                print(WoWTools_Mixin.addName, addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+                print(e.Icon.icon2.. addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
                 return
             end
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
@@ -1569,7 +1569,7 @@ local function Init_Blizzard_WeeklyRewards()
                         text= format(e.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
                     end
                     if text then
-                        print(WoWTools_Mixin.addName, addName,'|n|cffff00ff',text)
+                        print(e.Icon.icon2.. addName,'|n|cffff00ff',text)
                     end
                 end
             end
@@ -1612,7 +1612,7 @@ local function set_Week_Reward_Look_Specialization()
     if not hasReward or WeekRewardLookFrame then
         return
     elseif hasReward then
-        print(WoWTools_Mixin.addName, addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
+        print(e.Icon.icon2.. addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
     WeekRewardLookFrame= CreateFrame('Frame')
@@ -1648,7 +1648,7 @@ local function set_Week_Reward_Look_Specialization()
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(frame)
                 frame:set_Show(false)
-                print(WoWTools_Mixin.addName, addName, '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                print(e.Icon.icon2.. addName, '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             end)
             local texture= self:CreateTexture(nil,'BORDER')
             texture:SetSize(60,60)
@@ -1753,7 +1753,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.Icon.icon2.. addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1798,7 +1798,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.Icon.icon2.. addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         SavGameTooltipScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
@@ -1841,7 +1841,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_Mixin.addName, addName, format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.Icon.icon2.. addName, format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1912,7 +1912,7 @@ local function Init_Blizzard_ChallengesUI()
             local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
             if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
                 ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-                print(WoWTools_Mixin.addName, addName)
+                print(e.Icon.icon2.. addName)
                 print('|cffff00ff',text)
             end
         end
@@ -2152,7 +2152,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

@@ -200,7 +200,7 @@ local function Init_Menu(self, root)
         return Save.no[e.Player.guid]
     end, function()
         Save.no[e.Player.guid]= not Save.no[e.Player.guid] and true or nil
-        print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
+        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(e.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
@@ -226,7 +226,7 @@ local function Init_Menu(self, root)
                 return Save.no[data.guid]
             end, function(data)
                 Save.no[data.guid]= not Save.no[data.guid] and true or nil
-                    print(WoWTools_Mixin.addName, addName,
+                    print(e.Icon.icon2.. addName,
                         e.GetEnabeleDisable(not Save.no[data.guid]),
                         WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
                     )

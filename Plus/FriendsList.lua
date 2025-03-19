@@ -172,7 +172,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(WoWTools_Mixin.addName, addName,
+            print(e.Icon.icon2.. addName,
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
                     e.GetEnabeleDisable(false)..'Alt',
                     link
@@ -262,7 +262,7 @@ local function Init_Friends_Menu(self, root)
     local sub= root:CreateButton(e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
     sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
         Save.Friends= {}
-        print(WoWTools_Mixin.addName, addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+        print(e.Icon.icon2.. addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
     end)
     sub:CreateDivider()
 
@@ -525,7 +525,7 @@ local function Init_FriendsList()--好友列表, 初始化
         end
         if text then
             if showPrint then
-                print(WoWTools_Mixin.addName, addName, text)
+                print(e.Icon.icon2.. addName, text)
             else
                 e.call(FriendsFrame_CheckBattlenetStatus)
             end
@@ -976,7 +976,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

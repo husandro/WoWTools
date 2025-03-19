@@ -889,7 +889,7 @@ local function Init_Menu(self, root)--菜单
             return Save().questIDs[data.questID]
         end, function(data)
             Save().questIDs[data.questID]= not Save().questIDs[data.questID] and true or nil
-            print(WoWTools_Mixin.addName, addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
+            print(e.Icon.icon2.. addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
         end, {questID=questID})
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
@@ -1207,7 +1207,7 @@ local function Init_Button()
         local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
         --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
         C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-        print(WoWTools_Mixin.addName, addName2,'|cffff00ff', text)
+        print(e.Icon.icon2.. addName2,'|cffff00ff', text)
     end
     function TrackButton:set_VIGNETTES_UPDATED(init)
         if UnitOnTaxi('player') or not Save().vigentteSound then
@@ -1302,7 +1302,7 @@ local function Init_WorldFrame_Button()
         if uiMapID then
             Save().uiMapIDs[uiMapID]= not Save().uiMapIDs[uiMapID] and true or nil
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-            print(WoWTools_Mixin.addName, addName, addName2,
+            print(e.Icon.icon2.. addName, addName2,
                 name,
                 Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
@@ -1355,7 +1355,7 @@ local function Init_WorldFrame_Event()
         hooksecurefunc(self, 'OnMouseClickAction', function(f, d)
             if f.questID and d=='LeftButton' and IsAltKeyDown() then
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
-                print(WoWTools_Mixin.addName,addName, addName2,
+                print(e.Icon.icon2.. addName, addName2,
                     WoWTools_QuestMixin:GetLink(f.questID),
                     Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
@@ -1382,7 +1382,7 @@ local function Init_WorldFrame_Event()
                     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                     name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                    print(WoWTools_Mixin.addName,addName, addName2,
+                    print(e.Icon.icon2.. addName, addName2,
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
                         Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
