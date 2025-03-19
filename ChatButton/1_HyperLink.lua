@@ -21,11 +21,12 @@ local Save={
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
 
     setPlayerSound= e.Player.husandro,--播放, 声音
-    Cvar={}
+    Cvar={},
     --disabledNPCTalking=true,--禁用，隐藏NPC发言    
     --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
 
     --not_Add_Reload_Button=true,--添加 RELOAD 按钮
+    autoHideTableAttributeDisplay=true,--自动关闭，Fstack
 }
 
 local LinkButton, Category
@@ -1370,6 +1371,9 @@ local function Init_Blizzard_DebugTools()
     btn:SetNormalAtlas(e.Icon.icon)
     btn:SetScript('OnClick', function(self)
         FrameStackTooltip_ToggleDefaults()
+        if Save.autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
+            FrameStackTooltip_ToggleDefaults()
+        end
         self:set_tooltip()
     end)
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -1381,6 +1385,11 @@ local function Init_Blizzard_DebugTools()
         GameTooltip:Show()
     end
     btn:SetScript('OnEnter',  btn.set_tooltip)
+    btn:SetScript('OnHide', function()
+        if Save.autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
+            FrameStackTooltip_ToggleDefaults()
+        end
+    end)
 
     local edit= CreateFrame("EditBox", 'WoWToolsHyperLinkTableAttributeDisplayEdit', TableAttributeDisplay, 'InputBoxTemplate')
     WoWTools_TextureMixin:SetSearchBox(edit)
@@ -1420,12 +1429,6 @@ local function Init_Blizzard_DebugTools()
         GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
         GameTooltip:Show()
     end)
-    TableAttributeDisplay:HookScript('OnHide', function()
-        if Save.autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
-            FrameStackTooltip_ToggleDefaults()
-        end
-    end)
-
 end
 
 
