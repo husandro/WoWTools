@@ -307,13 +307,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
     elseif event=='PLAYER_LOGIN' then
-        if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
+        --[[if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
             C_CVar.RegisterCVar("addonProfilerEnabled", "1")
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             if not C_AddOnProfiler.IsEnabled() then
                 print(e.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
             end
-        end
+        end]]
         
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
