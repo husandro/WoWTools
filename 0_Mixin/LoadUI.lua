@@ -156,7 +156,7 @@ end
 
 --概要 ExpansionLandingPage Minimap.lua
 function WoWTools_LoadUIMixin:ToggleLandingPage()
-    if UnitAffectingCombat('player') then
+    if InCombatLockdown() then
         return
     end
     local frame= ExpansionLandingPageMinimapButton
@@ -207,7 +207,7 @@ end
 
 --宏伟宝库
 function WoWTools_LoadUIMixin:WeeklyRewards()
-    if not UnitAffectingCombat('player') then
+    if not InCombatLockdown() then
         if not WeeklyRewardsFrame then
             WeeklyRewards_LoadUI()
         elseif WeeklyRewardsFrame:IsShown() then

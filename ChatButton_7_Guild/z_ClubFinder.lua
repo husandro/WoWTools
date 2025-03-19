@@ -63,7 +63,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save().notAutoRequestToJoinClub
     then
-        print(WoWTools_ChatButtonMixin.addName, WoWTools_GuildMixin.addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
+        print(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end
@@ -89,7 +89,7 @@ local function set_check(frame)
     check:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_ChatButtonMixin.addName, WoWTools_GuildMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..e.Icon.left, e.GetEnabeleDisable(not Save().notAutoRequestToJoinClub))
         GameTooltip:Show()

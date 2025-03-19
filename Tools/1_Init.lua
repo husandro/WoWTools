@@ -135,7 +135,6 @@ local function Init_Panel()
                     end,
                     DropDownSetValue=function(value)
                         Save().BottomPoint[data.name]= value==2 and true or nil
-                        WoWTools_ToolsMixin:SetSaveData(Save)
                         WoWTools_ToolsMixin:RestAllPoint()--重置所有按钮位置
                     end,
                     GetOptions=function()

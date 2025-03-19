@@ -187,7 +187,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(e.onlyChinese and '邀请' or INVITE)
 
-            local btn= WoWTools_ChatButtonMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
+            local btn= WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
             WoWTools_InviteMixin.InviteButton= btn
 
             if WoWTools_InviteMixin.InviteButton then

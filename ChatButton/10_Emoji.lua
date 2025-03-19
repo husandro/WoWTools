@@ -551,7 +551,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         if arg1 == id then
             Save= WoWToolsSave['ChatButton_Emoji'] or Save
             addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
-            EmojiButton= WoWTools_ChatButtonMixin:CreateButton('Emoji', addName)
+            EmojiButton= WoWTools_ChatMixin:CreateButton('Emoji', addName)
 
             if EmojiButton then--禁用Chat Button
                 Init()

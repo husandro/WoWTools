@@ -142,7 +142,7 @@ function WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root)
 
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('LFGDungeonReadyPopup')
-        tooltip:AddDoubleLine(WoWTools_LFDMixin.addName, WoWTools_ChatButtonMixin.addName)
+        tooltip:AddDoubleLine(WoWTools_LFDMixin.addName, WoWTools_ChatMixin.addName)
     end)
 
     return true

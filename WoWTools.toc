@@ -30,7 +30,6 @@ Init.xml
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Aura.lua
 0_Mixin\Button.lua
-0_Mixin\Chat.lua
 0_Mixin\Collected.lua
 0_Mixin\Durabiliy.lua
 0_Mixin\EditBox.lua
@@ -540,8 +539,10 @@ Plus_Other\Realm.lua
 
 ##Chat Button
 ##这是Chat主要，如果需要其中一个功能，这个不能关
-ChatButton\0_ChatButtonMixin.lua
-ChatButton\0_Init.lua
+ChatButton\0_0_ChatMixin.lua
+ChatButton\0_1_Button_ChatMixin.lua
+ChatButton\0_2_Init.lua
+
 ##超链接， 欢迎, 一些其他功能
 ChatButton\1_HyperLink.lua
 ##ROLL

@@ -86,7 +86,7 @@ local function Init(self, root)
     end)
 
     root:CreateDivider()
-    WoWTools_ChatButtonMixin:Open_SettingsPanel(root, nil)
+    WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
 end
 
 

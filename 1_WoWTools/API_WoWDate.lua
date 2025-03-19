@@ -693,13 +693,13 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_AVG_ITEM_LEVEL_UPDATE", func
     e.GetNotifyInspect(nil, 'player')--取得装等
 end)
 
---给 e.Reload用
+--[[给 e.Reload用
 EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_START", function(_, encounterID)
     e.IsEncouter_Start= encounterID
 end)
 EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_END", function(_, arg1)
     e.IsEncouter_Start= nil
-end)
+end)]]
 
 --战网，好友GUID
 EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", Get_WoW_GUID_Info)

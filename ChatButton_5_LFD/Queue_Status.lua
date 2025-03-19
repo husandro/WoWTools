@@ -509,7 +509,7 @@ local function Init_Menu(self, root)
 --打开选项界面
     sub= WoWTools_MenuMixin:OpenOptions(root, {
         name=WoWTools_LFDMixin.addName,
-        category=WoWTools_ChatButtonMixin.Category
+        category=WoWTools_ChatMixin.Category
     })
 
 

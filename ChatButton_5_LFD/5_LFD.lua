@@ -126,7 +126,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
-            LFDButton= WoWTools_ChatButtonMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
+            LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 
             if LFDButton then--禁用Chat Button                
                 WoWTools_LFDMixin.LFDButton= LFDButton

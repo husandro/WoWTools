@@ -48,7 +48,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             WoWTools_CombatMixin.Save= WoWToolsSave['ChatButton_Combat'] or WoWTools_CombatMixin.Save
 
             local addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
-            local CombatButton= WoWTools_ChatButtonMixin:CreateButton('Combat', addName)
+            local CombatButton= WoWTools_ChatMixin:CreateButton('Combat', addName)
 
             WoWTools_CombatMixin.CombatButton= CombatButton
             WoWTools_CombatMixin.addName= addName

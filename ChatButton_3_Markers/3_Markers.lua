@@ -196,7 +196,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
 
-            MarkerButton= WoWTools_ChatButtonMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
+            MarkerButton= WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
 
             if MarkerButton then
                 Init()

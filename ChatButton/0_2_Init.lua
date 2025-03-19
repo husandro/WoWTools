@@ -1,5 +1,5 @@
 local id, e = ...
-local Save={
+WoWTools_ChatMixin.Save={
     --disabled=true,    
     disabledADD={
         ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
@@ -18,11 +18,9 @@ local Category, Layout
 
 
 
-function WoWTools_ChatButtonMixin:Open_SettingsPanel(root, name)
-    WoWTools_MenuMixin:OpenOptions(root, {category=Category, name=name or addName})
+local function Save()
+    return WoWTools_ChatMixin.Save
 end
-
-
 
 
 
@@ -39,9 +37,9 @@ local function Init_Menu(self, root)
     local sub
 
     WoWTools_MenuMixin:Scale(self, root, function()
-        return Save.scale
+        return Save().scale
     end, function(value)
-        Save.scale= value
+        Save().scale= value
         self:set_scale()
     end)
 
@@ -53,7 +51,7 @@ local function Init_Menu(self, root)
         sub:CreateRadio((strata=='MEDIUM' and '|cnGREEN_FONT_COLOR:' or '')..strata, function(data)
             return self:GetFrameStrata()== data
         end, function(data)
-            Save.strata= data
+            Save().strata= data
             self:set_strata()
             print(e.Icon.icon2.. addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
             return MenuResponse.Refresh
@@ -62,28 +60,25 @@ local function Init_Menu(self, root)
 
 
     root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
-        return Save.isVertical
+        return Save().isVertical
     end, function()
-        Save.isVertical= not Save.isVertical and true or nil
-        self:save_data()
-        WoWTools_ChatButtonMixin:RestHV()--方向, 竖
+        Save().isVertical= not Save().isVertical and true or nil
+        WoWTools_ChatMixin:RestHV()--方向, 竖
     end)
 
 --显示背景
     WoWTools_MenuMixin:ShowBackground(root,
     function()
-        return Save.isShowBackground
+        return Save().isShowBackground
     end, function()
-        Save.isShowBackground= not Save.isShowBackground and true or nil
-        self:save_data()
-        WoWTools_ChatButtonMixin:ShowBackgroud()
+        Save().isShowBackground= not Save().isShowBackground and true or nil
+        self:set_backgroud()
     end)
 
     sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
-        return Save.isEnterShowMenu
+        return Save().isEnterShowMenu
     end, function()
-        Save.isEnterShowMenu = not Save.isEnterShowMenu and true or nil
-        self:save_data()
+        Save().isEnterShowMenu = not Save().isEnterShowMenu and true or nil
     end)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine(e.onlyChinese and '显示菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, HUD_EDIT_MODE_MICRO_MENU_LABEL))
@@ -92,22 +87,16 @@ local function Init_Menu(self, root)
 
 
     --重置位置
-    WoWTools_MenuMixin:RestPoint(self, root, Save.point, function()
-        Save.Point=nil
+    WoWTools_MenuMixin:RestPoint(self, root, Save().point, function()
+        Save().Point=nil
         self:set_point()
         return MenuResponse.Open
     end)
 
 --打开选项界面
     root:CreateDivider()
-    WoWTools_ChatButtonMixin:Open_SettingsPanel(root, nil)
+    WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
 end
-
-
-
-
-
-
 
 
 
@@ -123,22 +112,27 @@ end
 --####
 local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
+    WoWTools_TextureMixin:SetSearchBox(SELECTED_DOCK_FRAME.editBox, {alpha=1})
 
-    function ChatButton:save_data()
-        WoWTools_ChatButtonMixin:SetSaveData(Save)
+    function ChatButton:set_size()
+        if self.isVertical then--方向, 竖
+            self:SetSize(30,10)
+        else
+            self:SetSize(10,30)
+        end
     end
 
     function ChatButton:set_strata()
-        self:SetFrameStrata(Save.strata or 'MEDIUM')
+        self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
 
     function ChatButton:set_scale()
-        self:SetScale(Save.scale or 1)
+        self:SetScale(Save().scale or 1)
     end
     function ChatButton:set_point()
         self:ClearAllPoints()
-        if Save.Point then
-            self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+        if Save().Point then
+            self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
         else
             self:SetPoint('BOTTOMLEFT', SELECTED_CHAT_FRAME, 'TOPLEFT', -5, 30)
         end
@@ -149,7 +143,7 @@ local function Init()
         GameTooltip:AddDoubleLine(e.Icon.icon2.. addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
         GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         GameTooltip:Show()
     end
@@ -168,8 +162,8 @@ local function Init()
     ChatButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
+        Save().Point={self:GetPoint(1)}
+        Save().Point[2]=nil
     end)
 
     ChatButton:SetScript("OnMouseUp", ResetCursor)
@@ -185,7 +179,7 @@ local function Init()
     end)
 
     ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
+        Save().scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().scale, nil)
     end)
 
 
@@ -198,6 +192,7 @@ local function Init()
     ChatButton:set_strata()
     ChatButton:set_point()
     ChatButton:set_scale()
+    ChatButton:set_size()
 end
 
 
@@ -227,15 +222,15 @@ local function Init_Panel()
 
     e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
 
-    for _, data in pairs (WoWTools_ChatButtonMixin:GetAllAddList()) do
+    for _, data in pairs (WoWTools_ChatMixin:GetAllAddList()) do
         e.AddPanel_Check({
             category= Category,
             name= data.tooltip,
             tooltip= data.name,
-            Value= not Save.disabledADD[data.name],
-            GetValue= function() return not Save.disabledADD[data.name] end,
+            Value= not Save().disabledADD[data.name],
+            GetValue= function() return not Save().disabledADD[data.name] end,
             SetValue= function()
-                Save.disabledADD[data.name]= not Save.disabledADD[data.name] and true or nil
+                Save().disabledADD[data.name]= not Save().disabledADD[data.name] and true or nil
             end
         })
     end
@@ -252,33 +247,33 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
-            Save= WoWToolsSave['ChatButton'] or Save
-            if not Save.disabled then
-                ChatButton= WoWTools_ChatButtonMixin:Init(Save.disabledADD, Save)
-            end
+            WoWTools_ChatMixin.Save= WoWToolsSave['ChatButton'] or Save()
+            Save().disabledADD= Save().disabledADD or {}
+    
+            ChatButton= WoWTools_ChatMixin:Init()            
 
-            Save.disabledADD= Save.disabledADD or {}
-
+            print(Save(), Save().disabledADD)
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
-                      
+
             Category, Layout= e.AddPanel_Sub_Category({
                 name=addName,
-                disabled=Save.disabled
+                disabled=Save().disabled
             })
-            
-            WoWTools_ChatButtonMixin.Category= Category
-            WoWTools_ChatButtonMixin.addName= addName
+
+            WoWTools_ChatMixin.Category= Category
+            WoWTools_ChatMixin.addName= addName
+
 
             e.AddPanel_Check_Button({
                 checkName= e.onlyChinese and '启用' or ENABLE,
-                GetValue= function() return not Save.disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
-                    Save.Point=nil
+                    Save().Point=nil
                     if ChatButton then
                         ChatButton:set_point()
                     end
@@ -289,20 +284,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= Category,
             })
 
-            if not Save.disabled then
+            if ChatButton then
                 Init()
             end
 
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
-            if WoWTools_ChatButtonMixin.addName then
-                self:UnregisterEvent(event)
-            end
+            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then
-            WoWToolsSave['ChatButton']=Save
+            WoWToolsSave['ChatButton']= Save()
         end
     end
 end)

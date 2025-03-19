@@ -86,7 +86,7 @@ local function Init()
                 ..format(e.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
                 ..'|r|n|n'
                 ..text
-                ..'|n|n'..WoWTools_ChatButtonMixin.addName..' '..WoWTools_LFDMixin.addName
+                ..'|n|n'..WoWTools_ChatMixin.addName..' '..WoWTools_LFDMixin.addName
         end
         self.bossTipsLabel:SetText(text or '')
     end)
