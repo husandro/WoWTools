@@ -475,21 +475,21 @@ local function Init()
     ToyButton:SetAttribute("Shift-type1", "item")
     ToyButton:SetAttribute("Ctrl-type1", "item")
 
-    ToyButton.alt= ToyButton:CreateTexture(nil,'BORDER')--达拉然炉石
+    ToyButton.alt= ToyButton:CreateTexture(nil,'BORDER', nil, 1)--达拉然炉石
     ToyButton.alt:SetSize(10, 10)
     ToyButton.alt:SetPoint('BOTTOMRIGHT',-3,3)
     ToyButton.alt:SetDrawLayer('OVERLAY',2)
     ToyButton.alt:AddMaskTexture(ToyButton.mask)
     ToyButton.alt:SetTexture(1444943)
 
-    ToyButton.ctrl= ToyButton:CreateTexture(nil,'OVERLAY')--要塞炉石
+    ToyButton.ctrl= ToyButton:CreateTexture(nil,'OVERLAY',nil, 1)--要塞炉石
     ToyButton.ctrl:SetSize(10, 10)
     ToyButton.ctrl:SetPoint('BOTTOMLEFT',2,2)
     ToyButton.ctrl:SetDrawLayer('OVERLAY',2)
     ToyButton.ctrl:AddMaskTexture(ToyButton.mask)
     ToyButton.ctrl:SetTexture(1041860)
 
-    ToyButton.shift= ToyButton:CreateTexture(nil,'OVERLAY', 0)--炉石
+    ToyButton.shift= ToyButton:CreateTexture(nil,'OVERLAY', nil, 1)--炉石
     ToyButton.shift:SetSize(10, 10)
     ToyButton.shift:SetPoint('TOPLEFT',2,-2)
     ToyButton.shift:SetDrawLayer('OVERLAY',2)
@@ -497,7 +497,7 @@ local function Init()
     ToyButton.shift:SetTexture(134414)
 
 
-    ToyButton.textureModifier= ToyButton:CreateTexture(nil, 'OVERLAY', nil, 1)
+    ToyButton.textureModifier= ToyButton:CreateTexture(nil, 'OVERLAY', nil, 2)
     ToyButton.textureModifier:SetAllPoints()
     ToyButton.textureModifier:AddMaskTexture(ToyButton.mask)
     ToyButton.textureModifier.Shift= 134414
