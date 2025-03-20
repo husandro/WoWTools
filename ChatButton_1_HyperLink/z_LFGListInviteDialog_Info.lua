@@ -1,4 +1,8 @@
+local e= select(2, ...)
 
+local function Save()
+    return WoWTools_HyperLink.Save
+end
 
 
 --队伍查找器, 接受邀请
@@ -11,7 +15,7 @@ local function Set_LFGListInviteDialog_OnShow(self)
     if status=="invited" then
         local info= C_LFGList.GetSearchResultInfo(self.resultID)
         if self.AcceptButton and self.AcceptButton:IsEnabled() and info then
-            print(e.Icon.icon2.. addName,
+            print(e.Icon.icon2..WoWTools_HyperLink.addName,
                 info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore) or '',--地下城史诗,分数
                 info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and '|A:pvptalents-warmode-swords:0:0|a|cnRED_FONT_COLOR:'..info.leaderPvpRatingInfo.rating..'|r' or '',--PVP 分数
                 info.leaderName and (e.onlyChinese and '%s邀请你加入' or COMMUNITY_INVITATION_FRAME_INVITATION_TEXT):format(WoWTools_UnitMixin:GetLink(info.leaderName)..' ') or '',--	%s邀请你加入

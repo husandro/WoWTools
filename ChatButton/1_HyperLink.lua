@@ -646,7 +646,7 @@ local function Set_HyperLlinkIcon()
         end
     end
     if Save.disabed then
-        DEFAULT_CHAT_FRAME.AddMessage=DEFAULT_CHAT_FRAME.ADD
+        DEFAULT_CHAT_FRAME.AddMessage= DEFAULT_CHAT_FRAME.ADD
     else
         DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动

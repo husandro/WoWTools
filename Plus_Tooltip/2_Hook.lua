@@ -358,7 +358,12 @@ local function Init()
         end
     end)]]
 
-
+    hooksecurefunc(Settings, 'InitTooltip', function(name, tooltip)
+        print(name, tooltip)
+    end)
+    hooksecurefunc(Settings, 'CreateOptionsInitTooltip', function(setting, name, tooltip, options)
+        print(setting, name, tooltip, options)
+    end)
 end
 
 

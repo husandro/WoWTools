@@ -322,7 +322,9 @@ local function Init_Panel()
         category= Category,
         SetValue= function()
             Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
-            print(e.Icon.icon2..WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            if not WoWTools_TooltipMixin:Init_CVar_Tooltip_Value() then
+                print(e.Icon.icon2..WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end
         end
     })
 

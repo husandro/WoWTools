@@ -1,3 +1,9 @@
+local e= select(2, ...)
+
+local function Save()
+    return WoWTools_HyperLink.Save
+end
+
 --隐藏NPC发言
 local VoHandle
 local function Set_Talking()

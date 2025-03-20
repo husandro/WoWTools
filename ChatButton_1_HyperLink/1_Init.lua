@@ -3,8 +3,10 @@ local id, e = ...
 local addName
 WoWTools_HyperLink={
     Save={
-    --disabed=true, --使用，禁用
+
+    linkIcon=true, --超链接，图标
     --notShowPlayerInfo=true,--不处理，玩家信息
+    showCVarValue=e.Player.husandro,
 
     channels={--频道名称替换 
         --['世界'] = '[世]',
@@ -35,7 +37,6 @@ local function Save()
     return WoWTools_HyperLink.Save
 end
 
-DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
@@ -50,13 +51,6 @@ DEFAULT_CHAT_FRAME.ADD= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
-local function Init_Button()
-    LinkButton.setPlayerSoundTips= LinkButton:CreateTexture(nil,'OVERLAY')
-    LinkButton.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
-    LinkButton.setPlayerSoundTips:SetSize(12,12)
-    LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
-
-end
 
 
 
@@ -65,11 +59,12 @@ end
 
 
 local function Init()
-    Init_Button()
-
     e.setPlayerSound= Save().setPlayerSound--播放, 声音
 
+    WoWTools_HyperLink:Init_Button()
     WoWTools_HyperLink:Init_Button_Menu()
+    WoWTools_HyperLink:Init_Link_Icon()
+    
 
     --[[if not Save.disabed then--使用，禁用
         Set_HyperLlinkIcon()
@@ -102,10 +97,14 @@ end
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
+
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1 == id then
             WoWTools_HyperLink.Save= WoWToolsSave['ChatButton_HyperLink'] or Save()
+
+            Save().linkIcon= not Save().disabed
+            Save().disabed= nil
             
             addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', addName)
@@ -117,7 +116,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
                 Init()
 
             else
-                DEFAULT_CHAT_FRAME.ADD= nil
+                DEFAULT_CHAT_FRAME.P_AddMessage= nil
                 self:UnregisterEvent(event)
             end
 

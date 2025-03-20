@@ -1,6 +1,15 @@
-local LOOT_ITEM= LOOT_ITEM--= WoWTools_TextMixin:Magic(LOOT_ITEM)--:gsub('%%s', '(.+)')--%s获得了战利品：%s。
-local CHAT_SAY_SEND= CHAT_SAY_SEND
+--超链接，图标 ItemRef.lua
+local e= select(2, ...)
 
+local function Save()
+    return WoWTools_HyperLink.Save
+end
+
+local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
+local CHAT_SAY_SEND= CHAT_SAY_SEND
+local IsShowTimestamps--聊天中时间戳
+
+DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
@@ -27,7 +36,6 @@ local function cn_Link_Text(link, tabInfo)
     return link
 end
 
-
 local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
@@ -35,6 +43,7 @@ local function SetChannels(link)
             return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(e.cn(WORLD), 2, 6)..']')
         end
 
+--关键词, 内容颜色，和频道名称替换
         if not Save().disabledKeyColor then
             for k, v in pairs(Save().channels) do--自定义
                 if name:find(k) then
@@ -134,7 +143,7 @@ local function Item(link)--物品超链接
             end
         end
     elseif classID==15 and (subclassID==2 or subclassID==5) then
-        if  subclassID==2 then----宠物数量
+        if  subclassID==2 then--宠物数量
             local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(itemID)
             local nu=Pet(speciesID)
             if nu then
@@ -506,8 +515,8 @@ end
     
 
 
-local IsShowTimestamps--聊天中时间戳
-local function setAddMessageFunc(self, s, ...)
+
+local function New_AddMessage(self, s, ...)
     local petChannel=s:find('|Hchannel:.-'..PET_BATTLE_COMBAT_LOG..']|h') and true or false
 
     s=s:gsub('|Hchannel:.-]|h', SetChannels)
@@ -556,6 +565,7 @@ local function setAddMessageFunc(self, s, ...)
         end
     end
 
+--关键词, 内容颜色，和频道名称替换
     if not Save().disabledKeyColor then
         for k, _ in pairs(Save().text) do--内容加颜色
             s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
@@ -564,52 +574,89 @@ local function setAddMessageFunc(self, s, ...)
 
     s= s:gsub(CHAT_SAY_SEND, '|A:transmog-icon-chat:0:0|a ')
 
-    return self.ADD(self, s, ...)
+    return self.P_AddMessage(self, s, ...)
 end
 
 
 
 
-LOOT_ITEM= LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
---是否有，聊天中时间戳
-IsShowTimestamps= C_CVar.GetCVar("showTimestamps")~='none' and true or nil
-EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_,arg1,arg2)
-    if arg1=='showTimestamps' then
-        IsShowTimestamps= arg2~='none' and true or nil
-    end
-end)
 
 
---#########
---使用，禁用
---#########
+
+
+
+
+
+
 local function Set_HyperLlinkIcon()
     for i = 3, NUM_CHAT_WINDOWS do
         local frame = _G["ChatFrame"..i]
         if frame then
-            if Save().disabed then
-                if frame.ADD then
-                    frame.AddMessage=frame.ADD
+            if Save().linkIcon then
+                if not frame.P_AddMessage then
+                    frame.P_AddMessage= frame.AddMessage
                 end
+                frame.AddMessage= New_AddMessage
             else
-                if not frame.ADD then
-                    frame.ADD=frame.AddMessage
+                if frame.P_AddMessage then
+                    frame.AddMessage= frame.P_AddMessage
                 end
-                frame.AddMessage=setAddMessageFunc
             end
         end
     end
-    if Save().disabed then
-        DEFAULT_CHAT_FRAME.AddMessage=DEFAULT_CHAT_FRAME.ADD
-    else
-        DEFAULT_CHAT_FRAME.AddMessage=setAddMessageFunc
+
+    if Save().linkIcon then
+        DEFAULT_CHAT_FRAME.AddMessage= New_AddMessage
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
+    else
+        DEFAULT_CHAT_FRAME.AddMessage= DEFAULT_CHAT_FRAME.P_AddMessage
     end
 
-    LinkButton.texture:SetAtlas(not Save().disabed and e.Icon.icon or e.Icon.disabled)
+    LinkButton.texture:SetAtlas(
+        Save().linkIcon and e.Icon.icon or e.Icon.disabled
+    )
+    --LinkButton.texture:SetDeaturation(C_Cvar.GetCVarBool(''))
 end
 
 
 
 
 
+
+local function Init()
+--是否有，聊天中时间戳
+    IsShowTimestamps= C_CVar.GetCVar('showTimestamps')~='none'
+    EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_, arg1, arg2, ...)
+        if arg1=='showTimestamps' then
+            IsShowTimestamps= arg2~='none'
+        end
+        if Save().linkIcon and Save().showCVarValue then
+            print(e.Icon.icon2..WoWTools_HyperLink.addName, arg1, arg2, ...)
+        end
+        print(arg1,arg2)
+    end)
+    return true
+end
+
+
+
+
+
+--超链接，图标
+function WoWTools_HyperLink:Init_Link_Icon()
+    C_Timer.After(0.3, function()
+        if Init() then
+            Init=function()end
+        end
+    end)
+
+    Set_HyperLlinkIcon()
+end
+
+
+
+--[[ChatFrame.lua
+聊天选项
+local hyperlink = string.format("|Haadcopenconfig|h[%s]", RESTRICT_CHAT_CONFIG_HYPERLINK);
+
+]]

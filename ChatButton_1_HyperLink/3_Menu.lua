@@ -16,46 +16,46 @@ end
 --主菜单
 --#####
 local function Init_Menu(self, root)
-    local sub, tre, col
+    local sub, sub2, sub3, col
     local isInBat= UnitAffectingCombat('player')
 
-    --超链接图标
+--超链接图标
     sub= root:CreateCheckbox(WoWTools_HyperLink.addName, function()
         return not Save().disabed
     end, function()
         Save().disabed= not Save().disabed and true or nil
-        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabed))
-        Set_HyperLlinkIcon()
+        print(e.Icon.icon2..WoWTools_HyperLink.addName, e.GetEnabeleDisable(not Save().disabed))
+        WoWTools_HyperLink:Init_Link_Icon()
     end)
 
     --关键词
-    sub:CreateCheckbox(e.Player.L.key, function()--关键词, 内容颜色，和频道名称替换
+    sub2=sub:CreateCheckbox(e.Player.L.key, function()--关键词, 内容颜色，和频道名称替换
         return not Save().disabledKeyColor
     end, function()
         Save().disabledKeyColor= not Save().disabledKeyColor and true or nil
     end)
 
-    sub:CreateButton('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, e.Player.L.key)), function()
-        if not Category then
+    sub2:CreateButton('|A:mechagon-projects:0:0|a'..(e.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, e.Player.L.key)), function()
+        if not WoWTools_HyperLink.Category then
             e.OpenPanelOpting()
         end
-        e.OpenPanelOpting(Category, addName)
+        e.OpenPanelOpting(WoWTools_HyperLink.Category, WoWTools_HyperLink.addName)
     end)
 
 
-    --玩家信息
+--玩家信息
     sub:CreateDivider()
-    tre= sub:CreateCheckbox(e.onlyChinese and '玩家信息' or PLAYER_MESSAGES, function()
+    sub2= sub:CreateCheckbox(e.onlyChinese and '玩家信息' or PLAYER_MESSAGES, function()
         return not Save().notShowPlayerInfo
     end, function()
         Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil
     end)
-    tre:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}))
     end)
 
 
-    --事件声音
+--事件声音
     col= isInBat and '|cnRED_FONT_COLOR:' or (
             not C_CVar.GetCVarBool('Sound_EnableAllSound')
             or C_CVar.GetCVar('Sound_MasterVolume')=='0'
@@ -73,8 +73,8 @@ local function Init_Menu(self, root)
         if Save().setPlayerSound then
             e.PlaySound()--播放, 声音
         end
-        Set_PlayerSound()
-        print(e.Icon.icon2.. addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
+        --Set_PlayerSound()
+        print(e.Icon.icon2.. WoWTools_HyperLink.addName, e.onlyChinese and "播放" or SLASH_STOPWATCH_PARAM_PLAY1, e.onlyChinese and '事件声音' or EVENTS_LABEL..SOUND)
     end)
     sub:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, e.Get_CVar_Tooltips({name='Sound_EnableAllSound', msg=e.onlyChinese and '开启声效' or ENABLE_SOUND}))
@@ -112,21 +112,21 @@ local function Init_Menu(self, root)
             Save().guildWelcome=true
             Save().groupWelcome=true
         end
-        self:Settings()
+       -- self:Settings()
     end)
 
     --公会新成员
-    tre=sub:CreateCheckbox(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER, function()
+    sub2=sub:CreateCheckbox(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER, function()
         return Save().guildWelcome
     end, function()
         Save().guildWelcome= not Save().guildWelcome and true or nil
-        self:Settings()
+       -- self:Settings()
     end)
-    tre:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save().guildWelcomeText)
     end)
 
-    tre= sub:CreateButton('|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
+    sub2= sub:CreateButton('|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
         StaticPopup_Show('WoWTools_EditText',
             (e.onlyChinese and '欢迎加入' or 'Welcome to join')..'|n|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
             nil,
@@ -135,41 +135,41 @@ local function Init_Menu(self, root)
                 SetValue= function(self)
                     local text= self.editBox:GetText()
                     Save().guildWelcomeText= text
-                    print(e.Icon.icon2.. addName, text)
+                    print(e.Icon.icon2.. WoWTools_HyperLink.addName, text)
                 end
             }
         )
     end)
-    tre:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save().guildWelcomeText)
     end)
 
     --队伍新成员
     sub:CreateDivider()
-    tre=sub:CreateCheckbox(e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, function ()
+    sub2=sub:CreateCheckbox(e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC, function ()
         return Save().groupWelcome
     end, function ()
         Save().groupWelcome= not Save().groupWelcome and true or nil
-        self:Settings()
+        --self:Settings()
     end)
-    tre:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save().groupWelcomeText)
         GameTooltip_AddBlankLineToTooltip(tooltip)
         GameTooltip_AddInstructionLine(tooltip,  e.onlyChinese and '仅限队长或团长' or format(LFG_LIST_CROSS_FACTION, LEADER))
     end)
 
-    tre=sub:CreateCheckbox(e.onlyChinese and '仅限组队邀请' or format(LFG_LIST_CROSS_FACTION, GROUP_INVITE), function ()
+    sub2=sub:CreateCheckbox(e.onlyChinese and '仅限组队邀请' or format(LFG_LIST_CROSS_FACTION, GROUP_INVITE), function ()
         return Save().welcomeOnlyHomeGroup
     end, function ()
         Save().welcomeOnlyHomeGroup= not Save().welcomeOnlyHomeGroup and true or nil
     end)
-    tre:SetTooltip(function (tooltip)
+    sub2:SetTooltip(function (tooltip)
         GameTooltip_AddNormalLine(tooltip, Save().groupWelcomeText)
         GameTooltip_AddBlankLineToTooltip(tooltip)
         GameTooltip_AddErrorLine(tooltip, e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
     end)
 
-    tre= sub:CreateButton('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
+    sub2= sub:CreateButton('|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '修改' or EDIT), function ()
         StaticPopup_Show('WoWTools_EditText',
             (e.onlyChinese and '欢迎加入' or 'Welcome to join')..'|n|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC),
             nil,
@@ -178,12 +178,12 @@ local function Init_Menu(self, root)
                 SetValue= function(frame)
                     local text= frame.editBox:GetText()
                     Save().groupWelcomeText=text
-                    print(e.Icon.icon2.. addName, text)
+                    print(e.Icon.icon2.. WoWTools_HyperLink.addName, text)
                 end
             }
         )
     end)
-    tre:SetTooltip(function(tooltip)
+    sub2:SetTooltip(function(tooltip)
         GameTooltip_AddNormalLine(tooltip, Save().groupWelcomeText)
         GameTooltip_AddBlankLineToTooltip(tooltip)
         GameTooltip_AddInstructionLine(tooltip,  e.onlyChinese and '仅限队长或团长' or format(LFG_LIST_CROSS_FACTION, LEADER))
@@ -244,13 +244,13 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=WoWTools_MenuMixin:Reload(root, false)
 
-    tre=sub:CreateCheckbox(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'), function ()
+    sub2=sub:CreateCheckbox(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'), function ()
         return not Save().not_Add_Reload_Button
     end, function ()
         Save().not_Add_Reload_Button= not Save().not_Add_Reload_Button and true or nil
-        Init_Add_Reload_Button()
+        --Init_Add_Reload_Button()
     end)
-    tre:SetTooltip(function (tooltip)
+    sub2:SetTooltip(function (tooltip)
         GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '主菜单' or MAINMENU_BUTTON)
         GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '选项' or OPTIONS)
     end)

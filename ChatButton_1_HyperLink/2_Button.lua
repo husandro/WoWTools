@@ -1,3 +1,5 @@
+local e= select(2, ...)
+
 local function Save()
     return WoWTools_HyperLink.Save
 end
@@ -16,13 +18,19 @@ end
 
 
 
+
 local function Init(LinkButton)
-    --事件, 声音, 提示图标
+    LinkButton.setPlayerSoundTips= LinkButton:CreateTexture(nil,'OVERLAY')
+    LinkButton.setPlayerSoundTips:SetPoint('BOTTOMLEFT',4, 4)
+    LinkButton.setPlayerSoundTips:SetSize(12,12)
+    LinkButton.setPlayerSoundTips:SetAtlas('chatframe-button-icon-voicechat')
+    
+ --事件, 声音, 提示图标
 
 
     --[[function LinkButton:HandlesGlobalMouseEvent(buttonName, event)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
-    end]]
+    end
     function LinkButton:Settings()
         self.texture:SetAtlas(not Save().disabed and e.Icon.icon or e.Icon.disabled)
         self.setPlayerSoundTips:SetShown(Save().setPlayerSound)
@@ -45,22 +53,23 @@ local function Init(LinkButton)
 
     LinkButton:SetScript('OnEvent', function(_, event, arg1, arg2, arg3)
         if event=='CHAT_MSG_SYSTEM' then
-            Event_CHAT_MSG_SYSTEM(arg1)
+            --Event_CHAT_MSG_SYSTEM(arg1)
 
         elseif event=='START_TIMER' then
-            Event_START_TIMER(arg1, arg2, arg3)
+            --Event_START_TIMER(arg1, arg2, arg3)
 
         elseif event=='STOP_TIMER_OF_TYPE' then
-            Event_STOP_TIMER_OF_TYPE()
+            --Event_STOP_TIMER_OF_TYPE()
 
         elseif event=='TALKINGHEAD_REQUESTED' then
-            Set_Talking()
+            --Set_Talking()
         end
     end)
 
     
 
-    LinkButton:Settings()
+    LinkButton:Settings()]]
+    
 end
 
 
@@ -68,5 +77,7 @@ end
 
 
 
-
+function WoWTools_HyperLink:Init_Button()
+    Init(self.LinkButton)
+end
 

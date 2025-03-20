@@ -1,4 +1,14 @@
 
+local e= select(2, ...)
+
+local function Save()
+    return WoWTools_HyperLink.Save
+end
+
+
+
+
+
 
 
 local function Create_Texture_Tips(btn, data)--atlas, coord)
@@ -52,7 +62,7 @@ local function Init_Add_Reload_Button()
             frame.reload:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, 'Tools '..addName)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HyperLink.addName)
                 GameTooltip:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
                 GameTooltip:Show()
             end)
