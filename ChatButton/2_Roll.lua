@@ -168,7 +168,7 @@ local function Init_Menu(_, root)
     if saveNum>0 then
         sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
             Save.save={}
-            return MenuResponse.Close
+            return MenuResponse.CloseAll
         end)
         sub:CreateDivider()
         for _, tab in pairs(Save.save) do

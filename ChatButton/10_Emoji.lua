@@ -185,7 +185,7 @@ local function Init_EmojiFrame()
 
 
     function Frame:set_tooltip()
-        self:set_owner()
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:AddDoubleLine('ChatButton', addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
@@ -210,6 +210,7 @@ local function Init_EmojiFrame()
     end)
     Frame:SetScript('OnMouseWheel', function(self, d)--缩放
         Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
+        self:set_tooltip()
     end)
 
 
@@ -442,8 +443,7 @@ local function Init()
 
 
     function EmojiButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         if Save.On_Click_Show then
             GameTooltip:AddDoubleLine(e.GetShowHide(not Frame:IsShown()), e.Icon.left)
         else
