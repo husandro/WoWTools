@@ -340,10 +340,13 @@ local function Init_Menu(_, root)
 --etrace
 
     root:CreateButton('|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE', function()
-        if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
+        --[[if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
             C_AddOns.LoadAddOn("Blizzard_EventTrace")
+        end]]
+        if not EventTrace then
+            UIParentLoadAddOn("Blizzard_EventTrace")
         end
-        EventTrace:OnShow()
+            EventTrace:OnShow()
         return MenuResponse.Open
     end)
 

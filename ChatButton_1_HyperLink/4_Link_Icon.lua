@@ -512,7 +512,7 @@ end
 
 
 
-    
+
 
 
 
@@ -632,10 +632,10 @@ local function Init()
             IsShowTimestamps= arg2~='none'
         end
         if Save().showCVarName then
-            print(e.Icon.icon2..WoWTools_HyperLink.addName, arg1, arg2, ...)
+            print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cffff00ffCVar|r|cff00ff001', arg1, '|r', arg2, ...)
         end
     end)
-    
+
 --CVar 名称
     hooksecurefunc('ChatConfigFrame_OnChatDisabledChanged', Set_HyperLlinkIcon)
 
