@@ -561,8 +561,7 @@ local function Init()
     GroupButton.textureNotInstance:SetAtlas('socket-punchcard-red-background')
 
     function GroupButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
 
         local find= show_Group_Info_Toolstip()--玩家,信息, 提示
 

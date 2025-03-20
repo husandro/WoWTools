@@ -12,6 +12,7 @@ WoWTools_ChatMixin.Save={
 
     borderAlpha=0.3,--外框，透明度
     pointX=0,
+    anchorMenuIndex=1,--菜单位置 下，上，左，右
 }
 
 local addName
@@ -37,7 +38,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub
+    local sub, sub2
 
     WoWTools_MenuMixin:Scale(self, root, function()
         return Save().scale
@@ -102,7 +103,7 @@ local function Init_Menu(self, root)
 
 
 --方向, 竖
-    root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
+    sub=root:CreateCheckbox('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION), function()
         return Save().isVertical
     end, function()
         Save().isVertical= not Save().isVertical and true or nil
@@ -112,9 +113,34 @@ local function Init_Menu(self, root)
         end
     end)
 
+--菜单位置
+    local textTab={
+      '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN),
+      e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
+      e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+      e.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+    }
+    for index, tab in pairs(WoWTools_ChatMixin:Get_AnchorMenu()) do
+        sub2=sub:CreateCheckbox(
+            textTab[index],
+        function(data)
+            return Save().anchorMenuIndex==data.index
+        end, function(data)
+            self:CloseMenu()
+            Save().anchorMenuIndex= data.index
+            self:set_anchor()
+            for _, btn in pairs(WoWTools_ChatMixin:Get_All_Buttons()) do
+                btn:set_anchor()
+            end
+            self:OpenMenu()
+        end, {index=index, p=tab[1], p2=tab[2]})
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddDoubleLine(desc.data.p, desc.data.p2)
+        end)
+    end
+
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(root,
-    function()
+    WoWTools_MenuMixin:ShowBackground(root, function()
         return Save().isShowBackground
     end, function()
         Save().isShowBackground= not Save().isShowBackground and true or nil
@@ -192,8 +218,7 @@ local function Init()
         end
     end
     function ChatButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         GameTooltip:AddDoubleLine(e.Icon.icon2.. addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
@@ -310,8 +335,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_ChatMixin.Save= WoWToolsSave['ChatButton'] or Save()
             Save().disabledADD= Save().disabledADD or {}
             Save().borderAlpha= Save().borderAlpha or 0.3
-            ChatButton= WoWTools_ChatMixin:Init()
+            Save().anchorMenuIndex= Save().anchorMenuIndex or 1
 
+            ChatButton= WoWTools_ChatMixin:Init()
+            
 
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 

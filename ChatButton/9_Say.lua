@@ -441,8 +441,7 @@ local function Init()
     SayButton.texture:SetAtlas('transmog-icon-chat')
 
     function SayButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         if Save.type or Save.text or Save.name then
             local name
             if Save.type==SLASH_WHISPER1 then

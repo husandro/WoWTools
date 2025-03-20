@@ -45,8 +45,7 @@ local function Init(btn)
     end
 
     function btn:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         WoWTools_CombatMixin:Set_Combat_Tooltip(GameTooltip)
         GameTooltip:Show()
     end

@@ -1046,8 +1046,7 @@ local function Init()
     WorldButton.leftClickTips:SetPoint('BOTTOM',0,2)
 
     function WorldButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
 
         local find
         find=0

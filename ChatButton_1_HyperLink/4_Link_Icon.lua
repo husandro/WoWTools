@@ -632,7 +632,7 @@ local function Init()
             IsShowTimestamps= arg2~='none'
         end
         if Save().showCVarName then
-            print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cffff00ffCVar|r|cff00ff001', arg1, '|r', arg2, ...)
+            print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cffff00ffCVar|r|cff00ff00', arg1, '|r', arg2, ...)
         end
     end)
 

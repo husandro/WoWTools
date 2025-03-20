@@ -94,8 +94,7 @@ local function Init()
     end
 
     function InviteButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         GameTooltip:AddDoubleLine(WoWTools_InviteMixin.addName, e.Icon.left)
         if Save().InvTar then
             GameTooltip:AddLine(e.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))

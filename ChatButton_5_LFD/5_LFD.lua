@@ -41,8 +41,7 @@ local function Init()
 
 
     function LFDButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
 
         if self.name and (self.dungeonID or self.RaidID) then

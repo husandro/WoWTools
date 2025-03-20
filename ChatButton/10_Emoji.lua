@@ -185,8 +185,7 @@ local function Init_EmojiFrame()
 
 
     function Frame:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         GameTooltip:AddDoubleLine('ChatButton', addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)

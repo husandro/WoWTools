@@ -136,8 +136,7 @@ local function Init(GuildButton)
     end
 
     function GuildButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         if not IsInGuild() then
             GameTooltip:AddLine('|cff9e9e9e'..(e.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..e.Icon.left)
         else

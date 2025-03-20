@@ -255,8 +255,7 @@ local function Init()
 
 
     function RollButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         GameTooltip:AddDoubleLine(addName, e.Icon.left)
         if #RollTab>0 then
             GameTooltip:AddLine(' ')

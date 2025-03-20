@@ -8,8 +8,33 @@ local function Save()
     return WoWTools_ChatMixin.Save
 end
 
+local AnchorMenu={--菜单位置
+    {"TOPLEFT",  "BOTTOMLEFT"},--下
+    {"BOTTOMLEFT",  "TOPLEFT"},--上
+    {"TOPRIGHT",  "TOPLEFT"},--左
+    {"TOPLEFT",  "TOPRIGHT"},--右
+}
 
+local AnchorTooltip={
+    {'ANCHOR_LEFT'},
+    {'ANCHOR_BOTTOMRIGHT'},
+    {'ANCHOR_RIGHT'},
+    {'ANCHOR_BOTTOMLEFT'}
+}
 
+--菜单，Tooltip, 位置
+local function Set_Menu_Anchor(btn)
+
+    function btn:set_anchor()
+        local index= Save().anchorMenuIndex or 1
+        self.menuAnchor= AnchorUtil.CreateAnchor(AnchorMenu[index][1], self, AnchorMenu[index][2])
+    end
+
+    function btn:set_owner()
+        GameTooltip:SetOwner(self, AnchorTooltip[Save().anchorMenuIndex or 1])-- "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+    end
+end
 
 
 
@@ -39,12 +64,18 @@ function WoWTools_ChatMixin:Init()
             self.Background:SetShown(Save().isShowBackground)
         end
 
+--菜单，Tooltip, 位置
+        Set_Menu_Anchor(ChatButton)
+        ChatButton:set_anchor()
+
+
         self.ChatButton= ChatButton
 
 
         return ChatButton
     end
 end
+
 
 
 
@@ -83,7 +114,7 @@ local function Set_Button(btn)
     btn.border:SetAtlas('bag-reagent-border')
     --btn.border:AddMaskTexture(btn.mask)
     WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha= 0.3})
-    
+
     btn:SetSize(30, 30)
 
     function btn:set_border_alpha()
@@ -101,14 +132,17 @@ local function Set_Button(btn)
         end
     end
 
+
+
+    function btn:set_state()
+        self:SetButtonState(self:IsMenuOpen() and 'PUSHED' or 'NORMAL')
+    end
+
     btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     function btn:HandlesGlobalMouseEvent(buttonName, event)
         return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
     end
 
-    function btn:set_state()
-        self:SetButtonState(self:IsMenuOpen() and 'PUSHED' or 'NORMAL')
-    end
 
     hooksecurefunc(btn, 'OnMenuOpened', function(self)
         self:SetButtonState('PUSHED')
@@ -130,7 +164,9 @@ local function Set_Button(btn)
     btn:SetScript('OnEnter', function(self)
         self:GetParent():SetButtonState('PUSHED')
         if self.set_tooltip then
+            self:set_owner()
             self:set_tooltip()
+            GameTooltip:Show()
         end
         if self.set_OnEnter then
             self:set_OnEnter()
@@ -150,6 +186,10 @@ local function Set_Button(btn)
             end
         end
     end)
+
+--菜单，Tooltip, 位置
+    Set_Menu_Anchor(btn)
+    btn:set_anchor()
 
     btn:set_border_alpha()
     btn:set_point()
@@ -178,6 +218,8 @@ function WoWTools_ChatMixin:CreateButton(name, addName)
 
     Set_Button(btn)
 
+
+
     table.insert(Buttons, btn)
 
     ChatButton:set_backgroud()
@@ -197,8 +239,9 @@ end
 
 
 
-
-
+function WoWTools_ChatMixin:Get_AnchorMenu()
+    return AnchorMenu
+end
 
 function WoWTools_ChatMixin:GetAllAddList()
     return AddList

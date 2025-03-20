@@ -5468,7 +5468,8 @@
         "FrameStackTooltip",
         "EMBLEM_BORDER",
         "ChatConfigFrame_OnChatDisabledChanged",
-        "LFG_LIST_INVITED_TO_GROUP"
+        "LFG_LIST_INVITED_TO_GROUP",
+        "AnchorUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

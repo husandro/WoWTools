@@ -140,8 +140,7 @@ local function Init()
     
 
     function MarkerButton:set_tooltip()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        self:set_owner()
         self:tooltip()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, (e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.left)
