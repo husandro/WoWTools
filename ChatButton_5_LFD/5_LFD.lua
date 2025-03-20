@@ -96,7 +96,7 @@ local function Init()
     WoWTools_LFDMixin:Init_RepopMe()--释放, 复活
 
     WoWTools_LFDMixin:Init_LFGDungeonReadyDialog()--确定，进入副本
-
+    WoWTools_LFDMixin:Init_LFGListInviteDialog_Info()--队伍查找器, 邀请信息
 
     PVPTimerFrame:HookScript('OnShow', function(self2)
         e.PlaySound()--播放, 声音

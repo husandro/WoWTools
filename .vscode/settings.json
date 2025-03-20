@@ -5467,7 +5467,8 @@
         "GUILD_MEMBERS_ONLINE",
         "FrameStackTooltip",
         "EMBLEM_BORDER",
-        "ChatConfigFrame_OnChatDisabledChanged"
+        "ChatConfigFrame_OnChatDisabledChanged",
+        "LFG_LIST_INVITED_TO_GROUP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

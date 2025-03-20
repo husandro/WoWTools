@@ -101,6 +101,7 @@ local function Init_Settings()
         if Timer0 then Timer0:Cancel() end
     end)
 
+    
     return true
 end
 

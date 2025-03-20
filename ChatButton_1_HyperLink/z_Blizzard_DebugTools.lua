@@ -5,17 +5,24 @@ local function Save()
     return WoWTools_HyperLink.Save
 end
 
-
-
-
-
-
-
-
 local btn
 
 
+
+
+
+
+
+
+
+
+
 local function Init()
+    if  Save().disabedFrameStackPlus or not TableAttributeDisplay then
+        return
+    end
+
+
     btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
         size=26,
         name='WoWToolsHyperLinkTableAttributeDisplayButton',
@@ -99,10 +106,9 @@ end
 
 --fstack 增强 TableAttributeDisplay
 function WoWTools_HyperLink:Blizzard_DebugTools()
-    if not self.Save.disabedFrameStackPlus and Init() then
+    if Init() then
         Init=function()
             btn:SetShown(not self.Save.disabedFrameStackPlus)
         end
-        return true
     end
 end

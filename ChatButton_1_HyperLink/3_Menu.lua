@@ -386,6 +386,8 @@ local function Init_Menu(_, root)
 
 
 
+
+
 --颜色选择器    
     root:CreateButton(
         '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER),
@@ -401,15 +403,32 @@ local function Init_Menu(_, root)
 
 
 
+
+
+
+
+
+
+
+
+
+
 --添加按钮
     root:CreateDivider()
+
+--/reload
     sub=WoWTools_MenuMixin:Reload(root, false)
 
-    sub2=sub:CreateCheckbox(e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'), function ()
+--添加按钮
+    sub2=sub:CreateCheckbox(
+        e.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'),
+    function ()
         return not Save().not_Add_Reload_Button
     end, function ()
         Save().not_Add_Reload_Button= not Save().not_Add_Reload_Button and true or nil
-        --Init_Add_Reload_Button()
+        if not WoWTools_HyperLink:Init_Reload() then
+            print(e.Icon.icon2..WoWTools_HyperLink.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
     end)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(e.onlyChinese and '添加' or ADD)

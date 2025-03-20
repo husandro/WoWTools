@@ -914,7 +914,7 @@ local function Init_Menu(_, root)
 
 --前往副本 Plus
     sub2= sub:CreateCheckbox(
-        e.onlyChinese and '前往副本 Plus' or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_ACTION_MOVE_TO, INSTANCE)..' Plus'),
+        e.onlyChinese and '前往副本' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PET_ACTION_MOVE_TO, INSTANCE),
     function()
         return not Save().disabledLFGDungeonReadyDialog
     end, function()
@@ -923,9 +923,23 @@ local function Init_Menu(_, root)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('LFGDungeonReadyDialog')
+        tooltip:AddLine(e.onlyChinese and '信息' or INFO)
         tooltip:AddLine(e.onlyChinese and '已经建好了一个副本，准备前往：' or SPECIFIC_INSTANCE_IS_READY)
     end)
 
+--队伍查找器, 接受邀请, 信息
+    sub2=sub:CreateCheckbox(
+        e.onlyChinese and '邀请信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, INFO),
+    function()
+        return not Save().disabedLFDInviteInfo
+    end, function()
+        Save().disabedLFDInviteInfo= not Save().disabedLFDInviteInfo and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('LFGListInviteDialog_Show')
+        tooltip:AddLine(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+        tooltip:AddLine(e.onlyChinese and '你收到了一支队伍的邀请：' or LFG_LIST_INVITED_TO_GROUP)
+    end)
 
 --设置,战场
     sub:CreateDivider()

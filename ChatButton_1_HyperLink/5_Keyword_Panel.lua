@@ -115,6 +115,8 @@ local function Init()
         end
         print(e.Icon.icon2.. WoWTools_HyperLink.addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
+
+    return true
 end
 
 
@@ -130,5 +132,7 @@ end
 
 
 function WoWTools_HyperLink:Init_Panel()
-    Init()
+    if Init() then
+        Init=function()end
+    end
 end

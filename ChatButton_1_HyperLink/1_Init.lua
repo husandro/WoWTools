@@ -46,99 +46,19 @@ local LinkButton
 
 
 
-
-
-local function Init_Button()
+local function Init()
     LinkButton.eventSoundTexture= LinkButton:CreateTexture(nil,'OVERLAY')
     LinkButton.eventSoundTexture:SetPoint('BOTTOMLEFT',4, 4)
     LinkButton.eventSoundTexture:SetSize(12,12)
     LinkButton.eventSoundTexture:SetAtlas('chatframe-button-icon-voicechat')
 
- --事件, 声音, 提示图标
-
-
-    --[[function LinkButton:HandlesGlobalMouseEvent(buttonName, event)
-        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
-    end
-    function LinkButton:Settings()
-        self.texture:SetAtlas(not Save().disabed and e.Icon.icon or e.Icon.disabled)
-        self.setPlayerSoundTips:SetShown(Save().setPlayerSound)
-
-        self:UnregisterAllEvents()
---欢迎加入, 信息
-        if Save().groupWelcome or Save().guildWelcome then
-            self:RegisterEvent('CHAT_MSG_SYSTEM')
-        end
---事件, 声音
-        if Save().setPlayerSound then
-            self:RegisterEvent('START_TIMER')
-            self:RegisterEvent('STOP_TIMER_OF_TYPE')
-        end
---隐藏NPC发言
-        if not Save().disabledNPCTalking then
-            self:RegisterEvent('TALKINGHEAD_REQUESTED')
-        end
-    end
-
-    LinkButton:SetScript('OnEvent', function(_, event, arg1, arg2, arg3)
-        if event=='CHAT_MSG_SYSTEM' then
-            --Event_CHAT_MSG_SYSTEM(arg1)
-
-        elseif event=='START_TIMER' then
-            --Event_START_TIMER(arg1, arg2, arg3)
-
-        elseif event=='STOP_TIMER_OF_TYPE' then
-            --Event_STOP_TIMER_OF_TYPE()
-
-        elseif event=='TALKINGHEAD_REQUESTED' then
-            --Set_Talking()
-        end
-    end)
-
-    
-
-    LinkButton:Settings()]]
-
-end
-
-
-
-
-
-
-
-
-
-
-
-
-local function Init()
-
-    Init_Button()
     WoWTools_HyperLink:Init_Button_Menu()
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
     WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
     WoWTools_HyperLink:Init_Welcome()--欢迎加入
-    WoWTools_HyperLink:Blizzard_DebugTools()--fstack 增强 TableAttributeDisplay
-
-    --[[if not Save.disabed then--使用，禁用
-        Set_HyperLlinkIcon()
-    end
-
-
-    LFGListInviteDialog:SetScript("OnShow", Set_LFGListInviteDialog_OnShow)--队伍查找器, 接受邀请
-    Init_Add_Reload_Button()--添加 RELOAD 按钮
-    Set_PlayerSound()--事件, 声音]]
-
-
-
+    WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
 end
-
-
-
-
-
 
 
 
@@ -161,7 +81,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
-            
+
             addName= '|A:voicechat-icon-STT-on:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', addName)
 
