@@ -25,9 +25,9 @@ local P_Items={
     [208704]=true,--幽邃住民的土灵炉石
 }
 local ModifiedTab={
-    [6948]='Shift',--炉石
-    [110560]='Ctrl',--要塞炉石
-    [140192]='Alt',--达拉然炉石
+    [6948]='shift',--炉石
+    [110560]='ctrl',--要塞炉石
+    [140192]='alt',--达拉然炉石
 }
 
 
@@ -471,11 +471,11 @@ local function Init()
     end
 
     ToyButton:SetAttribute("type1", "item")
-    ToyButton:SetAttribute("Alt-type1", "item")
+    ToyButton:SetAttribute("Alt-type1", "macro")
     ToyButton:SetAttribute("Shift-type1", "item")
     ToyButton:SetAttribute("Ctrl-type1", "item")
 
-    ToyButton.alt= ToyButton:CreateTexture(nil,'OVERLAY')--达拉然炉石
+    ToyButton.alt= ToyButton:CreateTexture(nil,'BORDER')--达拉然炉石
     ToyButton.alt:SetSize(10, 10)
     ToyButton.alt:SetPoint('BOTTOMRIGHT',-3,3)
     ToyButton.alt:SetDrawLayer('OVERLAY',2)
@@ -497,6 +497,12 @@ local function Init()
     ToyButton.shift:SetTexture(134414)
 
 
+    ToyButton.textureModifier= ToyButton:CreateTexture(nil, 'OVERLAY', nil, 1)
+    ToyButton.textureModifier:SetAllPoints()
+    ToyButton.textureModifier:AddMaskTexture(ToyButton.mask)
+    ToyButton.textureModifier.Shift= 134414
+    ToyButton.textureModifier.Ctrl=1041860
+    ToyButton.textureModifier.Alt=1444943
 
     ToyButton.text=WoWTools_LabelMixin:Create(ToyButton, {size=10, color=true, justifyH='CENTER'})
     ToyButton.text:SetPoint('TOP', ToyButton, 'BOTTOM',0,5)
@@ -513,7 +519,11 @@ local function Init()
         for itemID, type in pairs(ModifiedTab) do
             local name= C_Item.GetItemNameByID(itemID) or select(2,  C_ToyBox.GetToyInfo(itemID))
             if name then
-                self:SetAttribute(type.."-item1",  name)
+                if type=='alt' then
+                    self:SetAttribute("alt-macrotext1",  '/usetoy '..name)
+                else
+                    self:SetAttribute(type.."-item1",  name)
+                end
             else
                 self.isAltEvent=true
             end
@@ -562,12 +572,12 @@ local function Init()
 
 
 
-    ToyButton:SetScript('OnEvent', function(self, event, itemID, success)
+    ToyButton:SetScript('OnEvent', function(self, event, arg1, arg2)
         if event=='ITEM_DATA_LOAD_RESULT' then
-            if success then
-                if ModifiedTab[itemID] then
+            if arg2 then--success then
+                if ModifiedTab[arg1] then
                     self:set_alt()
-                elseif Save.items[itemID] then
+                elseif Save.items[arg1] then
                     self:Set_Random_Event()--is_Random_Eevent
                 end
                 if not self.isAltEvent and not self.is_Random_Eevent then
@@ -598,6 +608,16 @@ local function Init()
 
         elseif event=='BAG_UPDATE_COOLDOWN' then
             self:set_cool()
+
+        elseif event=='MODIFIER_STATE_CHANGED' then
+            local icon
+            if arg2==1 then
+                icon = arg1:find('SHIFT') and self.textureModifier.Shift
+                    or arg1:find('CTRL') and self.textureModifier.Ctrl
+                    or arg1:find('ALT') and self.textureModifier.Alt
+                    
+            end
+            self.textureModifier:SetTexture(icon or 0)
         end
     end)
 
@@ -746,6 +766,7 @@ local function Init()
             self:RegisterEvent('NEW_TOY_ADDED')
             self:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
             self:RegisterEvent('BAG_UPDATE_COOLDOWN')
+            self:RegisterEvent('MODIFIER_STATE_CHANGED')
             self:Get_Random_Value()
         else
             self:UnregisterAllEvents()
