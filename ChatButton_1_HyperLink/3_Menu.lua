@@ -313,7 +313,8 @@ local function Init_Menu(_, root)
 
 
 
---文本转语音    
+--文本转语音   
+    root:CreateDivider() 
     sub=root:CreateCheckbox(
         (isInBat and '|cnRED_FONT_COLOR:' or '')
         ..'|A:chatframe-button-icon-TTS:0:0|a'
@@ -322,7 +323,7 @@ local function Init_Menu(_, root)
         return C_CVar.GetCVarBool('textToSpeech')
     end, function ()
         if not InCombatLockdown() then
-            C_CVar.SetCVar("textToSpeech", C_CVar.GetCVarBool('textToSpeech') and '0' or '1' )
+            C_CVar.SetCVar("textToSpeech", C_CVar.GetCVar('textToSpeech')=='0' and '1' or '0' )
         end
     end)
     sub:SetTooltip(function(tooltip)
@@ -337,7 +338,7 @@ local function Init_Menu(_, root)
 
 
 --etrace
-    root:CreateDivider()
+
     root:CreateButton('|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE', function()
         if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
             C_AddOns.LoadAddOn("Blizzard_EventTrace")
