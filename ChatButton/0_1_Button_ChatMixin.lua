@@ -16,15 +16,78 @@ local AnchorMenu={--菜单位置
 }
 
 local AnchorTooltip={
-    {'ANCHOR_LEFT'},
-    {'ANCHOR_BOTTOMRIGHT'},
-    {'ANCHOR_RIGHT'},
-    {'ANCHOR_BOTTOMLEFT'}
+    'ANCHOR_LEFT',
+    'ANCHOR_LEFT',
+    'ANCHOR_LEFT',
+    'ANCHOR_RIGHT',
 }
 
---菜单，Tooltip, 位置
-local function Set_Menu_Anchor(btn)
+local function Set_Button_Script(btn)
 
+
+    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    function btn:HandlesGlobalMouseEvent(buttonName, event)
+        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
+    end
+
+    hooksecurefunc(btn, 'OnMenuOpened', function(self)
+        self:SetButtonState('PUSHED')
+    end)
+
+    hooksecurefunc(btn, 'OnMenuClosed', function(self)
+        self:SetButtonState('NORMAL')
+    end)
+
+
+    function btn:set_state()
+        self:SetButtonState(self:IsMenuOpen() and 'PUSHED' or 'NORMAL')
+    end
+
+    btn:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        ResetCursor()
+        if not self.IsMainButton then
+            self:GetParent():SetButtonState('NORMAL')
+        end
+        if self.set_OnLeave then
+            self:set_OnLeave()
+        end
+        self:set_state()
+    end)
+
+    btn:SetScript('OnEnter', function(self)
+        if self.set_tooltip then
+            self:set_owner()
+            self:set_tooltip()
+        end
+
+        if self.set_OnEnter then
+            self:set_OnEnter()
+        end
+
+        if not self.IsMainButton then
+            local p= self:GetParent()
+            p:SetButtonState('PUSHED')
+            if Save().isEnterShowMenu and not p:IsMenuOpen() and not self:IsMenuOpen() then
+                self:OpenMenu()
+            end
+        end
+    end)
+
+    btn:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' and self.set_OnMouseDown then
+            if not self:set_OnMouseDown() then
+                self:CloseMenu()
+            end
+            if self.set_tooltip then
+                self:set_owner()
+                self:set_tooltip()
+                GameTooltip:Show()
+            end
+        end
+    end)
+
+--菜单，Tooltip, 位置
     function btn:set_anchor()
         local index= Save().anchorMenuIndex or 1
         self.menuAnchor= AnchorUtil.CreateAnchor(AnchorMenu[index][1], self, AnchorMenu[index][2])
@@ -34,6 +97,8 @@ local function Set_Menu_Anchor(btn)
         GameTooltip:SetOwner(self, AnchorTooltip[Save().anchorMenuIndex or 1])-- "ANCHOR_LEFT")
         GameTooltip:ClearLines()
     end
+
+    btn:set_anchor()
 end
 
 
@@ -53,6 +118,8 @@ function WoWTools_ChatMixin:Init()
             frameType='DropdownButton',
         })
 
+        ChatButton.IsMainButton=true
+
         ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
         ChatButton.Background:SetPoint('BOTTOMLEFT', Buttons[1])
         ChatButton.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
@@ -64,9 +131,9 @@ function WoWTools_ChatMixin:Init()
             self.Background:SetShown(Save().isShowBackground)
         end
 
---菜单，Tooltip, 位置
-        Set_Menu_Anchor(ChatButton)
-        ChatButton:set_anchor()
+
+        Set_Button_Script(ChatButton)
+
 
 
         self.ChatButton= ChatButton
@@ -133,63 +200,9 @@ local function Set_Button(btn)
     end
 
 
-
-    function btn:set_state()
-        self:SetButtonState(self:IsMenuOpen() and 'PUSHED' or 'NORMAL')
-    end
-
-    btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    function btn:HandlesGlobalMouseEvent(buttonName, event)
-        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
-    end
-
-
-    hooksecurefunc(btn, 'OnMenuOpened', function(self)
-        self:SetButtonState('PUSHED')
-    end)
-
-    hooksecurefunc(btn, 'OnMenuClosed', function(self)
-        self:SetButtonState('NORMAL')
-    end)
-
-    btn:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:GetParent():SetButtonState('NORMAL')
-        if self.set_OnLeave then
-            self:set_OnLeave()
-        end
-        self:set_state()
-    end)
-
-    btn:SetScript('OnEnter', function(self)
-        self:GetParent():SetButtonState('PUSHED')
-        if self.set_tooltip then
-            self:set_owner()
-            self:set_tooltip()
-            --GameTooltip:Show()
-        end
-        if self.set_OnEnter then
-            self:set_OnEnter()
-        end
-        if Save().isEnterShowMenu and not ChatButton:IsMenuOpen() and not self:IsMenuOpen() then
-            self:OpenMenu()
-        end
-    end)
-
-    btn:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' and self.set_OnMouseDown then
-            if not self:set_OnMouseDown() then
-                self:CloseMenu()
-            end
-            if self.set_tooltip then
-                self:set_tooltip()
-            end
-        end
-    end)
-
 --菜单，Tooltip, 位置
-    Set_Menu_Anchor(btn)
-    btn:set_anchor()
+    Set_Button_Script(btn)
+
 
     btn:set_border_alpha()
     btn:set_point()

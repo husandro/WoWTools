@@ -139,6 +139,10 @@ local function Init_Menu(self, root)
         end)
     end
 
+    sub:CreateDivider()
+    sub:CreateTitle(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+
+
 --显示背景
     WoWTools_MenuMixin:ShowBackground(root, function()
         return Save().isShowBackground
@@ -218,12 +222,11 @@ local function Init()
         end
     end
     function ChatButton:set_tooltip()
-        self:set_owner()
-        GameTooltip:AddDoubleLine(e.Icon.icon2.. addName)
-        GameTooltip:AddLine(' ')
+       -- GameTooltip:AddDoubleLine(e.Icon.icon2.. addName)
+       -- GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        --GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
+        --GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         GameTooltip:Show()
     end
 
@@ -245,33 +248,14 @@ local function Init()
     end)
 
     ChatButton:SetScript("OnMouseUp", ResetCursor)
-    ChatButton:SetScript("OnMouseDown", function(self, d)
+    ChatButton:HookScript("OnMouseDown", function(self, d)
         if IsAltKeyDown() and d=='RightButton' then--移动光标
             SetCursor('UI_MOVE_CURSOR')
             self:CloseMenu()
         end
     end)
 
-    function ChatButton:HandlesGlobalMouseEvent(buttonName, event)
-        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton";
-    end
-    hooksecurefunc(ChatButton, 'OnMenuOpened', function(self)
-        self:SetButtonState('PUSHED')
-    end)
 
-    hooksecurefunc(ChatButton, 'OnMenuClosed', function(self)
-        self:SetButtonState('NORMAL')
-    end)
-
-    ChatButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save().scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().scale, nil)
-    end)
-
-    ChatButton:SetScript("OnLeave",function()
-        ResetCursor()
-        GameTooltip:Hide()
-    end)
-    ChatButton:SetScript('OnEnter', ChatButton.set_tooltip)
 
     ChatButton:set_strata()
     ChatButton:set_point()

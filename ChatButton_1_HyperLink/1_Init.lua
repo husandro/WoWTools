@@ -60,12 +60,10 @@ local function Init()
         end
         GameTooltip:Show()
     end
+
     function LinkButton:set_OnMouseDown()
-        
         Save().linkIcon= not Save().linkIcon and true or nil
-
         WoWTools_HyperLink:Init_Link_Icon()
-
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         print(e.Icon.icon2..WoWTools_HyperLink.addName, e.GetEnabeleDisable(not isDisabled and Save().linkIcon))
         if Save().linkIcon and isDisabled and not issecure() then
