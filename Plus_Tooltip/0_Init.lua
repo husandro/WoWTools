@@ -51,6 +51,7 @@ local function Load_Addon(name, isLoaddedName)
     if name and WoWTools_TooltipMixin.AddOn[name] and not Save().disabled then
         WoWTools_TooltipMixin.AddOn[name]()
     end
+    
 end
 
 
@@ -131,7 +132,7 @@ local function Init()
     WoWTools_TooltipMixin:Init_Settings()
     WoWTools_TooltipMixin:Init_SetPoint()
     WoWTools_TooltipMixin:Init_CVar()
-    WoWTools_TooltipMixin:Init_CVar_Value() --显示选项中的CVar
+
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
     --WoWTools_TooltipMixin:Set_Init_Item(GlueTooltip)
@@ -160,6 +161,7 @@ local function Init()
             end
         end
     end
+
 end
 
 
@@ -175,6 +177,9 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('PLAYER_LEAVING_WORLD')
+
+
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1==id then
@@ -194,8 +199,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Init()--初始
+            
         else
             Load_Addon(arg1)
+
+            --[[if arg1=='Blizzard_Settings' then
+                WoWTools_TooltipMixin:Init_CVar_Value() --显示选项中的CVar
+            end]]
         end
 
 

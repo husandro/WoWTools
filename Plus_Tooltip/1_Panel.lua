@@ -315,7 +315,7 @@ local function Init_Panel()
         category= Category
     })
 
-    initializer2= e.AddPanel_Check({
+    --[[initializer2= e.AddPanel_Check({
         name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
         tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
         GetValue= function() return Save().ShowOptionsCVarTips end,
@@ -326,7 +326,7 @@ local function Init_Panel()
                 print(e.Icon.icon2..WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
-    })
+    })]]
 
     WoWTools_TooltipMixin.AddOn.Blizzard_Settings=nil
 end

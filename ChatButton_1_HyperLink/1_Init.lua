@@ -6,7 +6,7 @@ WoWTools_HyperLink={
 
     linkIcon=true, --超链接，图标
     --notShowPlayerInfo=true,--不处理，玩家信息
-    showCVarValue=e.Player.husandro,
+    showCVarName=e.Player.husandro,
 
     channels={--频道名称替换 
         --['世界'] = '[世]',
@@ -37,6 +37,7 @@ local function Save()
     return WoWTools_HyperLink.Save
 end
 
+local LinkButton
 
 
 
@@ -46,6 +47,59 @@ end
 
 
 
+
+local function Init_Button()
+    LinkButton.eventSoundTexture= LinkButton:CreateTexture(nil,'OVERLAY')
+    LinkButton.eventSoundTexture:SetPoint('BOTTOMLEFT',4, 4)
+    LinkButton.eventSoundTexture:SetSize(12,12)
+    LinkButton.eventSoundTexture:SetAtlas('chatframe-button-icon-voicechat')
+
+ --事件, 声音, 提示图标
+
+
+    --[[function LinkButton:HandlesGlobalMouseEvent(buttonName, event)
+        return event == "GLOBAL_MOUSE_DOWN" and buttonName == "RightButton"
+    end
+    function LinkButton:Settings()
+        self.texture:SetAtlas(not Save().disabed and e.Icon.icon or e.Icon.disabled)
+        self.setPlayerSoundTips:SetShown(Save().setPlayerSound)
+
+        self:UnregisterAllEvents()
+--欢迎加入, 信息
+        if Save().groupWelcome or Save().guildWelcome then
+            self:RegisterEvent('CHAT_MSG_SYSTEM')
+        end
+--事件, 声音
+        if Save().setPlayerSound then
+            self:RegisterEvent('START_TIMER')
+            self:RegisterEvent('STOP_TIMER_OF_TYPE')
+        end
+--隐藏NPC发言
+        if not Save().disabledNPCTalking then
+            self:RegisterEvent('TALKINGHEAD_REQUESTED')
+        end
+    end
+
+    LinkButton:SetScript('OnEvent', function(_, event, arg1, arg2, arg3)
+        if event=='CHAT_MSG_SYSTEM' then
+            --Event_CHAT_MSG_SYSTEM(arg1)
+
+        elseif event=='START_TIMER' then
+            --Event_START_TIMER(arg1, arg2, arg3)
+
+        elseif event=='STOP_TIMER_OF_TYPE' then
+            --Event_STOP_TIMER_OF_TYPE()
+
+        elseif event=='TALKINGHEAD_REQUESTED' then
+            --Set_Talking()
+        end
+    end)
+
+    
+
+    LinkButton:Settings()]]
+
+end
 
 
 
@@ -59,12 +113,14 @@ end
 
 
 local function Init()
-    e.setPlayerSound= Save().setPlayerSound--播放, 声音
 
-    WoWTools_HyperLink:Init_Button()
+    Init_Button()
     WoWTools_HyperLink:Init_Button_Menu()
-    WoWTools_HyperLink:Init_Link_Icon()
-    
+    WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
+    WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
+    WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
+    WoWTools_HyperLink:Init_Welcome()--欢迎加入
+    WoWTools_HyperLink:Blizzard_DebugTools()--fstack 增强 TableAttributeDisplay
 
     --[[if not Save.disabed then--使用，禁用
         Set_HyperLlinkIcon()
@@ -106,7 +162,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
             
-            addName= '|A:bag-reagent-border-empty:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+            addName= '|A:voicechat-icon-STT-on:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', addName)
 
             WoWTools_HyperLink.LinkButton= LinkButton

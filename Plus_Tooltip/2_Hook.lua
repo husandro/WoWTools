@@ -346,7 +346,7 @@ local function Init()
             end
         end)
     end
-
+end
 
     --[[hooksecurefunc('CopyToClipboard', function(text)
         if text then
@@ -356,15 +356,17 @@ local function Init()
                 text
             )
         end
-    end)]]
+    end)
 
     hooksecurefunc(Settings, 'InitTooltip', function(name, tooltip)
+        info= SettingsTooltip
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
         print(name, tooltip)
     end)
     hooksecurefunc(Settings, 'CreateOptionsInitTooltip', function(setting, name, tooltip, options)
         print(setting, name, tooltip, options)
-    end)
-end
+    end)]]
+
 
 
 

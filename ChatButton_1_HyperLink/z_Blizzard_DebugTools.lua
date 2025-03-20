@@ -1,3 +1,4 @@
+--fstack 增强 TableAttributeDisplay
 local e= select(2, ...)
 
 local function Save()
@@ -11,11 +12,11 @@ end
 
 
 
-
+local btn
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
+    btn= WoWTools_ButtonMixin:Cbtn(TableAttributeDisplay, {
         size=26,
         name='WoWToolsHyperLinkTableAttributeDisplayButton',
     })
@@ -44,7 +45,8 @@ local function Init()
         end
     end)
 
-    local edit= CreateFrame("EditBox", 'WoWToolsHyperLinkTableAttributeDisplayEdit', TableAttributeDisplay, 'InputBoxTemplate')
+
+    local edit= CreateFrame("EditBox", 'WoWToolsHyperLinkTableAttributeDisplayEdit', btn, 'InputBoxTemplate')
     WoWTools_TextureMixin:SetSearchBox(edit)
     edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
     edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 36, 24 )
@@ -68,7 +70,7 @@ local function Init()
         end
     end)
 
-    local check= CreateFrame('CheckButton', 'WoWToolsHyperLinkTableAttributeDisplayHideCheckBox', TableAttributeDisplay, 'UICheckButtonTemplate')
+    local check= CreateFrame('CheckButton', 'WoWToolsHyperLinkTableAttributeDisplayHideCheckBox', btn, 'UICheckButtonTemplate')
     check:SetPoint('RIGHT', edit, 'LEFT')
     check:SetChecked(Save().autoHideTableAttributeDisplay)
     check:HookScript('OnClick', function()
@@ -82,7 +84,7 @@ local function Init()
         GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
         GameTooltip:Show()
     end)
-    
+
     return true
 end
 
@@ -95,10 +97,12 @@ end
 
 
 
-
+--fstack 增强 TableAttributeDisplay
 function WoWTools_HyperLink:Blizzard_DebugTools()
-    if Init() then
-        Init=function()end
+    if not self.Save.disabedFrameStackPlus and Init() then
+        Init=function()
+            btn:SetShown(not self.Save.disabedFrameStackPlus)
+        end
         return true
     end
 end

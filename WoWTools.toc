@@ -187,19 +187,20 @@ Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua
 Plus_Tooltip\f_Unit_Player.lua
 Plus_Tooltip\f_URL.lua
-Plus_Tooltip\f.Cvar.lua
 Plus_Tooltip\f.StatusBar.lua
 Plus_Tooltip\z_AchievementUI.lua
 Plus_Tooltip\z_ChallengesUI.lua
 Plus_Tooltip\z_ClassTalentUI.lua
 Plus_Tooltip\z_Collections.lua
-Plus_Tooltip\z_CVar_Value.lua
+Plus_Tooltip\z_CVar_Set.lua
+##Plus_Tooltip\z_CVar_Value.lua
 Plus_Tooltip\z_FlightMap.lua
 Plus_Tooltip\z_GenericTraitUI.lua
 Plus_Tooltip\z_OrderHallUI.lua
 Plus_Tooltip\z_PlayerChoice.lua
 Plus_Tooltip\z_Professions.lua
 Plus_Tooltip\z_EventTrace.lua
+
 
 
 ##小地图，增强
@@ -547,7 +548,7 @@ ChatButton\0_2_Init_Button.lua
 ##超链接， 欢迎, 一些其他功能
 ##ChatButton\1_HyperLink.lua
 ChatButton_1_HyperLink\1_Init.lua
-ChatButton_1_HyperLink\2_Button.lua
+##ChatButton_1_HyperLink\2_Button.lua
 ChatButton_1_HyperLink\3_Menu.lua
 ChatButton_1_HyperLink\4_Link_Icon.lua
 ChatButton_1_HyperLink\5_Keyword_Panel.lua

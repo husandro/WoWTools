@@ -589,10 +589,12 @@ end
 
 
 local function Set_HyperLlinkIcon()
+    local enable= Save().linkIcon and not C_SocialRestrictions.IsChatDisabled()
+
     for i = 3, NUM_CHAT_WINDOWS do
         local frame = _G["ChatFrame"..i]
         if frame then
-            if Save().linkIcon then
+            if enable then
                 if not frame.P_AddMessage then
                     frame.P_AddMessage= frame.AddMessage
                 end
@@ -605,17 +607,15 @@ local function Set_HyperLlinkIcon()
         end
     end
 
-    if Save().linkIcon then
+    if enable then
         DEFAULT_CHAT_FRAME.AddMessage= New_AddMessage
         DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
     else
         DEFAULT_CHAT_FRAME.AddMessage= DEFAULT_CHAT_FRAME.P_AddMessage
     end
 
-    LinkButton.texture:SetAtlas(
-        Save().linkIcon and e.Icon.icon or e.Icon.disabled
-    )
-    --LinkButton.texture:SetDeaturation(C_Cvar.GetCVarBool(''))
+    WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and e.Icon.icon or 'voicechat-icon-STT-on')
+    WoWTools_HyperLink.LinkButton.texture:SetDesaturated(not enable)
 end
 
 
@@ -626,15 +626,19 @@ end
 local function Init()
 --是否有，聊天中时间戳
     IsShowTimestamps= C_CVar.GetCVar('showTimestamps')~='none'
+
     EventRegistry:RegisterFrameEventAndCallback("CVAR_UPDATE", function(_, arg1, arg2, ...)
         if arg1=='showTimestamps' then
             IsShowTimestamps= arg2~='none'
         end
-        if Save().linkIcon and Save().showCVarValue then
+        if Save().showCVarName then
             print(e.Icon.icon2..WoWTools_HyperLink.addName, arg1, arg2, ...)
         end
-        print(arg1,arg2)
     end)
+    
+--CVar 名称
+    hooksecurefunc('ChatConfigFrame_OnChatDisabledChanged', Set_HyperLlinkIcon)
+
     return true
 end
 

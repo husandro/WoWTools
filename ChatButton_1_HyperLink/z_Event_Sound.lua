@@ -1,14 +1,26 @@
+--播放, 事件声音
 local e= select(2, ...)
 
 local function Save()
     return WoWTools_HyperLink.Save
 end
 
---#########
---事件, 声音
---#########
+local TimerType
+local Timer0
+local Timer1
+local Timer2
+local Timer3
+local Timer4
+
+
+
+
+
+
+
+
 local function Set_PlayerSound()--事件, 声音
-    if not Save().setPlayerSound or UnitAffectingCombat('player') then
+    if not Save().setPlayerSound then
         return
     end
 
@@ -29,56 +41,104 @@ local function Set_PlayerSound()--事件, 声音
         C_CVar.SetCVar('Sound_EnableDialog', '1')
         print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', e.onlyChinese and '启用对话' or ENABLE_DIALOG)
     end
-    
-end
 
-
-
-local function Event_STOP_TIMER_OF_TYPE()
-    LinkButton.timerType= nil
-    if LinkButton.timer4 then LinkButton.timer4:Cancel() end
-    if LinkButton.timer3 then LinkButton.timer3:Cancel() end
-    if LinkButton.timer2 then LinkButton.timer2:Cancel() end
-    if LinkButton.timer1 then LinkButton.timer1:Cancel() end
-    if LinkButton.timer0 then LinkButton.timer0:Cancel() end
 end
 
 
 
 
-local function Event_START_TIMER(arg1, arg2, arg3)
-    if not Save().setPlayerSound then
-        return
-    end
-    if arg2==0 and arg3==0 then
-        LinkButton.timerType= nil
-        if LinkButton.timer4 then LinkButton.timer4:Cancel() end
-        if LinkButton.timer3 then LinkButton.timer3:Cancel() end
-        if LinkButton.timer2 then LinkButton.timer2:Cancel() end
-        if LinkButton.timer1 then LinkButton.timer1:Cancel() end
-        if LinkButton.timer0 then LinkButton.timer0:Cancel() end
 
-    elseif arg1 and arg2 and arg2>3 and not LinkButton.timerType then
-        LinkButton.timerType=arg1
-        if arg2>20 then
-            LinkButton.timer4= C_Timer.NewTimer(arg2-10, function()--3
-                e.PlaySound()
-            end)
-        elseif arg2>=7 then
-            e.PlaySound()
+
+
+
+
+
+local function Init_Settings()
+
+    EventRegistry:RegisterFrameEventAndCallback("START_TIMER", function(owner, arg1, arg2, arg3)
+        if not Save().setPlayerSound then
+            return
         end
-        LinkButton.timer3= C_Timer.NewTimer(arg2-3, function()--3
-            e.PlaySound(115003)
-        end)
-        LinkButton.timer2= C_Timer.NewTimer(arg2-2, function()--2
-            e.PlaySound(115003)
-        end)
-        LinkButton.timer1= C_Timer.NewTimer(arg2-1, function()--1
-            e.PlaySound(115003)
-        end)
-        LinkButton.timer0= C_Timer.NewTimer(arg2, function()--0
-            e.PlaySound(114995 )--63971)
-            LinkButton.timerType=nil
-        end)
+        if arg2==0 and arg3==0 then
+            TimerType= nil
+            if Timer4 then Timer4:Cancel() end
+            if Timer3 then Timer3:Cancel() end
+            if Timer2 then Timer2:Cancel() end
+            if Timer1 then Timer1:Cancel() end
+            if Timer0 then Timer0:Cancel() end
+
+        elseif arg1 and arg2 and arg2>3 and not TimerType then
+            TimerType=arg1
+            if arg2>20 then
+                Timer4= C_Timer.NewTimer(arg2-10, function()--3
+                    e.PlaySound()
+                end)
+            elseif arg2>=7 then
+                e.PlaySound()
+            end
+            Timer3= C_Timer.NewTimer(arg2-3, function()--3
+                e.PlaySound(115003)
+            end)
+            Timer2= C_Timer.NewTimer(arg2-2, function()--2
+                e.PlaySound(115003)
+            end)
+            Timer1= C_Timer.NewTimer(arg2-1, function()--1
+                e.PlaySound(115003)
+            end)
+            Timer0= C_Timer.NewTimer(arg2, function()--0
+                e.PlaySound(114995 )--63971)
+                TimerType=nil
+            end)
+        end
+    end)
+
+    EventRegistry:RegisterFrameEventAndCallback("STOP_TIMER_OF_TYPE", function()
+        TimerType= nil
+        if Timer4 then Timer4:Cancel() end
+        if Timer3 then Timer3:Cancel() end
+        if Timer2 then Timer2:Cancel() end
+        if Timer1 then Timer1:Cancel() end
+        if Timer0 then Timer0:Cancel() end
+    end)
+
+    return true
+end
+
+
+
+
+
+
+
+
+
+
+local function Init()
+    local enabled= Save().setPlayerSound
+
+    e.setPlayerSound= enabled--播放, 事件声音
+
+    if enabled and Init_Settings() then
+        Init_Settings=function() end
     end
+
+    if enabled then
+        if InCombatLockdown() then
+            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, arg1)
+                Set_PlayerSound()
+                EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+            end)
+        else
+            Set_PlayerSound()
+        end
+    end
+
+    WoWTools_HyperLink.LinkButton.eventSoundTexture:SetShown(enabled)
+end
+
+
+
+
+function WoWTools_HyperLink:Init_Event_Sound()
+    Init()
 end

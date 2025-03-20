@@ -5,8 +5,8 @@ local function Save()
     return WoWTools_HyperLink.Save
 end
 
-local frame
-local LinkButton, Category
+
+local LinkButton
 
 
 
@@ -18,14 +18,16 @@ local LinkButton, Category
 
 --local Category, Layout
 local function Init()
-    frame= CreateFrame('Frame')
+    local frame= CreateFrame('Frame')
 
-    Category= e.AddPanel_Sub_Category({
-        name=WoWTools_HyperLink.addName,
+    local Category= e.AddPanel_Sub_Category({
+        name= WoWTools_HyperLink.addName,
         frame=frame,
         category=WoWTools_ChatMixin.Category,
-        disabled=not LinkButton
+        disabled=not WoWTools_HyperLink.LinkButton
     })
+
+    WoWTools_HyperLink.Category= Category
 
     local function Cedit(self)
         local edit= CreateFrame('Frame',nil, self, 'ScrollingEditBoxTemplate')--ScrollTemplates.lua
@@ -34,7 +36,7 @@ local function Init()
         edit.texture= edit:CreateTexture(nil, "BACKGROUND")
         edit.texture:SetAllPoints()
         edit.texture:SetAtlas('CreditsScreen-Background-0')
-        edit.texture:SetAlpha(0.3)
+        --edit.texture:SetAlpha(0.3)
 
         return edit
     end

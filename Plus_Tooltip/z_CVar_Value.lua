@@ -122,17 +122,16 @@ local function Init()
     end
 
 
-    hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
+    --[[hooksecurefunc(SettingsCheckBoxControlMixin, 'Init', function(self, initializer)
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
         end
-        --[[self.CheckBox.variable= initializer.data.setting.variable
-        set_onenter(self.CheckBox)]]
+
         local setting = initializer.data.setting
         local initTooltip= GenerateClosure(InitTooltip, initializer:GetName(), initializer:GetTooltip(), setting.variable)
         self:SetTooltipFunc(initTooltip)
         self.CheckBox:SetTooltipFunc(initTooltip)
-    end)
+    end)]]
     hooksecurefunc(SettingsSliderControlMixin, 'Init', function(self, initializer)
         if self:IsProtected() and InCombatLockdown() or issecure() then
             return
