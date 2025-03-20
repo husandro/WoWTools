@@ -489,7 +489,7 @@ local function Init()
     ToyButton.ctrl:AddMaskTexture(ToyButton.mask)
     ToyButton.ctrl:SetTexture(1041860)
 
-    ToyButton.shift= ToyButton:CreateTexture(nil,'OVERLAY')--炉石
+    ToyButton.shift= ToyButton:CreateTexture(nil,'OVERLAY', 0)--炉石
     ToyButton.shift:SetSize(10, 10)
     ToyButton.shift:SetPoint('TOPLEFT',2,-2)
     ToyButton.shift:SetDrawLayer('OVERLAY',2)
