@@ -15,7 +15,7 @@ end
 
 --主菜单
 --#####
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
     local sub, sub2, col
     local isInBat= UnitAffectingCombat('player')
 
@@ -25,15 +25,9 @@ local function Init_Menu(_, root)
         ..WoWTools_HyperLink.addName,
     function()
         return Save().linkIcon
-    end, function()
-        if C_SocialRestrictions.IsChatDisabled() and not issecure() then
-            Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
-        end
-
-        Save().linkIcon= not Save().linkIcon and true or nil
-        print(e.Icon.icon2..WoWTools_HyperLink.addName, e.GetEnabeleDisable(not Save().disabed))
-        WoWTools_HyperLink:Init_Link_Icon()
-    end)
+    end,
+        self.set_OnMouseDown
+    )
     sub:SetTooltip(function(tooltip)
         if C_SocialRestrictions.IsChatDisabled() then
             tooltip:AddLine(e.onlyChinese and '社交' or SOCIALS)
@@ -125,7 +119,7 @@ local function Init_Menu(_, root)
 
 
 --事件声音
-    col= isInBat and '|cnRED_FONT_COLOR:' or (
+    col= isInBat and '|cff828282' or (
             not C_CVar.GetCVarBool('Sound_EnableAllSound')
             or C_CVar.GetCVar('Sound_MasterVolume')=='0'
             or C_CVar.GetCVar('Sound_DialogVolume')=='0'
@@ -315,13 +309,12 @@ local function Init_Menu(_, root)
 
 --文本转语音   
     root:CreateDivider() 
-    sub=root:CreateCheckbox(
-        (isInBat and '|cnRED_FONT_COLOR:' or '')
+    sub=root:CreateButton(
+        (isInBat and '|cff828282' or '')
         ..'|A:chatframe-button-icon-TTS:0:0|a'
         ..(e.onlyChinese and '文本转语音' or TEXT_TO_SPEECH),
+        --return C_CVar.GetCVarBool('textToSpeech')
     function ()
-        return C_CVar.GetCVarBool('textToSpeech')
-    end, function ()
         if not InCombatLockdown() then
             C_CVar.SetCVar("textToSpeech", C_CVar.GetCVar('textToSpeech')=='0' and '1' or '0' )
         end

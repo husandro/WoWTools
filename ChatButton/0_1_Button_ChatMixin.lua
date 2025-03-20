@@ -166,7 +166,7 @@ local function Set_Button(btn)
         if self.set_tooltip then
             self:set_owner()
             self:set_tooltip()
-            GameTooltip:Show()
+            --GameTooltip:Show()
         end
         if self.set_OnEnter then
             self:set_OnEnter()

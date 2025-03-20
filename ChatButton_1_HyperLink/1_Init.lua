@@ -52,6 +52,27 @@ local function Init()
     LinkButton.eventSoundTexture:SetSize(12,12)
     LinkButton.eventSoundTexture:SetAtlas('chatframe-button-icon-voicechat')
 
+    function LinkButton:set_tooltip()
+        local isDisabled= C_SocialRestrictions.IsChatDisabled()
+        GameTooltip:AddDoubleLine(WoWTools_HyperLink.addName, e.GetEnabeleDisable(not isDisabled and Save().linkIcon))
+        if isDisabled then
+            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:' ..(e.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), e.GetEnabeleDisable(true))
+        end
+        GameTooltip:Show()
+    end
+    function LinkButton:set_OnMouseDown()
+        
+        Save().linkIcon= not Save().linkIcon and true or nil
+
+        WoWTools_HyperLink:Init_Link_Icon()
+
+        local isDisabled= C_SocialRestrictions.IsChatDisabled()
+        print(e.Icon.icon2..WoWTools_HyperLink.addName, e.GetEnabeleDisable(not isDisabled and Save().linkIcon))
+        if Save().linkIcon and isDisabled and not issecure() then
+            Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
+        end
+    end
+
     WoWTools_HyperLink:Init_Button_Menu()
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
