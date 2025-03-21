@@ -68,10 +68,15 @@ Tools_B1_Mount\UI_Collections.lua
 Tools_B1_Mount\UI_SpellBook.lua
 
 ##随机炉石
-Tools\B2_Hearthstone.lua
-##打开物品，各种物品
+Tools_B2_Hearthstone\1_Init.lua
+Tools_B2_Hearthstone\2_Button.lua
+Tools_B2_Hearthstone\3_Menu.lua
+Tools_B2_Hearthstone\4_Toy_Menu.lua
+Tools_B2_Hearthstone\z_Blizzard_Collections.lua
 
+##打开物品，各种物品
 Tools\B3_OpenItems.lua
+
 ##侦察地图, 玩具, 没有小号，可以禁用
 Tools\B4_MapToy.lua
 

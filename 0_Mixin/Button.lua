@@ -92,11 +92,11 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
         
 
-        btn.background= btn:CreateTexture(nil, 'BACKGROUND')
+        --[[btn.background= btn:CreateTexture(nil, 'BACKGROUND')
         btn.background:SetAllPoints(btn)
         btn.background:SetAtlas('bag-reagent-border-empty')
         btn.background:SetAlpha(0.3)
-        btn.background:AddMaskTexture(btn.mask)
+        btn.background:AddMaskTexture(btn.mask)]]
 
         btn.texture=btn:CreateTexture(nil, 'BORDER')
         btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
@@ -105,7 +105,6 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 
         btn.border=btn:CreateTexture(nil, 'ARTWORK')
         btn.border:SetAllPoints(btn)
-
         btn.border:SetAtlas('bag-reagent-border')
         WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
     end

@@ -13,6 +13,7 @@ WoWTools_ToolsMixin.Save={
     },
     scale=1,
     strata='MEDIUM',
+    borderAlpha=0.3,
     height=10,
     lineNum=10,
 
@@ -251,7 +252,7 @@ local function Init_Menu(self, root)
         WoWTools_ToolsMixin:ShowBackground()--显示背景
     end)
 
-
+--缩放
    WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().scale
     end, function(data)
@@ -262,9 +263,9 @@ local function Init_Menu(self, root)
             print(WoWTools_Mixin.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
-    
 
-   sub2= WoWTools_MenuMixin:FrameStrata(sub, function(data)
+--FrameStrata
+    WoWTools_MenuMixin:FrameStrata(sub, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().strata= data
@@ -272,6 +273,27 @@ local function Init_Menu(self, root)
     end)
 
 
+
+
+--Border 透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().borderAlpha or 0.3
+        end, setValue=function(value)
+            Save().borderAlpha=value
+            for _, btn in pairs(WoWTools_ToolsMixin:Get_All_Buttons()) do
+                btn:set_border_alpha()
+            end
+        end,
+        name=e.onlyChinese and '镶边' or EMBLEM_BORDER,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+        tooltip=e.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+    })
+    
 
     sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
@@ -470,6 +492,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== id then
             WoWTools_ToolsMixin.Save= WoWToolsSave['WoWTools_ToolsButton'] or WoWTools_ToolsMixin.Save
 
+            Save().borderAlpha= Save().borderAlpha or 0.3
             Save().BottomPoint= Save().BottomPoint or {
                 Mount=true,
                 Hearthstone=true,

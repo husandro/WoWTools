@@ -68,7 +68,7 @@ https://www.wowhead.com/cn/affix=147/萨拉塔斯的狡诈
 
 local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrentUIDisplaySeason()
     --season=12,--当前赛季
-    [1]={[1]=9, [2]=124, [3]=6},	--Tyrannical Storming Raging
+    --[1]={[1]=9, [2]=124, [3]=6},	--Tyrannical Storming Raging
     [2]={[1]=10, [2]=134, [3]=7},	--Fortified Entangling Bolstering
     [3]={[1]=9, [2]=136, [3]=123},	--Tyrannical Incorporeal Spiteful
     [4]={[1]=10, [2]=135, [3]=6},	--Fortified 	Afflicted	Raging
@@ -78,9 +78,19 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
     [8]={[1]=10, [2]=136, [3]=8},	--Fortified 	Incorporeal Sanguine
     [9]={[1]=9, [2]=134, [3]=11},	--Tyrannical Entangling Bursting
     [10]={[1]=10, [2]=3, [3]=123},	--Fortified 	Volcanic 	Spiteful
+    -- TWW Season 2 (Sort:[1](Level 4+);[2](Level 7+);[3](Level 10+);[4](Level 12+))
+	-- Information from(资料来自)：https://www.wowhead.com/guide/mythic-plus-dungeons/the-war-within-season-2/overview
+	{ [1]=148, [2] =9 , [3]=10, [4]=147, }, -- (1) Xal’atath’s Bargain: Ascendant | Tyrannical | Fortified  | Xal’atath’s Guile
+	{ [1]=162, [2] =10, [3]=9 , [4]=147, }, -- (2) Xal’atath’s Bargain: Pulsar    | Fortified  | Tyrannical | Xal’atath’s Guile
+	{ [1]=158, [2] =9 , [3]=10, [4]=147, }, -- (3) Xal’atath’s Bargain: Voidbound | Tyrannical | Fortified  | Xal’atath’s Guile
+	{ [1]=160, [2] =10, [3]=9 , [4]=147, }, -- (4) Xal’atath’s Bargain: Devour    | Fortified  | Tyrannical | Xal’atath’s Guile
+	{ [1]=162, [2] =9 , [3]=10, [4]=147, }, -- (5) Xal’atath’s Bargain: Pulsar    | Tyrannical | Fortified  | Xal’atath’s Guile
+	{ [1]=148, [2] =10, [3]=9 , [4]=147, }, -- (6) Xal’atath’s Bargain: Ascendant | Fortified  | Tyrannical | Xal’atath’s Guile
+	{ [1]=160, [2] =9 , [3]=10, [4]=147, }, -- (7) Xal’atath’s Bargain: Devour    | Tyrannical | Fortified  | Xal’atath’s Guile
+	{ [1]=158, [2] =10, [3]=9 , [4]=147, }, -- (8) Xal’atath’s Bargain: Voidbound | Fortified  | Tyrannical | Xal’atath’s Guile
 }
-]]
 
+]]
 
 
 
@@ -522,9 +532,9 @@ end
 
 --##################
 --史诗钥石地下城, 界面
---[[词缀日程表AngryKeystones Schedule.lua
+--词缀日程表AngryKeystones Schedule.lua
 local function Init_Affix()
-    if --C_AddOns.IsAddOnLoaded("AngryKeystones")
+    if C_AddOns.IsAddOnLoaded("AngryKeystones")
         or not affixSchedule
         or TipsFrame.affixesButton
         --or C_MythicPlus.GetCurrentSeason()~= affixSchedule.season
@@ -613,7 +623,7 @@ local function Init_Affix()
     --end
     --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
     --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', 0, -12)
-end]]
+end
 
 
 
@@ -2070,7 +2080,7 @@ local function Say_ChallengeComplete()
 
 
     function SayButton:Settings(isSay)
-        local info, bagID, slotID= WoWTools_BagMixin:Ceca(6948, {isKeystone=true})
+        local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
         local level= C_MythicPlus.GetOwnedKeystoneLevel()
         if bagID and slotID then
 

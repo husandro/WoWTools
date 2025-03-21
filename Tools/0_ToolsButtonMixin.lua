@@ -14,7 +14,7 @@ WoWTools_ToolsMixin={
     addName='|A:Professions-Crafting-Orders-Icon:0:0|aTools',
 }
 
-
+local AllButtons={}
 
 
 
@@ -36,11 +36,16 @@ function WoWTools_ToolsMixin:CreateButton(tab)
         isType2=true,
         isSecure=true,
         size=30,
+        --isMenu=tab.isMenu
     })
 
     btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
-
+    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
+    
+    function btn:set_border_alpha()
+        self.border:SetAlpha(WoWTools_ToolsMixin.Save.borderAlpha or 0.3)
+    end
+    
     function btn:GetData()
         return self.ToolsData
     end
@@ -51,6 +56,7 @@ function WoWTools_ToolsMixin:CreateButton(tab)
 
     WoWTools_ToolsMixin:SetPoint(btn, tab)
 
+    table.insert(AllButtons, btn)
     return btn
 end
 
@@ -339,3 +345,7 @@ function WoWTools_ToolsMixin:OpenMenu(root, name, showText)--打开, 选项界�
 end
 
 
+
+function WoWTools_ToolsMixin:Get_All_Buttons()
+    return AllButtons
+end
