@@ -532,7 +532,7 @@ end
 
 --##################
 --史诗钥石地下城, 界面
---词缀日程表AngryKeystones Schedule.lua
+--[[词缀日程表AngryKeystones Schedule.lua
 local function Init_Affix()
     if C_AddOns.IsAddOnLoaded("AngryKeystones")
         or not affixSchedule
@@ -625,7 +625,7 @@ local function Init_Affix()
     --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', 0, -12)
 end
 
-
+]]
 
 
 
