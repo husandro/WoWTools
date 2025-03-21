@@ -80,9 +80,6 @@ local function Init(ToyButton)
     ToyButton.textureModifier= ToyButton:CreateTexture(nil, 'OVERLAY', nil, 2)
     ToyButton.textureModifier:SetAllPoints()
     ToyButton.textureModifier:AddMaskTexture(ToyButton.mask)
-    ToyButton.textureModifier.Shift= 134414
-    ToyButton.textureModifier.Ctrl=1041860
-    ToyButton.textureModifier.Alt=1444943
 
     ToyButton.typeItems={}
 
@@ -149,6 +146,29 @@ local function Init(ToyButton)
             or (IsControlKeyDown() and 2)
             or (IsShiftKeyDown() and 3)
     end
+
+    function ToyButton:set_textureModifier(down)
+        if not GameTooltip:IsOwned(self) then
+            return
+        end
+
+        local itemID, icon, isDesaturated
+        if down==1 then
+            local index= self:get_modifier_index()
+            if index then
+                itemID= ModifiedMenuTab[index].itemID
+                icon= ModifiedMenuTab[index].icon
+                if itemID then
+                    isDesaturated= not PlayerHasToy(itemID) and C_Item.GetItemCount(itemID)==0
+                end
+            end
+        end
+        self:set_tooltip(itemID)
+        self:set_cool(itemID)
+        self.textureModifier:SetTexture(icon or 0)
+        self.textureModifier:SetDesaturated(isDesaturated)
+    end
+
 
     --取得，炉石, 绑定位置
     function ToyButton:get_location()
@@ -229,17 +249,7 @@ local function Init(ToyButton)
             self:set_cool()
 
         elseif event=='MODIFIER_STATE_CHANGED' then
-            local itemID, icon
-            if arg2==1 then
-                local index= self:get_modifier_index()
-                if index then
-                    itemID= ModifiedMenuTab[index].itemID
-                    icon= ModifiedMenuTab[index].icon
-                end
-            end
-            self:set_tooltip(itemID)
-            self:set_cool(itemID)
-            self.textureModifier:SetTexture(icon or 0)
+            self:set_textureModifier(arg2)
         end
     end)
 
@@ -417,6 +427,8 @@ local function Init(ToyButton)
 
 
 
+    
+
     function ToyButton:set_event()
         if self:IsVisible() then
             self:RegisterEvent('HEARTHSTONE_BOUND')
@@ -434,7 +446,6 @@ local function Init(ToyButton)
 
     ToyButton:SetScript('OnShow', ToyButton.set_event)
     ToyButton:SetScript('OnHide', ToyButton.set_event)
-    ToyButton:set_event()
 
 
 
@@ -445,11 +456,14 @@ local function Init(ToyButton)
 
 
 
+
+
+
+    --C_Timer.After(4, function()
     ToyButton:set_alt()
-    C_Timer.After(4, function()
-        ToyButton:set_location()
-        ToyButton:Get_Random_Value()
-    end)
+    ToyButton:set_location()
+    ToyButton:Get_Random_Value()
+    ToyButton:set_event()
 end
 
 
