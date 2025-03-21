@@ -234,6 +234,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
 
     tooltip= tooltip or GameTooltip
 
+    local cooldown--冷却时间剩余
 
     if itemLink then
         if tooltip==BattlePetTooltip or itemLink:find('Hbattlepet:%d+') then
@@ -250,9 +251,11 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         else
             tooltip:SetItemByID(itemID)
         end
+        cooldown= e.GetSpellItemCooldown(nil, itemID)--冷却时间剩余
 
     elseif spellID then
         tooltip:SetSpellByID(spellID)
+        cooldown= e.GetSpellItemCooldown(spellID, nil)--冷却时间剩余
 
     elseif currencyID then
         tooltip:SetCurrencyByID(currencyID)
@@ -286,15 +289,22 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         if petID then
             tooltip:SetCompanionPet(petID)
         elseif speciesID then
-            
+
         end
-        
+
 
     elseif specIndex or specID then
         Set_Specialization(tooltip, specIndex, specID)
     end
 
     Add_Tooltip(tooltip, tip, data)
+    
+--冷却时间剩余
+    if cooldown then
+        Add_Tooltip(tooltip, ' ', nil)
+        Add_Tooltip(tooltip, format(e.onlyChinese and '冷却时间剩余：%s' or ITEM_COOLDOWN_TIME, cooldown), nil)
+    end
+
     return true
 end
 

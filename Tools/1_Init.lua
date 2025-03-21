@@ -291,9 +291,11 @@ local function Init_Menu(self, root)
         maxValue=1,
         step=0.05,
         bit='%0.2f',
-        tooltip=e.onlyChinese and '改变透明度' or CHANGE_OPACITY,
+        tooltip=function(tooltip)
+            tooltip:AddLine(e.onlyChinese and '改变透明度' or CHANGE_OPACITY)
+        end,
     })
-    
+    sub:CreateSpacer()
 
     sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()

@@ -143,8 +143,12 @@ local function Init(ToyButton)
     end
 
 
-
-
+    function ToyButton:get_modifier_index()
+        return
+            IsAltKeyDown() and 1
+            or (IsControlKeyDown() and 2)
+            or (IsShiftKeyDown() and 3)
+    end
 
     --取得，炉石, 绑定位置
     function ToyButton:get_location()
@@ -171,8 +175,8 @@ local function Init(ToyButton)
     end
 
     --CD
-    function ToyButton:set_cool()
-        e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
+    function ToyButton:set_cool(itemID)
+        e.SetItemSpellCool(self, {item=itemID or self.itemID})--主图标冷却
     end
 
 
@@ -225,13 +229,16 @@ local function Init(ToyButton)
             self:set_cool()
 
         elseif event=='MODIFIER_STATE_CHANGED' then
-            local icon
+            local itemID, icon
             if arg2==1 then
-                icon = arg1:find('SHIFT') and self.textureModifier.Shift
-                    or arg1:find('CTRL') and self.textureModifier.Ctrl
-                    or arg1:find('ALT') and self.textureModifier.Alt
+                local index= self:get_modifier_index()
+                if index then
+                    itemID= ModifiedMenuTab[index].itemID
+                    icon= ModifiedMenuTab[index].icon
+                end
             end
-            self:set_tooltips()
+            self:set_tooltips(itemID)
+            self:set_cool(itemID)
             self.textureModifier:SetTexture(icon or 0)
         end
     end)
@@ -255,13 +262,10 @@ local function Init(ToyButton)
     function ToyButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-    
-        local modifiedItemID= IsAltKeyDown() and ModifiedMenuTab[1].itemID
-                    or IsControlKeyDown() and ModifiedMenuTab[2].itemID
-                    or IsShiftKeyDown() and ModifiedMenuTab[3].itemID
-        if modifiedItemID then
 
-            WoWTools_SetTooltipMixin:Setup(GameTooltip, {itemID=modifiedItemID})
+        local index= self:get_modifier_index()
+        if index then
+            WoWTools_SetTooltipMixin:Setup(GameTooltip, {itemID= ModifiedMenuTab[index].itemID})
         else
 
             GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), e.Icon.left)
@@ -313,7 +317,7 @@ local function Init(ToyButton)
 
 
 
-    
+
     ToyButton:SetScript("OnEnter",function(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
         self:set_tooltips()

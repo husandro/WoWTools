@@ -41,11 +41,11 @@ function WoWTools_ToolsMixin:CreateButton(tab)
 
     btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
     btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
-    
+
     function btn:set_border_alpha()
         self.border:SetAlpha(WoWTools_ToolsMixin.Save.borderAlpha or 0.3)
     end
-    
+
     function btn:GetData()
         return self.ToolsData
     end

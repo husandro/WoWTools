@@ -5469,7 +5469,8 @@
         "EMBLEM_BORDER",
         "ChatConfigFrame_OnChatDisabledChanged",
         "LFG_LIST_INVITED_TO_GROUP",
-        "AnchorUtil"
+        "AnchorUtil",
+        "ITEM_COOLDOWN_TIME"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
