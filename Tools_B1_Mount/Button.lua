@@ -460,7 +460,7 @@ local function Init()
         end
     end)
 
-    function MountButton:set_tooltips()
+    function MountButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local infoType, itemID, _, spellID= GetCursorInfo()
@@ -511,12 +511,12 @@ local function Init()
     MountButton:SetScript('OnEnter', function(self)
         WoWTools_KeyMixin:SetTexture(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
-        self:set_tooltips()
+        self:set_tooltip()
         self:SetScript('OnUpdate', function (s, elapsed)
             s.elapsed = (s.elapsed or 0.3) + elapsed
             if s.elapsed > 0.3 and GameTooltip:IsOwned(s) then-- and (s.spellID or s.itemID) then
                 s.elapsed = 0
-                s:set_tooltips()
+                s:set_tooltip()
             end
         end)
     end)

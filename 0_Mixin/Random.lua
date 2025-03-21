@@ -53,6 +53,9 @@ function WoWTools_RandomMixin:Get_Random_Value()
         if self.Random_Numeri==0 then
             self:Get_Random_List()
         end
+        if self.set_tooltip and GameTooltip:IsOwned(self) then
+            self:set_tooltip()
+        end
     end
 end
 

@@ -237,7 +237,7 @@ local function Init(ToyButton)
                     icon= ModifiedMenuTab[index].icon
                 end
             end
-            self:set_tooltips(itemID)
+            self:set_tooltip(itemID)
             self:set_cool(itemID)
             self.textureModifier:SetTexture(icon or 0)
         end
@@ -259,7 +259,8 @@ local function Init(ToyButton)
 
 
 --Tooltip
-    function ToyButton:set_tooltips()
+    function ToyButton:set_tooltip()
+        self.elapsed= 0
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
 
@@ -320,13 +321,13 @@ local function Init(ToyButton)
 
     ToyButton:SetScript("OnEnter",function(self)
         WoWTools_ToolsMixin:EnterShowFrame(self)
-        self:set_tooltips()
+        self:set_tooltip()
         self:SetScript('OnUpdate', function (s, elapsed)
-            s.elapsed = (s.elapsed or 0.3) + elapsed
-            if s.elapsed > 0.3 and s.itemID then
+            s.elapsed = (s.elapsed or 1) + elapsed
+            if s.elapsed > 1 and s.itemID then
                 s.elapsed = 0
                 if GameTooltip:IsOwned(s) and select(3, GameTooltip:GetItem())~=s.itemID then
-                    s:set_tooltips()
+                    s:set_tooltip()
                 end
             end
         end)

@@ -248,7 +248,7 @@ local function Init()
             end
         end
          if not frame.WoWToolsButton then--建立，图标，菜单
-            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {icon=e.Icon.icon, size=22})
+            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {atlas=e.Icon.icon, size=22})
             frame.WoWToolsButton:SetPoint('BOTTOMRIGHT')
             frame.WoWToolsButton:SetAlpha(0)
             frame.WoWToolsButton:SetScript('OnEnter', function(self)
@@ -258,7 +258,7 @@ local function Init()
             frame.WoWToolsButton:SetScript('OnClick', function(self)
                 MenuUtil.CreateContextMenu(self, Init_UI_Menu)--界面，菜单
             end)
-            frame:HookScript('OnLeave', function(self) self.WoWToolsButton:SetAlpha(0) end)
+            frame:HookScript('OnLeave', function(self)self.WoWToolsButton:SetAlpha(0) end)
             frame:HookScript('OnEnter', function(self) self.WoWToolsButton:SetAlpha(1) end)
             frame.WoWToolsText=WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})--nil, frame.name, nil,nil,nil,'RIGHT')
             frame.WoWToolsText:SetPoint('TOPRIGHT',0,-2)
