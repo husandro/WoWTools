@@ -120,6 +120,7 @@ end]]
 
 --快捷键
 function WoWTools_KeyMixin:SetMenu(frame, root, tab)
+    
     local sub
     local name= frame:get_key_text() or (e.onlyChinese and '设置捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL)
 )
@@ -161,7 +162,7 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
         )
     end, tab)
     sub:SetTooltip(function(tooltip, desc)
-        tooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, desc.data.name)
+       -- tooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, desc.data.name)
         tooltip:AddDoubleLine(
             e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
             desc.data.key or ('|cff828282'..(e.onlyChinese and '无' or NONE))

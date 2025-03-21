@@ -287,11 +287,12 @@ local OptionsList={{
 --设置捷键
     WoWTools_KeyMixin:SetMenu(self, sub, {
         name= WoWTools_OpenItemMixin.addName,
+        key=Save().KEY,
         GetKey=function(key)
-            Save().KEY=key
+            Save().KEY= key
             self:settings()
         end,
-        OnAlt=function(s)
+        OnAlt=function()
             Save().KEY=nil
             self:settings()
         end,
