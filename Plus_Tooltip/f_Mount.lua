@@ -20,21 +20,24 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     WoWTools_Mixin:Load({id=spellID, type='spell'})
     tooltip:AddDoubleLine('mountID '..mountID, spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'..'spellID '..spellID or nil)
 
+    local textRight
     if isFactionSpecific then
         if faction==0 then
-            tooltip.textRight:SetFormattedText(
+            textRight= format(
                 e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
                 format('|A:%s:0:0|a', e.Icon.Horde, e.onlyChinese and '部落' or THE_HORDE)
             )
         elseif faction==1 then
-            tooltip.textRight:SetFormattedText(
+            textRight= format(
                 e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
                 format('|A:%s:0:0|a', e.Icon.Alliance, e.onlyChinese and '联盟' or THE_ALLIANCE)
             )
         end
     elseif isForDragonriding then
-        tooltip.textRight:SetFormattedText(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
+        textRight= format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, e.onlyChinese and '驭空术' or MOUNT_JOURNAL_FILTER_DRAGONRIDING)
     end
+    tooltip.textRight:SetText(textRight or '')
+
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
         tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
@@ -48,7 +51,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     self:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
 
     tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-
+    
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)

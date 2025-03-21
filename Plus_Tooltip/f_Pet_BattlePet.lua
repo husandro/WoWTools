@@ -21,7 +21,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     end
     BattlePetTooltipTemplate_AddTextLine(tooltip, 'speciesID '..speciesID..'    |T'..speciesIcon..':0|t'..speciesIcon)
     BattlePetTooltipTemplate_AddTextLine(tooltip, 'companionID '..companionID..'    displayID '..creatureDisplayID)
-    
+
     BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
