@@ -75,7 +75,10 @@ Tools_B2_Hearthstone\4_Toy_Menu.lua
 Tools_B2_Hearthstone\z_Blizzard_Collections.lua
 
 ##打开物品，各种物品
-Tools\B3_OpenItems.lua
+Tools_B3_OpenItems\1_Init.lua
+Tools_B3_OpenItems\2_Button.lua
+Tools_B3_OpenItems\3_Menu.lua
+Tools_B3_OpenItems\4_Get_Item.lua
 
 ##侦察地图, 玩具, 没有小号，可以禁用
 Tools\B4_MapToy.lua

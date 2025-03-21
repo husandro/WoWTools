@@ -28,7 +28,7 @@ end)
 
 
 function WoWTools_KeyMixin:Init(btn, GetValue, notSetup)
-    btn.GetKEY= GetValue or btn.GetKey
+    btn.GetKEY= btn.GetKey or GetValue or btn.GetKey
     btn.KEYstring=WoWTools_LabelMixin:Create(btn,{size=12, color={r=1,g=1,b=1}})
     btn.KEYstring:SetPoint('TOPRIGHT')
 
@@ -39,6 +39,16 @@ function WoWTools_KeyMixin:Init(btn, GetValue, notSetup)
     btn.KEYtexture:SetDesaturated(true)
     btn.KEYtexture:SetSize(30, 15)
     btn.KEYtexture:Hide()
+
+    function btn:get_key_text()
+        local key=self:GetKEY()
+        if key then
+            return (WoWTools_KeyMixin:IsKeyValid(self) and '|cnGREEN_FONT_COLOR:' or '|cff828282')
+            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
+            ..'|A:NPE_Icon:0:0|a'..(key or '')
+            ..'|r'
+        end
+    end
 
     if not notSetup then
         self:Setup(btn)
@@ -111,18 +121,17 @@ end]]
 --快捷键
 function WoWTools_KeyMixin:SetMenu(frame, root, tab)
     local sub
-    if not frame:CanChangeAttribute() then
-        sub= root:CreateButton('|cff828282'..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), function()end)
-        sub:SetEnabled(false)
+    local name= frame:get_key_text() or (e.onlyChinese and '设置捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL)
+)
+    if not frame:CanChangeAttribute() or InCombatLockdown() then
+        sub= root:CreateTitle(name)
         return sub
     end
+
     sub=root:CreateCheckbox(
-        '|A:NPE_Icon:0:0|a'
-        --..(UnitAffectingCombat('player') and '|cff9e9e9e' or '')
-        ..(tab.key or (e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL))
-        ..(tab.icon or ''),
-    function(data)
-        return data.key~=nil
+        name,
+    function()
+        return self:GetKEY()~=nil
     end, function(data)
         StaticPopup_Show('WoWTools_EditText',
             (data.name and data.name..' ' or '')
@@ -130,8 +139,8 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
             ..'|n|n"|cnGREEN_FONT_COLOR:Q|r", "|cnGREEN_FONT_COLOR:ALT-Q|r","|cnGREEN_FONT_COLOR:BUTTON5|r"|n"|cnGREEN_FONT_COLOR:ALT-CTRL-SHIFT-Q|r"',
             nil,
             {
-                text=data.key,
-                key=data.key,
+                text=self:GetKEY(),
+                key=self:GetKEY(),
                 OnShow=function(s, tab2)
                     if not tab2.key then
                         s.editBox:SetText('BUTTON5')
@@ -151,9 +160,12 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
             }
         )
     end, tab)
-    sub:SetTooltip(function(tooltip, description)
-        tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
-        tooltip:AddDoubleLine(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, description.data.key)
+    sub:SetTooltip(function(tooltip, desc)
+        tooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, desc.data.name)
+        tooltip:AddDoubleLine(
+            e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
+            desc.data.key or ('|cff828282'..(e.onlyChinese and '无' or NONE))
+        )
     end)
     --sub:SetEnabled(not UnitAffectingCombat('player'))
     return sub
@@ -167,7 +179,6 @@ end
     WoWTools_KeyMixin:SetMenu(self, sub, {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=addName..(num2 and num2>0 and text2 or ''),
-        key=Save.KEY,
         GetKey=function(key)
             Save.KEY=key
             WoWTools_KeyMixin:Setup(MountButton)--设置捷键

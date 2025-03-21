@@ -247,7 +247,7 @@ local function Init_KeyButton(index, type)
         local isInCombat= not self:CanChangeAttribute()
         GameTooltip:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
-            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKey()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
+            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
             ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(e.onlyChinese and '解除键位' or UNBIND)
@@ -302,11 +302,13 @@ local function Init_KeyButton(index, type)
         end
     end)
 
---设置KEY
-    function button:GetKey()
+
+    WoWTools_KeyMixin:Init(button, nil, true)
+
+    --设置KEY
+    function button:GetKEY()
         return Save[self.type] or (self.type=='fishing' and 'BUTTON1') or 'F'
     end
-    WoWTools_KeyMixin:Init(button, nil, true)
 
 --启动时，设置KEY
     if Save['save_'..type] then
