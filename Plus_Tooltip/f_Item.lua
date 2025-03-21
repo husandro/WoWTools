@@ -12,6 +12,7 @@ local e= select(2, ...)
 
 
 local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+    local textLeft, text2Left
 --装等
     itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
     if itemLevel and itemLevel>1 then
@@ -44,7 +45,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
                 text=itemLevel..'|A:bags-greenarrow:0:0|a'
             end
             text= col..(text or itemLevel)..'|r'
-            tooltip.textLeft:SetText(text)
+            textLeft=text
         end
     end
 
@@ -54,7 +55,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
         local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
         if sourceInfo then
             visualID=sourceInfo.visualID
-            tooltip.text2Left:SetText(sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+            text2Left=sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         end
     end
     WoWTools_TooltipMixin:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
@@ -88,7 +89,9 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
 
         tooltip:AddDoubleLine(player or ' ', other)
     end
-       -- tooltip:Show()
+    -- tooltip:Show()
+
+    return textLeft, text2Left
 end
 
 
@@ -108,6 +111,8 @@ end
 
 
 local function Set_keystonee(tooltip)
+    local textLeft, text2Left
+
     for guid, info in pairs(e.WoWDate or {}) do
         if guid and guid~=e.Player.guid and info.Keystone.link then
             WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
@@ -126,10 +131,12 @@ local function Set_keystonee(tooltip)
             text= (text and text..'/' or '')..activities.level
         end
     end]]
+
     local score= WoWTools_WeekMixin:KeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore(), true)
     if text or score then
-        tooltip.textLeft:SetText((text and '|cnGREEN_FONT_COLOR:'..text..'|r ' or '')..(score or ''))
+        textLeft=(text and '|cnGREEN_FONT_COLOR:'..text..'|r ' or '')..(score or '')
     end
+
     local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
     local num= 0
     local completedNum=0
@@ -142,8 +149,10 @@ local function Set_keystonee(tooltip)
         end
     end
     if num>0 then
-        tooltip.text2Left:SetText(num..'|cnGREEN_FONT_COLOR:('..completedNum..')|r')
+        text2Left=num..'|cnGREEN_FONT_COLOR:('..completedNum..')|r'
     end
+
+    return textLeft, text2Left
 end
 
 
@@ -270,6 +279,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     tooltip:AddLine(' ')
 
+    local text2Left, textLeft
+
+
 --版本数据, 图标，名称，版本
     if expacID or setID then
         tooltip:AddDoubleLine(
@@ -295,16 +307,16 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end
 
     if classID==2 or classID==4 then
-        Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+        textLeft, text2Left= Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
 
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-        tooltip.text2Left:SetText(PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+        text2Left= PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
 
     elseif itemID==122284 then
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
-            tooltip.textLeft:SetText('|A:token-choice-wow:0:0|a'..C_CurrencyInfo.GetCoinTextureString(price))
+            textLeft='|A:token-choice-wow:0:0|a'..C_CurrencyInfo.GetCoinTextureString(price)
         end
 
     else
@@ -333,7 +345,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
-        Set_keystonee(tooltip)
+        textLeft, text2Left= Set_keystonee(tooltip)
     else
         Set_Item_Num(tooltip, itemID)
     end
@@ -342,10 +354,15 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     --setItemCooldown(tooltip, itemID)--物品冷却
 
+    tooltip.textLeft:SetText(textLeft or '')
+    tooltip.text2Left:SetText(text2Left or '')
+    
+
     tooltip.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     tooltip.backgroundColor:SetShown(true)
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
+
 
     --tooltip:Show()
 end
