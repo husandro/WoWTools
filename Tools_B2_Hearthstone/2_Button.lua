@@ -194,7 +194,7 @@ local function Init(ToyButton)
 
     --CD
     function ToyButton:set_cool(itemID)
-        e.SetItemSpellCool(self, {item=itemID or self.itemID})--主图标冷却
+        WoWTools_CooldownMixin:SetFrame(self, {item=itemID or self.itemID})--主图标冷却
     end
 
 
@@ -442,7 +442,7 @@ local function Init(ToyButton)
             self:Get_Random_Value()
         else
             self:UnregisterAllEvents()
-            e.SetItemSpellCool(self)--主图标冷却
+            WoWTools_CooldownMixin:SetFrame(self)--主图标冷却
         end
     end
 

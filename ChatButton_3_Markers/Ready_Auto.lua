@@ -50,7 +50,7 @@ local function Set_Ready(timeLeft)
         end)
     end
 
-    e.Ccool(ReadyCheckListenerFrame, nil, timeLeft or Get_LeftTime() or 35, nil, true, true)--冷却条
+    WoWTools_CooldownMixin:Setup(ReadyCheckListenerFrame, nil, timeLeft or Get_LeftTime() or 35, nil, true, true)--冷却条
 end
 
 
@@ -195,7 +195,7 @@ local function Init()
         if AutoReadyTime then
             AutoReadyTime:Cancel()
         end
-        e.Ccool(self)
+        WoWTools_CooldownMixin:Setup(self)
         self.time= nil
     end)
 
@@ -214,7 +214,7 @@ local function Init()
                 '|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)
             )
 
-            e.Ccool(ReadyCheckListenerFrame, nil, Get_LeftTime(), nil, true, true)--冷却条
+            WoWTools_CooldownMixin:Setup(ReadyCheckListenerFrame, nil, Get_LeftTime(), nil, true, true)--冷却条
         end
     end)
 

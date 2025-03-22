@@ -61,7 +61,7 @@ local function Init()
         self.elapsed=Save().mountShowTime
         self.specialEffects=nil
         self.tabs={}
-        e.Ccool(self)
+        WoWTools_CooldownMixin:Setup(self)
         self:SetShown(false)
     end
 
@@ -100,7 +100,7 @@ local function Init()
         elseif self.elapsed> Save().mountShowTime then
             self.elapsed=0
 
-            e.Ccool(self, nil, Save().mountShowTime, 0, true,false, true )--冷却条
+            WoWTools_CooldownMixin:Setup(self, nil, Save().mountShowTime, 0, true,false, true )--冷却条
             if self.specialEffects then
                 DEFAULT_CHAT_FRAME.editBox:SetText(EMOTE171_CMD2)
                 ChatEdit_SendText(DEFAULT_CHAT_FRAME.editBox, 0)

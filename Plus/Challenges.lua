@@ -1478,10 +1478,10 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.spellPort:RegisterEvent('SPELL_UPDATE_COOLDOWN')
                         frame.spellPort:SetScript('OnShow', function(self2)
                             self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                            e.SetItemSpellCool(self2, {spell=self2:GetParent().spellID})
+                            WoWTools_CooldownMixin:SetFrame(self2, {spell=self2:GetParent().spellID})
                         end)
                         frame.spellPort:SetScript('OnEvent', function(self2)
-                            e.SetItemSpellCool(self2, {spell=self2:GetParent().spellID})
+                            WoWTools_CooldownMixin:SetFrame(self2, {spell=self2:GetParent().spellID})
                         end)
                     end
                 end
@@ -1650,7 +1650,7 @@ local function set_Week_Reward_Look_Specialization()
             self.time:Cancel()
         end
         self:SetShown(show)
-        e.Ccool(self, nil, show and 4 or 0, nil, true, true, true)
+        WoWTools_CooldownMixin:Setup(self, nil, show and 4 or 0, nil, true, true, true)
     end
     function WeekRewardLookFrame:set_Texture()
         if not self.texture then

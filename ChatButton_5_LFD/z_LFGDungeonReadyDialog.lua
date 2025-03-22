@@ -21,12 +21,12 @@ local function Init()
 
     LFGInvitePopup:HookScript("OnShow", function(self)--自动进入FB
         e.PlaySound()--播放, 声音
-        e.Ccool(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
+        WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
     end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
         e.PlaySound()--播放, 声音
-        e.Ccool(self, nil, LFGInvitePopup.timeOut and LFGInvitePopup.timeOut or 38, nil, true, true)
+        WoWTools_CooldownMixin:Setup(self, nil, LFGInvitePopup.timeOut and LFGInvitePopup.timeOut or 38, nil, true, true)
     end)
 
 --禁用

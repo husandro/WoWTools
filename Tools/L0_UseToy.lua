@@ -245,7 +245,7 @@ local function Init_Menu_Toy(_, root)
             ..alt..icon
             ..name
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
-            ..(has and e.GetSpellItemCooldown(nil, itemID) or ''),--CD
+            ..(has and WoWTools_CooldownMixin:GetText(nil, itemID) or ''),--CD
             function(data)
                 return ToyButton.itemID==data.itemID
             end, function(data)
@@ -565,7 +565,7 @@ local function Init()
 
     --CD
     function ToyButton:set_cool()
-        e.SetItemSpellCool(self, {item=self.itemID})--主图标冷却
+        WoWTools_CooldownMixin:SetFrame(self, {item=self.itemID})--主图标冷却
     end
 
 
@@ -748,7 +748,7 @@ local function Init()
             self:Get_Random_Value()
         else
             self:UnregisterAllEvents()
-            e.SetItemSpellCool(self)--主图标冷却
+            WoWTools_CooldownMixin:SetFrame(self)--主图标冷却
         end
     end
 

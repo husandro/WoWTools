@@ -72,14 +72,14 @@ local function Init_Fuoco_Button(button)
     btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
     function btn:set_event()
-        e.SetItemSpellCool(self, {spell=818})
+        WoWTools_CooldownMixin:SetFrame(self, {spell=818})
     end
     function btn:settings()
         if self:IsVisible() then
             self:set_event()
             self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
         else
-            e.SetItemSpellCool(self)
+            WoWTools_CooldownMixin:SetFrame(self)
             self:UnregisterAllEvents()
         end
     end

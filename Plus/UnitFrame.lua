@@ -807,7 +807,7 @@ local function set_memberFrame(memberFrame)
             self:SetAlpha(0.5)
         end)
         function castFrame:set_settings()
-            local texture= e.SetItemSpellCool(self, {unit=self.unit})
+            local texture= WoWTools_CooldownMixin:SetFrame(self, {unit=self.unit})
             self.texture:SetTexture(texture or 0)
         end
         castFrame:SetScript('OnEvent', function(self, event, arg1)

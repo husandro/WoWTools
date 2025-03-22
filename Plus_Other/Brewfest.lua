@@ -123,7 +123,7 @@ local function Init()
         self:SetShown(info and true or false)
 
         local duration= (info and info.duration and info.duration>0) and info.duration or nil
-        e.Ccool(self, nil, duration, nil, true, true)
+        WoWTools_CooldownMixin:Setup(self, nil, duration, nil, true, true)
 
         local spellId= info and info.spellId or nil
         if duration then

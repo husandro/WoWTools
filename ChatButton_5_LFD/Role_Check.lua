@@ -75,9 +75,9 @@ local function Init_LFD()
             self.acceptTime:Cancel()
         end
         if not seconds then
-            e.Ccool(self)
+            WoWTools_CooldownMixin:Setup(self)
         else
-            e.Ccool(self, nil, seconds, nil, true, true)--设置冷却
+            WoWTools_CooldownMixin:Setup(self, nil, seconds, nil, true, true)--设置冷却
         end
     end
 
@@ -126,7 +126,7 @@ local function Init_PvP()
     C_Timer.After(2, Set_PvPRoles)
     PVPReadyDialog:HookScript('OnShow', function(self2)
         e.PlaySound()--播放, 声音
-        e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 end
 
@@ -170,7 +170,7 @@ local function Init_RolePollPopup()
         if btn2 then
             btn2.checkButton:SetChecked(true)
             e.call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
-            e.Ccool(self, nil, WoWTools_LFDMixin.Save.sec, nil, true)--冷却条
+            WoWTools_CooldownMixin:Setup(self, nil, WoWTools_LFDMixin.Save.sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(WoWTools_LFDMixin.Save.sec, function()
                 if self.acceptButton:IsEnabled() then
                     self.acceptButton:Click()
@@ -186,7 +186,7 @@ local function Init_RolePollPopup()
             if self.aceTime then
                 self.aceTime:Cancel()
             end
-            e.Ccool(self)--冷却条
+            WoWTools_CooldownMixin:Setup(self)--冷却条
         end
     end)
 
@@ -194,7 +194,7 @@ local function Init_RolePollPopup()
         if self.aceTime then
             self.aceTime:Cancel()
         end
-        e.Ccool(self)--冷却条
+        WoWTools_CooldownMixin:Setup(self)--冷却条
     end)
 end
 

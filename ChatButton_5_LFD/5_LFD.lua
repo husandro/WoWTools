@@ -99,7 +99,7 @@ local function Init()
 
     PVPTimerFrame:HookScript('OnShow', function(self2)
         e.PlaySound()--播放, 声音
-        e.Ccool(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
+        WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 end
 

@@ -87,7 +87,7 @@ local function Init_Frame()
                         exit_Instance()
                     end)
                     StaticPopup_Show('WoWTools_LFD_ExitIns')
-                    e.Ccool(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
+                    WoWTools_CooldownMixin:Setup(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             end
 
         elseif event=='PLAYER_ENTERING_WORLD' then
@@ -115,7 +115,7 @@ local function Init_Frame()
             if Save().leaveInstance then
                 e.PlaySound()--播放, 声音
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
-                    e.Ccool(PVPMatchResults.buttonContainer.leaveButton, nil, WoWTools_LFDMixin.Save.sec, nil, true, true)
+                    WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWTools_LFDMixin.Save.sec, nil, true, true)
                 end
                 print(e.Icon.icon2..WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(WoWTools_LFDMixin.Save.sec))
                 C_Timer.After(WoWTools_LFDMixin.Save.sec, function()

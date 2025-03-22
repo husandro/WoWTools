@@ -252,7 +252,7 @@ local function Init()--设置标记, 框架
         if MakerFrame.ping:IsShown() then
             local cooldownDuration = (self.cooldownInfo.endTimeMs / 1000) - GetTime()
             for _, btn2 in pairs(MakerFrame.ping.Button) do
-                e.Ccool(btn2, nil, cooldownDuration, nil, true)
+                WoWTools_CooldownMixin:Setup(btn2, nil, cooldownDuration, nil, true)
             end
         end
     end)
@@ -329,7 +329,7 @@ local function Init()--设置标记, 框架
                 self.timer=C_Timer.NewTimer(timeRemaining or totalTime, function() self.star=nil end)
                 self.star=true
             end
-            e.Ccool(self, nil, timeRemaining or totalTime, nil, true)--冷却条
+            WoWTools_CooldownMixin:Setup(self, nil, timeRemaining or totalTime, nil, true)--冷却条
         end
     end)
     MakerFrame.countdown:set_Event()
@@ -413,7 +413,7 @@ local function Init()--设置标记, 框架
     MakerFrame.check:SetScript('OnShow', MakerFrame.check.set_Event)
     MakerFrame.check:SetScript('OnHide', MakerFrame.check.set_Event)
     MakerFrame.check:SetScript('OnEvent', function(self, event, _, arg2)
-        e.Ccool(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
+        WoWTools_CooldownMixin:Setup(self, nil, event=='READY_CHECK_FINISHED' and 0 or arg2 or 0, nil, true, true)--冷却条
     end)
     MakerFrame.check:set_Event()
 

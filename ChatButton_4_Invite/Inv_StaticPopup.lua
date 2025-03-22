@@ -63,13 +63,13 @@ local function PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRe
             isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '%s其它服务器' or INVITATION_XREALM,
             WoWTools_UnitMixin:GetLink(nil, inviterGUID))--转服务器
         )
-        e.Ccool(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
+        WoWTools_CooldownMixin:Setup(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
     end
 
     local friend=WoWTools_UnitMixin:GetIsFriendIcon(nil, inviterGUID, nil)
     if friend then--好友
         if not Save().FriendAceInvite then
-            e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
+            WoWTools_CooldownMixin:Setup(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
             return
         end
         local sec=isInLFG() and 10 or 3--是否有FB, 排除中
@@ -108,7 +108,7 @@ local function PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRe
         StaticPopup1.button3:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..'|r'..(e.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
 
-        e.Ccool(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+        WoWTools_CooldownMixin:Setup(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
     end
 end
 

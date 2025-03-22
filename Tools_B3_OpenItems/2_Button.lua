@@ -270,7 +270,7 @@ local function Init(OpenButton)
             start, duration, enable = OpenButton:GetItemCooldown()
             self.texture:SetDesaturated(not enable)
         end
-        e.Ccool(OpenButton, start, duration, nil, true,nil, true)
+        WoWTools_CooldownMixin:Setup(OpenButton, start, duration, nil, true,nil, true)
     end
 
 

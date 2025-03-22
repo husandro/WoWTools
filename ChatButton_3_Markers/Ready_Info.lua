@@ -141,7 +141,7 @@ local function Init()
         self:set_Shown()
 
         if event=='READY_CHECK' and text then
-            e.Ccool(ReadyTipsButton,nil, arg2 or 35, nil, true)
+            WoWTools_CooldownMixin:Setup(ReadyTipsButton,nil, arg2 or 35, nil, true)
             self.HideTimer=C_Timer.NewTimer(arg2 or 35, function()
                 self:set_Hide()
             end)
@@ -176,7 +176,7 @@ local function Init()
     end)
 
     ReadyTipsButton:SetScript('OnHide', function(self)
-        e.Ccool(self, nil, 0)
+        WoWTools_CooldownMixin:Setup(self, nil, 0)
     end)
 
     ReadyTipsButton:set_Point()

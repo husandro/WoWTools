@@ -42,7 +42,7 @@ local function Set_Button_Function(btn)
 
     function btn:set_cool()
         local start, duration, enable = C_Container.GetItemCooldown(self.itemID)
-        e.Ccool(self, start, duration, nil, true, nil, true)--冷却条
+        WoWTools_CooldownMixin:Setup(self, start, duration, nil, true, nil, true)--冷却条
         btn.enableCooldown= enable
     end
 
@@ -263,7 +263,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
             btn:SetAttribute("item1", nil)
             btn.texture:SetTexture(0)
             btn:Hide()
-            e.Ccool(btn)
+            WoWTools_CooldownMixin:Setup(btn)
             btn:UnregisterAllEvents()
         end
     end

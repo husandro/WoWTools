@@ -251,11 +251,11 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         else
             tooltip:SetItemByID(itemID)
         end
-        cooldown= e.GetSpellItemCooldown(nil, itemID)--冷却时间剩余
+        cooldown= WoWTools_CooldownMixin:GetText(nil, itemID)--冷却时间剩余
 
     elseif spellID then
         tooltip:SetSpellByID(spellID)
-        cooldown= e.GetSpellItemCooldown(spellID, nil)--冷却时间剩余
+        cooldown= WoWTools_CooldownMixin:GetText(spellID, nil)--冷却时间剩余
 
     elseif currencyID then
         tooltip:SetCurrencyByID(currencyID)

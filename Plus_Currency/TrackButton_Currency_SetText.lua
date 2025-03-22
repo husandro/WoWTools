@@ -288,7 +288,7 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
     end)
 
     function btn:set_item_cool()
-        e.SetItemSpellCool(self, {item=self.itemID, type= self.itemButtonUs })
+        WoWTools_CooldownMixin:SetFrame(self, {item=self.itemID, type= self.itemButtonUs })
     end
     function btn:set_btn_Event()
         if self.itemID then

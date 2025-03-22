@@ -211,7 +211,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
             col='|cnRED_FONT_COLOR:'
             desc= '|A:Islands-QuestBangDisable:0:0|a'..(e.onlyChinese and '未收集' or NOT_COLLECTED)
         else
-            cool= e.GetSpellItemCooldown(nil, itemID)
+            cool= WoWTools_CooldownMixin:GetText(nil, itemID)
         end
     else
         if not disableCount then
@@ -219,7 +219,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
             if num==0 then
                 col='|cff9e9e9e'
             else
-                cool= e.GetSpellItemCooldown(nil, itemID)
+                cool= WoWTools_CooldownMixin:GetText(nil, itemID)
             end
 
             desc= ' x'..num..' '
@@ -398,3 +398,6 @@ function WoWTools_ItemMixin:GetItemCount(itemID, tab)
         bag, bank, net
 
 end
+
+
+

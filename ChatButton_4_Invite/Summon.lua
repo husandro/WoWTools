@@ -21,7 +21,7 @@ local function Init()
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate",function(self)
         if IsModifierKeyDown() or self.isCancelledAuto or not Save().Summon then
             if not self.isCancelledAuto then
-                e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+                WoWTools_CooldownMixin:Setup(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
                 if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
             end
             self.isCancelledAuto=true
@@ -34,7 +34,7 @@ local function Init()
                 if self.SummonTimer and not self.SummonTimer:IsCancelled() then
                     self.SummonTimer:Cancel()
                 end
-                e.Ccool(self, nil, 3, nil, true, true, nil)--冷却条
+                WoWTools_CooldownMixin:Setup(self, nil, 3, nil, true, true, nil)--冷却条
                 self.SummonTimer= C_Timer.NewTimer(3, function()
                     if not UnitAffectingCombat("player") and PlayerCanTeleport() then
                         C_SummonInfo.ConfirmSummon()
@@ -51,7 +51,7 @@ local function Init()
             end
 
         elseif self.enabledAutoSummon then--取消，召唤
-            e.Ccool(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
+            WoWTools_CooldownMixin:Setup(self, nil, C_SummonInfo.GetSummonConfirmTimeLeft(), nil, true, true, nil)--冷却条
             if self.SummonTimer and not self.SummonTimer:IsCancelled() then self.SummonTimer:Cancel() end--取消，计时
             self.enabledAutoSummon=nil
         end

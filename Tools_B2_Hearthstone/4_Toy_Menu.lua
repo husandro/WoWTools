@@ -64,7 +64,7 @@ local function Init_Menu_Toy(self, root)
             ..index..') '..icon
             ..name
             ..(isLoked and '|A:AdventureMapIcon-Lock:0:0|a' or '')--锁定
-            ..(has and e.GetSpellItemCooldown(nil, itemID) or ''),--CD
+            ..(has and WoWTools_CooldownMixin:GetText(nil, itemID) or ''),--CD
             function(data)
                 return self.itemID==data.itemID
             end, function(data)

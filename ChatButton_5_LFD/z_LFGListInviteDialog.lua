@@ -12,7 +12,7 @@ local function Settings(self)
 
     e.PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
 
-    e.Ccool(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+    WoWTools_CooldownMixin:Setup(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
 
     if WoWTools_LFDMixin.Save.disabedLFDInviteInfo or not self.resultID then
         return

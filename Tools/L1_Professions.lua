@@ -96,14 +96,14 @@ local function Init_Cooking(index)
         button.tooltip=macro
 
         function button:set_event()
-            e.SetItemSpellCool(self, {spell=818})
+            WoWTools_CooldownMixin:SetFrame(self, {spell=818})
         end
         function button:settings()
             if self:IsVisible() then
                 self:set_event()
                 self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
             else
-                e.SetItemSpellCool(self)
+                WoWTools_CooldownMixin:SetFrame(self)
                 self:UnregisterAllEvents()
             end
         end

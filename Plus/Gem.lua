@@ -501,7 +501,7 @@ local function Init_Spell_Button()
         if event=='SPELL_UPDATE_USABLE' then
             self:set_count()
         elseif event=='SPELL_UPDATE_COOLDOWN' then
-            e.SetItemSpellCool(self, {spell=self.spellID})
+            WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
         elseif event=='ACTIONBAR_UPDATE_STATE' then
             self:set()
         elseif event=='PLAYER_REGEN_ENABLED' then
@@ -513,7 +513,7 @@ local function Init_Spell_Button()
     SpellButton:SetScript('OnShow', function(self)
         self:RegisterEvent('SPELL_UPDATE_USABLE')
         self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-        e.SetItemSpellCool(self, {spell=self.spellID})
+        WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
         self:set_count()
     end)
     SpellButton:SetScript('OnHide', SpellButton.UnregisterAllEvents)

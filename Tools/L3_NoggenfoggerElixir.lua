@@ -278,6 +278,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Set_Aura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        e.SetItemSpellCool(button, {item=ItemID})
+        WoWTools_CooldownMixin:SetFrame(button, {item=ItemID})
     end
 end)

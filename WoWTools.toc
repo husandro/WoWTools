@@ -21,7 +21,7 @@
 Init.xml
 
 ##主要function，不能删除
-1_WoWTools\0_Mixin.lua
+0_Mixin\0_Mixin.lua
 1_WoWTools\1_WoWTools.lua
 1_WoWTools\API_Panel.lua
 1_WoWTools\API_WoWDate.lua
@@ -31,6 +31,7 @@ Init.xml
 0_Mixin\Aura.lua
 0_Mixin\Button.lua
 0_Mixin\Collected.lua
+0_Mixin\Cooldown.lua
 0_Mixin\Durabiliy.lua
 0_Mixin\EditBox.lua
 0_Mixin\Frame.lua

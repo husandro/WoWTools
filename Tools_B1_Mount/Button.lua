@@ -187,7 +187,7 @@ local function setTextrue()--设置图标
         end
     end
     MountButton.texture:SetTexture(icon or 0)
-    e.SetItemSpellCool(MountButton, {item=MountButton.itemID, spell=MountButton.spellID})--设置冷却
+    WoWTools_CooldownMixin:SetFrame(MountButton, {item=MountButton.itemID, spell=MountButton.spellID})--设置冷却
 end
 
 
@@ -541,7 +541,7 @@ local function Init()
         if MountButton:CanChangeAttribute() then
             setShiftCtrlAltAtt()--设置Shift Ctrl Alt 属性
             setClickAtt()--设置
-            e.SetItemSpellCool(MountButton, {item=MountButton.itemID, spell=MountButton.spellID})--设置冷却
+            WoWTools_CooldownMixin:SetFrame(MountButton, {item=MountButton.itemID, spell=MountButton.spellID})--设置冷却
         end
     end)
 
@@ -630,7 +630,7 @@ local function Init_Event()
             self.textureModifier:SetShown(icon)
 
         elseif event=='SPELL_UPDATE_COOLDOWN' then
-            e.SetItemSpellCool(self, {item=self.itemID, spell=self.spellID})--设置冷却
+            WoWTools_CooldownMixin:SetFrame(self, {item=self.itemID, spell=self.spellID})--设置冷却
 
         elseif event=='SPELL_UPDATE_USABLE' then
             setTextrue()--设置图标

@@ -175,9 +175,9 @@ local function Init()
 
             function btn:set_cool()
                 if self:IsVisible() then
-                    e.SetItemSpellCool(self, {spell=self.spellID2})--设置冷却
+                    WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID2})--设置冷却
                 else
-                    e.SetItemSpellCool(self)
+                    WoWTools_CooldownMixin:SetFrame(self)
                 end
             end
 
@@ -261,7 +261,7 @@ local function Init()
 
             btn:SetScript("OnEvent", function(self, event, arg1)
                 if event=='SPELL_UPDATE_COOLDOWN' then
-                    e.SetItemSpellCool(self, {spell=self.spellID2})--设置冷却
+                    WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID2})--设置冷却
 
                 elseif event=='SPELL_DATA_LOAD_RESULT' then
                     if (arg1==self.spellID or arg1==self.spellID2) then
@@ -303,7 +303,7 @@ local function Init()
                     GameTooltip:AddDoubleLine(
                         '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
                         ..(e.cn(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
-                        ..(e.GetSpellItemCooldown(self.spellID2, nil) or ''),
+                        ..(WoWTools_CooldownMixin:GetText(self.spellID2, nil) or ''),
                         format('%s%s',
                             IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
                             e.Icon.right)

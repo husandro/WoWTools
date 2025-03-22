@@ -55,7 +55,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
                 then
                     cool= '|cffff00ff'..(e.onlyChinese and '正在施放' or ACTION_SPELL_CAST_START)..'|r'
                 else
-                    cool=e.GetSpellItemCooldown(spellID, nil)
+                    cool=WoWTools_CooldownMixin:GetText(spellID, nil)
                 end
             end
         else
