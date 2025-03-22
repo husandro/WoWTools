@@ -32,7 +32,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
         num, data= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
 
     elseif not isWide then
-        for guid, info in pairs(e.WoWDate or {}) do--帐号数据
+        for guid, info in pairs(WoWTools_WoWDate or {}) do--帐号数据
             if guid~=WoWTools_DataMixin.Player.GUID then
                 local quantity=info.Currency[currencyID]
                 if quantity and quantity>0 then

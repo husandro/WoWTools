@@ -14,7 +14,7 @@ function WoWTools_EncounterMixin:GetWorldData(frame)
     ), WoWTools_DataMixin.Icon.left)
 
     GameTooltip:AddLine(' ')
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         local find
         local text, num= nil, 0
         for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS

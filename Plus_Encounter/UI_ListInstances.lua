@@ -161,7 +161,7 @@ local function Init()
                     button.KeyTexture:SetScript('OnEnter', function(self)
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:ClearLines()
-                        local link= e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
+                        local link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
                         if link then
                             GameTooltip:SetHyperlink(link)
                         else

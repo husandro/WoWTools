@@ -113,7 +113,7 @@ end
 local function Set_keystonee(tooltip)
     local textLeft, text2Left
 
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         if guid and guid~=WoWTools_DataMixin.Player.GUID and info.Keystone.link then
             WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
             tooltip:AddDoubleLine(
@@ -192,7 +192,7 @@ local function Set_Item_Num(tooltip, itemID)
     local bagAll,bankAll,numPlayer=0,0,0--帐号数据
     local new={}
 
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         local tab=info.Item[itemID]
         if tab and guid and guid~=WoWTools_DataMixin.Player.GUID then
             if tab.bag>0 or tab.bank>0 then

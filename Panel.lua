@@ -62,7 +62,7 @@ local function Init_Options()
                 (WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
-                    e.WoWDate={}
+                    WoWTools_WoWDate={}
                     WoWTools_Mixin:Reload()
                 end
             )
@@ -203,7 +203,6 @@ panel:RegisterEvent('PLAYER_LOGIN')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-            WoWToolsSave= WoWToolsSave or {}
 
             if not WoWToolsSave['WoWTools_Settings'] then
                 WoWToolsSave['WoWTools_Settings'] = {

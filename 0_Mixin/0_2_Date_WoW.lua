@@ -1,14 +1,16 @@
-local id, e = ...
 
+WoWTools_DataMixin.WoWGUID={}--战网，好友GUID--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
+WoWTools_DataMixin.UnitItemLevel={}--玩家装等
+WoWTools_DataMixin.GroupGuid={}--队伍数据收集
 
 
 
 --[[
-e.GetItemWoWNum(itemID)--取得WOW物品数量  return all, numPlayer
+WoWTools_BagMixin:GetItem_WoW_Num(itemID)--取得WOW物品数量  return all, numPlayer
 
-e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
+WoWTools_DataMixin.WoWGUID={}--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
 
-e.WoWDate[WoWTools_DataMixin.Player.GUID]={
+WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID]={
     Keystone={
         score= score,
         all= all,
@@ -19,7 +21,7 @@ e.WoWDate[WoWTools_DataMixin.Player.GUID]={
         weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
         weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
         weekWorld= WoWTools_WeekMixin:GetRewardText(6),--世界
-        link= e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
+        link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
     },
     Item={
         [itemID]={
@@ -33,8 +35,8 @@ e.WoWDate[WoWTools_DataMixin.Player.GUID]={
     region=
 }
 
-e.UnitItemLevel=[guid] = {--玩家装等
-        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
+WoWTools_DataMixin.UnitItemLevel=[guid] = {--玩家装等
+        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel),
         specID= GetInspectSpecialization(unit),
         faction= UnitFactionGroup(unit),
         col= hex,
@@ -42,15 +44,15 @@ e.UnitItemLevel=[guid] = {--玩家装等
         g=g,
         b=b,
     }
-e.GetNotifyInspect(tab, unit)--取得装等
-e.GroupGuid[GetUnitName(unit, true) or guid]={--队伍数据
+WoWTools_UnitMixin:GetNotifyInspect(tab, unit)--取得装等
+WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true) or guid]={--队伍数据
             unit= unit,
             combatRole= UnitGroupRolesAssigned(unit),
             guid=guid,
             faction= UnitFactionGroup(unit),
             level=
         }
-e.GetGroupGuidDate()--队伍数据收集
+GetGroupGuidDate()--队伍数据收集
 ]]
 
 
@@ -69,17 +71,15 @@ e.GetGroupGuidDate()--队伍数据收集
 --##############
 --战网，好友GUID
 --##############
-e.WoWGUID={}--e.WoWGUID[名称-服务器]=guid
-
 
 local function setwowguidTab(info)
     if info and info.characterName then
         local name= WoWTools_UnitMixin:GetFullName(info.characterName)
         if name then
             if info.isOnline and info.wowProjectID==1 then
-                e.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName, level= info.characterLevel}
+                WoWTools_DataMixin.WoWGUID[name]={guid=info.playerGuid, faction=info.factionName, level= info.characterLevel}
             else
-                e.WoWGUID[name]=nil
+                WoWTools_DataMixin.WoWGUID[name]=nil
             end
         end
     end
@@ -89,7 +89,7 @@ local function Get_WoW_GUID_Info(_, friendIndex)
         local accountInfo =C_BattleNet.GetFriendAccountInfo(friendIndex)
         setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
     else
-        e.WoWGUID={}
+        WoWTools_DataMixin.WoWGUID={}
         for i=1 ,BNGetNumFriends() do
             local accountInfo =C_BattleNet.GetFriendAccountInfo(i);
             setwowguidTab(accountInfo and accountInfo.gameAccountInfo)
@@ -115,7 +115,7 @@ end
 --########
 --玩家装等
 --########
-e.UnitItemLevel={}
+WoWTools_DataMixin.UnitItemLevel={}
 local function Get_Player_Info(_, guid)--取得玩家信息
     local unit= guid and UnitTokenFromGUID(guid)
     if not unit then
@@ -123,8 +123,8 @@ local function Get_Player_Info(_, guid)--取得玩家信息
     end
 
     local r, g, b, hex= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
-    e.UnitItemLevel[guid] = {--玩家装等
-        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel),
+    WoWTools_DataMixin.UnitItemLevel[guid] = {--玩家装等
+        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel),
         specID= GetInspectSpecialization(unit),
         faction= UnitFactionGroup(unit),
         col= hex,
@@ -161,39 +161,13 @@ end
 
 
 
---#######
---取得装等
---#######
-local NotifyInspectTicker
-function e.GetNotifyInspect(tab, unit)
-    if unit then
-        if UnitExists(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
-            NotifyInspect(unit)
-        end
-    else
-        tab=tab or {}
-        local num, index= #tab, 1
-        if num>0 then
-            if NotifyInspectTicker and not NotifyInspectTicker:IsCancelled() then
-                NotifyInspectTicker:Cancel()
-            end
-            NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
-                local unit2=tab[index]
-                if UnitExists(unit2) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit2, 1)
-                    NotifyInspect(tab[index])
-                    index= index+ 1
-                end
-            end, num)
-        end
-    end
-end
 
 --###########
 --队伍数据收集
 --###########
-e.GroupGuid={}
-function e.GetGroupGuidDate()--队伍数据收集
-    e.GroupGuid={}
+
+local function GetGroupGuidDate()--队伍数据收集
+    WoWTools_DataMixin.GroupGuid={}
     local UnitTab={}
     if IsInRaid() then
         for index= 1, MAX_RAID_MEMBERS do --GetNumGroupMembers() do
@@ -208,10 +182,10 @@ function e.GetGroupGuidDate()--队伍数据收集
                         combatRole= role or combatRole,
                         faction= UnitFactionGroup(unit),
                     }
-                    e.GroupGuid[guid]= tab
+                    WoWTools_DataMixin.GroupGuid[guid]= tab
                     tab.guid= guid
-                    e.GroupGuid[GetUnitName(unit, true)]= tab
-                    if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
+                    WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true)]= tab
+                    if not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then
                         table.insert(UnitTab, unit)
                     end
                 end
@@ -222,24 +196,24 @@ function e.GetGroupGuidDate()--队伍数据收集
             local unit= 'party'..index
             local guid= UnitExists(unit) and UnitGUID(unit)
             if guid then
-                e.GroupGuid[guid]= {
+                WoWTools_DataMixin.GroupGuid[guid]= {
                     unit= unit,
                     combatRole= UnitGroupRolesAssigned(unit),
                     faction= UnitFactionGroup(unit),
                 }
-                e.GroupGuid[GetUnitName(unit, true)]= {
+                WoWTools_DataMixin.GroupGuid[GetUnitName(unit, true)]= {
                     unit= unit,
                     combatRole= UnitGroupRolesAssigned(unit),
                     guid=guid,
                     faction= UnitFactionGroup(unit),
                 }
-                if not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLevel then
+                if not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then
                     table.insert(UnitTab, unit)
                 end
             end
         end
     end
-    e.GetNotifyInspect(UnitTab)--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
 end
 
 
@@ -278,7 +252,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         end
     end
 
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone={
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone={
         score= score,
         all= all,
         week= WoWTools_DataMixin.Player.Week,
@@ -289,7 +263,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         weekMythicPlus= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Activities),--MythicPlus
         weekPvP= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.RankedPvP),--RankedPvP
         weekWorld=WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
-        link= e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
+        link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
     }
 end
 
@@ -305,18 +279,18 @@ end
 
 --更新物品
 local function Update_Bag_Items()
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link=nil
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Item={}--{itemID={bag=包, bank=银行}}
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link=nil
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Item={}--{itemID={bag=包, bank=银行}}
     for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
         for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local itemID = C_Container.GetContainerItemID(bagID, slotID)
             if itemID then
                 if C_Item.IsItemKeystoneByID(itemID) then--挑战
-                    e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
+                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
 
                 else
                     local bag=C_Item.GetItemCount(itemID)--物品ID
-                    e.WoWDate[WoWTools_DataMixin.Player.GUID].Item[itemID]={
+                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Item[itemID]={
                         bag=bag,
                         bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
                     }
@@ -340,23 +314,6 @@ end
 
 
 
-
-
-
-function e.GetItemWoWNum(itemID)--e.GetItemWoWNum()--取得WOW物品数量
-    local all,numPlayer=0,0
-    for guid, info in pairs(e.WoWDate) do
-        if guid and info and info.region==WoWTools_DataMixin.Player.Region then --and guid~=WoWTools_DataMixin.Player.GUID then
-            local tab=info.Item[itemID]
-            if tab and tab.bag and tab.bank then
-                all=all +tab.bag
-                all=all +tab.bank
-                numPlayer=numPlayer +1
-            end
-        end
-    end
-    return all, numPlayer
-end
 
 
 
@@ -384,9 +341,9 @@ local function Update_Currency(_, arg1)--{currencyID = 数量}
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
             if C_CurrencyInfo.IsAccountWideCurrency(arg1) then
-                e.WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]=nil
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]=nil
             else
-                e.WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]=info.quantity==0 and nil or info.quantity
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]=info.quantity==0 and nil or info.quantity
             end
         end
     else
@@ -396,9 +353,9 @@ local function Update_Currency(_, arg1)--{currencyID = 数量}
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
             if currencyID and info and info.quantity and currencyID~=2032 then
                 if C_CurrencyInfo.IsAccountWideCurrency(currencyID) then
-                    e.WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]=nil
+                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]=nil
                 else
-                    e.WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
+                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
                 end
             end
         end
@@ -434,13 +391,13 @@ local function Update_Instance()--encounterID, encounterName)
         local bossName, worldBossID, reset=GetSavedWorldBossInfo(i)
         if bossName and (not reset or reset>0) then
             tab[bossName] = worldBossID
-            if e.WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[bossName] then--清除稀有怪
-                e.WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[bossName]=nil
+            if WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[bossName] then--清除稀有怪
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[bossName]=nil
             end
         end
     end
 
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Worldboss={
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Worldboss={
         week=WoWTools_DataMixin.Player.Week,
         day= date('%x'),
         boss=tab
@@ -457,7 +414,7 @@ local function Update_Instance()--encounterID, encounterName)
             tab[name][difficultyName]=killed
         end
     end
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Instance = {
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Instance = {
         week=WoWTools_DataMixin.Player.Week,
         day=date('%x'),
         ins=tab
@@ -495,7 +452,7 @@ local function Set_Rare_Elite_Killed(unit)--稀有怪数据
         if classification == "rare" or classification == "rareelite" then
             local name=UnitName(unit)
             if name then
-                e.WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
                 RequestRaidInfo()
             end
         end
@@ -506,7 +463,7 @@ local function Set_Rare_Elite_Killed(unit)--稀有怪数据
             if threat and threat>0 then
                 local name=UnitName(unit)
                 if name then
-                    e.WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
+                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
                     RequestRaidInfo()
                 end
             end
@@ -537,7 +494,7 @@ end
 --钱
 --##
 local function Set_Money()--钱
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Money= GetMoney() or 0
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Money= GetMoney() or 0
 end
 
 
@@ -603,13 +560,13 @@ end
 
 
 --队伍数据
-EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", e.GetGroupGuidDate)
-EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", e.GetGroupGuidDate)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", GetGroupGuidDate)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", GetGroupGuidDate)
 
 --总游戏时间：%s
 EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
     if arg1 and arg2 then
-        e.WoWDate[WoWTools_DataMixin.Player.GUID].Time={
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time={
             totalTime= arg1,
             levelTime= arg2,
         }
@@ -672,7 +629,7 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEVEL_UP", function(_, arg1)
     local level= arg1 or UnitLevel('player')
     WoWTools_DataMixin.Player.IsMaxLevel= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
     WoWTools_DataMixin.Player.Level= level
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].level= level
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].level= level
 end)
 
 --玩家, 派系
@@ -684,13 +641,13 @@ end)
 
 --取得装等, 更新自已
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_EQUIPMENT_CHANGED", function(_, arg1)
-    e.GetNotifyInspect(nil, 'player')--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(_, arg1)
-    e.GetNotifyInspect(nil, 'player')--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_AVG_ITEM_LEVEL_UPDATE", function(_, arg1)
-    e.GetNotifyInspect(nil, 'player')--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
 
 --[[给 e.Reload用
@@ -729,18 +686,17 @@ end)
 
 
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1~=id then
+    if arg1~='WoWTools' then
         return
     end
 
     WoWToolsSave= WoWToolsSave or {}
     WoWTools_WoWDate= WoWTools_WoWDate or {}
-    e.WoWDate= WoWTools_WoWDate or {}
 
 
     local day= date('%x')--日期
-    if not e.WoWDate[WoWTools_DataMixin.Player.GUID] then
-        e.WoWDate[WoWTools_DataMixin.Player.GUID]= {--默认数据
+    if not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID] then
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID]= {--默认数据
             Item={},--{itemID={bag=包, bank=银行}},
             Currency={},--{currencyID = 数量}
 
@@ -761,31 +717,31 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         }
     end
 
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Bank= e.WoWDate[WoWTools_DataMixin.Player.GUID].Bank or {}--派系
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Bank= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Bank or {}--派系
 
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild= e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild or {data={}}--公会信息
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].GuildInfo=nil--清除，旧版本数据
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild or {data={}}--公会信息
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].GuildInfo=nil--清除，旧版本数据
     
 
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].region= WoWTools_DataMixin.Player.Region
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].faction= WoWTools_DataMixin.Player.Faction--派系
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].level= WoWTools_DataMixin.Player.Level
-    e.WoWDate[WoWTools_DataMixin.Player.GUID].battleTag= WoWTools_DataMixin.Player.BattleTag or e.WoWDate[WoWTools_DataMixin.Player.GUID].battleTag
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].region= WoWTools_DataMixin.Player.Region
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].faction= WoWTools_DataMixin.Player.Faction--派系
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].level= WoWTools_DataMixin.Player.Level
+    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag
 
 
-    for guid, tab in pairs(e.WoWDate) do--清除不是本周数据
+    for guid, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
         if tab.Keystone.week ~=WoWTools_DataMixin.Player.Week then
-            e.WoWDate[guid].Keystone={week=WoWTools_DataMixin.Player.Week}
+            WoWTools_WoWDate[guid].Keystone={week=WoWTools_DataMixin.Player.Week}
         end
         if tab.Instance.week~=WoWTools_DataMixin.Player.Week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
-            e.WoWDate[guid].Instance={ins={}, day=day}
+            WoWTools_WoWDate[guid].Instance={ins={}, day=day}
         end
         if (tab.Worldboss.week~=WoWTools_DataMixin.Player.Week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
-            e.WoWDate[guid].Worldboss={boss={}, day=day}
+            WoWTools_WoWDate[guid].Worldboss={boss={}, day=day}
         end
 
         if tab.Rare.day~=day then
-            e.WoWDate[guid].Rare={day=day,boss={}}
+            WoWTools_WoWDate[guid].Rare={day=day,boss={}}
         end
     end
 
@@ -804,8 +760,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         RequestRaidInfo()
 
         C_Calendar.OpenCalendar()
-        e.GetNotifyInspect(nil, 'player')--取得,自已, 装等
-        e.GetGroupGuidDate()--队伍数据收集
+        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
+        GetGroupGuidDate()--队伍数据收集
 
         Update_Currency()--{currencyID = 数量}
         Update_Bag_Items()

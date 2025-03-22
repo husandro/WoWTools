@@ -30,7 +30,7 @@ local function Init()
             local itemID= C_Item.GetItemInfoInstant(itemIDOrLink)
             if itemID then
                 local all= 0--帐号数据
-                for guid, info in pairs(e.WoWDate or {}) do
+                for guid, info in pairs(WoWTools_WoWDate or {}) do
                     if guid and info and guid~=WoWTools_DataMixin.Player.GUID then
                         local tab=info.Item[itemID]
                         if tab and tab.bag and tab.bank then

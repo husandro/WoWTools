@@ -25,7 +25,7 @@ local function Get_Text()
         return
     end
     local msg
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         local text, numAll, find= nil, 0, nil
         for bossName, worldBossID in pairs(info.Worldboss.boss) do--世界BOSS
             numAll=numAll+1

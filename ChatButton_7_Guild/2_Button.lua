@@ -98,7 +98,7 @@ local function Init(GuildButton)
 
     function GuildButton:set_guildinfo_event()
         self:UnregisterEvent('CHAT_MSG_SYSTEM')
-        if IsInGuild() and (Save().guildInfo or not e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text) then
+        if IsInGuild() and (Save().guildInfo or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text) then
             self:RegisterEvent('CHAT_MSG_SYSTEM')
             GuildInfo()
         end
@@ -193,7 +193,7 @@ local function Init(GuildButton)
 --公会创立，信息
         elseif event=='CHAT_MSG_SYSTEM' then
             if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
-                e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text= arg1
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text= arg1
                 self:UnregisterEvent(event)
             end
 

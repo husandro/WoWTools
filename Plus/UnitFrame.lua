@@ -424,8 +424,8 @@ end)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:AddLine(' ')
-        if e.WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link then
-            GameTooltip:AddLine('|T4352494:0|t'..e.WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
+        if WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link then
+            GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
             GameTooltip:AddLine(' ')
         end
         WoWTools_WeekMixin:Activities({showTooltip=true})
@@ -1216,8 +1216,8 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                             end
                         else
                             local guid2= guid3 or UnitGUID(unit2)
-                            if guid2 and e.UnitItemLevel[guid2] and e.UnitItemLevel[guid2].specID then
-                                local texture= select(4, GetSpecializationInfoByID(e.UnitItemLevel[guid2].specID))
+                            if guid2 and WoWTools_DataMixin.UnitItemLevel[guid2] and WoWTools_DataMixin.UnitItemLevel[guid2].specID then
+                                local texture= select(4, GetSpecializationInfoByID(WoWTools_DataMixin.UnitItemLevel[guid2].specID))
                                 if texture then
                                     SetPortraitToTexture(self.Portrait, texture)
                                     find2= true
@@ -1232,7 +1232,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                         end
                     end
 
-                    self.itemLevel:SetText(guid3 and e.UnitItemLevel[guid3] and e.UnitItemLevel[guid3].itemLevel or '')
+                    self.itemLevel:SetText(guid3 and WoWTools_DataMixin.UnitItemLevel[guid3] and WoWTools_DataMixin.UnitItemLevel[guid3].itemLevel or '')
                 end
                 self:SetShown(isPlayer and find2)
             end
@@ -1240,7 +1240,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
             frame.classFrame:SetScript('OnEvent', function(self3)
                 local unit2= self3:GetParent().unit
                 if UnitIsPlayer(unit2) then
-                    e.GetNotifyInspect(nil, unit2)--取得玩家信息
+                    WoWTools_UnitMixin:GetNotifyInspect(nil, unit2)--取得玩家信息
                     C_Timer.After(2, function()
                         self3:set_settings()
                     end)

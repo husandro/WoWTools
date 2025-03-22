@@ -82,7 +82,7 @@ local function Settings()--队伍信息提示
     end
 
     local combatRole
-    local tab=e.GroupGuid[WoWTools_DataMixin.Player.GUID]
+    local tab=WoWTools_DataMixin.GroupGuid[WoWTools_DataMixin.Player.GUID]
     if tab then
         combatRole=tab.combatRole
     end
@@ -120,7 +120,7 @@ end
 
 
 local function set_Text(text)--处理%s
-    local groupTab= e.GroupGuid[WoWTools_DataMixin.Player.GUID]
+    local groupTab= WoWTools_DataMixin.GroupGuid[WoWTools_DataMixin.Player.GUID]
     if text:find('%%s') and groupTab and groupTab.subgroup then
         text= text:format(groupTab.subgroup..' '..GROUP..' ')
     else
@@ -436,7 +436,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
         if guid and UnitExists(unit) then
             playerNum= playerNum+1
 
-            if (not e.UnitItemLevel[guid] or not e.UnitItemLevel[guid].itemLeve) then
+            if (not WoWTools_DataMixin.UnitItemLevel[guid] or not WoWTools_DataMixin.UnitItemLevel[guid].itemLeve) then
                 table.insert(UnitTab, unit)
             end
 
@@ -451,7 +451,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             end
 
             if maxHP and role then
-                info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLeve or '')
+                info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
                 info.maxHP= maxHP
                 info.col= select(5, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
                 if uiMapID then--不在同地图
@@ -515,7 +515,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
 
     --GameTooltip:Show()
 
-    e.GetNotifyInspect(UnitTab)--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
     return find
 end
 

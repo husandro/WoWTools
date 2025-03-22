@@ -5,7 +5,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local realm= select(2, UnitName(unit)) or WoWTools_DataMixin.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
-    local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
+    local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
     local r, g, b, col = select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))--颜色
     local isInCombat= UnitAffectingCombat('player')
     local englishFaction = isPlayer and UnitFactionGroup(unit)
@@ -17,10 +17,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     tooltip.Portrait:SetShown(true)
 
     --取得玩家信息
-    local info= e.UnitItemLevel[guid]
+    local info= WoWTools_DataMixin.UnitItemLevel[guid]
     if info then
         if not isInCombat then
-            e.GetNotifyInspect(nil, unit)--取得装等
+            WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
         end
         if info.itemLevel then--设置装等
             if info.itemLevel>1 then
@@ -34,7 +34,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             end
         end
     else
-        e.GetNotifyInspect(nil, unit)--取得装等
+        WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
     end
 
     tooltip.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
@@ -106,7 +106,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 C_WowTokenPublic.UpdateMarketPrice()
                 local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 if price and price>0 then
-                    local all, numPlayer= e.GetItemWoWNum(122284)--取得WOW物品数量
+                    local all, numPlayer= WoWTools_BagMixin:GetItem_WoW_Num(122284)--取得WOW物品数量
                     text= all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,3)..'|A:Front-Gold-Icon:0:0|a'
                 end
             end

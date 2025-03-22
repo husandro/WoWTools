@@ -47,7 +47,7 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
         local bagAll,bankAll,numPlayer=0,0,0--帐号数据
-        for guid, info in pairs(e.WoWDate or {}) do
+        for guid, info in pairs(WoWTools_WoWDate or {}) do
             local tab=info.Item[122284]
             if tab and guid then
                 GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))
@@ -98,7 +98,7 @@ local function Init()
 
 
     local all=0
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         local tab=info.Item[122284]
         if tab and guid then
             GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), '|A:Banker:0:0|a'..(tab.bank==0 and '|cff9e9e9e'..tab.bank..'|r' or tab.bank)..' '..'|A:bag-main:0:0|a'..(tab.bag==0 and '|cff9e9e9e'..tab.bag..'|r' or tab.bag))

@@ -54,9 +54,9 @@ local function setCHAT_MSG_SYSTEM(text)
     if name==WoWTools_DataMixin.Player.name_realm then
         faction= WoWTools_DataMixin.Player.Faction
         guid= WoWTools_DataMixin.Player.GUID
-    elseif e.GroupGuid[name] then
-        faction= e.GroupGuid[name].faction
-        guid= e.GroupGuid[name].guid
+    elseif WoWTools_DataMixin.GroupGuid[name] then
+        faction= WoWTools_DataMixin.GroupGuid[name].faction
+        guid= WoWTools_DataMixin.GroupGuid[name].guid
     end
 
     table.insert(RollTab, {name=name,

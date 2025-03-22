@@ -139,7 +139,7 @@ local function Init_Menu(self, root)
     end)
 
 --总游戏时间
-    local tab=e.WoWDate[WoWTools_DataMixin.Player.GUID].Time
+    local tab=WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time
     sub=root:CreateCheckbox(
         tab.totalTime and SecondsToTime(tab.totalTime)
         or (WoWTools_Mixin.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, '')),
@@ -158,7 +158,7 @@ local function Init_Menu(self, root)
 
     local timeAll=0
     local numPlayer=0
-    for guid, tab2 in pairs(e.WoWDate or {}) do
+    for guid, tab2 in pairs(WoWTools_WoWDate or {}) do
         local time= tab2.Time and tab2.Time.totalTime
         if time and time>0 then
             numPlayer= numPlayer+1

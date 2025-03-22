@@ -70,7 +70,7 @@ function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
     )
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
-    local tab=e.WoWDate[WoWTools_DataMixin.Player.GUID].Time
+    local tab=WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time
     tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
     tooltip:AddDoubleLine(
         (WoWTools_Mixin.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(WoWTools_Mixin.onlyChinese and '第%d周' or WEEKS_ABBR, WoWTools_DataMixin.Player.Week)..date('%Y')..')',

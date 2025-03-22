@@ -224,7 +224,7 @@ local function UI_Party_Info(self)--队友位置
                 text= format('%s|A:%s:0:0|a', text, WoWTools_DataMixin.Icon.disabled)
             end
 
-            local tab= e.UnitItemLevel[guid]--装等
+            local tab= WoWTools_DataMixin.UnitItemLevel[guid]--装等
             if tab then
                 if tab.itemLevel then
                     text= text..'|A:charactercreate-icon-customize-body-selected:0:0|a'..tab.itemLevel
@@ -282,7 +282,7 @@ local function UI_Party_Info(self)--队友位置
         self.partyLable:SetPoint('TOPLEFT', self, 'TOPRIGHT')
     end
     self.partyLable:SetText(text or '')
-    e.GetNotifyInspect(UnitTab)--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
 end
 
 local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
@@ -730,7 +730,7 @@ end
 
 local function All_Player_Info()--所以角色信息   
     local last
-    for guid, info in pairs(e.WoWDate) do
+    for guid, info in pairs(WoWTools_WoWDate) do
         local link= info.Keystone.link
         local weekPvE= info.Keystone.weekPvE
         local weekMythicPlus= info.Keystone.weekMythicPlus

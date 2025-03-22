@@ -19,7 +19,7 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
             WoWTools_EncounterMixin:GetWorldData(frame)--角色世界BOSS提示            
             find=true
         else
-            for guid, info in pairs(e.WoWDate or {}) do--世界BOSS
+            for guid, info in pairs(WoWTools_WoWDate or {}) do--世界BOSS
                 if guid==WoWTools_DataMixin.Player.GUID then
                     local num=0
                     for bossName, worldBossID in pairs(info.Worldboss.boss) do

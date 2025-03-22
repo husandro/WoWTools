@@ -25,7 +25,7 @@ local listButton
 --我
 local function Init_IsSelf(root)
     local new={}
-    for guid, data in pairs(e.WoWDate) do
+    for guid, data in pairs(WoWTools_WoWDate) do
         if guid and guid~= WoWTools_DataMixin.Player.GUID and data.region==WoWTools_DataMixin.Player.Region then
             new[guid]=data
         end
@@ -138,7 +138,7 @@ local function Init_Friend(root)
     for i=1 , C_FriendList.GetNumFriends() do
         local game= C_FriendList.GetFriendInfoByIndex(i) or {}
         local guid= game.guid
-        if guid and not e.WoWDate[guid] and (game.connected or Save().show['FRIEND']) then
+        if guid and not WoWTools_WoWDate[guid] and (game.connected or Save().show['FRIEND']) then
             local name= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 root:CreateButton(
@@ -184,8 +184,8 @@ local function Init_Guild(root)
     local num=0
     for index=1, GetNumGuildMembers() do
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-        --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not e.WoWDate[guid] then
-        if name and guid and (isOnline or rankIndex<2 or Save().show['GUILD']) and not e.WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
+        --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not WoWTools_WoWDate[guid] then
+        if name and guid and (isOnline or rankIndex<2 or Save().show['GUILD']) and not WoWTools_WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
             local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
 
             if not isOnline then
@@ -243,7 +243,7 @@ local function Init_Club(root, clubID)
     local num=0
     for _, memberID in pairs(C_Club.GetClubMembers(clubID) or {}) do
         local tab = C_Club.GetMemberInfo(clubID, memberID)
-        if tab and tab.guid and tab.name and (tab.zone or tab.role<4 or (Save().show['CLUB'])) and not e.WoWDate[tab.guid] then
+        if tab and tab.guid and tab.name and (tab.zone or tab.role<4 or (Save().show['CLUB'])) and not WoWTools_WoWDate[tab.guid] then
             if not WoWTools_MailMixin:GetRealmInfo(tab.name) then
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= WoWTools_UnitMixin:GetPlayerInfo({guid=tab.guid, reName=true, reRealm=true, faction=faction, level=tab.level})--角色信息

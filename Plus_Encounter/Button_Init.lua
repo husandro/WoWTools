@@ -16,7 +16,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
     GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, WoWTools_DataMixin.Icon.left)
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         if guid and  info.Keystone.link then
             GameTooltip:AddDoubleLine(
                 (info.Keystone.weekNum or 0)
@@ -35,7 +35,7 @@ local function Set_Money(self, isTooltip)--险指南界面, 钱
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
     end
-    for guid, info in pairs(e.WoWDate or {}) do
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
         if info.Money then
             if isTooltip then
                 GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
@@ -114,7 +114,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..WoWTools_DataMixin.Icon.left..WoWTools_TextMixin:GetShowHide(Save().showInstanceBoss), WoWTools_Mixin.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         GameTooltip:AddLine(' ')
-        for guid, info in pairs(e.WoWDate or {}) do
+        for guid, info in pairs(WoWTools_WoWDate or {}) do
             if guid and info then
                 local find
                 for bossName, tab in pairs(info.Instance.ins) do----ins={[名字]={[难度]=已击杀数}}

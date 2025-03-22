@@ -709,8 +709,8 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
 
                 if subframes.class and fileName then
                     local text
-                    if e.UnitItemLevel[guid] and e.UnitItemLevel[guid].specID then
-                        local texture= select(4, GetSpecializationInfoForSpecID(e.UnitItemLevel[guid].specID))
+                    if WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].specID then
+                        local texture= select(4, GetSpecializationInfoForSpecID(WoWTools_DataMixin.UnitItemLevel[guid].specID))
                         if texture then
                             text= "|T"..texture..':0|t'
                         end
@@ -718,9 +718,9 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                     text= text or WoWTools_UnitMixin:GetClassIcon(nil, fileName)--职业图标
 
                     if text then
-                        if guid and e.UnitItemLevel[guid] and e.UnitItemLevel[guid].itemLevel then
-                            text= e.UnitItemLevel[guid].itemLevel..text
-                            itemLevel= itemLevel+ e.UnitItemLevel[guid].itemLevel
+                        if guid and WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then
+                            text= WoWTools_DataMixin.UnitItemLevel[guid].itemLevel..text
+                            itemLevel= itemLevel+ WoWTools_DataMixin.UnitItemLevel[guid].itemLevel
                             itemNum= itemNum+1
                         else
                             table.insert(getItemLevelTab, unit)--取得装等
@@ -752,7 +752,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
     text= text..'  '..format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK)..afkNum--AFK
     text= text..'  |A:deathrecap-icon-tombstone:0:0|a'..deadNum--死亡
     RaidFrame.groupInfoLable:SetText(text)
-    e.GetNotifyInspect(getItemLevelTab)--取得装等
+    WoWTools_UnitMixin:GetNotifyInspect(getItemLevelTab)--取得装等
 end
 
 

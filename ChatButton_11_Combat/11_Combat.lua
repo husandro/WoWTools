@@ -24,7 +24,7 @@ WoWTools_CombatMixin={
 
 
 local function Init()
-    if WoWTools_CombatMixin.Save.AllOnlineTime or not e.WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime then--总游戏时间
+    if WoWTools_CombatMixin.Save.AllOnlineTime or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
 

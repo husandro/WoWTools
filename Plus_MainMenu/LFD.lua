@@ -33,7 +33,7 @@ local function Init()
         GameTooltip:AddLine(' ')
 
         local find= WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
-        local link= e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
+        local link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
         if link then
             GameTooltip:AddLine('|T4352494:0|t'..link)
         end

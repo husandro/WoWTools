@@ -41,7 +41,7 @@ end
 local function Get_Text()
     local m, text, num
 
-    for insName, info in pairs(e.WoWDate[WoWTools_DataMixin.Player.GUID].Instance.ins or {}) do
+    for insName, info in pairs(WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Instance.ins or {}) do
         text= text and text..'|n' or ''
         text= text..'|T450908:0|t'..WoWTools_TextMixin:CN(insName)
         for difficultyName, index in pairs(info) do
@@ -56,7 +56,7 @@ local function Get_Text()
     text=nil
     num=0
 
-    for bossName, worldBossID in pairs(e.WoWDate[WoWTools_DataMixin.Player.GUID].Worldboss.boss or {}) do--世界BOSS
+    for bossName, worldBossID in pairs(WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Worldboss.boss or {}) do--世界BOSS
         num=num+1
         text= text and text..', ' or ''
         text= text..  WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
@@ -69,7 +69,7 @@ local function Get_Text()
 
     text= nil
     num=0
-    for name, _ in pairs(e.WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss or {}) do--稀有怪
+    for name, _ in pairs(WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss or {}) do--稀有怪
         text= text and text..', ' or ''
         text= text.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(name))
         num=num+1

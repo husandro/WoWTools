@@ -218,8 +218,8 @@ function WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
     if currencyID and currencyID>0 then
         if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
             for _, tab in pairs(C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyID) or {}) do
-                if e.WoWDate[tab.characterGUID] then
-                    tab.faction= e.WoWDate[tab.characterGUID].faction
+                if WoWTools_WoWDate[tab.characterGUID] then
+                    tab.faction= WoWTools_WoWDate[tab.characterGUID].faction
                 end
                 table.insert(new, tab)
                 num= num+ tab.quantity

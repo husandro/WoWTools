@@ -269,7 +269,7 @@ local function Init_Fast_Button_Menu(self, root)
         return MenuResponse.Open
     end)
 
-    for guid, info in pairs(e.WoWDate) do
+    for guid, info in pairs(WoWTools_WoWDate) do
         Fast_Button_Set_Menu(
             self, sub,
             WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=info.level, faction=info.faction}),

@@ -66,7 +66,7 @@ local function Init()
     hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnShow",function()--StaticPopup.lua
         WoWTools_Mixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         local name= C_SummonInfo.GetSummonConfirmSummoner()
-        local info= e.GroupGuid[name]
+        local info= WoWTools_DataMixin.GroupGuid[name]
         if info and info.guid then
             local playerInfo= WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {reLink=true})
             name= playerInfo~='' and playerInfo or name

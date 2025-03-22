@@ -121,7 +121,7 @@ function WoWTools_MailMixin:GetNameInfo(name)
     end
     local reName
     name = WoWTools_UnitMixin:GetFullName(name)--取得全名
-    for guid, tab in pairs(e.WoWDate) do
+    for guid, tab in pairs(WoWTools_WoWDate) do
         if name== WoWTools_UnitMixin:GetFullName(nil, nil, guid) then
             reName= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
             break

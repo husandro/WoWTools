@@ -223,7 +223,7 @@ local function WoWTools_Word_Filter(_, _, msg, name, _, _, _, _, _, _, _, _, _, 
             FilterTextTab[msg].num= FilterTextTab[msg].num +1
             return true
 
-        elseif not guid or guid== WoWTools_DataMixin.Player.GUID or WoWTools_UnitMixin:GetIsFriendIcon(name, guid) or e.GroupGuid[guid] then--自已, 好友
+        elseif not guid or guid== WoWTools_DataMixin.Player.GUID or WoWTools_UnitMixin:GetIsFriendIcon(name, guid) or WoWTools_DataMixin.GroupGuid[guid] then--自已, 好友
             return false
 
         elseif strlenutf8(msg)>Save.myChatFilterNum or msg:find('WTS') then-- msg:find('<.->') or  then
@@ -278,7 +278,7 @@ local function Init_User_Chat_Filter()
             or data.which~='FRIEND'
             or data.chatTarget==WoWTools_DataMixin.Player.name_realm
             or WoWTools_UnitMixin:GetIsFriendIcon(data.chatTarget)
-            or e.GroupGuid[data.chatTarget]
+            or WoWTools_DataMixin.GroupGuid[data.chatTarget]
         then
             return
         end--data.playerLocation

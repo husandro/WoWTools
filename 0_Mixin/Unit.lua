@@ -106,14 +106,14 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         name= name2
 
         if guid and (not faction or unit) then
-            if e.GroupGuid[guid] then
-                unit = unit or e.GroupGuid[guid].unit
-                faction= faction or e.GroupGuid[guid].faction
+            if WoWTools_DataMixin.GroupGuid[guid] then
+                unit = unit or WoWTools_DataMixin.GroupGuid[guid].unit
+                faction= faction or WoWTools_DataMixin.GroupGuid[guid].faction
             end
         end
 
         local friend= self:GetIsFriendIcon(nil, guid, nil)--检测, 是否好友
-        local groupInfo= e.GroupGuid[guid] or {}--队伍成员
+        local groupInfo= WoWTools_DataMixin.GroupGuid[guid] or {}--队伍成员
         local server= not reNotRegion and e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 
         text= (server and server.col or '')
@@ -138,7 +138,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 --等级 
             local unitLevel= tab.level
                 or (unit and UnitLevel(name))
-                or guid and e.WoWDate[guid] and e.WoWDate[guid].level
+                or guid and WoWTools_WoWDate[guid] and WoWTools_WoWDate[guid].level
             if unitLevel and unitLevel~=0 and GetMaxLevelForLatestExpansion()~=unitLevel then
                 text= text..'|cnGREEN_FONT_COLOR:'..unitLevel..'|r'
             end
@@ -263,13 +263,13 @@ BNET_CLIENT_HEROES = "Hero";
 BNET_CLIENT_CLNT = "CLNT";
 ]]
 
---e.WoWDate[WoWTools_DataMixin.Player.GUID].region= WoWTools_DataMixin.Player.Region
---e.WoWDate[WoWTools_DataMixin.Player.GUID].battleTag= WoWTools_DataMixin.Player.BattleTag or e.WoWDate[WoWTools_DataMixin.Player.GUID].battleTag
+--WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].region= WoWTools_DataMixin.Player.Region
+--WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag
 function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好友
     if guid or unit then
         guid= guid or self:GetGUID(unit, name)
         if guid and guid~=WoWTools_DataMixin.Player.GUID then
-            local data= e.WoWDate[guid]
+            local data= WoWTools_WoWDate[guid]
             if data then
                 if data.region~=WoWTools_DataMixin.Player.Region then--不在一区
                     return '|A:tokens-characterTransfer-small:0:0|a'
@@ -310,7 +310,7 @@ function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
 
-        if e.WoWGUID[self:GetFullName(name)] then
+        if WoWTools_DataMixin.WoWGUID[self:GetFullName(name)] then
             return WoWTools_DataMixin.Icon.net2
         end
     end
@@ -331,11 +331,11 @@ function WoWTools_UnitMixin:GetGUID(unit, name)--从名字,名unit, 获取GUID
         end
 
         name= self:GetFullName(name)
-        if e.GroupGuid[name] then--队友
-            return e.GroupGuid[name].guid
+        if WoWTools_DataMixin.GroupGuid[name] then--队友
+            return WoWTools_DataMixin.GroupGuid[name].guid
 
-        elseif e.WoWGUID[name] then--战网
-            return e.WoWGUID[name].guid
+        elseif WoWTools_DataMixin.WoWGUID[name] then--战网
+            return WoWTools_DataMixin.WoWGUID[name].guid
 
         elseif name==WoWTools_DataMixin.Player.Name then
             return WoWTools_DataMixin.Player.GUID
@@ -512,5 +512,38 @@ function WoWTools_UnitMixin:CheckRange(unit, range, operator)
         return (max or 999) <= range
     else
         return (min or 0) >= range
+    end
+end
+
+
+
+
+
+
+
+--#######
+--取得装等
+--#######
+local NotifyInspectTicker
+function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
+    if unit then
+        if UnitExists(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
+            NotifyInspect(unit)
+        end
+    else
+        tab=tab or {}
+        local num, index= #tab, 1
+        if num>0 then
+            if NotifyInspectTicker and not NotifyInspectTicker:IsCancelled() then
+                NotifyInspectTicker:Cancel()
+            end
+            NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
+                local unit2=tab[index]
+                if UnitExists(unit2) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit2, 1)
+                    NotifyInspect(tab[index])
+                    index= index+ 1
+                end
+            end, num)
+        end
     end
 end

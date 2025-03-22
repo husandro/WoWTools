@@ -23,7 +23,7 @@ local function Init()
     function frame:settings()
         local money=0
         if WoWTools_MainMenuMixin.Save.moneyWoW then
-            for _, info in pairs(e.WoWDate or {}) do
+            for _, info in pairs(WoWTools_WoWDate or {}) do
                 if info.Money then
                     money= money+ info.Money
                 end
@@ -50,7 +50,7 @@ local function Init()
 
         local numPlayer, allMoney= 0, 0
         local tab={}
-        for guid, info in pairs(e.WoWDate or {}) do
+        for guid, info in pairs(WoWTools_WoWDate or {}) do
             if info.Money and info.Money>0 then
                 numPlayer=numPlayer+1
                 allMoney= allMoney + info.Money

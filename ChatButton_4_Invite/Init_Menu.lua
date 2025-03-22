@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
 
     num=0
     for guid, name in pairs(WoWTools_InviteMixin.InvPlateGuid) do
-        if not e.GroupGuid[guid] then
+        if not WoWTools_DataMixin.GroupGuid[guid] then
             sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true}), function(data)
                 C_PartyInfo.InviteUnit(name)
             end, name)

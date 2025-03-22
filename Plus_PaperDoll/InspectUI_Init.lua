@@ -108,7 +108,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
     local unit= InspectFrame.unit
     if not Save().hide and unit and UnitExists(unit) then
         local guid= unit and UnitGUID(unit)
-        local info= guid and e.UnitItemLevel[guid]
+        local info= guid and WoWTools_DataMixin.UnitItemLevel[guid]
         if info then
             local level= UnitLevel(unit)
             local effectiveLevel= UnitEffectiveLevel(unit)
