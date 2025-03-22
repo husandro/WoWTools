@@ -438,7 +438,7 @@ local function Init()
         n= n>4 and 4 or n
         n= n<-1 and -1 or n
         Save().itemLevelBit=n
-        e.call(PaperDollFrame_UpdateStats)
+        WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
         self:set_tooltips()
         self:SetAlpha(0.3)
     end)

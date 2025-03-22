@@ -23,9 +23,9 @@ local function Save()
 end
 
 function WoWTools_CurrencyMixin:UpdateTokenFrame()
-	if not e.LockFrame(TokenFrame) then
-		e.call(TokenFrame.Update, TokenFrame)
-		e.call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
+	if not WoWTools_Mixin:IsLockFrame(TokenFrame) then
+		WoWTools_Mixin:Call(TokenFrame.Update, TokenFrame)
+		WoWTools_Mixin:Call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
 	end
 end
 

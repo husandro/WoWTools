@@ -41,7 +41,7 @@ local function Init_Frame()
         Frame:SetScript('OnEvent', function()
             if ProfessionsFrame:IsVisible() then
                 --GenerateClosure(ProfessionsFrame.CheckConfirmClose, ProfessionsFrame)
-                e.call(HideUIPanel, ProfessionsFrame)
+                WoWTools_Mixin:Call(HideUIPanel, ProfessionsFrame)
             end
         end)
 

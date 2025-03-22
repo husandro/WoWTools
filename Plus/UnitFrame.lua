@@ -101,7 +101,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         end
     end)
     if IsInRaid() then
-        e.call(PlayerFrame_UpdateGroupIndicator)
+        WoWTools_Mixin:Call(PlayerFrame_UpdateGroupIndicator)
     end
 
     if PlayerFrameGroupIndicatorLeft then
@@ -587,7 +587,7 @@ local function Init_TargetFrame()
         local text, speed
 
         if not UnitIsUnit('player', 'target') then
-            local mi, ma= e.GetRange('target')
+            local mi, ma= WoWTools_UnitMixin:GetRange('target')
             if mi and ma then
                 text=mi..'|n'..ma
                 if mi>40 then

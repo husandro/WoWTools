@@ -290,10 +290,10 @@ local function Init_WidthX2()
         MERCHANT_ITEMS_PER_PAGE= 10
         Save().numLine= 5
         Create_ItemButton()
-        e.call(MerchantFrame_UpdateMerchantInfo)
+        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
     end, sizeStopFunc= function()
         Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
-        e.call(MerchantFrame_UpdateMerchantInfo)
+        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
     end})
 end
 

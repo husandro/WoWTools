@@ -127,7 +127,7 @@ local function Init()
                     HideUIPanel(GameMenuFrame)
                 end
             end
-            e.call(ShowMacroFrame)
+            WoWTools_Mixin:Call(ShowMacroFrame)
         end
     end)
 end

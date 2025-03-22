@@ -5,7 +5,7 @@ local e= select(2, ...)
 local function Show_LFGDungeonReadyPopup()
     if GetLFGProposal() and not LFGDungeonReadyPopup:IsShown() then
         StaticPopupSpecial_Show(LFGDungeonReadyPopup)
-        e.call(LFGDungeonReadyPopup_Update)
+        WoWTools_Mixin:Call(LFGDungeonReadyPopup_Update)
     end
 end
 
@@ -20,12 +20,12 @@ local function Init()
     end
 
     LFGInvitePopup:HookScript("OnShow", function(self)--自动进入FB
-        e.PlaySound()--播放, 声音
+        WoWTools_Mixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, self.timeOut and STATICPOPUP_TIMEOUT, nil, true, true)
     end)
 
     LFGDungeonReadyDialog:HookScript("OnShow", function(self)--自动进入FB
-        e.PlaySound()--播放, 声音
+        WoWTools_Mixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self, nil, LFGInvitePopup.timeOut and LFGInvitePopup.timeOut or 38, nil, true, true)
     end)
 

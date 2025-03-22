@@ -190,7 +190,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().allAccountBag= not Save().allAccountBag and true or nil
         
-        e.call(BankFrame_ShowPanel, AccountBankPanel, (BANK_PANELS[3].name))--缩放按钮， 需要
+        WoWTools_Mixin:Call(BankFrame_ShowPanel, AccountBankPanel, (BANK_PANELS[3].name))--缩放按钮， 需要
         AccountBankPanel:GenerateItemSlotsForSelectedTab()
         WoWTools_BankMixin:Init_Plus()
     end)

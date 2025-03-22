@@ -493,3 +493,24 @@ function WoWTools_UnitMixin:GetGroupMembers(inclusoMe)
     end
     return tab
 end
+
+
+
+
+
+
+--距离
+local LibRangeCheck = LibStub("LibRangeCheck-3.0", true)
+function WoWTools_UnitMixin:GetRange(unit, checkVisible)--WA Prototypes.lua
+    return LibRangeCheck:GetRange(unit, checkVisible)
+end
+
+--距离
+function WoWTools_UnitMixin:CheckRange(unit, range, operator)
+    local min, max= LibRangeCheck:GetRange(unit, true)
+    if (operator) then-- == "<=") then
+        return (max or 999) <= range
+    else
+        return (min or 0) >= range
+    end
+end

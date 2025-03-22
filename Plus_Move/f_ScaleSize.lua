@@ -183,7 +183,7 @@ local function Init_Menu(self, root)
                     self:sizeRestFunc()
                 end
                 if not self.notUpdatePositon then
-                    e.call(UpdateUIPanelPositions, self.targetFrame)
+                    WoWTools_Mixin:Call(UpdateUIPanelPositions, self.targetFrame)
                 end
             end
             return MenuResponse.Refresh
@@ -222,7 +222,7 @@ local function Init_Menu(self, root)
                 if self.restPointFunc then
                     self.restPointFunc(self)
                 elseif not self.notUpdatePositon then
-                    e.call(UpdateUIPanelPositions, self.targetFrame)
+                    WoWTools_Mixin:Call(UpdateUIPanelPositions, self.targetFrame)
                 end
             end
             return MenuResponse.Refresh

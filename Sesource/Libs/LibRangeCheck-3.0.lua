@@ -1009,7 +1009,7 @@ lib.failedItemRequests = {}
 
 -- << Public API
 
---- The callback name that is fired when checkers are changed.
+--- ThWoWTools_Mixin:Callback name that is fired when checkers are changed.
 -- @field
 lib.CHECKERS_CHANGED = "CHECKERS_CHANGED"
 -- "export" it, maybe someone will need it for formatting

@@ -37,7 +37,7 @@ local function Init()
         minH=428,
         sizeUpdateFunc=function()
             if PVEFrame.activeTabIndex==3 then
-                e.call(ChallengesFrame.Update, ChallengesFrame)
+                WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
         end, sizeStopFunc=function(btn)
             if PVEFrame.activeTabIndex==1 then
@@ -61,7 +61,7 @@ local function Init()
             elseif PVEFrame.activeTabIndex==3 then
                 Save().size['PVEFrame_KEY']=nil
                 btn.targetFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
-                e.call(ChallengesFrame.Update, ChallengesFrame)
+                WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
         end
     })

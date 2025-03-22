@@ -186,7 +186,7 @@ local function Init_Scroll()
             if index and not InCombatLockdown() then
                 if index>MAX_ACCOUNT_MACROS then
                     index= index-MAX_ACCOUNT_MACROS
-                    e.call(MacroFrame.ChangeTab, MacroFrame, 2)
+                    WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 2)
                 end
 
                 MacroFrame:SelectMacro(index)

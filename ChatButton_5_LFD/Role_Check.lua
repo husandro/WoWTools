@@ -91,7 +91,7 @@ local function Init_LFD()
 
 
     LFDRoleCheckPopup:HookScript("OnShow",function(self)--副本职责
-        e.PlaySound()--播放, 声音
+        WoWTools_Mixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
         end
@@ -125,7 +125,7 @@ end
 local function Init_PvP()
     C_Timer.After(2, Set_PvPRoles)
     PVPReadyDialog:HookScript('OnShow', function(self2)
-        e.PlaySound()--播放, 声音
+        WoWTools_Mixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 end
@@ -145,7 +145,7 @@ end
 --职责确认 RolePoll.lua
 local function Init_RolePollPopup()
      RolePollPopup:HookScript('OnShow', function(self)
-        e.PlaySound()--播放, 声音
+        WoWTools_Mixin:PlaySound()--播放, 声音
         if not Save().autoSetPvPRole or IsModifierKeyDown() then
             return
         end
@@ -169,7 +169,7 @@ local function Init_RolePollPopup()
 
         if btn2 then
             btn2.checkButton:SetChecked(true)
-            e.call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
+            WoWTools_Mixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
             WoWTools_CooldownMixin:Setup(self, nil, WoWTools_LFDMixin.Save.sec, nil, true)--冷却条
             self.aceTime=C_Timer.NewTimer(WoWTools_LFDMixin.Save.sec, function()
                 if self.acceptButton:IsEnabled() then

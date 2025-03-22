@@ -1291,7 +1291,7 @@ function WoWTools_PetBattleMixin:Init_AbilityButton()
             for _, btn in pairs(Buttons) do
                 btn:Settings()
             end
-            e.call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
+            WoWTools_Mixin:Call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
         end
     else
         if C_PetBattles.IsInBattle() then

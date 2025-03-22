@@ -310,7 +310,7 @@ local function Init_Friends_Menu(self, root)
         return not Save.disabledFriendPlus
     end, function()
         Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
-        e.call(FriendsList_Update, true)
+        WoWTools_Mixin:Call(FriendsList_Update, true)
     end)
 
     root:CreateDivider()
@@ -527,7 +527,7 @@ local function Init_FriendsList()--好友列表, 初始化
             if showPrint then
                 print(e.Icon.icon2.. addName, text)
             else
-                e.call(FriendsFrame_CheckBattlenetStatus)
+                WoWTools_Mixin:Call(FriendsFrame_CheckBattlenetStatus)
             end
 
 C_Timer.After(1.3, function()
@@ -792,7 +792,7 @@ local function set_WhoList_Update()--查询, 名单列表
             btn:HookScript('OnClick', function()
                 if WhoFrameAddFriendButton:IsEnabled() and IsAltKeyDown() then
                     WhoFrameAddFriendButton:Click()
-                    C_Timer.After(1, function() e.call(WhoList_Update) end)
+                    C_Timer.After(1, function() WoWTools_Mixin:Call(WhoList_Update) end)
                 end
             end)
             btn:HookScript('OnEnter', function(self)--FriendsFrame.lua
@@ -1005,7 +1005,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if frame.elapsed>1 then
                     frame.elapsed=0
                     if not UnitAffectingCombat('player') then
-                        e.call(RaidGroupFrame_Update)
+                        WoWTools_Mixin:Call(RaidGroupFrame_Update)
                     end
                 end
             end)

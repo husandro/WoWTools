@@ -123,7 +123,7 @@ local function Init_Menu(self, root)
         function()
             Save.Pets={[2780]=true}
             if PetJournal_UpdatePetList then
-                e.call(PetJournal_UpdatePetList)
+                WoWTools_Mixin:Call(PetJournal_UpdatePetList)
             end
         end)
     end

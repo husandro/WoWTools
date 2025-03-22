@@ -812,7 +812,7 @@ local function Init_Menu(self, root)--菜单
         Save().trackButtonStrata= data
         self:set_strata()
     end)
-    sub2:SetEnabled(not e.LockFrame(self))
+    sub2:SetEnabled(not WoWTools_Mixin:IsLockFrame(self))
     --if UnitAffectingCombat('player') then
       --  sub2:SetEnabled(false)
     --end

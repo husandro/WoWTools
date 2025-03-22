@@ -578,7 +578,7 @@ local function Init()--设置标记, 框架
                 self:GetParent():GetParent():set_Tooltips_Point()
                 GameTooltip:ClearLines()
                 local can= CanBeRaidTarget('target')
-                GameTooltip:AddLine(MicroButtonTooltipText(e.Get_RaidTargetTexture(self.index), 'RAIDTARGET'..self.index))
+                GameTooltip:AddLine(MicroButtonTooltipText(WoWTools_MarkerMixin:GetIcon(self.index), 'RAIDTARGET'..self.index))
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(
                     e.Icon.left..(e.onlyChinese and '目标' or TARGET),
@@ -712,7 +712,7 @@ local function Init()--设置标记, 框架
                     color.col
                     ..e.Icon.left
                     ..(e.onlyChinese and '设置' or SETTINGS)
-                    ..e.Get_RaidTargetTexture(self.index2))
+                    ..WoWTools_MarkerMixin:GetIcon(self.index2))
 
                     GameTooltip:AddLine(e.Icon.right..color.col
                     ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)

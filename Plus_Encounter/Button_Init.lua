@@ -93,7 +93,7 @@ local function Init()
             self:set_Shown()
 
             WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
-            e.call(EncounterJournal_ListInstances)
+            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
             self:set_icon()
         elseif d=='RightButton' then
             Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil

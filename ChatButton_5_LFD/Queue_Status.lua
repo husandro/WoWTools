@@ -492,7 +492,7 @@ local function Init_Menu(self, root)
     root:CreateButton(
         MicroButtonTooltipText('队伍查找器', "TOGGLEGROUPFINDER"),
     function ()
-        e.call(PVEFrame_ToggleFrame)
+        WoWTools_Mixin:Call(PVEFrame_ToggleFrame)
         return MenuResponse.Open
     end)
 

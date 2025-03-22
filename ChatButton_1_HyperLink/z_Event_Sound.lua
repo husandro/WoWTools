@@ -71,22 +71,22 @@ local function Init_Settings()
             TimerType=arg1
             if arg2>20 then
                 Timer4= C_Timer.NewTimer(arg2-10, function()--3
-                    e.PlaySound()
+                    WoWTools_Mixin:PlaySound()
                 end)
             elseif arg2>=7 then
-                e.PlaySound()
+                WoWTools_Mixin:PlaySound()
             end
             Timer3= C_Timer.NewTimer(arg2-3, function()--3
-                e.PlaySound(115003)
+                WoWTools_Mixin:PlaySound(115003)
             end)
             Timer2= C_Timer.NewTimer(arg2-2, function()--2
-                e.PlaySound(115003)
+                WoWTools_Mixin:PlaySound(115003)
             end)
             Timer1= C_Timer.NewTimer(arg2-1, function()--1
-                e.PlaySound(115003)
+                WoWTools_Mixin:PlaySound(115003)
             end)
             Timer0= C_Timer.NewTimer(arg2, function()--0
-                e.PlaySound(114995 )--63971)
+                WoWTools_Mixin:PlaySound(114995 )--63971)
                 TimerType=nil
             end)
         end

@@ -105,7 +105,7 @@ local function Init()
             if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 if RaidGroupFrame_Update then
-                    e.call(RaidGroupFrame_Update)
+                    WoWTools_Mixin:Call(RaidGroupFrame_Update)
                 end
             end
         end,
@@ -114,7 +114,7 @@ local function Init()
             if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 if RaidGroupFrame_Update then
-                    e.call(RaidGroupFrame_Update)
+                    WoWTools_Mixin:Call(RaidGroupFrame_Update)
                 end
             end
         end

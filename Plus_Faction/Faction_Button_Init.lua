@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
 		return Save().indicato
 	end, function()
 		Save().indicato= not Save().indicato and true or nil
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 	
 
@@ -87,7 +87,7 @@ local function Init_Menu(self, root)
 			return Save().factions[data.factionID]
 		end, function(data)
 			Save().factions[data.factionID]= not Save().factions[data.factionID] and true or nil
-			e.call(ReputationFrame.Update, ReputationFrame)
+			WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 		end, {factionID=factionID})
 		WoWTools_SetTooltipMixin:FactionMenu(sub2)
 		--[[sub2:SetOnEnter(function(btn, description)
@@ -106,7 +106,7 @@ local function Init_Menu(self, root)
 --全部清除
 		WoWTools_MenuMixin:ClearAll(sub, function()
 			Save().factions={}
-			e.call(ReputationFrame.Update, ReputationFrame)
+			WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 		end)
 	end
 
@@ -140,7 +140,7 @@ local function Init_Menu(self, root)
 	return not Save().notPlus
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 		self:settings()
 	end)
 end

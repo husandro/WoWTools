@@ -1,18 +1,29 @@
 local e= select(2, ...)
-e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-e.ExpansionLevel= GetExpansionLevel()--版本数据
-e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
-e.WoWDate={}--战网，数据
-e.StausText={}--属性，截取表 API_Panel.lua
-e.ChallengesSpellTabs={}--Challenges.lua
-e.onlyChinese= LOCALE_zhCN and true or false
---e.tips=GameTooltip
+
 
 WoWTools_Mixin={
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= e.onlyChinese,
 }
+
+
+
+
+function WoWTools_Mixin:Call(func, ...)
+    if func then
+        securecallfunction(func, ...)
+    end
+end
+
+function WoWTools_Mixin:IsLockFrame(frame)
+    local disabled= frame:IsProtected() or issecure()
+    if e.Player.husandro and disabled then
+        local name= frame.GetName and frame:GetName()
+        print(name, 'IsProtected', frame:IsProtected() , 'issecure', issecure() )
+    end
+    return disabled
+end
+
 --WoWTools_Mixin.onlyChinese
 --WoWTools_Mixin.addName
 --[[
@@ -219,24 +230,9 @@ end
 
 
 
---距离
-local LibRangeCheck = LibStub("LibRangeCheck-3.0", true)
-function e.GetRange(unit, checkVisible)--WA Prototypes.lua
-    return LibRangeCheck:GetRange(unit, checkVisible)
-end
-
---距离
-function e.CheckRange(unit, range, operator)
-    local min, max= LibRangeCheck:GetRange(unit, true)
-    if (operator) then-- == "<=") then
-        return (max or 999) <= range
-    else
-        return (min or 0) >= range
-    end
-end
 
 
-function e.Get_CVar_Tooltips(info)--取得CVar信息 e.Get_CVar_Tooltips({name= ,msg=, value=})
+function WoWTools_Mixin:Get_CVar_Tooltips(info)--取得CVar信息 WoWTools_Mixin:Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
     ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', e.Icon.select) or '')
     ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
@@ -248,7 +244,7 @@ end
 
 
 
-function e.PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua e.PlaySound()--播放, 声音
+function WoWTools_Mixin:PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua WoWTools_Mixin:PlaySound()--播放, 声音
     if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not e.setPlayerSound) then
         return
     end
@@ -277,17 +273,6 @@ end
 
 
 
-
-function e.Get_RaidTargetTexture(index, unit)--取得图片
-    if unit then
-        index= GetRaidTargetIndex(unit)
-    end
-    if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
-        return ''
-    else
-        return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
-    end
-end
 
 
 

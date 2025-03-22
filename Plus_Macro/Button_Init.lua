@@ -66,7 +66,7 @@ local function Init_Menu(self, root)
                 if not InCombatLockdown() then
                     Save().toRightLeft=data.value
                     --self:set_texture()
-                    e.call(MacroFrame.ChangeTab, MacroFrame, 1)
+                    WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 1)
                     TargetButton:settings()
                 end
                 return MenuResponse.Refresh

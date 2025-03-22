@@ -218,7 +218,7 @@ local function Init()
                             root:CreateDivider()
                             root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
                                 Save().favorites={}
-                                e.call(EncounterJournal_ListInstances)
+                                WoWTools_Mixin:Call(EncounterJournal_ListInstances)
                             end)
                             root:CreateTitle(WoWTools_EncounterMixin.addName)
                         end)

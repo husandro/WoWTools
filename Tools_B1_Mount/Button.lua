@@ -322,7 +322,7 @@ local function Set_Item_Spell_Edit(info)
             SetValue = function(_, data, tab, text)
                 Save().Mounts[FLOOR][data.spellID]= tab
                 WoWTools_MountMixin.MountButton:settings()
-                if MountJournal_UpdateMountList then e.call(MountJournal_UpdateMountList) end
+                if MountJournal_UpdateMountList then WoWTools_Mixin:Call(MountJournal_UpdateMountList) end
                 print(e.Icon.icon2..WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
 
             end,
@@ -330,7 +330,7 @@ local function Set_Item_Spell_Edit(info)
                 Save().Mounts[FLOOR][data.spellID]=nil
                 checkMount()--检测坐骑
                 setClickAtt()--设置 Click属性
-                if MountJournal_UpdateMountList then e.call(MountJournal_UpdateMountList) end
+                if MountJournal_UpdateMountList then WoWTools_Mixin:Call(MountJournal_UpdateMountList) end
                 print(e.Icon.icon2..WoWTools_MountMixin.addName, e.onlyChinese and '移除' or REMOVE, data.link)
             end
         })

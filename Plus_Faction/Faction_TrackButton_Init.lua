@@ -29,7 +29,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().btnstr= not Save().btnstr and true or nil
 		self:set_Shown()
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
@@ -47,7 +47,7 @@ local function Init_Menu(self, root)
 			btn.text:ClearAllPoints()
 			btn:set_text_point()
 		end
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 
 --上
@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
 			end
 			last=btn
 		end
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 
 --隐藏名称
@@ -80,14 +80,14 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().onlyIcon= not Save().onlyIcon and true or nil
 		WoWTools_FactionMixin.onlyIcon= Save().onlyIcon
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(
 			e.onlyChinese and '仅显示有图标声望'
 			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
 		)
-		e.call(ReputationFrame.Update, ReputationFrame)
+		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 	sub2:SetEnabled(not PlayerGetTimerunningSeasonID())
 

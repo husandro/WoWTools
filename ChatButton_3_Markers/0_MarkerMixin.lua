@@ -38,3 +38,16 @@ function WoWTools_MarkerMixin:Get_ReadyTextIcon(autoReady)
         return format('|cffff0000%s|r|A:XMarksTheSpot:0:0|a', e.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
     end
 end
+
+
+function WoWTools_MarkerMixin:GetIcon(index, unit)--取得图片
+    if unit then
+        index= GetRaidTargetIndex(unit)
+    end
+    if not index or index<1 or index>NUM_WORLD_RAID_MARKERS then
+        return ''
+    else
+        return '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t'
+    end
+end
+

@@ -32,7 +32,7 @@ local function Init()
             VoHandle = nil
         end
 
-        local success, vo2 = e.PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
+        local success, vo2 = WoWTools_Mixin:PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
         if ( success ) then
             VoHandle = vo2
         end

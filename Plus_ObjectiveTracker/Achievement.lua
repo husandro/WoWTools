@@ -16,7 +16,7 @@ local function Init()
             num= num +1
         end
         if num>0 and AchievementFrame and AchievementFrame:IsVisible() and AchievementFrameAchievements_ForceUpdate then
-            e.call(AchievementFrameAchievements_ForceUpdate)--Blizzard_ObjectiveTracker
+            WoWTools_Mixin:Call(AchievementFrameAchievements_ForceUpdate)--Blizzard_ObjectiveTracker
         end
         self:print_text(num)
     end)

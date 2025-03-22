@@ -35,7 +35,7 @@ local function Set_Text(self)
         local unit = plate.UnitFrame and plate.UnitFrame.unit
         if UnitCanAttack('player', unit)
             and (self.isPvPArena and UnitIsPlayer(unit) or not self.isPvPArena)
-            and e.CheckRange(unit, 40, true)
+            and WoWTools_UnitMixin:CheckRange(unit, 40, true)
         then
             k=k+1
             if UnitIsUnit(unit..'target','player') then

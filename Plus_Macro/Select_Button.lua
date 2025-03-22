@@ -156,7 +156,7 @@ local function Init_Menu(_, root)
             local index= WoWTools_MacroMixin:GetSelectIndex()
             if index then
                 if select(3, GetMacroInfo(index))~= MacroFrameText:GetText() then
-                    e.call(MacroFrameSaveButton_OnClick)
+                    WoWTools_Mixin:Call(MacroFrameSaveButton_OnClick)
                 end
             end
             do

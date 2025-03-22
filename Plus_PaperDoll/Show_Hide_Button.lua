@@ -52,13 +52,13 @@ local function Settings()
 
     WoWTools_PaperDollMixin:Init_Status_Plus()--属性，增强
 
-    e.call(PaperDollFrame_SetLevel)
-    e.call(PaperDollFrame_UpdateStats)
+    WoWTools_Mixin:Call(PaperDollFrame_SetLevel)
+    WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
 
     for _, slot in pairs(Slot) do
         local btn2= _G[slot]
         if btn2 then
-            e.call(PaperDollItemSlotButton_Update, btn2)
+            WoWTools_Mixin:Call(PaperDollItemSlotButton_Update, btn2)
         end
     end
 
@@ -67,8 +67,8 @@ local function Settings()
         InspectFrame:set_status_label()--目标，属性
         InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
         if InspectFrame:IsShown() then
-            e.call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
-            e.call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
+            WoWTools_Mixin:Call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
+            WoWTools_Mixin:Call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end
     end
     PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)

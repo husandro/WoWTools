@@ -70,7 +70,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 StopSound(self.voHandle)
                 self.voHandle = nil
             end
-            local success, voHandle = e.PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
+            local success, voHandle = WoWTools_Mixin:PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
             if ( success ) then
                 self.voHandle = voHandle
             end

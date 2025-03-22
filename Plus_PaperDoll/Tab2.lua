@@ -117,7 +117,7 @@ local function Init_Button()
     end)
 
     Title:SetScript('OnMouseDown', function()
-        e.call(PaperDollFrame_SetSidebar, _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
+        WoWTools_Mixin:Call(PaperDollFrame_SetSidebar, _G['PaperDollSidebarTab2'], 2)--PaperDollFrame.lua
     end)
 
 end

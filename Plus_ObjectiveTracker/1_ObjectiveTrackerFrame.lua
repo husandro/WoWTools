@@ -200,7 +200,7 @@ local function set_frames_show(collapse, isFind)
                         end
                     end
                     if not find then
-                        --e.call(frame.ToggleCollapsed, frame)
+                        --WoWTools_Mixin:Call(frame.ToggleCollapsed, frame)
                     end
                 end
             end

@@ -308,7 +308,7 @@ local function Init_Panel()
         GetValue= function() return C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2 end,
         name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
         tooltip= function()
-            return e.Get_CVar_Tooltips({
+            return WoWTools_Mixin:Get_CVar_Tooltips({
                     name='ActionButtonUseKeyDown',
                     msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,

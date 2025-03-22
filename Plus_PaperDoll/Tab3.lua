@@ -15,7 +15,7 @@ local function Set_Tooltip(frame)
     frame:EnableMouse(true)
     frame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     frame:SetScript('OnMouseDown', function()
-        e.call(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
+        WoWTools_Mixin:Call(PaperDollFrame_SetSidebar, PaperDollSidebarTab3, 3)--PaperDollFrame.lua
     end)
     frame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")

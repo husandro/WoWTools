@@ -46,7 +46,7 @@ local function Init()--职业，能量条
                     Save().scale[btn.name]=nil
                     if btn.targetFrame:CanChangeAttribute() then
                         btn.targetFrame:SetScale(1)
-                        e.call(PlayerFrame_UpdateArt, PlayerFrame)
+                        WoWTools_Mixin:Call(PlayerFrame_UpdateArt, PlayerFrame)
                     end
                 end
             })

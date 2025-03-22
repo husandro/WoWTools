@@ -66,7 +66,7 @@ local function Init()
 
     EventRegistry:RegisterFrameEventAndCallback("SOCKET_INFO_UPDATE", function()
         if PaperDollItemsFrame:IsShown() then
-            e.call(PaperDollFrame_UpdateStats)
+            WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
         end
     end)
 

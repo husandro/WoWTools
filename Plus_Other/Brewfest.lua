@@ -58,7 +58,7 @@ local function Init()
 
     function button.leftTexture:set_tipSound()
         if self:GetParent():IsVisible() then
-            e.PlaySound()
+            WoWTools_Mixin:PlaySound()
         end
     end
     button.leftTexture:SetScript('OnShow', button.leftTexture.set_tipSound)
@@ -167,7 +167,7 @@ local function Init()
                     if info.spellId==43052 then
                         self.Timer= nil
                         self.spellId=nil
-                        e.PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
+                        WoWTools_Mixin:PlaySound(SOUNDKIT.IG_SPELLBOOK_OPEN)
                         break
                     end
                 end

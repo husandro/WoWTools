@@ -77,7 +77,7 @@ local function Init_Frame()
                 and not LFGDungeonReadyStatus:IsVisible()
                 and not LFGDungeonReadyDialog:IsVisible()
                 and not StaticPopup_Visible('WoWTools_LFD_ExitIns') then
-                    e.PlaySound()--播放, 声音
+                    WoWTools_Mixin:PlaySound()--播放, 声音
                     local leaveSce= 30
                     if Save().autoROLL and event=='LOOT_CLOSED' then
                         leaveSce= WoWTools_LFDMixin.Save.sec
@@ -103,7 +103,7 @@ local function Init_Frame()
             if not Save().leaveInstance then
                 return
             end
-            e.PlaySound()--播放, 声音
+            WoWTools_Mixin:PlaySound()--播放, 声音
             C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
             LFGTeleport(true)
             print(e.Icon.icon2..WoWTools_LFDMixin.addName,
@@ -113,7 +113,7 @@ local function Init_Frame()
             
         elseif event=='PVP_MATCH_COMPLETE' then--离开战场
             if Save().leaveInstance then
-                e.PlaySound()--播放, 声音
+                WoWTools_Mixin:PlaySound()--播放, 声音
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                     WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWTools_LFDMixin.Save.sec, nil, true, true)
                 end

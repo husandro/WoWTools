@@ -1,6 +1,16 @@
 local e = select(2, ...)
 
 
+e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
+e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+e.ExpansionLevel= GetExpansionLevel()--版本数据
+e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
+e.WoWDate={}--战网，数据
+e.StausText={}--属性，截取表 API_Panel.lua
+e.ChallengesSpellTabs={}--Challenges.lua
+e.onlyChinese= LOCALE_zhCN and true or false
+--e.tips=GameTooltip
+
 --[[
 e.Is_PTR= IsPublicBuild() or IsTestBuild()
 local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
@@ -11,20 +21,7 @@ local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
 
 
 --local securecallfunction= securecallfunction
-function e.call(func, ...)
-    if func then
-        securecallfunction(func, ...)
-    end
-end
 
-function e.LockFrame(frame)
-    local disabled= frame:IsProtected() or issecure()
-    if e.Player.husandro and disabled then
-        local name= frame.GetName and frame:GetName()
-        print(name, 'IsProtected', frame:IsProtected() , 'issecure', issecure() )
-    end
-    return disabled
-end
 
 
 

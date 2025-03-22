@@ -97,10 +97,10 @@ local function Init()
         setSize=true,
         sizeUpdateFunc=function()
             if PaperDollFrame.EquipmentManagerPane:IsVisible() then
-                e.call(PaperDollEquipmentManagerPane_Update)
+                WoWTools_Mixin:Call(PaperDollEquipmentManagerPane_Update)
             end
             if PaperDollFrame.TitleManagerPane:IsVisible() then
-                e.call(PaperDollTitlesPane_Update)
+                WoWTools_Mixin:Call(PaperDollTitlesPane_Update)
             end
         end,
         sizeStopFunc=function(btn)

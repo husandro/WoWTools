@@ -184,7 +184,7 @@ local function Init()
         self.nameText:SetFormattedText(
             '%s%s',
             not WoWTools_AttributesMixin.Save.disableTargetName and GetUnitName('target', false) or '',
-            e.Get_RaidTargetTexture(nil, 'target')
+            WoWTools_MarkerMixin:GetIcon(nil, 'target')
         )
 
         local value= GetUnitSpeed('target') or 0

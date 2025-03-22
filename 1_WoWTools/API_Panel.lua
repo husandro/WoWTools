@@ -236,7 +236,7 @@ end
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
 function e.OpenPanelOpting(category, name)
-    --[[if SettingsPanel:IsVisible() and not e.LockFrame(SettingsPanel) then--ToggleGameMenu()
+    --[[if SettingsPanel:IsVisible() and not WoWTools_Mixin:IsLockFrame(SettingsPanel) then--ToggleGameMenu()
         SettingsPanel:Close()
     end]]
     category= (category and category.GetID) and category or Category

@@ -151,12 +151,12 @@ end
 
 function WoWTools_MailMixin:RefreshAll()
     if InboxFrame:IsShown() then
-        e.call(InboxFrame_Update)
+        WoWTools_Mixin:Call(InboxFrame_Update)
     elseif SendMailFrame:IsShown() then
-        e.call(SendMailFrame_Update)
+        WoWTools_Mixin:Call(SendMailFrame_Update)
     end
     if OpenMailFrame:IsShown() then
-        e.call(OpenMail_Update)
+        WoWTools_Mixin:Call(OpenMail_Update)
     end
 end
 

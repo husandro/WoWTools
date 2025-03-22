@@ -578,8 +578,8 @@ local function set_Raid_Menu_List(root)
                 if GetLFGQueueStats(LE_LFG_CATEGORY_RF, data.dungeonID) then
                     LeaveSingleLFG(LE_LFG_CATEGORY_RF, data.dungeonID)
                 else
-                    e.call(RaidFinderQueueFrame_SetRaid, data.dungeonID)
-                    e.call(RaidFinderQueueFrame_Join)
+                    WoWTools_Mixin:Call(RaidFinderQueueFrame_SetRaid, data.dungeonID)
+                    WoWTools_Mixin:Call(RaidFinderQueueFrame_Join)
                     --printListInfo()--输出当前列表
                     WoWTools_LFDMixin:Set_LFDButton_Data(data.dungeonID, LE_LFG_CATEGORY_RF, e.cn(data.dungeonName), nil)--设置图标, 点击,提示
                 end
@@ -1045,7 +1045,7 @@ local function Init_Menu(_, root)
         (Save().autoROLL and '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t' or '|A:Levelup-Icon-Bag:0:0|a')
         ..(e.onlyChinese and '战利品掷骰' or LOOT_ROLL),
     function()
-        e.call(ToggleLootHistoryFrame)
+        WoWTools_Mixin:Call(ToggleLootHistoryFrame)
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
@@ -1207,7 +1207,7 @@ local function Init_Menu(_, root)
         ((UnitControllingVehicle("player") and CanExitVehicle()) and '' or '|cff9e9e9e')
         ..(e.onlyChinese and '离开载具' or BINDING_NAME_VEHICLEEXIT),
     function()
-        e.call(VehicleExit)
+        WoWTools_Mixin:Call(VehicleExit)
         return MenuResponse.Open
     end)
 end

@@ -882,7 +882,7 @@ local function Init_Menu(self, root)
         Save.gemLoc={
             [e.Player.class]={}
         }
-        e.call(ItemSocketingFrame_Update)
+        WoWTools_Mixin:Call(ItemSocketingFrame_Update)
         return MenuResponse.Refresh
     end)
 

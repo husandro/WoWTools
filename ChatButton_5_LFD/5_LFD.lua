@@ -61,11 +61,11 @@ local function Init()
     function LFDButton:set_OnMouseDown()
         if self.dungeonID then
             if self.type==LE_LFG_CATEGORY_LFD then
-                e.call(LFDQueueFrame_SetType, self.dungeonID)
-                e.call(LFDQueueFrame_Join)
+                WoWTools_Mixin:Call(LFDQueueFrame_SetType, self.dungeonID)
+                WoWTools_Mixin:Call(LFDQueueFrame_Join)
             elseif self.type==LE_LFG_CATEGORY_RF then
-                e.call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
-                e.call(RaidFinderQueueFrame_Join)
+                WoWTools_Mixin:Call(RaidFinderQueueFrame_SetRaid, self.dungeonID)
+                WoWTools_Mixin:Call(RaidFinderQueueFrame_Join)
             elseif self.type==LE_LFG_CATEGORY_SCENARIO then
 
             end
@@ -98,7 +98,7 @@ local function Init()
     WoWTools_LFDMixin:Init_LFGListInviteDialog_Info()--队伍查找器, 邀请信息
 
     PVPTimerFrame:HookScript('OnShow', function(self2)
-        e.PlaySound()--播放, 声音
+        WoWTools_Mixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 end
