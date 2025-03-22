@@ -300,11 +300,7 @@ local OptionsList={{
     })
 
     sub:CreateDivider()
-    sub2=sub:CreateTitle(
-        e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS),
-    function()
-        return MenuResponse.Open
-    end)
+    sub2=sub:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(self.useText, self.noText)
     end)
