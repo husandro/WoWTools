@@ -148,25 +148,23 @@ local function Init(ToyButton)
     end
 
     function ToyButton:set_textureModifier(down)
-        if not GameTooltip:IsOwned(self) then
-            return
-        end
-
         local itemID, icon, isDesaturated
-        if down==1 then
-            local index= self:get_modifier_index()
-            if index then
-                itemID= ModifiedMenuTab[index].itemID
-                icon= ModifiedMenuTab[index].icon
-                if itemID then
-                    isDesaturated= not PlayerHasToy(itemID) and C_Item.GetItemCount(itemID)==0
+        if GameTooltip:IsOwned(self) then
+            if down==1 then
+                local index= self:get_modifier_index()
+                if index then
+                    itemID= ModifiedMenuTab[index].itemID
+                    icon= ModifiedMenuTab[index].icon
+                    if itemID then
+                        isDesaturated= not PlayerHasToy(itemID) and C_Item.GetItemCount(itemID)==0
+                    end
                 end
             end
+            self:set_tooltip(itemID)
+            self:set_cool(itemID)
+            self.textureModifier:SetDesaturated(isDesaturated)
         end
-        self:set_tooltip(itemID)
-        self:set_cool(itemID)
         self.textureModifier:SetTexture(icon or 0)
-        self.textureModifier:SetDesaturated(isDesaturated)
     end
 
 
@@ -348,6 +346,8 @@ local function Init(ToyButton)
                 self:Set_Random_Value(itemID)
             end
         end
+        self:RegisterEvent('MODIFIER_STATE_CHANGED')
+        self:set_textureModifier(1)
     end)
 
     ToyButton:SetScript("OnLeave",function(self)
@@ -355,6 +355,8 @@ local function Init(ToyButton)
         self:SetScript('OnUpdate',nil)
         self.elapsed=nil
         self:Get_Random_Value()
+        self:UnregisterEvent('MODIFIER_STATE_CHANGED')
+        self:set_textureModifier()
     end)
 
     ToyButton:SetScript("OnMouseDown", function(_, d)
@@ -436,7 +438,7 @@ local function Init(ToyButton)
             self:RegisterEvent('NEW_TOY_ADDED')
             self:RegisterEvent('UI_MODEL_SCENE_INFO_UPDATED')
             self:RegisterEvent('BAG_UPDATE_COOLDOWN')
-            self:RegisterEvent('MODIFIER_STATE_CHANGED')
+            
             self:Get_Random_Value()
         else
             self:UnregisterAllEvents()
