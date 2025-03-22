@@ -13,7 +13,7 @@ local function Set_Dragonriding_Speed(frame)
     end
     frame.speedBar= CreateFrame('StatusBar', nil, frame)
     frame.speedBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Status')
-    frame.speedBar:SetStatusBarColor(e.Player.r, e.Player.g, e.Player.b)
+    frame.speedBar:SetStatusBarColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
     frame.speedBar:SetPoint('BOTTOM', frame, 'TOP')
     frame.speedBar:SetMinMaxValues(0, 100)
     frame.speedBar:SetSize(240,10)
@@ -53,7 +53,7 @@ local function Set_Dragonriding_Speed(frame)
             local base = isGliding and forwardSpeed or GetUnitSpeed("player") or 0
             if base>0 then
                 self.Text:SetText(math.modf(base / BASE_MOVEMENT_SPEED * 100))
-                local r,g,b=1,1,1-- e.Player.r, e.Player.g, e.Player.b
+                local r,g,b=1,1,1-- WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b
                 if isGliding then
                     if forwardSpeed==100 then
                         r,g,b= 0.64, 0.21, 0.93

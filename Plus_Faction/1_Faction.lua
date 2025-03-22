@@ -35,7 +35,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end
 			
 
-			local addName= format('|A:%s:0:0|a%s', e.Icon[WoWTools_DataMixin.Player.Faction] or 'ParagonReputation_Glow', WoWTools_Mixin.onlyChinese and '声望' or REPUTATION)
+			local addName= format('|A:%s:0:0|a%s', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or 'ParagonReputation_Glow', WoWTools_Mixin.onlyChinese and '声望' or REPUTATION)
 			WoWTools_FactionMixin.addName= addName
 
 			--添加控制面板

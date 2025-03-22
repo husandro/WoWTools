@@ -27,7 +27,7 @@ local function Init(Frame)
     --职业颜色
     useClassColorCheck:SetPoint("BOTTOMLEFT")
     useClassColorCheck.text:SetText(WoWTools_Mixin.onlyChinese and '职业颜色' or CLASS_COLORS)
-    useClassColorCheck.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+    useClassColorCheck.text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
     useClassColorCheck:SetChecked(Save().usrClassColor)
     useClassColorCheck:SetScript('OnMouseDown', function()
         Save().usrClassColor= not Save().usrClassColor and true or nil

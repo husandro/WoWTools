@@ -251,9 +251,9 @@ function WoWTools_MenuMixin:Color(root, text, onClick, colorInfo, data)
         text,
         onClick or function()end,
         {
-            r = colorInfo.r or e.Player.r,
-            g = colorInfo.g or e.Player.g,
-            b = colorInfo.b or e.Player.b,
+            r = colorInfo.r or WoWTools_DataMixin.Player.r,
+            g = colorInfo.g or WoWTools_DataMixin.Player.g,
+            b = colorInfo.b or WoWTools_DataMixin.Player.b,
             opacity = colorInfo.opacity or colorInfo.a or 1,
             swatchFunc = colorInfo.opacity or function()end,
             opacityFunc = colorInfo.opacityFunc or function()end,

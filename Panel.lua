@@ -12,7 +12,7 @@ end
 --自定义，颜色
 local function Set_Color()
     if Save().useColor==1 then
-        WoWTools_DataMixin.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= WoWTools_DataMixin.Player.col}
+        WoWTools_DataMixin.Player.useColor= {r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, a=1, hex= WoWTools_DataMixin.Player.col}
     elseif Save().useColor==2 then
         WoWTools_DataMixin.Player.useColor= Save().useCustomColorTab
     else

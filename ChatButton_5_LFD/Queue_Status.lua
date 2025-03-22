@@ -219,7 +219,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 ..(status~='queued' and ' '..get_Status_Text(status) or '')
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
                 ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(WoWTools_Mixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
-                ..(e.Icon[role] or '')
+                ..(WoWTools_DataMixin.Icon[role] or '')
                 ..' '.. WoWTools_TimeMixin:SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
                 ..' '
         end
@@ -324,7 +324,7 @@ local function Set_Queue_Status()--小眼睛, 信息
 
                 local roleText--职责
                 if role~='NONE' then
-                    roleText= e.Icon[role]
+                    roleText= WoWTools_DataMixin.Icon[role]
                 end
 
                 lfg= lfg and lfg..'\n   ' or '   '

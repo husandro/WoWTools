@@ -180,7 +180,7 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
     end
     return  string,
             colorRe or (
-                WoWTools_DataMixin.Player.useColor or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=WoWTools_DataMixin.Player.col}
+                WoWTools_DataMixin.Player.useColor or {r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, hex=WoWTools_DataMixin.Player.col}
             ),
             WoWTools_Mixin.onlyChinese and name or (difficultyID and GetDifficultyInfo(difficultyID))
 end

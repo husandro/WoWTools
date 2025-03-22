@@ -695,7 +695,7 @@ local function Init_All_Role(_, root)
     root:CreateDivider()
     for _, role in pairs({'TANK', 'HEALER', 'DAMAGER'}) do
         sub= root:CreateCheckbox(
-            e.Icon[role]
+            WoWTools_DataMixin.Icon[role]
             ..WoWTools_TextMixin:CN(_G[role])
             ..(role==cursorRole and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)
@@ -742,7 +742,7 @@ local function Init_All_Role(_, root)
 
     for _, role in pairs({'TANK', 'HEALER', 'DAMAGER'}) do
         sub= root:CreateCheckbox(
-            e.Icon[role]
+            WoWTools_DataMixin.Icon[role]
             ..WoWTools_TextMixin:CN(_G[role])
             ..(role==cursorRole and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
         function(data)

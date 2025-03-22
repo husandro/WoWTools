@@ -251,8 +251,8 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
                 local roleText=' '
                 table.sort(tab[classInfo.classFile].role, function(a,b) return a.index< b.index end)
                 for _, role in pairs(tab[classInfo.classFile].role) do
-                    if e.Icon[role.role] then
-                        roleText= roleText..e.Icon[role.role]
+                    if WoWTools_DataMixin.Icon[role.role] then
+                        roleText= roleText..WoWTools_DataMixin.Icon[role.role]
                     end
                 end
                 text= text.. roleText

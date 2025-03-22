@@ -540,7 +540,7 @@ elseif not Save().hide and self.SocketDisplay:IsShown() and link then
             local atlas
             if gemID then
                 local quality= C_Item.GetItemQualityByID(gemID)--C_Item.GetItemQualityColor(quality)
-                atlas= e.Icon[quality]
+                atlas= WoWTools_DataMixin.Icon[quality]
             end
             frame.Slot:SetAtlas(atlas or 'character-emptysocket')
         end

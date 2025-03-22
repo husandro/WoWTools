@@ -265,7 +265,7 @@ function WoWTools_LFDMixin:GetRewardInfo(dungeonID, scenarioID)--FB奖励
             end
         end
         if T or H  or D then
-            t=t..' |cff00ff00('.. (T and e.Icon['TANK']..T or '').. (H and e.Icon['HEALER']..H or '').. (D and e.Icon['DAMAGER']..D or '') ..')|r'
+            t=t..' |cff00ff00('.. (T and WoWTools_DataMixin.Icon['TANK']..T or '').. (H and WoWTools_DataMixin.Icon['HEALER']..H or '').. (D and WoWTools_DataMixin.Icon['DAMAGER']..D or '') ..')|r'
         end
     end
 

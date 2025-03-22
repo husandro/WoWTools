@@ -42,7 +42,7 @@ local function Settings(self)
 
         info.name,--名称
 
-        e.Icon[role] or '',
+        WoWTools_DataMixin.Icon[role] or '',
 
         info.numMembers and
             (WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)..'|cff00ff00 '..info.numMembers..'|r'

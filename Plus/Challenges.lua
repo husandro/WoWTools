@@ -301,7 +301,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ready:SetScript("OnMouseDown", DoReadyCheck)
 
     self.mark = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--标记
-    self.mark:SetText(e.Icon['TANK']..(WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
+    self.mark:SetText(WoWTools_DataMixin.Icon['TANK']..(WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon['HEALER'])
     self.mark:SetPoint('RIGHT', self.StartButton, 'LEFT',-2, 0)
     self.mark:SetSize(100,24)
     self.mark:SetScript("OnMouseDown",function()
@@ -1170,7 +1170,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 local text, text2= '', nil
                                 if info.specID then
                                     local icon, role= select(4, GetSpecializationInfoByID(info.specID))
-                                    text= e.Icon[role]..'|T'..icon..':0|t'
+                                    text= WoWTools_DataMixin.Icon[role]..'|T'..icon..':0|t'
                                 end
                                 text= info.name== WoWTools_DataMixin.Player.Name and text..info.name..'|A:auctionhouse-icon-favorite:0:0|a' or text..info.name
                                 if info.classID then
@@ -1185,7 +1185,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                     text2= info2.name== WoWTools_DataMixin.Player.Name and ('|A:auctionhouse-icon-favorite:0:0|a'..info2.name) or info2.name
                                     if info2.specID then
                                         local icon, role= select(4, GetSpecializationInfoByID(info.specID))
-                                        text2= text2..'|T'..icon..':0|t'..e.Icon[role]
+                                        text2= text2..'|T'..icon..':0|t'..WoWTools_DataMixin.Icon[role]
                                     end
                                     if info2.classID then
                                         local classFile= select(2, GetClassInfo(info2.classID))

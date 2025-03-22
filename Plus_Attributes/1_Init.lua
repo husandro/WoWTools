@@ -34,7 +34,7 @@ local function set_Tabs()
     get_PrimaryStat()--取得主属
 
     Tabs={
-        {name='STATUS', r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, useNumber=true, textValue=true},
+        {name='STATUS', r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, a=1, useNumber=true, textValue=true},
 
         {name= 'CRITCHANCE', text= WoWTools_Mixin.onlyChinese and '爆击' or STAT_CRITICAL_STRIKE, bar=true, dps=true, textValue=true, zeroShow=true},
         {name= 'HASTE', text= WoWTools_Mixin.onlyChinese and '急速' or STAT_HASTE, bar=true, dps=true, textValue=true, zeroShow=true},
@@ -65,9 +65,9 @@ local function set_Tabs()
         if not Save().tab[info.name]then
             Save().tab[info.name]={name= info.name}
         end
-        Tabs[index].r= index==1 and e.Player.r or Save().tab[info.name].r or 1
-        Tabs[index].g= index==1 and e.Player.g or Save().tab[info.name].g or 0.82
-        Tabs[index].b= index==1 and e.Player.b or Save().tab[info.name].b or 0
+        Tabs[index].r= index==1 and WoWTools_DataMixin.Player.r or Save().tab[info.name].r or 1
+        Tabs[index].g= index==1 and WoWTools_DataMixin.Player.g or Save().tab[info.name].g or 0.82
+        Tabs[index].b= index==1 and WoWTools_DataMixin.Player.b or Save().tab[info.name].b or 0
         Tabs[index].a= index==1 and 1 or Save().tab[info.name].a or 1
         Tabs[index].useNumber=info.name=='STATUS' and true
                             or Tabs[index].usePercent and nil

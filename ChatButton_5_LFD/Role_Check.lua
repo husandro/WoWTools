@@ -157,13 +157,13 @@ local function Init_RolePollPopup()
         local role = select(5, GetSpecializationInfo(GetSpecialization() or 0))
         if role=='DAMAGER' and canBeDamager then
             btn2= RolePollPopupRoleButtonDPS
-            icon= e.Icon['DAMAGER']
+            icon= WoWTools_DataMixin.Icon['DAMAGER']
         elseif role=='TANK' and canBeTank then
             btn2= RolePollPopupRoleButtonTank
-            icon= e.Icon['TANK']
+            icon= WoWTools_DataMixin.Icon['TANK']
         elseif role=='HEALER' and canBeHealer then
             btn2= RolePollPopupRoleButtonHealer
-            icon= e.Icon['HEALER']
+            icon= WoWTools_DataMixin.Icon['HEALER']
         end
 
 

@@ -26,7 +26,7 @@ local function Get_Guild_Name()
 
     name= WoWTools_TextMixin:sub(name, Save().subGuildName, nil, nil)
 
-    return  '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
+    return  '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
     ..(canGuildInvite and '|cff00ccff' or '|cff828282')
     ..WoWTools_GuildMixin:Get_Rank_Texture(guildRankIndex, false)
     ..(name)
@@ -74,7 +74,7 @@ local function Init_Guild_Menu(self, root)
         end
 
         tooltip:AddDoubleLine(
-            '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
+            '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
             ..(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
             WoWTools_TextMixin:GetYesNo(clubInfo.isCrossFaction)
         )
@@ -215,7 +215,7 @@ local function WoW_List(_, root)
                 local data= desc.data.guid and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(desc.data.guid) or {}
 
                 tooltip:AddDoubleLine(
-                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
+                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
                     ..'|T'..(data.tabardInfo and data.tabardInfo.emblemFileID or 0)..':0|t'
                     ..(desc.data.name or data.name),
                     WoWTools_UnitMixin:GetPlayerInfo({guid=data.lastPosterGUID, reName=true, reRealm=false})
@@ -238,7 +238,7 @@ local function WoW_List(_, root)
                 tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS, data.numActiveMembers)
 
                 tooltip:AddDoubleLine(
-                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
+                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
                     ..(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
                     WoWTools_TextMixin:GetYesNo(data.isCrossFaction)
                 )

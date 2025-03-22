@@ -16,7 +16,7 @@ local function Blizzard_ClassTalentUI(self)
             frame.specIconBorder= frame:CreateTexture(nil, 'ARTWORK')
             frame.specIconBorder:SetPoint('CENTER', frame.specIcon,1.2,-1.2)
             frame.specIconBorder:SetAtlas('bag-border')
-            frame.specIconBorder:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)
+            frame.specIconBorder:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
             frame.specIconBorder:SetSize(32,32)
 
             frame.specIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, size=18, copyFont=frame.RoleName})

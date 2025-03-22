@@ -805,7 +805,7 @@ end)
     if ArcheologyDigsiteProgressBar then
         mixin:SetAlphaColor(ArcheologyDigsiteProgressBar.BarBorderAndOverlay, true)
         mixin:HideTexture(ArcheologyDigsiteProgressBar.Shadow)
-        --ArcheologyDigsiteProgressBar.BarTitle:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
+        --ArcheologyDigsiteProgressBar.BarTitle:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
         ArcheologyDigsiteProgressBar.BarTitle:SetShadowOffset(1, -1)
         mixin:HideTexture(ArcheologyDigsiteProgressBar.BarBackground)
     end

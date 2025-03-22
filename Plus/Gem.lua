@@ -712,7 +712,7 @@ local function Init_ItemSocketingFrame_Update()
             if gemLink then
                 if WoWTools_DataMixin.Is_Timerunning then
                     local quality= C_Item.GetItemQualityByID(gemLink)--C_Item.GetItemQualityColor(quality)
-                    atlas= e.Icon[quality]
+                    atlas= WoWTools_DataMixin.Icon[quality]
                 else
                     local quality= C_TradeSkillUI.GetItemReagentQualityByItemInfo(gemLink) or C_TradeSkillUI.GetItemCraftedQualityByItemInfo(gemLink)
                     if quality then

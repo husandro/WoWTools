@@ -76,7 +76,7 @@ local function Init()
             local ID, _, _, icon, role = GetSpecializationInfo(index)
             specID= ID
             if icon then
-                a= '|T'..icon..':0|t'..(e.Icon[role] or '')
+                a= '|T'..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
         end
         local lootSpecID = GetLootSpecialization()
@@ -84,7 +84,7 @@ local function Init()
             lootSpecID= lootSpecID==0 and specID or lootSpecID
             local icon, role = select(4, GetSpecializationInfoByID(lootSpecID))
             if icon then
-                b= '|T'..icon..':0|t'..(e.Icon[role] or '')
+                b= '|T'..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
         end
         a= a or ''

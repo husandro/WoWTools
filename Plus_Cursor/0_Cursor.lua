@@ -64,7 +64,7 @@ Save={
     --gcdDrawBling=false,
     --gcdReverse=false,
 },
-Color={r=e.Player.r, g=e.Player.g, b= e.Player.b, a=1},
+Color={r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b= WoWTools_DataMixin.Player.b, a=1},
 addName=nil,
 DefaultTexture= 'bonusobjectives-bar-starburst',
 DefaultGCDTexture=[[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
@@ -93,7 +93,7 @@ end
 --####
 function WoWTools_CursorMixin:Set_Color()
     if Save().usrClassColor then
-        WoWTools_CursorMixin.Color={r=e.Player.r, g=e.Player.g, b= e.Player.b, a=1}
+        WoWTools_CursorMixin.Color={r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b= WoWTools_DataMixin.Player.b, a=1}
     else
         WoWTools_CursorMixin.Color=Save().color
     end

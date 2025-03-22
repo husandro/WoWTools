@@ -88,7 +88,7 @@ local function Settings()
     if ( effectiveLevel ~= level ) then
         level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
     end
-    local faction= format('|A:%s:26:26|a', e.Icon[WoWTools_DataMixin.Player.Faction] or '')
+    local faction= format('|A:%s:26:26|a', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or '')
 
     CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
 end

@@ -116,7 +116,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				end,
 				buttonText='|A:colorblind-colorwheel:0:0|a'..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
 				buttonFunc= function()
-					WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
+					WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
 				end,
 			})
 
@@ -131,7 +131,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			if Save().autoShow then
 				C_Timer.After(2, function()
-					WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
+					WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
 					print(
 						WoWTools_Mixin.addName,
 						WoWTools_ColorMixin.addName,

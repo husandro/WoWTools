@@ -1,8 +1,8 @@
 local id, e = ...
 local addName
 local Save={
-    --notRaidFrame= not e.Player.husandro,
-    raidFrameScale= e.Player.husandro and 0.8 or 1,
+    --notRaidFrame= not WoWTools_DataMixin.Player.husandro,
+    raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1,
     --raidFrameAlpha=1,
     --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 }
@@ -143,7 +143,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     end
 
     --外框
-    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(e.Player.r, e.Player.g, e.Player.b)--设置颜色
+    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)--设置颜色
 
     --移动zzZZ, 睡着
     playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
@@ -424,8 +424,8 @@ end)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:AddLine(' ')
-        if e.WoWDate[e.Player.guid].Keystone.link then
-            GameTooltip:AddLine('|T4352494:0|t'..e.WoWDate[e.Player.guid].Keystone.link)
+        if e.WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link then
+            GameTooltip:AddLine('|T4352494:0|t'..e.WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
             GameTooltip:AddLine(' ')
         end
         WoWTools_WeekMixin:Activities({showTooltip=true})
@@ -865,8 +865,8 @@ local function set_memberFrame(memberFrame)
         function raidTargetFrame:set_faction()
             local faction= UnitFactionGroup(self.unit)
             local atlas
-            if faction~= e.Player.faction or self.isPlayer then
-                atlas= e.Icon[faction]
+            if faction~= WoWTools_DataMixin.Player.faction or self.isPlayer then
+                atlas= WoWTools_DataMixin.Icon[faction]
             end
             if atlas then
                 self.faction:SetAtlas(atlas)

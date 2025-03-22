@@ -13,7 +13,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local tooltipName=tooltip:GetName() or 'GameTooltip'
 
 
-    tooltip.Portrait:SetAtlas(e.Icon[englishFaction] or 'Neutral')
+    tooltip.Portrait:SetAtlas(WoWTools_DataMixin.Icon[englishFaction] or 'Neutral')
     tooltip.Portrait:SetShown(true)
 
     --取得玩家信息
@@ -30,7 +30,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         if info.specID then
             local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
             if icon then
-                text2Left= "|T"..icon..':0|t'..(e.Icon[role] or '')
+                text2Left= "|T"..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
         end
     else
@@ -51,7 +51,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             if reason==0 then
                 textLeft= (WoWTools_Mixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
             elseif reason==1 then
-                textLeft= (WoWTools_Mixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.layer))..textLeft
+                textLeft= (WoWTools_Mixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.layer))..textLeft
             elseif reason==2 then--战争模
                 textLeft= (isWarModeDesired and (WoWTools_Mixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (WoWTools_Mixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..textLeft
             elseif reason==3 then

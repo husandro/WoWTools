@@ -415,7 +415,7 @@ function WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			btn:SetNormalTexture(tables.icon)--设置，图片
 		end
 		if btn.border then
-			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or e.Icon[tables.itemQuality]--qualityToIconBorderAtlas4[tables.itemQuality]
+			local atlas= btn.itemButtonUse and qualityToIconBorderAtlas[tables.itemQuality] or WoWTools_DataMixin.Icon[tables.itemQuality]--qualityToIconBorderAtlas4[tables.itemQuality]
 			if atlas then
 				btn.border:SetAtlas(atlas)
 			end

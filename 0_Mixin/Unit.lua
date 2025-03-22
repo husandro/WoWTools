@@ -38,7 +38,7 @@ function WoWTools_UnitMixin:Get_Unit_Color(unit, guid)
     local r, g, b, hex, classFilename
     if UnitExists(unit) then
         if UnitIsUnit('player', unit) then
-            r,g,b,hex= e.Player.r, e.Player.g, e.Player.b, WoWTools_DataMixin.Player.col
+            r,g,b,hex= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, WoWTools_DataMixin.Player.col
         else
             classFilename= UnitClassBase(unit)
         end
@@ -123,7 +123,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
                     ..(self:GetClassIcon(unit, englishClass) or '')
 
         if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
-            text= text..e.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
+            text= text..WoWTools_DataMixin.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
         end
         if reName and name then
             if reRealm then
@@ -247,7 +247,7 @@ end
 function WoWTools_UnitMixin:GetFaction(unit, englishFaction, all)--检查, 是否同一阵营
     englishFaction= englishFaction or (unit and  UnitFactionGroup(unit))
     if englishFaction and (englishFaction~= WoWTools_DataMixin.Player.Faction or all) then
-        return format('|A:%s:0:0|a', e.Icon[englishFaction] or '')
+        return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[englishFaction] or '')
     end
 end
 

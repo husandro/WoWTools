@@ -26,8 +26,6 @@ Init.xml
 0_Mixin\0_1_Data.lua
 0_Mixin\0_2_Date_WoW.lua
 0_Mixin\0_3_Data_NeedUpdate.lua
-
-1_WoWTools\z_Init_Panel.lua
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Aura.lua
 0_Mixin\Button.lua
@@ -54,7 +52,7 @@ Init.xml
 0_Mixin\SetTooltip_Faction.lua
 0_Mixin\Unit.lua
 0_Mixin\Week.lua
-
+0_Mixin\3_Panel.lua
 Panel.lua
 
 ##坐骑， Tools 主要的，

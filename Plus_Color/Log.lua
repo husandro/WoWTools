@@ -192,7 +192,7 @@ local function Init()
 		table.insert(Save().logColor, 1, {r=r, g=g, b=b, a=a})
 	end)
 
-	--RestColor= WoWTools_ColorMixin:Create_Texture(e.Player.r, e.Player.g, e.Player.b, 1)--记录，打开时的颜色， 和历史
+	--RestColor= WoWTools_ColorMixin:Create_Texture(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1)--记录，打开时的颜色， 和历史
 	--RestColor:SetPoint('TOPRIGHT', ColorPickerFrame.Content.ColorSwatchCurrent, 'TOPRIGHT', 10,0)
 
 --保存，颜色

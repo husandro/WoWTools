@@ -118,7 +118,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
 
             local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
             if icon and role then
-                text=text..'|T'..icon..':0|t'..e.Icon[role]
+                text=text..'|T'..icon..':0|t'..WoWTools_DataMixin.Icon[role]
             end
             if level and level>0 then
                 text= text..level

@@ -50,7 +50,7 @@ local function set_RequestToJoinFrame(frame)
                 end
                 _, name, _, icon, role= GetSpecializationInfoByID(btn.specID)
                 if name then
-                    name= '|T'..(icon or 0)..':0|t'..(e.Icon[role] or '')..WoWTools_TextMixin:CN(name)
+                    name= '|T'..(icon or 0)..':0|t'..(WoWTools_DataMixin.Icon[role] or '')..WoWTools_TextMixin:CN(name)
                     if check then
                         text2= (text2 and text2..', ' or '').. name
                     end

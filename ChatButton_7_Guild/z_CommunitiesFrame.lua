@@ -97,7 +97,7 @@ local function CommunitiesList_ScrollBox(self)
             local elementData = clubID and btn:GetElementData()
             local clubInfo= elementData.clubInfo or {}
 
-            faction= clubInfo.crossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction]
+            faction= clubInfo.crossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction]
 
             Create_Texture(btn)
 

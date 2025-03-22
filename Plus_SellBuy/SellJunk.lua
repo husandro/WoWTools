@@ -146,7 +146,7 @@ Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName
                 and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
                 and (
                         (itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=30)
-                        or (e.Player.isMaxLevel and expansionID and expansionID<WoWTools_DataMixin.ExpansionLevel)--旧版本
+                        or (WoWTools_DataMixin.Player.isMaxLevel and expansionID and expansionID<WoWTools_DataMixin.ExpansionLevel)--旧版本
                     )
                 and not Save().noSell[itemID]
             then
