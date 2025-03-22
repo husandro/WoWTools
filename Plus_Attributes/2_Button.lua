@@ -58,17 +58,17 @@ local function Init()
     function button:get_sendTextTips()
         local text
         if ChatEdit_GetActiveWindow() then
-            text= e.onlyChinese and '编辑' or EDIT
+            text= WoWTools_Mixin.onlyChinese and '编辑' or EDIT
         elseif UnitExists('target') and UnitIsPlayer('target') and not UnitIsUnit('player', 'target') then
-            text= (e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
+            text= (WoWTools_Mixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)..': '.. GetUnitName('target', true)
         elseif not UnitIsDeadOrGhost('player') and IsInInstance() then
-            text= (e.onlyChinese and '说' or SAY)
+            text= (WoWTools_Mixin.onlyChinese and '说' or SAY)
         elseif IsInRaid() then
-            text= e.onlyChinese and '说: 团队' or (SAY..': '..CHAT_MSG_RAID)
+            text= WoWTools_Mixin.onlyChinese and '说: 团队' or (SAY..': '..CHAT_MSG_RAID)
         elseif IsInGroup() then
-            text= e.onlyChinese and '说: 队伍' or (SAY..': '..CHAT_MSG_PARTY)
+            text= WoWTools_Mixin.onlyChinese and '说: 队伍' or (SAY..': '..CHAT_MSG_PARTY)
         else
-            text= (e.onlyChinese and '说' or SAY)
+            text= (WoWTools_Mixin.onlyChinese and '说' or SAY)
         end
         return text
     end
@@ -129,12 +129,12 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '重置' or RESET, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重置' or RESET, e.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.mid)
         GameTooltip:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         GameTooltip:Show()
     end
 
@@ -149,7 +149,7 @@ local function Init()
 
         elseif d=='LeftButton' and not IsModifierKeyDown() then
             WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-            print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r', e.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重置' or RESET)..'|r', WoWTools_Mixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息

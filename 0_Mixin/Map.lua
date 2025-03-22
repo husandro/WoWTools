@@ -107,18 +107,18 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
     local colorRe, name
     if difficultyID and difficultyID>0 then
         local color= {
-            ['经典']= {name= e.onlyChinese and '经典' or LAYOUT_STYLE_CLASSIC, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
-            ['场景']= {name= e.onlyChinese and '场景' or SCENARIOS , hex='|cffc6ffc9', r=0.78, g=1, b=0.79},
-            ['随机']= {name= e.onlyChinese and '随机' or LFG_TYPE_RANDOM_DUNGEON, hex='|cff1eff00', r=0.12, g=1, b=0},
-            ['普通']= {name= e.onlyChinese and '普通' or PLAYER_DIFFICULTY1, hex='|cffffffff', r=1, g=1, b=1},
-            ['英雄']= {name= e.onlyChinese and '英雄' or PLAYER_DIFFICULTY2, hex='|cff0070dd', r=0, g=0.44, b=0.87},
-            ['史诗']= {name= e.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
-            ['挑战']= {name= e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
-            ['漫游']= {name= e.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
+            ['经典']= {name= WoWTools_Mixin.onlyChinese and '经典' or LAYOUT_STYLE_CLASSIC, hex='|cff9d9d9d', r=0.62, g=0.62, b=0.62},
+            ['场景']= {name= WoWTools_Mixin.onlyChinese and '场景' or SCENARIOS , hex='|cffc6ffc9', r=0.78, g=1, b=0.79},
+            ['随机']= {name= WoWTools_Mixin.onlyChinese and '随机' or LFG_TYPE_RANDOM_DUNGEON, hex='|cff1eff00', r=0.12, g=1, b=0},
+            ['普通']= {name= WoWTools_Mixin.onlyChinese and '普通' or PLAYER_DIFFICULTY1, hex='|cffffffff', r=1, g=1, b=1},
+            ['英雄']= {name= WoWTools_Mixin.onlyChinese and '英雄' or PLAYER_DIFFICULTY2, hex='|cff0070dd', r=0, g=0.44, b=0.87},
+            ['史诗']= {name= WoWTools_Mixin.onlyChinese and '史诗' or PLAYER_DIFFICULTY6, hex='|cffff00ff', r=1, g=0, b=1},
+            ['挑战']= {name= WoWTools_Mixin.onlyChinese and '挑战' or PLAYER_DIFFICULTY5,  hex='|cffff8200', r=1, g=0.51, b=0},
+            ['漫游']= {name= WoWTools_Mixin.onlyChinese and '漫游' or PLAYER_DIFFICULTY_TIMEWALKER, hex='|cff00ffff', r=0, g=1, b=1},
             ['pvp']= {name= 'PvP', hex='|cffff0000', r=1, g=0, b=0},
-            ['追随']= {name= e.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
-            ['地下堡']= {name= e.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
-            ['团本剧情']={name= e.onlyChinese and '团本剧情' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID, QUEST_CLASSIFICATION_QUESTLINE), hex='|cffaaffaa', r=0.67, g=1.00, b=0.67}
+            ['追随']= {name= WoWTools_Mixin.onlyChinese and '追随' or LFG_TYPE_FOLLOWER_DUNGEON, hex='|cffb1ff00', r=0.69, g=1, b=0, a=1},
+            ['地下堡']= {name= WoWTools_Mixin.onlyChinese and '地下堡' or DELVES_LABEL, hex='|cffedd100', r=0.93, g=0.82, b=0, a=1},
+            ['团本剧情']={name= WoWTools_Mixin.onlyChinese and '团本剧情' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RAID, QUEST_CLASSIFICATION_QUESTLINE), hex='|cffaaffaa', r=0.67, g=1.00, b=0.67}
 
         } or {}
         local type={
@@ -182,7 +182,7 @@ function WoWTools_MapMixin:GetDifficultyColor(string, difficultyID)--DifficultyU
             colorRe or (
                 e.Player.useColor or {r=e.Player.r, g=e.Player.g, b=e.Player.b, hex=e.Player.col}
             ),
-            e.onlyChinese and name or (difficultyID and GetDifficultyInfo(difficultyID))
+            WoWTools_Mixin.onlyChinese and name or (difficultyID and GetDifficultyInfo(difficultyID))
 end
 
 

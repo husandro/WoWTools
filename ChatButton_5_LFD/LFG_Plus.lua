@@ -84,7 +84,7 @@ local function Init_LFGListSearchEntry_Update(self)
         self.autoAcceptTexture:SetScript('OnEnter', function(self2)
             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(e.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
             GameTooltip:Show()
         end)
@@ -109,7 +109,7 @@ local function Init_LFGListSearchEntry_Update(self)
             if self2.realm then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(e.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
                 GameTooltip:Show()
             end
@@ -261,7 +261,7 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
         end
     end
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine(e.onlyChinese and '申请' or SIGN_UP, (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
+    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '申请' or SIGN_UP, (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
     tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
     tooltip:Show()
 end
@@ -287,7 +287,7 @@ local function Init_Button()--预创建队伍增强
     Button:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(not e.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', e.GetEnabeleDisable(Save().LFGPlus))
+        GameTooltip:AddDoubleLine(not WoWTools_Mixin.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', e.GetEnabeleDisable(Save().LFGPlus))
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
         GameTooltip:Show()
         self2:SetAlpha(1)

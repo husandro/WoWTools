@@ -51,7 +51,7 @@ local function Init_Professions(index)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
             '|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left,
-            e.Icon.right..MicroButtonTooltipText(e.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
+            e.Icon.right..MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
         )
         GameTooltip:Show()
     end)
@@ -157,7 +157,7 @@ local function Init_KeyButton_Menu(self, root)
 
     root:CreateButton(
         '|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
-        ..MicroButtonTooltipText(e.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK"),
+        ..MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK"),
     function()
         ToggleProfessionsBook()
         return MenuResponse.Open
@@ -165,7 +165,7 @@ local function Init_KeyButton_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        (e.onlyChinese and '设置快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL))
+        (WoWTools_Mixin.onlyChinese and '设置快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL))
         ..'|cnGREEN_FONT_COLOR:'..(Save[self.type] or ''),
     function()
         return WoWTools_KeyMixin:IsKeyValid(self)
@@ -188,14 +188,14 @@ local function Init_KeyButton_Menu(self, root)
 
 --启动时，设置KEY
     sub2=sub:CreateCheckbox(
-        e.onlyChinese and '保存' or SAVE,
+        WoWTools_Mixin.onlyChinese and '保存' or SAVE,
     function()
         return Save['save_'..self.type]
     end, function()
         Save['save_'..self.type]= not Save['save_'..self.type] and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '登入：设置' or (LOG_IN..': '..SETTINGS))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '登入：设置' or (LOG_IN..': '..SETTINGS))
     end)
 end
 
@@ -239,7 +239,7 @@ local function Init_KeyButton(index, type)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
             WoWTools_SpellMixin:GetName(self.spellID)..e.Icon.left,
-            e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
         GameTooltip:AddLine(' ')
 
@@ -247,10 +247,10 @@ local function Init_KeyButton(index, type)
         local isInCombat= not self:CanChangeAttribute()
         GameTooltip:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
-            ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..e.Icon.mid..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
+            ..(WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..e.Icon.mid..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
-            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(e.onlyChinese and '解除键位' or UNBIND)
+            ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(WoWTools_Mixin.onlyChinese and '解除键位' or UNBIND)
         )
         GameTooltip:Show()
     end
@@ -275,7 +275,7 @@ local function Init_KeyButton(index, type)
     end)
     button:SetScript('OnMouseWheel', function(self, d)
         if not self:CanChangeAttribute() then
-            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         self:set_key(d==1)-- 1上, -1下
@@ -369,7 +369,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
             Save= WoWToolsSave['Tools_Professions'] or Save
             if WoWTools_ToolsMixin.Button then
                 --Init()

@@ -15,9 +15,9 @@ local function Set_Button_Tooltip(self)
 
     local free, all, regentsFree= WoWTools_BagMixin:GetFree(true)--背包，空位
 
-    local name= (self.index==1 and '|A:Banker:0:0|a'..(e.onlyChinese and '银行' or BANK))
-                or (self.index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
-                or (self.index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
+    local name= (self.index==1 and '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '银行' or BANK))
+                or (self.index==2 and '|A:CreationCatalyst-32x32:0:0|a'..(WoWTools_Mixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS))
+                or (self.index==3 and '|A:questlog-questtypeicon-account:0:0|a'..(WoWTools_Mixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
                 or ''
     GameTooltip:AddDoubleLine(self.name, name)
     if self.tooltip then
@@ -26,7 +26,7 @@ local function Set_Button_Tooltip(self)
 
     GameTooltip:AddLine(' ')
     GameTooltip:AddDoubleLine(
-        '|A:bag-main:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL)
+        '|A:bag-main:0:0|a'..(WoWTools_Mixin.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL)
         ..' |cnGREEN_FONT_COLOR:'..free..'|r (|cnRED_FONT_COLOR:'..(all-free)..'|r) / '..all,
         '(|cnGREEN_FONT_COLOR:'..(free-regentsFree)..'|r+|cnGREEN_FONT_COLOR:'..regentsFree..'|r)'
     )
@@ -138,7 +138,7 @@ local function Init_BankSlotsFrame()
     btnOutAll:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     btnOutAll.index=1
     btnOutAll.isOutItem=true
-    btnOutAll.name='|A:Cursor_OpenHand_64:0:0|a'..(e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
+    btnOutAll.name='|A:Cursor_OpenHand_64:0:0|a'..(WoWTools_Mixin.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
     Set_Button(btnOutAll)
 
     --[[btnOutAll:SetScript('OnClick', function(self)
@@ -152,8 +152,8 @@ local function Init_BankSlotsFrame()
     btnInAll.index=1
     btnInAll.isOutItem=false
     btnInAll.name= '|A:Banker:0:0|a'
-        ..(e.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))
-        ..'(|cff828282'..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)..'|r)'
+        ..(WoWTools_Mixin.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))
+        ..'(|cff828282'..(WoWTools_Mixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)..'|r)'
     Set_Button(btnInAll)
     --[[btnInAll:SetScript('OnClick', function()
         WoWTools_BankMixin:Take_Item(false, nil, nil, 1, false)
@@ -163,7 +163,7 @@ local function Init_BankSlotsFrame()
 --提示，标签
     local label= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=14})
     label:SetPoint('RIGHT', btnInAll, 'LEFT', 4,0)
-    label:SetText(e.onlyChinese and '银行' or BANK)
+    label:SetText(WoWTools_Mixin.onlyChinese and '银行' or BANK)
 
 --空栏位，数量
     --local label2= WoWTools_LabelMixin:Create(btnInAll, {color=true, size=12, name='WoWToolsBankFreeSlotLabel'})
@@ -231,7 +231,7 @@ local function Init_ReagentBankFrame()
     btnSort:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '整理材料银行' or BAG_CLEANUP_REAGENT_BANK)
         GameTooltip:Show()
     end)
     btnSort:SetScript('OnClick', C_Container.SortReagentBankBags)
@@ -252,14 +252,14 @@ local function Init_ReagentBankFrame()
     --[[despButton:HookScript('OnEnter', function(s)
         GameTooltip:SetOwner(s, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
         GameTooltip:Show()
     end)]]
     despButton.index=2
     despButton.isOutItem=false
     despButton.name= '|A:Banker:0:0|a'
-    ..(e.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
-    ..'(|cff828282'..(e.onlyChinese and '物品' or ITEMS)..'|r)'
+    ..(WoWTools_Mixin.onlyChinese and '存放各种材料' or REAGENTBANK_DEPOSIT)
+    ..'(|cff828282'..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS)..'|r)'
     Set_Button(despButton)
 
 
@@ -269,8 +269,8 @@ local function Init_ReagentBankFrame()
     btnAllOut.index=2
     btnAllOut.isOutItem=true
     btnAllOut.name= '|A:Cursor_OpenHand_64:0:0|a'
-        ..(e.onlyChinese and '取出所有材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), BAG_FILTER_REAGENTS))
-        ..'(|cff828282'..(e.onlyChinese and '物品' or ITEMS)..'|r)'
+        ..(WoWTools_Mixin.onlyChinese and '取出所有材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), BAG_FILTER_REAGENTS))
+        ..'(|cff828282'..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS)..'|r)'
         Set_Button(btnAllOut)
 
     --[[btnAllOut:SetScript('OnClick', function(self)
@@ -282,9 +282,9 @@ local function Init_ReagentBankFrame()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local free= WoWTools_BagMixin:GetFree(true)--self:get_free()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '取出所有材料' or 'Take out all reagents',
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '取出所有材料' or 'Take out all reagents',
             format('|A:4549254:0:0|a%s #%s%d',
-                e.onlyChinese and '材料' or AUCTION_CATEGORY_TRADE_GOODS,
+                WoWTools_Mixin.onlyChinese and '材料' or AUCTION_CATEGORY_TRADE_GOODS,
                 free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
                 free)
         )
@@ -299,7 +299,7 @@ local function Init_ReagentBankFrame()
 --提示，标签
     local label= WoWTools_LabelMixin:Create(btnAllOut, {color=true, size=14})
     label:SetPoint('LEFT', btnAllOut, 'RIGHT')
-    label:SetText(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
+    label:SetText(WoWTools_Mixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
 
 
 
@@ -351,7 +351,7 @@ local function Init_AccountBankPanel()
     btnAllOut:SetPoint('RIGHT', BankItemAutoSortButton, 'LEFT', -2, 0)
     btnAllOut.index=3
     btnAllOut.isOutItem=true
-    btnAllOut.name='|A:Cursor_OpenHand_64:0:0|a'..(e.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
+    btnAllOut.name='|A:Cursor_OpenHand_64:0:0|a'..(WoWTools_Mixin.onlyChinese and '取出所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ALL), ITEMS))
     btnAllOut.tooltip=function(tooltip)
         local activeTabIndex= WoWTools_BankMixin:GetIndex()
         local tabIndex= AccountBankPanel.selectedTabID
@@ -381,14 +381,14 @@ local function Init_AccountBankPanel()
     despButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
     despButton.index=3
     despButton.isOutItem=false
-    despButton.name= '|A:Banker:0:0|a'..(e.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)..e.Icon.left
+    despButton.name= '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)..e.Icon.left
     despButton.tooltip= function(tooltip)
         local bankAutoDepositReagents =C_CVar.GetCVarBool('bankAutoDepositReagents')
         tooltip:AddDoubleLine(
             '|A:Banker:0:0|a'
-            ..(e.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))..e.Icon.right,
+            ..(WoWTools_Mixin.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))..e.Icon.right,
 
-            (bankAutoDepositReagents and '|cnGREEN_FONT_COLOR:' or '|cff828282')..(e.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
+            (bankAutoDepositReagents and '|cnGREEN_FONT_COLOR:' or '|cff828282')..(WoWTools_Mixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
         )
     end
     function despButton.checkBagFunc(bag, slot)
@@ -410,11 +410,11 @@ local function Init_AccountBankPanel()
     btnSort:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK)
         local cvar= C_CVar.GetCVarBool('bankConfirmTabCleanUp')
         GameTooltip:AddLine(
             (cvar and '|cnGREEN_FONT_COLOR:' or '|cff828282')
-            ..(e.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
+            ..(WoWTools_Mixin.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
         )
 
         GameTooltip:Show()
@@ -439,7 +439,7 @@ local function Init_AccountBankPanel()
     check:HookScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL)
         GameTooltip:Show()
     end)
     check.Text:SetText('')
@@ -448,7 +448,7 @@ local function Init_AccountBankPanel()
 --标签，战团银行
     local label= WoWTools_LabelMixin:Create(AccountBankPanel.ItemDepositFrame, {size=14, color=true})
     label:SetPoint('RIGHT', check, 'LEFT')
-    label:SetText('|A:questlog-questtypeicon-account:0:0|a'..(e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
+    label:SetText('|A:questlog-questtypeicon-account:0:0|a'..(WoWTools_Mixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
 
 --清除，标签，名称
     AccountBankPanel.Header:ClearAllPoints()
@@ -513,7 +513,7 @@ local function Init_OpenAllBag_Button()
     up:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '打开背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOT))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOT))
         GameTooltip:Show()
     end)
     up:SetScript('OnClick', function()
@@ -534,7 +534,7 @@ local function Init_OpenAllBag_Button()
     down:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '关闭背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLOSE, BAGSLOT))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '关闭背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLOSE, BAGSLOT))
         GameTooltip:Show()
     end)
     down:SetScript('OnClick', function()

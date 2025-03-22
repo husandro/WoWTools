@@ -16,7 +16,7 @@ local function Init_Menu(self, root)
     local sub
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
+        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
     function()
         return not Save().hide
     end, function()
@@ -28,7 +28,7 @@ local function Init_Menu(self, root)
 
 
     sub:CreateCheckbox(
-        e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+        WoWTools_Mixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
     function()
         return not Save().left
     end, function()
@@ -41,7 +41,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
+        WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
     function()
         return Save().toTopTrack
     end, function()
@@ -61,7 +61,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        e.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
+        WoWTools_Mixin.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
     function()
         return Save().onGoing
     end, function()
@@ -70,7 +70,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        e.onlyChinese and '时间' or TIME_LABEL,
+        WoWTools_Mixin.onlyChinese and '时间' or TIME_LABEL,
     function()
         return Save().showDate
     end, function()
@@ -101,7 +101,7 @@ local function Init_Menu(self, root)
 	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		self:set_point()
-		print(e.Icon.icon2..WoWTools_HolidayMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+		print(e.Icon.icon2..WoWTools_HolidayMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
     root:CreateDivider()
@@ -219,9 +219,9 @@ local function Init()
             end
             GameTooltip:ClearLines()
         end
-        GameTooltip:AddDoubleLine(e.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
         GameTooltip:Show()

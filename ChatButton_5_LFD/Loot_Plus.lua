@@ -75,7 +75,7 @@ local function Init()
                 GameTooltip:ClearLines()
                 if p.dropInfo.startTime then
                     local startTime= '|cnRED_FONT_COLOR:'..(WoWTools_TimeMixin:Info(p.dropInfo.startTime/1000, false, nil) or '')
-                    local duration= p.dropInfo.duration and '|cnGREEN_FONT_COLOR:'..format(e.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(p.dropInfo.duration/100))
+                    local duration= p.dropInfo.duration and '|cnGREEN_FONT_COLOR:'..format(WoWTools_Mixin.onlyChinese and '持续时间：%s' or PROFESSIONS_CRAFTING_FORM_CRAFTER_DURATION_REMAINING, SecondsToTime(p.dropInfo.duration/100))
                     GameTooltip:AddDoubleLine(startTime, duration)
                     GameTooltip:AddLine(' ')
                 end
@@ -110,7 +110,7 @@ local function Init()
 
         if winInfo and notGreed then--修改，名字
             if winInfo.isSelf then
-                btn.WinningRollInfo.WinningRoll:SetText(e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
+                btn.WinningRollInfo.WinningRoll:SetText(e.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
             elseif winInfo.playerGUID then
                 local name= WoWTools_UnitMixin:GetPlayerInfo(nil, winInfo.playerGUID, nil, {reName=true})
                 if name and name~='' then
@@ -179,7 +179,7 @@ local function Init()
     btn:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save().disabledLootPlus))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save().disabledLootPlus))
         GameTooltip:AddLine(' ')
         local  encounterID= GroupLootHistoryFrame.selectedEncounterID
         local info= encounterID and C_LootHistory.GetInfoForEncounter(encounterID)
@@ -189,7 +189,7 @@ local function Init()
             GameTooltip:AddDoubleLine('startTime', WoWTools_TimeMixin:SecondsToClock(info.startTime))
             GameTooltip:AddDoubleLine('duration', info.duration and SecondsToTime(info.duration/100))
         else
-            GameTooltip:AddDoubleLine('encounterID', e.onlyChinese and '无' or NONE)
+            GameTooltip:AddDoubleLine('encounterID', WoWTools_Mixin.onlyChinese and '无' or NONE)
         end
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)

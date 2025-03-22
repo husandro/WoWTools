@@ -43,7 +43,7 @@ local function Init()
 
     local str=WoWTools_LabelMixin:Create(frame)--内容加颜色
     str:SetPoint('TOPLEFT')
-    str:SetText(e.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
+    str:SetText(WoWTools_Mixin.onlyChinese and '颜色: 关键词 (|cnGREEN_FONT_COLOR:空格|r) 分开' or (COLOR..': '..KBASE_DEFAULT_SEARCH_TEXT..'|cnGREEN_FONT_COLOR:( '..KEY_SPACE..' )|r'))
     local editBox=Cedit(frame)
     editBox:SetPoint('TOPLEFT', str, 'BOTTOMLEFT',0,-5)
 
@@ -57,7 +57,7 @@ local function Init()
     end
     local btn=CreateFrame('Button', nil, editBox, 'UIPanelButtonTemplate')
     btn:SetSize(80,28)
-    btn:SetText(e.onlyChinese and '更新' or UPDATE)
+    btn:SetText(WoWTools_Mixin.onlyChinese and '更新' or UPDATE)
     btn:SetPoint('BOTTOMRIGHT')
     btn:SetScript('OnMouseDown', function(self)
         Save().text={}
@@ -72,16 +72,16 @@ local function Init()
                     t=WoWTools_TextMixin:Magic(t)
                     Save().text[t]=true
                     n=n+1
-                    print(n..')'..(e.onlyChinese and '颜色' or COLOR), t)
+                    print(n..')'..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR), t)
                 end
             end)
         end
-        print(e.Icon.icon2.. WoWTools_HyperLink.addName, e.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=WoWTools_LabelMixin:Create(frame)--频道名称替换
     str2:SetPoint('TOPLEFT', editBox, 'BOTTOMLEFT', 0,-20)
-    str2:SetText(e.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
+    str2:SetText(WoWTools_Mixin.onlyChinese and '频道名称替换: 关键词|cnGREEN_FONT_COLOR:=|r替换' or (CHANNEL_CHANNEL_NAME..': '..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL..'  |cnGREEN_FONT_COLOR:= |r'))
     local editBox2=Cedit(frame)
     editBox2:SetPoint('TOPLEFT', str2, 'BOTTOMLEFT',0,-5)
     if Save().channels then
@@ -94,7 +94,7 @@ local function Init()
     end
     local btn2=CreateFrame('Button', nil, editBox2, 'UIPanelButtonTemplate')
     btn2:SetSize(80,28)
-    btn2:SetText(e.onlyChinese and '更新' or UPDATE)
+    btn2:SetText(WoWTools_Mixin.onlyChinese and '更新' or UPDATE)
     btn2:SetPoint('BOTTOMRIGHT')
     btn2:SetScript('OnMouseDown', function(self)
         Save().channels={}
@@ -109,11 +109,11 @@ local function Init()
                     name=WoWTools_TextMixin:Magic(name)
                     Save().channels[name]=name2
                     n=n+1
-                    print(n..')'..(e.onlyChinese and '频道' or CHANNELS)..': ',name, e.onlyChinese and '替换' or REPLACE, name2)
+                    print(n..')'..(WoWTools_Mixin.onlyChinese and '频道' or CHANNELS)..': ',name, WoWTools_Mixin.onlyChinese and '替换' or REPLACE, name2)
                 end
             end)
         end
-        print(e.Icon.icon2.. WoWTools_HyperLink.addName, e.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(e.onlyChinese and '完成' or COMPLETE)..'|r',  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r',  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     return true

@@ -38,7 +38,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             if WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE] then
                 WoWTools_AuctionHouseMixin.Save= WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]
                 WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]= nil
@@ -55,7 +55,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
 
-            local addName= '|A:Auctioneer:0:0|a'..(e.onlyChinese and '拍卖行' or BUTTON_LAG_AUCTIONHOUSE)
+            local addName= '|A:Auctioneer:0:0|a'..(WoWTools_Mixin.onlyChinese and '拍卖行' or BUTTON_LAG_AUCTIONHOUSE)
             WoWTools_AuctionHouseMixin.addName= addName
 
             --添加控制面板
@@ -65,7 +65,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

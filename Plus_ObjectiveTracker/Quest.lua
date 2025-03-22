@@ -8,7 +8,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(QuestObjectiveTracker, e.onlyChinese and '任务' or TRACKER_HEADER_QUESTS, function(self)
+    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(QuestObjectiveTracker, WoWTools_Mixin.onlyChinese and '任务' or TRACKER_HEADER_QUESTS, function(self)
         local questIDS, num= {}, 0
         for i= 1, C_QuestLog.GetNumQuestWatches() or 0, 1 do
             local questID= C_QuestLog.GetQuestIDForQuestWatchIndex(i)

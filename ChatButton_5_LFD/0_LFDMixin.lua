@@ -84,9 +84,9 @@ function WoWTools_LFDMixin:Get_Instance_Num(name)
     local num = self.Save.wow[name] or 0
     local text
     if num >0 then
-        text= '|cnGREEN_FONT_COLOR:#'..num..'|r '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        text= '|cnGREEN_FONT_COLOR:#'..num..'|r '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     else
-        text= '0 '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        text= '0 '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     end
     return text , num
 end

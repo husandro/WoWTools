@@ -20,7 +20,7 @@ local function Init(self, root)
     local sub
 
     sub= root:CreateCheckbox(
-        e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
+        WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
     function()
         return Save().showMakerFrameHotKey
     end, function()
@@ -28,7 +28,7 @@ local function Init(self, root)
         frame:set_all_hotkey()--设置全部，快捷键
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '提示' or CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '提示' or CHARACTER_CUSTOMIZATION_TUTORIAL_TITLE)
     end)
 
     --位于上方
@@ -82,7 +82,7 @@ local function Init(self, root)
         Save().markersFramePoint=nil
         frame:ClearAllPoints()
         frame:Init_Set_Frame()
-        print(WoWTools_Mixin.addName, self.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(WoWTools_Mixin.addName, self.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 
     root:CreateDivider()

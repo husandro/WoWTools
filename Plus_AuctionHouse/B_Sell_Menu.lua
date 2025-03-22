@@ -17,7 +17,7 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
     root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
+        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
     function()
         return not Save().hideSellItemList
     end, function()
@@ -29,14 +29,14 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 
     sub=root:CreateButton(
-        e.onlyChinese and '隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS),
+        WoWTools_Mixin.onlyChinese and '隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS),
     function()
         return MenuResponse.Open
     end)
 
 --隐藏物品列表，隐藏按钮
     sub:CreateCheckbox(
-        e.onlyChinese and '隐藏' or HIDE,
+        WoWTools_Mixin.onlyChinese and '隐藏' or HIDE,
     function()
         return Save().hideSellItemListButton
     end, function()
@@ -46,12 +46,12 @@ local function Init_Menu(self, root)
 
 --全部清除
     sub:CreateButton(
-        '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL),
+        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL),
     function()
         Save().hideSellItem={}
         Save().hideSellPet={}
         self:Init_Sell_Item_Button()
-        print(e.Icon.icon2..WoWTools_AuctionHouseMixin.addName, e.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+        print(e.Icon.icon2..WoWTools_AuctionHouseMixin.addName, WoWTools_Mixin.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
         return MenuResponse.Refresh
     end)
 
@@ -96,7 +96,7 @@ local function Init_Menu(self, root)
 
 
     if not find then
-       sub:CreateTitle(e.onlyChinese and '无' or NONE)
+       sub:CreateTitle(WoWTools_Mixin.onlyChinese and '无' or NONE)
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
 
@@ -105,15 +105,15 @@ local function Init_Menu(self, root)
         select(4, WoWTools_ItemMixin:GetColor(Save().sellItemQualiy))
         ..format(
             CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
-            e.onlyChinese and '品质' or PROFESSIONS_COLUMN_HEADER_QUALITY,
+            WoWTools_Mixin.onlyChinese and '品质' or PROFESSIONS_COLUMN_HEADER_QUALITY,
             (e.cn(_G['ITEM_QUALITY'..Save().sellItemQualiy..'_DESC']) or Save().sellItemQualiy)
         ),
     function()
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '最小' or MINIMUM)
-        tooltip:AddLine(e.onlyChinese and '物品品质' or COLORBLIND_ITEM_QUALITY)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '最小' or MINIMUM)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '物品品质' or COLORBLIND_ITEM_QUALITY)
     end)
 --物品品质 0, 8
     for quality= Enum.ItemQuality.Poor ,  Enum.ItemQuality.WoWToken do
@@ -133,14 +133,14 @@ local function Init_Menu(self, root)
 
 --转到出售
     sub=root:CreateCheckbox(
-        e.onlyChinese and '转到出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, AUCTION_HOUSE_SELL_TAB),
+        WoWTools_Mixin.onlyChinese and '转到出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, AUCTION_HOUSE_SELL_TAB),
     function()
         return Save().intShowSellItem
     end, function()
         Save().intShowSellItem= not Save().intShowSellItem and true or nil
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示拍卖行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, BUTTON_LAG_AUCTIONHOUSE))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示拍卖行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, BUTTON_LAG_AUCTIONHOUSE))
     end)
 
 --打开，选项
@@ -156,7 +156,7 @@ local function Init_Menu(self, root)
             Save().numButton=value
             self:Init_Sell_Item_Button()
         end,
-        name=e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+        name=WoWTools_Mixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
         minValue=1,
         maxValue=40,
         step=1,

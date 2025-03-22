@@ -21,7 +21,7 @@ local function set_Use_Spell_Button(btn, spellID)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName)
-            GameTooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             GameTooltip:AddLine(' ')
             if self.spellID then
                 GameTooltip:AddDoubleLine(
@@ -32,7 +32,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     e.Icon.left
                 )
             end
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             GameTooltip:Show()
             self:SetAlpha(1)
         end
@@ -49,7 +49,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     end
                     self:set_tooltips()
                     self:set_alpha()
-                    print(e.Icon.icon2..WoWTools_UseItemsMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
+                    print(e.Icon.icon2..WoWTools_UseItemsMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
                 end
             else
                 WoWTools_UseItemsMixin:Init_Menu(self)

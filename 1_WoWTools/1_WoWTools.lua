@@ -8,7 +8,7 @@ e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
 e.WoWDate={}--战网，数据
 e.StausText={}--属性，截取表 API_Panel.lua
 e.ChallengesSpellTabs={}--Challenges.lua
-e.onlyChinese= LOCALE_zhCN and true or false
+WoWTools_Mixin.onlyChinese= LOCALE_zhCN and true or false
 --e.tips=GameTooltip
 
 --[[

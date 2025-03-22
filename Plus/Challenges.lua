@@ -149,8 +149,8 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                             GameTooltip:ClearLines()
                             GameTooltip:SetHyperlink(self2.item)
-                            GameTooltip:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
-                            GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
                             GameTooltip:Show()
                     end)
                     self['key'..i]:SetScript("OnLeave",function()
@@ -263,13 +263,13 @@ local function UI_Party_Info(self)--队友位置
             local reason=UnitPhaseReason(unit)--位面
             if reason then
                 if reason==0 then--不同了阶段
-                    text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
                 elseif reason==1 then--不在同位面
-                    text= text ..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.L.layer))..'|r'
+                    text= text ..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', e.Player.L.layer))..'|r'
                 elseif reason==2 then--战争模式
-                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(e.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
+                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
                 elseif reason==3 then
-                    text= text..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
+                    text= text..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
                 end
             end
 
@@ -295,13 +295,13 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.keyFrame:SetFrameLevel(7)
 
     self.ready = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--就绪
-    self.ready:SetText((e.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', e.Icon.select))
+    self.ready:SetText((WoWTools_Mixin.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', e.Icon.select))
     self.ready:SetPoint('LEFT', self.StartButton, 'RIGHT',2, 0)
     self.ready:SetSize(100,24)
     self.ready:SetScript("OnMouseDown", DoReadyCheck)
 
     self.mark = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--标记
-    self.mark:SetText(e.Icon['TANK']..(e.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
+    self.mark:SetText(e.Icon['TANK']..(WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon['HEALER'])
     self.mark:SetPoint('RIGHT', self.StartButton, 'LEFT',-2, 0)
     self.mark:SetSize(100,24)
     self.mark:SetScript("OnMouseDown",function()
@@ -326,7 +326,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.clear = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--清除KEY
     self.clear:SetPoint('RIGHT', self, -15, -50)
     self.clear:SetSize(70,24)
-    self.clear:SetText(e.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
+    self.clear:SetText(WoWTools_Mixin.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
     self.clear:SetScript("OnMouseDown",function()
         C_ChallengeMode.RemoveKeystone()
         ChallengesKeystoneFrame:Reset()
@@ -337,10 +337,10 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.ins = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--插入
     self.ins:SetPoint('BOTTOMRIGHT', self.clear, 'TOPRIGHT', 0, 2)
     self.ins:SetSize(70,24)
-    self.ins:SetText(e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+    self.ins:SetText(WoWTools_Mixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     self.ins:SetScript("OnMouseDown",function()
             if UnitAffectingCombat('player') then
-                print(e.Icon.icon2.. addName,'|cnRED_FONT_COLOR:', e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+                print(e.Icon.icon2.. addName,'|cnRED_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
                 return
             end
             ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
@@ -357,7 +357,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     end
                 end
             end
-            print(WoWTools_Mixin.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
+            print(WoWTools_Mixin.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
     end)
 
     self:HookScript('OnShow', function(self2)
@@ -394,8 +394,8 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
                     GameTooltip:ClearLines()
                     GameTooltip:AddLine(self3.link)
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(e.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
-                    GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
+                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '发送信息' or SEND_MESSAGE, e.Icon.left)
+                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.right)
                     GameTooltip:Show()
                 end)
                 self2.dungeonScoreLink:SetScript('OnLeave', function(self3)
@@ -435,10 +435,10 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     check:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
+        GameTooltip:AddLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-        GameTooltip:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
+        GameTooltip:AddDoubleLine(1, WoWTools_Mixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+        GameTooltip:AddDoubleLine(2, WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
         GameTooltip:Show()
         self2:SetAlpha(1)
     end)
@@ -484,14 +484,14 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
 
 
     self.countdown = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--倒计时7秒
-    self.countdown:SetText((e.onlyChinese and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
+    self.countdown:SetText((WoWTools_Mixin.onlyChinese and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
     self.countdown:SetPoint('TOP', self, 'BOTTOM',100, 5)
     self.countdown:SetSize(150,24)
     self.countdown:SetScript("OnMouseDown",function()
         C_PartyInfo.DoCountdown(7)
     end)
     self.countdown2 = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--倒计时7秒
-    self.countdown2:SetText((e.onlyChinese and '取消' or CANCEL)..' 0')
+    self.countdown2:SetText((WoWTools_Mixin.onlyChinese and '取消' or CANCEL)..' 0')
     self.countdown2:SetPoint('TOP', self, 'BOTTOM',-100, 5)
     self.countdown2:SetSize(100,24)
     self.countdown2:SetScript("OnMouseDown",function()
@@ -710,13 +710,13 @@ local function create_lable(btn, point, text, col, size)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(
-            self.point==3 and (e.onlyChinese and '团队副本' or RAIDS)
-            or self.point==1 and (e.onlyChinese and '地下城' or DUNGEONS)
-            or self.point==2 and (e.onlyChinese and 'PvP' or PVP)
-            or self.point==6 and (e.onlyChinese and '世界' or WORLD)
-            or self.point=='b' and (e.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
-            or self.point=='l' and (e.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
-            or self.point=='r' and (e.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
+            self.point==3 and (WoWTools_Mixin.onlyChinese and '团队副本' or RAIDS)
+            or self.point==1 and (WoWTools_Mixin.onlyChinese and '地下城' or DUNGEONS)
+            or self.point==2 and (WoWTools_Mixin.onlyChinese and 'PvP' or PVP)
+            or self.point==6 and (WoWTools_Mixin.onlyChinese and '世界' or WORLD)
+            or self.point=='b' and (WoWTools_Mixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
+            or self.point=='l' and (WoWTools_Mixin.onlyChinese and '本周次数' or format(CURRENCY_THIS_WEEK, format(ARCHAEOLOGY_COMPLETION,self.num)))
+            or self.point=='r' and (WoWTools_Mixin.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
         )
         GameTooltip:AddLine('|cffffffff'..(self:GetText() or ''))
         GameTooltip:Show()
@@ -792,7 +792,7 @@ local function All_Player_Info()--所以角色信息
                 )
 
                 if link then
-                    if e.onlyChinese and link then--取得中文，副本名称
+                    if WoWTools_Mixin.onlyChinese and link then--取得中文，副本名称
                         local mapID, name= link:match('|Hkeystone:%d+:(%d+):.+%[(.+) %(%d+%)]')
                         mapID= mapID and tonumber(mapID)
                         if mapID and name and e.ChallengesSpellTabs[mapID] and e.ChallengesSpellTabs[mapID].name then
@@ -859,7 +859,7 @@ local function set_All_Text()--所有记录
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(e.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
             GameTooltip:AddDoubleLine('x: '..Save.rightX, 'Shift+'..e.Icon.mid)
             GameTooltip:AddDoubleLine('y: '..Save.rightY, 'Alt+'..e.Icon.mid)
             GameTooltip:Show()
@@ -926,12 +926,12 @@ local function set_All_Text()--所有记录
                     table.insert(newTab, 1, tab)
                 end
             end
-            GameTooltip:AddDoubleLine(e.onlyChinese and '历史' or HISTORY, completed..'/'..all)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '历史' or HISTORY, completed..'/'..all)
 
             for _, tab in pairs(newTab) do
                 local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
                 if name then
-                    if e.onlyChinese and not LOCALE_zhCN then
+                    if WoWTools_Mixin.onlyChinese and not LOCALE_zhCN then
                         name= e.ChallengesSpellTabs[tab.mapID] and e.ChallengesSpellTabs[tab.mapID].name or name
                     end
                     local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
@@ -953,7 +953,7 @@ local function set_All_Text()--所有记录
         end)
     end
     ChallengesFrame.runHistoryLable:SetText(
-        (e.onlyChinese and '历史' or HISTORY)
+        (WoWTools_Mixin.onlyChinese and '历史' or HISTORY)
         ..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true)
         ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
     )
@@ -1006,7 +1006,7 @@ local function set_All_Text()--所有记录
     for _, tab in pairs(newTab) do
         local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
         if name then
-            if e.onlyChinese then
+            if WoWTools_Mixin.onlyChinese then
                 name= e.ChallengesSpellTabs[tab.mapID] and e.ChallengesSpellTabs[tab.mapID].name or name
             end
             weekText= weekText and weekText..'|n' or ''
@@ -1027,7 +1027,7 @@ local function set_All_Text()--所有记录
         ChallengesFrame.weekCompledLabel:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
     end
     ChallengesFrame.weekCompledLabel:SetText(
-        (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
+        (WoWTools_Mixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
         ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(WoWTools_WeekMixin:GetRewardText(1) or '')
         ..(weekText and '|n'..weekText or '')
     )
@@ -1062,7 +1062,7 @@ local function set_All_Text()--所有记录
             self:SetAlpha(0.5)
         end)
     end
-    ChallengesFrame.weekLootItemLevelLable:SetText(e.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
+    ChallengesFrame.weekLootItemLevelLable:SetText(WoWTools_Mixin.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
 
     local lootText
 
@@ -1221,11 +1221,11 @@ local function set_Update()--Blizzard_ChallengesUI.lua
 
                     GameTooltip:AddLine(' ')
                     local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self2.mapID))
-                    local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--所有
-                    local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(e.onlyChinese and '无' or NONE)..'|r'--本周
-                    GameTooltip:AddDoubleLine((e.onlyChinese and '历史' or HISTORY)..': '..a, (e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
+                    local a=GetNum(self2.mapID, true) or RED_FONT_COLOR_CODE..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r'--所有
+                    local w=GetNum(self2.mapID) or RED_FONT_COLOR_CODE..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r'--本周
+                    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '历史' or HISTORY)..': '..a, (WoWTools_Mixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (e.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
+                    GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self2.mapID..'|r', timeLimit and (WoWTools_Mixin.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
                     if texture and backgroundTexture then
                         GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
                     end
@@ -1263,7 +1263,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 end
                 frame.nameLable.name= nameText
                 --  ( ) . % + - * ? [ ^ $
-                if (e.onlyChinese or LOCALE_zhCN) and e.ChallengesSpellTabs[frame.mapID] then
+                if (WoWTools_Mixin.onlyChinese or LOCALE_zhCN) and e.ChallengesSpellTabs[frame.mapID] then
                     nameText= e.ChallengesSpellTabs[frame.mapID].name
                 else
                     nameText=nameText:match('%((.+)%)') or nameText
@@ -1295,7 +1295,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         if self2.score then
                             GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             GameTooltip:ClearLines()
-                            GameTooltip:AddLine(format(e.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self2.score))
+                            GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self2.score))
                             GameTooltip:Show()
                             self2:SetAlpha(0.5)
                         end
@@ -1312,7 +1312,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         frame.HighestLevel:SetScript('OnEnter', function(self2)
                             GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                             GameTooltip:ClearLines()
-                            GameTooltip:AddLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (e.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
+                            GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..': '..self2:GetText()))
                             GameTooltip:Show()
                             self2:SetAlpha(0.5)
                         end)
@@ -1340,8 +1340,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 label:SetScript('OnEnter', function(self2)
                                     GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     GameTooltip:ClearLines()
-                                    GameTooltip:AddDoubleLine(format(e.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
-                                                            self2.overTime and '|cff828282'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, WoWTools_TimeMixin:SecondsToClock(self2.durationSec)) or WoWTools_TimeMixin:SecondsToClock(self2.durationSec)
+                                    GameTooltip:AddDoubleLine(format(WoWTools_Mixin.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, self2.name),
+                                                            self2.overTime and '|cff828282'..format(WoWTools_Mixin.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, WoWTools_TimeMixin:SecondsToClock(self2.durationSec)) or WoWTools_TimeMixin:SecondsToClock(self2.durationSec)
                                                         )
                                     GameTooltip:Show()
                                     self2:SetAlpha(0.5)
@@ -1380,13 +1380,13 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                     GameTooltip:SetOwner(self2:GetParent(), "ANCHOR_RIGHT")
                                     GameTooltip:ClearLines()
                                     GameTooltip:AddDoubleLine(
-                                        e.onlyChinese and '历史 |cnGREEN_FONT_COLOR:完成|r/总计' or (HISTORY..' |cnGREEN_FONT_COLOR:'..COMPLETE..'|r/'..TOTAL) ,
-                                        self2.all or (e.onlyChinese and '无' or NONE)
+                                        WoWTools_Mixin.onlyChinese and '历史 |cnGREEN_FONT_COLOR:完成|r/总计' or (HISTORY..' |cnGREEN_FONT_COLOR:'..COMPLETE..'|r/'..TOTAL) ,
+                                        self2.all or (WoWTools_Mixin.onlyChinese and '无' or NONE)
                                     )
-                                    GameTooltip:AddDoubleLine(e.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week and '('..self2.week..')' or (e.onlyChinese and '无' or NONE))
+                                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK, self2.week and '('..self2.week..')' or (WoWTools_Mixin.onlyChinese and '无' or NONE))
                                     if self2.completed and self2.totale and self2.completed < self2.totale then
                                         GameTooltip:AddLine(' ')
-                                        GameTooltip:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(e.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
+                                        GameTooltip:AddDoubleLine(self2.totale..' - |cnGREEN_FONT_COLOR:'..self2.completed..'|r =', '|cnRED_FONT_COLOR:'..format(WoWTools_Mixin.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self2.totale-self2.completed))
                                     end
                                     GameTooltip:Show()
                                     self2:SetAlpha(0.5)
@@ -1461,7 +1461,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                                 GameTooltip:ClearLines()
                                 GameTooltip:SetSpellByID(parent.spellID)
                                 if not IsSpellKnownOrOverridesKnown(parent.spellID) then--没学会
-                                    GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
+                                    GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
                                 end
                                 GameTooltip:Show()
                                 self2:SetAlpha(1)
@@ -1544,7 +1544,7 @@ local function Init_Blizzard_WeeklyRewards()
     WeeklyRewardsFrame.showChallenges:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
         GameTooltip:ClearLines();
-        GameTooltip:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
         GameTooltip:Show()
         self2:SetButtonState('NORMAL')
     end)
@@ -1574,9 +1574,9 @@ local function Init_Blizzard_WeeklyRewards()
                 if title then
                     title= e.cn(title)
                     if C_WeeklyRewards.ShouldShowFinalRetirementMessage() then
-                        text= format(e.onlyChinese and '所有未领取的奖励都会在%s上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
+                        text= format(WoWTools_Mixin.onlyChinese and '所有未领取的奖励都会在%s上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
                     elseif C_WeeklyRewards.HasAvailableRewards() or C_WeeklyRewards.HasGeneratedRewards() or C_WeeklyRewards.CanClaimRewards() then
-                        text= format(e.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
+                        text= format(WoWTools_Mixin.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
                     end
                     if text then
                         print(e.Icon.icon2.. addName,'|n|cffff00ff',text)
@@ -1622,7 +1622,7 @@ local function set_Week_Reward_Look_Specialization()
     if not hasReward or WeekRewardLookFrame then
         return
     elseif hasReward then
-        print(e.Icon.icon2.. addName,'|cffff00ff'..(e.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
+        print(e.Icon.icon2.. addName,'|cffff00ff'..(WoWTools_Mixin.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
 
     WeekRewardLookFrame= CreateFrame('Frame')
@@ -1658,7 +1658,7 @@ local function set_Week_Reward_Look_Specialization()
             self.texture:SetAllPoints(self)
             self:SetScript('OnEnter', function(frame)
                 frame:set_Show(false)
-                print(e.Icon.icon2.. addName, '|cffff00ff', e.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
+                print(e.Icon.icon2.. addName, '|cffff00ff', WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
             end)
             local texture= self:CreateTexture(nil,'BORDER')
             texture:SetSize(60,60)
@@ -1763,7 +1763,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(e.Icon.icon2.. addName, e.onlyChinese and '副本' or INSTANCE, e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '副本' or INSTANCE, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save.insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1771,8 +1771,8 @@ local function Init_Blizzard_ChallengesUI()
     function check:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(e.onlyChinese and '信息' or INFO))
-        GameTooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..e.Icon.left..(WoWTools_Mixin.onlyChinese and '信息' or INFO))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. e.Icon.mid)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1808,7 +1808,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(e.Icon.icon2.. addName, e.onlyChinese and '信息' or INFO,  e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '信息' or INFO,  WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         SavGameTooltipScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
@@ -1816,8 +1816,8 @@ local function Init_Blizzard_ChallengesUI()
     function tipsButton:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(e.onlyChinese and '信息' or INFO))
-        GameTooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(SavGameTooltipScale or 1)..'|r'.. e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left..(WoWTools_Mixin.onlyChinese and '信息' or INFO))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(SavGameTooltipScale or 1)..'|r'.. e.Icon.mid)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1840,7 +1840,7 @@ local function Init_Blizzard_ChallengesUI()
     end)
     spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if not self:CanChangeAttribute() then
-            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         local scale= Save.portScale or 1
@@ -1851,14 +1851,14 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(e.Icon.icon2.. addName, format(e.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, e.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(e.Icon.icon2.. addName, format(WoWTools_Mixin.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save.portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
     end)
     function spellButton:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        if e.onlyChinese then
+        if WoWTools_Mixin.onlyChinese then
             GameTooltip:AddDoubleLine('挑战20层','限时传送门')
             GameTooltip:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
         else
@@ -1871,14 +1871,14 @@ local function Init_Blizzard_ChallengesUI()
             local icon= C_Spell.GetSpellTexture(tab.spell)
             GameTooltip:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
                                 'spellID '..tab.spell..' '..
-                                (IsSpellKnownOrOverridesKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
-                                                        or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
+                                (IsSpellKnownOrOverridesKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
+                                                        or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
                                 )
                             )
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or e.GetShowHide(nil, true), e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. e.Icon.mid)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1957,7 +1957,7 @@ local function Init_Blizzard_ChallengesUI()
     btn:SetScript("OnEnter",function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
         self:SetAlpha(1)
@@ -2032,7 +2032,7 @@ local function Say_ChallengeComplete()
                 local sub, sub2
                 root:CreateButton(
                     ( WoWTools_BagMixin:Ceca(nil, {isKeystone=true}) and '' or '|cff828282')
-                    ..('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY)),
+                    ..('|A:transmog-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY)),
                 function()
                     self:Settings(true)
                     return MenuResponse.Open
@@ -2040,23 +2040,23 @@ local function Say_ChallengeComplete()
 
                 root:CreateDivider()
                 root:CreateButton(
-                    e.onlyChinese and '隐藏' or HIDE,
+                    WoWTools_Mixin.onlyChinese and '隐藏' or HIDE,
                 self.Hide)
 
                 root:CreateDivider()
                 sub= WoWTools_MenuMixin:OpenOptions(root, {name=addName})
                 sub2=sub:CreateCheckbox(
-                    e.onlyChinese and '启用' or ENABLE,
+                    WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
                 function()
                     return Save.slotKeystoneSay
                 end, function()
                     Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
                 end)
                 sub2:SetTooltip(function(tooltip)
-                    GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY))
+                    GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY))
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(1, e.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-                    GameTooltip:AddDoubleLine(2, e.onlyChinese and '完成' or COMPLETE)
+                    GameTooltip:AddDoubleLine(1, WoWTools_Mixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+                    GameTooltip:AddDoubleLine(2, WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
                 end)
              end)
         end
@@ -2065,10 +2065,10 @@ local function Say_ChallengeComplete()
     SayButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+        GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY), e.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         GameTooltip:Show()
     end)
 
@@ -2144,7 +2144,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             Save= WoWToolsSave['Plus_Challenges'] or Save
 
@@ -2154,7 +2154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
 
-            addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(e.onlyChinese and '史诗钥石地下城' or CHALLENGES)
+            addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
 
             --添加控制面板
             e.AddPanel_Check({
@@ -2162,7 +2162,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

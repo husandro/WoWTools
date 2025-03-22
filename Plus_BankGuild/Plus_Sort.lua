@@ -44,8 +44,8 @@ local function Init(self)
         WoWTools_GuildBankMixin.isInRun= nil
         print(
             WoWTools_GuildBankMixin.addName,
-            '|cffff00ff'..(e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
-            e.onlyChinese and '中断' or INTERRUPT
+            '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
+            WoWTools_Mixin.onlyChinese and '中断' or INTERRUPT
         )
         return
     end
@@ -82,8 +82,8 @@ local function Init(self)
             WoWTools_GuildBankMixin.isInRun= nil
             print(
                 WoWTools_GuildBankMixin.addName,
-                '|cnRED_FONT_COLOR:'..(e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
-                    e.onlyChinese and '中断' or INTERRUPT
+                '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
+                    WoWTools_Mixin.onlyChinese and '中断' or INTERRUPT
                 )
             return
         end
@@ -104,8 +104,8 @@ local function Init(self)
             WoWTools_GuildBankMixin.isInRun= nil
             print(
                 WoWTools_GuildBankMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
-                e.onlyChinese and '完成' or COMPLETE
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)..'|r',
+                WoWTools_Mixin.onlyChinese and '完成' or COMPLETE
             )
             return
         end

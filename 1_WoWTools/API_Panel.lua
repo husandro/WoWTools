@@ -50,14 +50,14 @@ function e.ReloadPanel(tab)
     rest.clearTips=tab.clearTips
     rest:SetScript('OnClick', function(self)
         StaticPopup_Show('WoWTools_RestData',
-        (self.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+        (self.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
         nil, self.func)
     end)
     rest:SetScript('OnLeave', GameTooltip_Hide)
     rest:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(self.clearTips or (e.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
+        GameTooltip:AddLine(self.clearTips or (WoWTools_Mixin.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
         GameTooltip:Show()
@@ -75,7 +75,7 @@ function e.ReloadPanel(tab)
         reload:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
             GameTooltip:Show()
@@ -96,7 +96,7 @@ function e.ReloadPanel(tab)
         check:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(e.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
             GameTooltip:Show()
@@ -104,7 +104,7 @@ function e.ReloadPanel(tab)
     end
     if tab.restTips then
         local needReload= WoWTools_LabelMixin:Create(tab.panel)
-        needReload:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', e.Icon.toLeft))
+        needReload:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', e.Icon.toLeft))
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
     end
@@ -167,11 +167,11 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
             GameTooltip:ClearLines()
             GameTooltip:AddLine(tab.text)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(e.onlyChinese and '最小' or MINIMUM)..': '..tab.min)
-            GameTooltip:AddLine('|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '最大' or MAXIMUM)..': '..tab.max)
+            GameTooltip:AddLine('|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'..(WoWTools_Mixin.onlyChinese and '最小' or MINIMUM)..': '..tab.min)
+            GameTooltip:AddLine('|A:bags-greenarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '最大' or MAXIMUM)..': '..tab.max)
             GameTooltip:AddLine('Setp: '..tab.setp)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..self2:GetValue())
+            GameTooltip:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..self2:GetValue())
             GameTooltip:Show()
         end)
     end
@@ -318,8 +318,8 @@ function e.AddPanel_Button(tab, parentInitializer)
 end
 --[[
 e.AddPanel_Button({
-    title= e.onlyChinese and '' or '',
-    buttonText=e.onlyChinese and '' or '',
+    title= WoWTools_Mixin.onlyChinese and '' or '',
+    buttonText=WoWTools_Mixin.onlyChinese and '' or '',
     SetValue=function()
     end,
     tooltip=nil,
@@ -407,8 +407,8 @@ DropDownSetValue=function(value)
 end,
 GetOptions=function()
     local container = Settings.CreateControlTextContainer()
-    container:Add(1, e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE)
-    container:Add(2, e.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
+    container:Add(1, WoWTools_Mixin.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE)
+    container:Add(2, WoWTools_Mixin.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW)
     return container:GetData()
 end
 })
@@ -553,10 +553,10 @@ end
 function  e.Add_Panel_RestData_Button(root, SetValue)
     if not StaticPopupDialogs['WoWTools_Rest_DaTa'] then
         StaticPopupDialogs['WoWTools_Rest_DaTa']={--重置所有,清除全部玩具
-            text=id..' '..addName..'|n'..(e.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(e.onlyChinese and '重新加载UI' or RELOADUI),
+            text=id..' '..addName..'|n'..(WoWTools_Mixin.onlyChinese and '清除全部' or CLEAR_ALL)..'|n|n'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI),
             whileDead=true, hideOnEscape=true, exclusive=true,
-            button1='|cnRED_FONT_COLOR:'..(e.onlyChinese and '重置' or RESET)..'|r',
-            button2= e.onlyChinese and '取消' or CANCEL,
+            button1='|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重置' or RESET)..'|r',
+            button2= WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
             OnAccept = function(_, setValue)
                 setValue()
                 WoWTools_Mixin:Reload()

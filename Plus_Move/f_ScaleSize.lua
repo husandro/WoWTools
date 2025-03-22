@@ -83,7 +83,7 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
     if not self:IsCanChange() then
-        root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        root:CreateTitle(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
 
@@ -107,7 +107,7 @@ local function Init_Menu(self, root)
 --尺寸
     if self.setSize then
         sub=root:CreateCheckbox(
-            e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
+            WoWTools_Mixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
         function()
             return not Save().disabledSize[self.name]
         end, function()
@@ -173,7 +173,7 @@ local function Init_Menu(self, root)
         end)
 --重置, 尺寸
         sub:CreateRadio(
-            e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+            WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         function()
             return Save().size[self.name]
         end, function()
@@ -193,7 +193,7 @@ local function Init_Menu(self, root)
 --改变透明度
     if self.set_move_event then
         sub=root:CreateCheckbox(
-            (e.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' '..(Save().alpha or 1),
+            (WoWTools_Mixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' '..(Save().alpha or 1),
         function()
             return not Save().disabledAlpha[self.name]
         end, function()
@@ -201,11 +201,11 @@ local function Init_Menu(self, root)
             self:set_move_event()
         end)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '移动时' or CAMERA_SMARTER)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移动时' or CAMERA_SMARTER)
         end)
 
 --设置
-        WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=e.onlyChinese and '设置' or SETTINGS})
+        WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=WoWTools_Mixin.onlyChinese and '设置' or SETTINGS})
     end
 
 --清除，位置，数据
@@ -213,7 +213,7 @@ local function Init_Menu(self, root)
         root:CreateDivider()
         root:CreateRadio(
             (Save().point[self.name] and '' or '|cff9e9e9e')
-            ..(e.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+            ..(WoWTools_Mixin.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
         function()
             return Save().point[self.name]
         end, function()
@@ -336,12 +336,12 @@ local function Set_Tooltip(self)
     GameTooltip:ClearLines()
 
     if not self:IsCanChange() then
-        GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
+        GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
         GameTooltip:Show()
         return
     end
 
-    GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', e.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
+    GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', WoWTools_Mixin.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
     local parent= self.targetFrame:GetParent()
     if parent then
         GameTooltip:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
@@ -350,7 +350,7 @@ local function Set_Tooltip(self)
     local scale
     scale= tonumber(format('%.2f', self.targetFrame:GetScale() or 1))
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
-    GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
+    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
 
     if self.setSize then
         GameTooltip:AddLine(' ')
@@ -368,7 +368,7 @@ local function Set_Tooltip(self)
         h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
         GameTooltip:AddDoubleLine(
-            col..(e.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
+            col..(WoWTools_Mixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
                 e.GetEnabeleDisable(not Save().disabledSize[self.name])..e.Icon.right
         )
 
@@ -384,12 +384,12 @@ local function Set_Tooltip(self)
     GameTooltip:AddLine(' ')
     if self.set_move_event then--Frame 移动时，设置透明度
         GameTooltip:AddDoubleLine(
-            (e.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
+            (WoWTools_Mixin.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
             Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
         )
     end
 
-    GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
     GameTooltip:Show()
 end
 

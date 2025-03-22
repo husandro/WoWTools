@@ -137,7 +137,7 @@ local function Init()
     UseButton:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             if not self:CanChangeAttribute() then
-                print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 WoWTools_FoodMixin:Check_Items(true)
             end
@@ -153,13 +153,13 @@ local function Init()
         GameTooltip:ClearLines()
         local itemID, itemLink = self:get_tooltip_item()
         if itemID and itemLink then
-            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), e.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
+            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), WoWTools_Mixin.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
         else
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(e.onlyChinese and '查询' or WHO), e.Icon.mid)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '查询' or WHO), e.Icon.mid)
 
             GameTooltip:AddLine(' ')
             if self.alt then
@@ -176,7 +176,7 @@ local function Init()
             end
             GameTooltip:AddDoubleLine(
                 (Save().onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
-                ..(e.onlyChinese and '仅当前版本物品'
+                ..(WoWTools_Mixin.onlyChinese and '仅当前版本物品'
                     or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL))
                 ),
                 e.GetEnabeleDisable(Save().onlyMaxExpansion)

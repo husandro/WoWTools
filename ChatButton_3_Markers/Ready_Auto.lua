@@ -33,7 +33,7 @@ local function Set_Ready(timeLeft)
         print(
             WoWTools_MarkerMixin.addName,
             WoWTools_MarkerMixin:Get_ReadyTextIcon(),
-            '|cffff00ffAlt', e.onlyChinese and '取消' or CANCEL
+            '|cffff00ffAlt', WoWTools_Mixin.onlyChinese and '取消' or CANCEL
         )
 
         timeLeft= Save().autoReadySeconds or 3
@@ -86,7 +86,7 @@ local function Init_UI()
 
         check.Text:SetText(
             WoWTools_MarkerMixin:Get_ReadyTextIcon(i)
-            or (e.onlyChinese and '无' or NONE)
+            or (WoWTools_Mixin.onlyChinese and '无' or NONE)
         )
         check.Text:ClearAllPoints()
         check.Text:SetPoint('RIGHT', check, 'LEFT')
@@ -122,7 +122,7 @@ local function Init_UI()
 
     AltCanellText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame)
     AltCanellText:SetPoint('TOPRIGHT', check, 'BOTTOMLEFT', 0,-2)
-    AltCanellText:SetText('Alt '..(e.onlyChinese and '取消' or CANCEL))
+    AltCanellText:SetText('Alt '..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL))
     function AltCanellText:set_shown()
         AltCanellText:SetShown(Save().autoReady)
     end
@@ -175,10 +175,10 @@ local function Init()
         if ( toggleDifficultyID and toggleDifficultyID > 0 ) then
             difficultyName=  WoWTools_MapMixin:GetDifficultyColor(nil, difficultyID) or difficultyName
             ReadyCheckFrameText:SetFormattedText(
-                (e.onlyChinese and "%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:" or READY_CHECK_MESSAGE..'|n'..RAID_DIFFICULTY..': ')
+                (WoWTools_Mixin.onlyChinese and "%s正在进行就位确认。\n团队副本难度: |cnGREEN_FONT_COLOR:" or READY_CHECK_MESSAGE..'|n'..RAID_DIFFICULTY..': ')
                 ..difficultyName..'|r', '')
         else
-           ReadyCheckFrameText:SetFormattedText(e.onlyChinese and '%s正在进行就位确认。' or READY_CHECK_MESSAGE, '')
+           ReadyCheckFrameText:SetFormattedText(WoWTools_Mixin.onlyChinese and '%s正在进行就位确认。' or READY_CHECK_MESSAGE, '')
        end
 
         Set_Ready(timeLeft)--设置，就绪，未就绪
@@ -211,7 +211,7 @@ local function Init()
             print(
                 WoWTools_MarkerMixin.addName,
                 WoWTools_MarkerMixin:Get_ReadyTextIcon(),
-                '|cff00ff00'..(e.onlyChinese and '取消' or CANCEL)
+                '|cff00ff00'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)
             )
 
             WoWTools_CooldownMixin:Setup(ReadyCheckListenerFrame, nil, Get_LeftTime(), nil, true, true)--冷却条

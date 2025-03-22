@@ -156,11 +156,11 @@ local function created_model(btn, setBg)
         end
         if self.petData and not self.locked and self:IsEnabled() then
             WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
-            GameTooltip:AddDoubleLine(e.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
             if self:GetID()==EXTRA_PET_STABLE_SLOT_LUA_INDEX then
                 GameTooltip:AddDoubleLine(
-                    format('|cffaad372%s|r', e.onlyChinese and '天赋' or TALENT),
-                    format('|T461112:0|t|cffaad372%s|r', e.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or C_Spell.GetSpellName(267116) or 'Animal Companion')
+                    format('|cffaad372%s|r', WoWTools_Mixin.onlyChinese and '天赋' or TALENT),
+                    format('|T461112:0|t|cffaad372%s|r', WoWTools_Mixin.onlyChinese and '动物伙伴' or C_Spell.GetSpellLink(267116) or C_Spell.GetSpellName(267116) or 'Animal Companion')
                 )
             end
             GameTooltip:Show()
@@ -249,7 +249,7 @@ local function Init()
     btnSecond.SpellFrame.Icon:SetPoint('RIGHT')
     btnSecond.SpellFrame.Name:ClearAllPoints()
     btnSecond.SpellFrame.Name:SetPoint('RIGHT', btnSecond.SpellFrame.Icon, 'LEFT')
-    if e.onlyChinese and not LOCALE_zhCN then
+    if WoWTools_Mixin.onlyChinese and not LOCALE_zhCN then
         btnSecond.SpellFrame.Name:SetText('动物伙伴')
     end
     hooksecurefunc(btnSecond, 'Refresh', function(self)
@@ -265,7 +265,7 @@ local function Init()
 
 
     --食物
-    StableFrame.PetModelScene.PetInfo.Food=WoWTools_LabelMixin:Create(StableFrame.PetModelScene.PetInfo, {copyFont=not e.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
+    StableFrame.PetModelScene.PetInfo.Food=WoWTools_LabelMixin:Create(StableFrame.PetModelScene.PetInfo, {copyFont=not WoWTools_Mixin.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
     StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
     --特殊，加图标
     StableFrame.PetModelScene.PetInfo.ExoticTexture= StableFrame.PetModelScene.PetInfo:CreateTexture()
@@ -279,7 +279,7 @@ local function Init()
         local text
         if petData.slotID then
             local dietString = table.concat(C_StableInfo.GetStablePetFoodTypes(petData.slotID), LIST_DELIMITER)
-            text= format(e.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, dietString)
+            text= format(WoWTools_Mixin.onlyChinese and '食物：%s' or PET_DIET_TEMPLATE, dietString)
         end
         self.Food:SetText(text or '')
     end)

@@ -27,10 +27,10 @@ local function Init()
             return
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((GetTotalAchievementPoints() or 0)..' '..(e.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
+        GameTooltip:AddLine((GetTotalAchievementPoints() or 0)..' '..(WoWTools_Mixin.onlyChinese and '成就点数' or ACHIEVEMENT_POINTS))
         if IsInGuild() then
             local guid= GetTotalAchievementPoints(true) or 0
-            GameTooltip:AddLine(guid..' '..(e.onlyChinese and '公会成就' or GUILD_ACHIEVEMENTS_TITLE))
+            GameTooltip:AddLine(guid..' '..(WoWTools_Mixin.onlyChinese and '公会成就' or GUILD_ACHIEVEMENTS_TITLE))
         end
         GameTooltip:Show()
     end)

@@ -20,9 +20,9 @@ function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
     if value and max then
         r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
         if UnitIsFeignDeath(unit) then
-            text= e.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
+            text= WoWTools_Mixin.onlyChinese and '假死' or BOOST2_HUNTERBEAST_FEIGNDEATH:match('|cFFFFFFFF(.+)|r') or NO..DEAD
         elseif value <= 0 then
-            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '死亡' or DEAD)..'|r'
+            text = '|A:poi-soulspiritghost:0:0|a'..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '死亡' or DEAD)..'|r'
         else
             local hp = value / max * 100
             text = ('%i%%'):format(hp)..'  '

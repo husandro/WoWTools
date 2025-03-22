@@ -65,12 +65,12 @@ local function Is_Sandro()
             'Ms-Nemesis',--最大存20个
         }
         Save().fast={
-            [e.onlyChinese and '布甲' or C_Item.GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
-            [e.onlyChinese and '皮甲' or C_Item.GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
-            [e.onlyChinese and '锁甲' or C_Item.GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
-            [e.onlyChinese and '板甲' or C_Item.GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
-            [e.onlyChinese and '盾牌' or C_Item.GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
-            [e.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
+            [WoWTools_Mixin.onlyChinese and '布甲' or C_Item.GetItemSubClassInfo(4, 1)]= 'Ms-Nemesis',--布甲
+            [WoWTools_Mixin.onlyChinese and '皮甲' or C_Item.GetItemSubClassInfo(4, 2)]= 'Xiaod-Nemesis',--皮甲
+            [WoWTools_Mixin.onlyChinese and '锁甲' or C_Item.GetItemSubClassInfo(4, 3)]= 'Fuocco-Nemesis',--锁甲
+            [WoWTools_Mixin.onlyChinese and '板甲' or C_Item.GetItemSubClassInfo(4, 4)]= 'Zans-Nemesis',--板甲
+            [WoWTools_Mixin.onlyChinese and '盾牌' or C_Item.GetItemSubClassInfo(4, 6)]= 'Zans-Nemesis',--盾牌
+            [WoWTools_Mixin.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
 
         }
     elseif e.Player.region==4 then
@@ -139,7 +139,7 @@ function WoWTools_MailMixin:GetRealmInfo(name)
     end
     local realm= name:match('%-(.+)')
     if realm and not (e.Player.Realms[realm] or realm==e.Player.realm) then
-        return format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '该玩家与你不在同一个服务器' or ERR_PETITION_NOT_SAME_SERVER)
+        return format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '该玩家与你不在同一个服务器' or ERR_PETITION_NOT_SAME_SERVER)
     end
 end
 
@@ -240,10 +240,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_MailMixin.Save= WoWToolsSave['Plus_Mail'] or Save()
 
-            local addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(e.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
+            local addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
             WoWTools_MailMixin.addName= addName
 
             --添加控制面板
@@ -252,7 +252,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
             if not Save().disabled then

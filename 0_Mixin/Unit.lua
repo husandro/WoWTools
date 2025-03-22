@@ -91,7 +91,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
 
     if guid==e.Player.guid or name==e.Player.name or name==e.Player.name_realm then
-        return e.Icon.player..((reName or reLink) and e.Player.col..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
+        return e.Icon.player..((reName or reLink) and e.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
     end
 
     if reLink then
@@ -194,13 +194,13 @@ end
 function WoWTools_UnitMixin:GetOnlineInfo(unit)--单位，状态信息
     if unit and UnitExists(unit) then
         if not UnitIsConnected(unit) then
-            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), e.onlyChinese and '离线' or PLAYER_OFFLINE
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), WoWTools_Mixin.onlyChinese and '离线' or PLAYER_OFFLINE
         elseif UnitIsAFK(unit) then
-            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), e.onlyChinese and '离开' or AFK
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), WoWTools_Mixin.onlyChinese and '离开' or AFK
         elseif UnitIsGhost(unit) then
-            return '|A:poi-soulspiritghost:0:0|a', e.onlyChinese and '幽灵' or DEAD
+            return '|A:poi-soulspiritghost:0:0|a', WoWTools_Mixin.onlyChinese and '幽灵' or DEAD
         elseif UnitIsDead(unit) then
-            return '|A:deathrecap-icon-tombstone:0:0|a', e.onlyChinese and '死亡' or DEAD
+            return '|A:deathrecap-icon-tombstone:0:0|a', WoWTools_Mixin.onlyChinese and '死亡' or DEAD
         end
     end
 end

@@ -40,19 +40,19 @@ end
 
 local function menu_tooltip(root)
     root:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
-        tooltip:AddLine(e.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
     end)
 end
 
 local function Init_Menu(self, root)
     local sub
-    sub=root:CreateButton((e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
+    sub=root:CreateButton((WoWTools_Mixin.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
         set_frames_show(true)
     end)
     menu_tooltip(sub)
 
-    sub=root:CreateButton((e.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
+    sub=root:CreateButton((WoWTools_Mixin.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
         set_frames_show(false)
     end)
     menu_tooltip(sub)
@@ -82,7 +82,7 @@ local function Init()
     ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine((e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
+        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
         GameTooltip:Show()
     end)
 
@@ -112,16 +112,16 @@ end
  --[[local sub, col
 
     col= set_frames_show(true, true) and '' or '|cff9e9e9e'
-    root:CreateButton(col..(e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
+    root:CreateButton(col..(WoWTools_Mixin.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
         set_frames_show(true, false)
     end)
 
     col= set_frames_show(false, true) and '' or '|cff9e9e9e'
-    root:CreateButton(col..(e.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
+    root:CreateButton(col..(WoWTools_Mixin.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
         set_frames_show(false, false)
     end)
 
-    sub= root:CreateCheckbox(e.onlyChinese and '自动' or SELF_CAST_AUTO, function()
+    sub= root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
         return Save().autoHide
     end, function()
         Save().autoHide = not Save().autoHide and true or nil
@@ -129,15 +129,15 @@ end
     end)
     sub:SetTooltip(function(tooltip, elementDescription)
         GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
-        GameTooltip_AddInstructionLine(tooltip, e.onlyChinese and e.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-        GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '仅限在副本中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_INSTANCE))
+        GameTooltip_AddInstructionLine(tooltip, WoWTools_Mixin.onlyChinese and WoWTools_Mixin.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+        GameTooltip_AddNormalLine(tooltip, WoWTools_Mixin.onlyChinese and '仅限在副本中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_INSTANCE))
     end)
 
 缩放
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().scale= WoWTools_FrameMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save().scale, function()
-            print(e.Icon.icon2..WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            print('|cnRED_FONT_COLOR:', e.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
+            print(e.Icon.icon2..WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print('|cnRED_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)
         self:set_tooltip()
     end)
@@ -147,7 +147,7 @@ end
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
     end)
     
     btn.eventFrame= CreateFrame('Frame', nil, btn)

@@ -6,14 +6,14 @@ local e= select(2, ...)
 
 --专业技能 ProfessionsRecipeTracker
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(ProfessionsRecipeTracker, e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, function(self)
+    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(ProfessionsRecipeTracker, WoWTools_Mixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, function(self)
         local num= 0
         local function clear_Recipe(isRecrafting)
             for index, recipeID in pairs(C_TradeSkillUI.GetRecipesTracked(isRecrafting) or {}) do
                 C_TradeSkillUI.SetRecipeTracked(recipeID, false, isRecrafting)
                 local itemLink= C_TradeSkillUI.GetRecipeItemLink(recipeID)
                 if itemLink then
-                    print(index..')', itemLink, isRecrafting and (e.onlyChinese and '再造' or PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT) or '')
+                    print(index..')', itemLink, isRecrafting and (WoWTools_Mixin.onlyChinese and '再造' or PROFESSIONS_CRAFTING_FORM_OUTPUT_RECRAFT) or '')
                 end
                 num=num+1
             end

@@ -32,8 +32,8 @@ local function Init(OpenButton)
 
     OpenButton.count=WoWTools_LabelMixin:Create(OpenButton, {size=10, color={r=1,g=1,b=1}})--10, nil, nil, true)
     OpenButton.count:SetPoint('BOTTOMRIGHT')
-    OpenButton.noText= '|A:talents-button-reset:0:0|a'..(e.onlyChinese and '禁用' or DISABLE)
-    OpenButton.useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(e.onlyChinese and '使用' or USE)
+    OpenButton.noText= '|A:talents-button-reset:0:0|a'..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE)
+    OpenButton.useText= '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a'..(WoWTools_Mixin.onlyChinese and '使用' or USE)
 
     WoWTools_KeyMixin:Init(OpenButton, function() return Save().KEY end)
 
@@ -53,9 +53,9 @@ local function Init(OpenButton)
                 if self:CanChangeAttribute() then
                     GameTooltip:AddLine(' ')
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), self.noText)
-                    GameTooltip:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..e.Icon.left)
-                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
+                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), self.noText)
+                    GameTooltip:AddDoubleLine(e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..e.Icon.left)
+                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
                     GameTooltip:Show()
                 end
 
@@ -67,8 +67,8 @@ local function Init(OpenButton)
         else
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_OpenItemMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(e.Icon.right..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
-            GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), e.onlyChinese and '刷新' or REFRESH)
+            GameTooltip:AddDoubleLine(e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
+            GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
             GameTooltip:Show()
             if (BattlePetTooltip) then
                 BattlePetTooltip:Hide()
@@ -258,7 +258,7 @@ local function Init(OpenButton)
         local key= Save().KEY
         if key then
             local col= GetBindingByKey(key)==self:GetName()..':LeftButton' and '|cnGREEN_FONT_COLOR:' or '|cff828282'
-            return col..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|r'
+            return col..(WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..'|r'
         end
     end
     

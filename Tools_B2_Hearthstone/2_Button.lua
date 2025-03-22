@@ -286,9 +286,9 @@ local function Init(ToyButton)
                 GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
             end
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             GameTooltip:AddDoubleLine(
-                e.onlyChinese and '随机' or 'Random',
+                WoWTools_Mixin.onlyChinese and '随机' or 'Random',
                 (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
                 ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
                 ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
@@ -303,7 +303,7 @@ local function Init(ToyButton)
                 if itemID then
                     GameTooltip:AddDoubleLine(
                         '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':32|t|cnGREEN_FONT_COLOR:'
-                        ..(e.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)),
+                        ..(WoWTools_Mixin.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)),
                         e.Icon.right
                     )
                 end

@@ -22,7 +22,7 @@ local function Get_Guild_Name()
     local findDay= canGuildInvite and WoWTools_GuildMixin:GetClubFindDay(clubID)
 
 
-    local name= guildName or clubInfo.name or (e.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER)
+    local name= guildName or clubInfo.name or (WoWTools_Mixin.onlyChinese and '公会成员' or LFG_LIST_GUILD_MEMBER)
 
     name= WoWTools_TextMixin:sub(name, Save().subGuildName, nil, nil)
 
@@ -32,7 +32,7 @@ local function Get_Guild_Name()
     ..(name)
     ..'|r'
     ..(guildRankName and guildRankIndex and guildRankIndex>1 and ' '.. guildRankName or '')
-    ..(findDay and ' '..format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or '')
+    ..(findDay and ' '..format(WoWTools_Mixin.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay) or '')
 end
 
 
@@ -75,26 +75,26 @@ local function Init_Guild_Menu(self, root)
 
         tooltip:AddDoubleLine(
             '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
-            ..(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
+            ..(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
             e.GetYesNo(clubInfo.isCrossFaction)
         )
 
         if findDay then
             tooltip:AddDoubleLine(
                 '|A:characterupdate_clock-icon:0:0|a'
-                ..(e.onlyChinese and '公会查找器信息过期剩余时间：' or GUILD_FINDER_POSTING_GOING_TO_EXPIRE),
-                format(e.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay)
+                ..(WoWTools_Mixin.onlyChinese and '公会查找器信息过期剩余时间：' or GUILD_FINDER_POSTING_GOING_TO_EXPIRE),
+                format(WoWTools_Mixin.onlyChinese and '%d天' or CLUB_FINDER_DAYS_UNTIL_EXPIRE , findDay)
             )
         end
 
         tooltip:AddDoubleLine('clubID', clubID)
 
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
+        tooltip:AddDoubleLine('|cff00ccff'..(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
         if not canGuildInvite then
             tooltip:AddLine(
                 '|cff828282'
-                ..(e.onlyChinese and '无法邀请成员' or format(ERROR_CLUB_ACTION_INVITE_MEMBER, ''))..'|r'
+                ..(WoWTools_Mixin.onlyChinese and '无法邀请成员' or format(ERROR_CLUB_ACTION_INVITE_MEMBER, ''))..'|r'
             )
         end
     end)
@@ -105,7 +105,7 @@ local function Init_Guild_Menu(self, root)
 
 
     --公会信息
-    sub2=sub:CreateCheckbox(e.onlyChinese and '公会信息' or GUILD_INFORMATION, function()
+    sub2=sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '公会信息' or GUILD_INFORMATION, function()
         return Save().guildInfo
     end, function()
         Save().guildInfo= not Save().guildInfo and true or nil
@@ -116,7 +116,7 @@ local function Init_Guild_Menu(self, root)
     end)
 
     sub2= sub:CreateCheckbox(
-        e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
+        WoWTools_Mixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
     function()
         return Save().showNotOnLine
     end, function()
@@ -133,13 +133,13 @@ local function Init_Guild_Menu(self, root)
             Save().subGuildName= value~=0 and value or nil
             frame.Low:SetText(Get_Guild_Name())
         end,
-        name=e.onlyChinese and '截取' or 'sub' ,
+        name=WoWTools_Mixin.onlyChinese and '截取' or 'sub' ,
         minValue=0,
         maxValue=93,--最长31英文字符
         step=1,
         tooltip=function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '公会名称' or CLUB_FINDER_REPORT_REASON_GUILD_NAME)
-            tooltip:AddLine('0 = '..(e.onlyChinese and '禁用' or DISABLE))
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '公会名称' or CLUB_FINDER_REPORT_REASON_GUILD_NAME)
+            tooltip:AddLine('0 = '..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE))
         end
     })
     sub:CreateSpacer()
@@ -173,7 +173,7 @@ local function WoW_List(_, root)
         return MenuResponse.Open
     end)
     sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(e.onlyChinese and '打开/关闭公会和社区' or BINDING_NAME_TOGGLEGUILDTAB)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '打开/关闭公会和社区' or BINDING_NAME_TOGGLEGUILDTAB)
     end)
 
 
@@ -235,17 +235,17 @@ local function WoW_List(_, root)
                 )
 
 
-                tooltip:AddDoubleLine(e.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS, data.numActiveMembers)
+                tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS, data.numActiveMembers)
 
                 tooltip:AddDoubleLine(
                     '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
-                    ..(e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
+                    ..(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
                     e.GetYesNo(data.isCrossFaction)
                 )
 
 
                 tooltip:AddLine(' ')
-                tooltip:AddDoubleLine('|cff00ccff'..(e.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
+                tooltip:AddDoubleLine('|cff00ccff'..(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
             end)
         end
     end
@@ -278,7 +278,7 @@ local function Guild_Player_List(_, root)
     root:CreateDivider()
     if total<2 or (online<2 and not showNotOnLine) then
         root:CreateTitle(
-            (e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON)..(online-1)
+            (WoWTools_Mixin.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON)..(online-1)
         )
         return
     end
@@ -325,7 +325,7 @@ local function Guild_Player_List(_, root)
             sub:SetTooltip(function(tooltip, desc)
                 local col= desc.data.isOnline and '' or '|cff828282'
                 tooltip:AddDoubleLine(
-                    col..(e.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER),
+                    col..(WoWTools_Mixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER),
                     col..SLASH_WHISPER1..' '..desc.data.name
                 )
                 tooltip:AddLine(' ')
@@ -372,7 +372,7 @@ local function Init_Menu(self, root)
 --弹劾
     if CanReplaceGuildMaster() then
         root:CreateButton(
-            e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
+            WoWTools_Mixin.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
         ToggleGuildFrame)
         root:CreateDivider()
     end
@@ -387,10 +387,10 @@ local function Init_Menu(self, root)
     if CanReplaceGuildMaster() then
         root:CreateDivider()
         sub=root:CreateButton(
-            e.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
+            WoWTools_Mixin.onlyChinese and '弹劾' or GUILD_IMPEACH_POPUP_CONFIRM,
         ToggleGuildFrame)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '你所在公会的领袖已被标记为非活动状态。你现在可以争取公会领导权。是否要移除公会领袖？' or GUILD_IMPEACH_POPUP_TEXT, nil,nil,nil, true)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '你所在公会的领袖已被标记为非活动状态。你现在可以争取公会领导权。是否要移除公会领袖？' or GUILD_IMPEACH_POPUP_TEXT, nil,nil,nil, true)
         end)
     end
 

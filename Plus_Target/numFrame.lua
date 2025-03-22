@@ -129,7 +129,7 @@ local function Init_Button()
         if d=='RightButton' and IsControlKeyDown() then--还原
             Save().creaturePoint=nil
             self:set_point()
-            print(WoWTools_Mixin.addName , WoWTools_TargetMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_Mixin.addName , WoWTools_TargetMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         elseif d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
@@ -149,7 +149,7 @@ local function Init_Button()
         Save().creatureFontSize=n
         WoWTools_LabelMixin:Create(nil, {changeFont=self.Text, size=n})
         self:set_tooltip()
-        print(e.Icon.icon2..WoWTools_TargetMixin.addName, (e.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
+        print(e.Icon.icon2..WoWTools_TargetMixin.addName, (WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
     end)
 
     function numButton:set_tooltip()
@@ -157,15 +157,15 @@ local function Init_Button()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName)
         GameTooltip:AddLine(' ')
-        if e.onlyChinese then
-            GameTooltip:AddLine(e.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
+        if WoWTools_Mixin.onlyChinese then
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and e.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
         else
             GameTooltip:AddLine(e.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save().creatureFontSize, 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save().creatureFontSize, 'Alt+'..e.Icon.mid)
         GameTooltip:Show()
     end
     numButton:SetScript('OnLeave', GameTooltip_Hide)

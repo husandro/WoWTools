@@ -80,7 +80,7 @@ local function Init_Menu_Toy(self, root)
         sub2=sub:CreateCheckbox(
             (has and '' or '|cff9e9e9e')
             ..icon
-            ..(e.onlyChinese and '锁定' or LOCK)..'|A:AdventureMapIcon-Lock:0:0|a',
+            ..(WoWTools_Mixin.onlyChinese and '锁定' or LOCK)..'|A:AdventureMapIcon-Lock:0:0|a',
         function(data)
             return Save().lockedToy==data.itemID
         end, function(data)
@@ -94,7 +94,7 @@ local function Init_Menu_Toy(self, root)
 
 
         sub2=sub:CreateButton(
-            '|A:common-icon-zoomin:0:0|a'..(e.onlyChinese and '设置' or SETTINGS),
+            '|A:common-icon-zoomin:0:0|a'..(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS),
         function(data)
             WoWTools_LoadUIMixin:Journal(3)
             if data.name or data.itemID then
@@ -111,12 +111,12 @@ local function Init_Menu_Toy(self, root)
             {itemID=itemID, name=toyName}
         )
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+            tooltip:AddLine(MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
         end)
 
         sub:CreateDivider()
         sub2=sub:CreateButton(
-            '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
+            '|A:common-icon-redx:0:0|a'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE),
             function(data)
                 WoWTools_HearthstoneMixin:Remove_Toy(data.itemID)--移除
                 return MenuResponse.Open

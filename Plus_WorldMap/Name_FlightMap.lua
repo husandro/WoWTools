@@ -51,14 +51,14 @@ local function Init()
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
+        GameTooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            '|A:FlightMaster:0:0|a'..(e.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
+            '|A:FlightMaster:0:0|a'..(WoWTools_Mixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
                 e.GetShowHide(WoWTools_WorldMapMixin.Save.ShowFlightMap_Name),
-                e.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
+                WoWTools_Mixin.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
             )
             ..e.Icon.left
         )

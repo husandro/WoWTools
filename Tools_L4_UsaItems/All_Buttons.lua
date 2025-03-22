@@ -104,7 +104,7 @@ local function set_Bling_Quest(self)--布林顿任务
         self.quest=WoWTools_LabelMixin:Create(self, {size=8})
         self.quest:SetPoint('BOTTOM',0,8)
     end
-    self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '完成' or COMPLETE)..'|r' or '|A:questlegendary:0:0|a')
+    self.quest:SetText(complete and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r' or '|A:questlegendary:0:0|a')
 end
 
 

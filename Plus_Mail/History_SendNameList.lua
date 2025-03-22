@@ -29,7 +29,7 @@ local function created_button(index)
     btn:SetScript('OnEnter', function(frame)
         GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))
+        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_Mixin.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_MailMixin:GetRealmInfo(frame.name) or ' ', frame.name)
         GameTooltip:Show()
@@ -135,7 +135,7 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
     root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
+        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
     function()
         return not Save().hideSendPlayerList
     end, function()
@@ -146,7 +146,7 @@ local function Init_Menu(self, root)
 
     local num= #Save().lastSendPlayerList
     sub=root:CreateButton(
-        format('%s |cnGREEN_FONT_COLOR:#%d|r', e.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER, num),
+        format('%s |cnGREEN_FONT_COLOR:#%d|r', WoWTools_Mixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER, num),
     function()
         return MenuResponse.Open
     end)
@@ -173,7 +173,7 @@ local function Init_Menu(self, root)
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(description.data.name)
             tooltip:AddLine(' ')
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
             tooltip:AddLine(WoWTools_MailMixin:GetRealmInfo(description.data.name))--该玩家与你不在同一个服务器
         end)
     end
@@ -184,7 +184,7 @@ local function Init_Menu(self, root)
     end
     if num>1 then
         sub:CreateButton(
-            e.onlyChinese and '全部清除' or CLEAR_ALL,
+            WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
             Save().lastSendPlayerList={}
             set_list()
@@ -193,7 +193,7 @@ local function Init_Menu(self, root)
     end
 
     sub2= sub:CreateButton(
-        e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
+        WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
     function()
         return MenuResponse.Open
     end)
@@ -205,7 +205,7 @@ local function Init_Menu(self, root)
         end, setValue=function(value)
             Save().lastMaxSendPlayerList=value
         end,
-        name=e.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
+        name=WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
         minValue=5,
         maxValue=100,
         step=1,
@@ -297,9 +297,9 @@ local function Init()
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, (e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))..'|cnGREEN_FONT_COLOR:#'..#Save().lastSendPlayerList)
+        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, (WoWTools_Mixin.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))..'|cnGREEN_FONT_COLOR:#'..#Save().lastSendPlayerList)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
         GameTooltip:Show()
     end
     Button:SetScript('OnLeave', GameTooltip_Hide)

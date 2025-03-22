@@ -110,7 +110,7 @@ local function Init_Options(category, layout)
     e.AddPanel_Header(layout, addName)
     local initializer=e.AddPanel_Check({
         category= category,
-        name= '|cff3fc6ea'..(e.onlyChinese and '启用' or ENABLE)..'|r',
+        name= '|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '启用' or ENABLE)..'|r',
         tooltip= addName,
         GetValue= function() return not Save.disabled end,
         SetValue= function()
@@ -120,7 +120,7 @@ local function Init_Options(category, layout)
 
     e.AddPanel_Check({
         category= category,
-        name= '|cff3fc6ea'..(e.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
+        name= '|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
         tooltip= addName,
         GetValue= function() return Save.isLeft end,
         SetValue= function()
@@ -132,7 +132,7 @@ local function Init_Options(category, layout)
 
     e.AddPanel_Check({
         category= category,
-        name= '|cff3fc6ea'..(e.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
+        name= '|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
         tooltip= addName,
         GetValue= function() return Save.showText end,
         SetValue= function()
@@ -171,7 +171,7 @@ local function Init()
             btn.spellID= tab.spell
             btn.spellID2= tab.spell2
             btn.luce= tab.luce
-            btn.name1= e.onlyChinese and tab.name
+            btn.name1= WoWTools_Mixin.onlyChinese and tab.name
 
             function btn:set_cool()
                 if self:IsVisible() then
@@ -223,7 +223,7 @@ local function Init()
                 else
                     btn.text:SetPoint('LEFT', btn, 'RIGHT')
                 end
-                if e.onlyChinese then
+                if WoWTools_Mixin.onlyChinese then
                     btn.text:SetText(tab.name)
                 end
             end]]
@@ -296,7 +296,7 @@ local function Init()
                 GameTooltip:ClearLines()
                 GameTooltip:SetSpellByID(self.spellID)
                 if not IsSpellKnownOrOverridesKnown(self.spellID) then
-                    GameTooltip:AddLine(format('|cnRED_FONT_COLOR:%s|r', e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
+                    GameTooltip:AddLine(format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
                 end
                 if self.spellID2 then
                     GameTooltip:AddLine(' ')
@@ -305,7 +305,7 @@ local function Init()
                         ..(e.cn(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
                         ..(WoWTools_CooldownMixin:GetText(self.spellID2, nil) or ''),
                         format('%s%s',
-                            IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',e.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
+                            IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',WoWTools_Mixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
                             e.Icon.right)
                         )
                 end
@@ -344,12 +344,12 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
 
             Save= WoWToolsSave['Tools_MagePortal'] or Save
 
             if not Save.disabled and  WoWTools_ToolsMixin.Button then
-                addName= '|T626001:0|t|cff3fc6ea'..(e.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
+                addName= '|T626001:0|t|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
                 Init()
             else
                 Tab=nil

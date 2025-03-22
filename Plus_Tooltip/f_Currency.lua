@@ -22,7 +22,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     if factionID and factionID>0 then
         local name= (C_Reputation.GetFactionDataByID(factionID) or {}).name
         if name then
-            tooltip:AddDoubleLine(e.onlyChinese and '声望' or REPUTATION, e.cn(name)..' '..factionID)
+            tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '声望' or REPUTATION, e.cn(name)..' '..factionID)
         end
     end
 
@@ -68,7 +68,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
             (col or '|cnGREEN_FONT_COLOR:')
             ..numPlayer
             ..(icon or e.Icon.wow2)
-            ..(e.onlyChinese and '角色' or CHARACTER)
+            ..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)
             ..currIcon..WoWTools_Mixin:MK(num, 3)
         )
     end

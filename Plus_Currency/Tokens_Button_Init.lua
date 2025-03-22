@@ -15,10 +15,10 @@ local function click(self)
 	local infoType, itemID, itemLink = GetCursorInfo()
 	if infoType == "item" and itemID then
 		Save().item[itemID]= not Save().item[itemID] and true or nil
-		print(e.Icon.icon2..WoWTools_CurrencyMixin.addName, e.onlyChinese and '追踪' or TRACKING,
+		print(e.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING,
 				Save().item[itemID] and
-				('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
-				or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
+				('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+				or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 				itemLink or itemID)
 		ClearCursor()
 		WoWTools_CurrencyMixin:Set_TrackButton_Text()
@@ -36,13 +36,13 @@ local function enter(self)
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 				Save().item[itemID] and
-					('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-				or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+					('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+				or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
 		)
 		Button:set_texture(C_Item.GetItemIconByID(itemID))
 	else
-		GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-		GameTooltip:AddDoubleLine((e.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(e.onlyChinese and '物品' or ITEMS), e.onlyChinese and '追踪' or TRACKING)
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+		GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
 	end
 	GameTooltip:AddLine(' ')
 
@@ -138,7 +138,7 @@ local function Init()
 	Button.bag:SetScript('OnEnter', function(self2)
 		GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(e.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '在行囊上显示' or SHOW_ON_BACKPACK, GetNumWatchedTokens())
 		for index=1, BackpackTokenFrame:GetMaxTokensWatched() do--Blizzard_TokenUI.lua
 			local info = C_CurrencyInfo.GetBackpackCurrencyInfo(index)
 			if info and info.name and info.iconFileID then

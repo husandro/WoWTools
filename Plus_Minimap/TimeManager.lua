@@ -52,7 +52,7 @@ local function Init_Stopwatch_Menu(self, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(e.Icon.icon2.. addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 
@@ -67,7 +67,7 @@ local function Init_Stopwatch_Menu(self, root)
 
     root:CreateDivider()
     root:CreateCheckbox(
-        e.Icon.left..(e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
+        e.Icon.left..(WoWTools_Mixin.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
     function()
         return Save().StopwatchOnClickPause
     end, function()
@@ -75,7 +75,7 @@ local function Init_Stopwatch_Menu(self, root)
         if StopwatchFrame.set_onclick_pause then
             StopwatchFrame:set_onclick_pause()
         else
-            StopwatchTitle:SetText(e.onlyChinese and '秒表' or STOPWATCH_TITLE)
+            StopwatchTitle:SetText(WoWTools_Mixin.onlyChinese and '秒表' or STOPWATCH_TITLE)
         end
     end)
 
@@ -149,7 +149,7 @@ local function Init_TimeManager_Menu(self, root)
         return not Save().disabledClockPlus
     end, function()
         Save().disabledClockPlus= not Save().disabledClockPlus and true or nil
-        print(e.Icon.icon2.. addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 --重新加载
@@ -200,14 +200,14 @@ local function Init_TimeManager_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
-        ..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
+        ..(WoWTools_Mixin.onlyChinese and '秒表' or STOPWATCH_TITLE),
     function()
         return StopwatchFrame:IsShown()
     end, function()
         WoWTools_Mixin:Call(Stopwatch_Toggle)
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
     end)
     Init_Stopwatch_Menu(self, sub)
 end
@@ -246,7 +246,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         '|A:auctionhouse-icon-clock:0:0:|a'
         ..(self==TimeManagerClockButton and '|cnGREEN_FONT_COLOR:' or '')
-        ..(e.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
+        ..(WoWTools_Mixin.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
     function()
         return MenuResponse.Open
     end)
@@ -257,14 +257,14 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
         --..(self==StopwatchFrame and '|cnGREEN_FONT_COLOR:' )
-        ..(e.onlyChinese and '秒表' or STOPWATCH_TITLE),
+        ..(WoWTools_Mixin.onlyChinese and '秒表' or STOPWATCH_TITLE),
     function()
         return StopwatchFrame:IsShown()
     end, function()
         WoWTools_Mixin:Call(Stopwatch_Toggle)
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
     end)
     Init_Stopwatch_Menu(self, sub)
 end
@@ -453,13 +453,13 @@ local function Init_StopwatchFrame()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..e.Icon.mid)
-        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().StopwatchFrameScale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
         if Save().StopwatchOnClickPause then
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(
-                (e.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
+                (WoWTools_Mixin.onlyChinese and '开始/暂停' or NEWBIE_TOOLTIP_STOPWATCH_PLAYPAUSEBUTTON),
                 e.Icon.left
             )
         end
@@ -551,19 +551,19 @@ local function Init_StopwatchFrame()
     StopwatchTickerSecond:SetShadowOffset(1, -1)
 
     hooksecurefunc('Stopwatch_Pause', function()
-        StopwatchTitle:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE))
+        StopwatchTitle:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE))
         StopwatchTickerHour:SetTextColor(0,1,0,1)
         StopwatchTickerMinute:SetTextColor(0,1,0,1)
         StopwatchTickerSecond:SetTextColor(0,1,0,1)
     end)
     hooksecurefunc('Stopwatch_Play', function()
-        StopwatchTitle:SetText(e.Player.col..(e.onlyChinese and '开始' or START))
+        StopwatchTitle:SetText(e.Player.col..(WoWTools_Mixin.onlyChinese and '开始' or START))
         WoWTools_ColorMixin:Setup(StopwatchTickerHour, {type='FontString'})
         WoWTools_ColorMixin:Setup(StopwatchTickerMinute, {type='FontString'})
         WoWTools_ColorMixin:Setup(StopwatchTickerSecond, {type='FontString'})
     end)
     hooksecurefunc('Stopwatch_Clear', function()
-        StopwatchTitle:SetText((e.onlyChinese and '重置' or RESET))
+        StopwatchTitle:SetText((WoWTools_Mixin.onlyChinese and '重置' or RESET))
         StopwatchTickerHour:SetTextColor(1,1,1,1)
         StopwatchTickerMinute:SetTextColor(1,1,1,1)
         StopwatchTickerSecond:SetTextColor(1,1,1,1)
@@ -576,9 +576,9 @@ local function Init_StopwatchFrame()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         if Stopwatch_IsPlaying() then
-            GameTooltip:AddLine(e.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE)
         else
-            GameTooltip:AddLine(e.onlyChinese and '开始' or START)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '开始' or START)
         end
         GameTooltip:Show()
         self:SetAlpha(1)
@@ -588,7 +588,7 @@ local function Init_StopwatchFrame()
     StopwatchResetButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, Save().StopwatchOnClickPause and "ANCHOR_LEFT" or "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '重置' or RESET)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '重置' or RESET)
         GameTooltip:Show()
         self:SetAlpha(1)
     end)
@@ -670,17 +670,17 @@ local function Init()
 
     hooksecurefunc('TimeManagerClockButton_UpdateTooltip', function()
         if Save().disabledClockPlus then
-            GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+            GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
         else
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('|cffffffff'..('ServerTime'), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(GetServerTime())..e.Icon.left)
-            GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+            GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
 
-            --GameTooltip:AddDoubleLine('|cffffffff'..(e.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
+            --GameTooltip:AddDoubleLine('|cffffffff'..(WoWTools_Mixin.onlyChinese and '服务器时间' or TIMEMANAGER_TOOLTIP_REALMTIME), '|cnGREEN_FONT_COLOR:'..WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true)..e.Icon.left)
             --GameTooltip:AddLine(' ')
 
-            GameTooltip:AddDoubleLine('|cffffffff'..(e.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
-            GameTooltip:AddDoubleLine('|cffffffff'..((e.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
+            GameTooltip:AddDoubleLine('|cffffffff'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), 'Alt+'..e.Icon.right)
+            GameTooltip:AddDoubleLine('|cffffffff'..((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE))..' |cnGREEN_FONT_COLOR:'..(Save().TimeManagerClockButtonScale or 1), 'Alt+'..e.Icon.mid)
             --GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         end
         GameTooltip:Show()

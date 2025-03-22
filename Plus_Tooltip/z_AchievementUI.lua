@@ -21,7 +21,7 @@ local function Blizzard_AchievementUI()
                         GameTooltip:ClearLines()
                         GameTooltip:SetAchievementByID(achievementID)
                         GameTooltip:AddLine(' ')
-                        GameTooltip:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '说' or SAY), e.Icon.left)
+                        GameTooltip:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY), e.Icon.left)
                         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
                         GameTooltip:Show()
                     end

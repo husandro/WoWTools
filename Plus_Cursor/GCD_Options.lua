@@ -16,7 +16,7 @@ local function Init(Frame)
         return
     end
     Frame.sliderSize = e.CSlider(Frame, {min=8, max=128, value=Save().gcdSize, setp=1,
-    text=e.onlyChinese and '缩放' or UI_SCALE,
+    text=WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -27,7 +27,7 @@ local function Init(Frame)
     Frame.sliderSize:SetPoint("TOPLEFT", Frame.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = e.CSlider(Frame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
-    text=e.onlyChinese and '透明度' or 'Alpha',
+    text=WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
@@ -61,7 +61,7 @@ local function Init(Frame)
 
     local checkReverse=CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     checkReverse:SetChecked(Save().gcdReverse)
-    checkReverse.text:SetText(e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION)
+    checkReverse.text:SetText(WoWTools_Mixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION)
     checkReverse:SetScript('OnMouseUp', function()
         Save().gcdReverse = not Save().gcdReverse and true or false
         WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
@@ -120,7 +120,7 @@ local function Init(Frame)
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 64)))
                 tooltip:AddLine(description.data.texture)
-                tooltip:AddLine(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+                tooltip:AddLine(WoWTools_Mixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
             end)
             sub:AddInitializer(function(btn)
                 btn.fontString:ClearAllPoints()
@@ -140,7 +140,7 @@ local function Init(Frame)
         local icon = texture and '|T'..texture..':0|t'
         table.remove(Save().GCDTexture, Save().gcdTextureIndex)
         Save().gcdTextureIndex=1
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultGCDTexture)
@@ -177,7 +177,7 @@ local function Init(Frame)
     addColorButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(format(e.onlyChinese and "仅限%s" or LFG_LIST_CROSS_FACTION , 'Texture'))
+        GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and "仅限%s" or LFG_LIST_CROSS_FACTION , 'Texture'))
         GameTooltip:Show()
     end)
     addColorButton:SetScript('OnLeave', GameTooltip_Hide)

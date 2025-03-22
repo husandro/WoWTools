@@ -31,7 +31,7 @@ local function Init(btn)
                 local specA=''
                 local class
                 table.sort(specTable, function (a2, b2) return a2<b2 end)
-                tips= e.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
+                tips= WoWTools_Mixin.onlyChinese and '拾取专精' or format(PROFESSIONS_SPECIALIZATION_TITLE, UNIT_FRAME_DROPDOWN_SUBSECTION_TITLE_LOOT )
                 for _,  specID in pairs(specTable) do
                     local _, name,_, icon2, _, classFile= GetSpecializationInfoByID(specID)
                     if icon2 and classFile then
@@ -52,8 +52,8 @@ local function Init(btn)
                 tips= tips and tips..'|n|n' or ''
                 tips= tips
                     ..item
-                    ..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
-                    ..(not isSelf and ' |cffffffff'..(e.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS))..'|r' or '')
+                    ..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                    ..(not isSelf and ' |cffffffff'..(WoWTools_Mixin.onlyChinese and '其他职业' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, CLASS))..'|r' or '')
             end
         else
             local itemID= btn.itemID or C_Item.GetItemInfoInstant(btn.link)

@@ -191,10 +191,10 @@ panel:RegisterEvent('PLAYER_LOGIN')
 --panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or Save
 
-            addName= '|A:BonusLoot-Chest:0:0|a'..(e.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
+            addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_Mixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
             
             OpenButton= WoWTools_ToolsMixin:CreateButton({
                 name='OpenItems',

@@ -75,13 +75,13 @@ function WoWTools_AddOnsMixin:Get_MenoryValue(indexORname, showText)
     if value and value>0 then
         if value<1000 then
             if showText then
-                va= format(e.onlyChinese and '插件内存：%.2f KB' or TOTAL_MEM_KB_ABBR, value)
+                va= format(WoWTools_Mixin.onlyChinese and '插件内存：%.2f KB' or TOTAL_MEM_KB_ABBR, value)
             else
                 va= format('%iKB', value)
             end
         else
             if showText then
-                va= format(e.onlyChinese and '插件内存：%.2f MB' or TOTAL_MEM_MB_ABBR, value/1000)
+                va= format(WoWTools_Mixin.onlyChinese and '插件内存：%.2f MB' or TOTAL_MEM_MB_ABBR, value/1000)
             else
                 va= format('%.2fMB', value/1000)
             end
@@ -180,7 +180,7 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
             percentText= format('%0.2fMB',allMemo/1000)
         end
     end
-    tooltip:AddDoubleLine(' ', index..' '..(e.onlyChinese and '插件' or ADDONS)..' '..percentText)
+    tooltip:AddDoubleLine(' ', index..' '..(WoWTools_Mixin.onlyChinese and '插件' or ADDONS)..' '..percentText)
 
     for i, info in pairs(newTab) do
         local left=info.left
@@ -241,7 +241,7 @@ local function Init()
                 AddonList.ForceLoad:HookScript('OnEnter', function(self)
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
-                    GameTooltip:AddLine(e.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+                    GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
                     GameTooltip:Show()
                 end)
                 AddonList.ForceLoad:HookScript('OnLeave', GameTooltip_Hide)
@@ -285,9 +285,9 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or Save()
-            addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(e.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
+            addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_Mixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
             WoWTools_AddOnsMixin.addName= addName
 
@@ -298,7 +298,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function () return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -313,7 +313,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             C_CVar.RegisterCVar("addonProfilerEnabled", "1")
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             if not C_AddOnProfiler.IsEnabled() then
-                print(e.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
+                print(e.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
             end
         end]]
         

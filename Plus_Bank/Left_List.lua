@@ -30,7 +30,7 @@ local function Set_Tooltip(self, tooltip, type)
     if type==0 or type==1 then
         for itemID, count in pairs(self.bankItems or {}) do
             if find==0 then
-                tooltip:AddDoubleLine(' ', (e.onlyChinese and '银行' or BANK)..'|A:Banker:0:0|a')
+                tooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '银行' or BANK)..'|A:Banker:0:0|a')
             end
 
             find=find+1
@@ -47,7 +47,7 @@ local function Set_Tooltip(self, tooltip, type)
     if type==0 or type==2 then
         for itemID, count in pairs(self.bagItems or {}) do
             if find2==0 then
-                tooltip:AddDoubleLine(' ', (e.onlyChinese and '背包' or INVTYPE_BAG)..'|A:bag-main:0:0|a')
+                tooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '背包' or INVTYPE_BAG)..'|A:bag-main:0:0|a')
             end
             find2=find2+1
             name= WoWTools_ItemMixin:GetName(itemID, nil, nil, {notCount=true})
@@ -78,7 +78,7 @@ local function Init_Button_Menu(self, root)
     local sub=root:CreateButton(
         (self.bankNum==0 and '|cff828282' or '')
         ..'|A:Cursor_OpenHand_32:0:0|a'
-        ..(e.onlyChinese and '提取' or WITHDRAW)
+        ..(WoWTools_Mixin.onlyChinese and '提取' or WITHDRAW)
         ..' '..(self.bankNumText or '')
         ..'  '..WoWTools_BagMixin:GetFree(self.classID==7),
     function()
@@ -87,7 +87,7 @@ local function Init_Button_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         local find, find2= Set_Tooltip(self, tooltip, 1)
         if find==0 and find2==0 then
-            tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '银行' or BANK)))
+            tooltip:AddLine(tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '银行' or BANK)))
         end
     end)
 
@@ -95,7 +95,7 @@ local function Init_Button_Menu(self, root)
     sub=root:CreateButton(
         (self.bagNum==0 and '|cff828282' or '')
         ..'|A:Cursor_buy_32:0:0|a'
-        ..(e.onlyChinese and '存放' or DEPOSIT)
+        ..(WoWTools_Mixin.onlyChinese and '存放' or DEPOSIT)
         ..' '..(self.bagNumText or '')
         ..'  '..WoWTools_BankMixin:GetFree(),
     function()
@@ -105,7 +105,7 @@ local function Init_Button_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         local find, find2= Set_Tooltip(self, tooltip, 2)
         if find==0 and find2==0 then
-            tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
+            tooltip:AddLine('|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL))
         end
     end)
 
@@ -168,7 +168,7 @@ local function Create_ListButton(index)
 
         local find, find2= Set_Tooltip(self, GameTooltip, 0)
         if find==0 and find2==0 then
-            GameTooltip:AddLine((e.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
+            GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
             GameTooltip:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
         end
         GameTooltip:Show()
@@ -418,9 +418,9 @@ local function Init()
 
         local index= WoWTools_BankMixin:GetIndex()
         local text=
-            index==1 and (e.onlyChinese and '银行' or BANK)
-            or index==2 and (e.onlyChinese and '材料' or BANK_TAB_ASSIGN_REAGENTS_CHECKBOX)
-            or index==3 and (e.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+            index==1 and (WoWTools_Mixin.onlyChinese and '银行' or BANK)
+            or index==2 and (WoWTools_Mixin.onlyChinese and '材料' or BANK_TAB_ASSIGN_REAGENTS_CHECKBOX)
+            or index==3 and (WoWTools_Mixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
 --空栏位
         text= (self.bankSlotFree and self.bankSlotFree..' ' or '')..(text or '')
 
@@ -456,7 +456,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         GameTooltip:Show()
     end
 
@@ -483,7 +483,7 @@ local function Init()
     ListButton:SetupMenu(function(self, root)
         local sub
         root:CreateCheckbox(
-            e.onlyChinese and '显示' or SHOW,
+            WoWTools_Mixin.onlyChinese and '显示' or SHOW,
         function()
             return Save().showLeftList
         end, function()
@@ -508,7 +508,7 @@ local function Init()
         end)
 
         sub:CreateCheckbox(
-            e.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
+            WoWTools_Mixin.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
         function()
             return not Save().hideLeftListTooltip
         end, function()

@@ -67,10 +67,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 			WoWTools_CurrencyMixin.Save= WoWToolsSave['Currency2'] or Save()
 
-			local addName= '|A:bags-junkcoin:0:0|a'..(e.onlyChinese and '货币' or TOKENS)
+			local addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_Mixin.onlyChinese and '货币' or TOKENS)
 			WoWTools_CurrencyMixin.addName= addName
 
 			--添加控制面板
@@ -79,7 +79,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				GetValue= function() return not Save().disabled end,
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
-					print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end
 			})
 

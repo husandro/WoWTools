@@ -34,11 +34,11 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
                 SetPortraitTexture(tooltip.Portrait, source)
                 tooltip.Portrait:SetShown(true)
             end
-            local text= source=='player' and (e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                    or source=='pet' and (e.onlyChinese and '宠物' or PET)
+            local text= source=='player' and (WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                    or source=='pet' and (WoWTools_Mixin.onlyChinese and '宠物' or PET)
                     or UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo({unit=source, reName=true})
                     or UnitName(source) or _G[source] or source
-            tooltip:AddLine((col or '|cffffffff') ..format(e.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
+            tooltip:AddLine((col or '|cffffffff') ..format(WoWTools_Mixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
             tooltip:Show()
         end
     end

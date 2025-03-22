@@ -100,10 +100,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or Save()
-            local addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(e.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+            local addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_Mixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
             WoWTools_AttributesMixin.addName= addName
 
             local frame= CreateFrame('Frame')
@@ -123,7 +123,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Init() then Init=function()end end
                         WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,

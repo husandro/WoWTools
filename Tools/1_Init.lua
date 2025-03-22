@@ -46,19 +46,19 @@ local function Init_Panel()
 
 
     local initializer=e.AddPanel_Check_Button({
-        checkName= e.onlyChinese and '启用' or ENABLE,
+        checkName= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
             Save().point=nil
             if Button then
                 Button:set_point()
             end
-            print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= addName,
         layout= Layout,
@@ -67,9 +67,9 @@ local function Init_Panel()
 
     e.AddPanel_Check({
         category= Category,
-        name= e.onlyChinese and '战团藏品' or COLLECTIONS,
+        name= WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS,
         tooltip= '|nCollectionsJournal_LoadUI()|n|n'
-                ..(e.onlyChinese and '登入游戏时|n建议：开启' or
+                ..(WoWTools_Mixin.onlyChinese and '登入游戏时|n建议：开启' or
                 (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME)..'|n'..HELPFRAME_SUGGESTION_BUTTON_TEXT..': '..ENABLE)
         ),
         GetValue= function() return Save().loadCollectionUI end,
@@ -85,12 +85,12 @@ local function Init_Panel()
         category= Category,
         layout=Layout,
         title= WoWTools_ToolsMixin.addName,
-        buttonText= '|A:QuestArtifact:0:0|a'..(e.onlyChinese and '重置' or RESET),
-        addSearchTags= e.onlyChinese and '重置' or RESET,
+        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_Mixin.onlyChinese and '重置' or RESET),
+        addSearchTags= WoWTools_Mixin.onlyChinese and '重置' or RESET,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
                 WoWTools_ToolsMixin.addName
-                ..'|n|n|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                ..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
                     WoWTools_ToolsMixin.Save=nil
@@ -98,10 +98,10 @@ local function Init_Panel()
                 end
             )
         end,
-        tooltip=e.onlyChinese and '全部清除' or CLEAR_ALL
+        tooltip=WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL
     })
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
+    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
 
     for _, data in pairs (WoWTools_ToolsMixin.AddList) do
@@ -140,8 +140,8 @@ local function Init_Panel()
                     end,
                     GetOptions=function()
                         local container = Settings.CreateControlTextContainer()
-                        container:Add(1, '|A:bags-greenarrow:0:0|a'..(e.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))
-                        container:Add(2, '|A:Bags-padlock-authenticator:0:0|a'..(e.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW))
+                        container:Add(1, '|A:bags-greenarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '位于上方' or QUESTLINE_LOCATED_ABOVE))
+                        container:Add(2, '|A:Bags-padlock-authenticator:0:0|a'..(WoWTools_Mixin.onlyChinese and '位于下方' or QUESTLINE_LOCATED_BELOW))
                         return container:GetData()
                     end
                 })
@@ -171,38 +171,38 @@ end
 local function Init_Menu(self, root)
 
     if not self:CanChangeAttribute() then
-        root:CreateTitle(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        root:CreateTitle(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
 
     local sub, sub2
-    sub=root:CreateCheckbox(e.onlyChinese and '显示' or SHOW, function()
+    sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '显示' or SHOW, function()
         return self.Frame:IsShown()
     end, function()
         self:set_shown()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine((UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '')..(e.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
+        tooltip:AddLine((UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:' or '')..(WoWTools_Mixin.onlyChinese and '脱离战斗' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
     end)
 
 --显示
-    sub:CreateTitle(e.onlyChinese and '显示' or SHOW)
-    sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(e.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+    sub:CreateTitle(WoWTools_Mixin.onlyChinese and '显示' or SHOW)
+    sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_Mixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save().isEnterShow
     end, function()
         Save().isEnterShow = not Save().isEnterShow and true or nil
     end)
 
 --隐藏
-    sub:CreateTitle(e.onlyChinese and '隐藏' or HIDE)
-    sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
+    sub:CreateTitle(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
+    sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
         return Save().isCombatHide
     end, function()
         Save().isCombatHide = not Save().isCombatHide and true or nil
         self:set_event()
     end)
 
-    sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(e.onlyChinese and '移动' or NPE_MOVE), function()
+    sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), function()
         return Save().isMovingHide
     end, function()
         Save().isMovingHide = not Save().isMovingHide and true or nil
@@ -211,7 +211,7 @@ local function Init_Menu(self, root)
 
     sub:CreateCheckbox(
         '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'
-        ..(e.onlyChinese and '显示主菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MAINMENU_BUTTON)),
+        ..(WoWTools_Mixin.onlyChinese and '显示主菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MAINMENU_BUTTON)),
     function()
         return Save().isMainMenuHide
     end, function()
@@ -230,10 +230,10 @@ local function Init_Menu(self, root)
         self:set_size()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)
     end)
 
-    sub2=sub:CreateCheckbox('|A:'..e.Icon.icon..':0:0|a'..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
+    sub2=sub:CreateCheckbox('|A:'..e.Icon.icon..':0:0|a'..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
         return Save().showIcon
     end, function()
         Save().showIcon= not Save().showIcon and true or nil
@@ -260,7 +260,7 @@ local function Init_Menu(self, root)
             Save().scale=data
             self:set_scale()
         else
-            print(WoWTools_Mixin.addName, e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(WoWTools_Mixin.addName, WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
 
@@ -286,13 +286,13 @@ local function Init_Menu(self, root)
                 btn:set_border_alpha()
             end
         end,
-        name=e.onlyChinese and '镶边' or EMBLEM_BORDER,
+        name=WoWTools_Mixin.onlyChinese and '镶边' or EMBLEM_BORDER,
         minValue=0,
         maxValue=1,
         step=0.05,
         bit='%0.2f',
         tooltip=function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '改变透明度' or CHANGE_OPACITY)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)
         end,
     })
     sub:CreateSpacer()
@@ -343,7 +343,7 @@ local function Init()
 
     function Button:set_point()
         if self:IsProtected() and InCombatLockdown() then
-           print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+           print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         else
             self:ClearAllPoints()
             local p=Save().point
@@ -361,7 +361,7 @@ local function Init()
         if self:CanChangeAttribute() then
             self:SetScale(Save().scale or 1)
         else
-            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end
 
@@ -374,9 +374,9 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..e.GetShowHide(nil, true), e.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         GameTooltip:Show()
     end
 
@@ -491,7 +491,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
             WoWTools_ToolsMixin.Save= WoWToolsSave['WoWTools_ToolsButton'] or WoWTools_ToolsMixin.Save
 
             Save().borderAlpha= Save().borderAlpha or 0.3

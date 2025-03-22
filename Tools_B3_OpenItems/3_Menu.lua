@@ -13,10 +13,10 @@ local function Edit_Item(self, info)
     StaticPopup_Show('WoWTools_EditText',
         WoWTools_OpenItemMixin.addName..'|n|n'
         ..WoWTools_ItemMixin:GetName(info.itemID)..'|n|n'
-        ..format(e.onlyChinese and '发现：%s' or ERR_ZONE_EXPLORED,
+        ..format(WoWTools_Mixin.onlyChinese and '发现：%s' or ERR_ZONE_EXPLORED,
         Save().no[info.itemID] and self.noText
         or (Save().use[info.itemID] and self.useText)
-        or (e.onlyChinese and '新' or NEW)
+        or (WoWTools_Mixin.onlyChinese and '新' or NEW)
     ),
     nil,
     {
@@ -45,7 +45,7 @@ local function Edit_Item(self, info)
             print(e.Icon.icon2..WoWTools_OpenItemMixin.addName,
                 WoWTools_ItemMixin:GetLink(data.itemID),
                 num>1 and
-                    (e.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r'
+                    (WoWTools_Mixin.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r'
                     or self.useText
             )
         end,
@@ -61,7 +61,7 @@ local function Edit_Item(self, info)
         EditBoxOnTextChanged=function(s)
             local num= s:GetNumber()
             if num>1 then
-                s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
+                s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
             else
                 s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..self.useText..'|r');
             end
@@ -101,7 +101,7 @@ local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
 
     if type=='use' then
         sub:CreateButton(
-            e.Icon.left..(e.onlyChinese and '修改' or EDIT),
+            e.Icon.left..(WoWTools_Mixin.onlyChinese and '修改' or EDIT),
         function(data)
             Edit_Item(self, data)
             return MenuResponse.Open
@@ -110,14 +110,14 @@ local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
     end
 --移除
     sub:CreateButton(
-        '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
+        '|A:common-icon-redx:0:0|a'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE),
     function(data)
         Save()[data.type][data.itemID]=nil
 
         print(e.Icon.icon2..WoWTools_OpenItemMixin.addName,
             Save()[data.type][data.itemID]
-            and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|r'
-            or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
+            and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'
+            or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
 
             WoWTools_ItemMixin:GetLink(data.itemID),
             data.type=='no' and self.noText or self.useText
@@ -135,7 +135,7 @@ end
 local function Remove_All_Menu(self, root, type, num)
     root:CreateButton(
         (type=='use' and '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a' or '|A:talents-button-reset:0:0|a')
-        ..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num,
+        ..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num,
     function(data)
         local index=0
         local type2= data.type=='no' and self.noText or self.useText
@@ -144,12 +144,12 @@ local function Remove_All_Menu(self, root, type, num)
             index= index+1
             print(
                 index..')',
-                e.onlyChinese and '移除' or REMOVE,
+                WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
                 WoWTools_ItemMixin:GetLink(itemID),
                 '|A:common-icon-redx:0:0|a'..type2
             )
         end
-        print(e.onlyChinese and '全部清除' or CLEAR_ALL, '|A:common-icon-redx:0:0|a|cnGREEN_FONT_COLOR:#',  index)
+        print(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, '|A:common-icon-redx:0:0|a|cnGREEN_FONT_COLOR:#',  index)
         Save()[data.type]={}
         WoWTools_OpenItemMixin:Get_Item()
     end, {type=type})
@@ -190,14 +190,14 @@ local function Init_Menu(self, root)
         )
         sub:SetTooltip(function(tooltip)
             tooltip:AddDoubleLine(self.noText)
-            tooltip:AddDoubleLine(e.Icon.mid..(e.onlyChinese and '向上滚动' or COMBAT_TEXT_SCROLL_UP))
+            tooltip:AddDoubleLine(e.Icon.mid..(WoWTools_Mixin.onlyChinese and '向上滚动' or COMBAT_TEXT_SCROLL_UP))
 
         end)
     else
-        sub=root:CreateButton(e.onlyChinese and '无' or  NONE)
+        sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '无' or  NONE)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE))
-            tooltip:AddLine(e.onlyChinese and '拖曳物品到这里' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '使用/禁用' or (USE..'/'..DISABLE))
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '拖曳物品到这里' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
         end)
     end
     root:CreateDivider()
@@ -243,24 +243,24 @@ local function Init_Menu(self, root)
 
 
 local OptionsList={{
-    name=e.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
+    name=WoWTools_Mixin.onlyChinese and '<右键点击打开>' or ITEM_OPENABLE,
     type='open'
 },{
-    name=e.onlyChinese and '坐骑' or MOUNTS or ITEM_OPENABLE,
+    name=WoWTools_Mixin.onlyChinese and '坐骑' or MOUNTS or ITEM_OPENABLE,
     type='mount'
 },{
-    name=e.onlyChinese and '幻化' or TRANSMOGRIFY,
+    name=WoWTools_Mixin.onlyChinese and '幻化' or TRANSMOGRIFY,
     type='mago'
 }, {
-    name=e.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
+    name=WoWTools_Mixin.onlyChinese and '配方' or TRADESKILL_SERVICE_LEARN,
     type='ski'
 }, {
-    name=e.onlyChinese and '其它' or BINDING_HEADER_OTHER,
+    name=WoWTools_Mixin.onlyChinese and '其它' or BINDING_HEADER_OTHER,
     type='alt'
 }, {
-    name=e.onlyChinese and '材料' or BAG_FILTER_REAGENTS,
+    name=WoWTools_Mixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS,
     type='reagent',
-    tooltip=e.onlyChinese and '检查' or WHO,
+    tooltip=WoWTools_Mixin.onlyChinese and '检查' or WHO,
 },
 }
     for _, info in pairs(OptionsList) do
@@ -300,7 +300,7 @@ local OptionsList={{
     })
 
     sub:CreateDivider()
-    sub2=sub:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+    sub2=sub:CreateTitle(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(self.useText, self.noText)
     end)

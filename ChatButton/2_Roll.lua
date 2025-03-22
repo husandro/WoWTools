@@ -147,26 +147,26 @@ local function Init_Menu(_, root)
 
     root:SetScrollMode(20*44)
 
-    sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..rollNum..'|r', function()
+    sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..' |cnGREEN_FONT_COLOR:#'..rollNum..'|r', function()
         setRest()--重置
         return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
     end)
 
-    sub2= sub:CreateCheckbox('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
+    sub2= sub:CreateCheckbox('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
         return Save.autoClear
     end, function ()
         Save.autoClear= not Save.autoClear and true or false
         setAutoClearRegisterEvent()--注册自动清除事件
     end)
     sub2:SetTooltip(function (tooltip)
-        GameTooltip_SetTitle(tooltip, e.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
+        GameTooltip_SetTitle(tooltip, WoWTools_Mixin.onlyChinese and '进入战斗时: 清除' or (ENTERING_COMBAT..': '..SLASH_STOPWATCH_PARAM_STOP2))
     end)
 
     if saveNum>0 then
-        sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
+        sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
             Save.save={}
             return MenuResponse.CloseAll
         end)
@@ -181,7 +181,7 @@ local function Init_Menu(_, root)
             end, tab.text)
             sub2:SetTooltip(function(tooltip, data)
                 GameTooltip_SetTitle(tooltip, data.data)
-                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
+                GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_Mixin.onlyChinese and '发送信息' or SEND_MESSAGE))
             end)
         end
         WoWTools_MenuMixin:SetGridMode(sub, saveNum)
@@ -206,7 +206,7 @@ local function Init_Menu(_, root)
                 end, tab.text)
                 sub:SetTooltip(function(tooltip, data)
                     GameTooltip_SetTitle(tooltip, data.data)
-                    GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE))
+                    GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_Mixin.onlyChinese and '发送信息' or SEND_MESSAGE))
                 end)
                 tabNew[tab.name]=true
             end
@@ -304,9 +304,9 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             Save= WoWToolsSave['ChatButton_Rool'] or Save
-            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '掷骰' or ROLL)
+            addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_Mixin.onlyChinese and '掷骰' or ROLL)
             RollButton= WoWTools_ChatMixin:CreateButton('Roll', addName)
 
             if RollButton then

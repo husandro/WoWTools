@@ -69,7 +69,7 @@ local function Init()
                     or (UnitAffectingCombat('player') and '|cnRED_FONT_COLOR:')
                     or '|cffffffff'
                 )
-                ..(e.onlyChinese and '霸业商店' or PLUNDERSTORM_PLUNDER_STORE_TITLE)..'|r'
+                ..(WoWTools_Mixin.onlyChinese and '霸业商店' or PLUNDERSTORM_PLUNDER_STORE_TITLE)..'|r'
                 ..e.Icon.mid,
 
                 WoWTools_CurrencyMixin:GetName(

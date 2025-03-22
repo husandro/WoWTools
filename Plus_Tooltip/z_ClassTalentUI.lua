@@ -32,8 +32,8 @@ local function Blizzard_ClassTalentUI(self)
                     if specID then
                         GameTooltip:AddLine(' ')
                         GameTooltip:AddLine(name)
-                        GameTooltip:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
-                        GameTooltip:AddDoubleLine((e.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
+                        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
+                        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
                         if icon then
                             GameTooltip:AddDoubleLine(icon and '|T'..icon..':0|t'..icon)
                         end

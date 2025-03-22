@@ -27,7 +27,7 @@ local function Setttings(btn)
     
     if not btn.setID and not btn.createButton  then
         btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {size=30, atlas='groupfinder-eye-highlight'})
-        btn.createButton.str= e.onlyChinese and '空' or EMPTY
+        btn.createButton.str= WoWTools_Mixin.onlyChinese and '空' or EMPTY
         btn.createButton:SetPoint('RIGHT', 0,-4)
         btn.createButton:SetScript('OnLeave', GameTooltip_Hide)
         btn.createButton:SetScript('OnEnter', function(self)
@@ -37,8 +37,8 @@ local function Setttings(btn)
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(self.str,
                 C_EquipmentSet.GetEquipmentSetID(self.str)
-                and ('|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r')
-                or ('|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r')
+                and ('|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..'|r')
+                or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..'|r')
             )
             GameTooltip:Show()
         end)
@@ -53,9 +53,9 @@ local function Setttings(btn)
             end
             C_EquipmentSet.CreateEquipmentSet(self.str)
             if setID then
-                print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(e.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
             else
-                print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '新建' or NEW)..'|r', self.str)
+                print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..'|r', self.str)
             end
         end)
     end
@@ -81,7 +81,7 @@ local function Setttings(btn)
         btn:HookScript('OnEnter', function(self)
             if self.setID and not Save().hide then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
-                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(e.onlyChinese and '装备' or EQUIPSET_EQUIP)..e.Icon.right)
+                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '装备' or EQUIPSET_EQUIP)..e.Icon.right)
                 GameTooltip:Show()
             end
         end)

@@ -137,7 +137,7 @@ local function Init_Panel()
     frame.cursorCheck=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
     frame.cursorCheck:SetChecked(not Save().disabled)
     frame.cursorCheck:SetPoint("TOPLEFT", 0, -35)
-    frame.cursorCheck.text:SetText('1)'..(e.onlyChinese and '启用' or ENABLE).. ' Cursor')
+    frame.cursorCheck.text:SetText('1)'..(WoWTools_Mixin.onlyChinese and '启用' or ENABLE).. ' Cursor')
     frame.cursorCheck:SetScript('OnMouseDown', function()
         Save().disabled = not Save().disabled and true or nil
         if not Save().disabled and not WoWTools_CursorMixin.CursorFrame then
@@ -155,7 +155,7 @@ local function Init_Panel()
     frame.gcdCheck=CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
     frame.gcdCheck:SetChecked(not Save().disabledGCD)
     frame.gcdCheck:SetPoint("TOPLEFT", frame, 'TOP', 0, -35)
-    frame.gcdCheck.text:SetText('2)'..(e.onlyChinese and '启用' or ENABLE).. ' GCD')
+    frame.gcdCheck.text:SetText('2)'..(WoWTools_Mixin.onlyChinese and '启用' or ENABLE).. ' GCD')
     frame.gcdCheck:SetScript('OnMouseDown', function()
         Save().disabledGCD = not Save().disabledGCD and true or nil
         if not Save().disabledGCD and not gcdFrame then
@@ -200,10 +200,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_CursorMixin.Save= WoWToolsSave['Plus_Cursor'] or Save()
 
-            addName= '|A:ClickCast-Icon-Mouse:0:0|a'..(e.onlyChinese and '鼠标' or MOUSE_LABEL)
+            addName= '|A:ClickCast-Icon-Mouse:0:0|a'..(WoWTools_Mixin.onlyChinese and '鼠标' or MOUSE_LABEL)
             WoWTools_CursorMixin.addName= addName
 
             WoWTools_CursorMixin:Set_Color()

@@ -15,7 +15,7 @@ local Button
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(e.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
     for guid, info in pairs(e.WoWDate or {}) do
         if guid and  info.Keystone.link then
             GameTooltip:AddDoubleLine(
@@ -46,10 +46,10 @@ local function Set_Money(self, isTooltip)--险指南界面, 钱
     end
     if isTooltip then
         if allMoney==0 then
-            GameTooltip:AddDoubleLine(e.onlyChinese and '钱' or MONEY, e.onlyChinese and '无' or NONE)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '钱' or MONEY, WoWTools_Mixin.onlyChinese and '无' or NONE)
         else
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((e.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(e.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..' '..(WoWTools_Mixin.onlyChinese and '总计：' or FROM_TOTAL)..WoWTools_Mixin:MK(allMoney/10000, 3), C_CurrencyInfo.GetCoinTextureString(allMoney))
         end
         GameTooltip:Show()
     end
@@ -79,8 +79,8 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
         GameTooltip:Show()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
@@ -112,7 +112,7 @@ local function Init()
     Button.btn.instance:SetScript('OnEnter',function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine((e.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), e.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), WoWTools_Mixin.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         GameTooltip:AddLine(' ')
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and info then

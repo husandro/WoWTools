@@ -182,7 +182,7 @@ panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
             WoWTools_TooltipMixin.addName= addName
 

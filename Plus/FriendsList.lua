@@ -9,7 +9,7 @@ local Save={
     }
 
 local FriendsButton
-local OptionText--= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
+local OptionText--= (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
 
 
 local OptionTexture={
@@ -73,7 +73,7 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
                     nameObj:SetScript('OnEnter', function(self2)
                         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                         GameTooltip:ClearLines()
-                        GameTooltip:AddDoubleLine(e.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
+                        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '/密语' or SLASH_SMART_WHISPER2, self2.col..self2.name)
                         GameTooltip:AddLine(' ')
                         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
                         GameTooltip:Show()
@@ -220,12 +220,12 @@ end
 
 local function Init_Friends_Menu(self, root)
     if not BNConnected() then
-        root:CreateTitle('|cnRED_FONT_COLOR:'..(e.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
+        root:CreateTitle('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
         root:CreateDivider()
     end
 
-    root:CreateTitle(e.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
-    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE), function()
+    root:CreateTitle(WoWTools_Mixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
+    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_ONLINE, WoWTools_Mixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE), function()
         return Save.Friends[e.Player.guid]== 'Availabel'
     end, function()
         if Save.Friends[e.Player.guid]== 'Availabel' then
@@ -236,7 +236,7 @@ local function Init_Friends_Menu(self, root)
         self:set_status()
     end)
 
-    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY), function()
+    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_AFK, WoWTools_Mixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY), function()
         return Save.Friends[e.Player.guid]== 'Away'
     end, function()
         if Save.Friends[e.Player.guid]== 'Away' then
@@ -247,7 +247,7 @@ local function Init_Friends_Menu(self, root)
         self:set_status()
     end)
 
-    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY), function()
+    root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_DND, WoWTools_Mixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY), function()
         return Save.Friends[e.Player.guid]== 'DND'
     end, function()
         if Save.Friends[e.Player.guid]== 'DND' then
@@ -259,10 +259,10 @@ local function Init_Friends_Menu(self, root)
     end)
 
     root:CreateDivider()
-    local sub= root:CreateButton(e.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
-    sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
+    local sub= root:CreateButton(WoWTools_Mixin.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
+    sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         Save.Friends= {}
-        print(e.Icon.icon2.. addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
     end)
     sub:CreateDivider()
 
@@ -276,37 +276,37 @@ local function Init_Friends_Menu(self, root)
             btn:SetData(guid)
             btn:SetTooltip(function(tooltip, elementDescription)
                 GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription))
-                GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '移除' or REMOVE)
+                GameTooltip_AddNormalLine(tooltip, WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
             end)
         end
     end
 
     root:CreateDivider()
-    sub= root:CreateCheckbox(e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(e.onlyChinese and '好友' or FRIEND)..') '..( e.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a', function()
+    sub= root:CreateCheckbox(e.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)..') '..( WoWTools_Mixin.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a', function()
         return not Save.disabledBNFriendInfo
     end, function()
         Save.disabledBNFriendInfo= not Save.disabledBNFriendInfo and true or nil
     end)
 
-    sub:CreateCheckbox(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..format('|T%d:0|t', e.Icon.wow)..(e.onlyChinese and '好友' or FRIEND)), function()
+    sub:CreateCheckbox(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..format('|T%d:0|t', e.Icon.wow)..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)), function()
         return not Save.allFriendInfo
     end, function()
         Save.allFriendInfo= not Save.allFriendInfo and true or nil
     end)
 
-    sub:CreateCheckbox((e.onlyChinese and '仅限偏好好友' or format(LFG_LIST_CROSS_FACTION, BATTLE_PET_FAVORITE))..'|A:friendslist-favorite:0:0|a', function()
+    sub:CreateCheckbox((WoWTools_Mixin.onlyChinese and '仅限偏好好友' or format(LFG_LIST_CROSS_FACTION, BATTLE_PET_FAVORITE))..'|A:friendslist-favorite:0:0|a', function()
         return Save.showFriendInfoOnlyFavorite
     end, function()
         Save.showFriendInfoOnlyFavorite= not Save.showFriendInfoOnlyFavorite and true or nil
     end)
 
-    sub:CreateCheckbox((e.onlyChinese and '仅限脱离战斗' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))..'|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a', function()
+    sub:CreateCheckbox((WoWTools_Mixin.onlyChinese and '仅限脱离战斗' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))..'|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a', function()
         return not Save.showInCombatFriendInfo
     end, function()
         Save.showInCombatFriendInfo= not Save.showInCombatFriendInfo and true or nil
     end)
 
-    root:CreateCheckbox('|A:Battlenet-ClientIcon-App:0:0|a'..(e.onlyChinese and '好友' or FRIEND)..' Plus', function()
+    root:CreateCheckbox('|A:Battlenet-ClientIcon-App:0:0|a'..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)..' Plus', function()
         return not Save.disabledFriendPlus
     end, function()
         Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
@@ -440,9 +440,9 @@ local function Init_FriendsList()--好友列表, 初始化
                 end
                 if (client == BNET_CLIENT_WOW) and (rafLinkType ~= Enum.RafLinkType.None) and not isMobile then
                     if rafLinkType == Enum.RafLinkType.Recruit then
-                        return format(e.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|a|cffffd200招募的战友：|r %s' or RAF_RECRUIT_FRIEND, locationText);
+                        return format(WoWTools_Mixin.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|a|cffffd200招募的战友：|r %s' or RAF_RECRUIT_FRIEND, locationText);
                     else
-                        return format(e.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|acffffd200招募者：|r %s' or RAF_RECRUITER_FRIEND, locationText);
+                        return format(WoWTools_Mixin.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|acffffd200招募者：|r %s' or RAF_RECRUITER_FRIEND, locationText);
                     end
                 end
             end
@@ -501,7 +501,7 @@ local function Init_FriendsList()--好友列表, 初始化
             if bnetAFK or bnetDND then
                 BNSetAFK(false)
                 BNSetDND(false)
-                text= format(OptionText, FRIENDS_TEXTURE_ONLINE, e.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE)
+                text= format(OptionText, FRIENDS_TEXTURE_ONLINE, WoWTools_Mixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE)
 
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_ONLINE)
@@ -509,14 +509,14 @@ local function Init_FriendsList()--好友列表, 初始化
         elseif Save.Friends[e.Player.guid]=='Away' then
             if not bnetAFK then
                 BNSetAFK(true)
-                text= format(OptionText, FRIENDS_TEXTURE_AFK, e.onlyChinese and '离开' or FRIENDS_LIST_AWAY)
+                text= format(OptionText, FRIENDS_TEXTURE_AFK, WoWTools_Mixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY)
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_AFK)
 
         elseif Save.Friends[e.Player.guid]=='DND' then
             if not bnetDND then
                 BNSetDND(true)
-                text= format(OptionText, FRIENDS_TEXTURE_DND, e.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY)
+                text= format(OptionText, FRIENDS_TEXTURE_DND, WoWTools_Mixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY)
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_DND)
 
@@ -682,7 +682,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                 if subframes.name and name then
                     local text
                     if name==e.Player.name then--自己
-                        text= e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME
+                        text= WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME
                     end
                     if not text then--距离
                         local distance, checkedDistance = UnitDistanceSquared(unit)
@@ -815,8 +815,8 @@ local function set_WhoList_Update()--查询, 名单列表
 
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(self.col..'index', self.index)
-                GameTooltip:AddDoubleLine(self.col..(e.onlyChinese and '组队邀请' or GROUP_INVITE), (e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-                GameTooltip:AddDoubleLine(self.col..(e.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(self.col..(WoWTools_Mixin.onlyChinese and '组队邀请' or GROUP_INVITE), (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
+                GameTooltip:AddDoubleLine(self.col..(WoWTools_Mixin.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
                 GameTooltip:Show()
@@ -843,7 +843,7 @@ local function set_WhoList_Update()--查询, 名单列表
         if r and g and b then
             if btn.Name and info.fullName then
                 if info.fullName== e.Player.name then
-                    btn.Name:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', e.Icon.toLeft))
+                    btn.Name:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', e.Icon.toLeft))
                 else
                     local nameText= WoWTools_UnitMixin:GetIsFriendIcon(info.fullName)--检测, 是否好友
                     if nameText then
@@ -960,7 +960,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             if WoWToolsSave['FriendsList_lua'] then
                 Save= WoWToolsSave['FriendsList_lua']
@@ -968,7 +968,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Save= WoWToolsSave['Plus_FriendsList'] or Save
             end
-            addName= '|A:socialqueuing-icon-group:0:0|a'..(e.onlyChinese and '好友列表' or FRIENDS_LIST)
+            addName= '|A:socialqueuing-icon-group:0:0|a'..(WoWTools_Mixin.onlyChinese and '好友列表' or FRIENDS_LIST)
 
             --添加控制面板
             e.AddPanel_Check({
@@ -976,20 +976,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
             if Save.disabled then
                 self:UnregisterEvent(event)
             else
-                OptionText= (e.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
+                OptionText= (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
                 RegionNames = {
-                    [1] = e.onlyChinese and '北美' or NORTH_AMERICA,
-                    [2] = e.onlyChinese and '韩国' or KOREA,
-                    [3] = e.onlyChinese and '欧洲' or EUROPE,
-                    [4] = e.onlyChinese and '台湾' or TAIWAN,
-                    [5] = e.onlyChinese and '中国' or CHINA,
+                    [1] = WoWTools_Mixin.onlyChinese and '北美' or NORTH_AMERICA,
+                    [2] = WoWTools_Mixin.onlyChinese and '韩国' or KOREA,
+                    [3] = WoWTools_Mixin.onlyChinese and '欧洲' or EUROPE,
+                    [4] = WoWTools_Mixin.onlyChinese and '台湾' or TAIWAN,
+                    [5] = WoWTools_Mixin.onlyChinese and '中国' or CHINA,
                 }
                 Init()
 

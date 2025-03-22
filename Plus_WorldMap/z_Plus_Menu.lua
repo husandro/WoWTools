@@ -8,14 +8,14 @@ local function Init()
         local sub, sub2
 --全部放弃
         root:CreateDivider()
-        sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
+        sub=root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)..' #'..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0), function()
             StaticPopupDialogs["WoWTools_WorldMpa_ABANDON_QUEST"] =  {
-                text= (e.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not e.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
-                button1 = '|cnRED_FONT_COLOR:'..(not e.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
-                button2 = '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '取消' or CANCEL),
+                text= (WoWTools_Mixin.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)..'|n|n|cnYELLOW_FONT_COLOR:'..(not WoWTools_Mixin.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not WoWTools_Mixin.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not WoWTools_Mixin.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
+                button1 = '|cnRED_FONT_COLOR:'..(not WoWTools_Mixin.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
+                button2 = '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL),
                 OnAccept = function()
                     local n=0
-                    print(e.Icon.icon2..WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
+                    print(e.Icon.icon2..WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
                     for index=1 , C_QuestLog.GetNumQuestLogEntries() do
                         do
                             local questInfo=C_QuestLog.GetInfo(index)
@@ -37,7 +37,7 @@ local function Init()
                 whileDead=true, hideOnEscape=true, exclusive=true,
                 showAlert= true,
             }
-            StaticPopup_Show("WoWTools_WorldMpa_ABANDON_QUEST", '|n|cnRED_FONT_COLOR:|n|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '所有任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, QUESTS_LABEL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
+            StaticPopup_Show("WoWTools_WorldMpa_ABANDON_QUEST", '|n|cnRED_FONT_COLOR:|n|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '所有任务' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, QUESTS_LABEL))..' |r#|cnGREEN_FONT_COLOR:'..select(2, C_QuestLog.GetNumQuestLogEntries())..'|r')
         end)
         sub:SetTooltip(function(tooltip)
             tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
@@ -75,7 +75,7 @@ local function Init()
                     if description.data.var=='scrollToLogQuest' then
                         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
                     end
-                    tooltip:AddDoubleLine(e.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
+                    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
                     tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
                 end)
             end

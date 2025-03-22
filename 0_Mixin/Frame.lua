@@ -30,7 +30,7 @@ end
 function WoWTools_FrameMixin:ScaleFrame(frame, delta, value, func)
     local n= value
     if not frame:CanChangeAttribute() then
-        print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
     if IsAltKeyDown() then
         n= n or 1

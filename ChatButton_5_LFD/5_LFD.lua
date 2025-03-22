@@ -119,11 +119,11 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
-        if arg1 == id then
+        if arg1== 'WoWTools' then
             WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
             WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 5
 
-            WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(e.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
+            WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_Mixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
             LFDButton= WoWTools_ChatMixin:CreateButton('LFD', WoWTools_LFDMixin.addName)
 

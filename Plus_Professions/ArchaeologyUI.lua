@@ -40,7 +40,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         function framGameTooltipButton:set_tooltips()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(e.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save().ArcheologySound))
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save().ArcheologySound))
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
             GameTooltip:Show()
         end
@@ -156,10 +156,10 @@ local function Init()
                     local sub= raceName
                     if rarity == 0 then
                         name= '|cffffffff'..name..'|r'
-                        sub= sub.."-|cffffffff"..(e.onlyChinese and '普通' or ITEM_QUALITY1_DESC).."|r"
+                        sub= sub.."-|cffffffff"..(WoWTools_Mixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC).."|r"
                     else
                         name='|cff0070dd'..name..'|r'
-                        sub= sub.."-|cff0070dd"..(e.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
+                        sub= sub.."-|cff0070dd"..(WoWTools_Mixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
                     end
                     btn.artifactName:SetText(name)
                     btn.artifactSubText:SetText(sub..' |cnGREEN_FONT_COLOR:'..completionCount..'|r')

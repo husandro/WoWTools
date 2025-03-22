@@ -18,7 +18,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         )
     elseif info.isMajor then
         tooltip:AddDoubleLine(
-            (e.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID,
+            (WoWTools_Mixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)..' '..info.factionID,
             icon
         )
     else
@@ -28,7 +28,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         tooltip:AddDoubleLine(info.factionStandingtext or ' ', (info.hasRewardPending or '')..(info.valueText or '')..(info.valueText and info.isParagon and '|A:Banker:0:0|a' or ''))
     end
     if info.hasRewardPending then
-        tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+        tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
     end
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
     if tooltip==EmbeddedItemTooltip then

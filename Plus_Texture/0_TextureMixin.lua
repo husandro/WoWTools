@@ -102,7 +102,7 @@ local function Create_IconSelectorPopupFrame()
 
     IconFrame:Hide()
 
-    IconFrame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(e.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
+    IconFrame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(WoWTools_Mixin.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
 
     IconFrame.BorderBox.IconSelectorEditBox:SetAutoFocus(false)
 

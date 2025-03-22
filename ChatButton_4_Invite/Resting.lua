@@ -14,12 +14,12 @@ local function Init()
     WoWTools_InviteMixin.RestingFrame= frame
 
     frame.enterText= '|A:communities-icon-addgroupplus:0:0|a'..(
-                    e.onlyChinese and '进入|cnGREEN_FONT_COLOR:休息|r区'
+                    WoWTools_Mixin.onlyChinese and '进入|cnGREEN_FONT_COLOR:休息|r区'
                     or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnGREEN_FONT_COLOR:Rest|r', ZONE))
                 )
 
     frame.leaveText= '|A:communities-icon-addgroupplus:0:0|a'..(
-                    e.onlyChinese and '离开|cnRED_FONT_COLOR:休息|r区'
+                    WoWTools_Mixin.onlyChinese and '离开|cnRED_FONT_COLOR:休息|r区'
                     or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LEAVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|cnRED_FONT_COLOR:Rest|r', ZONE))
                 )
 

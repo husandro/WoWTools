@@ -50,30 +50,30 @@ local InstanceEventTab={
 
 function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
     tooltip:AddDoubleLine(
-        (e.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(self.Save.bat.time),
-        self.Save.bat.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        (WoWTools_Mixin.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(self.Save.bat.time),
+        self.Save.bat.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     )
     tooltip:AddDoubleLine(
-        (e.onlyChinese and '宠物' or PET)..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num..' |T646379:0|t'..self.Save.pet.capture,
+        (WoWTools_Mixin.onlyChinese and '宠物' or PET)..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num..' |T646379:0|t'..self.Save.pet.capture,
         PetAll.win..'/'..PetAll.num
     )
-        --(PetAll.num>0 and PetAll.win..'/'..PetAll.num or (e.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num,
+        --(PetAll.num>0 and PetAll.win..'/'..PetAll.num or (WoWTools_Mixin.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num,
         --self.Save.pet.capture..' |T646379:0|t'
   
     tooltip:AddDoubleLine(
-        (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(self.Save.afk.time),
-        self.Save.afk.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        (WoWTools_Mixin.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(self.Save.afk.time),
+        self.Save.afk.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     )
     tooltip:AddDoubleLine(
-        (e.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..self.Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..self.Save.ins.dead,
-        self.Save.ins.num..' '..(e.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(self.Save.ins.time)
+        (WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..self.Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..self.Save.ins.dead,
+        self.Save.ins.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(self.Save.ins.time)
     )
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine((e.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
+    tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
     local tab=e.WoWDate[e.Player.guid].Time
-    tooltip:AddDoubleLine((e.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
+    tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
     tooltip:AddDoubleLine(
-        (e.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(e.onlyChinese and '第%d周' or WEEKS_ABBR, e.Player.week)..date('%Y')..')',
+        (WoWTools_Mixin.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(WoWTools_Mixin.onlyChinese and '第%d周' or WEEKS_ABBR, e.Player.week)..date('%Y')..')',
         SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
     )
 end
@@ -111,7 +111,7 @@ local function set_TrackButton_Text()--设置显示内容
 
     if OnAFKTime then
         text= text and text..'|n' or ''
-        text= text .. (e.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..WoWTools_TimeMixin:Info(OnAFKTime, not Save().timeTypeText)
+        text= text .. (WoWTools_Mixin.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..WoWTools_TimeMixin:Info(OnAFKTime, not Save().timeTypeText)
     end
 
     if OnPetTime then
@@ -137,7 +137,7 @@ end
 
 
 local function set_Pet_Text()--宠物战斗, 设置显示内容
-    local text= format(e.onlyChinese and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
+    local text= format(WoWTools_Mixin.onlyChinese and '%d轮' or PET_BATTLE_COMBAT_LOG_NEW_ROUND, PetRound.round or 0)
     if  C_PetBattles.IsWildBattle() then
         text=text..'|A:worldquest-icon-petbattle:0:0|a'
     elseif PetRound.PVP then
@@ -175,7 +175,7 @@ local function TrackButton_Frame_Init_Date(self)--初始, 数据
 
     elseif OnAFKTime then
         local text, sec = WoWTools_TimeMixin:Info(OnAFKTime, not save.timeTypeText)
-        LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '离开' or AFK)..text..'|r'
+        LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '离开' or AFK)..text..'|r'
         save.afk.num= save.afk.num + 1
         save.afk.time= save.afk.time + sec
         print(e.Icon.icon2..WoWTools_CombatMixin.addName, LastText)
@@ -217,7 +217,7 @@ local function TrackButton_Frame_Init_Date(self)--初始, 数据
         else
             LastText='|cnRED_FONT_COLOR:'..LastText..'|r'
         end
-        print(WoWTools_Mixin.addName,  WoWTools_CombatMixin.addName, e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, save.pet.win..'/'..save.pet.num, (save.pet.capture>0 and save.pet.capture..' |T646379:0|t' or ''));
+        print(WoWTools_Mixin.addName,  WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE, LastText, save.pet.win..'/'..save.pet.num, (save.pet.capture>0 and save.pet.capture..' |T646379:0|t' or ''));
 
         PetRound={}
         OnPetTime=nil
@@ -235,7 +235,7 @@ local function TrackButton_Frame_Init_Date(self)--初始, 数据
             save.ins.time= save.ins.time +sec
         end
         LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
-        print(WoWTools_Mixin.addName, InstanceDate.map or e.onlyChinese and '副本' or INSTANCE, text)
+        print(WoWTools_Mixin.addName, InstanceDate.map or WoWTools_Mixin.onlyChinese and '副本' or INSTANCE, text)
 
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
@@ -354,10 +354,10 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
     function TrackButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().textScale or 1),'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().textScale or 1),'Alt+'..e.Icon.mid)
         GameTooltip:AddLine(' ')
         WoWTools_CombatMixin:Set_Combat_Tooltip(GameTooltip)
         GameTooltip:AddLine(' ')
@@ -386,7 +386,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             Save().textScale=sacle
             self:set_text_scale()
             self:set_tooltip()
-            print(e.Icon.icon2..WoWTools_CombatMixin.addName, e.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+            print(e.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 

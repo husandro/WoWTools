@@ -30,7 +30,7 @@ local function Init()--字数
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.onlyChinese and '收件人' or MAIL_TO_LABEL)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_Mixin.onlyChinese and '收件人' or MAIL_TO_LABEL)
         GameTooltip:Show()
     end)
     SendMailNameEditBox.clearButton:SetScript('OnClick', function(self)
@@ -50,7 +50,7 @@ local function Init()--字数
         if text=='' then
             text= WoWTools_MailMixin:GetNameInfo(name) or text
             if (LOCALE_koKR or LOCALE_zhCN or LOCALE_zhTW or LOCALE_ruRU) and self:GetText():find(' ') then
-                text= text..' (|cffffffff'..(e.onlyChinese and '空格键' or KEY_SPACE)..'|r)'
+                text= text..' (|cffffffff'..(WoWTools_Mixin.onlyChinese and '空格键' or KEY_SPACE)..'|r)'
             end
         end
         self.playerTipsLable:SetText(text)
@@ -73,7 +73,7 @@ local function Init()--字数
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.onlyChinese and '收件人' or MAIL_TO_LABEL)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_Mixin.onlyChinese and '收件人' or MAIL_TO_LABEL)
         GameTooltip:Show()
     end)
     SendMailSubjectEditBox.clearButton:SetScript('OnClick', function(self)

@@ -82,7 +82,7 @@ local function Init_ShowCommoditiesButton()
     local showCommoditiesButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.ItemSellFrame, {
         isUI=true,
         size={100,22},
-        text=e.onlyChinese and '物品' or ITEMS
+        text=WoWTools_Mixin.onlyChinese and '物品' or ITEMS
     })
     showCommoditiesButton:SetPoint('BOTTOMRIGHT', -15,15)
     showCommoditiesButton:SetFrameLevel(levelFrame)
@@ -92,7 +92,7 @@ local function Init_ShowCommoditiesButton()
         GameTooltip:ClearLines();
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示模式' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, MODE), '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '转到' or CONVERT)..'|r '..(WoWTools_Mixin.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS))
         GameTooltip:Show();
     end)
     showCommoditiesButton:SetScript('OnClick', function()
@@ -109,7 +109,7 @@ local function Init_ShowCommoditiesButton()
     local showSellButton=WoWTools_ButtonMixin:Cbtn(AuctionHouseFrame.CommoditiesSellFrame, {
         isUI=true,
         size={100,22},
-        text=e.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS
+        text=WoWTools_Mixin.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS
     })
     showSellButton:SetPoint('BOTTOMRIGHT',  -15,15)
     showSellButton:SetFrameLevel(levelFrame)
@@ -119,7 +119,7 @@ local function Init_ShowCommoditiesButton()
         GameTooltip:ClearLines();
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '转到' or CONVERT)..'|r '..(e.onlyChinese and '物品' or ITEMS))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示' or SHOW, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '转到' or CONVERT)..'|r '..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS))
         GameTooltip:Show();
     end)
     showSellButton:SetScript('OnClick', function()
@@ -140,7 +140,7 @@ local function Init_ShowCommoditiesButton()
         GameTooltip:ClearLines();
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', e.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
+        GameTooltip:AddDoubleLine(' ', WoWTools_Mixin.onlyChinese and '取消拍卖' or AUCTION_HOUSE_CANCEL_AUCTION_BUTTON)
         GameTooltip:Show();
     end)
     cancelButton2:SetScript('OnClick', C_AuctionHouse.CancelSell)
@@ -319,7 +319,7 @@ local function Update_Total_Price(frame)
                 end
             else
                 col='|cnRED_FONT_COLOR:'
-                text= col..(e.onlyChinese and '危险' or VOICEMACRO_1_Sc_0)
+                text= col..(WoWTools_Mixin.onlyChinese and '危险' or VOICEMACRO_1_Sc_0)
                 local itemID=  C_Item.GetItemID(itemLocation)
                 if itemID and not Save().hideSellItem[itemID] then--加入，隐藏，物品列表
                     Save().hideSellItem[itemID]=true
@@ -433,7 +433,7 @@ local function Init_MaxSellItemCheck()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
-        GameTooltip:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
+        GameTooltip:AddDoubleLine(' ', WoWTools_Mixin.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         GameTooltip:Show()
     end)
     MaxSellItemCheck:SetScript('OnClick', function()
@@ -451,7 +451,7 @@ local function Init_MaxSellItemCheck()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
-        GameTooltip:AddDoubleLine(' ', e.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
+        GameTooltip:AddDoubleLine(' ', WoWTools_Mixin.onlyChinese and '最大数量' or AUCTION_HOUSE_MAX_QUANTITY_BUTTON)
         GameTooltip:Show()
     end)
     MaxSellItemCheck2:SetScript('OnClick', function()

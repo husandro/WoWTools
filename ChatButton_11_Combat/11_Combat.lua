@@ -43,11 +43,11 @@ panel:RegisterEvent('ADDON_LOADED')
 panel:RegisterEvent('PLAYER_LOGOUT')
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
-        if arg1 == id then
+        if arg1== 'WoWTools' then
 
             WoWTools_CombatMixin.Save= WoWToolsSave['ChatButton_Combat'] or WoWTools_CombatMixin.Save
 
-            local addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
+            local addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
             local CombatButton= WoWTools_ChatMixin:CreateButton('Combat', addName)
 
             WoWTools_CombatMixin.CombatButton= CombatButton

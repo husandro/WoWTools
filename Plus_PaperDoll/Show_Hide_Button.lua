@@ -86,7 +86,7 @@ end
 
 local function Init_Menu(_, root)
     root:CreateCheckbox(
-        e.onlyChinese and '启用' or ENABLE,
+        WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
     function()
         return not Save().hide
     end, function()
@@ -145,8 +145,8 @@ local function Init(frame)
         --GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.left)
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        --GameTooltip:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
         GameTooltip:Show()
         self:set_alpha(true)
     end)

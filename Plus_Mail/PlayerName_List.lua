@@ -93,7 +93,7 @@ local function Init_WoW(root)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 sub=root:CreateButton(
                     WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
-                    ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))
+                    ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))
                     ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
@@ -112,7 +112,7 @@ local function Init_WoW(root)
         root:CreateDivider()
     end
     sub=root:CreateCheckbox(
-        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+        WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
     function()
         return Save().show['WoW']
     end, function()
@@ -120,7 +120,7 @@ local function Init_WoW(root)
         return MenuResponse.CloseAll
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
     WoWTools_MenuMixin:SetGridMode(root, num)
@@ -143,7 +143,7 @@ local function Init_Friend(root)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 root:CreateButton(
                     WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=game.level, faction=game.faction})
-                    ..(game.connected and '' or ('|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))),
+                    ..(game.connected and '' or ('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
                     return MenuResponse.Open
@@ -157,7 +157,7 @@ local function Init_Friend(root)
         root:CreateDivider()
     end
     sub=root:CreateCheckbox(
-        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+        WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
     function()
         return Save().show['FRIEND']
     end, function()
@@ -165,7 +165,7 @@ local function Init_Friend(root)
         return MenuResponse.CloseAll
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
     WoWTools_MenuMixin:SetGridMode(root, num)
@@ -189,7 +189,7 @@ local function Init_Guild(root)
             local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
 
             if not isOnline then
-                text= text..'|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                text= text..'|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
             end
 
             if rankIndex == 0 then
@@ -214,7 +214,7 @@ local function Init_Guild(root)
         root:CreateDivider()
     end
     sub=root:CreateCheckbox(
-        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+        WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
     function()
         return Save().show['GUILD']
     end, function()
@@ -222,7 +222,7 @@ local function Init_Guild(root)
         return MenuResponse.CloseAll
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
     WoWTools_MenuMixin:SetGridMode(root, num)
@@ -248,7 +248,7 @@ local function Init_Club(root, clubID)
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
                 local  text= WoWTools_UnitMixin:GetPlayerInfo({guid=tab.guid, reName=true, reRealm=true, faction=faction, level=tab.level})--角色信息
                 if not tab.zone then
-                    text= text..'|cff9e9e9e'..(e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
+                    text= text..'|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
                 end
                 if tab.role == Enum.ClubRoleIdentifier.Owner or tab.role == Enum.ClubRoleIdentifier.Leader then
                     text= text.."|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t"
@@ -275,7 +275,7 @@ local function Init_Club(root, clubID)
         root:CreateDivider()
     end
     sub=root:CreateCheckbox(
-        e.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
+        WoWTools_Mixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE,
     function()
         return Save().show['CLUB']
     end, function()
@@ -283,7 +283,7 @@ local function Init_Club(root, clubID)
         return MenuResponse.CloseAll
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
     WoWTools_MenuMixin:SetGridMode(root, num)
@@ -307,7 +307,7 @@ local function Init_Menu(_, root)
     local sub
 --我
     sub=root:CreateButton(
-        '|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+        '|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
     function()
         return MenuResponse
     end)
@@ -315,7 +315,7 @@ local function Init_Menu(_, root)
 
 --战网
     sub=root:CreateButton(
-        e.Icon.net2..(e.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
+        e.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
     function()
         return MenuResponse
     end)
@@ -323,7 +323,7 @@ local function Init_Menu(_, root)
 
 --好友
     sub=root:CreateButton(
-        '|A:groupfinder-icon-friend:0:0|a'..(e.onlyChinese and '好友' or FRIEND),
+        '|A:groupfinder-icon-friend:0:0|a'..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND),
     function()
         return MenuResponse
     end)
@@ -331,7 +331,7 @@ local function Init_Menu(_, root)
 
 --公会
     sub=root:CreateButton(
-        '|A:communities-guildbanner-background:0:0|a'..(e.onlyChinese and '公会' or GUILD),
+        '|A:communities-guildbanner-background:0:0|a'..(WoWTools_Mixin.onlyChinese and '公会' or GUILD),
     function()
         return MenuResponse
     end)
@@ -356,7 +356,7 @@ local function Init_Menu(_, root)
 --保存内容
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        e.onlyChinese and '保存内容' or format(GUILDBANK_LOG_TITLE_FORMAT, INFO),--"%s 记录"
+        WoWTools_Mixin.onlyChinese and '保存内容' or format(GUILDBANK_LOG_TITLE_FORMAT, INFO),--"%s 记录"
     function()
         return Save().logSendInfo
     end, function()
@@ -366,8 +366,8 @@ local function Init_Menu(_, root)
         SendMailBodyEditBox:save_log()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '收件人：' or MAIL_TO_LABEL)
-        tooltip:AddLine(e.onlyChinese and '主题：' or MAIL_SUBJECT_LABEL)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '收件人：' or MAIL_TO_LABEL)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '主题：' or MAIL_SUBJECT_LABEL)
     end)
 
 --打开选项
@@ -414,10 +414,10 @@ function Init()
     listButton.btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '名单列表' or WHO_LIST)
+        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_Mixin.onlyChinese and '名单列表' or WHO_LIST)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(e.onlyChinese and '目标' or TARGET)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '收件人：' or MAIL_TO_LABEL, WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true, reRealm=true}))
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '目标' or TARGET)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '收件人：' or MAIL_TO_LABEL, WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true, reRealm=true}))
         if self.tooltip then
             GameTooltip:AddLine(self.tooltip)
         end
@@ -462,9 +462,9 @@ function Init()
     listButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, e.onlyChinese and '名单列表' or WHO_LIST)
+        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_Mixin.onlyChinese and '名单列表' or WHO_LIST)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(e.onlyChinese and '显示好友列表' or SHOW_FRIENDS_LIST)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示好友列表' or SHOW_FRIENDS_LIST)
         GameTooltip:Show()
     end)
 

@@ -60,11 +60,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             Save= WoWToolsSave['Interrupts_Tolen'] or Save
 
-            addName= '|A:nameplates-holypower2-on:0:0|a'..(e.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
+            addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_Mixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
 
             --添加控制面板
             local root= e.AddPanel_Check({
@@ -79,13 +79,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             e.AddPanel_Check({
-                name= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '团队' or RAID),
+                name= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '团队' or RAID),
                 GetValue= function() return Save.enabledInRaid end,
                 SetValue= function()
                     Save.enabledInRaid = not Save.enabledInRaid and true or nil
                     self:Set_Event()
                 end,
-                tooltip=(e.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
+                tooltip=(WoWTools_Mixin.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,
             }, root)

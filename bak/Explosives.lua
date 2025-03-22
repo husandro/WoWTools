@@ -113,7 +113,7 @@ end
 --#####
 local function Init_Menu(self, level, type)
     local info= {
-        text= e.onlyChinese and '透明度' or 'Alpha',
+        text= WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
         checked= Save.hide,
         func= function()
             Save.hide= not Save.hide and true or nil
@@ -125,7 +125,7 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info= {
-        text= e.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
+        text= WoWTools_Mixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET,
         checked= Save.mark,
         func= function()
             Save.mark= not Save.mark and true or nil
@@ -134,7 +134,7 @@ local function Init_Menu(self, level, type)
     e.LibDD:UIDropDownMenu_AddButton(info, level)
 
     info= {
-        text= e.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY,
+        text= WoWTools_Mixin.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY,
         checked= Save.sound,
         icon= 'chatframe-button-icon-voicechat',
         disabled= not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0',
@@ -193,7 +193,7 @@ local function set_Button()
                 GameTooltip:AddDoubleLine(name, filedataid and '|T'..filedataid ..':0|t' or ' ')
                 GameTooltip:AddLine(description, nil,nil,nil,true)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine((e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left, (e.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right)
+                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left, (WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
                 GameTooltip:Show()
@@ -214,25 +214,25 @@ end
 panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
             e.AddPanel_Check({
-                name= '|T2175503:0|t'..(e.onlyChinese and '爆炸物' or addName),
+                name= '|T2175503:0|t'..(WoWTools_Mixin.onlyChinese and '爆炸物' or addName),
                 tooltip= select(2, C_ChallengeMode.GetAffixInfo(13)),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
             --[[添加控制面板        
-            local check= e.AddPanel_Check((e.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
+            local check= e.AddPanel_Check((WoWTools_Mixin.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function(self2)
                 local name, description, filedataid= C_ChallengeMode.GetAffixInfo(13)

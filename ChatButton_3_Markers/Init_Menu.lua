@@ -38,37 +38,37 @@ local function Init_RaidTarget_Menu(_, root)
 
     local Tab={
         {
-            text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK),
+            text= e.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
             type='tank',
-            tip= e.onlyChinese and '小队或团队' or  (GROUP..' '..OR_CAPS ..' '..RAID),
+            tip= WoWTools_Mixin.onlyChinese and '小队或团队' or  (GROUP..' '..OR_CAPS ..' '..RAID),
             rest=restGroup,
             check=checkGroup
         },
         {
-            text= e.Icon.HEALER..(e.onlyChinese and '治疗' or HEALER),
+            text= e.Icon.HEALER..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
             type='healer',
-            tip=e.onlyChinese and '仅限小队' or format(LFG_LIST_CROSS_FACTION, GROUP),
+            tip=WoWTools_Mixin.onlyChinese and '仅限小队' or format(LFG_LIST_CROSS_FACTION, GROUP),
             rest=restGroup,
             check=checkGroup
         },
         {
-            text= e.Icon.TANK..(e.onlyChinese and '坦克' or TANK)..'2',
+            text= e.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..'2',
             type='tank2',
-            tip=e.onlyChinese and '仅限团队' or format(LFG_LIST_CROSS_FACTION, RAID),
+            tip=WoWTools_Mixin.onlyChinese and '仅限团队' or format(LFG_LIST_CROSS_FACTION, RAID),
             rest=restGroup,
             check=checkGroup
         },
         {
-            text='|A:auctionhouse-icon-favorite:0:0|a'..(e.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+            text='|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
             type='isSelf',
-            tip=e.onlyChinese and '不在队伍' or PARTY_LEAVE,
+            tip=WoWTools_Mixin.onlyChinese and '不在队伍' or PARTY_LEAVE,
             rest=restSelf,
             check=checkSelf
         },
         {
-            text='|A:Target:0:0|a'..(e.onlyChinese and '目标' or TARGET),
+            text='|A:Target:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标' or TARGET),
             type='target',
-            tip=e.onlyChinese and '不在队伍' or PARTY_LEAVE,
+            tip=WoWTools_Mixin.onlyChinese and '不在队伍' or PARTY_LEAVE,
             rest= restSelf,
             check=checkSelf
         }
@@ -86,7 +86,7 @@ local function Init_RaidTarget_Menu(_, root)
         })
 
         sub:SetTooltip(function(tooltip, desc)
-            tooltip:AddLine(e.onlyChinese and '重置' or RESET)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '重置' or RESET)
             tooltip:AddLine(desc.data.tip)
         end)
         sub:AddInitializer(function(button, desc)
@@ -156,7 +156,7 @@ local function Init_Menu(self, root)
     sub=root:CreateCheckbox(
         (Save().tank==0 and Save().healer==0 and '|cff9e9e9e' or '')
         ..'|A:mechagon-projects:0:0|a'
-        ..((e.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
+        ..((WoWTools_Mixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
         ..e.Icon.TANK..e.Icon.HEALER
     ), function ()
         return Save().autoSet
@@ -178,7 +178,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         (WoWTools_MapMixin:IsInPvPArea() or (WoWTools_MarkerMixin.MakerFrame and not WoWTools_MarkerMixin.MakerFrame:CanChangeAttribute()) and '|cff9e9e9e' or '')
-        ..(e.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
+        ..(WoWTools_Mixin.onlyChinese and '队伍标记工具' or format(PROFESSION_TOOL_TOOLTIP_LINE, BINDING_HEADER_RAID_TARGET)
     ), function()
         return WoWTools_MarkerMixin.MakerFrame and WoWTools_MarkerMixin.MakerFrame:IsShown()
     end, function()
@@ -186,10 +186,10 @@ local function Init_Menu(self, root)
         WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
     end)
     sub:SetTooltip(function(tooltip)
-        GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
-        GameTooltip_AddNormalLine(tooltip, e.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
+        GameTooltip_AddNormalLine(tooltip, WoWTools_Mixin.onlyChinese and '世界标记' or SLASH_WORLD_MARKER3:gsub('/',''))
+        GameTooltip_AddNormalLine(tooltip, WoWTools_Mixin.onlyChinese and '需求：队伍和权限' or (NEED..": "..format(COVENANT_RENOWN_TOAST_REWARD_COMBINER, HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS, CALENDAR_INVITELIST_SETMODERATOR)))
         if WoWTools_MarkerMixin.MakerFrame and not WoWTools_MarkerMixin.MakerFrame:CanChangeAttribute() then
-            GameTooltip_AddErrorLine(tooltip, e.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
+            GameTooltip_AddErrorLine(tooltip, WoWTools_Mixin.onlyChinese and "当前禁用操作" or (REFORGE_CURRENT..': '..DISABLE))
         end
     end)
 
@@ -197,7 +197,7 @@ local function Init_Menu(self, root)
     WoWTools_MarkerMixin:Init_MarkerTools_Menu(self, sub)--队伍标记工具, 选项，菜单
 
 
-    sub=root:CreateCheckbox(e.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)), function()
+    sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)), function()
         return Save().groupReadyTips
     end, function()
         Save().groupReadyTips= not Save().groupReadyTips and true or nil
@@ -209,18 +209,18 @@ local function Init_Menu(self, root)
     end)
     sub:CreateButton(
         (WoWTools_MarkerMixin.ReadyTipsButton and WoWTools_MarkerMixin.ReadyTipsButton:IsShown() and '' or '|cff9e9e9e')
-        ..(e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
+        ..(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
     ), function()
         if WoWTools_MarkerMixin.ReadyTipsButton then
             WoWTools_MarkerMixin.ReadyTipsButton:set_Hide()
         end
     end)
-    sub:CreateButton((Save().groupReadyTipsPoint and '' or '|cff9e9e9e')..(e.onlyChinese and '重置位置' or RESET_POSITION), function()
+    sub:CreateButton((Save().groupReadyTipsPoint and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save().groupReadyTipsPoint=nil
         if WoWTools_MarkerMixin.ReadyTipsButton then
             WoWTools_MarkerMixin.ReadyTipsButton:ClearAllPoints()
             WoWTools_MarkerMixin.ReadyTipsButton:set_Point()--位置
-            print(e.Icon.icon2..WoWTools_MarkerMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+            print(e.Icon.icon2..WoWTools_MarkerMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 
@@ -229,7 +229,7 @@ local function Init_Menu(self, root)
 
     sub= root:CreateButton(
         WoWTools_MarkerMixin:Get_ReadyTextIcon()
-        or (e.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
+        or (WoWTools_Mixin.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
     function()
         local show= ReadyCheckFrame:IsShown()
         ReadyCheckFrame:SetShown(not show)
@@ -237,7 +237,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Refresh
     end)
     sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(e.onlyChinese and '显示就绪框' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, READY))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示就绪框' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, READY))
         tooltip:AddLine('ReadyCheckFrame')
     end)
 
@@ -247,7 +247,7 @@ local function Init_Menu(self, root)
 
         sub2= sub:CreateRadio(
             WoWTools_MarkerMixin:Get_ReadyTextIcon(value)
-            or (e.onlyChinese and '无' or NONE),
+            or (WoWTools_Mixin.onlyChinese and '无' or NONE),
         function(data)
             return data==Save().autoReady
         end, function(data)
@@ -257,7 +257,7 @@ local function Init_Menu(self, root)
         end, value>0 and value or nil)
 
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO)
         end)
     end
 
@@ -269,12 +269,12 @@ local function Init_Menu(self, root)
         end, setValue=function(value)
             Save().autoReadySeconds=value
         end,
-        name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        name=WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
         minValue=1,
         maxValue=25,
         step=1,
         tooltip=function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '自动' or SELF_CAST_AUTO)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO)
         end
 
     })

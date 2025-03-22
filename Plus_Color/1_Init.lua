@@ -95,10 +95,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 			WoWTools_ColorMixin.Save= WoWToolsSave['Plus_Color'] or Save()
 
-			local addName= '|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '颜色选择器' or COLOR_PICKER)
+			local addName= '|A:colorblind-colorwheel:0:0|a'..(WoWTools_Mixin.onlyChinese and '颜色选择器' or COLOR_PICKER)
 			WoWTools_ColorMixin.addName= addName
 
 			--添加控制面板
@@ -111,10 +111,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 						WoWTools_Mixin.addName,
 						addName,
 						e.GetEnabeleDisable(not Save().disabled),
-						e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+						WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)
 				end,
-				buttonText='|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '显示' or SHOW),
+				buttonText='|A:colorblind-colorwheel:0:0|a'..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
 				buttonFunc= function()
 					WoWTools_ColorMixin:ShowColorFrame(e.Player.r, e.Player.g, e.Player.b, 1, nil, nil)
 				end,
@@ -136,7 +136,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 						WoWTools_Mixin.addName,
 						WoWTools_ColorMixin.addName,
 						'|cnGREEN_FONT_COLOR:'
-						..(e.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
+						..(WoWTools_Mixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
 						..'|A:colorblind-colorwheel:0:0|a'
 					)
 				end)

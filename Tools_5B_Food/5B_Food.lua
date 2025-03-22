@@ -161,7 +161,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
 
             WoWTools_FoodMixin.Save= WoWToolsSave['Tools_Foods'] or Save()
 
@@ -177,7 +177,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_Mixin:Load({id=class.ctrl, type='spell'})
             end
 
-            local addName= '|A:Food:0:0|a'..(e.onlyChinese and '食物' or POWER_TYPE_FOOD)
+            local addName= '|A:Food:0:0|a'..(WoWTools_Mixin.onlyChinese and '食物' or POWER_TYPE_FOOD)
             WoWTools_FoodMixin.addName= addName
 
             UseButton= WoWTools_ToolsMixin:CreateButton({
@@ -189,7 +189,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         category=category,
                         layout=layout,
                         tooltip=addName,
-                        buttonText= e.onlyChinese and '还原位置' or RESET_POSITION,
+                        buttonText= WoWTools_Mixin.onlyChinese and '还原位置' or RESET_POSITION,
                         SetValue= function()
                             Save().point=nil
                             if UseButton and UseButton:CanChangeAttribute() then

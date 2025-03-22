@@ -3,7 +3,7 @@ local e= select(2, ...)
 
 WoWTools_Mixin={
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
-    onlyChinese= e.onlyChinese,
+    onlyChinese= WoWTools_Mixin.onlyChinese,
 }
 
 --WoWTools_Mixin.onlyChinese
@@ -151,7 +151,7 @@ function WoWTools_Mixin:MK(number, bit)
     if number>=1e6 then
         number= number/1e6
         text= 'm'
-    elseif number>= 1e4 and e.onlyChinese then
+    elseif number>= 1e4 and WoWTools_Mixin.onlyChinese then
         number= number/1e4
         text='w'
     elseif number>=1e3 then
@@ -224,7 +224,7 @@ function WoWTools_Mixin:Reload(isControlKeyDown)
             C_UI.Reload()
         end
     else
-        print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
 end
 
@@ -235,9 +235,9 @@ end
 function WoWTools_Mixin:Get_CVar_Tooltips(info)--取得CVar信息 WoWTools_Mixin:Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
     ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', e.Icon.select) or '')
-    ..(info.value and (e.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
-    ..'('..(e.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..format('%.1f',C_CVar.GetCVar(info.name))..'|r |r'
-    ..(e.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..format('%.1f', C_CVar.GetCVarDefault(info.name))..')|r'
+    ..(info.value and (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
+    ..'('..(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..format('%.1f',C_CVar.GetCVar(info.name))..'|r |r'
+    ..(WoWTools_Mixin.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..format('%.1f', C_CVar.GetCVarDefault(info.name))..')|r'
 end
 
 

@@ -27,7 +27,7 @@ function WoWTools_MacroMixin:GetName(name, icon)
         return
             '|T'..(icon or 134400)..':0|t'
             ..(name:gsub('  ', '')==' '
-            and (e.onlyChinese and '(空格)' or ('('..KEY_SPACE..')'))
+            and (WoWTools_Mixin.onlyChinese and '(空格)' or ('('..KEY_SPACE..')'))
             or name)
     end
 end
@@ -94,14 +94,14 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
                 GameTooltip:AddLine(WoWTools_SpellMixin:GetName(spellID))--取得法术，名称
                 GameTooltip:AddLine(' ')
             end
-            GameTooltip:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (e.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
+            GameTooltip:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (WoWTools_Mixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
             GameTooltip:AddLine(body, nil,nil,nil, true)
             GameTooltip:AddLine(' ')
             if frame~=MacroFrameSelectedMacroButton then
                 local col= InCombatLockdown() and '|cff9e9e9e' or '|cffffffff'
                 GameTooltip:AddDoubleLine(
-                    col..(e.onlyChinese and '删除' or DELETE),
-                    col..'Alt+'..(e.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
+                    col..(WoWTools_Mixin.onlyChinese and '删除' or DELETE),
+                    col..'Alt+'..(WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
                 )
             end
 
@@ -167,21 +167,21 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_MacroMixin.Save= WoWToolsSave['Plus_Macro2'] or Save()
 
-            local addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(e.onlyChinese and '宏' or MACRO)
+            local addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(WoWTools_Mixin.onlyChinese and '宏' or MACRO)
             WoWTools_MacroMixin.addName= addName
 
             --添加控制面板
             e.AddPanel_Check({
                 name= addName,
-                tooltip= ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
-                    ..'|r|n'..(e.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                tooltip= ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                    ..'|r|n'..(WoWTools_Mixin.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -193,7 +193,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         WoWTools_Mixin.addName,
                         addName,
                         e.GetEnabeleDisable(false), 'MacroToolkit',
-                        e.onlyChinese and '插件' or ADDONS
+                        WoWTools_Mixin.onlyChinese and '插件' or ADDONS
                     )
                 end
             end

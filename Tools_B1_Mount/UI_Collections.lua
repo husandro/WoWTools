@@ -32,7 +32,7 @@ local function Init_UI_Menu(self, root)
     local mountID = frame.mountID
 
     if not mountID then
-        root:CreateTitle((e.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..' mountID')
+        root:CreateTitle((WoWTools_Mixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..' mountID')
         return
     end
 
@@ -62,7 +62,7 @@ local function Init_UI_Menu(self, root)
         end
 
         local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
-        sub=root:CreateCheckbox(col..(e.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type),
+        sub=root:CreateCheckbox(col..(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type),
             function(data)
                 return Save().Mounts[data.type][data.spellID]
 
@@ -169,7 +169,7 @@ local function Init_UI_List_Menu(self, root)
     end
 
     root:CreateDivider()
-    root:CreateButton('     '..(e.onlyChinese and '勾选所有' or CHECK_ALL), function()
+    root:CreateButton('     '..(WoWTools_Mixin.onlyChinese and '勾选所有' or CHECK_ALL), function()
         self.Type={
             [MOUNT_JOURNAL_FILTER_GROUND]=true,
             [MOUNT_JOURNAL_FILTER_AQUATIC]=true,
@@ -183,7 +183,7 @@ local function Init_UI_List_Menu(self, root)
         return MenuResponse.Refresh
     end)
 
-    root:CreateButton('     '..(e.onlyChinese and '撤选所有' or UNCHECK_ALL), function()
+    root:CreateButton('     '..(WoWTools_Mixin.onlyChinese and '撤选所有' or UNCHECK_ALL), function()
         self:rest_type()
         self.ResetButton:Click()
         return MenuResponse.Refresh

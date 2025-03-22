@@ -104,7 +104,7 @@ local function Init()
             if defaultOption and defaultOption.recommend and defaultOption.label then
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                 local label= e.strText[defaultOption.label] or defaultOption.label
-                GameTooltip_AddHighlightLine(SettingsTooltip, string.format("%s: %s", e.onlyChinese and '推荐' or VIDEO_OPTIONS_RECOMMENDED, GREEN_FONT_COLOR:WrapTextInColorCode(label)))
+                GameTooltip_AddHighlightLine(SettingsTooltip, string.format("%s: %s", WoWTools_Mixin.onlyChinese and '推荐' or VIDEO_OPTIONS_RECOMMENDED, GREEN_FONT_COLOR:WrapTextInColorCode(label)))
             end
 
             if warningOption and warningOption.value == setting:GetValue() and warningOption.warning then
@@ -115,7 +115,7 @@ local function Init()
 
             if setting:HasCommitFlag(Settings.CommitFlag.ClientRestart) then
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
-                GameTooltip_AddErrorLine(SettingsTooltip, e.onlyChinese and '更改此选项需要重新启动客户端' or VIDEO_OPTIONS_NEED_CLIENTRESTART)
+                GameTooltip_AddErrorLine(SettingsTooltip, WoWTools_Mixin.onlyChinese and '更改此选项需要重新启动客户端' or VIDEO_OPTIONS_NEED_CLIENTRESTART)
             end
         end
         return initTooltip
@@ -218,7 +218,7 @@ local function Init()
         local function InitializeKeyBindingButtonTooltip(index)
             local key = select(index, GetBindingKey(action))
             if key then
-                Settings.InitTooltip(format(KEY_BINDING_NAME_AND_KEY, bindingName, GetBindingText(key)), e.onlyChinese and '<右键解除键位>' or KEY_BINDING_TOOLTIP)
+                Settings.InitTooltip(format(KEY_BINDING_NAME_AND_KEY, bindingName, GetBindingText(key)), WoWTools_Mixin.onlyChinese and '<右键解除键位>' or KEY_BINDING_TOOLTIP)
             end
             GameTooltip_AddNormalLine(SettingsTooltip, 'bindingIndex |cnGREEN_FONT_COLOR:'..bindingIndex..'|r', true)
             GameTooltip_AddNormalLine(SettingsTooltip, 'action |cnGREEN_FONT_COLOR:'..action..'|r', true)

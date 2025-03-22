@@ -12,7 +12,7 @@ end
 
 local function Set_Tooltip(root)
     root:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 
@@ -22,7 +22,7 @@ local function Init_Menu(_, root)
     local sub
     root:CreateTitle('Plus')
     sub= root:CreateCheckbox(
-        e.onlyChinese and '购买' or AUCTION_HOUSE_BUY_TAB,
+        WoWTools_Mixin.onlyChinese and '购买' or AUCTION_HOUSE_BUY_TAB,
     function()
         return not Save().disabledBuyPlus
     end, function()
@@ -31,7 +31,7 @@ local function Init_Menu(_, root)
     Set_Tooltip(sub)
 
     sub= root:CreateCheckbox(
-        e.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB,
+        WoWTools_Mixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB,
     function()
         return not Save().disabledSellPlus
     end, function()
@@ -41,7 +41,7 @@ local function Init_Menu(_, root)
 
 
     sub= root:CreateCheckbox(
-        e.onlyChinese and '拍卖' or AUCTION_HOUSE_AUCTIONS_SUB_TAB,
+        WoWTools_Mixin.onlyChinese and '拍卖' or AUCTION_HOUSE_AUCTIONS_SUB_TAB,
     function()
         return not Save().disabledAuctionsPlus
     end, function()

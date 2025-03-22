@@ -61,9 +61,9 @@ end
 --已收集, 未收集
 local function get_has_text(has)
     if has then
-        return format('|cnRED_FONT_COLOR:%s|r',  e.onlyChinese and '已收集' or WoWTools_TextMixin:sub(COLLECTED, 3, 5, true))
+        return format('|cnRED_FONT_COLOR:%s|r',  WoWTools_Mixin.onlyChinese and '已收集' or WoWTools_TextMixin:sub(COLLECTED, 3, 5, true))
     elseif has~=nil then
-        return format('|cnGREEN_FONT_COLOR:%s|r',  e.onlyChinese and '未收集' or WoWTools_TextMixin:sub(NOT_COLLECTED, 3, 5, true))
+        return format('|cnGREEN_FONT_COLOR:%s|r',  WoWTools_Mixin.onlyChinese and '未收集' or WoWTools_TextMixin:sub(NOT_COLLECTED, 3, 5, true))
     end
 end
 
@@ -479,7 +479,7 @@ function e.Set_Item_Info(self, tab)
 
 
         elseif classID==12 and itemQuality and itemQuality>0 then--任务
-            topRightText= e.onlyChinese and '任务' or WoWTools_TextMixin:sub(itemSubType, 2,3, true)
+            topRightText= WoWTools_Mixin.onlyChinese and '任务' or WoWTools_TextMixin:sub(itemSubType, 2,3, true)
 
         elseif itemID and C_ToyBox.GetToyInfo(itemID) then--玩具
             bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
@@ -888,17 +888,17 @@ local function Init()
     FMTab={--附魔
         ['主属性']= '主',
         ['坐骑速度']= '骑',
-        [PRIMARY_STAT1_TOOLTIP_NAME]=  e.onlyChinese and "力" or WoWTools_TextMixin:sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
-        [PRIMARY_STAT2_TOOLTIP_NAME]=  e.onlyChinese and "敏" or WoWTools_TextMixin:sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
-        [PRIMARY_STAT3_TOOLTIP_NAME]=  e.onlyChinese and "耐" or WoWTools_TextMixin:sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
-        [PRIMARY_STAT4_TOOLTIP_NAME]=  e.onlyChinese and "智" or WoWTools_TextMixin:sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
-        [ITEM_MOD_CRIT_RATING_SHORT]= e.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 3, true),
-        [ITEM_MOD_HASTE_RATING_SHORT]= e.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 3, true),
-        [ITEM_MOD_MASTERY_RATING_SHORT]= e.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 3, true),
-        [ITEM_MOD_VERSATILITY]= e.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 3, true),
-        [ITEM_MOD_CR_AVOIDANCE_SHORT]= e.onlyChinese and '闪' or WoWTools_TextMixin:sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
-        [ITEM_MOD_CR_LIFESTEAL_SHORT]= e.onlyChinese and '吸' or WoWTools_TextMixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
-        [ITEM_MOD_CR_SPEED_SHORT]= e.onlyChinese and '速' or WoWTools_TextMixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
+        [PRIMARY_STAT1_TOOLTIP_NAME]=  WoWTools_Mixin.onlyChinese and "力" or WoWTools_TextMixin:sub(PRIMARY_STAT1_TOOLTIP_NAME, 1, 3, true),
+        [PRIMARY_STAT2_TOOLTIP_NAME]=  WoWTools_Mixin.onlyChinese and "敏" or WoWTools_TextMixin:sub(PRIMARY_STAT2_TOOLTIP_NAME, 1, 3, true),
+        [PRIMARY_STAT3_TOOLTIP_NAME]=  WoWTools_Mixin.onlyChinese and "耐" or WoWTools_TextMixin:sub(PRIMARY_STAT3_TOOLTIP_NAME, 1, 3, true),
+        [PRIMARY_STAT4_TOOLTIP_NAME]=  WoWTools_Mixin.onlyChinese and "智" or WoWTools_TextMixin:sub(PRIMARY_STAT4_TOOLTIP_NAME, 1, 3, true),
+        [ITEM_MOD_CRIT_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 3, true),
+        [ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 3, true),
+        [ITEM_MOD_MASTERY_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 3, true),
+        [ITEM_MOD_VERSATILITY]= WoWTools_Mixin.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 3, true),
+        [ITEM_MOD_CR_AVOIDANCE_SHORT]= WoWTools_Mixin.onlyChinese and '闪' or WoWTools_TextMixin:sub(ITEM_MOD_CR_AVOIDANCE_SHORT, 1, 3, true),
+        [ITEM_MOD_CR_LIFESTEAL_SHORT]= WoWTools_Mixin.onlyChinese and '吸' or WoWTools_TextMixin:sub(ITEM_MOD_CR_LIFESTEAL_SHORT, 1, 3, true),
+        [ITEM_MOD_CR_SPEED_SHORT]= WoWTools_Mixin.onlyChinese and '速' or WoWTools_TextMixin:sub(ITEM_MOD_CR_SPEED_SHORT, 1, 3, true),
     }
 
     --boss掉落，物品, 可能，会留下 StaticPopup1 框架
@@ -1001,7 +1001,7 @@ local function Init()
                             btn:HookScript('OnEnter', function(self)
                                 if self.itemLink and GameTooltip:IsShown() then
                                     GameTooltip:AddLine(' ')
-                                    GameTooltip:AddDoubleLine(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
+                                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
                                     GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
                                     GameTooltip:Show()
                                 end
@@ -1092,7 +1092,7 @@ local function add_Button_OpenOption(frame)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1261,19 +1261,19 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             Save= WoWToolsSave['Plus_ItemInfo'] or Save
-            addName= '|A:Barbershop-32x32:0:0|a'..(e.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
+            addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_Mixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
             --添加控制面板
             e.AddPanel_Check({
                 name= addName,
-                tooltip= e.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
+                tooltip= WoWTools_Mixin.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

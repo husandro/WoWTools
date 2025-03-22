@@ -56,7 +56,7 @@ local function Init()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
         GameTooltip:AddDoubleLine(WoWTools_HyperLink.addName, e.GetEnabeleDisable(not isDisabled and Save().linkIcon))
         if isDisabled then
-            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:' ..(e.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), e.GetEnabeleDisable(true))
+            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:' ..(WoWTools_Mixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), e.GetEnabeleDisable(true))
         end
         GameTooltip:Show()
     end
@@ -95,13 +95,13 @@ panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
-        if arg1 == id then
+        if arg1== 'WoWTools' then
             WoWTools_HyperLink.Save= WoWToolsSave['ChatButton_HyperLink'] or Save()
 
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
 
-            addName= '|A:voicechat-icon-STT-on:0:0|a'..(e.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+            addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_Mixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
             LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', addName)
 
             WoWTools_HyperLink.LinkButton= LinkButton

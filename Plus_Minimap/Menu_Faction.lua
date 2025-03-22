@@ -49,7 +49,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
 --打开选项
     sub=root:CreateCheckbox(
         '|A:VignetteEvent-SuperTracked:0:0|a'
-        ..(e.onlyChinese and '名望' or LANDING_PAGE_RENOWN_LABEL),
+        ..(WoWTools_Mixin.onlyChinese and '名望' or LANDING_PAGE_RENOWN_LABEL),
     function()
         return MajorFactionRenownFrame and MajorFactionRenownFrame:IsShown()
     end, function()

@@ -78,20 +78,20 @@ end
 local function Init_Button_Menu(self, root)
     root:CreateCheckbox(
         '|A:auctionhouse-icon-favorite:0:0|a'
-        ..(e.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER),
+        ..(WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_BUTTON_MARKER),
     function()
         return Save.favorites[self.itemID]
     end, function()
         Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
         self:set_favorite()
-        print(e.Icon.icon2.. addName, Save.favorites[self.itemID] and self.itemID or '', e.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(e.Icon.icon2.. addName, Save.favorites[self.itemID] and self.itemID or '', WoWTools_Mixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         Func.Set_Gem()
     end)
     root:CreateDivider()
 
     root:CreateCheckbox(
         '|A:common-icon-rotateright:0:0|a'
-        ..(e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT),
+        ..(WoWTools_Mixin.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT),
     function ()
         return Save.gemLeft[self.itemID]
     end, function ()
@@ -101,7 +101,7 @@ local function Init_Button_Menu(self, root)
 
     root:CreateCheckbox(
         '|A:bags-greenarrow:0:0|a'
-        ..(e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
+        ..(WoWTools_Mixin.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
     function ()
         return Save.gemTop[self.itemID]
     end, function ()
@@ -111,7 +111,7 @@ local function Init_Button_Menu(self, root)
 
     root:CreateCheckbox(
         '|A:common-icon-rotateleft:0:0|a'
-        ..(e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT),
+        ..(WoWTools_Mixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT),
     function ()
         return Save.gemRight[self.itemID]
     end, function ()
@@ -200,10 +200,10 @@ local function creatd_button(index, parent)
             GameTooltip:ClearLines()
             GameTooltip:SetBagItem(self.bagID, self.slotID)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-            GameTooltip:AddDoubleLine((e.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT)..format('|A:%s:0:0|a', e.Icon.toRight), 'Alt+'..e.Icon.left)
-            GameTooltip:AddDoubleLine((e.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..e.Icon.mid)
-            GameTooltip:AddDoubleLine((e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', e.Icon.toLeft), 'Alt+'..e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT)..format('|A:%s:0:0|a', e.Icon.toRight), 'Alt+'..e.Icon.left)
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..e.Icon.mid)
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', e.Icon.toLeft), 'Alt+'..e.Icon.right)
             GameTooltip:Show()
         end
     end
@@ -790,7 +790,7 @@ end
 local function Init_Menu(self, root)
     local sub, num
     sub=root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
+        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
     function()
         return not Save.hide
     end, function()
@@ -800,12 +800,12 @@ local function Init_Menu(self, root)
     sub:SetEnabled(Frame:CanChangeAttribute())
 
     root:CreateCheckbox(
-        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, e.onlyChinese and '法术' or SPELLS, 'Button'),
+        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_Mixin.onlyChinese and '法术' or SPELLS, 'Button'),
     function()
         return not Save.disableSpell
     end, function()
         Save.disableSpell= not Save.disableSpell and true or nil
-        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disableSpell), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disableSpell), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end, {})
 
     root:CreateDivider()
@@ -816,7 +816,7 @@ local function Init_Menu(self, root)
 
     root:CreateButton(
         '|A:auctionhouse-icon-favorite:0:0|a'
-        ..(e.onlyChinese and '清除标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_BUTTON_MARKER))
+        ..(WoWTools_Mixin.onlyChinese and '清除标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_BUTTON_MARKER))
         ..' |cnGREEN_FONT_COLOR:#'..num,
     function()
         Save.favorites={}
@@ -834,7 +834,7 @@ local function Init_Menu(self, root)
     end
     root:CreateButton(
          '|A:common-icon-rotateright:0:0|a'
-         ..(e.onlyChinese and '清除左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT))
+         ..(WoWTools_Mixin.onlyChinese and '清除左边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT))
          ..' |cnGREEN_FONT_COLOR:#'
          ..num,
     function()
@@ -850,7 +850,7 @@ local function Init_Menu(self, root)
     end
     root:CreateButton(
         '|A:bags-greenarrow:0:0|a'
-        ..(e.onlyChinese and '清除上面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP))
+        ..(WoWTools_Mixin.onlyChinese and '清除上面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP))
         ..' |cnGREEN_FONT_COLOR:#'
         ..num,
     function()
@@ -866,7 +866,7 @@ local function Init_Menu(self, root)
     end
     root:CreateButton(
          '|A:common-icon-rotateleft:0:0|a'
-         ..(e.onlyChinese and '清除右边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT))
+         ..(WoWTools_Mixin.onlyChinese and '清除右边' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT))
          ..' |cnGREEN_FONT_COLOR:#'
          ..num,
     function()
@@ -877,7 +877,7 @@ local function Init_Menu(self, root)
 
     root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
-        ..(e.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
+        ..(WoWTools_Mixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
     function()
         Save.gemLoc={
             [e.Player.class]={}
@@ -933,8 +933,8 @@ local function Init_Button_All()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
         GameTooltip:Show()
     end
     btn:SetAlpha(0.5)
@@ -1049,10 +1049,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             Save= WoWToolsSave['Plus_Gem'] or Save
 
-            addName= '|T4555592:0|t'..(e.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
+            addName= '|T4555592:0|t'..(WoWTools_Mixin.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
 
             --添加控制面板
             e.AddPanel_Check({
@@ -1060,7 +1060,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

@@ -73,7 +73,7 @@ local function Init()
     end)
     edit:SetScript("OnKeyUp", function(s, key)
         if IsControlKeyDown() and key == "C" then
-            print(e.Icon.icon2.. WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+            print(e.Icon.icon2.. WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
         end
     end)
 
@@ -88,7 +88,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HyperLink.addName)
-        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
+        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_Mixin.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
         GameTooltip:Show()
     end)
 

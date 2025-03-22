@@ -58,7 +58,7 @@ local function set_vignetteGUID(tooltip, vignetteGUID)
             verticalPadding = -overflow
         end
     elseif waitingForData then
-        GameTooltip_SetTitle(tooltip, e.onlyChinese and '获取数据' or RETRIEVING_DATA)
+        GameTooltip_SetTitle(tooltip, WoWTools_Mixin.onlyChinese and '获取数据' or RETRIEVING_DATA)
     end
     if verticalPadding then
         tooltip:SetPadding(0, verticalPadding)
@@ -100,7 +100,7 @@ local function set_areaPoiID(tooltip, uiMapID, areaPoiID)
             local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(areaPoiID)
             if secondsLeft and secondsLeft > 0 then
                 local timeString = SecondsToTime(secondsLeft)
-                GameTooltip_AddNormalLine(tooltip, format(e.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString))
+                GameTooltip_AddNormalLine(tooltip, format(WoWTools_Mixin.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString))
                 addedTooltipLine = true
             end
         end
@@ -156,10 +156,10 @@ local function Set_Specialization(tooltip, specIndex, specID)
     end
 
     local stat={
-        e.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
-        e.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
-        e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
-        --e.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
+        WoWTools_Mixin.onlyChinese and '力量' or SPEC_FRAME_PRIMARY_STAT_STRENGTH,
+        WoWTools_Mixin.onlyChinese and '敏捷' or SPEC_FRAME_PRIMARY_STAT_AGILITY,
+        WoWTools_Mixin.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
+        --WoWTools_Mixin.onlyChinese and '智力' or SPEC_FRAME_PRIMARY_STAT_INTELLECT,
     }
 
     local specIDs= C_SpecializationInfo.GetSpellsDisplay(specID) or {}
@@ -302,7 +302,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
 --冷却时间剩余
     if cooldown then
         Add_Tooltip(tooltip, ' ', nil)
-        Add_Tooltip(tooltip, format(e.onlyChinese and '冷却时间剩余：%s' or ITEM_COOLDOWN_TIME, cooldown), nil)
+        Add_Tooltip(tooltip, format(WoWTools_Mixin.onlyChinese and '冷却时间剩余：%s' or ITEM_COOLDOWN_TIME, cooldown), nil)
     end
 
     return true

@@ -40,7 +40,7 @@ local function Init_Button_Menu(self, root)
     local sub
 
     sub=root:CreateCheckbox(
-        (e.onlyChinese and '加载插件' or LOAD_ADDON),
+        (WoWTools_Mixin.onlyChinese and '加载插件' or LOAD_ADDON),
     function(data)
         return Save().load_Button_Name==data.name
     end, function()
@@ -63,7 +63,7 @@ local function Init_Button_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         Set_OnEnter_Tooltip(self, tooltip)
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '/reload')
+        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI, '/reload')
     end)
 
 --替换
@@ -71,12 +71,12 @@ local function Init_Button_Menu(self, root)
     local some, sel, tab= select(2, WoWTools_AddOnsMixin:Get_AddListInfo())
     sub=root:CreateButton(
         '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'
-        ..(e.onlyChinese and '替换' or REPLACE)
+        ..(WoWTools_Mixin.onlyChinese and '替换' or REPLACE)
         ..' '..(some+sel),
     function(data)
 
         StaticPopup_Show('WoWTools_OK',
-            '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'..(e.onlyChinese and '替换' or REPLACE)
+            '|A:ShipMission_ShipFollower-Lock-Rare:0:0|a'..(WoWTools_Mixin.onlyChinese and '替换' or REPLACE)
             ..'|n'..data.name,
             nil,
             {SetValue=function()
@@ -94,7 +94,7 @@ local function Init_Button_Menu(self, root)
 --修改名称/图标
     root:CreateButton(
         '|A:QuestLegendaryTurnin:0:0|a'
-        ..(e.onlyChinese and '修改名称/图标' or EQUIPMENT_SET_EDIT),
+        ..(WoWTools_Mixin.onlyChinese and '修改名称/图标' or EQUIPMENT_SET_EDIT),
     function(data)
         local name= data.name:match('|t(.+)') or data.name
         local texture= data.name:match('|T(%d+):0|t')
@@ -122,10 +122,10 @@ local function Init_Button_Menu(self, root)
 
 --删除
     root:CreateButton(
-        '|A:XMarksTheSpot:0:0|a'..(e.onlyChinese and '删除' or DELETE),
+        '|A:XMarksTheSpot:0:0|a'..(WoWTools_Mixin.onlyChinese and '删除' or DELETE),
     function(data)
         StaticPopup_Show('WoWTools_OK',
-            '|A:XMarksTheSpot:0:0|a'..(e.onlyChinese and '删除' or DELETE)
+            '|A:XMarksTheSpot:0:0|a'..(WoWTools_Mixin.onlyChinese and '删除' or DELETE)
             ..'|n'..data.name,
             nil,
             {SetValue=function()
@@ -215,7 +215,7 @@ local function Create_Button(indexAdd)
         GameTooltip:ClearLines()
         Set_OnEnter_Tooltip(self, GameTooltip)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
+        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
         GameTooltip:Show()
     end)
 

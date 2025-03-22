@@ -61,7 +61,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
             WoWTools_ProfessionMixin.Save= WoWToolsSave['Plus_Professions'] or WoWTools_ProfessionMixin.Save
 
             if PlayerGetTimerunningSeasonID() then
@@ -69,7 +69,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 return
             end
 
-            WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(e.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
+            WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(WoWTools_Mixin.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
 
             --添加控制面板
             e.AddPanel_Check({
@@ -78,7 +78,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2..WoWTools_ProfessionMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2..WoWTools_ProfessionMixin.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

@@ -22,16 +22,16 @@ end
 local function Init_Menu(self, root)
     local sub
     root:CreateButton(
-        '|A:characterundelete-RestoreButton:0:0|a'..(e.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE)),
+        '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_Mixin.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE)),
     function()
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-        print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE))
+        print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE))
         return MenuResponse.Open
     end)
 
     root:CreateDivider()
     root:CreateCheckbox(
-        e.Icon.mid..(e.onlyChinese and '显示' or SHOW),
+        e.Icon.mid..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
     function()
         return self.frame:IsShown()
     end, function()
@@ -40,7 +40,7 @@ local function Init_Menu(self, root)
     end)
 
     sub=root:CreateButton(
-        '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '发送信息' or SEND_MESSAGE),
+        '|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '发送信息' or SEND_MESSAGE),
     function()
         self:send_Att_Chat()--发送信息
         return MenuResponse.Open
@@ -59,7 +59,7 @@ local function Init_Menu(self, root)
     local targetMove= WoWTools_AttributesMixin.TargetMoveButton
     if targetMove then
         sub= root:CreateButton(
-            '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标移动' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TARGET, NPE_MOVE)),
+            '|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标移动' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TARGET, NPE_MOVE)),
         function()
             return MenuResponse.Open
         end)

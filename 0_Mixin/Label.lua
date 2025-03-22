@@ -45,9 +45,9 @@ function WoWTools_LabelMixin:Create(frame, tab)
         font:SetShadowOffset(copyFont:GetShadowOffset())
         if justifyH then font:SetJustifyH(justifyH) end
     else
-        if e.onlyChinese or size then--THICKOUTLINE
+        if WoWTools_Mixin.onlyChinese or size then--THICKOUTLINE
             local fontName2, size2, fontFlag2= font:GetFont()
-            if e.onlyChinese and not LOCALE_zhCN then
+            if WoWTools_Mixin.onlyChinese and not LOCALE_zhCN then
                 fontName2= 'Interface\\AddOns\\WoWTools\\Sesource\\ARHei.TTF'--黑体字
             end
             font:SetFont(fontName2, size or size2, notFlag and fontFlag2 or 'OUTLINE')

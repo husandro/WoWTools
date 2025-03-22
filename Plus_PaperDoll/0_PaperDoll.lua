@@ -82,13 +82,13 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
 
             local addName= (
                 e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
                 or '|A:charactercreate-gendericon-female-selected:0:0|a'
-            )..(e.onlyChinese and '角色' or CHARACTER)
+            )..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)
 
             WoWTools_PaperDollMixin.addName= addName
 
@@ -98,7 +98,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 

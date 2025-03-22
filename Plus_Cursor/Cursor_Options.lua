@@ -17,18 +17,18 @@ local function Init(Frame)
         return
     end
     Frame.sliderMaxParticles = e.CSlider(Frame, {min=50, max=4096, value=Save().maxParticles, setp=1,
-    text=e.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
+    text=WoWTools_Mixin.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
         Save().maxParticles= value
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
     Frame.sliderMaxParticles:SetPoint("TOPLEFT", Frame.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
     local sliderMinDistance = e.CSlider(Frame, {min=1, max=10, value=Save().minDistance, setp=1, color=true,
-    text=e.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
+    text=WoWTools_Mixin.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -40,7 +40,7 @@ local function Init(Frame)
 
 
     local sliderSize = e.CSlider(Frame, {min=8, max=128, value=Save().size, setp=1,
-    text=e.onlyChinese and '缩放' or UI_SCALE,
+    text=WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -73,7 +73,7 @@ local function Init(Frame)
     sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
     local sliderRate = e.CSlider(Frame, {min=0.001, max=0.1, value=Save().rate, setp=0.001, color=true,
-    text=e.onlyChinese and '刷新' or REFRESH,
+    text=WoWTools_Mixin.onlyChinese and '刷新' or REFRESH,
     func=function(self, value)
         value= tonumber(format('%.3f', value))
         self:SetValue(value)
@@ -84,7 +84,7 @@ local function Init(Frame)
     sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
     local sliderRotate = e.CSlider(Frame, {min=0, max=32, value=Save().rotate, setp=1,
-    text=e.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
+    text=WoWTools_Mixin.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -95,7 +95,7 @@ local function Init(Frame)
     sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -20)
 
     local sliderDuration = e.CSlider(Frame, {min=0.1, max=4, value=Save().duration, setp=0.1, color=true,
-    text=e.onlyChinese and '持续时间' or AUCTION_DURATION,
+    text=WoWTools_Mixin.onlyChinese and '持续时间' or AUCTION_DURATION,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
@@ -106,7 +106,7 @@ local function Init(Frame)
     sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -20)
 
     local sliderGravity = e.CSlider(Frame, {min=-512, max=512, value=Save().gravity, setp=1,
-    text=e.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
+    text=WoWTools_Mixin.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
@@ -117,7 +117,7 @@ local function Init(Frame)
     sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = e.CSlider(Frame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
-    text=e.onlyChinese and '透明度' or 'Alpha',
+    text=WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
@@ -174,7 +174,7 @@ local function Init(Frame)
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(description.data.texture, 64)))
                 tooltip:AddLine(description.data.texture)
-                tooltip:AddLine(e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+                tooltip:AddLine(WoWTools_Mixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
             end)
             sub:AddInitializer(function(btn)
                 btn.fontString:ClearAllPoints()
@@ -195,7 +195,7 @@ local function Init(Frame)
         local icon = select(2, WoWTools_CursorMixin:GetTextureType(texture))
         table.remove(Save().Atlas, Save().atlasIndex)
         Save().atlasIndex=1
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:Cursor_Settings()
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultTexture)
@@ -237,7 +237,7 @@ local function Init(Frame)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine('Atlas')
-        GameTooltip:AddDoubleLine('Texture', (e.onlyChinese and '需求' or NEED)..' \\Interface')
+        GameTooltip:AddDoubleLine('Texture', (WoWTools_Mixin.onlyChinese and '需求' or NEED)..' \\Interface')
         GameTooltip:Show()
     end)
     addColorButton:SetScript('OnLeave', GameTooltip_Hide)

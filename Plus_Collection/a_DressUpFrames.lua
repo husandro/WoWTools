@@ -40,7 +40,7 @@ local SlotsIcon = {
     '|T135490:0|t',--25弓
     '|T135610:0|t',--26枪械
     '|T135530:0|t',--27弩
-    '|A:transmog-nav-slot-enchant:0:0|a',--28 e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT,
+    '|A:transmog-nav-slot-enchant:0:0|a',--28 WoWTools_Mixin.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT,
     '|A:ElementalStorm-Lesser-Earth:0:0|a',--29'军团再临"神器
 }
 
@@ -98,9 +98,9 @@ local function Set_SetDetails(frame)
         GameTooltip:ClearLines()
         GameTooltip:SetHyperlink(link)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
         if p.name then
-            GameTooltip:AddDoubleLine(e.onlyChinese and '搜索' or SEARCH, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '搜索' or SEARCH, e.Icon.right)
         end
         GameTooltip:Show()
         self:SetAlpha(0.5)

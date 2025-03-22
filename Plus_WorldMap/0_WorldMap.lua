@@ -25,7 +25,7 @@ Save={
     ShowWorldQues_Name=true,
     --ShowFlightMap_Name=true,
 },
---WoWTools_WorldMapMixin.addName= e.onlyChinese and '地图' or WORLD_MAP
+--WoWTools_WorldMapMixin.addName= WoWTools_Mixin.onlyChinese and '地图' or WORLD_MAP
 }
 
 
@@ -107,7 +107,7 @@ function WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
         name =name or name2
         WoWTools_ChatMixin:Chat(name, nil, true)
     else
-        print(e.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map")
+        print(WoWTools_Mixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map")
     end
 end
 
@@ -121,17 +121,17 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_WorldMapMixin.Save= WoWToolsSave['Plus_WorldMap'] or WoWTools_WorldMapMixin.Save
 
-            local addName= '|A:poi-islands-table:0:0|a'..(e.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
+            local addName= '|A:poi-islands-table:0:0|a'..(WoWTools_Mixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
             WoWTools_WorldMapMixin.addName= addName
-            --WoWTools_WorldMapMixin.addName2= e.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
+            --WoWTools_WorldMapMixin.addName2= WoWTools_Mixin.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
 
             --添加控制面板
             e.AddPanel_Check({
                 name= WoWTools_WorldMapMixin.addName,
-                tooltip=  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+                tooltip=  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                 GetValue= function() return not WoWTools_WorldMapMixin.Save.disabled end,
                 func= function()
                     WoWTools_WorldMapMixin.Save.disabled= not WoWTools_WorldMapMixin.Save.disabled and true or nil
@@ -139,7 +139,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         WoWTools_Mixin.addName,
                         addName,
                         e.GetEnabeleDisable(not WoWTools_WorldMapMixin.Save.disabled),
-                        e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end
             })

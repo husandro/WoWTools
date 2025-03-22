@@ -27,7 +27,7 @@ local function Init_Menu(self, root)
 
     if self==EquipButton then
         root:CreateCheckbox(
-            e.onlyChinese and '显示' or SHOW,
+            WoWTools_Mixin.onlyChinese and '显示' or SHOW,
         function()
             return Save().equipment
         end, function()
@@ -47,7 +47,7 @@ local function Init_Menu(self, root)
 
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
+        WoWTools_Mixin.onlyChinese and '装等' or ITEM_UPGRADE_STAT_AVERAGE_ITEM_LEVEL,
     function()
         return Save().trackButtonShowItemLeve
     end, function()
@@ -67,7 +67,7 @@ local function Init_Menu(self, root)
 
 --向右
     root:CreateCheckbox(
-        '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '向右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT),
+        '|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '向右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT),
     function()
         return Save().EquipmentH
     end, function()
@@ -96,7 +96,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:RestPoint(self, root, Save().Equipment, function()
         Save().Equipment=nil
         TrackButton:set_point()
-        print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 
 --打开选项界面
@@ -183,7 +183,7 @@ local function Create_Button(index)
             local _, specName2, _, icon3 = GetSpecializationInfo(specIndex)
             if icon3 and specName2 then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddLine(format(e.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
+                GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, '|T'..icon3..':0|t|cffff00ff'..specName2..'|r'))
             end
         end
         GameTooltip:AddLine(' ')
@@ -455,9 +455,9 @@ local function Init_TrackButton()--添加装备管理框
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")..e.Icon.left,
-            e.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            e.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
-        GameTooltip:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(e.onlyChinese and '移动' or NPE_MOVE))
+        GameTooltip:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE))
         GameTooltip:Show()
         EquipButton:SetButtonState('PUSHED')
     end)
@@ -556,7 +556,7 @@ function Init_EquipButton()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
         GameTooltip:Show()
         self:SetAlpha(1)
         TrackButton:SetButtonState('PUSHED')
@@ -588,7 +588,7 @@ function WoWTools_PaperDollMixin:TrackButton_Settings()
 end
 
 function WoWTools_PaperDollMixin:Init_TrackButton()
-    addName= '|A:bags-icon-equipment:0:0|a'..(e.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)
+    addName= '|A:bags-icon-equipment:0:0|a'..(WoWTools_Mixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)
     Init_EquipButton()
     Init_TrackButton()
 end

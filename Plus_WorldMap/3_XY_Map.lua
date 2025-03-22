@@ -20,10 +20,10 @@ local MapXYButton
 local function Set_Map_Waypoint(self)
     local mapID = WorldMapFrame.mapID
     if not mapID then
-        print(e.onlyChinese and '没有找到MapID' or "Not found MapID")
+        print(WoWTools_Mixin.onlyChinese and '没有找到MapID' or "Not found MapID")
         return
     elseif not C_Map.CanSetUserWaypointOnMap(mapID) then
-        print(e.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map")
+        print(WoWTools_Mixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map")
         return
     end
 
@@ -61,7 +61,7 @@ end
         x, y= x*0.01, y*0.01
 
         if x>1 or y>1 then
-            print(e.onlyChinese and '错误XY' or 'Error XY')
+            print(WoWTools_Mixin.onlyChinese and '错误XY' or 'Error XY')
             return
         end
 
@@ -71,7 +71,7 @@ end
 
         print(C_Map.GetUserWaypointHyperlink(), x*100, y*100)
     else
-        print(e.onlyChinese and '错误XY' or 'Error XY')
+        print(WoWTools_Mixin.onlyChinese and '错误XY' or 'Error XY')
     end
 end
 
@@ -88,7 +88,7 @@ local function Init_Menu(_, root)
     root:CreateButton(
         (can and '' or '|cff9e9e9e')
         ..'|A:Waypoint-MapPin-ChatIcon:0:0|a'
-        ..(e.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
+        ..(WoWTools_Mixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
     function()
         WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
         return MenuResponse.Open
@@ -98,7 +98,7 @@ local function Init_Menu(_, root)
     root:CreateButton(
         (WorldMapFrame.mapID==MapUtil.GetDisplayableMapForPlayer() and '|cff9e9e9e' or '')
         ..e.Icon.player
-        ..(e.onlyChinese and '返回当前地图' or
+        ..(WoWTools_Mixin.onlyChinese and '返回当前地图' or
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PREVIOUS, REFORGE_CURRENT), WORLD_MAP)
     ), function()
         WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
@@ -123,14 +123,14 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
 
         --GameTooltip:AddLine(' ')
         --local can
         --can= C_Map.GetBestMapForUnit("player")
         --can= can and C_Map.CanSetUserWaypointOnMap(can)
-        --GameTooltip:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(e.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(e.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
-        --GameTooltip:AddDoubleLine(e.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
+        --GameTooltip:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
         GameTooltip:Show()
     end)
     MapXYButton:SetScript('OnMouseDown', function(self)
@@ -172,7 +172,7 @@ local function Init()
         print(
             WoWTools_Mixin.addName,
             WoWTools_WorldMapMixin.addName,
-            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+            '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
             self:GetText()
         )
     end)
@@ -184,15 +184,15 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddLine(
             '|A:Waypoint-MapPin-Untracked:0:0|a'
-            ..(e.onlyChinese and '地图标记' or MAP_PIN)
+            ..(WoWTools_Mixin.onlyChinese and '地图标记' or MAP_PIN)
             ..'|A:NPE_Icon:0:0|aEnter'
         )
 
         local mapID = WorldMapFrame.mapID
         if not mapID then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '没有找到MapID' or "Not found MapID"))
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '没有找到MapID' or "Not found MapID"))
         elseif not C_Map.CanSetUserWaypointOnMap(mapID) then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
         end
 
         GameTooltip:Show()

@@ -156,8 +156,8 @@ function WoWTools_DurabiliyMixin:OnEnter()
 
     GameTooltip:AddLine(' ')
     GameTooltip:AddDoubleLine(
-        (e.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
-         '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff9e9e9e')..num..'|r) '..(e.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
+        (WoWTools_Mixin.onlyChinese and '耐久度' or DURABILITY)..' ('..(max2>0 and math.modf(cur2/max2*100) or 100)..'%)'..coText,
+         '('..(num>0 and '|cnRED_FONT_COLOR:' or '|cff9e9e9e')..num..'|r) '..(WoWTools_Mixin.onlyChinese and '修理物品' or REPAIR_ITEMS)..euip
     )
 
     local item, cur3, pvp= GetAverageItemLevel()
@@ -165,7 +165,7 @@ function WoWTools_DurabiliyMixin:OnEnter()
     item= item or 0
     pvp= pvp or 0
     GameTooltip:AddDoubleLine(
-        (e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
+        (WoWTools_Mixin.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL)
         ..(e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
         ..(cur3==item and format(' |cnGREEN_FONT_COLOR:%.2f|r', cur3) or format(' |cnRED_FONT_COLOR:%.2f|r/%.2f', cur3, item)),
         format('%.02f', pvp)..' PvP|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a')

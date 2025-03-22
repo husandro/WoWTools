@@ -27,21 +27,21 @@ local function Init_Menu(self, root)
 
 --仅限公会官员
     sub=root:CreateCheckbox(
-        e.onlyChinese and '仅限公会官员' or  format(LFG_LIST_CROSS_FACTION, CHAT_MSG_OFFICER),
+        WoWTools_Mixin.onlyChinese and '仅限公会官员' or  format(LFG_LIST_CROSS_FACTION, CHAT_MSG_OFFICER),
     function()
         return Save().plusOnlyOfficerAndLeader
     end, function()
         Save().plusOnlyOfficerAndLeader= not Save().plusOnlyOfficerAndLeader and true or nil
         if not WoWTools_GuildBankMixin:Init_Plus() then
-            print(WoWTools_GuildBankMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_GuildBankMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
         return MenuButton.CloseButton
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         tooltip:AddLine(' ')
-        tooltip:AddLine(e.onlyChinese and '公会领袖' or GUILD_RANK0_DESC)
-        tooltip:AddLine(e.onlyChinese and '公会官员' or GUILD_RANK1_DESC)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '公会领袖' or GUILD_RANK0_DESC)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '公会官员' or GUILD_RANK1_DESC)
     end)
 
     if
@@ -66,7 +66,7 @@ local function Init_Menu(self, root)
 
 --打开，背包
     sub= root:CreateCheckbox(
-        e.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
+        WoWTools_Mixin.onlyChinese and '背包' or HUD_EDIT_MODE_BAGS_LABEL,
     function()
         return Save().autoOpenBags
     end, function()
@@ -79,12 +79,12 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '打开/关闭所有的背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
+        tooltip:AddLine(MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '打开/关闭所有的背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
     )
     end)
 
 --索引
-    root:CreateCheckbox(e.onlyChinese and '索引' or 'Index', function()
+    root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex
     end, function()
         Save().showIndex= not Save().showIndex and true or nil--显示，索引
@@ -100,13 +100,13 @@ local function Init_Menu(self, root)
             Save().BgAplha=value
             GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha)
         end,
-        name=e.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
+        name=WoWTools_Mixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
         minValue=0,
         maxValue=1,
         step=0.05,
         bit='%.2f',
         tooltip=function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '改变透明度' or CHANGE_OPACITY)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)
         end
     })
     sub:SetEnabled(isEnabled)
@@ -128,7 +128,7 @@ local function Init_Menu(self, root)
             Save().num=value
             WoWTools_GuildBankMixin:Update_Button()
         end,
-        name=e.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+        name=WoWTools_Mixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
         minValue=1,
         maxValue=32,
         step=1,
@@ -153,7 +153,7 @@ local function Init_Menu(self, root)
             Save().line=value
             WoWTools_GuildBankMixin:Update_Button()
         end,
-        name=e.onlyChinese and '间隔' or 'Interval',
+        name=WoWTools_Mixin.onlyChinese and '间隔' or 'Interval',
         minValue=0,
         maxValue=32,
         step=1,
@@ -195,7 +195,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_GuildBankMixin.addName)
-        GameTooltip:AddLine(e.onlyChinese and '刷新' or REFRESH)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
         GameTooltip:Show()
     end)
     RefreshButton:SetScript('OnClick', function()
@@ -203,7 +203,7 @@ local function Init()
             QueryGuildBankTab(tabID)
         end
         print(
-            WoWTools_GuildBankMixin.addName, e.onlyChinese and '刷新完成' or
+            WoWTools_GuildBankMixin.addName, WoWTools_Mixin.onlyChinese and '刷新完成' or
             format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFRESH, COMPLETE)
         )
     end)

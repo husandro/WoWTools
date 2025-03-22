@@ -16,7 +16,7 @@ local function Init_Menu(_, root)
     local sub
 
     local function set_tooltip(tooltip)
-        tooltip:AddLine('|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+        tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
     end
 
     sub=root:CreateCheckbox(
@@ -31,9 +31,9 @@ local function Init_Menu(_, root)
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 
-    root:CreateTitle(e.onlyChinese and '收件箱' or INBOX)
+    root:CreateTitle(WoWTools_Mixin.onlyChinese and '收件箱' or INBOX)
     root:CreateCheckbox(
-        (e.onlyChinese and '收件箱' or INBOX)..' Plus',
+        (WoWTools_Mixin.onlyChinese and '收件箱' or INBOX)..' Plus',
     function()
         return not Save().hide
     end, function()
@@ -42,10 +42,10 @@ local function Init_Menu(_, root)
     end)
 
 
-    root:CreateTitle(e.onlyChinese and '发件箱' or SENDMAIL)
+    root:CreateTitle(WoWTools_Mixin.onlyChinese and '发件箱' or SENDMAIL)
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '名单列表' or WHO_LIST,
+        WoWTools_Mixin.onlyChinese and '名单列表' or WHO_LIST,
     function()
         return not Save().hideSendNameList
     end, function()
@@ -55,7 +55,7 @@ local function Init_Menu(_, root)
 
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY),
+        WoWTools_Mixin.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY),
     function()
         return not Save().hideHistoryList
     end, function()
@@ -65,7 +65,7 @@ local function Init_Menu(_, root)
 
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL),
+        WoWTools_Mixin.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL),
     function()
         return not Save().hideItemButtonList
     end, function()
@@ -74,14 +74,14 @@ local function Init_Menu(_, root)
     end)
 
     sub=root:CreateCheckbox(
-        e.onlyChinese and '自动转到发件箱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, SENDMAIL)),
+        WoWTools_Mixin.onlyChinese and '自动转到发件箱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_TURN, SENDMAIL)),
     function()
         return not Save().notAutoToSendFrame
     end, function()
         Save().notAutoToSendFrame= not Save().notAutoToSendFrame and true or nil
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '尚未发现信件' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TAXI_PATH_UNREACHABLE, MAIL_LABEL))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '尚未发现信件' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TAXI_PATH_UNREACHABLE, MAIL_LABEL))
     end)
 
 
@@ -92,7 +92,7 @@ local function Init_Menu(_, root)
         end, setValue=function(value)
             Save().autoToSendFrameSecond=value
         end,
-        name=e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
+        name=WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS ,
         minValue=0.5,
         maxValue=5,
         step=0.1,
@@ -126,7 +126,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
         GameTooltip:Show()
     end)
 

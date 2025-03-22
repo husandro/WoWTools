@@ -167,7 +167,7 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 			GameTooltip:ClearLines()
 			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
-			GameTooltip:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '追踪' or TRACKING, WoWTools_Mixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(e.cn(info.name), info.factionID, 0,1,0,0,1,0)
 			GameTooltip:Show()

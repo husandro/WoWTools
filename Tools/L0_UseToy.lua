@@ -129,7 +129,7 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save.lockedToy)
     end
-    print(e.Icon.icon2.. addName, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 
@@ -264,7 +264,7 @@ local function Init_Menu_Toy(_, root)
         sub2=sub:CreateCheckbox(
             (has and '' or '|cff9e9e9e')
             ..icon
-            ..(e.onlyChinese and '锁定' or LOCK)..'|A:AdventureMapIcon-Lock:0:0|a',
+            ..(WoWTools_Mixin.onlyChinese and '锁定' or LOCK)..'|A:AdventureMapIcon-Lock:0:0|a',
         function(data)
             return Save.lockedToy==data.itemID
         end, function(data)
@@ -279,12 +279,12 @@ local function Init_Menu_Toy(_, root)
 --设置
         sub2=sub:CreateButton(
             '|A:common-icon-zoomin:0:0|a'
-            ..MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"),
+            ..MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"),
             set_ToggleCollectionsJournal,
             {itemID=itemID, name=toyName}
         )
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '设置' or SETTINGS)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)
         end)
 
         Set_Alt_Menu(sub, itemID)
@@ -292,7 +292,7 @@ local function Init_Menu_Toy(_, root)
 --移除
         sub:CreateDivider()
         sub2=sub:CreateButton(
-            '|A:common-icon-redx:0:0|a'..(e.onlyChinese and '移除' or REMOVE),
+            '|A:common-icon-redx:0:0|a'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE),
             function(data)
                 Remove_Toy(data.itemID)--移除
                 return MenuResponse.Refresh
@@ -325,14 +325,14 @@ local function Init_Menu(self, root)
 
 
 --移除未收集
-    sub2=sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(e.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
+    sub2=sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
         if IsControlKeyDown() then
             local n=0
             for itemID in pairs(Save.items) do
                 if not PlayerHasToy(itemID) then
                     Save.items[itemID]=nil
                     n=n+1
-                    print(n, e.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+                    print(n, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
                 end
             end
             if n>0 then
@@ -349,10 +349,10 @@ local function Init_Menu(self, root)
     end)
 
 --全部清除
-    sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
+    sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() then
             Save.items={}
-            print(e.Icon.icon2.. addName, e.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:Rest_Random()
         else
             return MenuResponse.Open
@@ -368,11 +368,11 @@ local function Init_Menu(self, root)
     for _ in pairs(P_Items) do
         all=all+1
     end
-    sub2=sub:CreateButton('|A:common-icon-undo:0:0|a'..(e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
+    sub2=sub:CreateButton('|A:common-icon-undo:0:0|a'..(WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
         if IsControlKeyDown() then
             Save.items= P_Items
             ToyButton:Rest_Random()
-            print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', e.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
         end
@@ -385,11 +385,11 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     sub2=sub:CreateButton(
         '|A:common-icon-zoomin:0:0|a'
-        ..MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"),
+        ..MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"),
         set_ToggleCollectionsJournal
     )
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine((e.onlyChinese and '设置' or SETTINGS))
+        tooltip:AddLine((WoWTools_Mixin.onlyChinese and '设置' or SETTINGS))
     end)
 
 --设置捷键
@@ -479,7 +479,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
                 e.GetEnabeleDisable(Save.items[itemID])..e.Icon.left
             )
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
             GameTooltip:Show()
             self:SetAlpha(1)
         end
@@ -620,9 +620,9 @@ local function Init()
             GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         GameTooltip:AddDoubleLine(
-            e.onlyChinese and '随机' or 'Random',
+            WoWTools_Mixin.onlyChinese and '随机' or 'Random',
             (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
             ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
             ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
@@ -804,11 +804,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
 
             Save= WoWToolsSave['Tools_UseToy'] or Save
 
-            addName='|A:collections-icon-favorites:0:0|a'..(e.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
+            addName='|A:collections-icon-favorites:0:0|a'..(WoWTools_Mixin.onlyChinese and '随机玩具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, USE, TOY))
 
 
             ToyButton= WoWTools_ToolsMixin:CreateButton({

@@ -28,13 +28,13 @@ local function Create_Texture(btn)
 --总人数
     btn.allText= WoWTools_LabelMixin:Create(btn, {color={r=0.62,g=0.62,b=0.62}})
     btn.allText:SetPoint('TOP', btn.Icon, 'BOTTOM')
-    btn.allText.tooltip= e.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS
+    btn.allText.tooltip= WoWTools_Mixin.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS
     Set_Sctipt(btn.allText)
 
 --在线人数
     btn.onlineText=WoWTools_LabelMixin:Create(btn, {color=true})
     btn.onlineText:SetPoint('BOTTOM', 0, 2)
-    btn.onlineText.tooltip= e.onlyChinese and '在线成员' or GUILD_MEMBERS_ONLINE
+    btn.onlineText.tooltip= WoWTools_Mixin.onlyChinese and '在线成员' or GUILD_MEMBERS_ONLINE
     Set_Sctipt(btn.onlineText)
 
 --是否有申请人
@@ -42,7 +42,7 @@ local function Create_Texture(btn)
     btn.inviteTexture:SetPoint('RIGHT',-6,0)
     btn.inviteTexture:SetSize(20,20)
     btn.inviteTexture:SetAtlas('communities-icon-invitemail')
-    btn.inviteTexture.tooltip= e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS
+    btn.inviteTexture.tooltip= WoWTools_Mixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS
     Set_Sctipt(btn.inviteTexture)
 
 --是否有未读信息
@@ -50,14 +50,14 @@ local function Create_Texture(btn)
     btn.msgTexture:SetPoint('RIGHT',-6,-20)
     btn.msgTexture:SetSize(20,20)
     btn.msgTexture:SetAtlas('communities-icon-notification')
-    btn.msgTexture.tooltip= e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION
+    btn.msgTexture.tooltip= WoWTools_Mixin.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION
     Set_Sctipt(btn.msgTexture)
 
 --是否跨派系
     btn.factionTexture= btn:CreateTexture(nil, 'BORDER', nil, 2)
     btn.factionTexture:SetPoint('RIGHT',-6,20)
     btn.factionTexture:SetSize(20,20)
-    btn.factionTexture.tooltip= e.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION
+    btn.factionTexture.tooltip= WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION
     btn.factionTexture.isCrossFaction= true
     Set_Sctipt(btn.factionTexture)
 

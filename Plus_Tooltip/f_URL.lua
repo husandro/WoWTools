@@ -21,7 +21,7 @@ local function Init_WoWHeadText()
     wowheadText= 'https://www.wowhead.com/%s=%d'
     raiderioText= 'https://raider.io/characters/%s/%s/%s'
 
-    if e.onlyChinese or LOCALE_zhTW then
+    if WoWTools_Mixin.onlyChinese or LOCALE_zhTW then
         WoWHead= 'https://www.wowhead.com/cn/'
         if not LOCALE_zhCN then
             wowheadText= 'https://www.wowhead.com/cn/%s=%d'
@@ -134,7 +134,7 @@ local function Create_Button(tooltip)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
             WoWTools_TooltipMixin.addName,
-            e.onlyChinese and '打开成就' or OBJECTIVES_VIEW_ACHIEVEMENT
+            WoWTools_Mixin.onlyChinese and '打开成就' or OBJECTIVES_VIEW_ACHIEVEMENT
         )
         GameTooltip:Show()
     end)

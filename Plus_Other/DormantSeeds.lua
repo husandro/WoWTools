@@ -78,11 +78,11 @@ local function Init()
             end
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         local col= not self:CanChangeAttribute() and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(e.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
         col= not Save.point and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(e.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
         GameTooltip:Show()
     end
 
@@ -109,7 +109,7 @@ local function Init()
             if self:CanChangeAttribute() then
                 Save.point=nil
                 self:set_Point()
-                print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end
     end)
@@ -279,12 +279,12 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWToolsSave['DormantSeeds']= nil
             Save= WoWToolsSave['Other_DormantSeeds'] or Save
 
             if not PlayerGetTimerunningSeasonID() then
-                addName= '|T656681:0|t'..(e.onlyChinese and '梦境之种' or 'DormantSeeds')
+                addName= '|T656681:0|t'..(WoWTools_Mixin.onlyChinese and '梦境之种' or 'DormantSeeds')
 
                 e.AddPanel_Check_Button({
                     checkName= addName,
@@ -294,18 +294,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Button then
                             Button:set_Shown(not Save.disabled)
                             Button:set_button(not Save.disabled)
-                            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         elseif not Save.disabled then
                             if Init() then Init=function()end end
                         end
                     end,
-                    buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                    buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
                     buttonFunc= function()
                         Save.Point=nil
                         if Button then
                             Button:set_Point()
                         end
-                        print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                     end,
                     tooltip=function()
                         return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName

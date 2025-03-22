@@ -5,7 +5,7 @@ local e= select(2, ...)
 
 
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(MonthlyActivitiesObjectiveTracker, e.onlyChinese and '旅行者日志' or TRACKER_HEADER_MONTHLY_ACTIVITIES, function(self)
+    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(MonthlyActivitiesObjectiveTracker, WoWTools_Mixin.onlyChinese and '旅行者日志' or TRACKER_HEADER_MONTHLY_ACTIVITIES, function(self)
         local num=0
         for _, perksActivityIDs in pairs(C_PerksActivities.GetTrackedPerksActivities() or {}) do
             for _, perksActivityID in pairs(perksActivityIDs) do

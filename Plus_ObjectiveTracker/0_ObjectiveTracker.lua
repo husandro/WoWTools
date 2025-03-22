@@ -33,13 +33,13 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName,addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((e.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (e.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
         GameTooltip:Show()
         f:SetAlpha(1)
     end)
     btn:SetScript('OnDoubleClick', func)
     function btn:print_text(num)
-        print(e.Icon.icon2.. addName, e.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -121,10 +121,10 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_ObjectiveTrackerMixin.Save= WoWToolsSave['ObjectiveTracker'] or WoWTools_ObjectiveTrackerMixin.Save
 
-           addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(e.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
+           addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
            WoWTools_ObjectiveTrackerMixin.addName= addName
 
             --添加控制面板
@@ -134,7 +134,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

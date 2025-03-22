@@ -29,27 +29,27 @@ local function Init_Options()
     })
 
     e.AddPanel_Check({
-        name= e.onlyChinese and '启用' or ENABLE,
+        name= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_TextureMixin.addName,
         category= Category,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
     local initializer2= e.AddPanel_Check_Button({
-        checkName= e.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+        checkName= WoWTools_Mixin.onlyChinese and '材质' or TEXTURES_SUBHEADER,
         GetValue= function() return not Save().disabledTexture end,
         SetValue= function()
             Save().disabledTexture= not Save().disabledTexture and true or nil
-            print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
-        buttonText= e.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
+        buttonText= WoWTools_Mixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
-            e.OpenPanelOpting(nil, (e.Player.useColor and e.Player.useColor.hex or '')..(e.onlyChinese and '颜色' or COLOR))
+            e.OpenPanelOpting(nil, (e.Player.useColor and e.Player.useColor.hex or '')..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         end,
         tooltip= WoWTools_TextureMixin.addName,
         layout= Layout,
@@ -57,7 +57,7 @@ local function Init_Options()
     })
 
     local initializer= e.AddPanelSider({
-        name= e.onlyChinese and '透明度' or 'Alpha',
+        name= WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
         GetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
         maxValue= 1,
@@ -67,31 +67,31 @@ local function Init_Options()
         SetValue= function(_, _, value2)
             if value2 then
                 Save().alpha= e.GetFormatter1to10(value2, 0, 1)
-                print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })
     initializer:SetParentInitializer(initializer2, function() if Save().disabled then return false else return true end end)
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '其它' or OTHER)
+    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '其它' or OTHER)
 
     initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
-        tooltip= (e.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
-                ..'|n|n'..((e.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
-                ..'|n'..((e.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
+        name= WoWTools_Mixin.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
+        tooltip= (WoWTools_Mixin.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
+                ..'|n|n'..((WoWTools_Mixin.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
+                ..'|n'..((WoWTools_Mixin.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. e.GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
         category= Category,
         GetValue= function() return not Save().disabledChatBubble end,
         SetValue= function()
             Save().disabledChatBubble= not Save().disabledChatBubble and true or nil
             WoWTools_TextureMixin:Init_Chat_Bubbles()
             if Save().disabledChatBubble and BubblesFrame then
-                print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '透明度' or 'Alpha',
+        name= WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
         GetValue= function() return Save().chatBubbleAlpha or 0.5 end,
         minValue= 0,
         maxValue= 1,
@@ -108,7 +108,7 @@ local function Init_Options()
     initializer:SetParentInitializer(initializer2, function() if Save().disabledChatBubble then return false else return true end end)
 
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '缩放' or UI_SCALE,
+        name= WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
         GetValue= function() return Save().chatBubbleSacal or 0.85 end,
         minValue= 0.3,
         maxValue= 1,
@@ -124,12 +124,12 @@ local function Init_Options()
     initializer:SetParentInitializer(initializer2, function() if Save().disabledChatBubble then return false else return true end end)
 
     e.AddPanel_Check_Sider({
-        checkName= (e.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
+        checkName= (WoWTools_Mixin.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
         checkGetValue= function() return Save().classPowerNum end,
         checkTooltip= WoWTools_TextureMixin.addName,
         checkSetValue= function()
             Save().classPowerNum= not Save().classPowerNum and true or false
-            print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function()
             local s= Save().classPowerNumSize
@@ -147,7 +147,7 @@ local function Init_Options()
                 local value3= e.GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
                 WoWTools_MoveMixin:Init_Class_Power()--职业
-                print(e.Icon.icon2..WoWTools_TextureMixin.addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_TextureMixin.addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end,
         layout= Layout,
@@ -155,13 +155,13 @@ local function Init_Options()
     })
 
     e.AddPanel_Check({
-        name= e.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
+        name= WoWTools_Mixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
         tooltip='HelpTip',
         category= Category,
         GetValue= function() return not Save().disabledHelpTip end,
         SetValue= function()
             Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
-            print(e.Icon.icon2..WoWTools_TextureMixin.addName, e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end

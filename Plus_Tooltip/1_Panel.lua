@@ -37,11 +37,11 @@ end
 local function Init_Panel()
     local addName= WoWTools_TooltipMixin.addName
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '选项' or OPTIONS)
+    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '选项' or OPTIONS)
 
 
     local initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
+        name= WoWTools_Mixin.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
         tooltip= addName,
         GetValue= function() return Save().setDefaultAnchor end,
         category= Category,
@@ -87,7 +87,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
     initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+        name= WoWTools_Mixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
         tooltip= addName,
         GetValue= function() return Save().cursorRight end,
         category= Category,
@@ -99,7 +99,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
     initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
+        name= WoWTools_Mixin.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
         tooltip= addName,
         GetValue= function() return Save().inCombatDefaultAnchor end,
         category= Category,
@@ -111,10 +111,10 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
 
 
-    e.AddPanel_Header(Layout, e.onlyChinese and '设置' or SETTINGS)
+    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)
 
     initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '模型' or MODEL,
+        name= WoWTools_Mixin.onlyChinese and '模型' or MODEL,
         tooltip= addName,
         GetValue= function() return not Save().hideModel end,
         category= Category,
@@ -125,7 +125,7 @@ local function Init_Panel()
     })
 
     initializer= e.AddPanel_Check({
-        name= e.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+        name= WoWTools_Mixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
         tooltip= addName,
         GetValue= function() return Save().modelLeft end,
         category= Category,
@@ -137,7 +137,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     --[[initializer= e.AddPanel_Check({
-        name= (e.onlyChinese and '模型' or MODEL)..' ID',
+        name= (WoWTools_Mixin.onlyChinese and '模型' or MODEL)..' ID',
         tooltip= addName,
         value= Save().showModelFileID,
         category= Category,
@@ -149,7 +149,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 ]]
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
+        name= WoWTools_Mixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
         GetValue= function() return Save().modelSize or 100 end,
         minValue= 40,
         maxValue= 300,
@@ -197,7 +197,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     initializer= e.AddPanelSider({
-        name= e.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
+        name= WoWTools_Mixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
         GetValue= function() return Save().modelFacing or -24 end,
         minValue= -1,
         maxValue= 1,
@@ -213,7 +213,7 @@ local function Init_Panel()
     initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
 
     e.AddPanel_Check({
-        name= e.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
+        name= WoWTools_Mixin.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
         tooltip= addName,
         GetValue= function() return not Save().disabledNPCcolor end,
         category= Category,
@@ -223,30 +223,30 @@ local function Init_Panel()
     })
 
     e.AddPanel_Check({
-        name= e.onlyChinese and '生命值' or HEALTH,
+        name= WoWTools_Mixin.onlyChinese and '生命值' or HEALTH,
         tooltip= addName,
         GetValue= function() return not Save().hideHealth end,
         category= Category,
         SetValue= function()
             Save().hideHealth= not Save().hideHealth and true or nil
-            print(e.Icon.icon2..WoWTools_TooltipMixin.addName,  e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(e.Icon.icon2..WoWTools_TooltipMixin.addName,  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 
 --<右键点击设置框体>
     e.AddPanel_Check({
-        name= e.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK,
+        name= WoWTools_Mixin.onlyChinese and '<右键点击设置框体>' or UNIT_POPUP_RIGHT_CLICK,
         tooltip=  e.GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK),
         GetValue= function() return Save().UNIT_POPUP_RIGHT_CLICK end,
         category= Category,
         SetValue= function()
             Save().UNIT_POPUP_RIGHT_CLICK= not Save().UNIT_POPUP_RIGHT_CLICK and true or nil
-            print(WoWTools_TooltipMixin.addName,  e.GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnRED_FONT_COLOR:'..(e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            print(WoWTools_TooltipMixin.addName,  e.GetShowHide(Save().UNIT_POPUP_RIGHT_CLICK), '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
         end
     })
     
     e.AddPanel_Check({
-        name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
+        name= format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, '|A:NPE_Icon:0:0|aCtrl+Shift', WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         tooltip= 'wowhead.com|nraider.io',
         GetValue= function() return Save().ctrl end,
         category= Category,
@@ -261,7 +261,7 @@ local function Init_Panel()
     e.AddPanel_Header(Layout, 'CVar')
 
     initializer2= e.AddPanel_Check({
-        name= e.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
+        name= WoWTools_Mixin.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
         tooltip= function() return WoWTools_TooltipMixin:Set_CVar(nil, true, true) end,
         GetValue= function() return Save().setCVar end,
         category= Category,
@@ -272,21 +272,21 @@ local function Init_Panel()
     })
 
     initializer= e.AddPanel_Button({
-        buttonText= e.onlyChinese and '设置' or SETTINGS,
+        buttonText= WoWTools_Mixin.onlyChinese and '设置' or SETTINGS,
         layout= Layout,
         SetValue= function()
             WoWTools_TooltipMixin:Set_CVar()
-            print(e.onlyChinese and '设置完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COMPLETE))
+            print(WoWTools_Mixin.onlyChinese and '设置完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COMPLETE))
         end
     })
     initializer:SetParentInitializer(initializer2)
 
     initializer= e.AddPanel_Button({
-        buttonText= e.onlyChinese and '默认' or DEFAULT,
+        buttonText= WoWTools_Mixin.onlyChinese and '默认' or DEFAULT,
         layout= Layout,
         SetValue= function()
             WoWTools_TooltipMixin:Set_CVar(true, nil, nil)
-            print(e.onlyChinese and '默认完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEFAULT, COMPLETE))
+            print(WoWTools_Mixin.onlyChinese and '默认完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEFAULT, COMPLETE))
         end
     })
     initializer:SetParentInitializer(initializer2)
@@ -301,29 +301,29 @@ local function Init_Panel()
         end,
         GetOptions= function()
             local container = Settings.CreateControlTextContainer()
-            container:Add(1, e.onlyChinese and '是' or YES)
-            container:Add(2, e.onlyChinese and '不' or NO)
+            container:Add(1, WoWTools_Mixin.onlyChinese and '是' or YES)
+            container:Add(2, WoWTools_Mixin.onlyChinese and '不' or NO)
             return container:GetData()
         end,
         GetValue= function() return C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 1 or 2 end,
-        name= e.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
+        name= WoWTools_Mixin.onlyChinese and '按下快捷键时施法' or ACTION_BUTTON_USE_KEY_DOWN,
         tooltip= function()
             return WoWTools_Mixin:Get_CVar_Tooltips({
                     name='ActionButtonUseKeyDown',
-                    msg=e.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
+                    msg=WoWTools_Mixin.onlyChinese and '在按下快捷键时施法，而不是在松开快捷键时施法。' or OPTION_TOOLTIP_ACTION_BUTTON_USE_KEY_DOWN,
                 }) end,
         category= Category
     })
 
     --[[initializer2= e.AddPanel_Check({
-        name= (e.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
-        tooltip= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
+        name= (WoWTools_Mixin.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
+        tooltip= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
         GetValue= function() return Save().ShowOptionsCVarTips end,
         category= Category,
         SetValue= function()
             Save().ShowOptionsCVarTips= not Save().ShowOptionsCVarTips and true or nil
             if not WoWTools_TooltipMixin:Init_CVar_Tooltip_Value() then
-                print(e.Icon.icon2..WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_TooltipMixin.addName, e.GetEnabeleDisable(not Save().ShowOptionsCVarTips), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         end
     })]]
@@ -359,13 +359,13 @@ function WoWTools_TooltipMixin:Init_Category()
 
 
     e.AddPanel_Check({
-        name= e.onlyChinese and '启用' or ENABLE,
+        name= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
         tooltip= self.addName,
         GetValue= function() return not Save().disabled end,
         category= Category,
         func= function()
             Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_Mixin.addName, self.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_Mixin.addName, self.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 end

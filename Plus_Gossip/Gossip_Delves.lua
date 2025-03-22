@@ -77,7 +77,7 @@ local function Init_OnShow(self)
             end
         end
         btn:Click()
-        print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', e.onlyChinese and '取消' or CANCEL)
+        print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', WoWTools_Mixin.onlyChinese and '取消' or CANCEL)
     end
 end
 
@@ -98,7 +98,7 @@ local function Init_Menu(_, root)
         return;
     end
     root:CreateDivider()
-    local sub= root:CreateCheckbox(e.onlyChinese and '最高等级' or BEST, function()
+    local sub= root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '最高等级' or BEST, function()
         return Save().delvesDifficultyMaxLevel
     end, function()
         Save().delvesDifficultyMaxLevel= not Save().delvesDifficultyMaxLevel and true or nil

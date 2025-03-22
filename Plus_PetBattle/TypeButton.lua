@@ -175,19 +175,19 @@ local function Init_Menu(self, root)
     local sub, sub2
 --打开，宠物手册
     sub=root:CreateButton(
-        '|TInterface\\Icons\\PetJournalPortrait:0|t'..(e.onlyChinese and '宠物手册' or PET_JOURNAL),
+        '|TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_Mixin.onlyChinese and '宠物手册' or PET_JOURNAL),
     function()
         WoWTools_LoadUIMixin:Journal(2)
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(e.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+        tooltip:AddLine(MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
     end)
 
     root:CreateDivider()
 --显示
     root:CreateCheckbox(
-        e.Icon.left..(e.onlyChinese and '显示' or SHOW),
+        e.Icon.left..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
     function()
         return self.frame:IsShown()
     end, function()
@@ -204,7 +204,7 @@ local function Init_Menu(self, root)
 
 --总是显示
     sub2=sub:CreateCheckbox(
-        e.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
+        WoWTools_Mixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
     function()
         return Save().TypeButton.allShow
     end, function()
@@ -215,11 +215,11 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(WoWTools_PetBattleMixin.addName4)
         tooltip:AddLine(' ')
-        tooltip:AddLine(e.onlyChinese and '自动显示：'
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '自动显示：'
             or (format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW)..':')
         )
-        tooltip:AddLine(e.onlyChinese and '宠物手册' or PET_JOURNAL)
-        tooltip:AddLine(e.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '宠物手册' or PET_JOURNAL)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
     end)
 
 --显示背景
@@ -343,12 +343,12 @@ local function Init(isShow)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName4)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
         if not C_AddOns.IsAddOnLoaded('Rematch') then
-            GameTooltip:AddDoubleLine(e.Icon.left..(e.onlyChinese and '图标' or EMBLEM_SYMBOL), e.onlyChinese and '过滤器: 宠物类型' or (FILTER..": "..PET_FAMILIES))
+            GameTooltip:AddDoubleLine(e.Icon.left..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), WoWTools_Mixin.onlyChinese and '过滤器: 宠物类型' or (FILTER..": "..PET_FAMILIES))
         end
         GameTooltip:Show()
     end

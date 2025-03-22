@@ -29,7 +29,7 @@ local function Init_Label()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:AddLine(' ')
         local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
-        GameTooltip:AddDoubleLine(e.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
         local ok2
         for k, v in pairs(GetAutoCompleteRealms()) do
             if v==e.Player.realm then
@@ -40,7 +40,7 @@ local function Init_Label()
             ok2=true
         end
         if not ok2 then
-            GameTooltip:AddDoubleLine(e.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
         end
 
         GameTooltip:AddLine(' ')
@@ -50,10 +50,10 @@ local function Init_Label()
         GameTooltip:AddLine(' ')
         if GameLimitedMode_IsActive() then
             local rLevel, rMoney, profCap = GetRestrictedAccountData()
-            GameTooltip:AddLine(e.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED, 1,0,0)
-            GameTooltip:AddDoubleLine(e.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
-            GameTooltip:AddDoubleLine(e.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
-            GameTooltip:AddDoubleLine(e.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '受限制' or CHAT_MSG_RESTRICTED, 1,0,0)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '等级' or LEVEL, rLevel, 1,0,0, 1,0,0)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '钱' or MONEY, GetMoneyString(rMoney), 1,0,0, 1,0,0)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, profCap, 1,0,0, 1,0,0)
 
         end
 

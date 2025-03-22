@@ -22,16 +22,16 @@ local function Set_Tooltip(self)
 
 
     GameTooltip:AddDoubleLine(
-        e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
+        WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
         e.Icon.right
     )
     GameTooltip:AddDoubleLine(
-        e.onlyChinese and '移动' or NPE_MOVE,
+        WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,
         'Alt+'..e.Icon.right
     )
     if self.setZoom then
         GameTooltip:AddDoubleLine(
-            (e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
+            (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
             'Alt+'..e.Icon.mid
         )
     end
@@ -67,7 +67,7 @@ local function Init_Menu(self, root)
     root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'
         ..(Save().point[self.name] and '' or '|cff828282')
-        ..(e.onlyChinese and '重置位置' or RESET_POSITION),
+        ..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION),
     function()
         Save().point[self.name]= nil
         local p=self.pointSave

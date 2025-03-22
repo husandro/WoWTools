@@ -79,24 +79,24 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
         return
     end
     if Save().Sell[itemID] and not Save().notSellCustom then
-        return e.onlyChinese and '自定义' or CUSTOM
+        return WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM
     end
     if not e.Is_Timerunning and not Save().notSellBoss and itemLink then
         local level= Save().bossItems[itemID]
         if level then
             local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
             if level== itemLevel  then
-                return e.onlyChinese and '首领' or BOSS
+                return WoWTools_Mixin.onlyChinese and '首领' or BOSS
             end
         end
     end
     if quality==0 then
         if WoWTools_CollectedMixin:GetPet9Item(itemID, true) then--宠物兑换, wow9.0
-            return e.onlyChinese and '宠物' or PET
+            return WoWTools_Mixin.onlyChinese and '宠物' or PET
 
         elseif not Save().notSellJunk then--垃圾
             if isBound==true then
-                return e.onlyChinese and '垃圾' or BAG_FILTER_JUNK
+                return WoWTools_Mixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK
             else
                 local classID, subclassID = select(6, C_Item.GetItemInfoInstant(itemID))
                 if (classID==2 or classID==4) and subclassID~=0 then
@@ -105,7 +105,7 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
                         return
                     end
                 end
-                return e.onlyChinese and '垃圾' or BAG_FILTER_JUNK
+                return WoWTools_Mixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK
             end
         end
     end
@@ -186,12 +186,12 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
             WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
             WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
             WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
 
-            local addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(e.onlyChinese and '商人' or MERCHANT)
+            local addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_Mixin.onlyChinese and '商人' or MERCHANT)
             WoWTools_SellBuyMixin.addName= addName
 
             --添加控制面板
@@ -200,7 +200,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

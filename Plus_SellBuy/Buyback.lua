@@ -57,10 +57,10 @@ local function set_buyback_item()
 
     C_Timer.After(0.3, function()
         for index, itemLink in pairs(tab) do
-            print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '购回' or BUYBACK), itemLink)
+            print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '购回' or BUYBACK), itemLink)
         end
         for index, info in pairs(no) do
-            print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, index..')|cnRED_FONT_COLOR:'..(e.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
+            print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, index..')|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
         end
     end)
 end
@@ -81,17 +81,17 @@ local function Add_Remove_ToSave(itemID)
     local text
     if Save().noSell[itemID] then
         Save().noSell[itemID]=nil
-        text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)
+        text= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
     else
         Save().noSell[itemID]=true
         Save().Sell[itemID]=nil
-        text='|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)
+        text='|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)
         set_buyback_item()
     end
     print(
         WoWTools_Mixin.addName,
         WoWTools_SellBuyMixin.addName,
-        e.onlyChinese and '回购' or BUYBACK,
+        WoWTools_Mixin.onlyChinese and '回购' or BUYBACK,
         text
     )
 end
@@ -121,10 +121,10 @@ local function Init_Menu(self, root)
             Add_Remove_ToSave(data.itemID)
         end, {itemID=itemID})
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '添加回购' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BUYBACK))
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '添加回购' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BUYBACK))
         end)
     else
-        root:CreateTitle(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+        root:CreateTitle(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
         
     end
 
@@ -159,7 +159,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         
-        GameTooltip:AddDoubleLine(e.onlyChinese and '回购' or BUYBACK, '|cnGREEN_FONT_COLOR: #'..(self:set_text() or ''))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '回购' or BUYBACK, '|cnGREEN_FONT_COLOR: #'..(self:set_text() or ''))
         GameTooltip:AddLine(' ')
 
         local infoType, itemID= GetCursorInfo()
@@ -170,10 +170,10 @@ local function Init()
         if (infoType=='item' or infoType=='merchant') and itemID then
             local name= WoWTools_ItemMixin:GetName(itemID)
             if Save().noSell[itemID] then
-                GameTooltip:AddDoubleLine(name, (e.onlyChinese and '移除' or REMOVE)..e.Icon.left)
+                GameTooltip:AddDoubleLine(name, (WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..e.Icon.left)
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
-                GameTooltip:AddDoubleLine(name, (e.onlyChinese and '添加' or ADD)..e.Icon.left)
+                GameTooltip:AddDoubleLine(name, (WoWTools_Mixin.onlyChinese and '添加' or ADD)..e.Icon.left)
                 local icon= C_Item.GetItemIconByID(itemID)
                 if icon then
                     self.texture:SetTexture(icon)
@@ -181,8 +181,8 @@ local function Init()
             end
 
         else
-            GameTooltip:AddLine(e.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
         end
         GameTooltip:Show()
     end

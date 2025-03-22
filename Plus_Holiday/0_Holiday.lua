@@ -46,11 +46,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             WoWTools_HolidayMixin.Save= WoWToolsSave['Plus_Holiday'] or Save()
 
-            local addName= '|A:GarrisonTroops-Health:0:0|a'..(e.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)
+            local addName= '|A:GarrisonTroops-Health:0:0|a'..(WoWTools_Mixin.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)
             WoWTools_HolidayMixin.addName= addName
 
             e.AddPanel_Check_Button({
@@ -58,15 +58,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
-                buttonText= e.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
                     Save().point=nil
                     if WoWTools_HolidayMixin.TrackButton then
                         WoWTools_HolidayMixin.TrackButton:set_point()
                     end
-                    print(e.Icon.icon2.. addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 layout= nil,
                 category= nil,

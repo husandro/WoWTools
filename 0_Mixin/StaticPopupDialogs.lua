@@ -41,10 +41,10 @@ local function Init()
 StaticPopupDialogs['WoWTools_RestData']= {
     text=WoWTools_Mixin.addName
         ..'|n|n%s|n|n|cnRED_FONT_COLOR:'
-        ..(e.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
+        ..(WoWTools_Mixin.onlyChinese and "你想要将所有选项重置为默认状态吗？|n将会立即对所有设置生效。" or CONFIRM_RESET_SETTINGS)
         ..'|r|n|n',
-    button1= e.onlyChinese and '重置' or RESET,
-    button2= e.onlyChinese and '取消' or CANCEL,
+    button1= WoWTools_Mixin.onlyChinese and '重置' or RESET,
+    button2= WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
     OnAccept=function(_, SetValue)
         SetValue()
     end,
@@ -67,9 +67,9 @@ StaticPopupDialogs['WoWTools_RestData']= {
 
 StaticPopupDialogs['WoWTools_EditText']={
     text=WoWTools_Mixin.addName..'|n|n%s|n',
-    button1= e.onlyChinese and '修改' or EDIT,
-    button2= e.onlyChinese and '取消' or CANCEL,
-    button3= e.onlyChinese and '移除' or REMOVE,
+    button1= WoWTools_Mixin.onlyChinese and '修改' or EDIT,
+    button2= WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
+    button3= WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
     OnShow=function(self, data)
         self.editBox:SetAutoFocus(false)
         self.editBox:SetText(data.text or '')
@@ -149,9 +149,9 @@ StaticPopup_Show('WoWTools_EditText',
 
 StaticPopupDialogs['WoWTools_Item'] = {
 	text = WoWTools_Mixin.addName..'|n|n%s',
-	button1 = e.onlyChinese and '添加' or ADD,
-	button2 = e.onlyChinese and '取消' or CANCEL,
-    button3 = e.onlyChinese and '移除' or REMOVE,
+	button1 = WoWTools_Mixin.onlyChinese and '添加' or ADD,
+	button2 = WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
+    button3 = WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
     OnShow=function(self, data)
         if data.OnShow then
             data.OnShow(self, data)
@@ -192,10 +192,10 @@ StaticPopup_Show('WoWTools_Item',addName, nil, {
 
 
 StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
-        text=WoWTools_Mixin.addName..' '..(e.onlyChinese and '区域' or FLOOR)..'|n|n%s',
-        button1=e.onlyChinese and '区域' or FLOOR,
-        button2=e.onlyChinese and '取消' or CANCEL,
-        button3=e.onlyChinese and '移除' or REMOVE,
+        text=WoWTools_Mixin.addName..' '..(WoWTools_Mixin.onlyChinese and '区域' or FLOOR)..'|n|n%s',
+        button1=WoWTools_Mixin.onlyChinese and '区域' or FLOOR,
+        button2=WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
+        button3=WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
         OnShow = function(self, data)
             self.editBox:SetAutoFocus(false)
             self.editBox:SetText(data.text or '')
@@ -226,7 +226,7 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             local frame= self:GetParent()
             local btn=frame.button1
             btn:SetEnabled((text and text~=data.text) and true or false)
-            btn:SetText(text or (e.onlyChinese and '无' or NONE))
+            btn:SetText(text or (WoWTools_Mixin.onlyChinese and '无' or NONE))
         end,
         EditBoxOnEscapePressed = function(self, data)
             local text=self:GetText()
@@ -257,8 +257,8 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
 
     StaticPopupDialogs['WoWTools_OK']={
         text =WoWTools_Mixin.addName..'|n|n%s',
-        button1 = e.onlyChinese and '确定' or OKAY,
-        button2 = e.onlyChinese and '取消' or CANCEL,
+        button1 = WoWTools_Mixin.onlyChinese and '确定' or OKAY,
+        button2 = WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
         OnShow=function(self, data)
             if data.OnShow then
                 data.OnShow(self, data)
@@ -284,13 +284,13 @@ StaticPopup_Show('WoWTools_OK',
 
 
     StaticPopupDialogs["WoWTools_Tooltips_LinkURL"] = {
-        text= '|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
-        button1 = e.onlyChinese and '关闭' or CLOSE,
+        text= '|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
+        button1 = WoWTools_Mixin.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
                     print(e.Icon.icon2..WoWTools_TooltipMixin.addName,
-                            '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
+                            '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )
                     s:GetParent():Hide()
@@ -341,8 +341,8 @@ StaticPopup_Show('WoWTools_OK',
     StaticPopupDialogs['WoWTools_Currency']= {
         text='|n|n|n',
         hasEditBox=true,
-        button1= e.onlyChinese and '添加' or ADD,
-        button2= e.onlyChinese and '取消' or CANCEL,
+        button1= WoWTools_Mixin.onlyChinese and '添加' or ADD,
+        button2= WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
         OnShow=function(s, data)
             s.editBox:SetNumeric(true)
             s.editBox:SetNumber(data.GetValue() or 0)
@@ -365,7 +365,7 @@ StaticPopup_Show('WoWTools_OK',
             local p= s:GetParent()
             if currencyID>0 and currencyID<214748364 then
                 name, info=WoWTools_CurrencyMixin:GetName(currencyID, nil, nil)
-                text=(e.onlyChinese and '货币' or TOKENS)
+                text=(WoWTools_Mixin.onlyChinese and '货币' or TOKENS)
                 if info and name then
                     text= text..'|n|n'..name
                     icon=info.iconFileID

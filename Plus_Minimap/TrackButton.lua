@@ -395,7 +395,7 @@ local function set_OnEnter_btn_tips(self)
                     verticalPadding = -overflow
                 end
             elseif waitingForData then
-                GameTooltip_SetTitle(GameTooltip, e.onlyChinese and '获取数据' or RETRIEVING_DATA)
+                GameTooltip_SetTitle(GameTooltip, WoWTools_Mixin.onlyChinese and '获取数据' or RETRIEVING_DATA)
             end
             if verticalPadding then
                 GameTooltip:SetPadding(0, verticalPadding)
@@ -432,7 +432,7 @@ local function set_OnEnter_btn_tips(self)
                 local secondsLeft = C_AreaPoiInfo.GetAreaPOISecondsLeft(self.areaPoiID)
                 if secondsLeft and secondsLeft > 0 then
                     local timeString = SecondsToTime(secondsLeft)
-                    GameTooltip_AddNormalLine(GameTooltip, format(e.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString))
+                    GameTooltip_AddNormalLine(GameTooltip, format(WoWTools_Mixin.onlyChinese and '剩余时间：%s' or BONUS_OBJECTIVE_TIME_LEFT, timeString))
                     addedTooltipLine = true
                 end
             end
@@ -722,8 +722,8 @@ local function set_Button_Text()
                 set_OnEnter_btn_tips(self)
 
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(e.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
-                GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
+                GameTooltip:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
 
                 GameTooltip:Show()
                 TrackButton:SetButtonState('PUSHED')
@@ -772,7 +772,7 @@ local function Init_Menu(self, root)--菜单
     local sub, sub2
 --显示
     sub=root:CreateCheckbox(
-        e.onlyChinese and '显示' or SHOW,
+        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
     function()
         return Save().vigentteButtonShowText
     end, function()
@@ -784,7 +784,7 @@ local function Init_Menu(self, root)--菜单
 
     
     sub:CreateCheckbox(
-        e.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
+        WoWTools_Mixin.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
     function()
         return Save().textToDown
     end, function()
@@ -824,7 +824,7 @@ local function Init_Menu(self, root)--菜单
 --当前
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        (e.onlyChinese and '当前' or REFORGE_CURRENT)..(Save().vigentteSound and '|A:chatframe-button-icon-voicechat:0:0|a' or ' ')..'Vignette',
+        (WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT)..(Save().vigentteSound and '|A:chatframe-button-icon-voicechat:0:0|a' or ' ')..'Vignette',
     function()
         return not Save().hideVigentteCurrent
     end, function()
@@ -833,7 +833,7 @@ local function Init_Menu(self, root)--菜单
 
 --小地图
     sub:CreateCheckbox(
-        (e.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
+        (WoWTools_Mixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL),
     function()
         return not Save().hideVigentteCurrentOnMinimap
     end, function()
@@ -843,7 +843,7 @@ local function Init_Menu(self, root)--菜单
 
 --世界地图
     sub:CreateCheckbox(
-        (e.onlyChinese and '世界地图' or WORLDMAP_BUTTON),
+        (WoWTools_Mixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON),
     function()
         return not Save().hideVigentteCurrentOnWorldMap
     end, function()
@@ -854,7 +854,7 @@ local function Init_Menu(self, root)--菜单
     sub:CreateCheckbox(
         '|A:chatframe-button-icon-voicechat:0:0|a'
         ..(Save().hideVigentteCurrentOnWorldMap and '|cff9e9e9e' or '')
-        ..(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND)),
+        ..(WoWTools_Mixin.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND)),
     function()
         return Save().vigentteSound
     end, function()
@@ -863,7 +863,7 @@ local function Init_Menu(self, root)--菜单
             self:set_VIGNETTES_UPDATED(true)
             self:set_event()
             if Save().vigentteSound then
-                self:speak_Text(e.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
+                self:speak_Text(WoWTools_Mixin.onlyChinese and '播放声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTTRACE_BUTTON_PLAY, SOUND))
             end
         end
     end)
@@ -875,7 +875,7 @@ local function Init_Menu(self, root)--菜单
         WoWTools_Mixin:Load({id=questID, type=='quest'})
     end
     sub=root:CreateButton(
-        (e.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)
+        (WoWTools_Mixin.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS)
         ..' |cnGREEN_FONT_COLOR:#'..num,
     function()
         return MenuResponse.Open
@@ -892,7 +892,7 @@ local function Init_Menu(self, root)--菜单
             print(e.Icon.icon2.. addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
         end, {questID=questID})
         sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
             tooltip:AddLine('questID '..description.data.questID)
         end)
     end
@@ -900,7 +900,7 @@ local function Init_Menu(self, root)--菜单
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
-            e.onlyChinese and '全部清除' or CLEAR_ALL,
+            WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
             Save().questIDs={}
         end)
@@ -926,7 +926,7 @@ local function Init_Menu(self, root)--菜单
             Save().areaPoiIDs[data.areaPoiID]= not Save().areaPoiIDs[data.areaPoiID] and data.uiMapID or nil
         end, {areaPoiID=areaPoiID, uiMapID=uiMapID})
         sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
             tooltip:AddLine('uiMapID '..description.data.uiMapID)
             tooltip:AddLine('areaPoiID '..description.data.areaPoiID)
         end)
@@ -935,7 +935,7 @@ local function Init_Menu(self, root)--菜单
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
-            e.onlyChinese and '全部清除' or CLEAR_ALL,
+            WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
             Save().areaPoiIDs={}
         end)
@@ -948,7 +948,7 @@ local function Init_Menu(self, root)--菜单
         num= num+1
     end
     sub=root:CreateButton(
-        (e.onlyChinese and '地图' or WORLD_MAP)..'|cnGREEN_FONT_COLOR:#'..num,
+        (WoWTools_Mixin.onlyChinese and '地图' or WORLD_MAP)..'|cnGREEN_FONT_COLOR:#'..num,
     function()
         return MenuResponse.Open
     end)
@@ -962,7 +962,7 @@ local function Init_Menu(self, root)--菜单
             Save().uiMapIDs[data.uiMapID]= not Save().uiMapIDs[data.uiMapID] and true or nil
         end, {uiMapID=uiMapID})
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
             tooltip:AddLine('uiMapID '..uiMapID)
         end)
     end
@@ -970,7 +970,7 @@ local function Init_Menu(self, root)--菜单
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
-            e.onlyChinese and '全部清除' or CLEAR_ALL,
+            WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
             Save().uiMapIDs={}
         end)
@@ -1084,9 +1084,9 @@ local function Init_Button()
         GameTooltip:AddDoubleLine(addName, addName2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-        GameTooltip:AddDoubleLine(e.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((e.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..e.Icon.mid)
         GameTooltip:Show()
     end
 
@@ -1304,7 +1304,7 @@ local function Init_WorldFrame_Button()
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
             print(e.Icon.icon2.. addName, addName2,
                 name,
-                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
             self:set_texture()
         end
@@ -1357,7 +1357,7 @@ local function Init_WorldFrame_Event()
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
                 print(e.Icon.icon2.. addName, addName2,
                     WoWTools_QuestMixin:GetLink(f.questID),
-                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
             end
         end)
@@ -1385,7 +1385,7 @@ local function Init_WorldFrame_Event()
                     print(e.Icon.icon2.. addName, addName2,
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
-                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                     )
                 end
             end

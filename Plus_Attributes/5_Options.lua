@@ -25,7 +25,7 @@ local function Init()--设置 panel
             check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
             check:SetChecked(Save().onlyDPS)
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            if e.onlyChinese then
+            if WoWTools_Mixin.onlyChinese then
                 check.text:SetText("仅限"..INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
             else
                 check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
@@ -40,7 +40,7 @@ local function Init()--设置 panel
         elseif info.tank and not findTank then
             local text= WoWTools_LabelMixin:Create(panel)
             text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-            if e.onlyChinese then
+            if WoWTools_Mixin.onlyChinese then
                 text:SetText("仅限"..INLINE_TANK_ICON)
             else
                 text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_TANK_ICON)
@@ -75,7 +75,7 @@ local function Init()--设置 panel
             GameTooltip:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
             if not info.zeroShow then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(e.GetShowHide(not Save().tab[self.name].hide), (e.onlyChinese and '值' or 'value: ')..' < 1 ='..(e.onlyChinese and '隐藏' or HIDE))
+                GameTooltip:AddDoubleLine(e.GetShowHide(not Save().tab[self.name].hide), (WoWTools_Mixin.onlyChinese and '值' or 'value: ')..' < 1 ='..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE))
             end
             GameTooltip:Show()
         end)
@@ -123,7 +123,7 @@ local function Init()--设置 panel
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(self.text, self.name, r2, g2, b2)
-                GameTooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..e.Icon.left)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 GameTooltip:Show()
@@ -150,7 +150,7 @@ local function Init()--设置 panel
 
             --位数，bit
             local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
-                text= e.Player.col..(e.onlyChinese and '位数' or 'bit'),
+                text= e.Player.col..(WoWTools_Mixin.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
                     self:SetValue(value)
@@ -169,7 +169,7 @@ local function Init()--设置 panel
             local targetCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             targetCheck:SetChecked(Save().showTargetSpeed)
             targetCheck:SetPoint('LEFT', text, 'RIGHT',2, 0)
-            targetCheck.text:SetText('|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET))
+            targetCheck.text:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标' or TARGET))
             targetCheck:SetScript('OnClick',function()
                 Save().showTargetSpeed= not Save().showTargetSpeed and true or nil
                 WoWTools_AttributesMixin:Init_Target_Speed()
@@ -180,21 +180,21 @@ local function Init()--设置 panel
             dragonriding:SetChecked(not Save().disabledDragonridingSpeed)
             --dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
             dragonriding:SetPoint('TOPLEFT', text, 'BOTTOMLEFT', 0, -2)
-            dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', e.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
+            dragonriding.text:SetFormattedText('|A:dragonriding_vigor_decor:0:0|a%s', WoWTools_Mixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE)
             dragonriding:SetScript('OnClick',function()
                 Save().disabledDragonridingSpeed= not Save().disabledDragonridingSpeed and true or nil
                 WoWTools_AttributesMixin:Init_Dragonriding_Speed()
-                print(e.Icon.icon2..WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             --载具，速度
             local vehicleSpeedCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             vehicleSpeedCheck:SetChecked(not Save().disabledVehicleSpeed)
             vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
-            vehicleSpeedCheck.text:SetFormattedText(e.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
+            vehicleSpeedCheck.text:SetFormattedText(WoWTools_Mixin.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save().disabledVehicleSpeed= not Save().disabledVehicleSpeed and true or nil
-                print(e.Icon.icon2..WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), e.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(e.Icon.icon2..WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 WoWTools_AttributesMixin:Init_Vehicle_Speed()
             end)
 
@@ -203,7 +203,7 @@ local function Init()--设置 panel
             local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
             check2:SetChecked(Save().tab['VERSATILITY'].onlyDefense)
             check2:SetPoint('LEFT', text, 'RIGHT',2,0)
-            check2.text:SetText((e.onlyChinese and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
+            check2.text:SetText((WoWTools_Mixin.onlyChinese and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
             check2:SetScript('OnMouseDown', function(self)
                 Save().tab['VERSATILITY'].onlyDefense= not Save().tab['VERSATILITY'].onlyDefense and true or nil
                 if Save().tab['VERSATILITY'].onlyDefense then
@@ -253,7 +253,7 @@ local function Init()--设置 panel
     local text= WoWTools_LabelMixin:Create(panel, {size=26})--26)--Text
     text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -30)
     --text:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
-    text:SetText(e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
+    text:SetText(WoWTools_Mixin.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))
     text:EnableMouse(true)
     text.r, text.g, text.b, text.a= Save().font.r, Save().font.g, Save().font.b, Save().font.a
     WoWTools_AttributesMixin:Set_Shadow(text)--设置，字体阴影
@@ -281,7 +281,7 @@ local function Init()--设置 panel
     text:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))..e.Icon.left..(e.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))..e.Icon.left..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:AddDoubleLine('r'..(self2.r or 1)..' g'..(self2.g or 1)..' b'..(self2.b or 1), 'a'..(self2.a or 1))
         GameTooltip:Show()
         self2:SetAlpha(0.3)
@@ -318,7 +318,7 @@ local function Init()--设置 panel
 
     local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     notTextCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -32)
-    notTextCheck.text:SetText(e.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
+    notTextCheck.text:SetText(WoWTools_Mixin.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
     notTextCheck:SetChecked(Save().notText)
     notTextCheck:SetScript('OnMouseDown', function()
         Save().notText= not Save().notText and true or nil
@@ -332,7 +332,7 @@ local function Init()--设置 panel
     textColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -359,7 +359,7 @@ local function Init()--设置 panel
 
     check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint("TOPLEFT", notTextCheck, 'BOTTOMLEFT')
-    check.text:SetText((e.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
+    check.text:SetText((WoWTools_Mixin.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
     check:SetChecked(Save().toLeft)
     check:SetScript('OnMouseDown', function()
         Save().toLeft= not Save().toLeft and true or nil
@@ -369,7 +369,7 @@ local function Init()--设置 panel
 
     local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
     check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
-    check5.text:SetText((e.onlyChinese and '数值' or STATUS_TEXT_VALUE)..' 2K')
+    check5.text:SetText((WoWTools_Mixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)..' 2K')
     check5:SetChecked(Save().useNumber)
     check5:SetScript('OnMouseDown', function()
         Save().useNumber= not Save().useNumber and true or nil
@@ -378,7 +378,7 @@ local function Init()--设置 panel
 
     --位数，bit
     local sliderBit= e.CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
-        text=(e.onlyChinese and '位数' or 'bit'),
+        text=(WoWTools_Mixin.onlyChinese and '位数' or 'bit'),
         func=function(self, value)
             value= math.ceil(value)
             self:SetValue(value)
@@ -392,7 +392,7 @@ local function Init()--设置 panel
 
     local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
     barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
-    barValueText.text:SetText(e.onlyChinese and '增益' or BENEFICIAL)
+    barValueText.text:SetText(WoWTools_Mixin.onlyChinese and '增益' or BENEFICIAL)
     barValueText:SetChecked(Save().setMaxMinValue)
     barValueText:SetScript('OnMouseDown', function()
         Save().setMaxMinValue= not Save().setMaxMinValue and true or nil
@@ -415,7 +415,7 @@ local function Init()--设置 panel
     panel.barGreenColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -447,7 +447,7 @@ local function Init()--设置 panel
     panel.barRedColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(e.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -483,7 +483,7 @@ local function Init()--设置 panel
 
     local check3= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
     check3:SetPoint("LEFT", check2.text, 'RIGHT', 6, 0)
-    check3.text:SetText((e.onlyChinese and '格式' or FORMATTING).. ' 2')
+    check3.text:SetText((WoWTools_Mixin.onlyChinese and '格式' or FORMATTING).. ' 2')
     check3:SetChecked(Save().barTexture2)
     check3:SetScript('OnMouseDown', function()
         Save().barTexture2= not Save().barTexture2 and true or nil
@@ -492,7 +492,7 @@ local function Init()--设置 panel
 
     --bar, 宽度
     local barWidth= e.CSlider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
-        text=e.onlyChinese and '宽' or WIDE,
+        text=WoWTools_Mixin.onlyChinese and '宽' or WIDE,
         func=function(self, value)
             value= math.floor(value)
             self:SetValue(value)
@@ -519,7 +519,7 @@ local function Init()--设置 panel
 
     local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar 向左
     barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
-    barToLeft.text:SetText(e.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)
+    barToLeft.text:SetText(WoWTools_Mixin.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)
     barToLeft:SetChecked(Save().barToLeft)
     barToLeft:SetScript('OnMouseDown', function()
         Save().barToLeft= not Save().barToLeft and true or nil
@@ -556,14 +556,14 @@ local function Init()--设置 panel
 
     --文本，截取
     local slider3= e.CSlider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
-        text=e.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
+        text=WoWTools_Mixin.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
         func=function(self, value, userInput)
             value= math.floor(value)
             self:SetValue(value)
             self.Text:SetText(value)
             Save().gsubText= value>0 and value or nil
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', e.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+            print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', WoWTools_Mixin.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
         end,
         tips=nil
     })
@@ -587,7 +587,7 @@ local function Init()--设置 panel
     checkStrupper:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '大写' or 'Uppercase')
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '大写' or 'Uppercase')
         GameTooltip:Show()
     end)
 
@@ -606,13 +606,13 @@ local function Init()--设置 panel
     checkStrlower:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '小写' or 'Lowercase')
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '小写' or 'Lowercase')
         GameTooltip:Show()
     end)
 
     --缩放
     local slider4= e.CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
-        text=e.onlyChinese and '缩放' or UI_SCALE,
+        text=WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
         func=function(self, value)
             value= tonumber(format('%.1f', value)) or 1
             self:SetValue(value)
@@ -626,7 +626,7 @@ local function Init()--设置 panel
 
 
     local sliderButtonAlpha = e.CSlider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
-    text=e.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
+    text=WoWTools_Mixin.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         value= value==0 and 0 or value
@@ -639,7 +639,7 @@ local function Init()--设置 panel
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
     local sliderButtonScale = e.CSlider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
-    text=e.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
+    text=WoWTools_Mixin.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
     func=function(self, value)
         value= tonumber(format('%.01f', value))
         value= value<0.4 and 0.4 or value
@@ -662,14 +662,14 @@ local function Init()--设置 panel
     restPosti:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine((not Save().point and '|cff9e9e9e' or '')..(e.onlyChinese and '重置位置' or RESET_POSITION))
+        GameTooltip:AddLine((not Save().point and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION))
         GameTooltip:Show()
     end)
 
 
     local checkHidePet= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
     checkHidePet:SetPoint('BOTTOMLEFT')
-    checkHidePet.text:SetText(e.onlyChinese and '自动隐藏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+    checkHidePet.text:SetText(WoWTools_Mixin.onlyChinese and '自动隐藏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
     checkHidePet:SetChecked(Save().hideInPetBattle)
     checkHidePet:SetScript('OnMouseDown', function()
         Save().hideInPetBattle= not Save().hideInPetBattle and true or nil

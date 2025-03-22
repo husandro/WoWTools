@@ -16,7 +16,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected==0 then
-            BattlePetTooltipTemplate_AddTextLine(tooltip, format(e.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
+            BattlePetTooltipTemplate_AddTextLine(tooltip, format(WoWTools_Mixin.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
         end
     end
     BattlePetTooltipTemplate_AddTextLine(tooltip, 'speciesID '..speciesID..'    |T'..speciesIcon..':0|t'..speciesIcon)
@@ -68,7 +68,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
         BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
         BattlePetTooltipTemplate_AddTextLine(tooltip,
             '|TInterface\\Icons\\PetJournalPortrait:0|t'
-            ..(e.onlyChinese and '搜索' or SEARCH)..' |A:NPE_Icon:0:0|aAlt'
+            ..(WoWTools_Mixin.onlyChinese and '搜索' or SEARCH)..' |A:NPE_Icon:0:0|aAlt'
         )
     end
 

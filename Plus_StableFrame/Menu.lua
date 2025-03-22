@@ -24,7 +24,7 @@ local function Init_Menu(_, root)
     local sub
     --所有宠物
         root:CreateCheckbox(
-            '|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS),
+            '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '所有宠物' or BATTLE_PETS_TOTAL_PETS),
         function()
             return Save().show_All_List
         end, function()
@@ -38,14 +38,14 @@ local function Init_Menu(_, root)
         if Save().show_All_List then
     --排序
             sub=root:CreateCheckbox(
-                e.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
+                WoWTools_Mixin.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
             function()
                 return not Save().sortDown
             end, function()
                 Save().sortDown= not Save().sortDown and true or nil
             end)
             sub:SetTooltip(function(tooltip)
-                tooltip:AddLine(e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)
+                tooltip:AddLine(WoWTools_Mixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)
             end)
 
             for _, tab in pairs( {
@@ -53,18 +53,18 @@ local function Init_Menu(_, root)
                 {name='creatureID', type='creatureID'},
                 {name='uiModelSceneID', type='uiModelSceneID'},
                 {name='displayID', type='displayID'},
-                {name=e.onlyChinese and '类型' or TYPE, type='type'},
-                {name=e.onlyChinese and '名称' or NAME, type='name'},
-                {name=e.onlyChinese and '专精' or SPECIALIZATION, type='specialization'},
-                {name=e.onlyChinese and '图标' or EMBLEM_SYMBOL, type='icon'},
-                {name=e.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL, type="familyName"}
+                {name=WoWTools_Mixin.onlyChinese and '类型' or TYPE, type='type'},
+                {name=WoWTools_Mixin.onlyChinese and '名称' or NAME, type='name'},
+                {name=WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION, type='specialization'},
+                {name=WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL, type='icon'},
+                {name=WoWTools_Mixin.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL, type="familyName"}
             }) do
                 sub=root:CreateButton(tab.name, function(data)
                     WoWTools_StableFrameMixin:sort_pets_list(data.type)
                     return MenuResponse.Open
                 end, {type=tab.type})
                 sub:SetTooltip(function(tooltip)
-                    tooltip:AddLine(e.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)
+                    tooltip:AddLine(WoWTools_Mixin.onlyChinese and '排序' or STABLE_FILTER_BUTTON_LABEL)
                 end)
             end
 
@@ -82,7 +82,7 @@ local function Init_Menu(_, root)
                     end
 
                 end,
-                name=e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
+                name=WoWTools_Mixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
                 minValue=8,
                 maxValue=72,
                 step=1,
@@ -101,7 +101,7 @@ local function Init_Menu(_, root)
         end)
 
         root:CreateCheckbox(
-            e.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
+            WoWTools_Mixin.onlyChinese and 'HUD提示信息' or HUD_EDIT_MODE_HUD_TOOLTIP_LABEL,
         function()
             return not Save().HideTips
         end, function()
@@ -129,10 +129,10 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
         GameTooltip:AddDoubleLine(
             (_G['WoWTools_StableFrameAllList'] and '' or '|cff828282')
-            ..(e.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE),
+            ..(WoWTools_Mixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE),
             (Save().all_List_Size or 22)..e.Icon.mid
         )
         GameTooltip:Show()

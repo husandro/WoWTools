@@ -26,7 +26,7 @@ local function Init(Frame)
 
     --职业颜色
     useClassColorCheck:SetPoint("BOTTOMLEFT")
-    useClassColorCheck.text:SetText(e.onlyChinese and '职业颜色' or CLASS_COLORS)
+    useClassColorCheck.text:SetText(WoWTools_Mixin.onlyChinese and '职业颜色' or CLASS_COLORS)
     useClassColorCheck.text:SetTextColor(e.Player.r, e.Player.g, e.Player.b)
     useClassColorCheck:SetChecked(Save().usrClassColor)
     useClassColorCheck:SetScript('OnMouseDown', function()
@@ -41,7 +41,7 @@ local function Init(Frame)
 
     --自定义,颜色
     colorText:SetPoint('LEFT', useClassColorCheck.text, 'RIGHT', 4,0)
-    colorText:SetText('|A:colorblind-colorwheel:0:0|a'..(e.onlyChinese and '自定义 ' or CUSTOM))
+    colorText:SetText('|A:colorblind-colorwheel:0:0|a'..(WoWTools_Mixin.onlyChinese and '自定义 ' or CUSTOM))
     colorText:EnableMouse(true)
     colorText.r, colorText.g, colorText.b, colorText.a= Save().color.r, Save().color.g, Save().color.b, Save().color.a
     colorText:SetScript('OnMouseDown', function(self)
@@ -81,26 +81,26 @@ local function Init(Frame)
     colorText:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, (e.onlyChinese and '颜色' or COLOR)..e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..e.Icon.left)
         GameTooltip:Show()
     end)
     colorText:SetScript('OnLeave', GameTooltip_Hide)
 
     --不使用，颜色
     notUseColorCheck:SetPoint("LEFT", colorText, 'RIGHT')
-    notUseColorCheck.text:SetText(e.onlyChinese and '无' or NONE)
+    notUseColorCheck.text:SetText(WoWTools_Mixin.onlyChinese and '无' or NONE)
     notUseColorCheck:SetChecked(Save().notUseColor)
     notUseColorCheck:SetScript('OnMouseDown', function()
         Save().notUseColor= not Save().notUseColor and true or nil
         Save().useClassColorCheck=nil
         useClassColorCheck:SetChecked(false)
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.GetEnabeleDisable(not Save().disabled), e.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(e.Icon.icon2..WoWTools_CursorMixin.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     --随机, 图片
     Frame.randomTextureCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     Frame.randomTextureCheck:SetPoint("LEFT", notUseColorCheck.text, 'RIGHT', 10,0)
-    Frame.randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(e.onlyChinese and '随机图标' or 'Random '..EMBLEM_SYMBOL))
+    Frame.randomTextureCheck.text:SetText('|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_Mixin.onlyChinese and '随机图标' or 'Random '..EMBLEM_SYMBOL))
     Frame.randomTextureCheck:SetChecked(Save().randomTexture)
     Frame.randomTextureCheck:SetScript('OnMouseDown', function()
         Save().randomTexture= not Save().randomTexture and true or nil
@@ -113,10 +113,10 @@ local function Init(Frame)
     Frame.randomTextureCheck:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.onlyChinese and '事件' or EVENTS_LABEL)
+        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '事件' or EVENTS_LABEL)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('Cursor', (e.onlyChinese and '战斗中: 移动' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..NPE_MOVE))
-        GameTooltip:AddDoubleLine(' ', (e.onlyChinese and '其它' or OTHER)..e.Icon.left)
+        GameTooltip:AddDoubleLine('Cursor', (WoWTools_Mixin.onlyChinese and '战斗中: 移动' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..NPE_MOVE))
+        GameTooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '其它' or OTHER)..e.Icon.left)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine('GCD', e.GetEnabeleDisable(true))
         GameTooltip:Show()

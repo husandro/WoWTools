@@ -20,8 +20,8 @@ local function OnEnter_Tooltip(self)
         GameTooltip:ClearLines()
     end
     GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-    GameTooltip:AddDoubleLine(e.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'), e.Icon.mid)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'), e.Icon.mid)
     GameTooltip:Show()
 end
 
@@ -78,7 +78,7 @@ function WoWTools_MinimapMixin:Init_Icon()
         btn:EnableMouseWheel(true)
         btn:SetScript('OnMouseWheel', function(_, d)
             if d==1 then
-                e.OpenPanelOpting(nil, '|A:talents-button-undo:0:0|a'..(e.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
+                e.OpenPanelOpting(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
             else
                 e.OpenPanelOpting(nil, WoWTools_MinimapMixin.addName)
             end
@@ -119,16 +119,16 @@ end]]
     end
 
 
-    GameTooltip:AddDoubleLine(e.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.mid)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or SETTINGS_TITLE , e.Icon.mid)
 
     if self and type(self)=='table' then
         if _G['LibDBIcon10_WoWTools'] and _G['LibDBIcon10_WoWTools']:IsMouseWheelEnabled() then
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.mid)
         else
-            GameTooltip:AddDoubleLine(e.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, 'Alt'..e.Icon.right)
         end
     end
-    GameTooltip:AddDoubleLine(e.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT , 'Shift'..e.Icon.left)
 
     GameTooltip:AddLine(' ')
     GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)

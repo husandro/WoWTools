@@ -91,7 +91,7 @@ local function UpdateButtonState(frame)--技能提示
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(spellID)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(e.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
+            GameTooltip:AddDoubleLine((IsInGroup() and '|A:communities-icon-chat:0:0|a' or '')..(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT), e.Icon.right)
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
             GameTooltip:Show()
         end

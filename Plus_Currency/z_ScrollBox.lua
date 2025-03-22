@@ -65,7 +65,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 				GameTooltip:SetCurrencyByID(self.currencyID)
 				GameTooltip:AddLine(" ")
 			end
-			GameTooltip:AddDoubleLine(e.onlyChinese and '追踪' or TRACKING, e.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
+			GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '追踪' or TRACKING, WoWTools_Mixin.onlyChinese and '指定' or COMBAT_ALLY_START_MISSION)
 			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 			GameTooltip:Show()
 		end)

@@ -33,7 +33,7 @@ local SlotsIcon = {
     '|T135490:0|t',--25弓
     '|T135610:0|t',--26枪械
     '|T135530:0|t',--27弩
-    '|A:transmog-nav-slot-enchant:0:0|a',--28 e.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT,
+    '|A:transmog-nav-slot-enchant:0:0|a',--28 WoWTools_Mixin.onlyChinese and '武器附魔' or WEAPON_ENCHANTMENT,
     '|A:ElementalStorm-Lesser-Earth:0:0|a',--29'军团再临"神器
 }
 
@@ -301,8 +301,8 @@ local function set_Items_Tooltips(self)--UpdateItems
                                     if info then
                                         GameTooltip:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
                                         GameTooltip:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
-                                        GameTooltip:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
-                                                            info.isUsable and '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(e.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
+                                        GameTooltip:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
+                                                            info.isUsable and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
                                         GameTooltip:AddLine(' '
                                     )
                                     end
@@ -310,7 +310,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                                     GameTooltip:SetHyperlink(link2)
                                 end
                                 GameTooltip:AddLine(' ')
-                                GameTooltip:AddDoubleLine(e.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
+                                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
                                 GameTooltip:Show()
                                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
                              end

@@ -85,11 +85,11 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1==id then
+        if arg1== 'WoWTools' then
 
             WoWTools_TargetMixin.Save= WoWToolsSave['Plus_Target'] or WoWTools_TargetMixin.Save
 
-            local addName= '|A:common-icon-rotateright:0:0|a'..(e.onlyChinese and '目标' or TARGET)
+            local addName= '|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标' or TARGET)
             WoWTools_TargetMixin.addName= addName
 
             WoWTools_TargetMixin:Init_Options()

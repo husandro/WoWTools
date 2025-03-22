@@ -56,12 +56,12 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
             local difficultyText
 --史诗地下城 1
             if info.type == Enum.WeeklyRewardChestThresholdType.Activities then
-                head= e.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
-                difficultyText= string.format(e.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
+                head= WoWTools_Mixin.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS
+                difficultyText= string.format(WoWTools_Mixin.onlyChinese and '史诗 %d' or WEEKLY_REWARDS_MYTHIC, info.level)
 --PVP 2
             elseif info.type == Enum.WeeklyRewardChestThresholdType.RankedPvP then
-                head= e.onlyChinese and 'PvP' or PVP
-                if e.onlyChinese then
+                head= WoWTools_Mixin.onlyChinese and 'PvP' or PVP
+                if WoWTools_Mixin.onlyChinese then
                     local tab={
                         [0]= "休闲者",
                         [1]= "争斗者 I",
@@ -78,25 +78,25 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                 difficultyText=  difficultyText or PVPUtil.GetTierName(info.level)-- _G["PVP_RANK_"..tierEnum.."_NAME"] PVPUtil.lua
 --团队副本 3
             elseif info.type == Enum.WeeklyRewardChestThresholdType.Raid then
-                head= e.onlyChinese and '团队副本' or RAIDS
+                head= WoWTools_Mixin.onlyChinese and '团队副本' or RAIDS
                 difficultyText=  DifficultyUtil.GetDifficultyName(info.level)
 --AlsoReceive 4
             elseif info.type== Enum.WeeklyRewardChestThresholdType.AlsoReceive then
-                head= e.onlyChinese and '你还将得到' or WEEKLY_REWARDS_ALSO_RECEIVE
+                head= WoWTools_Mixin.onlyChinese and '你还将得到' or WEEKLY_REWARDS_ALSO_RECEIVE
 --5 Concession
             elseif info.type== Enum.WeeklyRewardChestThresholdType.Concession then
-                head= e.onlyChinese and '收集' or WEEKLY_REWARDS_GET_CONCESSION
+                head= WoWTools_Mixin.onlyChinese and '收集' or WEEKLY_REWARDS_GET_CONCESSION
 
 --世界 6
             elseif info.type== Enum.WeeklyRewardChestThresholdType.World then
-                head= e.onlyChinese and '世界' or WORLD
+                head= WoWTools_Mixin.onlyChinese and '世界' or WORLD
 
             end
             if head then
                 R[head]= R[head] or {}
                 R[head][info.index] = {
                     level = info.level,
-                    difficulty = difficultyText or (e.onlyChinese and '休闲者' or PVP_RANK_0_NAME),
+                    difficulty = difficultyText or (WoWTools_Mixin.onlyChinese and '休闲者' or PVP_RANK_0_NAME),
                     progress = info.progress,
                     threshold = info.threshold,
                     unlocked = info.progress>=info.threshold,
@@ -186,7 +186,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                     if link then
                         GameTooltip:SetHyperlink(link)
                     else
-                        GameTooltip:AddDoubleLine(format(e.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,e.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),e.onlyChinese and '无' or NONE)
+                        GameTooltip:AddDoubleLine(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,WoWTools_Mixin.onlyChinese and '物品等级' or STAT_AVERAGE_ITEM_LEVEL ),WoWTools_Mixin.onlyChinese and '无' or NONE)
                         GameTooltip:AddLine(' ')
                         GameTooltip:AddDoubleLine('Activities Type '..self2.type, 'id '..self2.id)
                     end
@@ -222,7 +222,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                 text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', e.Icon.select)..((info.level and info.level>0) and info.level or '')
             else
                 if info.unlocked then
-                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', e.Icon.select)..(info.level or '')--.. ' '..(e.onlyChinese and '完成' or COMPLETE)
+                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', e.Icon.select)..(info.level or '')--.. ' '..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
                 else
                     text='    |cff828282'..index..') '
                         ..info.difficulty

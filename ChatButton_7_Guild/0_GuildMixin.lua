@@ -115,7 +115,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
         local col= online>1 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
 
         GameTooltip:AddDoubleLine(
-            col..(e.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON),
+            col..(WoWTools_Mixin.onlyChinese and '在线成员：' or GUILD_MEMBERS_ONLINE_COLON),
             col..'|A:UI-HUD-UnitFrame-Player-Group-FriendOnlineIcon:0:0|a'..(online-1)..'|r'
             ..(app and app>1 and '/|A:UI-ChatIcon-App:0:0|a'..(app-1) or '')
         )
@@ -172,13 +172,13 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
         GameTooltip:AddDoubleLine(
             hasPlayer and
                 '|cnGREEN_FONT_COLOR:'
-                ..(e.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
+                ..(WoWTools_Mixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
                 ..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'..numApplicant
             or ' ',
 
             hasMsg and
                 '|cnGREEN_FONT_COLOR:'
-                ..(e.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION)
+                ..(WoWTools_Mixin.onlyChinese and '未读信息' or COMMUNITIES_CHAT_FRAME_UNREAD_MESSAGES_NOTIFICATION)
                 ..'|A:communities-icon-notification:0:0|a'
         )
     end

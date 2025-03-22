@@ -69,13 +69,13 @@ local function Init()
     local frame= SettingsPanel.AddOnsTab
     if frame then
         frame.reload= CreateFrame('Button', nil, frame, 'GameMenuButtonTemplate')
-        frame.reload:SetText(e.onlyChinese and '重新加载UI' or RELOADUI)
+        frame.reload:SetText(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
         frame.reload:SetScript('OnLeave', GameTooltip_Hide)
         frame.reload:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HyperLink.addName)
-            GameTooltip:AddDoubleLine(e.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI, '|cnGREEN_FONT_COLOR:'..SLASH_RELOAD1)
             GameTooltip:Show()
         end)
         frame.reload:SetScript('OnClick', function() WoWTools_Mixin:Reload() end)
@@ -102,7 +102,7 @@ local function Init()
         self:AddSection()
 
         local btn = self:AddButton(
-            e.onlyChinese and '重新加载UI' or RELOADUI,
+            WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI,
         function()
             WoWTools_Mixin:Reload()
         end)

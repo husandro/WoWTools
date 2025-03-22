@@ -53,7 +53,7 @@ local function Init()
         local version, build, date, tocversion, localizedVersion, buildType = GetBuildInfo()
         GameTooltip:AddLine(version..' '..build.. ' '..date.. ' '..tocversion..(buildType and ' '..buildType or ''), 1,0,1)
         if localizedVersion and localizedVersion~='' then
-            GameTooltip:AddLine((e.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
+            GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
         end
         GameTooltip:AddLine('realmID '..(GetRealmID() or '')..' '..(GetNormalizedRealmName() or ''), 1,0.82,0)
         GameTooltip:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
@@ -62,7 +62,7 @@ local function Init()
         if info and info.wowProjectID then
             local region=''
             if info.regionID and info.regionID~=e.Player.region then
-                region=' regionID'..(e.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
+                region=' regionID'..(WoWTools_Mixin.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
             end
             GameTooltip:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end
@@ -72,18 +72,18 @@ local function Init()
         local bat= UnitAffectingCombat('player')
 
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
             ..e.Icon.mid
-            ..(e.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+            ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '插件' or ADDONS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '插件' or ADDONS)..'|r'
             ..e.Icon.right
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(e.onlyChinese and '宏命令设置' or MACROS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '宏命令设置' or MACROS)..'|r'
             ..e.Icon.mid
-            ..(e.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+            ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
         GameTooltip:Show()

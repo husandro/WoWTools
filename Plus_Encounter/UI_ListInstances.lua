@@ -43,7 +43,7 @@ local function Init()
         if button and button.instanceID then --and button.tooltipTitle--button.bgImage:GetTexture() button.name:GetText()
             local textKill= WoWTools_EncounterMixin:GetInstanceData(button)--界面,击杀,数据
             if not button.tipsText and textKill then
-                button.tipsText=WoWTools_LabelMixin:Create(button, {size=e.onlyChinese and 12 or 10, copyFont= not e.onlyChinese and button.name or nil})--10, button.name)
+                button.tipsText=WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10, copyFont= not WoWTools_Mixin.onlyChinese and button.name or nil})--10, button.name)
                 button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
                 button.tipsText:SetJustifyH('RIGHT')
             end
@@ -110,9 +110,9 @@ local function Init()
             end
 
             if not button.challengeText then
-                button.challengeText= WoWTools_LabelMixin:Create(button, {size=e.onlyChinese and 12 or 10})
+                button.challengeText= WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10})
                 button.challengeText:SetPoint('BOTTOMLEFT',4,4)
-                button.challengeText2= WoWTools_LabelMixin:Create(button, {size=e.onlyChinese and 12 or 10})
+                button.challengeText2= WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10})
                 button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
 
                 button:HookScript('OnEnter', function(self)
@@ -166,7 +166,7 @@ local function Init()
                             GameTooltip:SetHyperlink(link)
                         else
                             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-                            GameTooltip:AddLine(e.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
+                            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
                         end
                         GameTooltip:Show()
                         self:SetAlpha(0.3)
@@ -198,15 +198,15 @@ local function Init()
                     GameTooltip:ClearLines()
                     GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(e.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
-                    GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+                    GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
+                    GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
                     GameTooltip:Show()
                     self:settings(true)
                 end)
                 button.Favorites2:SetScript('OnClick', function(self, d)
                     if d=='RightButton' then
                         MenuUtil.CreateContextMenu(self, function(f, root)
-                            local sub=root:CreateCheckbox(e.onlyChinese and '收藏' or FAVORITES, function()
+                            local sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES, function()
                                 return f:get_save()
                             end, function()
                                 self:setup()
@@ -216,7 +216,7 @@ local function Init()
                                 tooltip:AddLine(WoWTools_EncounterMixin.addName)
                             end)
                             root:CreateDivider()
-                            root:CreateButton(e.onlyChinese and '全部清除' or CLEAR_ALL, function()
+                            root:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
                                 Save().favorites={}
                                 WoWTools_Mixin:Call(EncounterJournal_ListInstances)
                             end)

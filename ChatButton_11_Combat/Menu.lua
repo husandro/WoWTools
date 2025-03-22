@@ -18,31 +18,31 @@ local function Init_Menu(self, root)
     local isInCombat= UnitAffectingCombat('player')
 --战斗信息
 
-    sub=root:CreateCheckbox(e.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO), function()
+    sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO), function()
         return not Save().disabledText
     end, function()
         self:set_Click()
     end)
 
-    sub:CreateCheckbox((e.onlyChinese and '时间类型' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TIME_LABEL:gsub(HEADER_COLON,''), TYPE))..' '.. SecondsToTime(35), function()
+    sub:CreateCheckbox((WoWTools_Mixin.onlyChinese and '时间类型' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TIME_LABEL:gsub(HEADER_COLON,''), TYPE))..' '.. SecondsToTime(35), function()
         return Save().timeTypeText
     end, function()
         Save().timeTypeText= not Save().timeTypeText and true or nil
     end)
 
-    sub2=sub:CreateCheckbox((e.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a|cnGREEN_FONT_COLOR:'..Save().SayTime, function()
+    sub2=sub:CreateCheckbox((WoWTools_Mixin.onlyChinese and '战斗时间' or COMBAT)..'|A:communities-icon-chat:0:0|a|cnGREEN_FONT_COLOR:'..Save().SayTime, function()
         return not Save().disabledSayTime
     end, function()
         Save().disabledSayTime= not Save().disabledSayTime and true or false
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '说' or SAY)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '说' or SAY)
     end)
 
-    sub2:CreateButton(e.onlyChinese and '设置' or SETTINGS, function()
+    sub2:CreateButton(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, function()
         StaticPopup_Show('WoWTools_EditText',
         WoWTools_CombatMixin.addName
-        ..'|n|n'.. (e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+        ..'|n|n'.. (WoWTools_Mixin.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
         ..'|n|n>= 60 '..e.GetEnabeleDisable(true),
         nil,
         {
@@ -75,33 +75,33 @@ local function Init_Menu(self, root)
             Save().SayTime= math.floor(value)
             WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(Save().SayTime), nil, nil)
         end,
-        name= e.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS,
+        name= WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS,
         minValue=60,
         maxValue=600,
         step=1,
         bit=nil,
         tooltip=function(tooltip)
-            tooltip:AddLine(e.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)
+            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)
         end,
     })
     sub2:CreateSpacer()
 
-    --[[sub2:CreateButton(e.onlyChinese and '设置' or SETTINGS, function()
+    --[[sub2:CreateButton(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, function()
         StaticPopup_Show('WoWToolsChatButtonCombatSayTime')
         return MenuResponse.Open
     end)]]
 
     sub:CreateDivider()
-    sub:CreateButton(e.onlyChinese and '重置位置' or RESET_POSITION, function()
+    sub:CreateButton(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION, function()
         Save().textFramePoint=nil
         if WoWTools_CombatMixin.TrackButton then
             WoWTools_CombatMixin.TrackButton:set_Point()
         end
-        print(e.Icon.icon2..WoWTools_CombatMixin.addName, e.onlyChinese and '重置位置' or RESET_POSITION)
+        print(e.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         return MenuResponse.Open
     end)
 
-    sub2=sub:CreateButton((isInCombat and '|cff9e9e9e' or '')..(e.onlyChinese and '全部清除' or CLEAR_ALL), function()
+    sub2=sub:CreateButton((isInCombat and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() and not InCombatLockdown() then
             WoWTools_CombatMixin.Save= nil
             WoWTools_Mixin:Reload()
@@ -109,7 +109,7 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r+'..e.Icon.left)
-        tooltip:AddLine(e.onlyChinese and '重新加载UI' or RELOADUI)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
     end)
 
 
@@ -133,7 +133,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '战斗中缩放'
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '战斗中缩放'
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, UI_SCALE)
         )
     end)
@@ -142,7 +142,7 @@ local function Init_Menu(self, root)
     local tab=e.WoWDate[e.Player.guid].Time
     sub=root:CreateCheckbox(
         tab.totalTime and SecondsToTime(tab.totalTime)
-        or (e.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, '')),
+        or (WoWTools_Mixin.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, '')),
     function()
         return Save().AllOnlineTime
     end, function ()
@@ -152,8 +152,8 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, ''))
-        tooltip:AddLine(format(e.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, ''))
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, ''))
+        tooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, ''))
     end)
 
     local timeAll=0
@@ -172,7 +172,7 @@ local function Init_Menu(self, root)
 
     if timeAll>0 then
         sub:CreateDivider()
-        sub:CreateTitle((e.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll))
+        sub:CreateTitle((WoWTools_Mixin.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll))
 
     end
 
@@ -180,7 +180,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         '|T'..FRIENDS_TEXTURE_AFK..':0|t'
         ..(UnitIsAFK('player') and '|cff9e9e9e' or '')
-        ..(e.onlyChinese and '暂离' or 'AFK'),
+        ..(WoWTools_Mixin.onlyChinese and '暂离' or 'AFK'),
     function()
         WoWTools_ChatMixin:SendText(SLASH_CHAT_AFK1)
         return MenuResponse.Open

@@ -118,8 +118,8 @@ local function Set_Label(self)
                     '|T'..(icon or 0)..':0|t'
                     ..(
                         remainingWithdrawals > 0  and remainingWithdrawals
-                        or ( (remainingWithdrawals==0 and access) and (e.onlyChinese and '无' or NONE) )
-                        or ( e.onlyChinese and '无限制' or UNLIMITED )
+                        or ( (remainingWithdrawals==0 and access) and (WoWTools_Mixin.onlyChinese and '无' or NONE) )
+                        or ( WoWTools_Mixin.onlyChinese and '无限制' or UNLIMITED )
                     )
                     ..(access or '')
                 )
@@ -202,7 +202,7 @@ local function Create_SortButton(frame, isFunc)--if not WoWTools_GuildMixin:IsLe
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_GuildBankMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(e.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             GameTooltip:Show()
         end)
         frame.SortButton= btn
@@ -526,7 +526,7 @@ local function Init_UI()
     GuildBankWithdrawMoneyFrame:SetScript('OnLeave', GameTooltip_Hide)
     GuildBankWithdrawMoneyFrame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(e.onlyChinese and '可用数量' or GUILDBANK_AVAILABLE_MONEY)
+        GameTooltip:SetText(WoWTools_Mixin.onlyChinese and '可用数量' or GUILDBANK_AVAILABLE_MONEY)
         GameTooltip:Show()
     end)
 
@@ -570,7 +570,7 @@ local function Init_UI()
 
         GuildBankTabInfoEditBox.Instructions:SetText(
             GetGuildBankTabInfo(tabID)
-            or format(e.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)
+            or format(WoWTools_Mixin.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)
         )
     end)
 

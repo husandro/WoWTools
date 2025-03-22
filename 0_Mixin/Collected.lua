@@ -9,9 +9,9 @@ function WoWTools_CollectedMixin:Mount(mountID, itemID)--坐骑, 收集数量
     end
     if mountID then
         if select(11, C_MountJournal.GetMountInfoByID(mountID)) then
-            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', true
+            return '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r', true
         else
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
+            return '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
         end
     end
 end
@@ -19,9 +19,9 @@ end
 function WoWTools_CollectedMixin:Toy(itemID)--玩具,是否收集
     if C_ToyBox.GetToyInfo(itemID) then
         if PlayerHasToy(itemID) then
-            return '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r', true
+            return '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r', true
         else
-            return '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
+            return '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r', false
         end
     end
 end
@@ -43,7 +43,7 @@ function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--�
                         text= '|A:Adventures-Checkmark:0:0|a'--黄色√
                     end
                 else
-                    text= '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
+                    text= '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r'
                 end
             elseif isCollected==false then
                 if icon then
@@ -53,7 +53,7 @@ function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--�
                         text= '|A:transmog-icon-hidden:0:0|a'
                     end
                 else
-                    text= '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+                    text= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
                 end
             end
         end
@@ -74,11 +74,11 @@ end
     end
     if numAll>0 then
         if numCollected==numAll then
-            return '|A:transmog-icon-checkmark:0:0|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(e.onlyChinese and '已收集' or COLLECTED)..'|r'
+            return '|A:transmog-icon-checkmark:0:0|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r'
         elseif numCollected==0 then
-            return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnRED_FONT_COLOR:'..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+            return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         else
-            return ' |cnYELLOW_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(e.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+            return ' |cnYELLOW_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         end
     end
 end]]

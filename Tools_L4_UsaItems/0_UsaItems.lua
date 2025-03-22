@@ -1,6 +1,4 @@
-local id, e = ...
-
-
+local e = select(2, ...)
 
 
 
@@ -98,7 +96,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
-        if arg1== id then
+        if arg1== 'WoWTools' then
 
             WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
 
@@ -112,7 +110,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --Save.item[1] = 156833
             --end
 
-            WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(e.onlyChinese and '使用物品' or USE_ITEM)
+            WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_Mixin.onlyChinese and '使用物品' or USE_ITEM)
 
             for _, ID in pairs(WoWTools_UseItemsMixin.Save.item) do
                 WoWTools_Mixin:Load({id=ID, type='item'})
