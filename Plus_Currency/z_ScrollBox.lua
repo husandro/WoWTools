@@ -90,7 +90,7 @@ local function set_Tokens_Button(frame)--设置, 列表, 内容
 	end
 
 	if frame.check then
-		frame.check:SetCheckedTexture(info and info.iconFileID or e.Icon.icon)
+		frame.check:SetCheckedTexture(info and info.iconFileID or WoWTools_DataMixin.Icon.icon)
 		frame.check.currencyID= currencyID
 		frame.check:SetShown(true)
 		frame.check:SetChecked(Save().tokens[currencyID])

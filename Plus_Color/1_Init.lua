@@ -102,7 +102,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			WoWTools_ColorMixin.addName= addName
 
 			--添加控制面板
-			e.AddPanel_Check_Button({
+			WoWTools_PanelMixin:Check_Button({
 				checkName= addName,
 				GetValue= function() return not Save().disabled end,
 				SetValue= function()
@@ -110,7 +110,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					print(
 						WoWTools_Mixin.addName,
 						addName,
-						e.GetEnabeleDisable(not Save().disabled),
+						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
 						WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)
 				end,

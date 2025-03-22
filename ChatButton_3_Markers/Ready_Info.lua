@@ -24,7 +24,7 @@ local function Init()
         return
     end
 
-    ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas=e.Icon.select})
+    ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas=WoWTools_DataMixin.Icon.select})
     WoWTools_MarkerMixin.ReadyTipsButton= ReadyTipsButton
 
     ReadyTipsButton.text=WoWTools_LabelMixin:Create(ReadyTipsButton)
@@ -160,9 +160,9 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, WoWTools_Mixin.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE, (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().tipsTextSacle or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE, (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().tipsTextSacle or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
     ReadyTipsButton:SetScript('OnLeave', function()

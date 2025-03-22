@@ -162,7 +162,7 @@ local function Init_Menu(self, root)
 
     for classID, info in pairs(tab) do
         sub=root:CreateButton(
-            classID..' '..(e.cn(C_Item.GetItemClassInfo(classID)) or ''),
+            classID..' '..(WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID)) or ''),
         function()
             return MenuResponse.Open
         end)
@@ -212,7 +212,7 @@ local function Init_Disabled_Button()
     end
     function btn:settings()
         self.Text:SetText(self:get_num())
-        self:SetNormalAtlas(e.Icon.disabled)
+        self:SetNormalAtlas(WoWTools_DataMixin.Icon.disabled)
     end
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -236,8 +236,8 @@ local function Init_Disabled_Button()
             WoWTools_Mixin.onlyChinese and '自动添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ADD)
         )
         GameTooltip:AddDoubleLine(
-            e.Icon.left..(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS)),
-            (WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right
+            WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS)),
+            (WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:Show()
     end
@@ -247,7 +247,7 @@ local function Init_Disabled_Button()
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
             Save.items[itemID]= not Save.items[itemID] and true or nil
-            print(e.Icon.icon2.. addName,
+            print(WoWTools_DataMixin.Icon.icon2.. addName,
                 Save.items[itemID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'
                     or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
@@ -455,13 +455,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(WoWTools_Mixin.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
 
             --添加控制面板
-             e.AddPanel_Check({
+             WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 Value= not Save.disabled,
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,

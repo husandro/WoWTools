@@ -3,7 +3,7 @@ local id, e = ...
 WoWTools_EncounterMixin={
     Save={
         wowBossKill={},
-        loot= {[e.Player.class]= {}},
+        loot= {[WoWTools_DataMixin.Player.Class]= {}},
         favorites={},--副本收藏
     },
     addName=nil,
@@ -12,7 +12,7 @@ WoWTools_EncounterMixin={
 }
 
 function WoWTools_EncounterMixin:GetBossNameSort(name)--取得怪物名称, 短名称
-    name= e.cn(name)
+    name= WoWTools_TextMixin:CN(name)
     name=name:gsub('(,.+)','')
     name=name:gsub('(，.+)','')
     name=name:gsub('·.+','')
@@ -110,17 +110,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
 
-            Save().loot[e.Player.class]= Save().loot[e.Player.class] or {}--这个不能删除，不然换职业会出错
+            Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错
 
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_EncounterMixin.addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_EncounterMixin.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_EncounterMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

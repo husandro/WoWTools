@@ -25,13 +25,13 @@ local function Init_Menu(self, root)
         '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_Mixin.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE)),
     function()
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-        print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE))
         return MenuResponse.Open
     end)
 
     root:CreateDivider()
     root:CreateCheckbox(
-        e.Icon.mid..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
+        WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
     function()
         return self.frame:IsShown()
     end, function()

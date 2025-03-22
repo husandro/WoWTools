@@ -2,7 +2,7 @@ local e= select(2, ...)
 WoWTools_FactionMixin={}
 
 local function GetText(string)
-    return e.cn(_G[string..(e.Player.sex==3 and '_FEMALE' or '')])
+    return WoWTools_TextMixin:CN(_G[string..(WoWTools_DataMixin.Player.Sex==3 and '_FEMALE' or '')])
 end
 
 local function Get_Data(factionID, index)
@@ -63,7 +63,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
             value= '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
             isCapped=true
         end
-        factionStandingtext = e.cn(repInfo.reaction)
+        factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction)
         texture=repInfo.texture--图标
         friendshipID= repInfo.friendshipFactionID
 
@@ -124,7 +124,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
     local hasRewardPending
     if isParagon then--奖励
         local currentValue, threshold, _, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID);
-        hasRewardPending= hasRewardPending2 and format('|A:GarrMission-%sChest:0:0|a', e.Player.faction) or nil
+        hasRewardPending= hasRewardPending2 and format('|A:GarrMission-%sChest:0:0|a', WoWTools_DataMixin.Player.Faction) or nil
         if not tooLowLevelForParagon and currentValue and threshold then
             local completed= math.modf(currentValue/threshold)--完成次数
             currentValue= completed>0 and currentValue - threshold * completed or currentValue
@@ -169,7 +169,7 @@ function WoWTools_FactionMixin:GetName(factionID, index)
     local data= WoWTools_FactionMixin:GetInfo(factionID, index, true)
     if not data.name or not data.factionID then
         if data.name then
-            return e.cn(data.name)
+            return WoWTools_TextMixin:CN(data.name)
         else
             return factionID or index
         end
@@ -180,7 +180,7 @@ function WoWTools_FactionMixin:GetName(factionID, index)
     return
         (data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
         ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')
-        ..e.cn(data.name)
+        ..WoWTools_TextMixin:CN(data.name)
         ..'|r |cffffffff'
         ..(
             data.isCapped and ''
@@ -189,7 +189,7 @@ function WoWTools_FactionMixin:GetName(factionID, index)
         )
         ..((not data.isCapped or data.hasRep) and data.valueText or '')
         ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
-        ..(data.hasRewardPending and (e.Player.faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')
+        ..(data.hasRewardPending and (WoWTools_DataMixin.Player.Faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')
 end
 
 

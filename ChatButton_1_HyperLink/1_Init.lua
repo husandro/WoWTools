@@ -6,7 +6,7 @@ WoWTools_HyperLink={
 
     linkIcon=true, --超链接，图标
     --notShowPlayerInfo=true,--不处理，玩家信息
-    showCVarName=e.Player.husandro,
+    showCVarName=WoWTools_DataMixin.Player.husandro,
 
     channels={--频道名称替换 
         --['世界'] = '[世]',
@@ -14,17 +14,17 @@ WoWTools_HyperLink={
     text={--内容颜色,
         [ACHIEVEMENTS]=true,
     },
-    disabledKeyColor= not e.Player.husandro,--禁用，内容颜色，和频道名称替换
+    disabledKeyColor= not WoWTools_DataMixin.Player.husandro,--禁用，内容颜色，和频道名称替换
 
-    groupWelcome= e.Player.husandro,--欢迎
-    groupWelcomeText= e.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
+    groupWelcome= WoWTools_DataMixin.Player.husandro,--欢迎
+    groupWelcomeText= WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
 
-    guildWelcome= e.Player.husandro,
-    guildWelcomeText= e.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
+    guildWelcome= WoWTools_DataMixin.Player.husandro,
+    guildWelcomeText= WoWTools_DataMixin.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
 
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
 
-    setPlayerSound= e.Player.husandro,--播放, 声音
+    setPlayerSound= WoWTools_DataMixin.Player.husandro,--播放, 声音
     Cvar={},
     --disabledNPCTalking=true,--禁用，隐藏NPC发言    
     --disabledTalkingPringText=true,--禁用，隐藏NPC发言，文本
@@ -54,9 +54,9 @@ local function Init()
 
     function LinkButton:set_tooltip()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
-        GameTooltip:AddDoubleLine(WoWTools_HyperLink.addName, e.GetEnabeleDisable(not isDisabled and Save().linkIcon))
+        GameTooltip:AddDoubleLine(WoWTools_HyperLink.addName, WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon))
         if isDisabled then
-            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:' ..(WoWTools_Mixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), e.GetEnabeleDisable(true))
+            GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:' ..(WoWTools_Mixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE), WoWTools_TextMixin:GetEnabeleDisable(true))
         end
         GameTooltip:Show()
     end
@@ -65,7 +65,7 @@ local function Init()
         Save().linkIcon= not Save().linkIcon and true or nil
         WoWTools_HyperLink:Init_Link_Icon()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
-        print(e.Icon.icon2..WoWTools_HyperLink.addName, e.GetEnabeleDisable(not isDisabled and Save().linkIcon))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon))
         if Save().linkIcon and isDisabled and not issecure() then
             Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
         end

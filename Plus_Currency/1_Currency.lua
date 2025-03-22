@@ -5,13 +5,13 @@ WoWTools_CurrencyMixin.Save={
 	item={},--[202196]= true
 	--indicato=nil,--指定显示
 
-	Hide=not e.Player.husandro,
+	Hide=not WoWTools_DataMixin.Player.husandro,
 	str=true,
 	--scaleTrackButton=1,
 	toRightTrackText=true,--向右平移
 	--toTopTrack=true,--向上
 	--notAutoHideTrack=true,--自动隐藏
-	itemButtonUse=e.Player.husandro,
+	itemButtonUse=WoWTools_DataMixin.Player.husandro,
 	--disabledItemTrack=true,禁用，追踪物品
 
 	--hideCurrencyMax=true,--隐藏，已达到资源上限,提示
@@ -74,16 +74,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			WoWTools_CurrencyMixin.addName= addName
 
 			--添加控制面板
-			e.AddPanel_Check({
+			WoWTools_PanelMixin:OnlyCheck({
 				name= addName,
 				GetValue= function() return not Save().disabled end,
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
-					print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end
 			})
 
-			e.SetItemCurrencyID= Save().ItemInteractionID--套装，转换，货币
+			WoWTools_DataMixin.CurrencyUpdateItemLevelID= Save().ItemInteractionID--套装，转换，货币
 
 			if Save().disabled then
 				self:UnregisterEvent(event)
@@ -103,7 +103,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 					local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 					Save().ItemInteractionID= itemInfo.currencyTypeId
-					e.SetItemCurrencyID= itemInfo.currencyTypeId
+					WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId
 				end)
 				C_ItemInteraction.GetChargeInfo()
 			end

@@ -1,6 +1,6 @@
 local id, e = ...
 WoWTools_FactionMixin.Save={
-	btn=e.Player.husandro,--启用，TrackButton
+	btn=WoWTools_DataMixin.Player.husandro,--启用，TrackButton
 	factions={},--指定,显示,声望
 	btnstr=true,--文本
 	scaleTrackButton=1,--缩放
@@ -10,7 +10,7 @@ WoWTools_FactionMixin.Save={
 
 	factionUpdateTips=true,--更新, 提示
 	--indicato=true,--指定
-	onlyIcon=e.Player.husandro,--隐藏名称， 仅显示有图标
+	onlyIcon=WoWTools_DataMixin.Player.husandro,--隐藏名称， 仅显示有图标
 	--notPlus=true,
 }
 
@@ -35,16 +35,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end
 			
 
-			local addName= format('|A:%s:0:0|a%s', e.Icon[e.Player.faction] or 'ParagonReputation_Glow', WoWTools_Mixin.onlyChinese and '声望' or REPUTATION)
+			local addName= format('|A:%s:0:0|a%s', e.Icon[WoWTools_DataMixin.Player.Faction] or 'ParagonReputation_Glow', WoWTools_Mixin.onlyChinese and '声望' or REPUTATION)
 			WoWTools_FactionMixin.addName= addName
 
 			--添加控制面板
-			e.AddPanel_Check({
+			WoWTools_PanelMixin:OnlyCheck({
 				name= addName,
 				GetValue= function() return not Save().disabled end,
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
-					print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 				end
 			})
 

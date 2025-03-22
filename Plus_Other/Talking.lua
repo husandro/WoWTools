@@ -1,6 +1,6 @@
 local id, e = ...
 local Save={
-    --notPrint= e.Player.husandro
+    --notPrint= WoWTools_DataMixin.Player.husandro
 }
 local addName
 --TalkingHeadUI.lua
@@ -31,7 +31,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(WoWTools_Mixin.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
 
             --添加控制面板
-            local initializer2= e.AddPanel_Check({
+            local initializer2= WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_Mixin.onlyChinese and '隐藏' or HIDE , WoWTools_Mixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
                         ..'|n|n'..(WoWTools_Mixin.onlyChinese and '声音' or SOUND)
@@ -46,7 +46,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= WoWTools_OtherMixin.Category,
             })
 
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_Mixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL,                
                 GetValue= function() return not Save.notPrint end,
                 tooltip= WoWTools_Mixin.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',

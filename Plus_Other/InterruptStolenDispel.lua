@@ -5,7 +5,7 @@ local Save={
 }
 local addName
 local de='>'--分隔符
-if e.Player.region==4 or e.Player.region==5 then de='→' end
+if WoWTools_DataMixin.Player.Region==4 or WoWTools_DataMixin.Player.Region==5 then de='→' end
 local UMark={[1]='{rt1}', [2]='{rt2}', [4]='{rt3}', [8]='{rt4}', [16]='{rt5}', [32]='{rt6}', [64]='{rt7}', [128]='{rt8}'}
 
 
@@ -14,7 +14,7 @@ local eventFrame= CreateFrame("Frame")
 eventFrame:SetScript('OnEvent', function()
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
     if
-        sourceGUID~=e.Player.guid--不是自已
+        sourceGUID~=WoWTools_DataMixin.Player.GUID--不是自已
         or not C_PlayerInfo.GUIDIsPlayer(sourceGUID)--PET
         or not destGUID--目标
         or not spellID
@@ -25,8 +25,8 @@ eventFrame:SetScript('OnEvent', function()
     end
 
     local text=(UMark[sourceRaidFlags] or '')..WoWTools_SpellMixin:GetLink(spellID)..de..WoWTools_SpellMixin:GetLink(extraSpellID)..(UMark[destRaidFlags] or '')
-    if destGUID==e.Player.guid then
-        print('|A:nameplates-holypower2-on:0:0|a', e.Icon.player..e.Player.col, text)
+    if destGUID==WoWTools_DataMixin.Player.GUID then
+        print('|A:nameplates-holypower2-on:0:0|a', WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.col, text)
     else
         WoWTools_ChatMixin:Chat(text, nil, nil)
     end
@@ -67,7 +67,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_Mixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
 
             --添加控制面板
-            local root= e.AddPanel_Check({
+            local root= WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
@@ -78,7 +78,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 category= WoWTools_OtherMixin.Category,
             })
 
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '团队' or RAID),
                 GetValue= function() return Save.enabledInRaid end,
                 SetValue= function()

@@ -15,7 +15,7 @@ function WoWTools_SpellMixin:GetLink(spellID, isCN)
             link=format('|cff28a3ff|Hspell:%d:0|h[%d]|h|r', spellID, spellID)
         end
         if isCN then
-            local name= e.cn(nil, {spellID=spellID, isName=true})
+            local name= WoWTools_TextMixin:CN(nil, {spellID=spellID, isName=true})
             if name then
                 link= link:gsub('%[.-]', '['..name..']')
             end
@@ -63,7 +63,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
             col='|cff9e9e9e'
         end
     end
-    name= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
+    name= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
     if name then
         name= name:match('|c........(.+)|r') or name
     end

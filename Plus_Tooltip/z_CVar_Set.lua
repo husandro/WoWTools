@@ -65,7 +65,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
                 if defaultValue~=value then
                     C_CVar.SetCVar(info.name, defaultValue)
                     if not notPrint then
-                        print(e.Icon.icon2..WoWTools_TooltipMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '恢复默认设置' or RESET_TO_DEFAULT)..'|r', info.name, defaultValue, info.msg)
                     end
                 end
             else
@@ -73,7 +73,7 @@ function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)
                 if value~=info.value then
                     C_CVar.SetCVar(info.name, info.value)
                     if not notPrint then
-                        print(e.Icon.icon2..WoWTools_TooltipMixin.addName, info.name, info.value..'('..value..')', info.msg)
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName, info.name, info.value..'('..value..')', info.msg)
                     end
                 end
             end

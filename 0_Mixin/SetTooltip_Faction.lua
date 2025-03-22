@@ -13,7 +13,7 @@ local function AddRenownRewardsToTooltip(self, renownRewards)
 		if icon then
 			local file, width, height = icon, 16, 16
 			local rewardTexture = CreateSimpleTextureMarkup(file, width, height)
-			renownRewardString = rewardTexture .. " " .. e.cn(name)
+			renownRewardString = rewardTexture .. " " .. WoWTools_TextMixin:CN(name)
 		end
 		local wrapText = false
 		GameTooltip_AddNormalLine(GameTooltip, renownRewardString, wrapText)
@@ -61,10 +61,10 @@ local function ShowFriendshipReputationTooltip(self)
 
 	local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(friendshipData.friendshipFactionID)
 
-	local name= e.cn(friendshipData.name or self.name)
+	local name= WoWTools_TextMixin:CN(friendshipData.name or self.name)
 	if not name then
 		local data= C_Reputation.GetFactionDataByID(self.factionID)
-		name= data and e.cn(data.name) or self.factionID
+		name= data and WoWTools_TextMixin:CN(data.name) or self.factionID
 	end
 
 
@@ -101,11 +101,11 @@ local function ShowMajorFactionRenownTooltip(self)
 	GameTooltip:SetOwner(self, self.ANCHOR_RIGHT and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
 
 	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {}
-	GameTooltip_SetTitle(GameTooltip, e.cn(majorFactionData.name), HIGHLIGHT_FONT_COLOR)
+	GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(majorFactionData.name), HIGHLIGHT_FONT_COLOR)
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
 	GameTooltip_AddHighlightLine(GameTooltip, (WoWTools_Mixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL).. majorFactionData.renownLevel)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
-	GameTooltip_AddNormalLine(GameTooltip, format(WoWTools_Mixin.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, e.cn(majorFactionData.name)))
+	GameTooltip_AddNormalLine(GameTooltip, format(WoWTools_Mixin.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, WoWTools_TextMixin:CN(majorFactionData.name)))
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(self.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1)
 	if #nextRenownRewards > 0 then
@@ -124,7 +124,7 @@ local function ShowStandardTooltip(self)
 		name= data and data.name
 	end
 
-	GameTooltip_SetTitle(GameTooltip, e.cn(name))
+	GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(name))
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)

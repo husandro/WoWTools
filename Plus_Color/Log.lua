@@ -139,7 +139,7 @@ local function Init()
 		local r,g,b,a= ColorPickerFrame:GetPreviousValues()
 		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, e.Icon.left)
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, WoWTools_DataMixin.Icon.left)
 		if r and g and b then
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(
@@ -222,7 +222,7 @@ local function Init()
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(
 				(WoWTools_Mixin.onlyChinese and '常用颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, COLOR))..' '..self.index,
-				(WoWTools_Mixin.onlyChinese and '替换' or REPLACE)..e.Icon.right
+				(WoWTools_Mixin.onlyChinese and '替换' or REPLACE)..WoWTools_DataMixin.Icon.right
 			)
 		end
 		icon.notClick='RightButton'

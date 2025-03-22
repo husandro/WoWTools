@@ -1,4 +1,3 @@
-local e= select(2, ...)
 WoWTools_TextMixin={}
 
 
@@ -21,7 +20,7 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
         frame.ScrollBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, {font='GameFontNormal', isShowLinkTooltip=true})
         frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
         frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
-        
+
         frame:SetScript('OnHide', function(f)
             if f.onHide then
                 do
@@ -86,7 +85,7 @@ end
 
 
 --取得中文
-function e.cn(text, tab)--{gossipOptionID=, questID=}
+function WoWTools_TextMixin:CN(text, tab)--{gossipOptionID=, questID=}
     if WoWTools_Chinese_Mixin then
         return WoWTools_Chinese_Mixin:Setup(text, tab) or text
     end
@@ -102,7 +101,7 @@ function WoWTools_TextMixin:sub(text, size, letterSize, lower)
     local le = strlenutf8(text)
     local le2= strlen(text)
 
-    text= e.cn(text)
+    text= self:CN(text)
 
     if le==le2 and text:find('%w') then
         text= text:sub(1, letterSize or size)
@@ -142,7 +141,7 @@ end
 
 
 
-function e.GetShowHide(sh, all)
+function WoWTools_TextMixin:GetShowHide(sh, all)
     if all then
         if sh then
             return WoWTools_Mixin.onlyChinese and '|cnGREEN_FONT_COLOR:显示|r/隐藏' or ('|cnGREEN_FONT_COLOR:'..SHOW..'|r/'..HIDE)
@@ -158,7 +157,7 @@ function e.GetShowHide(sh, all)
 	end
 end
 
-function e.GetEnabeleDisable(ed, all)--启用或禁用字符
+function WoWTools_TextMixin:GetEnabeleDisable(ed, all)--启用或禁用字符
     if all then
         if ed==nil then
             return WoWTools_Mixin.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE)
@@ -176,7 +175,7 @@ function e.GetEnabeleDisable(ed, all)--启用或禁用字符
     end
 end
 
-function e.GetYesNo(yesno, notColor)
+function WoWTools_TextMixin:GetYesNo(yesno, notColor)
     if notColor then
         if yesno then
             return WoWTools_Mixin.onlyChinese and '是' or YES

@@ -160,7 +160,7 @@ function WoWTools_ItemMixin:GetLink(itemID)
         link= select(2, C_Item.GetItemInfo(itemID))
         if not link then
             WoWTools_Mixin:Load({id=itemID, type='item'})
-            local name= e.cn(nil, {itemID=itemID, isName=true})
+            local name= WoWTools_TextMixin:CN(nil, {itemID=itemID, isName=true})
             link= '|Hitem:'..itemID..'::::::::::::::::::|h['..(name or itemID)..']|h'
             if not name then
                 local hex= select(4, self:GetColor(itemID, nil))
@@ -226,7 +226,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
         end
     end
 
-    name= e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID '..itemID)
+    name= WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID '..itemID)
 
     if name then
         if not name:find('|c') then

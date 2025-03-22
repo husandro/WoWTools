@@ -18,12 +18,12 @@ local Frame
 
 local function set_Loot_Spec_Texture(self)
     if self.dungeonEncounterID then
-        local specID=Save().loot[e.Player.class][self.dungeonEncounterID]
+        local specID=Save().loot[WoWTools_DataMixin.Player.Class][self.dungeonEncounterID]
         local icon= specID and select(4, GetSpecializationInfoByID(specID))
         if icon then
             self.texture:SetTexture(icon)
         else
-            self.texture:SetAtlas(e.Icon.icon)
+            self.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
         end
         self:SetAlpha(icon and 1 or 0.3)
     else
@@ -62,8 +62,8 @@ local function Init_All_Class(self, root, num)
             sub=root:CreateButton(
                 (WoWTools_UnitMixin:GetClassIcon(nil, classInfo.classFile) or '')
                 ..col
-                ..e.cn(classInfo.className)
-                ..(e.Player.class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')
+                ..WoWTools_TextMixin:CN(classInfo.className)
+                ..(WoWTools_DataMixin.Player.Class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')
                 ..(n==0 and '' or ' '..n),
             function()
                 return MenuResponse.Open
@@ -107,7 +107,7 @@ local function Init_All_Class(self, root, num)
         ..(num==0 and '|cff9e9e9e' or '')
         ..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..num,
     function()
-        Save().loot={[e.Player.class]={}}
+        Save().loot={[WoWTools_DataMixin.Player.Class]={}}
     end)
 end
 
@@ -132,16 +132,16 @@ local function Init_Menu(self, root)
         if icon and specID and name then
             sub=root:CreateCheckbox(
                 '|T'..(icon or 0)..':0|t'
-                ..e.Player.col
-                ..e.cn(name)
+                ..WoWTools_DataMixin.Player.col
+                ..WoWTools_TextMixin:CN(name)
                 ..(curSpec==specIndex and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
             function(data)
-                return Save().loot[e.Player.class][data.dungeonEncounterID]== data.specID
+                return Save().loot[WoWTools_DataMixin.Player.Class][data.dungeonEncounterID]== data.specID
             end, function(data)
-                if not Save().loot[e.Player.class][data.dungeonEncounterID] or Save().loot[e.Player.class][data.dungeonEncounterID]~= data.specID then
-                    Save().loot[e.Player.class][data.dungeonEncounterID]=data.specID
+                if not Save().loot[WoWTools_DataMixin.Player.Class][data.dungeonEncounterID] or Save().loot[WoWTools_DataMixin.Player.Class][data.dungeonEncounterID]~= data.specID then
+                    Save().loot[WoWTools_DataMixin.Player.Class][data.dungeonEncounterID]=data.specID
                 else
-                    Save().loot[e.Player.class][data.dungeonEncounterID]=nil
+                    Save().loot[WoWTools_DataMixin.Player.Class][data.dungeonEncounterID]=nil
                 end
                 set_Loot_Spec_Texture(self)
             end, {dungeonEncounterID= self.dungeonEncounterID, specID=specID})
@@ -152,7 +152,7 @@ local function Init_Menu(self, root)
     end
     
     root:CreateDivider()
-    sub=root:CreateTitle(e.cn(self.name, {journalEncounterID=self.journalEncounterID})..' '..self.dungeonEncounterID)
+    sub=root:CreateTitle(WoWTools_TextMixin:CN(self.name, {journalEncounterID=self.journalEncounterID})..' '..self.dungeonEncounterID)
 
 
     num=0
@@ -183,7 +183,7 @@ local function Button_OnEnter(self)
         local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self.encounterID)--button.index= button.GetOrderIndex()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        local cnName= e.cn(name2, true)
+        local cnName= WoWTools_TextMixin:CN(name2, true)
         GameTooltip:AddDoubleLine(cnName and cnName..' '..name2 or name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
         GameTooltip:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
         if dungeonEncounterID then
@@ -283,7 +283,7 @@ local function Init()
     
     Frame:SetScript('OnEvent', function(self, event, arg1)
         if event=='ENCOUNTER_START' and arg1 then--BOSS战时, 指定拾取, 专精
-            local indicatoSpec=Save().loot[e.Player.class][arg1]
+            local indicatoSpec=Save().loot[WoWTools_DataMixin.Player.Class][arg1]
             if indicatoSpec then
                 local loot = GetLootSpecialization()
                 local spec = GetSpecialization()
@@ -293,7 +293,7 @@ local function Init()
                     self.SpceLog= loot--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
                     SetLootSpecialization(indicatoSpec)
                     local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                    print(e.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
                 end
             end
 
@@ -305,7 +305,7 @@ local function Init()
                     self.SpceLog= spec and GetSpecializationInfo(spec) or self.SpceLog
                 end
                 local _, name, _, icon, role = GetSpecializationInfoByID(self.SpceLog)
-                print(e.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', e.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
                 self.SpceLog=nil
             end
         end

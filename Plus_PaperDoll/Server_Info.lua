@@ -28,11 +28,11 @@ local function Init_Label()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:AddLine(' ')
-        local server= e.Get_Region(e.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
+        local server= e.Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
         local ok2
         for k, v in pairs(GetAutoCompleteRealms()) do
-            if v==e.Player.realm then
+            if v==WoWTools_DataMixin.Player.realm then
                 GameTooltip:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
             else
                 GameTooltip:AddDoubleLine(v, k)
@@ -40,12 +40,12 @@ local function Init_Label()
             ok2=true
         end
         if not ok2 then
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '唯一' or ITEM_UNIQUE, e.Player.realm)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '唯一' or ITEM_UNIQUE, WoWTools_DataMixin.Player.realm)
         end
 
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine('realmID', GetRealmID())
-        GameTooltip:AddDoubleLine('regionID: '..e.Player.region,  GetCurrentRegionName())
+        GameTooltip:AddDoubleLine('regionID: '..WoWTools_DataMixin.Player.Region,  GetCurrentRegionName())
 
         GameTooltip:AddLine(' ')
         if GameLimitedMode_IsActive() then
@@ -71,10 +71,10 @@ end
 
 local function Settings()
     local ser=GetAutoCompleteRealms() or {}
-    local server= e.Get_Region(e.Player.realm, nil, nil)
+    local server= e.Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)
     local num= #ser
     local text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
-            ..e.Player.realm..(server and ' '..server.col or '')
+            ..WoWTools_DataMixin.Player.realm..(server and ' '..server.col or '')
     Label:SetText(text or '')
 end
 

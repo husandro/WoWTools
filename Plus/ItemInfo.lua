@@ -80,7 +80,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     local upLevel, downLevel
     local itemLinkPlayer =  GetInventoryItemLink('player', invSlot)
     if itemLinkPlayer then
-        if e.Is_Timerunning then
+        if WoWTools_DataMixin.Is_Timerunning then
             local numItem, numPlayer= 0, 0
             for _, num in pairs(C_Item.GetItemStats(itemLink) or {}) do
                 numItem= numItem +num
@@ -122,7 +122,7 @@ local function get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality
     else
         upLevel=true
     end
-    if upLevel or downLevel or e.Is_Timerunning then
+    if upLevel or downLevel or WoWTools_DataMixin.Is_Timerunning then
         return (upLevel and '|cnGREEN_FONT_COLOR:'  or (downLevel and '|cnRED_FONT_COLOR:') or  '|cffffffff')
                 ..itemLevel..'|r'
     end
@@ -208,7 +208,7 @@ function e.Set_Item_Info(self, tab)
         setIDItem= setID and true or nil--套装
 
 
-        local lowerVer= not e.Is_Timerunning and expacID< e.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
+        local lowerVer= not WoWTools_DataMixin.Is_Timerunning and expacID< WoWTools_DataMixin.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
         --[[if itemQuality then
             r,g,b = C_Item.GetItemQualityColor(itemQuality)
         end]]
@@ -227,7 +227,7 @@ function e.Set_Item_Info(self, tab)
             end
 
         elseif itemID==6948 then--炉石
-            bottomLeftText=WoWTools_TextMixin:sub(e.cn(GetBindLocation()), 3, 6, true)
+            bottomLeftText=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GetBindLocation()), 3, 6, true)
 
         elseif containerInfo and containerInfo.hasLoot then--宝箱
             local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, red=true, onlyRed=true})--物品提示，信息
@@ -290,14 +290,14 @@ function e.Set_Item_Info(self, tab)
                 end
             end
             if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"
-                bottomRightText= format('|A:%s:0:0|a', e.Icon.select)
+                bottomRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
             elseif dateInfo.red then--红色
-                bottomRightText= format('|A:%s:0:0|a', e.Icon.disabled)
+                bottomRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
             elseif dateInfo.wow then
-                bottomRightText= e.Icon.wow2
+                bottomRightText= WoWTools_DataMixin.Icon.wow2
             end
 
-            if expacID== e.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
+            if expacID== WoWTools_DataMixin.ExpansionLevel and classID==8 and dateInfo.text[useStr] then--附魔
                 local text= dateInfo.text[useStr]
                 for k, v in pairs(FMTab) do
                     if text:find(k) then
@@ -315,7 +315,7 @@ function e.Set_Item_Info(self, tab)
         elseif classID==2 or classID==4 then--装备
             if C_Item.IsCosmeticItem(itemLink) then--装饰品
                 bottomLeftText= get_has_text(select(2, WoWTools_CollectedMixin:Item(itemLink, nil, nil, true)))
-            elseif e.Is_Timerunning then
+            elseif WoWTools_DataMixin.Is_Timerunning then
 
                 local stat= WoWTools_ItemStatsMixin:GetItem(itemLink)
                 for i=1 ,4 do
@@ -337,7 +337,7 @@ function e.Set_Item_Info(self, tab)
 
             else
                 local isRedItem
-                if itemQuality and (itemQuality>1 or e.Is_Timerunning) then
+                if itemQuality and (itemQuality>1 or WoWTools_DataMixin.Is_Timerunning) then
                     local upItemLevel= 0
                     local dateInfo= WoWTools_ItemMixin:GetTooltip({
                         bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
@@ -351,15 +351,15 @@ function e.Set_Item_Info(self, tab)
                         bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
 
                     elseif dateInfo.wow then--战网
-                        bottomLeftText= e.Icon.wow2
+                        bottomLeftText= WoWTools_DataMixin.Icon.wow2
                         if subclassID==0 then
                             if itemLevel and itemLevel>1 then
                                 bottomLeftText= bottomLeftText.. itemLevel
                                 local level= GetAverageItemLevel()
                                 if not dateInfo.red then
-                                    bottomLeftText= bottomLeftText.. (level<itemLevel and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', e.Icon.select))
+                                    bottomLeftText= bottomLeftText.. (level<itemLevel and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
                                 else
-                                    bottomLeftText= format('%s|A:%s:0:0|a', bottomLeftText, e.Icon.disabled)
+                                    bottomLeftText= format('%s|A:%s:0:0|a', bottomLeftText, WoWTools_DataMixin.Icon.disabled)
                                 end
                             end
                             if dateInfo.text[classStr] then
@@ -397,13 +397,13 @@ function e.Set_Item_Info(self, tab)
                         end
                     end
 
-                    if itemMinLevel>e.Player.level then--低装等
+                    if itemMinLevel>WoWTools_DataMixin.Player.Level then--低装等
                         bottomLeftText= '|cnRED_FONT_COLOR:'..(bottomLeftText or itemMinLevel)..'|r'
                     end
                     if dateInfo.text[pvpItemStr] then--PvP装备
                         rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                     end
-                    if e.Player.IsMaxLevel and dateInfo.text[upgradeStr] then--"升级：%s/%s"
+                    if WoWTools_DataMixin.Player.IsMaxLevel and dateInfo.text[upgradeStr] then--"升级：%s/%s"
                         local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                         local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
 
@@ -424,8 +424,8 @@ function e.Set_Item_Info(self, tab)
                         if text then
                             topLeftText= topLeftText and topLeftText..'|r'..text or text
                         end
-                    elseif itemMinLevel<=e.Player.level and itemQuality~=7 then--不可使用
-                        topLeftText=format('|A:%s:0:0|a', e.Icon.disabled)
+                    elseif itemMinLevel<=WoWTools_DataMixin.Player.Level and itemQuality~=7 then--不可使用
+                        topLeftText=format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
                         isRedItem=true
                     end
 
@@ -437,7 +437,7 @@ function e.Set_Item_Info(self, tab)
                 if isCollected==false then
                     topRightText= topRightText or WoWTools_TextMixin:sub(itemSubType, 2, 3, true)
                     if itemQuality and itemQuality<=1 then
-                        if itemMinLevel<=e.Player.level then
+                        if itemMinLevel<=WoWTools_DataMixin.Player.Level then
                             isRedItem=true
                         else
                             local dateInfo= WoWTools_ItemMixin:GetTooltip({
@@ -485,7 +485,7 @@ function e.Set_Item_Info(self, tab)
             bottomRightText= get_has_text(PlayerHasToy(itemID))--已收集, 未收集
 
         elseif itemQuality==7 or itemQuality==8 then--7传家宝，8 WoWToken
-            topRightText=e.Icon.wow2
+            topRightText=WoWTools_DataMixin.Icon.wow2
 
             if classID==0 and subclassID==8 and C_Item.GetItemSpell(itemLink) then--传家宝，升级，物品
                 local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={useStr}, wow=true, red=true})--物品提示，信息
@@ -531,18 +531,18 @@ function e.Set_Item_Info(self, tab)
             elseif text then
                 bottomLeftText= Get_Class_Icon_da_Text(text)
             elseif dateInfo.wow then
-                topRightText= e.Icon.wow2
+                topRightText= WoWTools_DataMixin.Icon.wow2
             elseif dateInfo.red then
-                topRightText= format('|A:%s:0:0|a', e.Icon.disabled)
+                topRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
             end
 
         elseif itemStackCount==1 then
             local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, text={chargesStr}, wow=true, red=true})--物品提示，信息
             bottomLeftText=dateInfo.text[chargesStr]
             if dateInfo.wow then
-                topRightText= e.Icon.wow2
+                topRightText= WoWTools_DataMixin.Icon.wow2
             elseif dateInfo.red then
-                topRightText= format('|A:%s:0:0|a', e.Icon.disabled)
+                topRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
             end
         end
 
@@ -1001,7 +1001,7 @@ local function Init()
                             btn:HookScript('OnEnter', function(self)
                                 if self.itemLink and GameTooltip:IsShown() then
                                     GameTooltip:AddLine(' ')
-                                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
+                                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.left)
                                     GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
                                     GameTooltip:Show()
                                 end
@@ -1092,7 +1092,7 @@ local function add_Button_OpenOption(frame)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭角色界面' or BINDING_NAME_TOGGLECHARACTER0, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1267,13 +1267,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_Mixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 tooltip= WoWTools_Mixin.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

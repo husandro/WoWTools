@@ -14,7 +14,7 @@ local function Create_Button(index)
 
     local button= WoWTools_ToolsMixin:CreateButton({
         name='WoWToolsToolsProfession'..index,
-        tooltip='|T'..icon..':0|t'..e.cn(name),
+        tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name),
     })
     if button then
         button:SetScript('OnLeave', GameTooltip_Hide)
@@ -50,8 +50,8 @@ local function Init_Professions(index)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
-            '|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left,
-            e.Icon.right..MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
+            '|T'..(self.icon or 0)..':0|t'..WoWTools_TextMixin:CN(self.name)..WoWTools_DataMixin.Icon.left,
+            WoWTools_DataMixin.Icon.right..MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '专业' or PROFESSIONS_BUTTON, "TOGGLEPROFESSIONBOOK")..'|A:UI-HUD-MicroMenu-Professions-Mouseover:24:24|a'
         )
         GameTooltip:Show()
     end)
@@ -116,10 +116,10 @@ local function Init_Cooking(index)
     button:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine('|T'..(self.icon or 0)..':0|t'..e.cn(self.name)..e.Icon.left)
+        GameTooltip:AddLine('|T'..(self.icon or 0)..':0|t'..WoWTools_TextMixin:CN(self.name)..WoWTools_DataMixin.Icon.left)
         if self.tooltip then
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(self.tooltip..e.Icon.right)
+            GameTooltip:AddLine(self.tooltip..WoWTools_DataMixin.Icon.right)
 
             local data= C_Spell.GetSpellCooldown(818)
             if data and data.duration>0 then
@@ -179,7 +179,7 @@ local function Init_KeyButton_Menu(self, root)
 --设置KEY
     WoWTools_KeyMixin:SetMenu(self, sub,  {
         icon='|A:NPE_ArrowDown:0:0|a',
-        name=e.cn(self.name),
+        name=WoWTools_TextMixin:CN(self.name),
         key=Save[self.type],
         GetKey=function(key)
             Save[self.type]=key
@@ -238,8 +238,8 @@ local function Init_KeyButton(index, type)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
-            WoWTools_SpellMixin:GetName(self.spellID)..e.Icon.left,
-            e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            WoWTools_SpellMixin:GetName(self.spellID)..WoWTools_DataMixin.Icon.left,
+            WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
         GameTooltip:AddLine(' ')
 
@@ -247,10 +247,10 @@ local function Init_KeyButton(index, type)
         local isInCombat= not self:CanChangeAttribute()
         GameTooltip:AddDoubleLine(
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cff9e9e9e') or '')
-            ..(WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..e.Icon.mid..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
+            ..(WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)..' '..self:GetKEY()..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP),
 
             (isInCombat and '|cnRED_FONT_COLOR:' or (isKeyValid and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e')
-            ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..e.Icon.mid..(WoWTools_Mixin.onlyChinese and '解除键位' or UNBIND)
+            ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '解除键位' or UNBIND)
         )
         GameTooltip:Show()
     end

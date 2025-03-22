@@ -32,7 +32,7 @@ local function setCHAT_MSG_SYSTEM(text)
     if not (name and roll and minText=='1' and maxText=='100') then
         return
     end
-    name=name:find('%-') and name or (name..'-'..e.Player.realm)
+    name=name:find('%-') and name or (name..'-'..WoWTools_DataMixin.Player.realm)
     if not findRolled(name) then
         if not Max or roll>Max then
             if Max then
@@ -51,9 +51,9 @@ local function setCHAT_MSG_SYSTEM(text)
     end
 
     local faction,guid
-    if name==e.Player.name_realm then
-        faction= e.Player.faction
-        guid= e.Player.guid
+    if name==WoWTools_DataMixin.Player.name_realm then
+        faction= WoWTools_DataMixin.Player.Faction
+        guid= WoWTools_DataMixin.Player.GUID
     elseif e.GroupGuid[name] then
         faction= e.GroupGuid[name].faction
         guid= e.GroupGuid[name].guid
@@ -256,7 +256,7 @@ local function Init()
 
     function RollButton:set_tooltip()
         self:set_owner()
-        GameTooltip:AddDoubleLine(addName, e.Icon.left)
+        GameTooltip:AddDoubleLine(addName, WoWTools_DataMixin.Icon.left)
         if #RollTab>0 then
             GameTooltip:AddLine(' ')
             local tabNew={}

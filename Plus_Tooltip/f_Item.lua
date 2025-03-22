@@ -26,7 +26,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
             end
 --栏位
             tooltip:AddDoubleLine(
-                (e.cn(_G[itemEquipLoc]) or '')..' '..(itemEquipLoc or ''),
+                (WoWTools_TextMixin:CN(_G[itemEquipLoc]) or '')..' '..(itemEquipLoc or ''),
                 ( WoWTools_Mixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot
             )
             local slotLink=GetInventoryItemLink('player', slot)
@@ -76,7 +76,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
             if classFile and icon2 then
 
 
-                if e.Player.class==classFile then
+                if WoWTools_DataMixin.Player.Class==classFile then
                     player=player..'|T'..icon2..':0|t'
 
                 elseif not otherTab[classFile] then
@@ -114,7 +114,7 @@ local function Set_keystonee(tooltip)
     local textLeft, text2Left
 
     for guid, info in pairs(e.WoWDate or {}) do
-        if guid and guid~=e.Player.guid and info.Keystone.link then
+        if guid and guid~=WoWTools_DataMixin.Player.GUID and info.Keystone.link then
             WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
             tooltip:AddDoubleLine(
                 (info.Keystone.weekNum==0 and '|cff9e9e9e0|r' or info.Keystone.weekNum or '')
@@ -194,7 +194,7 @@ local function Set_Item_Num(tooltip, itemID)
 
     for guid, info in pairs(e.WoWDate or {}) do
         local tab=info.Item[itemID]
-        if tab and guid and guid~=e.Player.guid then
+        if tab and guid and guid~=WoWTools_DataMixin.Player.GUID then
             if tab.bag>0 or tab.bank>0 then
                 table.insert(new, {
                     guid= guid,
@@ -234,7 +234,7 @@ local function Set_Item_Num(tooltip, itemID)
 
     if numPlayer>1 then
         tooltip:AddDoubleLine(
-            numPlayer..e.Icon.wow2..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)..' '..WoWTools_Mixin:MK(bagAll+bankAll, 3),
+            numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)..' '..WoWTools_Mixin:MK(bagAll+bankAll, 3),
 
            WoWTools_Mixin:MK(bankAll,3)..'|A:Banker:0:0|a '
         ..WoWTools_Mixin:MK(bagAll, 3)..'|A:bag-main:0:0|a'
@@ -271,7 +271,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
-    local r, g, b, col= 1,1,1,e.Player.col
+    local r, g, b, col= 1,1,1,WoWTools_DataMixin.Player.col
     if itemQuality then
         r, g, b, col= C_Item.GetItemQualityColor(itemQuality)
         col=col and '|c'..col
@@ -301,8 +301,8 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --物品，类型
     if classID and subclassID then
         tooltip:AddDoubleLine(
-            (e.cn(itemType) or 'itemType')..' '..classID,
-            (e.cn(itemSubType) or 'itemSubType')..' '..subclassID
+            (WoWTools_TextMixin:CN(itemType) or 'itemType')..' '..classID,
+            (WoWTools_TextMixin:CN(itemSubType) or 'itemSubType')..' '..subclassID
         )
     end
 

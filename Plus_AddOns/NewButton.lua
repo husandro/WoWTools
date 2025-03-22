@@ -34,7 +34,7 @@ local function Init()
         WoWTools_AddOnsMixin:Show_Select_Tooltip()--提示，当前，选中
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine('|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..e.Icon.left)
+        GameTooltip:AddLine('|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 
@@ -115,7 +115,7 @@ local function Init()
                 memo= memo and ' |cnRED_FONT_COLOR:'..memo..'|r' or ''
                 table.insert(newTab, {
                     left=icon..col..title..memo,
-                    right=dema and col..e.cn(_G['ADDON_DEMAND_LOADED']) or ' ',
+                    right=dema and col..WoWTools_TextMixin:CN(_G['ADDON_DEMAND_LOADED']) or ' ',
                     memo=value or 0
                 })
                 allMomo= allMomo+ (value or 0)
@@ -237,7 +237,7 @@ local function Init_NotDisabled_Button()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
-        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_Mixin.onlyChinese and '启用' or ENABLE, ''), e.GetYesNo(Save().enableAllButtn))
+        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_Mixin.onlyChinese and '启用' or ENABLE, ''), WoWTools_TextMixin:GetYesNo(Save().enableAllButtn))
         GameTooltip:Show()
         self:SetAlpha(1)
     end
@@ -277,7 +277,7 @@ local function Init_NotDisabled_Button()
         end
     end)
     function btn:set_icon()
-        self:SetNormalAtlas(Save().enableAllButtn and e.Icon.icon or e.Icon.disabled)
+        self:SetNormalAtlas(Save().enableAllButtn and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
     end
     btn:SetScript('OnClick', function(self)
         Save().enableAllButtn= not Save().enableAllButtn and true or nil

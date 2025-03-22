@@ -378,15 +378,15 @@ local function Init_AccountBankPanel()
     despButton:SetHighlightAtlas('auctionhouse-nav-button-select')
     despButton:SetPushedAtlas('auctionhouse-nav-button-select')
 
-    despButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    despButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     despButton.index=3
     despButton.isOutItem=false
-    despButton.name= '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)..e.Icon.left
+    despButton.name= '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)..WoWTools_DataMixin.Icon.left
     despButton.tooltip= function(tooltip)
         local bankAutoDepositReagents =C_CVar.GetCVarBool('bankAutoDepositReagents')
         tooltip:AddDoubleLine(
             '|A:Banker:0:0|a'
-            ..(WoWTools_Mixin.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))..e.Icon.right,
+            ..(WoWTools_Mixin.onlyChinese and '存放所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ALL), ITEMS))..WoWTools_DataMixin.Icon.right,
 
             (bankAutoDepositReagents and '|cnGREEN_FONT_COLOR:' or '|cff828282')..(WoWTools_Mixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
         )

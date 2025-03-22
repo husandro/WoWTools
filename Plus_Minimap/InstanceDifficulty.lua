@@ -69,9 +69,9 @@ local function InstanceDifficulty_Tooltip(tooltip, difficultyID)
     for _, ID in pairs(tab) do
         local text, color= WoWTools_MapMixin:GetDifficultyColor(nil, ID)
         tooltip:AddDoubleLine(
-            (ID==difficultyID and format('|A:%s:0:0|a', e.Icon.toRight) or '')
+            (ID==difficultyID and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight) or '')
             ..text
-            ..(ID==difficultyID and format('|A:%s:0:0|a', e.Icon.toLeft) or ''),
+            ..(ID==difficultyID and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or ''),
 
             (color and color.hex or '')..ID
         )
@@ -90,12 +90,12 @@ local function InstanceDifficulty_OnEnter(self)
     GameTooltip:ClearLines()
     --name, instanceType, difficultyID, difficultyName, maxPlayers, dynamicDifficulty, isDynamic, instanceID, instanceGroupSize, LfgDungeonID
     local instanceName, _, difficultyID, difficultyName, maxPlayers= GetInstanceInfo()
-    difficultyName= e.cn(difficultyName)
+    difficultyName= WoWTools_TextMixin:CN(difficultyName)
     if difficultyName and maxPlayers then
         difficultyName= difficultyName..(maxPlayers and ' ('..maxPlayers..')' or '')..' '..(difficultyID or '')
     end
 
-    GameTooltip:AddDoubleLine(e.cn(instanceName), difficultyName)
+    GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(instanceName), difficultyName)
     GameTooltip:AddLine(self.tooltip)
     GameTooltip:AddLine(' ')
    

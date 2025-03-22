@@ -132,7 +132,7 @@ local function select_Reward(questID)--自动:选择奖励
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
-            print(e.Icon.icon2..'|cffff00ff'..(WoWTools_Mixin.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
+            print(WoWTools_DataMixin.Icon.icon2..'|cffff00ff'..(WoWTools_Mixin.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
         end
     end
 end
@@ -244,7 +244,7 @@ local function Init_Quest()
             self.texture= self:CreateTexture()
             self.texture:SetAllPoints()
         end
-        self.texture:SetAtlas(Save().quest and 'UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest' or e.Icon.icon)--AutoQuest-Badge-Campaign
+        self.texture:SetAtlas(Save().quest and 'UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest' or WoWTools_DataMixin.Icon.icon)--AutoQuest-Badge-Campaign
         self:set_Alpha()
     end
 
@@ -286,9 +286,9 @@ local function Init_Quest()
         GameTooltip:AddLine(' ')
         WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.GetEnabeleDisable(Save().quest),e.Icon.left)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),e.Icon.right)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetEnabeleDisable(Save().quest),WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or OPTIONS, WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
@@ -330,7 +330,7 @@ local function Init_Quest()
 
                 local need= campaignNum+ legendaryNum+ storyNum +bountyNum
                 self.Text:SetText(
-                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..format('|A:%s:0:0|a', e.Icon.toLeft)..'|r ' or '')
+                    (inMapNum>0 and '|cnGREEN_FONT_COLOR:'..inMapNum..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft)..'|r ' or '')
                     ..(dayNum>0 and WoWTools_QuestMixin:GetColor('Day').hex..dayNum..'|r ' or '')
                     ..(weekNum>0 and WoWTools_QuestMixin:GetColor('Week').hex..weekNum..'|r ' or '')
                     ..(numQuest>0 and '|cffffffff'..numQuest..'|r ' or '')
@@ -372,7 +372,7 @@ local function Init_Quest()
         end
     end)
     --[[QuestButton:SetScript('OnMouseWheel', function()
-        e.OpenPanelOpting(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_Mixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
+        WoWTools_PanelMixin:Open(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_Mixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
     end)]]
 
     QuestButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_Alpha() end)
@@ -416,7 +416,7 @@ local function Init_Quest()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(e.Icon.icon2..WoWTools_GossipMixin.addName2, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2, self.name, self.npc, WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc]))
     end)
 
     QuestFrame.sel.questIDLabel:SetScript("OnLeave", function(self) self:SetAlpha(1) GameTooltip_Hide() end)
@@ -430,7 +430,7 @@ local function Init_Quest()
         GameTooltip:ClearLines()
         GameTooltip_AddQuest(GameTooltip, questID)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
     QuestFrame.sel.questIDLabel:SetScript('OnMouseDown',function(self)
@@ -524,11 +524,11 @@ local function Init_Quest()
                 end
                 local text=GetProgressText()
                 C_Timer.After(0.5, function()
-                    print(e.Icon.icon2,
+                    print(WoWTools_DataMixin.Icon.icon2,
                         WoWTools_QuestMixin:GetLink(questID),
                         text and '|cnGREEN_FONT_COLOR:'..text..'|r',
                         link or '',
-                        '|cffff00ff'..e.cn(QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:GetText() or '')..e.Icon.left
+                        '|cffff00ff'..WoWTools_TextMixin:CN(QuestFrameGoodbyeButton and QuestFrameGoodbyeButton:GetText() or '')..WoWTools_DataMixin.Icon.left
                     )
                 end)
             end
@@ -536,7 +536,7 @@ local function Init_Quest()
         else
             if not QuestButton.questSelect[questID] then--已选任务, 提示用
                 C_Timer.After(0.5, function()
-                    print(e.Icon.icon2, WoWTools_QuestMixin:GetLink(questID))
+                    print(WoWTools_DataMixin.Icon.icon2, WoWTools_QuestMixin:GetLink(questID))
                 end)
                 QuestButton.questSelect[questID]=true
             end
@@ -621,8 +621,8 @@ local function Init_Quest()
         if not QuestButton.questSelect[questID] then--已选任务, 提示用
 
             C_Timer.After(0.5, function()
-                print(e.Icon.icon2..WoWTools_QuestMixin:GetLink(questID),
-                    (complete and '|cffff00ff' or '|cff00ffff')..e.cn(acceptButton:GetText() or '')..'|r'..e.Icon.left,
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_QuestMixin:GetLink(questID),
+                    (complete and '|cffff00ff' or '|cff00ffff')..WoWTools_TextMixin:CN(acceptButton:GetText() or '')..'|r'..WoWTools_DataMixin.Icon.left,
                     itemLink or '')
             end)
             QuestButton.questSelect[questID]=true

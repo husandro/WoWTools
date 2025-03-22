@@ -5,10 +5,10 @@ Save={
     --hide=true,--隐藏CreateTexture
 
     --EquipmentH=true, --装备管理, true横, false坚
-    equipment= e.Player.husandro,--装备管理, 开关,
+    equipment= WoWTools_DataMixin.Player.husandro,--装备管理, 开关,
     --Equipment=nil--装备管理, 位置保存
     equipmentFrameScale=1.1,--装备管理, 缩放
-    trackButtonShowItemLeve= e.Player.husandro,--装等
+    trackButtonShowItemLeve= WoWTools_DataMixin.Player.husandro,--装等
     --trackButtonStrata='',
 
     --notStatusPlus=true,--禁用，属性 PLUS
@@ -86,19 +86,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
 
             local addName= (
-                e.Player.sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
+                WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
                 or '|A:charactercreate-gendericon-female-selected:0:0|a'
             )..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)
 
             WoWTools_PaperDollMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
             })
 

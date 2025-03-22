@@ -1,6 +1,18 @@
 --玩具界面, 菜单
 local e= select(2, ...)
 
+local function Save()
+    return  WoWToolsSave['Tools_UseItems']
+end
+
+
+
+
+
+
+
+
+
 
 
 local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
@@ -32,10 +44,10 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
         local icon= C_Item.GetItemIconByID(itemID)
         local find=WoWTools_UseItemsMixin:Find_Type('item', itemID)
         GameTooltip:AddDoubleLine(
-            (icon and '|T'..icon..':0|t' or '')..(C_ToyBox.GetToyLink(itemID) or itemID)..' '..e.GetEnabeleDisable(find),
-            e.Icon.left
+            (icon and '|T'..icon..':0|t' or '')..(C_ToyBox.GetToyLink(itemID) or itemID)..' '..WoWTools_TextMixin:GetEnabeleDisable(find),
+            WoWTools_DataMixin.Icon.left
         )
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         self:SetAlpha(1)
     end
@@ -48,9 +60,9 @@ local function Init_Opetions_ToyBox(btn)--标记, 是否已选取
             end
             local find=WoWTools_UseItemsMixin:Find_Type('item', itemID)
             if find then
-                table.remove(WoWTools_UseItemsMixin.Save.item, find)
+                table.remove(Save().item, find)
             else
-                table.insert(WoWTools_UseItemsMixin.Save.item, itemID)
+                table.insert(Save().item, itemID)
             end
             self:set_tooltips()
             self:set_alpha()

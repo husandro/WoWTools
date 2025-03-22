@@ -21,11 +21,12 @@
 Init.xml
 
 ##主要function，不能删除
-0_Mixin\0_Mixin.lua
-1_WoWTools\1_WoWTools.lua
-1_WoWTools\API_Panel.lua
-1_WoWTools\API_WoWDate.lua
-1_WoWTools\NeedUpdate_Data.lua
+
+0_Mixin\3_Mixin.lua
+0_Mixin\0_1_Data.lua
+0_Mixin\0_2_Date_WoW.lua
+0_Mixin\0_3_Data_NeedUpdate.lua
+
 1_WoWTools\z_Init_Panel.lua
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Aura.lua
@@ -54,6 +55,7 @@ Init.xml
 0_Mixin\Unit.lua
 0_Mixin\Week.lua
 
+Panel.lua
 
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua

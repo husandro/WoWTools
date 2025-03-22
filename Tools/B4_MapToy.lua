@@ -21,12 +21,12 @@ local Tab={
 
 }
 
-if e.Player.faction=='Alliance' then
+if WoWTools_DataMixin.Player.Faction=='Alliance' then
     --LM
     table.insert(Tab, {itemID=150743, achievements={736, 842, 750, 851, 857, 855, 853, 856, 850, 845, 848, 852, 854, 847, 728, 849, 844, 4996, 846, 861, 860}})--卡利姆多
     table.insert(Tab, {itemID=150746, achievements={858, 859, 627, 776, 775, 768, 765, 802, 782, 766, 772, 777, 779, 770, 774, 780, 769, 773, 778, 841, 4995, 761, 771, 781, 868}})--东部王国
 
-elseif e.Player.faction=='Horde' then
+elseif WoWTools_DataMixin.Player.Faction=='Horde' then
     --BL
     table.insert(Tab, {itemID=150744, achievements={736, 842, 750, 851, 857, 855, 853, 856, 850, 845, 848, 852, 854, 847, 728, 849, 844, 4996, 846, 861, 860}})--卡利姆多
     table.insert(Tab, {itemID=150745, achievements={858, 859, 627, 776, 775, 768, 765, 802, 782, 766, 772, 777, 779, 770, 774, 780, 769, 773, 778, 841, 4995, 761, 771, 781, 868}})--东部王国
@@ -40,7 +40,7 @@ local Save={
     no={
         --[guid]=true
     },
-    autoAddDisabled= e.Player.husandro,
+    autoAddDisabled= WoWTools_DataMixin.Player.husandro,
 }
 
 
@@ -172,7 +172,7 @@ local function Init_Menu(self, root)
                 index..') '
                 ..(tab.wasEarnedByMe==true and '|cff9e9e9e' or '')
                 ..'|T'..(tab.icon or 0)..':0|t'
-                ..(e.cn(tab.name) or tab.achievementID)
+                ..(WoWTools_TextMixin:CN(tab.name) or tab.achievementID)
                 ..(tab.wasEarnedByMe==true and '|A:common-icon-checkmark:0:0|a' or ''),
             function(data)
                 self:Set_Random_Value(data.itemID, data.achievements, true)
@@ -196,15 +196,15 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub= root:CreateButton((WoWTools_Mixin.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' #'..num or ''), function() return MenuResponse.Open end)
 
-    sub2= sub:CreateCheckbox(WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil)..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE), function()
-        return Save.no[e.Player.guid]
+    sub2= sub:CreateCheckbox(WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil)..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE), function()
+        return Save.no[WoWTools_DataMixin.Player.GUID]
     end, function()
-        Save.no[e.Player.guid]= not Save.no[e.Player.guid] and true or nil
-        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.no[e.Player.guid]), WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reLink=true, reName=true, reRealm=true}))
+        Save.no[WoWTools_DataMixin.Player.GUID]= not Save.no[WoWTools_DataMixin.Player.GUID] and true or nil
+        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[WoWTools_DataMixin.Player.GUID]), WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reLink=true, reName=true, reRealm=true}))
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
-        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT, e.GetEnabeleDisable(not Save.no[e.Player.guid]))
+        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[WoWTools_DataMixin.Player.GUID]))
     end)
 
     sub3= sub2:CreateCheckbox(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
@@ -226,8 +226,8 @@ local function Init_Menu(self, root)
                 return Save.no[data.guid]
             end, function(data)
                 Save.no[data.guid]= not Save.no[data.guid] and true or nil
-                    print(e.Icon.icon2.. addName,
-                        e.GetEnabeleDisable(not Save.no[data.guid]),
+                    print(WoWTools_DataMixin.Icon.icon2.. addName,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save.no[data.guid]),
                         WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reLink=true, reName=true, reRealm=true})
                     )
 
@@ -236,7 +236,7 @@ local function Init_Menu(self, root)
         )
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
-            tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT, e.GetEnabeleDisable(not Save.no[description.data.guid]))
+            tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[description.data.guid]))
         end)
     end
 
@@ -286,7 +286,7 @@ local function Init()
             GameTooltip:SetItemByID(self.itemID)
         else
             GameTooltip:AddDoubleLine(' ', addName)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         end
         GameTooltip:Show()
     end
@@ -391,7 +391,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:Taxi_Frame_Yellow:0:0|a'..(WoWTools_Mixin.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
             WoWTools_ToolsMixin:AddOptions(function(category, layout)
-                 e.AddPanel_Check_Button({
+                 WoWTools_PanelMixin:Check_Button({
                      checkName= addName,
                      GetValue= function() return not Save.disabled end,
                      SetValue= function()
@@ -407,7 +407,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
              end)
 
             if not Save.disabled
-                and not Save.no[e.Player.guid]
+                and not Save.no[WoWTools_DataMixin.Player.GUID]
                 and WoWTools_ToolsMixin.Button
             then
 
@@ -429,7 +429,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if find==nil then
                     if not notHasToy and Save.autoAddDisabled then
-                        Save.no[e.Player.guid]=true
+                        Save.no[WoWTools_DataMixin.Player.GUID]=true
                         self:UnregisterEvent('ADDON_LOADED')
                         return
                     end

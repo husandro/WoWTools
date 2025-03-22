@@ -26,7 +26,7 @@ local function Get_Guild_Name()
 
     name= WoWTools_TextMixin:sub(name, Save().subGuildName, nil, nil)
 
-    return  '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+    return  '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
     ..(canGuildInvite and '|cff00ccff' or '|cff828282')
     ..WoWTools_GuildMixin:Get_Rank_Texture(guildRankIndex, false)
     ..(name)
@@ -74,9 +74,9 @@ local function Init_Guild_Menu(self, root)
         end
 
         tooltip:AddDoubleLine(
-            '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+            '|A:'..(clubInfo.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
             ..(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
-            e.GetYesNo(clubInfo.isCrossFaction)
+            WoWTools_TextMixin:GetYesNo(clubInfo.isCrossFaction)
         )
 
         if findDay then
@@ -90,7 +90,7 @@ local function Init_Guild_Menu(self, root)
         tooltip:AddDoubleLine('clubID', clubID)
 
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine('|cff00ccff'..(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
+        tooltip:AddDoubleLine('|cff00ccff'..(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), WoWTools_DataMixin.Icon.left)
         if not canGuildInvite then
             tooltip:AddLine(
                 '|cff828282'
@@ -112,7 +112,7 @@ local function Init_Guild_Menu(self, root)
         self:set_guildinfo_event()--事件, 公会新成员, 队伍新成员
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.WoWDate[e.Player.guid].Guild.text)
+        tooltip:AddLine(e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text)
     end)
 
     sub2= sub:CreateCheckbox(
@@ -162,12 +162,12 @@ end
 
 
 
---帐号，公会，数据  e.WoWDate[e.Player.guid].Guild.data[4]= e.Player.realm
+--帐号，公会，数据  e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.data[4]= WoWTools_DataMixin.Player.realm
 local function WoW_List(_, root)
     local sub, sub2
 
     sub=root:CreateButton(
-        e.Icon.net2..MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB"),
+        WoWTools_DataMixin.Icon.net2..MicroButtonTooltipText('公会与社区', "TOGGLEGUILDTAB"),
     function()
         ToggleGuildFrame()
         return MenuResponse.Open
@@ -179,7 +179,7 @@ local function WoW_List(_, root)
 
     local name, realm, rankIndex, rankName
     for guid, info in pairs(e.WoWDate) do
-        if info.Guild and info.Guild.link and info.Guild.clubID and guid~=e.Player.guid then
+        if info.Guild and info.Guild.link and info.Guild.clubID and guid~=WoWTools_DataMixin.Player.GUID then
 
             C_ClubFinder.RequestPostingInformationFromClubId(info.Guild.clubID)
 
@@ -193,8 +193,8 @@ local function WoW_List(_, root)
                 ..' '
                 ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex, true)
                 ..name
-                ..(realm and realm~=e.Player.realm
-                    and (e.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
+                ..(realm and realm~=WoWTools_DataMixin.Player.realm
+                    and (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
                     or ''
                 ),
             function(data)
@@ -215,14 +215,14 @@ local function WoW_List(_, root)
                 local data= desc.data.guid and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(desc.data.guid) or {}
 
                 tooltip:AddDoubleLine(
-                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
                     ..'|T'..(data.tabardInfo and data.tabardInfo.emblemFileID or 0)..':0|t'
                     ..(desc.data.name or data.name),
                     WoWTools_UnitMixin:GetPlayerInfo({guid=data.lastPosterGUID, reName=true, reRealm=false})
                 )
                 if desc.data.realm then
                     tooltip:AddLine(
-                        (e.Player.Realms[desc.data.realm] and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')
+                        (WoWTools_DataMixin.Player.Realms[desc.data.realm] and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')
                         ..desc.data.realm
                     )
                 end
@@ -238,14 +238,14 @@ local function WoW_List(_, root)
                 tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '成员数量' or CLUB_FINDER_SORT_BY_MOST_MEMBERS, data.numActiveMembers)
 
                 tooltip:AddDoubleLine(
-                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[e.Player.faction])..':0:0|a'
+                    '|A:'..(data.isCrossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
                     ..(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION),
-                    e.GetYesNo(data.isCrossFaction)
+                    WoWTools_TextMixin:GetYesNo(data.isCrossFaction)
                 )
 
 
                 tooltip:AddLine(' ')
-                tooltip:AddDoubleLine('|cff00ccff'..(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), e.Icon.left)
+                tooltip:AddDoubleLine('|cff00ccff'..(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT), WoWTools_DataMixin.Icon.left)
             end)
         end
     end
@@ -292,7 +292,7 @@ local function Guild_Player_List(_, root)
 
     for index=1, total, 1 do
         name, rankName, rankIndex, level, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-        if name and guid and (isOnline or showNotOnLine) and guid~=e.Player.guid then
+        if name and guid and (isOnline or showNotOnLine) and guid~=WoWTools_DataMixin.Player.GUID then
             publicNote= publicNote~='' and publicNote or nil
             officerNote= officerNote~='' and officerNote or nil
             sub=root:CreateButton(
@@ -306,7 +306,7 @@ local function Guild_Player_List(_, root)
                 ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex)--官员
                 ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})--名称
                 ..(level and level~=maxLevel and ' |cnGREEN_FONT_COLOR:'..level..'|r' or '')--等级
-                ..(isOnline and zone and (zone==map and '|A:poi-islands-table:0:0|a' or e.cn(zone)) or '')--地区
+                ..(isOnline and zone and (zone==map and '|A:poi-islands-table:0:0|a' or WoWTools_TextMixin:CN(zone)) or '')--地区
                 ..((publicNote or officerNote) and '|A:QuestLegendary:0:0|a' or ''),--提示有备注
 
 

@@ -37,7 +37,7 @@ local function Init_Menu(self, root)
 
 --关键词, 内容颜色，和频道名称替换
     sub2=sub:CreateCheckbox(
-        e.Player.L.key,
+        WoWTools_DataMixin.Player.Language.key,
     function()
         return not Save().disabledKeyColor
     end, function()
@@ -46,12 +46,12 @@ local function Init_Menu(self, root)
 
 --设置关键词
     sub2:CreateButton(
-        '|A:mechagon-projects:0:0|a'..(WoWTools_Mixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, e.Player.L.key)),
+        '|A:mechagon-projects:0:0|a'..(WoWTools_Mixin.onlyChinese and '设置关键词' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, WoWTools_DataMixin.Player.Language.key)),
     function()
         if not WoWTools_HyperLink.Category then
-            e.OpenPanelOpting()
+            WoWTools_PanelMixin:Open()
         end
-        e.OpenPanelOpting(WoWTools_HyperLink.Category, WoWTools_HyperLink.addName)
+        WoWTools_PanelMixin:Open(WoWTools_HyperLink.Category, WoWTools_HyperLink.addName)
         return MenuResponse.Open
     end)
 
@@ -62,9 +62,9 @@ local function Init_Menu(self, root)
         Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}), e.GetEnabeleDisable(true))
+        tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}), WoWTools_TextMixin:GetEnabeleDisable(true))
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine(e.Player.col..UnitName('player'), e.GetEnabeleDisable(false))
+        tooltip:AddDoubleLine(WoWTools_DataMixin.Player.col..UnitName('player'), WoWTools_TextMixin:GetEnabeleDisable(false))
     end)
 
 --CVar 名称
@@ -237,7 +237,7 @@ local function Init_Menu(self, root)
                 SetValue= function(self)
                     local text= self.editBox:GetText()
                     Save().guildWelcomeText= text
-                    print(e.Icon.icon2.. WoWTools_HyperLink.addName, text)
+                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, text)
                 end
             }
         )
@@ -280,7 +280,7 @@ local function Init_Menu(self, root)
                 SetValue= function(frame)
                     local text= frame.editBox:GetText()
                     Save().groupWelcomeText=text
-                    print(e.Icon.icon2.. WoWTools_HyperLink.addName, text)
+                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, text)
                 end
             }
         )
@@ -424,7 +424,7 @@ local function Init_Menu(self, root)
     end, function ()
         Save().not_Add_Reload_Button= not Save().not_Add_Reload_Button and true or nil
         if not WoWTools_HyperLink:Init_Reload() then
-            print(e.Icon.icon2..WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     end)
     sub2:SetTooltip(function (tooltip)

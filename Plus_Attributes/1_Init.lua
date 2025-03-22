@@ -25,7 +25,7 @@ local function get_PrimaryStat()--取得主属
     local spec= GetSpecialization() or 0
     Role= GetSpecializationRole(spec)--DAMAGER, TANK, HEALER
     local icon, _
-    icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, e.Player.sex))
+    icon, _, PrimaryStat= select(4, GetSpecializationInfo(spec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
     SetPortraitToTexture(WoWTools_AttributesMixin.Button.texture, icon or 0)
 end
 
@@ -83,7 +83,7 @@ local function set_Tabs()
         Tabs[index].hide= Save().tab[info.name].hide
         Tabs[index].zeroShow= info.zeroShow--等于0， 时也要显示
         if not Tabs[index].hide then
-            if info.name=='STAGGER' and (e.Player.class~='MONK' or Role~='TANK') then--武僧, 醉拳
+            if info.name=='STAGGER' and (WoWTools_DataMixin.Player.Class~='MONK' or Role~='TANK') then--武僧, 醉拳
                 Tabs[index].hide= true
             elseif info.dps then--四属性, DPS
                 if Role~='DAMAGER' and Role~='HEALER' and Save().onlyDPS then

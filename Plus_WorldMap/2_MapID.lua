@@ -41,15 +41,15 @@ local function Set_Text()
         end
     end
 
-    if e.Player.Layer then
-        m = e.Player.Layer..' '..m
+    if WoWTools_DataMixin.Player.Layer then
+        m = WoWTools_DataMixin.Player.Layer..' '..m
     end
 
     achievementID = C_QuestLog.GetZoneStoryInfo(uiMapID)--当前地图，故事任务
     if achievementID then
         local completed, _, icon
         story, _, completed, _, _, _, _, _, icon= select(2, GetAchievementInfo(achievementID))
-        story= e.cn(story) or achievementID
+        story= WoWTools_TextMixin:CN(story) or achievementID
         if completed then
             story= '|cff9e9e9e'..story..'|r'
         end
@@ -93,10 +93,10 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:SetAchievementByID(self.achievementID)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '查看' or VIEW, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '查看' or VIEW, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(
             WoWTools_Mixin.onlyChinese and '发送链接' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SEND_LABEL, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK),
-            e.Icon.right
+            WoWTools_DataMixin.Icon.right
         )
         GameTooltip:Show()
         self:SetAlpha(0.7)

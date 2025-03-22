@@ -20,9 +20,9 @@ WoWTools_GossipMixin= {
     quest= true,
     questOption={},
     questRewardCheck={},--{任务ID= index}
-    --autoSortQuest=  e.Player.husandro,--仅显示当前地图任务
-    autoSelectReward= e.Player.husandro,--自动选择奖励
-    showAllQuestNum= e.Player.husandro,--显示所有任务数量
+    --autoSortQuest=  WoWTools_DataMixin.Player.husandro,--仅显示当前地图任务
+    autoSelectReward= WoWTools_DataMixin.Player.husandro,--自动选择奖励
+    showAllQuestNum= WoWTools_DataMixin.Player.husandro,--显示所有任务数量
 
     scale=1,
     --point=nil,
@@ -31,7 +31,7 @@ WoWTools_GossipMixin= {
     Gossip_Text_Icon_Player={--玩家，自定义，对话，文本
         [55193]={
             icon='communities-icon-invitemail',
-            name=(e.Player.husandro and '打开邮件' or OPENMAIL),
+            name=(WoWTools_DataMixin.Player.husandro and '打开邮件' or OPENMAIL),
             hex='ffff00ff'}
     },
     Gossip_Text_Icon_Size=14,
@@ -115,12 +115,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 ..(WoWTools_Mixin.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
 
              --添加控制面板
-            e.AddPanel_Check_Button({
+            WoWTools_PanelMixin:Check_Button({
                  checkName= addName,
                  GetValue= function() return not Save().disabled end,
                  SetValue= function()
                      Save().disabled = not Save().disabled and true or nil
-                     print(e.Icon.icon2.. addName, WoWTools_GossipMixin.addName2, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_GossipMixin.addName2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                  end,
                  buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
@@ -130,7 +130,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         btn:ClearAllPoints()
                         btn:set_Point()
                      end
-                     print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
                  tooltip= addName,
                  layout= nil,

@@ -17,7 +17,7 @@ local function Add_Item(info)
     StaticPopup_Show('WoWTools_Item', WoWTools_FoodMixin.addName, nil, {
         link= info.itemLink or itemLink,
         itemID=info.itemID,
-        name= e.cn(itemName, {itemID=info.itemID, isName=true}),
+        name= WoWTools_TextMixin:CN(itemName, {itemID=info.itemID, isName=true}),
         color= {ITEM_QUALITY_COLORS[itemRarity].color:GetRGBA()},
         texture= itemTexture,
         count=C_Item.GetItemCount(info.itemID, true, true, true, true),
@@ -157,19 +157,19 @@ local function Init()
         else
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '查询' or WHO), e.Icon.mid)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '查询' or WHO), WoWTools_DataMixin.Icon.mid)
 
             GameTooltip:AddLine(' ')
             if self.alt then
-                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.alt), 'Alt+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.alt), 'Alt+'..WoWTools_DataMixin.Icon.left)
             end
             if self.ctrl then
-                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.ctrl), 'Ctrl+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.ctrl), 'Ctrl+'..WoWTools_DataMixin.Icon.left)
             end
             if self.shift then
-                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.shift), 'Shift+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetName(self.shift), 'Shift+'..WoWTools_DataMixin.Icon.left)
             end
             if self.alt or self.ctrl or self.shift then
                 GameTooltip:AddLine(' ')
@@ -179,7 +179,7 @@ local function Init()
                 ..(WoWTools_Mixin.onlyChinese and '仅当前版本物品'
                     or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL))
                 ),
-                e.GetEnabeleDisable(Save().onlyMaxExpansion)
+                WoWTools_TextMixin:GetEnabeleDisable(Save().onlyMaxExpansion)
             )
         end
         GameTooltip:Show()

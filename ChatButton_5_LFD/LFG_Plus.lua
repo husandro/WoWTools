@@ -54,7 +54,7 @@ local function Init_LFGListSearchEntry_Update(self)
         end
         color= color or {r=1,g=1,b=1}
         if info.numBNetFriends and info.numBNetFriends>0 then--好友, 数量
-            text= text..' '..e.Icon.wow2..info.numBNetFriends
+            text= text..' '..WoWTools_DataMixin.Icon.wow2..info.numBNetFriends
         end
         if info.numCharFriends and info.numCharFriends>0 then--好友, 数量
             text= text..' |A:socialqueuing-icon-group:0:0|a'..info.numCharFriends
@@ -78,7 +78,7 @@ local function Init_LFGListSearchEntry_Update(self)
     if autoAccept and not self.autoAcceptTexture then--自动, 邀请
         self.autoAcceptTexture=self:CreateTexture(nil,'OVERLAY')
         self.autoAcceptTexture:SetPoint('LEFT')
-        self.autoAcceptTexture:SetAtlas(e.Icon.select)
+        self.autoAcceptTexture:SetAtlas(WoWTools_DataMixin.Icon.select)
         self.autoAcceptTexture:SetSize(12,12)
         self.autoAcceptTexture:EnableMouse(true)
         self.autoAcceptTexture:SetScript('OnEnter', function(self2)
@@ -96,7 +96,7 @@ local function Init_LFGListSearchEntry_Update(self)
 
     local realm, realmText
     if info.leaderName and not isAppFinished then
-        local server= info.leaderName:match('%-(.+)') or e.Player.realm
+        local server= info.leaderName:match('%-(.+)') or WoWTools_DataMixin.Player.realm
         server=e.Get_Region(server)--服务器，EU， US {col, text}
         realm= server and server.col
         realmText=server and server.realm
@@ -261,7 +261,7 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
         end
     end
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '申请' or SIGN_UP, (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left, 0,1,0, 0,1,0)
+    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '申请' or SIGN_UP, (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left, 0,1,0, 0,1,0)
     tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
     tooltip:Show()
 end
@@ -272,12 +272,12 @@ end
 
 
 local function Init_Button()--预创建队伍增强    
-    local Button= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, atlas= Save().LFGPlus and e.Icon.icon or e.Icon.disabled})
+    local Button= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, atlas= Save().LFGPlus and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled})
     Button:SetPoint('LEFT', PVEFrame.TitleContainer)
     Button:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Button:SetAlpha(0.5)
     function Button:set_texture()
-        self:SetNormalAtlas(Save().LFGPlus and e.Icon.icon or e.Icon.disabled)
+        self:SetNormalAtlas(Save().LFGPlus and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
     end
     Button:SetScript('OnClick', function(self)
         Save().LFGPlus= not Save().LFGPlus and true or nil
@@ -287,7 +287,7 @@ local function Init_Button()--预创建队伍增强
     Button:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(not WoWTools_Mixin.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', e.GetEnabeleDisable(Save().LFGPlus))
+        GameTooltip:AddDoubleLine(not WoWTools_Mixin.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', WoWTools_TextMixin:GetEnabeleDisable(Save().LFGPlus))
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
         GameTooltip:Show()
         self2:SetAlpha(1)

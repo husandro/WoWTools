@@ -23,16 +23,16 @@ local function Init()
 
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '坐骑' or MOUNTS)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '宠物手册' or PET_JOURNAL)..'|r'
-            ..e.Icon.right
+            ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '玩具箱' or TOY_BOX)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 

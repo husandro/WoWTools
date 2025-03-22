@@ -23,9 +23,9 @@ local function Init(self)
 	local currencyID= itemInfo.currencyTypeId
 	if currencyID then
 		Save().ItemInteractionID= currencyID
-		e.SetItemCurrencyID= currencyID
+		WoWTools_DataMixin.CurrencyUpdateItemLevelID= currencyID
 	else
-		currencyID= self.chargeCurrencyTypeId or e.SetItemCurrencyID--套装，转换，货币
+		currencyID= self.chargeCurrencyTypeId or WoWTools_DataMixin.CurrencyUpdateItemLevelID--套装，转换，货币
 	end
 
 

@@ -26,11 +26,11 @@ Save={
     },
     fast={},--快速，加载，物品，指定玩家
     fastShow=true,--显示/隐藏，快速，加载，按钮
-    --CtrlFast= e.Player.husandro,--Ctrl+RightButton,快速，加载，物品
+    --CtrlFast= WoWTools_DataMixin.Player.husandro,--Ctrl+RightButton,快速，加载，物品
     --scaleSendPlayerFrame=1.2,--清除历史数据，缩放
     scaleFastButton=1.3,
     --INBOXITEMS_TO_DISPLAY=7,
-    logSendInfo= e.Player.husandro,--隐藏时不,清除，内容
+    logSendInfo= WoWTools_DataMixin.Player.husandro,--隐藏时不,清除，内容
     --lastSendPlayer='Fuocco-server',--收件人
     --lastSendSub=主题
     --lastSendBody=内容
@@ -45,11 +45,11 @@ end
 
 
 local function Is_Sandro()
-    if not e.Player.husandro or #Save().lastSendPlayerList~=0 then
+    if not WoWTools_DataMixin.Player.husandro or #Save().lastSendPlayerList~=0 then
         return
     end
         --1US(includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-    if e.Player.region==3 then
+    if WoWTools_DataMixin.Player.Region==3 then
         Save().lastSendPlayerList= {
             'Zans-Nemesis',
             'Qisi-Nemesis',
@@ -73,7 +73,7 @@ local function Is_Sandro()
             [WoWTools_Mixin.onlyChinese and '武器' or C_Item.GetItemClassInfo(2)]= 'Zans-Nemesis',--武器
 
         }
-    elseif e.Player.region==4 then
+    elseif WoWTools_DataMixin.Player.Region==4 then
         Save().lastSendPlayerList= {
             'Wowtools-巫妖之王',
         }
@@ -101,7 +101,7 @@ function WoWTools_MailMixin:SetSendName(name, guid)
     if not name then
         return
     end
-    name= name:gsub('%-'..e.Player.realm, '')
+    name= name:gsub('%-'..WoWTools_DataMixin.Player.realm, '')
     SendMailNameEditBox:SetText(name)
     SendMailNameEditBox:SetCursorPosition(0)
     SendMailNameEditBox:ClearFocus()
@@ -128,7 +128,7 @@ function WoWTools_MailMixin:GetNameInfo(name)
         end
     end
     reName= reName or WoWTools_UnitMixin:GetPlayerInfo({name=name, reName=true, reRealm=true})
-    return reName and reName:gsub('%-'..e.Player.realm, '') or name
+    return reName and reName:gsub('%-'..WoWTools_DataMixin.Player.realm, '') or name
 end
 
 
@@ -138,7 +138,7 @@ function WoWTools_MailMixin:GetRealmInfo(name)
         return
     end
     local realm= name:match('%-(.+)')
-    if realm and not (e.Player.Realms[realm] or realm==e.Player.realm) then
+    if realm and not (WoWTools_DataMixin.Player.Realms[realm] or realm==WoWTools_DataMixin.Player.realm) then
         return format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '该玩家与你不在同一个服务器' or ERR_PETITION_NOT_SAME_SERVER)
     end
 end
@@ -247,12 +247,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MailMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
             if not Save().disabled then

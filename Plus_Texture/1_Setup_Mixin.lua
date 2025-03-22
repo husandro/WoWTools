@@ -32,7 +32,7 @@ end
 --设置，颜色，透明度
 function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaORmin)
     if object then
-        if not notColor and e.Player.useColor then
+        if not notColor and WoWTools_DataMixin.Player.useColor then
             WoWTools_ColorMixin:Setup(object, {type=object:GetObjectType()})
         end
         if not notAlpha then

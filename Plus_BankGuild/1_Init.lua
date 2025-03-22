@@ -4,7 +4,7 @@ WoWTools_GuildBankMixin.Save={
     num=20,
     BgAplha=1,--背景ALPHA
     showIndex=true,
-    autoOpenBags=e.Player.husandro,--自动，打开背包
+    autoOpenBags=WoWTools_DataMixin.Player.husandro,--自动，打开背包
     plusOnlyOfficerAndLeader=true,
 
     saveItemSeconds=0.8,--保存，提取物品，延迟
@@ -63,12 +63,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_GuildBankMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue=function() return not WoWTools_GuildBankMixin.Save.disabled end,
                 SetValue= function()
                     WoWTools_GuildBankMixin.Save.disabled= not WoWTools_GuildBankMixin.Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not WoWTools_GuildBankMixin.Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not WoWTools_GuildBankMixin.Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

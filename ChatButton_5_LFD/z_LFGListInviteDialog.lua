@@ -26,7 +26,7 @@ local function Settings(self)
     end
 
     print(
-        e.Icon.icon2..WoWTools_LFDMixin.addName,
+        WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
 
         info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and
             '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore)
@@ -53,7 +53,7 @@ local function Settings(self)
         or '',--对方是否开启, 自动邀请
 
         info.activityID and
-            '|cffff00ff'..e.cn(C_LFGList.GetActivityFullName(info.activityID))..'|r'
+            '|cffff00ff'..WoWTools_TextMixin:CN(C_LFGList.GetActivityFullName(info.activityID))..'|r'
         or '',--查找器,类型
 
         info.isWarMode and-- info.isWarMode ~= C_PvP.IsWarModeDesired() and

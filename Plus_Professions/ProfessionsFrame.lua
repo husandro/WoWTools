@@ -31,7 +31,7 @@ local function Init()
             if itemID then
                 local all= 0--帐号数据
                 for guid, info in pairs(e.WoWDate or {}) do
-                    if guid and info and guid~=e.Player.guid then
+                    if guid and info and guid~=WoWTools_DataMixin.Player.GUID then
                         local tab=info.Item[itemID]
                         if tab and tab.bag and tab.bank then
                            all= all+1
@@ -69,7 +69,7 @@ local function Init()
         GameTooltip:SetRecipeResultItem(info.recipeID, {}, nil, info.unlockedRecipeLevel)
         GameTooltip:AddLine(' ')
 
-        local text= e.cn(nil, {recipeID=info.recipeID}) or C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
+        local text= WoWTools_TextMixin:CN(nil, {recipeID=info.recipeID}) or C_TradeSkillUI.GetRecipeSourceText(info.recipeID)
         if text then
             GameTooltip:AddLine(text, nil, nil, nil, true)
             GameTooltip:AddLine(' ')
@@ -139,13 +139,13 @@ local function Init()
         if not btn then
             btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {
                 size=16,
-                atlas= Save().disabledEnchant and e.Icon.disabled or e.Icon.icon
+                atlas= Save().disabledEnchant and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon
             })
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
             btn:SetScript('OnClick', function(self2)
                 Save().disabledEnchant= not Save().disabledEnchant and true or nil
-                self2:SetNormalAtlas(Save().disabledEnchant and e.Icon.disabled or e.Icon.icon)
+                self2:SetNormalAtlas(Save().disabledEnchant and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
             end)
             btn:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(0.3) end)
             btn:SetScript('OnEnter', function(self2)
@@ -153,7 +153,7 @@ local function Init()
                 GameTooltip:ClearLines()
                 GameTooltip:SetItemByID(38682)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动加入' or AUTO_JOIN, e.GetEnabeleDisable(not Save().disabledEnchant))
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动加入' or AUTO_JOIN, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledEnchant))
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
                 GameTooltip:Show()
                 self2:SetAlpha(1)

@@ -44,7 +44,7 @@ local function created_button(index)
     function btn:settings()
         self.Text:SetText(WoWTools_MailMixin:GetNameInfo(self.name))
         self:SetWidth(self.Text:GetWidth()+4)
-        self.alpha= (self.name==e.Player.name_realm or WoWTools_MailMixin:GetRealmInfo(self.name)) and 0.3 or 1
+        self.alpha= (self.name==WoWTools_DataMixin.Player.name_realm or WoWTools_MailMixin:GetRealmInfo(self.name)) and 0.3 or 1
         self:set_alpha()
         self:SetShown(true)
     end
@@ -74,7 +74,7 @@ local function set_list()
     end
     local index=1
     for _, name in pairs(Save().lastSendPlayerList) do
-        if not WoWTools_MailMixin:GetRealmInfo(name) and name~=e.Player.name_realm then
+        if not WoWTools_MailMixin:GetRealmInfo(name) and name~=WoWTools_DataMixin.Player.name_realm then
             local btn= Tab[index] or created_button(index)
             btn.name=name
             btn:settings()
@@ -155,7 +155,7 @@ local function Init_Menu(self, root)
         sub2=sub:CreateCheckbox(
             (
                 WoWTools_MailMixin:GetRealmInfo(name) and '|cff9e9e9e'
-                or (name==e.Player.name_realm and '|cff00ff00')
+                or (name==WoWTools_DataMixin.Player.name_realm and '|cff00ff00')
                 or ''
             )
             ..WoWTools_MailMixin:GetNameInfo(name),
@@ -299,7 +299,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, (WoWTools_Mixin.onlyChinese and '历史收件人' or format(CRAFTING_ORDER_MAIL_FULFILLED_TO, HISTORY))..'|cnGREEN_FONT_COLOR:#'..#Save().lastSendPlayerList)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
     Button:SetScript('OnLeave', GameTooltip_Hide)

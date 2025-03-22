@@ -11,9 +11,9 @@ local function Set_Sctipt(object)
         self:SetAlpha(0.3)
         GameTooltip:SetOwner(self:GetParent(), "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_GuildMixin.addName, e.Icon.icon2..self.tooltip)
+        GameTooltip:AddDoubleLine(WoWTools_GuildMixin.addName, WoWTools_DataMixin.Icon.icon2..self.tooltip)
         if self.isCrossFaction then
-            GameTooltip:AddDoubleLine(' ', e.GetYesNo(self.crossFaction))
+            GameTooltip:AddDoubleLine(' ', WoWTools_TextMixin:GetYesNo(self.crossFaction))
         end
         GameTooltip:Show()
     end)
@@ -97,7 +97,7 @@ local function CommunitiesList_ScrollBox(self)
             local elementData = clubID and btn:GetElementData()
             local clubInfo= elementData.clubInfo or {}
 
-            faction= clubInfo.crossFaction and 'CrossedFlags' or e.Icon[e.Player.faction]
+            faction= clubInfo.crossFaction and 'CrossedFlags' or e.Icon[WoWTools_DataMixin.Player.Faction]
 
             Create_Texture(btn)
 

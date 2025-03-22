@@ -14,7 +14,7 @@ WoWTools_AuctionHouseMixin.Save={
     numButton=14,--行数
     scaleSellButton=0.95,--综合
 
-    intShowSellItem= e.Player.husandro,--显示，转到出售物品
+    intShowSellItem= WoWTools_DataMixin.Player.husandro,--显示，转到出售物品
     isMaxSellItem= true,--出售物品时，使用，最大数量
     hideSellItem={--跳过，拍卖行物品
         [201469]=true,--翡翠青苹果
@@ -59,13 +59,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_AuctionHouseMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 Value= not Save().disabled,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

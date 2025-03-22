@@ -3,8 +3,8 @@ WoWTools_MoveMixin={
 Save={
     --disabledMove=true,--禁用移动
     point={},--移动
-    SavePoint= e.Player.husandro,--保存窗口,位置
-    moveToScreenFuori=e.Player.husandro,--可以移到屏幕外
+    SavePoint= WoWTools_DataMixin.Player.husandro,--保存窗口,位置
+    moveToScreenFuori=WoWTools_DataMixin.Player.husandro,--可以移到屏幕外
 
     --disabledZoom=true,--禁用缩放
     scale={--缩放

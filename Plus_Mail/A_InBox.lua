@@ -494,7 +494,7 @@ local function Init_InboxFrame_Update()
 
             local isCOD = CODAmount and CODAmount>0
             local isAuctionHouse= invoiceType~=nil or sender==BUTTON_LAG_AUCTIONHOUSE--拍卖行
-            local isSelf= sender==e.Player.name
+            local isSelf= sender==WoWTools_DataMixin.Player.Name
             
             if hasItem and hasItem>1 then
                 btn.countLable:SetText('|cffffd100'..hasItem..'|r')
@@ -534,7 +534,7 @@ local function Init_InboxFrame_Update()
             elseif isGM or isSelf then--GM, 自已,系统功能，如角色直升, 紫色
                 btn.typeTexture:SetVertexColor(0,0.5,1)
                 btn.typeText:SetTextColor(0,0.5,1)
-                text= isGM and 'GM' or e.Icon.player
+                text= isGM and 'GM' or WoWTools_DataMixin.Icon.Player
 
             else--绿色
                 btn.typeTexture:SetVertexColor(0,1,0)

@@ -131,7 +131,7 @@ local function Init_Menu(self, root)
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()
-		print(e.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
 	--打开选项界面
@@ -223,11 +223,11 @@ local function Init()
 		GameTooltip:ClearLines()
 		GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
 		GameTooltip:AddLine(' ')
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, e.Icon.left)
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, WoWTools_DataMixin.Icon.left)
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
 		GameTooltip:AddLine(' ')
-		--GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..e.Icon.mid)
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+		--GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
 		GameTooltip:Show()
 	end
 
@@ -243,7 +243,7 @@ local function Init()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
 		else
-			self:SetPoint('TOPLEFT', 0, e.Player.husandro and 0 or -100)
+			self:SetPoint('TOPLEFT', 0, WoWTools_DataMixin.Player.husandro and 0 or -100)
 		end
 	end
 

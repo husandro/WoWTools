@@ -11,7 +11,7 @@ local function Dungeon_Name(self)
             self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
             self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
         end
-        text= e.cn(self.name)
+        text= WoWTools_TextMixin:CN(self.name)
     end
     if self.Text then
         self.Text:SetText(text or '')

@@ -39,8 +39,8 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     end
 
     tooltip:AddLine(' ')
-    local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
-    local cnName= e.cn(nil, {npcID=companionID, isName=true})
+    local sourceInfo= WoWTools_TextMixin:CN(nil, {speciesID=speciesID}) or {}
+    local cnName= WoWTools_TextMixin:CN(nil, {npcID=companionID, isName=true})
 
     if cnName then
         tooltip:AddLine('|cffffffff'..cnName..'|r')

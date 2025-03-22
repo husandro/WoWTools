@@ -123,7 +123,7 @@ local function Init()
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
                     if name then
-                        local cnName=e.cn(name, true)
+                        local cnName=WoWTools_TextMixin:CN(name, true)
                         GameTooltip:AddDoubleLine(cnName or name, cnName and name..' ')
                     end
 
@@ -161,7 +161,7 @@ local function Init()
                     button.KeyTexture:SetScript('OnEnter', function(self)
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:ClearLines()
-                        local link= e.WoWDate[e.Player.guid].Keystone.link
+                        local link= e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
                         if link then
                             GameTooltip:SetHyperlink(link)
                         else
@@ -198,8 +198,8 @@ local function Init()
                     GameTooltip:ClearLines()
                     GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), e.Icon.left)
-                    GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.right)
+                    GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), WoWTools_DataMixin.Icon.left)
+                    GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
                     GameTooltip:Show()
                     self:settings(true)
                 end)
@@ -231,7 +231,7 @@ local function Init()
                     local isSaved= self:get_save()
                     local insID= self:GetParent().instanceID
                     if insID then
-                        Save().favorites[e.Player.guid][insID]= not isSaved and true or nil
+                        Save().favorites[WoWTools_DataMixin.Player.GUID][insID]= not isSaved and true or nil
                         self:settings()
                     end
                 end
@@ -240,8 +240,8 @@ local function Init()
                     self:SetAlpha((isEnter or isSaved) and 1 or 0)
                 end
                 function button.Favorites2:get_save()
-                    Save().favorites[e.Player.guid]= Save().favorites[e.Player.guid] or {}
-                    return Save().favorites[e.Player.guid][self:GetParent().instanceID]
+                    Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
+                    return Save().favorites[WoWTools_DataMixin.Player.GUID][self:GetParent().instanceID]
                 end
             end
         end

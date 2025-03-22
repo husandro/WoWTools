@@ -1,7 +1,3 @@
-local e = select(2, ...)
-
-
-
 local P_Tabs={
     item={
         --156833,--[凯蒂的印哨]
@@ -57,14 +53,12 @@ local P_Tabs={
     },
 }
 
-WoWTools_UseItemsMixin={
-    Save= P_Tabs,
-    P_Tabs=P_Tabs,
-    addName=nil
-}
+WoWTools_UseItemsMixin={}
 
 
-
+function WoWTools_UseItemsMixin:Get_P_Tabs()
+    return P_Tabs
+end
 
 function WoWTools_UseItemsMixin:Find_Type(type, ID)
     for index, ID2 in pairs(self.Save[type]) do
@@ -73,7 +67,6 @@ function WoWTools_UseItemsMixin:Find_Type(type, ID)
         end
     end
 end
-
 
 
 
@@ -93,42 +86,33 @@ end
 --加载保存数据
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_LOGIN')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWTools_UseItemsMixin.Save = WoWToolsSave['Tools_UseItems'] or WoWTools_UseItemsMixin.Save
+           WoWToolsSave['Tools_UseItems']= WoWToolsSave['Tools_UseItems'] or P_Tabs
 
 --禁用，Tools模块，退出
+
             if not WoWTools_ToolsMixin.Button then
-                self:UnregisterEvent(event)
+                self:UnregisterAllEvents()
                 return
             end
 
-            --if (not WoWToolsSave or not WoWToolsSave[addName..'Tools']) and PlayerHasToy(156833) and WoWTools_UseItemsMixin.Save.item[1]==194885 then
-            --Save.item[1] = 156833
-            --end
-
             WoWTools_UseItemsMixin.addName= '|A:soulbinds_tree_conduit_icon_utility:0:0|a'..(WoWTools_Mixin.onlyChinese and '使用物品' or USE_ITEM)
 
-            for _, ID in pairs(WoWTools_UseItemsMixin.Save.item) do
-                WoWTools_Mixin:Load({id=ID, type='item'})
-            end
-            for _, ID in pairs(WoWTools_UseItemsMixin.Save.spell) do
-                WoWTools_Mixin:Load({id=ID, type='spell'})
-            end
-            for _, ID in pairs(WoWTools_UseItemsMixin.Save.equip) do
+            for _, ID in pairs(WoWToolsSave['Tools_UseItems'].item) do
                 WoWTools_Mixin:Load({id=ID, type='item'})
             end
 
-            C_Timer.After(2.3, function()
-                if UnitAffectingCombat('player') then
-                    self:RegisterEvent("PLAYER_REGEN_ENABLED")
-                else
-                    Init()--初始
-                end
-            end)
+            for _, ID in pairs(WoWToolsSave['Tools_UseItems'].spell) do
+                WoWTools_Mixin:Load({id=ID, type='spell'})
+            end
+
+            for _, ID in pairs(WoWToolsSave['Tools_UseItems'].equip) do
+                WoWTools_Mixin:Load({id=ID, type='item'})
+            end
 
         elseif arg1=='Blizzard_Collections' then
             WoWTools_UseItemsMixin:Init_UI_Toy()
@@ -137,12 +121,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_UseItemsMixin:Init_PlayerSpells()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['Tools_UseItems']=WoWTools_UseItemsMixin.Save
-        end
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
+    elseif event=='PLAYER_LOGIN' then
         Init()--初始
         self:UnregisterEvent(event)
     end

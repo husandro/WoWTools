@@ -175,7 +175,7 @@ local function Init()
             GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
         end
 
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         WoWTools_KeyMixin:SetTexture(self)
     end)

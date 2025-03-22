@@ -99,7 +99,7 @@ local function Save_Macro_Menu(frame, root)
             if description.data.tab.body then
                 tooltip:AddLine(description.data.tab.body)
                 tooltip:AddLine(' ')
-                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..e.Icon.left)
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left)
             else
                 tooltip:AddLine((WoWTools_Mixin.onlyChinese '无' or NONE))
             end
@@ -206,7 +206,7 @@ local function Init()
         local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff9e9e9e'
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..e.Icon.left, e.Icon.right..col..(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
+        GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..col..(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
         GameTooltip:Show()
     end
 

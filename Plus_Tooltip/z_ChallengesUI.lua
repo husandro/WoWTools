@@ -12,8 +12,8 @@ local function Blizzard_ChallengesUI()
                     name = tbl.name
                     description = string.format(tbl.desc, self.info.pct)
                 else
-                    name= e.cn(name)
-                    description= e.cn(description)
+                    name= WoWTools_TextMixin:CN(name)
+                    description= WoWTools_TextMixin:CN(description)
                 end
                 GameTooltip:SetText(name, 1, 1, 1, 1, true)
                 GameTooltip:AddLine(description, nil, nil, nil, true)

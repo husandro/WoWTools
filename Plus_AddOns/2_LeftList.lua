@@ -61,7 +61,7 @@ local function Create_Fast_Button(indexAdd)
         AddonTooltip:SetOwner(self.checkTexture, "ANCHOR_LEFT")
         AddonTooltip_Update(self)
         AddonTooltip:AddLine(' ')
-        AddonTooltip:AddDoubleLine(' ', e.GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0)..e.Icon.left)
+        AddonTooltip:AddDoubleLine(' ', WoWTools_TextMixin:GetEnabeleDisable(C_AddOns.GetAddOnEnableState(self:GetID())~=0)..WoWTools_DataMixin.Icon.left)
         AddonTooltip:Show()
     end
     btn:SetScript('OnEnter', function(self)

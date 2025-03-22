@@ -53,9 +53,9 @@ local function Setttings(btn)
             end
             C_EquipmentSet.CreateEquipmentSet(self.str)
             if setID then
-                print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
             else
-                print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..'|r', self.str)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..'|r', self.str)
             end
         end)
     end
@@ -64,16 +64,16 @@ local function Setttings(btn)
     end
 
     if not btn.setScripOK then
-        btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+        btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
         btn:HookScript('OnClick', function(self, d)
             if self.setID and not Save().hide and d=='RightButton' then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
                 if notCan then
-                    print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, notCan)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, notCan)
                 else
                     C_EquipmentSet.UseEquipmentSet(self.setID)
                     local name, iconFileID = C_EquipmentSet.GetEquipmentSetInfo(self.setID)
-                    print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, iconFileID and '|T'..iconFileID..':0|t|cnGREEN_FONT_COLOR:' or '', name)
                 end
             end
         end)
@@ -81,7 +81,7 @@ local function Setttings(btn)
         btn:HookScript('OnEnter', function(self)
             if self.setID and not Save().hide then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
-                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '装备' or EQUIPSET_EQUIP)..e.Icon.right)
+                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '装备' or EQUIPSET_EQUIP)..WoWTools_DataMixin.Icon.right)
                 GameTooltip:Show()
             end
         end)

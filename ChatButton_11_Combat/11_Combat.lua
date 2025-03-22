@@ -3,7 +3,7 @@ WoWTools_CombatMixin={
     Save= {
     textScale=1.2,
     SayTime=120,--每隔
-    disabledSayTime= not e.Player.husandro,
+    disabledSayTime= not WoWTools_DataMixin.Player.husandro,
     --AllOnlineTime=true,--进入游戏时,提示游戏,时间
 
     bat={num= 0, time= 0},--战斗数据
@@ -24,7 +24,7 @@ WoWTools_CombatMixin={
 
 
 local function Init()
-    if WoWTools_CombatMixin.Save.AllOnlineTime or not e.WoWDate[e.Player.guid].Time.totalTime then--总游戏时间
+    if WoWTools_CombatMixin.Save.AllOnlineTime or not e.WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime then--总游戏时间
         RequestTimePlayed()
     end
 

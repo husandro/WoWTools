@@ -47,7 +47,7 @@ local function get_Faction_Info(index, factionID)
 	if WoWTools_FactionMixin.onlyIcon then--仅显示有图标
 		name=nil
 	else
-		name= e.cn(name)
+		name= WoWTools_TextMixin:CN(name)
 		name= name:match('%- (.+)') or name
 	end
 

@@ -56,17 +56,17 @@ local function set_save_gem(itemEquipLoc, gemLink, index)
     if not itemEquipLoc then
         return
     end
-    Save.gemLoc[e.Player.class][itemEquipLoc]= Save.gemLoc[e.Player.class][itemEquipLoc] or {}
+    Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc]= Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc] or {}
     local gemID
     if gemLink then
         gemID= C_Item.GetItemInfoInstant(gemLink)
         if gemID then
-            Save.gemLoc[e.Player.class][itemEquipLoc][index]= gemID
+            Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc][index]= gemID
         end
     end
 
-    gemID= gemID or Save.gemLoc[e.Player.class][itemEquipLoc][index]
-    Save.gemLoc[e.Player.class][itemEquipLoc][index]= gemID
+    gemID= gemID or Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc][index]
+    Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc][index]= gemID
     return gemID
 end
 
@@ -84,7 +84,7 @@ local function Init_Button_Menu(self, root)
     end, function()
         Save.favorites[self.itemID]= not Save.favorites[self.itemID] and true or nil
         self:set_favorite()
-        print(e.Icon.icon2.. addName, Save.favorites[self.itemID] and self.itemID or '', WoWTools_Mixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(WoWTools_DataMixin.Icon.icon2.. addName, Save.favorites[self.itemID] and self.itemID or '', WoWTools_Mixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         Func.Set_Gem()
     end)
     root:CreateDivider()
@@ -200,10 +200,10 @@ local function creatd_button(index, parent)
             GameTooltip:ClearLines()
             GameTooltip:SetBagItem(self.bagID, self.slotID)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT)..format('|A:%s:0:0|a', e.Icon.toRight), 'Alt+'..e.Icon.left)
-            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..e.Icon.mid)
-            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', e.Icon.toLeft), 'Alt+'..e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '左边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_LEFT)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight), 'Alt+'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '上面' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..'|A:bags-greenarrow:0:0|a', 'Alt+'..WoWTools_DataMixin.Icon.mid)
+            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_RIGHT)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft), 'Alt+'..WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
         end
     end
@@ -324,7 +324,7 @@ Func.Set_Gem= function()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                 local level= C_Item.GetDetailedItemLevelInfo(info.hyperlink) or 0
                 local classID, subclassID, _, expacID= select(12, C_Item.GetItemInfo(info.hyperlink))
                 if classID==3
-                    and (e.Is_Timerunning or (e.Player.IsMaxLevel and e.ExpansionLevel== expacID or not e.Player.IsMaxLevel))--最高等级
+                    and (WoWTools_DataMixin.Is_Timerunning or (WoWTools_DataMixin.Player.IsMaxLevel and WoWTools_DataMixin.ExpansionLevel== expacID or not WoWTools_DataMixin.Player.IsMaxLevel))--最高等级
                 then
                     local tab={
                         info= info,
@@ -344,11 +344,11 @@ Func.Set_Gem= function()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
                         table.insert(gemRight, tab)
                     else
                         local type
-                        if e.Is_Timerunning then
+                        if WoWTools_DataMixin.Is_Timerunning then
                             local date= WoWTools_ItemMixin:GetTooltip({hyperLink=info.hyperlink, index=2})
                             type= date.indexText and date.indexText:match('|c........(.-)|r') or date.indexText
                         else
-                            type= subclassID and e.cn(C_Item.GetItemSubClassInfo(classID, subclassID))
+                            type= subclassID and WoWTools_TextMixin:CN(C_Item.GetItemSubClassInfo(classID, subclassID))
                         end
                         type=type or ' '
                         items[type]= items[type] or {}
@@ -620,7 +620,7 @@ local function Init_ItemSocketingFrame_Update()
     local numSockets = GetNumSockets() or 0
     CurTypeGemTab={}
     local itemEquipLoc
-    if e.Is_Timerunning then
+    if WoWTools_DataMixin.Is_Timerunning then
         local link, itemID= select(2, ItemSocketingDescription:GetItem())
         itemEquipLoc= itemID and select(4, C_Item.GetItemInfoInstant(itemID))
         if itemEquipLoc then
@@ -631,8 +631,8 @@ local function Init_ItemSocketingFrame_Update()
             elseif itemEquipLoc=='INVTYPE_WEAPON' then--16, 17
                 itemEquipLoc= itemEquipLoc..(GetInventoryItemLink('player', 16)==link and 16 or 17)
             end
-            if not Save.gemLoc[e.Player.class][itemEquipLoc] then
-                Save.gemLoc[e.Player.class][itemEquipLoc]={}
+            if not Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc] then
+                Save.gemLoc[WoWTools_DataMixin.Player.Class][itemEquipLoc]={}
             end
         end
     end
@@ -652,7 +652,7 @@ local function Init_ItemSocketingFrame_Update()
                 btn.type=WoWTools_LabelMixin:Create(btn)
                 btn.type:SetPoint('BOTTOM', btn, 'TOP', 0, 2)
                 btn.qualityTexture= btn:CreateTexture(nil, 'OVERLAY')
-                if e.Is_Timerunning then
+                if WoWTools_DataMixin.Is_Timerunning then
                     btn.qualityTexture:SetPoint('CENTER')
                     btn.qualityTexture:SetSize(46,46)--40
                 else
@@ -710,7 +710,7 @@ local function Init_ItemSocketingFrame_Update()
             local left, right= WoWTools_ItemStatsMixin:Gem(nil, gemLink)
             local atlas
             if gemLink then
-                if e.Is_Timerunning then
+                if WoWTools_DataMixin.Is_Timerunning then
                     local quality= C_Item.GetItemQualityByID(gemLink)--C_Item.GetItemQualityColor(quality)
                     atlas= e.Icon[quality]
                 else
@@ -805,7 +805,7 @@ local function Init_Menu(self, root)
         return not Save.disableSpell
     end, function()
         Save.disableSpell= not Save.disableSpell and true or nil
-        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disableSpell), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disableSpell), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end, {})
 
     root:CreateDivider()
@@ -880,7 +880,7 @@ local function Init_Menu(self, root)
         ..(WoWTools_Mixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
     function()
         Save.gemLoc={
-            [e.Player.class]={}
+            [WoWTools_DataMixin.Player.Class]={}
         }
         WoWTools_Mixin:Call(ItemSocketingFrame_Update)
         return MenuResponse.Refresh
@@ -905,7 +905,7 @@ local function Init_Button_All()
     local btn= WoWTools_ButtonMixin:Cbtn(ItemSocketingFrame.TitleContainer, {size=22})
     btn:SetPoint('LEFT', 26)
     function btn:set_texture()
-        btn:SetNormalAtlas(Save.hide and e.Icon.disabled or e.Icon.icon)
+        btn:SetNormalAtlas(Save.hide and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
     end
     function btn:set_shown()
         if Frame:CanChangeAttribute() then
@@ -932,9 +932,9 @@ local function Init_Button_All()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.GetShowHide(not Save.hide), e.Icon.left)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), e.Icon.mid)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save.hide), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
     btn:SetAlpha(0.5)
@@ -1055,12 +1055,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|T4555592:0|t'..(WoWTools_Mixin.onlyChinese and '镶嵌宝石' or SOCKET_GEMS)
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

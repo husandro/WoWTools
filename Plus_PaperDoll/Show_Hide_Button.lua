@@ -65,13 +65,13 @@ local function Settings()
     if InspectFrame then
         InspectLevelText:set_font_size()
         InspectFrame:set_status_label()--目标，属性
-        InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
+        InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
         if InspectFrame:IsShown() then
             WoWTools_Mixin:Call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
             WoWTools_Mixin:Call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end
     end
-    PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and e.Icon.disabled or e.Icon.icon)
+    PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
 end
 
 
@@ -112,7 +112,7 @@ local function Init(frame)
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas= not Save().hide and e.Icon.icon or e.Icon.disabled})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas= not Save().hide and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled})
     btn:SetPoint('LEFT', title)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
@@ -121,7 +121,7 @@ local function Init(frame)
         MenuUtil.CreateContextMenu(self, Init_Menu)
 
         --[[if d=='RightButton' then
-            e.OpenPanelOpting(nil, WoWTools_PaperDollMixin.addName)
+            WoWTools_PanelMixin:Open(nil, WoWTools_PaperDollMixin.addName)
         else
             Save().hide= not Save().hide and true or nil
             Settings()
@@ -142,11 +142,11 @@ local function Init(frame)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
         
-        --GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.left)
+        --GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide), WoWTools_DataMixin.Icon.left)
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or SETTINGS_TITLE, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or SETTINGS_TITLE, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         self:set_alpha(true)
     end)

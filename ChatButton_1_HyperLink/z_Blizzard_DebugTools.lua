@@ -29,7 +29,7 @@ local function Init()
     })
 
     btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
-    btn:SetNormalAtlas(e.Icon.icon)
+    btn:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
     btn:SetScript('OnClick', function(self)
         FrameStackTooltip_ToggleDefaults()
         if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then
@@ -42,7 +42,7 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HyperLink.addName)
-        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', e.GetEnabeleDisable(FrameStackTooltip:IsVisible()))
+        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_TextMixin:GetEnabeleDisable(FrameStackTooltip:IsVisible()))
         GameTooltip:Show()
     end
     btn:SetScript('OnEnter',  btn.set_tooltip)
@@ -73,7 +73,7 @@ local function Init()
     end)
     edit:SetScript("OnKeyUp", function(s, key)
         if IsControlKeyDown() and key == "C" then
-            print(e.Icon.icon2.. WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+            print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
         end
     end)
 

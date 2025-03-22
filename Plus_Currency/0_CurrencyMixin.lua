@@ -107,7 +107,7 @@ function WoWTools_CurrencyMixin:GetLink(currencyID, index, link, isCN)
     local info
     info, _, link = get_info(currencyID, index, link)
     if link and isCN and WoWTools_Chinese_Mixin and info and info.name then
-        local cnName= e.cn(info.name)
+        local cnName= WoWTools_TextMixin:CN(info.name)
         if cnName and info.name~=info.name then
             link=link:gsub(info.name, cnName)
         end
@@ -178,7 +178,7 @@ function WoWTools_CurrencyMixin:GetName(currencyID, index, link)
                 ('|c'..select(4, C_Item.GetItemQualityColor(info.quality or 1)))--颜色
                 or '|cnENCHANT_COLOR:'
             )
-            ..e.cn(info.name)--名称
+            ..WoWTools_TextMixin:CN(info.name)--名称
             ..'|r'
             ..(
                 isMax and '|cnRED_FONT_COLOR:'

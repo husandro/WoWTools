@@ -187,7 +187,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 --显示
     root:CreateCheckbox(
-        e.Icon.left..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
+        WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
     function()
         return self.frame:IsShown()
     end, function()
@@ -315,7 +315,7 @@ local function Init(isShow)
     function TypeButton:set_Frame_shown()
         local show= not Save().TypeButton.hideFrame
         self.frame:SetShown(show)
-        self:SetNormalAtlas(show and e.Icon.icon or 'WildBattlePetCapturable')
+        self:SetNormalAtlas(show and WoWTools_DataMixin.Icon.icon or 'WildBattlePetCapturable')
         self:SetAlpha(show and 1 or 0.3)
     end
 
@@ -343,12 +343,12 @@ local function Init(isShow)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName, WoWTools_PetBattleMixin.addName4)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         if not C_AddOns.IsAddOnLoaded('Rematch') then
-            GameTooltip:AddDoubleLine(e.Icon.left..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), WoWTools_Mixin.onlyChinese and '过滤器: 宠物类型' or (FILTER..": "..PET_FAMILIES))
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), WoWTools_Mixin.onlyChinese and '过滤器: 宠物类型' or (FILTER..": "..PET_FAMILIES))
         end
         GameTooltip:Show()
     end

@@ -15,7 +15,7 @@ end
 
 function WoWTools_QuestMixin:GetName(questID)
     if questID then
-        return e.cn(nil, {questID=questID, isName=true})
+        return WoWTools_TextMixin:CN(nil, {questID=questID, isName=true})
             or C_TaskQuest.GetQuestInfoByQuestID(questID)
             or C_QuestLog.GetTitleForQuestID(questID)
             or questID
@@ -31,7 +31,7 @@ function WoWTools_QuestMixin:GetLink(questID)
         WoWTools_Mixin:Load({id=questID, type='quest'})
         local index= C_QuestLog.GetLogIndexForQuestID(questID)
         local info= index and C_QuestLog.GetInfo(index) or {}
-        local name= e.cn(info.title or questID, {questID=questID, isName=true})
+        local name= WoWTools_TextMixin:CN(info.title or questID, {questID=questID, isName=true})
         link= '|cffffff00|Hquest:'..questID..':'..(info.level or -1)..':::|h['..(name or questID)..']|h|r'
     end
     return link
@@ -218,8 +218,8 @@ function WoWTools_QuestMixin:GetQuestAll()
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), WoWTools_QuestMixin:GetColor('Day').hex..(WoWTools_Mixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', e.Icon.select))
-    GameTooltip:AddLine(e.Player.col..(WoWTools_Mixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
+    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), WoWTools_QuestMixin:GetColor('Day').hex..(WoWTools_Mixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
+    GameTooltip:AddLine(WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
     GameTooltip:AddLine(' ')
@@ -280,7 +280,7 @@ function WoWTools_QuestMixin:GetColor(text, questID)
     }
     if text then
         return color[text]
-    elseif questID and UnitEffectiveLevel('player')== e.Player.level then
+    elseif questID and UnitEffectiveLevel('player')== WoWTools_DataMixin.Player.Level then
         local difficulty= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
         if difficulty then
             if difficulty== 0 then--Trivial    
@@ -325,7 +325,7 @@ function WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, isComplete)--
         if tagInfo.tagID == Enum.QuestTag.Legendary then
             tagID, color, atlas= "COMPLETED_LEGENDARY", WoWTools_QuestMixin:GetColor('Complete'), nil
         else
-            tagID, color, atlas=  nil, WoWTools_QuestMixin:GetColor('Complete'), format('|A:%s:0:0|a', e.Icon.select)--"COMPLETED", WoWTools_QuestMixin:GetColor('Complete')
+            tagID, color, atlas=  nil, WoWTools_QuestMixin:GetColor('Complete'), format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)--"COMPLETED", WoWTools_QuestMixin:GetColor('Complete')
         end
     elseif C_QuestLog.IsFailed(questID) then
         tagID, color, atlas= "FAILED", WoWTools_QuestMixin:GetColor('Failed'), nil

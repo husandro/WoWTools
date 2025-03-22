@@ -40,7 +40,7 @@ end
 
 
 function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
-    if not e.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then--不是，最高等级时，退出
+    if not WoWTools_DataMixin.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then--不是，最高等级时，退出
         return
     end
     --{frame=AllTipsFrame, point={'TOPLEFT', AllTipsFrame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'}
@@ -112,7 +112,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
     if showTooltip then
         local find
         for head, tab in pairs(R) do
-            GameTooltip:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..head)
+            GameTooltip:AddLine(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..head)
             for index, info in pairs(tab) do
                 if info.unlocked then
                     local itemLink=  C_WeeklyRewards.GetExampleRewardItemHyperlinks(info.id)
@@ -121,7 +121,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                     GameTooltip:AddLine(
                         '   '..index..') '
                         ..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)
-                        ..format('|A:%s:0:0|a', e.Icon.select)..((info.level and info.level>0) and info.level or ''))
+                        ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..((info.level and info.level>0) and info.level or ''))
                 else
                     GameTooltip:AddLine('    |cff828282'..index..') '
                         ..info.difficulty
@@ -170,7 +170,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
             end
             frame.WeekRewards['rewardChestHead'..head]= label
         end
-        label:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..head)
+        label:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..head)
         last= label
 
         for index, info in pairs(tab) do
@@ -219,10 +219,10 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                 local texture= C_Item.GetItemIconByID(itemLink)
                 local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
-                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', e.Icon.select)..((info.level and info.level>0) and info.level or '')
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..((info.level and info.level>0) and info.level or '')
             else
                 if info.unlocked then
-                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', e.Icon.select)..(info.level or '')--.. ' '..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
+                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..(info.level or '')--.. ' '..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
                 else
                     text='    |cff828282'..index..') '
                         ..info.difficulty

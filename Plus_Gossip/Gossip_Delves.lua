@@ -53,9 +53,9 @@ local function Init_OnShow(self)
             local spellLink
             if option.spellID then
                 local link= C_Spell.GetSpellLink(option.spellID)
-                spellLink= e.cn(link, {spellID=option.spellID, spellLink=link, isName=true})
+                spellLink= WoWTools_TextMixin:CN(link, {spellID=option.spellID, spellLink=link, isName=true})
             end
-            name=spellLink or e.cn(option.name)
+            name=spellLink or WoWTools_TextMixin:CN(option.name)
 
 
             for _, reward in ipairs(option.rewards or {}) do
@@ -65,13 +65,13 @@ local function Init_OnShow(self)
                     local link= WoWTools_ItemMixin:GetLink(reward.id)
                     itemLink= (itemLink or '    ')
                         ..(
-                            e.cn(link or item, {itemID=reward.id, itemLink=link, isName=true})
+                            WoWTools_TextMixin:CN(link or item, {itemID=reward.id, itemLink=link, isName=true})
                             or ('|T'..(C_Item.GetItemIconByID(reward.id) or 0)..':0|t')
                         )
                         ..'x'..(reward.quantity or 1)..' '
                 end
             end
-            print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
             if itemLink then
                 print(itemLink)
             end
@@ -105,7 +105,7 @@ local function Init_Menu(_, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_Mixin.addName)
-        tooltip:AddDoubleLine(WoWTools_GossipMixin.addName, e.GetEnabeleDisable(Save().delvesDifficultyMaxLevel))
+        tooltip:AddDoubleLine(WoWTools_GossipMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(Save().delvesDifficultyMaxLevel))
     end)
     sub:SetEnabled(Save().gossip and true or false)
 end

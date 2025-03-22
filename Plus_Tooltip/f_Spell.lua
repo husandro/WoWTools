@@ -21,10 +21,10 @@ local function Set_HunterPet(tooltip, spellID)
 
     local atlas= e.dropdownIconForPetSpec[info.specialization]
     tooltip:AddDoubleLine(
-        (e.cn(info.familyName) or '')
+        (WoWTools_TextMixin:CN(info.familyName) or '')
         ..(info.name and info.name~=info.familyName and '<'..info.name..'>' or ''),
 
-        (atlas and '|A:'..atlas..':0:0|a' or '')..(e.cn(info.specialization) or '')
+        (atlas and '|A:'..atlas..':0:0|a' or '')..(WoWTools_TextMixin:CN(info.specialization) or '')
     )
 
     local icon, icon2='', ''

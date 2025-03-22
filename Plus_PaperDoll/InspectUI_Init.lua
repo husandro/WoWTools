@@ -34,7 +34,7 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
                 GameTooltip:ClearLines()
                 GameTooltip:SetOwner(InspectFrame, "ANCHOR_RIGHT")
                 GameTooltip:SetHyperlink(self.link)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.left)
                 GameTooltip:Show()
             end
         end)
@@ -66,14 +66,14 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
         frame.itemBG= frame:CreateTexture(nil, 'BACKGROUND')
         frame.itemBG:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
         frame.itemBG:SetAlpha(0.7)
-        --frame.itemBG:SetVertexColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+        --frame.itemBG:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
         frame.itemBG:SetPoint('TOPLEFT', frame.itemLinkText)
         frame.itemBG:SetPoint('BOTTOMRIGHT', frame.itemLinkText)
     end
     if frame.itemLinkText then
         if link then
             local itemID= GetInventoryItemID(unit, slot)
-            local cnName= e.cn(nil, {itemID=itemID, isName=true})
+            local cnName= WoWTools_TextMixin:CN(nil, {itemID=itemID, isName=true})
             if cnName then
                 cnName= cnName:match('|cff......(.+)|r') or cnName
                 local atlas= link:match('%[(.-) |A') or link:match('%[(.-)]')
@@ -189,7 +189,7 @@ local function Init_UI()
                 end
             end
             for a, b in pairs(sta) do
-                table.insert(newSta, {text=e.cn(_G[a] or a), value=b})
+                table.insert(newSta, {text=WoWTools_TextMixin:CN(_G[a] or a), value=b})
             end
             table.sort(newSta, function(a,b) return a.value> b.value end)
             for index, info in pairs(newSta) do

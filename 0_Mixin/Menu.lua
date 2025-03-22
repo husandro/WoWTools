@@ -207,12 +207,12 @@ function WoWTools_MenuMixin:ScaleCheck(frame, root, GetValue, SetValue, ResetVal
         {checkGetValue=checkGetValue}
     )
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.GetEnabeleDisable(nil, true))
+        tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
     end)
 
     local sub2= self:ScaleRoot(frame, sub, GetValue, SetValue, ResetValue)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.GetEnabeleDisable(nil, true))
+        tooltip:AddLine(WoWTools_TextMixin:GetEnabeleDisable(nil, true))
     end)
     return sub2, sub
 end]]
@@ -399,7 +399,7 @@ function WoWTools_MenuMixin:Reload(root, isControlKeyDown)
         end
     end, isControlKeyDown)
     sub:SetTooltip(function(tooltip, desc)
-        tooltip:AddDoubleLine(SLASH_RELOAD1, desc.data and '|cnGREEN_FONT_COLOR:Ctrl+|r'..e.Icon.left)
+        tooltip:AddDoubleLine(SLASH_RELOAD1, desc.data and '|cnGREEN_FONT_COLOR:Ctrl+|r'..WoWTools_DataMixin.Icon.left)
     end)
     return sub
 end
@@ -603,7 +603,7 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
         if SettingsPanel:IsVisible() and not WoWTools_Mixin:IsLockFrame(SettingsPanel) then--ToggleGameMenu()
             SettingsPanel:Close()
         end
-        e.OpenPanelOpting(data.category, data.name)
+        WoWTools_PanelMixin:Open(data.category, data.name)
         return MenuResponse.Open
     end, {name=name, category=category})
 
@@ -676,7 +676,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
 
     local roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(curSpecIndex, false, false))
     local sub= root:CreateButton(
-        '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..e.cn(name),
+        '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..WoWTools_TextMixin:CN(name),
     function(data)
         WoWTools_LoadUIMixin:SpellBook(2, nil)
         return MenuResponse.Open
@@ -691,7 +691,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
             roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
 
             local sub2= sub:CreateButton(
-                '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..e.cn(name),
+                '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..WoWTools_TextMixin:CN(name),
             function(data)
                 if GetSpecialization(nil, false, 1)~=data.specIndex
                     and not InCombatLockdown()
@@ -707,7 +707,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
                     tooltip:AddLine(
                         ((UnitAffectingCombat('player') or GetSpecialization(nil, false, 1)==data2.specIndex) and '|cff828282' or '')
                         ..(WoWTools_Mixin.onlyChinese and '激活' or SPEC_ACTIVE)
-                        ..e.Icon.left)
+                        ..WoWTools_DataMixin.Icon.left)
                 end}
             )
 

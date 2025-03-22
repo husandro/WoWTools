@@ -102,7 +102,7 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
     local showTooltip= settings.showTooltip
 
     local R={}
-    for _, tab in pairs(e.ItemCurrencyTips) do
+    for _, tab in pairs(WoWTools_DataMixin.ItemCurrencyTips) do
         local text=''
         if tab.type=='currency' and tab.id and tab.id>0 then
             local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(tab.id)

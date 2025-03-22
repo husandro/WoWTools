@@ -27,7 +27,7 @@ local function Init_Menu(self, root)
 		else
 			WoWTools_FactionMixin:Init_TrackButton()--监视, 文本
 		end
-		print(e.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING, e.GetShowHide(Save().btn))
+		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING, WoWTools_TextMixin:GetShowHide(Save().btn))
 	end)
 
 --自动隐藏
@@ -57,7 +57,7 @@ local function Init_Menu(self, root)
 			WoWTools_FactionMixin.TrackButton:ClearAllPoints()
 			WoWTools_FactionMixin.TrackButton:set_Point()
 		end
-		print(e.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
 --指定
@@ -178,7 +178,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
 		WoWTools_FactionMixin:Set_TrackButton_Pushed(true)--TrackButton，提示
 	end)

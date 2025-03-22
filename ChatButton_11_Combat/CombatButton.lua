@@ -27,7 +27,7 @@ local function Init(btn)
     btn.texture2:SetShown(false)
 
     function btn:set_texture()
-        self.texture:SetAtlas(e.Icon[e.Player.faction] or e.Icon['Neutral'])
+        self.texture:SetAtlas(e.Icon[WoWTools_DataMixin.Player.Faction] or e.Icon['Neutral'])
         self.texture:SetDesaturated(Save().disabledText and true or false)--禁用/启用 TrackButton, 提示
     end
 

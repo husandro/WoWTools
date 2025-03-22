@@ -18,7 +18,7 @@ local function Set_Text(self)
         text= self.taxiNodeData.name
         if text then
             text= text:match('(.-)'..KEY_COMMA) or text:match('(.-)'..PLAYER_LIST_DELIMITER) or text
-            text= e.cn(text)
+            text= WoWTools_TextMixin:CN(text)
         end
     end
     if self.Text then
@@ -57,10 +57,10 @@ local function Init()
             '|A:FlightMaster:0:0|a'..(WoWTools_Mixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
-                e.GetShowHide(WoWTools_WorldMapMixin.Save.ShowFlightMap_Name),
+                WoWTools_TextMixin:GetShowHide(WoWTools_WorldMapMixin.Save.ShowFlightMap_Name),
                 WoWTools_Mixin.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
             )
-            ..e.Icon.left
+            ..WoWTools_DataMixin.Icon.left
         )
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
         GameTooltip:Show()
@@ -68,7 +68,7 @@ local function Init()
     end)
 
     function btn:Settings()
-        self:SetNormalAtlas(not WoWTools_WorldMapMixin.Save.ShowFlightMap_Name and e.Icon.disabled or e.Icon.icon)
+        self:SetNormalAtlas(not WoWTools_WorldMapMixin.Save.ShowFlightMap_Name and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
     end
     btn:Settings()
 

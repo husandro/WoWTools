@@ -15,7 +15,7 @@ WoWTools_BankMixin.Save={
     --leftListScale=1,
     --hideLeftListTooltip=true,
 
-    openBagInBank=e.Player.husandro,
+    openBagInBank=WoWTools_DataMixin.Player.husandro,
 
     --disabledBankBag=true,--银行背包
     --disabledReagentFrame= true,--材料银行
@@ -47,12 +47,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_BankMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue=function() return not WoWTools_BankMixin.Save.disabled end,
                 SetValue= function()
                     WoWTools_BankMixin.Save.disabled= not WoWTools_BankMixin.Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not WoWTools_BankMixin.Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not WoWTools_BankMixin.Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

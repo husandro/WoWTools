@@ -62,7 +62,7 @@ local function Init_UI_Menu(self, root)
         end
 
         local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
-        sub=root:CreateCheckbox(col..(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..' '..e.cn(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type),
+        sub=root:CreateCheckbox(col..(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..' '..WoWTools_TextMixin:CN(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type),
             function(data)
                 return Save().Mounts[data.type][data.spellID]
 
@@ -160,7 +160,7 @@ end
 --过滤，列表，菜单
 local function Init_UI_List_Menu(self, root)
     for _, type in pairs(MountType) do
-        root:CreateCheckbox(e.cn(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type), function(data)
+        root:CreateCheckbox(WoWTools_TextMixin:CN(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type), function(data)
             return self.Type[data]
         end, function(data)
             self.Type[data]= not self.Type[data] and true or nil
@@ -244,11 +244,11 @@ local function Init()
                     end
                     text=text..'|cnGREEN_FONT_COLOR:'..num..'|r'
                 end
-                text= text..e.cn(type)
+                text= text..WoWTools_TextMixin:CN(type)
             end
         end
          if not frame.WoWToolsButton then--建立，图标，菜单
-            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {atlas=e.Icon.icon, size=22})
+            frame.WoWToolsButton=WoWTools_ButtonMixin:Cbtn(frame, {atlas=WoWTools_DataMixin.Icon.icon, size=22})
             frame.WoWToolsButton:SetPoint('BOTTOMRIGHT')
             frame.WoWToolsButton:SetAlpha(0)
             frame.WoWToolsButton:SetScript('OnEnter', function(self)
@@ -301,7 +301,7 @@ local function Init()
     end
     function btn:set_text()
         for type in pairs(self.Type or {}) do
-            self:SetText(e.cn(type))
+            self:SetText(WoWTools_TextMixin:CN(type))
             return
         end
         self:SetText('Tools')

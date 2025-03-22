@@ -17,12 +17,12 @@ Save={
     Sell={
         [34498]=true,--[纸飞艇工具包]
     },
-    --notAutoLootPlus= e.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
+    --notAutoLootPlus= WoWTools_DataMixin.Player.husandro,--打开拾取窗口时，下次禁用，自动拾取
     --notPlus=true,--商人 Plus,加宽
 
     --notSellBoss=true,--出售，BOSS，掉落
     bossItems={},
-    saveBossLootList= e.Player.husandro,--保存，BOSS，列表
+    saveBossLootList= WoWTools_DataMixin.Player.husandro,--保存，BOSS，列表
 
     --notAutoRepairAll=true,--自动修理
 
@@ -81,7 +81,7 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
     if Save().Sell[itemID] and not Save().notSellCustom then
         return WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM
     end
-    if not e.Is_Timerunning and not Save().notSellBoss and itemLink then
+    if not WoWTools_DataMixin.Is_Timerunning and not Save().notSellBoss and itemLink then
         local level= Save().bossItems[itemID]
         if level then
             local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
@@ -188,19 +188,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWTools_SellBuyMixin.Save= WoWToolsSave['Plus_SellBuy'] or WoWTools_SellBuyMixin.Save
-            WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid]= WoWTools_SellBuyMixin.Save.buyItems[e.Player.guid] or {}
+            WoWTools_SellBuyMixin.Save.buyItems[WoWTools_DataMixin.Player.GUID]= WoWTools_SellBuyMixin.Save.buyItems[WoWTools_DataMixin.Player.GUID] or {}
             WoWTools_SellBuyMixin.Save.WoWBuyItems= WoWTools_SellBuyMixin.Save.WoWBuyItems or {}
 
             local addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_Mixin.onlyChinese and '商人' or MERCHANT)
             WoWTools_SellBuyMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 

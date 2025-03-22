@@ -42,7 +42,7 @@ local function Edit_Item(self, info)
             Save().use[data.itemID]=num
             Save().no[data.itemID]=nil
             WoWTools_OpenItemMixin:Get_Item()--取得背包物品信息                        
-            print(e.Icon.icon2..WoWTools_OpenItemMixin.addName,
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_OpenItemMixin.addName,
                 WoWTools_ItemMixin:GetLink(data.itemID),
                 num>1 and
                     (WoWTools_Mixin.onlyChinese and '合成物品' or COMBINED_BAG_TITLE:gsub(INVTYPE_BAG,ITEMS))..': '..'|cnGREEN_FONT_COLOR:'..num..'|r'
@@ -101,7 +101,7 @@ local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
 
     if type=='use' then
         sub:CreateButton(
-            e.Icon.left..(WoWTools_Mixin.onlyChinese and '修改' or EDIT),
+            WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '修改' or EDIT),
         function(data)
             Edit_Item(self, data)
             return MenuResponse.Open
@@ -114,7 +114,7 @@ local function Remove_NoUse_Menu(self, root, itemID, type, numUse)
     function(data)
         Save()[data.type][data.itemID]=nil
 
-        print(e.Icon.icon2..WoWTools_OpenItemMixin.addName,
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_OpenItemMixin.addName,
             Save()[data.type][data.itemID]
             and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'
             or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '物品不存在' or SPELL_FAILED_ITEM_GONE)),
@@ -139,7 +139,7 @@ local function Remove_All_Menu(self, root, type, num)
     function(data)
         local index=0
         local type2= data.type=='no' and self.noText or self.useText
-        print(e.Icon.icon2..WoWTools_OpenItemMixin.addName)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_OpenItemMixin.addName)
         for itemID in pairs(Save()[data.type]) do
             index= index+1
             print(
@@ -190,7 +190,7 @@ local function Init_Menu(self, root)
         )
         sub:SetTooltip(function(tooltip)
             tooltip:AddDoubleLine(self.noText)
-            tooltip:AddDoubleLine(e.Icon.mid..(WoWTools_Mixin.onlyChinese and '向上滚动' or COMBAT_TEXT_SCROLL_UP))
+            tooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '向上滚动' or COMBAT_TEXT_SCROLL_UP))
 
         end)
     else

@@ -132,7 +132,7 @@ local function Add_Stat(tab)--添加
             --showFunc= tab.showFunc,
         })
     end
-    --print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stat), WoWTools_Mixin.onlyChinese and '添加' or ADD)
+    --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r', stat), WoWTools_Mixin.onlyChinese and '添加' or ADD)
 end
 
 local function Remove_Stat(tab)--移除        
@@ -143,12 +143,12 @@ local function Remove_Stat(tab)--移除
         for i, info in pairs(PAPERDOLL_STATCATEGORIES[index].stats or {}) do
             if info.stat==stat then
                 table.remove(PAPERDOLL_STATCATEGORIES[index].stats, i)
-                --print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '移除' or REMOVE), stat, name)
+                --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '移除' or REMOVE), stat, name)
                 return
             end
         end
     end
-    --print(e.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
+    --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE), stat, name)
 end
 
 local function Get_Primary_Text(primary)--主属性, 文本
@@ -166,9 +166,9 @@ end
 
 local function Get_Role_Text(roleIndex)--职责
     return
-        roleIndex== Enum.LFGRole.Tank and format('%s%s', e.Icon.TANK, WoWTools_Mixin.onlyChinese and '坦克' or TANK)
-        or (roleIndex==Enum.LFGRole.Healer and format('%s%s', e.Icon.HEALER, WoWTools_Mixin.onlyChinese and '治疗' or HEALER))
-        or (roleIndex==Enum.LFGRole.Damage and format('%s%s', e.Icon.DAMAGER, WoWTools_Mixin.onlyChinese and '伤害' or DAMAGER))
+        roleIndex== Enum.LFGRole.Tank and format('%s%s', WoWTools_DataMixin.Icon.TANK, WoWTools_Mixin.onlyChinese and '坦克' or TANK)
+        or (roleIndex==Enum.LFGRole.Healer and format('%s%s', WoWTools_DataMixin.Icon.TANK, WoWTools_Mixin.onlyChinese and '治疗' or HEALER))
+        or (roleIndex==Enum.LFGRole.Damage and format('%s%s', WoWTools_DataMixin.Icon.DAMAGER, WoWTools_Mixin.onlyChinese and '伤害' or DAMAGER))
         or (WoWTools_Mixin.onlyChinese and '无' or NONE)
     
 end
@@ -347,13 +347,13 @@ local function Init_Status_Menu(self, root)
         else
             local index= tab.index
             local stat= tab.stat
-            local name= tab.name or e.cn(_G[stat] or _G['STAT_'..stat]) or stat
+            local name= tab.name or WoWTools_TextMixin:CN(_G[stat] or _G['STAT_'..stat]) or stat
             --tab.name= tab.name or name
             local stats= Find_Stats(stat, index, false)
             local role, autoHide ='', ''
             if stats then
                 local tank, n, dps= Find_Roles(stats.roles)--职责
-                role= format('%s%s%s', tank and e.Icon.TANK or '', n and e.Icon.HEALER or '', dps and e.Icon.DAMAGER or '')
+                role= format('%s%s%s', tank and WoWTools_DataMixin.Icon.TANK or '', n and WoWTools_DataMixin.Icon.TANK or '', dps and WoWTools_DataMixin.Icon.DAMAGER or '')
                 autoHide= format('|cnGREEN_FONT_COLOR:%s|r', stats.hideAt or '')--隐藏 0， -1
             end
             local primary

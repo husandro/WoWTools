@@ -1,18 +1,18 @@
 local e = select(2, ...)
-if e.Player.region~=1 and e.Player.region~=3 then
+if WoWTools_DataMixin.Player.Region~=1 and WoWTools_DataMixin.Player.Region~=3 then
     e.Get_Region=function()end
     return
 end
 --[[
 e.Get_Region(realm, guid, unit, disabled)
-e.Player.L={layer=, size=, key=}
+WoWTools_DataMixin.Player.Language={layer=, size=, key=}
 ]]
 
 
 
 
 local Realms={}
-if e.Player.region==3 then--EU 
+if WoWTools_DataMixin.Player.Region==3 then--EU 
     Realms = {--3 EU
         ["Aegwynn"]="deDE", ["Alexstrasza"]="deDE", ["Alleria"]="deDE", ["Aman’Thul"]="deDE", ["Aman'Thul"]="deDE", ["Ambossar"]="deDE",
         ["Anetheron"]="deDE", ["Antonidas"]="deDE", ["Anub'arak"]="deDE", ["Area52"]="deDE", ["Arthas"]="deDE",
@@ -73,7 +73,7 @@ if e.Player.region==3 then--EU
         ["Aggra(Português)"]="ptBR",
     }
 
-elseif e.Player.region==1 then
+elseif WoWTools_DataMixin.Player.Region==1 then
     Realms = {--1 US
         ["Aman'Thul"]="oce", ["Barthilas"]="oce", ["Caelestrasz"]="oce", ["Dath'Remar"]="oce", ["Dreadmaul"]="oce",
         ["Frostmourne"]="oce", ["Gundrak"]="oce", ["Jubei'Thos"]="oce", ["Khaz'goroth"]="oce", ["Nagrand"]="oce",
@@ -158,9 +158,9 @@ function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, u
         regionColor={}
         Realms={}
     else
-        realm= realm=='' and e.Player.realm
+        realm= realm=='' and WoWTools_DataMixin.Player.realm
                 or realm
-                or unit and ((select(2, UnitName(unit)) or e.Player.realm))
+                or unit and ((select(2, UnitName(unit)) or WoWTools_DataMixin.Player.realm))
                 or guid and select(7, GetPlayerInfoByGUID(guid))
         return realm and Realms[realm] and regionColor[Realms[realm]]
     end

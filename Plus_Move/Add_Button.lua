@@ -23,16 +23,16 @@ local function Set_Tooltip(self)
 
     GameTooltip:AddDoubleLine(
         WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
-        e.Icon.right
+        WoWTools_DataMixin.Icon.right
     )
     GameTooltip:AddDoubleLine(
         WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,
-        'Alt+'..e.Icon.right
+        'Alt+'..WoWTools_DataMixin.Icon.right
     )
     if self.setZoom then
         GameTooltip:AddDoubleLine(
             (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
-            'Alt+'..e.Icon.mid
+            'Alt+'..WoWTools_DataMixin.Icon.mid
         )
     end
     GameTooltip:Show()

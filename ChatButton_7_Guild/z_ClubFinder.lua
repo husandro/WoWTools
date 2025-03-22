@@ -24,7 +24,7 @@ local function set_RequestToJoinFrame(frame)
     local edit= frame.MessageFrame.MessageScroll.EditBox
     local avgItemLevel, _, avgItemLevelPvp = GetAverageItemLevel()
     if avgItemLevel then
-        local cd= e.Player.region==1 or e.Player.region==3
+        local cd= WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3
         text= format(cd and 'Level %d' or UNIT_LEVEL_TEMPLATE, UnitLevel('player') or 0)
         text= text..'|n' ..format((cd and 'Item' or ITEMS)..' %d', avgItemLevel or 0)
         text= text..'|n'..format('PvP %d', avgItemLevelPvp or 0)--PvP物品等级 %d
@@ -50,7 +50,7 @@ local function set_RequestToJoinFrame(frame)
                 end
                 _, name, _, icon, role= GetSpecializationInfoByID(btn.specID)
                 if name then
-                    name= '|T'..(icon or 0)..':0|t'..(e.Icon[role] or '')..e.cn(name)
+                    name= '|T'..(icon or 0)..':0|t'..(e.Icon[role] or '')..WoWTools_TextMixin:CN(name)
                     if check then
                         text2= (text2 and text2..', ' or '').. name
                     end
@@ -63,7 +63,7 @@ local function set_RequestToJoinFrame(frame)
         and not IsModifierKeyDown()
         and not Save().notAutoRequestToJoinClub
     then
-        print(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName, frame.ClubName:GetText(), e.cn(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
+        print(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName, frame.ClubName:GetText(), WoWTools_TextMixin:CN(frame.Apply:GetText()), '|n', text, '|n|cffff00ff',text2)
         frame.Apply:Click()
     end
 end
@@ -91,7 +91,7 @@ local function set_check(frame)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_Mixin.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..e.Icon.left, e.GetEnabeleDisable(not Save().notAutoRequestToJoinClub))
+        GameTooltip:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_Mixin.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..WoWTools_DataMixin.Icon.left, WoWTools_TextMixin:GetEnabeleDisable(not Save().notAutoRequestToJoinClub))
         GameTooltip:Show()
     end)
     check:SetScript('OnShow', function(self2)

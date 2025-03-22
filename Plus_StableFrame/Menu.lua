@@ -1,5 +1,5 @@
 local e= select(2, ...)
-if e.Player.class~='HUNTER' then
+if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
 
@@ -129,11 +129,11 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(
             (_G['WoWTools_StableFrameAllList'] and '' or '|cff828282')
             ..(WoWTools_Mixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE),
-            (Save().all_List_Size or 22)..e.Icon.mid
+            (Save().all_List_Size or 22)..WoWTools_DataMixin.Icon.mid
         )
         GameTooltip:Show()
     end

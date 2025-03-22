@@ -20,7 +20,7 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
             find=true
         else
             for guid, info in pairs(e.WoWDate or {}) do--世界BOSS
-                if guid==e.Player.guid then
+                if guid==WoWTools_DataMixin.Player.GUID then
                     local num=0
                     for bossName, worldBossID in pairs(info.Worldboss.boss) do
                         num= num+1
@@ -28,7 +28,7 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
                         if num>2 and  select(2, math.modf(num / 3))==0 then
                             text=text..'|n'
                         end
-                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(e.cn(bossName))
+                        text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
                     end
                     break
                 end
@@ -48,12 +48,12 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
                         GameTooltip:AddLine(' ')
                     end
 
-                    GameTooltip:AddDoubleLine((difficultyName or e.cn(name) or '')..' '..(num or ''))
+                    GameTooltip:AddDoubleLine((difficultyName or WoWTools_TextMixin:CN(name) or '')..' '..(num or ''))
                     local t
                     for j=1,numEncounters do
                         local bossName,_,isKilled = GetSavedInstanceEncounterInfo(i,j)
                         local t2
-                        t2= e.cn(bossName)
+                        t2= WoWTools_TextMixin:CN(bossName)
                         if t then
                             t2=t2..' ('..j else t2=j..') '..t2
                         end

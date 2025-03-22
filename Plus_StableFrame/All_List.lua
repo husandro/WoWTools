@@ -1,5 +1,5 @@
 local e= select(2, ...)
-if e.Player.class~='HUNTER' then
+if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
 

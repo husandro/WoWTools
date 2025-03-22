@@ -257,7 +257,7 @@ local function Create_Spec_Button(index)
     btn.specIndex= index
     btn.specID= specID
     btn.icon='|T'..(texture or 0)..':0|t'
-    btn.name= e.cn(name)
+    btn.name= WoWTools_TextMixin:CN(name)
 
     btn.LootIcon= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
     btn.LootIcon:SetSize(14,14)
@@ -332,12 +332,12 @@ local function Create_Spec_Button(index)
                     )
                     ..(self.isActive and (WoWTools_Mixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
                     or (WoWTools_Mixin.onlyChinese and '激活' or SPEC_ACTIVE))
-                    ..e.Icon.left,
+                    ..WoWTools_DataMixin.Icon.left,
 
-                    e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+                    WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
                 )
                 if SpecFrame:IsMovable() then
-                    tooltip:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE))
+                    tooltip:AddDoubleLine(' ', 'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE))
                 end
             end
         })
@@ -523,7 +523,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 tooltip= WoWTools_Mixin.onlyChinese and '法术距离, 颜色'
                         or (
@@ -534,7 +534,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,

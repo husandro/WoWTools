@@ -15,7 +15,7 @@ local function Init()
                 button2 = '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL),
                 OnAccept = function()
                     local n=0
-                    print(e.Icon.icon2..WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMapMixin.addName,  '|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '放弃' or ABANDON_QUEST_ABBREV))
                     for index=1 , C_QuestLog.GetNumQuestLogEntries() do
                         do
                             local questInfo=C_QuestLog.GetInfo(index)
@@ -75,7 +75,7 @@ local function Init()
                     if description.data.var=='scrollToLogQuest' then
                         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
                     end
-                    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '默认' or DEFAULT, e.GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
+                    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '默认' or DEFAULT, WoWTools_TextMixin:GetYesNo(C_CVar.GetCVarDefault(description.data.var)))
                     tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
                 end)
             end

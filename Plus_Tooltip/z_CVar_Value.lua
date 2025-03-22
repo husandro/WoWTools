@@ -12,7 +12,7 @@ local e= select(2, ...)
                 local value, defaultValue, _, _, _, isSecure = C_CVar.GetCVarInfo(frame.variable)
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                 GameTooltip_AddNormalLine(SettingsTooltip,
-                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..e.Icon.right..frame.variable..'|r')
+                    HIGHLIGHT_FONT_COLOR:WrapTextInColorCode('CVar|cff00ff00'..WoWTools_DataMixin.Icon.right..frame.variable..'|r')
                     ..(value and ' ('..(value or '')..'/'..(defaultValue or '')..')' or ''),
                     true)
                 if isSecure then
@@ -54,7 +54,7 @@ local function Init()
             if isSecure then
                 GameTooltip_AddNormalLine(SettingsTooltip, '|cnRED_FONT_COLOR:isSecure: true|r', true)
             end
-            GameTooltip_AddNormalLine(SettingsTooltip, e.Icon.icon2..WoWTools_TooltipMixin.addName)
+            GameTooltip_AddNormalLine(SettingsTooltip, WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName)
         end
     end
     local function CreateOptionsInitTooltip(setting, name, tooltip, options, variable)--Blizzard_SettingControls.lua
@@ -225,7 +225,7 @@ local function Init()
             if category then
                 GameTooltip_AddNormalLine(SettingsTooltip, category, true)
             end
-            GameTooltip_AddNormalLine(SettingsTooltip, e.Icon.icon2..WoWTools_TooltipMixin.addName, true)
+            GameTooltip_AddNormalLine(SettingsTooltip, WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName, true)
         end
 
         for index, button in ipairs(self.Buttons) do

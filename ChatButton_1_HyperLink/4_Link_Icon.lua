@@ -25,7 +25,7 @@ DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
 local function cn_Link_Text(link, tabInfo)
     local name= link:match('|h%[|c........(.-)|r]|h') or link:match('|h%[(.-)]|h')
     if name then
-        local new= e.cn(name, tabInfo)--汉化
+        local new= WoWTools_TextMixin:CN(name, tabInfo)--汉化
         if new and name~=new then
 
             name= name:match('|c........(.-)|r') or name
@@ -40,7 +40,7 @@ local function SetChannels(link)
     local name=link:match('%[(.-)]')
     if name then
         if name:find(WORLD) then
-            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(e.cn(WORLD), 2, 6)..']')
+            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(WORLD), 2, 6)..']')
         end
 
 --关键词, 内容颜色，和频道名称替换
@@ -53,12 +53,12 @@ local function SetChannels(link)
         end
 
         if name:find(GENERAL_LABEL) then--综合
-            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(e.cn(GENERAL_LABEL), 2, 6)..']')
+            return link:gsub('%[.-]', '['..WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GENERAL_LABEL), 2, 6)..']')
         end
 
         name= name:match('%d+%. (.+)') or name:match('%d+．(.+)') or name--去数字
         name= name:match('%- (.+)') or name:match('：(.+)') or name:match(':(.+)') or name
-        name=WoWTools_TextMixin:sub(e.cn(name), 2, 6)
+        name=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(name), 2, 6)
         return link:gsub('%[.-]', '['..name..']')
     end
 end
@@ -67,15 +67,15 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local split= LinkUtil.SplitLink(link)
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
-    if name==e.Player.name_realm or name==e.Player.name then
-        return '[|A:auctionhouse-icon-favorite:0:0|a'..e.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]'
+    if name==WoWTools_DataMixin.Player.name_realm or name==WoWTools_DataMixin.Player.Name then
+        return '[|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]'
     else
         local text= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name)
         if server then
-            if server== e.Player.realm then
+            if server== WoWTools_DataMixin.Player.realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
             else
-                return (text or '')..link:gsub('%-'..server..'|r]|h', (e.Player.Realms[server] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..'*|r|r]|h')
+                return (text or '')..link:gsub('%-'..server..'|r]|h', (WoWTools_DataMixin.Player.Realms[server] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..'*|r|r]|h')
             end
         elseif text then
             return text..link
@@ -104,7 +104,7 @@ local function Mount(id2, item)
         if  mountID then
             local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
             if isCollected then
-                return format('|A:%s:0:0|a', e.Icon.select), icon
+                return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select), icon
             else
                 return '|A:questlegendary:0:0|a', icon
             end
@@ -156,7 +156,7 @@ local function Item(link)--物品超链接
             end
         end
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-        t= PlayerHasToy(itemID) and (t..format('|A:%s:0:0|a', e.Icon.select)) or (t..'|A:questlegendary:0:0|a')
+        t= PlayerHasToy(itemID) and (t..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)) or (t..'|A:questlegendary:0:0|a')
     end
     local bag= C_Item.GetItemCount(link, true, false, true)--数量
     if bag and bag>0 then
@@ -257,16 +257,16 @@ local function Achievement(link)--成就
     if id2 then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..cn_Link_Text(link)..(completed and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
+        return texture..cn_Link_Text(link)..(completed and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '|A:questlegendary:0:0|a')
     end
 end
 
 local function Quest(link)--任务
     local id2=link:match('Hquest:(%d+)')
     if id2 then
-        local wow= C_QuestLog.IsAccountQuest(id2) and e.Icon.wow2 or ''--帐号通用        
+        local wow= C_QuestLog.IsAccountQuest(id2) and WoWTools_DataMixin.Icon.wow2 or ''--帐号通用        
         if C_QuestLog.IsQuestFlaggedCompleted(id2) then
-            return wow..cn_Link_Text(link)..format('|A:%s:0:0|a', e.Icon.select)
+            return wow..cn_Link_Text(link)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
         else
             return wow..cn_Link_Text(link)..'|A:questlegendary:0:0|a'
         end
@@ -278,7 +278,7 @@ end
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
         if icon then
-            return '|T'..icon..':0|t'..link..(known and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
+            return '|T'..icon..':0|t'..link..(known and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '|A:questlegendary:0:0|a')
         end
     end
 end]]
@@ -287,7 +287,7 @@ local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return '|T'..icon..':0|t'..cn_Link_Text(link)..(known and format('|A:%s:0:0|a', e.Icon.select) or '|A:questlegendary:0:0|a')
+        return '|T'..icon..':0|t'..cn_Link_Text(link)..(known and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '|A:questlegendary:0:0|a')
     end
 end
 
@@ -322,7 +322,7 @@ local function Outfit(link)--外观方案链接
         end
         if to>0 then
             if to==co then
-                return cn_Link_Text(link)..format('|A:%s:0:0|a', e.Icon.select)
+                return cn_Link_Text(link)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
             elseif co>0 then
                 return cn_Link_Text(link)..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'
             else
@@ -341,7 +341,7 @@ local function Transmogillusion(link)--幻化
             if info.isCollected and info.isUsable then
                 icon='|T132288:0|t'
             elseif info.isCollected then
-                icon=format('|A:%s:0:0|a', e.Icon.select)
+                icon=format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
             end
             return cn_Link_Text(link)..icon
         end
@@ -353,7 +353,7 @@ local function TransmogAppearance(link)--幻化
     if appearanceID then
         local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
         if has then
-            return cn_Link_Text(link).format('|A:%s:0:0|a', e.Icon.select)
+            return cn_Link_Text(link).format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
         else
             return cn_Link_Text(link)..'|A:questlegendary:0:0|a'
         end
@@ -451,7 +451,7 @@ local function TransmogSet(link)--幻化套装
             end
             if to>0 then
                 if n==to then
-                    t= t..format('|A:%s:0:0|a', e.Icon.select)
+                    t= t..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
                 elseif n==0 then
                     t= t..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
                 else
@@ -556,8 +556,8 @@ local function New_AddMessage(self, s, ...)
         if not IsShowTimestamps then
             local unitName= s:match(LOOT_ITEM)--	%s获得了战利品：%s。
             if unitName then
-                if unitName==e.Player.name or unitName==YOU then
-                    s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..e.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
+                if unitName==WoWTools_DataMixin.Player.Name or unitName==YOU then
+                    s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
                 else
                     s=s:gsub(WoWTools_TextMixin:Magic(unitName), WoWTools_UnitMixin:GetLink(unitName))
                 end
@@ -614,7 +614,7 @@ local function Set_HyperLlinkIcon()
         DEFAULT_CHAT_FRAME.AddMessage= DEFAULT_CHAT_FRAME.P_AddMessage
     end
 
-    WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and e.Icon.icon or 'voicechat-icon-STT-on')
+    WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and WoWTools_DataMixin.Icon.icon or 'voicechat-icon-STT-on')
     WoWTools_HyperLink.LinkButton.texture:SetDesaturated(not enable)
 end
 
@@ -632,7 +632,7 @@ local function Init()
             IsShowTimestamps= arg2~='none'
         end
         if Save().showCVarName then
-            print(e.Icon.icon2..'|A:voicechat-icon-STT-on:0:0|a|cffff00ffCVar|r|cff00ff00', arg1, '|r', arg2, ...)
+            print(WoWTools_DataMixin.Icon.icon2..'|A:voicechat-icon-STT-on:0:0|a|cffff00ffCVar|r|cff00ff00', arg1, '|r', arg2, ...)
         end
     end)
 

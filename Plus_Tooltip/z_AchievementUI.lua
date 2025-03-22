@@ -21,7 +21,7 @@ local function Blizzard_AchievementUI()
                         GameTooltip:ClearLines()
                         GameTooltip:SetAchievementByID(achievementID)
                         GameTooltip:AddLine(' ')
-                        GameTooltip:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY), e.Icon.left)
+                        GameTooltip:AddDoubleLine('|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY), WoWTools_DataMixin.Icon.left)
                         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
                         GameTooltip:Show()
                     end
@@ -37,14 +37,14 @@ local function Blizzard_AchievementUI()
                         WoWTools_ChatMixin:Chat(achievementLink)
                     end
                 end)
-                frame.Shield:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+                frame.Shield:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
             end
         end
         if frame.AchievementIDLabel then
             local text= frame.id
             local flags= frame.id and select(9, GetAchievementInfo(frame.id))
             if flags==0x20000 then
-                text= e.Icon.net2..'|cff00ccff'..frame.id..'|r'
+                text= WoWTools_DataMixin.Icon.net2..'|cff00ccff'..frame.id..'|r'
             end
             frame.AchievementIDLabel:SetText(text or '')
         end
@@ -73,7 +73,7 @@ local function Blizzard_AchievementUI()
             if button.Player and button.Player.idText then
                 local flags= button.id and select(9, GetAchievementInfo(button.id))
                 if flags==0x20000 then
-                    button.Player.idText:SetText(e.Icon.net2..'|cffff00ff'..button.id..'|r')
+                    button.Player.idText:SetText(WoWTools_DataMixin.Icon.net2..'|cffff00ff'..button.id..'|r')
                 else
                     button.Player.idText:SetText(button.id or '')
                 end

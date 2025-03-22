@@ -27,16 +27,16 @@ local function Save_WoWGuild()
         local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID) or {}
         local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
 
-        e.WoWDate[e.Player.guid].Guild= {
+        e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {
             guid= club.clubFinderGUID,
             link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID),
             clubID= clubID,
-            data={guildName, guildRankName, guildRankIndex, realm or e.Player.realm},
-            text= e.WoWDate[e.Player.guid].Guild.text
+            data={guildName, guildRankName, guildRankIndex, realm or WoWTools_DataMixin.Player.realm},
+            text= e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text
         }
 
     else
-        e.WoWDate[e.Player.guid].Guild= {data={}}
+        e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {data={}}
     end
 end
 

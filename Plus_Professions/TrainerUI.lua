@@ -114,7 +114,7 @@ local function Init()
     local btn2= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame.TitleContainer)
 
     function btn2:set_icon()
-        self:SetNormalAtlas(Save().disabledClassTrainer and e.Icon.disabled or e.Icon.icon)
+        self:SetNormalAtlas(Save().disabledClassTrainer and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
     end
     btn2:set_icon()
 
@@ -131,7 +131,7 @@ local function Init()
     function btn2:set_tooltip()
         GameTooltip:SetOwner(ClassTrainerFrame.TitleContainer, "ANCHOR_TOPLEFT")
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全部学习' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, LEARN), e.GetShowHide(not Save().disabledClassTrainer))
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全部学习' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, LEARN), WoWTools_TextMixin:GetShowHide(not Save().disabledClassTrainer))
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
 		GameTooltip:Show()

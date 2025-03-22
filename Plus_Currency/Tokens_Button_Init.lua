@@ -15,9 +15,9 @@ local function click(self)
 	local infoType, itemID, itemLink = GetCursorInfo()
 	if infoType == "item" and itemID then
 		Save().item[itemID]= not Save().item[itemID] and true or nil
-		print(e.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING,
+		print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING,
 				Save().item[itemID] and
-				('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+				('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
 				or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 				itemLink or itemID)
 		ClearCursor()
@@ -37,12 +37,12 @@ local function enter(self)
 		GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 				Save().item[itemID] and
 					('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-				or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+				or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
 		)
 		Button:set_texture(C_Item.GetItemIconByID(itemID))
 	else
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
-		GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
+		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
+		GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
 	end
 	GameTooltip:AddLine(' ')
 
@@ -91,9 +91,9 @@ local function Init()
 			self.texture:SetTexture(icon)
 			self.bagButton.texture:SetTexture(icon)
 		elseif Save().Hide then
-			self.texture:SetAtlas(e.Icon.icon)
+			self.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
 			self.texture:SetAlpha(0.5)
-			self.bagButton.texture:SetAtlas(e.Icon.icon)
+			self.bagButton.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
 		else
 			self.texture:SetAlpha(1)
 			self.texture:SetAtlas('ui-questtrackerbutton-filter')

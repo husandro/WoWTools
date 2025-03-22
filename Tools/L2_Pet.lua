@@ -306,10 +306,10 @@ local function Init()
         GameTooltip:AddLine(' ')
         local name = WoWTools_Mixin.onlyChinese and info.cn or info.name
         if name then
-            GameTooltip:AddDoubleLine(name, e.Icon.left)
+            GameTooltip:AddDoubleLine(name, WoWTools_DataMixin.Icon.left)
         end
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), e.Icon.mid)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
     button:SetScript('OnLeave', GameTooltip_Hide)

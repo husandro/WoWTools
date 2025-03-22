@@ -2,6 +2,10 @@
 local e= select(2, ...)
 local button
 
+local function Save()
+    return  WoWToolsSave['Tools_UseItems']
+end
+
 
 
 local function Init_Dia()
@@ -19,11 +23,11 @@ local function Init_Dia()
             self.button1:SetEnabled(not find)
         end,
         OnAccept = function(_, data)
-            table.insert(WoWTools_UseItemsMixin.Save[data.type], data.ID)
+            table.insert(Save()[data.type], data.ID)
             print(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r', WoWTools_Mixin.onlyChinese and '完成' or COMPLETE, data.name, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         OnAlt = function(_, data)
-            table.remove(WoWTools_UseItemsMixin.Save[data.type], data.index)
+            table.remove(Save()[data.type], data.index)
             print(WoWTools_ToolsMixin.addName, WoWTools_UseItemsMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_Mixin.onlyChinese and '完成' or COMPLETE, data.name, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
     }
@@ -67,7 +71,7 @@ local function Init()
         GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '拖曳: 添加' or (DRAG_MODEL..': '..ADD))
         GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '法术, 物品, 装备' or (SPELLS..', '..ITEMS..', '..EQUIPSET_EQUIP)))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
         self:SetAlpha(1.0)
     end)

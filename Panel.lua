@@ -1,13 +1,8 @@
 local id, e = ...
-local Save={
-    onlyChinese= LOCALE_zhCN or e.Player.husandro,
-    --useClassColor= e.Player.husandro,--使用,职业, 颜色
-    --useCustomColor= nil,--使用, 自定义, 颜色
-    useColor=1,
-    useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
-}
 
-
+local function Save()
+    return WoWToolsSave['WoWTools_Settings']
+end
 
 
 
@@ -16,12 +11,12 @@ local Save={
 
 --自定义，颜色
 local function Set_Color()
-    if Save.useColor==1 then
-        e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}
-    elseif Save.useColor==2 then
-        e.Player.useColor= Save.useCustomColorTab
+    if Save().useColor==1 then
+        WoWTools_DataMixin.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= WoWTools_DataMixin.Player.col}
+    elseif Save().useColor==2 then
+        WoWTools_DataMixin.Player.useColor= Save().useCustomColorTab
     else
-        e.Player.useColor=nil
+        WoWTools_DataMixin.Player.useColor=nil
     end
 end
 
@@ -38,31 +33,33 @@ end
 --开始
 --####
 local function Init_Options()
-    e.AddPanel_Header(nil, WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)
+    WoWTools_PanelMixin:Header(nil, WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)
 
-    e.AddPanel_Button({
-        title= '|A:talents-button-undo:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
-        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_Mixin.onlyChinese and '清除全部' or REMOVE_WORLD_MARKERS ),
-        addSearchTags= WoWTools_Mixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT,
+    WoWTools_PanelMixin:OnlyButton({
+        title= '|A:talents-button-undo:0:0|a'..(WoWTools_Mixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT),
+        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_Mixin.onlyChinese and '重置' or RESET ),
+        addSearchTags= WoWTools_Mixin.onlyChinese and '设置' or SETTINGS,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (WoWTools_Mixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT)..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                (WoWTools_Mixin.onlyChinese and '全部重置，插件设置' or (RESET_ALL_BUTTON_TEXT..', '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, SETTINGS)))
+                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
-                function()
-                    e.ClearAllSave=true
-                    WoWTools_Mixin:Reload()
-                end
-            )
+            function()
+                EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
+                    WoWToolsSave={}
+                end)
+                WoWTools_Mixin:Reload()
+            end)
         end
     })
 
-    e.AddPanel_Button({
-        title= e.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+    WoWTools_PanelMixin:OnlyButton({
+        title= WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
         buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
         addSearchTags= WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (e.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                (WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
                     e.WoWDate={}
@@ -79,16 +76,16 @@ local function Init_Options()
 
 
 
-    e.AddPanel_DropDown({
+    WoWTools_PanelMixin:OnlyMenu({
         SetValue= function(value)
             if value==2 then
-                local valueR, valueG, valueB, valueA= Save.useCustomColorTab.r, Save.useCustomColorTab.g, Save.useCustomColorTab.b, Save.useCustomColorTab.a
+                local valueR, valueG, valueB, valueA= Save().useCustomColorTab.r, Save().useCustomColorTab.g, Save().useCustomColorTab.b, Save().useCustomColorTab.a
                 local setA, setR, setG, setB
                 local function func()
                     local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
-                    Save.useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
+                    Save().useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     Set_Color()--自定义，颜色
-                    print(e.Player.useColor and e.Player.useColor.hex or '', id, WoWTools_Mixin.addName,   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', id, WoWTools_Mixin.addName,   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
                         setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
@@ -103,9 +100,9 @@ local function Init_Options()
                     ColorPickerFrame.Footer.OkayButton:Click()
                 end
                 Set_Color()--自定义，颜色
-                print(WoWTools_Mixin.addName, e.Player.useColor and e.Player.useColor.hex or '', (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..'|r',   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..'|r',   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
-            Save.useColor= value
+            Save().useColor= value
 
         end,
         GetOptions= function()
@@ -115,31 +112,30 @@ local function Init_Options()
 			container:Add(3, WoWTools_Mixin.onlyChinese and '无' or NONE)
 			return container:GetData();
         end,
-        GetValue= function() return Save.useColor end,
-        name= (e.Player.useColor and e.Player.useColor.hex or '')..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR),
+        GetValue= function() return Save().useColor end,
+        name= (WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '')..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR),
         tooltip= WoWTools_Mixin.addName,
     })
 
 
     if not LOCALE_zhCN then
-        e.AddPanel_Check({
+        WoWTools_PanelMixin:OnlyCheck({
             name= 'Chinese ',
             tooltip= WoWTools_Mixin.onlyChinese and '语言: 简体中文'
                     or (LANGUAGE..': '..LFG_LIST_LANGUAGE_ZHCN),
-            Value= SavWoWTools_Mixin.onlyChinese,
-            GetValue= function() return SavWoWTools_Mixin.onlyChinese end,
+            Value= Save().onlyChinese,
+            GetValue= function() return Save().onlyChinese end,
             SetValue= function()
                 WoWTools_Mixin.onlyChinese= not WoWTools_Mixin.onlyChinese and true or nil
-                WoWTools_Mixin.onlyChinese= WoWTools_Mixin.onlyChinese
-                SavWoWTools_Mixin.onlyChinese = WoWTools_Mixin.onlyChinese
+                Save().onlyChinese = WoWTools_Mixin.onlyChinese
                 print(WoWTools_Mixin.addName,  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
     end
 
-    if e.Player.region==1 or e.Player.region==3 then--US EU realm提示
-        local function get_tooltip(tooltip)
-            local tabs= e.Player.region==3 and
+    if WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3 then--US EU realm提示
+        local function get_tooltip()
+            local tabs= WoWTools_DataMixin.Player.Region==3 and
                 {
                     ["deDE"] = {col="|cFF00FF00DE|r", text='DE', realm="Germany"},
                     ["frFR"] = {col="|cFF00FFFFFR|r", text='FR', realm="France"},
@@ -166,24 +162,24 @@ local function Init_Options()
             return text
         end
 
-        e.AddPanel_Check({
+        WoWTools_PanelMixin:OnlyCheck({
             name= WoWTools_Mixin.onlyChinese and '服务器' or 'Realm',
             tooltip=get_tooltip(),
-            Value= not Save.disabledRealm,
-            GetValue= function() return not Save.disabledRealm end,
+            Value= not Save().disabledRealm,
+            GetValue= function() return not Save().disabledRealm end,
             SetValue= function()
-                Save.disabledRealm= not Save.disabledRealm and true or nil
+                Save().disabledRealm= not Save().disabledRealm and true or nil
                 print(WoWTools_Mixin.addName,  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
 
-        if Save.disabledRealm then
+        if Save().disabledRealm then
             e.Get_Region(nil, nil, nil, true)
             e.Get_Region=function() end
         end
     end
 
-    e.AddPanel_Header(nil, 'Plus')
+    WoWTools_PanelMixin:Header(nil, 'Plus')
 end
 
 
@@ -203,38 +199,41 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('PLAYER_LOGIN')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
             WoWToolsSave= WoWToolsSave or {}
 
-            if WoWToolsSave['Panel Settings'] then
-                Save= WoWToolsSave['Panel Settings']
-                WoWToolsSave['Panel_Settings']=nil
-            else
-                Save= WoWToolsSave['WoWTools_Settings'] or Save
+            if not WoWToolsSave['WoWTools_Settings'] then
+                WoWToolsSave['WoWTools_Settings'] = {
+                    onlyChinese= LOCALE_zhCN or WoWTools_DataMixin.Player.husandro,
+                    --useClassColor= WoWTools_DataMixin.Player.husandro,--使用,职业, 颜色
+                    --useCustomColor= nil,--使用, 自定义, 颜色
+                    useColor=1,
+                    useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
+                }
             end
-            WoWTools_Mixin.onlyChinese= LOCALE_zhCN or SavWoWTools_Mixin.onlyChinese
-            WoWTools_Mixin.onlyChinese= WoWTools_Mixin.onlyChinese
 
-            Save.useColor= Save.useColor or 1
-            Save.useCustomColorTab= Save.useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
+            WoWTools_Mixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
+
+            Save().useColor= Save().useColor or 1
+            Save().useCustomColorTab= Save().useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
             Set_Color()--自定义，颜色
 
             Init_Options()
 
-            e.Is_Timerunning= PlayerGetTimerunningSeasonID()
+            WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()
 
 
             if WoWTools_Mixin.onlyChinese then
-                e.Player.L= {
+                WoWTools_DataMixin.Player.Language= {
                     layer='位面',
                     key='关键词',
                 }
             end
 
-            e.StausText={
+            WoWTools_DataMixin.StausText={
                 [ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
                 [ITEM_MOD_CRIT_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
                 [ITEM_MOD_MASTERY_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 2, true),
@@ -257,15 +256,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end
 
-            C_Timer.After(2, function()
-                e.Is_Timerunning= PlayerGetTimerunningSeasonID()
-            end)
-            self:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent(event)
         end
-    else
-        if not e.ClearAllSave then
-            WoWToolsSave['Panel_Settings']= Save
-        end
+
+    elseif event=='PLAYER_LOGIN' then
+        WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()
+        self:UnregisterEvent(event)
     end
 end)
 

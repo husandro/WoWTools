@@ -79,8 +79,8 @@ local function Set_Load_Button()--LoadButtons
                     col='|cff999999'
                 end
                 AddonTooltip:AddDoubleLine(
-                    reason and col..(e.cn(_G["ADDON_"..reason]) or ' ') or ' ',
-                    format('%s%s', WoWTools_Mixin.onlyChinese and '查询' or WHO, e.Icon.left)
+                    reason and col..(WoWTools_TextMixin:CN(_G["ADDON_"..reason]) or ' ') or ' ',
+                    format('%s%s', WoWTools_Mixin.onlyChinese and '查询' or WHO, WoWTools_DataMixin.Icon.left)
                 )
 
                 AddonTooltip:Show()

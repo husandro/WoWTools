@@ -39,7 +39,7 @@ local function EventFilter(_, _, text, ...)
 		local name2= data.name
 		local factionID= data.factionID
 		if name2==name and factionID then
-			local cnName= e.cn(name)
+			local cnName= WoWTools_TextMixin:CN(name)
 			if cnName then
 				local num= text:match('%d+')
 				if num then
@@ -93,11 +93,11 @@ local function Init_Check()
                     text= text..'|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a'
                 end
             end
-            text= text..e.cn(name)
+            text= text..WoWTools_TextMixin:CN(name)
         end
     end
     if text then
-        print(e.Icon.icon2..WoWTools_FactionMixin.addName, '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
     end
 end
 

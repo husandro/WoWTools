@@ -336,7 +336,7 @@ local function Set_Tooltip(self)
     GameTooltip:ClearLines()
 
     if not self:IsCanChange() then
-        GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), e.GetEnabeleDisable(false))
+        GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
         GameTooltip:Show()
         return
     end
@@ -350,7 +350,7 @@ local function Set_Tooltip(self)
     local scale
     scale= tonumber(format('%.2f', self.targetFrame:GetScale() or 1))
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
-    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), scale..e.Icon.left)
+    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), scale..WoWTools_DataMixin.Icon.left)
 
     if self.setSize then
         GameTooltip:AddLine(' ')
@@ -369,7 +369,7 @@ local function Set_Tooltip(self)
 
         GameTooltip:AddDoubleLine(
             col..(WoWTools_Mixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
-                e.GetEnabeleDisable(not Save().disabledSize[self.name])..e.Icon.right
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledSize[self.name])..WoWTools_DataMixin.Icon.right
         )
 
         if self.sizeTooltip then
@@ -385,11 +385,11 @@ local function Set_Tooltip(self)
     if self.set_move_event then--Frame 移动时，设置透明度
         GameTooltip:AddDoubleLine(
             (WoWTools_Mixin.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
-            Save().disabledAlpha[self.name] and e.GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
+            Save().disabledAlpha[self.name] and WoWTools_TextMixin:GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
         )
     end
 
-    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.mid)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.mid)
     GameTooltip:Show()
 end
 
@@ -568,7 +568,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
             size=size,
             initFunc=initFunc
         })
-        if e.Player.husandro then
+        if WoWTools_DataMixin.Player.husandro then
             print(WoWTools_MoveMixin.addName, issecure(), target:GetName(), '|cnRED_FONT_COLOR:不能执行')
         end
     else
@@ -578,7 +578,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
         if initFunc then
             initFunc(btn)
         end
-        if e.Player.husandro then
+        if WoWTools_DataMixin.Player.husandro then
             print(WoWTools_MoveMixin.addName, issecure(), target:GetName(), '|cnGREEN_FONT_COLOR:执行')
         end
     end

@@ -26,7 +26,7 @@ local listButton
 local function Init_IsSelf(root)
     local new={}
     for guid, data in pairs(e.WoWDate) do
-        if guid and guid~= e.Player.guid and data.region==e.Player.region then
+        if guid and guid~= WoWTools_DataMixin.Player.GUID and data.region==WoWTools_DataMixin.Player.Region then
             new[guid]=data
         end
     end
@@ -315,7 +315,7 @@ local function Init_Menu(_, root)
 
 --战网
     sub=root:CreateButton(
-        e.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
+        WoWTools_DataMixin.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET),
     function()
         return MenuResponse
     end)

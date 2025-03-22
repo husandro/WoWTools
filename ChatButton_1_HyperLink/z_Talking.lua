@@ -38,7 +38,7 @@ local function Init()
         end
 
         if not Save().disabledTalkingPringText and text then
-            print(e.Icon.icon2
+            print(WoWTools_DataMixin.Icon.icon2
                 ..'|cffff00ff'..(name or '')
                 ..'|r|A:voicechat-icon-textchat-silenced:0:0|a|cff00ff00'
                 ..(text or '')

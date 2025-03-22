@@ -4,9 +4,9 @@ local TrackButton
 local WorldMapButton--世界地图，添加一个按钮
 local addName, addName2
 --[[
-vigentteButton=e.Player.husandro,
+vigentteButton=WoWTools_DataMixin.Player.husandro,
 vigentteButtonShowText=true,
-vigentteSound= e.Player.husandro,--播放声音
+vigentteSound= WoWTools_DataMixin.Player.husandro,--播放声音
 vigentteButtonTextScale=1,
 hideVigentteCurrentOnMinimap=true,--当前，小地图，标记
 hideVigentteCurrentOnWorldMap=true,--当前，世界地图，标记
@@ -14,7 +14,7 @@ questIDs={},--世界任务, 监视, ID {[任务ID]=true}
 areaPoiIDs={[7492]= 2025},--{[areaPoiID]= 地图ID}
 uiMapIDs= {},--地图ID 监视, areaPoiIDs，
 currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
-textToDown= e.Player.husandro,--文本，向下
+textToDown= WoWTools_DataMixin.Player.husandro,--文本，向下
 ]]
 
 local function Save()
@@ -73,7 +73,7 @@ local function get_Quest_Text(questID)
                 local secondsLeft = C_TaskQuest.GetQuestTimeLeftSeconds(questID, true)
                 local secText= secondsLeft and SecondsToTime(secondsLeft)--WoWTools_TimeMixin:SecondsToClock(secondsLeft, true)
                 text= text and text..'|n' or ''
-                text= e.cn(questName)
+                text= WoWTools_TextMixin:CN(questName)
                     ..(secText and ' |cffffffff'..secText..'|r' or '')
             end
         end
@@ -211,7 +211,7 @@ local function Get_areaPoiID_Text(uiMapID, areaPoiID, all)
         return
     end
 
-    local name= e.cn(poiInfo.name)
+    local name= WoWTools_TextMixin:CN(poiInfo.name)
     local atlas=  poiInfo.atlasName
 
     if poiInfo.factionID and C_Reputation.IsMajorFaction(poiInfo.factionID) then
@@ -284,7 +284,7 @@ local function Get_Current_Vignettes()
                 if info.rewardQuestID==0 then
                     info.rewardQuestID=nil
                 end
-                local name= e.cn(info.name, {vignetteID= info.vignetteID})
+                local name= WoWTools_TextMixin:CN(info.name, {vignetteID= info.vignetteID})
 
                 if info.vignetteID == 5715 or info.vignetteID==5466 then--翻动的泥土堆
                     name= name..'|T1059121:0|t'
@@ -363,7 +363,7 @@ local function set_OnEnter_btn_tips(self)
             local waitingForData, titleAdded = false, false
 
             if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
-                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name))
+                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(vignetteInfo.name))
                 titleAdded = true
 
             elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
@@ -374,8 +374,8 @@ local function set_OnEnter_btn_tips(self)
                 if race and class and name then
                     local classInfo = C_CreatureInfo.GetClassInfo(class) or {}
                     local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {}
-                    GameTooltip_SetTitle(GameTooltip, e.cn(name), GetClassColorObj(classInfo.classFile))
-                    GameTooltip_AddColoredLine(GameTooltip, e.cn(factionInfo.name), GetFactionColor(factionInfo.groupTag))
+                    GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(name), GetClassColorObj(classInfo.classFile))
+                    GameTooltip_AddColoredLine(GameTooltip, WoWTools_TextMixin:CN(factionInfo.name), GetFactionColor(factionInfo.groupTag))
                     if vignetteInfo.rewardQuestID then
                         GameTooltip_AddQuestRewardsToTooltip(GameTooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY)
                     end
@@ -385,7 +385,7 @@ local function set_OnEnter_btn_tips(self)
 
             elseif vignetteInfo.type == Enum.VignetteType.Torghast then
                 SharedTooltip_SetBackdropStyle(GameTooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY)
-                GameTooltip_SetTitle(GameTooltip, e.cn(vignetteInfo.name))
+                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(vignetteInfo.name))
                 titleAdded = true
             end
 
@@ -419,12 +419,12 @@ local function set_OnEnter_btn_tips(self)
             local verticalPadding = nil
 
             if hasName then
-                GameTooltip_SetTitle(GameTooltip, e.cn(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+                GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(poiInfo.name), HIGHLIGHT_FONT_COLOR)
                 addedTooltipLine = true
             end
 
             if hasDescription then
-                GameTooltip_AddNormalLine(GameTooltip, e.cn(poiInfo.description))
+                GameTooltip_AddNormalLine(GameTooltip, WoWTools_TextMixin:CN(poiInfo.description))
                 addedTooltipLine = true
             end
 
@@ -472,7 +472,7 @@ local function set_OnEnter_btn_tips(self)
     end
     if widgetSetID then
         local info= self.uiMapID and C_Map.GetMapInfo(self.uiMapID) or {}
-        GameTooltip:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, e.cn(info.name))
+        GameTooltip:AddDoubleLine('widgetSetID |cnGREEN_FONT_COLOR:'..widgetSetID, WoWTools_TextMixin:CN(info.name))
     end
     if self.rewardQuestID then
         GameTooltip:AddLine('rewardQuestID |cnGREEN_FONT_COLOR:'..self.rewardQuestID)
@@ -722,8 +722,8 @@ local function set_Button_Text()
                 set_OnEnter_btn_tips(self)
 
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '信息' or INFO) or ' ', e.Icon.left)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , e.Icon.right)
+                GameTooltip:AddDoubleLine(self.name and self.name~='' and '|A:communities-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '信息' or INFO) or ' ', WoWTools_DataMixin.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU , WoWTools_DataMixin.Icon.right)
 
                 GameTooltip:Show()
                 TrackButton:SetButtonState('PUSHED')
@@ -889,7 +889,7 @@ local function Init_Menu(self, root)--菜单
             return Save().questIDs[data.questID]
         end, function(data)
             Save().questIDs[data.questID]= not Save().questIDs[data.questID] and true or nil
-            print(e.Icon.icon2.. addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
+            print(WoWTools_DataMixin.Icon.icon2.. addName, addName2, WoWTools_QuestMixin:GetLink(data.questID))
         end, {questID=questID})
         sub2:SetTooltip(function(tooltip, description)
             tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
@@ -955,7 +955,7 @@ local function Init_Menu(self, root)--菜单
 
     for uiMapID in pairs(Save().uiMapIDs) do
         sub2=sub:CreateCheckbox(
-            e.cn((C_Map.GetMapInfo(uiMapID) or {}).name) or uiMapID,
+            WoWTools_TextMixin:CN((C_Map.GetMapInfo(uiMapID) or {}).name) or uiMapID,
         function(data)
             return Save().uiMapIDs[data.uiMapID]
         end, function(data)
@@ -1039,7 +1039,7 @@ local function Init_Button()
         if Save().pointVigentteButton then
             self:SetPoint(Save().pointVigentteButton[1], UIParent, Save().pointVigentteButton[3], Save().pointVigentteButton[4], Save().pointVigentteButton[5])
         else
-            self:SetPoint('TOPLEFT', 600, e.Player.husandro and 0 or -100)
+            self:SetPoint('TOPLEFT', 600, WoWTools_DataMixin.Player.husandro and 0 or -100)
         end
     end
 
@@ -1083,10 +1083,10 @@ local function Init_Button()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(addName, addName2)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.GetShowHide(nil, true), e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '主菜单' or MAINMENU_BUTTON, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().vigentteButtonTextScale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
 
@@ -1207,7 +1207,7 @@ local function Init_Button()
         local destination= ttsVoices.voiceID and Enum.VoiceTtsDestination.QueuedLocalPlayback or Enum.VoiceTtsDestination.LocalPlayback
         --C_VoiceChat.SpeakText(voiceID, text, destination, rate, volume)
         C_VoiceChat.SpeakText(voiceID, text, destination, 0, 100)
-        print(e.Icon.icon2.. addName2,'|cffff00ff', text)
+        print(WoWTools_DataMixin.Icon.icon2.. addName2,'|cffff00ff', text)
     end
     function TrackButton:set_VIGNETTES_UPDATED(init)
         if UnitOnTaxi('player') or not Save().vigentteSound then
@@ -1293,7 +1293,7 @@ local function Init_WorldFrame_Button()
         if not uiMapID then
             self:SetNormalTexture(0)
         else
-            self:SetNormalAtlas(Save().uiMapIDs[uiMapID] and e.Icon.select or 'VignetteKillElite')
+            self:SetNormalAtlas(Save().uiMapIDs[uiMapID] and WoWTools_DataMixin.Icon.select or 'VignetteKillElite')
         end
     end
     WorldMapButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
@@ -1302,9 +1302,9 @@ local function Init_WorldFrame_Button()
         if uiMapID then
             Save().uiMapIDs[uiMapID]= not Save().uiMapIDs[uiMapID] and true or nil
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
-            print(e.Icon.icon2.. addName, addName2,
+            print(WoWTools_DataMixin.Icon.icon2.. addName, addName2,
                 name,
-                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
             self:set_texture()
         end
@@ -1316,7 +1316,7 @@ local function Init_WorldFrame_Button()
         if uiMapID then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', e.Icon.select) or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
+            GameTooltip:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
             GameTooltip:Show()
         end
@@ -1344,7 +1344,7 @@ end
 local function Init_WorldFrame_Event()
     hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
         if self.questID and self.OnMouseClickAction then
-            GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
+            GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
@@ -1355,9 +1355,9 @@ local function Init_WorldFrame_Event()
         hooksecurefunc(self, 'OnMouseClickAction', function(f, d)
             if f.questID and d=='LeftButton' and IsAltKeyDown() then
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
-                print(e.Icon.icon2.. addName, addName2,
+                print(WoWTools_DataMixin.Icon.icon2.. addName, addName2,
                     WoWTools_QuestMixin:GetLink(f.questID),
-                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
             end
         end)
@@ -1366,7 +1366,7 @@ local function Init_WorldFrame_Event()
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
         if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-            GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', e.Icon.select) or ''), 'Alt+'..e.Icon.left)
+            GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
@@ -1382,10 +1382,10 @@ local function Init_WorldFrame_Event()
                     local poiInfo = C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID) or {}
                     local name= get_AreaPOIInfo_Name(poiInfo)--取得 areaPoiID 名称
                     name= name=='' and 'areaPoiID '..self.areaPoiID or name
-                    print(e.Icon.icon2.. addName, addName2,
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, addName2,
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
-                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                     )
                 end
             end

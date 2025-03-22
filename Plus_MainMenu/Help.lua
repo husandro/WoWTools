@@ -56,15 +56,15 @@ local function Init()
             GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '本地' or REFORGE_CURRENT)..localizedVersion, 1,0,0)
         end
         GameTooltip:AddLine('realmID '..(GetRealmID() or '')..' '..(GetNormalizedRealmName() or ''), 1,0.82,0)
-        GameTooltip:AddLine('regionID '..e.Player.region..' '..GetCurrentRegionName(), 1,0.82,0)
+        GameTooltip:AddLine('regionID '..WoWTools_DataMixin.Player.Region..' '..GetCurrentRegionName(), 1,0.82,0)
 
-        local info=C_BattleNet.GetGameAccountInfoByGUID(e.Player.guid)
+        local info=C_BattleNet.GetGameAccountInfoByGUID(WoWTools_DataMixin.Player.GUID)
         if info and info.wowProjectID then
             local region=''
-            if info.regionID and info.regionID~=e.Player.region then
+            if info.regionID and info.regionID~=WoWTools_DataMixin.Player.Region then
                 region=' regionID'..(WoWTools_Mixin.onlyChinese and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..info.regionID..'|r'
             end
-            GameTooltip:AddLine('isInCurrentRegion '..e.GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
+            GameTooltip:AddLine('isInCurrentRegion '..WoWTools_TextMixin:GetYesNo(info.isInCurrentRegion)..region, 1,1,1)
         end
 
         GameTooltip:AddLine(' ')
@@ -73,16 +73,16 @@ local function Init()
 
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '插件' or ADDONS)..'|r'
-            ..e.Icon.right
+            ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '宏命令设置' or MACROS)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 

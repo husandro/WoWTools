@@ -37,7 +37,7 @@ local function Init()
 
 	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		if not Save().notPlus then
-			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true})
 			if name~='' then
 				self.PlayerName:SetFormattedText(WoWTools_Mixin.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
 			end
@@ -55,7 +55,7 @@ local function Init()
     end)
     hooksecurefunc(CurrencyTransferMenu.PlayerBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus then
-			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=e.Player.guid, reName=true, reRealm=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true, reRealm=true})
 			if name~='' then
 				self.Label:SetFormattedText(WoWTools_Mixin.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 			end
@@ -82,7 +82,7 @@ local function Init()
 			if currencyID and currencyID>0 then
 				local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
 				if num>0 then
-					text= #tab..e.Icon.wow2..WoWTools_Mixin:MK(num, 3)
+					text= #tab..WoWTools_DataMixin.Icon.wow2..WoWTools_Mixin:MK(num, 3)
 				end
 			end
 		end

@@ -97,7 +97,7 @@ local function Init_Menu(_, root)
     root:CreateDivider()
     root:CreateButton(
         (WorldMapFrame.mapID==MapUtil.GetDisplayableMapForPlayer() and '|cff9e9e9e' or '')
-        ..e.Icon.player
+        ..WoWTools_DataMixin.Icon.Player
         ..(WoWTools_Mixin.onlyChinese and '返回当前地图' or
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PREVIOUS, REFORGE_CURRENT), WORLD_MAP)
     ), function()
@@ -114,7 +114,7 @@ end
 
 local function Init()
     MapXYButton=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {
-        atlas=e.Icon.player:match('|A:(.-):'),
+        atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
         size=22,
     })
 
@@ -123,14 +123,14 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
 
         --GameTooltip:AddLine(' ')
         --local can
         --can= C_Map.GetBestMapForUnit("player")
         --can= can and C_Map.CanSetUserWaypointOnMap(can)
-        --GameTooltip:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r' or '')..e.Icon.left)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), e.Icon.right)
+        --GameTooltip:AddDoubleLine('|A:Waypoint-MapPin-ChatIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL)), (not can and GetMinimapZoneText() or not can and '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r' or '')..WoWTools_DataMixin.Icon.left)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '返回当前地图' or (PREVIOUS..REFORGE_CURRENT..WORLD_MAP), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
     MapXYButton:SetScript('OnMouseDown', function(self)

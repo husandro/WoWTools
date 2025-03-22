@@ -2,9 +2,9 @@ local id, e = ...
 
 WoWTools_ObjectiveTrackerMixin={
 Save={
-    disabled= not e.Player.husandro,
-    scale= e.Player.husandro and 0.85 or 1,
-    autoHide= e.Player.husandro and true or nil
+    disabled= not WoWTools_DataMixin.Player.husandro,
+    scale= WoWTools_DataMixin.Player.husandro and 0.85 or 1,
+    autoHide= WoWTools_DataMixin.Player.husandro and true or nil
 },
 }
 
@@ -33,13 +33,13 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName,addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '双击' or 'Double-Click')..e.Icon.left, (WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '双击' or 'Double-Click')..WoWTools_DataMixin.Icon.left, (WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
         GameTooltip:Show()
         f:SetAlpha(1)
     end)
     btn:SetScript('OnDoubleClick', func)
     function btn:print_text(num)
-        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -128,13 +128,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
            WoWTools_ObjectiveTrackerMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name=addName,
                 tooltip='|cnRED_FONT_COLOR:Bug',
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

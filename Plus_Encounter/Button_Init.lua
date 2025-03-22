@@ -15,7 +15,7 @@ local Button
 local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑战
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, e.Icon.left)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, WoWTools_DataMixin.Icon.left)
     for guid, info in pairs(e.WoWDate or {}) do
         if guid and  info.Keystone.link then
             GameTooltip:AddDoubleLine(
@@ -79,13 +79,13 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, e.GetEnabeleDisable(not Save().hideEncounterJournal).. e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '奖励' or QUEST_REWARDS, e.GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_TextMixin:GetEnabeleDisable(not Save().hideEncounterJournal).. WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '奖励' or QUEST_REWARDS, WoWTools_TextMixin:GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
     function Button:set_icon()
-        self:SetNormalAtlas(Save().hideEncounterJournal and e.Icon.disabled or e.Icon.icon )
+        self:SetNormalAtlas(Save().hideEncounterJournal and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon )
     end
     Button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
@@ -112,7 +112,7 @@ local function Init()
     Button.btn.instance:SetScript('OnEnter',function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..e.Icon.left..e.GetShowHide(Save().showInstanceBoss), WoWTools_Mixin.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..WoWTools_DataMixin.Icon.left..WoWTools_TextMixin:GetShowHide(Save().showInstanceBoss), WoWTools_Mixin.onlyChinese and '已击杀' or DUNGEON_ENCOUNTER_DEFEATED)
         GameTooltip:AddLine(' ')
         for guid, info in pairs(e.WoWDate or {}) do
             if guid and info then
@@ -180,7 +180,7 @@ local function Init()
     end)
 
 
-    if e.Player.IsMaxLevel then
+    if WoWTools_DataMixin.Player.IsMaxLevel then
         Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色,挑战
         Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
         Button.btn.keystones:SetNormalTexture(4352494)

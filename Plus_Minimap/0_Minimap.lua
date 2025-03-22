@@ -3,13 +3,13 @@ local id, e = ...
 
 WoWTools_MinimapMixin={
 Save={
-    scale=e.Player.husandro and 1 or 0.85,
+    scale=WoWTools_DataMixin.Player.husandro and 1 or 0.85,
     ZoomOut=true,--更新地区时,缩小化地图
     ZoomOutInfo=true,--小地图, 缩放, 信息
 
-    vigentteButton=e.Player.husandro,
+    vigentteButton=WoWTools_DataMixin.Player.husandro,
     vigentteButtonShowText=true,
-    vigentteSound= e.Player.husandro,--播放声音
+    vigentteSound= WoWTools_DataMixin.Player.husandro,--播放声音
     vigentteButtonTextScale=1,
     hideVigentteCurrentOnMinimap=nil,--当前，小地图，标记
     hideVigentteCurrentOnWorldMap=nil,--当前，世界地图，标记
@@ -17,7 +17,7 @@ Save={
     areaPoiIDs={[7943]= 2248},--{[areaPoiID]= 地图ID}
     uiMapIDs= {},--地图ID 监视, areaPoiIDs，
     currentMapAreaPoiIDs=true,--当前地图，监视, areaPoiIDs，
-    textToDown= e.Player.husandro,--文本，向下
+    textToDown= WoWTools_DataMixin.Player.husandro,--文本，向下
 
     miniMapPoint={},--保存小图地, 按钮位置
 
@@ -29,12 +29,12 @@ Save={
     useServerTimer=true,--小时图，使用服务器, 时间
 
     --秒表
-    StopwatchOnClickPause=e.Player.husandro,--移过暂停
+    StopwatchOnClickPause=WoWTools_DataMixin.Player.husandro,--移过暂停
 
     hideExpansionLandingPageMinimapButton= true,--隐藏，图标
     --moveExpansionLandingPageMinimapButton=true,--移动动图标
 
-    moving_over_Icon_show_menu=e.Player.husandro,--移过图标时，显示菜单
+    moving_over_Icon_show_menu=WoWTools_DataMixin.Player.husandro,--移过图标时，显示菜单
     --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
     --MajorFactionRenownFrame_Button_Scale=1,--缩放
 },
@@ -141,7 +141,7 @@ local function Init_Menu(self, root)
         return not Save().disabledInstanceDifficulty
     end, function()
         Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
-            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     )
     sub2:SetTooltip(function(tooltip)
@@ -220,12 +220,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MinimapMixin.addName= addName
             WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
 
-           e.AddPanel_Check_Button({
+           WoWTools_PanelMixin:Check_Button({
                 checkName= addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -234,7 +234,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                     WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
                     WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
-                    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                 end
             })
 

@@ -170,7 +170,7 @@ local function Init(ToyButton)
 
     --取得，炉石, 绑定位置
     function ToyButton:get_location()
-        return e.cn(GetBindLocation())
+        return WoWTools_TextMixin:CN(GetBindLocation())
     end
 
     --显示, 炉石, 绑定位置
@@ -277,22 +277,22 @@ local function Init(ToyButton)
             WoWTools_SetTooltipMixin:Setup(GameTooltip, {itemID= ModifiedMenuTab[index].itemID})
         else
 
-            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), e.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), WoWTools_DataMixin.Icon.left)
             GameTooltip:AddLine(' ')
             local name, col
             for _, data in pairs(ModifiedMenuTab) do
                 name, col=WoWTools_ItemMixin:GetName(data.itemID)
                 col= col or ''
-                GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..WoWTools_DataMixin.Icon.left)
             end
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:AddDoubleLine(
                 WoWTools_Mixin.onlyChinese and '随机' or 'Random',
                 (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
                 ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
                 ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
-                ..e.Icon.mid
+                ..WoWTools_DataMixin.Icon.mid
             )
 
 
@@ -304,7 +304,7 @@ local function Init(ToyButton)
                     GameTooltip:AddDoubleLine(
                         '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':32|t|cnGREEN_FONT_COLOR:'
                         ..(WoWTools_Mixin.onlyChinese and '发现就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BATTLE_PET_SOURCE_11, READY)),
-                        e.Icon.right
+                        WoWTools_DataMixin.Icon.right
                     )
                 end
             end

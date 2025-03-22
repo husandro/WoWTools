@@ -8,10 +8,10 @@ WoWTools_TooltipMixin={
         --AnchorPoint={},--指定点，位置
         --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
 
-        setCVar=e.Player.husandro,
-        ShowOptionsCVarTips=e.Player.husandro,--显示选项中的CVar
+        setCVar=WoWTools_DataMixin.Player.husandro,
+        ShowOptionsCVarTips=WoWTools_DataMixin.Player.husandro,--显示选项中的CVar
         inCombatDefaultAnchor=true,
-        ctrl= e.Player.husandro,--取得网页，数据链接
+        ctrl= WoWTools_DataMixin.Player.husandro,--取得网页，数据链接
 
         --模型
         modelSize=100,--大小
@@ -19,7 +19,7 @@ WoWTools_TooltipMixin={
         modelX= 0,
         modelY= -15,
         modelFacing= -0.3,--方向
-        showModelFileID=e.Player.husandro,--显示，文件ID
+        showModelFileID=WoWTools_DataMixin.Player.husandro,--显示，文件ID
         --WidgetSetID=848,--自定义，监视 WidgetSetID
         --disabledNPCcolor=true,--禁用NPC颜色
         --hideHealth=true,----生命条提示

@@ -5,18 +5,18 @@ WoWTools_MarkerMixin.Save={
     tank= 2,
     tank2= 6,
     healer= 1,
-    isSelf= e.Player.husandro and 4 or nil,
-    target= e.Player.husandro and 7 or nil,
+    isSelf= WoWTools_DataMixin.Player.husandro and 4 or nil,
+    target= WoWTools_DataMixin.Player.husandro and 7 or nil,
 
     countdown=7,
     groupReadyTips=true,
     tipsTextSacle=1,
 
     markersScale=1,
-    markersFrame= e.Player.husandro,
+    markersFrame= WoWTools_DataMixin.Player.husandro,
     showMakerFrameBackground=true,
     FrameStrata='MEDIUM',
-    pingTime= e.Player.husandro,--显示ping冷却时间
+    pingTime= WoWTools_DataMixin.Player.husandro,--显示ping冷却时间
 
     --autoReady=nil, 1,就绪， 2未就绪， nil禁用
     autoReadySeconds=3,
@@ -104,22 +104,22 @@ local function Init()
         GameTooltip:AddDoubleLine(
             (autoSet and '|cnGREEN_FONT_COLOR:' or '|cff828282')
             ..(WoWTools_Mixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER)),
-            e.GetEnabeleDisable(autoSet)
+            WoWTools_TextMixin:GetEnabeleDisable(autoSet)
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             (tank and WoWTools_MarkerMixin:SetColor(tank).col or '|cff828282')
-            ..e.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
+            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
            tank and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank) or ''
         )
         GameTooltip:AddDoubleLine(
             (tank2 and WoWTools_MarkerMixin:SetColor(tank2).col or '|cff828282')
-            ..e.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..' 2',
+            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..' 2',
            tank2 and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank2) or ''
         )
         GameTooltip:AddDoubleLine(
             (healer and WoWTools_MarkerMixin:SetColor(healer).col or '|cff828282')
-            ..e.Icon.HEALER..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
+            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
            healer and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', healer) or ''
         )
         GameTooltip:AddLine(' ')
@@ -143,7 +143,7 @@ local function Init()
         self:set_owner()
         self:tooltip()
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, (WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, (WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
 

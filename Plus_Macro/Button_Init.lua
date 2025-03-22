@@ -129,7 +129,7 @@ local function Init_Menu(self, root)
 
 --删除,专用宏
     sub:CreateDivider()
-    text=format(WoWTools_Mixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS, WoWTools_UnitMixin:GetPlayerInfo(nil, e.Player.guid, nil, {reName=true}))
+    text=format(WoWTools_Mixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS, WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true}))
         ..(num2==0 and ' |cff9e9e9e#' or ' #')..num2
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
@@ -182,12 +182,12 @@ local function Create_Button(name)
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MacroMixin.addName)
             local col= self:find_text() and '|cff9e9e9e' or ''
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(col..self.text..(self.tip or ''), e.Icon.left)
+            GameTooltip:AddDoubleLine(col..self.text..(self.tip or ''), WoWTools_DataMixin.Icon.left)
             if self.text2 then
                 GameTooltip:AddLine(' ')
                 col= self:find_text(true) and '|cff9e9e9e' or ''
             end
-            GameTooltip:AddDoubleLine(col..self.text2..(self.tip2 or ''), e.Icon.right)
+            GameTooltip:AddDoubleLine(col..self.text2..(self.tip2 or ''), WoWTools_DataMixin.Icon.right)
         end
         GameTooltip:Show()
     end
@@ -303,7 +303,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left)
+        GameTooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
     Button:SetScript('OnMouseDown', function(self)

@@ -129,7 +129,7 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save.lockedToy)
     end
-    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 
@@ -225,7 +225,7 @@ local function Init_Menu_Toy(_, root)
         index= index+ 1
 
         icon= '|T'..(icon or 0)..':0|t'
-        name=e.cn(toyName, {itemID=itemID, isName=true})
+        name=WoWTools_TextMixin:CN(toyName, {itemID=itemID, isName=true})
         if name then
             name=name:match('|c........(.-)|r') or name
         else
@@ -345,21 +345,21 @@ local function Init_Menu(self, root)
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 --全部清除
     sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() then
             Save.items={}
-            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:Rest_Random()
         else
             return MenuResponse.Open
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 
@@ -372,13 +372,13 @@ local function Init_Menu(self, root)
         if IsControlKeyDown() then
             Save.items= P_Items
             ToyButton:Rest_Random()
-            print(e.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 --设置
@@ -477,9 +477,9 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
             local icon= C_Item.GetItemIconByID(itemID)
             GameTooltip:AddDoubleLine(
                 (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
-                e.GetEnabeleDisable(Save.items[itemID])..e.Icon.left
+                WoWTools_TextMixin:GetEnabeleDisable(Save.items[itemID])..WoWTools_DataMixin.Icon.left
             )
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
             self:SetAlpha(1)
         end
@@ -611,22 +611,22 @@ local function Init()
     function ToyButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(self.itemID), (WoWTools_KeyMixin:IsKeyValid(self) or '').. WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
         local name, col
         for _, data in pairs(ModifiedMenuTab) do
             name, col=WoWTools_ItemMixin:GetName(data.itemID)
             col= col or ''
-            GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..e.Icon.left)
+            GameTooltip:AddDoubleLine(col..name, col..data.type..'+'..WoWTools_DataMixin.Icon.left)
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine(
             WoWTools_Mixin.onlyChinese and '随机' or 'Random',
             (ToyButton.Locked_Value and '' or '|cnGREEN_FONT_COLOR:#'..#self.Random_List..'|r')
             ..(ToyButton.Selected_Value and '|A:transmog-icon-checkmark:0:0|a' or '')
             ..(ToyButton.Locked_Value and '|A:AdventureMapIcon-Lock:0:0|a' or '')
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
         )
 
 

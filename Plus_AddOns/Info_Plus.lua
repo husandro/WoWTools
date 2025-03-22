@@ -153,7 +153,7 @@ local function Create_Check(frame)
         local icon= select(3, WoWTools_TextureMixin:IsAtlas( C_AddOns.GetAddOnMetadata(addonIndex, "IconTexture") or C_AddOns.GetAddOnMetadata(addonIndex, "IconAtlas"))) or ''--Atlas or Texture
         GameTooltip:AddDoubleLine(
             format('%s%s |cnGREEN_FONT_COLOR:%d|r', icon, self.name or '', addonIndex),
-            format('%s%s', WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, e.Icon.left)
+            format('%s%s', WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL, WoWTools_DataMixin.Icon.left)
         )
         GameTooltip:Show()
         self:set_enter_alpha()
@@ -205,7 +205,7 @@ local function Init_Set_List(frame, addonIndex)
     end
 
     frame.check:SetID(addonIndex)
-    frame.check:SetCheckedTexture(iconTexture or e.Icon.icon)
+    frame.check:SetCheckedTexture(iconTexture or WoWTools_DataMixin.Icon.icon)
     frame.check.name= name
     frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or false
     frame.check:SetChecked(isChecked)--fast

@@ -136,7 +136,7 @@ local function Init()
             colorTab[text]= true
             local texture= Create_Texture(col.r, col.g, col.b, col.a)
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-            texture.tooltip= e.cn(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
+            texture.tooltip= WoWTools_TextMixin:CN(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
             if n==10 then
                 n=0
                 x= x+ size

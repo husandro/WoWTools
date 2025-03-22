@@ -2,13 +2,13 @@ local id, e = ...
 WoWTools_ChatMixin.Save={
     --disabled=true,    
     disabledADD={
-        ['ChatButton_Emoji']= not e.Player.cn and not e.Player.husandro,
+        ['ChatButton_Emoji']= not WoWTools_DataMixin.Player.cn and not WoWTools_DataMixin.Player.husandro,
     },
     scale= 1,
     strata='MEDIUM',
     --isVertical=nil,--方向, 竖
     --isShowBackground=nil,--是否显示背景 bool
-    isEnterShowMenu= e.Player.husandro,-- 移过图标，显示菜单
+    isEnterShowMenu= WoWTools_DataMixin.Player.husandro,-- 移过图标，显示菜单
 
     borderAlpha=0.3,--外框，透明度
     pointX=0,
@@ -53,7 +53,7 @@ local function Init_Menu(self, root)
     end, function(data)
         Save().strata= data
         self:set_strata()
-        print(e.Icon.icon2.. addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
+        print(WoWTools_DataMixin.Icon.icon2.. addName ,'SetFrameStrata(\"|cnGREEN_FONT_COLOR:'..self:GetFrameStrata()..'|r\")')
         return MenuResponse.Refresh
     end)
 
@@ -222,11 +222,11 @@ local function Init()
         end
     end
     function ChatButton:set_tooltip()
-       -- GameTooltip:AddDoubleLine(e.Icon.icon2.. addName)
+       -- GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2.. addName)
        -- GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        --GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -289,10 +289,10 @@ end
 local function Init_Panel()
 
 
-    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '选项' or OPTIONS)
+    WoWTools_PanelMixin:Header(Layout, WoWTools_Mixin.onlyChinese and '选项' or OPTIONS)
 
     for _, data in pairs (WoWTools_ChatMixin:GetAllAddList()) do
-        e.AddPanel_Check({
+        WoWTools_PanelMixin:OnlyCheck({
             category= Category,
             name= data.tooltip,
             tooltip= data.name,
@@ -326,7 +326,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_Mixin.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
-            Category, Layout= e.AddPanel_Sub_Category({
+            Category, Layout= WoWTools_PanelMixin:AddSubCategory({
                 name=addName,
                 disabled=Save().disabled
             })
@@ -335,12 +335,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_ChatMixin.addName= addName
 
 
-            e.AddPanel_Check_Button({
+            WoWTools_PanelMixin:Check_Button({
                 checkName= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -348,7 +348,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if ChatButton then
                         ChatButton:set_point()
                     end
-                    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip= addName,
                 layout= Layout,

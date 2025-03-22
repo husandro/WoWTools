@@ -69,12 +69,12 @@ local function Init()
 
                 if isKilled then
                     text= text
-                        ..'|A:common-icon-checkmark:0:0|a|cnRED_FONT_COLOR:'..e.cn(bossName)
+                        ..'|A:common-icon-checkmark:0:0|a|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
                         ..'|r |cffffffff'..(WoWTools_Mixin.onlyChinese and '已消灭' or BOSS_DEAD)..'|r'
                     dead= dead+1
                 else
                     text= text
-                        ..'|A:QuestLegendary:0:0|a|cnGREEN_FONT_COLOR:'..e.cn(bossName)
+                        ..'|A:QuestLegendary:0:0|a|cnGREEN_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
                         ..'|r |cffffffff'..(WoWTools_Mixin.onlyChinese and '可消灭' or BOSS_ALIVE)..'|r'
                 end
             end

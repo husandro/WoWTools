@@ -4,7 +4,7 @@ WoWTools_AddOnsMixin={
 Save={
     --load_Button_Name=BASE_SETTINGS_TAB,--记录，已加载方案
     buttons={
-        [e.Player.husandro and '一般' or BASE_SETTINGS_TAB]={
+        [WoWTools_DataMixin.Player.husandro and '一般' or BASE_SETTINGS_TAB]={
             ['WeakAuras']=true,
             ['WeakAurasOptions']=true,
             ['WeakAurasArchive']=true,
@@ -13,14 +13,14 @@ Save={
             ['TextureAtlasViewer']=true,-- true, i or guid
             ['WoWTools_Chinese']=(not LOCALE_zhCN and not LOCALE_zhTW) and true or nil,
             [id]=true,
-        }, [e.Player.husandro and '宠物对战' or PET_BATTLE_COMBAT_LOG]={
+        }, [WoWTools_DataMixin.Player.husandro and '宠物对战' or PET_BATTLE_COMBAT_LOG]={
             ['BugSack']=true,
             ['!BugGrabber']=true,
             ['tdBattlePetScript']=true,
             --['zAutoLoadPetTeam_Rematch']=true,
             ['Rematch']=true,
             [id]=true,
-        }, [e.Player.husandro and '副本' or INSTANCE]={
+        }, [WoWTools_DataMixin.Player.husandro and '副本' or INSTANCE]={
             ['BugSack']=true,
             ['!BugGrabber']=true,
             ['WeakAuras']=true,
@@ -37,10 +37,10 @@ Save={
         ['WoWeuCN_Tooltips']=1,
         [id]=1,
     },
-    enableAllButtn= e.Player.husandro,--全部禁用时，不禁用本插件
+    enableAllButtn= WoWTools_DataMixin.Player.husandro,--全部禁用时，不禁用本插件
 
 
-    load_list=e.Player.husandro,--禁用, 已加载，列表
+    load_list=WoWTools_DataMixin.Player.husandro,--禁用, 已加载，列表
     --load_list_top=true,
     load_list_size=22,
 
@@ -129,7 +129,7 @@ function WoWTools_AddOnsMixin:Get_AddListInfo()
                 sel= sel+1
             end
             local name=C_AddOns.GetAddOnInfo(i)
-            tab[name]= stat==1 and e.Player.guid or i
+            tab[name]= stat==1 and WoWTools_DataMixin.Player.GUID or i
         end
     end
     return load, some, sel, tab
@@ -155,7 +155,7 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
         local vType= type(value)
         local text= vType=='string' and WoWTools_UnitMixin:GetPlayerInfo({guid=value})
         if not text and not isLoaded and reason then
-            text= '|cff9e9e9e'..e.cn(_G['ADDON_'..reason] or reason)..' ('..index
+            text= '|cff9e9e9e'..WoWTools_TextMixin:CN(_G['ADDON_'..reason] or reason)..' ('..index
         end
         local title= C_AddOns.GetAddOnInfo(name) or name
         local col= C_AddOns.GetAddOnDependencies(name) and '|cffff00ff' or (isLoaded and '|cnGREEN_FONT_COLOR:') or '|cff9e9e9e'
@@ -292,13 +292,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_AddOnsMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 Value= not Save().disabled,
                 GetValue=function () return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -313,7 +313,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             C_CVar.RegisterCVar("addonProfilerEnabled", "1")
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             if not C_AddOnProfiler.IsEnabled() then
-                print(e.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
+                print(WoWTools_DataMixin.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
             end
         end]]
         

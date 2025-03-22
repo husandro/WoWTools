@@ -40,7 +40,7 @@ local function Init_TrackButton()
 		if Save().point then
 			self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
 		else
-			self:SetPoint('TOPLEFT', 200, e.Player.husandro and 0 or -100)
+			self:SetPoint('TOPLEFT', 200, WoWTools_DataMixin.Player.husandro and 0 or -100)
 		end
 	end
 
@@ -113,19 +113,19 @@ local function Init_TrackButton()
 			GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 					Save().item[itemID] and
 						('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-					or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+					or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
 			)
 			self:set_texture(C_Item.GetItemIconByID(itemID))
 		else
 			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
 			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
 			GameTooltip:AddLine(' ')
-			GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, e.Icon.left)
-			GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), e.Icon.right)
-			GameTooltip:AddDoubleLine(canFrame..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..e.Icon.right)
-			GameTooltip:AddDoubleLine(e.GetShowHide(Save().str, true), e.Icon.mid)
+			GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, WoWTools_DataMixin.Icon.left)
+			GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
+			GameTooltip:AddDoubleLine(canFrame..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..WoWTools_DataMixin.Icon.right)
+			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Save().str, true), WoWTools_DataMixin.Icon.mid)
 			GameTooltip:AddLine(' ')
-			GameTooltip:AddDoubleLine(canFrame..(WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..e.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
+			GameTooltip:AddDoubleLine(canFrame..(WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
 		end
 		GameTooltip:Show()
 	end
@@ -157,9 +157,9 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save().item[itemID]= not Save().item[itemID] and true or nil
-			print(e.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING,
+			print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING,
 					Save().item[itemID] and
-					('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', e.Icon.select))
+					('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
 					or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
 			ClearCursor()

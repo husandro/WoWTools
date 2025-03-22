@@ -184,7 +184,7 @@ local function Set_List_Button(btn, displayData)
     Init_Button(btn)
 
 
-    local tipsText= e.cn(displayData.name or btn.Name:GetText() or '')..(displayData.label and displayData.name~= displayData.label and '|n'..e.cn(displayData.label) or '')
+    local tipsText= WoWTools_TextMixin:CN(displayData.name or btn.Name:GetText() or '')..(displayData.label and displayData.name~= displayData.label and '|n'..WoWTools_TextMixin:CN(displayData.label) or '')
     tipsText= tipsText and tipsText..'|n' or ''
 
     local variantSets = SetsDataProvider:GetVariantSets(setID) or {}
@@ -204,7 +204,7 @@ local function Set_List_Button(btn, displayData)
                 isLimited= isLimited or info.limitedTimeSet--限时套装
 
                 local name= info.description or info.name or ''
-                name= e.cn(name)
+                name= WoWTools_TextMixin:CN(name)
                 name= numAll==collect and '|cnGREEN_FONT_COLOR:'..name..'|r' or name--已收集
 
                 local isCollected= collect== numAll--是否已收
@@ -215,11 +215,11 @@ local function Set_List_Button(btn, displayData)
                             ..name--名称
                             ..(info.limitedTimeSet and '|A:socialqueuing-icon-clock:0:0|a' or '')--限时套装
                             ..' '..info.setID
-                            --..(info.setID==btn.setID and ' '..format('|A:%s:0:0|a', e.Icon.toLeft) or '')
+                            --..(info.setID==btn.setID and ' '..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or '')
                 tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
             end
             patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))
-            version= version or (info.expansionID and e.cn(_G['EXPANSION_NAME'..info.expansionID]))
+            version= version or (info.expansionID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..info.expansionID]))
         end
     end
 
@@ -297,7 +297,7 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         local btn=itemFrame['btn'..i]
         if not btn then
-            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {icon=e.Icon.icon, size={26,10}})
+            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {icon=WoWTools_DataMixin.Icon.icon, size={26,10}})
             btn:SetNormalAtlas('adventure-missionend-line')
             itemFrame['btn'..i]=btn
             if i==1 then

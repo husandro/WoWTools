@@ -26,7 +26,7 @@ local function Init_Menu(_, root)
             if name and playerTitle then
                 local cnName
                 if WoWTools_Chinese_Mixin then
-                    cnName= e.cn(name, {titleID=i})
+                    cnName= WoWTools_TextMixin:CN(name, {titleID=i})
                 end
 
                 sub=root:CreateButton(
@@ -39,7 +39,7 @@ local function Init_Menu(_, root)
 
                 end, {index=i, name=name, cnName=cnName})
                 sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(e.Icon.left..'wowhead.com')
+                    tooltip:AddLine(WoWTools_DataMixin.Icon.left..'wowhead.com')
                     tooltip:AddLine('index '..description.data.index)
                     tooltip:AddLine(description.data.name..' ')
                     local cn= description.data.cnName

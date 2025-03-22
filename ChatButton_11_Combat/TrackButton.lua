@@ -70,10 +70,10 @@ function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
     )
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
-    local tab=e.WoWDate[e.Player.guid].Time
+    local tab=e.WoWDate[WoWTools_DataMixin.Player.GUID].Time
     tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '总计' or TOTAL)..'|A:socialqueuing-icon-clock:0:0|a',  tab.totalTime and SecondsToTime(tab.totalTime))
     tooltip:AddDoubleLine(
-        (WoWTools_Mixin.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(WoWTools_Mixin.onlyChinese and '第%d周' or WEEKS_ABBR, e.Player.week)..date('%Y')..')',
+        (WoWTools_Mixin.onlyChinese and '本周%s' or CURRENCY_THIS_WEEK):format('CD')..' ('..format(WoWTools_Mixin.onlyChinese and '第%d周' or WEEKS_ABBR, WoWTools_DataMixin.Player.Week)..date('%Y')..')',
         SecondsToTime(C_DateAndTime.GetSecondsUntilWeeklyReset())
     )
 end
@@ -178,7 +178,7 @@ local function TrackButton_Frame_Init_Date(self)--初始, 数据
         LastText= '|A:socialqueuing-icon-clock:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '离开' or AFK)..text..'|r'
         save.afk.num= save.afk.num + 1
         save.afk.time= save.afk.time + sec
-        print(e.Icon.icon2..WoWTools_CombatMixin.addName, LastText)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CombatMixin.addName, LastText)
         OnAFKTime=nil
     end
 
@@ -354,10 +354,10 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
     function TrackButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().textScale or 1),'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().textScale or 1),'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
         WoWTools_CombatMixin:Set_Combat_Tooltip(GameTooltip)
         GameTooltip:AddLine(' ')
@@ -386,7 +386,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             Save().textScale=sacle
             self:set_text_scale()
             self:set_tooltip()
-            print(e.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,"|cnGREEN_FONT_COLOR:", sacle)
         end
     end)
 

@@ -1,14 +1,14 @@
 ---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 
 local id, e= ...
-if not e.Player.IsMaxLevel then
+if not WoWTools_DataMixin.Player.IsMaxLevel then
     return
 end
 
 local Save= {
-    mark= e.Player.husandro,
-    sound= e.Player.husandro,
-    hide= e.Player.husandro,
+    mark= WoWTools_DataMixin.Player.husandro,
+    sound= WoWTools_DataMixin.Player.husandro,
+    hide= WoWTools_DataMixin.Player.husandro,
 }
 
 local addName= 'Explosives'
@@ -193,9 +193,9 @@ local function set_Button()
                 GameTooltip:AddDoubleLine(name, filedataid and '|T'..filedataid ..':0|t' or ' ')
                 GameTooltip:AddLine(description, nil,nil,nil,true)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left, (WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)..e.Icon.right)
+                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left, (WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, e.cn(addName))
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TextMixin:CN(addName))
                 GameTooltip:Show()
             end
         end)
@@ -218,21 +218,21 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             Save= WoWToolsSave[addName] or Save
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= '|T2175503:0|t'..(WoWTools_Mixin.onlyChinese and '爆炸物' or addName),
                 tooltip= select(2, C_ChallengeMode.GetAffixInfo(13)),
                 value= not Save.disabled,
                 func= function()
                     Save.disabled = not Save.disabled and true or nil
-                    print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_Mixin.addName, WoWTools_TextMixin:CN(addName), WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
             --[[添加控制面板        
-            local check= e.AddPanel_Check((WoWTools_Mixin.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
+            local check= WoWTools_PanelMixin:OnlyCheck((WoWTools_Mixin.onlyChinese and '爆炸物' or addName)..'|T2175503:0|t', not Save.disabled, nil, true)
             check:SetScript('OnMouseDown', function()
                 Save.disabled = not Save.disabled and true or nil
-                print(WoWTools_Mixin.addName, e.cn(addName), e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_Mixin.addName, WoWTools_TextMixin:CN(addName), WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
             check:SetScript('OnEnter', function(self2)
                 local name, description, filedataid= C_ChallengeMode.GetAffixInfo(13)

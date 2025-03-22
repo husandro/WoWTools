@@ -9,7 +9,7 @@ end
 
 local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请 
     if not WoWTools_InviteMixin:Get_Leader() then--取得权限
-        print(e.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '你没有权利这样做' or ERR_GUILD_PERMISSIONS)
         return
     end
     local n=0
@@ -19,7 +19,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
         if num==40 then
             return
         elseif not IsInRaid() and num==5 and not Save().PartyToRaid then
-            print(e.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '请求：转化为团队' or  PETITION_TITLE:format('|cff00ff00'..CONVERT_TO_RAID..'|r'))
             return
         end
 
@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
     local sub, sub2, col, num
 
     sub=root:CreateButton(
-        e.Icon.left
+        WoWTools_DataMixin.Icon.left
         ..(WoWTools_InviteMixin:Get_Leader() and '' or '|cff9e9e9e')
         ..(WoWTools_Mixin.onlyChinese and '邀请成员' or GUILDCONTROL_OPTION7),
     function()
@@ -112,7 +112,7 @@ local function Init_Menu(self, root)
             text=Save().ChannelText,
             SetValue= function(s)
                 Save().ChannelText = string.upper(s.editBox:GetText())
-                print(e.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
             end,
         })
     end)
@@ -132,7 +132,7 @@ local function Init_Menu(self, root)
 
 --接受邀请
     root:CreateDivider()
-    sub=root:CreateCheckbox((WoWTools_Mixin.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION)..format('|A:%s:0:0|a', e.Icon.select), function()
+    sub=root:CreateCheckbox((WoWTools_Mixin.onlyChinese and '接受邀请' or CALENDAR_ACCEPT_INVITATION)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select), function()
         return Save().FriendAceInvite
     end, function()
         Save().FriendAceInvite= not Save().FriendAceInvite and true or nil
@@ -179,7 +179,7 @@ local function Init_Menu(self, root)
                 text= Save().SummonThxText or WoWTools_InviteMixin.SummonThxText,
                 SetValue= function(s)
                     Save().SummonThxText=s.editBox:GetText()
-                    print(e.Icon.icon2..WoWTools_InviteMixin.addName, Save().SummonThxText)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, Save().SummonThxText)
                 end,
                 OnAlt=function()
                     Save().SummonThxText=nil
@@ -230,7 +230,7 @@ local function Init_Menu(self, root)
 
 
 --焦点
-    sub=root:CreateCheckbox((WoWTools_Mixin.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save().setFucus and ' |cnGREEN_FONT_COLOR:'..Save().focusKey..'|r + '..e.Icon.left or ''), function()
+    sub=root:CreateCheckbox((WoWTools_Mixin.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save().setFucus and ' |cnGREEN_FONT_COLOR:'..Save().focusKey..'|r + '..WoWTools_DataMixin.Icon.left or ''), function()
         return Save().setFucus
     end, function()
         Save().setFucus= not Save().setFucus and true or nil
@@ -241,7 +241,7 @@ local function Init_Menu(self, root)
 
     for _, key in pairs({'Shift', 'Ctrl', 'Alt'}) do
         col= (Save().focusKey== key or not self:CanChangeAttribute()) and '|cff9e9e9e' or ''
-        sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, e.Icon.left), function(data)
+        sub2=sub:CreateCheckbox(format('%s%s + %s', col, key, WoWTools_DataMixin.Icon.left), function(data)
             return Save().focusKey== data
         end, function(data)
             Save().focusKey= data
@@ -254,7 +254,7 @@ local function Init_Menu(self, root)
     sub:CreateTitle(
         format('    %s+%s%s=%s|r',
                 Save().focusKey or '',
-                e.Icon.right,
+                WoWTools_DataMixin.Icon.right,
                 WoWTools_Mixin.onlyChinese and '空' or EMPTY,
                 WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
             )
@@ -288,7 +288,7 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', e.Icon.disabled, WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, WoWTools_Mixin.onlyChinese and '邀请' or INVITE))
+    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', WoWTools_DataMixin.Icon.disabled, WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, WoWTools_Mixin.onlyChinese and '邀请' or INVITE))
 
     sub2=sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '休息区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE), function()
         return Save().NoInvInResting
@@ -309,7 +309,7 @@ local function Init_Menu(self, root)
         sub2=sub:CreateButton(nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
         function(data)
             Save().InvNoFriend[data]=nil
-            print(e.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
         end, guid)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)

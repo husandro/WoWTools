@@ -13,7 +13,7 @@ local function Init(UseButton)
     end
 
     local item, alt, ctrl, shift
-    local tab= WoWTools_FoodMixin.Save.spells[e.Player.class]
+    local tab= WoWTools_FoodMixin.Save.spells[WoWTools_DataMixin.Player.Class]
     if tab then
         item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
     end

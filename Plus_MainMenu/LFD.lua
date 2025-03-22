@@ -33,7 +33,7 @@ local function Init()
         GameTooltip:AddLine(' ')
 
         local find= WoWTools_WeekMixin:Activities({showTooltip=true})--周奖励，提示
-        local link= e.WoWDate[e.Player.guid].Keystone.link
+        local link= e.WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
         if link then
             GameTooltip:AddLine('|T4352494:0|t'..link)
         end
@@ -46,16 +46,16 @@ local function Init()
 
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '地下城和团队副本' or GROUP_FINDER)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and 'PvP' or PVP)..'|r'
-            ..e.Icon.right
+            ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '地下堡' or DELVES_LABEL)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 

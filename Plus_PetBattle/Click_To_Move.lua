@@ -20,7 +20,7 @@ local function Init_Camera_Tabs()
         ['0']={WoWTools_Mixin.onlyChinese and '从不调整镜头' or CAMERA_NEVER, WoWTools_Mixin.onlyChinese and '设定视角，使其固定在一点，永远不自动调节。' or OPTION_TOOLTIP_CAMERA_NEVER},
     }
     CVarNameTabs={
-        ['autoInteract']= e.Icon.right..(WoWTools_Mixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+        ['autoInteract']= WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
         ['cameraSmoothStyle']= WoWTools_Mixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE,
         ['cameraSmoothTrackingStyle']= WoWTools_Mixin.onlyChinese and '点击移动镜头' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, CAMERA_LABEL)
     }
@@ -53,7 +53,7 @@ end
 
 local function Get_Lock_ClickToMove_Value()
     if Save().ClickMoveButton.AutoClickToMove then
-        return e.Player.IsMaxLevel and '1' or '0'
+        return WoWTools_DataMixin.Player.IsMaxLevel and '1' or '0'
     else
         return Save().ClickMoveButton['lock_autoInteract']
     end
@@ -140,8 +140,8 @@ local function Init_ClickToMove_Menu(self, root, col)
         return MenuResponse.CloseAll
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion(), e.GetEnabeleDisable(false))
-        tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion(), e.GetEnabeleDisable(true))
+        tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(false))
+        tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(true))
     end)
 end
 
@@ -293,9 +293,9 @@ local function Init_Menu(self, root)
     function()
         Save().ClickMoveButton={
             PlayerFrame=true,
-            lock_autoInteract=e.Player.husandro and '1' or nil,
-            lock_cameraSmoothStyle= e.Player.husandro and '0' or nil,
-            lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
+            lock_autoInteract=WoWTools_DataMixin.Player.husandro and '1' or nil,
+            lock_cameraSmoothStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
+            lock_cameraSmoothTrackingStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
         }
         self:Settings()
         return MenuResponse.Open
@@ -411,22 +411,22 @@ local function Init_Button()
             (Get_Lock_ClickToMove_Value() and '|cff828282' or col)
             ..CVarNameTabs['autoInteract']
             ..': |r'
-            ..e.GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")),
+            ..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract")),
 
-            e.Icon.left
+            WoWTools_DataMixin.Icon.left
         )
 
         GameTooltip:AddDoubleLine(
             WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
 
-            e.Icon.right
+            WoWTools_DataMixin.Icon.right
         )
 
         if not Save().ClickMoveButton.PlayerFrame then
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(
                 WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,
-                'Alt+'..e.Icon.right
+                'Alt+'..WoWTools_DataMixin.Icon.right
             )
         end
         GameTooltip:Show()

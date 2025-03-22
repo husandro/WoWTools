@@ -127,7 +127,7 @@ local function Init_Menu(self, root)
     for _, tab2 in pairs(newTab) do
         sub=root:CreateButton(
             tab2.class..') '
-            ..(e.cn(C_Item.GetItemClassInfo(tab2.class) or tab2.class or ''))
+            ..(WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(tab2.class) or tab2.class or ''))
             ..((tab2.class==2 or tab2==4) and '|T132288:0|t' or ' ')
             ..'|cnGREEN_FONT_COLOR:#'..tab2.num,
         function(data)
@@ -144,7 +144,7 @@ local function Init_Menu(self, root)
         for _, tab3 in pairs(newSubTab) do
             sub2=sub:CreateButton(
                 tab3.subClass
-                ..(e.cn(C_Item.GetItemSubClassInfo(tab2.class, tab3.subClass)) or (tab2.class..' '..tab3.subClass))
+                ..(WoWTools_TextMixin:CN(C_Item.GetItemSubClassInfo(tab2.class, tab3.subClass)) or (tab2.class..' '..tab3.subClass))
                 ..'|cnGREEN_FONT_COLOR:#'..tab3.num,
             function(data)
                 self:set_PickupContainerItem(data.class, data.subClass, nil)
@@ -399,7 +399,7 @@ local function Init_Button()
             btn:SetScript('OnClick', function(self, d)
                 if d=='LeftButton' then
                     local name= Save().fast[self.name]
-                    if name and name~=e.Player.name_realm then
+                    if name and name~=WoWTools_DataMixin.Player.name_realm then
                          WoWTools_MailMixin:SetSendName(name)--设置，发送名称，文
                     end
                     self:GetParent():GetParent():set_PickupContainerItem(self.classID, self.subClassID, self.findString)--自动放物品
@@ -416,7 +416,7 @@ local function Init_Button()
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine('|T'..(self:GetNormalTexture():GetTexture() or 0)..':0|t'..self.name, WoWTools_MailMixin:GetNameInfo(playerName))
-                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '添加' or ADD)..e.Icon.left, playerName and playerName~=playerNameInfo and playerName)
+                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '添加' or ADD)..WoWTools_DataMixin.Icon.left, playerName and playerName~=playerNameInfo and playerName)
                 GameTooltip:AddLine(' ')
                 if self.classID==2 or self.classID==4 then
                     GameTooltip:AddDoubleLine(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, WoWTools_Mixin.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
@@ -425,7 +425,7 @@ local function Init_Button()
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self.num)
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '组数' or AUCTION_NUM_STACKS, self.stack)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.right)
+                GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right)
                 GameTooltip:Show()
                 self:SetAlpha(1)
             end)
@@ -480,7 +480,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_Mixin.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
     fastButton:SetScript('OnLeave', function()

@@ -25,9 +25,9 @@ local function Get_Major_Faction_Level(factionID, level)
                 local completed= math.modf(currentValue/threshold)--完成次数
                 currentValue= completed>0 and currentValue - threshold * completed or currentValue
                 if hasRewardPending2 then
-                    text= format('|cnGREEN_FONT_COLOR:%i%%|A:GarrMission-%sChest:0:0|a%s%d|r', currentValue/threshold*100, e.Player.faction, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                    text= format('|cnGREEN_FONT_COLOR:%i%%|A:GarrMission-%sChest:0:0|a%s%d|r', currentValue/threshold*100, WoWTools_DataMixin.Player.Faction, hasRewardPending and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '', completed)
                 else
-                    text= format('%i%%|A:Banker:0:0|a%s%d', currentValue/threshold*100, hasRewardPending and format('|A:%s:0:0|a', e.Icon.select) or '', completed)
+                    text= format('%i%%|A:Banker:0:0|a%s%d', currentValue/threshold*100, hasRewardPending and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '', completed)
                 end
             end
         end
@@ -58,7 +58,7 @@ end
 local function Get_Major_Faction_List()
     local tab={}
     local find={}
-    for i= LE_EXPANSION_DRAGONFLIGHT, e.ExpansionLevel, 1 do
+    for i= LE_EXPANSION_DRAGONFLIGHT, WoWTools_DataMixin.ExpansionLevel, 1 do
         for _, factionID in pairs(C_MajorFactions.GetMajorFactionIDs(i) or {}) do--if C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(i) then
             if not find[factionID] then
                 table.insert(tab, factionID)
@@ -214,7 +214,7 @@ local function Init()
     function Button:set_texture()
         local hide= Save().hide_MajorFactionRenownFrame_Button
         if hide then
-            self:SetNormalAtlas(e.Icon.icon)
+            self:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
             self:SetAlpha(0.3)
         else
             self:SetNormalTexture(0)
@@ -227,8 +227,8 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide_MajorFactionRenownFrame_Button), e.Icon.left)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide_MajorFactionRenownFrame_Button), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
 

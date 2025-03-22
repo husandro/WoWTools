@@ -2,7 +2,7 @@ local e= select(2, ...)
 
 --设置单位, 玩家
 function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
-    local realm= select(2, UnitName(unit)) or e.Player.realm--服务器
+    local realm= select(2, UnitName(unit)) or WoWTools_DataMixin.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and e.GroupGuid[guid]) and true or nil--队友
@@ -64,13 +64,13 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     end
 
     local region= e.Get_Region(realm)--服务器，EU， US
-    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==e.Player.realm and format('|A:%s:0:0|a', e.Icon.select) or e.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
+    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
 
     if isSelf then
         local titleID= GetCurrentTitle()
         if titleID and titleID>1 then
             local titleName= GetTitleName(titleID)
-            text2Right= e.cn(titleName, {titleID= titleID})
+            text2Right= WoWTools_TextMixin:CN(titleName, {titleID= titleID})
             text2Right= text2Right and text2Right:gsub('%%s', '')
         end
     else
@@ -168,7 +168,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             end
         else
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
-                    ..(e.cn(raceName) or e.cn(raceFile) or '')
+                    ..(WoWTools_TextMixin:CN(raceName) or WoWTools_TextMixin:CN(raceFile) or '')
                     ..' '..(WoWTools_UnitMixin:GetClassIcon(nil, classFilename) or '')
                     ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(WoWTools_Mixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
         end
@@ -188,7 +188,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             local show=true
             if i==num then
                 if isSelf then--位面ID, 战争模式
-                    lineLeft:SetText(e.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..e.Player.L.layer..' '..e.Player.Layer or ' ')
+                    lineLeft:SetText(WoWTools_DataMixin.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..WoWTools_DataMixin.Player.Language.layer..' '..WoWTools_DataMixin.Player.Layer or ' ')
                     local lineRight= _G[tooltipName..'TextRight'..i]
                     if lineRight then
                         if isWarModeDesired then

@@ -70,7 +70,7 @@ local function Init()
                     or '|cffffffff'
                 )
                 ..(WoWTools_Mixin.onlyChinese and '霸业商店' or PLUNDERSTORM_PLUNDER_STORE_TITLE)..'|r'
-                ..e.Icon.mid,
+                ..WoWTools_DataMixin.Icon.mid,
 
                 WoWTools_CurrencyMixin:GetName(
                     C_AccountStore.GetCurrencyIDForStore(Constants.AccountStoreConsts.PlunderstormStoreFrontID) or 3139, nil, nil

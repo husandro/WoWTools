@@ -82,7 +82,7 @@ local function Init()
     ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.right)
+        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
 
@@ -136,7 +136,7 @@ end
 缩放
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().scale= WoWTools_FrameMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save().scale, function()
-            print(e.Icon.icon2..WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             print('|cnRED_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)
         self:set_tooltip()

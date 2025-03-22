@@ -1,6 +1,6 @@
 --宠物，信息，提示
 local e= select(2, ...)
-if e.Player.class~='HUNTER' then
+if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
 
@@ -38,31 +38,31 @@ local function SetTooltip(frame, pet)
 
         elseif indexType=='specialization' then
             local atlas = e.dropdownIconForPetSpec[name]
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION), (atlas and '|A:'..atlas..':22:22|a' or '')..col..e.cn(name))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION), (atlas and '|A:'..atlas..':22:22|a' or '')..col..WoWTools_TextMixin:CN(name))
 
         elseif indexType=='level' then
             GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '等级' or LEVEL), col..name)
 
         elseif indexType=='name' then
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '名字' or NAME), col..e.cn(name))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '名字' or NAME), col..WoWTools_TextMixin:CN(name))
 
         elseif indexType=='icon' then
             GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), col..format('|T%d:14|t%d', name, name))
 
         elseif indexType=='familyName' then
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL), col..e.cn(name))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL), col..WoWTools_TextMixin:CN(name))
 
         elseif indexType=='type' then
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '类型' or TYPE), col..e.cn(name))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '类型' or TYPE), col..WoWTools_TextMixin:CN(name))
 
         elseif indexType=='isFavorite' then
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), col..e.GetYesNo(name, true))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), col..WoWTools_TextMixin:GetYesNo(name, true))
 
         elseif indexType=='isExotic' then
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '特殊' or STABLE_EXOTIC_TYPE_LABEL), col..e.GetYesNo(name, true))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '特殊' or STABLE_EXOTIC_TYPE_LABEL), col..WoWTools_TextMixin:GetYesNo(name, true))
         else
 
-            name= (name==false or name==true) and col..e.GetYesNo(name, true)
+            name= (name==false or name==true) and col..WoWTools_TextMixin:GetYesNo(name, true)
                 or name
             GameTooltip:AddDoubleLine(col..indexType, col..name)
         end
@@ -73,7 +73,7 @@ local function SetTooltip(frame, pet)
         table.concat(C_StableInfo.GetStablePetFoodTypes(pet.slotID), LIST_DELIMITER)
     )
     GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL, e.Icon.left)
+    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL, WoWTools_DataMixin.Icon.left)
 
     if GameTooltip.playerModel and pet.displayID and pet.displayID>0 then
         GameTooltip.playerModel:SetDisplayInfo(pet.displayID)

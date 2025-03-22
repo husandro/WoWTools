@@ -16,18 +16,18 @@ local function Init(Frame)
     if Frame.sliderMaxParticles or Save().disabled then
         return
     end
-    Frame.sliderMaxParticles = e.CSlider(Frame, {min=50, max=4096, value=Save().maxParticles, setp=1,
+    Frame.sliderMaxParticles = WoWTools_PanelMixin:Slider(Frame, {min=50, max=4096, value=Save().maxParticles, setp=1,
     text=WoWTools_Mixin.onlyChinese and '粒子密度' or PARTICLE_DENSITY,
     func=function(self, value)
         value= math.floor(value)
         self:SetValue(value)
         self.Text:SetText(value)
         Save().maxParticles= value
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end})
     Frame.sliderMaxParticles:SetPoint("TOPLEFT", Frame.cursorCheck, 'BOTTOMLEFT', 0, -20)
 
-    local sliderMinDistance = e.CSlider(Frame, {min=1, max=10, value=Save().minDistance, setp=1, color=true,
+    local sliderMinDistance = WoWTools_PanelMixin:Slider(Frame, {min=1, max=10, value=Save().minDistance, setp=1, color=true,
     text=WoWTools_Mixin.onlyChinese and '最小距离' or MINIMUM..TRACKER_SORT_PROXIMITY,
     func=function(self, value)
         value= math.floor(value)
@@ -39,7 +39,7 @@ local function Init(Frame)
     sliderMinDistance:SetPoint("TOPLEFT", Frame.sliderMaxParticles, 'BOTTOMLEFT', 0, -20)
 
 
-    local sliderSize = e.CSlider(Frame, {min=8, max=128, value=Save().size, setp=1,
+    local sliderSize = WoWTools_PanelMixin:Slider(Frame, {min=8, max=128, value=Save().size, setp=1,
     text=WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
@@ -50,7 +50,7 @@ local function Init(Frame)
     end})
     sliderSize:SetPoint("TOPLEFT", sliderMinDistance, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = e.CSlider(Frame, {min=-100, max=100, value=Save().X, setp=1, color=true,
+    local sliderX = WoWTools_PanelMixin:Slider(Frame, {min=-100, max=100, value=Save().X, setp=1, color=true,
     text='X',
     func=function(self, value)
         value= math.floor(value)
@@ -61,7 +61,7 @@ local function Init(Frame)
     end})
     sliderX:SetPoint("TOPLEFT", sliderSize, 'BOTTOMLEFT', 0, -20)
 
-    local sliderY = e.CSlider(Frame, {min=-100, max=100, value=Save().Y, setp=1,
+    local sliderY = WoWTools_PanelMixin:Slider(Frame, {min=-100, max=100, value=Save().Y, setp=1,
     text='Y',
     func=function(self, value)
         value= math.floor(value)
@@ -72,7 +72,7 @@ local function Init(Frame)
     end})
     sliderY:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRate = e.CSlider(Frame, {min=0.001, max=0.1, value=Save().rate, setp=0.001, color=true,
+    local sliderRate = WoWTools_PanelMixin:Slider(Frame, {min=0.001, max=0.1, value=Save().rate, setp=0.001, color=true,
     text=WoWTools_Mixin.onlyChinese and '刷新' or REFRESH,
     func=function(self, value)
         value= tonumber(format('%.3f', value))
@@ -83,7 +83,7 @@ local function Init(Frame)
     end})
     sliderRate:SetPoint("TOPLEFT", sliderY, 'BOTTOMLEFT', 0, -20)
 
-    local sliderRotate = e.CSlider(Frame, {min=0, max=32, value=Save().rotate, setp=1,
+    local sliderRotate = WoWTools_PanelMixin:Slider(Frame, {min=0, max=32, value=Save().rotate, setp=1,
     text=WoWTools_Mixin.onlyChinese and '旋转' or HUD_EDIT_MODE_SETTING_MINIMAP_ROTATE_MINIMAP:gsub(MINIMAP_LABEL, ''),
     func=function(self, value)
         value= math.floor(value)
@@ -94,7 +94,7 @@ local function Init(Frame)
     end})
     sliderRotate:SetPoint("TOPLEFT", sliderRate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderDuration = e.CSlider(Frame, {min=0.1, max=4, value=Save().duration, setp=0.1, color=true,
+    local sliderDuration = WoWTools_PanelMixin:Slider(Frame, {min=0.1, max=4, value=Save().duration, setp=0.1, color=true,
     text=WoWTools_Mixin.onlyChinese and '持续时间' or AUCTION_DURATION,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -105,7 +105,7 @@ local function Init(Frame)
     end})
     sliderDuration:SetPoint("TOPLEFT", sliderRotate, 'BOTTOMLEFT', 0, -20)
 
-    local sliderGravity = e.CSlider(Frame, {min=-512, max=512, value=Save().gravity, setp=1,
+    local sliderGravity = WoWTools_PanelMixin:Slider(Frame, {min=-512, max=512, value=Save().gravity, setp=1,
     text=WoWTools_Mixin.onlyChinese and '掉落' or BATTLE_PET_SOURCE_1,
     func=function(self, value)
         value= math.floor(value)
@@ -116,7 +116,7 @@ local function Init(Frame)
     end})
     sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = e.CSlider(Frame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
+    local alphaSlider = WoWTools_PanelMixin:Slider(Frame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
     text=WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -195,7 +195,7 @@ local function Init(Frame)
         local icon = select(2, WoWTools_CursorMixin:GetTextureType(texture))
         table.remove(Save().Atlas, Save().atlasIndex)
         Save().atlasIndex=1
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:Cursor_Settings()
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultTexture)
@@ -231,7 +231,7 @@ local function Init(Frame)
 
     --添加按钮
     addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
-    addColorButton:SetNormalAtlas(e.Icon.select)
+    addColorButton:SetNormalAtlas(WoWTools_DataMixin.Icon.select)
     addColorButton:SetScript('OnClick', add_Color)
     addColorButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

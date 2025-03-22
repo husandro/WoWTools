@@ -1,7 +1,7 @@
 --Flyout, 技能，提示
 local id, e= ...
 local Save={}
-local SpellTab={}--e.ChallengesSpellTabs
+local SpellTab={}--WoWTools_DataMixin.ChallengesSpellTabs
 local addName
 
 --[[local function Vstr(t)--垂直文字
@@ -69,7 +69,7 @@ local function GetSpellText(spellID)
 
     local text
     local des= C_Spell.GetSpellDescription(spellID)
-    des= e.cn(des)
+    des= WoWTools_TextMixin:CN(des)
     if des then
         text= des:match('|cff00ccff(.-)|r')
             or des:match('传送至(.-)入口处')--传送至永茂林地入口处。
@@ -90,10 +90,10 @@ local function GetSpellText(spellID)
             or des:match('(.-) 입구로 순간이동합니다')--상록숲 입구로 순간이동합니다.
     end
     if not text then
-        text= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
+        text= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
         if not text then
             text= select(2, GetCallPetSpellInfo(spellID))
-            text= e.cn(text)
+            text= WoWTools_TextMixin:CN(text)
         end
         text=text:match('%-(.+)') or text
         text=text:match('：(.+)') or text
@@ -183,7 +183,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    sub=root:CreateTitle(e.cn(name))
+    sub=root:CreateTitle(WoWTools_TextMixin:CN(name))
     root:CreateDivider()
 
     for slot= 1, numSlots2 do
@@ -193,7 +193,7 @@ local function Init_Menu(self, root)
             sub= root:CreateButton(
                 '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
                 ..(isKnown and '' or '|cnRED_FONT_COLOR:')
-                ..(e.cn(spellName, {spellID=spellID, isName=true}) or spellID),
+                ..(WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true}) or spellID),
             function(data)
                 local spellLink= WoWTools_SpellMixin:GetLink(data.spellID, false)
                 WoWTools_ChatMixin:Chat(spellLink or data.spellID, nil, true)
@@ -225,7 +225,7 @@ end
 
 
 local function Init_All_Flyout()
-    --if not e.Player.IsMaxLevel or e.Is_Timerunning then return end
+    --if not WoWTools_DataMixin.Player.IsMaxLevel or WoWTools_DataMixin.Is_Timerunning then return end
     --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
     local tab={
         232,--'英雄之路：地心之战--11
@@ -273,10 +273,10 @@ local function Init_All_Flyout()
                 local spellID= overrideSpellID or flyoutSpellID
                 if spellID then
                     WoWTools_Mixin:Load({id=spellID, type='spell'})
-                    local name2= e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
+                    local name2= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
                     local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then
-                        GameTooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..e.cn(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..WoWTools_TextMixin:CN(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..'('..slot)
                     else
                         GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..'('..slot)
                     end
@@ -337,13 +337,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:common-icon-backarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术弹出框' or 'SpellFlyout')
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 Value= not Save.disabled,
                 GetValue=function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,
@@ -353,7 +353,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             else
                 if WoWTools_Mixin.onlyChinese then
-                    for _, info in pairs(e.ChallengesSpellTabs or {}) do
+                    for _, info in pairs(WoWTools_DataMixin.ChallengesSpellTabs or {}) do
                         if info.spell and info.name then
                             SpellTab[info.spell]=info.name
                         end

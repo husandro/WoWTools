@@ -45,7 +45,7 @@ local function Init()
                 if IsInRaid() then
                     for i=1, MAX_RAID_MEMBERS do
                         local name, _, subgroup= GetRaidRosterInfo(i)
-                        if name==e.Player.name then
+                        if name==WoWTools_DataMixin.Player.Name then
                             if subgroup then
                                 nu= ' '..subgroup..GROUP
                             end
@@ -54,8 +54,8 @@ local function Init()
                     end
                 end
                 return (not p or p.playerRollState==Enum.EncounterLootDropRollState.Greed) and ''
-                        or ((e.Player.region==1 or e.Player.region==3) and ' need, pls{rt1}'..nu)
-                        or (e.Player.region==5 and ' 您好，我很需求这个，能让让吗？谢谢{rt1}'..nu)
+                        or ((WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and ' need, pls{rt1}'..nu)
+                        or (WoWTools_DataMixin.Player.Region==5 and ' 您好，我很需求这个，能让让吗？谢谢{rt1}'..nu)
                         or (' '..NEED..', '..VOICEMACRO_LABEL_THANKYOU3..'{rt1}'..nu)
             end
             function btn.chatTexure:get_playername()
@@ -63,7 +63,7 @@ local function Init()
                 local playerName= info.playerName
                 if playerName and info.playerGUID and not playerName:find('%-') then
                     local realm= select(7,GetPlayerInfoByGUID(info.playerGUID))
-                    if realm and realm~='' and realm~=e.Player.realm then
+                    if realm and realm~='' and realm~=WoWTools_DataMixin.Player.realm then
                         playerName= playerName..'-'..realm
                     end
                 end
@@ -110,7 +110,7 @@ local function Init()
 
         if winInfo and notGreed then--修改，名字
             if winInfo.isSelf then
-                btn.WinningRollInfo.WinningRoll:SetText(e.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
+                btn.WinningRollInfo.WinningRoll:SetText(WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r')
             elseif winInfo.playerGUID then
                 local name= WoWTools_UnitMixin:GetPlayerInfo(nil, winInfo.playerGUID, nil, {reName=true})
                 if name and name~='' then
@@ -129,7 +129,7 @@ local function Init()
         if btn.dropInfo.itemHyperlink and notGreed then
             local _, _, itemSubType2, itemEquipLoc, _, _, subclassID = C_Item.GetItemInfoInstant(btn.dropInfo.itemHyperlink)--提示,装备,子类型
             local collected, _, isSelfCollected= WoWTools_CollectedMixin:Item(btn.dropInfo.itemHyperlink, nil, false)--物品是否收集
-            text= subclassID==0 and itemEquipLoc and e.cn(_G[itemEquipLoc]) or e.cn(itemSubType2)
+            text= subclassID==0 and itemEquipLoc and WoWTools_TextMixin:CN(_G[itemEquipLoc]) or WoWTools_TextMixin:CN(itemSubType2)
             if isSelfCollected and collected then
                 text= text..' '..collected
             end
@@ -161,7 +161,7 @@ local function Init()
     end
     function btn:Set_Atlas()
         if Save().disabledLootPlus then
-            self:SetNormalAtlas(e.Icon.disabled)
+            self:SetNormalAtlas(WoWTools_DataMixin.Icon.disabled)
         else
             self:SetNormalAtlas('communities-icon-notification')
         end
@@ -179,7 +179,7 @@ local function Init()
     btn:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), e.GetEnabeleDisable(not Save().disabledLootPlus))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '战利品 Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOOT, 'Plus'), WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledLootPlus))
         GameTooltip:AddLine(' ')
         local  encounterID= GroupLootHistoryFrame.selectedEncounterID
         local info= encounterID and C_LootHistory.GetInfoForEncounter(encounterID)

@@ -90,7 +90,7 @@ local function Init_Buttons()--设置按钮
             GameTooltip:SetOwner(Frame.Buttons[#Frame.Buttons], "ANCHOR_TOP")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(self.text, '|T'..EmojiButton:get_texture(self:GetID())..':0|t')
-            GameTooltip:AddDoubleLine(e.Icon.left..(WoWTools_Mixin.onlyChinese and '插入' or 'Insert'), (WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL)..e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '插入' or 'Insert'), (WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL)..WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
         end)
         btn:SetScript('OnClick', function(self, d)
@@ -188,9 +188,9 @@ local function Init_EmojiFrame()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:AddDoubleLine('ChatButton', addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..e.Icon.mid)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
     Frame:SetScript("OnMouseUp", ResetCursor)
@@ -268,7 +268,7 @@ local function Init_Menu(self, root)
         Save.showEnter = not Save.showEnter and true or nil
     end)
 
-    root:CreateCheckbox(e.Icon.left..(WoWTools_Mixin.onlyChinese and '鼠标' or MOUSE_LABEL), function()
+    root:CreateCheckbox(WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '鼠标' or MOUSE_LABEL), function()
         return Save.On_Click_Show
     end, function()
         Save.On_Click_Show= not Save.On_Click_Show and true or false
@@ -336,7 +336,7 @@ local function Init_Menu(self, root)
     end)
 
     for index, channel in pairs(Channels) do
-        sub2:CreateCheckbox('|cff9e9e9e'..index..'|r '..(e.cn(_G[channel]) or channel), function(data)
+        sub2:CreateCheckbox('|cff9e9e9e'..index..'|r '..(WoWTools_TextMixin:CN(_G[channel]) or channel), function(data)
             return not Save.Channels[data]
         end, function(data)
             Save.Channels[data]= not Save.Channels[data] and true or nil
@@ -396,12 +396,12 @@ end
 local function Init()
     EmojiText_EN= {'Angel','Angry','Biglaugh','Clap','Cool','Cry','Cutie','Despise','Dreamsmile','Embarrass','Evil','Excited','Faint','Fight','Flu','Freeze','Frown','Greet','Grimace','Growl','Happy','Heart','Horror','Ill','Innocent','Kongfu','Love','Mail','Makeup','Meditate','Miserable','Okay','Pretty','Puke','Shake','Shout','Shuuuu','Shy','Sleep','Smile','Suprise','Surrender','Sweat','Tear','Tears','Think','Titter','Ugly','Victory','Hero','Wronged','Mario',}
 
-    if e.Player.region==5 then
+    if WoWTools_DataMixin.Player.Region==5 then
         EmojiText= {'天使','生气','大笑','鼓掌','酷','哭','可爱','鄙视','美梦','尴尬','邪恶','兴奋','晕','打架','流感','呆','皱眉','致敬','鬼脸','龇牙','开心','心','恐惧','生病','无辜','功夫','花痴','邮件','化妆','沉思','可怜','好','漂亮','吐','握手','喊','闭嘴','害羞','睡觉','微笑','吃惊','失败','流汗','流泪','悲剧','想','偷笑','猥琐','胜利','雷锋','委屈','马里奥'}
 
-    elseif e.Player.region==4 then
+    elseif WoWTools_DataMixin.Player.Region==4 then
         EmojiText= {'天使','生氣','大笑','鼓掌','酷','哭','可愛','鄙視','美夢','尷尬','邪惡','興奮','暈','打架','流感','呆','皺眉','致敬','鬼臉','齜牙','開心','心','恐懼','生病','無辜','功夫','花痴','郵件','化妝','沉思','可憐','好','漂亮','吐','握手','喊','閉嘴','害羞','睡覺','微笑','吃驚','失敗','流汗','流淚','悲劇','想','偷笑','猥瑣','勝利','英雄','委屈','馬里奧'}
-    elseif e.Player.region==2 then
+    elseif WoWTools_DataMixin.Player.Region==2 then
         EmojiText= {'천사','화난','웃음','박수','시원함','울음','귀엽다','경멸','꿈','당혹 스러움','악','흥분','헤일로','싸움','독감','머무르기','찡그림','공물','grimface','눈에띄는이빨','행복','심장','두려움','나쁜','순진한','쿵푸','관용구','메일','메이크업','명상','나쁨','좋은','아름다운','침','악수','외침','닥치기','수줍음','수면','웃음','놀라움','실패','땀','눈물','비극','생각하기','shirking','걱정','victory','hero','wronged','Mario'}
     else
         EmojiText= EmojiText_EN
@@ -445,11 +445,11 @@ local function Init()
     function EmojiButton:set_tooltip()
         self:set_owner()
         if Save.On_Click_Show then
-            GameTooltip:AddDoubleLine(e.GetShowHide(not Frame:IsShown()), e.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Frame:IsShown()), WoWTools_DataMixin.Icon.left)
         else
             GameTooltip:AddDoubleLine(
                 format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''),
-                (self.chatFrameEditBox and (WoWTools_Mixin.onlyChinese and '插入' or 'Insert') or (WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL))..e.Icon.left
+                (self.chatFrameEditBox and (WoWTools_Mixin.onlyChinese and '插入' or 'Insert') or (WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL))..WoWTools_DataMixin.Icon.left
             )
         end
         if self.numFilter==0 then

@@ -168,7 +168,7 @@ function WoWTools_ItemLocationMixin:GetItemQuality()
 	end
 end
 
---物品名称, name, e.cn(name)
+--物品名称, name, WoWTools_TextMixin:CN(name)
 function WoWTools_ItemLocationMixin:GetItemTexture()
 	local texture
 	if self:IsValid() then
@@ -181,7 +181,7 @@ function WoWTools_ItemLocationMixin:GetItemTexture()
 	return texture, format('|T%d:0|t', texture)
 end
 
---物品名称, name, e.cn(name)
+--物品名称, name, WoWTools_TextMixin:CN(name)
 function WoWTools_ItemLocationMixin:GetItemName(isText)
 	if self:IsValid() then
 		local itemID= self:GetItemID()

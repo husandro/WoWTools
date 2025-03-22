@@ -53,9 +53,9 @@ local function Init(OpenButton)
                 if self:CanChangeAttribute() then
                     GameTooltip:AddLine(' ')
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), self.noText)
-                    GameTooltip:AddDoubleLine(e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..e.Icon.left)
-                    GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..'|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP), self.noText)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), (WoWTools_KeyMixin:IsKeyValid(self) or '')..WoWTools_DataMixin.Icon.left)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
                     GameTooltip:Show()
                 end
 
@@ -67,8 +67,8 @@ local function Init(OpenButton)
         else
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_OpenItemMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(e.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
-            GameTooltip:AddDoubleLine(e.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_KeyMixin:IsKeyValid(self))
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.mid..'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN), WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
             GameTooltip:Show()
             if (BattlePetTooltip) then
                 BattlePetTooltip:Hide()

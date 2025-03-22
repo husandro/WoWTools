@@ -188,7 +188,7 @@ local function Init_Guild_Menu(_, root)
     local map=WoWTools_MapMixin:GetUnit('player')
     for index=1, GetNumGuildMembers() do
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
-        if name and guid and guid~=e.Player.guid then
+        if name and guid and guid~=WoWTools_DataMixin.Player.GUID then
             local text=WoWTools_UnitMixin:GetPlayerInfo({--名称
                 guid=guid,
                 name=name,

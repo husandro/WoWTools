@@ -51,7 +51,7 @@ local function Init()
     button:SetScript('OnHide', function(self)
         local num= C_Item.GetItemCount(37829, true, false, true)
         if self.item and self.item<num then
-            print(e.Icon.icon2.. addName, WoWTools_ItemMixin:GetLink(37829), self.item)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_ItemMixin:GetLink(37829), self.item)
         end
         self.item=nil
     end)
@@ -98,7 +98,7 @@ local function Init()
 
         Save.scale=sacle
         self:set_Scale()
-        print(e.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
     end)
 
     function button:set_Point()
@@ -211,7 +211,7 @@ local function Init()
     button:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and IsShiftKeyDown() then
             local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
-            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
                 macroId and '/click ExtraActionButton1' or (WoWTools_Mixin.onlyChinese and '无法创建' or NONE)
             )
         end
@@ -223,11 +223,11 @@ local function Init()
         GameTooltip:AddLine(' ')
         local macro= select(3, GetMacroInfo('Ram'))
         local col= (macro and macro:find('ExtraActionButton1')) and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '创建宏"' or CREATE_MACROS), col..'Shift+'..e.Icon.left)
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '创建宏"' or CREATE_MACROS), col..'Shift+'..WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(col..'/click ExtraActionButton1')
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, e.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end)
     button:SetScript('OnLeave', GameTooltip_Hide)
@@ -253,9 +253,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save= WoWToolsSave['Other_Brewfest'] or Save
 
             --添加控制面板
-           addName= '|T132248:0|t'..(WoWTools_Mixin.onlyChinese and '美酒节赛羊' or e.cn(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true}) or 'Brewfest')
+           addName= '|T132248:0|t'..(WoWTools_Mixin.onlyChinese and '美酒节赛羊' or WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true}) or 'Brewfest')
 
-            e.AddPanel_Check_Button({
+            WoWTools_PanelMixin:Check_Button({
                 checkName= addName,
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
@@ -266,7 +266,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         end
                         button:SetShown(true)
                     else
-                        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                     end
                 end,
                 buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
@@ -276,13 +276,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         button:ClearAllPoints()
                         button:set_Point()
                     end
-                    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 tooltip=function()
                     return WoWTools_Mixin.onlyChinese and '节日: 美酒节（赛羊）'
                         or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
                             CALENDAR_FILTER_HOLIDAYS,
-                            e.cn(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true})
+                            WoWTools_TextMixin:CN(C_Item.GetItemNameByID(33976), {itemID=33976, isName=true})
                             or ''
                         )
                 end,

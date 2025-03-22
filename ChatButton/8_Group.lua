@@ -2,10 +2,10 @@ local id, e = ...
 local addName
 local Save={
     --mouseUP=  not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
-    mouseUP=  (e.Player.region==1 or e.Player.region==3) and 'sum me, pls'
-                or e.Player.region==5  and '求拉, 谢谢'
+    mouseUP=  (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
+                or WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢'
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME),
-    mouseDown= e.Player.region~=5 and 'inv, thx' or '1' ,
+    mouseDown= WoWTools_DataMixin.Player.Region~=5 and 'inv, thx' or '1' ,
     --type='/raid'
     --text=团队
 }
@@ -82,7 +82,7 @@ local function Settings()--队伍信息提示
     end
 
     local combatRole
-    local tab=e.GroupGuid[e.Player.guid]
+    local tab=e.GroupGuid[WoWTools_DataMixin.Player.GUID]
     if tab then
         combatRole=tab.combatRole
     end
@@ -120,7 +120,7 @@ end
 
 
 local function set_Text(text)--处理%s
-    local groupTab= e.GroupGuid[e.Player.guid]
+    local groupTab= e.GroupGuid[WoWTools_DataMixin.Player.GUID]
     if text:find('%%s') and groupTab and groupTab.subgroup then
         text= text:format(groupTab.subgroup..' '..GROUP..' ')
     else
@@ -220,7 +220,7 @@ local function Init_Menu(_, root)
                     if UnitExists(unit) then
                         playerName=GetUnitName(unit, true)
                         sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
-                            if data and data~=e.Player.name then
+                            if data and data~=WoWTools_DataMixin.Player.Name then
                                 WoWTools_ChatMixin:Say(nil, data, nil)
                             end
                             return MenuResponse.Open
@@ -239,13 +239,13 @@ local function Init_Menu(_, root)
                     --playerName= GetRaidRosterInfo(i)
                     --WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true})
                     sub2=sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
-                        if data and data~=e.Player.name then
+                        if data and data~=WoWTools_DataMixin.Player.Name then
                             WoWTools_ChatMixin:Say(nil, data, nil)
                         end
                         return MenuResponse.Open
                     end, playerName)
                     sub2:SetTooltip(function(tooltip, description)
-                        if description.data and description.data~=e.Player.name then
+                        if description.data and description.data~=WoWTools_DataMixin.Player.Name then
                             tooltip:AddLine(WoWTools_Mixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)
                         end
                     end)
@@ -274,7 +274,7 @@ local function Init_Menu(_, root)
         (WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
         ..': '
         ..(
-            isInGroup and e.GetYesNo(C_PartyInfo.IsCrossFactionParty())
+            isInGroup and WoWTools_TextMixin:GetYesNo(C_PartyInfo.IsCrossFactionParty())
             or (C_PartyInfo.CanFormCrossFactionParties() and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '可创建' or BATTLETAG_CREATE)..'|r')
             or ('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r')
         ).. ' #'..crossNum,
@@ -285,11 +285,11 @@ local function Init_Menu(_, root)
     sub:SetTooltip(function(tooltip, description)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
         tooltip:AddLine(' ')
-        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '创建跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, START_A_GROUP),  e.GetEnabeleDisable(C_PartyInfo.CanFormCrossFactionParties()))
+        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '创建跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, START_A_GROUP),  WoWTools_TextMixin:GetEnabeleDisable(C_PartyInfo.CanFormCrossFactionParties()))
         local col2= IsInGroup() and '' or '|cff9e9e9e'
         tooltip:AddDoubleLine(
             col2..(WoWTools_Mixin.onlyChinese and '跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)),
-            col2..e.GetYesNo(isCrossFactionParty)..' #'..description.data..' '..(WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+            col2..WoWTools_TextMixin:GetYesNo(isCrossFactionParty)..' #'..description.data..' '..(WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
         )
     end)
 
@@ -303,9 +303,9 @@ local function Init_Menu(_, root)
     end, function()
         if not UnitAffectingCombat('player') then
             C_CVar.SetCVar("chatBubblesParty", C_CVar.GetCVarBool("chatBubblesParty") and '0' or '1')
-            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
         else
-            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         end
     end)
 
@@ -353,9 +353,9 @@ local function Init_Menu(_, root)
                         self.editBox:SetText(Save[data.type])
                     else
                         if data.type=='mouseUP' then
-                            self.editBox:SetText(e.Player.region==5 and '求拉, 谢谢' or 'sum me, pls')
+                            self.editBox:SetText(WoWTools_DataMixin.Player.Region==5 and '求拉, 谢谢' or 'sum me, pls')
                         else
-                            self.editBox:SetText(e.Player.region==5 and '1' or 'inv, thx')
+                            self.editBox:SetText(WoWTools_DataMixin.Player.Region==5 and '1' or 'inv, thx')
                         end
                         self.button3:SetEnabled(false)
                     end
@@ -553,7 +553,7 @@ local function Init()
     GroupButton.tipBubbles= GroupButton:CreateTexture(nil, 'OVERLAY')
     GroupButton.tipBubbles:SetSize(8, 8)
     GroupButton.tipBubbles:SetPoint('TOPLEFT', 3, 0)
-    GroupButton.tipBubbles:SetAtlas(e.Icon.disabled)
+    GroupButton.tipBubbles:SetAtlas(WoWTools_DataMixin.Icon.disabled)
 
     --副本外，在团中提示
     GroupButton.textureNotInstance=GroupButton:CreateTexture(nil,'BACKGROUND')
@@ -569,15 +569,15 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        GameTooltip:AddDoubleLine(self.text, self.type and self.type..e.Icon.left)
+        GameTooltip:AddDoubleLine(self.text, self.type and self.type..WoWTools_DataMixin.Icon.left)
 
         if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
             GameTooltip:AddLine(' ')
             if Save.mouseUP then
-                GameTooltip:AddDoubleLine(Save.mouseUP, (WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..e.Icon.mid)
+                GameTooltip:AddDoubleLine(Save.mouseUP, (WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..WoWTools_DataMixin.Icon.mid)
             end
             if Save.mouseDown then
-                GameTooltip:AddDoubleLine(Save.mouseDown, (WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..e.Icon.mid)
+                GameTooltip:AddDoubleLine(Save.mouseDown, (WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid)
             end
 
         end

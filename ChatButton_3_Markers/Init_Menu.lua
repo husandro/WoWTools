@@ -38,21 +38,21 @@ local function Init_RaidTarget_Menu(_, root)
 
     local Tab={
         {
-            text= e.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
+            text= WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
             type='tank',
             tip= WoWTools_Mixin.onlyChinese and '小队或团队' or  (GROUP..' '..OR_CAPS ..' '..RAID),
             rest=restGroup,
             check=checkGroup
         },
         {
-            text= e.Icon.HEALER..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
+            text= WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
             type='healer',
             tip=WoWTools_Mixin.onlyChinese and '仅限小队' or format(LFG_LIST_CROSS_FACTION, GROUP),
             rest=restGroup,
             check=checkGroup
         },
         {
-            text= e.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..'2',
+            text= WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..'2',
             type='tank2',
             tip=WoWTools_Mixin.onlyChinese and '仅限团队' or format(LFG_LIST_CROSS_FACTION, RAID),
             rest=restGroup,
@@ -104,7 +104,7 @@ local function Init_RaidTarget_Menu(_, root)
             sub=root:CreateRadio(
                 '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..i..':0|t'
                 ..WoWTools_MarkerMixin:SetColor(i).col
-                ..e.cn(_G['RAID_TARGET_'..i]),
+                ..WoWTools_TextMixin:CN(_G['RAID_TARGET_'..i]),
             function(data)
                 return Save()[data.type]==data.index
             end, function(data)
@@ -157,7 +157,7 @@ local function Init_Menu(self, root)
         (Save().tank==0 and Save().healer==0 and '|cff9e9e9e' or '')
         ..'|A:mechagon-projects:0:0|a'
         ..((WoWTools_Mixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
-        ..e.Icon.TANK..e.Icon.HEALER
+        ..WoWTools_DataMixin.Icon.TANK..WoWTools_DataMixin.Icon.TANK
     ), function ()
         return Save().autoSet
     end, function ()
@@ -220,7 +220,7 @@ local function Init_Menu(self, root)
         if WoWTools_MarkerMixin.ReadyTipsButton then
             WoWTools_MarkerMixin.ReadyTipsButton:ClearAllPoints()
             WoWTools_MarkerMixin.ReadyTipsButton:set_Point()--位置
-            print(e.Icon.icon2..WoWTools_MarkerMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MarkerMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
 

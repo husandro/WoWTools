@@ -75,7 +75,7 @@ local function Init()--设置 panel
             GameTooltip:AddDoubleLine(self.text2, format('%.2f%%', value or 0))
             if not info.zeroShow then
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(e.GetShowHide(not Save().tab[self.name].hide), (WoWTools_Mixin.onlyChinese and '值' or 'value: ')..' < 1 ='..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE))
+                GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().tab[self.name].hide), (WoWTools_Mixin.onlyChinese and '值' or 'value: ')..' < 1 ='..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE))
             end
             GameTooltip:Show()
         end)
@@ -123,7 +123,7 @@ local function Init()--设置 panel
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(self.text, self.name, r2, g2, b2)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..e.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..WoWTools_DataMixin.Icon.left)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(format('r%.2f', r2)..format('  g%.2f', g2)..format('  b%.2f', b2), format('a%.2f', a2))
                 GameTooltip:Show()
@@ -136,7 +136,7 @@ local function Init()--设置 panel
             local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
             current:SetChecked(Save().tab[info.name].bar)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
-            current.text:SetText(e.Player.col..'Bar')
+            current.text:SetText(WoWTools_DataMixin.Player.col..'Bar')
             current:SetScript('OnMouseUp',function(self)
                 Save().tab['STATUS'].bar= not Save().tab['STATUS'].bar and true or false
                 WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
@@ -149,8 +149,8 @@ local function Init()--设置 panel
             current.name= info.name
 
             --位数，bit
-            local sliderBit=e.CSlider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
-                text= e.Player.col..(WoWTools_Mixin.onlyChinese and '位数' or 'bit'),
+            local sliderBit=WoWTools_PanelMixin:Slider(panel, {w=100,h=20, min=0, max=3, value=Save().tab['STATUS'].bit or 3, setp=1, color=nil,
+                text= WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '位数' or 'bit'),
                 func=function(self, value)
                     value= math.floor(value)
                     self:SetValue(value)
@@ -184,7 +184,7 @@ local function Init()--设置 panel
             dragonriding:SetScript('OnClick',function()
                 Save().disabledDragonridingSpeed= not Save().disabledDragonridingSpeed and true or nil
                 WoWTools_AttributesMixin:Init_Dragonriding_Speed()
-                print(e.Icon.icon2..WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledDragonridingSpeed), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledDragonridingSpeed), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
             end)
 
             --载具，速度
@@ -194,7 +194,7 @@ local function Init()--设置 panel
             vehicleSpeedCheck.text:SetFormattedText(WoWTools_Mixin.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
             vehicleSpeedCheck:SetScript('OnClick',function()
                 Save().disabledVehicleSpeed= not Save().disabledVehicleSpeed and true or nil
-                print(e.Icon.icon2..WoWTools_AttributesMixin.addName, e.GetEnabeleDisable(not Save().disabledVehicleSpeed), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledVehicleSpeed), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 WoWTools_AttributesMixin:Init_Vehicle_Speed()
             end)
 
@@ -281,14 +281,14 @@ local function Init()--设置 panel
     text:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))..e.Icon.left..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, (WoWTools_Mixin.onlyChinese and '阴影' or SHADOW_QUALITY:gsub(QUALITY , ''))..WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:AddDoubleLine('r'..(self2.r or 1)..' g'..(self2.g or 1)..' b'..(self2.b or 1), 'a'..(self2.a or 1))
         GameTooltip:Show()
         self2:SetAlpha(0.3)
     end)
 
     --bar, 宽度
-    local sliderX=e.CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
+    local sliderX=WoWTools_PanelMixin:Slider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.x, setp=1, color=nil,
         text='X',
         func=function(self, value)
             value= math.floor(value)
@@ -303,7 +303,7 @@ local function Init()--设置 panel
     sliderX.text= text
 
     --bar, 宽度
-    local sliderY= e.CSlider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
+    local sliderY= WoWTools_PanelMixin:Slider(panel, {w=120 ,h=20, min=-5, max=5, value=Save().font.y, setp=1, color=true,
         text='Y', func=function(self, value, userInput)
             value= math.floor(value)
             self:SetValue(value)
@@ -332,7 +332,7 @@ local function Init()--设置 panel
     textColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, WoWTools_DataMixin.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -377,7 +377,7 @@ local function Init()--设置 panel
     end)
 
     --位数，bit
-    local sliderBit= e.CSlider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
+    local sliderBit= WoWTools_PanelMixin:Slider(panel, {w=100 ,h=20, min=0, max=3, value=Save().bit or 0, setp=1, color=nil,
         text=(WoWTools_Mixin.onlyChinese and '位数' or 'bit'),
         func=function(self, value)
             value= math.ceil(value)
@@ -415,7 +415,7 @@ local function Init()--设置 panel
     panel.barGreenColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, WoWTools_DataMixin.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -447,7 +447,7 @@ local function Init()--设置 panel
     panel.barRedColor:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, e.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS, WoWTools_DataMixin.Icon.left..self.hex..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -491,7 +491,7 @@ local function Init()--设置 panel
     end)
 
     --bar, 宽度
-    local barWidth= e.CSlider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
+    local barWidth= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-119, max=250, value=Save().barWidth, setp=1, color=nil,
         text=WoWTools_Mixin.onlyChinese and '宽' or WIDE,
         func=function(self, value)
             value= math.floor(value)
@@ -504,7 +504,7 @@ local function Init()--设置 panel
     barWidth:SetPoint("LEFT", check3.text, 'RIGHT', 10, 0)
 
     --bar, x
-    local barX= e.CSlider(panel, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
+    local barX= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-250, max=250, value=Save().barX, setp=1, color=true,
         text='X',
         func=function(self, value)
             value= math.floor(value)
@@ -527,7 +527,7 @@ local function Init()--设置 panel
     end)
 
     --间隔，上下
-    local slider= e.CSlider(panel, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
+    local slider= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-5, max=10, value=Save().vertical, setp=0.1, color=nil,
         text='|T450907:0|t|T450905:0|t',
         func=function(self, value)
             value= tonumber(format('%.1f', value))
@@ -541,7 +541,7 @@ local function Init()--设置 panel
     slider:SetPoint("TOPLEFT", barToLeft, 'BOTTOMLEFT', 0,-80)
 
     --间隔，左右
-    local slider2= e.CSlider(panel, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
+    local slider2= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=-0.1, max=40, value=Save().horizontal, setp=0.1, color=true,
         text='|T450908:0|t|T450906:0|t',
         func=function(self, value)
             value= tonumber(format('%.1f', value))
@@ -555,7 +555,7 @@ local function Init()--设置 panel
     slider2:SetPoint("LEFT", slider, 'RIGHT', 10,0)
 
     --文本，截取
-    local slider3= e.CSlider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
+    local slider3= WoWTools_PanelMixin:Slider(panel, {w=120, h=20, min=0, max=20, value=Save().gsubText or 0, setp=1, color=nil,
         text=WoWTools_Mixin.onlyChinese and '截取' or BINDING_NAME_SCREENSHOT,
         func=function(self, value, userInput)
             value= math.floor(value)
@@ -563,7 +563,7 @@ local function Init()--设置 panel
             self.Text:SetText(value)
             Save().gsubText= value>0 and value or nil
             WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
-            print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', WoWTools_Mixin.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..value..'|r', WoWTools_Mixin.onlyChinese and '文本 0=否' or (LOCALE_TEXT_LABEL..' 0='..NO))
         end,
         tips=nil
     })
@@ -611,7 +611,7 @@ local function Init()--设置 panel
     end)
 
     --缩放
-    local slider4= e.CSlider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
+    local slider4= WoWTools_PanelMixin:Slider(panel, {w=nil, h=20, min=0.3, max=4, value=Save().scale or 1, setp=0.1, color=nil,
         text=WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
         func=function(self, value)
             value= tonumber(format('%.1f', value)) or 1
@@ -625,7 +625,7 @@ local function Init()--设置 panel
     slider4:SetPoint("TOPLEFT", slider3, 'BOTTOMLEFT', 0,-24)
 
 
-    local sliderButtonAlpha = e.CSlider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
+    local sliderButtonAlpha = WoWTools_PanelMixin:Slider(panel, {min=0, max=1, value=Save().buttonAlpha or 0.3, setp=0.1, color=true,
     text=WoWTools_Mixin.onlyChinese and '专精透明度' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, 'Alpha'),
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -638,7 +638,7 @@ local function Init()--设置 panel
     end})
     sliderButtonAlpha:SetPoint("TOPLEFT", slider4, 'BOTTOMLEFT', 0,-24)
 
-    local sliderButtonScale = e.CSlider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
+    local sliderButtonScale = WoWTools_PanelMixin:Slider(panel, {min=0.4, max=4, value=Save().buttonScale or 1, setp=0.1, color=true,
     text=WoWTools_Mixin.onlyChinese and '专精缩放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, UI_SCALE),
     func=function(self, value)
         value= tonumber(format('%.01f', value))

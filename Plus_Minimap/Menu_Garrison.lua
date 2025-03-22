@@ -23,7 +23,7 @@ local function Get_Garrison_List_Num(followerType)
         elseif num==0 then
             text= format('|cff9e9e9e%d|r/%d', num, all)
         elseif all==num then
-            text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', e.Icon.select)
+            text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
         else
             text= format('|cnGREEN_FONT_COLOR:%d|r/%d', num, all)
         end
@@ -84,7 +84,7 @@ local function Init_GarrisonList()
     --[[{name=  WoWTools_Mixin.onlyChinese and '任务' or GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_8_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower,
-    atlas= string.format("bfa-landingbutton-%s-up", e.Player.faction),
+    atlas= string.format("bfa-landingbutton-%s-up", WoWTools_DataMixin.Player.Faction),
     tooltip= WoWTools_Mixin.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
     },]]
 
@@ -92,7 +92,7 @@ local function Init_GarrisonList()
     garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
     frame='OrderHallMissionFrame',
-    atlas= WoWTools_UnitMixin:GetClassIcon('player', nil, true),--职业图标 -- e.Player.class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", e.Player.class),
+    atlas= WoWTools_UnitMixin:GetClassIcon('player', nil, true),--职业图标 -- WoWTools_DataMixin.Player.Class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", WoWTools_DataMixin.Player.Class),
     --tooltip= WoWTools_Mixin.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
     },
 
@@ -100,8 +100,8 @@ local function Init_GarrisonList()
     garrisonType= Enum.GarrisonType.Type_6_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower,
     garrFollowerTypeID2=Enum.GarrisonFollowerType.FollowerType_6_0_Boat,
-    atlas= format("GarrLanding-MinimapIcon-%s-Up", e.Player.faction),
-    atlas2= format('Islands-%sBoat', e.Player.faction),
+    atlas= format("GarrLanding-MinimapIcon-%s-Up", WoWTools_DataMixin.Player.Faction),
+    atlas2= format('Islands-%sBoat', WoWTools_DataMixin.Player.Faction),
     --tooltip= WoWTools_Mixin.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
     },
 
@@ -235,7 +235,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
 
                         sub:CreateButton(
                             (info2.textureKit and format('|A:SanctumUpgrades-%s-32x32:0:0|a', info2.textureKit) or '')
-                            ..e.cn(info2.name)..' '..level,
+                            ..WoWTools_TextMixin:CN(info2.name)..' '..level,
                         function(data)
                             WoWTools_LoadUIMixin:CovenantRenown(nil, data.covenantID)
                             return MenuResponse.Open

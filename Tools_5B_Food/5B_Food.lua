@@ -24,20 +24,20 @@ local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
 WoWTools_FoodMixin={
 Save={
     noUseItems={},--禁用物品
-    autoLogin= e.Player.husandro,--启动,查询
-    isShowBackground=e.Player.husandro,--背景
+    autoLogin= WoWTools_DataMixin.Player.husandro,--启动,查询
+    isShowBackground=WoWTools_DataMixin.Player.husandro,--背景
     --onlyMaxExpansion=true,--仅本版本物品
     olnyUsaItem=true,
     numLine=12,
-    autoWho=e.Player.husandro,
+    autoWho=WoWTools_DataMixin.Player.husandro,
     class={
         [0]={
             [1]=true,--药水
             [2]=true,--药剂
             [3]=true,--合计
             [5]=true,--食物
-            [7]=e.Is_Timerunning,
-            [8]=e.Is_Timerunning,--其它
+            [7]=WoWTools_DataMixin.Is_Timerunning,
+            [8]=WoWTools_DataMixin.Is_Timerunning,--其它
         },
         [15]={
             [4]=true,
@@ -107,9 +107,9 @@ function WoWTools_FoodMixin:Get_Item_Valid(itemID)
         local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
         if self.Save.class[classID]
             and self.Save.class[classID][subClassID]
-            and (e.Is_Timerunning
+            and (WoWTools_DataMixin.Is_Timerunning
                     or (self.Save.onlyMaxExpansion
-                        and (PaneIDs[itemID] or e.ExpansionLevel==expacID)
+                        and (PaneIDs[itemID] or WoWTools_DataMixin.ExpansionLevel==expacID)
                         or not self.Save.onlyMaxExpansion
                     )
                 )
@@ -167,9 +167,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().spells= Save().spells or ClassSpells
 
-            local class= Save().spells[e.Player.class]
+            local class= Save().spells[WoWTools_DataMixin.Player.Class]
             if not class then
-                Save().spells[e.Player.class]= {}
+                Save().spells[WoWTools_DataMixin.Player.Class]= {}
             else
                 WoWTools_Mixin:Load({id=class.item, type='item'})
                 WoWTools_Mixin:Load({id=class.alt, type='spell'})
@@ -185,7 +185,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 tooltip=addName,
                 isMoveButton=true,
                 option=function(category, layout, initializer)
-                    e.AddPanel_Button({
+                    WoWTools_PanelMixin:OnlyButton({
                         category=category,
                         layout=layout,
                         tooltip=addName,

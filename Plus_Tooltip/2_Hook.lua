@@ -20,7 +20,7 @@ local function create_Quest_Label(frame)
         if self.questID then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName..e.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.left)
             GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
             GameTooltip:Show()
             self:SetAlpha(1)
@@ -64,7 +64,7 @@ local function Init()
         local _, name, icon, _, unparsedDescription, _, petType = C_PetBattles.GetAbilityInfoByID(abilityID)
         local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)    
         self.Description:SetText(
-            e.cn(description)
+            WoWTools_TextMixin:CN(description)
             ..'|n|n'..(WoWTools_Mixin.onlyChinese and '技能' or ABILITIES)
             ..abilityID
             ..(icon and '  |T'..icon..':0|t'..icon or '')
@@ -177,8 +177,8 @@ local function Init()
     hooksecurefunc(ScenarioChallengeModeAffixMixin, 'OnEnter', function(self)
         if self.affixID then
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
-            GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
-            GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
+            GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
+            GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
             GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
             WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
@@ -188,8 +188,8 @@ local function Init()
         ScenarioChallengeModeBlock.Affixes[1]:HookScript('OnEnter', function(self)
             if self.affixID then
                 local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
-                GameTooltip:SetText(e.cn(name), 1, 1, 1, 1, true)
-                GameTooltip:AddLine(e.cn(description), nil, nil, nil, true)
+                GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
+                GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
                 GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
                 WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
                 GameTooltip:Show()
@@ -267,7 +267,7 @@ local function Init()
                         acceto=acceto+1
                     end
                 end
-                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), e.GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
+                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
             end
         end
 

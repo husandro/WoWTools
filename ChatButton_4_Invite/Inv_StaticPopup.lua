@@ -58,7 +58,7 @@ local function PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRe
         WoWTools_Mixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
         print(WoWTools_Mixin.addName, 'ChatButton', WoWTools_InviteMixin.addName, text,
             '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
-            (isTank and e.Icon.TANK or '')..(isHealer and e.Icon.HEALER or '')..(isDamage and e.Icon.DAMAGER or ''),
+            (isTank and WoWTools_DataMixin.Icon.TANK or '')..(isHealer and WoWTools_DataMixin.Icon.TANK or '')..(isDamage and WoWTools_DataMixin.Icon.DAMAGER or ''),
             questSessionActive and (WoWTools_Mixin.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
             isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(WoWTools_Mixin.onlyChinese and '%s其它服务器' or INVITATION_XREALM,
             WoWTools_UnitMixin:GetLink(nil, inviterGUID))--转服务器

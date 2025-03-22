@@ -123,8 +123,8 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ColorMixin.addName)
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(
-			e.GetShowHide(self.frame:IsShown()),
-			(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..e.Icon.left
+			WoWTools_TextMixin:GetShowHide(self.frame:IsShown()),
+			(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
 		)
         GameTooltip:Show()
 	end
@@ -143,7 +143,7 @@ local function Init()
 	btn.frame:SetSize(1,1)
 
 	function btn:Settings()
-		self:SetNormalAtlas(Save().hide and e.Icon.icon or 'ui-questtrackerbutton-filter')
+		self:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.icon or 'ui-questtrackerbutton-filter')
 		self.frame:SetShown(not Save().hide)
 		self.frame:SetScale(Save().scale or 1)
 		ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())

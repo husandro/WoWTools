@@ -33,7 +33,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
     local type=UnitCreatureType(unit)--生物类型
     if type and not type:find(COMBAT_ALLY_START_MISSION) then
-        textRight=e.cn(type)
+        textRight=WoWTools_TextMixin:CN(type)
     end
 
     local uiWidgetSet= UnitWidgetSet(unit)
@@ -45,14 +45,14 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     if guid then
         zone, npc = select(5, strsplit("-", guid))--位面,NPCID
         if zone then
-            tooltip:AddDoubleLine(e.Player.L.layer..' '..zone, 'npcID '..npc)
-            e.Player.Layer=zone
+            tooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer..' '..zone, 'npcID '..npc)
+            WoWTools_DataMixin.Player.Layer=zone
         end
         self:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
     end
 
     --NPC 中文名称
-    local data= e.cn(nil, {unit=unit, npcID=npc})
+    local data= WoWTools_TextMixin:CN(nil, {unit=unit, npcID=npc})
     if data then
         textLeft= data[1]
         text2Right= data[2]

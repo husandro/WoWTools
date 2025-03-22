@@ -12,9 +12,9 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--等级
     local levelText
     if lv then
-        if lv<e.Player.level then
+        if lv<WoWTools_DataMixin.Player.Level then
             levelText= '|cnGREEN_FONT_COLOR:['..lv..']|r'
-        elseif lv>e.Player.level then
+        elseif lv>WoWTools_DataMixin.Player.Level then
             levelText= '|cnRED_FONT_COLOR:['..lv..']|r'
         else
             levelText='|cffffffff['..lv..']|r'

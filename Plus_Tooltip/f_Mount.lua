@@ -25,12 +25,12 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         if faction==0 then
             textRight= format(
                 WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
-                format('|A:%s:0:0|a', e.Icon.Horde, WoWTools_Mixin.onlyChinese and '部落' or THE_HORDE)
+                format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.Horde, WoWTools_Mixin.onlyChinese and '部落' or THE_HORDE)
             )
         elseif faction==1 then
             textRight= format(
                 WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION,
-                format('|A:%s:0:0|a', e.Icon.Alliance, WoWTools_Mixin.onlyChinese and '联盟' or THE_ALLIANCE)
+                format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.NONE, WoWTools_Mixin.onlyChinese and '联盟' or THE_ALLIANCE)
             )
         end
     elseif isForDragonriding then
@@ -45,7 +45,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
 
     if source then--显示来源
         tooltip:AddLine(' ')
-        tooltip:AddLine(e.cn(source), nil,nil,nil,true)
+        tooltip:AddLine(WoWTools_TextMixin:CN(source), nil,nil,nil,true)
     end
 
     self:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型

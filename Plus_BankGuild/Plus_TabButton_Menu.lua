@@ -341,7 +341,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem, titl
                 (num==0 and '|cff828282' or '')
                 ..(classID<10 and ' ' or '')
                 ..classID..' '
-                ..e.cn(C_Item.GetItemClassInfo(classID))
+                ..WoWTools_TextMixin:CN(C_Item.GetItemClassInfo(classID))
                 ..' #'..num,
             function(data)
                 if isOut then--提取
@@ -361,7 +361,7 @@ local function Init_SubMenu(self, root, tabID, isOut, numOutorIn, onlyItem, titl
                 (num==0 and '|cff828282' or '')
                 ..(subClassID<10 and ' ' or '')
                 ..subClassID..' '
-                ..e.cn(C_Item.GetItemSubClassInfo(7, subClassID))
+                ..WoWTools_TextMixin:CN(C_Item.GetItemSubClassInfo(7, subClassID))
                 ..' #'..num,
             function(data)
                 if isOut then--提取

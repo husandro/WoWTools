@@ -1,5 +1,5 @@
 local e= select(2, ...)
-if e.Player.class~='HUNTER' then
+if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
 
@@ -144,7 +144,7 @@ local function created_model(btn, setBg)
         else
             self.specTexture:SetTexture(0)
         end
-        self.specText:SetText(e.cn(pet.specialization) or '')
+        self.specText:SetText(WoWTools_TextMixin:CN(pet.specialization) or '')
     end
 
     hooksecurefunc(btn, 'SetPet', btn.set_pet)--StableActivePetButtonTemplateMixin
@@ -156,7 +156,7 @@ local function created_model(btn, setBg)
         end
         if self.petData and not self.locked and self:IsEnabled() then
             WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, WoWTools_DataMixin.Icon.right)
             if self:GetID()==EXTRA_PET_STABLE_SLOT_LUA_INDEX then
                 GameTooltip:AddDoubleLine(
                     format('|cffaad372%s|r', WoWTools_Mixin.onlyChinese and '天赋' or TALENT),

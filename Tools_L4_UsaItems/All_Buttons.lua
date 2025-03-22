@@ -1,5 +1,9 @@
 local e= select(2, ...)
 
+local function Save()
+    return  WoWToolsSave['Tools_UseItems']
+end
+
 local function get_Find(ID, spell)
     if spell then
         if IsSpellKnownOrOverridesKnown(ID) then
@@ -229,10 +233,10 @@ end
 
 local function Init()
     WoWTools_ToolsMixin:AddOptions(function(_, layout)
-        e.AddPanel_Header(layout, WoWTools_UseItemsMixin.addName)
+        WoWTools_PanelMixin:Header(layout, WoWTools_UseItemsMixin.addName)
     end)
 
-    for _, itemID in pairs(WoWTools_UseItemsMixin.Save.item) do
+    for _, itemID in pairs(Save().item) do
         local name ,icon
         if get_Find(itemID) then
             name = C_Item.GetItemNameByID(itemID)
@@ -240,7 +244,7 @@ local function Init()
             if name and icon then
                 local btn= WoWTools_ToolsMixin:CreateButton({
                     name='UsaItems_ItemID_'..itemID,
-                    tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
+                    tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
                 })
                 if btn then
                     btn.itemID=itemID
@@ -254,7 +258,7 @@ local function Init()
         end
    end
 
-    for _, itemID in pairs(WoWTools_UseItemsMixin.Save.equip) do
+    for _, itemID in pairs(Save().equip) do
         local name ,icon
         if C_Item.GetItemCount(itemID)>0 then
             name = C_Item.GetItemNameByID(itemID)
@@ -265,7 +269,7 @@ local function Init()
             if name and icon and slot then
                 local btn= WoWTools_ToolsMixin:CreateButton({
                     name='UsaItems_Equip_ItemID_'..itemID,
-                    tooltip='|T'..icon..':0|t'..e.cn(name, {itemID=itemID, isName=true}),
+                    tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}),
                 })
                 if btn then
                     btn.itemID=itemID
@@ -280,14 +284,14 @@ local function Init()
         end
     end
 
-    for _, spellID in pairs(WoWTools_UseItemsMixin.Save.spell) do
+    for _, spellID in pairs(Save().spell) do
         if IsSpellKnownOrOverridesKnown(spellID) then
             local name= C_Spell.GetSpellName(spellID)
             local icon= C_Spell.GetSpellTexture(spellID)
             if name and icon then
                 local btn= WoWTools_ToolsMixin:CreateButton({
                     name='UsaItems_SpellID_'..spellID,
-                    tooltip='|T'..icon..':0|t'..e.cn(name, {spellID=spellID, isName=true}),
+                    tooltip='|T'..icon..':0|t'..WoWTools_TextMixin:CN(name, {spellID=spellID, isName=true}),
                 })
                 if btn then
                     btn.spellID=spellID

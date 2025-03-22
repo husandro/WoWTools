@@ -4,13 +4,13 @@ if PlayerGetTimerunningSeasonID() then
 end
 
 local id, e = ...
-if e.Player.level<70 then
+if WoWTools_DataMixin.Player.Level<70 then
     return
 end
 
 local Save={
-    disabled= not e.Player.husandro,
-    scale= e.Player.husandro and 0.85 or 1,
+    disabled= not WoWTools_DataMixin.Player.husandro,
+    scale= WoWTools_DataMixin.Player.husandro and 0.85 or 1,
 }
 
 local addName
@@ -45,7 +45,7 @@ local function Init()
         self:ClearAllPoints()
         if Save.point then
             self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
-        elseif e.Player.husandro then
+        elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('TOPRIGHT', PlayerFrame, 'TOPLEFT',0,15)
         else
             self:SetPoint('CENTER', -400, 200)
@@ -78,11 +78,11 @@ local function Init()
             end
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= not self:CanChangeAttribute() and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..e.Icon.mid))
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
         col= not Save.point and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -109,7 +109,7 @@ local function Init()
             if self:CanChangeAttribute() then
                 Save.point=nil
                 self:set_Point()
-                print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end
     end)
@@ -154,7 +154,7 @@ local function Init()
         end
         Button:set_Currency()
     else
-        Button:SetNormalTexture(e.Icon.icon)
+        Button:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
     end
 
     function Button:set_Event()
@@ -286,7 +286,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if not PlayerGetTimerunningSeasonID() then
                 addName= '|T656681:0|t'..(WoWTools_Mixin.onlyChinese and '梦境之种' or 'DormantSeeds')
 
-                e.AddPanel_Check_Button({
+                WoWTools_PanelMixin:Check_Button({
                     checkName= addName,
                     GetValue= function() return not Save.disabled end,
                     SetValue= function()
@@ -294,7 +294,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Button then
                             Button:set_Shown(not Save.disabled)
                             Button:set_button(not Save.disabled)
-                            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         elseif not Save.disabled then
                             if Init() then Init=function()end end
                         end
@@ -305,10 +305,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Button then
                             Button:set_Point()
                         end
-                        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                     end,
                     tooltip=function()
-                        return e.cn(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName
+                        return WoWTools_TextMixin:CN(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName
                     end,
                     layout= WoWTools_OtherMixin.Layout,
                     category= WoWTools_OtherMixin.Category,

@@ -1,10 +1,10 @@
 local id, e= ...
-if e.Player.class~='MAGE' then
+if WoWTools_DataMixin.Player.Class~='MAGE' then
     return
 end
 
 local Tab
-if e.Player.faction=='Horde' then--部落
+if WoWTools_DataMixin.Player.Faction=='Horde' then--部落
     Tab={
         {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
         {spell=3567, spell2=11417, name='奥格瑞玛', luce=true,},
@@ -24,7 +24,7 @@ if e.Player.faction=='Horde' then--部落
         {spell=120145, name='远古传送'},
         {spell=193759, name='守护者圣殿'},
     }
-elseif e.Player.faction=='Alliance' then
+elseif WoWTools_DataMixin.Player.Faction=='Alliance' then
     Tab={
         {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
         {spell=3561, spell2=10059,  name='暴风城', luce=true,},
@@ -66,7 +66,7 @@ end
 
 local function Get_Spell_Label(spellID, text)
     if text then
-        text= e.cn(text, {spellID=spellID, isName=true})
+        text= WoWTools_TextMixin:CN(text, {spellID=spellID, isName=true})
         text=text:gsub('(.+):','')
         text=text:gsub('(.+)：','');
         text=text:gsub('(.+)-','');
@@ -107,8 +107,8 @@ end
 
 
 local function Init_Options(category, layout)
-    e.AddPanel_Header(layout, addName)
-    local initializer=e.AddPanel_Check({
+    WoWTools_PanelMixin:Header(layout, addName)
+    local initializer=WoWTools_PanelMixin:OnlyCheck({
         category= category,
         name= '|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '启用' or ENABLE)..'|r',
         tooltip= addName,
@@ -118,7 +118,7 @@ local function Init_Options(category, layout)
         end
     })
 
-    e.AddPanel_Check({
+    WoWTools_PanelMixin:OnlyCheck({
         category= category,
         name= '|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
         tooltip= addName,
@@ -130,7 +130,7 @@ local function Init_Options(category, layout)
         end
     }, initializer)
 
-    e.AddPanel_Check({
+    WoWTools_PanelMixin:OnlyCheck({
         category= category,
         name= '|cff3fc6ea'..(WoWTools_Mixin.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
         tooltip= addName,
@@ -160,7 +160,7 @@ local function Init()
 
         btn=WoWTools_ToolsMixin:CreateButton({
             name='MagePortal_Spell_'..tab.spell,
-            tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(e.cn(name, {spellID=tab.spell, isName=true}) or tab.spell),
+            tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(WoWTools_TextMixin:CN(name, {spellID=tab.spell, isName=true}) or tab.spell),
             isLeftOnlyLine=function()
                 return Save.isLeft
             end,
@@ -302,11 +302,11 @@ local function Init()
                     GameTooltip:AddLine(' ')
                     GameTooltip:AddDoubleLine(
                         '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
-                        ..(e.cn(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
+                        ..(WoWTools_TextMixin:CN(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
                         ..(WoWTools_CooldownMixin:GetText(self.spellID2, nil) or ''),
                         format('%s%s',
                             IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',WoWTools_Mixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
-                            e.Icon.right)
+                            WoWTools_DataMixin.Icon.right)
                         )
                 end
                 GameTooltip:Show()

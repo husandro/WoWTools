@@ -60,7 +60,7 @@ local function Set_Holiday()--节日, 提示, LFDButton.texture
     if not texturePath and not atlas then
         dungeonID, name= nil,nil
     end
-    WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, LE_LFG_CATEGORY_LFD, e.cn(name), texturePath,  atlas)--设置图标
+    WoWTools_LFDMixin:Set_LFDButton_Data(dungeonID, LE_LFG_CATEGORY_LFD, WoWTools_TextMixin:CN(name), texturePath,  atlas)--设置图标
 end
 
 

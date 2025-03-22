@@ -3,7 +3,7 @@ local e= select(2, ...)
 
 WoWTools_Mixin={
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
-    onlyChinese= WoWTools_Mixin.onlyChinese,
+    onlyChinese= LOCALE_zhCN and true or false
 }
 
 --WoWTools_Mixin.onlyChinese
@@ -18,7 +18,7 @@ end
 
 function WoWTools_Mixin:IsLockFrame(frame)
     local disabled= frame:IsProtected() or issecure()
-    if e.Player.husandro and disabled then
+    if WoWTools_DataMixin.Player.husandro and disabled then
         local name= frame.GetName and frame:GetName()
         print(name, 'IsProtected', frame:IsProtected() , 'issecure', issecure() )
     end
@@ -185,10 +185,10 @@ function WoWTools_Mixin:GetExpansionText(expacID, questID)
         expacID= GetQuestExpansion(questID)
     end
 
-    local text= expacID and e.cn(_G['EXPANSION_NAME'..expacID])
+    local text= expacID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..expacID])
     if text then
         text= (WoWTools_TextureMixin:GetWoWLog(expacID) or '')..' '..text..' '..(expacID+1)
-        if e.ExpansionLevel < expacID then
+        if WoWTools_DataMixin.ExpansionLevel < expacID then
             text='|cff828282'..text..'|r'
         end
         return text
@@ -234,7 +234,7 @@ end
 
 function WoWTools_Mixin:Get_CVar_Tooltips(info)--取得CVar信息 WoWTools_Mixin:Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
-    ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', e.Icon.select) or '')
+    ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '')
     ..(info.value and (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
     ..'('..(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..format('%.1f',C_CVar.GetCVar(info.name))..'|r |r'
     ..(WoWTools_Mixin.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..format('%.1f', C_CVar.GetCVarDefault(info.name))..')|r'
@@ -245,7 +245,7 @@ end
 
 
 function WoWTools_Mixin:PlaySound(soundKitID, setPlayerSound)--播放, 声音 SoundKitConstants.lua WoWTools_Mixin:PlaySound()--播放, 声音
-    if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not e.setPlayerSound) then
+    if not C_CVar.GetCVarBool('Sound_EnableAllSound') or C_CVar.GetCVar('Sound_MasterVolume')=='0' or (not setPlayerSound and not WoWTools_DataMixin.IsSetPlayerSound) then
         return
     end
     local channel
@@ -269,6 +269,18 @@ end
 
 
 
+--添加，Check 和 划条
+function WoWTools_Mixin:GetFormatter1to10(value, minValue, maxValue)
+    if value and minValue and maxValue then
+        return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
+    end
+    return value
+end
+--[[local function GetFormatter1to10(minValue, maxValue)
+    return function(value)
+        return WoWTools_Mixin:GetFormatter1to10(value, minValue, maxValue)
+    end
+end]]
 
 
 

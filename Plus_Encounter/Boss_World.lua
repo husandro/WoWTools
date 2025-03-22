@@ -80,9 +80,9 @@ local function Create_WorldBoss_Button()
                 )
         )
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hideWorldBossText), e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or  NPE_MOVE, e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE, (Save().EncounterJournalFontSize or 12)..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hideWorldBossText), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or  NPE_MOVE, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE, (Save().EncounterJournalFontSize or 12)..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
     btn:SetScript('OnLeave', GameTooltip_Hide)
@@ -118,7 +118,7 @@ local function Create_WorldBoss_Button()
     btn.texture:SetAllPoints()
     btn.texture:SetAlpha(0.5)
     function btn:set_texture()
-        btn.texture:SetAtlas(Save().hideWorldBossText and e.Icon.disabled or e.Icon.icon)
+        btn.texture:SetAtlas(Save().hideWorldBossText and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
     end
 
 

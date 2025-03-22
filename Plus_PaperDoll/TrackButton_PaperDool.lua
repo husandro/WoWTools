@@ -35,7 +35,7 @@ local function Init_Menu(self, root)
         end)
     else
         root:CreateButton(
-            e.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
+            WoWTools_DataMixin.Icon.left..MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0"),
         function()
             WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)
             return MenuResponse.Open
@@ -96,7 +96,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:RestPoint(self, root, Save().Equipment, function()
         Save().Equipment=nil
         TrackButton:set_point()
-        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
     end)
 
 --打开选项界面
@@ -161,7 +161,7 @@ local function Create_Button(index)
                 WoWTools_PaperDollMixin:Settings_Tab1()--修改总装等
             end)
         else
-            print(e.Icon.icon2.. addName, notCan)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, notCan)
         end
     end)
     btn:SetScript("OnEnter", function(self)
@@ -318,7 +318,7 @@ local function Init_TrackButton()--添加装备管理框
         self:ClearAllPoints()
         if Save().Equipment then
             self:SetPoint(Save().Equipment[1], UIParent, Save().Equipment[3], Save().Equipment[4], Save().Equipment[5])
-        elseif e.Player.husandro then
+        elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.FrameTexture, 'TOPRIGHT',-4,-3)
         else
             self:SetPoint('BOTTOMRIGHT', PaperDollItemsFrame, 'TOPRIGHT')
@@ -454,10 +454,10 @@ local function Init_TrackButton()--添加装备管理框
 
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")..e.Icon.left,
-            e.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            MicroButtonTooltipText('角色信息', "TOGGLECHARACTER0")..WoWTools_DataMixin.Icon.left,
+            WoWTools_DataMixin.Icon.right..'|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
-        GameTooltip:AddDoubleLine(' ', 'Alt+'..e.Icon.right..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE))
+        GameTooltip:AddDoubleLine(' ', 'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE))
         GameTooltip:Show()
         EquipButton:SetButtonState('PUSHED')
     end)
@@ -529,7 +529,7 @@ function Init_EquipButton()
 
 
     function EquipButton:set_texture()
-        self:SetNormalAtlas(Save().equipment and 'bags-icon-equipment' or e.Icon.disabled)
+        self:SetNormalAtlas(Save().equipment and 'bags-icon-equipment' or WoWTools_DataMixin.Icon.disabled)
     end
 
     function EquipButton:set_shown()
@@ -556,7 +556,7 @@ function Init_EquipButton()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
         self:SetAlpha(1)
         TrackButton:SetButtonState('PUSHED')

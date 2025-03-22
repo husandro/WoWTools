@@ -13,7 +13,7 @@ local function Set_Faction_Menu(root, factionID)
 
     local sub=root:CreateCheckbox(
         (info.atlas and '|A:'..info.atlas..':0:0|a' or (info.texture and '|T'..info.texture..':0|t') or '')
-        ..e.cn(info.name)
+        ..WoWTools_TextMixin:CN(info.name)
         ..(info.color and '|c'..info.color:GenerateHexColor() or '|cffffffff')
         ..(info.factionStandingtext and ' '..info.factionStandingtext..' ' or '')
         ..'|r'
@@ -59,7 +59,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
     local index=0
 
 --当前版本
-    local tab=C_MajorFactions.GetMajorFactionIDs(e.ExpansionLevel) or {}
+    local tab=C_MajorFactions.GetMajorFactionIDs(WoWTools_DataMixin.ExpansionLevel) or {}
     local find={}
 
 --MajorFactionsConstantsDocumentation.lua
@@ -79,7 +79,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
 
 
 --旧数据
-    for expacID= e.ExpansionLevel-1, 9, -1 do
+    for expacID= WoWTools_DataMixin.ExpansionLevel-1, 9, -1 do
         tab=C_MajorFactions.GetMajorFactionIDs(expacID)
         if tab then
             table.sort(tab, function(a, b) return a>b end)

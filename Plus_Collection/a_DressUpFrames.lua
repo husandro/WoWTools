@@ -98,9 +98,9 @@ local function Set_SetDetails(frame)
         GameTooltip:ClearLines()
         GameTooltip:SetHyperlink(link)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, WoWTools_DataMixin.Icon.left)
         if p.name then
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '搜索' or SEARCH, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '搜索' or SEARCH, WoWTools_DataMixin.Icon.right)
         end
         GameTooltip:Show()
         self:SetAlpha(0.5)

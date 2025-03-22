@@ -49,7 +49,7 @@ local function Init_Menu_Toy(self, root)
         index= index+ 1
 
         icon= '|T'..(icon or 0)..':0|t'
-        name=e.cn(toyName, {itemID=itemID, isName=true})
+        name=WoWTools_TextMixin:CN(toyName, {itemID=itemID, isName=true})
         if name then
             name=name:match('|c........(.-)|r') or name
         else

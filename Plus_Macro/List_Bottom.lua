@@ -549,7 +549,7 @@ local function Init_SpellBook_Menu(self, root)
         end
     end
 --FS
-    if e.Player.class=='MAGE' then
+    if WoWTools_DataMixin.Player.Class=='MAGE' then
         local sub=root:CreateButton(
             WoWTools_Mixin.onlyChinese and '解散水元素' or 'PetDismiss',
         function()
@@ -712,7 +712,7 @@ local function Init_Chat_Menu(root, listTab)
         end
         if label then
             sub=root:CreateButton(
-                e.cn(label),
+                WoWTools_TextMixin:CN(label),
             function(data)
                 if InCombatLockdown() then return end
                 MacroFrameText:Insert(data.label..'\n')
@@ -787,7 +787,7 @@ local function Set_Button_OnEnter(btn)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(e.cn(self.name), self.index)
+        GameTooltip:AddLine(WoWTools_TextMixin:CN(self.name), self.index)
         GameTooltip:Show()
     end)
 end

@@ -70,7 +70,7 @@ local function Init()
 
    
                 frame.PortraitButton:SetSize(20,20)--37
-                frame.PortraitButton:SetNormalAtlas(e.Icon.icon)
+                frame.PortraitButton:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
                 frame.PortraitButton:SetPushedAtlas('bag-border-highlight')
                 frame.PortraitButton:SetHighlightAtlas('bag-border')
                 frame.PortraitButton:SetFrameLevel(btn:GetFrameLevel()+100)

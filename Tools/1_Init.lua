@@ -25,7 +25,7 @@ WoWTools_ToolsMixin.Save={
     --loadCollectionUI=nil,
     --show=false,
     --point
-    isShowBackground=e.Player.husandro,
+    isShowBackground=WoWTools_DataMixin.Player.husandro,
 
 }
 
@@ -45,12 +45,12 @@ local function Init_Panel()
 
 
 
-    local initializer=e.AddPanel_Check_Button({
+    local initializer=WoWTools_PanelMixin:Check_Button({
         checkName= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
@@ -58,14 +58,14 @@ local function Init_Panel()
             if Button then
                 Button:set_point()
             end
-            print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= addName,
         layout= Layout,
         category= Category,
     })
 
-    e.AddPanel_Check({
+    WoWTools_PanelMixin:OnlyCheck({
         category= Category,
         name= WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS,
         tooltip= '|nCollectionsJournal_LoadUI()|n|n'
@@ -81,7 +81,7 @@ local function Init_Panel()
 
 
 
-    e.AddPanel_Button({
+    WoWTools_PanelMixin:OnlyButton({
         category= Category,
         layout=Layout,
         title= WoWTools_ToolsMixin.addName,
@@ -101,7 +101,7 @@ local function Init_Panel()
         tooltip=WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL
     })
 
-    e.AddPanel_Header(Layout, WoWTools_Mixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
+    WoWTools_PanelMixin:Header(Layout, WoWTools_Mixin.onlyChinese and '选项: 需要重新加载' or (OPTIONS..': '..REQUIRES_RELOAD))
 
 
     for _, data in pairs (WoWTools_ToolsMixin.AddList) do
@@ -109,7 +109,7 @@ local function Init_Panel()
         if not data.isPlayerSetupOptions then--用户，自定义设置，选项，法师
 
             if data.isMoveButton then--食物
-                initializer= e.AddPanel_Check({
+                initializer= WoWTools_PanelMixin:OnlyCheck({
                     category= Category,
                     name= data.tooltip,
                     tooltip= data.name,
@@ -121,7 +121,7 @@ local function Init_Panel()
 
             else
 
-                initializer= e.AddPanel_Check_DropDown({
+                initializer= WoWTools_PanelMixin:CheckMenu({
                     category=Category,
                     layout=Layout,
                     name=data.tooltip,
@@ -233,14 +233,14 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)
     end)
 
-    sub2=sub:CreateCheckbox('|A:'..e.Icon.icon..':0:0|a'..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
+    sub2=sub:CreateCheckbox('|A:'..WoWTools_DataMixin.Icon.icon..':0:0|a'..(WoWTools_Mixin.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
         return Save().showIcon
     end, function()
         Save().showIcon= not Save().showIcon and true or nil
         self:set_icon()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.GetShowHide(nil, true))
+        tooltip:AddLine(WoWTools_TextMixin:GetShowHide(nil, true))
     end)
 
 --显示背景
@@ -349,7 +349,7 @@ local function Init()
             local p=Save().point
             if Save().point then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-            elseif e.Player.husandro then
+            elseif WoWTools_DataMixin.Player.husandro then
                 self:SetPoint('BOTTOMRIGHT', -420, 10)
             else
                 self:SetPoint('CENTER', 300, 100)
@@ -372,11 +372,11 @@ local function Init()
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..e.GetShowHide(nil, true), e.Icon.left)
+        GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..e.Icon.mid)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE or SLASH_TEXTTOSPEECH_MENU, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -504,7 +504,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Button= WoWTools_ToolsMixin:Init()
 
-            Category, Layout= e.AddPanel_Sub_Category({
+            Category, Layout= WoWTools_PanelMixin:AddSubCategory({
                 name=addName,
                 disabled= not Button,
             })

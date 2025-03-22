@@ -102,16 +102,16 @@ local function Init()
 
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '专精' or TALENT_FRAME_TAB_LABEL_SPEC)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '天赋' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
-            ..e.Icon.right
+            ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '法术书' or TALENT_FRAME_TAB_LABEL_SPELLBOOK)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 

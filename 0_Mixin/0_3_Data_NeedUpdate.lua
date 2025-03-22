@@ -1,10 +1,8 @@
-local e= select(2, ...)
+
 
 --z_ItemInteractionFrame.lua
 --套装，转换，货币, 不指定, 值可能是nil
---e.SetItemCurrencyID=nil
-
-
+--WoWTools_DataMixin.CurrencyUpdateItemLevelID=nil
 
 
 
@@ -12,7 +10,7 @@ local e= select(2, ...)
 
 
 --WoWTools_LabelMixin:ItemCurrencyTips
-e.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
+WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提示
     {type='currency', id=3008},--神勇石
 
     {type='currency', id=3107},--风化安德麦纹章
@@ -20,7 +18,7 @@ e.ItemCurrencyTips= {---物品升级界面，挑战界面，物品，货币提�
     {type='currency', id=3113},--符文安德麦纹章
     {type='currency', id=3114},--鎏金安德麦纹章
 
-    {type='currency', id=e.SetItemCurrencyID, show=true},--套装，转换，货币
+    {type='currency', id=WoWTools_DataMixin.CurrencyUpdateItemLevelID, show=true},--套装，转换，货币
     {type='currency', id=1602, line=true},--征服点数
     {type='currency', id=1191},--勇气点数
 }
@@ -41,7 +39,7 @@ local function Level_Text(text)
     }
     return tab[text] or text
 end
-function e.GetChallengesWeekItemLevel(level, limitMaxKeyLevel)--LimitMaxKeyLevel --限制，显示等级,不然，数据会出错
+function WoWTools_DataMixin.GetChallengesWeekItemLevel(level, limitMaxKeyLevel)--LimitMaxKeyLevel --限制，显示等级,不然，数据会出错
     level= min(limitMaxKeyLevel or 20, level)
     level= max(2, level)
     local tab={
@@ -78,7 +76,7 @@ https://wago.io/meD8JMW3C
 C_MythicPlus.GetCurrentSeason()
 https://wago.tools/db2/MapChallengeMode?locale=zhCN
 ]]
-e.ChallengesSpellTabs={
+WoWTools_DataMixin.ChallengesSpellTabs={
     [399]= {spell=393256, ins=1202, name='红玉', spellName='利爪防御者之路', spellDes='传送到|cff00ccff红玉新生法池|r的入口。'},--传送到红玉新生法池的入口。 利爪防御者之路
     [400]= {spell=393262, ins=1198, name='诺库德', spellName='啸风平原之路', spellDes='|cff00ccff传送至诺库德阻击战|r的入口。'},--传送至诺库德阻击战的入口。 啸风平原之路
     [401]= {spell=393279, ins=1203, name='魔馆', spellName='奥秘之路',  spellDes='传送至|cff00ccff碧蓝魔馆|r的入口。'},--传送至碧蓝魔馆的入口。 奥秘之路
@@ -160,8 +158,8 @@ e.ChallengesSpellTabs={
 }
 
 --双法术，
-if e.Player.faction=='Alliance' then
-    e.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
+if WoWTools_DataMixin.Player.Faction=='Alliance' then
+    WoWTools_DataMixin.ChallengesSpellTabs[353].spell= 445418 --围攻伯拉勒斯
 end
 
 

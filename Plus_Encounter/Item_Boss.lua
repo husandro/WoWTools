@@ -37,7 +37,7 @@ local function Init(btn)
                     if icon2 and classFile then
                         specA = specA..((class and class~=classFile) and '  ' or '')..'|T'..icon2..':0|t'
                         class=classFile
-                        tips= tips..'|n|T'..icon2..':0|t'..e.cn(name)
+                        tips= tips..'|n|T'..icon2..':0|t'..WoWTools_TextMixin:CN(name)
                     end
                 end
                 if specA~='' then
@@ -71,7 +71,7 @@ local function Init(btn)
             if WoW_Tools_Chinese_CN then--汉化
 
                 classText= string.gsub(classText..', ', '(.-), ', function(a)
-                    local b= e.cn(a)
+                    local b= WoWTools_TextMixin:CN(a)
                     if b then
                         return b..' '
                     end

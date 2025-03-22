@@ -1,8 +1,8 @@
 local id, e= ...
 WoWTools_CursorMixin={
 Save={
-    disabled= not e.Player.husandro,
-    disabledGCD= not e.Player.husandro,
+    disabled= not WoWTools_DataMixin.Player.husandro,
+    disabledGCD= not WoWTools_DataMixin.Player.husandro,
     color={r=0, g=1, b= 0, a=1},
     usrClassColor=true,
     size=32,--8 64
@@ -113,13 +113,13 @@ local function Init_Panel()
     local frame= CreateFrame('Frame')
     WoWTools_CursorMixin.OptionsFrame= frame
 
-    e.AddPanel_Sub_Category({
+    WoWTools_PanelMixin:AddSubCategory({
         name= addName,
         frame= frame,
         disabled= Save().disabled and  Save().disabledGCD,
     })
 
-    e.ReloadPanel({
+    WoWTools_PanelMixin:ReloadButton({
         panel=frame,
         addName=addName,
         restTips=true,

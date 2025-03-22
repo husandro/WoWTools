@@ -3,8 +3,8 @@ local id, e = ...
 WoWTools_HolidayMixin={
     Save={
         onGoing=true,--仅限: 正在活动
-        --disabled= not e.Player.husandro
-        --left=e.Player.husandro,--内容靠左
+        --disabled= not WoWTools_DataMixin.Player.husandro
+        --left=WoWTools_DataMixin.Player.husandro,--内容靠左
         --toTopTrack=true,--向上
         --showDate= true,--时间
     },
@@ -53,12 +53,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local addName= '|A:GarrisonTroops-Health:0:0|a'..(WoWTools_Mixin.onlyChinese and '节日' or CALENDAR_FILTER_HOLIDAYS)
             WoWTools_HolidayMixin.addName= addName
 
-            e.AddPanel_Check_Button({
+            WoWTools_PanelMixin:Check_Button({
                 checkName= addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end,
                 buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -66,7 +66,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if WoWTools_HolidayMixin.TrackButton then
                         WoWTools_HolidayMixin.TrackButton:set_point()
                     end
-                    print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
                 end,
                 layout= nil,
                 category= nil,

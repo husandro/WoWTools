@@ -34,7 +34,7 @@ local function get_InviteButton_Frame(index)
         end
 
 
-        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, atlas=e.Icon.select})
+        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, atlas=WoWTools_DataMixin.Icon.select})
         frame.InviteButton:SetAllPoints()
         --frame.InviteButton:SetPoint('TOPLEFT')
         frame.InviteButton.Size=20
@@ -215,7 +215,7 @@ local function Set_Queue_Status()--小眼睛, 信息
         if status and mapName then
             pvp= pvp and pvp..'|n' or ''
             pvp= pvp..'   '..i..') '
-                ..e.cn(mapName)..(queueType and ' ('..queueType..')')
+                ..WoWTools_TextMixin:CN(mapName)..(queueType and ' ('..queueType..')')
                 ..(status~='queued' and ' '..get_Status_Text(status) or '')
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
                 ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(WoWTools_Mixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
@@ -302,7 +302,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                     numMembers= ' |A:socialqueuing-icon-group:0:0|a'..info.numMembers--..(WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
                     local friendly
                     if info.numBNetFriends and info.numBNetFriends>0 then
-                        friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..e.Icon.wow2
+                        friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..WoWTools_DataMixin.Icon.wow2
                     end
                     if info.numCharFriends and info.numCharFriends>0 then
                         friendly = (friendly and friendly..' ' or '')..info.numCharFriends..'|A:recruitafriend_V2_tab_icon:0:0|a'
@@ -316,10 +316,10 @@ local function Set_Queue_Status()--小眼睛, 信息
                 end
 
                 local factionText--指定，派系 info.crossFactionListing
-                if info.leaderFactionGroup==0 and e.Player.faction=='Alliance' then
-                    factionText= format('|A:%s:0:0|a', e.Icon.Horde)
-                elseif info.leaderFactionGroup==1 and e.Player.faction=='Horde' then
-                    factionText= format('|A:%s:0:0|a', e.Icon.Alliance)
+                if info.leaderFactionGroup==0 and WoWTools_DataMixin.Player.Faction=='Alliance' then
+                    factionText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.Horde)
+                elseif info.leaderFactionGroup==1 and WoWTools_DataMixin.Player.Faction=='Horde' then
+                    factionText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.NONE)
                 end
 
                 local roleText--职责
@@ -328,8 +328,8 @@ local function Set_Queue_Status()--小眼睛, 信息
                 end
 
                 lfg= lfg and lfg..'\n   ' or '   '
-                lfg= lfg..index..') '..e.cn(info.name)
-                    ..' '.. (e.cn(activityName) or '')
+                lfg= lfg..index..') '..WoWTools_TextMixin:CN(info.name)
+                    ..' '.. (WoWTools_TextMixin:CN(activityName) or '')
                     ..(numMembers or '')
                     ..(info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and ' '..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true) or '')
                     ..(pvpIcon or '')
@@ -465,7 +465,7 @@ local function Set_Queue_Status()--小眼睛, 信息
         end
         if list then
             text= (text and text..'|n' or '')
-            ..(LFGListUtil_IsEntryEmpowered() and e.Icon.player or '|A:auctionhouse-icon-favorite:0:0|a')
+            ..(LFGListUtil_IsEntryEmpowered() and WoWTools_DataMixin.Icon.Player or '|A:auctionhouse-icon-favorite:0:0|a')
             ..(WoWTools_Mixin.onlyChinese and '招募' or RAF_RECRUITMENT)..(info.autoAccept and ' ('..(WoWTools_Mixin.onlyChinese and '自动加入' or AUTO_JOIN)..')' or '')
             ..'|n'..list
         end
@@ -576,8 +576,8 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_LFDMixin.addName, WoWTools_Mixin.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 

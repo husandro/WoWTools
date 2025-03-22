@@ -40,7 +40,7 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         function framGameTooltipButton:set_tooltips()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '声音提示' or  SOUND, e.GetEnabeleDisable(Save().ArcheologySound))
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '声音提示' or  SOUND, WoWTools_TextMixin:GetEnabeleDisable(Save().ArcheologySound))
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
             GameTooltip:Show()
         end

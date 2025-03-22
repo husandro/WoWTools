@@ -147,7 +147,7 @@ local function Init_Menu(self, root)
     end
     sub=root:CreateCheckbox(
         (WoWTools_Mixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
-        ..e.Icon.mid
+        ..WoWTools_DataMixin.Icon.mid
         ..((num+num2)==0 and '|cff9e9e9e' or '')
         ..(num..'/'..num2),
     function()
@@ -203,7 +203,7 @@ local function Init_Menu(self, root)
 --列表，禁用NPC, 闲话,任务, 选项
     for npcID, name in pairs(Save().NPC) do--npcID 是字符
         sub2=sub:CreateCheckbox(
-            e.cn(nil, {npcID=npcID, isName=true}) or name~=true and name or npcID,
+            WoWTools_TextMixin:CN(nil, {npcID=npcID, isName=true}) or name~=true and name or npcID,
         function(data)
             return Save().NPC[data.npc]
         end, function(data)
@@ -242,7 +242,7 @@ local function Init_Menu(self, root)
 --列表，PlayerChoiceFrame
     for spellID, rarity in pairs(Save().choice) do
         local hex= select(4, C_Item.GetItemQualityColor(rarity))
-        local quality=(hex and '|c'..hex or '')..(e.cn(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
+        local quality=(hex and '|c'..hex or '')..(WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..rarity..'_DESC']) or rarity)
 
         sub2=sub:CreateCheckbox(
             WoWTools_SpellMixin:GetName(spellID)
@@ -330,7 +330,7 @@ local function Init_Menu(self, root)
     for _, movieEntry in pairs(MOVIE_LIST or WoWTools_GossipMixin:Get_MoveData()) do
         for _, movieID in pairs(movieEntry.movieIDs) do
             sub3=sub2:CreateButton(
-                e.cn(movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion]) or movieID,
+                WoWTools_TextMixin:CN(movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion]) or movieID,
             function(data)
                 MovieFrame_PlayMovie(MovieFrame, data.movieID)
             end, {movieID=movieID})

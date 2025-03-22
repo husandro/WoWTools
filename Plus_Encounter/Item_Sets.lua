@@ -19,7 +19,7 @@ local function Setings(frame)
             btn.collection= btn:CreateTexture()
             btn.collection:SetSize(10,10)
             btn.collection:SetPoint('TOP', btn, 'BOTTOM',0,2)
-            btn.collection:SetAtlas(e.Icon.select)
+            btn.collection:SetAtlas(WoWTools_DataMixin.Icon.select)
         end
         if btn.collection then
             btn.collection:SetShown(has)
@@ -31,7 +31,7 @@ local function Setings(frame)
     end
     if all>0 then
         if coll==all then
-            text= format('|A:%s:0:0|a', e.Icon.select)
+            text= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
         else
             text= format('%s%d/%d', coll==0 and '|cff9e9e9e' or '', coll, all)
         end

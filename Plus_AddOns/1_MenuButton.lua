@@ -212,7 +212,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
+        GameTooltip:AddDoubleLine(' ', (WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 

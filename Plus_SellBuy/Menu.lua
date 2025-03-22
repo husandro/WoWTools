@@ -174,15 +174,15 @@ local function BuyItem_Menu(_, root)
 
     --列表，购买
     num=0
-    for itemID, numItem in pairs(Save().buyItems[e.Player.guid] or {}) do
+    for itemID, numItem in pairs(Save().buyItems[WoWTools_DataMixin.Player.GUID] or {}) do
         num=num+1
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2=sub:CreateCheckbox(
             '|cnGREEN_FONT_COLOR:'..numItem..'|r '..itemName,
         function(data)
-            return Save().buyItems[e.Player.guid][data.itemID]
+            return Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]
         end, function(data)
-            Save().buyItems[e.Player.guid][data.itemID]=not Save().buyItems[e.Player.guid][data.itemID] and true or nil
+            Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]=not Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID] and true or nil
             WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
             local btn= _G['WoWTools_BuybackButton']
             if btn then
@@ -197,7 +197,7 @@ local function BuyItem_Menu(_, root)
         sub:CreateButton(
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL),
         function()
-            Save().buyItems[e.Player.guid]={}
+            Save().buyItems[WoWTools_DataMixin.Player.GUID]={}
             WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
             local btn= _G['WoWTools_BuybackButton']
             if btn then
@@ -376,7 +376,7 @@ local function Init_Menu(self, root)
         return not Save().notPlus
     end, function()
         Save().notPlus = not Save().notPlus and true or nil
-        print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
 
@@ -411,10 +411,10 @@ local function Init_Menu(self, root)
         return not Save().notAutoLootPlus
     end, function()
         Save().notAutoLootPlus= not Save().notAutoLootPlus and true or nil
-        print(e.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, e.GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
         tooltip:AddLine(' ')
         tooltip:AddLine(
             WoWTools_Mixin.onlyChinese and '拾取窗口 Shift: 禁用'

@@ -26,7 +26,7 @@ local function set_vignetteGUID(tooltip, vignetteGUID)
     local waitingForData, titleAdded = false, false
 
     if vignetteInfo.type == Enum.VignetteType.Normal or vignetteInfo.type == Enum.VignetteType.Treasure then
-        GameTooltip_SetTitle(tooltip, e.cn(vignetteInfo.name))
+        GameTooltip_SetTitle(tooltip, WoWTools_TextMixin:CN(vignetteInfo.name))
         titleAdded = true
 
     elseif vignetteInfo.type == Enum.VignetteType.PvPBounty then
@@ -37,8 +37,8 @@ local function set_vignetteGUID(tooltip, vignetteGUID)
         if race and class and name then
             local classInfo = C_CreatureInfo.GetClassInfo(class) or {}
             local factionInfo = C_CreatureInfo.GetFactionInfo(race) or {}
-            GameTooltip_SetTitle(tooltip, e.cn(name), GetClassColorObj(classInfo.classFile))
-            GameTooltip_AddColoredLine(tooltip, e.cn(factionInfo.name), GetFactionColor(factionInfo.groupTag))
+            GameTooltip_SetTitle(tooltip, WoWTools_TextMixin:CN(name), GetClassColorObj(classInfo.classFile))
+            GameTooltip_AddColoredLine(tooltip, WoWTools_TextMixin:CN(factionInfo.name), GetFactionColor(factionInfo.groupTag))
             if vignetteInfo.rewardQuestID then
                 GameTooltip_AddQuestRewardsToTooltip(tooltip, vignetteInfo.rewardQuestID, TOOLTIP_QUEST_REWARDS_STYLE_PVP_BOUNTY)
             end
@@ -48,7 +48,7 @@ local function set_vignetteGUID(tooltip, vignetteGUID)
 
     elseif vignetteInfo.type == Enum.VignetteType.Torghast then
         SharedTooltip_SetBackdropStyle(tooltip, GAME_TOOLTIP_BACKDROP_STYLE_RUNEFORGE_LEGENDARY)
-        GameTooltip_SetTitle(tooltip, e.cn(vignetteInfo.name))
+        GameTooltip_SetTitle(tooltip, WoWTools_TextMixin:CN(vignetteInfo.name))
         titleAdded = true
     end
 
@@ -87,12 +87,12 @@ local function set_areaPoiID(tooltip, uiMapID, areaPoiID)
         local verticalPadding = nil
 
         if hasName then
-            GameTooltip_SetTitle(tooltip, e.cn(poiInfo.name), HIGHLIGHT_FONT_COLOR)
+            GameTooltip_SetTitle(tooltip, WoWTools_TextMixin:CN(poiInfo.name), HIGHLIGHT_FONT_COLOR)
             addedTooltipLine = true
         end
 
         if hasDescription then
-            GameTooltip_AddNormalLine(tooltip, e.cn(poiInfo.description))
+            GameTooltip_AddNormalLine(tooltip, WoWTools_TextMixin:CN(poiInfo.description))
             addedTooltipLine = true
         end
 
@@ -166,10 +166,10 @@ local function Set_Specialization(tooltip, specIndex, specID)
 
     tooltip:AddDoubleLine(
         (specID or '')..'|T'..(icon or 0)..':0|t'
-        ..(e.cn(name) or ''),
+        ..(WoWTools_TextMixin:CN(name) or ''),
 
         (stat[primaryStat] or stat[3])
-        ..'|A:'..(roleIcon or '')..':0:0|a'..(e.cn(_G[role] or role) or '')
+        ..'|A:'..(roleIcon or '')..':0:0|a'..(WoWTools_TextMixin:CN(_G[role] or role) or '')
     )
 
     tooltip:AddLine(' ')
@@ -179,7 +179,7 @@ local function Set_Specialization(tooltip, specIndex, specID)
     )
 
     tooltip:AddLine(' ')
-    tooltip:AddLine(e.cn(description), nil, nil, nil, true)
+    tooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
 end
 
 

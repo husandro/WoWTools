@@ -55,11 +55,11 @@ local function Create_Button()
         WoWTools_SetTooltipMixin:Frame(self, nil, {
             itemLink=itemLink,
             tooltip= self.isPet and
-                (WoWTools_Mixin.onlyChinese and '开始拍卖' or CREATE_AUCTION).. e.Icon.left..' '..e.Icon.right..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
+                (WoWTools_Mixin.onlyChinese and '开始拍卖' or CREATE_AUCTION).. WoWTools_DataMixin.Icon.left..' '..WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
                 or
                 function(tooltip)
                     tooltip:AddLine(' ')
-                    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '开始拍卖' or CREATE_AUCTION..e.Icon.left, e.Icon.right..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE))
+                    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '开始拍卖' or CREATE_AUCTION..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE))
                 end
         })
         local itemName
@@ -230,7 +230,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AuctionHouseMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
     end
 
     function AuctionHouseButton:Settings()

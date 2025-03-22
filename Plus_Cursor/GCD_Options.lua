@@ -15,7 +15,7 @@ local function Init(Frame)
     if Frame.sliderSize or Save().disabledGCD then
         return
     end
-    Frame.sliderSize = e.CSlider(Frame, {min=8, max=128, value=Save().gcdSize, setp=1,
+    Frame.sliderSize = WoWTools_PanelMixin:Slider(Frame, {min=8, max=128, value=Save().gcdSize, setp=1,
     text=WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,
     func=function(self, value)
         value= math.floor(value)
@@ -26,7 +26,7 @@ local function Init(Frame)
     end})
     Frame.sliderSize:SetPoint("TOPLEFT", Frame.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
-    local alphaSlider = e.CSlider(Frame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
+    local alphaSlider = WoWTools_PanelMixin:Slider(Frame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
     text=WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
     func=function(self, value)
         value= tonumber(format('%.1f', value))
@@ -37,7 +37,7 @@ local function Init(Frame)
     end})
     alphaSlider:SetPoint("TOPLEFT", Frame.sliderSize, 'BOTTOMLEFT', 0, -20)
 
-    local sliderX = e.CSlider(Frame, {min=-100, max=100, value=Save().gcdX , setp=1,
+    local sliderX = WoWTools_PanelMixin:Slider(Frame, {min=-100, max=100, value=Save().gcdX , setp=1,
     text='X',
     func=function(self, value)
         value= math.floor(value)
@@ -48,7 +48,7 @@ local function Init(Frame)
     end})
     sliderX:SetPoint("TOPLEFT", alphaSlider, 'BOTTOMLEFT', 0, -20)
 
-    local sliderY = e.CSlider(Frame, {min=-100, max=100, value=Save().gcdY, setp=1, color=true,
+    local sliderY = WoWTools_PanelMixin:Slider(Frame, {min=-100, max=100, value=Save().gcdY, setp=1, color=true,
     text='Y',
     func=function(self, value)
         value= math.floor(value)
@@ -140,7 +140,7 @@ local function Init(Frame)
         local icon = texture and '|T'..texture..':0|t'
         table.remove(Save().GCDTexture, Save().gcdTextureIndex)
         Save().gcdTextureIndex=1
-        print(e.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, icon, texture)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CursorMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, icon, texture)
         set_panel_Texture()
         WoWTools_CursorMixin:ShowGCDTips()--显示GCD图片
         addColorEdit:SetText(texture or WoWTools_CursorMixin.DefaultGCDTexture)
@@ -172,7 +172,7 @@ local function Init(Frame)
 
     --添加按钮
     addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
-    addColorButton:SetNormalAtlas(e.Icon.select)
+    addColorButton:SetNormalAtlas(WoWTools_DataMixin.Icon.select)
     addColorButton:SetScript('OnClick', add_Color)
     addColorButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

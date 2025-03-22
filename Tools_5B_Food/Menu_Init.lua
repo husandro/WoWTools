@@ -17,7 +17,7 @@ local function AltSpell_Menu(self, root)
 
     --法术书
     local sub,sub2, sub3, spellSub, num
-    local spells= Save().spells[e.Player.class]
+    local spells= Save().spells[WoWTools_DataMixin.Player.Class]
     --local item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
     local keyTab={
         {type='Alt', spellID=spells.alt},
@@ -33,10 +33,10 @@ local function AltSpell_Menu(self, root)
             ..(WoWTools_SpellMixin:GetName(tab.spellID) or ''),--取得法术，名称
 
         function(data)
-            return Save().spells[e.Player.class][data.type]==data.spellID and data.spellID~=nil
+            return Save().spells[WoWTools_DataMixin.Player.Class][data.type]==data.spellID and data.spellID~=nil
 
         end, function(data)
-            Save().spells[e.Player.class][data.type]= not Save().spells[e.Player.class][data.type] and data.spellID or nil
+            Save().spells[WoWTools_DataMixin.Player.Class][data.type]= not Save().spells[WoWTools_DataMixin.Player.Class][data.type] and data.spellID or nil
             WoWTools_FoodMixin:Set_AltSpell()
 
         end, {type=string.lower(tab.type), spellID=tab.spellID})
@@ -47,7 +47,7 @@ local function AltSpell_Menu(self, root)
             spellSub= C_SpellBook.GetSpellBookSkillLineInfo(i)--shouIdHide name numSpellBookItems iconID isGuild itemIndexOffset
             if spellSub and spellSub.name and not spellSub.shouIdHide then
                 sub2=sub:CreateButton(
-                    '|T'..(spellSub.iconID or 0)..':0|t'..e.cn(spellSub.name),
+                    '|T'..(spellSub.iconID or 0)..':0|t'..WoWTools_TextMixin:CN(spellSub.name),
                 function()
                     return MenuResponse.Open
                 end)
@@ -64,10 +64,10 @@ local function AltSpell_Menu(self, root)
                                 WoWTools_SpellMixin:GetName(spellData.spellID),
 
                             function(data)
-                                return Save().spells[e.Player.class][data.type]==data.spellID
+                                return Save().spells[WoWTools_DataMixin.Player.Class][data.type]==data.spellID
 
                             end, function(data)
-                                Save().spells[e.Player.class][data.type]= Save().spells[e.Player.class][data.type]~= data.spellID and data.spellID or nil
+                                Save().spells[WoWTools_DataMixin.Player.Class][data.type]= Save().spells[WoWTools_DataMixin.Player.Class][data.type]~= data.spellID and data.spellID or nil
                                 WoWTools_FoodMixin:Set_AltSpell()
 
                             end, {type=string.lower(tab.type), spellID=spellData.spellID})
@@ -152,7 +152,7 @@ local function Check_All_Menu(_, root, setClassID)
         return MenuResponse.Refresh
     end, {classID=setClassID})
     if not setClassID then
-        sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+        sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left) end)
     end
 
     --撤选所有
@@ -168,7 +168,7 @@ local function Check_All_Menu(_, root, setClassID)
         return MenuResponse.Refresh
     end, {classID=setClassID})
     if not setClassID then
-        sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left) end)
+        sub:SetTooltip(function(tooltip) tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left) end)
     end
 end
 
@@ -218,7 +218,7 @@ local function Init_Menu(self, root)
         (Save().autoWho and '|cnGREEN_FONT_COLOR:' or '')
         ..'|A:common-icon-zoomin:0:0|a'
         ..(WoWTools_Mixin.onlyChinese and '查找' or WHO)
-        ..e.Icon.mid,
+        ..WoWTools_DataMixin.Icon.mid,
     function()
         WoWTools_FoodMixin:Check_Items(true)
     end)
@@ -228,7 +228,7 @@ local function Init_Menu(self, root)
     for classID=0, 20 do
         class= C_Item.GetItemClassInfo(classID)
         if class then
-            sub2:CreateCheckbox(classID..' '..e.cn(class)..' '..(items[classID] and items[classID].num or ''), function(data)
+            sub2:CreateCheckbox(classID..' '..WoWTools_TextMixin:CN(class)..' '..(items[classID] and items[classID].num or ''), function(data)
                 return Save().DisableClassID[data.classID]
             end, function(data)
                 Save().DisableClassID[data.classID]= not Save().DisableClassID[data.classID] and true or nil
@@ -290,7 +290,7 @@ local function Init_Menu(self, root)
     end)
 
 --仅当前版本物品
-    if not e.Is_Timerunning then--时光
+    if not WoWTools_DataMixin.Is_Timerunning then--时光
         sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)), function()
             return Save().onlyMaxExpansion
         end, function()
@@ -412,7 +412,7 @@ local function Init_Menu(self, root)
                     find=true
                 end
 
-                sub=root:CreateCheckbox(classID..' '..e.cn(class)..' '..(items[classID] and items[classID].num or ''), function(data)
+                sub=root:CreateCheckbox(classID..' '..WoWTools_TextMixin:CN(class)..' '..(items[classID] and items[classID].num or ''), function(data)
                     return Save().class[data.classID]
                 end, function(data)
                     if Save().class[data.classID] then
@@ -442,7 +442,7 @@ local function Init_Menu(self, root)
                     subClass=C_Item.GetItemSubClassInfo(classID, subClassID)
                     if subClass and subClass~='' then
                         sub:CreateCheckbox(
-                            subClassID..' '..e.cn(subClass)..' '
+                            subClassID..' '..WoWTools_TextMixin:CN(subClass)..' '
                             ..(items[classID] and items[classID][subClassID] or ''),
                         function(data)
                             return Save().class[data.classID] and Save().class[data.classID][data.subClassID]
@@ -469,7 +469,7 @@ local function Init_Menu(self, root)
 
     Check_All_Menu(self, root, nil)
 
-    if e.Player.husandro then
+    if WoWTools_DataMixin.Player.husandro then
         AltSpell_Menu(self, root)
     end
 end

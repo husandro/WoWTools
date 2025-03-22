@@ -1,5 +1,7 @@
 local e= select(2, ...)
+
 WoWTools_ItemStatsMixin={}
+
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 
 
@@ -14,7 +16,7 @@ function WoWTools_ItemStatsMixin:Gem(frame, itemLink)--显示, 宝石, 属性
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo
-        if e.Is_Timerunning then
+        if WoWTools_DataMixin.Is_Timerunning then
             dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, index=3})--物品提示，信息
         else
             dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
@@ -24,7 +26,7 @@ function WoWTools_ItemStatsMixin:Gem(frame, itemLink)--显示, 宝石, 属性
         if text then
             text= string.lower(text)
 
-            for name, name2 in pairs(e.StausText) do
+            for name, name2 in pairs(WoWTools_DataMixin.StausText) do
                 --print(string.lower(name), name2, text:find(string.lower(name)), text)
                 if text:find(string.lower(name)) then
                     if not leftText then
@@ -86,35 +88,35 @@ function WoWTools_ItemStatsMixin:GetItem(link)--取得，物品，次属性，�
     local num, tab= 0, {}
     local info= C_Item.GetItemStats(link) or {}
     if info['ITEM_MOD_CRIT_RATING_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_CRIT_RATING_SHORT], value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CRIT_RATING_SHORT], value=info['ITEM_MOD_CRIT_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_HASTE_RATING_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_HASTE_RATING_SHORT], value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_HASTE_RATING_SHORT], value=info['ITEM_MOD_HASTE_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_MASTERY_RATING_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_MASTERY_RATING_SHORT], value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_MASTERY_RATING_SHORT], value=info['ITEM_MOD_MASTERY_RATING_SHORT'] or 1, index=1})
         num= num +1
     end
     if info['ITEM_MOD_VERSATILITY'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_VERSATILITY], value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_VERSATILITY], value=info['ITEM_MOD_VERSATILITY'] or 1, index=1})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_AVOIDANCE_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_CR_AVOIDANCE_SHORT], value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CR_AVOIDANCE_SHORT], value=info['ITEM_MOD_CR_AVOIDANCE_SHORT'], index=2})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_LIFESTEAL_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_CR_LIFESTEAL_SHORT], value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CR_LIFESTEAL_SHORT], value=info['ITEM_MOD_CR_LIFESTEAL_SHORT'] or 1, index=2})
         num= num +1
     end
     if num<4 and info['ITEM_MOD_CR_SPEED_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_CR_SPEED_SHORT], value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_CR_SPEED_SHORT], value=info['ITEM_MOD_CR_SPEED_SHORT'] or 1, index=2})
         num= num +1
     end
     --[[if num<4 and info['ITEM_MOD_EXTRA_ARMOR_SHORT'] then
-        table.insert(tab, {text=e.StausText[ITEM_MOD_EXTRA_ARMOR_SHORT], value=info['ITEM_MOD_EXTRA_ARMOR_SHORT'] or 1, index=2})
+        table.insert(tab, {text=WoWTools_DataMixin.StausText[ITEM_MOD_EXTRA_ARMOR_SHORT], value=info['ITEM_MOD_EXTRA_ARMOR_SHORT'] or 1, index=2})
         num= num +1
     end]]
     table.sort(tab, function(a,b) return a.value>b.value and a.index== b.index end)

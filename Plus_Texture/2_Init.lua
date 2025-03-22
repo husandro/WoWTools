@@ -9,10 +9,10 @@ WoWTools_TextureMixin.Save={
     chatBubbleAlpha= 0.5,--聊天泡泡
     chatBubbleSacal= 0.85,
 
-    classPowerNum= e.Player.husandro,--职业，显示数字
+    classPowerNum= WoWTools_DataMixin.Player.husandro,--职业，显示数字
     classPowerNumSize= 12,
 
-    --disabledMainMenu= not e.Player.husandro, --主菜单，颜色，透明度
+    --disabledMainMenu= not WoWTools_DataMixin.Player.husandro, --主菜单，颜色，透明度
     --disabledHelpTip=true,--隐藏所有教程
 
     HideTalentsBG=true,--隐藏，天赋，背景

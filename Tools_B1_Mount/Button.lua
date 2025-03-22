@@ -5,7 +5,7 @@ local function Save()
 end
 
 local function set_ShiJI()--召唤司机 代驾型机械路霸
-    ShiJI= e.Player.faction=='Horde' and 179244 or (e.Player.faction=='Alliance' and 179245) or nil--"Alliance", "Horde", "Neutral"
+    ShiJI= WoWTools_DataMixin.Player.Faction=='Horde' and 179244 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 179245) or nil--"Alliance", "Horde", "Neutral"
 end
 
 
@@ -40,7 +40,7 @@ local MountType={
 
 local function XDInt()--德鲁伊设置
     XD=nil
-    if e.Player.class=='DRUID' then
+    if WoWTools_DataMixin.Player.Class=='DRUID' then
         local ground=IsSpellKnownOrOverridesKnown(768) and 768
         local flying=IsSpellKnownOrOverridesKnown(783) and 783
         if ground then
@@ -323,7 +323,7 @@ local function Set_Item_Spell_Edit(info)
                 Save().Mounts[FLOOR][data.spellID]= tab
                 WoWTools_MountMixin.MountButton:settings()
                 if MountJournal_UpdateMountList then WoWTools_Mixin:Call(MountJournal_UpdateMountList) end
-                print(e.Icon.icon2..WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, C_Spell.GetSpellLink(data.spellID), '|n', text)
 
             end,
             OnAlt = function(_, data)
@@ -331,7 +331,7 @@ local function Set_Item_Spell_Edit(info)
                 checkMount()--检测坐骑
                 setClickAtt()--设置 Click属性
                 if MountJournal_UpdateMountList then WoWTools_Mixin:Call(MountJournal_UpdateMountList) end
-                print(e.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, data.link)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, data.link)
             end
         })
     end
@@ -365,12 +365,12 @@ local function Set_Item_Spell_Edit(info)
         SetValue = function(_, data)
             Save().Mounts[data.type][data.ID]=true
             WoWTools_MountMixin.MountButton:settings()
-            print(e.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '添加' or ADD, data.link)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '添加' or ADD, data.link)
         end,
         OnAlt = function(_, data)
             Save().Mounts[data.type][data.ID]=nil
             WoWTools_MountMixin.MountButton:settings()
-            print(e.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, data.link)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, data.link)
         end,
     })
 end
@@ -486,7 +486,7 @@ local function Init()
             local key= WoWTools_KeyMixin:IsKeyValid(self)
             GameTooltip:AddDoubleLine(
                 WoWTools_ItemMixin:GetName(self.itemID) or WoWTools_SpellMixin:GetName(self.spellID),
-                (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
+                (key and '|cnGREEN_FONT_COLOR:'..key or '')..WoWTools_DataMixin.Icon.left
             )
             GameTooltip:AddLine(' ')
 
@@ -494,7 +494,7 @@ local function Init()
             GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '坐骑特效' or EMOTE171_CMD2:gsub('/',''), '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a')
 
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         end
         GameTooltip:Show()
     end
@@ -636,7 +636,7 @@ local function Init_Event()
             setTextrue()--设置图标
 
         elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
-            WoWTools_MountMixin.faction= e.Player.faction=='Horde' and 0 or (e.Player.faction=='Alliance' and 1)
+            WoWTools_MountMixin.faction= WoWTools_DataMixin.Player.Faction=='Horde' and 0 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 1)
             self:settings()
         end
     end)

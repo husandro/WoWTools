@@ -2,7 +2,7 @@ local id, e = ...
 local addName
 local Save={
         Friends={},
-        disabledBNFriendInfo=not e.Player.husandro and true or nil,--禁用战网，好友信息，提示
+        disabledBNFriendInfo=not WoWTools_DataMixin.Player.husandro and true or nil,--禁用战网，好友信息，提示
         --allFriendInfo= true,--仅限，WoW，好友
         --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
         --showFriendInfoOnlyFavorite=true,--仅限收藏好友
@@ -31,8 +31,8 @@ local function set_SOCIAL_QUEUE_UPDATE()--更新, 快速加入
             QuickJoinToastButton.quickJoinText= WoWTools_LabelMixin:Create(QuickJoinToastButton, {color=true})--:CreateFontString()
             --QuickJoinToastButton.quickJoinText:SetFontObject('NumberFontNormal')
             QuickJoinToastButton.quickJoinText:SetPoint('TOPRIGHT', -6, -3)
-            --if e.Player.useColor then
-              --  QuickJoinToastButton.FriendCount:SetTextColor(e.Player.useColor.r, e.Player.useColor.g, e.Player.useColor.b)
+            --if WoWTools_DataMixin.Player.useColor then
+              --  QuickJoinToastButton.FriendCount:SetTextColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
             --end
         end
 
@@ -172,9 +172,9 @@ local function set_QuinkJoin_Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(e.Icon.icon2.. addName,
+            print(WoWTools_DataMixin.Icon.icon2.. addName,
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
-                    e.GetEnabeleDisable(false)..'Alt',
+                    WoWTools_TextMixin:GetEnabeleDisable(false)..'Alt',
                     link
                 )
         end
@@ -226,34 +226,34 @@ local function Init_Friends_Menu(self, root)
 
     root:CreateTitle(WoWTools_Mixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
     root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_ONLINE, WoWTools_Mixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE), function()
-        return Save.Friends[e.Player.guid]== 'Availabel'
+        return Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel'
     end, function()
-        if Save.Friends[e.Player.guid]== 'Availabel' then
-            Save.Friends[e.Player.guid]= nil
+        if Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel' then
+            Save.Friends[WoWTools_DataMixin.Player.GUID]= nil
         else
-            Save.Friends[e.Player.guid]= 'Availabel'
+            Save.Friends[WoWTools_DataMixin.Player.GUID]= 'Availabel'
         end
         self:set_status()
     end)
 
     root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_AFK, WoWTools_Mixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY), function()
-        return Save.Friends[e.Player.guid]== 'Away'
+        return Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Away'
     end, function()
-        if Save.Friends[e.Player.guid]== 'Away' then
-            Save.Friends[e.Player.guid]= nil
+        if Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Away' then
+            Save.Friends[WoWTools_DataMixin.Player.GUID]= nil
         else
-            Save.Friends[e.Player.guid]= 'Away'
+            Save.Friends[WoWTools_DataMixin.Player.GUID]= 'Away'
         end
         self:set_status()
     end)
 
     root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_DND, WoWTools_Mixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY), function()
-        return Save.Friends[e.Player.guid]== 'DND'
+        return Save.Friends[WoWTools_DataMixin.Player.GUID]== 'DND'
     end, function()
-        if Save.Friends[e.Player.guid]== 'DND' then
-            Save.Friends[e.Player.guid]= nil
+        if Save.Friends[WoWTools_DataMixin.Player.GUID]== 'DND' then
+            Save.Friends[WoWTools_DataMixin.Player.GUID]= nil
         else
-            Save.Friends[e.Player.guid]= 'DND'
+            Save.Friends[WoWTools_DataMixin.Player.GUID]= 'DND'
         end
         self:set_status()
     end)
@@ -262,12 +262,12 @@ local function Init_Friends_Menu(self, root)
     local sub= root:CreateButton(WoWTools_Mixin.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
     sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         Save.Friends= {}
-        print(e.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
     end)
     sub:CreateDivider()
 
     for guid, stat in pairs(Save.Friends) do
-        if guid~=e.Player.guid then
+        if guid~=WoWTools_DataMixin.Player.GUID then
             local btn= sub:CreateButton(format('|A:%s:0:0|a', OptionTexture[stat] or '').. WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}), function(data)
                 if data then
                     Save.Friends[data]= nil
@@ -282,13 +282,13 @@ local function Init_Friends_Menu(self, root)
     end
 
     root:CreateDivider()
-    sub= root:CreateCheckbox(e.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)..') '..( WoWTools_Mixin.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a', function()
+    sub= root:CreateCheckbox(WoWTools_DataMixin.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)..') '..( WoWTools_Mixin.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a', function()
         return not Save.disabledBNFriendInfo
     end, function()
         Save.disabledBNFriendInfo= not Save.disabledBNFriendInfo and true or nil
     end)
 
-    sub:CreateCheckbox(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..format('|T%d:0|t', e.Icon.wow)..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)), function()
+    sub:CreateCheckbox(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)), function()
         return not Save.allFriendInfo
     end, function()
         Save.allFriendInfo= not Save.allFriendInfo and true or nil
@@ -315,7 +315,7 @@ local function Init_Friends_Menu(self, root)
 
     root:CreateDivider()
     root:CreateButton(id..' '..addName, function()
-        e.OpenPanelOpting(nil, addName)
+        WoWTools_PanelMixin:Open(nil, addName)
     end)
 end
 
@@ -397,7 +397,7 @@ local function Init_FriendsList()--好友列表, 初始化
             if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
                 text= text..WoWTools_UnitMixin:GetPlayerInfo({
                             guid=accountInfo.gameAccountInfo.playerGuid,
-                            reLink= accountInfo.gameAccountInfo.factionName==e.Player.faction,
+                            reLink= accountInfo.gameAccountInfo.factionName==WoWTools_DataMixin.Player.Faction,
                             reName=true,
                             --reRealm=true,
                             faction=accountInfo.gameAccountInfo.factionName,
@@ -429,7 +429,7 @@ local function Init_FriendsList()--好友列表, 初始化
         local function ShowRichPresenceOnly(client, wowProjectID, faction, realmID)
             if (client ~= BNET_CLIENT_WOW) or (wowProjectID ~= WOW_PROJECT_ID) then
                 return true;
-            elseif (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and ((faction ~= e.Player.faction) or (realmID ~= self.playerRealmID)) then
+            elseif (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and ((faction ~= WoWTools_DataMixin.Player.Faction) or (realmID ~= self.playerRealmID)) then
                 return true
             end
         end
@@ -490,14 +490,14 @@ local function Init_FriendsList()--好友列表, 初始化
 
     function FriendsButton:set_status(showPrint)
         if not BNConnected() then
-            self:SetNormalAtlas(e.Icon.icon)
+            self:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
             return
         end
         local bnetAFK, bnetDND= select(5, BNGetInfo())
         local text
 
 
-        if Save.Friends[e.Player.guid]=='Availabel' then
+        if Save.Friends[WoWTools_DataMixin.Player.GUID]=='Availabel' then
             if bnetAFK or bnetDND then
                 BNSetAFK(false)
                 BNSetDND(false)
@@ -506,14 +506,14 @@ local function Init_FriendsList()--好友列表, 初始化
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_ONLINE)
 
-        elseif Save.Friends[e.Player.guid]=='Away' then
+        elseif Save.Friends[WoWTools_DataMixin.Player.GUID]=='Away' then
             if not bnetAFK then
                 BNSetAFK(true)
                 text= format(OptionText, FRIENDS_TEXTURE_AFK, WoWTools_Mixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY)
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_AFK)
 
-        elseif Save.Friends[e.Player.guid]=='DND' then
+        elseif Save.Friends[WoWTools_DataMixin.Player.GUID]=='DND' then
             if not bnetDND then
                 BNSetDND(true)
                 text= format(OptionText, FRIENDS_TEXTURE_DND, WoWTools_Mixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY)
@@ -521,11 +521,11 @@ local function Init_FriendsList()--好友列表, 初始化
             self:SetNormalTexture(FRIENDS_TEXTURE_DND)
 
         else
-            self:SetNormalAtlas(e.Icon.icon)
+            self:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
         end
         if text then
             if showPrint then
-                print(e.Icon.icon2.. addName, text)
+                print(WoWTools_DataMixin.Icon.icon2.. addName, text)
             else
                 WoWTools_Mixin:Call(FriendsFrame_CheckBattlenetStatus)
             end
@@ -681,7 +681,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
 
                 if subframes.name and name then
                     local text
-                    if name==e.Player.name then--自己
+                    if name==WoWTools_DataMixin.Player.Name then--自己
                         text= WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME
                     end
                     if not text then--距离
@@ -801,7 +801,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 local index= self.index
                 local info = index and C_FriendList.GetWhoInfo(index)
                 if info and info.fullName then
-                    GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', e.Icon.toRight))
+                    GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight))
                                 ..(WoWTools_UnitMixin:GetClassIcon(nil, info.filename) or '')
                                 ..self.col
                                 ..info.fullName
@@ -815,8 +815,8 @@ local function set_WhoList_Update()--查询, 名单列表
 
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(self.col..'index', self.index)
-                GameTooltip:AddDoubleLine(self.col..(WoWTools_Mixin.onlyChinese and '组队邀请' or GROUP_INVITE), (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left)
-                GameTooltip:AddDoubleLine(self.col..(WoWTools_Mixin.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..e.Icon.left)
+                GameTooltip:AddDoubleLine(self.col..(WoWTools_Mixin.onlyChinese and '组队邀请' or GROUP_INVITE), (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left)
+                GameTooltip:AddDoubleLine(self.col..(WoWTools_Mixin.onlyChinese and '添加好友' or ADD_FRIEND), 'Alt+'..WoWTools_DataMixin.Icon.left)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
                 GameTooltip:Show()
@@ -842,13 +842,13 @@ local function set_WhoList_Update()--查询, 名单列表
         btn.col= hex and '|c'..hex or ''
         if r and g and b then
             if btn.Name and info.fullName then
-                if info.fullName== e.Player.name then
-                    btn.Name:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', e.Icon.toLeft))
+                if info.fullName== WoWTools_DataMixin.Player.Name then
+                    btn.Name:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
                 else
                     local nameText= WoWTools_UnitMixin:GetIsFriendIcon(info.fullName)--检测, 是否好友
                     if nameText then
                         nameText= nameText..info.fullName
-                        if info.fullName== e.Player.name then
+                        if info.fullName== WoWTools_DataMixin.Player.Name then
                             nameText= nameText..'|A:auctionhouse-icon-favorite:0:0|a'
                         end
                         btn.Name:SetText(nameText)
@@ -929,7 +929,7 @@ local function Init()--FriendsFrame.lua
                     local t=''
                     for j=1,numEncounters do
                         local isKilled = select(3, GetSavedInstanceEncounterInfo(index,j))
-                        t= t..(isKilled and '|A:common-icon-redx:0:0|a' or format('|A:%s:0:0|a', e.Icon.select))
+                        t= t..(isKilled and '|A:common-icon-redx:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
                     end
                     text= t..' '..text
                 end
@@ -971,12 +971,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             addName= '|A:socialqueuing-icon-group:0:0|a'..(WoWTools_Mixin.onlyChinese and '好友列表' or FRIENDS_LIST)
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 GetValue= function() return not Save.disabled end,
                 SetValue= function()
                     Save.disabled= not Save.disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

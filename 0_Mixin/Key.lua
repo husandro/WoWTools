@@ -193,7 +193,7 @@ end
         local key= WoWTools_KeyMixin:IsKeyValid(self)
         GameTooltip:AddDoubleLine(
             self.typeSpell and WoWTools_SpellMixin:GetName(self.typeID) or WoWTools_ItemMixin:GetName(self.typeID),
-            (key and '|cnGREEN_FONT_COLOR:'..key or '')..e.Icon.left
+            (key and '|cnGREEN_FONT_COLOR:'..key or '')..WoWTools_DataMixin.Icon.left
         )
     end
 

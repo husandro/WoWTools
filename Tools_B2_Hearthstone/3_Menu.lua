@@ -62,21 +62,21 @@ local function Init_Menu(self, root)
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 --全部清除
     sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() then
             Save().items={}
-            print(e.Icon.icon2..WoWTools_HearthstoneMixin.addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_HearthstoneMixin.addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
             self:Rest_Random()
         else
             return MenuResponse.Open
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 
@@ -89,13 +89,13 @@ local function Init_Menu(self, root)
         if IsControlKeyDown() then
             Save().items= WoWTools_HearthstoneMixin:Get_P_Items()
             self:Rest_Random()
-            print(e.Icon.icon2..WoWTools_HearthstoneMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_HearthstoneMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         else
             return MenuResponse.Open
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 --设置

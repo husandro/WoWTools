@@ -76,7 +76,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     
 
 --提示，已存在
-    if _G[name] and e.Player.husandro then
+    if _G[name] and WoWTools_DataMixin.Player.husandro then
         print('Cbtn', '已存在', name)
     end
 
@@ -152,7 +152,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if isMenu then
         btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     else
-        btn:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+        btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     end
 
 --EnableMouseWheel

@@ -43,7 +43,7 @@ local function Init_Menu(self, root)
         StaticPopup_Show('WoWTools_EditText',
         WoWTools_CombatMixin.addName
         ..'|n|n'.. (WoWTools_Mixin.onlyChinese and '时间戳' or EVENTTRACE_TIMESTAMP)..' '..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
-        ..'|n|n>= 60 '..e.GetEnabeleDisable(true),
+        ..'|n|n>= 60 '..WoWTools_TextMixin:GetEnabeleDisable(true),
         nil,
         {
             OnShow=function(s)
@@ -97,7 +97,7 @@ local function Init_Menu(self, root)
         if WoWTools_CombatMixin.TrackButton then
             WoWTools_CombatMixin.TrackButton:set_Point()
         end
-        print(e.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CombatMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         return MenuResponse.Open
     end)
 
@@ -108,7 +108,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub2:SetTooltip(function (tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r+'..WoWTools_DataMixin.Icon.left)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
     end)
 
@@ -139,7 +139,7 @@ local function Init_Menu(self, root)
     end)
 
 --总游戏时间
-    local tab=e.WoWDate[e.Player.guid].Time
+    local tab=e.WoWDate[WoWTools_DataMixin.Player.GUID].Time
     sub=root:CreateCheckbox(
         tab.totalTime and SecondsToTime(tab.totalTime)
         or (WoWTools_Mixin.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, '')),

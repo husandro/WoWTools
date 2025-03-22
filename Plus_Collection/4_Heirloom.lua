@@ -157,7 +157,7 @@ end
 local ListButton
 local function Init_ClassListButton()
 
-    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {size=22, icon=e.Icon.icon, name='WoWTools_PlusHeirloomsClassListButton'})
+    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {size=22, icon=WoWTools_DataMixin.Icon.icon, name='WoWTools_PlusHeirloomsClassListButton'})
 
     function ListButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -168,9 +168,9 @@ local function Init_ClassListButton()
             GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
         end
 
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().Heirlooms_Class_Scale or 0), e.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().Heirlooms_Class_Scale or 0), WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全职业' or ALL_CLASSES, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全职业' or ALL_CLASSES, WoWTools_DataMixin.Icon.left)
 
         GameTooltip:Show()
     end
@@ -248,7 +248,7 @@ local function Init_ClassListButton()
         spec= spec or 0
         local num= classID>0 and C_SpecializationInfo.GetNumSpecializationsForClassID(classID) or 0
         for i = 1, num, 1 do
-            local specID, _, _, icon, role = GetSpecializationInfoForClassID(classID, i, e.Player.sex)
+            local specID, _, _, icon, role = GetSpecializationInfoForClassID(classID, i, WoWTools_DataMixin.Player.Sex)
             local btn= self.specButton[i]
             if not btn then
                 btn= self:cereate_button(classID, specID, nil, nil)
@@ -289,7 +289,7 @@ local function Init_ClassListButton()
     for i = 1, GetNumClasses() do--设置，职业
         local classFile, classID= select(2, GetClassInfo(i))
         local atlas
-        if classFile==e.Player.class then
+        if classFile==WoWTools_DataMixin.Player.Class then
             atlas= 'auctionhouse-icon-favorite'
         else
             atlas= WoWTools_UnitMixin:GetClassIcon(nil, classFile, true)

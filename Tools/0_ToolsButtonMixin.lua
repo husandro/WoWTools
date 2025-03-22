@@ -128,7 +128,7 @@ function WoWTools_ToolsMixin:Init()
     self.Button.texture:SetPoint('CENTER')
     self.Button.texture:SetSize(10,10)
     self.Button.texture:SetShown(self.Save.showIcon)
-    self.Button.texture:SetAtlas(e.Icon.icon)
+    self.Button.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
 
     --底部,需要，设置高 宽
     self.Button.LeftFrame= self:CreateBackgroundFrame(self.Button.Frame, 'WoWTools_LeftFrame')

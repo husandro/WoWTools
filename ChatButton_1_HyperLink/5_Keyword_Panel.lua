@@ -20,7 +20,7 @@ local LinkButton
 local function Init()
     local frame= CreateFrame('Frame')
 
-    local Category= e.AddPanel_Sub_Category({
+    local Category= WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_HyperLink.addName,
         frame=frame,
         category=WoWTools_ChatMixin.Category,
@@ -76,7 +76,7 @@ local function Init()
                 end
             end)
         end
-        print(e.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '颜色' or COLOR, '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     local str2=WoWTools_LabelMixin:Create(frame)--频道名称替换
@@ -113,7 +113,7 @@ local function Init()
                 end
             end)
         end
-        print(e.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r',  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r',  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     return true

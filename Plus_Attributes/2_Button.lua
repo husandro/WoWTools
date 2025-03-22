@@ -97,7 +97,7 @@ local function Init()
         self:ClearAllPoints()
         if Save().point then
             button:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
-        elseif e.Player.husandro then
+        elseif WoWTools_DataMixin.Player.husandro then
             button:SetPoint('LEFT', PlayerFrame, 'RIGHT', 25, 35)
         else
             button:SetPoint('LEFT', 23, 180)
@@ -129,12 +129,12 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AttributesMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重置' or RESET, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重置' or RESET, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
-        GameTooltip:AddDoubleLine(e.GetShowHide(not Save().hide), e.Icon.mid)
-        GameTooltip:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(self:get_sendTextTips(), 'Shift+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -149,7 +149,7 @@ local function Init()
 
         elseif d=='LeftButton' and not IsModifierKeyDown() then
             WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
-            print(e.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重置' or RESET)..'|r', WoWTools_Mixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重置' or RESET)..'|r', WoWTools_Mixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)
 
         elseif d=='RightButton' and IsShiftKeyDown() then
             self:send_Att_Chat()--发送信息

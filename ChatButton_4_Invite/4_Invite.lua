@@ -8,17 +8,17 @@ Save={
     FriendAceInvite=true,--接受, 好友, 邀请
     InvNoFriendNum=0,--拒绝, 次数
     restingTips=true,--休息区提示
-    ChannelText=e.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
+    ChannelText=WoWTools_DataMixin.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
 
     Summon= true,--接受, 召唤
     notSummonChat=nil,--不说
     SummonThxText=nil,--自定义THX内容
     SummonThxInRaid=nil,--在团里也说谢谢
 
-    setFrameFun= e.Player.husandro,--跟随，密语
+    setFrameFun= WoWTools_DataMixin.Player.husandro,--跟随，密语
 
-    setFucus= e.Player.husandro,--焦点
-    overSetFocus= e.Player.husandro,--移过是，
+    setFucus= WoWTools_DataMixin.Player.husandro,--焦点
+    overSetFocus= WoWTools_DataMixin.Player.husandro,--移过是，
     focusKey= 'Shift',
 
 },
@@ -95,7 +95,7 @@ local function Init()
 
     function InviteButton:set_tooltip()
         self:set_owner()
-        GameTooltip:AddDoubleLine(WoWTools_InviteMixin.addName, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_InviteMixin.addName, WoWTools_DataMixin.Icon.left)
         if Save().InvTar then
             GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))
         end
@@ -153,9 +153,9 @@ local function Init()
 
 
 
-    if (e.Player.region==1 or e.Player.region==3) then
+    if (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) then
         WoWTools_InviteMixin.SummonThxText = '{rt1}thx{rt1}, sum me'
-    elseif e.Player.region==5 then
+    elseif WoWTools_DataMixin.Player.Region==5 then
         WoWTools_InviteMixin.SummonThxText= '{rt1}谢谢{rt1}, 拉我'
     else
         WoWTools_InviteMixin.SummonThxText= '{rt1}'..SUMMON..'{rt1} '..VOICEMACRO_16_Dw_1

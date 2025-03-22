@@ -27,14 +27,14 @@ Save={
     barTexture2=true,--样式2
     barWidth= -60,--bar, 宽度
     barX=22,--bar,移位
-    --barToLeft=e.Player.husandro,--bar,放左边
+    --barToLeft=WoWTools_DataMixin.Player.husandro,--bar,放左边
     scale= 1.1,--缩放
     vertical=3,--上下，间隔
     horizontal=9,--左右， 间隔
     setMaxMinValue= true,--增加,减少值
     bitPrecet=0,--百分比，位数
     onlyDPS=true,--四属性, 仅限DPS
-    --useNumber= e.Player.husandro,--使用数字
+    --useNumber= WoWTools_DataMixin.Player.husandro,--使用数字
     --notText=false,--禁用，数值
     textColor= {r=1,g=1,b=1,a=1},--数值，颜色
     bit=0,--数值，位数
@@ -56,7 +56,7 @@ Save={
     --gsubText
     --strlower
     --strupper
-    showBG=e.Player.husandro,
+    showBG=WoWTools_DataMixin.Player.husandro,
 
 }
 }
@@ -109,21 +109,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             local frame= CreateFrame('Frame')
             WoWTools_AttributesMixin.PanelFrame= frame
 
-            local Category= e.AddPanel_Sub_Category({--添加控制面板
+            local Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
                 name=addName,
                 frame=frame,
                 disabled= Save().disabled,
             })
             WoWTools_AttributesMixin.Category= Category
 
-            e.ReloadPanel({panel=frame, addName=addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            WoWTools_PanelMixin:ReloadButton({panel=frame, addName=addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save().disabled = not Save().disabled and true or nil
                     if not Save().disabled then
                         if Init() then Init=function()end end
                         WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,

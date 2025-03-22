@@ -57,7 +57,7 @@ local function Get_Item(itemID)
 			end
 		end
 
-		name= e.cn(C_Item.GetItemNameByID(itemID)) or ''
+		name= WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID)) or ''
 
 		local nameText
 		local hex= itemQuality and select(4, C_Item.GetItemQualityColor(itemQuality)) or 'ffffffff'
@@ -109,7 +109,7 @@ local function Get_Currency(currencyID, index)
 
 	if Save().nameShow then
 		local hex= currencyID and C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) and 'ff00d1ff' or select(4, C_Item.GetItemQualityColor(info and info.quality or 1))
-		name = format('|c%s%s|r', hex, e.cn(info.name))
+		name = format('|c%s%s|r', hex, WoWTools_TextMixin:CN(info.name))
 	end
 
 
@@ -252,14 +252,14 @@ local function Create_Button(last, index, endTokenIndex, itemButtonUse, tables)
             GameTooltip:AddLine(' ')
             local col= C_Item.GetItemCount(self.itemID)==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
             if self.itemButtonUse then
-                GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '使用物品' or USE_ITEM), e.Icon.left)
+                GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '使用物品' or USE_ITEM), WoWTools_DataMixin.Icon.left)
             end
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..e.Icon.left))
+            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '拿取' or 'Pickup'), col..('Alt+'..WoWTools_DataMixin.Icon.left))
             WoWTools_BagMixin:Find(true, {itemID=self.itemID})--查询，背包里物品
         elseif self.currencyID then
             GameTooltip:SetCurrencyByID(self.currencyID)
             local link= C_CurrencyInfo.GetCurrencyLink(self.currencyID) or (WoWTools_Mixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK)
-            GameTooltip:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', e.Icon.left)
+            GameTooltip:AddDoubleLine(link..'|A:transmog-icon-chat:0:0|a', WoWTools_DataMixin.Icon.left)
 			WoWTools_CurrencyMixin:Find(self.currencyID, nil)--选中提示
 
         elseif self.index then

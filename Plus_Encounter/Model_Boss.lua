@@ -19,7 +19,7 @@ local function Setings(self)
             text= text..'uiModelSceneID '..self.uiModelSceneID..'|n'
         end
         text= text..'CreatureDisplayID ' .. self.displayInfo
-        local name= e.cn(self.name, true)--汉化
+        local name= WoWTools_TextMixin:CN(self.name, true)--汉化
         if name then
             text= text..'|n'..name
         end

@@ -26,20 +26,20 @@ local function Set_PlayerSound()--事件, 声音
 
     if not C_CVar.GetCVarBool('Sound_EnableAllSound') then
         C_CVar.SetCVar('Sound_EnableAllSound', '1')
-        print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', WoWTools_Mixin.onlyChinese and '开启声效' or ENABLE_SOUND)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableAllSound|r', WoWTools_Mixin.onlyChinese and '开启声效' or ENABLE_SOUND)
     end
     if C_CVar.GetCVar('Sound_MasterVolume')=='0' then
         C_CVar.SetCVar('Sound_MasterVolume', '1.0')
-        print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', WoWTools_Mixin.onlyChinese and '主音量' or MASTER_VOLUME, '1')
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_MasterVolume|r', WoWTools_Mixin.onlyChinese and '主音量' or MASTER_VOLUME, '1')
     end
 
     if C_CVar.GetCVar('Sound_DialogVolume')=='0' then
         C_CVar.SetCVar('Sound_DialogVolume', '1.0')
-        print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',WoWTools_Mixin.onlyChinese and '对话' or DIALOG_VOLUME, '1')
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_DialogVolume|r',WoWTools_Mixin.onlyChinese and '对话' or DIALOG_VOLUME, '1')
     end
     if not C_CVar.GetCVarBool('Sound_EnableDialog') then
         C_CVar.SetCVar('Sound_EnableDialog', '1')
-        print(e.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', WoWTools_Mixin.onlyChinese and '启用对话' or ENABLE_DIALOG)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:CVar Sound_EnableDialog|r', WoWTools_Mixin.onlyChinese and '启用对话' or ENABLE_DIALOG)
     end
 
 end
@@ -117,7 +117,7 @@ end
 local function Init()
     local enabled= Save().setPlayerSound
 
-    e.setPlayerSound= enabled--播放, 事件声音
+    WoWTools_DataMixin.IsSetPlayerSound= enabled--播放, 事件声音
 
     if enabled and Init_Settings() then
         Init_Settings=function() end

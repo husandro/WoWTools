@@ -16,8 +16,8 @@ local function Set_Text(self)
     if isInGuild then
         self.texture2:SetAtlas(
             isInGuild and 'UI-HUD-MicroMenu-GuildCommunities-Up'
-            or (e.Player.faction=='Alliance' and 'honorsystem-prestige-laurel-bg-alliance')
-            or (e.Player.faction=='Horde' and 'honorsystem-prestige-laurel-bg-horde')
+            or (WoWTools_DataMixin.Player.Faction=='Alliance' and 'honorsystem-prestige-laurel-bg-alliance')
+            or (WoWTools_DataMixin.Player.Faction=='Horde' and 'honorsystem-prestige-laurel-bg-horde')
             or 'UI-HUD-MicroMenu-GuildCommunities-Up'
     )
     else
@@ -98,7 +98,7 @@ local function Init(GuildButton)
 
     function GuildButton:set_guildinfo_event()
         self:UnregisterEvent('CHAT_MSG_SYSTEM')
-        if IsInGuild() and (Save().guildInfo or not e.WoWDate[e.Player.guid].Guild.text) then
+        if IsInGuild() and (Save().guildInfo or not e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text) then
             self:RegisterEvent('CHAT_MSG_SYSTEM')
             GuildInfo()
         end
@@ -114,7 +114,7 @@ local function Init(GuildButton)
                     isInviete=true
 
                     if isInit then
-                        print(e.Icon.icon2..WoWTools_GuildMixin.addName,
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GuildMixin.addName,
                             '|cffff00ff'
                             ..(WoWTools_Mixin.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
                             ..(WoWTools_Mixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
@@ -138,7 +138,7 @@ local function Init(GuildButton)
     function GuildButton:set_tooltip()
         self:set_owner()
         if not IsInGuild() then
-            GameTooltip:AddLine('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..e.Icon.left)
+            GameTooltip:AddLine('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..WoWTools_DataMixin.Icon.left)
         else
             WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end
@@ -193,7 +193,7 @@ local function Init(GuildButton)
 --公会创立，信息
         elseif event=='CHAT_MSG_SYSTEM' then
             if arg1 and arg1:find(G_GUILD_INFO_TEMPLATE) then
-                e.WoWDate[e.Player.guid].Guild.text= arg1
+                e.WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text= arg1
                 self:UnregisterEvent(event)
             end
 

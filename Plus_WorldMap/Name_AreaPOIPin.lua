@@ -60,7 +60,7 @@ local function Init(frame)
         if frame and frame.Text then
             local text--地图，地名，名称
             if isEnabled and frame.name then
-                text= e.cn(frame.name)
+                text= WoWTools_TextMixin:CN(frame.name)
                 text= text:match(INSTANCE_DIFFICULTY_FORMAT) or text
             end
             frame.Text:SetText(text or '')

@@ -29,9 +29,9 @@ local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data.mountID then
         local isUsable, useError = C_MountJournal.GetMountUsabilityByID(desc.data.mountID, true)
         if useError then
-            GameTooltip_AddErrorLine(tooltip, e.cn(useError))
+            GameTooltip_AddErrorLine(tooltip, WoWTools_TextMixin:CN(useError))
         elseif isUsable then
-            GameTooltip_AddNormalLine(tooltip, e.Icon.left..(WoWTools_Mixin.onlyChinese and '召唤' or SUMMON))
+            GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '召唤' or SUMMON))
         end
     elseif desc.data.spellID then
         tooltip:SetSpellByID(desc.data.spellID)
@@ -41,7 +41,7 @@ local function Set_Menu_Tooltip(tooltip, desc)
     if desc.data.type==FLOOR then
         for uiMapID, _ in pairs(Save().Mounts[FLOOR][desc.data.spellID] or {}) do
             local mapInfo = C_Map.GetMapInfo(uiMapID)
-            tooltip:AddDoubleLine(uiMapID, mapInfo and e.cn(mapInfo.name))
+            tooltip:AddDoubleLine(uiMapID, mapInfo and WoWTools_TextMixin:CN(mapInfo.name))
         end
     end
 end
@@ -58,7 +58,7 @@ local function ClearAll_Menu(root, type, index)
         local sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function(data)
             if IsControlKeyDown() then
                 Save().Mounts[data]={}
-                print(e.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, e.cn(type))
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, WoWTools_TextMixin:CN(type))
                 WoWTools_MountMixin.MountButton:settings()
 
             else
@@ -66,8 +66,8 @@ local function ClearAll_Menu(root, type, index)
             end
         end, type)
         sub:SetTooltip(function(tooltip, desc)
-            tooltip:AddLine(e.cn(desc.data))
-            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+            tooltip:AddLine(WoWTools_TextMixin:CN(desc.data))
+            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
         end)
     end
     WoWTools_MenuMixin:SetGridMode(root, index)
@@ -100,7 +100,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
     end
 
     root:CreateButton(
-        (data.mountID and '|A:QuestLegendary:0:0|a' or icon)..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..(data.mountID and '' or e.Icon.left),
+        (data.mountID and '|A:QuestLegendary:0:0|a' or icon)..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..(data.mountID and '' or WoWTools_DataMixin.Icon.left),
     function()
         WoWTools_MountMixin:Set_Item_Spell_Edit(data)
         return MenuResponse.Open
@@ -126,7 +126,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
         function(info)
             Save().Mounts[info.type][info.itemID or info.spellID]=nil
 
-            print(e.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
                     WoWTools_ItemMixin:GetLink(info.itemID)
                     or (info.spellID and C_Spell.GetSpellLink(info.spellID)
                     or info.itemID or info.spellID
@@ -160,7 +160,7 @@ local function Set_Mount_Menu(root, type, spellID, name, index)
     col= col or ''
 
     if index then
-        name= e.cn(creatureName or C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID '..spellID)
+        name= WoWTools_TextMixin:CN(creatureName or C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID '..spellID)
     end
 
     icon= '|T'..(spellID and C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
@@ -209,7 +209,7 @@ local function Init_Menu_Mount(root, type, name)
     local num= WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
     local col= num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
 
-    local sub= Set_Mount_Menu(root, type, tab2[1], (WoWTools_Mixin.onlyChinese and name or e.cn(type))..' '..col..num, nil)
+    local sub= Set_Mount_Menu(root, type, tab2[1], (WoWTools_Mixin.onlyChinese and name or WoWTools_TextMixin:CN(type))..' '..col..num, nil)
 
 
     local index=0
@@ -283,7 +283,7 @@ local function Init_Menu_Spell(_, sub)
             index..') '
             ..col
             ..icon
-            ..(e.cn(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID: '..spellID)),
+            ..(WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true}) or ('spellID: '..spellID)),
         function(data)
             WoWTools_MountMixin:Set_Item_Spell_Edit(data)
             return MenuResponse.Open
@@ -306,14 +306,14 @@ local function Init_Menu_Spell(_, sub)
     sub2=sub:CreateButton(WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT, function()
         if IsControlKeyDown() then
             Save().Mounts[SPELLS]= WoWTools_MountMixin:P_Mouts_Tab()
-            print(e.Icon.icon2..WoWTools_MountMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
             WoWTools_MountMixin.MountButton:settings()
         else
             return MenuResponse.Open
         end
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..e.Icon.left)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
     end)
 
 end
@@ -341,7 +341,7 @@ local function Init_Menu_Item(_, sub)
         num= C_Item.GetItemCount(itemID, false, true, true) or 0
 
         local name= '|T'..(C_Item.GetItemIconByID(itemID) or 0)..':0|t'
-                    ..(e.cn(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID: '..itemID))
+                    ..(WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID: '..itemID))
                     ..(num==0 and '|cff9e9e9e' or '|cffffffff')..' x'..num..'|r'
 
         sub2=sub:CreateButton(
@@ -465,7 +465,7 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '召唤坐骑:' or MOUNT..': ', Save().mountShowTime..' '..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS))
-        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, e.Icon.mid)
+        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, WoWTools_DataMixin.Icon.mid)
     end)
 
     sub3=sub2:CreateCheckbox('<AFK>'..(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO), function()
@@ -488,7 +488,7 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '坐骑特效:' or EMOTE171_CMD2..': ', Save().mountShowTime..' '..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS))
-        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, e.Icon.mid)
+        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, WoWTools_DataMixin.Icon.mid)
     end)
 
     sub2=sub:CreateButton('|T'..FRIENDS_TEXTURE_AFK..':0|t'..(UnitIsAFK('player') and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '暂离' or 'AFK'), function()

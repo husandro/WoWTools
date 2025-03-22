@@ -139,7 +139,7 @@ local Save={
         [89770]=true,--一簇牦牛毛
         [219940]=true,--流星残片
         [95350]=true,---乌古的咒语
-        
+
         --11
         [224185]=true--导蟹树枝
 
@@ -151,8 +151,8 @@ local Save={
     mago=true,
     ski=true,
     alt=true,
-    --noItemHide= true,--not e.Player.husandro,
-    KEY=e.Player.husandro and 'F',
+    --noItemHide= true,--not WoWTools_DataMixin.Player.husandro,
+    KEY=WoWTools_DataMixin.Player.husandro and 'F',
     --reagent= true,--禁用，检查，材料包
 }
 
@@ -166,7 +166,7 @@ local OpenButton
 
 
 
-if e.Player.class=='ROGUE' then
+if WoWTools_DataMixin.Player.Class=='ROGUE' then
     WoWTools_Mixin:Load({id=1804, type='spell'})--开锁 Pick Lock
 end
 
@@ -188,14 +188,13 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_LOGIN')
---panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or Save
 
             addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_Mixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
-            
+
             OpenButton= WoWTools_ToolsMixin:CreateButton({
                 name='OpenItems',
                 tooltip=addName,
@@ -212,10 +211,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_LOGIN' then
           WoWTools_OpenItemMixin:Init_Button()
-
-    --[[elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            --WoWToolsSave['Tools_OpenItems'] = WoWTools_OpenItemMixin.Save
-        end]]
     end
 end)

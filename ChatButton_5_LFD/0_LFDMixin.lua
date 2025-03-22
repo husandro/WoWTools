@@ -167,7 +167,7 @@ function WoWTools_LFDMixin:GetQueuedList(category, reTips, reRole)
         if name then
             num= num+1
             if reTips then
-                name= e.cn(name)
+                name= WoWTools_TextMixin:CN(name)
                 local boss=''
                 if category==LE_LFG_CATEGORY_RF then
                     local numEncounters = GetLFGDungeonNumEncounters(dungeonID)
@@ -182,7 +182,7 @@ function WoWTools_LFDMixin:GetQueuedList(category, reTips, reRole)
                     if kill==numEncounters then boss=RED_FONT_COLOR_CODE..boss..'|r' end
                     local mapName=select(19, GetLFGDungeonInfo(dungeonID))
                     if mapName then
-                        name= name.. ' ('..e.cn(mapName)..')'
+                        name= name.. ' ('..WoWTools_TextMixin:CN(mapName)..')'
                     end
                 end
                 m=(m and m..'|n  ' or '  ')

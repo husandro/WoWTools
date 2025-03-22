@@ -1,34 +1,18 @@
-local e = select(2, ...)
+WoWTools_DataMixin={}
 
-
-e.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-e.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-e.ExpansionLevel= GetExpansionLevel()--版本数据
-e.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
-e.WoWDate={}--战网，数据
-e.StausText={}--属性，截取表 API_Panel.lua
-e.ChallengesSpellTabs={}--Challenges.lua
-WoWTools_Mixin.onlyChinese= LOCALE_zhCN and true or false
---e.tips=GameTooltip
-
---[[
-e.Is_PTR= IsPublicBuild() or IsTestBuild()
-local isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
-local isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
-local isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC
-]]
-
-
-
---local securecallfunction= securecallfunction
-
-
-
+WoWTools_DataMixin.StausText={}--属性，截取表 API_Panel.lua
+WoWTools_DataMixin.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
+WoWTools_DataMixin.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
+WoWTools_DataMixin.ExpansionLevel= GetExpansionLevel()--版本数据
+WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
+--WoWTools_DataMixin.IsSetPlayerSound= enabled--播放, 事件声音
 
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')
 local playerRealm= GetRealmName():gsub(' ', '')
 local currentRegion= GetCurrentRegion()
+local r, g, b, hex= GetClassColor(baseClass)
+hex= '|c'..hex
 
 local function GetWeek()--周数
     local region= currentRegion
@@ -48,46 +32,47 @@ local function GetWeek()--周数
 end
 
 
-
-
-e.Player={
+WoWTools_DataMixin.Player={
     realm= playerRealm,
     Realms= {},--多服务器
-    name_realm= UnitName('player')..'-'..playerRealm,
-    name= UnitName('player'),
-    sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
-    class= baseClass,
-    r= GetClassColor(baseClass),
-    g= select(2,GetClassColor(baseClass)),
-    b= select(3, GetClassColor(baseClass)),
-    col= '|c'..select(4, GetClassColor(baseClass)),
-    cn= currentRegion==5 or currentRegion==4,
-    region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-    --Lo= GetLocale(),
-    week= GetWeek(),--周数 date('%W')
-    guid= UnitGUID('player'),
-    IsMaxLevel= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
-    level= UnitLevel('player') or 1,--UnitEffectiveLevel('player')
-    husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
-    battleTag= battleTag,
-    faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
-    Layer= nil, --位面数字
-    --useColor= nil,--使用颜色
-    L={},--多语言，文本
-}
-e.Player.useColor= {r=e.Player.r, g=e.Player.g, b=e.Player.b, a=1, hex= e.Player.col}--使用颜色
 
- --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
- --ver= select(4,GetBuildInfo())>=100100,--版本 100100
- --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
+    name_realm= UnitName('player')..'-'..playerRealm,
+    Name= UnitName('player'),
+    Sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
+    Class= baseClass,
+
+    Region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
+    cn= currentRegion==5 or currentRegion==4,
+
+    r= r,
+    g= g,
+    b= b,
+    col= hex,
+    useColor= {r=r, g=g, b=b, a=1, hex= hex},--使用颜色
+
+    --Lo= GetLocale(),
+    Week= GetWeek(),--周数 date('%W')
+    GUID= UnitGUID('player'),
+    IsMaxLevel= UnitLevel('player')==GetMaxLevelForLatestExpansion(), --GetMaxLevelForPlayerExpansion(),--玩家是否最高等级 MAX_PLAYER_LEVEL
+    Level= UnitLevel('player') or 1,--UnitEffectiveLevel('player')
+    husandro= battleTag== '古月剑龙#5972' or battleTag=='SandroChina#2690' or battleTag=='Sandro126#2297' or battleTag=='Sandro163EU#2603',
+    BattleTag= battleTag,
+    Faction= UnitFactionGroup('player'),--玩家, 派系  "Alliance", "Horde", "Neutral"
+    Layer= nil, --位面数字
+    Language={},--多语言，文本
+}
 for k, v in pairs(GetAutoCompleteRealms()) do
-    e.Player.Realms[v]=k
+    WoWTools_DataMixin.Player.Realms[v]=k
 end
 
+--zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
+--ver= select(4,GetBuildInfo())>=100100,--版本 100100
+--disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
 
---recipetoast-icon-star
-e.Icon={
-    --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=e.Player.guid , race=nil , sex=e.Player.sex , reAtlas=false}),
+
+
+WoWTools_DataMixin.Icon={
+    --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=WoWTools_DataMixin.Player.GUID , race=nil , sex=WoWTools_DataMixin.Player.Sex , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools:0|t',
     disabled='talents-button-reset',
@@ -115,80 +100,68 @@ e.Icon={
 	[Enum.ItemQuality.Artifact] = "dressingroom-itemborder-artifact",
 	[Enum.ItemQuality.Heirloom] = "dressingroom-itemborder-account",
 	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",--8
-
 }
 
 
---[[WoWTools_Mixin:GetWoWTexture()
-C_Timer.After(1, function()
-    C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua    
-    print('BNET_CLIENT_WOW',success and texture)
-        if success and texture then
-            e.Icon.wow=texture
-        end
-    end)
-    C_Texture.GetTitleIconTexture(BNET_CLIENT_WOW, Enum.TitleIconVersion.Small, function(success, texture)
-        print(success, texture)
-        if success and texture then
-            e.Icon.net2= '|T'..texture..':0|t'
-            print(texture, e.Icon.net2)
-        end
-    end)
-end)]]
+
+
+
+
+
+
+
+
+
+
 
 if LOCALE_zhCN then
-    e.Player.L= {
+    WoWTools_DataMixin.Player.Language= {
         layer='位面',
         key='关键词',
     }
 elseif LOCALE_zhTW then
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='位面',
         key='關鍵詞',
     }
 elseif LOCALE_koKR then
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='층',
         key='키워드',
     }
 elseif LOCALE_frFR then
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='Couche',
         key='Mots clés',
     }
 elseif LOCALE_deDE then
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='Schicht',
         key='Schlüsselwörter',
     }
 elseif LOCALE_esES or LOCALE_esMX then--西班牙语
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='Capa',
         key='Palabras clave',
     }
 elseif LOCALE_ruRU then
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='слой',
         key='Ключевые слова',
     }
 elseif LOCALE_ptBR then--葡萄牙语
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='Camada',
         key='Palavras-chave',
     }
 elseif LOCALE_itIT then
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer='Strato',
         key='Parole chiave',
     }
 else
-    e.Player.L={
+    WoWTools_DataMixin.Player.Language={
         layer= 'Layer',
         key='Key words',
     }
 end
-
-
-
-
-

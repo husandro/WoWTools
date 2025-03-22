@@ -87,14 +87,14 @@ local function Set_Gossip_Text(self, info)
         local zoneInfo= Save().Gossip_Text_Icon_Player[gossipOptionID] or WoWTools_GossipMixin:Get_GossipData()[gossipOptionID]
         if zoneInfo then
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(zoneInfo.icon, size))
-            local name= zoneInfo.name or e.cn(info.name, {questID=info.questID, isName=true})
+            local name= zoneInfo.name or WoWTools_TextMixin:CN(info.name, {questID=info.questID, isName=true})
             local hex= zoneInfo.hex
             text= (icon or '')..name
             if hex then
                 text= '|c'..hex..text..'|r'
             end
         else
-            text= e.cn(info.name, {questID=info.questID, isName=true})
+            text= WoWTools_TextMixin:CN(info.name, {questID=info.questID, isName=true})
         end
     end
 
@@ -151,7 +151,7 @@ local function Create_CheckButton(frame, info)
                 GameTooltip:SetOwner(f or self, f and "ANCHOR_BOTTOM" or "ANCHOR_RIGHT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG), e.GetEnabeleDisable(Save().gossip))
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG), WoWTools_TextMixin:GetEnabeleDisable(Save().gossip))
                 GameTooltip:AddDoubleLine(' ')
                 GameTooltip:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..self.id..'|r')
                 if f and not ColorPickerFrame:IsShown() then
@@ -171,7 +171,7 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save().gossipOption[self.id]= not Save().gossipOption[self.id] and (self.name or '') or nil
                 if Save().gossipOption[self.id] and not IsModifierKeyDown() and Save().gossip then
-                    print(e.Icon.icon2..WoWTools_GossipMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
                 end
             end)
@@ -257,8 +257,8 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         self:SetAlpha(1)
     end)
@@ -284,7 +284,7 @@ local function Init()
         self.texture:SetAlpha(Save().gossip and 1 or 0.3)
     end
     function GossipButton:set_Texture()--设置，图片 
-        local atlas= Save().gossip and 'SpecDial_LastPip_BorderGlow' or e.Icon.icon
+        local atlas= Save().gossip and 'SpecDial_LastPip_BorderGlow' or WoWTools_DataMixin.Icon.icon
         self.texture:SetAtlas(atlas)
         self.gossipFrane_Button:SetNormalAtlas(atlas)
         self:set_Alpha()
@@ -294,13 +294,13 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_Mixin.onlyChinese and '对话' or ENABLE_DIALOG)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), 'Alt+'..e.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..e.GetEnabeleDisable(Save().gossip), e.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), e.Icon.mid)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or OPTIONS, e.Icon.mid)
+        GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..WoWTools_TextMixin:GetEnabeleDisable(Save().gossip), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), WoWTools_DataMixin.Icon.mid)
+        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or OPTIONS, WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self.texture:SetAlpha(1)
     end
@@ -347,7 +347,7 @@ local function Init()
             else
                 Gossip_Text_Icon_Frame:SetShown(d==-1)
             end
-            --e.OpenPanelOpting('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_Mixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
+            --WoWTools_PanelMixin:Open('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_Mixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
         end
     end)
 
@@ -386,7 +386,7 @@ local function Init()
                 if Save().movie[arg1] then
                     if Save().stopMovie then
                         MovieFrame:StopMovie()
-                        print(e.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_Mixin.onlyChinese and '对话' or ENABLE_DIALOG,
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_Mixin.onlyChinese and '对话' or ENABLE_DIALOG,
                             '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON)..'|r',
                             'movieID|cnGREEN_FONT_COLOR:',
                             arg1
@@ -396,7 +396,7 @@ local function Init()
                 else
                     Save().movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
@@ -404,7 +404,7 @@ local function Init()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(e.Icon.icon2..WoWTools_GossipMixin.addName, '|n|cnRED_FONT_COLOR:',  format(WoWTools_Mixin.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|n|cnRED_FONT_COLOR:',  format(WoWTools_Mixin.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
             end
         end
     end)
@@ -426,7 +426,7 @@ local function Init()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(e.Icon.icon2..WoWTools_GossipMixin.addName, self.name, self.npc, e.GetEnabeleDisable(Save().NPC[self.npc]))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, self.name, self.npc, WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc]))
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -505,7 +505,7 @@ local function Init()
 
         elseif Save().quest and (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
             if quest then
-                name= e.cn(info.name)..'<|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '任务' or QUESTS_LABEL)..'|r>'
+                name= WoWTools_TextMixin:CN(info.name)..'<|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '任务' or QUESTS_LABEL)..'|r>'
             end
             C_GossipInfo.SelectOption(index)
             find=true
@@ -602,7 +602,7 @@ local function Init()
                         C_GossipInfo.SelectAvailableQuest(frame.id)
                     end
                 else
-                    print(e.Icon.icon2..WoWTools_GossipMixin.addName2, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r', WoWTools_Mixin.onlyChinese and '任务' or QUESTS_LABEL,'ID')
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r', WoWTools_Mixin.onlyChinese and '任务' or QUESTS_LABEL,'ID')
                 end
             end)
         end

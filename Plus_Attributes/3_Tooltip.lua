@@ -20,7 +20,7 @@ local Show_Tooltip={}
 --主属性
 Show_Tooltip.STATUS= function(frame, owner)
     local currentSpec= GetSpecialization() or 0
-    local PrimaryStat= select(6, GetSpecializationInfo(currentSpec, nil, nil, nil, e.Player.sex))
+    local PrimaryStat= select(6, GetSpecializationInfo(currentSpec, nil, nil, nil, WoWTools_DataMixin.Player.Sex))
 
     local stat, effectiveStat, posBuff, negBuff = UnitStat('player', PrimaryStat)
     local effectiveStatDisplay = BreakUpLargeNumbers(effectiveStat or 0)
@@ -171,7 +171,7 @@ Show_Tooltip.HASTE= function(frame)
 	end
 	GameTooltip:AddDoubleLine(frame.nameText or frame.name or ' ', format(hasteFormatString, format("%0.2f%%", haste + 0.5)), frame.r, frame.g, frame.b, frame.r, frame.g, frame.b)
 	GameTooltip:AddLine(
-        e.cn(_G["STAT_HASTE_"..e.Player.class.."_TOOLTIP"])
+        WoWTools_TextMixin:CN(_G["STAT_HASTE_"..WoWTools_DataMixin.Player.Class.."_TOOLTIP"])
         or (WoWTools_Mixin.onlyChinese and '提高攻击速度和施法速度。' or STAT_HASTE_TOOLTIP),
         nil, nil, nil, true
     )

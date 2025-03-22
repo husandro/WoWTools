@@ -5,7 +5,7 @@ Save={
     ShowMapID= true,--地图ID
     --MapIDScale=1,
 
-    HideTitle=e.Player.husandro,--隐藏，标题
+    HideTitle=WoWTools_DataMixin.Player.husandro,--隐藏，标题
 
     ShowMapXY= true,--地图坐标
     --MapXYScale=1,
@@ -129,7 +129,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --WoWTools_WorldMapMixin.addName2= WoWTools_Mixin.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_WorldMapMixin.addName,
                 tooltip=  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                 GetValue= function() return not WoWTools_WorldMapMixin.Save.disabled end,
@@ -138,7 +138,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(
                         WoWTools_Mixin.addName,
                         addName,
-                        e.GetEnabeleDisable(not WoWTools_WorldMapMixin.Save.disabled),
+                        WoWTools_TextMixin:GetEnabeleDisable(not WoWTools_WorldMapMixin.Save.disabled),
                         WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end

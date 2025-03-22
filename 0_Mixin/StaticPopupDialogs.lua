@@ -8,7 +8,6 @@ WoWTools_OK
 
 
 
-local id, e= ...
 
 local function Get_UIMapIDs_Name(text)--从text取得uiMapID表
     local tab, reText={}, nil
@@ -19,7 +18,7 @@ local function Get_UIMapIDs_Name(text)--从text取得uiMapID表
             if uiMapID and info and info.name and not tab[uiMapID] then--uiMapID<2147483647
                 tab[uiMapID]=true
                 reText= reText and reText..'|n' or ''
-                reText= reText..uiMapID..' '..e.cn(info.name)
+                reText= reText..uiMapID..' '..WoWTools_TextMixin:CN(info.name)
             end
         end
     end)
@@ -289,7 +288,7 @@ StaticPopup_Show('WoWTools_OK',
         OnShow = function(self, web)
             self.editBox:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
-                    print(e.Icon.icon2..WoWTools_TooltipMixin.addName,
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName,
                             '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
                             s:GetText()
                         )
@@ -409,13 +408,7 @@ StaticPopup_Show("PERKS_PROGRAM_CONFIRM_PURCHASE", product.price, markup, data);
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
-    if arg1~= id then
-        return
-    end
-
-    C_Timer.After(1, function()
-        if Init() then Init=function()end end
-        EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
-    end)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", function(owner)
+    if Init() then Init=function()end end
+    EventRegistry:UnregisterCallback('PLAYER_LOGIN', owner)
 end)

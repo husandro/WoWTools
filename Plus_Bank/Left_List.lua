@@ -122,7 +122,7 @@ local function Set_Button_Text(self)
     local name= self.subClassID
         and C_Item.GetItemSubClassInfo(self.classID, self.subClassID)
         or C_Item.GetItemClassInfo(self.classID)
-    name= e.cn(name)
+    name= WoWTools_TextMixin:CN(name)
     name= name..' '..(self.subClassID or self.classID)
     self.Text:SetText(name or '')
 end
@@ -168,7 +168,7 @@ local function Create_ListButton(index)
 
         local find, find2= Set_Tooltip(self, GameTooltip, 0)
         if find==0 and find2==0 then
-            GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..e.Icon.left)
+            GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '提取/存放' or (WITHDRAW..'/'..DEPOSIT))..WoWTools_DataMixin.Icon.left)
             GameTooltip:AddLine('classID '..self.classID..(self.subClassID and '-'..self.subClassID or ''))
         end
         GameTooltip:Show()
@@ -456,7 +456,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_BankMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
 

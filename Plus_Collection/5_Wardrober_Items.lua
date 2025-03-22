@@ -184,9 +184,9 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                     if all>0 then
                         local col= collected==all and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(n/2))==0 and '|cffff7f00' or '|cffffffff')
                         local icon= SlotsIcon[category] or ''
-                        local name= e.cn(C_TransmogCollection.GetCategoryInfo(category)) or ''
+                        local name= WoWTools_TextMixin:CN(C_TransmogCollection.GetCategoryInfo(category)) or ''
                         GameTooltip:AddLine(
-                            format('%s%s%s %i%%  %s/%s%s', col, icon, name, collected/all*100, WoWTools_Mixin:MK(collected, 3), WoWTools_Mixin:MK(all, 3), e.Icon.player)
+                            format('%s%s%s %i%%  %s/%s%s', col, icon, name, collected/all*100, WoWTools_Mixin:MK(collected, 3), WoWTools_Mixin:MK(all, 3), WoWTools_DataMixin.Icon.Player)
                         )
                         n=n+1
                     end
@@ -197,7 +197,7 @@ local function Init_Wardrober_Items()--物品, 幻化, 界面
                 local all= C_TransmogCollection.GetCategoryTotal(self.Text.category) or 0
                 local icon= SlotsIcon[self.Text.category] or ''
                 GameTooltip:AddLine(
-                    format('%s%i%%  %s/%s', icon, collected/all*100, WoWTools_Mixin:MK(collected, 3), (WoWTools_Mixin:MK(all, 3) ) or '')..e.Icon.player)
+                    format('%s%i%%  %s/%s', icon, collected/all*100, WoWTools_Mixin:MK(collected, 3), (WoWTools_Mixin:MK(all, 3) ) or '')..WoWTools_DataMixin.Icon.Player)
             end
             GameTooltip:Show()
         end)
@@ -310,7 +310,7 @@ local function set_Items_Tooltips(self)--UpdateItems
                                     GameTooltip:SetHyperlink(link2)
                                 end
                                 GameTooltip:AddLine(' ')
-                                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL, e.Icon.left)
+                                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL, WoWTools_DataMixin.Icon.left)
                                 GameTooltip:Show()
                                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
                              end

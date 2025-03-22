@@ -1,9 +1,9 @@
 local id, e= ...
 WoWTools_MacroMixin={
 Save={
-    --disabled= not e.Player.husandro,
+    --disabled= not WoWTools_DataMixin.Player.husandro,
     toRightLeft=3, -- 1,2, 3 左边 右边 默认
-    spellButton=e.Player.husandro,
+    spellButton=WoWTools_DataMixin.Player.husandro,
     --旧版本 mcaro={},-- {name=tab.name, icon=tab.icon, body=tab.body}
     macro={},--{[|T..icon..:0|t..name..spllID..itemName]={name=tab.name, icon=tab.icon, body=tab.body}}
 
@@ -101,7 +101,7 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
                 local col= InCombatLockdown() and '|cff9e9e9e' or '|cffffffff'
                 GameTooltip:AddDoubleLine(
                     col..(WoWTools_Mixin.onlyChinese and '删除' or DELETE),
-                    col..'Alt+'..(WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..e.Icon.left
+                    col..'Alt+'..(WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left
                 )
             end
 
@@ -174,14 +174,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MacroMixin.addName= addName
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 tooltip= ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
                     ..'|r|n'..(WoWTools_Mixin.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(e.Icon.icon2.. addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -192,7 +192,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(
                         WoWTools_Mixin.addName,
                         addName,
-                        e.GetEnabeleDisable(false), 'MacroToolkit',
+                        WoWTools_TextMixin:GetEnabeleDisable(false), 'MacroToolkit',
                         WoWTools_Mixin.onlyChinese and '插件' or ADDONS
                     )
                 end

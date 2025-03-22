@@ -12,7 +12,7 @@ local function calendar_Uptate()
     local info= indexInfo and C_Calendar.GetDayEvent(indexInfo.offsetMonths, indexInfo.monthDay, indexInfo.eventIndex) or {}
     local text
     if info.eventID then
-        local title= e.cn(nil, {holydayID= info.eventID, isName=true})
+        local title= WoWTools_TextMixin:CN(nil, {holydayID= info.eventID, isName=true})
         text= (info.iconTexture and '|T'..info.iconTexture..':0|t'..info.iconTexture..'|n' or '')
             ..'eventID '..info.eventID
             ..(info.title and '|n'..info.title or '')
@@ -30,7 +30,7 @@ local function calendar_Uptate()
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('https://www.wowhead.com/event='..self.eventID, e.Icon.left)
+            GameTooltip:AddDoubleLine('https://www.wowhead.com/event='..self.eventID, WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end)
         CalendarViewHolidayFrame.Text:SetScript('OnMouseDown', function(frame)

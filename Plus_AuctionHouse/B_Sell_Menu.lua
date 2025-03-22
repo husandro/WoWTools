@@ -51,7 +51,7 @@ local function Init_Menu(self, root)
         Save().hideSellItem={}
         Save().hideSellPet={}
         self:Init_Sell_Item_Button()
-        print(e.Icon.icon2..WoWTools_AuctionHouseMixin.addName, WoWTools_Mixin.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AuctionHouseMixin.addName, WoWTools_Mixin.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
         return MenuResponse.Refresh
     end)
 
@@ -81,7 +81,7 @@ local function Init_Menu(self, root)
         if speciesName then
             sub2= sub:CreateCheckbox(
                 '|T'..(speciesIcon or 0)..':0|t'
-                ..e.cn(speciesName, {npcID=companionID, isName=true}),
+                ..WoWTools_TextMixin:CN(speciesName, {npcID=companionID, isName=true}),
             function(data)
                 return Save().hideSellPet[data.speciesID]
             end, function(data)
@@ -106,7 +106,7 @@ local function Init_Menu(self, root)
         ..format(
             CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
             WoWTools_Mixin.onlyChinese and '品质' or PROFESSIONS_COLUMN_HEADER_QUALITY,
-            (e.cn(_G['ITEM_QUALITY'..Save().sellItemQualiy..'_DESC']) or Save().sellItemQualiy)
+            (WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..Save().sellItemQualiy..'_DESC']) or Save().sellItemQualiy)
         ),
     function()
         return MenuResponse.Open
@@ -119,7 +119,7 @@ local function Init_Menu(self, root)
     for quality= Enum.ItemQuality.Poor ,  Enum.ItemQuality.WoWToken do
         sub2=sub:CreateCheckbox(
             select(4, WoWTools_ItemMixin:GetColor(quality))
-            ..(e.cn(_G['ITEM_QUALITY'..quality..'_DESC']) or quality),
+            ..(WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC']) or quality),
         function(data)
             return Save().sellItemQualiy== data.quality
         end, function(data)

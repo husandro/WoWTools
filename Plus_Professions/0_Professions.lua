@@ -72,13 +72,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_ProfessionMixin.addName= '|A:Professions_Icon_FirstTimeCraft:0:0|a'..(WoWTools_Mixin.onlyChinese and '专业' or PROFESSIONS_TRACKER_HEADER_PROFESSION)
 
             --添加控制面板
-            e.AddPanel_Check({
+            WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_ProfessionMixin.addName,
                 tooltip= WoWTools_ProfessionMixin.addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(e.Icon.icon2..WoWTools_ProfessionMixin.addName, e.GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_ProfessionMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

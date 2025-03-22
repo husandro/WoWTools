@@ -126,7 +126,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MailMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), e.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 

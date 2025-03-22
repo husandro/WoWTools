@@ -589,7 +589,7 @@ local function Set_PetUnit(self)
 
 --名称
     self.nameText:SetText(
-        (e.cn(name) or '')
+        (WoWTools_TextMixin:CN(name) or '')
         ..(speciesName and name~=speciesName and ' ['..speciesName..']' or '')
     )
     self.nameText:SetTextColor(r,g,b)
@@ -635,7 +635,7 @@ local function Init_Button_Menu(self, root)
     local color= name and select(2, Get_Pet_Quality(self.petOwner, petIndex))
 
     sub=root:CreateButton(
-        name and color.hex..'|T'..icon..':0|t'..e.cn(name)
+        name and color.hex..'|T'..icon..':0|t'..WoWTools_TextMixin:CN(name)
             or '|TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_Mixin.onlyChinese and '宠物手册' or PET_JOURNAL),
     function(data)
         WoWTools_LoadUIMixin:Journal(2, {petOwner=self.petOwner, petIndex=self:getPetIndex()})
@@ -654,7 +654,7 @@ local function Init_Button_Menu(self, root)
     root:CreateDivider()
 --显示
     root:CreateCheckbox(
-        e.Icon.left..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
+        WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
     function()
         return self.frame:IsShown()
     end, function()
@@ -791,10 +791,10 @@ local function Set_Move_Button(btn)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName5, WoWTools_PetBattleMixin.addName6)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, e.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, e.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..e.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -1256,7 +1256,7 @@ local function Init_BottomFrame()
                 self["AbilityName"..i]:SetText(
                     (PET_TYPE_SUFFIX[petType] and '|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t' or '')
                     ..'|T'..(icon or 0)..':0|t'
-                    ..e.cn(name, {spellID=abilityID})
+                    ..WoWTools_TextMixin:CN(name, {spellID=abilityID})
                     ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
                     ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
                 )

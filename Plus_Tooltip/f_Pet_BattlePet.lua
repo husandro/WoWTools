@@ -40,12 +40,12 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     BattlePetTooltipTemplate_AddTextLine(tooltip, abilityIcon)
 
     BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
-    local npcName= e.cn(nil, {npcID=companionID, isName=true})--中文名称
+    local npcName= WoWTools_TextMixin:CN(nil, {npcID=companionID, isName=true})--中文名称
     if npcName then
         BattlePetTooltipTemplate_AddTextLine(tooltip, npcName)
     end
 
-    local sourceInfo= e.cn(nil, {speciesID=speciesID}) or {}
+    local sourceInfo= WoWTools_TextMixin:CN(nil, {speciesID=speciesID}) or {}
     tooltipDescription= sourceInfo[1] or tooltipDescription
     if tooltipDescription then
         BattlePetTooltipTemplate_AddTextLine(tooltip, tooltipDescription, nil, nil, nil, true)--来源提示

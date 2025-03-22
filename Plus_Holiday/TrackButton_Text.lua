@@ -16,7 +16,7 @@ local function Check_TimeWalker_Quest_Completed()--迷离的时光之路，任�
         72725,--迷离的时光之路 熊猫人之迷
     }) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
-            return format('|A:%s:0:0|a', e.Icon.select)
+            return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
         end
     end
 end
@@ -24,7 +24,7 @@ end
 local function Check_Darkmon_Quest_Completed()--暗月马戏团，宠物对战，任务是否完成
     for _, questID in pairs({36471, 32175}) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
-            return format('|A:%s:0:0|a', e.Icon.select)
+            return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
         end
     end
 end
@@ -108,7 +108,7 @@ end
 local CALENDAR_EVENTTYPE_TEXTURES = {
 	[Enum.CalendarEventType.Raid]		= "Interface\\LFGFrame\\LFGIcon-Raid",
 	[Enum.CalendarEventType.Dungeon]	= "Interface\\LFGFrame\\LFGIcon-Dungeon",
-	--[Enum.CalendarEventType.PvP]		=  e.Player.faction=='Alliance' and "Interface\\Calendar\\UI-Calendar-Event-PVP02" or (e.Player.faction=='Horde' and "Interface\\Calendar\\UI-Calendar-Event-PVP01") or "Interface\\Calendar\\UI-Calendar-Event-PVP",
+	--[Enum.CalendarEventType.PvP]		=  WoWTools_DataMixin.Player.Faction=='Alliance' and "Interface\\Calendar\\UI-Calendar-Event-PVP02" or (WoWTools_DataMixin.Player.Faction=='Horde' and "Interface\\Calendar\\UI-Calendar-Event-PVP01") or "Interface\\Calendar\\UI-Calendar-Event-PVP",
 	[Enum.CalendarEventType.Meeting]	= "Interface\\Calendar\\MeetingIcon",
 	[Enum.CalendarEventType.Other]		= "Interface\\Calendar\\UI-Calendar-Event-Other",
 }
@@ -124,7 +124,7 @@ local function Get_Button_Text(event)
     local text
     local texture
 
-    local tab= e.cn(nil, {holydayID=event.eventID}) or {}
+    local tab= WoWTools_TextMixin:CN(nil, {holydayID=event.eventID}) or {}
     local title=tab[1] or event.title
 
 
@@ -329,13 +329,13 @@ local function Create_Button(index, last)
         if (self.monthOffset and self.day and self.index) then
             local holidayInfo= C_Calendar.GetHolidayInfo(self.monthOffset, self.day, self.index);
             if (holidayInfo) then
-                local data= e.cn(nil, {holydayID=self.eventID}) or {}
+                local data= WoWTools_TextMixin:CN(nil, {holydayID=self.eventID}) or {}
                 title= data[1] or holidayInfo.name
                 description = data[2] or holidayInfo.description;
 
                 if (holidayInfo.startTime and holidayInfo.endTime) then
                     description=format(WoWTools_Mixin.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
-                        e.cn(description),
+                        WoWTools_TextMixin:CN(description),
                         FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month, holidayInfo.startTime.year),
                         GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
                         FormatShortDate(holidayInfo.endTime.monthDay, holidayInfo.endTime.month, holidayInfo.startTime.year),
@@ -346,16 +346,16 @@ local function Create_Button(index, last)
                 local raidInfo = C_Calendar.GetRaidInfo(self.monthOffset, self.day, self.index);
                 if raidInfo and raidInfo.calendarType == "RAID_LOCKOUT" then
                     title = GetDungeonNameWithDifficulty(raidInfo.name, raidInfo.difficultyName);
-                    description= format(WoWTools_Mixin.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, e.cn(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
+                    description= format(WoWTools_Mixin.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, WoWTools_TextMixin:CN(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
                 end
             end
             if title or description then
                 if title then
-                    GameTooltip:AddLine(e.cn(title))
+                    GameTooltip:AddLine(WoWTools_TextMixin:CN(title))
                 end
                 if description and description~='' then
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddLine(e.cn(description), nil,nil,nil,true)
+                    GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil,nil,nil,true)
                     GameTooltip:AddLine(' ')
                 end
             end

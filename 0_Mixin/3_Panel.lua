@@ -3,21 +3,21 @@ local e= select(2, ...)
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)
 
-
+WoWTools_PanelMixin={}
 --[[
-e.ReloadPanel(tab)
-e.CSlider(self, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
-e.OpenPanelOpting(category, name)
-e.AddPanel_Sub_Category(tab)
-e.AddPanel_Header(layout, title)
-e.AddPanel_Check(tab)
-e.AddPanel_Button(tab)
-e.AddPanel_DropDown(tab)
-e.AddPanel_Check_Button(tab)
-e.GetFormatter1to10(value, minValue, maxValue)
-e.AddPanel_Check_Sider(tab)
-e.AddPanelSider(tab)
-e.StausText={}--属性，截取表 API_Panel.lua
+WoWTools_PanelMixin:ReloadButton(tab)
+WoWTools_PanelMixin:Slider(frame, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
+WoWTools_PanelMixin:Open(category, name)
+WoWTools_PanelMixin:AddSubCategory(tab)
+WoWTools_PanelMixin:Header(layout, title)
+WoWTools_PanelMixin:OnlyCheck(tab)
+WoWTools_PanelMixin:OnlyButton(tab)
+WoWTools_PanelMixin:OnlyMenu(tab)
+WoWTools_PanelMixin:CheckMenu(tab, parentInitializer)
+WoWTools_PanelMixin:Check_Button(tab)
+WoWTools_Mixin:Check_Slider(tab)
+WoWTools_Mixin:OnlySlider(tab)
+
 
 initializer:AddSearchTags(bindingName)
 
@@ -40,7 +40,7 @@ layout:AddInitializer(initializer);
 --#####################
 --重新加载UI, 重置, 按钮
 --#####################
-function e.ReloadPanel(tab)
+function WoWTools_PanelMixin:ReloadButton(tab)
     local rest= WoWTools_ButtonMixin:Cbtn(tab.panel, {isUI=true, size=25})
     rest:SetNormalAtlas('bags-button-autosort-up')
     rest:SetPushedAtlas('bags-button-autosort-down')
@@ -48,18 +48,18 @@ function e.ReloadPanel(tab)
     rest.addName=tab.addName
     rest.func=tab.clearfunc
     rest.clearTips=tab.clearTips
-    rest:SetScript('OnClick', function(self)
+    rest:SetScript('OnClick', function(frame)
         StaticPopup_Show('WoWTools_RestData',
-        (self.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
-        nil, self.func)
+        (frame.addName or '')..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+        nil, frame.func)
     end)
     rest:SetScript('OnLeave', GameTooltip_Hide)
-    rest:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    rest:SetScript('OnEnter', function(frame)
+        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(self.clearTips or (WoWTools_Mixin.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
+        GameTooltip:AddLine(frame.clearTips or (WoWTools_Mixin.onlyChinese and '当前保存' or (ITEM_UPGRADE_CURRENT..SAVE)))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, frame.addName)
         GameTooltip:Show()
     end)
 
@@ -72,18 +72,18 @@ function e.ReloadPanel(tab)
         reload:SetScript('OnClick', function() WoWTools_Mixin:Reload() end)
         reload.addName=tab.addName
         reload:SetScript('OnLeave', GameTooltip_Hide)
-        reload:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        reload:SetScript('OnEnter', function(frame)
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, frame.addName)
             GameTooltip:Show()
         end)
     end
     if tab.disabledfunc then
         local check=CreateFrame("CheckButton", nil, tab.panel, "InterfaceOptionsCheckButtonTemplate")
-        check.text:SetText(e.GetEnabeleDisable(true))
+        check.text:SetText(WoWTools_TextMixin:GetEnabeleDisable(true))
         check:SetChecked(tab.checked)
         if reload then
             check:SetPoint('LEFT', reload, 'RIGHT')
@@ -93,18 +93,18 @@ function e.ReloadPanel(tab)
         check:SetScript('OnClick', tab.disabledfunc)
         check:SetScript('OnLeave', GameTooltip_Hide)
         check.addName= tab.addName
-        check:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        check:SetScript('OnEnter', function(frame)
+            GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '启用/禁用' or (ENABLE..'/'..DISABLE))
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, self.addName)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, frame.addName)
             GameTooltip:Show()
         end)
     end
     if tab.restTips then
         local needReload= WoWTools_LabelMixin:Create(tab.panel)
-        needReload:SetText(format('|A:%s:0:0|a', e.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', e.Icon.toLeft))
+        needReload:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
         needReload:SetPoint('BOTTOMRIGHT')
         needReload:SetTextColor(0,1,0)
     end
@@ -114,8 +114,8 @@ end
 
 
 
-function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
-    local slider= CreateFrame("Slider", nil, self, 'OptionsSliderTemplate')
+function WoWTools_PanelMixin:Slider(frame, tab)--WoWTools_PanelMixin:Slider(frame, {w=, h=, min=, max=, value=, setp=, color=, text=, func=clickfunc, tips=func})
+    local slider= CreateFrame("Slider", nil, frame, 'OptionsSliderTemplate')
     slider:SetSize(tab.w or 200, tab.h or 18)
     slider:SetMinMaxValues(tab.min, tab.max)
     slider:SetValue(tab.value)
@@ -133,17 +133,17 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
     slider:EnableMouseWheel(true)
     slider.max= tab.max
     slider.min= tab.min
-    slider:SetScript('OnMouseWheel', function(self2, d)
-        local setp= self2:GetValueStep() or 1
-        local value= self2:GetValue()
+    slider:SetScript('OnMouseWheel', function(f, d)
+        local setp= f:GetValueStep() or 1
+        local value= f:GetValue()
         if d== 1 then
             value= value- setp
         elseif d==-1 then
             value= value+ setp
         end
-        value= value> self2.max and self2.max or value
-        value= value< self2.min and self2.min or value
-        self2:SetValue(value)
+        value= value> f.max and f.max or value
+        value= value< f.min and f.min or value
+        f:SetValue(value)
     end)
     if tab.color then
         slider.Low:SetTextColor(1,0,1)
@@ -162,8 +162,8 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
     if tab.tip then
         slider:SetScript('OnEnter', tab.tips)
     else
-        slider:SetScript('OnEnter', function(self2)
-            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+        slider:SetScript('OnEnter', function(f)
+            GameTooltip:SetOwner(f, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(tab.text)
             GameTooltip:AddLine(' ')
@@ -171,7 +171,7 @@ function e.CSlider(self, tab)--e.CSlider(self, {w=, h=, min=, max=, value=, setp
             GameTooltip:AddLine('|A:bags-greenarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '最大' or MAXIMUM)..': '..tab.max)
             GameTooltip:AddLine('Setp: '..tab.setp)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(format('|A:%s:0:0|a', e.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..self2:GetValue())
+            GameTooltip:AddLine(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_Mixin.onlyChinese and '当前: ' or ITEM_UPGRADE_CURRENT)..f:GetValue())
             GameTooltip:Show()
         end)
     end
@@ -235,7 +235,7 @@ end
 
 --打开，选项
 --Settings.OpenToCategory(categoryID, scrollToElementName)
-function e.OpenPanelOpting(category, name)
+function WoWTools_PanelMixin:Open(category, name)
     --[[if SettingsPanel:IsVisible() and not WoWTools_Mixin:IsLockFrame(SettingsPanel) then--ToggleGameMenu()
         SettingsPanel:Close()
     end]]
@@ -247,7 +247,7 @@ end
 
 
 --添加，子目录
-function e.AddPanel_Sub_Category(tab)
+function WoWTools_PanelMixin:AddSubCategory(tab)
     local disabled
     if type(tab.disabled)=='function' then
         disabled= tab.disabled()
@@ -266,7 +266,7 @@ end
 
 
 --添加，标题
-function e.AddPanel_Header(layout, title)
+function WoWTools_PanelMixin:Header(layout, title)
     layout= layout or Layout
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
 end
@@ -281,7 +281,7 @@ end
 
 
 --添加，Check
-function e.AddPanel_Check(tab, parentInitializer)
+function WoWTools_PanelMixin:OnlyCheck(tab, parentInitializer)
     local setting=Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),
@@ -301,7 +301,7 @@ end
 
 --添加，按钮
 --CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip, addSearchTags)
-function e.AddPanel_Button(tab, parentInitializer)
+function WoWTools_PanelMixin:OnlyButton(tab, parentInitializer)
     local layout= tab.layout or Layout
     local initializer= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
         tab.title or '',
@@ -317,7 +317,7 @@ function e.AddPanel_Button(tab, parentInitializer)
     return initializer
 end
 --[[
-e.AddPanel_Button({
+WoWTools_PanelMixin:OnlyButton({
     title= WoWTools_Mixin.onlyChinese and '' or '',
     buttonText=WoWTools_Mixin.onlyChinese and '' or '',
     SetValue=function()
@@ -329,7 +329,7 @@ e.AddPanel_Button({
 
 
 --添加，下拉菜单
-function e.AddPanel_DropDown(tab)
+function WoWTools_PanelMixin:OnlyMenu(tab)
     local setting= Settings.RegisterProxySetting(--categoryTbl, variable, variableType, name, defaultValue, getValue, setValue
         tab.category or Category,
         Set_VariableIndex(),
@@ -349,7 +349,7 @@ end
 
 --Blizzard_SettingControls.lua
 --CreateSettingsCheckboxDropdownInitializer(cbSetting, cbLabel, cbTooltip, dropdownSetting, dropdownOptions, dropDownLabel, dropDownTooltip)
-function e.AddPanel_Check_DropDown(tab, parentInitializer)
+function WoWTools_PanelMixin:CheckMenu(tab, parentInitializer)
     local layout= tab.layout or Layout
     local cbSetting=Settings.RegisterProxySetting(
         tab.category or Category,--categoryTbl
@@ -392,7 +392,7 @@ function e.AddPanel_Check_DropDown(tab, parentInitializer)
     return initializer
 end
 --[[
-e.AddPanel_Check_DropDown({
+WoWTools_PanelMixin:CheckMenu({
 category=,
 name=,
 tooltip=,
@@ -420,7 +420,7 @@ end
 
 
 --添加，Check 和 按钮
-function e.AddPanel_Check_Button(tab, parentInitializer)
+function WoWTools_PanelMixin:Check_Button(tab, parentInitializer)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -447,25 +447,13 @@ end
 
 
 
---添加，Check 和 划条
-function e.GetFormatter1to10(value, minValue, maxValue)
-    if value and minValue and maxValue then
-        return RoundToSignificantDigits(((value-minValue)/(maxValue-minValue) * (maxValue- minValue)) + minValue, maxValue)
-    end
-    return value
-end
---[[local function GetFormatter1to10(minValue, maxValue)
-    return function(value)
-        return e.GetFormatter1to10(value, minValue, maxValue)
-    end
-end]]
 
 
 
 
 
 
-function e.AddPanel_Check_Sider(tab)
+function WoWTools_Mixin:Check_Slider(tab)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -489,7 +477,7 @@ function e.AddPanel_Check_Sider(tab)
 
     local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.step);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-       return e.GetFormatter1to10(value or 1, 0, 1)
+       return WoWTools_Mixin:GetFormatter1to10(value or 1, 0, 1)
     end)
 
     local initializer = CreateSettingsCheckboxSliderInitializer(
@@ -511,7 +499,7 @@ end
 
 
 --添加，划动条
-function e.AddPanelSider(tab)
+function WoWTools_Mixin:OnlySlider(tab)
     local setting = Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),
@@ -524,7 +512,7 @@ function e.AddPanelSider(tab)
 
     local options = Settings.CreateSliderOptions(tab.minValue, tab.maxValue, tab.setp);
     options:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-        return e.GetFormatter1to10(value or 1, 0, 1)
+        return WoWTools_Mixin:GetFormatter1to10(value or 1, 0, 1)
     end)
 
     local initializer=Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);

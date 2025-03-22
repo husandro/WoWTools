@@ -120,7 +120,7 @@ local function Get_Items(self)--取得背包物品信息
                 and (not Save().no[info.itemID] or Save().use[info.itemID])--禁用使用
                 --and C_PlayerInfo.CanUseItem(info.itemID)--是否可使用
                 and not (duration and duration>2 or enable==0) and classID~=8--冷却
-                and ((itemMinLevel and itemMinLevel<=e.Player.level) or not itemMinLevel)--使用等级
+                and ((itemMinLevel and itemMinLevel<=WoWTools_DataMixin.Player.Level) or not itemMinLevel)--使用等级
                 and classID~=13
             then
                 --WoWTools_Mixin:Load({id=info.itemID, type='item'})
@@ -163,7 +163,7 @@ local function Get_Items(self)--取得背包物品信息
 
                        if info.hasLoot then--可打开
                             if Save().open then
-                                if dateInfo.text[LOCKED] and e.Player.class=='ROGUE' then--DZ
+                                if dateInfo.text[LOCKED] and WoWTools_DataMixin.Player.Class=='ROGUE' then--DZ
                                     Set_Att(self, bag, slot, info.iconFileID, info.itemID, 1804)--开锁 Pick Lock
                                 else--if not dateInfo.text[LOCKED] then
                                     Set_Att(self, bag, slot, info.iconFileID, info.itemID)
@@ -232,7 +232,7 @@ local function Get_Items(self)--取得背包物品信息
                                     return
                                 end
                             end
-                        elseif e.Is_Timerunning and (info.itemID>=219256 and info.itemID<=219282) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
+                        elseif WoWTools_DataMixin.Is_Timerunning and (info.itemID>=219256 and info.itemID<=219282) then--将帛线织入你的永恒潜能披风，使你获得的经验值永久提高12%。
                             Set_Att(self, bag, slot, info.iconFileID, info.itemID)
                             return
                         end

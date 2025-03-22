@@ -26,7 +26,7 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
         --GameTooltip:AddLine('|A:Cursor_lootall_128:0:0|a'..(WoWTools_Mixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus')
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), e.GetEnabeleDisable(not Save().notSellJunk))
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), WoWTools_TextMixin:GetEnabeleDisable(not Save().notSellJunk))
         if not Save().notSellJunk then
             GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '品质：%s' or PROFESSIONS_CRAFTING_QUALITY, '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC)..'|r'))
         end
@@ -133,7 +133,7 @@ end
 local Frame= CreateFrame('Frame')
 Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName)--encounterID, itemID, itemLink, quantity, playerName, classFileName
     if event=='ENCOUNTER_LOOT_RECEIVED' then--买出BOOS装备
-        if IsInInstance() and  (playerName and playerName:find(e.Player.name) or not IsInGroup()) then
+        if IsInInstance() and  (playerName and playerName:find(WoWTools_DataMixin.Player.Name) or not IsInGroup()) then
             local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, classID, subclassID, bindType, expansionID = C_Item.GetItemInfo(itemLink)
             itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
 
@@ -146,7 +146,7 @@ Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName
                 and bindType == LE_ITEM_BIND_ON_ACQUIRE--1     LE_ITEM_BIND_ON_ACQUIRE    拾取绑定
                 and (
                         (itemLevel and itemLevel>1 and avgItemLevel-itemLevel>=30)
-                        or (e.Player.isMaxLevel and expansionID and expansionID<e.ExpansionLevel)--旧版本
+                        or (e.Player.isMaxLevel and expansionID and expansionID<WoWTools_DataMixin.ExpansionLevel)--旧版本
                     )
                 and not Save().noSell[itemID]
             then

@@ -224,7 +224,7 @@ local function Init()
             '|cnGREEN_FONT_COLOR:'
             ..(WoWTools_Mixin.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
             ..(icon and '|T'..icon..':0|t' or ''),
-            e.Icon.left
+            WoWTools_DataMixin.Icon.left
         )
         GameTooltip:Show()
     end)
@@ -234,7 +234,7 @@ local function Init()
     end)
 
     --选定宏，点击，弹出菜单，自定图标
-    MacroFrameSelectedMacroButton:RegisterForClicks(e.LeftButtonDown, e.RightButtonDown)
+    MacroFrameSelectedMacroButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     MacroFrameSelectedMacroButton:HookScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)

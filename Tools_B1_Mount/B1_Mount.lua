@@ -79,8 +79,8 @@ local P_Mouts_Tab={
 WoWTools_MountMixin={
     Save={
         Mounts=P_Mouts_Tab,
-        KEY= e.Player.husandro and 'BUTTON5', --为我自定义, 按键
-        AFKRandom=e.Player.husandro,--离开时, 随机坐骑
+        KEY= WoWTools_DataMixin.Player.husandro and 'BUTTON5', --为我自定义, 按键
+        AFKRandom=WoWTools_DataMixin.Player.husandro,--离开时, 随机坐骑
         mountShowTime=3,--坐骑秀，时间
         showFlightModeButton=true, --切换飞行模式
         --toFrame=nil,
@@ -157,7 +157,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
                 end
 
-                WoWTools_MountMixin.faction= e.Player.faction=='Horde' and 0 or (e.Player.faction=='Alliance' and 1)
+                WoWTools_MountMixin.faction= WoWTools_DataMixin.Player.Faction=='Horde' and 0 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 1)
             else
                 self:UnregisterEvent('ADDON_LOADED')
             end

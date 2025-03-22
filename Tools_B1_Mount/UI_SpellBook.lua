@@ -27,12 +27,12 @@ local function set_Use_Spell_Button(btn, spellID)
                 GameTooltip:AddDoubleLine(
                     '|T'..(C_Spell.GetSpellTexture(self.spellID) or 0)..':0|t'
                     ..(C_Spell.GetSpellLink(self.spellID) or self.spellID)
-                    ..' '..e.GetEnabeleDisable(Save().Mounts[SPELLS][self.spellID]),
+                    ..' '..WoWTools_TextMixin:GetEnabeleDisable(Save().Mounts[SPELLS][self.spellID]),
 
-                    e.Icon.left
+                    WoWTools_DataMixin.Icon.left
                 )
             end
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, e.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
             self:SetAlpha(1)
         end
@@ -45,7 +45,7 @@ local function set_Use_Spell_Button(btn, spellID)
                     self:set_tooltips()
                     self:set_alpha()
                     WoWTools_MountMixin.MountButton:settings()
-                    print(e.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD, C_Spell.GetSpellLink(self.spellID))
                 end
             else
                 WoWTools_MountMixin:Init_Menu_Spell(self)

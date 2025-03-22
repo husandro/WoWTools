@@ -57,7 +57,7 @@ local function Init()
         if cur then
             info =info or {}
             if cur== max then
-                text= (info.quantity and WoWTools_Mixin:MK(info.quantity, 1) or format('|A:%s:0:0|a', e.Icon.select))
+                text= (info.quantity and WoWTools_Mixin:MK(info.quantity, 1) or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
             else
                 text= format('%i%%', cur/max*100)
             end
@@ -92,16 +92,16 @@ local function Init()
 
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
-            ..e.Icon.right
+            ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
             (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '团队副本' or RAIDS)..'|r'
-            ..e.Icon.mid
+            ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 

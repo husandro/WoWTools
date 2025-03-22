@@ -50,7 +50,7 @@ local function Init_Button_Menu(self, root)
                 local name= C_AddOns.GetAddOnInfo(i)
                 local value=tab[name]
                 local vType= type(value)
-                if vType=='boolean' or vType=='number' or value==e.Player.guid then
+                if vType=='boolean' or vType=='number' or value==WoWTools_DataMixin.Player.GUID then
                     C_AddOns.EnableAddOn(i)
                 else
                     C_AddOns.DisableAddOn(i)
@@ -215,7 +215,7 @@ local function Create_Button(indexAdd)
         GameTooltip:ClearLines()
         Set_OnEnter_Tooltip(self, GameTooltip)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..e.Icon.left)
+        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 
@@ -310,7 +310,7 @@ function WoWTools_AddOnsMixin:Set_Right_Buttons()
     end
 
     if self.NewButton then
-        self.NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', e.Icon.player, some) or '')
+        self.NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', WoWTools_DataMixin.Icon.Player, some) or '')
         self.NewButton.Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
     end
 

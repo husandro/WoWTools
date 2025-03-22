@@ -34,7 +34,7 @@ local function Init_OnEnter(self)
     GameTooltip:ClearLines()
     GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
     GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(e.Player.L.layer, e.Player.Layer or (WoWTools_Mixin.onlyChinese and '无' or NONE))--位面
+    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer, WoWTools_DataMixin.Player.Layer or (WoWTools_Mixin.onlyChinese and '无' or NONE))--位面
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
     if uiMapID then
@@ -77,9 +77,9 @@ local function Init_OnEnter(self)
             end
             GameTooltip:AddLine(' ')
             if playerCursorMapName then
-                GameTooltip:AddDoubleLine(e.Icon.player..playerCursorMapName, 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.Player..playerCursorMapName, 'XY: '..x..' '..y)
             else
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, e.Icon.player)), 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: '..x..' '..y)
             end
         end
     end
@@ -168,7 +168,7 @@ local function Init_PlayerXY_Option_Menu(self, root2)
             Save().PlayerXY_Size= value
             WoWTools_WorldMapMixin:Init_XY_Player()
         end,
-        name= e.Icon.player,
+        name= WoWTools_DataMixin.Icon.Player,
         minValue=6,
         maxValue=72,
         step=1,
@@ -220,7 +220,7 @@ local function Init_Menu(self, root)
         ShowHideTitle()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(e.GetShowHide(nil, true))
+        tooltip:AddLine(WoWTools_TextMixin:GetShowHide(nil, true))
     end)
     root:CreateDivider()
 
@@ -320,7 +320,7 @@ local function Init_Menu(self, root)
 
 --玩家当前位置
     sub=root:CreateCheckbox(
-        e.Icon.player..' XY',
+        WoWTools_DataMixin.Icon.Player..' XY',
     function()
         return Save().ShowPlayerXY
     end, function()

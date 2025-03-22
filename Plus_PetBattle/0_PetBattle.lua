@@ -3,16 +3,16 @@ local id, e = ...
 WoWTools_PetBattleMixin={
 
     Save={
-        --clickToMove= e.Player.husandro,--禁用, 点击移动
+        --clickToMove= WoWTools_DataMixin.Player.husandro,--禁用, 点击移动
         ClickMoveButton={
-            --disabled= not e.Player.husandro,
+            --disabled= not WoWTools_DataMixin.Player.husandro,
             --Point,
             --Scale=1,
             --Strata='MEDIUM'
             PlayerFrame=true,
-            lock_autoInteract=e.Player.husandro and '1' or nil,
-            lock_cameraSmoothStyle= e.Player.husandro and '0' or nil,
-            lock_cameraSmoothTrackingStyle= e.Player.husandro and '0' or nil,
+            lock_autoInteract=WoWTools_DataMixin.Player.husandro and '1' or nil,
+            lock_cameraSmoothStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
+            lock_cameraSmoothTrackingStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
         },
         TypeButton={
             --disabled=true,
@@ -20,7 +20,7 @@ WoWTools_PetBattleMixin={
             --hideFrame=true,
             --scale=1,
             --strata='MEDIUM',
-            --allShow=e.Player.husandro,
+            --allShow=WoWTools_DataMixin.Player.husandro,
             showBackground=true,
         },
         Plus={
