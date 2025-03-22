@@ -6,7 +6,8 @@ WoWTools_Mixin={
     onlyChinese= e.onlyChinese,
 }
 
-
+--WoWTools_Mixin.onlyChinese
+--WoWTools_Mixin.addName
 
 
 function WoWTools_Mixin:Call(func, ...)
@@ -24,8 +25,7 @@ function WoWTools_Mixin:IsLockFrame(frame)
     return disabled
 end
 
---WoWTools_Mixin.onlyChinese
---WoWTools_Mixin.addName
+
 --[[
 AccountUtil.lua
 FriendsFrame.lua
