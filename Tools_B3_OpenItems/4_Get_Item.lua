@@ -104,6 +104,7 @@ local function Get_Items(self)--取得背包物品信息
     for bag= Enum.BagIndex.Backpack, bagMax do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             info = C_Container.GetContainerItemInfo(bag, slot)
+
             local duration, enable
             if info and info.itemID then
                 itemMinLevel, _, _, _, _, _, _, classID, subclassID= select(5, C_Item.GetItemInfo(info.itemID))

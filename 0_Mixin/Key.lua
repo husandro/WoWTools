@@ -28,7 +28,7 @@ end)
 
 
 function WoWTools_KeyMixin:Init(btn, GetValue, notSetup)
-    btn.GetKEY= btn.GetKey or GetValue or btn.GetKey
+    btn.GetKEY= GetValue or btn.GetKey or btn.GetKEY
     btn.KEYstring=WoWTools_LabelMixin:Create(btn,{size=12, color={r=1,g=1,b=1}})
     btn.KEYstring:SetPoint('TOPRIGHT')
 
@@ -120,28 +120,18 @@ end]]
 
 --快捷键
 function WoWTools_KeyMixin:SetMenu(frame, root, tab)
-    
-    local sub
-    local name= frame:get_key_text() or (e.onlyChinese and '设置捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL)
-)
-    if not frame:CanChangeAttribute() or InCombatLockdown() then
-        sub= root:CreateTitle(name)
-        return sub
-    end
-
-    sub=root:CreateCheckbox(
-        name,
-    function()
-        return self:GetKEY()~=nil
-    end, function(data)
+    local sub=root:CreateButton(
+        (e.onlyChinese and '设置捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL))
+        ..(tab.key and ' ['..tab.key..']' or ''),
+    function(data)
         StaticPopup_Show('WoWTools_EditText',
             (data.name and data.name..' ' or '')
             ..(e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL)
             ..'|n|n"|cnGREEN_FONT_COLOR:Q|r", "|cnGREEN_FONT_COLOR:ALT-Q|r","|cnGREEN_FONT_COLOR:BUTTON5|r"|n"|cnGREEN_FONT_COLOR:ALT-CTRL-SHIFT-Q|r"',
             nil,
             {
-                text=self:GetKEY(),
-                key=self:GetKEY(),
+                text=data.key,
+                key=data.key,
                 OnShow=function(s, tab2)
                     if not tab2.key then
                         s.editBox:SetText('BUTTON5')
@@ -157,17 +147,21 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
                     print(WoWTools_Mixin.addName, data.name, text)
                 end,
                 OnAlt=data.OnAlt,
-                GetKey=tab.GetKey,
+                GetKey=data.GetKey,
             }
         )
     end, tab)
+    sub:SetEnabled(frame:CanChangeAttribute() and not InCombatLockdown())
+
     sub:SetTooltip(function(tooltip, desc)
-       -- tooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, desc.data.name)
+        tooltip:AddDoubleLine(e.onlyChinese and '设置' or SETTINGS, desc.data.name)
         tooltip:AddDoubleLine(
             e.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL,
-            desc.data.key or ('|cff828282'..(e.onlyChinese and '无' or NONE))
+            desc.data.key
         )
+        tooltip:AddLine(frame:get_key_text())
     end)
+
     --sub:SetEnabled(not UnitAffectingCombat('player'))
     return sub
 end

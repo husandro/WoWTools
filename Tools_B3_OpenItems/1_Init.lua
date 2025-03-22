@@ -204,14 +204,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if OpenButton then
                 WoWTools_OpenItemMixin.OpenButton= OpenButton
                 WoWTools_OpenItemMixin.addName= addName
-            --else
-                --self:UnregisterEvent('PLAYER_LOGIN')
+            else
+                self:UnregisterEvent('PLAYER_LOGIN')
             end
             self:UnregisterEvent("ADDON_LOADED")
         end
 
     elseif event=='PLAYER_LOGIN' then
-        WoWTools_OpenItemMixin:Init_Button()
+          WoWTools_OpenItemMixin:Init_Button()
 
     --[[elseif event == "PLAYER_LOGOUT" then
         if not e.ClearAllSave then

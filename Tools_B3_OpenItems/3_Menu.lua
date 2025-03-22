@@ -282,6 +282,7 @@ local OptionsList={{
     root:CreateDivider()
 
 --打开, 选项界面，菜单
+
     sub= WoWTools_ToolsMixin:OpenMenu(root, WoWTools_OpenItemMixin.addName, self:get_key_text())
 
 --设置捷键
