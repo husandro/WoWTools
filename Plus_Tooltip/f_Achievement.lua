@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就

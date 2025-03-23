@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币

@@ -1,5 +1,5 @@
 --坐骑秀
-local e=select(2, ...)
+
 local Frame
 
 local function Save()

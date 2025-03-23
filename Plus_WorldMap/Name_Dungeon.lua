@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 --地下城，加名称
 local IsSetup
 

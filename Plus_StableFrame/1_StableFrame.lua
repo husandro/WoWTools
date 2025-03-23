@@ -1,4 +1,4 @@
-local id, e= ...
+
 if WoWTools_DataMixin.Player.Class~='HUNTER' then
     WoWTools_StableFrameMixin.Save={disabled=true}
     return

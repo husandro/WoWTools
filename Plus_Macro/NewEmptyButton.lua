@@ -1,5 +1,5 @@
 --创建，空，按钮
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_MacroMixin.Save
 end

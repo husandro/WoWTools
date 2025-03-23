@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end

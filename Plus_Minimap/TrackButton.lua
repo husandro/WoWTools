@@ -1,5 +1,5 @@
 
-local e= select(2, ...)
+
 local TrackButton
 local WorldMapButton--世界地图，添加一个按钮
 local addName, addName2

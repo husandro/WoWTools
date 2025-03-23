@@ -101,6 +101,10 @@ WoWTools_DataMixin.Icon={
 	[Enum.ItemQuality.Artifact] = "dressingroom-itemborder-artifact",
 	[Enum.ItemQuality.Heirloom] = "dressingroom-itemborder-account",
 	[Enum.ItemQuality.WoWToken] = "dressingroom-itemborder-account",--8
+
+    [STABLE_PET_SPEC_CUNNING] = "cunning-icon-small",
+    [STABLE_PET_SPEC_FEROCITY] = "ferocity-icon-small",
+    [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
 }
 
 

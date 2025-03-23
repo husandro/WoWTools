@@ -1,11 +1,7 @@
-local e= select(2, ...)
+
 WoWTools_StableFrameMixin={}
 
-e.dropdownIconForPetSpec = {
-    [STABLE_PET_SPEC_CUNNING] = "cunning-icon-small",
-    [STABLE_PET_SPEC_FEROCITY] = "ferocity-icon-small",
-    [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
-}
+
 
 function WoWTools_StableFrameMixin:GetAbilitieIconForTab(tab, line)
     local text=''

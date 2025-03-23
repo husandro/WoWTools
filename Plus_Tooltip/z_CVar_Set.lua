@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 --设置Cvar
 function WoWTools_TooltipMixin:Set_CVar(reset, tips, notPrint)

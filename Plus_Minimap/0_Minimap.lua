@@ -1,5 +1,5 @@
 
-local id, e = ...
+
 
 WoWTools_MinimapMixin={
 Save={

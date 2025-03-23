@@ -1,4 +1,4 @@
-local id, e = ...
+
 
 local Save={
     --enabledInRaid=true--在团队中启用会掉帧

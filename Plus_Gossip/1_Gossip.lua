@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 local GossipButton
 
 local function Save()

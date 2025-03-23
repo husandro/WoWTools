@@ -1,5 +1,5 @@
 
-local e= select(2, ...)
+
 
 local MovieList= {--CinematicsMenu.lua
     { expansion=LE_EXPANSION_CLASSIC,

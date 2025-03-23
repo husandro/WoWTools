@@ -1,5 +1,5 @@
 --帮助
-local e= select(2, ...)
+
 
 
 

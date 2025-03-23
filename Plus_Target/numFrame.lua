@@ -1,5 +1,5 @@
 --怪物目标, 队员目标, 总怪物
-local e= select(2, ...)
+
 local Frame
 local numFrame
 local numButton

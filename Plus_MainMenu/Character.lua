@@ -1,5 +1,5 @@
 --角色 CharacterMicroButton 
-local e= select(2, ...)
+
 --MainMenuBarMicroButtons.lua
 
 

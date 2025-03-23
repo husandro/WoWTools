@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物

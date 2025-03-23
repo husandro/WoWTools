@@ -1,5 +1,5 @@
 --天赋
-local e= select(2, ...)
+
 
 
 

@@ -40,7 +40,7 @@ local function GetHunterPetSpellText(spellID, isLeftPoint)
         end
     end
 
-    local atlas = e.dropdownIconForPetSpec[info.specialization]
+    local atlas = WoWTools_DataMixin.Icon[info.specialization]
     if atlas then
         icon= (icon and icon..(isLeftPoint and '' or '|n' ) or '').. (atlas and '|A:'..atlas..':0:0|a' or '')
     end

@@ -1,5 +1,5 @@
 --宠物，信息，提示
-local e= select(2, ...)
+
 if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
@@ -37,7 +37,7 @@ local function SetTooltip(frame, pet)
             end
 
         elseif indexType=='specialization' then
-            local atlas = e.dropdownIconForPetSpec[name]
+            local atlas = WoWTools_DataMixin.Icon[name]
             GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION), (atlas and '|A:'..atlas..':22:22|a' or '')..col..WoWTools_TextMixin:CN(name))
 
         elseif indexType=='level' then

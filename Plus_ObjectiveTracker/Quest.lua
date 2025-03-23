@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 --任务 QuestObjectiveTracker QuestObjectiveTrackerMixin
 
 

@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 --实时玩家当前坐标
 
 local function Save()

@@ -1,6 +1,6 @@
  --显示选项中的CVar
 --Blizzard_SettingControls.lua
-local e= select(2, ...)
+
         --[[local function set_onenter(self)
             if self.onEnter or not self.variable then
                 return
@@ -36,12 +36,12 @@ local function Init()
     end
 
     local function InitTooltip(name, tooltip, variable)
-        GameTooltip_AddHighlightLine(SettingsTooltip, e.strText[name] or name)
+        GameTooltip_AddHighlightLine(SettingsTooltip, WoWTools_TextMixin:CN(name) or name)
         if tooltip then
             if type(tooltip) == "function" then
                 GameTooltip_AddNormalLine(SettingsTooltip, tooltip())
             else
-                GameTooltip_AddNormalLine(SettingsTooltip, e.strText[tooltip] or tooltip)
+                GameTooltip_AddNormalLine(SettingsTooltip, WoWTools_TextMixin:CN(tooltip) or tooltip)
             end
         end
         if variable then
@@ -75,7 +75,7 @@ local function Init()
                 if option.tooltip or option.disabled then
                     GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
                     if option.label then
-                        local optionLabel= e.strText[option.label] or option.label
+                        local optionLabel= WoWTools_TextMixin:CN(option.label) or option.label
                         if option.disabled then
                             optionLabel = DISABLED_FONT_COLOR:WrapTextInColorCode(optionLabel)
                         else
@@ -83,7 +83,7 @@ local function Init()
                         end
                         local optionTooltip= option.tooltip
                         if optionTooltip then
-                            optionTooltip= e.strText[optionTooltip] or optionTooltip
+                            optionTooltip= WoWTools_TextMixin:CN(optionTooltip) or optionTooltip
                             if option.disabled then
                                 optionTooltip = DISABLED_FONT_COLOR:WrapTextInColorCode(optionTooltip)
                             elseif default and option.recommend then
@@ -103,13 +103,13 @@ local function Init()
             end
             if defaultOption and defaultOption.recommend and defaultOption.label then
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
-                local label= e.strText[defaultOption.label] or defaultOption.label
+                local label= WoWTools_TextMixin:CN(defaultOption.label) or defaultOption.label
                 GameTooltip_AddHighlightLine(SettingsTooltip, string.format("%s: %s", WoWTools_Mixin.onlyChinese and '推荐' or VIDEO_OPTIONS_RECOMMENDED, GREEN_FONT_COLOR:WrapTextInColorCode(label)))
             end
 
             if warningOption and warningOption.value == setting:GetValue() and warningOption.warning then
                 GameTooltip_AddBlankLineToTooltip(SettingsTooltip)
-                local warning= e.strText[warningOption.warning] or warningOption.warning
+                local warning= WoWTools_TextMixin:CN(warningOption.warning) or warningOption.warning
                 GameTooltip_AddNormalLine(SettingsTooltip, WARNING_FONT_COLOR:WrapTextInColorCode(warning))
             end
 
@@ -214,7 +214,7 @@ local function Init()
         local bindingIndex = initializer.data.bindingIndex
         local action, category = GetBinding(bindingIndex)
         local bindingName = GetBindingName(action)
-        bindingName= e.strText[bindingName] or bindingName
+        bindingName= WoWTools_TextMixin:CN(bindingName) or bindingName
         local function InitializeKeyBindingButtonTooltip(index)
             local key = select(index, GetBindingKey(action))
             if key then

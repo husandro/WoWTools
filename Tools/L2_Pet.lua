@@ -1,4 +1,4 @@
-local id, e = ...
+
 local addName
 local Save={
     speciesID=2780,

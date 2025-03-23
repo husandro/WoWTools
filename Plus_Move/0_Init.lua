@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_MoveMixin={
 Save={
     --disabledMove=true,--禁用移动

@@ -1,5 +1,5 @@
 --玩具界面, 菜单
-local e= select(2, ...)
+
 
 local function Save()
     return  WoWToolsSave['Tools_UseItems']

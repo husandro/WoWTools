@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 --地图坐标
 
 local function Save()

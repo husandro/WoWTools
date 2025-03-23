@@ -1,6 +1,6 @@
 
 --公会 GuildMicroButton
-local e= select(2, ...)
+
 
 
 

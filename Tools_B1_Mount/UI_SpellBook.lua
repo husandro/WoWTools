@@ -1,5 +1,5 @@
 --法术书，选项
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_MountMixin.Save
 end

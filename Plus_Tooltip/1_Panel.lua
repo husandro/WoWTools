@@ -1,5 +1,5 @@
 --添加新控制面板 Blizzard_Settings
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_TooltipMixin.Save
 end

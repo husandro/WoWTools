@@ -1,5 +1,5 @@
 --命令，按钮，列表
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_MacroMixin.Save
 end

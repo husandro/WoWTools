@@ -4,7 +4,7 @@ end
 
 
 --快速，加载，物品，按钮
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_MailMixin.Save
 end

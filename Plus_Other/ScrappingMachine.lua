@@ -1,4 +1,4 @@
-local id, e = ...
+
 local Save={
     items={--禁用，自动添加，物品
         --+精通

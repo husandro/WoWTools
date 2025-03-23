@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 --设置单位, NPC

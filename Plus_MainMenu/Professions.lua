@@ -1,5 +1,5 @@
 --专业
-local e= select(2, ...)
+
 
 
 

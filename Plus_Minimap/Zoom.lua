@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 local Frame=CreateFrame('Frame')
 local Save= function()
     return  WoWTools_MinimapMixin.Save

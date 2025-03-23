@@ -1,5 +1,4 @@
 
-local id, e = ...
 local addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips'
 
 WoWTools_TooltipMixin={

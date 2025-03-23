@@ -1,4 +1,4 @@
-local id, e = ...
+
 
 
 local P_Mouts_Tab={

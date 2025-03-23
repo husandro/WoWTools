@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 --地图ID，信息
 
 local function Save()

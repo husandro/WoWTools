@@ -1,4 +1,4 @@
-local id, e= ...
+
 local Save={
     fishing='BUTTON1',
     archaeology='F',

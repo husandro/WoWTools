@@ -1,4 +1,4 @@
-local id, e= ...
+
 WoWTools_MacroMixin={
 Save={
     --disabled= not WoWTools_DataMixin.Player.husandro,

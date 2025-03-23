@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 if WoWTools_DataMixin.Player.Class~='HUNTER' then
     return
 end
@@ -138,7 +138,7 @@ local function created_model(btn, setBg)
             self.Icon:SetTexCoord(0, 1, 0, 1)
         end
 
-        local atlas= e.dropdownIconForPetSpec[pet.specialization]
+        local atlas= WoWTools_DataMixin.Icon[pet.specialization]
         if atlas then
             self.specTexture:SetAtlas(atlas)
         else

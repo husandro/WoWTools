@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 --天赋 ClassTalentSpecTabMixin

@@ -1,4 +1,4 @@
-local e = select(2, ...)
+
 --飞行点名称
 local btn
 

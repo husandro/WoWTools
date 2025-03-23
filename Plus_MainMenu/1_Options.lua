@@ -1,5 +1,5 @@
 --添加控制面板
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_MainMenuMixin.Save
 end

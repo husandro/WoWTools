@@ -1,5 +1,5 @@
 --界面，菜单
-local e= select(2, ...)
+
 local MountType={
     MOUNT_JOURNAL_FILTER_GROUND,
     MOUNT_JOURNAL_FILTER_AQUATIC,

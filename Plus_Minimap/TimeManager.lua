@@ -19,7 +19,7 @@ showStopwatchFrame=true,加载游戏时，显示秒表
 StopwatchFrameScale=1,缩放
 StopwatchOnClickPause=true,--移过暂停
 ]]
-local e= select(2, ...)
+
 local addName
 
 local function Save()

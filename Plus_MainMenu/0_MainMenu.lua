@@ -1,4 +1,4 @@
-local id, e = ...
+
 
 WoWTools_MainMenuMixin={
     Save={

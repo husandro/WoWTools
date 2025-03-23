@@ -1,4 +1,4 @@
-local id, e= ...
+
 if WoWTools_DataMixin.Player.Class~='MAGE' then
     return
 end

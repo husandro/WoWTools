@@ -1,5 +1,5 @@
 --选项，操作，按钮
-local e= select(2, ...)
+
 local button
 
 local function Save()

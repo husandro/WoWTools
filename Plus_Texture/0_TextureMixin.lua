@@ -1,7 +1,7 @@
 --[[
 CreateBackground(frame, tab)
 ]]
-local e= select(2, ...)
+
 
 WoWTools_TextureMixin={
     Events={}

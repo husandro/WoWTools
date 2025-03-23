@@ -1,5 +1,4 @@
 local id, e = ...
-
 WoWTools_ObjectiveTrackerMixin={
 Save={
     disabled= not WoWTools_DataMixin.Player.husandro,

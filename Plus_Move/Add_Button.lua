@@ -1,6 +1,6 @@
 --添加，移动/缩放，按钮
 --创建, 一个移动按钮
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_MoveMixin.Save
 end

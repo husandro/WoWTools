@@ -1,5 +1,5 @@
 --选定宏，点击，弹出菜单，自定图标
-local e= select(2, ...)
+
 
 local function Get_Text_Table()
     local allTab={}

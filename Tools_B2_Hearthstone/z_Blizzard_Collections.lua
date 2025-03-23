@@ -1,5 +1,5 @@
 --玩具界面, 按钮
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_HearthstoneMixin.Save
 end

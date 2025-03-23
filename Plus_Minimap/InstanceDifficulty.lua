@@ -4,7 +4,7 @@ MinimapCluster.InstanceDifficulty.Default
 MinimapCluster.InstanceDifficulty.ChallengeMode.Text
 MinimapCluster.InstanceDifficulty.Guild.Border
 ]]
-local e= select(2, ...)
+
 
 
 
