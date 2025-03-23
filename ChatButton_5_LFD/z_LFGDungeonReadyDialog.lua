@@ -29,7 +29,7 @@ local function Init()
     end)
 
 --禁用
-    if WoWTools_LFDMixin.Save.disabledLFGDungeonReadyDialog then
+    if WoWToolsSave['ChatButton_LFD'].disabledLFGDungeonReadyDialog then
         return
     end
 
@@ -54,7 +54,7 @@ local function Init()
     LFGDungeonReadyDialog:HookScript('OnShow', function(self)
         local numBosses = select(9, GetLFGProposal()) or 0
         local isHoliday = select(13, GetLFGProposal())
-        if numBosses == 0 or isHoliday or WoWTools_LFDMixin.Save.disabledLFGDungeonReadyDialog then
+        if numBosses == 0 or isHoliday or WoWToolsSave['ChatButton_LFD'].disabledLFGDungeonReadyDialog then
             self.bossTipsLabel:SetText('')
             return
         end

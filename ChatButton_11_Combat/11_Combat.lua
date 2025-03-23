@@ -1,6 +1,6 @@
 
-WoWTools_CombatMixin={
-    Save= {
+WoWTools_CombatMixin={}
+local P_Save= {
     textScale=1.2,
     SayTime=120,--每隔
     disabledSayTime= not WoWTools_DataMixin.Player.husandro,
@@ -14,25 +14,11 @@ WoWTools_CombatMixin={
 
     inCombatScale=1,--战斗中缩放
 }
-}
 
 
 
 
 
-
-
-
-local function Init()
-    if WoWTools_CombatMixin.Save.AllOnlineTime or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime then--总游戏时间
-        RequestTimePlayed()
-    end
-
-
-    WoWTools_CombatMixin:Init_Button()
-    WoWTools_CombatMixin:Init_TrackButton()
-    WoWTools_CombatMixin:Init_SetupMenu()
-end
 
 
 
@@ -40,33 +26,31 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
+
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            WoWTools_CombatMixin.Save= WoWToolsSave['ChatButton_Combat'] or WoWTools_CombatMixin.Save
+            WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or P_Save
 
-            local addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
-            local CombatButton= WoWTools_ChatMixin:CreateButton('Combat', addName)
+            WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
+            WoWTools_CombatMixin.CombatButton= WoWTools_ChatMixin:CreateButton('Combat', WoWTools_CombatMixin.addName)
 
-            WoWTools_CombatMixin.CombatButton= CombatButton
-            WoWTools_CombatMixin.addName= addName
-
-            if CombatButton then--禁用Chat Button
-                if WoWTools_CombatMixin.Save.SayTime==0 then
-                    WoWTools_CombatMixin.Save.disabledSayTime= true
-                    WoWTools_CombatMixin.Save.SayTime=120
+            if WoWTools_CombatMixin.CombatButton then--禁用Chat Button
+                if WoWToolsSave['ChatButton_Combat'].SayTime==0 then
+                    WoWToolsSave['ChatButton_Combat'].disabledSayTime= true
+                    WoWToolsSave['ChatButton_Combat'].SayTime=120
                 end
 
-                Init()
+                if WoWToolsSave['ChatButton_Combat'].AllOnlineTime or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime then--总游戏时间
+                    RequestTimePlayed()
+                end
+
+                WoWTools_CombatMixin:Init_Button()
+                WoWTools_CombatMixin:Init_TrackButton()
+                WoWTools_CombatMixin:Init_SetupMenu()
             end
             self:UnregisterEvent(event)
-        end
-
-    elseif event=='PLAYER_LOGOUT' then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_Combat']= WoWTools_CombatMixin.Save
         end
     end
 end)

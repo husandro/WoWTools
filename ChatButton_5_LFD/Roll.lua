@@ -39,7 +39,7 @@ end
 
 local function set_ROLL_Check(frame, notPrint)
     local rollID= frame and frame.rollID
-    if not WoWTools_LFDMixin.Save.autoROLL or not rollID then
+    if not WoWToolsSave['ChatButton_LFD'].autoROLL or not rollID then
         set_Timer_Text(frame)--提示，剩余时间
         return
     end

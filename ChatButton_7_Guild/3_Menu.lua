@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_GuildMixin.Save
+    return WoWToolsSave['ChatButtonGuild']
 end
 
 

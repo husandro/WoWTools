@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_CombatMixin.Save
+    return WoWToolsSave['ChatButton_Combat']
 end
 
 
@@ -103,7 +103,7 @@ local function Init_Menu(self, root)
 
     sub2=sub:CreateButton((isInCombat and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
         if IsControlKeyDown() and not InCombatLockdown() then
-            WoWTools_CombatMixin.Save= nil
+            WoWToolsSave['ChatButton_Combat']= nil
             WoWTools_Mixin:Reload()
         end
     end)

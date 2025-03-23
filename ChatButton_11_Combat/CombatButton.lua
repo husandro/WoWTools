@@ -1,5 +1,5 @@
 local function Save()
-    return WoWTools_CombatMixin.Save
+    return WoWToolsSave['ChatButton_Combat']
 end
 
 

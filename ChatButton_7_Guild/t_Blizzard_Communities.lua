@@ -16,7 +16,7 @@
     mixin:SetNineSlice(CommunitiesFrameInset, nil, true)
     mixin:SetNineSlice(CommunitiesFrameCommunitiesList.InsetFrame, true)
     CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
-    
+
     CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
     mixin:SetSearchBox(CommunitiesFrame.ChatEditBox)
@@ -24,7 +24,7 @@
     mixin:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
     mixin:SetAlphaColor(CommunitiesFrameMiddle)
 
-    
+
     mixin:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
     hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
@@ -39,7 +39,7 @@
         end)
     end)
 
-    
+
 
     mixin:HideFrame(CommunitiesFrame.ChatTab, {index=1})
     mixin:HideFrame(CommunitiesFrame.RosterTab, {index=1})
@@ -97,7 +97,7 @@
     mixin:SetInset(GuildRegistrarFrameInset)
     mixin:SetNineSlice(GuildRegistrarFrameInset)
     mixin:SetScrollBar(GuildRegistrarFrame)
-    
+
 --设计，公会战袍
     --mixin:SetNineSlice(TabardFrameInset)
     TabardFrameInset:Hide()
@@ -166,7 +166,7 @@
     mixin:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, nil, nil, true)
     mixin:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
 
-        
+
 --新闻过滤
     mixin:SetFrame(CommunitiesGuildNewsFiltersFrame, {isMinAlpha=true})
 

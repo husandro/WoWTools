@@ -1,6 +1,6 @@
 
 --local addName
-WoWTools_LFDMixin.Save={
+local P_Save={
     leaveInstance=WoWTools_DataMixin.Player.husandro,--自动离开,指示图标
     autoROLL= WoWTools_DataMixin.Player.husandro,--自动,战利品掷骰
     --disabledLootPlus=true,--禁用，战利品Plus
@@ -101,6 +101,8 @@ local function Init()
         WoWTools_Mixin:PlaySound()--播放, 声音
         WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
+
+    return true
 end
 
 
@@ -116,12 +118,12 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
+
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-            WoWTools_LFDMixin.Save= WoWToolsSave['ChatButton_LFD'] or WoWTools_LFDMixin.Save
-            WoWTools_LFDMixin.Save.sec= WoWTools_LFDMixin.Save.sec or 5
+            WoWToolsSave['ChatButton_LFD']=  WoWToolsSave['ChatButton_LFD'] or P_Save
+            WoWToolsSave['ChatButton_LFD'].sec= WoWToolsSave['ChatButton_LFD'].sec or 5
 
             WoWTools_LFDMixin.addName= '|A:groupfinder-eye-frame:0:0|a'..(WoWTools_Mixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
 
@@ -129,14 +131,10 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             if LFDButton then--禁用Chat Button                
                 WoWTools_LFDMixin.LFDButton= LFDButton
-                Init()
+                
+                if Init() then Init=function()end end
             end
             self:UnregisterEvent(event)
-        end
-
-    elseif event=='PLAYER_LOGOUT' then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
         end
     end
 end)

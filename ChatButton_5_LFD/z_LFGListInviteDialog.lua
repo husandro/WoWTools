@@ -14,7 +14,7 @@ local function Settings(self)
 
     WoWTools_CooldownMixin:Setup(self, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
 
-    if WoWTools_LFDMixin.Save.disabedLFDInviteInfo or not self.resultID then
+    if WoWToolsSave['ChatButton_LFD'].disabedLFDInviteInfo or not self.resultID then
         return
     end
 

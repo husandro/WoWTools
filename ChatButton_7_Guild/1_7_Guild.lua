@@ -1,4 +1,4 @@
-WoWTools_GuildMixin.Save={
+local P_Save={
     --disabledPetitionTarget=true,新建，自动要求签名目标
     --guildInfo=true,公会信息
     --showNotOnLine=true,
@@ -6,7 +6,6 @@ WoWTools_GuildMixin.Save={
 }
 
 
-local GuildButton
 
 
 
@@ -42,57 +41,45 @@ end
 
 
 
-local function Init()
-    if not GuildButton then
-        return
-    end
 
-    C_ClubFinder.RequestSubscribedClubPostingIDs()
 
-    WoWTools_GuildMixin:Init_Button()
-    WoWTools_GuildMixin:Init_ClubFinder()
-    WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus
-    WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
-end
+
 
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
-
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')--保存公会数据，到WOW
 panel:RegisterEvent('PLAYER_GUILD_UPDATE')
 panel:RegisterEvent('PLAYER_LOGIN')
-
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_GuildMixin.Save= WoWToolsSave['ChatButtonGuild'] or WoWTools_GuildMixin.Save
+            WoWToolsSave['ChatButtonGuild']= WoWToolsSave['ChatButtonGuild'] or P_Save
 
-            local addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(WoWTools_Mixin.onlyChinese and '公会' or GUILD)
-            WoWTools_GuildMixin.addName= addName
+            WoWTools_GuildMixin.addName= '|A:UI-HUD-MicroMenu-GuildCommunities-Up:0:0|a'..(WoWTools_Mixin.onlyChinese and '公会' or GUILD)
 
-            GuildButton= WoWTools_ChatMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
-            WoWTools_GuildMixin.GuildButton= GuildButton
+            WoWTools_GuildMixin.GuildButton= WoWTools_ChatMixin:CreateButton('Guild', WoWTools_GuildMixin.addName)
 
-            if not GuildButton  then
-                self:UnregisterEvent('PLAYER_ENTERING_WORLD')
+            if WoWTools_GuildMixin.GuildButton then
+                self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_LOGIN' then
-        Init()
+        C_ClubFinder.RequestSubscribedClubPostingIDs()
+
+        WoWTools_GuildMixin:Init_Button()
+        WoWTools_GuildMixin:Init_ClubFinder()
+        WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus
+        WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
+
         Save_WoWGuild()--保存公会数据，到WOW
+
         self:UnregisterEvent(event)
 
     elseif event=='PLAYER_GUILD_UPDATE' then
         Save_WoWGuild()--保存公会数据，到WOW
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButtonGuild']= WoWTools_GuildMixin.Save
-        end
     end
 end)

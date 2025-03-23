@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_GuildMixin.Save
+    return WoWToolsSave['ChatButtonGuild']
 end
 
 local G_GUILD_INFO_TEMPLATE= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立
@@ -225,6 +225,5 @@ end
 function WoWTools_GuildMixin:Init_Button()
     if Init(self.GuildButton) then
         Init=function()end
-        return true
     end
 end

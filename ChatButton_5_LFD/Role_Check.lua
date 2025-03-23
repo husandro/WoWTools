@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_LFDMixin.Save
+    return WoWToolsSave['ChatButton_LFD']
 end
 
 
@@ -101,11 +101,11 @@ local function Init_LFD()
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(WoWTools_LFDMixin.Save.sec).. '|r '..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT)..'|r',
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(Save().sec).. '|r '..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT)..'|r',
                 '|cnRED_FONT_COLOR:'..'Alt '..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)
             )
-        self:CancellORSetTime(WoWTools_LFDMixin.Save.sec)
-        self.acceptTime= C_Timer.NewTimer(WoWTools_LFDMixin.Save.sec, function()
+        self:CancellORSetTime(Save().sec)
+        self.acceptTime= C_Timer.NewTimer(Save().sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cffff00ff', t)
@@ -170,8 +170,8 @@ local function Init_RolePollPopup()
         if btn2 then
             btn2.checkButton:SetChecked(true)
             WoWTools_Mixin:Call(RolePollPopupRoleButtonCheckButton_OnClick, btn2.checkButton, btn2)
-            WoWTools_CooldownMixin:Setup(self, nil, WoWTools_LFDMixin.Save.sec, nil, true)--冷却条
-            self.aceTime=C_Timer.NewTimer(WoWTools_LFDMixin.Save.sec, function()
+            WoWTools_CooldownMixin:Setup(self, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true)--冷却条
+            self.aceTime=C_Timer.NewTimer(Save().sec, function()
                 if self.acceptButton:IsEnabled() then
                     self.acceptButton:Click()
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, WoWTools_Mixin.onlyChinese and '职责确认' or ROLE_POLL, icon or '')

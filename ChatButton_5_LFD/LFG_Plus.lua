@@ -1,5 +1,5 @@
 local function Save()
-    return WoWTools_LFDMixin.Save
+    return WoWToolsSave['ChatButton_LFD']
 end
 
 

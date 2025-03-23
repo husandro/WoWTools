@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_LFDMixin.Save
+    return WoWToolsSave['ChatButton_LFD']
 end
 
 local ExitIns
@@ -80,7 +80,7 @@ local function Init_Frame()
                     WoWTools_Mixin:PlaySound()--播放, 声音
                     local leaveSce= 30
                     if Save().autoROLL and event=='LOOT_CLOSED' then
-                        leaveSce= WoWTools_LFDMixin.Save.sec
+                        leaveSce= WoWToolsSave['ChatButton_LFD'].sec
                     end
                     ExitIns=true
                     C_Timer.After(leaveSce, function()
@@ -116,10 +116,10 @@ local function Init_Frame()
             if Save().leaveInstance then
                 WoWTools_Mixin:PlaySound()--播放, 声音
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
-                    WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWTools_LFDMixin.Save.sec, nil, true, true)
+                    WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true, true)
                 end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(WoWTools_LFDMixin.Save.sec))
-                C_Timer.After(WoWTools_LFDMixin.Save.sec, function()
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(Save().sec))
+                C_Timer.After(Save().sec, function()
                     if not IsModifierKeyDown() then
                         if IsInLFDBattlefield() then
                             ConfirmOrLeaveLFGParty()
@@ -141,7 +141,7 @@ end
 
 local function Init()
     StaticPopupDialogs['WoWTools_LFD_ExitIns']={
-        text =WoWTools_Mixin.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(WoWTools_Mixin.onlyChinese and '离开' or LEAVE)..'|r: ' ..(WoWTools_Mixin.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..WoWTools_LFDMixin.Save.sec..' |r'..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
+        text =WoWTools_Mixin.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(WoWTools_Mixin.onlyChinese and '离开' or LEAVE)..'|r: ' ..(WoWTools_Mixin.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..Save().sec..' |r'..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
         button1 = WoWTools_Mixin.onlyChinese and '离开' or  LEAVE,
         button2 = WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
         OnAccept=function()
@@ -168,9 +168,10 @@ local function Init()
             s:GetParent():Hide()
         end,
         whileDead=true, hideOnEscape=true, exclusive=true,
-        timeout=WoWTools_LFDMixin.Save.sec}
+        timeout=Save().sec}
 
     Init_Frame()
+    
     LFGDungeonReadyStatus:HookScript('OnShow', function()
         if Save().leaveInstance then
             exit_Instance()
@@ -181,6 +182,8 @@ local function Init()
             exit_Instance()
         end
     end)
+
+    return true
 end
 
 
@@ -189,5 +192,7 @@ end
 
 
 function WoWTools_LFDMixin:Init_Exit_Instance()
-    Init()
+    if Init() then
+        Init=function()end
+    end
 end

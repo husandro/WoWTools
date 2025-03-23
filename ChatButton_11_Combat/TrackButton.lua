@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_CombatMixin.Save
+    return WoWToolsSave['ChatButton_Combat']
 end
 
 
@@ -49,23 +49,23 @@ local InstanceEventTab={
 
 function WoWTools_CombatMixin:Set_Combat_Tooltip(tooltip)
     tooltip:AddDoubleLine(
-        (WoWTools_Mixin.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(self.Save.bat.time),
-        self.Save.bat.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        (WoWTools_Mixin.onlyChinese and '战斗' or COMBAT)..'|A:warfronts-basemapicons-horde-barracks-minimap:0:0|a'..SecondsToTime(Save().bat.time),
+        Save().bat.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     )
     tooltip:AddDoubleLine(
-        (WoWTools_Mixin.onlyChinese and '宠物' or PET)..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num..' |T646379:0|t'..self.Save.pet.capture,
+        (WoWTools_Mixin.onlyChinese and '宠物' or PET)..'|A:worldquest-icon-petbattle:0:0|a'..Save().pet.win..'|r/'..Save().pet.num..' |T646379:0|t'..Save().pet.capture,
         PetAll.win..'/'..PetAll.num
     )
-        --(PetAll.num>0 and PetAll.win..'/'..PetAll.num or (WoWTools_Mixin.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..self.Save.pet.win..'|r/'..self.Save.pet.num,
-        --self.Save.pet.capture..' |T646379:0|t'
-  
+        --(PetAll.num>0 and PetAll.win..'/'..PetAll.num or (WoWTools_Mixin.onlyChinese and '宠物' or PET))..'|A:worldquest-icon-petbattle:0:0|a'..Save().pet.win..'|r/'..Save().pet.num,
+        --Save().pet.capture..' |T646379:0|t'
+
     tooltip:AddDoubleLine(
-        (WoWTools_Mixin.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(self.Save.afk.time),
-        self.Save.afk.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        (WoWTools_Mixin.onlyChinese and '离开' or AFK)..'|A:socialqueuing-icon-clock:0:0|a'..SecondsToTime(Save().afk.time),
+        Save().afk.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     )
     tooltip:AddDoubleLine(
-        (WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..self.Save.ins.kill..'|A:poi-soulspiritghost:0:0|a'..self.Save.ins.dead,
-        self.Save.ins.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(self.Save.ins.time)
+        (WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..'|A:BuildanAbomination-32x32:0:0|a'..Save().ins.kill..'|A:poi-soulspiritghost:0:0|a'..Save().ins.dead,
+        Save().ins.num..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)..' |A:CrossedFlagsWithTimer:0:0|a'..WoWTools_TimeMixin:Info(Save().ins.time)
     )
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '在线' or GUILD_ONLINE_LABEL)..'|A:socialqueuing-icon-clock:0:0|a', SecondsToTime(GetSessionTime()))--time)---在线时间
@@ -162,7 +162,7 @@ end
 
 
 
-local function TrackButton_Frame_Init_Date(self)--初始, 数据
+local function TrackButton_Frame_Init_Date()--初始, 数据
     local time=GetTime()
     local save= Save()
     if UnitIsAFK('player') then
@@ -241,7 +241,6 @@ local function TrackButton_Frame_Init_Date(self)--初始, 数据
     end
 
     if OnAFKTime or OnCombatTime or OnPetTime or OnInstanceTime then
-        TrackButton.elapsed= 0.4
         TrackButton.Frame:SetShown(true)
     else
         TrackButton.Frame:SetShown(false)
@@ -450,6 +449,10 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
             self.elapsed = 0
             set_TrackButton_Text()--设置显示内容
         end
+    end)
+
+    TrackButton.Frame:SetScript('OnHide', function(self)
+        self.elapsed= nil
     end)
 
     TrackButton:set_Point()
