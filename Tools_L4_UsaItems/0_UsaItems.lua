@@ -61,7 +61,7 @@ function WoWTools_UseItemsMixin:Get_P_Tabs()
 end
 
 function WoWTools_UseItemsMixin:Find_Type(type, ID)
-    for index, ID2 in pairs(self.Save[type]) do
+    for index, ID2 in pairs(WoWToolsSave['Tools_UseItems'][type]) do
         if ID2==ID then
             return index
         end

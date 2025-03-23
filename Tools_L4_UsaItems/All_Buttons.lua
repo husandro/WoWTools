@@ -1,7 +1,7 @@
 local e= select(2, ...)
 
 local function Save()
-    return  WoWToolsSave['Tools_UseItems']
+    return WoWToolsSave['Tools_UseItems']
 end
 
 local function get_Find(ID, spell)
