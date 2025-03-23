@@ -1,4 +1,4 @@
-local id, e = ...
+
 local addName
 local Save={
     --mouseUP=  not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
@@ -339,7 +339,7 @@ local function Init_Menu(_, root)
 
         end, function(data)
             StaticPopupDialogs['WoWTools_ChatButton_Group_CUSTOM']={--区域,设置对话框
-                text=id..'    '..addName
+                text=addName
                     ..'|n|n'..(WoWTools_Mixin.onlyChinese and '自定义发送信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, SEND_MESSAGE))
                     ..'|n|n|cnGREEN_FONT_COLOR:'..format('|A:%s:0:0|a', data.icon)..data.text..'|r|n|n'
                     ..(WoWTools_Mixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
@@ -694,7 +694,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButtonGroup']=Save
         end
     end

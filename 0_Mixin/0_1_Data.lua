@@ -6,6 +6,7 @@ WoWTools_DataMixin.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown")
 WoWTools_DataMixin.ExpansionLevel= GetExpansionLevel()--版本数据
 WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
 --WoWTools_DataMixin.IsSetPlayerSound= enabled--播放, 事件声音
+--WoWTools_DataMixin.ClearAllSave= true 全部重置，插件设置
 
 local battleTag= select(2, BNGetInfo())
 local baseClass= UnitClassBase('player')

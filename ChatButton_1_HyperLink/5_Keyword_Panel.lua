@@ -1,12 +1,8 @@
 --颜色: 关键词
-local e= select(2, ...)
-
 local function Save()
     return WoWTools_HyperLink.Save
 end
 
-
-local LinkButton
 
 
 

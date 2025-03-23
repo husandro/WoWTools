@@ -1,5 +1,5 @@
 --历史, 拾取框 LootHistory.lua
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_LFDMixin.Save
 end

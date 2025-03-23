@@ -1,7 +1,6 @@
-local id, e = ...
 
 
-WoWTools_ToolsMixin.Save={
+local P_Save={
     --disabled=true,
 
     disabledADD={},
@@ -35,7 +34,7 @@ local Button, Category, Layout
 local addName= WoWTools_ToolsMixin.addName
 
 local function Save()
-    return WoWTools_ToolsMixin.Save
+    return WoWToolsSave['WoWTools_ToolsButton']
 end
 
 
@@ -93,7 +92,7 @@ local function Init_Panel()
                 ..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
-                    WoWTools_ToolsMixin.Save=nil
+                    WoWToolsSave['WoWTools_ToolsButton']=nil
                     WoWTools_Mixin:Reload()
                 end
             )
@@ -492,7 +491,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_ToolsMixin.Save= WoWToolsSave['WoWTools_ToolsButton'] or WoWTools_ToolsMixin.Save
+            WoWToolsSave['WoWTools_ToolsButton']= WoWToolsSave['WoWTools_ToolsButton'] or P_Save
 
             Save().borderAlpha= Save().borderAlpha or 0.3
             Save().BottomPoint= Save().BottomPoint or {
@@ -525,9 +524,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             Save().show= Button and Button.Frame:IsShown()
-
             WoWToolsSave['WoWTools_ToolsButton']= Save()
         end
     end

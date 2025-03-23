@@ -1,6 +1,3 @@
-local e= select(2, ...)
-
-
 WoWTools_Mixin={
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false

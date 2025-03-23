@@ -1,8 +1,3 @@
-
-
-
-
-local e= select(2, ...)
 WoWTools_LabelMixin={}
 
 

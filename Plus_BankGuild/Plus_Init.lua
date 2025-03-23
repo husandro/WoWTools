@@ -370,7 +370,7 @@ local function Init_Button(self)
 
                 --物品，信息
                     btn:set_item()
-                    e.Set_Item_Info(btn, {guidBank={tab=tabID, slot=slotID}})
+                    WoWTools_ItemMixin:Setup(btn, {guidBank={tab=tabID, slot=slotID}})
 
                     index= index+1
                     table.insert(newTab, btn)
@@ -381,7 +381,7 @@ local function Init_Button(self)
 
 
                 --物品，信息
-                    e.Set_Item_Info(btn, {guidBank={tab=tabID, slot=slotID}})
+                    WoWTools_ItemMixin:Setup(btn, {guidBank={tab=tabID, slot=slotID}})
                     table.insert(newTab, btn)
                 end
             end

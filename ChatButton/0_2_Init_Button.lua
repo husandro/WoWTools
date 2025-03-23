@@ -1,5 +1,4 @@
-local id, e = ...
-WoWTools_ChatMixin.Save={
+local P_Save={
     --disabled=true,    
     disabledADD={
         ['ChatButton_Emoji']= not WoWTools_DataMixin.Player.cn and not WoWTools_DataMixin.Player.husandro,
@@ -23,7 +22,7 @@ local Category, Layout
 
 
 local function Save()
-    return WoWTools_ChatMixin.Save
+    return WoWToolsSave['ChatButton']
 end
 
 
@@ -312,17 +311,16 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_ChatMixin.Save= WoWToolsSave['ChatButton'] or Save()
+            WoWToolsSave['ChatButton']= WoWToolsSave['ChatButton'] or P_Save
             Save().disabledADD= Save().disabledADD or {}
             Save().borderAlpha= Save().borderAlpha or 0.3
             Save().anchorMenuIndex= Save().anchorMenuIndex or 1
 
             ChatButton= WoWTools_ChatMixin:Init()
-            
+
 
             addName='|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_Mixin.onlyChinese and '聊天工具' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHAT, AUCTION_SUBCATEGORY_PROFESSION_TOOLS))
 
@@ -362,11 +360,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         elseif arg1=='Blizzard_Settings' then
             Init_Panel()
             self:UnregisterEvent(event)
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
-            WoWToolsSave['ChatButton']= Save()
         end
     end
 end)

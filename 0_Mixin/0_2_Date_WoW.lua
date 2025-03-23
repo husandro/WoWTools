@@ -1,4 +1,3 @@
-
 WoWTools_DataMixin.WoWGUID={}--战网，好友GUID--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
 WoWTools_DataMixin.UnitItemLevel={}--玩家装等
 WoWTools_DataMixin.GroupGuid={}--队伍数据收集

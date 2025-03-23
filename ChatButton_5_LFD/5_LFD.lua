@@ -1,4 +1,4 @@
-local id, e = ...
+
 --local addName
 WoWTools_LFDMixin.Save={
     leaveInstance=WoWTools_DataMixin.Player.husandro,--自动离开,指示图标
@@ -135,7 +135,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_LFD']= WoWTools_LFDMixin.Save
         end
     end

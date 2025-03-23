@@ -1,8 +1,12 @@
 --ItemLocation.lua
-local e= select(2, ...)
+
 WoWTools_ItemLocationMixin={
     itemLocation={},
 }
+
+
+
+
 --清除
 function WoWTools_ItemLocationMixin:Clear()
     self.itemLocation={}

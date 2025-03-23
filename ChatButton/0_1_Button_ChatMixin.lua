@@ -1,11 +1,9 @@
---local e= select(2, ...)
-
 local AddList={}--插件表，所有，选项用 {name=name, tooltip=tooltip})
 local Buttons={}--存放所有, 按钮 {btn1, btn2,}
 local ChatButton
 
 local function Save()
-    return WoWTools_ChatMixin.Save
+    return WoWToolsSave['ChatButton']
 end
 
 local AnchorMenu={--菜单位置
@@ -111,7 +109,7 @@ end
 
 
 function WoWTools_ChatMixin:Init()
-    if not self.Save.disabled then
+    if not Save().disabled then
         ChatButton= WoWTools_ButtonMixin:Cbtn(nil, {
             name='WoWToolsChatButtonMainButton',
             icon='hide',
@@ -223,7 +221,7 @@ end
 function WoWTools_ChatMixin:CreateButton(name, addName)
     table.insert(AddList, {name=name, tooltip=addName})--选项用
 
-    if not ChatButton or self.Save.disabledADD[name] then
+    if not ChatButton or Save().disabledADD[name] then
         return
     end
 

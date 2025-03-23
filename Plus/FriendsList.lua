@@ -1,4 +1,4 @@
-local id, e = ...
+
 local addName
 local Save={
         Friends={},
@@ -314,7 +314,7 @@ local function Init_Friends_Menu(self, root)
     end)
 
     root:CreateDivider()
-    root:CreateButton(id..' '..addName, function()
+    root:CreateButton(addName, function()
         WoWTools_PanelMixin:Open(nil, addName)
     end)
 end
@@ -1016,7 +1016,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         set_SOCIAL_QUEUE_UPDATE()
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_FriendsList']=Save
         end
     end

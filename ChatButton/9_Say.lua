@@ -1,4 +1,4 @@
-local id, e = ...
+
 local Save= {
     --inInstanceBubblesDisabled= WoWTools_DataMixin.Player.husandro,
     saveWhisper=true,--保存, 密语
@@ -578,7 +578,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
         getWhisper(event, arg1, arg2, ...)
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_Say']=Save
         end
     elseif event== 'PLAYER_ENTERING_WORLD' then

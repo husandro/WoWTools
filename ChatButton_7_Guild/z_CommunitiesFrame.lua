@@ -1,5 +1,5 @@
 --社区 Plus
-local e= select(2, ...)
+
 
 
 local function Set_Sctipt(object)

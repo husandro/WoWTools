@@ -269,7 +269,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         self:UnregisterEvent(event)
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_Mail']=Save()
         end
     end

@@ -1,4 +1,3 @@
-local id, e = ...
 
 
 WoWTools_InviteMixin={
@@ -196,7 +195,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_Invite']= WoWTools_InviteMixin.Save
         end
     end

@@ -1,4 +1,3 @@
-local id, e = ...
 
 if not WoWTools_DataMixin.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() then
     WoWTools_DataMixin.ChallengesSpellTabs={}
@@ -2185,7 +2184,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Say_ChallengeComplete()
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_Challenges']=Save
         end
     end

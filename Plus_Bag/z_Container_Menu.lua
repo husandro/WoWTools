@@ -1,5 +1,5 @@
 --背包，菜单，增强 ContainerFrame.lua
-local e= select(2, ...)
+
 
 --NUM_TOTAL_BAG_FRAMES 5
 --local function AddButtons_BagFilters(description, bagID)

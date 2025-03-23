@@ -1,5 +1,3 @@
-local id, e = ...
-
 local Save={
     world= WoWTools_DataMixin.Player.Region==5 and '大脚世界频道' or 'World',
     myChatFilter= true,--过滤，多次，内容
@@ -422,8 +420,8 @@ end
 
 --设置, 屏蔽刷屏, 数量
     sub2=sub:CreateButton('     '..(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..' |cnGREEN_FONT_COLOR:'..Save.myChatFilterNum, function()
-        StaticPopupDialogs[id..addName..'myChatFilterNum']= {
-            text=id..' '..addName..'|n|n'..get_myChatFilter_Text(),
+        StaticPopupDialogs['WoWToolsChatButtonWorldMyChatFilterNum']= {
+            text=addName..'|n|n'..get_myChatFilter_Text(),
             whileDead=true, hideOnEscape=true, exclusive=true,
             hasEditBox=true,
             button1= WoWTools_Mixin.onlyChinese and '修改' or EDIT,
@@ -447,7 +445,7 @@ end
                 self2:GetParent():Hide()
             end,
         }
-        StaticPopup_Show(id..addName..'myChatFilterNum')
+        StaticPopup_Show('WoWToolsChatButtonWorldMyChatFilterNum')
     end)
 
     sub2:SetTooltip(function(tooltip)
@@ -825,7 +823,7 @@ local function Channel_Opetion_Menu(sub, name)
     --世界，修改
 if name== Save.world then
     sub:CreateButton(WoWTools_Mixin.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''), function()
-        StaticPopupDialogs[id..addName..'changeNamme']={
+        StaticPopupDialogs['WoWToolsChatButtonWorldChangeNamme']={
             text=(WoWTools_Mixin.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI ),
             whileDead=true, hideOnEscape=true, exclusive=true,
             hasEditBox=1,
@@ -855,7 +853,7 @@ if name== Save.world then
                 s:GetParent():Hide()
             end,
         }
-        StaticPopup_Show(id..addName..'changeNamme')
+        StaticPopup_Show('WoWToolsChatButtonWorldChangeNamme')
     end)
     sub:CreateDivider()
 end
@@ -1193,7 +1191,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButtonWorldChannel']=Save
         end
 

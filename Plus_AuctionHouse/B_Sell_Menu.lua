@@ -3,7 +3,7 @@ if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
     return
 end
 --拍卖行
-local e= select(2, ...)
+
 
 local function Save()
     return WoWTools_AuctionHouseMixin.Save

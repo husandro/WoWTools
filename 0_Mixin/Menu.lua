@@ -30,7 +30,6 @@ SetScrollButton(root, maxCharacters)
 GetDragonriding()
 ]]
 
-local e= select(2, ...)
 WoWTools_MenuMixin={
     maxMenuButton=35,
 }

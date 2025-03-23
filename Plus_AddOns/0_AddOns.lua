@@ -1,4 +1,4 @@
-local id, e = ...
+
 
 WoWTools_AddOnsMixin={
 Save={
@@ -12,14 +12,14 @@ Save={
             ['!BugGrabber']=true,
             ['TextureAtlasViewer']=true,-- true, i or guid
             ['WoWTools_Chinese']=(not LOCALE_zhCN and not LOCALE_zhTW) and true or nil,
-            [id]=true,
+            ['WoWTools']=true,
         }, [WoWTools_DataMixin.Player.husandro and '宠物对战' or PET_BATTLE_COMBAT_LOG]={
             ['BugSack']=true,
             ['!BugGrabber']=true,
             ['tdBattlePetScript']=true,
             --['zAutoLoadPetTeam_Rematch']=true,
             ['Rematch']=true,
-            [id]=true,
+            ['WoWTools']=true,
         }, [WoWTools_DataMixin.Player.husandro and '副本' or INSTANCE]={
             ['BugSack']=true,
             ['!BugGrabber']=true,
@@ -29,13 +29,13 @@ Save={
             ['DBM-Core']=true,
             ['DBM-Challenges']=true,
             ['DBM-StatusBarTimers']=true,
-            [id]=true,
+            ['WoWTools']=true,
         }
     },
     fast={
         ['TextureAtlasViewer']=1,
         ['WoWeuCN_Tooltips']=1,
-        [id]=1,
+        ['WoWTools']=1,
     },
     enableAllButtn= WoWTools_DataMixin.Player.husandro,--全部禁用时，不禁用本插件
 
@@ -318,7 +318,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end]]
         
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_AddOns']=Save()
         end
     end

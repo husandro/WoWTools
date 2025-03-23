@@ -1,6 +1,4 @@
 
-local e= select(2, ...)
-
 
 
 

@@ -1,5 +1,5 @@
 --新建，公会, 签名 OfferPetition
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_GuildMixin.Save
 end

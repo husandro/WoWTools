@@ -2,8 +2,6 @@
 ScaleFrame(frame, delta, value, func)
 CreateFrame(parent, tab)
 ]]
-
-local e= select(2, ...)
 local Index=0
 WoWTools_FrameMixin= {}
 

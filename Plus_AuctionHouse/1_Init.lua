@@ -6,7 +6,6 @@ if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
     WoWTools_AuctionHouseMixin.Save={disabled=true}
     return
 end
-local id, e = ...
 
 WoWTools_AuctionHouseMixin.Save={
     --出售
@@ -84,7 +83,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_AuctionHouseMixin:Init_MenuButton()
         end
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_AuctionHouse']=Save()
         end
     end

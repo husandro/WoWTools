@@ -1,4 +1,8 @@
-local e= select(2, ...)
+local function Save()
+    return WoWToolsSave['WoWTools_ToolsButton']
+end
+
+
 
 WoWTools_ToolsMixin={
     AddList={},--所有, 按钮 {name}=true
@@ -24,7 +28,7 @@ function WoWTools_ToolsMixin:CreateButton(tab)
     if not tab.disabledOptions then
         table.insert(self.AddList, tab)
     end
-    if not self.Button or self.Save.disabledADD[tab.name] then
+    if not self.Button or Save().disabledADD[tab.name] then
         return
     end
 
@@ -43,7 +47,7 @@ function WoWTools_ToolsMixin:CreateButton(tab)
     btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
 
     function btn:set_border_alpha()
-        self.border:SetAlpha(WoWTools_ToolsMixin.Save.borderAlpha or 0.3)
+        self.border:SetAlpha(WoWToolsSave['WoWTools_ToolsButton'].borderAlpha or 0.3)
     end
 
     function btn:GetData()
@@ -71,7 +75,7 @@ end
 
 function WoWTools_ToolsMixin:Set_Shown_Background(frame)
     if frame and frame.Background then
-        frame.Background:SetShown(WoWTools_ToolsMixin.Save.isShowBackground)
+        frame.Background:SetShown(WoWToolsSave['WoWTools_ToolsButton'].isShowBackground)
     end
 end
 
@@ -96,7 +100,7 @@ function WoWTools_ToolsMixin:GetParent(tab)--取得 Parent
     if tab.parentFrame then--指定
         return tab.parentFrame
 
-    elseif self.Save.BottomPoint[tab.name]--选项，自定义，
+    elseif Save().BottomPoint[tab.name]--选项，自定义，
         or tab.isMoveButton
     then
         return self.Button
@@ -109,25 +113,25 @@ end
 
 
 function WoWTools_ToolsMixin:Init()
-    if self.Save.disabled then
+    if Save().disabled then
         return
     end
 
     self.Button= WoWTools_ButtonMixin:Cbtn(nil, {
         name='WoWToolsMainToolsButton',
-        size={30, self.Save.height or 10}
+        size={30, Save().height or 10}
     })
 
     self.Button.Frame= CreateFrame('Frame', nil, self.Button)
     self.Button.Frame:SetAllPoints()
-    self.Button.Frame:SetShown(self.Save.show)
+    self.Button.Frame:SetShown(Save().show)
 --为显示Frame用
     self.Button.IsShownFrameEnterButton=true
 
     self.Button.texture=self.Button:CreateTexture(nil, 'BORDER')
     self.Button.texture:SetPoint('CENTER')
     self.Button.texture:SetSize(10,10)
-    self.Button.texture:SetShown(self.Save.showIcon)
+    self.Button.texture:SetShown(Save().showIcon)
     self.Button.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
 
     --底部,需要，设置高 宽
@@ -188,7 +192,7 @@ function WoWTools_ToolsMixin:SetPoint(btn, tab)
     else
 
 --BOOTOM
-        if self.Save.BottomPoint[tab.name] or tab.isMoveButton then
+        if Save().BottomPoint[tab.name] or tab.isMoveButton then
             local num=#self.BottomButtons
             if num==0 then
 --为显示/隐藏Frame用
@@ -214,7 +218,7 @@ function WoWTools_ToolsMixin:SetPoint(btn, tab)
                 self:Set_Shown_Background(self.Button.LeftFrame)
 
             else
-                local numLine= self.Save.lineNum or 10
+                local numLine= Save().lineNum or 10
                 if select(2, math.modf(num / numLine))==0 then
                     btn:SetPoint('RIGHT', self.leftNewLineButton, 'LEFT')
                     self.Button.LeftFrame:SetPoint('LEFT', btn)
@@ -327,7 +331,7 @@ end
 
 --当Enter图标是，显示Tools Frame
 function WoWTools_ToolsMixin:EnterShowFrame(btn)
-    if btn.IsShownFrameEnterButton and self.Save.isEnterShow and not self.Button.Frame:IsShown() then
+    if btn.IsShownFrameEnterButton and Save().isEnterShow and not self.Button.Frame:IsShown() then
         self.Button:set_shown()
     end
 end

@@ -1,5 +1,4 @@
 
-local id, e= ...
 local function Save()
     return WoWTools_AddOnsMixin.Save
 end
@@ -287,7 +286,7 @@ local function Init_NotDisabled_Button()
 
     AddonList.DisableAllButton:HookScript('OnClick', function()
         if Save().enableAllButtn then
-            C_AddOns.EnableAddOn(id)
+            C_AddOns.EnableAddOn('WoWTools')
             WoWTools_Mixin:Call(AddonList_Update)
         end
     end)

@@ -1,9 +1,3 @@
---[[
-Get
-OnEnter
-]]
-
-local e= select(2, ...)
 WoWTools_DurabiliyMixin={}
 
 

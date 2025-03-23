@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_MarkerMixin.Save={
     autoSet=true,
 
@@ -206,7 +206,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_Markers']=WoWTools_MarkerMixin.Save
         end
     end

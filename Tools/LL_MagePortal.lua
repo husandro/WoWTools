@@ -361,7 +361,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Tools_MagePortal']=Save
         end
 

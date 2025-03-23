@@ -45,6 +45,8 @@ Init.xml
 0_Mixin\Menu.lua
 0_Mixin\Quest.lua
 0_Mixin\Random.lua
+##美服，欧服，服器语言，提示
+0_Mixin\Realm.lua
 0_Mixin\Spell.lua
 0_Mixin\Text.lua
 0_Mixin\Time.lua
@@ -544,8 +546,7 @@ Plus_Other\InterruptStolenDispel.lua
 Plus_Other\DormantSeeds.lua
 ##自动隐藏，弹出NPC说话，
 Plus_Other\Talking.lua
-##美服，欧服，服器语言，提示
-Plus_Other\Realm.lua
+
 
 
 ##Chat Button

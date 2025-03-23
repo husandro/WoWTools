@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_InviteMixin.Save
 end
@@ -27,7 +27,7 @@ local function Init()
     ClearFoucsFrame:SetAttribute('type1','focus')
     ClearFoucsFrame:SetAttribute('unit', nil)
 
-    e.SetButtonKey(ClearFoucsFrame, true, strupper(key)..'-BUTTON2', nil)--设置, 快捷键
+    WoWTools_KeyMixin:SetButtonKey(ClearFoucsFrame, true, strupper(key)..'-BUTTON2', nil)--设置, 快捷键
 
 
 
@@ -147,7 +147,7 @@ local function Init()
     })
     btn:SetAttribute("type1", "focus")
     btn:SetAttribute('unit', 'mouseover')
-    e.SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
+    WoWTools_KeyMixin:SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
 
     hooksecurefunc("CreateFrame", function(_, name, _, template)--为新的框架，加属性
         local frame= name and _G[name]

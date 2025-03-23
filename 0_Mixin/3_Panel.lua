@@ -1,4 +1,3 @@
-local e= select(2, ...)
 --插件名称
 local Category, Layout = Settings.RegisterVerticalLayoutCategory('|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r')
 Settings.RegisterAddOnCategory(Category)

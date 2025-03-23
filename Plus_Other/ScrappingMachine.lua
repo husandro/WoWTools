@@ -309,7 +309,7 @@ local function Init()
     for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
         if (btn) then
             hooksecurefunc(btn, 'RefreshIcon', function(self)
-                e.Set_Item_Info(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
+                WoWTools_ItemMixin:Setup(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
             end)
         end
     end
@@ -477,7 +477,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Other_ScrappingMachine']=Save
         end
     end

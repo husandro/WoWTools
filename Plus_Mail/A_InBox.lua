@@ -453,7 +453,7 @@ local function Create_Unit_Button(btn, i)
         self.typeText:SetText('')
         self.outItemOrMoney:SetShown(false)
         self.DeleteButton:SetShown(false)
-        e.Set_Item_Info(btn, {})
+        WoWTools_ItemMixin:Setup(btn, {})
     end
    
 end
@@ -563,7 +563,7 @@ local function Init_InboxFrame_Update()
             btn.outItemOrMoney.openMailID= btn.index
             btn.outItemOrMoney:SetShown((money or hasItem) and not isCOD)
 
-            e.Set_Item_Info(btn, {itemLink=firstItemLink})
+            WoWTools_ItemMixin:Setup(btn, {itemLink=firstItemLink})
         end
     end
 
@@ -731,7 +731,7 @@ local function Set_OpenMail_Update()
     for i=1, ATTACHMENTS_MAX_RECEIVE do--物品，信息
         local attachmentButton = OpenMailFrame.OpenMailAttachments[i]
         if attachmentButton and attachmentButton:IsShown() then
-            e.Set_Item_Info(attachmentButton, {itemLink= (not hide and HasInboxItem(InboxFrame.openMailID, i)) and GetInboxItemLink(InboxFrame.openMailID, i)})
+            WoWTools_ItemMixin:Setup(attachmentButton, {itemLink= (not hide and HasInboxItem(InboxFrame.openMailID, i)) and GetInboxItemLink(InboxFrame.openMailID, i)})
         end
     end
 end

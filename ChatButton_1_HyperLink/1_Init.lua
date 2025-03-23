@@ -1,5 +1,3 @@
-
-local id, e = ...
 local addName
 WoWTools_HyperLink={
     Save={
@@ -129,7 +127,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_HyperLink']= Save()
         end
     end

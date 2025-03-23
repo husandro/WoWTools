@@ -1,9 +1,10 @@
-local id, e = ...
-
-local Save={
+local P_Save={
     autoClear=true,--进入战斗时,清除数据
     save={},--保存数据,最多30个
 }
+local function Save()
+    return WoWToolsSave['ChatButton_Rool']
+end
 
 local addName
 local RollButton
@@ -94,10 +95,10 @@ local function get_Save_Max()--清除时,保存数据
         end
     end
     if maxTab then
-        if #Save.save>=30 then
-            table.remove(Save.save, 1)
+        if #Save().save>=30 then
+            table.remove(Save().save, 1)
         end
-        table.insert(Save.save, maxTab)
+        table.insert(Save().save, maxTab)
     end
 end
 
@@ -112,12 +113,12 @@ end
 
 
 local function setAutoClearRegisterEvent()--注册自动清除事件
-    if Save.autoClear then
+    if Save().autoClear then
         panel:RegisterEvent('PLAYER_REGEN_DISABLED')
     else
         panel:UnregisterEvent('PLAYER_REGEN_DISABLED')
     end
-    RollButton.autoClearTips:SetShown(Save.autoClear)
+    RollButton.autoClearTips:SetShown(Save().autoClear)
 end
 
 
@@ -143,7 +144,7 @@ end
 local function Init_Menu(_, root)
     local sub, sub2, icon
     local rollNum= #RollTab
-    local saveNum= #Save.save
+    local saveNum= #Save().save
 
     root:SetScrollMode(20*44)
 
@@ -156,9 +157,9 @@ local function Init_Menu(_, root)
     end)
 
     sub2= sub:CreateCheckbox('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '自动清除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SLASH_STOPWATCH_PARAM_STOP2)), function ()
-        return Save.autoClear
+        return Save().autoClear
     end, function ()
-        Save.autoClear= not Save.autoClear and true or false
+        Save().autoClear= not Save().autoClear and true or false
         setAutoClearRegisterEvent()--注册自动清除事件
     end)
     sub2:SetTooltip(function (tooltip)
@@ -167,11 +168,11 @@ local function Init_Menu(_, root)
 
     if saveNum>0 then
         sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER))..' |cnGREEN_FONT_COLOR:#'..saveNum..'|r', function()
-            Save.save={}
+            Save().save={}
             return MenuResponse.CloseAll
         end)
         sub:CreateDivider()
-        for _, tab in pairs(Save.save) do
+        for _, tab in pairs(Save().save) do
             sub2= sub:CreateButton(
                 '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t|cffffffff'..tab.roll..'|r '
                 ..WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {reName=true, reRealm=true})..' '..tab.date,
@@ -305,7 +306,8 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            Save= WoWToolsSave['ChatButton_Rool'] or Save
+            WoWToolsSave['ChatButton_Rool']= WoWToolsSave['ChatButton_Rool'] or P_Save
+
             addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_Mixin.onlyChinese and '掷骰' or ROLL)
             RollButton= WoWTools_ChatMixin:CreateButton('Roll', addName)
 
@@ -317,9 +319,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             get_Save_Max()--清除时,保存数据
-            WoWToolsSave['ChatButton_Rool']= Save
         end
 
     elseif event=='CHAT_MSG_SYSTEM' then

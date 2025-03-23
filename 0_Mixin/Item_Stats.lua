@@ -1,5 +1,3 @@
-local e= select(2, ...)
-
 WoWTools_ItemStatsMixin={}
 
 local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"

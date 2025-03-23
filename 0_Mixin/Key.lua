@@ -1,4 +1,3 @@
-local e= select(2, ...)
 WoWTools_KeyMixin={}
 
 local Frame=CreateFrame('Frame')
@@ -211,10 +210,28 @@ end
 
 
 
-function e.SetButtonKey(self, set, key, click)--设置清除快捷键
+function WoWTools_KeyMixin:SetButtonKey(frame, set, key, click)--设置清除快捷键
     if set then
-        SetOverrideBindingClick(self, true, key, self:GetName(), click or 'LeftButton')
+        SetOverrideBindingClick(frame, true, key, frame:GetName(), click or 'LeftButton')
     else
-        ClearOverrideBindings(self)
+        ClearOverrideBindings(frame)
+    end
+end
+
+
+
+
+
+
+function WoWTools_KeyMixin:GetHotKeyText(text, action)
+    local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
+    if text and text:find(KEY_BUTTON) then
+       return text:gsub(KEY_BUTTON, 'm')
+    elseif action then
+        text= GetBindingKeyForAction(action, false, false)
+        if text and text:find(KEY_BUTTON) then
+            text= text:gsub(KEY_BUTTON, 'm')
+        end
+        return text
     end
 end

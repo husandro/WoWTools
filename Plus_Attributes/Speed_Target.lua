@@ -1,5 +1,5 @@
 --目标，移动，速度
-local e= select(2, ...)
+
 
 local function Save()
     return WoWTools_AttributesMixin.Save

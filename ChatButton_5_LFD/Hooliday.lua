@@ -1,5 +1,4 @@
 --节日, 提示, LFDButton.texture
-local e= select(2, ...)
 
 
 

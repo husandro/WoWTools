@@ -1,4 +1,4 @@
-local id, e = ...
+
 local addName= SOCKET_GEMS
 local Save={
     --hide=true,--显示，隐藏 Frame
@@ -1073,7 +1073,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_Gem']=Save
         end
     end

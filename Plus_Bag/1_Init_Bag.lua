@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_BagMixin.Save={}
 
 local function Save()
@@ -45,7 +45,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_Container']=Save()
         end
     end

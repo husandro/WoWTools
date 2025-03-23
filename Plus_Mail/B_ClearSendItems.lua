@@ -45,7 +45,7 @@ local function Init()
                 num= num+ (select(4, GetSendMailItem(i)) or 1)
             end
             if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                e.Set_Item_Info(sendMailAttachmentButton, {itemLink=has and GetSendMailItemLink(i)})
+                WoWTools_ItemMixin:Setup(sendMailAttachmentButton, {itemLink=has and GetSendMailItemLink(i)})
             end
         end
         self.clearSendItem.Text:SetText(num>0 and num or '')

@@ -1,6 +1,4 @@
 --隐藏NPC发言
-local e= select(2, ...)
-
 local function Save()
     return WoWTools_HyperLink.Save
 end

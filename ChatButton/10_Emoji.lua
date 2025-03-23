@@ -1,4 +1,3 @@
-local id, e = ...
 local addName= 'Emoji'
 local Save={
     showEnter=nil,
@@ -559,7 +558,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_Emoji']=Save
         end
     end

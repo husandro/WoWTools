@@ -1,4 +1,3 @@
-local e= select(2, ...)
 --CommunitiesUtil.lua
 WoWTools_GuildMixin = {}
 

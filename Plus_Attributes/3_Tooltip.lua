@@ -1,5 +1,4 @@
 ---@diagnostic disable: param-type-mismatch
-local e= select(2, ...)
 
 local function Save()
     return WoWTools_AttributesMixin.Save

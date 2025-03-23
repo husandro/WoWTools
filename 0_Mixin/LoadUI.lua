@@ -13,7 +13,6 @@ JournalInstance(journalInstanceID)--冒险指南，副本
 
 
 
-local e= select(2, ...)
 WoWTools_LoadUIMixin= {}
 --[[
        if not CollectionsJournal then

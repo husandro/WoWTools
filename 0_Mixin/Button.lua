@@ -1,4 +1,3 @@
-local e= select(2, ...)
 --[[
 Cbtn(frame, tab)
 CreateSecureButton(tab)

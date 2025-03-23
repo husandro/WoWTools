@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 local MakerFrame
 local function Save()
     return WoWTools_MarkerMixin.Save
@@ -241,7 +241,7 @@ local function Init()--设置标记, 框架
         btn.HotKey:SetPoint('TOPRIGHT', 1, 2)
         function btn:set_hotkey()
             if self.action then
-                self.HotKey:SetText(Save().showMakerFrameHotKey and e.GetHotKeyText(nil, self.action) or '')
+                self.HotKey:SetText(Save().showMakerFrameHotKey and WoWTools_KeyMixin:GetHotKeyText(nil, self.action) or '')
             end
         end
 
@@ -617,7 +617,7 @@ local function Init()--设置标记, 框架
             function btn:set_hotkey()
                 self.HotKey:SetText(
                     Save().showMakerFrameHotKey and
-                    e.GetHotKeyText(nil, 'RAIDTARGET'..self.index)
+                    WoWTools_KeyMixin:GetHotKeyText(nil, 'RAIDTARGET'..self.index)
                     or ''
                 )
             end

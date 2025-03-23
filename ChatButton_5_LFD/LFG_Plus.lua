@@ -1,4 +1,3 @@
-local e= select(2, ...)
 local function Save()
     return WoWTools_LFDMixin.Save
 end
@@ -97,7 +96,7 @@ local function Init_LFGListSearchEntry_Update(self)
     local realm, realmText
     if info.leaderName and not isAppFinished then
         local server= info.leaderName:match('%-(.+)') or WoWTools_DataMixin.Player.realm
-        server=e.Get_Region(server)--服务器，EU， US {col, text}
+        server=WoWTools_RealmMixin:Get_Region(server)--服务器，EU， US {col, text}
         realm= server and server.col
         realmText=server and server.realm
     end

@@ -1,5 +1,5 @@
 --释放, 复活
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_LFDMixin.Save
 end

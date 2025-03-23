@@ -3,7 +3,7 @@ GetPosition()
 IsInDelve()
 Get_Minimap_Tracking
 ]]
-local e= select(2, ...)
+
 WoWTools_MapMixin={}
 
 function WoWTools_MapMixin:GetPosition()

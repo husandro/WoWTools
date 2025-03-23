@@ -6,7 +6,7 @@ GetLink(questID)
 GetRewardInfo(questID)
 GetQuestAll()--所有，任务，提示
 ]]
-local e= select(2, ...)
+
 WoWTools_QuestMixin={}
 
 function WoWTools_QuestMixin:GetID()

@@ -1,4 +1,10 @@
-local id, e = ...
+local P_Save={
+    onlyChinese= LOCALE_zhCN or WoWTools_DataMixin.Player.husandro,
+    --useClassColor= WoWTools_DataMixin.Player.husandro,--使用,职业, 颜色
+    --useCustomColor= nil,--使用, 自定义, 颜色
+    useColor=1,
+    useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
+}
 
 local function Save()
     return WoWToolsSave['WoWTools_Settings']
@@ -45,6 +51,7 @@ local function Init_Options()
                 ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
             function()
+                WoWTools_DataMixin.ClearAllSave= true
                 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
                     WoWToolsSave={}
                 end)
@@ -85,7 +92,7 @@ local function Init_Options()
                     local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
                     Save().useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     Set_Color()--自定义，颜色
-                    print(WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', id, WoWTools_Mixin.addName,   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', WoWTools_Mixin.addName,   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
                         setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
@@ -174,8 +181,11 @@ local function Init_Options()
         })
 
         if Save().disabledRealm then
-            e.Get_Region(nil, nil, nil, true)
-            e.Get_Region=function() end
+            do
+                WoWTools_RealmMixin:Get_Region(nil, nil, nil, true)
+            end
+---@diagnostic disable-next-line: duplicate-set-field
+            WoWTools_RealmMixin.Get_Region=function() end
         end
     end
 
@@ -205,13 +215,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             if not WoWToolsSave['WoWTools_Settings'] then
-                WoWToolsSave['WoWTools_Settings'] = {
-                    onlyChinese= LOCALE_zhCN or WoWTools_DataMixin.Player.husandro,
-                    --useClassColor= WoWTools_DataMixin.Player.husandro,--使用,职业, 颜色
-                    --useCustomColor= nil,--使用, 自定义, 颜色
-                    useColor=1,
-                    useCustomColorTab= {r=1, g=0.82, b=0, a=1, hex='|cffffd100'},--自定义, 颜色, 表
-                }
+                WoWToolsSave['WoWTools_Settings'] = P_Save
             end
 
             WoWTools_Mixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese

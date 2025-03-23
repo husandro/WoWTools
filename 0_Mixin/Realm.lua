@@ -1,10 +1,14 @@
-local e = select(2, ...)
+---@diagnostic disable: duplicate-set-field
+
+WoWTools_RealmMixin={}
+
+
 if WoWTools_DataMixin.Player.Region~=1 and WoWTools_DataMixin.Player.Region~=3 then
-    e.Get_Region=function()end
+    WoWTools_RealmMixin.Get_Region=function()end
     return
 end
 --[[
-e.Get_Region(realm, guid, unit, disabled)
+WoWTools_RealmMixin:Get_Region(realm, guid, unit, disabled)
 WoWTools_DataMixin.Player.Language={layer=, size=, key=}
 ]]
 
@@ -153,7 +157,7 @@ local regionColor = {--https://wago.io/6-GG3RMcC
     ["bzl"]= {col="|cFF8fce00BZL|r", text='BZL', realm="Brazil"},
 }
 
-function e.Get_Region(realm, guid, unit, disabled)--e.Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
+function WoWTools_RealmMixin:Get_Region(realm, guid, unit, disabled)--WoWTools_RealmMixin:Get_Region(server, guid, unit)--服务器，EU， US {col=, text=, realm=}
     if disabled then
         regionColor={}
         Realms={}

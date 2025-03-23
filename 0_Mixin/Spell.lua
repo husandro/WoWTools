@@ -3,7 +3,7 @@ GetName(spellID)--取得法术，名称
 GetLink(spellID, isCN)
 ]]
 
-local e= select(2, ...)
+
 WoWTools_SpellMixin={}
 
 

@@ -1,6 +1,4 @@
 --超链接，图标 ItemRef.lua
-local e= select(2, ...)
-
 local function Save()
     return WoWTools_HyperLink.Save
 end

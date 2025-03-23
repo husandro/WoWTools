@@ -1,5 +1,3 @@
-local e= select(2, ...)
-
 WoWTools_UnitMixin={}
 
 function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服务器为*
@@ -114,7 +112,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
         local friend= self:GetIsFriendIcon(nil, guid, nil)--检测, 是否好友
         local groupInfo= WoWTools_DataMixin.GroupGuid[guid] or {}--队伍成员
-        local server= not reNotRegion and e.Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
+        local server= not reNotRegion and WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US {col=, text=, realm=}
 
         text= (server and server.col or '')
                     ..(friend or '')

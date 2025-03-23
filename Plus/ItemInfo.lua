@@ -1,4 +1,6 @@
-local id, e = ...
+
+
+
 local addName
 local Save={}
 
@@ -24,7 +26,7 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
         ['INVTYPE_RANGEDRIGHT']= true,
     }
 
---e.Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, itemLink=nil, point=nil})
+--WoWTools_ItemMixin:Setup(itemButton, {bag={bag=bagID, slot=slotID}, merchant={slot=slot, buyBack= selectedTab==2}, guidBank={tab=tab, slot=i}, itemLink=nil, point=nil})
 
 
 
@@ -135,11 +137,15 @@ end
 
 
 
-function e.Set_Item_Info(self, tab)
-    if not self or (not self:IsShown() and not tab.isShow) then
-        return
-    end
 
+
+
+
+
+
+
+
+local function Setup(self, tab)
     local itemLevel, itemQuality, battlePetSpeciesID
     local itemLink, containerInfo, itemID, isBound
     local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
@@ -659,6 +665,27 @@ end
 
 
 
+function WoWTools_ItemMixin:Setup(frame, tab)
+    if not frame or (not frame:IsShown() and not tab.isShow) then
+        return
+    end
+    Setup(frame, tab)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -687,9 +714,9 @@ local function setBags(self)--背包设置
     for _, itemButton in self:EnumerateValidItems() do
         if itemButton.hasItem then
             local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
-            e.Set_Item_Info(itemButton, {bag={bag=bagID, slot=slotID}})
+            WoWTools_ItemMixin:Setup(itemButton, {bag={bag=bagID, slot=slotID}})
         else
-            e.Set_Item_Info(itemButton, {})
+            WoWTools_ItemMixin:Setup(itemButton, {})
         end
     end
 end
@@ -733,7 +760,7 @@ local function setGuildBank()--公会银行,设置
             local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP)
             local button = (GuildBankFrame.Columns[column] and GuildBankFrame.Columns[column].Buttons) and GuildBankFrame.Columns[column].Buttons[index]
             if button then
-                e.Set_Item_Info(button,{guidBank={tab=tab, slot=i}})
+                WoWTools_ItemMixin:Setup(button,{guidBank={tab=tab, slot=i}})
             end
         end
     end
@@ -780,9 +807,9 @@ local function Init_Bag()
                 if slot and bag then
                     if self.hasItem then
                         local slotID, bagID= self:GetSlotAndBagID()--:GetID() GetBagID()
-                        e.Set_Item_Info(self, {bag={bag=bagID, slot=slotID}})
+                        WoWTools_ItemMixin:Setup(self, {bag={bag=bagID, slot=slotID}})
                     else
-                        e.Set_Item_Info(self, {})
+                        WoWTools_ItemMixin:Setup(self, {})
                     end
                 end
             end)
@@ -792,7 +819,7 @@ local function Init_Bag()
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
         hooksecurefunc(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
             if button and bagID and slotID then
-                e.Set_Item_Info(button, {bag={bag=bagID, slot=slotID}})
+                WoWTools_ItemMixin:Setup(button, {bag={bag=bagID, slot=slotID}})
             end
         end)
         return
@@ -803,7 +830,7 @@ local function Init_Bag()
             ADDON= lib:GetAddon("Inventorian")
             local InvLevel = ADDON:NewModule('InventorianWoWToolsItemInfo')
             function InvLevel:Update()
-                e.Set_Item_Info(self, {bag={bag=self.bag, slot=self.slot}})
+                WoWTools_ItemMixin:Setup(self, {bag={bag=self.bag, slot=self.slot}})
             end
             function InvLevel:WrapItemButton(item)
                 hooksecurefunc(item, "Update", InvLevel.Update)
@@ -843,8 +870,8 @@ local function Init_Bag()
     hooksecurefunc('BankFrameItemButton_Update', function(self)
         if not self.isBag then
             local bag, slot= WoWTools_BankMixin:GetBagAndSlot(self)
-            e.Set_Item_Info(self, {bag={bag=bag, slot=slot}})
-            --e.Set_Item_Info(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
+            WoWTools_ItemMixin:Setup(self, {bag={bag=bag, slot=slot}})
+            --WoWTools_ItemMixin:Setup(self, {bag={bag=self:GetParent():GetID(), slot=self:GetID()}})
         end
     end)
 
@@ -852,7 +879,7 @@ local function Init_Bag()
     hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(self)
         local info= self.itemInfo or {}
         info.isShow=true
-        e.Set_Item_Info(self, info)
+        WoWTools_ItemMixin:Setup(self, info)
     end)
 end
 
@@ -941,10 +968,10 @@ local function Init()
             local slot = isBuy and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
             local itemButton= _G["MerchantItem"..i..'ItemButton']
             if itemButton then
-                e.Set_Item_Info(itemButton, {merchant={slot=slot, buyBack= not isBuy}})
+                WoWTools_ItemMixin:Setup(itemButton, {merchant={slot=slot, buyBack= not isBuy}})
             end
         end
-        e.Set_Item_Info(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
+        WoWTools_ItemMixin:Setup(MerchantBuyBackItemItemButton, {merchant={slot=GetNumBuybackItems(), buyBack=true}})
     end
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
@@ -1024,7 +1051,7 @@ local function Init()
             return
         end
         for index, btn in pairs(self.ScrollBox:GetFrames() or {}) do
-            e.Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
+            WoWTools_ItemMixin:Setup(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
     hooksecurefunc(LootFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
@@ -1032,7 +1059,7 @@ local function Init()
             return
         end
         for index, btn in pairs(self:GetFrames() or {}) do
-            e.Set_Item_Info(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
+            WoWTools_ItemMixin:Setup(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
     end)
 
@@ -1041,7 +1068,7 @@ local function Init()
 
 
     hooksecurefunc( BankPanelItemButtonMixin, 'Refresh', function (self)
-        e.Set_Item_Info(self, {itemLink=self.itemInfo and self.itemInfo.hyperlink})
+        WoWTools_ItemMixin:Setup(self, {itemLink=self.itemInfo and self.itemInfo.hyperlink})
     end)
 
 end
@@ -1129,7 +1156,7 @@ local function Set_Blizzard_PerksProgram()
             local frame= PerksProgramFrame:GetFrozenItemFrame()
             if frame then
                 local itemLink= frame.FrozenButton.itemID and WoWTools_ItemMixin:GetLink(frame.FrozenButton.itemID)
-                e.Set_Item_Info(frame.FrozenButton, {itemLink=itemLink, size=12})
+                WoWTools_ItemMixin:Setup(frame.FrozenButton, {itemLink=itemLink, size=12})
             end
         end
     end
@@ -1140,12 +1167,12 @@ local function Set_Blizzard_PerksProgram()
         for _, btn in pairs(self2:GetFrames()) do
             if btn.itemID then
                 local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
-                e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
+                WoWTools_ItemMixin:Setup(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
             elseif btn.GetItemInfo then--10.2
                 local itemInfo=btn:GetItemInfo()
                 if itemInfo then
                     local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
-                    e.Set_Item_Info(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
+                    WoWTools_ItemMixin:Setup(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                 end
             end
         end
@@ -1188,16 +1215,16 @@ end
 local function Set_Blizzard_AuctionHouseUI()
     --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
     hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
-        e.Set_Item_Info(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
+        WoWTools_ItemMixin:Setup(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
     end)
 
     hooksecurefunc(AuctionHouseFrame, 'SelectBrowseResult', function(self, browseResult)
         local itemKey = browseResult.itemKey
         local itemKeyInfo = C_AuctionHouse.GetItemKeyInfo(itemKey) or {}
         if itemKeyInfo.isCommodity then
-            e.Set_Item_Info(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
+            WoWTools_ItemMixin:Setup(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
         else
-            e.Set_Item_Info(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
+            WoWTools_ItemMixin:Setup(self.ItemBuyFrame.ItemDisplay.ItemButton, {itemKey= itemKey, size=12})
         end
 
         if not self.countLable then
@@ -1302,7 +1329,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Plus_ItemInfo']=Save
         end
     end

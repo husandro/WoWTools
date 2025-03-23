@@ -28,7 +28,7 @@ local function Init_Label()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:AddLine(' ')
-        local server= e.Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
+        local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
         local ok2
         for k, v in pairs(GetAutoCompleteRealms()) do
@@ -71,7 +71,7 @@ end
 
 local function Settings()
     local ser=GetAutoCompleteRealms() or {}
-    local server= e.Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)
+    local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)
     local num= #ser
     local text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
             ..WoWTools_DataMixin.Player.realm..(server and ' '..server.col or '')

@@ -1,6 +1,3 @@
-
-local id, e = ...
-
 WoWTools_GuildMixin.Save={
     --disabledPetitionTarget=true,新建，自动要求签名目标
     --guildInfo=true,公会信息
@@ -94,7 +91,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Save_WoWGuild()--保存公会数据，到WOW
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButtonGuild']= WoWTools_GuildMixin.Save
         end
     end

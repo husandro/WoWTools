@@ -1,4 +1,3 @@
-local e= select(2, ...)
 
 
 local function AddRenownRewardsToTooltip(self, renownRewards)

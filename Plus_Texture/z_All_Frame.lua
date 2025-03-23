@@ -109,7 +109,7 @@ local function Init(mixin)
             if not self.HotKey:IsShown() then
                 return
             end
-            local key= e.GetHotKeyText(GetBindingKey("ACTIONBUTTON"..self:GetID()), nil)
+            local key= WoWTools_KeyMixin:GetHotKeyText(GetBindingKey("ACTIONBUTTON"..self:GetID()), nil)
             if key then
                 self.HotKey:SetText(key);
             end

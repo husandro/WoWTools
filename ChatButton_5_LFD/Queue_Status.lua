@@ -1,5 +1,5 @@
 --小眼睛, 更新信息
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_LFDMixin.Save
 end
@@ -392,7 +392,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                 local realmText--服务器，名称
                                 local realm= name:match('%-(.+)')
                                 if realm then
-                                    local realmTab = e.Get_Region(realm)
+                                    local realmTab = WoWTools_RealmMixin:Get_Region(realm)
                                     if realmTab and realmTab.col then
                                         realmText= ' '..name ..' '..realmTab.col
                                     else

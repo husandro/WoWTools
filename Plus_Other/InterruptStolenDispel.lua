@@ -100,7 +100,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         self:Set_Event()
 
     elseif event == "PLAYER_LOGOUT" then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['Interrupts_Tolen']=Save
         end
     end

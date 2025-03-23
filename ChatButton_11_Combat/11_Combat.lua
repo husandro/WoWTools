@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_CombatMixin={
     Save= {
     textScale=1.2,
@@ -65,7 +65,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         end
 
     elseif event=='PLAYER_LOGOUT' then
-        if not e.ClearAllSave then
+        if not WoWTools_DataMixin.ClearAllSave then
             WoWToolsSave['ChatButton_Combat']= WoWTools_CombatMixin.Save
         end
     end

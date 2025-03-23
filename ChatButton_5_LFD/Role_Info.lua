@@ -1,6 +1,6 @@
 
 --小眼睛, 更新信息
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_LFDMixin.Save
 end
