@@ -1,5 +1,5 @@
 --界面, 增强
-local e= select(2, ...)
+
 local function Save()
 	return WoWTools_FactionMixin.Save
 end

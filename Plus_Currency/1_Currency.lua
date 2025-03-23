@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_CurrencyMixin.Save={
 	--notPlus=true,
 	tokens={},--{[currencyID]=true}指定显示，表

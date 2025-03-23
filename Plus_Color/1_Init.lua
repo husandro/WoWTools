@@ -1,4 +1,4 @@
-local id, e= ...
+
 local function Save()
 	return WoWTools_ColorMixin.Save
 end

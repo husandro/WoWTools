@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 local isGo
 local function set_expand_collapse(show)

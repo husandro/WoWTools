@@ -1,8 +1,3 @@
-local function Save()
-	return WoWTools_FactionMixin.Save
-end
-
-
 
 
 

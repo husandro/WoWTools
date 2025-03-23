@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_FactionMixin.Save={
 	btn=WoWTools_DataMixin.Player.husandro,--启用，TrackButton
 	factions={},--指定,显示,声望

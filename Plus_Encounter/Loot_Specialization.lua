@@ -1,5 +1,5 @@
 --BOSS战时, 指定拾取, 专精
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_EncounterMixin.Save
 end

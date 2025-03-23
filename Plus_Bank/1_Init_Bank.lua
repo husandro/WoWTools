@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_BankMixin.Save={
     --disabled=true,--禁用
 

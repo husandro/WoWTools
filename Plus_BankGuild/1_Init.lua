@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_GuildBankMixin.Save={
     line=0,
     num=20,

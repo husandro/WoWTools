@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 --info, num, total, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(currencyID, index)

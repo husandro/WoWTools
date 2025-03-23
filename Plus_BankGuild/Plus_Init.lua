@@ -1,7 +1,8 @@
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_GuildBankMixin.Save
 end
+
 --Blizzard_GuildBankUI.lua  bank, log, moneylog, tabinfo
 
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98

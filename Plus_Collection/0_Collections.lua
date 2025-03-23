@@ -1,4 +1,4 @@
-local id, e = ...
+
 WoWTools_CollectionMixin={
     Save={
         --hideHeirloom= true,--传家宝

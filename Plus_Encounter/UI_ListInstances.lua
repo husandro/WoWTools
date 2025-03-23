@@ -1,6 +1,6 @@
 --界面, 副本击杀
 --Blizzard_EncounterJournal.lua
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_EncounterMixin.Save
 end

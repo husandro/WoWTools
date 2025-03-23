@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 
 
 --BOSS模型 Blizzard_EncounterJournal.lua

@@ -1,6 +1,6 @@
 --宠物 2
 --Blizzard_PetCollection.lua
-local e= select(2, ...)
+
 
 
 

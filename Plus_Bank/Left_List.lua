@@ -1,6 +1,6 @@
 
 --存取，分类，按钮
-local e= select(2, ...)
+
 local function Save()
     return WoWTools_BankMixin.Save
 end

@@ -1,4 +1,4 @@
-local e= select(2, ...)
+
 WoWTools_FactionMixin={}
 
 local function GetText(string)

@@ -1,5 +1,4 @@
 --战利品, 套装, 收集数 Blizzard_LootJournalItems.lua
-local e= select(2, ...)
 
 
 

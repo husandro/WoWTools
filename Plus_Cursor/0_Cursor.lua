@@ -1,4 +1,4 @@
-local id, e= ...
+
 WoWTools_CursorMixin={
 Save={
     disabled= not WoWTools_DataMixin.Player.husandro,
