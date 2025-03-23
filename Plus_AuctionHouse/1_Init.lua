@@ -3,11 +3,11 @@
 
 --拍卖行, 受限模式
 if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
-    WoWTools_AuctionHouseMixin.Save={disabled=true}
+    WoWTools_AuctionHouseMixin.disabled=true
     return
 end
 
-WoWTools_AuctionHouseMixin.Save={
+local P_Save={
     --出售
     --hideSellItemList=true,--隐藏，物品列表
     numButton=14,--行数
@@ -28,51 +28,65 @@ WoWTools_AuctionHouseMixin.Save={
     SellItemDefaultPrice={},--默认价格
 }
 
+
+
+
+
+
+
+
 local function Save()
-    return WoWTools_AuctionHouseMixin.Save
+    return WoWToolsSave['Plus_AuctionHouse']
 end
+
+
+
+
+
+
+
+
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("PLAYER_LOGIN")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            if WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE] then
-                WoWTools_AuctionHouseMixin.Save= WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]
-                WoWToolsSave[BUTTON_LAG_AUCTIONHOUSE]= nil
-            else
-                WoWTools_AuctionHouseMixin.Save= WoWToolsSave['Plus_AuctionHouse'] or Save()
-            end
+
+            WoWToolsSave['Plus_AuctionHouse']= WoWToolsSave['Plus_AuctionHouse'] or P_Save
+
 --宠物笼
             Save().hideSellItem[82800]= nil
             Save().hideSellPet= Save().hideSellPet or {}
             Save().sellItemQualiy= Save().sellItemQualiy or 1--物品列表，检测有效物品
 
             if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent(event)
+                WoWTools_AuctionHouseMixin.disabled= true
+                self:UnregisterAllEvents()
                 return
             end
 
-            local addName= '|A:Auctioneer:0:0|a'..(WoWTools_Mixin.onlyChinese and '拍卖行' or BUTTON_LAG_AUCTIONHOUSE)
-            WoWTools_AuctionHouseMixin.addName= addName
+            WoWTools_AuctionHouseMixin.addName= '|A:Auctioneer:0:0|a'..(WoWTools_Mixin.onlyChinese and '拍卖行' or BUTTON_LAG_AUCTIONHOUSE)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
+                name= WoWTools_AuctionHouseMixin.addName,
                 Value= not Save().disabled,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_AuctionHouseMixin.addName,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI
+                    )
                 end
             })
 
             if Save().disabled then
-                self:UnregisterEvent(event)
-            else
-
-                WoWTools_AuctionHouseMixin:Init_AccountStore()
+                self:UnregisterAllEvents()
             end
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
@@ -82,9 +96,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_AuctionHouseMixin:Sell_Other()
             WoWTools_AuctionHouseMixin:Init_MenuButton()
         end
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_AuctionHouse']=Save()
-        end
+
+    elseif event=='PLAYER_LOGIN' then
+        WoWTools_AuctionHouseMixin:Init_AccountStore()
     end
 end)

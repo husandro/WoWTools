@@ -1,4 +1,4 @@
-if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
+if WoWTools_AuctionHouseMixin.disabled then
     return
 end
 --所有，出售物品, 列表

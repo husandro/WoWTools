@@ -1,12 +1,24 @@
 --拍卖行, 受限模式
-if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
-    WoWTools_AuctionHouseMixin.Save={disabled=true}
+if WoWTools_AuctionHouseMixin.disabled then
     return
 end
-local e= select(2, ...)
+
+
+
+
+
+
 local function Save()
-    return WoWTools_AuctionHouseMixin.Save
+    return WoWToolsSave['Plus_AuctionHouse']
 end
+
+
+
+
+
+
+
+
 
 
 
@@ -15,6 +27,12 @@ local function Set_Tooltip(root)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
+
+
+
+
+
+
 
 
 

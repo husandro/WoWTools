@@ -1,10 +1,10 @@
-if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
+if WoWTools_AuctionHouseMixin.disabled then
     return
 end
 --拍卖行
 
 local function Save()
-    return WoWTools_AuctionHouseMixin.Save
+    return WoWToolsSave['Plus_AuctionHouse']
 end
 
 
@@ -525,6 +525,9 @@ local function Init()
 
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:ClearAllPoints()
     AuctionHouseFrame.ItemSellList.RefreshFrame.TotalQuantity:SetPoint('BOTTOMRIGHT', AuctionHouseFrame.ItemSellList, 'TOPRIGHT', -25, 0)
+
+
+    return true
 end
 
 
@@ -538,7 +541,7 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Sell_Other()
-    if not self.Save.disabledSellPlus then
-        Init()
+    if not Save().disabledSellPlus and Init() then
+        Init=function()end
     end
 end

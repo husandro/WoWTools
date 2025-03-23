@@ -1,5 +1,5 @@
 
-if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
+if WoWTools_AuctionHouseMixin.disabled then
     return
 end
 
@@ -126,7 +126,7 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
-    if not self.Save.disabledBuyPlus then
+    if not WoWToolsSave['Plus_AuctionHouse'].disabledBuyPlus then
         Init()
     end
 end
