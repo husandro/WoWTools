@@ -336,7 +336,7 @@ end
 -- Wait a bit with the initial positioning to let any GetMinimapShape addons
 -- load up.
 if not lib.loggedIn then
-	local frame = CreateFrame('Frame')
+	local frame = CreateFrame("Frame")
 	frame:SetScript("OnEvent", function(self)
 		for _, button in next, lib.objects do
 			updatePosition(button, button.db and button.db.minimapPos)
@@ -379,13 +379,13 @@ end
 --
 
 function lib:Register(name, object, db, customCompartmentIcon)
-	if not object or not object.icon then error("Can't register LDB objects without icons set!") end
-	if self:GetMinimapButton(name) then error(DBICON10.. ": Object '".. name .."' is already registered.") end
+	if not object.icon then error("Can't register LDB objects without icons set!") end
+	if lib:GetMinimapButton(name) then error(DBICON10.. ": Object '".. name .."' is already registered.") end
 	createButton(name, object, db, customCompartmentIcon)
 end
 
 function lib:Lock(name)
-	local button = self:GetMinimapButton(name)
+	local button = lib:GetMinimapButton(name)
 	if button then
 		button:SetScript("OnDragStart", nil)
 		button:SetScript("OnDragStop", nil)
