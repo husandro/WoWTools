@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_InviteMixin.Save
+    return WoWToolsSave['ChatButton_Invite']
 end
 
 
@@ -98,7 +98,9 @@ local function Init_Menu(self, root)
         return Save().Channel
     end, function()
         Save().Channel = not Save().Channel and true or nil
-        WoWTools_InviteMixin.InvChanellFrame:set_event()
+        if _G['WoWToolsChatInviteChanellFrame'] then
+            _G['WoWToolsChatInviteChanellFrame']:set_event()
+        end
     end)
     sub:SetTooltip(function (tooltip)
         tooltip:AddLine(Save().ChannelText)
@@ -136,11 +138,22 @@ local function Init_Menu(self, root)
         return Save().FriendAceInvite
     end, function()
         Save().FriendAceInvite= not Save().FriendAceInvite and true or nil
+        if not WoWTools_InviteMixin:Init_StaticPopup() then
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
     end)
 
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '测试' or 'Test',
+    function()
+        local name= UnitName('player')
+        StaticPopup_Show("PARTY_INVITE", format(WoWTools_DataMixin.onlyChinese and '"%s邀请你加入队伍"' or INVITATION, name))
+        EventRegistry:TriggerEvent('PARTY_INVITE_REQUEST', UnitName('player'), true, true, true, true, true, WoWTools_DataMixin.Player.GUID, false)
+        return MenuResponse.Open
+    end)
 
 
 
@@ -228,7 +241,6 @@ local function Init_Menu(self, root)
 
 
 
-
 --焦点
     sub=root:CreateCheckbox((WoWTools_Mixin.onlyChinese and '焦点' or HUD_EDIT_MODE_FOCUS_FRAME_LABEL)..(Save().setFucus and ' |cnGREEN_FONT_COLOR:'..Save().focusKey..'|r + '..WoWTools_DataMixin.Icon.left or ''), function()
         return Save().setFucus
@@ -299,6 +311,9 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '好友除外' or 'Except friends')
     end)
+
+   
+
     sub:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
         Save().InvNoFriend={}
     end)

@@ -5470,7 +5470,8 @@
         "ChatConfigFrame_OnChatDisabledChanged",
         "LFG_LIST_INVITED_TO_GROUP",
         "AnchorUtil",
-        "ITEM_COOLDOWN_TIME"
+        "ITEM_COOLDOWN_TIME",
+        "INVITATION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

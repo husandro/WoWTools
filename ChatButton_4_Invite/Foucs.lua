@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_InviteMixin.Save
+    return WoWToolsSave['ChatButton_Invite']
 end
 
 
@@ -138,6 +138,7 @@ local function Init()
         end
     end
 
+    tab=nil
 
 
     --设置单位焦点
@@ -173,6 +174,7 @@ local function Init()
         end
     end)
 
+    return true
 end
 
 
@@ -188,8 +190,8 @@ end
 
 
 function WoWTools_InviteMixin:Init_Focus()
-    if Save().setFucus then
-        Init()
+    if Save().setFucus and Init() then
+        Init=function()end
     end
 end
 

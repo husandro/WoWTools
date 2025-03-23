@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_InviteMixin.Save
+    return WoWToolsSave['ChatButton_Invite']
 end
 
 
@@ -13,8 +13,7 @@ end
 
 
 local function Init()
-    local frame= CreateFrame('Frame')
-    WoWTools_InviteMixin.InvChanellFrame= frame
+    local frame= CreateFrame('Frame', 'WoWToolsChatInviteChanellFrame')
 
 
     function frame:set_event()
@@ -70,6 +69,8 @@ local function Init()
     end)
 
     frame:set_event()
+
+    return true
 end
 
 
@@ -81,6 +82,8 @@ end
 
 
 function WoWTools_InviteMixin:Init_Chanell()
-    Init()
+    if Init() then
+        Init=function()end
+    end
 end
 

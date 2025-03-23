@@ -285,6 +285,18 @@ end]]
 
 
 
+--WoWTools_Mixin:StaticPopup_FindVisible('PARTY_INVITE')
+function WoWTools_Mixin:StaticPopup_FindVisible(which)
+    local info = StaticPopupDialogs[which];
+	if info then
+        for index = 1, STATICPOPUP_NUMDIALOGS, 1 do--4
+            local frame = StaticPopup_GetDialog(index);
+            if frame and frame:IsShown() and (frame.which == which) then-- and (not info.multiple or (frame.data == data)) ) then
+                return frame--StaticPopup1
+            end
+        end
+    end
+end
 
 
 

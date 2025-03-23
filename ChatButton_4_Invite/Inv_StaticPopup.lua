@@ -1,22 +1,7 @@
-
+--邀请, 对话框
 local function Save()
-    return WoWTools_InviteMixin.Save
+    return WoWToolsSave['ChatButton_Invite']
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 local function isInLFG()--是否有FB, 排除中
@@ -27,65 +12,99 @@ local function isInLFG()--是否有FB, 排除中
     end
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---###########
---邀请, 对话框
---###########
 local notInviterGUID--邀请,对话框, guid
-local function PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
-    if not inviterGUID or not name then
-        return
-    end
-    if not StaticPopup1 or not StaticPopup1:IsShown() then
+
+
+
+
+
+local function New_StaticPopup_FindVisible(which)
+    local info = StaticPopupDialogs[which];
+	if ( not info ) then
+		return nil;
+	end
+	for index = 1, STATICPOPUP_NUMDIALOGS, 1 do
+		local frame = StaticPopup_GetDialog(index);
+		if frame and frame:IsShown() and (frame.which == which) then-- and (not info.multiple or (frame.data == data)) ) then
+			return frame;
+		end
+	end
+	return nil;
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allowMultipleRoles, inviterGUID, questSessionActive)
+     local StaticPopupFrame= WoWTools_Mixin:StaticPopup_FindVisible('PARTY_INVITE')
+
+    if not inviterGUID or not name or not StaticPopupFrame then
         return
     end
 
-    local function setPrint(sec, text)
+
+    local text
+    local sec
+
+    local function setPrint()
         WoWTools_Mixin:PlaySound(SOUNDKIT.IG_PLAYER_INVITE)--播放, 声音
-        print(WoWTools_Mixin.addName, 'ChatButton', WoWTools_InviteMixin.addName, text,
-            '|cnGREEN_FONT_COLOR:'..sec.. ' |r'..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
-            (isTank and WoWTools_DataMixin.Icon.TANK or '')..(isHealer and WoWTools_DataMixin.Icon.TANK or '')..(isDamage and WoWTools_DataMixin.Icon.DAMAGER or ''),
+
+        print(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
+
+            text,
+
+            '|cnGREEN_FONT_COLOR:',sec, '|r'..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
+
+            (isTank and WoWTools_DataMixin.Icon.TANK or '')
+            ..(isHealer and WoWTools_DataMixin.Icon.HEALER or '')
+            ..(isDamage and WoWTools_DataMixin.Icon.DAMAGER or '')
+            ..(allowMultipleRoles and (WoWTools_DataMixin.onlyChinese and '多个职责' or CLUB_FINDER_MULTIPLE_ROLES) or ''),
+
             questSessionActive and (WoWTools_Mixin.onlyChinese and '场景战役' or SCENARIOS) or '',--场景战役
-            isNativeRealm and '|cnGREEN_FONT_COLOR:'..format(WoWTools_Mixin.onlyChinese and '%s其它服务器' or INVITATION_XREALM,
-            WoWTools_UnitMixin:GetLink(nil, inviterGUID))--转服务器
+
+            isNativeRealm and '|cffff00ff'
+            ..format(WoWTools_Mixin.onlyChinese and '%s邀请你加入队伍。\n\n接受邀请可能会将你传送到另外一个服务器区域。' or INVITATION_XREALM, WoWTools_UnitMixin:GetLink(nil, inviterGUID))--转服务器
         )
-        WoWTools_CooldownMixin:Setup(StaticPopup1, nil, sec, nil, true, true, nil)--冷却条    
+        WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, sec, nil, true, true, nil)--冷却条    
     end
+
+
 
     local friend=WoWTools_UnitMixin:GetIsFriendIcon(nil, inviterGUID, nil)
     if friend then--好友
         if not Save().FriendAceInvite then
-            WoWTools_CooldownMixin:Setup(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
+            WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条  
             return
         end
-        local sec=isInLFG() and 10 or 3--是否有FB, 排除中
-        setPrint(sec, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT)..'|r'..(WoWTools_Mixin.onlyChinese and '好友' or FRIENDS))
-        if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
-        StaticPopup1.InvTimer = C_Timer.NewTimer(sec, function()
+
+        sec=isInLFG() and 10 or 3--是否有FB, 排除中
+        text= '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT)..'|r'..(WoWTools_Mixin.onlyChinese and '好友' or FRIENDS)
+        setPrint()
+
+        if StaticPopupFrame.InvTimer then StaticPopupFrame.InvTimer:Cancel() end
+
+        StaticPopupFrame.InvTimer = C_Timer.NewTimer(sec, function()
             AcceptGroup()
             StaticPopup_Hide("PARTY_INVITE")
         end)
 
     elseif Save().InvNoFriend[inviterGUID] then--拒绝
-        setPrint(3, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE)..'|r'..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum)
-        StaticPopup1.button3:SetText('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT))
+        sec= 3
+        text= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE)..'|r'..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum
+        setPrint()
+
+        StaticPopupFrame.button3:SetText('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT))
         notInviterGUID=inviterGUID
-        if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
-        StaticPopup1.InvTimer = C_Timer.NewTimer(3, function()
+        if StaticPopupFrame.InvTimer then StaticPopupFrame.InvTimer:Cancel() end
+        StaticPopupFrame.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE")
             Save().InvNoFriendNum=Save().InvNoFriendNum+1
@@ -93,22 +112,25 @@ local function PARTY_INVITE_REQUEST(name, isTank, isHealer, isDamage, isNativeRe
         end)
 
     elseif IsResting() and Save().NoInvInResting and not questSessionActive then--休息区不组队
-        setPrint(3, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '' or DECLINE)..'|r'..(WoWTools_Mixin.onlyChinese and '休息区' or (CALENDAR_STATUS_OUT..ZONE)))
+        sec= 3
+        text= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '' or DECLINE)..'|r'..(WoWTools_Mixin.onlyChinese and '休息区' or (CALENDAR_STATUS_OUT..ZONE))
+        setPrint()
 
-        StaticPopup1.button3:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE))
+        StaticPopupFrame.button3:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
-        if StaticPopup1.InvTimer then StaticPopup1.InvTimer:Cancel() end
-        StaticPopup1.InvTimer = C_Timer.NewTimer(3, function()
+
+        if StaticPopupFrame.InvTimer then StaticPopupFrame.InvTimer:Cancel() end
+        StaticPopupFrame.InvTimer = C_Timer.NewTimer(3, function()
             DeclineGroup()
             StaticPopup_Hide("PARTY_INVITE")
             Save().InvNoFriendNum=Save().InvNoFriendNum+1
         end)
 
     else--添加 拒绝 陌生人
-        StaticPopup1.button3:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE))
+        StaticPopupFrame.button3:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE))
         notInviterGUID=inviterGUID
 
-        WoWTools_CooldownMixin:Setup(StaticPopup1, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
+        WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, STATICPOPUP_TIMEOUT, nil, true, true, nil)--冷却条
     end
 end
 
@@ -117,10 +139,9 @@ end
 
 
 local function Init()
-    local frame= CreateFrame('Frame')
-    frame:RegisterEvent('PARTY_INVITE_REQUEST')
-    frame:SetScript('OnEvent', PARTY_INVITE_REQUEST)
 
+
+    EventRegistry:RegisterFrameEventAndCallback("PARTY_INVITE_REQUEST", Settings)
 
 
     StaticPopupDialogs["PARTY_INVITE"].button3= '|cff00ff00'..(WoWTools_Mixin.onlyChinese and '总是' or ALWAYS)..'|r'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE)..'|r'--添加总是拒绝按钮
@@ -141,6 +162,8 @@ local function Init()
         end
         notInviterGUID=nil
     end
+
+    return true
 end
 
 
@@ -154,5 +177,8 @@ end
 
 
 function WoWTools_InviteMixin:Init_StaticPopup()
-    Init()
+    if Save().FriendAceInvite and Init() then
+        Init=function()end
+        return true
+    end
 end

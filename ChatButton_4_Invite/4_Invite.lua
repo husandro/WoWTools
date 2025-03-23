@@ -1,7 +1,10 @@
 
 
 WoWTools_InviteMixin={
-Save={
+    InvPlateGuid={},
+    --SummonThxText='谢谢, 拉我'
+}
+local P_Save={
     InvNoFriend={},
     --LFGListAceInvite=true,--接受,LFD, 邀请
     FriendAceInvite=true,--接受, 好友, 邀请
@@ -20,19 +23,11 @@ Save={
     overSetFocus= WoWTools_DataMixin.Player.husandro,--移过是，
     focusKey= 'Shift',
 
-},
-InviteButton=nil,
-RestingFrame=nil,
-InvTargetFrame=nil,
-InvChanellFrame=nil,
-
-InvPlateGuid={},
-SummonThxText='谢谢, 拉我'
 }
 
 
 local function Save()
-    return WoWTools_InviteMixin.Save
+    return WoWToolsSave['ChatButton_Invite']
 end
 
 
@@ -40,7 +35,7 @@ function WoWTools_InviteMixin:Get_Leader()--取得权限
     return UnitIsGroupAssistant('player') or UnitIsGroupLeader('player') or not IsInGroup()
 end
 
-
+local InviteButton
 
 
 
@@ -70,11 +65,6 @@ end
 --初始
 --####
 local function Init()
-    local InviteButton= WoWTools_InviteMixin.InviteButton
-    if not InviteButton then
-        return
-    end
-
     InviteButton.texture:SetAtlas('communities-icon-addgroupplus')
 
     InviteButton.summonTips= InviteButton:CreateTexture(nil,'OVERLAY')--召唤，提示
@@ -111,43 +101,9 @@ local function Init()
     function InviteButton:set_OnMouseDown()
         WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
     end
-    --[[InviteButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' then
-            WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
-            self:CloseMenu()
-            self:set_tooltip()
-        end
-    end)
-
-    
-    InviteButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家
-        else
-            WoWTools_InviteMixin:Init_Menu(self)
-        end
-    end)
-
-    InviteButton:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:state_leave()
-    end)
-    InviteButton:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-        self:state_enter()
-    end)]]
 
     InviteButton:settings()
 
-
-
-    WoWTools_InviteMixin:Init_Chanell()--设置,内容,频道, 邀请,事件
-    WoWTools_InviteMixin:Init_Target()--设置, 邀请目标
-    WoWTools_InviteMixin:Init_Focus()--Shift+点击设置焦点
-    WoWTools_InviteMixin:Init_Summon()
-    WoWTools_InviteMixin:Init_Resting()--设置, 休息区提示事件
-
-    --hooksecurefunc(StaticPopupDialogs["CONFIRM_SUMMON"], "OnUpdate", Init_CONFIRM_SUMMON)
 
 
 
@@ -159,6 +115,8 @@ local function Init()
     else
         WoWTools_InviteMixin.SummonThxText= '{rt1}'..SUMMON..'{rt1} '..VOICEMACRO_16_Dw_1
     end
+
+    return true
 end
 
 
@@ -177,26 +135,35 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('PLAYER_LOGIN')
+
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-            WoWTools_InviteMixin.Save= WoWToolsSave['ChatButton_Invite'] or WoWTools_InviteMixin.Save
+            WoWToolsSave['ChatButton_Invite']= WoWToolsSave['ChatButton_Invite'] or P_Save
 
             WoWTools_InviteMixin.addName= '|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_Mixin.onlyChinese and '邀请' or INVITE)
 
-            local btn= WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
-            WoWTools_InviteMixin.InviteButton= btn
+            InviteButton= WoWTools_ChatMixin:CreateButton('Invite', WoWTools_InviteMixin.addName)
 
-            if WoWTools_InviteMixin.InviteButton then
-                Init()
+            WoWTools_InviteMixin.InviteButton= InviteButton
+
+            if InviteButton then
+                if Init() then
+                    Init=function()end
+                end
+                self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_LOGOUT' then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_Invite']= WoWTools_InviteMixin.Save
-        end
+    elseif event=='PLAYER_LOGIN' then
+        WoWTools_InviteMixin:Init_Chanell()--设置,内容,频道, 邀请,事件
+        WoWTools_InviteMixin:Init_Focus()--Shift+点击设置焦点
+        WoWTools_InviteMixin:Init_Summon()
+        WoWTools_InviteMixin:Init_Resting()--设置, 休息区提示事件
+        WoWTools_InviteMixin:Init_Target()--设置, 邀请目标
+        WoWTools_InviteMixin:Init_StaticPopup()
     end
 end)
