@@ -303,6 +303,7 @@ end
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -315,7 +316,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
                 self:RegisterEvent('CHAT_MSG_SYSTEM')
             end
-            self:UnregisterEvent('ADDON_LOADED')
+            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then
