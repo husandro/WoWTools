@@ -151,7 +151,7 @@ local function Init_Menu(self, root)
     function()
         local name= UnitName('player')
         StaticPopup_Show("PARTY_INVITE", format(WoWTools_DataMixin.onlyChinese and '"%s邀请你加入队伍"' or INVITATION, name))
-        EventRegistry:TriggerEvent('PARTY_INVITE_REQUEST', UnitName('player'), true, true, true, true, true, WoWTools_DataMixin.Player.GUID, false)
+        EventRegistry:TriggerEvent('PARTY_INVITE_REQUEST', UnitName('player'), true, true, true, false, true, WoWTools_DataMixin.Player.GUID, false)
         return MenuResponse.Open
     end)
 
