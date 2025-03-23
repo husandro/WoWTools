@@ -87,7 +87,8 @@ local function Init_Frame()
                         exit_Instance()
                     end)
                     StaticPopup_Show('WoWTools_LFD_ExitIns')
-                    WoWTools_CooldownMixin:Setup(StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
+                    
+                    WoWTools_CooldownMixin:Setup(WoWTools_Mixin:StaticPopup_FindVisible('WoWTools_LFD_ExitIns') or StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             end
 
         elseif event=='PLAYER_ENTERING_WORLD' then

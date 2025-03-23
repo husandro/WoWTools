@@ -292,7 +292,7 @@ function WoWTools_Mixin:StaticPopup_FindVisible(which)
         for index = 1, STATICPOPUP_NUMDIALOGS, 1 do--4
             local frame = StaticPopup_GetDialog(index);
             if frame and frame:IsShown() and (frame.which == which) then-- and (not info.multiple or (frame.data == data)) ) then
-                return frame--StaticPopup1
+                return frame, frame.timeleft--StaticPopup1
             end
         end
     end
