@@ -1,5 +1,7 @@
 
-
+local function Save()
+    return WoWToolsSave['Plus_Texture']
+end
 
 
 
@@ -8,7 +10,7 @@ function WoWTools_TextureMixin:SetColorTexture(object, tab)
         tab= tab or {}
         tab.isColorTexture=true
         tab.type=object:GetObjectType()
-        tab.alpha= tab.alpha or self.alpha or self.min or self.Save.alpha or 0.5
+        tab.alpha= tab.alpha or self.alpha or self.min or Save().alpha or 0.5
         WoWTools_ColorMixin:Setup(object, tab)
     end
 end
@@ -39,7 +41,7 @@ function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaOR
             if alphaORmin==true then
                 object:SetAlpha(self.min or 0.5)
             else
-                object:SetAlpha(alphaORmin or self.Save.alpha or self.min or 0.5)
+                object:SetAlpha(alphaORmin or Save().alpha or self.min or 0.5)
             end
         end
     end
@@ -93,7 +95,7 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
     local notColor= tab.notColor
     local alpha
     if not tab.notAlpha then
-        alpha= tab.isMinAlpha and self.min or tab.alpha or self.Save.alpha
+        alpha= tab.isMinAlpha and self.min or tab.alpha or Save().alpha
     end
     for index, icon in pairs({frame:GetRegions()}) do
         if icon:GetObjectType()=="Texture" then

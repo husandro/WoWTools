@@ -1,5 +1,5 @@
 local function Save()
-    return WoWTools_TextureMixin.Save
+    return WoWToolsSave['Plus_Texture']
 end
 
 

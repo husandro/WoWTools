@@ -1,6 +1,6 @@
 
 
-WoWTools_TextureMixin.Save={
+local P_Save={
     --disabled=true,
     --disabledTexture=true,
     alpha= 0.5,
@@ -20,7 +20,7 @@ WoWTools_TextureMixin.Save={
 
 
 local function Save()
-    return WoWTools_TextureMixin.Save
+    return WoWToolsSave['Plus_Texture']
 end
 
 
@@ -39,7 +39,6 @@ local function Init()
     WoWTools_TextureMixin:Init_Action_Button()
 
     if not Save().disabledTexture then
-
 
         WoWTools_TextureMixin:Init_All_Frame()
 
@@ -64,23 +63,25 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_TextureMixin.Save= WoWToolsSave['Plus_Texture'] or Save()
-            WoWTools_TextureMixin.Save.classPowerNumSize= WoWTools_TextureMixin.Save.classPowerNumSize or 12
+            print(WoWToolsSave)
+            WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
+            Save().classPowerNumSize= Save().classPowerNumSize or 12
 
-            local addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_Mixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
-            WoWTools_TextureMixin.addName= addName
+            WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_Mixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
             WoWTools_TextureMixin:Init_Options()
 
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
-                self:UnregisterEvent(event)
+                self:UnregisterAllEvents()
             else
+
                 Init()
+
                 if Save().disabledTexture then
                     self:UnregisterEvent(event)
                 end
@@ -91,9 +92,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_TextureMixin.Events[arg1]= nil
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Texture']= Save()
-        end
     end
 end)

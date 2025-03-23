@@ -1,7 +1,7 @@
 --聊天泡泡
 --ChatBubbles https://wago.io/yyX84OlOD
 local function Save()
-    return WoWTools_TextureMixin.Save
+    return WoWToolsSave['Plus_Texture']
 end
 
 local BubblesFrame
