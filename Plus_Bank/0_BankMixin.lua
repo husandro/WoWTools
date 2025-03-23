@@ -28,9 +28,9 @@ end
 function WoWTools_BankMixin:GetFree(index)
     index= self:GetIndex(index)
     local free, all= 0, 0
-    
+
     local isBank, isReagent, isAccount= self:GetActive(index)
-    
+
     if isBank then
 --银行
         for i=1, NUM_BANKGENERIC_SLOTS do--28
@@ -258,7 +258,7 @@ end
 
 function WoWTools_BankMixin:Set_Background_Texture(texture)
     if texture then
-        if self.Save.showBackground then
+        if WoWToolsSave['Plus_Bank'].showBackground then
             texture:SetAtlas('bank-frame-background')
         else
             texture:SetTexture(0)

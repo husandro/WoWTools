@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_BankMixin.Save
+    return WoWToolsSave['Plus_Bank']
 end
 
 

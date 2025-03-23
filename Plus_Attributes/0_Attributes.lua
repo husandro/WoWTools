@@ -97,7 +97,8 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("PLAYER_LOGIN")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -131,13 +132,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if not Save().disabled then
-                if Init() then Init=function()end end
+            if Save().disabled then
+                self:UnregisterEvent('PLAYER_LOGIN')
             end
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_AttributesMixin:Init_Options()
             self:UnregisterEvent(event)
         end
+
+    elseif event=='PLAYER_LOGIN' then
+        if Init() then Init=function()end end
+        self:UnregisterEvent(event)
     end
 end)

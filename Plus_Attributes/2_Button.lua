@@ -270,6 +270,9 @@ local function Init()
 
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
     end)
+
+
+    return true
 end
 
 
@@ -284,5 +287,7 @@ end
 
 
 function WoWTools_AttributesMixin:Create_Button()
-    Init()
+    if Init() then
+        Init=function()end
+    end
 end

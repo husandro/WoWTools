@@ -141,7 +141,7 @@ local function Init()
             WoWTools_MoveMixin:Setup(AddonList)
         end
     --银行
-        if WoWTools_BankMixin.Save.disabled then
+        if WoWToolsSave['Plus_Bank'].disabled then
             WoWTools_MoveMixin:Setup(BankFrame)
             WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
         end

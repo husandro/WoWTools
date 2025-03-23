@@ -2,7 +2,7 @@
 --存取，分类，按钮
 
 local function Save()
-    return WoWTools_BankMixin.Save
+    return WoWToolsSave['Plus_Bank']
 end
 
 local ListButton
@@ -544,6 +544,8 @@ local function Init()
     hooksecurefunc('BankFrame_ShowPanel', Set_Label)
     hooksecurefunc(BankPanelTabMixin, 'OnClick', Set_Label)
     --AccountBankPanel.PurchaseTab:HookScript('OnClick', Set_Label)
+
+    return true
 end
 
 
@@ -560,10 +562,13 @@ end
 
 --存取，分类，按钮
 function WoWTools_BankMixin:Init_Left_List()
-    if self.Save.left_List and not ListButton then
-        Init()
-    elseif ListButton then
+    if ListButton then
         ListButton:Settings()
         Set_Label()
+
+    elseif Save().left_List and Init() then
+        if Init() then
+            Init=function()end
+        end
     end
 end

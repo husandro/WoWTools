@@ -62,6 +62,7 @@ function WoWTools_AuctionHouseMixin:SetPostNextSellItem()
     then
         return
     end
+    
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
             local itemLocation, itemCommodityStatus= self:GetItemSellStatus(bag, slot, true)

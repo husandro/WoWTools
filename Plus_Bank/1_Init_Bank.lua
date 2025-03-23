@@ -1,5 +1,5 @@
 
-WoWTools_BankMixin.Save={
+local P_Save={
     --disabled=true,--禁用
 
     line=2,
@@ -35,32 +35,31 @@ WoWTools_BankMixin.Save={
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("BANKFRAME_OPENED")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_BankMixin.Save= WoWToolsSave['Plus_Bank'] or WoWTools_BankMixin.Save
 
-            WoWTools_BankMixin.Save.guild= nil
+            WoWToolsSave['Plus_Bank']= WoWToolsSave['Plus_Bank'] or P_Save
 
-            local addName= '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '银行' or BANK)
-            WoWTools_BankMixin.addName= addName
+            WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '银行' or BANK)
 
-            --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                GetValue=function() return not WoWTools_BankMixin.Save.disabled end,
+                name= WoWTools_BankMixin.addName,
+                GetValue=function() return not WoWToolsSave['Plus_Bank'].disabled end,
                 SetValue= function()
-                    WoWTools_BankMixin.Save.disabled= not WoWTools_BankMixin.Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not WoWTools_BankMixin.Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    WoWToolsSave['Plus_Bank'].disabled= not WoWToolsSave['Plus_Bank'].disabled and true or nil
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Plus_Bank'].disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             })
 
-            if not WoWTools_BankMixin.Save.disabled then
-                self:RegisterEvent('BANKFRAME_OPENED')
+            if not WoWToolsSave['Plus_Bank'].disabled then
+                self:UnregisterAllEvents()
+            else
+                self:UnregisterEvent(event)
             end
-
-            self:UnregisterEvent(event)
         end
 
     elseif event=='BANKFRAME_OPENED' then
@@ -71,11 +70,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         WoWTools_BankMixin:Init_Left_List()
         WoWTools_BankMixin:Set_PortraitButton()
         self:UnregisterEvent(event)
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Bank']= WoWTools_BankMixin.Save
-        end
     end
 end)
 

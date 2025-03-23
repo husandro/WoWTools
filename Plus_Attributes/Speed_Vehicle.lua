@@ -41,6 +41,7 @@ local function Init()
             end)
         end
     end
+    return true
 end
 
 
@@ -51,12 +52,7 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Vehicle_Speed()
-    if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed then
-        return
+    if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed and Init() then
+        Init=function()end
     end
-
-    do
-        Init()
-    end
-    Init=function()end
 end

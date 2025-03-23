@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWTools_BankMixin.Save
+    return WoWToolsSave['Plus_Bank']
 end
 
 
@@ -703,8 +703,7 @@ local function Init()
         end
     end)
 
-
-
+    return true
 end
 
 
@@ -712,5 +711,7 @@ end
 
 
 function WoWTools_BankMixin:Init_UI()
-   Init()
+    if Init() then
+        Init=function()end
+    end
 end

@@ -211,17 +211,18 @@ end
 
 --显示拍卖行时，转到出售物品
 local function OnShowToSellFrame()
-    if not Save().intShowSellItem then
+    if not Save().intShowSellItem or not AuctionHouseFrame:IsShown() then
         return
     end
-    if not AuctionHouseFrame:IsShown() then
-        return
-    end
+    local isCommodity
     for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do--Constants.InventoryConstants.NumBagSlots
         for slot=1, C_Container.GetContainerNumSlots(bag) do
-            if select(2, WoWTools_AuctionHouseMixin:GetItemSellStatus(bag, slot, true)) then
-                AuctionHouseFrame:SetDisplayMode(AuctionHouseFrameDisplayMode.CommoditiesSell)
-                C_Timer.After(0.5, function() WoWTools_AuctionHouseMixin:SetPostNextSellItem() end)--放入，第一个，物品
+            isCommodity= select(2, WoWTools_AuctionHouseMixin:GetItemSellStatus(bag, slot, true))
+            if isCommodity then
+                AuctionHouseFrame:SetDisplayMode(isCommodity==Enum.ItemCommodityStatus.Commodity and AuctionHouseFrameDisplayMode.CommoditiesSell or AuctionHouseFrameDisplayMode.ItemSell)
+                C_Timer.After(0.3, function()
+                    WoWTools_AuctionHouseMixin:SetPostNextSellItem() --放入，第一个，物品
+                end)
                 return
             end
         end
