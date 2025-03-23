@@ -330,14 +330,18 @@ local function Init_Menu(_, root)
         {type= 'mouseDown', text= WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLYellow-Up'},
     }
     for _, tab in pairs(tab2) do
-        local text=(Save[tab.type] or tab.text)
-        if Save[tab.type] then
-            text=set_Text(text)--处理%s
+        local text=Save()[tab.type]
+        if text then
+            text= set_Text(text)--处理%s
+        else
+            text= tab.text
         end
-        text=format('|A:%s:0:0|a', tab.icon)..text
+        text= format('|A:%s:0:0|a%s', tab.icon, text)
 
-        sub:CreateCheckbox(text, function(data)
-            return Save[data.type]
+        sub:CreateCheckbox(
+            text,
+        function(data)
+            return Save()[data.type]
 
         end, function(data)
             StaticPopupDialogs['WoWTools_ChatButton_Group_CUSTOM']={--区域,设置对话框
@@ -351,8 +355,8 @@ local function Init_Menu(_, root)
                 button2= WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
                 button3= WoWTools_Mixin.onlyChinese and '禁用' or DISABLE,
                 OnShow = function(self)
-                    if Save[data.type] then
-                        self.editBox:SetText(Save[data.type])
+                    if Save()[data.type] then
+                        self.editBox:SetText(Save()[data.type])
                     else
                         if data.type=='mouseUP' then
                             self.editBox:SetText(WoWTools_DataMixin.Player.Region==5 and '求拉, 谢谢' or 'sum me, pls')
@@ -369,13 +373,13 @@ local function Init_Menu(_, root)
                 OnAccept = function(self)
                     local text2= self.editBox:GetText()
                     if text2:gsub(' ','')=='' then
-                        Save[data.type]=nil
+                        Save()[data.type]=nil
                     else
-                        Save[data.type]=text2
+                        Save()[data.type]=text2
                     end
                 end,
                 OnAlt = function()
-                    Save[data.type]=nil
+                    Save()[data.type]=nil
                 end,
                 EditBoxOnTextChanged=function(self)
                     local text2= self:GetText()
