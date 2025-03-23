@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_AddOnsMixin.Save
+    return WoWToolsSave['Plus_AddOns']
 end
 local FastButtons={}--快捷键
 local LeftFrame

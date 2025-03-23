@@ -4,30 +4,11 @@ if not WoWTools_DataMixin.Player.IsMaxLevel or PlayerGetTimerunningSeasonID() th
     return
 end
 
-
-
-
 for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
     WoWTools_Mixin:Load({id=tab.spell, type='spell'})
 end
 
-local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local addName
-local Save= {
+local P_Save= {
     --hideIns=true,--隐藏，副本，挑战，信息
     --insScale=0.8,--副本，缩放
 
@@ -42,8 +23,12 @@ local Save= {
     --hideKeyUI=true,--挑战,钥石,插入界面
     slotKeystoneSay=WoWTools_DataMixin.Player.husandro,--插入, KEY时, 说
 }
-
+local addName
 local TipsFrame
+local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
+local function Save()
+    return WoWToolsSave['Plus_Challenges']
+end
 
 
 
@@ -164,7 +149,7 @@ local function getBagKey(self, point, x, y, parent) --KEY链接
                     self['key'..i].bag:SetText(itemLink)
                 end
                 if self['key'..i] and self==ChallengesFrame then
-                    self['key'..i]:SetShown(not Save.hideTips)
+                    self['key'..i]:SetShown(not Save().hideTips)
                 end
                 i=i+1
             end
@@ -198,7 +183,7 @@ end
 --挑战,钥石,插入,界面
 --##################
 local function UI_Party_Info(self)--队友位置
-    if Save.hideKeyUI then
+    if Save().hideKeyUI then
         return
     end
     local UnitTab={}
@@ -360,7 +345,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
 
     self:HookScript('OnShow', function(self2)
-        if Save.hideKeyUI then
+        if Save().hideKeyUI then
             return
         end
         getBagKey(self2, 'BOTTOMRIGHT', -15, 170, self2.keyFrame)--KEY链接
@@ -426,10 +411,10 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     --##############
     local check= CreateFrame("CheckButton", nil, self.keyFrame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
     check:SetPoint('RIGHT', self.ins, 'LEFT')
-    check:SetChecked(Save.slotKeystoneSay)
+    check:SetChecked(Save().slotKeystoneSay)
     --check:SetAlpha(0.5)
     check:SetScript('OnMouseDown', function()
-        Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
+        Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
     end)
     check:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
@@ -443,7 +428,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     end)
     check:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(0.5) end)
     hooksecurefunc(self, 'OnKeystoneSlotted',function(self2)--插入, KEY时, 说
-        if not Save.slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self2.inseSayTips then
+        if not Save().slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self2.inseSayTips then
             return
         end
         local mapChallengeModeID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
@@ -859,8 +844,8 @@ local function set_All_Text()--所有记录
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
-            GameTooltip:AddDoubleLine('x: '..Save.rightX, 'Shift+'..WoWTools_DataMixin.Icon.mid)
-            GameTooltip:AddDoubleLine('y: '..Save.rightY, 'Alt+'..WoWTools_DataMixin.Icon.mid)
+            GameTooltip:AddDoubleLine('x: '..Save().rightX, 'Shift+'..WoWTools_DataMixin.Icon.mid)
+            GameTooltip:AddDoubleLine('y: '..Save().rightY, 'Alt+'..WoWTools_DataMixin.Icon.mid)
             GameTooltip:Show()
             self:SetAlpha(1)
         end
@@ -868,18 +853,18 @@ local function set_All_Text()--所有记录
         ChallengesFrame.moveRightTipsButton:SetScript('OnEnter', ChallengesFrame.moveRightTipsButton.set_tooltips)
         function ChallengesFrame.moveRightTipsButton:set_point()
             ChallengesFrame.runHistoryLable:ClearAllPoints()
-            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', Save.rightX, Save.rightY)
+            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', Save().rightX, Save().rightY)
         end
         ChallengesFrame.moveRightTipsButton:SetScript('OnMouseWheel', function(self, d)
-            local x= Save.rightX
-            local y= Save.rightY
+            local x= Save().rightX
+            local y= Save().rightY
             if IsShiftKeyDown() then
                 x= d==1 and x+5 or x-5
             elseif IsAltKeyDown() then
                 y= d==1 and y+5 or y-5
             end
-            Save.rightX= x
-            Save.rightY= y
+            Save().rightX= x
+            Save().rightY= y
             self:set_point()
             self:set_tooltips()
         end)
@@ -1145,7 +1130,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             frame.journalInstanceID= insTab.ins
             if not frame.setTips then
                 frame:HookScript('OnEnter', function(self2)--提示
-                    if not self2.mapID or Save.hideIns then
+                    if not self2.mapID or Save().hideIns then
                         return
                     end
                     local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self2.mapID)
@@ -1244,7 +1229,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
              --#########
             --名称, 缩写
             --#########
-            local nameText = not Save.hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
+            local nameText = not Save().hideIns and C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
             if nameText then
                 if not frame.nameLable then
                     frame.nameLable=WoWTools_LabelMixin:Create(frame, {size=10, mouse= true, justifyH='CENTER'})
@@ -1272,7 +1257,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     nameText=nameText:match('·(.+)') or nameText
                     nameText=WoWTools_TextMixin:sub(nameText, 5, 12)
                 end
-                frame.nameLable:SetScale(Save.insScale or 1)
+                frame.nameLable:SetScale(Save().insScale or 1)
             end
             if frame.nameLable then
                 frame.nameLable:SetText(nameText or '')
@@ -1317,9 +1302,9 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         end)
                     end
                 end
-                frame.scoreLable:SetText((overAllScore and not Save.hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..WoWTools_WeekMixin:KeystoneScorsoColor(overAllScore,nil,true) or '')
+                frame.scoreLable:SetText((overAllScore and not Save().hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..WoWTools_WeekMixin:KeystoneScorsoColor(overAllScore,nil,true) or '')
                 frame.scoreLable.score= overAllScore
-                frame.scoreLable:SetScale(Save.insScale or 1)
+                frame.scoreLable:SetScale(Save().insScale or 1)
 
                 if affixScores and #affixScores > 0 then --最佳 
                     local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
@@ -1327,7 +1312,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     for _, info in ipairs(affixScores) do
                         local text
                         local label=frame['affixInfo'..info.name]
-                        if info.level and info.level>0 and info.durationSec and (info.name == nameA or info.name==nameB) and not Save.hideIns then
+                        if info.level and info.level>0 and info.durationSec and (info.name == nameA or info.name==nameB) and not Save().hideIns then
                             if not label then
                                 label= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT', mouse=true})
                                 if info.name== nameA then
@@ -1356,7 +1341,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                             label.name= icon..info.name..': '..level
                         end
                         if label then
-                            label:SetScale(Save.insScale or 1)
+                            label:SetScale(Save().insScale or 1)
                             label:SetText(text or '')
                         end
                     end
@@ -1366,7 +1351,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 --副本 完成/总次数 (全部)
                 --#####################
                 local numText
-                if not Save.hideIns then
+                if not Save().hideIns then
                     local all, completed, totale= GetNum(frame.mapID, true)
                     local week= GetNum(frame.mapID)--本周
                     if all or week then
@@ -1400,7 +1385,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                     end
                 end
                 if frame.completedLable then
-                    frame.completedLable:SetScale(Save.insScale or 1)
+                    frame.completedLable:SetScale(Save().insScale or 1)
                     frame.completedLable:SetText(numText or '')
                 end
             end
@@ -1408,7 +1393,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --################
             --提示, 包里KEY地图
             --################
-            local findKey= currentChallengeMapID== frame.mapID and not Save.hideIns or false
+            local findKey= currentChallengeMapID== frame.mapID and not Save().hideIns or false
             if findKey and not frame.currentKey then--提示, 包里KEY地图
                 frame.currentKey= frame:CreateTexture(nil, 'OVERLAY', nil, self:GetFrameLevel()+1)
                 frame.currentKey:SetPoint('RIGHT', frame, 0, 8)
@@ -1432,7 +1417,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 frame.currentKey.label:SetPoint('TOP', frame.currentKey,-2,2)
             end
             if frame.currentKey then
-                frame.currentKey:SetScale(Save.insScale or 1)
+                frame.currentKey:SetScale(Save().insScale or 1)
                 frame.currentKey:SetShown(findKey)
                 frame.currentKey.label:SetText(keyStoneLevel or '')
             end
@@ -1440,7 +1425,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
             --#####
             --传送门
             --#####
-            if not Save.hidePort then
+            if not Save().hidePort then
                 if frame.spellID then
                     if not frame.spellPort then
                         local h=frame:GetWidth()/3 +8
@@ -1494,8 +1479,8 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                 else
                     frame.spellPort:SetAlpha(0.3)
                 end
-                frame.spellPort:SetShown(not Save.hidePort)
-                frame.spellPort:SetScale(Save.portScale or 1)
+                frame.spellPort:SetShown(not Save().hidePort)
+                frame.spellPort:SetScale(Save().portScale or 1)
             end
         end
     end
@@ -1615,11 +1600,12 @@ end
 --########################
 local WeekRewardLookFrame
 local function set_Week_Reward_Look_Specialization()
-
     local hasReward= C_WeeklyRewards.HasAvailableRewards()
-
-    if not hasReward or WeekRewardLookFrame then
+    if hasReward==nil then
         return
+    elseif hasReward==false then
+        return true
+
     elseif hasReward then
         print(WoWTools_DataMixin.Icon.icon2.. addName,'|cffff00ff'..(WoWTools_Mixin.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
     end
@@ -1628,6 +1614,7 @@ local function set_Week_Reward_Look_Specialization()
     WeekRewardLookFrame:SetSize(40,40)
     WeekRewardLookFrame:SetPoint("CENTER", -100, 60)
     WeekRewardLookFrame:SetShown(false)
+
     WeekRewardLookFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
     WeekRewardLookFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
@@ -1638,9 +1625,12 @@ local function set_Week_Reward_Look_Specialization()
             self:SetShown(false)
             return
         end
-        self:UnregisterEvent('UNIT_SPELLCAST_SENT')
+
+        
         if IsResting() then
             self:RegisterEvent('UNIT_SPELLCAST_SENT')
+        else
+            self:UnregisterEvent('UNIT_SPELLCAST_SENT')
         end
     end
 
@@ -1651,6 +1641,7 @@ local function set_Week_Reward_Look_Specialization()
         self:SetShown(show)
         WoWTools_CooldownMixin:Setup(self, nil, show and 4 or 0, nil, true, true, true)
     end
+
     function WeekRewardLookFrame:set_Texture()
         if not self.texture then
             self.texture= self:CreateTexture(nil, 'BACKGROUND')
@@ -1677,6 +1668,7 @@ local function set_Week_Reward_Look_Specialization()
         end
         SetPortraitToTexture(self.texture, texture or 0)
     end
+
     WeekRewardLookFrame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
         if event=='PLAYER_UPDATE_RESTING' or event=='PLAYER_ENTERING_WORLD' then
             self:set_Event()
@@ -1687,6 +1679,8 @@ local function set_Week_Reward_Look_Specialization()
     end)
 
     WeekRewardLookFrame:set_Event()
+
+    return true
 end
 
 
@@ -1730,7 +1724,7 @@ local function Init_Blizzard_ChallengesUI()
     TipsFrame:SetFrameLevel(7)
     TipsFrame:SetPoint('CENTER')
     TipsFrame:SetSize(1, 1)
-    TipsFrame:SetShown(not Save.hideTips)
+    TipsFrame:SetShown(not Save().hideTips)
     TipsFrame:SetScale(SavGameTooltipScale or 1)
 
     local check= WoWTools_ButtonMixin:Cbtn(ChallengesFrame, {size=18})
@@ -1738,7 +1732,7 @@ local function Init_Blizzard_ChallengesUI()
     check.texture:SetAllPoints()
     check.texture:SetAlpha(0.3)
     function check:set_Texture()
-        self.texture:SetAtlas(not Save.hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        self.texture:SetAtlas(not Save().hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end
     check:set_Texture()
     check:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
@@ -1748,13 +1742,13 @@ local function Init_Blizzard_ChallengesUI()
         check:SetPoint('LEFT', PVEFrame.TitleContainer)
     end
     check:SetScript("OnClick", function(self)
-        Save.hideIns = not Save.hideIns and true or nil
-        --self:SetNormalAtlas(not Save.hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        Save().hideIns = not Save().hideIns and true or nil
+        --self:SetNormalAtlas(not Save().hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
         self:set_Texture()
         set_Update()
     end)
     check:SetScript('OnMouseWheel', function(self, d)--缩放
-        local scale= Save.insScale or 1
+        local scale= Save().insScale or 1
         if d==1 then
             scale= scale-0.05
         else
@@ -1763,7 +1757,7 @@ local function Init_Blizzard_ChallengesUI()
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
         print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '副本' or INSTANCE, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
-        Save.insScale= scale==1 and nil or scale
+        Save().insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
     end)
@@ -1771,7 +1765,7 @@ local function Init_Blizzard_ChallengesUI()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (WoWTools_Mixin.onlyChinese and '副本' or INSTANCE)..WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '信息' or INFO))
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save.insScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save().insScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1786,7 +1780,7 @@ local function Init_Blizzard_ChallengesUI()
     end)
 
 
-    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size=18, atlas=not Save.hideTips and 'FXAM-QuestBang' or 'talents-button-reset'})
+    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size=18, atlas=not Save().hideTips and 'FXAM-QuestBang' or 'talents-button-reset'})
     if _G['MoveZoomInButtonPerPVEFrame'] then
         tipsButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
     else
@@ -1794,9 +1788,9 @@ local function Init_Blizzard_ChallengesUI()
     end
     tipsButton:SetAlpha(0.5)
     tipsButton:SetScript('OnClick', function(self)
-        Save.hideTips= not Save.hideTips and true or nil
-        TipsFrame:SetShown(not Save.hideTips)
-        self:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or 'talents-button-reset')
+        Save().hideTips= not Save().hideTips and true or nil
+        TipsFrame:SetShown(not Save().hideTips)
+        self:SetNormalAtlas(not Save().hideTips and 'FXAM-QuestBang' or 'talents-button-reset')
     end)
     tipsButton:SetScript('OnMouseWheel', function(self, d)--缩放
         local scale= SavGameTooltipScale or 1
@@ -1829,20 +1823,20 @@ local function Init_Blizzard_ChallengesUI()
 
 
     --传送门
-    local spellButton= WoWTools_ButtonMixin:Cbtn(check, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset'})
+    local spellButton= WoWTools_ButtonMixin:Cbtn(check, {size={18,18}, atlas= not Save().hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset'})
     spellButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'] or tipsButton, 'RIGHT')
     spellButton:SetAlpha(0.5)
     spellButton:SetScript('OnClick', function(self)
-        Save.hidePort= not Save.hidePort and true or nil
+        Save().hidePort= not Save().hidePort and true or nil
         set_Update()
-        self:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset')
+        self:SetNormalAtlas(not Save().hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset')
     end)
     spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if not self:CanChangeAttribute() then
             print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
-        local scale= Save.portScale or 1
+        local scale= Save().portScale or 1
         if d==1 then
             scale= scale-0.05
         else
@@ -1851,7 +1845,7 @@ local function Init_Blizzard_ChallengesUI()
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
         print(WoWTools_DataMixin.Icon.icon2.. addName, format(WoWTools_Mixin.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
-        Save.portScale= scale==1 and nil or scale
+        Save().portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
     end)
@@ -1877,7 +1871,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save.portScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save().portScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
         GameTooltip:Show()
@@ -1935,7 +1929,7 @@ local function Init_Blizzard_ChallengesUI()
     --#################
     --挑战,钥石,插入界面
     --#################
-    local btn= WoWTools_ButtonMixin:Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon= not Save.hideKeyUI})
+    local btn= WoWTools_ButtonMixin:Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon= not Save().hideKeyUI})
     btn:SetFrameStrata('HIGH')
     btn:SetFrameLevel(7)
     btn:SetAlpha(0.5)
@@ -1945,13 +1939,13 @@ local function Init_Blizzard_ChallengesUI()
         btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
     end
     btn:SetScript("OnClick", function(self)
-        Save.hideKeyUI = not Save.hideKeyUI and true or nil
+        Save().hideKeyUI = not Save().hideKeyUI and true or nil
         if ChallengesKeystoneFrame.keyFrame then
-            ChallengesKeystoneFrame.keyFrame:SetShown(not Save.hideKeyUI)
-        elseif not Save.hideKeyUI then
+            ChallengesKeystoneFrame.keyFrame:SetShown(not Save().hideKeyUI)
+        elseif not Save().hideKeyUI then
             init_Blizzard_ChallengesUI()
         end
-        self:SetNormalAtlas(not Save.hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        self:SetNormalAtlas(not Save().hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end)
     btn:SetScript("OnEnter",function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -1965,7 +1959,7 @@ local function Init_Blizzard_ChallengesUI()
         GameTooltip:Hide()
         self:SetAlpha(0.5)
     end)
-    if not Save.hideKeyUI then
+    if not Save().hideKeyUI then
         init_Blizzard_ChallengesUI()
     end
 
@@ -1985,9 +1979,9 @@ end
 
 local SayButton
 local function Say_ChallengeComplete()
-    if not Save.slotKeystoneSay or SayButton then
+    if not Save().slotKeystoneSay or SayButton then
         if SayButton then
-            SayButton:SetShown(Save.slotKeystoneSay)
+            SayButton:SetShown(Save().slotKeystoneSay)
         end
         return
     end
@@ -2016,8 +2010,8 @@ local function Say_ChallengeComplete()
     SayButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save.sayButtonPoint={self:GetPoint(1)}
-        Save.sayButtonPoint[2]=nil
+        Save().sayButtonPoint={self:GetPoint(1)}
+        Save().sayButtonPoint[2]=nil
     end)
 
     SayButton:SetScript("OnMouseUp", ResetCursor)
@@ -2047,9 +2041,9 @@ local function Say_ChallengeComplete()
                 sub2=sub:CreateCheckbox(
                     WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
                 function()
-                    return Save.slotKeystoneSay
+                    return Save().slotKeystoneSay
                 end, function()
-                    Save.slotKeystoneSay= not Save.slotKeystoneSay and true or nil
+                    Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
                 end)
                 sub2:SetTooltip(function(tooltip)
                     GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY))
@@ -2071,8 +2065,8 @@ local function Say_ChallengeComplete()
         GameTooltip:Show()
     end)
 
-    if Save.sayButtonPoint then
-        SayButton:SetPoint(Save.sayButtonPoint[1], UIParent, Save.sayButtonPoint[3], Save.sayButtonPoint[4], Save.sayButtonPoint[5])
+    if Save().sayButtonPoint then
+        SayButton:SetPoint(Save().sayButtonPoint[1], UIParent, Save().sayButtonPoint[3], Save().sayButtonPoint[4], Save().sayButtonPoint[5])
     else
         SayButton:SetPoint('CENTER', 100, 100)
     end
@@ -2140,12 +2134,14 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            Save= WoWToolsSave['Plus_Challenges'] or Save
+            WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
 
             if PlayerGetTimerunningSeasonID() then
                 self:UnregisterEvent(event)
@@ -2158,35 +2154,49 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
-                GetValue= function() return not Save.disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
-            if Save.disabled then
-                self:UnregisterEvent(event)
+            if Save().disabled then
+                self:UnregisterAllEvents()
             else
-                self:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-                C_Timer.After(4, set_Week_Reward_Look_Specialization)--打开周奖励时，提示拾取专精
+                
+                self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
 
+            if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
+                self:UnregisterEvent(event)
+            end
+
 
         elseif arg1=='Blizzard_WeeklyRewards' then
             Init_Blizzard_WeeklyRewards()
+
+            if set_Week_Reward_Look_Specialization() then--打开周奖励时，提示拾取专精
+                set_Week_Reward_Look_Specialization=function()end
+            end
+
+            if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
+                self:UnregisterEvent(event)
+            end
         end
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         Say_ChallengeComplete()
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Challenges']=Save
+    elseif event=='PLAYER_ENTERING_WORLD' then
+        if set_Week_Reward_Look_Specialization() then--打开周奖励时，提示拾取专精
+            set_Week_Reward_Look_Specialization=function()end
+            self:UnregisterEvent(event)
         end
+        
     end
 end)
 
@@ -2201,7 +2211,7 @@ end)
 
 --panel:RegisterEvent('CHALLENGE_MODE_START')
 --[[elseif event=='CHALLENGE_MODE_START' then -赏金, 说 Bounty
-    if Save.hideKeyUI then
+    if Save().hideKeyUI then
         return
     end
     local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
@@ -2234,7 +2244,7 @@ end)
                 end
 
                 for _, v in pairs(chat) do
-                    if not Save.slotKeystoneSay then
+                    if not Save().slotKeystoneSay then
                         print(v)
                     else
                         WoWTools_ChatMixin:Chat(v)

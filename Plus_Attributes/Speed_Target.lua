@@ -2,7 +2,7 @@
 
 
 local function Save()
-    return WoWTools_AttributesMixin.Save
+    return WoWToolsSave['Plus_Attributes']
 end
 
 
@@ -183,7 +183,7 @@ local function Init()
 
         self.nameText:SetFormattedText(
             '%s%s',
-            not WoWTools_AttributesMixin.Save.disableTargetName and GetUnitName('target', false) or '',
+            not WoWToolsSave['Plus_Attributes'].disableTargetName and GetUnitName('target', false) or '',
             WoWTools_MarkerMixin:GetIcon(nil, 'target')
         )
 
@@ -221,7 +221,7 @@ function WoWTools_AttributesMixin:Init_Target_Speed()
         btn:Settings()
         return
     end
-    if not self.Save.showTargetSpeed then
+    if not WoWToolsSave['Plus_Attributes'].showTargetSpeed then
         return
     end
 

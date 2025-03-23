@@ -51,7 +51,7 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Vehicle_Speed()
-    if self.Save.disabledVehicleSpeed then
+    if WoWToolsSave['Plus_Attributes'].disabledVehicleSpeed then
         return
     end
 

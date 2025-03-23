@@ -1,7 +1,8 @@
 
 
-WoWTools_AttributesMixin={
-Save={
+WoWTools_AttributesMixin={}
+
+local P_Save={
     redColor= '|cffff0000',
     greenColor='|cff00ff00',
     font={r=0, g=0, b=0, a=1, x=1, y=-1},--阴影
@@ -59,12 +60,11 @@ Save={
     showBG=WoWTools_DataMixin.Player.husandro,
 
 }
-}
 
 -- STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 
 local function Save()
-    return WoWTools_AttributesMixin.Save
+    return WoWToolsSave['Plus_Attributes']
 end
 
 
@@ -102,33 +102,31 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWTools_AttributesMixin.Save= WoWToolsSave['Plus_Attributes'] or Save()
-            local addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_Mixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
-            WoWTools_AttributesMixin.addName= addName
+            WoWToolsSave['Plus_Attributes']= WoWToolsSave['Plus_Attributes'] or P_Save
 
-            local frame= CreateFrame('Frame')
-            WoWTools_AttributesMixin.PanelFrame= frame
+            WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_Mixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+            WoWTools_AttributesMixin.PanelFrame= CreateFrame('Frame')
 
             local Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
-                name=addName,
-                frame=frame,
+                name=WoWTools_AttributesMixin.addName,
+                frame=WoWTools_AttributesMixin.PanelFrame,
                 disabled= Save().disabled,
             })
             WoWTools_AttributesMixin.Category= Category
 
-            WoWTools_PanelMixin:ReloadButton({panel=frame, addName=addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
+            WoWTools_PanelMixin:ReloadButton({panel=WoWTools_AttributesMixin.PanelFrame, addName=WoWTools_AttributesMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
                 disabledfunc=function()
                     Save().disabled = not Save().disabled and true or nil
                     if not Save().disabled then
                         if Init() then Init=function()end end
                         WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,
                 clearfunc= function()
-                    WoWTools_AttributesMixin.Save=nil
+                    WoWToolsSave['Plus_Attributes']=nil
                     WoWTools_Mixin:Reload()
                 end
             })
@@ -139,14 +137,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Settings' then
             WoWTools_AttributesMixin:Init_Options()
-            if WoWTools_AttributesMixin.Category then
-                self:UnregisterEvent(event)
-            end
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Attributes']=Save()
+            self:UnregisterEvent(event)
         end
     end
 end)

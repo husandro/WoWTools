@@ -1,7 +1,7 @@
 
 
-WoWTools_AddOnsMixin={
-Save={
+WoWTools_AddOnsMixin={}
+local P_Save={
     --load_Button_Name=BASE_SETTINGS_TAB,--记录，已加载方案
     buttons={
         [WoWTools_DataMixin.Player.husandro and '一般' or BASE_SETTINGS_TAB]={
@@ -51,8 +51,8 @@ Save={
     --hideLeftList
 
     --disabledInfoPlus=true,禁用plus
-},
 }
+
 --NewButton=nil,--新建按钮
 --BottomFrame=nil,--插件，图标，列表
 --MenuButton=nil,--菜单，按钮
@@ -60,10 +60,15 @@ Save={
 --LeftFrame=nil,--左边列表
 
 
-local addName
+
 local function Save()
-    return WoWTools_AddOnsMixin.Save
+    return WoWToolsSave['Plus_AddOns']
 end
+
+
+
+
+
 
 
 
@@ -262,6 +267,8 @@ local function Init()
         WoWTools_AddOnsMixin:Set_Left_Buttons()--插件，快捷，选中
         WoWTools_AddOnsMixin:Set_Right_Buttons()
     end)
+
+    return true
 end
 
 
@@ -281,45 +288,47 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
 --panel:RegisterEvent("PLAYER_LOGIN")
---panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_AddOnsMixin.Save= WoWToolsSave['Plus_AddOns'] or Save()
-            addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_Mixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
-
-            WoWTools_AddOnsMixin.addName= addName
+            WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or P_Save
+            WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_Mixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
+                name= WoWTools_AddOnsMixin.addName,
                 Value= not Save().disabled,
                 GetValue=function () return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    if not Save().disabled then
+                        if Init() then
+                            Init=function()end
+                            return
+                        end
+                    end
+                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_AddOnsMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
 
             if not Save().disabled then
-                Init()
+                if Init() then
+                    Init=function()end
+                end
             end
             self:UnregisterEvent(event)
         end
+
     --[[elseif event=='PLAYER_LOGIN' then
         if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
             C_CVar.RegisterCVar("addonProfilerEnabled", "1")
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             if not C_AddOnProfiler.IsEnabled() then
-                print(WoWTools_DataMixin.Icon.icon2..addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)))
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU or 'CPU %s', DISABLE)))
             end
-        end]]
-        
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_AddOns']=Save()
         end
+        self:UnregisterEvent(event)]]
     end
 end)

@@ -1,24 +1,24 @@
+local P_Save={
+    Friends={},
+    disabledBNFriendInfo=not WoWTools_DataMixin.Player.husandro and true or nil,--禁用战网，好友信息，提示
+    --allFriendInfo= true,--仅限，WoW，好友
+    --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
+    --showFriendInfoOnlyFavorite=true,--仅限收藏好友
+}
 
 local addName
-local Save={
-        Friends={},
-        disabledBNFriendInfo=not WoWTools_DataMixin.Player.husandro and true or nil,--禁用战网，好友信息，提示
-        --allFriendInfo= true,--仅限，WoW，好友
-        --showInCombatFriendInfo=true,--仅限，不在战斗中，好友，提示
-        --showFriendInfoOnlyFavorite=true,--仅限收藏好友
-    }
-
 local FriendsButton
+local RegionNames
 local OptionText--= (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
-
-
 local OptionTexture={
     ['Availabel'] = FRIENDS_TEXTURE_ONLINE,
     ['DND']= FRIENDS_TEXTURE_DND,
     ['Away'] =FRIENDS_TEXTURE_AFK,
 }
-local RegionNames
 
+local function Save()
+    return WoWToolsSave['Plus_FriendsList']
+end
 
 
 
@@ -226,34 +226,34 @@ local function Init_Friends_Menu(self, root)
 
     root:CreateTitle(WoWTools_Mixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
     root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_ONLINE, WoWTools_Mixin.onlyChinese and '有空' or FRIENDS_LIST_AVAILABLE), function()
-        return Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel'
+        return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel'
     end, function()
-        if Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel' then
-            Save.Friends[WoWTools_DataMixin.Player.GUID]= nil
+        if Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Availabel' then
+            Save().Friends[WoWTools_DataMixin.Player.GUID]= nil
         else
-            Save.Friends[WoWTools_DataMixin.Player.GUID]= 'Availabel'
+            Save().Friends[WoWTools_DataMixin.Player.GUID]= 'Availabel'
         end
         self:set_status()
     end)
 
     root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_AFK, WoWTools_Mixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY), function()
-        return Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Away'
+        return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Away'
     end, function()
-        if Save.Friends[WoWTools_DataMixin.Player.GUID]== 'Away' then
-            Save.Friends[WoWTools_DataMixin.Player.GUID]= nil
+        if Save().Friends[WoWTools_DataMixin.Player.GUID]== 'Away' then
+            Save().Friends[WoWTools_DataMixin.Player.GUID]= nil
         else
-            Save.Friends[WoWTools_DataMixin.Player.GUID]= 'Away'
+            Save().Friends[WoWTools_DataMixin.Player.GUID]= 'Away'
         end
         self:set_status()
     end)
 
     root:CreateCheckbox(OptionText:format(FRIENDS_TEXTURE_DND, WoWTools_Mixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY), function()
-        return Save.Friends[WoWTools_DataMixin.Player.GUID]== 'DND'
+        return Save().Friends[WoWTools_DataMixin.Player.GUID]== 'DND'
     end, function()
-        if Save.Friends[WoWTools_DataMixin.Player.GUID]== 'DND' then
-            Save.Friends[WoWTools_DataMixin.Player.GUID]= nil
+        if Save().Friends[WoWTools_DataMixin.Player.GUID]== 'DND' then
+            Save().Friends[WoWTools_DataMixin.Player.GUID]= nil
         else
-            Save.Friends[WoWTools_DataMixin.Player.GUID]= 'DND'
+            Save().Friends[WoWTools_DataMixin.Player.GUID]= 'DND'
         end
         self:set_status()
     end)
@@ -261,16 +261,16 @@ local function Init_Friends_Menu(self, root)
     root:CreateDivider()
     local sub= root:CreateButton(WoWTools_Mixin.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
     sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
-        Save.Friends= {}
+        Save().Friends= {}
         print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)
     end)
     sub:CreateDivider()
 
-    for guid, stat in pairs(Save.Friends) do
+    for guid, stat in pairs(Save().Friends) do
         if guid~=WoWTools_DataMixin.Player.GUID then
             local btn= sub:CreateButton(format('|A:%s:0:0|a', OptionTexture[stat] or '').. WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}), function(data)
                 if data then
-                    Save.Friends[data]= nil
+                    Save().Friends[data]= nil
                 end
             end)
             btn:SetData(guid)
@@ -283,33 +283,33 @@ local function Init_Friends_Menu(self, root)
 
     root:CreateDivider()
     sub= root:CreateCheckbox(WoWTools_DataMixin.Icon.net2..(WoWTools_Mixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)..' ('..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)..') '..( WoWTools_Mixin.onlyChinese and '信息' or INFO)..'|A:communities-icon-chat:0:0|a', function()
-        return not Save.disabledBNFriendInfo
+        return not Save().disabledBNFriendInfo
     end, function()
-        Save.disabledBNFriendInfo= not Save.disabledBNFriendInfo and true or nil
+        Save().disabledBNFriendInfo= not Save().disabledBNFriendInfo and true or nil
     end)
 
     sub:CreateCheckbox(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)), function()
-        return not Save.allFriendInfo
+        return not Save().allFriendInfo
     end, function()
-        Save.allFriendInfo= not Save.allFriendInfo and true or nil
+        Save().allFriendInfo= not Save().allFriendInfo and true or nil
     end)
 
     sub:CreateCheckbox((WoWTools_Mixin.onlyChinese and '仅限偏好好友' or format(LFG_LIST_CROSS_FACTION, BATTLE_PET_FAVORITE))..'|A:friendslist-favorite:0:0|a', function()
-        return Save.showFriendInfoOnlyFavorite
+        return Save().showFriendInfoOnlyFavorite
     end, function()
-        Save.showFriendInfoOnlyFavorite= not Save.showFriendInfoOnlyFavorite and true or nil
+        Save().showFriendInfoOnlyFavorite= not Save().showFriendInfoOnlyFavorite and true or nil
     end)
 
     sub:CreateCheckbox((WoWTools_Mixin.onlyChinese and '仅限脱离战斗' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))..'|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a', function()
-        return not Save.showInCombatFriendInfo
+        return not Save().showInCombatFriendInfo
     end, function()
-        Save.showInCombatFriendInfo= not Save.showInCombatFriendInfo and true or nil
+        Save().showInCombatFriendInfo= not Save().showInCombatFriendInfo and true or nil
     end)
 
     root:CreateCheckbox('|A:Battlenet-ClientIcon-App:0:0|a'..(WoWTools_Mixin.onlyChinese and '好友' or FRIEND)..' Plus', function()
-        return not Save.disabledFriendPlus
+        return not Save().disabledFriendPlus
     end, function()
-        Save.disabledFriendPlus= not Save.disabledFriendPlus and true or nil
+        Save().disabledFriendPlus= not Save().disabledFriendPlus and true or nil
         WoWTools_Mixin:Call(FriendsList_Update, true)
     end)
 
@@ -352,17 +352,17 @@ local function Init_FriendsList()--好友列表, 初始化
 
     FriendsButton.playerRealmID = GetRealmID()
     FriendsButton:SetScript('OnEvent', function(self, _, friendIndex)
-        if Save.disabledBNFriendInfo then
+        if Save().disabledBNFriendInfo then
             return
         end
-        if not Save.showInCombatFriendInfo and UnitAffectingCombat('player') and IsInInstance() then--战斗中，不显示，好友，提示
+        if not Save().showInCombatFriendInfo and UnitAffectingCombat('player') and IsInInstance() then--战斗中，不显示，好友，提示
             self.tips=nil
             return
         end
         local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
         if not accountInfo
             or (
-                not Save.allFriendInfo--仅限，WoW，好友
+                not Save().allFriendInfo--仅限，WoW，好友
                 and accountInfo.gameAccountInfo.isOnline
                 and (
                         accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW
@@ -370,7 +370,7 @@ local function Init_FriendsList()--好友列表, 初始化
                         or not accountInfo.gameAccountInfo.isInCurrentRegion
                     )
                 )
-            or (not accountInfo.isFavorite and Save.showFriendInfoOnlyFavorite)--仅限收藏好友
+            or (not accountInfo.isFavorite and Save().showFriendInfoOnlyFavorite)--仅限收藏好友
         then
             return
         end
@@ -465,7 +465,7 @@ local function Init_FriendsList()--好友列表, 初始化
         end
     end)
 
-    if Save.showFriendInfoOnlyFavorite then
+    if Save().showFriendInfoOnlyFavorite then
         FriendsButton:RegisterEvent('BN_FRIEND_INFO_CHANGED')
     else
         C_Timer.After(2, function()
@@ -497,7 +497,7 @@ local function Init_FriendsList()--好友列表, 初始化
         local text
 
 
-        if Save.Friends[WoWTools_DataMixin.Player.GUID]=='Availabel' then
+        if Save().Friends[WoWTools_DataMixin.Player.GUID]=='Availabel' then
             if bnetAFK or bnetDND then
                 BNSetAFK(false)
                 BNSetDND(false)
@@ -506,14 +506,14 @@ local function Init_FriendsList()--好友列表, 初始化
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_ONLINE)
 
-        elseif Save.Friends[WoWTools_DataMixin.Player.GUID]=='Away' then
+        elseif Save().Friends[WoWTools_DataMixin.Player.GUID]=='Away' then
             if not bnetAFK then
                 BNSetAFK(true)
                 text= format(OptionText, FRIENDS_TEXTURE_AFK, WoWTools_Mixin.onlyChinese and '离开' or FRIENDS_LIST_AWAY)
             end
             self:SetNormalTexture(FRIENDS_TEXTURE_AFK)
 
-        elseif Save.Friends[WoWTools_DataMixin.Player.GUID]=='DND' then
+        elseif Save().Friends[WoWTools_DataMixin.Player.GUID]=='DND' then
             if not bnetDND then
                 BNSetDND(true)
                 text= format(OptionText, FRIENDS_TEXTURE_DND, WoWTools_Mixin.onlyChinese and '忙碌' or FRIENDS_LIST_BUSY)
@@ -559,7 +559,7 @@ end
 --好友PLUS
 --FriendsFrame.lua
 local function Set_FriendsFrame_UpdateFriendButton(self)
-    if Save.disabledFriendPlus then
+    if Save().disabledFriendPlus then
         return
     end
 
@@ -957,33 +957,35 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("PLAYER_LOGIN")
+panel:RegisterEvent("SOCIAL_QUEUE_UPDATE")
+
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            if WoWToolsSave['FriendsList_lua'] then
-                Save= WoWToolsSave['FriendsList_lua']
-                WoWToolsSave['FriendsList_lua']= nil
-            else
-                Save= WoWToolsSave['Plus_FriendsList'] or Save
-            end
+            WoWToolsSave['Plus_FriendsList']= WoWToolsSave['Plus_FriendsList'] or P_Save
+
             addName= '|A:socialqueuing-icon-group:0:0|a'..(WoWTools_Mixin.onlyChinese and '好友列表' or FRIENDS_LIST)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
-                GetValue= function() return not Save.disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
-            if Save.disabled then
-                self:UnregisterEvent(event)
+            if Save().disabled then
+                self:UnregisterAllEvents()
+                OptionTexture=nil
+
             else
                 OptionText= (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
+
                 RegionNames = {
                     [1] = WoWTools_Mixin.onlyChinese and '北美' or NORTH_AMERICA,
                     [2] = WoWTools_Mixin.onlyChinese and '韩国' or KOREA,
@@ -991,9 +993,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     [4] = WoWTools_Mixin.onlyChinese and '台湾' or TAIWAN,
                     [5] = WoWTools_Mixin.onlyChinese and '中国' or CHINA,
                 }
-                Init()
-
-                self:RegisterEvent('SOCIAL_QUEUE_UPDATE')
             end
 
         elseif arg1=='Blizzard_RaidUI' then
@@ -1009,15 +1008,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     end
                 end
             end)
+            RaidFrame:HookScript('OnHide', function(frame)
+                frame.elapsed= nil
+            end)
 
+            self:UnregisterEvent(event)
         end
 
     elseif event=='SOCIAL_QUEUE_UPDATE' then
         set_SOCIAL_QUEUE_UPDATE()
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_FriendsList']=Save
-        end
+    elseif event == "PLAYER_LOGIN" then
+        Init()
+        self:UnregisterEvent(event)
     end
 end)

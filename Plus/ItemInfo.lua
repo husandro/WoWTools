@@ -2,9 +2,11 @@
 
 
 local addName
-local Save={}
+local P_Save={}
 
-
+local function Save()
+    return WoWToolsSave['Plus_ItemInfo']
+end
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
 local keyStr= format(CHALLENGE_MODE_KEYSTONE_NAME,'(.+) ')--钥石
@@ -1285,26 +1287,26 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            Save= WoWToolsSave['Plus_ItemInfo'] or Save
+            WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or P_Save
             addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_Mixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
                 tooltip= WoWTools_Mixin.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
-                GetValue= function() return not Save.disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
-            if Save.disabled then
+            if Save().disabled then
                 self:UnregisterEvent(event)
             else
                 Init()
@@ -1326,11 +1328,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面
             add_Button_OpenOption(ItemUpgradeFrameCloseButton)--添加一个按钮, 打开选项                       
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_ItemInfo']=Save
         end
     end
 end)

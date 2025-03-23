@@ -1,13 +1,17 @@
 
-local addName
-local Save={
+
+local P_Save={
     --notRaidFrame= not WoWTools_DataMixin.Player.husandro,
     raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1,
     --raidFrameAlpha=1,
     --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
 }
 
+local function Save()
+    return WoWToolsSave['Plus_UnitFrame']
+end
 
+local addName
 
 local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture then
@@ -1340,7 +1344,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right, 'Alt+'..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), Save.compactPartyFrameScale or 1)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right, 'Alt+'..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), Save().compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
@@ -1352,7 +1356,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
             print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or COMBAT))
             return
         end
-        local sacle= Save.compactPartyFrameScale or 1
+        local sacle= Save().compactPartyFrameScale or 1
         if d==1 then
             sacle=sacle+0.05
         elseif d==-1 then
@@ -1365,10 +1369,10 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         end
         print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), sacle)
         CompactPartyFrame:SetScale(sacle)
-        Save.compactPartyFrameScale=sacle
+        Save().compactPartyFrameScale=sacle
     end)
-    if Save.compactPartyFrameScale and Save.compactPartyFrameScale~=1 then
-        CompactPartyFrame:SetScale(Save.compactPartyFrameScale)
+    if Save().compactPartyFrameScale and Save().compactPartyFrameScale~=1 then
+        CompactPartyFrame:SetScale(Save().compactPartyFrameScale)
     end
     CompactPartyFrame:SetClampedToScreen(true)
     CompactPartyFrame:SetMovable(true)
@@ -1831,12 +1835,12 @@ local function Init_RaidFrame()--设置,团队
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self:SetAlpha(1)
     end
     function CompactRaidFrameContainer.moveFrame:set_Scale()
-        self:GetParent():SetScale(Save.raidFrameScale or 1)
+        self:GetParent():SetScale(Save().raidFrameScale or 1)
     end
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseWheel', function(self, d)--缩放
         if not IsAltKeyDown() then
@@ -1846,7 +1850,7 @@ local function Init_RaidFrame()--设置,团队
             print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
-        local num= Save.raidFrameScale or 1
+        local num= Save().raidFrameScale or 1
         if d==1 then
             num= num+0.05
         elseif d==-1 then
@@ -1854,7 +1858,7 @@ local function Init_RaidFrame()--设置,团队
         end
         num= num>4 and 4 or num
         num= num<0.4 and 0.4 or num
-        Save.raidFrameScale= num
+        Save().raidFrameScale= num
         self:set_Scale()
         self:set_Tooltips()
         print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, num)
@@ -1876,7 +1880,7 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameManager.ScaleButton:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.ScaleButton:SetAlpha(0.3)
     function CompactRaidFrameManager.ScaleButton:settings()
-        CompactRaidFrameManager:SetScale(Save.managerScale or 1)
+        CompactRaidFrameManager:SetScale(Save().managerScale or 1)
     end
     CompactRaidFrameManager.ScaleButton:SetScript('OnLeave', function(self)
         self:SetAlpha(0.3)
@@ -1887,9 +1891,9 @@ local function Init_RaidFrame()--设置,团队
     CompactRaidFrameManager.ScaleButton:SetupMenu(function(self, root)
 --缩放
         WoWTools_MenuMixin:Scale(self, root, function()
-            return Save.managerScale or 1
+            return Save().managerScale or 1
         end, function(value)
-            Save.managerScale= value
+            Save().managerScale= value
             self:settings()
         end)
 
@@ -2135,41 +2139,32 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            if WoWToolsSave[UNITFRAME_LABEL] then
-                Save= WoWToolsSave[UNITFRAME_LABEL]
-                WoWToolsSave[UNITFRAME_LABEL]= nil
-            else
-                Save= WoWToolsSave['Plus_UnitFrame'] or Save
-            end
+            WoWToolsSave['Plus_UnitFrame']= WoWToolsSave['Plus_UnitFrame'] or P_Save
 
             addName= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(WoWTools_Mixin.onlyChinese and '单位框体' or UNITFRAME_LABEL)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
-                GetValue= function() return not Save.disabled end,
+                GetValue= function() return not Save().disabled end,
                 func= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
-            if not Save.disabled then
+            if not Save().disabled then
                 Init()
             end
 
             self:UnregisterEvent(event)
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_UnitFrame']=Save
-        end
     end
 end)
 

@@ -1,7 +1,7 @@
 ---@diagnostic disable: param-type-mismatch
 
 local function Save()
-    return WoWTools_AttributesMixin.Save
+    return WoWToolsSave['Plus_Attributes']
 end
 
 

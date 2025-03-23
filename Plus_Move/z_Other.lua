@@ -137,7 +137,7 @@ local function Init()
             WoWTools_MoveMixin:Setup(MerchantFrame)
         end
     --插件
-        if WoWTools_AddOnsMixin.Save.disabled then
+        if WoWToolsSave['Plus_AddOns'].disabled then
             WoWTools_MoveMixin:Setup(AddonList)
         end
     --银行
