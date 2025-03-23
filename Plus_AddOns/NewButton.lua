@@ -276,7 +276,7 @@ local function Init_NotDisabled_Button()
         end
     end)
     function btn:set_icon()
-        self:SetNormalAtlas(Save().enableAllButtn and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(Save().enableAllButtn and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end
     btn:SetScript('OnClick', function(self)
         Save().enableAllButtn= not Save().enableAllButtn and true or nil

@@ -77,7 +77,7 @@ local function Init_LFGListSearchEntry_Update(self)
     if autoAccept and not self.autoAcceptTexture then--自动, 邀请
         self.autoAcceptTexture=self:CreateTexture(nil,'OVERLAY')
         self.autoAcceptTexture:SetPoint('LEFT')
-        self.autoAcceptTexture:SetAtlas(WoWTools_DataMixin.Icon.select)
+        self.autoAcceptTexture:SetAtlas('common-icon-checkmark')
         self.autoAcceptTexture:SetSize(12,12)
         self.autoAcceptTexture:EnableMouse(true)
         self.autoAcceptTexture:SetScript('OnEnter', function(self2)
@@ -271,12 +271,12 @@ end
 
 
 local function Init_Button()--预创建队伍增强    
-    local Button= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, atlas= Save().LFGPlus and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled})
+    local Button= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, atlas= Save().LFGPlus and WoWTools_DataMixin.Icon.icon or 'talents-button-reset'})
     Button:SetPoint('LEFT', PVEFrame.TitleContainer)
     Button:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Button:SetAlpha(0.5)
     function Button:set_texture()
-        self:SetNormalAtlas(Save().LFGPlus and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(Save().LFGPlus and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end
     Button:SetScript('OnClick', function(self)
         Save().LFGPlus= not Save().LFGPlus and true or nil

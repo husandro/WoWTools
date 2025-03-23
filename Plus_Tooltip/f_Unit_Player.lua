@@ -64,7 +64,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     end
 
     local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
-    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
+    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', 'common-icon-checkmark') or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
 
     if isSelf then
         local titleID= GetCurrentTitle()

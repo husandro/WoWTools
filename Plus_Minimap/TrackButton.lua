@@ -1293,7 +1293,7 @@ local function Init_WorldFrame_Button()
         if not uiMapID then
             self:SetNormalTexture(0)
         else
-            self:SetNormalAtlas(Save().uiMapIDs[uiMapID] and WoWTools_DataMixin.Icon.select or 'VignetteKillElite')
+            self:SetNormalAtlas(Save().uiMapIDs[uiMapID] and 'common-icon-checkmark' or 'VignetteKillElite')
         end
     end
     WorldMapButton:SetPoint('TOPRIGHT', WorldMapFramePortrait, 'BOTTOMRIGHT', 2, 10)
@@ -1304,7 +1304,7 @@ local function Init_WorldFrame_Button()
             local name= (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID)
             print(WoWTools_DataMixin.Icon.icon2.. addName, addName2,
                 name,
-                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                Save().uiMapIDs[uiMapID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
             )
             self:set_texture()
         end
@@ -1316,7 +1316,7 @@ local function Init_WorldFrame_Button()
         if uiMapID then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
+            GameTooltip:AddDoubleLine(addName2..(Save().uiMapIDs[uiMapID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), ((C_Map.GetMapInfo(uiMapID) or {}).name or '')..' '..uiMapID)
             GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
             GameTooltip:Show()
         end
@@ -1344,7 +1344,7 @@ end
 local function Init_WorldFrame_Event()
     hooksecurefunc('TaskPOI_OnEnter', function(self)--世界任务，提示 WorldMapFrame.lua
         if self.questID and self.OnMouseClickAction then
-            GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(addName2..(Save().questIDs[self.questID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
@@ -1357,7 +1357,7 @@ local function Init_WorldFrame_Event()
                 Save().questIDs[f.questID]= not Save().questIDs[f.questID] and true or nil
                 print(WoWTools_DataMixin.Icon.icon2.. addName, addName2,
                     WoWTools_QuestMixin:GetLink(f.questID),
-                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                    Save().questIDs[f.questID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                 )
             end
         end)
@@ -1366,7 +1366,7 @@ local function Init_WorldFrame_Event()
 
     hooksecurefunc(AreaPOIPinMixin,'TryShowTooltip', function(self)--areaPoiID,提示 AreaPOIDataProvider.lua
         if self.areaPoiID and  self:GetMap() and self:GetMap():GetMapID() then
-            GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(addName2..(Save().areaPoiIDs[self.areaPoiID] and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''), 'Alt+'..WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()
         end
     end)
@@ -1385,7 +1385,7 @@ local function Init_WorldFrame_Event()
                     print(WoWTools_DataMixin.Icon.icon2.. addName, addName2,
                         (C_Map.GetMapInfo(uiMapID) or {}).name or ('uiMapID '..uiMapID),
                         name,
-                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+                        Save().areaPoiIDs[self.areaPoiID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark') or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
                     )
                 end
             end

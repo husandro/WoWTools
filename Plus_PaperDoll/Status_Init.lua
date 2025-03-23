@@ -38,7 +38,7 @@ local function Init_Button()
     function Button:set_texture()
         self:SetNormalAtlas(
             Save().notStatusPlus
-            and WoWTools_DataMixin.Icon.disabled
+            and 'talents-button-reset'
             or 'loottoast-arrow-orange')
     end
 

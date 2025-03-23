@@ -135,7 +135,7 @@ local function Init_Menu(self, root)
 --接受邀请
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..(WoWTools_Mixin.onlyChinese and '邀请' or INVITE),
+        '|A:common-icon-checkmark:0:0|a'..(WoWTools_Mixin.onlyChinese and '邀请' or INVITE),
     function()
         return not Save().notInvitePlus
     end, function()
@@ -145,23 +145,38 @@ local function Init_Menu(self, root)
         end
     end)
 
-   sub2=sub:CreateCheckbox(
+    sub:CreateTitle(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT)
+    sub2=sub:CreateCheckbox(
         WoWTools_Mixin.onlyChinese and '好友' or FRIENDS,
     function()
         return Save().FriendAceInvite
     end, function()
         Save().FriendAceInvite= not Save().FriendAceInvite and true or nil
     end)
-    
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '战网, 好友, 公会' or (COMMUNITY_COMMAND_BATTLENET..', '..FRIENDS..', '..GUILD))
     end)
 
+
+    sub:CreateTitle(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE)
+    sub2=sub:CreateCheckbox(
+        WoWTools_Mixin.onlyChinese and '休息区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE),
+    function()
+        return Save().NoInvInResting
+    end, function()
+        Save().NoInvInResting= not Save().NoInvInResting and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '必须处于休息区域。' or SPELL_FAILED_CUSTOM_ERROR_464)
+    end)
+
+
+    sub:CreateDivider()
     sub:CreateButton(
         WoWTools_Mixin.onlyChinese and '测试' or 'Test',
     function()
         local name= UnitName('player')
-        StaticPopup_Show("PARTY_INVITE", format(WoWTools_Mixin.onlyChinese and '"%s邀请你加入队伍"' or INVITATION, name))
+        StaticPopup_Show("PARTY_INVITE", '|n'..format(WoWTools_Mixin.onlyChinese and '"%s邀请你加入队伍"' or INVITATION, name)..'|n|n')
         EventRegistry:TriggerEvent('PARTY_INVITE_REQUEST', UnitName('player'), true, true, true, false, true, WoWTools_DataMixin.Player.GUID, false)
         return MenuResponse.Open
     end)
@@ -313,7 +328,7 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(format('|A:%s:0:0|a%s %d %s', WoWTools_DataMixin.Icon.disabled, WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, WoWTools_Mixin.onlyChinese and '邀请' or INVITE))
+    sub=root:CreateButton(format('|A:talents-button-reset:0:0|a%s %d %s', 'talents-button-reset', WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, WoWTools_Mixin.onlyChinese and '邀请' or INVITE))
  
     sub:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
         Save().InvNoFriend={}

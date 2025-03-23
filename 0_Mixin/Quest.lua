@@ -218,7 +218,7 @@ function WoWTools_QuestMixin:GetQuestAll()
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), WoWTools_QuestMixin:GetColor('Day').hex..(WoWTools_Mixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
+    GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), WoWTools_QuestMixin:GetColor('Day').hex..(WoWTools_Mixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
     GameTooltip:AddLine(WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
@@ -325,7 +325,7 @@ function WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, isComplete)--
         if tagInfo.tagID == Enum.QuestTag.Legendary then
             tagID, color, atlas= "COMPLETED_LEGENDARY", WoWTools_QuestMixin:GetColor('Complete'), nil
         else
-            tagID, color, atlas=  nil, WoWTools_QuestMixin:GetColor('Complete'), format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)--"COMPLETED", WoWTools_QuestMixin:GetColor('Complete')
+            tagID, color, atlas=  nil, WoWTools_QuestMixin:GetColor('Complete'), format('|A:%s:0:0|a', 'common-icon-checkmark')--"COMPLETED", WoWTools_QuestMixin:GetColor('Complete')
         end
     elseif C_QuestLog.IsFailed(questID) then
         tagID, color, atlas= "FAILED", WoWTools_QuestMixin:GetColor('Failed'), nil

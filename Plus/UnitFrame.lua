@@ -965,7 +965,7 @@ local function set_memberFrame(memberFrame)
                     text= (text and text..' ' or '')..WoWTools_TextMixin:CN(mapInfo.name)
                     local mapID2= C_Map.GetBestMapForUnit('player')
                     if mapID2== mapID then
-                        text= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..text
+                        text= format('|A:%s:0:0|a', 'common-icon-checkmark')..text
                     end
                 end
                 self.Text:SetText(text or '')

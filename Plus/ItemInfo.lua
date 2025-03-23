@@ -296,9 +296,9 @@ local function Setup(self, tab)
                 end
             end
             if dateInfo.text[ITEM_SPELL_KNOWN] then--"已经学会"
-                bottomRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
+                bottomRightText= format('|A:%s:0:0|a', 'common-icon-checkmark')
             elseif dateInfo.red then--红色
-                bottomRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
+                bottomRightText= format('|A:%s:0:0|a', 'talents-button-reset')
             elseif dateInfo.wow then
                 bottomRightText= WoWTools_DataMixin.Icon.wow2
             end
@@ -363,9 +363,9 @@ local function Setup(self, tab)
                                 bottomLeftText= bottomLeftText.. itemLevel
                                 local level= GetAverageItemLevel()
                                 if not dateInfo.red then
-                                    bottomLeftText= bottomLeftText.. (level<itemLevel and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
+                                    bottomLeftText= bottomLeftText.. (level<itemLevel and '|A:bags-greenarrow:0:0|a' or format('|A:%s:0:0|a', 'common-icon-checkmark'))
                                 else
-                                    bottomLeftText= format('%s|A:%s:0:0|a', bottomLeftText, WoWTools_DataMixin.Icon.disabled)
+                                    bottomLeftText= format('%s|A:%s:0:0|a', bottomLeftText, 'talents-button-reset')
                                 end
                             end
                             if dateInfo.text[classStr] then
@@ -431,7 +431,7 @@ local function Setup(self, tab)
                             topLeftText= topLeftText and topLeftText..'|r'..text or text
                         end
                     elseif itemMinLevel<=WoWTools_DataMixin.Player.Level and itemQuality~=7 then--不可使用
-                        topLeftText=format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
+                        topLeftText=format('|A:%s:0:0|a', 'talents-button-reset')
                         isRedItem=true
                     end
 
@@ -539,7 +539,7 @@ local function Setup(self, tab)
             elseif dateInfo.wow then
                 topRightText= WoWTools_DataMixin.Icon.wow2
             elseif dateInfo.red then
-                topRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
+                topRightText= format('|A:%s:0:0|a', 'talents-button-reset')
             end
 
         elseif itemStackCount==1 then
@@ -548,7 +548,7 @@ local function Setup(self, tab)
             if dateInfo.wow then
                 topRightText= WoWTools_DataMixin.Icon.wow2
             elseif dateInfo.red then
-                topRightText= format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
+                topRightText= format('|A:%s:0:0|a', 'talents-button-reset')
             end
         end
 

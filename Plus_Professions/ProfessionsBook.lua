@@ -21,7 +21,7 @@ local function Init()
     btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')
     function btn2:set_alpha()
         self:SetAlpha(Save().wangquePrefessionText and 1 or 0.3)
-        self:SetNormalAtlas(not Save().wangquePrefessionText and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(not Save().wangquePrefessionText and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end
     function btn2:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")

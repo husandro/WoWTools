@@ -212,7 +212,7 @@ local function Init_Disabled_Button()
     end
     function btn:settings()
         self.Text:SetText(self:get_num())
-        self:SetNormalAtlas(WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas('talents-button-reset')
     end
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

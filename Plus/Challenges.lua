@@ -216,11 +216,11 @@ local function UI_Party_Info(self)--队友位置
 
             local stat=GetReadyCheckStatus(unit)
             if stat=='ready' then
-                text= text..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
+                text= text..format('|A:%s:0:0|a', 'common-icon-checkmark')
             elseif stat=='waiting' then
                 text= text..'  '
             elseif stat=='notready' then
-                text= format('%s|A:%s:0:0|a', text, WoWTools_DataMixin.Icon.disabled)
+                text= format('%s|A:%s:0:0|a', text, 'talents-button-reset')
             end
 
             local tab= WoWTools_DataMixin.UnitItemLevel[guid]--装等
@@ -252,7 +252,7 @@ local function UI_Party_Info(self)--队友位置
 
             local name2, uiMapID2=WoWTools_MapMixin:GetUnit(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
-                text=text..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
+                text=text..format('|A:%s:0:0|a', 'common-icon-checkmark')
             elseif name2 then
                 text=text ..'|A:poi-islands-table:0:0|a'..name2
             else
@@ -294,7 +294,7 @@ local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
     self.keyFrame:SetFrameLevel(7)
 
     self.ready = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--就绪
-    self.ready:SetText((WoWTools_Mixin.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
+    self.ready:SetText((WoWTools_Mixin.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
     self.ready:SetPoint('LEFT', self.StartButton, 'RIGHT',2, 0)
     self.ready:SetSize(100,24)
     self.ready:SetScript("OnMouseDown", DoReadyCheck)
@@ -1046,7 +1046,7 @@ local function set_All_Text()--所有记录
             weeklyRewardLevel2= min(weeklyRewardLevel2, LimitMaxKeyLevel)
             local week= level..') '..(WoWTools_DataMixin.GetChallengesWeekItemLevel(level, LimitMaxKeyLevel) or '')
             local curkey= self.curKey==level and '|T4352494:0|t' or ''
-            local curLevel= self.curLevel==level and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''
+            local curLevel= self.curLevel==level and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''
             return week..curkey..curLevel
         end
         ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
@@ -1738,7 +1738,7 @@ local function Init_Blizzard_ChallengesUI()
     check.texture:SetAllPoints()
     check.texture:SetAlpha(0.3)
     function check:set_Texture()
-        self.texture:SetAtlas(not Save.hideIns and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
+        self.texture:SetAtlas(not Save.hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end
     check:set_Texture()
     check:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
@@ -1749,7 +1749,7 @@ local function Init_Blizzard_ChallengesUI()
     end
     check:SetScript("OnClick", function(self)
         Save.hideIns = not Save.hideIns and true or nil
-        --self:SetNormalAtlas(not Save.hideIns and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
+        --self:SetNormalAtlas(not Save.hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
         self:set_Texture()
         set_Update()
     end)
@@ -1786,7 +1786,7 @@ local function Init_Blizzard_ChallengesUI()
     end)
 
 
-    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size=18, atlas=not Save.hideTips and 'FXAM-QuestBang' or WoWTools_DataMixin.Icon.disabled})
+    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size=18, atlas=not Save.hideTips and 'FXAM-QuestBang' or 'talents-button-reset'})
     if _G['MoveZoomInButtonPerPVEFrame'] then
         tipsButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
     else
@@ -1796,7 +1796,7 @@ local function Init_Blizzard_ChallengesUI()
     tipsButton:SetScript('OnClick', function(self)
         Save.hideTips= not Save.hideTips and true or nil
         TipsFrame:SetShown(not Save.hideTips)
-        self:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(not Save.hideTips and 'FXAM-QuestBang' or 'talents-button-reset')
     end)
     tipsButton:SetScript('OnMouseWheel', function(self, d)--缩放
         local scale= SavGameTooltipScale or 1
@@ -1829,13 +1829,13 @@ local function Init_Blizzard_ChallengesUI()
 
 
     --传送门
-    local spellButton= WoWTools_ButtonMixin:Cbtn(check, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or WoWTools_DataMixin.Icon.disabled})
+    local spellButton= WoWTools_ButtonMixin:Cbtn(check, {size={18,18}, atlas= not Save.hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset'})
     spellButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'] or tipsButton, 'RIGHT')
     spellButton:SetAlpha(0.5)
     spellButton:SetScript('OnClick', function(self)
         Save.hidePort= not Save.hidePort and true or nil
         set_Update()
-        self:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(not Save.hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset')
     end)
     spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
         if not self:CanChangeAttribute() then
@@ -1951,7 +1951,7 @@ local function Init_Blizzard_ChallengesUI()
         elseif not Save.hideKeyUI then
             init_Blizzard_ChallengesUI()
         end
-        self:SetNormalAtlas(not Save.hideKeyUI and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(not Save.hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
     end)
     btn:SetScript("OnEnter",function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")

@@ -207,7 +207,7 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
                             (info.iconID and '|T'..info.iconID..':0|t' or '')
                             ..WoWTools_TextMixin:CN(info.name)
                             ..reward
-                            ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''),
+                            ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
 
                         function(data)
                             if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then
@@ -284,7 +284,7 @@ local function set_Party_Menu_List(root)
                     sub=root:CreateButton(
                         WoWTools_TextMixin:CN(name)
                         ..reward
-                        ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or ''),
+                        ..(GetLFGDungeonRewards(dungeonID) and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''),
 
                     function(data)
                         if GetLFGQueueStats(LE_LFG_CATEGORY_LFD, data.dungeonID) then

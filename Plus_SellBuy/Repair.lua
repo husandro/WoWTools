@@ -114,7 +114,7 @@ local function Init()
     hooksecurefunc('MerchantFrame_UpdateGuildBankRepair', function()
         local repairAllCost = GetRepairAllCost()
         if not CanGuildBankRepair() then
-            MerchantGuildBankRepairButton.Text:SetFormattedText('|A:%s:0:0|a', WoWTools_DataMixin.Icon.disabled)
+            MerchantGuildBankRepairButton.Text:SetFormattedText('|A:%s:0:0|a', 'talents-button-reset')
         else
             local co = GetGuildBankMoney() or 0
             local col= co==0 and '|cff9e9e9e' or (repairAllCost> co and '|cnRED_FONT_COLOR:') or '|cnGREEN_FONT_COLOR:'

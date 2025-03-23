@@ -68,7 +68,7 @@ local function Init()
     end)
 
     function btn:Settings()
-        self:SetNormalAtlas(not WoWTools_WorldMapMixin.Save.ShowFlightMap_Name and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+        self:SetNormalAtlas(not WoWTools_WorldMapMixin.Save.ShowFlightMap_Name and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
     end
     btn:Settings()
 

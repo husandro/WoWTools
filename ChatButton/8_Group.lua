@@ -557,7 +557,7 @@ local function Init()
     GroupButton.tipBubbles= GroupButton:CreateTexture(nil, 'OVERLAY')
     GroupButton.tipBubbles:SetSize(8, 8)
     GroupButton.tipBubbles:SetPoint('TOPLEFT', 3, 0)
-    GroupButton.tipBubbles:SetAtlas(WoWTools_DataMixin.Icon.disabled)
+    GroupButton.tipBubbles:SetAtlas('talents-button-reset')
 
     --副本外，在团中提示
     GroupButton.textureNotInstance=GroupButton:CreateTexture(nil,'BACKGROUND')

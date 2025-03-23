@@ -430,7 +430,7 @@ local function Init()
     SayButton.tipBubbles= SayButton:CreateTexture(nil, 'OVERLAY')
     SayButton.tipBubbles:SetSize(8, 8)
     SayButton.tipBubbles:SetPoint('TOPLEFT', 3, -0)
-    SayButton.tipBubbles:SetAtlas(WoWTools_DataMixin.Icon.disabled)
+    SayButton.tipBubbles:SetAtlas('talents-button-reset')
 
     SayButton.numWhisper=WoWTools_LabelMixin:Create(SayButton, {color={r=0,g=1,b=0}})--最后密语,数量, 提示
     SayButton.numWhisper:SetPoint('TOPRIGHT',-3, 0)

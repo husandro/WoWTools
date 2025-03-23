@@ -85,7 +85,7 @@ local function Init()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
     function Button:set_icon()
-        self:SetNormalAtlas(Save().hideEncounterJournal and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon )
+        self:SetNormalAtlas(Save().hideEncounterJournal and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon )
     end
     Button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then

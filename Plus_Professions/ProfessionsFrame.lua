@@ -139,13 +139,13 @@ local function Init()
         if not btn then
             btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {
                 size=16,
-                atlas= Save().disabledEnchant and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon
+                atlas= Save().disabledEnchant and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon
             })
             btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
             btn:SetScript('OnClick', function(self2)
                 Save().disabledEnchant= not Save().disabledEnchant and true or nil
-                self2:SetNormalAtlas(Save().disabledEnchant and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+                self2:SetNormalAtlas(Save().disabledEnchant and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
             end)
             btn:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(0.3) end)
             btn:SetScript('OnEnter', function(self2)

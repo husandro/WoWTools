@@ -231,7 +231,7 @@ local function Init(Frame)
 
     --添加按钮
     addColorButton:SetPoint('LEFT', addColorEdit, 'RIGHT', 5,0)
-    addColorButton:SetNormalAtlas(WoWTools_DataMixin.Icon.select)
+    addColorButton:SetNormalAtlas('common-icon-checkmark')
     addColorButton:SetScript('OnClick', add_Color)
     addColorButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

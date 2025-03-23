@@ -16,7 +16,7 @@ local function Check_TimeWalker_Quest_Completed()--迷离的时光之路，任�
         72725,--迷离的时光之路 熊猫人之迷
     }) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
-            return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
+            return format('|A:%s:0:0|a', 'common-icon-checkmark')
         end
     end
 end
@@ -24,7 +24,7 @@ end
 local function Check_Darkmon_Quest_Completed()--暗月马戏团，宠物对战，任务是否完成
     for _, questID in pairs({36471, 32175}) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
-            return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
+            return format('|A:%s:0:0|a', 'common-icon-checkmark')
         end
     end
 end

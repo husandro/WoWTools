@@ -18,7 +18,7 @@ local ReadyTipsButton
 local function Init()
     ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {
         size=22,
-        atlas=WoWTools_DataMixin.Icon.select,
+        atlas='common-icon-checkmark',
         name='WoWToolsChatMarkersReadyInfoButton',
     })
 

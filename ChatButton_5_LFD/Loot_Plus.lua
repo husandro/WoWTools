@@ -161,7 +161,7 @@ local function Init()
     end
     function btn:Set_Atlas()
         if Save().disabledLootPlus then
-            self:SetNormalAtlas(WoWTools_DataMixin.Icon.disabled)
+            self:SetNormalAtlas('talents-button-reset')
         else
             self:SetNormalAtlas('communities-icon-notification')
         end

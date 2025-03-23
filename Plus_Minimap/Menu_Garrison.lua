@@ -23,7 +23,7 @@ local function Get_Garrison_List_Num(followerType)
         elseif num==0 then
             text= format('|cff9e9e9e%d|r/%d', num, all)
         elseif all==num then
-            text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)
+            text= format('|cffff00ff%d/%d|r', num, all)..format('|A:%s:0:0|a', 'common-icon-checkmark')
         else
             text= format('|cnGREEN_FONT_COLOR:%d|r/%d', num, all)
         end

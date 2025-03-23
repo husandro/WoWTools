@@ -385,7 +385,7 @@ local function Init()
     end)
 
     --添加按钮
-    menu.edit.add= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas=WoWTools_DataMixin.Icon.select, size=23})--添加, 按钮
+    menu.edit.add= WoWTools_ButtonMixin:Cbtn(menu.edit, {atlas='common-icon-checkmark', size=23})--添加, 按钮
     menu.edit.add:SetPoint('LEFT', menu.edit, 'RIGHT', 5,0)
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()

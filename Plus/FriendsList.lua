@@ -929,7 +929,7 @@ local function Init()--FriendsFrame.lua
                     local t=''
                     for j=1,numEncounters do
                         local isKilled = select(3, GetSavedInstanceEncounterInfo(index,j))
-                        t= t..(isKilled and '|A:common-icon-redx:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
+                        t= t..(isKilled and '|A:common-icon-redx:0:0|a' or format('|A:%s:0:0|a', 'common-icon-checkmark'))
                     end
                     text= t..' '..text
                 end

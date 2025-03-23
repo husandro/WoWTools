@@ -905,7 +905,7 @@ local function Init_Button_All()
     local btn= WoWTools_ButtonMixin:Cbtn(ItemSocketingFrame.TitleContainer, {size=22})
     btn:SetPoint('LEFT', 26)
     function btn:set_texture()
-        btn:SetNormalAtlas(Save.hide and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+        btn:SetNormalAtlas(Save.hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
     end
     function btn:set_shown()
         if Frame:CanChangeAttribute() then

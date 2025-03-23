@@ -120,7 +120,7 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                     GameTooltip:AddLine(
                         '   '..index..') '
                         ..(texture and itemLevel and '|T'..texture..':0|t'..itemLevel or info.difficulty)
-                        ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..((info.level and info.level>0) and info.level or ''))
+                        ..format('|A:%s:0:0|a', 'common-icon-checkmark')..((info.level and info.level>0) and info.level or ''))
                 else
                     GameTooltip:AddLine('    |cff828282'..index..') '
                         ..info.difficulty
@@ -218,10 +218,10 @@ function WoWTools_WeekMixin:Activities(settings)--周奖励，提示
                 local texture= C_Item.GetItemIconByID(itemLink)
                 local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink)
                 text= '    '..index..') '..(texture and '|T'..texture..':0|t' or itemLink)
-                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..((info.level and info.level>0) and info.level or '')
+                text= text..((itemLevel and itemLevel>0) and itemLevel or '')..format('|A:%s:0:0|a', 'common-icon-checkmark')..((info.level and info.level>0) and info.level or '')
             else
                 if info.unlocked then
-                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select)..(info.level or '')--.. ' '..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
+                    text='   '..index..') '..info.difficulty..format('|A:%s:0:0|a', 'common-icon-checkmark')..(info.level or '')--.. ' '..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)
                 else
                     text='    |cff828282'..index..') '
                         ..info.difficulty

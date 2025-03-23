@@ -65,13 +65,13 @@ local function Settings()
     if InspectFrame then
         InspectLevelText:set_font_size()
         InspectFrame:set_status_label()--目标，属性
-        InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+        InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
         if InspectFrame:IsShown() then
             WoWTools_Mixin:Call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
             WoWTools_Mixin:Call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end
     end
-    PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+    PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
 end
 
 
@@ -112,7 +112,7 @@ local function Init(frame)
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas= not Save().hide and WoWTools_DataMixin.Icon.icon or WoWTools_DataMixin.Icon.disabled})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas= not Save().hide and WoWTools_DataMixin.Icon.icon or 'talents-button-reset'})
     btn:SetPoint('LEFT', title)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)

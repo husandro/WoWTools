@@ -114,7 +114,7 @@ local function Init()
     local btn2= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame.TitleContainer)
 
     function btn2:set_icon()
-        self:SetNormalAtlas(Save().disabledClassTrainer and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+        self:SetNormalAtlas(Save().disabledClassTrainer and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
     end
     btn2:set_icon()
 

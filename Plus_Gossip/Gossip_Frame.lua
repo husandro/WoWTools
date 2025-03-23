@@ -280,7 +280,7 @@ local function Init()
                 self.Add:SetNormalAtlas('VignetteEvent')
                 self.Add.tooltip=WoWTools_Mixin.onlyChinese and '已存在' or UPDATE
             else--需要，更新，数据
-                self.Add:SetNormalAtlas(WoWTools_DataMixin.Icon.select)
+                self.Add:SetNormalAtlas('common-icon-checkmark')
                 self.Add.tooltip=WoWTools_Mixin.onlyChinese and '需要更新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, UPDATE)
             end
         else

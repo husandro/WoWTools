@@ -376,10 +376,10 @@ local function Init()--设置标记, 框架
 
 
 --就绪
-    MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas=WoWTools_DataMixin.Icon.select})
+    MakerFrame.check=WoWTools_ButtonMixin:Cbtn(MakerFrame, {size={size,size}, atlas='common-icon-checkmark'})
 
     table.insert(MakerFrame.Buttons, MakerFrame.check)
-    --MakerFrame.check:SetNormalAtlas(WoWTools_DataMixin.Icon.select)
+    --MakerFrame.check:SetNormalAtlas('common-icon-checkmark')
     function MakerFrame.check:set_point()
         if Save().H then
             self:SetPoint('BOTTOM', MakerFrame.countdown, 'TOP')

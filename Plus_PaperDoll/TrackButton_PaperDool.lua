@@ -529,7 +529,7 @@ function Init_EquipButton()
 
 
     function EquipButton:set_texture()
-        self:SetNormalAtlas(Save().equipment and 'bags-icon-equipment' or WoWTools_DataMixin.Icon.disabled)
+        self:SetNormalAtlas(Save().equipment and 'bags-icon-equipment' or 'talents-button-reset')
     end
 
     function EquipButton:set_shown()

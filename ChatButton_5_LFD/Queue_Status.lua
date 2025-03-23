@@ -34,7 +34,7 @@ local function get_InviteButton_Frame(index)
         end
 
 
-        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, atlas=WoWTools_DataMixin.Icon.select})
+        frame.InviteButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, atlas='common-icon-checkmark'})
         frame.InviteButton:SetAllPoints()
         --frame.InviteButton:SetPoint('TOPLEFT')
         frame.InviteButton.Size=20

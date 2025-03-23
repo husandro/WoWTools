@@ -118,7 +118,7 @@ local function Create_WorldBoss_Button()
     btn.texture:SetAllPoints()
     btn.texture:SetAlpha(0.5)
     function btn:set_texture()
-        btn.texture:SetAtlas(Save().hideWorldBossText and WoWTools_DataMixin.Icon.disabled or WoWTools_DataMixin.Icon.icon)
+        btn.texture:SetAtlas(Save().hideWorldBossText and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
     end
 
 

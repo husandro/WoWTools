@@ -231,7 +231,7 @@ end
 
 function WoWTools_Mixin:Get_CVar_Tooltips(info)--取得CVar信息 WoWTools_Mixin:Get_CVar_Tooltips({name= ,msg=, value=})
     return (info.msg and info.msg..'|n' or '')..info.name..'|n'
-    ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select) or '')
+    ..(info.value and C_CVar.GetCVar(info.name)== info.value and format('|A:%s:0:0|a', 'common-icon-checkmark') or '')
     ..(info.value and (WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)..info.value..' ' or '')
     ..'('..(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT)..'|cnGREEN_FONT_COLOR:'..format('%.1f',C_CVar.GetCVar(info.name))..'|r |r'
     ..(WoWTools_Mixin.onlyChinese and '默认' or DEFAULT)..'|cffff00ff'..format('%.1f', C_CVar.GetCVarDefault(info.name))..')|r'

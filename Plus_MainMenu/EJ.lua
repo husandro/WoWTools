@@ -57,7 +57,7 @@ local function Init()
         if cur then
             info =info or {}
             if cur== max then
-                text= (info.quantity and WoWTools_Mixin:MK(info.quantity, 1) or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.select))
+                text= (info.quantity and WoWTools_Mixin:MK(info.quantity, 1) or format('|A:%s:0:0|a', 'common-icon-checkmark'))
             else
                 text= format('%i%%', cur/max*100)
             end
