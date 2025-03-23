@@ -19,13 +19,6 @@ end
 
 local addName
 local SayButton
-local panel= CreateFrame('Frame')
-
-local SLASH_SAY1= SLASH_SAY1
-local SLASH_YELL1= SLASH_YELL1
-local SLASH_WHISPER1= SLASH_WHISPER1
-
-
 
 
 
@@ -550,6 +543,7 @@ end
 --###########
 --加载保存数据
 --###########
+local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
 panel:RegisterEvent("CHAT_MSG_WHISPER")

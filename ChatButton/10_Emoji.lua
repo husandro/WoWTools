@@ -1,4 +1,4 @@
-local addName= 'Emoji'
+
 local P_Save={
     showEnter=nil,
     On_Click_Show=true,
@@ -15,9 +15,9 @@ local function Save()
     return WoWToolsSave['ChatButton_Emoji']
 end
 
+local addName
 local EmojiButton
 local Frame
-
 local EmojiText, EmojiText_EN
 local TextToTexture--过滤，事件
 
@@ -189,7 +189,7 @@ local function Init_EmojiFrame()
 
     function Frame:set_tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:AddDoubleLine('ChatButton', addName)
+        GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
@@ -557,7 +557,9 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             EmojiButton= WoWTools_ChatMixin:CreateButton('Emoji', addName)
 
             if EmojiButton then--禁用Chat Button
-                Init()
+                if Init() then
+                    Init=function()end
+                end
             end
             self:UnregisterEvent(event)
         end
