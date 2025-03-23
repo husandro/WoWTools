@@ -272,26 +272,23 @@ local function Init_Menu(_, root)
         end
     end
 
-    sub=root:CreateButton(
+    sub=root:CreateTitle(
         (WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
         ..': '
         ..(
             isInGroup and WoWTools_TextMixin:GetYesNo(C_PartyInfo.IsCrossFactionParty())
             or (C_PartyInfo.CanFormCrossFactionParties() and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '可创建' or BATTLETAG_CREATE)..'|r')
             or ('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r')
-        ).. ' #'..crossNum,
-    function()
-        return MenuResponse.Refresh
-    end, crossNum)
+        ).. ' #'..crossNum)
 
-    sub:SetTooltip(function(tooltip, description)
+    sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '跨阵营' or COMMUNITIES_EDIT_DIALOG_CROSS_FACTION)
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '创建跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, START_A_GROUP),  WoWTools_TextMixin:GetEnabeleDisable(C_PartyInfo.CanFormCrossFactionParties()))
         local col2= IsInGroup() and '' or '|cff9e9e9e'
         tooltip:AddDoubleLine(
             col2..(WoWTools_Mixin.onlyChinese and '跨阵营队伍' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_EDIT_DIALOG_CROSS_FACTION, HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)),
-            col2..WoWTools_TextMixin:GetYesNo(isCrossFactionParty)..' #'..description.data..' '..(WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+            col2..WoWTools_TextMixin:GetYesNo(isCrossFactionParty)..' #'..crossNum..' '..(WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
         )
     end)
 
@@ -303,7 +300,7 @@ local function Init_Menu(_, root)
     sub=root:CreateCheckbox((isInBat and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT), function()
         return C_CVar.GetCVarBool("chatBubblesParty")
     end, function()
-        if not UnitAffectingCombat('player') then
+        if not InCombatLockdown() then
             C_CVar.SetCVar("chatBubblesParty", C_CVar.GetCVarBool("chatBubblesParty") and '0' or '1')
             print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("chatBubblesParty")))
         else
@@ -311,23 +308,24 @@ local function Init_Menu(_, root)
         end
     end)
 
-    sub:SetTooltip(function (tooltip)
+    sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_CVar.SetCVar(\"chatBubblesParty\")')
     end)
 
 
     sub=root:CreateButton(
         (Save().mouseUP and '|A:bags-greenarrow:0:0|a' or '')
-        ..(Save().mouseDown and '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a' or '')
+        ..(Save().mouseDown and '|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a' or '')
         ..(not Save().mouseUP and not Save().mouseDown and '|cff9e9e9e' or '')
-        ..(WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM)..'|A:voicechat-icon-textchat-silenced:0:0|a', function()
+        ..(WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM)..'|A:voicechat-icon-textchat-silenced:0:0|a',
+    function()
         return MenuResponse.Refresh
     end)
 
 
     local tab2={
         {type= 'mouseUP', text= WoWTools_Mixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, icon= 'bags-greenarrow'},
-        {type= 'mouseDown', text= WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLYellow-Up'},
+        {type= 'mouseDown', text= WoWTools_Mixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLRed-Up'},
     }
     for _, tab in pairs(tab2) do
         local text=Save()[tab.type]
@@ -575,20 +573,36 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        GameTooltip:AddDoubleLine(self.text, self.type and self.type..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(
+            self.text,
+            self.type and self.type..WoWTools_DataMixin.Icon.left
+        )
 
-        if (Save().mouseDown or Save().mouseUP) then-- and IsInGroup()
+        local down, up= Save().mouseDown, Save().mouseUP
+        if down or up then
             GameTooltip:AddLine(' ')
-            if Save().mouseUP then
-                GameTooltip:AddDoubleLine(Save().mouseUP, (WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..WoWTools_DataMixin.Icon.mid)
-            end
-            if Save().mouseDown then
-                GameTooltip:AddDoubleLine(Save().mouseDown, (WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid)
-            end
-
+        end
+        if up then
+            GameTooltip:AddLine(
+                WoWTools_DataMixin.Icon.mid
+                ..'|A:bags-greenarrow:0:0|a'
+                ..up
+                ..'|A:voicechat-icon-textchat-silenced:0:0|a',
+                nil,nil,nil, true
+            )
+        end
+        if down then
+            GameTooltip:AddLine(
+                WoWTools_DataMixin.Icon.mid
+                ..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'
+                ..down
+                ..'|A:voicechat-icon-textchat-silenced:0:0|a',
+                nil,nil,nil, true
+            )
         end
         GameTooltip:Show()
     end
+
 
     GroupButton:SetupMenu(Init_Menu)
 
