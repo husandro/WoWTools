@@ -85,13 +85,16 @@ WoWTools_DataMixin.Icon={
     net2= '|A:gmchat-icon-blizz:0:0|a',--'|A:Battlenet-ClientIcon-App:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32)
     toLeft='common-icon-rotateleft',--向左
     toRight='common-icon-rotateright',--向右
+    
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
     HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON
     DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',--INLINE_DAMAGER_ICON
     NONE='|A:UI-LFG-RoleIcon-Pending:0:0|a',
+
     Alliance='charcreatetest-logo-alliance',
     Horde='charcreatetest-logo-horde',
     Neutral='nameplates-icon-flag-neutral',
+
     [Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",--0  C_Item.GetItemQualityByID(ID)
 	[Enum.ItemQuality.Common] = "dressingroom-itemborder-white",
 	[Enum.ItemQuality.Uncommon] = "dressingroom-itemborder-green",

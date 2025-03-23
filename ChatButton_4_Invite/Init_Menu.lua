@@ -135,7 +135,7 @@ local function Init_Menu(self, root)
 --接受邀请
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        '|A:common-icon-checkmark:0:0|a'..(WoWTools_Mixin.onlyChinese and '邀请' or INVITE),
+        '|A:communities-icon-notification:0:0|a'..(WoWTools_Mixin.onlyChinese and '邀请' or INVITE),
     function()
         return not Save().notInvitePlus
     end, function()
