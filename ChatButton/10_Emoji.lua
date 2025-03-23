@@ -1,5 +1,5 @@
 local addName= 'Emoji'
-local Save={
+local P_Save={
     showEnter=nil,
     On_Click_Show=true,
     Channels={},
@@ -10,6 +10,10 @@ local Save={
     clickIndex=18,
     numButtonLine=10,
 }
+
+local function Save()
+    return WoWToolsSave['ChatButton_Emoji']
+end
 
 local EmojiButton
 local Frame
@@ -94,7 +98,7 @@ local function Init_Buttons()--设置按钮
         end)
         btn:SetScript('OnClick', function(self, d)
             send(self.text, d)
-            Save.clickIndex= self:GetID()
+            Save().clickIndex= self:GetID()
             EmojiButton:set_texture()
         end)
 
@@ -112,7 +116,7 @@ local function Init_Buttons()--设置按钮
                 btn:SetPoint('LEFT', self.Buttons[index-1], 'RIGHT')
             end
         end
-        local num= Save.numButtonLine
+        local num= Save().numButtonLine
         for index= num+1 , #self.Buttons, num do
             local btn= self.Buttons[index]
             btn:ClearAllPoints()
@@ -126,13 +130,13 @@ local function Init_Buttons()--设置按钮
     Frame.texture2:SetAlpha(0.5)
 
     function Frame:set_background()
-        if Save.show_background then
+        if Save().show_background then
             self.texture2:ClearAllPoints()
             self.texture2:SetPoint('BOTTOMLEFT', self.Buttons[1], -4, -4)
-            self.texture2:SetPoint('BOTTOMRIGHT', self.Buttons[Save.numButtonLine], 4, -4)
+            self.texture2:SetPoint('BOTTOMRIGHT', self.Buttons[Save().numButtonLine], 4, -4)
             self.texture2:SetPoint('TOP', self.Buttons[#self.Buttons], 0, 4)
         end
-        self.texture2:SetShown(Save.show_background)
+        self.texture2:SetShown(Save().show_background)
     end
 
     Frame:set_buttons_point()
@@ -154,17 +158,17 @@ local function Init_EmojiFrame()
 
     function Frame:set_point()
         self:ClearAllPoints()
-        if Save.Point then
-            self:SetPoint(Save.Point[1], UIParent, Save.Point[3], Save.Point[4], Save.Point[5])
+        if Save().Point then
+            self:SetPoint(Save().Point[1], UIParent, Save().Point[3], Save().Point[4], Save().Point[5])
         else
             self:SetPoint('BOTTOMRIGHT', EmojiButton, 'TOPLEFT', -120, 4)
         end
     end
     function Frame:set_scale()
-        self:SetScale(Save.scale or 1)
+        self:SetScale(Save().scale or 1)
     end
 
-    Frame:SetShown(Save.show)
+    Frame:SetShown(Save().show)
     Frame:RegisterForDrag("RightButton")
     Frame:SetMovable(true)
     Frame:SetClampedToScreen(true)
@@ -178,8 +182,8 @@ local function Init_EmojiFrame()
     Frame:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save.Point={self:GetPoint(1)}
-        Save.Point[2]=nil
+        Save().Point={self:GetPoint(1)}
+        Save().Point[2]=nil
     end)
 
 
@@ -188,7 +192,7 @@ local function Init_EmojiFrame()
         GameTooltip:AddDoubleLine('ChatButton', addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save.scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
@@ -208,7 +212,7 @@ local function Init_EmojiFrame()
         EmojiButton:SetButtonState('PUSHED')
     end)
     Frame:SetScript('OnMouseWheel', function(self, d)--缩放
-        Save.scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save.scale, nil)
+        Save().scale=WoWTools_FrameMixin:ScaleFrame(self, d, Save().scale, nil)
         self:set_tooltip()
     end)
 
@@ -262,31 +266,31 @@ local function Init_Menu(self, root)
 --显示
     root:CreateTitle(WoWTools_Mixin.onlyChinese and '显示' or SHOW)
     root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_Mixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
-        return Save.showEnter
+        return Save().showEnter
     end, function()
-        Save.showEnter = not Save.showEnter and true or nil
+        Save().showEnter = not Save().showEnter and true or nil
     end)
 
     root:CreateCheckbox(WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '鼠标' or MOUSE_LABEL), function()
-        return Save.On_Click_Show
+        return Save().On_Click_Show
     end, function()
-        Save.On_Click_Show= not Save.On_Click_Show and true or false
+        Save().On_Click_Show= not Save().On_Click_Show and true or false
         self:set_texture()
     end)
 
 --隐藏
     root:CreateTitle(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
     root:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
-        return not Save.notHideCombat
+        return not Save().notHideCombat
     end, function()
-        Save.notHideCombat = not Save.notHideCombat and true or nil
+        Save().notHideCombat = not Save().notHideCombat and true or nil
         self:set_event()
     end)
 
     root:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), function()
-        return not Save.notHideMoving
+        return not Save().notHideMoving
     end, function()
-        Save.notHideMoving = not Save.notHideMoving and true or nil
+        Save().notHideMoving = not Save().notHideMoving and true or nil
         self:set_event()
     end)
 
@@ -300,9 +304,9 @@ local function Init_Menu(self, root)
 
     --缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save.scale
+        return Save().scale
     end, function(value)
-        Save.scale= value
+        Save().scale= value
         Frame:SetShown(true)
         Frame:set_scale()
     end)
@@ -316,9 +320,9 @@ local function Init_Menu(self, root)
                 (index==10 and '|cnGREEN_FONT_COLOR:' or '')
                 ..index,
             function(data)
-                return Save.numButtonLine==data
+                return Save().numButtonLine==data
             end, function(data)
-                Save.numButtonLine= data
+                Save().numButtonLine= data
                 Frame:SetShown(true)
                 Frame:set_buttons_point()
                 return MenuResponse.Refresh
@@ -326,7 +330,7 @@ local function Init_Menu(self, root)
         end
     end
     sub2:CreateDivider()
-    sub2:CreateTitle(Save.numButtonLine..'/'..self.numAllFile)
+    sub2:CreateTitle(Save().numButtonLine..'/'..self.numAllFile)
     sub2:SetGridMode(MenuConstants.VerticalGridDirection, 2)
 
 --聊天频道
@@ -336,39 +340,39 @@ local function Init_Menu(self, root)
 
     for index, channel in pairs(Channels) do
         sub2:CreateCheckbox('|cff9e9e9e'..index..'|r '..(WoWTools_TextMixin:CN(_G[channel]) or channel), function(data)
-            return not Save.Channels[data]
+            return not Save().Channels[data]
         end, function(data)
-            Save.Channels[data]= not Save.Channels[data] and true or nil
+            Save().Channels[data]= not Save().Channels[data] and true or nil
             self:set_filter_event()
         end, channel)
     end
 
 --背景
     sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
-        return Save.show_background
+        return Save().show_background
     end, function()
-        Save.show_background= not Save.show_background and true or nil
+        Save().show_background= not Save().show_background and true or nil
         Frame:SetShown(true)
         Frame:set_background()
     end)
 
     sub2:CreateDivider()
     sub2:CreateButton(WoWTools_Mixin.onlyChinese and '全选' or ALL, function()
-        Save.Channels={}
+        Save().Channels={}
         self:set_filter_event()
         return MenuResponse.Refresh
     end)
     sub2:CreateButton(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function()
         for _, channel in pairs(Channels) do
-            Save.Channels[channel]=true
+            Save().Channels[channel]=true
         end
         self:set_filter_event()
         return MenuResponse.Refresh
     end)
 
     sub:CreateDivider()
-    sub:CreateButton((Save.Point and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), function()
-        Save.Point=nil
+    sub:CreateButton((Save().Point and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), function()
+        Save().Point=nil
         Frame:set_point()
         return MenuResponse.Refresh
     end)
@@ -416,7 +420,7 @@ local function Init()
 
 
     function EmojiButton:get_emoji_text(index)
-        index= index or Save.clickIndex or 18
+        index= index or Save().clickIndex or 18
         if index<=self.numFile then
             return EmojiText[index]
         else
@@ -424,7 +428,7 @@ local function Init()
         end
     end
     function EmojiButton:get_texture(index)
-        index= index or Save.clickIndex or 18
+        index= index or Save().clickIndex or 18
         if index<=self.numFile then
             return 'Interface\\Addons\\WoWTools\\Sesource\\Emojis\\'..EmojiText_EN[index]
         else
@@ -433,7 +437,7 @@ local function Init()
     end
 
     function EmojiButton:set_texture()
-        if Save.On_Click_Show then
+        if Save().On_Click_Show then
             self.texture:SetTexture(self:get_texture(18))
         else
             self.texture:SetTexture(self:get_texture())
@@ -443,7 +447,7 @@ local function Init()
 
     function EmojiButton:set_tooltip()
         self:set_owner()
-        if Save.On_Click_Show then
+        if Save().On_Click_Show then
             GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Frame:IsShown()), WoWTools_DataMixin.Icon.left)
         else
             GameTooltip:AddDoubleLine(
@@ -465,7 +469,7 @@ local function Init()
     end
 
     function EmojiButton:set_OnEnter()
-        if Save.showEnter then
+        if Save().showEnter then
             self:set_frame_shown(true)
         end
         self:set_frame_state(true)
@@ -477,7 +481,7 @@ local function Init()
     function EmojiButton:set_filter_event()
         local find=0
         for _, channel in pairs(Channels) do
-            if not Save.Channels[channel] then
+            if not Save().Channels[channel] then
                 ChatFrame_AddMessageEventFilter(channel, WoWTools_Emoji_Filter)
                 find= find+1
             else
@@ -504,12 +508,12 @@ local function Init()
 
 --Frame, 设置, 事件
     function EmojiButton:set_event()
-        if Save.notHideCombat then
+        if Save().notHideCombat then
             self:UnregisterEvent('PLAYER_REGEN_DISABLED')
         else
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
         end
-        if Save.notHideMoving then
+        if Save().notHideMoving then
             self:UnregisterEvent('PLAYER_STARTED_MOVING')
         else
             self:RegisterEvent('PLAYER_STARTED_MOVING')
@@ -529,7 +533,7 @@ local function Init()
     EmojiButton:SetupMenu(Init_Menu)
 
     function EmojiButton:set_OnMouseDown()
-        if Save.On_Click_Show then
+        if Save().On_Click_Show then
             self:set_frame_shown(not Frame:IsShown())
         else
             send(self:get_emoji_text(),  self.chatFrameEditBox and 'LeftButton' or 'RightButton')
@@ -543,23 +547,19 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
+
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-            Save= WoWToolsSave['ChatButton_Emoji'] or Save
+
+            WoWToolsSave['ChatButton_Emoji']= WoWToolsSave['ChatButton_Emoji'] or P_Save
             addName= '|TInterface\\Addons\\WoWTools\\Sesource\\Emojis\\Embarrass:0|tEmoji'
             EmojiButton= WoWTools_ChatMixin:CreateButton('Emoji', addName)
 
             if EmojiButton then--禁用Chat Button
                 Init()
             end
-            self:UnregisterEvent('ADDON_LOADED')
-        end
-
-    elseif event=='PLAYER_LOGOUT' then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_Emoji']=Save
+            self:UnregisterEvent(event)
         end
     end
 end)

@@ -1,6 +1,12 @@
 
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
+end
+
+local function Get_LeftTime()
+    if ReadyCheckListenerFrame.time then
+        return select(2, WoWTools_TimeMixin:Info(nil, false, nil, ReadyCheckListenerFrame.time))
+    end
 end
 
 local AutoReadyTime--时间
@@ -11,11 +17,6 @@ local AltCanellText--Alt, 取消提示
 
 
 
-local function Get_LeftTime()
-    if ReadyCheckListenerFrame.time then
-        return select(2, WoWTools_TimeMixin:Info(nil, false, nil, ReadyCheckListenerFrame.time))
-    end
-end
 
 
 
@@ -29,14 +30,17 @@ local function Set_Ready(timeLeft)
         AutoReadyTime:Cancel()
     end
 
-    if Save().autoReady then
+    local autoReady= Save().autoReady
+
+    if autoReady then
         print(
             WoWTools_MarkerMixin.addName,
-            WoWTools_MarkerMixin:Get_ReadyTextIcon(),
+            WoWTools_MarkerMixin:Get_ReadyTextAtlas(autoReady),
             '|cffff00ffAlt', WoWTools_Mixin.onlyChinese and '取消' or CANCEL
         )
 
         timeLeft= Save().autoReadySeconds or 3
+
         if not timeLeft then
             local time= Get_LeftTime()
             if time then
@@ -45,8 +49,10 @@ local function Set_Ready(timeLeft)
         end
 
         AutoReadyTime= C_Timer.NewTimer(timeLeft, function()
-            ConfirmReadyCheck(Save().autoReady==1 and 1 or nil)
-            ReadyCheckFrame:SetShown(false)
+            if ReadyCheckFrame:IsShown() then
+                ConfirmReadyCheck(autoReady==1 and 1 or nil)
+                ReadyCheckFrame:SetShown(false)
+            end
         end)
     end
 
@@ -65,10 +71,6 @@ end
 
 
 local function Init_UI()
-    if PlayerNameText then
-        return
-    end
-
     ReadyCheckFrame:SetHeight(120)--100
     ReadyCheckFrameText:SetPoint('TOP', 20, -45)--="TOP" x="20" y="-37"/>
 
@@ -85,7 +87,7 @@ local function Init_UI()
         check.value= i>0 and i or nil
 
         check.Text:SetText(
-            WoWTools_MarkerMixin:Get_ReadyTextIcon(i)
+            WoWTools_MarkerMixin:Get_ReadyTextAtlas(i)
             or (WoWTools_Mixin.onlyChinese and '无' or NONE)
         )
         check.Text:ClearAllPoints()
@@ -186,7 +188,7 @@ local function Init()
 
 
 
-    
+
 
     ReadyCheckListenerFrame:HookScript('OnHide', function(self)
         if PlayerNameText then
@@ -210,14 +212,15 @@ local function Init()
 
             print(
                 WoWTools_MarkerMixin.addName,
-                WoWTools_MarkerMixin:Get_ReadyTextIcon(),
+                WoWTools_MarkerMixin:Get_ReadyTextAtlas(),
                 '|cff00ff00'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)
             )
 
-            WoWTools_CooldownMixin:Setup(ReadyCheckListenerFrame, nil, Get_LeftTime(), nil, true, true)--冷却条
+            WoWTools_CooldownMixin:Setup(self, nil, Get_LeftTime(), nil, true, true)--冷却条
         end
     end)
 
+    return true
 end
 
 
@@ -226,5 +229,7 @@ end
 
 
 function WoWTools_MarkerMixin:Init_AutoReady()
-    Init()
+    if Init() then
+        Init=function()end
+    end
 end

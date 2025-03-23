@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
 end
 
 
@@ -92,7 +92,7 @@ local function Init_RaidTarget_Menu(_, root)
         sub:AddInitializer(function(button, desc)
             local index=Save()[desc.data.type]
             button.fontString:SetText(
-                (index and WoWTools_MarkerMixin:SetColor(index).col or '')
+                (index and WoWTools_MarkerMixin:GetColor(index).col or '')
                 ..desc.data.text
                 ..(index and '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..index..':0|t' or '')
             )
@@ -103,7 +103,7 @@ local function Init_RaidTarget_Menu(_, root)
         for i=1, NUM_RAID_ICONS do
             sub=root:CreateRadio(
                 '|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_'..i..':0|t'
-                ..WoWTools_MarkerMixin:SetColor(i).col
+                ..WoWTools_MarkerMixin:GetColor(i).col
                 ..WoWTools_TextMixin:CN(_G['RAID_TARGET_'..i]),
             function(data)
                 return Save()[data.type]==data.index
@@ -203,23 +203,28 @@ local function Init_Menu(self, root)
         Save().groupReadyTips= not Save().groupReadyTips and true or nil
         WoWTools_MarkerMixin:Init_Ready_Tips_Button()--注册事件, 就绪,队员提示信息
         if Save().groupReadyTips then--测试
-            WoWTools_MarkerMixin.ReadyTipsButton.text:SetText('Test')
-            WoWTools_MarkerMixin.ReadyTipsButton:set_Shown()
+            local btn= _G['WoWToolsChatMarkersReadyInfoButton']
+            if btn then
+                btn.text:SetText('Test')
+                btn:set_Shown()
+            end
         end
     end)
     sub:CreateButton(
-        (WoWTools_MarkerMixin.ReadyTipsButton and WoWTools_MarkerMixin.ReadyTipsButton:IsShown() and '' or '|cff9e9e9e')
+        (_G['WoWToolsChatMarkersReadyInfoButton'] and _G['WoWToolsChatMarkersReadyInfoButton']:IsShown() and '' or '|cff9e9e9e')
         ..(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2
     ), function()
-        if WoWTools_MarkerMixin.ReadyTipsButton then
-            WoWTools_MarkerMixin.ReadyTipsButton:set_Hide()
+        local btn= _G['WoWToolsChatMarkersReadyInfoButton']
+        if btn then
+            btn:set_Hide()
         end
     end)
     sub:CreateButton((Save().groupReadyTipsPoint and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save().groupReadyTipsPoint=nil
-        if WoWTools_MarkerMixin.ReadyTipsButton then
-            WoWTools_MarkerMixin.ReadyTipsButton:ClearAllPoints()
-            WoWTools_MarkerMixin.ReadyTipsButton:set_Point()--位置
+        local btn= _G['WoWToolsChatMarkersReadyInfoButton']
+        if btn then
+            btn:ClearAllPoints()
+            btn:set_Point()--位置
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_MarkerMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
         end
     end)
@@ -228,7 +233,7 @@ local function Init_Menu(self, root)
 
 
     sub= root:CreateButton(
-        WoWTools_MarkerMixin:Get_ReadyTextIcon()
+        WoWTools_MarkerMixin:Get_ReadyTextAtlas(Save().autoReady)
         or (WoWTools_Mixin.onlyChinese and '无就绪' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NONE, READY)),
     function()
         local show= ReadyCheckFrame:IsShown()
@@ -246,7 +251,7 @@ local function Init_Menu(self, root)
     for value= 0, 2 do
 
         sub2= sub:CreateRadio(
-            WoWTools_MarkerMixin:Get_ReadyTextIcon(value)
+            WoWTools_MarkerMixin:Get_ReadyTextAtlas(value)
             or (WoWTools_Mixin.onlyChinese and '无' or NONE),
         function(data)
             return data==Save().autoReady

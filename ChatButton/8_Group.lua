@@ -1,6 +1,6 @@
 
 local addName
-local Save={
+local P_Save={
     --mouseUP=  not LOCALE_zhCN and SUMMON ..' '..COMBATLOG_FILTER_STRING_ME or '求拉, 谢谢',
     mouseUP=  (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
                 or WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢'
@@ -11,7 +11,9 @@ local Save={
 }
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
 
-
+local function Save()
+    return WoWToolsSave['ChatButtonGroup']
+end
 
 local GroupButton
 local roleAtlas={
@@ -72,8 +74,8 @@ local function Settings()--队伍信息提示
     local isInInstance= IsInInstance()
     local num=GetNumGroupMembers()
 
-    if Save.type and Save.text then
-        Set_Type(Save.type, Save.text)
+    if Save().type and Save().text then
+        Set_Type(Save().type, Save().text)
 
     elseif IsInRaid() then
         Set_Type(SLASH_RAID2, RAID)--使用,提示
@@ -182,8 +184,8 @@ local function Init_Menu(_, root)
 
         end, function(data)
             WoWTools_ChatMixin:Say(data.type)
-            Save.type=data.type
-            Save.text=data.text
+            Save().type=data.type
+            Save().text=data.text
             Settings()
 
         end, tab)
@@ -315,9 +317,9 @@ local function Init_Menu(_, root)
 
 
     sub=root:CreateButton(
-        (Save.mouseUP and '|A:bags-greenarrow:0:0|a' or '')
-        ..(Save.mouseDown and '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a' or '')
-        ..(not Save.mouseUP and not Save.mouseDown and '|cff9e9e9e' or '')
+        (Save().mouseUP and '|A:bags-greenarrow:0:0|a' or '')
+        ..(Save().mouseDown and '|A:UI-HUD-MicroMenu-StreamDLYellow-Up:0:0|a' or '')
+        ..(not Save().mouseUP and not Save().mouseDown and '|cff9e9e9e' or '')
         ..(WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM)..'|A:voicechat-icon-textchat-silenced:0:0|a', function()
         return MenuResponse.Refresh
     end)
@@ -571,13 +573,13 @@ local function Init()
 
         GameTooltip:AddDoubleLine(self.text, self.type and self.type..WoWTools_DataMixin.Icon.left)
 
-        if (Save.mouseDown or Save.mouseUP) then-- and IsInGroup()
+        if (Save().mouseDown or Save().mouseUP) then-- and IsInGroup()
             GameTooltip:AddLine(' ')
-            if Save.mouseUP then
-                GameTooltip:AddDoubleLine(Save.mouseUP, (WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..WoWTools_DataMixin.Icon.mid)
+            if Save().mouseUP then
+                GameTooltip:AddDoubleLine(Save().mouseUP, (WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP)..WoWTools_DataMixin.Icon.mid)
             end
-            if Save.mouseDown then
-                GameTooltip:AddDoubleLine(Save.mouseDown, (WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid)
+            if Save().mouseDown then
+                GameTooltip:AddDoubleLine(Save().mouseDown, (WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_DOWN)..WoWTools_DataMixin.Icon.mid)
             end
 
         end
@@ -613,9 +615,9 @@ local function Init()
     GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
         local text
         if d==1 then
-            text= Save.mouseUP
+            text= Save().mouseUP
         elseif d==-1 then
-            text= Save.mouseDown
+            text= Save().mouseDown
         end
         if text then
             text=set_Text(text)--处理%s
@@ -667,22 +669,24 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('GROUP_LEFT')
+panel:RegisterEvent('GROUP_ROSTER_UPDATE')
+panel:RegisterEvent('CVAR_UPDATE')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            Save= WoWToolsSave['ChatButtonGroup'] or Save
+
+            WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or P_Save
             addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_Mixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)
 
             if GroupButton then--禁用 ChatButton
                 Init()
-                self:RegisterEvent('GROUP_LEFT')
-                self:RegisterEvent('GROUP_ROSTER_UPDATE')
-                self:RegisterEvent('CVAR_UPDATE')
-
+                self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
@@ -691,11 +695,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CVAR_UPDATE' then
         if arg1=='chatBubblesParty' then
             Settings()--提示，聊天泡泡，开启/禁用
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButtonGroup']=Save
         end
     end
 end)

@@ -1,6 +1,7 @@
 local addName
-WoWTools_HyperLink={
-    Save={
+WoWTools_HyperLink={}
+
+local P_Save={
 
     linkIcon=true, --超链接，图标
     --notShowPlayerInfo=true,--不处理，玩家信息
@@ -29,10 +30,10 @@ WoWTools_HyperLink={
 
     --not_Add_Reload_Button=true,--添加 RELOAD 按钮
     autoHideTableAttributeDisplay=true,--自动关闭，Fstack
-}}
+}
 
 local function Save()
-    return WoWTools_HyperLink.Save
+    return WoWToolsSave['ChatButton_HyperLink']
 end
 
 local LinkButton
@@ -89,12 +90,12 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
 
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-            WoWTools_HyperLink.Save= WoWToolsSave['ChatButton_HyperLink'] or Save()
+
+            WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
 
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
@@ -124,11 +125,6 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 self:UnregisterEvent(event)
             end
-        end
-
-    elseif event=='PLAYER_LOGOUT' then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_HyperLink']= Save()
         end
     end
 end)

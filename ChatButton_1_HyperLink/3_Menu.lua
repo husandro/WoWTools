@@ -1,5 +1,5 @@
 local function Save()
-    return WoWTools_HyperLink.Save
+    return WoWToolsSave['ChatButton_HyperLink']
 end
 
 

@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
 end
 
 
@@ -97,7 +97,6 @@ local function Set_TankHealer(set)--设置队伍标记
             WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
             isSelf= true
         end
-        
     end
     return tank or healer or isSelf
 end
@@ -170,6 +169,8 @@ local function Init()
     C_Timer.After(2, function()
         Set_TankHealer()
     end)
+
+    return true
 end
 
 
@@ -180,7 +181,9 @@ end
 
 --设置队伍标记
 function WoWTools_MarkerMixin:Init_Tank_Healer()
-    Init()
+    if Init() then
+        Init=function()end
+    end
 end
 
 function WoWTools_MarkerMixin:Set_TankHealer(set)

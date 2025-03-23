@@ -1,5 +1,5 @@
 
-local Save= {
+local P_Save= {
     --inInstanceBubblesDisabled= WoWTools_DataMixin.Player.husandro,
     saveWhisper=true,--保存, 密语
     WhisperTab={},--保存, 密语, 内容 {name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
@@ -12,6 +12,10 @@ local Save= {
     --isWoW=bool,
     numWhisper=0,--最后密语,数量
 }
+
+local function Save()
+    return WoWToolsSave['ChatButton_Say']
+end
 
 local addName
 local SayButton
@@ -58,16 +62,16 @@ end
 --密语列表
 --#######
 local function set_numWhisper_Tips()--最后密语,数量, 提示
-    SayButton.numWhisper:SetText(Save.numWhisper>0 and Save.numWhisper or '')
+    SayButton.numWhisper:SetText(Save().numWhisper>0 and Save().numWhisper or '')
 end
 
 local function rest_numWhisper_Tips()--重置密语，数量
-    Save.numWhisper=0--最后密语,数量, 清空
+    Save().numWhisper=0--最后密语,数量, 清空
     set_numWhisper_Tips()--最后密语,数量, 提示
 end
 
 local function findWhisper(name)
-    for index, tab in pairs(Save.WhisperTab) do
+    for index, tab in pairs(Save().WhisperTab) do
         if tab.name==name then
             return index
         end
@@ -80,14 +84,14 @@ local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
         local index=findWhisper(name)
         local tab= {text=text, type=type, player=WoWTools_DataMixin.Player.name_realm, time=date('%X')}
         if index then
-            Save.WhisperTab[index].guid=guid
-            table.insert(Save.WhisperTab[index].msg, tab)
+            Save().WhisperTab[index].guid=guid
+            table.insert(Save().WhisperTab[index].msg, tab)
         else
             local wow= event:find('MSG_BN') and true or nil
-            table.insert(Save.WhisperTab, 1, {name=name, wow=wow, guid=guid, msg={tab}})
+            table.insert(Save().WhisperTab, 1, {name=name, wow=wow, guid=guid, msg={tab}})
         end
         if not type then
-            Save.numWhisper= Save.numWhisper + 1--最后密语,数量
+            Save().numWhisper= Save().numWhisper + 1--最后密语,数量
             set_numWhisper_Tips()--最后密语,数量, 提示
         end
     end
@@ -98,7 +102,7 @@ end
 
 
 local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
-    if Save.inInstanceBubblesDisabled and not UnitAffectingCombat('player') then
+    if Save().inInstanceBubblesDisabled and not UnitAffectingCombat('player') then
         if IsInInstance() then
             C_CVar.SetCVar("chatBubbles", '0')
         else
@@ -155,7 +159,7 @@ local function Init_Menu(self, root)
                 ..tab.type
                 ..(tab.isWhisper and ' '..WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true}) or ''),
             function(data)
-                    return Save.type==data.type
+                    return Save().type==data.type
 
             end, function(data)
                 local name
@@ -202,16 +206,16 @@ local function Init_Menu(self, root)
 
 --密语列表 --{name=name, wow=wow, guid=guid, msg={text=text, type=type,time=time}}
     --[[sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '保存' or SAVE, function()
-        return Save.saveWhisper
+        return Save().saveWhisper
     end, function()
-        Save.saveWhisper= not Save.saveWhisper and true or nil
+        Save().saveWhisper= not Save().saveWhisper and true or nil
     end)]]
 
 --全部清除
-    local num= #Save.WhisperTab
+    local num= #Save().WhisperTab
     if num>0 then
         sub2=sub:CreateButton((WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num, function()
-            Save.WhisperTab={}
+            Save().WhisperTab={}
             rest_numWhisper_Tips()--重置密语，数量
             return MenuResponse.CloseAll
         end)
@@ -222,7 +226,7 @@ local function Init_Menu(self, root)
         sub:CreateDivider()
 
 
-        for index, tab in pairs(Save.WhisperTab) do
+        for index, tab in pairs(Save().WhisperTab) do
             local playerName= WoWTools_UnitMixin:GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
             sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '), function(data)
@@ -290,7 +294,7 @@ local function Init_Menu(self, root)
             sub2:CreateButton(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function(data)
                 local findIndex= findWhisper(data)
                 if findIndex then
-                    Save.WhisperTab[findIndex]=nil
+                    Save().WhisperTab[findIndex]=nil
                     print(WoWTools_DataMixin.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(data))
                 else
                     print(WoWTools_DataMixin.Icon.icon2.. addName, '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', WoWTools_UnitMixin:GetLink(data))
@@ -381,9 +385,9 @@ local function Init_Menu(self, root)
     end)
 
     sub3=sub2:CreateCheckbox(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
-        return Save.inInstanceBubblesDisabled
+        return Save().inInstanceBubblesDisabled
     end, function()
-        Save.inInstanceBubblesDisabled= not Save.inInstanceBubblesDisabled and true or nil
+        Save().inInstanceBubblesDisabled= not Save().inInstanceBubblesDisabled and true or nil
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
     end)
 
@@ -442,17 +446,17 @@ local function Init()
 
     function SayButton:set_tooltip()
         self:set_owner()
-        if Save.type or Save.text or Save.name then
+        if Save().type or Save().text or Save().name then
             local name
-            if Save.type==SLASH_WHISPER1 then
+            if Save().type==SLASH_WHISPER1 then
                 name= GetUnitName('target', true)
-            elseif Save.name then
-                name= Save.isWoW and WoWTools_DataMixin.Icon.net2..'|cff28a3ff'..Save.name or Save.name
+            elseif Save().name then
+                name= Save().isWoW and WoWTools_DataMixin.Icon.net2..'|cff28a3ff'..Save().name or Save().name
             end
-            GameTooltip:AddDoubleLine((Save.text or '')..(Save.type and ' '..Save.type or ''),(name or '')..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine((Save().text or '')..(Save().type and ' '..Save().type or ''),(name or '')..WoWTools_DataMixin.Icon.left)
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '密语数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_WHISPER, AUCTION_HOUSE_QUANTITY_LABEL), Save.numWhisper)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '密语数量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_TEXTTOSPEECH_WHISPER, AUCTION_HOUSE_QUANTITY_LABEL), Save().numWhisper)
         GameTooltip:Show()
     end
 
@@ -468,41 +472,41 @@ local function Init()
     SayButton:SetupMenu(Init_Menu)
 
     function SayButton:set_OnMouseDown()
-        if Save.type or Save.name then
-            local name, wow= Save.name, Save.isWoW
-            if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
+        if Save().type or Save().name then
+            local name, wow= Save().name, Save().isWoW
+            if Save().type==SLASH_WHISPER1 and UnitIsPlayer('target') then
                 name=GetUnitName('target', true)
                 wow= false
             end
-            WoWTools_ChatMixin:Say(Save.type, name, wow)
+            WoWTools_ChatMixin:Say(Save().type, name, wow)
         else
             return true
         end
     end
 
     --[[SayButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' and (Save.type or Save.name) then
-            local name, wow= Save.name, Save.isWoW
-            if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
+        if d=='LeftButton' and (Save().type or Save().name) then
+            local name, wow= Save().name, Save().isWoW
+            if Save().type==SLASH_WHISPER1 and UnitIsPlayer('target') then
                 name=GetUnitName('target', true)
                 wow= false
             end
-            WoWTools_ChatMixin:Say(Save.type, name, wow)
+            WoWTools_ChatMixin:Say(Save().type, name, wow)
             self:CloseMenu()
             self:set_tooltip()
         end
     end)
     SayButton:SetScript('OnClick', function(self, d)
 
-        if d=='LeftButton' and (Save.type or Save.name) then
+        if d=='LeftButton' and (Save().type or Save().name) then
 
-            local name, wow= Save.name, Save.isWoW
-            if Save.type==SLASH_WHISPER1 and UnitIsPlayer('target') then
+            local name, wow= Save().name, Save().isWoW
+            if Save().type==SLASH_WHISPER1 and UnitIsPlayer('target') then
                 name=GetUnitName('target', true)
                 wow= false
             end
 
-            WoWTools_ChatMixin:Say(Save.type, name, wow)
+            WoWTools_ChatMixin:Say(Save().type, name, wow)
 
         else
             MenuUtil.CreateContextMenu(self, Init_Menu)
@@ -511,10 +515,10 @@ local function Init()
     end)]]
 
     function SayButton:settings(type, text, name, isWoW)
-        Save.type= type
-        Save.text= text
-        Save.name= name
-        Save.isWoW= isWoW
+        Save().type= type
+        Save().text= text
+        Save().name= name
+        Save().isWoW= isWoW
 
         if text=='大喊' then
             text='喊'
@@ -528,7 +532,7 @@ local function Init()
     end
 
 
-    SayButton:settings(Save.type, Save.text, Save.name, Save.isWoW)
+    SayButton:settings(Save().type, Save().text, Save().name, Save().isWoW)
     set_chatBubbles_Tips() --提示，聊天泡泡，开启/禁用
     set_numWhisper_Tips()--最后密语,数量, 提示
 end
@@ -547,40 +551,40 @@ end
 --加载保存数据
 --###########
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
+panel:RegisterEvent("CHAT_MSG_WHISPER")
+panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
+panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+panel:RegisterEvent('CVAR_UPDATE')
+
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            Save= WoWToolsSave['ChatButton_Say'] or Save
-            Save.text= Save.text or (WoWTools_Mixin.onlyChinese and '说' or SAY)
+
+            WoWToolsSave['ChatButton_Say']= WoWToolsSave['ChatButton_Say'] or P_Save
+            Save().text= Save().text or (WoWTools_Mixin.onlyChinese and '说' or SAY)
+
             addName= '|A:transmog-icon-chat:0:0|a'..(WoWTools_Mixin.onlyChinese and '说' or SAY)
             SayButton= WoWTools_ChatMixin:CreateButton('Say', addName)
 
             if SayButton then--禁用Chat Button
-                if #Save.WhisperTab>120 then
-                    for i=121, #Save.WhisperTab do
-                        Save.WhisperTab[i]=nil
+                if #Save().WhisperTab>120 then
+                    for i=121, #Save().WhisperTab do
+                        Save().WhisperTab[i]=nil
                     end
                 end
 
                 Init()
-                self:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
-                self:RegisterEvent("CHAT_MSG_WHISPER")
-                self:RegisterEvent("CHAT_MSG_BN_WHISPER")
-                self:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
-                self:RegisterEvent('PLAYER_ENTERING_WORLD')
-                self:RegisterEvent('CVAR_UPDATE')
+                self:UnregisterEvent('ADDON_LOADED')
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent('ADDON_LOADED')
         end
 
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_Say']=Save
-        end
     elseif event== 'PLAYER_ENTERING_WORLD' then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
 

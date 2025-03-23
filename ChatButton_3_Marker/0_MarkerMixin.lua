@@ -24,12 +24,12 @@ local Color={
     [7]={r=1, g=0, b=0, col='|cffff2020'},--十字, 红色
     [8]={r=1, g=1, b=1, col='|cffffffff'},--骷髅,白色
 }
-function WoWTools_MarkerMixin:SetColor(index)
+function WoWTools_MarkerMixin:GetColor(index)
     return Color[index]
 end
 
-function WoWTools_MarkerMixin:Get_ReadyTextIcon(autoReady)
-    autoReady= autoReady or self.Save.autoReady
+function WoWTools_MarkerMixin:Get_ReadyTextAtlas(autoReady)
+    autoReady= autoReady or WoWToolsSave['ChatButton_Markers'].autoReady
     if autoReady==1 then
         return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_Mixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
     elseif autoReady==2 then

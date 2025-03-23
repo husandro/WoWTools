@@ -2,8 +2,9 @@ local P_Save={
     autoClear=true,--进入战斗时,清除数据
     save={},--保存数据,最多30个
 }
+
 local function Save()
-    return WoWToolsSave['ChatButton_Rool']
+    return WoWToolsSave['ChatButton_Roll']
 end
 
 local addName
@@ -303,20 +304,27 @@ end
 
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('CHAT_MSG_SYSTEM')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['ChatButton_Rool']= WoWToolsSave['ChatButton_Rool'] or P_Save
+            if WoWToolsSave['ChatButton_Rool'] then
+                WoWToolsSave['ChatButton_Roll']= WoWToolsSave['ChatButton_Rool']
+                WoWToolsSave['ChatButton_Rool']= nil
+            else
+                WoWToolsSave['ChatButton_Roll']= WoWToolsSave['ChatButton_Roll'] or P_Save
+            end
 
             addName= '|TInterface\\PVPFrame\\Icons\\PVP-Banner-Emblem-47:0|t'..(WoWTools_Mixin.onlyChinese and '掷骰' or ROLL)
             RollButton= WoWTools_ChatMixin:CreateButton('Roll', addName)
 
             if RollButton then
                 Init()
-                self:RegisterEvent('CHAT_MSG_SYSTEM')
+                self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

@@ -572,14 +572,14 @@ ChatButton_1_HyperLink\z_Welcome.lua
 ChatButton\2_Roll.lua
 
 ##标记
-ChatButton_3_Markers\0_MarkerMixin.lua
-ChatButton_3_Markers\3_Markers.lua
-ChatButton_3_Markers\Tank_Healer.lua
-ChatButton_3_Markers\Ready_Info.lua
-ChatButton_3_Markers\Ready_Auto.lua
-ChatButton_3_Markers\Init_Menu.lua
-ChatButton_3_Markers\Markers_Frame.lua
-ChatButton_3_Markers\Markers_Frame_Menu.lua
+ChatButton_3_Marker\0_MarkerMixin.lua
+ChatButton_3_Marker\1_Init.lua
+ChatButton_3_Marker\2_Menu.lua
+ChatButton_3_Marker\3_Frame.lua
+ChatButton_3_Marker\3_Frame_Menu.lua
+ChatButton_3_Marker\Tank_Healer.lua
+ChatButton_3_Marker\Ready_Info.lua
+ChatButton_3_Marker\Ready_Auto.lua
 
 
 ##邀请， 自动接受， 拒绝，屏蔽

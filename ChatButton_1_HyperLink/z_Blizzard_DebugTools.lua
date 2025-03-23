@@ -1,6 +1,6 @@
 --fstack 增强 TableAttributeDisplay
 local function Save()
-    return WoWTools_HyperLink.Save
+    return WoWToolsSave['ChatButton_HyperLink']
 end
 
 local btn
@@ -106,7 +106,7 @@ end
 function WoWTools_HyperLink:Blizzard_DebugTools()
     if Init() then
         Init=function()
-            btn:SetShown(not self.Save.disabedFrameStackPlus)
+            btn:SetShown(not Save().disabedFrameStackPlus)
         end
     end
 end

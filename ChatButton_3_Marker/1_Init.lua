@@ -1,5 +1,4 @@
-
-WoWTools_MarkerMixin.Save={
+local P_Save={
     autoSet=true,
 
     tank= 2,
@@ -23,7 +22,7 @@ WoWTools_MarkerMixin.Save={
 }
 
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
 end
 local MarkerButton
 
@@ -72,11 +71,12 @@ local function Init()
                 self.texture:SetAtlas('Bonus-Objective-Star')
             end
         end
-        
+
         self.texture:SetDesaturated(not Save().autoSet)
 
 --就绪，图标
-        local _, atlas= WoWTools_MarkerMixin:Get_ReadyTextIcon()
+
+        local atlas= select(2, WoWTools_MarkerMixin:Get_ReadyTextAtlas(Save().autoReady))
         if atlas then
             self.ready:SetAtlas(atlas)
         else
@@ -108,36 +108,36 @@ local function Init()
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            (tank and WoWTools_MarkerMixin:SetColor(tank).col or '|cff828282')
+            (tank and WoWTools_MarkerMixin:GetColor(tank).col or '|cff828282')
             ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
            tank and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank) or ''
         )
         GameTooltip:AddDoubleLine(
-            (tank2 and WoWTools_MarkerMixin:SetColor(tank2).col or '|cff828282')
+            (tank2 and WoWTools_MarkerMixin:GetColor(tank2).col or '|cff828282')
             ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..' 2',
            tank2 and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank2) or ''
         )
         GameTooltip:AddDoubleLine(
-            (healer and WoWTools_MarkerMixin:SetColor(healer).col or '|cff828282')
+            (healer and WoWTools_MarkerMixin:GetColor(healer).col or '|cff828282')
             ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
            healer and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', healer) or ''
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            (isSelf and WoWTools_MarkerMixin:SetColor(isSelf).col or '|cff828282')
+            (isSelf and WoWTools_MarkerMixin:GetColor(isSelf).col or '|cff828282')
             ..'|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
             isSelf and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', isSelf) or ''
         )
         GameTooltip:AddDoubleLine(
-            (target and WoWTools_MarkerMixin:SetColor(target).col or '|cff828282')
+            (target and WoWTools_MarkerMixin:GetColor(target).col or '|cff828282')
             ..'|A:Target:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标' or TARGET),
             target and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', target) or ''
         )
         GameTooltip:AddDoubleLine()
     end
 
-     
-    
+
+
 
     function MarkerButton:set_tooltip()
         self:set_owner()
@@ -184,30 +184,25 @@ end
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent('ADDON_LOADED')
-panel:RegisterEvent('PLAYER_LOGOUT')
+
 panel:SetScript('OnEvent', function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
-            WoWTools_MarkerMixin.Save= WoWToolsSave['ChatButton_Markers'] or WoWTools_MarkerMixin.Save
 
-            if WoWTools_MarkerMixin.Save.autoReady==0 then
-                WoWTools_MarkerMixin.Save.autoReady= nil
+            WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
+
+            if Save().autoReady==0 then
+                Save().autoReady= nil
             end
-            WoWTools_MarkerMixin.Save.autoReadySeconds= WoWTools_MarkerMixin.Save.autoReadySeconds or 3
+            Save().autoReadySeconds= Save().autoReadySeconds or 3
 
             WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_Mixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
-
             MarkerButton= WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
 
             if MarkerButton then
                 Init()
             end
             self:UnregisterEvent(event)
-        end
-
-    elseif event=='PLAYER_LOGOUT' then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ChatButton_Markers']=WoWTools_MarkerMixin.Save
         end
     end
 end)

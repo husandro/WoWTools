@@ -1,6 +1,6 @@
 --添加 RELOAD 按钮
 local function Save()
-    return WoWTools_HyperLink.Save
+    return WoWToolsSave['ChatButton_HyperLink']
 end
 
 local dataButton={--layoutIndex

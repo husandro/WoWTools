@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
 end
 
 

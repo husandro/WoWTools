@@ -1,31 +1,26 @@
 
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
 end
-
-
-
-
-
 
 --队员,就绪,提示信息
 local ReadyTipsButton
 
-local function Init()
-    if not Save().groupReadyTips then
-        if ReadyTipsButton then
-            ReadyTipsButton:set_Event()
-            ReadyTipsButton:set_Shown()
-        end
-        return
-    elseif ReadyTipsButton then
-        ReadyTipsButton:set_Event()
-        ReadyTipsButton:set_Shown()
-        return
-    end
 
-    ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {size={22,22}, atlas=WoWTools_DataMixin.Icon.select})
-    WoWTools_MarkerMixin.ReadyTipsButton= ReadyTipsButton
+
+
+
+
+
+
+
+
+local function Init()
+    ReadyTipsButton= WoWTools_ButtonMixin:Cbtn(nil, {
+        size=22,
+        atlas=WoWTools_DataMixin.Icon.select,
+        name='WoWToolsChatMarkersReadyInfoButton',
+    })
 
     ReadyTipsButton.text=WoWTools_LabelMixin:Create(ReadyTipsButton)
     ReadyTipsButton.text:SetPoint('BOTTOMLEFT', ReadyTipsButton, 'TOPLEFT')
@@ -183,6 +178,8 @@ local function Init()
     ReadyTipsButton:set_Scale()
     ReadyTipsButton:set_Event()
     ReadyTipsButton:set_Shown()
+
+    return true
 end
 
 
@@ -195,5 +192,10 @@ end
 
 
 function WoWTools_MarkerMixin:Init_Ready_Tips_Button()--队员,就绪,提示信息
-    Init()
+    if Save().groupReadyTips and Init() then
+        Init=function()
+            ReadyTipsButton:set_Event()
+            ReadyTipsButton:set_Shown()
+        end
+    end
 end

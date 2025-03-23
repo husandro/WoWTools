@@ -1,6 +1,6 @@
 --隐藏NPC发言
 local function Save()
-    return WoWTools_HyperLink.Save
+    return WoWToolsSave['ChatButton_HyperLink']
 end
 
 local VoHandle
@@ -54,7 +54,7 @@ end
 
 --隐藏NPC发言
 function WoWTools_HyperLink:Init_NPC_Talking()
-    if not self.Save.disabledNPCTalking and Init() then
+    if not Save().disabledNPCTalking and Init() then
         Init=function()end
     end
 end

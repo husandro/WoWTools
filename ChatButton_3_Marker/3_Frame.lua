@@ -1,11 +1,8 @@
-
-local MakerFrame
 local function Save()
-    return WoWTools_MarkerMixin.Save
+    return WoWToolsSave['ChatButton_Markers']
 end
 
-
-
+local MakerFrame
 
 
 
@@ -707,7 +704,7 @@ local function Init()--设置标记, 框架
             if self.index==0 then
                 GameTooltip:AddLine('|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '清除全部' or CLEAR_ALL)..WoWTools_DataMixin.Icon.left)
             else
-                local color= WoWTools_MarkerMixin:SetColor(self.index2)
+                local color= WoWTools_MarkerMixin:GetColor(self.index2)
                 GameTooltip:AddLine(
                     color.col
                     ..WoWTools_DataMixin.Icon.left
@@ -730,7 +727,7 @@ local function Init()--设置标记, 框架
             btn.texture=btn:CreateTexture(nil,'BACKGROUND')
             btn.texture:SetAllPoints()
 
-            local col= WoWTools_MarkerMixin:SetColor(index)
+            local col= WoWTools_MarkerMixin:GetColor(index)
             btn.texture:SetColorTexture(col.r, col.g, col.b)
             btn.texture:SetAlpha(0.3)
 
@@ -941,6 +938,8 @@ local function Init()--设置标记, 框架
             frame:set_point()
         end
     end
+
+    return true
 end
 
 
@@ -973,9 +972,8 @@ function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
         MakerFrame:set_Event()
 
     elseif Save().markersFrame then
-        do
-            Init()
+        if Init() then
+            Init=function()end
         end
-        Init=function()end
     end
 end
