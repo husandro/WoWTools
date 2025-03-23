@@ -1,4 +1,3 @@
-
 local P_Save={
     --disabled=true,--禁用
 
@@ -30,6 +29,30 @@ local P_Save={
 }
 
 
+local function Save()
+    return WoWToolsSave['Plus_Bank']
+end
+
+
+local function Init()
+    if Save().disabled then
+        return
+    end
+
+    WoWTools_BankMixin:Init_Menu()
+    WoWTools_BankMixin:Init_MoveFrame()
+    WoWTools_BankMixin:Init_Plus()--整合，一起
+    WoWTools_BankMixin:Init_UI()--存放，取出，所有
+    WoWTools_BankMixin:Init_Left_List()
+    WoWTools_BankMixin:Set_PortraitButton()
+    return true
+end
+
+
+
+
+
+
 
 
 
@@ -50,12 +73,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 name= WoWTools_BankMixin.addName,
                 GetValue=function() return not WoWToolsSave['Plus_Bank'].disabled end,
                 SetValue= function()
-                    WoWToolsSave['Plus_Bank'].disabled= not WoWToolsSave['Plus_Bank'].disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Plus_Bank'].disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    Save().disabled= not Save().disabled and true or nil
+                    if Init() then
+                        Init=function()end
+                    else
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    end
                 end
             })
 
-            if not WoWToolsSave['Plus_Bank'].disabled then
+            if Save().disabled then
                 self:UnregisterAllEvents()
             else
                 self:UnregisterEvent(event)
@@ -63,12 +90,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BANKFRAME_OPENED' then
-        WoWTools_BankMixin:Init_Menu()
-        WoWTools_BankMixin:Init_MoveFrame()
-        WoWTools_BankMixin:Init_Plus()--整合，一起
-        WoWTools_BankMixin:Init_UI()--存放，取出，所有
-        WoWTools_BankMixin:Init_Left_List()
-        WoWTools_BankMixin:Set_PortraitButton()
+        if Init() then
+            Init=function()end
+        end
         self:UnregisterEvent(event)
     end
 end)

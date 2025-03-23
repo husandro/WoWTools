@@ -387,6 +387,10 @@ end
 
 
 local function Init()
+    if not Save().left_List then
+        return
+    end
+
     ListButton=WoWTools_ButtonMixin:Menu(BankFrame, {
         name='WoWToolsBankLeftListButton',
         atlas='NPE_ArrowDownGlow',
@@ -404,7 +408,7 @@ local function Init()
     ListButton.frame:Hide()
 
 --显示背景 frame.Background
-    ListButton.frame.Background= ListButton.frame:CreateTexture(nil, 'BACKGROUND')
+    ListButton.frame.Background= ListButton.frame:CreateTexture('WoWToolsBankLeftListClassBackground', 'BACKGROUND')
     ListButton.frame.Background:SetPoint('TOPRIGHT', 2, 1)--右上角
     ListButton.frame.Background:EnableMouse(true)
 
@@ -562,13 +566,10 @@ end
 
 --存取，分类，按钮
 function WoWTools_BankMixin:Init_Left_List()
-    if ListButton then
-        ListButton:Settings()
-        Set_Label()
-
-    elseif Save().left_List and Init() then
-        if Init() then
-            Init=function()end
+    if Init() then
+        Init=function()
+            ListButton:Settings()
+            Set_Label()
         end
     end
 end
