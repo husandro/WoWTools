@@ -90,12 +90,26 @@ local function Init()
 			self:SetColorHSV(h, s, value)
 		end
 	end)
-
-
+	
+--[[
+	--不能点击，指定值
+	ColorPickerFrame.Content.ColorPicker.Value:HookScript('OnLeave', GameTooltip_Hide)
 	ColorPickerFrame.Content.ColorPicker.Value:HookScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-		GameTooltip:SetText('+0.01 ')
+		if not Save().hide then
+			GameTooltip:SetOwner(ColorPickerFrame, 'ANCHOR_RIGHT')
+			GameTooltip:SetText('+0.01 '..WoWTools_DataMixin.Icon.mid..' -0.01')
+			GameTooltip:Show()
+		end
 	end)
+
+	ColorPickerFrame.Content.ColorPicker.Alpha:HookScript('OnLeave', GameTooltip_Hide)
+	ColorPickerFrame.Content.ColorPicker.Alpha:HookScript('OnEnter', function(self)
+		if not Save().hide then
+			GameTooltip:SetOwner(ColorPickerFrame, 'ANCHOR_RIGHT')
+			GameTooltip:SetText('+0.01 Alt+'..WoWTools_DataMixin.Icon.mid..' -0.01')
+			GameTooltip:Show()
+		end
+	end)]]
 
 
 
