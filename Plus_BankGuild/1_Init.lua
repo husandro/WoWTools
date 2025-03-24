@@ -1,5 +1,4 @@
-
-WoWTools_GuildBankMixin.Save={
+local P_Save={
     line=0,
     num=20,
     BgAplha=1,--背景ALPHA
@@ -11,7 +10,9 @@ WoWTools_GuildBankMixin.Save={
     sortRightToLeft=true,--排序，从后到前
 }
 
-
+local function Save()
+    return WoWToolsSave['Plus_GuildBank'] or {}
+end
 
 
 
@@ -19,7 +20,9 @@ WoWTools_GuildBankMixin.Save={
 
 local function Init()
     if WoWTools_TextureMixin.Events.Blizzard_GuildBankUI then
-        WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
+        do
+            WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
+        end
         WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
     end
 
@@ -29,13 +32,15 @@ local function Init()
 
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)
-        if WoWTools_GuildBankMixin.Save.autoOpenBags then
+        if WoWToolsSave['Plus_GuildBank'].autoOpenBags then
             do
                 WoWTools_BagMixin:OpenBag(nil, false)
             end
             self:Raise()
         end
     end)
+
+    return true
 end
 
 
@@ -53,36 +58,43 @@ end
 local panel= CreateFrame("Frame")
 
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_GuildBankMixin.Save= WoWToolsSave['Plus_GuildBank'] or WoWTools_GuildBankMixin.Save
+            WoWToolsSave['Plus_GuildBank']= WoWToolsSave['Plus_GuildBank'] or P_Save
 
-            local addName= '|A:VignetteLoot:0:0|a'..(WoWTools_Mixin.onlyChinese and '公会银行' or GUILD_BANK)
-            WoWTools_GuildBankMixin.addName= addName
+            WoWTools_GuildBankMixin.addName= '|A:VignetteLoot:0:0|a'..(WoWTools_Mixin.onlyChinese and '公会银行' or GUILD_BANK)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                GetValue=function() return not WoWTools_GuildBankMixin.Save.disabled end,
+                name= WoWTools_GuildBankMixin.addName,
+                GetValue=function() return not Save().disabled end,
                 SetValue= function()
-                    WoWTools_GuildBankMixin.Save.disabled= not WoWTools_GuildBankMixin.Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not WoWTools_GuildBankMixin.Save.disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_GuildBankMixin.addName,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI
+                    )
                 end
             })
 
-            if WoWTools_GuildBankMixin.Save.disabled then
+            if Save().disabled then
+                self:UnregisterEvent(event)
+
+            elseif C_AddOns.IsAddOnLoaded('Blizzard_GuildBankUI') then
+                if Init() then
+                    Init=function()end
+                end
                 self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_GuildBankUI' then
-            Init()
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_GuildBank']= WoWTools_GuildBankMixin.Save
+        elseif arg1=='Blizzard_GuildBankUI' and WoWToolsSave then
+            if Init() then
+                Init=function()end
+            end
+            self:UnregisterEvent(event)
         end
     end
 end)

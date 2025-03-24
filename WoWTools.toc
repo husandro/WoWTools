@@ -166,14 +166,14 @@ Plus_Texture\z_Event_Frame.lua
 Plus\ItemInfo.lua
  
 
-
 ##颜色选择器
 Plus_Color\0_ColorMixin.lua
 Plus_Color\1_Init.lua
-Plus_Color\2_Options.lua
+Plus_Color\2_Menu.lua
 Plus_Color\Log.lua
 Plus_Color\Edit.lua
 Plus_Color\Select_Color.lua
+Plus_Color\Other.lua
 
 
 ##鼠标，提示
@@ -299,14 +299,14 @@ Plus_ObjectiveTracker\World_Quest.lua
 
 
 ##战团藏品
-Plus_Collection\0_Collections.lua
-Plus_Collection\1_Mount.lua
-Plus_Collection\2_Pet.lua
-Plus_Collection\3_ToyBox.lua
-Plus_Collection\4_Heirloom.lua
-Plus_Collection\5_Wardrober_Items.lua
-Plus_Collection\5_Wardrober_Sets.lua
-Plus_Collection\a_DressUpFrames.lua
+Plus_Collection\1_ADDON_LOADED.lua
+Plus_Collection\Mount.lua
+Plus_Collection\Pet.lua
+Plus_Collection\ToyBox.lua
+Plus_Collection\Heirloom.lua
+Plus_Collection\Wardrober_Items.lua
+Plus_Collection\Wardrober_Sets.lua
+Plus_Collection\DressUpFrames.lua
 Plus_Collection\Options.lua
 
 

@@ -1,7 +1,5 @@
-
-
 local function Save()
-    return WoWTools_CollectionMixin.Save
+    return WoWToolsSave['Plus_Collection'] or {}
 end
 
 local SetsDataProvider
@@ -170,6 +168,7 @@ local function Set_List_Button(btn, displayData)
     if not btn:IsVisible() then
         return
     end
+
     local setID= displayData.setID or btn.setID
     if Save().hideSets or not setID then
         if btn.set_Rest then
@@ -178,10 +177,7 @@ local function Set_List_Button(btn, displayData)
         return
     end
 
-
-
     Init_Button(btn)
-
 
     local tipsText= WoWTools_TextMixin:CN(displayData.name or btn.Name:GetText() or '')..(displayData.label and displayData.name~= displayData.label and '|n'..WoWTools_TextMixin:CN(displayData.label) or '')
     tipsText= tipsText and tipsText..'|n' or ''
@@ -242,6 +238,8 @@ local function Set_List_Button(btn, displayData)
     local numStes= #variantSets
     btn.numSetsLabel:SetText(numStes>1 and numStes or '')
     btn.numSetsLabel:SetTextColor(r, g, b)
+
+    variantSets= nil
 end
 
 
@@ -396,6 +394,8 @@ local function Init()
 
     --套装,物品, Link
     hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', Init_Wardrobe_DetailsFrame)
+
+    return true
 end
 
 
@@ -416,7 +416,7 @@ end
 
 
 function WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
-    if not TipsLabel and not self.Save.hideSets then
-        Init()
+    if not Save().hideSets and Init() then
+        Init=function()end
     end
 end

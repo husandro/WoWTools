@@ -1,6 +1,6 @@
 
 local function Save()
-	return WoWTools_ColorMixin.Save
+	return WoWToolsSave['Plus_Color'] or {}
 end
 
 
@@ -78,7 +78,24 @@ local function Init_Menu(self, root)
 --重新加载UI
 	WoWTools_MenuMixin:Reload(sub)
 
+
+--禁止自动隐藏
+	sub=root:CreateCheckbox(
+		'|A:newplayertutorial-drag-cursor:0:0|a'
+		..(WoWTools_Mixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+	function()
+		return not Save().notHideFuori
+	end, function()
+		Save().notHideFuori= not Save().notHideFuori and true or nil
+		self:Settings()
+	end)
+	sub:SetTooltip(function(tooltip)
+		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
+	end)
+
+
 --自动显示
+	root:CreateDivider()
 	sub=root:CreateCheckbox(
 		WoWTools_Mixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW),
 	function()
@@ -92,10 +109,9 @@ local function Init_Menu(self, root)
 	end)
 
 
-
-	root:CreateDivider()
 --打开选项界面
-	WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ColorMixin.addName,})
+	root:CreateDivider()
+	WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ColorMixin.addName})
 end
 
 
@@ -114,7 +130,7 @@ local function Init()
 	btn:SetPoint("TOPLEFT", ColorPickerFrame.Border, 7, -7)
 
 	function btn:set_alpha()
-		self:GetNormalTexture():SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.2)
+		self:GetNormalTexture():SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
 	end
 
 	function btn:set_tooltip()
@@ -142,11 +158,33 @@ local function Init()
 	btn.frame:SetPoint('BOTTOMRIGHT')
 	btn.frame:SetSize(1,1)
 
+--原生，去掉，在框架外，会自动关闭, 提示
+	btn.autoHideTexture= btn:CreateTexture(nil, 'BORDER')
+	btn.autoHideTexture:SetSize(23,23)
+	btn.autoHideTexture:SetPoint('LEFT', ColorPickerFrame.Footer.CancelButton, 'RIGHT', 0, -1)
+	btn.autoHideTexture:SetAtlas('newplayertutorial-drag-cursor')
+	btn.autoHideTexture:EnableMouse(true)
+	btn.autoHideTexture:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)	
+	btn.autoHideTexture:SetScript('OnEnter', function(self)
+		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
+		GameTooltip:SetText(WoWTools_Mixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+		GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
+		GameTooltip:Show()
+		self:SetAlpha(0.3)
+	end)
+	btn.autoHideTexture:SetScript('OnMouseDown', function(self)
+		local p= self:GetParent()
+		if not p:IsMenuOpen() then
+			p:OpenMenu()
+		end
+	end)
+
 	function btn:Settings()
 		self:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.icon or 'ui-questtrackerbutton-filter')
 		self.frame:SetShown(not Save().hide)
 		self.frame:SetScale(Save().scale or 1)
 		ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())
+		self.autoHideTexture:SetShown(not Save().notHideFuori)
 	end
 
 	btn:SetupMenu(Init_Menu)
@@ -161,6 +199,6 @@ end
 
 
 
-function WoWTools_ColorMixin:Init_Options()
+function WoWTools_ColorMixin:Init_Menu()
 	Init()
 end

@@ -316,6 +316,7 @@ local function Init_Menu(self, root)
         if not InCombatLockdown() then
             C_CVar.SetCVar("textToSpeech", C_CVar.GetCVar('textToSpeech')=='0' and '1' or '0' )
         end
+        return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('/tts')
@@ -331,16 +332,27 @@ local function Init_Menu(self, root)
 --etrace
 
     root:CreateButton('|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE', function()
-        --[[if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
-            C_AddOns.LoadAddOn("Blizzard_EventTrace")
-        end]]
-        if not EventTrace then
-            UIParentLoadAddOn("Blizzard_EventTrace")
+        do
+            if not EventTrace then
+                UIParentLoadAddOn("Blizzard_EventTrace")
+            end
         end
+        if EventTrace:IsVisible() then
+            EventTrace:Hide()
+        else
             EventTrace:OnShow()
+        end
+
         return MenuResponse.Open
     end)
 
+        --[[if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
+            C_AddOns.LoadAddOn("Blizzard_EventTrace")
+        endif not EventTrace then
+            UIParentLoadAddOn("Blizzard_EventTrace")
+        end
+        --EventTrace:SetShown(not EventTrace:IsShown())
+ ]]
 
 
 

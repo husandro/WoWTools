@@ -1,19 +1,6 @@
 
 
-WoWTools_ColorMixin={
-    Save= {
-        --disabled=true,
-        --hide=true,
-        --autoShow=true,--自动显示
-        --sacle=1,
-
-        logColor={},--保存，历史记录
-        --logMaxColor=10,--设置，最多保存30个颜色
-        --selectType2=true,--更多颜色
-
-        saveColor={},--保存4个颜色
-    }
-}
+WoWTools_ColorMixin={}
 
 
 

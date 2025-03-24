@@ -3,7 +3,7 @@
 
 
 local function Save()
-    return WoWTools_CollectionMixin.Save
+    return WoWToolsSave['Plus_Collection'] or {}
 end
 
 

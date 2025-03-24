@@ -1,6 +1,6 @@
 
 local function Save()
-	return WoWTools_ColorMixin.Save
+	return WoWToolsSave['Plus_Color'] or {}
 end
 
 

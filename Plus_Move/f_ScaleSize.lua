@@ -81,6 +81,7 @@ end
 
 --菜单
 local function Init_Menu(self, root)
+    root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
     local sub, sub2
     if not self:IsCanChange() then
         root:CreateTitle(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)

@@ -233,7 +233,7 @@ end
 
 --[[公会银行
 function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(mixin)
-    if WoWTools_GuildBankMixin.Save.disabled then
+    if WoWToolsSave['Plus_GuildBank'].disabled then
         WoWTools_GuildBankMixin:Init_Guild_Texture(mixin)
     end
 end]]

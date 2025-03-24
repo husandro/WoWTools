@@ -328,8 +328,8 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(format('|A:talents-button-reset:0:0|a%s %d %s', 'talents-button-reset', WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE,  Save().InvNoFriendNum or 0, WoWTools_Mixin.onlyChinese and '邀请' or INVITE))
- 
+    sub=root:CreateButton(format('%s|A:talents-button-reset:0:0|a%s %d', WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE, WoWTools_Mixin.onlyChinese and '邀请' or INVITE, Save().InvNoFriendNum or 0))
+
     sub:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
         Save().InvNoFriend={}
     end)
@@ -353,6 +353,7 @@ end
 
 
 
-function WoWTools_InviteMixin:Init_Menu(...)
-    Init_Menu(...)
+
+function WoWTools_InviteMixin:Setup_Menu(btn)
+    btn:SetupMenu(Init_Menu)
 end

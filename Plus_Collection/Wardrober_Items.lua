@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWTools_CollectionMixin.Save
+    return WoWToolsSave['Plus_Collection'] or {}
 end
 
 local SlotsIcon = {
@@ -443,6 +443,8 @@ local function Init()
     WardrobeCollectionFrameSearchBox:ClearAllPoints()
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
+
+    return true
 end
 
 
@@ -450,11 +452,10 @@ end
 
 
 
-local IsSet
+
 function WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化 5
-    if not IsSet and not self.Save.hideItems then
-        IsSet=true
-        Init()
+    if not Save().hideItems and Init() then
+        Init=function()end
     end
 end
 

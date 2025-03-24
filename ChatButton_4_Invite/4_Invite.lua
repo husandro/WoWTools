@@ -94,9 +94,7 @@ local function Init()
         GameTooltip:Show()
     end
 
-    InviteButton:SetupMenu(function(...)
-        WoWTools_InviteMixin:Init_Menu(...)
-    end)
+    WoWTools_InviteMixin:Setup_Menu(InviteButton)
 
     function InviteButton:set_OnMouseDown()
         WoWTools_InviteMixin:Inv_All_Unit()--邀请，周围玩家

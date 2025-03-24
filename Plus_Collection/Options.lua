@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWTools_CollectionMixin.Save
+    return WoWToolsSave['Plus_Collection'] or {}
 end
 
 
@@ -11,7 +11,7 @@ end
 
 
 
-local function Init_Menu(self, root)
+local function Init_Menu(_, root)
     local sub
 
 

@@ -50,7 +50,7 @@ end
 
 --公会银行
 WoWTools_MoveMixin.Events['Blizzard_GuildBankUI']= function()
-    if WoWTools_GuildBankMixin.Save.disabled then
+    if WoWToolsSave['Plus_GuildBank'].disabled then
         WoWTools_MoveMixin:Setup(GuildBankFrame)
     end
 end

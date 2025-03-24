@@ -35,10 +35,6 @@ end
 
 
 local function Init()
-    if Save().disabled then
-        return
-    end
-
     WoWTools_BankMixin:Init_Menu()
     WoWTools_BankMixin:Init_MoveFrame()
     WoWTools_BankMixin:Init_Plus()--整合，一起
@@ -74,7 +70,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not WoWToolsSave['Plus_Bank'].disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    if Init() then
+                    if not Save().disabled and Init() then
                         Init=function()end
                     else
                         print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)

@@ -150,7 +150,8 @@ local function Init()
     btn:SetAttribute('unit', 'mouseover')
     WoWTools_KeyMixin:SetButtonKey(btn, true, strupper(key)..'-BUTTON1', nil)--设置, 快捷键
 
-    hooksecurefunc("CreateFrame", function(_, name, _, template)--为新的框架，加属性
+
+    --[[hooksecurefunc("CreateFrame", function(_, name, _, template)--为新的框架，加属性
         local frame= name and _G[name]
         if template
             and (
@@ -159,14 +160,15 @@ local function Init()
             and frame
             and not frame:GetAttribute(ClearFoucsFrame.key..'-type1')
         then
+        
             ClearFoucsFrame:set_key(frame)
             ClearFoucsFrame:set_say_follow(frame)
         end
-    end)
+    end)]]
 
 
 
-    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(self, groupIndex)
+    hooksecurefunc('CompactRaidGroup_InitializeForGroup', function(self)--, groupIndex)
         for i=1, MEMBERS_PER_RAID_GROUP do
             local frame= _G[self:GetName().."Member"..i]
             ClearFoucsFrame:set_key(frame)
