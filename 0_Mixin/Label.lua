@@ -88,8 +88,15 @@ end
 
 
 
-local framGameTooltipLabels
-function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，挑战界面，物品，货币提示
+
+
+
+
+
+
+
+
+local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，物品，货币提示
     local frame= settings.frame
     local point= settings.point
     local showName= settings.showName
@@ -179,6 +186,15 @@ function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，�
             end
         end
     end
+end
+
+
+
+
+
+
+function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，挑战界面，物品，货币提示
+    ItemCurrencyTips(settings or {})
 end
 
 

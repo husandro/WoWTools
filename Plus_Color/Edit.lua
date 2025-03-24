@@ -1,5 +1,12 @@
 
 local EditBoxs={}
+--SimpleColorSelectAPIDocumentation.lua
+
+
+
+
+
+
 
 
 local function OnColorSelect(_, r, g, b)
@@ -9,14 +16,15 @@ local function OnColorSelect(_, r, g, b)
 
     local a= ColorPickerFrame.hasOpacity and ColorPickerFrame.Content.ColorPicker:GetColorAlpha() or 1
     for _, frame in pairs(EditBoxs) do
-
-        if not frame:HasFocus() then
-            local text= frame.get_text(r, g, b, a)
-            if text then
-                frame:SetText(text)
+        if frame:IsShown() then
+            if not frame:HasFocus() then
+                local text= frame.get_text(r, g, b, a)
+                if text then
+                    frame:SetText(text)
+                end
             end
+            frame.Instructions:SetTextColor(r,g,b)
         end
-        frame.Instructions:SetTextColor(r,g,b)
     end
 end
 
@@ -85,7 +93,7 @@ end
 
 local Tab={
     {
-        name='R G B A',
+        name='RGBA',
         get_value= function(text)
             return Get_RGBAtoText(text)
         end,
@@ -98,7 +106,7 @@ local Tab={
         end,
     },
     {
-        name='HEX '..(WoWTools_DataMixin.Player.onlyChinese and '颜色码' or COLOR_PICKER_HEX),--..' AARRGGBB',
+        name='HEX',--..(WoWTools_DataMixin.Player.onlyChinese and '颜色码' or COLOR_PICKER_HEX),--..' AARRGGBB',
         get_value= function(text)
             return WoWTools_ColorMixin:HEXtoRGB(text)
         end,
@@ -107,7 +115,7 @@ local Tab={
         end,
     },
     {
-        name='R G B',
+        name='RGB',
         get_value= function(text)
             local r,g,b= text:match('(%d+).-(%d+).-(%d+)')
             if r and g and b then
@@ -123,6 +131,27 @@ local Tab={
                 g*255,
                 b*255
             )
+        end,
+    },
+
+
+    {
+        name= 'HSV',
+        get_value= function(text)
+            local h, s, v = text:match('(%d+).-(%d+).-(%d+)')
+            h= h and tonumber(h)
+            s= s and tonumber(s)
+            v= v and tonumber(v)
+            if h and s and v then
+                ColorPickerFrame.Content.ColorPicker:SetColorHSV(h, s/100, v/100)
+                return ColorPickerFrame.Content.ColorPicker:GetColorRGB()
+            end
+        end,
+        get_text= function()
+            local h,s,v= ColorPickerFrame.Content.ColorPicker:GetColorHSV()
+            if h and s and v then
+                return string.format("%i %i %i", h, s*100, v*100)
+            end
         end,
     },
     {
@@ -293,7 +322,6 @@ local function Create_EditBox(index, tab)
     end)
     frame:SetScript('OnEnter', function(self)
         self:set_tooltip()
-        
     end)
 
    --[[rame.icon= frame:CreateTexture()
@@ -339,4 +367,3 @@ end
 function WoWTools_ColorMixin:Init_EditBox()
     Init()
 end
-

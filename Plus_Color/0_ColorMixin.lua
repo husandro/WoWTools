@@ -226,6 +226,48 @@ local function HSV_to_RGB(ch, cs, cv)
 	end
 	return r, g, b
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            RGB to HSV
+
+            r, g, b = r or 1, g or 1, b or 1
+            local maxVal = math.max(r, g, b)
+            local minVal = math.min(r, g, b)
+            local delta = maxVal - minVal
+
+            local h, s, v = 0, 0, maxVal
+
+            if delta > 0 then
+                if maxVal == r then
+                    h = (g - b) / delta % 6
+                elseif maxVal == g then
+                    h = (b - r) / delta + 2
+                elseif maxVal == b then
+                    h = (r - g) / delta + 4
+                end
+                h = h * 60
+                if h < 0 then
+                    h = h + 360
+                end
+
+                s = maxVal == 0 and 0 or delta / maxVal
+            end
+
+            return string.format("%i %i %i", math.floor(h + 0.5), math.floor(s * 100 + 0.5), math.floor(v * 100 + 0.5))
 ]]
 
 
