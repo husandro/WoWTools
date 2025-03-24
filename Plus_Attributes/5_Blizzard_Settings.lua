@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWToolsSave['Plus_Attributes']
+    return WoWToolsSave['Plus_Attributes'] or {}
 end
 
 

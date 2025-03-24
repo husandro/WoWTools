@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['Plus_AddOns']
+    return WoWToolsSave['Plus_AddOns'] or {}
 end
 
 

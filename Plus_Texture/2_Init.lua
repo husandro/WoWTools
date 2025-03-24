@@ -20,8 +20,9 @@ local P_Save={
 
 
 local function Save()
-    return WoWToolsSave['Plus_Texture']
+    return WoWToolsSave['Plus_Texture'] or {}
 end
+
 
 
 
@@ -44,7 +45,9 @@ local function Init()
 
         for name in pairs(WoWTools_TextureMixin.Events) do
             if C_AddOns.IsAddOnLoaded(name) then
-                WoWTools_TextureMixin.Events[name](nil, WoWTools_TextureMixin)
+                do
+                    WoWTools_TextureMixin.Events[name](nil, WoWTools_TextureMixin)
+                end
                 WoWTools_TextureMixin.Events[name]= nil
             end
         end
@@ -67,7 +70,7 @@ panel:RegisterEvent("ADDON_LOADED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            print(WoWToolsSave)
+
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
             Save().classPowerNumSize= Save().classPowerNumSize or 12
 
@@ -87,8 +90,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             end
 
-        elseif WoWTools_TextureMixin.Events[arg1] then
-            WoWTools_TextureMixin.Events[arg1](nil, WoWTools_TextureMixin)
+        elseif WoWTools_TextureMixin.Events[arg1] and WoWToolsSave then
+            do
+                WoWTools_TextureMixin.Events[arg1](nil, WoWTools_TextureMixin)
+            end
             WoWTools_TextureMixin.Events[arg1]= nil
         end
 

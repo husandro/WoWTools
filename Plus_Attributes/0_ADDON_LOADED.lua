@@ -64,7 +64,7 @@ local P_Save={
 -- STAT_CATEGORY_ATTRIBUTES--PaperDollFrame.lua
 
 local function Save()
-    return WoWToolsSave['Plus_Attributes']
+    return WoWToolsSave['Plus_Attributes'] or {}
 end
 
 
@@ -134,6 +134,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 self:UnregisterEvent('PLAYER_LOGIN')
+            else
+                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    WoWTools_AttributesMixin:Init_Options()
+                    self:UnregisterEvent(event)
+                end
             end
 
         elseif arg1=='Blizzard_Settings' then

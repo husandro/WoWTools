@@ -5471,7 +5471,10 @@
         "LFG_LIST_INVITED_TO_GROUP",
         "AnchorUtil",
         "ITEM_COOLDOWN_TIME",
-        "INVITATION"
+        "INVITATION",
+        "AuctionHouseFrameMixin",
+        "AuctionHouseSearchContext",
+        "g_auctionHouseSortsBySearchContext"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

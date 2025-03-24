@@ -7,7 +7,7 @@ local P_Save={
 }
 
 local function Save()
-    return WoWToolsSave['WoWTools_Settings']
+    return WoWToolsSave['WoWTools_Settings'] or {}
 end
 
 

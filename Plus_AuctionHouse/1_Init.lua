@@ -1,6 +1,3 @@
-
-
-
 --拍卖行, 受限模式
 if GameLimitedMode_IsActive() or PlayerGetTimerunningSeasonID() then
     WoWTools_AuctionHouseMixin.disabled=true
@@ -36,11 +33,17 @@ local P_Save={
 
 
 local function Save()
-    return WoWToolsSave['Plus_AuctionHouse']
+    return WoWToolsSave['Plus_AuctionHouse'] or {}
 end
 
 
-
+local function Init()
+    WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
+    WoWTools_AuctionHouseMixin:Init_AllAuctions()
+    WoWTools_AuctionHouseMixin:Init_Sell()
+    WoWTools_AuctionHouseMixin:Sell_Other()
+    WoWTools_AuctionHouseMixin:Init_MenuButton()
+end
 
 
 
@@ -87,17 +90,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 self:UnregisterAllEvents()
+
+            elseif C_AddOns.IsAddOnLoaded('Blizzard_AuctionHouseUI') then
+                Init()
+                self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_AuctionHouseUI' then
-            WoWTools_AuctionHouseMixin:Init_BrowseResultsFrame()
-            WoWTools_AuctionHouseMixin:Init_AllAuctions()
-            WoWTools_AuctionHouseMixin:Init_Sell()
-            WoWTools_AuctionHouseMixin:Sell_Other()
-            WoWTools_AuctionHouseMixin:Init_MenuButton()
+        elseif arg1=='Blizzard_AuctionHouseUI' and WoWToolsSave then
+            Init()
+            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_LOGIN' then
         WoWTools_AuctionHouseMixin:Init_AccountStore()
+        self:UnregisterEvent(event)
     end
 end)

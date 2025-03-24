@@ -17,7 +17,7 @@ local OptionTexture={
 }
 
 local function Save()
-    return WoWToolsSave['Plus_FriendsList']
+    return WoWToolsSave['Plus_FriendsList'] or {}
 end
 
 
@@ -950,7 +950,22 @@ end
 
 
 
+local function Blizzard_RaidUI()
+    hooksecurefunc('RaidGroupFrame_Update', Init_RaidGroupFrame_Update)--团队, 模块
 
+    RaidFrame:HookScript('OnUpdate', function(frame, elapsed)
+        frame.elapsed= (frame.elapsed or 1) + elapsed
+        if frame.elapsed>1 then
+            frame.elapsed=0
+            if not UnitAffectingCombat('player') then
+                WoWTools_Mixin:Call(RaidGroupFrame_Update)
+            end
+        end
+    end)
+    RaidFrame:HookScript('OnHide', function(frame)
+        frame.elapsed= nil
+    end)
+end
 
 
 
@@ -993,25 +1008,15 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     [4] = WoWTools_Mixin.onlyChinese and '台湾' or TAIWAN,
                     [5] = WoWTools_Mixin.onlyChinese and '中国' or CHINA,
                 }
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_RaidUI') then
+                    Blizzard_RaidUI()
+                    self:UnregisterEvent(event)
+                end
             end
 
-        elseif arg1=='Blizzard_RaidUI' then
-
-            hooksecurefunc('RaidGroupFrame_Update', Init_RaidGroupFrame_Update)--团队, 模块
-
-            RaidFrame:HookScript('OnUpdate', function(frame, elapsed)
-                frame.elapsed= (frame.elapsed or 1) + elapsed
-                if frame.elapsed>1 then
-                    frame.elapsed=0
-                    if not UnitAffectingCombat('player') then
-                        WoWTools_Mixin:Call(RaidGroupFrame_Update)
-                    end
-                end
-            end)
-            RaidFrame:HookScript('OnHide', function(frame)
-                frame.elapsed= nil
-            end)
-
+        elseif arg1=='Blizzard_RaidUI' and WoWToolsSave then
+            Blizzard_RaidUI()
             self:UnregisterEvent(event)
         end
 

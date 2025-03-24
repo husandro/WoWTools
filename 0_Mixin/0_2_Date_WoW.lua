@@ -690,8 +690,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     end
 
     WoWToolsSave= WoWToolsSave or {}
-    WoWTools_WoWDate= WoWTools_WoWDate or {}
 
+    WoWTools_WoWDate= WoWTools_WoWDate or {}
 
     local day= date('%x')--日期
     if not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID] then
@@ -744,45 +744,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         end
     end
 
-    Get_Info_Challenge()--挑战
 
-    --C_MajorFactions.RequestCatchUpState()
-    C_FriendList.ShowFriends()
-
-
-    --C_PerksProgram.RequestPendingChestRewards()
-
-    C_Timer.After(4, function()
-
-
-        C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
-        RequestRaidInfo()
-
-        C_Calendar.OpenCalendar()
-        WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
-        GetGroupGuidDate()--队伍数据收集
-
-        Update_Currency()--{currencyID = 数量}
-        Update_Bag_Items()
-        Set_Money()--钱
-        Update_Challenge_Mode()
-        --################
-        --开启, 新手編輯模式
-        --################ LFDFrame.lua
-        if C_PlayerInfo.IsPlayerNPERestricted() then
-            --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
-            EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
-                return TableIsEmpty(self2.FramesBlockingEditMode)
-            end
-            if Minimap then
-                Minimap:SetShown(true)
-                MinimapCluster:SetShown(true)
-            end
-        end
-
-        Get_WoW_GUID_Info()--战网，好友GUID                
-
-    end)
+    --C_Timer.After(4, function() end)
 
     EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
@@ -791,4 +754,44 @@ end)
 
 
 
+
+
+
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+    Get_Info_Challenge()--挑战
+
+    --C_MajorFactions.RequestCatchUpState()
+    C_FriendList.ShowFriends()
+
+    --C_PerksProgram.RequestPendingChestRewards()
+
+    C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+    RequestRaidInfo()
+
+    C_Calendar.OpenCalendar()
+    WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
+    GetGroupGuidDate()--队伍数据收集
+
+    Update_Currency()--{currencyID = 数量}
+    Update_Bag_Items()
+    Set_Money()--钱
+    Update_Challenge_Mode()
+    --################
+    --开启, 新手編輯模式
+    --################ LFDFrame.lua
+    if C_PlayerInfo.IsPlayerNPERestricted() then
+        --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
+        EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
+            return TableIsEmpty(self2.FramesBlockingEditMode)
+        end
+        if Minimap then
+            Minimap:SetShown(true)
+            MinimapCluster:SetShown(true)
+        end
+    end
+
+    Get_WoW_GUID_Info()--战网，好友GUID
+
+    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+end)
 

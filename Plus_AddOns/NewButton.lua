@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['Plus_AddOns']
+    return WoWToolsSave['Plus_AddOns'] or {}
 end
 local NewButton
 
@@ -16,8 +16,12 @@ local NewButton
 
 --新建按钮
 local function Init()
-    NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {size=26, atlas='communities-chat-icon-plus'})
-    WoWTools_AddOnsMixin.NewButton= NewButton
+    NewButton= WoWTools_ButtonMixin:Cbtn(AddonList, {
+        size=26,
+        atlas='communities-chat-icon-plus',
+        name='WoWToolsAddonsNewButton'
+    })
+    --WoWTools_AddOnsMixin.NewButton= NewButton
 
 
     NewButton:SetPoint('TOPRIGHT', -2, -28)
@@ -207,6 +211,14 @@ local function Init()
         end
     end)
     NewButton:SetShown(not Save().hideRightList)
+
+
+
+
+
+    local label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
+    label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
+    label:SetText(C_AddOns.GetNumAddOns())
 end
 
 
@@ -342,14 +354,7 @@ end
 
 
 function WoWTools_AddOnsMixin:Init_NewButton_Button()
-    do
-        Init()
-    end
+    Init()
     Init_Refresh_Button()
     Init_NotDisabled_Button()
-
-    local label= WoWTools_LabelMixin:Create(NewButton)--插件，总数
-    label:SetPoint('LEFT',AddonListEnableAllButton, 3,0)
-    label:SetText(C_AddOns.GetNumAddOns())
-
 end

@@ -1,6 +1,6 @@
 --欢迎加入
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink']
+    return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
 local raidMS=ERR_RAID_MEMBER_ADDED_S:gsub("%%s", "(.+)")--%s加入了团队。

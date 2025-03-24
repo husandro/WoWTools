@@ -1,7 +1,7 @@
 --小眼睛, 更新信息
 
 local function Save()
-    return WoWToolsSave['ChatButton_LFD']
+    return WoWToolsSave['ChatButton_LFD'] or {}
 end
 local Button--WoWTools_LFDMixin.TipsButton= Button
 

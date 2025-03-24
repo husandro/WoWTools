@@ -4,7 +4,7 @@ end
 --拍卖行
 
 local function Save()
-    return WoWToolsSave['Plus_AuctionHouse']
+    return WoWToolsSave['Plus_AuctionHouse'] or {}
 end
 
 

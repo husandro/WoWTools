@@ -1,7 +1,7 @@
 --释放, 复活
 
 local function Save()
-    return WoWToolsSave['ChatButton_LFD']
+    return WoWToolsSave['ChatButton_LFD'] or {}
 end
 local Frame
 

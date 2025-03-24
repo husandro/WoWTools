@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['Plus_AddOns']
+    return WoWToolsSave['Plus_AddOns'] or {}
 end
 
 
@@ -29,7 +29,7 @@ local function Init_Menu(self, root)
         return not Save().hideLeftList
     end, function()
         Save().hideLeftList= not Save().hideLeftList and true or nil
-        WoWTools_AddOnsMixin.LeftFrame:settings()
+        _G['WoWToolsAddOnsLeftFrame']:settings()
         WoWTools_AddOnsMixin:Set_Left_Buttons()
     end)
     sub:SetTooltip(function(tooltip)
@@ -42,7 +42,7 @@ local function Init_Menu(self, root)
         return Save().leftListScale or 1
     end, function(value)
         Save().leftListScale= value
-        WoWTools_AddOnsMixin.LeftFrame:settings()
+        _G['WoWToolsAddOnsLeftFrame']:settings()
     end)
     sub:CreateDivider()
 
@@ -68,7 +68,7 @@ local function Init_Menu(self, root)
         return Save().load_list
     end, function()
         Save().load_list= not Save().load_list and true or nil
-        WoWTools_AddOnsMixin.BottomFrame:Set_Load_Button()
+        WoWTools_AddOnsMixin:Set_Load_Button()
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_Mixin.onlyChinese and '仅限有图标' or format(LFG_LIST_CROSS_FACTION, EMBLEM_SYMBOL))
@@ -82,8 +82,8 @@ local function Init_Menu(self, root)
         return Save().load_list_top
     end, function()
         Save().load_list_top= not Save().load_list_top and true or nil
-        WoWTools_AddOnsMixin.BottomFrame:set_frame_point()
-        WoWTools_AddOnsMixin.BottomFrame:set_button_point()
+        _G['WoWToolsAddOnsBottomFrame']:set_frame_point()
+        _G['WoWToolsAddOnsBottomFrame']:set_button_point()
     end)
 
 --大小
@@ -93,7 +93,7 @@ local function Init_Menu(self, root)
             return Save().load_list_size or 22
         end, setValue=function(value)
             Save().load_list_size= value
-            WoWTools_AddOnsMixin.BottomFrame:set_button_point()
+            _G['WoWToolsAddOnsBottomFrame']:set_button_point()
         end,
         name=WoWTools_Mixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         minValue=8,
@@ -116,7 +116,7 @@ local function Init_Menu(self, root)
         return not Save().hideRightList
     end, function()
         Save().hideRightList= not Save().hideRightList and true or nil
-        WoWTools_AddOnsMixin.RightFrame:settings()
+        _G['WoWToolsAddOnsRightFrame']:settings()
         WoWTools_AddOnsMixin:Set_Right_Buttons()
     end)
     sub:SetTooltip(function(tooltip)
@@ -129,7 +129,7 @@ local function Init_Menu(self, root)
         return Save().rightListScale or 1
     end, function(value)
         Save().rightListScale= value
-        WoWTools_AddOnsMixin.RightFrame:settings()
+        _G['WoWToolsAddOnsRightFrame']:settings()
     end)
 
     sub:CreateDivider()
@@ -151,17 +151,36 @@ local function Init_Menu(self, root)
 
 --隐藏背景
     root:CreateDivider()
-    sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '隐藏背景' or HIDE_PULLOUT_BG,
+    sub=root:CreateButton(
+        WoWTools_Mixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
     function()
-        return not Save().Bg_Alpha1
-    end, function()
-        Save().Bg_Alpha1= not Save().Bg_Alpha1 and true or nil
-        AddonListInset.Bg:SetAlpha(Save().Bg_Alpha1 and 1 or 0.5)
+        return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine((WoWTools_Mixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' 0.5')
     end)
+
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().Bg_Alpha or 0.5
+        end, setValue=function(value)
+            Save().Bg_Alpha=value
+            self:set_bg()
+        end,
+        name=WoWTools_Mixin.onlyChinese and '改变透明度' or CHANGE_OPACITY ,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%.2f',
+    })
+    sub:CreateSpacer()
+
+
+
+
+
 
     sub=root:CreateCheckbox(
         (WoWTools_Mixin.onlyChinese and '信息' or INFO)..' Plus',
@@ -217,7 +236,10 @@ local function Init()
 
     btn:SetupMenu(Init_Menu)
 
-
+    function btn:set_bg()
+        AddonListInset.Bg:SetAlpha(Save().Bg_Alpha or 0.5)
+    end
+    btn:set_bg()
 
     WoWTools_AddOnsMixin.MenuButton= btn
 end
@@ -234,10 +256,4 @@ end
 
 function WoWTools_AddOnsMixin:Init_Menu_Button()
     Init()
-
-    C_Timer.After(2, function()--Bg 透明度
-        if AddonListInset.Bg:GetAlpha()~=1 and Save().Bg_Alpha1 then
-            AddonListInset.Bg:SetAlpha(1)
-        end
-    end)
 end

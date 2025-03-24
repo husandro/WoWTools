@@ -27,7 +27,7 @@ local P_Save={
 
 
 local function Save()
-    return WoWToolsSave['ChatButton_Invite']
+    return WoWToolsSave['ChatButton_Invite'] or {}
 end
 
 

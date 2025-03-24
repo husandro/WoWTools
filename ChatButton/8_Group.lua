@@ -12,7 +12,7 @@ local P_Save={
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
 
 local function Save()
-    return WoWToolsSave['ChatButtonGroup']
+    return WoWToolsSave['ChatButtonGroup'] or {}
 end
 
 local GroupButton

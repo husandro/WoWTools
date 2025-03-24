@@ -4,7 +4,7 @@ end
 --拍卖行
 
 local function Save()
-    return WoWToolsSave['Plus_AuctionHouse']
+    return WoWToolsSave['Plus_AuctionHouse'] or {}
 end
 
 
@@ -74,6 +74,9 @@ local function Create_Button()
     end)
 
     btn:SetScript('OnClick', function(self, d)
+        if not self.itemLocation then
+            return
+        end
         if d=='LeftButton' then--放入，物品
             if AuctionHouseMultisellProgressFrame:IsShown() then
                 C_AuctionHouse.CancelSell()

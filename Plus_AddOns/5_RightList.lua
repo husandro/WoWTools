@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['Plus_AddOns']
+    return WoWToolsSave['Plus_AddOns'] or {}
 end
 
 local Buttons={}--方案
@@ -240,48 +240,11 @@ end
 
 
 
-
-
-
-
-local function Init()
-    RightFrame= CreateFrame("Frame", nil, AddonList)
-    RightFrame:SetSize(1,1)
-    RightFrame:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, 0)
-    function RightFrame:settings()
-        self:SetScale(Save().rightListScale or 1)
-        self:SetShown(not Save().hideRightList)
-        if WoWTools_AddOnsMixin.NewButton then
-            WoWTools_AddOnsMixin.NewButton:SetShown(not Save().hideRightList)
-        end
-    end
-    RightFrame:settings()
-
-    WoWTools_AddOnsMixin.RightFrame= RightFrame
-end
-
-
-
-function WoWTools_AddOnsMixin:Init_Right_Buttons()
-    Init()
-end
-
-
-
-
-
-
-
-
-
-
-
-
---方案，按钮
-function WoWTools_AddOnsMixin:Set_Right_Buttons()
-    if not self.RightFrame:IsShown() then
+local function Set_Right_Buttons()
+    if not RightFrame:IsShown() then
         return
     end
+    
     local load, need, sel, some= 0, 0, 0, 0
     for i=1, C_AddOns.GetNumAddOns() do
         if select(2, C_AddOns.IsAddOnLoadable(i))=='DEMAND_LOADED' then--需要时加载
@@ -308,9 +271,9 @@ function WoWTools_AddOnsMixin:Set_Right_Buttons()
         index= index+1
     end
 
-    if self.NewButton then
-        self.NewButton.Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', WoWTools_DataMixin.Icon.Player, some) or '')
-        self.NewButton.Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
+    if _G['WoWToolsAddonsNewButton'] then
+        _G['WoWToolsAddonsNewButton'].Text:SetFormattedText('%d%s', sel, some>0 and format('%s%d', WoWTools_DataMixin.Icon.Player, some) or '')
+        _G['WoWToolsAddonsNewButton'].Text3:SetFormattedText('|cnGREEN_FONT_COLOR:%d|r%s', load, need>0 and format('|cffff00ff+%d|r', need) or '')--总已加载，数量
     end
 
     for i= index, #Buttons do
@@ -321,4 +284,45 @@ function WoWTools_AddOnsMixin:Set_Right_Buttons()
             btn.numAllLoad= nil
         end
     end
+end
+
+
+
+
+local function Init()
+    RightFrame= CreateFrame("Frame", 'WoWToolsAddOnsRightFrame', AddonList)
+    RightFrame:SetSize(1,1)
+    RightFrame:SetPoint('TOPLEFT', AddonList, 'TOPRIGHT', 2, 0)
+    function RightFrame:settings()
+        self:SetScale(Save().rightListScale or 1)
+        self:SetShown(not Save().hideRightList)
+        if _G['WoWToolsAddonsNewButton'] then
+            _G['WoWToolsAddonsNewButton']:SetShown(not Save().hideRightList)
+        end
+    end
+    RightFrame:settings()
+    Set_Right_Buttons()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_AddOnsMixin:Init_Right_Buttons()
+    Init()
+end
+
+--方案，按钮
+function WoWTools_AddOnsMixin:Set_Right_Buttons()
+    Set_Right_Buttons()
 end

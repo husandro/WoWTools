@@ -3,7 +3,7 @@ local Buttons={}--存放所有, 按钮 {btn1, btn2,}
 local ChatButton
 
 local function Save()
-    return WoWToolsSave['ChatButton']
+    return WoWToolsSave['ChatButton'] or {}
 end
 
 local AnchorMenu={--菜单位置

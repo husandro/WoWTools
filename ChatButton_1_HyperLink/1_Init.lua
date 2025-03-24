@@ -33,7 +33,7 @@ local P_Save={
 }
 
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink']
+    return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
 local LinkButton
@@ -109,18 +109,26 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if LinkButton then
                 Init()
 
+                if
+                    WoWTools_HyperLink:Blizzard_DebugTools()
+                    and WoWTools_HyperLink:Blizzard_Settings()
+                then
+                    self:UnregisterEvent(event)
+                end
+
             else
                 DEFAULT_CHAT_FRAME.P_AddMessage= nil
                 self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_Settings' then
-            WoWTools_HyperLink:Init_Panel()
+        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
+            WoWTools_HyperLink:Blizzard_Settings()
+
             if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
                 self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_DebugTools' then--FSTACK Blizzard_DebugTools.lua
+        elseif arg1=='Blizzard_DebugTools' and WoWToolsSave then--FSTACK Blizzard_DebugTools.lua
             WoWTools_HyperLink:Blizzard_DebugTools()
             if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                 self:UnregisterEvent(event)

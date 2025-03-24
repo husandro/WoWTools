@@ -2,7 +2,7 @@
 local P_Save={}
 
 local function Save()
-    return WoWToolsSave['Plus_Container']
+    return WoWToolsSave['Plus_Container'] or {}
 end
 
 

@@ -1,6 +1,6 @@
 --颜色: 关键词
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink']
+    return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
 
@@ -127,8 +127,9 @@ end
 
 
 
-function WoWTools_HyperLink:Init_Panel()
-    if Init() then
+function WoWTools_HyperLink:Blizzard_Settings()
+    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') and Init() then
         Init=function()end
+        return true
     end
 end

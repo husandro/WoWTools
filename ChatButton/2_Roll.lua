@@ -4,7 +4,7 @@ local P_Save={
 }
 
 local function Save()
-    return WoWToolsSave['ChatButton_Roll']
+    return WoWToolsSave['ChatButton_Roll'] or {}
 end
 
 local addName

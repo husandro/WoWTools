@@ -1,7 +1,7 @@
 --新建，公会, 签名 OfferPetition
 
 local function Save()
-    return WoWToolsSave['ChatButtonGuild']
+    return WoWToolsSave['ChatButtonGuild'] or {}
 end
 
 

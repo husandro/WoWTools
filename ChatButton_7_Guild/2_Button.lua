@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['ChatButtonGuild']
+    return WoWToolsSave['ChatButtonGuild'] or {}
 end
 
 local G_GUILD_INFO_TEMPLATE= GUILD_INFO_TEMPLATE:gsub('(%%.+)', '')--公会创立

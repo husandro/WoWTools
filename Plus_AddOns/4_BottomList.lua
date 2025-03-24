@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['Plus_AddOns']
+    return WoWToolsSave['Plus_AddOns'] or {}
 end
 local BottomFrame--已加载，插件列表
 
@@ -11,8 +11,10 @@ local BottomFrame--已加载，插件列表
 
 --已加载，插件列表
 local function Set_Load_Button()--LoadButtons
-    BottomFrame:SetShown(Save().load_list)
-    if not Save().load_list then
+    local isShow= Save().load_list
+
+    BottomFrame:SetShown(isShow)
+    if not isShow then
         return
     end
 
@@ -40,7 +42,9 @@ local function Set_Load_Button()--LoadButtons
             btn.texture= btn:CreateTexture(nil, 'BORDER')
             btn.texture:SetAllPoints(btn)
             btn.texture2= btn:CreateTexture(nil, 'OVERLAY')
-            btn.texture2:SetAllPoints(btn)
+            btn.texture2:SetPoint('TOPLEFT',-2,2)
+            btn.texture2:SetPoint('BOTTOMRIGHT', 2, -2)
+            btn.texture2:SetVertexColor(0,1,0)
             btn.texture2:SetAtlas('Forge-ColorSwatchSelection')
             --btn.Text= WoWTools_LabelMixin:Create(btn)
             --btn.Text:SetPoint('CENTER')
@@ -140,7 +144,7 @@ end
 
 
 local function Init()
-    BottomFrame= CreateFrame('Frame', 'WoWTools_AddOnsBottomFrame', WoWTools_AddOnsMixin.MenuButton)
+    BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', WoWTools_AddOnsMixin.MenuButton)
 
     BottomFrame:SetSize(1,1)
     function BottomFrame:set_frame_point()
@@ -179,19 +183,12 @@ local function Init()
     AddonList:HookScript('OnSizeChanged', function()
         BottomFrame:set_button_point()
     end)
-    AddonList:HookScript('OnShow', function()
+    --[[AddonList:HookScript('OnShow', function()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         Set_Load_Button()
-    end)
+    end)]]
     BottomFrame:set_frame_point()
-
-
-
-    function BottomFrame:Set_Load_Button()
-        Set_Load_Button()
-    end
-
-    WoWTools_AddOnsMixin.BottomFrame= BottomFrame
+    Set_Load_Button()
 end
 
 
@@ -206,4 +203,8 @@ end
 
 function WoWTools_AddOnsMixin:Init_Load_Button()
     Init()
+end
+
+function WoWTools_AddOnsMixin:Set_Load_Button()
+    Set_Load_Button()
 end

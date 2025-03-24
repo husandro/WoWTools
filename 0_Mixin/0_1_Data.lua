@@ -1,4 +1,4 @@
-WoWTools_DataMixin={}
+WoWTools_DataMixin= {}
 
 WoWTools_DataMixin.StausText={}--属性，截取表 API_Panel.lua
 WoWTools_DataMixin.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
@@ -85,7 +85,7 @@ WoWTools_DataMixin.Icon={
     net2= '|A:gmchat-icon-blizz:0:0|a',--'|A:Battlenet-ClientIcon-App:0:0|a',--'|A:questlog-questtypeicon-account:0:0|a',-- '|A:gmchat-icon-blizz:0:0|a',-- BNet_GetClientEmbeddedTexture(-2, 32, 32)
     toLeft='common-icon-rotateleft',--向左
     toRight='common-icon-rotateright',--向右
-    
+
     TANK='|A:UI-LFG-RoleIcon-Tank:0:0|a',--INLINE_TANK_ICON
     HEALER='|A:UI-LFG-RoleIcon-Healer:0:0|a',--INLINE_HEALER_ICON
     DAMAGER='|A:UI-LFG-RoleIcon-DPS:0:0|a',--INLINE_DAMAGER_ICON

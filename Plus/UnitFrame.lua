@@ -8,7 +8,7 @@ local P_Save={
 }
 
 local function Save()
-    return WoWToolsSave['Plus_UnitFrame']
+    return WoWToolsSave['Plus_UnitFrame'] or {}
 end
 
 local addName

@@ -30,7 +30,7 @@ local P_Save={
 
 
 local function Save()
-    return WoWToolsSave['Plus_Bank']
+    return WoWToolsSave['Plus_Bank'] or {}
 end
 
 

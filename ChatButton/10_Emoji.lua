@@ -12,7 +12,7 @@ local P_Save={
 }
 
 local function Save()
-    return WoWToolsSave['ChatButton_Emoji']
+    return WoWToolsSave['ChatButton_Emoji'] or {}
 end
 
 local addName

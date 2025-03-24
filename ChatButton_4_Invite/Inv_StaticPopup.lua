@@ -1,6 +1,6 @@
 --邀请, 对话框
 local function Save()
-    return WoWToolsSave['ChatButton_Invite']
+    return WoWToolsSave['ChatButton_Invite'] or {}
 end
 
 

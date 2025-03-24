@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['Plus_AddOns']
+    return WoWToolsSave['Plus_AddOns'] or {}
 end
 local FastButtons={}--快捷键
 local LeftFrame
@@ -124,44 +124,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_AddOnsMixin:Init_Left_Buttons()
-    LeftFrame= CreateFrame("Frame", nil, AddonList)
-    LeftFrame:SetSize(1,1)
-    LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT')
-    function LeftFrame:settings()
-        self:SetScale(Save().leftListScale or 1)
-        self:SetShown(not Save().hideLeftList)
-    end
-    LeftFrame:settings()
-
-    WoWTools_AddOnsMixin.LeftFrame= LeftFrame
-end
-
-
-
-
-
-
-
-
-
-
-
-
---插件，快捷，选中
-function WoWTools_AddOnsMixin:Set_Left_Buttons()
-    if not self.LeftFrame:IsShown() then
+local function Set_Left_Buttons()
+    if not LeftFrame:IsShown() then
         return
     end
 
@@ -184,6 +148,7 @@ function WoWTools_AddOnsMixin:Set_Left_Buttons()
         btn:settings()
         btn:SetShown(true)
     end
+
     for i= #newTab +1, #FastButtons do
         local btn= FastButtons[i]
         if btn then
@@ -191,4 +156,38 @@ function WoWTools_AddOnsMixin:Set_Left_Buttons()
             btn.name=nil
         end
     end
+end
+
+
+
+
+local function Init()
+    LeftFrame= CreateFrame("Frame", 'WoWToolsAddOnsLeftFrame', AddonList)
+    LeftFrame:SetSize(1,1)
+    LeftFrame:SetPoint('TOPRIGHT', AddonList, 'TOPLEFT')
+    function LeftFrame:settings()
+        self:SetScale(Save().leftListScale or 1)
+        self:SetShown(not Save().hideLeftList)
+    end
+    LeftFrame:settings()
+    Set_Left_Buttons()
+end
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_AddOnsMixin:Init_Left_Buttons()
+    Init()
+end
+
+--插件，快捷，选中
+function WoWTools_AddOnsMixin:Set_Left_Buttons()
+    Set_Left_Buttons()
 end

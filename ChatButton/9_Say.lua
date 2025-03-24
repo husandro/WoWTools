@@ -14,7 +14,7 @@ local P_Save= {
 }
 
 local function Save()
-    return WoWToolsSave['ChatButton_Say']
+    return WoWToolsSave['ChatButton_Say'] or {}
 end
 
 local addName

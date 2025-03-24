@@ -701,7 +701,7 @@ end)
     mixin:SetNineSlice(AddonListInset, true)
     mixin:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
     mixin:SetMenu(AddonList.Dropdown)
-
+    mixin:SetSearchBox(AddonList.SearchBox)
 
 
      if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR

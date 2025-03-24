@@ -26,8 +26,9 @@ local P_Save= {
 local addName
 local TipsFrame
 local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
+
 local function Save()
-    return WoWToolsSave['Plus_Challenges']
+    return WoWToolsSave['Plus_Challenges'] or {}
 end
 
 
@@ -2164,27 +2165,24 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
-                
+                if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
+                    Init_Blizzard_WeeklyRewards()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
+                    Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
+                end
+
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_ChallengesUI' then--挑战,钥石,插入界面
             Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
 
-            if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
-                self:UnregisterEvent(event)
-            end
-
-
         elseif arg1=='Blizzard_WeeklyRewards' then
             Init_Blizzard_WeeklyRewards()
 
             if set_Week_Reward_Look_Specialization() then--打开周奖励时，提示拾取专精
                 set_Week_Reward_Look_Specialization=function()end
-            end
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                self:UnregisterEvent(event)
             end
         end
 

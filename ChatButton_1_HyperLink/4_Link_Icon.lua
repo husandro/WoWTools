@@ -1,6 +1,6 @@
 --超链接，图标 ItemRef.lua
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink']
+    return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
 local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)

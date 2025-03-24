@@ -127,7 +127,56 @@ end
 
 
 
+
+
+
+
+
+
+
+--拍卖，数量
+local function Init_NumOwnedAuctions()
+    local Label= WoWTools_LabelMixin:Create(AuctionHouseFrameAuctionsTab, {color=true})
+    Label:SetPoint('LEFT', AuctionHouseFrameAuctionsTab.Text, 'RIGHT', 2, 0)
+
+    local function set_text()
+        local num
+        if C_AuctionHouse.HasFullOwnedAuctionResults() then
+            num= C_AuctionHouse.GetNumOwnedAuctions()
+        end
+        Label:SetText(num or '')
+    end
+
+    local function get_data()
+        local sorts ={
+            [1] = { sortOrder = Enum.AuctionHouseSortOrder.Name, reverseSort = false },
+            [2] = { sortOrder = Enum.AuctionHouseSortOrder.Price, reverseSort = false }
+        }
+        C_AuctionHouse.QueryOwnedAuctions(sorts)
+    end
+   get_data()
+
+    AuctionHouseFrame:HookScript('OnShow', get_data)
+
+    EventRegistry:RegisterFrameEventAndCallback("AUCTION_HOUSE_AUCTION_CREATED", get_data)
+
+    EventRegistry:RegisterFrameEventAndCallback("OWNED_AUCTIONS_UPDATED", set_text)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
+
 --移动，刷新，按钮
     AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:ClearAllPoints()
     AuctionHouseFrameAuctionsFrame.AllAuctionsList.RefreshFrame.RefreshButton:SetPoint('RIGHT', AuctionHouseFrameAuctionsFrame.CancelAuctionButton, 'LEFT', -4, 0)
@@ -139,6 +188,9 @@ local function Init()
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.AllAuctionsList.ScrollBox, 'Update', OnDoubleClick_AllAuctionsList)
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.ItemList.ScrollBox, 'Update', OnDoubleClick_AllAuctionsList)
     hooksecurefunc(AuctionHouseFrameAuctionsFrame.CommoditiesList.ScrollBox, 'Update', OnDoubleClick_AllAuctionsList)
+
+--拍卖，数量
+    Init_NumOwnedAuctions()
 end
 
 

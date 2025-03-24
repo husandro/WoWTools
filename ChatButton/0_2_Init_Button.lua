@@ -22,7 +22,7 @@ local Category, Layout
 
 
 local function Save()
-    return WoWToolsSave['ChatButton']
+    return WoWToolsSave['ChatButton'] or {}
 end
 
 
@@ -355,6 +355,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if ChatButton then
                 Init()
+            end
+
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                Init_Panel()
+                self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_Settings' then

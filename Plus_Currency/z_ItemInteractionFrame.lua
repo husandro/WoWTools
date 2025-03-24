@@ -8,7 +8,7 @@ end
 
 
 
-C_AddOns.LoadAddOn('Blizzard_ItemInteractionUI')
+
 
 --#############
 --套装,转换,货币

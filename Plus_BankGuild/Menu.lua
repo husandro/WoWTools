@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_GuildBankMixin.Save
+    return WoWTools_GuildBankMixin.Save or {}
 end
 local MenuButton, RefreshButton
 

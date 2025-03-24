@@ -22,7 +22,7 @@ local SpellsTab={
 }
 
 local function Save()
-    return WoWToolsSave['Plus_Gem']
+    return WoWToolsSave['Plus_Gem'] or {}
 end
 
 
@@ -1071,6 +1071,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                self:UnregisterEvent(event)
+            elseif C_AddOns.IsAddOnLoaded('Blizzard_ItemSocketingUI') then
+                Init()
                 self:UnregisterEvent(event)
             end
 

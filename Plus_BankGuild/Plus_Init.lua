@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_GuildBankMixin.Save
+    return WoWTools_GuildBankMixin.Save or {}
 end
 
 --Blizzard_GuildBankUI.lua  bank, log, moneylog, tabinfo

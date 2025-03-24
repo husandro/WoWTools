@@ -1,7 +1,7 @@
 --历史, 拾取框 LootHistory.lua
 
 local function Save()
-    return WoWToolsSave['ChatButton_LFD']
+    return WoWToolsSave['ChatButton_LFD'] or {}
 end
 
 

@@ -5,7 +5,7 @@ local addName
 local P_Save={}
 
 local function Save()
-    return WoWToolsSave['Plus_ItemInfo']
+    return WoWToolsSave['Plus_ItemInfo'] or {}
 end
 
 local chargesStr= ITEM_SPELL_CHARGES:gsub('%%d', '%(%%d%+%)')--(%d+)次
@@ -1152,7 +1152,7 @@ end
 
 
 --商站 Blizzard_PerksProgram.lua
-local function Set_Blizzard_PerksProgram()
+local function Blizzard_PerksProgram()
     local function set_FrozenButton_Tips()
         if PerksProgramFrame.GetFrozenItemFrame then
             local frame= PerksProgramFrame:GetFrozenItemFrame()
@@ -1190,7 +1190,7 @@ end
 
 
 --周奖励, 物品提示，信息
-local function Set_Blizzard_WeeklyRewards()
+local function Blizzard_WeeklyRewards()
     hooksecurefunc(WeeklyRewardsFrame, 'Refresh', function(self2)--Blizzard_WeeklyRewards.lua WeeklyRewardsMixin:Refresh(playSheenAnims)
         for _, activityInfo in ipairs(C_WeeklyRewards.GetActivities() or {}) do
             local frame = self2:GetActivityFrame(activityInfo.type, activityInfo.index)
@@ -1214,7 +1214,7 @@ end
 
 
 --拍卖行
-local function Set_Blizzard_AuctionHouseUI()
+local function Blizzard_AuctionHouseUI()
     --出售页面，买卖，物品信息 Blizzard_AuctionHouseSellFrame.lua
     hooksecurefunc(AuctionHouseSellFrameMixin, 'SetItem', function(self, itemLocation)
         WoWTools_ItemMixin:Setup(self.ItemDisplay.ItemButton, {itemLocation= itemLocation, size=12})
@@ -1244,7 +1244,7 @@ end
 
 
 --套装转换, 界面
-local function Set_Blizzard_ItemInteractionUI()
+local function Blizzard_ItemInteractionUI()
     add_Button_OpenOption(ItemInteractionFrameCloseButton)--添加一个按钮, 打开选项
     ItemInteractionFrame.Tip= CreateFrame('GameTooltip', nil, ItemInteractionFrame, 'GameTooltipTemplate')
     ItemInteractionFrame.Tip:SetScript('OnHide', ItemInteractionFrame.Tip.ClearLines)
@@ -1310,20 +1310,35 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             else
                 Init()
+                if C_AddOns.IsAddOnLoaded('Blizzard_PerksProgram') then
+                    Blizzard_PerksProgram()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
+                    Blizzard_WeeklyRewards()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_AuctionHouseUI') then
+                    Blizzard_AuctionHouseUI()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+                    Blizzard_ItemInteractionUI()
+                end
+                if C_AddOns.IsAddOnLoaded('Blizzard_ItemUpgradeUI') then
+                    add_Button_OpenOption(ItemUpgradeFrameCloseButton)
+                end
             end
 
 
         elseif arg1=='Blizzard_PerksProgram' then
-            Set_Blizzard_PerksProgram()
+            Blizzard_PerksProgram()
 
         elseif arg1=='Blizzard_WeeklyRewards' then
-            Set_Blizzard_WeeklyRewards()
+            Blizzard_WeeklyRewards()
 
         elseif arg1=='Blizzard_AuctionHouseUI' then
-            Set_Blizzard_AuctionHouseUI()
+            Blizzard_AuctionHouseUI()
 
         elseif arg1=='Blizzard_ItemInteractionUI' then--套装转换, 界面
-            Set_Blizzard_ItemInteractionUI()
+            Blizzard_ItemInteractionUI()
 
 
         elseif arg1=='Blizzard_ItemUpgradeUI' then--装备升级, 界面

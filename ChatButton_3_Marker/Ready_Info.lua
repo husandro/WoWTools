@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWToolsSave['ChatButton_Markers']
+    return WoWToolsSave['ChatButton_Markers'] or {}
 end
 
 --队员,就绪,提示信息

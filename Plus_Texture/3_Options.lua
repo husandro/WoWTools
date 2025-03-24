@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWToolsSave['Plus_Texture']
+    return WoWToolsSave['Plus_Texture'] or {}
 end
 
 local Category, Layout

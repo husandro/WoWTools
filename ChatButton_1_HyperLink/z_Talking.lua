@@ -1,6 +1,6 @@
 --隐藏NPC发言
 local function Save()
-    return WoWToolsSave['ChatButton_HyperLink']
+    return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
 local VoHandle
