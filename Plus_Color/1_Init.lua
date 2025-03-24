@@ -30,11 +30,10 @@ local function Show_ClorFrame()
 	WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
 
 	print(
-		WoWTools_Mixin.addName,
-		WoWTools_ColorMixin.addName,
+		WoWTools_DataMixin.Icon.icon2..WoWTools_ColorMixin.addName,
 		'|cnGREEN_FONT_COLOR:'
 		..(WoWTools_Mixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
-		..'|A:colorblind-colorwheel:0:0|a'
+
 	)
 
 end

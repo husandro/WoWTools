@@ -176,6 +176,8 @@ local function Init()
 		local p= self:GetParent()
 		if not p:IsMenuOpen() then
 			p:OpenMenu()
+		else
+			p:CloseMenu()
 		end
 	end)
 
