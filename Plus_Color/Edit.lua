@@ -133,18 +133,18 @@ local Tab={
             )
         end,
     },
-
-
     {
         name= 'HSV',
         get_value= function(text)
-            local h, s, v = text:match('(%d+).-(%d+).-(%d+)')
+        local h, s, v = text:match('(%d+).-(%d+).-(%d+)')
             h= h and tonumber(h)
             s= s and tonumber(s)
             v= v and tonumber(v)
             if h and s and v then
-                ColorPickerFrame.Content.ColorPicker:SetColorHSV(h, s/100, v/100)
-                return ColorPickerFrame.Content.ColorPicker:GetColorRGB()
+                local frame= ColorPickerFrame.Content.ColorPicker
+                frame:SetColorHSV(h, s/100, v/100)
+                frame:SetColorAlpha(1)
+                return frame:GetColorRGB()
             end
         end,
         get_text= function()
