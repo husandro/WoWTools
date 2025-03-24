@@ -100,6 +100,7 @@ local Tab={
     {
         name='HEX',
         get_value= function(text)
+           -- print(WoWTools_ColorMixin:HEXtoRGB(text))
             return WoWTools_ColorMixin:HEXtoRGB(text)
         end,
         get_text= function(r,g,b,a)

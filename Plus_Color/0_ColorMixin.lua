@@ -30,6 +30,7 @@ function WoWTools_ColorMixin:RGBtoHEX(r, g, b, a, frame)
         b= math.max(math.min(b, 1), 0)
         a= math.max(math.min(a or 1, 1), 0)
         local hex=format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
+        --        format("|cff %02x %02x%02x", r*255, g*255, b*255);
         set_Frame_Color(frame, r, g, b, a, hex)
         return hex
     end
@@ -54,8 +55,9 @@ function WoWTools_ColorMixin:HEXtoRGB(text, frame)
         text=string.sub(text,1,8)
     end
     if len == 8 then
-        r,g,b, a= ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), ExtractColorValueFromHex(text, 7), ExtractColorValueFromHex(text, 1)
-    elseif len==6 then
+        a, r,g,b= ExtractColorValueFromHex(text, 1), ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), ExtractColorValueFromHex(text, 7)
+
+    elseif len==#COLOR_FORMAT_RGB then
         r,g,b,a= ExtractColorValueFromHex(text, 1), ExtractColorValueFromHex(text, 3), ExtractColorValueFromHex(text, 5), 1
     end
     if r and g and b then
