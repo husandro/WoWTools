@@ -174,11 +174,7 @@ local function Init()
 	end)
 	btn.autoHideTexture:SetScript('OnMouseDown', function(self)
 		local p= self:GetParent()
-		if not p:IsMenuOpen() then
-			p:OpenMenu()
-		else
-			p:CloseMenu()
-		end
+		p:SetMenuOpen(not p:IsMenuOpen())
 	end)
 
 	function btn:Settings()

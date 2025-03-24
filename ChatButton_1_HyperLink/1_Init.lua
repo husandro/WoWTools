@@ -109,13 +109,9 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if LinkButton then
                 Init()
 
-                if
-                    WoWTools_HyperLink:Blizzard_DebugTools()
-                    and WoWTools_HyperLink:Blizzard_Settings()
-                then
-                    self:UnregisterEvent(event)
-                end
-
+                WoWTools_HyperLink:Blizzard_DebugTools()
+                WoWTools_HyperLink:Blizzard_Settings()
+                WoWTools_HyperLink:Blizzard_EventTrace()
             else
                 DEFAULT_CHAT_FRAME.P_AddMessage= nil
                 self:UnregisterEvent(event)
@@ -124,15 +120,12 @@ panel:SetScript('OnEvent', function(self, event, arg1)
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then
             WoWTools_HyperLink:Blizzard_Settings()
 
-            if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
-                self:UnregisterEvent(event)
-            end
 
         elseif arg1=='Blizzard_DebugTools' and WoWToolsSave then--FSTACK Blizzard_DebugTools.lua
             WoWTools_HyperLink:Blizzard_DebugTools()
-            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                self:UnregisterEvent(event)
-            end
+
+        elseif arg1=='Blizzard_EventTrace' and WoWToolsSave then
+            WoWTools_HyperLink:Blizzard_EventTrace()
         end
     end
 end)

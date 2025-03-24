@@ -98,9 +98,8 @@ local Tab={
         end,
     },
     {
-        name='HEX',
+        name='HEX '..(WoWTools_DataMixin.Player.onlyChinese and '颜色码' or COLOR_PICKER_HEX),--..' AARRGGBB',
         get_value= function(text)
-           -- print(WoWTools_ColorMixin:HEXtoRGB(text))
             return WoWTools_ColorMixin:HEXtoRGB(text)
         end,
         get_text= function(r,g,b,a)
@@ -273,12 +272,14 @@ local function Create_EditBox(index, tab)
     frame:SetScript('OnEditFocusGained', function(self)
         self:HighlightText()
 	    self:set_bg_alpha(1)
+        self.Instructions:SetShown(false)
     end)
 
 --OnEditFocusLost
     frame:SetScript('OnEditFocusLost', function(self)
         self:ClearHighlightText()
         self:set_bg_alpha(0.6)
+        self.Instructions:SetShown(true)
     end)
 
 --OnHide
@@ -287,11 +288,12 @@ local function Create_EditBox(index, tab)
         self:ClearFocus()
     end)
 
-    frame:SetScript('OnLeave', function()
+    frame:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
     end)
     frame:SetScript('OnEnter', function(self)
         self:set_tooltip()
+        
     end)
 
    --[[rame.icon= frame:CreateTexture()

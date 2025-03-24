@@ -5477,7 +5477,9 @@
         "g_auctionHouseSortsBySearchContext",
         "DoesAncestryIncludeAny",
         "EventTracePanelMixin",
-        "COLOR_FORMAT_RGB"
+        "COLOR_FORMAT_RGB",
+        "EventTraceCloseButton",
+        "COLOR_PICKER_HEX"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

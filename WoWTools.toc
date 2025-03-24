@@ -210,7 +210,7 @@ Plus_Tooltip\z_GenericTraitUI.lua
 Plus_Tooltip\z_OrderHallUI.lua
 Plus_Tooltip\z_PlayerChoice.lua
 Plus_Tooltip\z_Professions.lua
-Plus_Tooltip\z_EventTrace.lua
+
 
 
 
@@ -563,7 +563,8 @@ ChatButton_1_HyperLink\1_Init.lua
 ChatButton_1_HyperLink\3_Menu.lua
 ChatButton_1_HyperLink\4_Link_Icon.lua
 ChatButton_1_HyperLink\Blizzard_Settings.lua
-ChatButton_1_HyperLink\z_Blizzard_DebugTools.lua
+ChatButton_1_HyperLink\Blizzard_DebugTools.lua
+ChatButton_1_HyperLink\Blizzard_EventTrace.lua
 ChatButton_1_HyperLink\z_Event_Sound.lua
 ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
