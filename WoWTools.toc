@@ -494,12 +494,11 @@ Plus_MainMenu\Store.lua
 
 
 ##鼠标 Mouse https://wago.io/CVmKEpl6E
-Plus_Cursor\0_Cursor.lua
-Plus_Cursor\1_Options.lua
-Plus_Cursor\Cursor_Init.lua
-Plus_Cursor\Cursor_Options.lua
-Plus_Cursor\GCD_Init.lua
-Plus_Cursor\GCD_Options.lua
+Plus_Cursor\1_Init.lua
+Plus_Cursor\2_Blizzard_Settings.lua
+Plus_Cursor\Cursor.lua
+Plus_Cursor\GCD.lua
+
 
 
 ##宏增强

@@ -1,5 +1,5 @@
 
-WoWTools_CurrencyMixin.Save={
+local P_Save={
 	--notPlus=true,
 	tokens={},--{[currencyID]=true}指定显示，表
 	item={},--[202196]= true
@@ -19,7 +19,7 @@ WoWTools_CurrencyMixin.Save={
 }
 
 local function Save()
-	return WoWTools_CurrencyMixin.Save
+	return WoWToolsSave['Currency2']
 end
 
 function WoWTools_CurrencyMixin:UpdateTokenFrame()
@@ -57,61 +57,75 @@ end
 
 
 
+local function Blizzard_ItemInteractionUI()
+	if not C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+		return
+	end
 
+	hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
+		WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
+	end)
+	return true
+end
 
 
 
 
 local panel= CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+--panel:RegisterEvent("ADDON_LOADED")
+--panel:RegisterEvent('PLAYER_LOGIN')
+panel:RegisterAllEvents()
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-			WoWTools_CurrencyMixin.Save= WoWToolsSave['Currency2'] or Save()
+			WoWToolsSave['Currency2']= WoWToolsSave['Currency2'] or P_Save
 
-			local addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_Mixin.onlyChinese and '货币' or TOKENS)
-			WoWTools_CurrencyMixin.addName= addName
+			WoWTools_CurrencyMixin.addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_Mixin.onlyChinese and '货币' or TOKENS)
 
 			--添加控制面板
 			WoWTools_PanelMixin:OnlyCheck({
-				name= addName,
+				name= WoWTools_CurrencyMixin.addName,
 				GetValue= function() return not Save().disabled end,
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
-					print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+					print(
+						WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName,
+						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+						WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+					)
 				end
 			})
 
 			WoWTools_DataMixin.CurrencyUpdateItemLevelID= Save().ItemInteractionID--套装，转换，货币
 
 			if Save().disabled then
-				self:UnregisterEvent(event)
-			else
-				for itemID, _ in pairs(Save().item) do
-					WoWTools_Mixin:Load({id=itemID, type='item'})--加载 item quest spell
-				end
-				Init()
-			end
-
-		elseif arg1=='Blizzard_ItemInteractionUI' then
-			if not Save().disabled then
-				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
-					WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
-				end)
-			else--记录，套装，转换，货币
+--记录，套装，转换，货币
 				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 					local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 					Save().ItemInteractionID= itemInfo.currencyTypeId
 					WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId
 				end)
-				C_ItemInteraction.GetChargeInfo()
+				self:UnregisterEvent(event)
+				--C_ItemInteraction.GetChargeInfo()
+			else
+				for itemID, _ in pairs(Save().item) do
+					WoWTools_Mixin:Load({id=itemID, type='item'})--加载 item quest spell
+				end
+				if Blizzard_ItemInteractionUI() then
+					Blizzard_ItemInteractionUI= function()end
+					self:UnregisterEvent(event)
+				end
+			end
+
+		elseif arg1=='Blizzard_ItemInteractionUI' and WoWToolsSave then
+			if Blizzard_ItemInteractionUI() then
+				Blizzard_ItemInteractionUI= function()end
+				self:UnregisterEvent(event)
 			end
 		end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Currency2']= Save()
-        end
+	elseif event=='PLAYER_LOGIN' then
+		Init()
+		self:UnregisterEvent(event)
     end
 end)

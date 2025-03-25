@@ -1,6 +1,6 @@
 
 local function Save()
-	return WoWTools_CurrencyMixin.Save
+	return WoWToolsSave['Currency2']
 end
 
 local MaxTabs={}
@@ -73,7 +73,7 @@ local function Init()
         end
     end
 
-    Frame:SetScript('OnEvent', function(self, _, arg1)
+    Frame:SetScript('OnEvent', function(_, _, arg1)
         if arg1 then
             Currency_Max(arg1)
         end

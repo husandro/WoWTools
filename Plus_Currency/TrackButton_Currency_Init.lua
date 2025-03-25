@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWTools_CurrencyMixin.Save
+    return WoWToolsSave['Currency2']
 end
 local TrackButton
 
