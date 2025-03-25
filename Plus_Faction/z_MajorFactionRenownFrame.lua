@@ -172,16 +172,18 @@ local function Settings()
 
     local index=0
     local btn, isSelect, atlas, text, isLocked
+    local onlyUnlockRenownFrame= Save().onlyUnlockRenownFrame
 
     for _, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
         local info= (
                     factionID
                     and factionID>0
                     and not Save().hideRenownFrame[factionID]
+
                 )
                 and C_MajorFactions.GetMajorFactionData(factionID)
 
-        if info then --and not info.isUnlocked then
+        if info and (onlyUnlockRenownFrame and info.isUnlocked or not onlyUnlockRenownFrame) then --and not info.isUnlocked then
             index= index+1
 
             btn= Buttons[index] or Create_Button(index)
@@ -273,7 +275,18 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
+    sub:CreateCheckbox(
+        '|A:greatVault-lock:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '仅限已解锁' or format(LFG_LIST_CROSS_FACTION, UNLOCK)),
+    function()
+        return Save().onlyUnlockRenownFrame
+    end, function()
+        Save().onlyUnlockRenownFrame= not Save().onlyUnlockRenownFrame and true or nil
+        Settings()
+    end)
+
 --隐藏，列表
+    sub:CreateDivider()
     for index, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
         sub2=sub:CreateCheckbox(
            index..')'.. WoWTools_FactionMixin:GetName(factionID, nil),

@@ -13,9 +13,10 @@ local P_Save={
 	onlyIcon=WoWTools_DataMixin.Player.husandro,--隐藏名称， 仅显示有图标
 	--notPlus=true,
 
-	hideRenownFrame={}
+	hideRenownFrame={},
 	--hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
 	--MajorFactionRenownFrame_Button_Scale
+	onlyUnlockRenownFrame=WoWTools_DataMixin.Player.husandro--仅限已解锁
 }
 
 local function Save()
