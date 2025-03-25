@@ -13,13 +13,24 @@ local Buttons={}
 --取得，等级，派系声望
 local function Get_Major_Faction_Level(factionID, level)
     --WoWTools_FactionMixin:GetInfo(factionID, nil, nil)
-    local text,hasRewardPending ='', false
+
+    local text= ''
+    --local hasRewardPending= false
+
+
+    local info = C_MajorFactions.GetMajorFactionData(factionID)
+
+    if not info or not info.isUnlocked then
+        return '|A:greatVault-lock:0:0|a', true
+    end
+
     level= level or 0
+
     if C_MajorFactions.HasMaximumRenown(factionID) then
         if C_Reputation.IsFactionParagon(factionID) then--奖励
             local currentValue, threshold, _, hasRewardPending2, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
             if not tooLowLevelForParagon and currentValue and threshold and threshold>0 then
-                hasRewardPending= hasRewardPending2
+                --hasRewardPending= hasRewardPending2
                 local completed= math.modf(currentValue/threshold)--完成次数
                 currentValue= completed>0 and currentValue - threshold * completed or currentValue
                 if hasRewardPending2 then
@@ -31,18 +42,17 @@ local function Get_Major_Faction_Level(factionID, level)
         end
         text= text or format('|cnGREEN_FONT_COLOR:%d|r|A:common-icon-checkmark:0:0|a', level)
     else
+
         local levels = C_MajorFactions.GetRenownLevels(factionID)
         if levels then
             text= format('%d/%d', level, #levels)
         else
             text= format('%d', level)
         end
-        local info = C_MajorFactions.GetMajorFactionData(factionID)
-        if info then
-            text= format('%s %i%%', text, info.renownReputationEarned/info.renownLevelThreshold*100)
-        end
+        text= format('%s %i%%', text, info.renownReputationEarned/info.renownLevelThreshold*100)
     end
-    return text, hasRewardPending
+
+    return text, false
 end
 
 
@@ -98,6 +108,7 @@ local function Create_Button(index)
     btn.texture2= btn:CreateTexture(nil, 'BORDER')
     btn.texture2:SetSize(64, 28)
     btn.texture2:SetPoint('LEFT')
+    --btn.isLockedTexture= btn:CreateTexture(nil, 'BORDER')
 
     btn:SetScript('OnLeave', function(self)
         Button:SetButtonState('NORMAL')
@@ -128,6 +139,7 @@ local function Create_Button(index)
     btn.SelectTexture:SetAtlas('auctionhouse-nav-button-select')
     btn.SelectTexture:SetAlpha(0.5)
 
+    btn.ANCHOR_RIGHT= true--提示，位置用
     Buttons[index]= btn
 
     return btn
@@ -159,7 +171,7 @@ local function Settings()
 
 
     local index=0
-    local btn, isSelect, atlas
+    local btn, isSelect, atlas, text, isLocked
 
     for _, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
         local info= (
@@ -169,7 +181,7 @@ local function Settings()
                 )
                 and C_MajorFactions.GetMajorFactionData(factionID)
 
-        if info then
+        if info then --and not info.isUnlocked then
             index= index+1
 
             btn= Buttons[index] or Create_Button(index)
@@ -193,8 +205,11 @@ local function Settings()
             btn.SelectTexture:SetShown(isSelect)
 
             --btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
-            btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
+            text, isLocked= Get_Major_Faction_Level(factionID, info.renownLevel)
+            btn.Text:SetText(text)--等级
             btn:SetShown(true)
+            btn.texture2:SetDesaturated(isLocked)
+            btn:GetNormalTexture():SetDesaturated(isLocked)
         end
     end
 
@@ -259,9 +274,9 @@ local function Init_Menu(self, root)
     end)
 
 --隐藏，列表
-    for _, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
+    for index, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
         sub2=sub:CreateCheckbox(
-            WoWTools_FactionMixin:GetName(factionID, nil),
+           index..')'.. WoWTools_FactionMixin:GetName(factionID, nil),
         function(data)
             return Save().hideRenownFrame[data.factionID]
         end, function(data)

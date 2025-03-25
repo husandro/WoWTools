@@ -41,8 +41,8 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
     local barMax= data.nextReactionThreshold
 
 
-    local factionStandingtext, value, texture, atlas, barColor
-
+    local factionStandingtext, value, texture, atlas, barColor--, unlockDescription
+    local isUnlocked=true
 
     local isCapped= standingID == MAX_REPUTATION_REACTION--8
     local isMajor = C_Reputation.IsMajorFaction(factionID)
@@ -84,6 +84,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
             value= '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
         end
         atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
+        isUnlocked= info.isUnlocked
     else
         if isHeaderWithRep or not isHeader then
             factionStandingtext = GetText("FACTION_STANDING_LABEL"..standingID)
@@ -159,6 +160,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
         isHeaderWithRep= isHeaderWithRep,
 
         hasRep= data.hasBonusRepGain,--额外，声望
+        isUnlocked= isUnlocked,
     }
 end
 
@@ -179,17 +181,30 @@ function WoWTools_FactionMixin:GetName(factionID, index)
 
     return
         (data.atlas and ('|A:'..data.atlas..':0:0|a') or (data.texture and '|T'..data.texture..':0|t') or '')
-        ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')
-        ..WoWTools_TextMixin:CN(data.name)
-        ..'|r |cffffffff'
-        ..(
-            data.isCapped and ''
-            or (data.factionStandingtext and data.factionStandingtext..' ')
+
+        ..(isAccount and '|cff00ccff' or (data.isCapped and '|cffff7f00') or '|cff00ff00')--战团声望， 已满
+        ..WoWTools_TextMixin:CN(data.name)--名称
+        ..'|r '
+
+        ..(data.isUnlocked and
+            '|cffffffff'
+            ..(--等级
+                data.isCapped and ''
+                or (data.factionStandingtext and data.factionStandingtext..' ')
+                or ''
+            )
+            ..((data.isCapped or data.hasRep) and data.valueText or '')--值
+            ..'|r'
+
+            or '|A:greatVault-lock:0:0|a'--未解锁
+        )
+
+        ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
+
+        ..(data.hasRewardPending--有奖励，可取
+            and (WoWTools_DataMixin.Player.Faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a')
             or ''
         )
-        ..((not data.isCapped or data.hasRep) and data.valueText or '')
-        ..(isAccount and '|A:questlog-questtypeicon-account:0:0|a' or '')
-        ..(data.hasRewardPending and (WoWTools_DataMixin.Player.Faction=='Alliance' and '|A:GarrMission-AllianceChest:0:0|a' or '|A:GarrMission-HordeChest:0:0|a') or '')
 end
 
 

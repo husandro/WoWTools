@@ -96,19 +96,35 @@ end
 
 --Major
 local function ShowMajorFactionRenownTooltip(self)
+	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID)
+
+	if not majorFactionData then
+		return
+	end
 
 	GameTooltip:SetOwner(self, self.ANCHOR_RIGHT and 'ANCHOR_RIGHT' or "ANCHOR_LEFT")
-
-	local majorFactionData = C_MajorFactions.GetMajorFactionData(self.factionID) or {}
 	GameTooltip_SetTitle(GameTooltip, WoWTools_TextMixin:CN(majorFactionData.name), HIGHLIGHT_FONT_COLOR)
+
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
+
 	GameTooltip_AddHighlightLine(GameTooltip, (WoWTools_Mixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL).. majorFactionData.renownLevel)
+
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	GameTooltip_AddNormalLine(GameTooltip, format(WoWTools_Mixin.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, WoWTools_TextMixin:CN(majorFactionData.name)))
+
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(self.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1)
 	if #nextRenownRewards > 0 then
 		AddRenownRewardsToTooltip(self, nextRenownRewards)
+	end
+
+	if majorFactionData.unlockOrder then
+		GameTooltip_AddBlankLineToTooltip(GameTooltip)
+		GameTooltip_AddErrorLine(GameTooltip, format(
+			WoWTools_DataMixin.onlyChinese and  '%s尚未解锁' or ERR_AZERITE_ESSENCE_SELECTION_FAILED_ESSENCE_NOT_UNLOCKED,
+			majorFactionData.unlockOrder..' '
+		))
+		GameTooltip_AddInstructionLine(GameTooltip, WoWTools_TextMixin:CN(majorFactionData.unlockDescription), true)
 	end
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)

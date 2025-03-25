@@ -5480,7 +5480,8 @@
         "COLOR_FORMAT_RGB",
         "EventTraceCloseButton",
         "COLOR_PICKER_HEX",
-        "CALENDAR_EVENT_DESCRIPTION"
+        "CALENDAR_EVENT_DESCRIPTION",
+        "ERR_AZERITE_ESSENCE_SELECTION_FAILED_ESSENCE_NOT_UNLOCKED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
