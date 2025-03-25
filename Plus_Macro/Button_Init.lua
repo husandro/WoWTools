@@ -1,7 +1,7 @@
 --宏列表，位置
 
 local function Save()
-    return WoWTools_MacroMixin.Save
+    return WoWToolsSave['Plus_Macro2']
 end
 
 local Button, TargetButton, AttackButton, NoteEditBox

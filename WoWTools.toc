@@ -372,8 +372,8 @@ Plus_Bag\z_Container_Menu.lua
 
 
 ##自动对话，任务
-Plus_Gossip\0_Init.lua
-Plus_Gossip\1_Gossip.lua
+Plus_Gossip\1_Init.lua
+Plus_Gossip\Gossip.lua
 Plus_Gossip\Gossip_Delves.lua
 Plus_Gossip\Gossip_Frame.lua
 Plus_Gossip\Gossip_Menu.lua
@@ -381,9 +381,10 @@ Plus_Gossip\Gossip_MovieData.lua
 Plus_Gossip\Gossip_PlayerChoice.lua
 Plus_Gossip\Gossip_TextData.lua
 Plus_Gossip\Gossip_PlayerData.lua
+Plus_Gossip\Quest.lua
 Plus_Gossip\Quest_Menu.lua
 Plus_Gossip\Quest_QuestInfo.lua
-Plus_Gossip\Quest.lua
+
 
 
 
@@ -501,7 +502,8 @@ Plus_Cursor\GCD.lua
 
 
 ##宏增强
-Plus_Macro\0_Macro.lua
+Plus_Macro\0_MacroMixin.lua
+Plus_Macro\1_Init.lua
 Plus_Macro\Button_Init.lua
 Plus_Macro\ChangeTab.lua
 Plus_Macro\List_Bottom.lua

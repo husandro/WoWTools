@@ -1,7 +1,7 @@
 
 
 local function Save()
-    return WoWTools_GossipMixin.Save
+    return WoWToolsSave['Plus_Gossip']
 end
 
 local IsQuestTrivialTracking

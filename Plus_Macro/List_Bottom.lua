@@ -1,7 +1,7 @@
 --命令，按钮，列表
 
 local function Save()
-    return WoWTools_MacroMixin.Save
+    return WoWToolsSave['Plus_Macro2']
 end
 local Frame
 
@@ -741,7 +741,7 @@ local function Init_MacroList_Menu(_, root)
         sub=root:CreateButton(
             info.text,
         function(data)
-            if not InCombatLockdown() and data.macro then
+            if not InCombatLockdown() and not WoWTools_Mixin:IsLockFrame(MacroFrame) and data.macro then
                 MacroFrameText:Insert(data.macro)
                 MacroFrameText:SetFocus()
             end
@@ -758,7 +758,7 @@ local function Init_MacroList_Menu(_, root)
             sub:CreateButton(
                 macro.text:gsub('\n', ' '),
             function(data)
-                if not InCombatLockdown() then
+                if not InCombatLockdown() and not WoWTools_Mixin:IsLockFrame(MacroFrame) then
                     MacroFrameText:Insert(data.text)
                     MacroFrameText:SetFocus()
                 end

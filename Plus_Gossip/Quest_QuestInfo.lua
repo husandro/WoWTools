@@ -1,7 +1,7 @@
 
 --任务目标，类型提示
 local function Set_QuestInfo_Display()
-    if not WoWTools_GossipMixin.Save.quest then
+    if not WoWToolsSave['Plus_Gossip'].quest then
         return
     end
 

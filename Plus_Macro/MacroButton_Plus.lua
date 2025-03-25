@@ -8,6 +8,7 @@ local function Delete_Macro(self)
     if InCombatLockdown()
         or not MacroDeleteButton:IsEnabled()
         or not index or index~=self.selectionIndex
+        or WoWTools_Mixin:IsLockFrame(MacroFrame)
     then
         return
     end

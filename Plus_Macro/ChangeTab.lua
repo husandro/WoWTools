@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_MacroMixin.Save
+    return WoWToolsSave['Plus_Macro2']
 end
 local ScrollBoxBackground
 
@@ -19,6 +19,10 @@ local ScrollBoxBackground
 
 --设置，列表
 local function Init_ChangeTab(self, tabID)
+    if WoWTools_Mixin:IsLockFrame(self) or InCombatLockdown() then
+        return
+    end
+
     self.MacroSelector:ClearAllPoints()
 
     local point= Save().toRightLeft
@@ -114,6 +118,8 @@ local function Init()
 
 --设置，列表
     hooksecurefunc(MacroFrame, 'ChangeTab', Init_ChangeTab)
+
+    Init=function()end
 end
 
 

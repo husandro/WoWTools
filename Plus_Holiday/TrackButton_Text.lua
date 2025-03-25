@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_HolidayMixin.Save
+    return WoWToolsSave['Plus_Holiday']
 end
 
 local Buttons={}

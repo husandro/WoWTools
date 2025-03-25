@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_GossipMixin.Save
+    return WoWToolsSave['Plus_Gossip']
 end
 
 
@@ -271,7 +271,7 @@ local function Init()
         frame:settings()
     end)
 
-
+    Init=function()end
 end
 
 

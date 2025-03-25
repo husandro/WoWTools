@@ -1,7 +1,7 @@
 --地下堡
 
 local function Save()
-    return WoWTools_GossipMixin.Save
+    return WoWToolsSave['Plus_Gossip']
 end
 
 
@@ -125,5 +125,5 @@ end
 function WoWTools_GossipMixin:Init_Delves()
     DelvesDifficultyPickerFrame:HookScript('OnShow', Init_OnShow)
     Menu.ModifyMenu("MENU_DELVES_DIFFICULTY", Init_Menu)
-    
+    WoWTools_GossipMixin.Init_Delves=function()end
 end

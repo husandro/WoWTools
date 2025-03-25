@@ -1,7 +1,7 @@
 --创建，空，按钮
 
 local function Save()
-    return WoWTools_MacroMixin.Save
+    return WoWToolsSave['Plus_Macro2']
 end
 --[[
 local global, perChar = GetNumMacros()
