@@ -15,7 +15,7 @@ local function Get_Major_Faction_Level(factionID, level)
     --WoWTools_FactionMixin:GetInfo(factionID, nil, nil)
 
     local text= ''
-    --local hasRewardPending= false
+    local hasRewardPending= false
 
 
     local info = C_MajorFactions.GetMajorFactionData(factionID)
