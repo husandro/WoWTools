@@ -635,6 +635,7 @@ local function Init()
     PanelFrame.cursorCheck:SetScript('OnMouseDown', function()
         Save().disabledCursor = not Save().disabledCursor and true or nil
         WoWTools_CursorMixin:Cursor_Settings(true)
+        WoWTools_CursorMixin:Blizzard_Settings()
     end)
 
 --GCD, 启用/禁用
@@ -645,6 +646,7 @@ local function Init()
     PanelFrame.gcdCheck:SetScript('OnMouseDown', function()
         Save().disabledGCD = not Save().disabledGCD and true or nil
         WoWTools_CursorMixin:GCD_Settings(true)
+        WoWTools_CursorMixin:Blizzard_Settings()
     end)
 
     Init=function()end
@@ -661,7 +663,6 @@ end
 
 
 function WoWTools_CursorMixin:Init_Panel()
-    
     Init()
 end
 

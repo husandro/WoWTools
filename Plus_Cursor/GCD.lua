@@ -96,7 +96,7 @@ local function Init()
     GCDFrame.cooldown:SetEdgeTexture("Interface\\Cooldown\\edge")
     GCDFrame.cooldown:SetDrawEdge(true)--冷却动画的移动边缘绘制亮线
     GCDFrame.cooldown:SetUseCircularEdge(true)--设置边缘纹理是否应该遵循圆形图案而不是方形编辑框
-    GCDFrame:SetShown(false)
+    GCDFrame:Hide()
 
     GCDFrame:SetScript('OnEvent', function(self)
         local data= C_Spell.GetSpellCooldown(61304)

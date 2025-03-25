@@ -5,9 +5,7 @@ end
 
 local CursorFrame
 local Pool, Used={}, {}
-local maxParticles, duration, rotate, size
-local egim, Elapsed= 0, 1
-
+local maxParticles, duration, rotate, size, minDistance, egim, rate, randomTexture, gravity
 
 
 
@@ -50,7 +48,7 @@ local function update_Particle(part,  delta)
         return true
     end
 
-    part.vy = part.vy - Save().gravity * delta
+    part.vy = part.vy - gravity * delta
     part.x = part.x + part.vx * delta
     part.y = part.y + part.vy * delta
 
@@ -71,9 +69,10 @@ end
 
 
 local nowX, nowY = 0, 0
+local Elapsed=1
 local function OnUpdate(_, elapsed)
-    Elapsed= (Elapsed or Save().rate) + elapsed
-    if Elapsed> Save().rate then
+    Elapsed= Elapsed + elapsed
+    if Elapsed> rate then
         Elapsed=0
         local oldX, oldY = nowX, nowY
         nowX, nowY = GetCursorPosition()
@@ -81,7 +80,7 @@ local function OnUpdate(_, elapsed)
         local x = nowX - oldX
         local y = nowY - oldY
 
-        if math.sqrt(x * x + y * y) > Save().minDistance then
+        if math.sqrt(x * x + y * y) > minDistance then
             egim  = atan2((nowX - oldX) ,  (nowY - oldY))
             Create_Particle()
         end
@@ -144,7 +143,7 @@ end
 
 
 local function Init_Texture(isInit)
-    local atlasIndex= Save().randomTexture and random(1, #(Save().Atlas)) or Save().atlasIndex
+    local atlasIndex= randomTexture and random(1, #(Save().Atlas)) or Save().atlasIndex
 
     local atlas, texture
 
@@ -156,7 +155,7 @@ local function Init_Texture(isInit)
     if not atlas and not texture then
         atlas= WoWTools_CursorMixin.DefaultTexture
     end
-    
+
     local max= math.max(#Pool+#Used, maxParticles)
 
     for i = 1, max do
@@ -166,7 +165,7 @@ local function Init_Texture(isInit)
         end
         Set_Texture(Pool[i], atlas, texture, isInit)
     end
-    
+
     for i=1, #Used do
         Set_Texture(Used[i], atlas, texture, isInit)
     end
@@ -179,14 +178,27 @@ local function Cursor_Settings()
     rotate= Save().rotate
     size= Save().size
     egim=0
-    Elapsed= Save().rate or 1
---事件
+    rate= Save().rate or 1
+    randomTexture= Save().randomTexture
+    minDistance=  Save().minDistance
+    gravity= Save().gravity
 
+
+--事件
     CursorFrame:UnregisterAllEvents()
-    if Save().disabledCursor then-- or not Save().randomTexture then
+
+    if Save().disabledCursor then
+        for i = 1, #Pool do
+            Pool[i]:Hide()
+        end
+        for i=1, #Used do
+            Used[i]:Hide()
+        end
         CursorFrame:SetShown(false)
         return
-    else
+
+
+    elseif randomTexture then
         CursorFrame:RegisterEvent('PLAYER_REGEN_DISABLED')
         CursorFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
         if UnitAffectingCombat('player') then
@@ -214,16 +226,12 @@ end
 --Cursor, 初始化
 local function Init()
     if Save().disabledCursor then
-        if CursorFrame then
-            CursorFrame:SetShown(false)
-        end
         return
     end
-    
 
-    CursorFrame= CreateFrame('Frame', 'WoWToolsCursorFrame')
-    
-   
+
+    CursorFrame= CreateFrame('Frame', 'WoWToolsCursorFrame', UIParent)
+
     CursorFrame:SetScript('OnUpdate', OnUpdate)
 
     CursorFrame:SetScript('OnEvent', function(self, event)
@@ -241,7 +249,10 @@ local function Init()
     end)
 
     Cursor_Settings()
-    return true
+
+    Init= function()
+        Cursor_Settings()
+    end
 end
 
 
@@ -252,11 +263,7 @@ end
 
 --初始, 设置, Cursor
 function WoWTools_CursorMixin:Cursor_Settings()
-    if Init() then
-        Init= function()
-            Cursor_Settings()
-        end
-    end
+    Init()
 end
 
 
