@@ -21,7 +21,7 @@ local FACTION_STANDING_INCREASED_ACCOUNT_WIDE = FACTION_STANDING_INCREASED_ACCOU
 --声望更新, 提示
 --#############
 local function EventFilter(_, _, text, ...)
-	if not WoWTools_FactionMixin.Save.factionUpdateTips then
+	if not WoWToolsSave['Plus_Faction'].factionUpdateTips then
 		return
 	end
 
@@ -124,7 +124,7 @@ function WoWTools_FactionMixin:Init_Chat_MSG()
 
     ChatFrame_AddMessageEventFilter('CHAT_MSG_COMBAT_FACTION_CHANGE', EventFilter)
 
-    if self.Save.factionUpdateTips then--声望更新, 提示
+    if WoWToolsSave['Plus_Faction'].factionUpdateTips then--声望更新, 提示
         C_Timer.After(4, Init_Check)
     end
 end

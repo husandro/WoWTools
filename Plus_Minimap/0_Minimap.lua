@@ -35,8 +35,7 @@ Save={
     --moveExpansionLandingPageMinimapButton=true,--移动动图标
 
     moving_over_Icon_show_menu=WoWTools_DataMixin.Player.husandro,--移过图标时，显示菜单
-    --hide_MajorFactionRenownFrame_Button=true,--隐藏，派系声望，列表，图标
-    --MajorFactionRenownFrame_Button_Scale=1,--缩放
+
 },
 --addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..HUD_EDIT_MODE_MINIMAP_LABEL,
 --addName2= '|A:VignetteKillElite:0:0|a'..TRACKING,
@@ -215,6 +214,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWTools_MinimapMixin.Save= WoWToolsSave['Minimap_Plus'] or WoWTools_MinimapMixin.Save
+
+            Save().MajorFactionRenownFrame_Button_Scale=nil
+			Save().hide_MajorFactionRenownFrame_Button=nil
 
             addName='|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
             WoWTools_MinimapMixin.addName= addName

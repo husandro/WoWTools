@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_FactionMixin.Save
+    return WoWToolsSave['Plus_Faction']
 end
 
 
@@ -192,7 +192,7 @@ local function Init()
 
 	function btn:settings()
 		if self.down then
-			local show= not WoWTools_FactionMixin.Save.notPlus
+			local show= not WoWToolsSave['Plus_Faction'].notPlus
 			self.down:SetShown(show)
 		end
 	end

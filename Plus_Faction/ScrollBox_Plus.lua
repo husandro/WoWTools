@@ -1,7 +1,7 @@
 --界面, 增强
 
 local function Save()
-	return WoWTools_FactionMixin.Save
+	return WoWToolsSave['Plus_Faction']
 end
 
 

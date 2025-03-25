@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_FactionMixin.Save
+    return WoWToolsSave['Plus_Faction']
 end
 local TrackButton
 

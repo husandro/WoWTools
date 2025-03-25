@@ -1,6 +1,5 @@
-
-local Save= function()
-    return  WoWTools_MinimapMixin.Save
+local function Save()
+	return WoWToolsSave['Plus_Faction']
 end
 
 local Button
@@ -83,18 +82,34 @@ end
 
 
 
+
+
+
+
+
 local function Create_Button(index)
+
     local btn= WoWTools_ButtonMixin:Cbtn(Button.frame, {size={80, 32}})
     btn:SetPoint('TOPLEFT', Buttons[index-1] or Button.frame, 'BOTTOMLEFT')
-    btn:SetHighlightAtlas('ChromieTime-Button-Highlight')
-    btn:SetScript('OnLeave', function()
+    btn:SetHighlightAtlas('auctionhouse-nav-button-select')
+
+    --btn.texture= btn:GetNormalTexture()
+
+    btn.texture2= btn:CreateTexture(nil, 'BORDER')
+    btn.texture2:SetSize(64, 28)
+    btn.texture2:SetPoint('LEFT')
+
+    btn:SetScript('OnLeave', function(self)
         Button:SetButtonState('NORMAL')
         WoWTools_SetTooltipMixin:Hide()
+        self:SetButtonState('NORMAL')
     end)
+
     btn:SetScript('OnEnter', function(self)
         Button:SetButtonState('PUSHED')
         WoWTools_SetTooltipMixin:Faction(self)
     end)
+
     btn:SetScript('OnClick', function(self)
         if
             not MajorFactionRenownFrame
@@ -105,17 +120,23 @@ local function Create_Button(index)
         end
     end)
 
-    btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-    btn.Text:SetPoint('BOTTOMLEFT', btn, 'BOTTOM')
+    btn.Text= WoWTools_LabelMixin:Create(btn, {color=true})
+    btn.Text:SetPoint('BOTTOMRIGHT')
 
-    btn.SelectTexture= btn:CreateTexture(nil, 'OVERLAY')
+    btn.SelectTexture= btn:CreateTexture(nil, 'BACKGROUND', nil , -1)
     btn.SelectTexture:SetAllPoints()
     btn.SelectTexture:SetAtlas('auctionhouse-nav-button-select')
+    btn.SelectTexture:SetAlpha(0.5)
 
-    btn.ANCHOR_RIGHT=true
     Buttons[index]= btn
+
     return btn
 end
+
+
+
+
+
 
 
 
@@ -135,27 +156,51 @@ local function Settings()
 
     --所有，派系声望
     local selectFactionID= MajorFactionRenownFrame:GetCurrentFactionID()
-    local tab= Get_Major_Faction_List()--取得，所有，派系声望
+
 
     local index=0
-    for _, factionID in pairs(tab) do
-        local info= C_MajorFactions.GetMajorFactionData(factionID or 0)
+    local btn, isSelect, atlas
+
+    for _, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
+        local info= (
+                    factionID
+                    and factionID>0
+                    and not Save().hideRenownFrame[factionID]
+                )
+                and C_MajorFactions.GetMajorFactionData(factionID)
+
         if info then
             index= index+1
-            local btn= Buttons[index] or Create_Button(index)
+
+            btn= Buttons[index] or Create_Button(index)
 
             btn.factionID= factionID
-            btn:SetNormalAtlas('majorfaction-celebration-'..(info.textureKit or 'toastbg'))
-            btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
 
-            btn.SelectTexture:SetShown(selectFactionID==factionID)
-            --[[if selectFactionID==factionID then--选中
-                btn.Text:SetTextColor(0,1,0)
+            isSelect= selectFactionID==factionID
+
+            atlas= 'majorfaction-celebration-'..(info.textureKit or 'toastbg')
+
+
+
+            if isSelect then
+                btn.texture2:SetAtlas(atlas)
+                btn:SetNormalTexture(0)
             else
-                btn.Text:SetTextColor(1,1,1)
-            end]]
+                btn.texture2:SetTexture(0)
+                btn:SetNormalAtlas(atlas)
+            end
+
+            btn.SelectTexture:SetShown(isSelect)
+
+            --btn:SetPushedAtlas('MajorFactions_Icons_'..(info.textureKit or '')..'512')
             btn.Text:SetText(Get_Major_Faction_Level(factionID, info.renownLevel))--等级
+            btn:SetShown(true)
         end
+    end
+
+    for i= index+1, #Buttons, 1 do
+        Buttons[i]:SetShown(false)
+        Buttons[i].factionID= nil
     end
 
     Button.frame:SetShown(true)
@@ -194,7 +239,58 @@ end
 
 
 
+local function Init_Menu(self, root)
+    local sub, sub2
 
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+    function()
+        return not Save().hide_MajorFactionRenownFrame_Button
+    end, function()
+        self:set_click()
+    end)
+
+--隐藏
+    root:CreateDivider()
+    sub=root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..' #'..#Save().hideRenownFrame,
+    function()
+        return MenuResponse.Open
+    end)
+
+--隐藏，列表
+    for _, factionID in pairs(Get_Major_Faction_List()) do--取得，所有，派系声望
+        sub2=sub:CreateCheckbox(
+            WoWTools_FactionMixin:GetName(factionID, nil),
+        function(data)
+            return Save().hideRenownFrame[data.factionID]
+        end, function(data)
+            Save().hideRenownFrame[data.factionID]= not Save().hideRenownFrame[data.factionID] and true or nil
+            Settings()
+        end, {factionID=factionID})
+
+        WoWTools_SetTooltipMixin:FactionMenu(sub2)
+    end
+
+--SetScrollMod
+    WoWTools_MenuMixin:SetScrollMode(sub, nil)
+
+--打开选项
+    root:CreateDivider()
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_FactionMixin.addName})
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().MajorFactionRenownFrame_Button_Scale or 1
+    end, function(value)
+        Save().MajorFactionRenownFrame_Button_Scale= value
+        self:set_scale()
+    end, function()
+        Save().MajorFactionRenownFrame_Button_Scale=nil
+        self:set_scale()
+    end)
+end
 
 
 
@@ -224,26 +320,35 @@ local function Init()
     function Button:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide_MajorFactionRenownFrame_Button), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().MajorFactionRenownFrame_Button_Scale or 1), WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
 
-    Button:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 8, 0)
+    function Button:set_click()
+        Save().hide_MajorFactionRenownFrame_Button= not Save().hide_MajorFactionRenownFrame_Button and true or nil
+        Settings()
+        self:set_texture()
+    end
+
+    Button:SetPoint('LEFT', MajorFactionRenownFrame.CloseButton, 'RIGHT', 8, 12)
     Button:SetFrameStrata(MajorFactionRenownFrame.CloseButton:GetFrameStrata())
 
     Button:SetScript('OnLeave', GameTooltip_Hide)
     Button:SetScript('OnEnter', Button.set_tooltips)
-    Button:SetScript('OnClick', function(self)
-        Save().hide_MajorFactionRenownFrame_Button= not Save().hide_MajorFactionRenownFrame_Button and true or nil
-        Settings()
-        self:set_texture()
-        self:set_tooltips()
+    Button:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            self:set_click()
+            self:set_tooltips()
+        else
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+        end
     end)
 
-    Button:SetScript('OnMouseWheel', function(self, d)
+    --[[Button:SetScript('OnMouseWheel', function(self, d)
         local n= Save().MajorFactionRenownFrame_Button_Scale or 1
         n= d==1 and n-0.1 or n
         n= d==-1 and n+0.1 or n
@@ -252,7 +357,7 @@ local function Init()
         Save().MajorFactionRenownFrame_Button_Scale=n
         self:set_scale()
         self:set_tooltips()
-    end)
+    end)]]
 
 
     Button.frame=CreateFrame('Frame', nil, Button)

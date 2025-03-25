@@ -91,13 +91,6 @@ local function Init(frame)
     for covenantID=1, 4 do
         Set_Covenant_Button(frame, covenantID)
     end
-
-
-    --[[frame:HookScript('OnShow', function(self)
-        for _, btn in pairs(self.Buttons) do
-            btn:SetShown(not Save().hide_MajorFactionRenownFrame_Button)
-        end
-    end)]]
 end
 
 
