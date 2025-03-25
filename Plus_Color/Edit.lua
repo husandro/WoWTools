@@ -245,7 +245,7 @@ local function Create_EditBox(index, tab)
     WoWTools_TextureMixin:SetSearchBox(frame, {alpha=0.6})
     frame.Instructions:SetAlpha(0.6)
 
-    --frame.clearButton:SetAlpha(0.6)
+    --[[frame.clearButton:SetAlpha(0.6)
     --frame.searchIcon:SetAlpha(0.6)
     --frame.searchIcon:SetAtlas('NPE_Icon')
     function frame:set_tooltip()
@@ -261,7 +261,7 @@ local function Create_EditBox(index, tab)
             GameTooltip:AddLine(Tab[3].get_text(r, g, b, a))
         end
         GameTooltip:Show()
-    end
+    end]]
 
     function frame:set_bg_alpha(alpha)
         frame.Middle:SetAlpha(alpha)
@@ -282,9 +282,9 @@ local function Create_EditBox(index, tab)
             Set_Color(self.get_value(self:GetText()))
         end
         self.clearButton:SetShown(self:HasText())
-        if GameTooltip:IsOwned(self) then
+        --[[if GameTooltip:IsOwned(self) then
             self:set_tooltip()
-        end
+        end]]
     end)
 
 --OnEscapePressed
@@ -317,17 +317,22 @@ local function Create_EditBox(index, tab)
         self:ClearFocus()
     end)
 
-    frame:SetScript('OnLeave', function(self)
+    --[[frame:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
     end)
     frame:SetScript('OnEnter', function(self)
         self:set_tooltip()
-    end)
+    end)]]
 
    --[[rame.icon= frame:CreateTexture()
     frame.icon:SetPoint('LEFT', frame, 'RIGHT')
     frame.icon:SetAtlas('NPE_Icon')
     frame.icon:SetSize(20,20)]]
+    
+    --[[if tab.name=='HSV' then
+        function frame:set_tooltip()
+        end
+    end]]
 
     table.insert(EditBoxs, frame)
 end
