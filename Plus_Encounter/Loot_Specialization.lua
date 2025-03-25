@@ -1,7 +1,7 @@
 --BOSS战时, 指定拾取, 专精
 
 local function Save()
-    return WoWTools_EncounterMixin.Save
+    return WoWToolsSave['Adventure_Journal']
 end
 local Frame
 

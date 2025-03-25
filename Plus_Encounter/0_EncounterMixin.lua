@@ -1,3 +1,4 @@
+WoWTools_EncounterMixin={}
 
 
 
@@ -6,8 +7,98 @@
 
 
 
---界面,击杀,数据
-function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
+
+function WoWTools_EncounterMixin:GetBossNameSort(name)--取得怪物名称, 短名称
+    name= WoWTools_TextMixin:CN(name)
+    name=name:gsub('(,.+)','')
+    name=name:gsub('(，.+)','')
+    name=name:gsub('·.+','')
+    name=name:gsub('%-.+','')
+    name=name:gsub('<.+>', '')
+    return name
+end
+
+
+
+
+
+
+
+
+
+
+
+local function Set_WorldData_Tooltip(self)
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddDoubleLine(format('%s %s',
+        WoWTools_Mixin.onlyChinese and '世界BOSS/稀有 ' or format('%s/%s', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHANNEL_CATEGORY_WORLD, BOSS), GARRISON_MISSION_RARE),
+        WoWTools_TextMixin:GetShowHide(WoWToolsSave['Adventure_Journal'].showWorldBoss)
+    ), WoWTools_DataMixin.Icon.left)
+
+    GameTooltip:AddLine(' ')
+    for guid, info in pairs(WoWTools_WoWDate or {}) do
+        local find
+        local text, num= nil, 0
+        for bossName in pairs(info.Worldboss.boss) do--世界BOSS
+            num=num+1
+            text= text and text..' ' or '   '
+            text= text..'|cnGREEN_FONT_COLOR:'..num..')|r'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
+        end
+        if text then
+            GameTooltip:AddLine(text, nil,nil,nil, true)
+            find=true
+        end
+
+        text, num= nil, 0
+        for bossName, _ in pairs(info.Rare.boss) do--稀有怪
+            num= num+1
+            text= text and text..' ' or ''
+            text= text..'(|cnGREEN_FONT_COLOR:'..num..'|r)'.. WoWTools_EncounterMixin:GetBossNameSort(WoWTools_TextMixin:CN(bossName))
+        end
+        if text then
+            GameTooltip:AddLine(text, nil,nil,nil, true)
+            find=true
+        end
+        if find then
+            GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==WoWTools_DataMixin.Player.GUID and '|A:auctionhouse-icon-favorite:0:0|a')
+        end
+    end
+    if self.instanceID then
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine('instanceID', self.instanceID)
+    end
+    GameTooltip:Show()
+end
+
+
+--所有角色已击杀世界BOSS提示
+function WoWTools_EncounterMixin:GetWorldData(frame)
+    Set_WorldData_Tooltip(frame)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function GetInstanceData(frame, showTips)
     local text,find
     local instanceID= frame.instanceID or frame.journalInstanceID
     if not instanceID then
@@ -16,7 +107,7 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
 
     if instanceID==1205 or instanceID==1192 or instanceID==1028 or instanceID==822 or instanceID==557 or instanceID==322 then--世界BOSS
         if showTips then
-            WoWTools_EncounterMixin:GetWorldData(frame)--角色世界BOSS提示            
+            Set_WorldData_Tooltip(frame)--角色世界BOSS提示            
             find=true
         else
             for guid, info in pairs(WoWTools_WoWDate or {}) do--世界BOSS
@@ -82,6 +173,14 @@ function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
     else
         return find
     end
+end
+
+
+
+
+--界面,击杀,数据
+function WoWTools_EncounterMixin:GetInstanceData(frame, showTips)
+    return GetInstanceData(frame, showTips)
 end
 
 

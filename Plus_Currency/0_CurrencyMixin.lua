@@ -238,3 +238,18 @@ currencyID	number
 quantity	number
 faction 
 ]]
+
+
+
+
+
+
+
+
+
+function WoWTools_CurrencyMixin:UpdateTokenFrame()
+	if not WoWTools_Mixin:IsLockFrame(TokenFrame) then
+		WoWTools_Mixin:Call(TokenFrame.Update, TokenFrame)
+		WoWTools_Mixin:Call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
+	end
+end

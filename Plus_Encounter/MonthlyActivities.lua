@@ -2,7 +2,7 @@
 --可能会，出错误
 
 local function Save()
-    return WoWTools_EncounterMixin.Save
+    return WoWToolsSave['Adventure_Journal']
 end
 
 

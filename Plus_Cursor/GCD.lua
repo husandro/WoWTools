@@ -125,7 +125,9 @@ local function Init()
 
     GCD_Settings()--设置 GCD
 
-    return true
+    Init=function(isTest2)
+        GCD_Settings(isTest2)
+    end
 end
 
 
@@ -142,9 +144,5 @@ end
 
 --设置 GCD
 function WoWTools_CursorMixin:GCD_Settings(isTest)
-    if Init(isTest) then
-        Init=function(isTest2)
-            GCD_Settings(isTest2)
-        end
-    end
+    Init(isTest)
 end

@@ -22,12 +22,7 @@ local function Save()
 	return WoWToolsSave['Currency2']
 end
 
-function WoWTools_CurrencyMixin:UpdateTokenFrame()
-	if not WoWTools_Mixin:IsLockFrame(TokenFrame) then
-		WoWTools_Mixin:Call(TokenFrame.Update, TokenFrame)
-		WoWTools_Mixin:Call(TokenFramePopup.CloseIfHidden, TokenFramePopup)
-	end
-end
+
 
 
 
@@ -65,6 +60,7 @@ local function Blizzard_ItemInteractionUI()
 	hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 		WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
 	end)
+	Blizzard_ItemInteractionUI=function()end
 	return true
 end
 
@@ -100,26 +96,26 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			if Save().disabled then
 --记录，套装，转换，货币
-				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
+				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function()--C_ItemInteraction.GetChargeInfo()
 					local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
 					Save().ItemInteractionID= itemInfo.currencyTypeId
 					WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId
 				end)
 				self:UnregisterEvent(event)
-				--C_ItemInteraction.GetChargeInfo()
+
 			else
+
 				for itemID, _ in pairs(Save().item) do
 					WoWTools_Mixin:Load({id=itemID, type='item'})--加载 item quest spell
 				end
+
 				if Blizzard_ItemInteractionUI() then
-					Blizzard_ItemInteractionUI= function()end
 					self:UnregisterEvent(event)
 				end
 			end
 
 		elseif arg1=='Blizzard_ItemInteractionUI' and WoWToolsSave then
 			if Blizzard_ItemInteractionUI() then
-				Blizzard_ItemInteractionUI= function()end
 				self:UnregisterEvent(event)
 			end
 		end

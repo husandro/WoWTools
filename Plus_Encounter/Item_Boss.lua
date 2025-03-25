@@ -1,7 +1,7 @@
 --Boss, 战利品, 信息
 
 local function Save()
-    return WoWTools_EncounterMixin.Save
+    return WoWToolsSave['Adventure_Journal']
 end
 local ITEM_CLASSES_ALLOWED= format(ITEM_CLASSES_ALLOWED, '(.+)')
 local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT:gsub('%%s/%%s','(.-%%d%+/%%d%+)')-- "升级：%s/%s"

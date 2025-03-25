@@ -4,7 +4,7 @@
 --BOSS模型 Blizzard_EncounterJournal.lua
 local function Setings(self)
     local text=''
-    if not WoWTools_EncounterMixin.Save.hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
+    if not WoWToolsSave['Adventure_Journal'].hideEncounterJournal and self.displayInfo and EncounterJournal.encounter and EncounterJournal.encounter.info and EncounterJournal.encounter.info.model and EncounterJournal.encounter.info.model.imageTitle then
         if not EncounterJournal.creatureDisplayIDText then
             EncounterJournal.creatureDisplayIDText=WoWTools_LabelMixin:Create(self, {size=10, fontType=EncounterJournal.encounter.info.model.imageTitle})--10, EncounterJournal.encounter.info.model.imageTitle)
             EncounterJournal.creatureDisplayIDText:SetPoint('BOTTOM', EncounterJournal.encounter.info.model.imageTitle, 'TOP', 0 , 10)

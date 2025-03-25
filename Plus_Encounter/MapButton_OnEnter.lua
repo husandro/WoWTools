@@ -4,12 +4,12 @@
 
 local function Init()
     EncounterJournal.encounter.instance.mapButton:SetScript('OnLeave', GameTooltip_Hide)
-    EncounterJournal.encounter.instance.mapButton:SetScript('OnEnter', function(self3)--综述,小地图提示
+    EncounterJournal.encounter.instance.mapButton:SetScript('OnEnter', function(self)--综述,小地图提示
         local name, description, bgImage, buttonImage1, loreImage, buttonImage2, dungeonAreaMapID, link, _, mapID= EJ_GetInstanceInfo()
         if not name then
             return
         end
-        GameTooltip:SetOwner(self3, "ANCHOR_LEFT")
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(link or name, (dungeonAreaMapID and 'UiMapID|cnGREEN_FONT_COLOR:'..dungeonAreaMapID..'|r' or '')..(mapID and ' mapID|cnGREEN_FONT_COLOR:'..mapID..'|r' or ''))
         GameTooltip:AddLine(' ')

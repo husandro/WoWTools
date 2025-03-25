@@ -6,7 +6,7 @@ local function Setings(frame)
     local coll, all, text= 0, 0, nil
     for _, btn in pairs(frame.ItemButtons or {}) do
         local has= false
-        local itemLink= not WoWTools_EncounterMixin.Save.hideEncounterJournal and btn:IsShown() and btn.itemLink
+        local itemLink= not WoWToolsSave['Adventure_Journal'].hideEncounterJournal and btn:IsShown() and btn.itemLink
         if itemLink then--itemID
             has = C_TransmogCollection.PlayerHasTransmogByItemInfo(itemLink)
             all= all+1

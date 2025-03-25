@@ -1,25 +1,11 @@
-
-
-WoWTools_EncounterMixin={
-    Save={
-        wowBossKill={},
-        loot= {[WoWTools_DataMixin.Player.Class]= {}},
-        favorites={},--副本收藏
-    },
-    addName=nil,
-    InstanceBossButton=nil,
-    WorldBossButton=nil,
+local P_Save={
+    wowBossKill={},
+    loot= {[WoWTools_DataMixin.Player.Class]= {}},
+    favorites={},--副本收藏
 }
 
-function WoWTools_EncounterMixin:GetBossNameSort(name)--取得怪物名称, 短名称
-    name= WoWTools_TextMixin:CN(name)
-    name=name:gsub('(,.+)','')
-    name=name:gsub('(，.+)','')
-    name=name:gsub('·.+','')
-    name=name:gsub('%-.+','')
-    name=name:gsub('<.+>', '')
-    return name
-end
+
+
 
 
 
@@ -27,7 +13,7 @@ end
 
 
 local function Save()
-    return WoWTools_EncounterMixin.Save
+    return WoWToolsSave['Adventure_Journal']
 end
 
 
@@ -64,36 +50,11 @@ local function Init_EncounterJournal()--冒险指南界面
     hooksecurefunc('EJ_SelectTier', function(tier)
         Save().EncounterJournalTier=tier
     end)
+
+    Init_EncounterJournal=function()end
 end
 
 
-
-
-local function Init()
-    WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-    WoWTools_EncounterMixin:WorldBoss_Settings()
-    WoWTools_EncounterMixin:InstanceBoss_Settings()
-
-    EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function(owner, arg1)
-        C_Timer.After(2, function()
-            WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
-            WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end)
-    end)
-
-    EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", function(_, arg1)
-        if arg1 then
-            Save().wowBossKill[arg1]= Save().wowBossKill[arg1] and Save().wowBossKill[arg1] +1 or 1--Boss击杀数量
-        end
-    end)
-
-    EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function(owner, arg1)
-        C_Timer.After(2, function()
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end)
-    end)
-end
 
 
 
@@ -103,12 +64,14 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('BOSS_KILL')
+panel:RegisterEvent('PLAYER_LOGIN')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWTools_EncounterMixin.Save= WoWToolsSave['Adventure_Journal'] or Save()
+            WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
 
             Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错
 
@@ -126,17 +89,43 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 self:UnregisterEvent(event)
+                self:UnregisterEvent('PLAYER_LOGIN')
             else
-                Init()
+                self:RegisterEvent('UPDATE_INSTANCE_INFO')
+                self:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
+                    Init_EncounterJournal()--冒险指南界面
+                    self:UnregisterEvent(event)
+                end
             end
 
-        elseif arg1=='Blizzard_EncounterJournal' then---冒险指南
+        elseif arg1=='Blizzard_EncounterJournal' and WoWToolsSave then---冒险指南
             Init_EncounterJournal()--冒险指南界面
+            self:UnregisterEvent(event)
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Adventure_Journal']=Save()
+    elseif event=='BOSS_KILL' then--记录，没删除
+        if arg1 then
+            Save().wowBossKill[arg1]= Save().wowBossKill[arg1] and Save().wowBossKill[arg1] +1 or 1--Boss击杀数量
         end
+
+    elseif event=='UPDATE_INSTANCE_INFO' then
+        C_Timer.After(2, function()
+            WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
+            WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+        end)
+
+    elseif event=='WEEKLY_REWARDS_UPDATE' then
+        C_Timer.After(2, function()
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+        end)
+
+    elseif event=='PLAYER_LOGIN' then
+        WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
+        WoWTools_EncounterMixin:WorldBoss_Settings()
+        WoWTools_EncounterMixin:InstanceBoss_Settings()
+        self:UnregisterEvent(event)
     end
 end)

@@ -5479,7 +5479,8 @@
         "EventTracePanelMixin",
         "COLOR_FORMAT_RGB",
         "EventTraceCloseButton",
-        "COLOR_PICKER_HEX"
+        "COLOR_PICKER_HEX",
+        "CALENDAR_EVENT_DESCRIPTION"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
