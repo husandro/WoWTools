@@ -8,8 +8,25 @@ end
 
 
 
-
-
+--收藏,菜单
+local function Init_Fvorite_Menu(self, root)
+    local sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES, function()
+        return self:get_save()
+    end, function()
+        self:setup()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_Mixin.addName)
+        tooltip:AddLine(WoWTools_EncounterMixin.addName)
+    end)
+    root:CreateDivider()
+    root:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
+        Save().favorites={}
+        WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+    end)
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName})
+end
 
 
 
@@ -110,34 +127,7 @@ local function Create(button)
     button.challengeText:SetPoint('BOTTOMLEFT',4,4)
     button.challengeText2= WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10})
     button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
-    button:HookScript('OnEnter', function(self)
-        if Save().hideEncounterJournal or not self.instanceID then
-            return
-        end
-        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        if name then
-            local cnName=WoWTools_TextMixin:CN(name, true)
-            GameTooltip:AddDoubleLine(cnName or name, cnName and name..' ')
-        end
-
-        GameTooltip:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
-        GameTooltip:AddDoubleLine(
-            dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
-            mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
-        )
-        if self.mapChallengeModeID then
-            GameTooltip:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
-        end
-        GameTooltip:AddLine(' ')
-        if WoWTools_EncounterMixin:GetInstanceData(self, true) then--界面,击杀,数据
-            GameTooltip:AddLine(' ')
-        end
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-        GameTooltip:Show()
-    end)
-    button:SetScript('OnLeave', GameTooltip_Hide)
+   
 
 
 --当前, KEY地图,ID
@@ -167,41 +157,28 @@ local function Create(button)
 
 --收藏
     button.Favorites2=WoWTools_ButtonMixin:Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, isType2=true})
+    button.Favorites2.border:SetTexture(0)
     button.Favorites2:SetPoint('TOPLEFT', -8, 8)
     button.Favorites2:EnableMouse(true)
     button.Favorites2:SetScript('OnLeave', function(self)
-        self:settings(false)
+        self:set_alpha()
         GameTooltip:Hide()
     end)
     button.Favorites2:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
-        self:settings(true)
+        self:set_alpha()
     end)
     button.Favorites2:SetScript('OnClick', function(self, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(f, root)
-                local sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES, function()
-                    return f:get_save()
-                end, function()
-                    self:setup()
-                end)
-                sub:SetTooltip(function(tooltip)
-                    tooltip:AddLine(WoWTools_Mixin.addName)
-                    tooltip:AddLine(WoWTools_EncounterMixin.addName)
-                end)
-                root:CreateDivider()
-                root:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
-                    Save().favorites={}
-                    WoWTools_Mixin:Call(EncounterJournal_ListInstances)
-                end)
-                root:CreateTitle(WoWTools_EncounterMixin.addName)
-            end)
+--收藏,菜单
+            MenuUtil.CreateContextMenu(self, Init_Fvorite_Menu)
+
         elseif d=='LeftButton' then
             self:setup()
         end
@@ -212,17 +189,53 @@ local function Create(button)
         local insID= self:GetParent().instanceID
         if insID then
             Save().favorites[WoWTools_DataMixin.Player.GUID][insID]= not isSaved and true or nil
-            self:settings()
+            self:set_alpha()
         end
     end
-    function button.Favorites2:settings(isEnter)
+    function button.Favorites2:set_alpha()
         local isSaved= self:get_save()
-        self:SetAlpha((isEnter or isSaved) and 1 or 0)
+        self:SetAlpha((isSaved or GameTooltip:IsOwned(self) or GameTooltip:IsOwned(self:GetParent())) and 1 or 0)
     end
     function button.Favorites2:get_save()
         Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
         return Save().favorites[WoWTools_DataMixin.Player.GUID][self:GetParent().instanceID]
     end
+
+
+
+
+    button:HookScript('OnEnter', function(self)
+        if Save().hideEncounterJournal or not self.instanceID then
+            return
+        end
+        local name, _, _, _, loreImage, _, dungeonAreaMapID, _, _, mapID = EJ_GetInstanceInfo(self.instanceID)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        if name then
+            local cnName=WoWTools_TextMixin:CN(name, true)
+            GameTooltip:AddDoubleLine(cnName or name, cnName and name..' ')
+        end
+
+        GameTooltip:AddDoubleLine('journalInstanceID: |cnGREEN_FONT_COLOR:'..self.instanceID, loreImage and '|T'..loreImage..':0|t'..loreImage)
+        GameTooltip:AddDoubleLine(
+            dungeonAreaMapID and dungeonAreaMapID>0 and 'dungeonAreaMapID |cnGREEN_FONT_COLOR:'..dungeonAreaMapID or ' ',
+            mapID and 'mapID |cnGREEN_FONT_COLOR:'..mapID
+        )
+        if self.mapChallengeModeID then
+            GameTooltip:AddLine( 'mapChallengeModeID: |cnGREEN_FONT_COLOR:'.. self.mapChallengeModeID)
+        end
+        GameTooltip:AddLine(' ')
+        if WoWTools_EncounterMixin:GetInstanceData(self, true) then--界面,击杀,数据
+            GameTooltip:AddLine(' ')
+        end
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:Show()
+        self.Favorites2:set_alpha()
+    end)
+    button:HookScript('OnLeave', function(self)
+        self.Favorites2:set_alpha()
+        GameTooltip:Hide()
+    end)
 end
 
 
@@ -279,7 +292,7 @@ local function Init_ListInstances()
             button.KeyTexture.label:SetText(C_MythicPlus.GetOwnedKeystoneLevel() or '')--当前KEY，等级
 
 --收藏
-            button.Favorites2:settings()
+            button.Favorites2:set_alpha()
             button.Favorites2:SetShown(button.instanceID)
         end
     end
