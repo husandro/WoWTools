@@ -1233,7 +1233,7 @@ local function Blizzard_AuctionHouseUI()
             self.countLable= WoWTools_LabelMixin:Create(self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay)
             self.countLable:SetPoint('BOTTOM', self.CommoditiesBuyFrame.BuyDisplay.ItemDisplay, 'TOP', 0,1)
         end
-        local count= WoWTools_ItemMixin:GetItemCount(itemKey.itemID)
+        local count= WoWTools_ItemMixin:GetCount(itemKey.itemID)
         self.countLable:SetText(count or '')
     end)
 end

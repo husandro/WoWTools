@@ -159,7 +159,7 @@ end
 --[[
 local function Set_Player(tooltip, itemID)
     tooltip.textRight:SetText(
-        WoWTools_ItemMixin:GetItemCount(itemID, {isWoW= not UnitAffectingCombat('player')})
+        WoWTools_ItemMixin:GetCount(itemID, {isWoW= not UnitAffectingCombat('player')})
     )
 end
     local wowNum= 0--WoW 数量    
@@ -170,7 +170,7 @@ end
     net= net-bag
 
     tooltip.textRight:SetText(
-        WoWTools_ItemMixin:GetItemCount(itemID, {isWoW= not UnitAffectingCombat('player')})
+        WoWTools_ItemMixin:GetCount(itemID, {isWoW= not UnitAffectingCombat('player')})
     )
 
 end]]
@@ -354,7 +354,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 --数量
     tooltip.textRight:SetText(
-        WoWTools_ItemMixin:GetItemCount(itemID)
+        WoWTools_ItemMixin:GetCount(itemID)
     )
 
     --setItemCooldown(tooltip, itemID)--物品冷却
