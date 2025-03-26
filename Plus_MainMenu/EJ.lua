@@ -46,7 +46,7 @@ end
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(EJMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(EJMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
     frame.Text:SetPoint('TOP', EJMicroButton, 0,  -3)
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
@@ -143,6 +143,8 @@ local function Init()
             EJ_ContentTab_Select(EncounterJournal.raidsTab:GetID())
         end
     end)
+
+    Init=function()end
 end
 
 

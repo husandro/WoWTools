@@ -20,10 +20,10 @@ local function Init()
     frame:SetPoint('TOP')
     frame:SetSize(1,1)
 
-    frame.Text= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
     frame.Text:SetPoint('TOP', MainMenuMicroButton, 0,  -3)
 
-    frame.Text2= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
+    frame.Text2= WoWTools_LabelMixin:Create(MainMenuMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
     frame.Text2:SetPoint('BOTTOM', MainMenuMicroButton, 0, 3)
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
@@ -130,6 +130,8 @@ local function Init()
             WoWTools_Mixin:Call(ShowMacroFrame)
         end
     end)
+
+    Init=function()end
 end
 
 

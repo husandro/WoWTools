@@ -10,7 +10,7 @@
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
     frame.Text:SetPoint('TOP', LFDMicroButton, 0,  -3)
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
@@ -84,6 +84,9 @@ local function Init()
             end
         end
     end)
+
+
+    Init=function()end
 end
 
 

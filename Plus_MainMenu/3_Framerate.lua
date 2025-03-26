@@ -1,7 +1,7 @@
 --每秒帧数 Plus
 
 local function Save()
-    return WoWTools_MainMenuMixin.Save
+    return WoWToolsSave['Plus_MainMenu']
 end
 
 local FramerateButton
@@ -17,7 +17,7 @@ local FramerateButton
 
 
 local function Init()
-    if not Save().frameratePlus or FramerateButton then
+    if not Save().frameratePlus then
         return
     end
 
@@ -100,6 +100,8 @@ local function Init()
     if Save().framerateLogIn and not FramerateFrame:IsShown() then--自动，打开
         FramerateFrame:Toggle()
     end
+
+    Init=function()end
 end
 
 

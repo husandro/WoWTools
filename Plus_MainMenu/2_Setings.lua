@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_MainMenuMixin.Save
+    return WoWToolsSave['Plus_MainMenu']
 end
 
 

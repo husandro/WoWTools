@@ -22,9 +22,9 @@ local function Init()
     PlayerSpellsMicroButton.Texture2:SetScale(0.5)
 
 
-    if WoWTools_MainMenuMixin.Save.enabledMainMenuAlpha then
-        PlayerSpellsMicroButton.Portrait:SetAlpha(WoWTools_MainMenuMixin.Save.mainMenuAlphaValue)
-        PlayerSpellsMicroButton.Texture2:SetAlpha(WoWTools_MainMenuMixin.Save.mainMenuAlphaValue)
+    if WoWToolsSave['Plus_MainMenu'].enabledMainMenuAlpha then
+        PlayerSpellsMicroButton.Portrait:SetAlpha(WoWToolsSave['Plus_MainMenu'].mainMenuAlphaValue)
+        PlayerSpellsMicroButton.Texture2:SetAlpha(WoWToolsSave['Plus_MainMenu'].mainMenuAlphaValue)
     end
 
 
@@ -135,6 +135,8 @@ local function Init()
             WoWTools_LoadUIMixin:SpellBook(3, nil)
         end
     end)
+
+    Init=function()end
 end
 
 

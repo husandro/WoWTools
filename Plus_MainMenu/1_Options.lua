@@ -1,7 +1,7 @@
 --添加控制面板
 
 local function Save()
-    return WoWTools_MainMenuMixin.Save
+    return WoWToolsSave['Plus_MainMenu']
 end
 
 

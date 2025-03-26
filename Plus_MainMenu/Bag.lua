@@ -15,14 +15,14 @@
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(MainMenuBarBackpackButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(MainMenuBarBackpackButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
     frame.Text:SetPoint('TOP', MainMenuBarBackpackButton, 0, -6)
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
     function frame:settings()
         local money=0
-        if WoWTools_MainMenuMixin.Save.moneyWoW then
+        if WoWToolsSave['Plus_MainMenu'].moneyWoW then
             for _, info in pairs(WoWTools_WoWDate or {}) do
                 if info.Money then
                     money= money+ info.Money
@@ -166,6 +166,8 @@ local function Init()
             ToggleAllBags()
         end
     end)
+
+    Init=function()end
 end
 
 

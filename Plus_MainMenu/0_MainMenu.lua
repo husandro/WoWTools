@@ -1,7 +1,9 @@
 
 
 WoWTools_MainMenuMixin={
-    Save={
+    Labels={}
+}
+local P_Save={
     plus=true,
     size=10,
     enabledMainMenuAlpha= true,
@@ -9,11 +11,7 @@ WoWTools_MainMenuMixin={
 
     --frameratePlus=true,--系统 fps plus
     --framerateLogIn=true,--自动，打开
-},
-addName=nil,
-Labels={}
 }
-
 --MainMenuBarMicroButtons.lua
 
 
@@ -22,18 +20,17 @@ Labels={}
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_MainMenuMixin.Save= WoWToolsSave['Plus_MainMenu'] or WoWTools_MainMenuMixin.Save
+            WoWToolsSave['Plus_MainMenu']= WoWToolsSave['Plus_MainMenu'] or P_Save
 
-            local addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
-            WoWTools_MainMenuMixin.addName= addName
+            WoWTools_MainMenuMixin.addName= '|A:UI-HUD-MicroMenu-GameMenu-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单Plus' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_MICRO_MENU_LABEL, 'Plus'))
 
             WoWTools_MainMenuMixin:Init_Category()
 
-            if not WoWTools_MainMenuMixin.Save.disabled then
+            if not WoWToolsSave['Plus_MainMenu'].disabled then
                 WoWTools_MainMenuMixin:Settings()
                 WoWTools_MainMenuMixin:Init_Character()--角色
                 WoWTools_MainMenuMixin:Init_Professions()--专业
@@ -47,19 +44,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MainMenuMixin:Init_Store()--商店
                 WoWTools_MainMenuMixin:Init_Help()--帮助
                 WoWTools_MainMenuMixin:Init_Bag()--背包
+
+                if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                    WoWTools_MainMenuMixin:Init_Options()--初始, 选项
+                    self:UnregisterEvent(event)
+                end
             end
+
             WoWTools_MainMenuMixin:Init_Framerate_Plus()--系统，fts
 
-        elseif arg1=='Blizzard_Settings' then
+        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
             WoWTools_MainMenuMixin:Init_Options()--初始, 选项
-            if WoWTools_MainMenuMixin.addName then
-                self:UnregisterEvent(event)
-            end
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_MainMenu']= WoWTools_MainMenuMixin.Save
+            self:UnregisterEvent(event)
         end
     end
 end)

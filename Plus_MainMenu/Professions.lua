@@ -85,6 +85,8 @@ local function Init()
             C_TradeSkillUI.OpenTradeSkill(skillLine)
         end
     end)
+
+    Init=function()end
 end
 
 

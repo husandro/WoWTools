@@ -8,7 +8,7 @@
 local function Init()
     local frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(AchievementMicroButton,  {size=WoWTools_MainMenuMixin.Save.size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(AchievementMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
     frame.Text:SetPoint('TOP', AchievementMicroButton, 0,  -3)
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
 
@@ -34,6 +34,8 @@ local function Init()
         end
         GameTooltip:Show()
     end)
+
+    Init=function()end
 end
 
 
