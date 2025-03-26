@@ -156,9 +156,13 @@ local function Set_keystonee(tooltip)
 end
 
 
-
+--[[
 local function Set_Player(tooltip, itemID)
-    --local wowNum= 0--WoW 数量    
+    tooltip.textRight:SetText(
+        WoWTools_ItemMixin:GetItemCount(itemID, {isWoW= not UnitAffectingCombat('player')})
+    )
+end
+    local wowNum= 0--WoW 数量    
     local bag= C_Item.GetItemCount(itemID, false, false, false, false)--物品数量
     local bank= C_Item.GetItemCount(itemID, true, false, true, false) --bank
     local net= C_Item.GetItemCount(itemID, false, false, false, true)--战团
@@ -166,12 +170,10 @@ local function Set_Player(tooltip, itemID)
     net= net-bag
 
     tooltip.textRight:SetText(
-        (net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
-        ..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a '
-        ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a'
+        WoWTools_ItemMixin:GetItemCount(itemID, {isWoW= not UnitAffectingCombat('player')})
     )
 
-end
+end]]
 
 
 
@@ -280,7 +282,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     tooltip:AddLine(' ')
 
     local text2Left, textLeft
-
+    local isInCombat= UnitAffectingCombat('player')
 
 --版本数据, 图标，名称，版本
     if expacID or setID then
@@ -350,7 +352,10 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         Set_Item_Num(tooltip, itemID)
     end
 
-    Set_Player(tooltip, itemID)
+--数量
+    tooltip.textRight:SetText(
+        WoWTools_ItemMixin:GetItemCount(itemID)
+    )
 
     --setItemCooldown(tooltip, itemID)--物品冷却
 

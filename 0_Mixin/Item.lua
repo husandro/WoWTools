@@ -387,13 +387,13 @@ function WoWTools_ItemMixin:GetItemCount(itemID, tab)
     tab= tab or {}
     itemID= itemID
         or (tab.itemKey and tab.itemKey.itemID)
-    local isWoW= tab.isWoW
+    --local isWoW= tab.isWoW
 
     if not itemID then
         return
     end
 
-    local wow= isWoW and self:GetWoWCount(itemID)
+    local wow= self:GetWoWCount(itemID)
 
     local bag= C_Item.GetItemCount(itemID, false, false, false, false) or 0--物品数量
     local bank= C_Item.GetItemCount(itemID, true, false, true, false) or 0--bank
@@ -401,7 +401,7 @@ function WoWTools_ItemMixin:GetItemCount(itemID, tab)
     bank= bank- bag
     net= net-bag
 
-    return (wow and '|cff9e9e9e'..wow..'|r'..WoWTools_DataMixin.Icon.wow2 or '')
+    return (wow==0 and '|cff9e9e9e' or '|cff00ccff')..wow..WoWTools_DataMixin.Icon.wow2
         ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
         ..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a '
         ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a',

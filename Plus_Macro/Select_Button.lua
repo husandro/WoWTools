@@ -150,7 +150,7 @@ local function Init_Menu(_, root)
         sub=root:CreateButton(
             tab.name,
         function(data)
-            if InCombatLockdown() then
+            if not WoWTools_MacroMixin:IsSecure() then
                 return
             end
             local index= WoWTools_MacroMixin:GetSelectIndex()

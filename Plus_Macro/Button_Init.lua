@@ -63,7 +63,7 @@ local function Init_Menu(self, root)
             function(data)
                 return Save().toRightLeft==data.value
             end, function(data)
-                if not InCombatLockdown() then
+                if WoWTools_MacroMixin:IsSecure() then
                     Save().toRightLeft=data.value
                     --self:set_texture()
                     WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 1)
@@ -114,10 +114,12 @@ local function Init_Menu(self, root)
         '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
-            if InCombatLockdown() then return end
+            if not WoWTools_MacroMixin:IsSecure() then
+                return
+            end
             print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '删除' or DELETE))
             for i = GetNumMacros(), 1, -1 do
-                if IsModifierKeyDown() or InCombatLockdown() then
+                if IsModifierKeyDown() or UnitAffectingCombat('player') then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
@@ -138,10 +140,12 @@ local function Init_Menu(self, root)
         '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
-            if InCombatLockdown() then return end
+            if not WoWTools_MacroMixin:IsSecure() then
+                return
+            end
             print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '删除' or DELETE))
             for  i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
-                if IsModifierKeyDown() or InCombatLockdown() then
+                if IsModifierKeyDown() or UnitAffectingCombat('player') then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
