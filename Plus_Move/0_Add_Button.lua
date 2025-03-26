@@ -2,7 +2,7 @@
 --创建, 一个移动按钮
 
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 

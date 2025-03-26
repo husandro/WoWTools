@@ -2,7 +2,7 @@
 
 
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 local Category, Layout

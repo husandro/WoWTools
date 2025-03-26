@@ -1,5 +1,5 @@
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 
@@ -141,9 +141,9 @@ end
 function WoWTools_MoveMixin:Setup(frame, tab)
     tab= tab or {}
 
-    local SavePoint= self.Save.SavePoint or tab.savePoint
-    local moveToScreenFuori= self.Save.moveToScreenFuori
-    --local disabledMove= self.Save.disabledMove
+    local SavePoint= Save().SavePoint or tab.savePoint
+    local moveToScreenFuori= Save().moveToScreenFuori
+    --local disabledMove= Save().disabledMove
 
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())

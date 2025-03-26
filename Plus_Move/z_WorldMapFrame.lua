@@ -1,6 +1,6 @@
 --世界地图
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 local minimizedWidth= WorldMapFrame.minimizedWidth or 702

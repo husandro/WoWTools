@@ -1,7 +1,7 @@
 --地下城和团队副本
 
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 

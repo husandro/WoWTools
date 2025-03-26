@@ -1,6 +1,9 @@
 
 WoWTools_MoveMixin={
-Save={
+    Events={}
+}
+
+P_Save={
     --disabledMove=true,--禁用移动
     point={},--移动
     SavePoint= WoWTools_DataMixin.Player.husandro,--保存窗口,位置
@@ -18,12 +21,10 @@ Save={
     --notMoveAlpha=true,--是否设置，移动时，设置透明度
     alpha=0.5,
     disabledAlpha={},
-},
-Events={}
 }
 
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 
@@ -71,7 +72,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or Save()
+            WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or P_Save
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)
 
             WoWTools_MoveMixin:Init_Options()

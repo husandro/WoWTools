@@ -1,7 +1,7 @@
 --角色
 
 local function Save()
-    return WoWTools_MoveMixin.Save
+    return WoWToolsSave['Plus_Move']
 end
 
 

@@ -1,6 +1,10 @@
 
 function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
-    if WoWToolsSave['Plus_Mail'].disabled or WoWToolsSave['Plus_Mail'].hideUIPlus or GameLimitedMode_IsActive() then--MailFrame
+    if not WoWToolsSave['Plus_Mail']
+        or WoWToolsSave['Plus_Mail'].disabled
+        or WoWToolsSave['Plus_Mail'].hideUIPlus
+        or GameLimitedMode_IsActive()
+    then
         WoWTools_MoveMixin:Setup(MailFrame)
         WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
     end
