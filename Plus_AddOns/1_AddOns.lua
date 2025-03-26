@@ -150,7 +150,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
---panel:RegisterEvent("PLAYER_LOGIN")
+panel:RegisterEvent("PLAYER_LOGIN")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -186,14 +186,19 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    --[[elseif event=='PLAYER_LOGIN' then
+    elseif event=='PLAYER_LOGIN' then
         if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
             C_CVar.RegisterCVar("addonProfilerEnabled", "1")
             C_CVar.SetCVar("addonProfilerEnabled", "0")
             if not C_AddOnProfiler.IsEnabled() then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDON_LIST_PERFORMANCE_PEAK_CPU or 'CPU %s', DISABLE)))
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
+                    '|cnRED_FONT_COLOR:',
+                    WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)
+                )
             end
         end
-        self:UnregisterEvent(event)]]
+        self:UnregisterEvent(event)
     end
 end)
+--/dump format(ADDON_LIST_PERFORMANCE_PEAK_CPU or 'CPU %s', DISABLE)

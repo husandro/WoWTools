@@ -401,7 +401,7 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
     bank= bank- bag
     net= net-bag
 
-    return (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(wow, 3)..'r'..WoWTools_DataMixin.Icon.wow2..'|r'
+    return (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(wow, 3)..'|r'..WoWTools_DataMixin.Icon.wow2
         ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
         ..(bank==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a '
         ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a',

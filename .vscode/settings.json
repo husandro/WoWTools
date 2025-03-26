@@ -5482,7 +5482,8 @@
         "COLOR_PICKER_HEX",
         "CALENDAR_EVENT_DESCRIPTION",
         "ERR_AZERITE_ESSENCE_SELECTION_FAILED_ESSENCE_NOT_UNLOCKED",
-        "UNLOCK"
+        "UNLOCK",
+        "ADDON_LIST_PERFORMANCE_PEAK_CPU"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
