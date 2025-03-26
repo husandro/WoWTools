@@ -1,7 +1,7 @@
 
 local Frame=CreateFrame('Frame')
 local Save= function()
-    return  WoWTools_MinimapMixin.Save
+    return  WoWToolsSave['Minimap_Plus']
 end
 
 
@@ -168,8 +168,8 @@ end
 --更新地区时,缩小化地图
 --当前缩放，显示数值
 function WoWTools_MinimapMixin:Init_Minimap_Zoom()
-    if self.Save.ZoomOut==true then
-        self.Save.ZoomOut='min'
+    if Save().ZoomOut==true then
+        Save().ZoomOut='min'
     end
     if not Minimap.viewRadius then
         Init()

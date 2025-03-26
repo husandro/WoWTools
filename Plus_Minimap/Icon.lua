@@ -2,7 +2,7 @@
 
 
 local Save= function()
-    return  WoWTools_MinimapMixin.Save
+    return  WoWToolsSave['Minimap_Plus']
 end
 
 

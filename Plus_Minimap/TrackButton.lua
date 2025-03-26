@@ -18,7 +18,7 @@ textToDown= WoWTools_DataMixin.Player.husandro,--文本，向下
 ]]
 
 local function Save()
-    return WoWTools_MinimapMixin.Save
+    return WoWToolsSave['Minimap_Plus']
 end
 
 
@@ -262,8 +262,10 @@ local function Get_Current_Vignettes()
     local onMinimap={}
     local onWorldMap={}
     local save=Save()
+    local hideOnMinimap= Save().hideVigentteCurrentOnMinimap
+    local hideWorldMap= Save().hideVigentteCurrentOnWorldMap
 
-    if not (save.hideVigentteCurrentOnMinimap and save.hideVigentteCurrentOnWorldMap) then
+    if not (hideOnMinimap and hideWorldMap) then
         local vignetteGUIDs= C_VignetteInfo.GetVignettes() or {}
         local bestUniqueVignetteIndex = C_VignetteInfo.FindBestUniqueVignette(vignetteGUIDs)
         local tab={}
@@ -276,8 +278,8 @@ local function Get_Current_Vignettes()
                 and (info.name or info.atlasName)
                 and not info.isDead
                 and (
-                    (info.onMinimap and not save.hideVigentteCurrentOnMinimap)--当前，小地图，标记
-                    or (info.onWorldMap and not save.hideVigentteCurrentOnWorldMap)--当前，世界地图，标记
+                    (info.onMinimap and not hideOnMinimap)--当前，小地图，标记
+                    or (info.onWorldMap and not hideWorldMap)--当前，世界地图，标记
                 )
             then
 
@@ -980,7 +982,7 @@ local function Init_Menu(self, root)--菜单
 
 --打开选项
     root:CreateDivider()
-    WoWTools_MinimapMixin:OpenPanel(root)
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_MinimapMixin.addName})
 end
 
 

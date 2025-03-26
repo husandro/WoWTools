@@ -23,7 +23,7 @@ StopwatchOnClickPause=true,--移过暂停
 local addName
 
 local function Save()
-    return  WoWTools_MinimapMixin.Save
+    return  WoWToolsSave['Minimap_Plus']
 end
 
 
@@ -59,7 +59,7 @@ local function Init_Stopwatch_Menu(self, root)
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
     sub:CreateDivider()
-    WoWTools_MinimapMixin:OpenPanel(sub)
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_MinimapMixin.addName})
 
     if Save().disabledClockPlus then
         return
@@ -155,7 +155,7 @@ local function Init_TimeManager_Menu(self, root)
 --重新加载
     WoWTools_MenuMixin:Reload(sub, nil)
     sub:CreateDivider()
-    WoWTools_MinimapMixin:OpenPanel(sub)
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_MinimapMixin.addName})
 
     if not Save().disabledClockPlus then
     --显示背景

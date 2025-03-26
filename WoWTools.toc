@@ -215,7 +215,8 @@ Plus_Tooltip\z_Professions.lua
 
 
 ##小地图，增强
-Plus_Minimap\0_Minimap.lua
+
+Plus_Minimap\1_Minimap.lua
 Plus_Minimap\Icon.lua
 Plus_Minimap\InstanceDifficulty.lua
 Plus_Minimap\TrackButton.lua
