@@ -156,12 +156,12 @@ local function Item(link)--物品超链接
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         t= PlayerHasToy(itemID) and (t..format('|A:%s:0:0|a', 'common-icon-checkmark')) or (t..'|A:questlegendary:0:0|a')
     end
-    local bag= C_Item.GetItemCount(link, true, false, true, true)--数量
+    --local bag= C_Item.GetItemCount(link, true, false, true, true)--数量
     --count = C_Item.GetItemCount(itemInfo [, includeBank [, includeUses [, includeReagentBank [, includeAccountBank]]]])
-
-    if bag and bag>0 then
+    t=t..WoWTools_ItemMixin:GetItemCount(itemID)
+    --[[if bag and bag>0 then
         t=t..'|A:bag-main:0:0|a'..WoWTools_Mixin:MK(bag, 3)
-    end
+    end]]
 
     if t~=link then
         return t
