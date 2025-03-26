@@ -4,7 +4,7 @@ local function Save()
 end
 
 local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
-local CHAT_SAY_SEND= CHAT_SAY_SEND
+--local CHAT_SAY_SEND= CHAT_SAY_SEND
 local IsShowTimestamps--聊天中时间戳
 
 DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
@@ -637,7 +637,7 @@ local function Init()
 --CVar 名称
     hooksecurefunc('ChatConfigFrame_OnChatDisabledChanged', Set_HyperLlinkIcon)
 
-    return true
+    Init=function()end
 end
 
 
@@ -647,9 +647,7 @@ end
 --超链接，图标
 function WoWTools_HyperLink:Init_Link_Icon()
     C_Timer.After(0.3, function()
-        if Init() then
-            Init=function()end
-        end
+        Init()
     end)
 
     Set_HyperLlinkIcon()

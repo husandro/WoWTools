@@ -42,13 +42,13 @@ local function Init()
     hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(self)
         self:HookScript('OnMouseDown', Set_OnMouseDown)
     end)]]
-    
+    Init=function()end
     return true
 end
 
 
 function WoWTools_HyperLink:Blizzard_EventTrace()
     if C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') and Init() then
-        Init=function()end
+        return true
     end
 end

@@ -112,6 +112,7 @@ local function Init()
         print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, WoWTools_Mixin.onlyChinese and '频道名称替换' or (CHANNEL_CHANNEL_NAME..COMMUNITIES_SETTINGS_SHORT_NAME_LABEL), '|cnGREEN_FONT_COLOR:#'..n..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..'|r',  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
+    Init=function()end
     return true
 end
 
@@ -129,7 +130,6 @@ end
 
 function WoWTools_HyperLink:Blizzard_Settings()
     if C_AddOns.IsAddOnLoaded('Blizzard_Settings') and Init() then
-        Init=function()end
         return true
     end
 end

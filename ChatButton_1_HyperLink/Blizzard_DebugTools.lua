@@ -90,7 +90,9 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    return true
+    Init=function()
+        btn:SetShown(not Save().disabedFrameStackPlus)
+    end
 end
 
 
@@ -103,10 +105,7 @@ end
 
 --fstack 增强 TableAttributeDisplay
 function WoWTools_HyperLink:Blizzard_DebugTools()
-    if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') and Init() then
-        Init=function()
-            btn:SetShown(not Save().disabedFrameStackPlus)
-        end
-        return true
+    if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
+        Init()
     end
 end
