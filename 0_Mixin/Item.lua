@@ -387,10 +387,13 @@ function WoWTools_ItemMixin:GetItemCount(itemID, tab)
     tab= tab or {}
     itemID= itemID
         or (tab.itemKey and tab.itemKey.itemID)
+    local isWoW= tab.isWoW
 
     if not itemID then
         return
     end
+
+    local wow= isWoW and self:GetWoWCount(itemID)
 
     local bag= C_Item.GetItemCount(itemID, false, false, false, false) or 0--物品数量
     local bank= C_Item.GetItemCount(itemID, true, false, true, false) or 0--bank
@@ -398,13 +401,30 @@ function WoWTools_ItemMixin:GetItemCount(itemID, tab)
     bank= bank- bag
     net= net-bag
 
-    return (net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
+    return (wow and '|cff9e9e9e'..wow..'|r'..WoWTools_DataMixin.Icon.wow2 or '')
+        ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
         ..(bank==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a '
         ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a',
 
-        bag, bank, net
+        bag, bank, net, wow
 
 end
 
 
 
+
+
+function WoWTools_ItemMixin:GetWoWCount(itemID)--WoWTools_BagMixin:GetItem_WoW_Num()--取得WOW物品数量
+    local all,numPlayer=0,0
+    for guid, info in pairs(WoWTools_WoWDate) do
+        if guid and info and info.region==WoWTools_DataMixin.Player.Region then --and guid~=WoWTools_DataMixin.Player.GUID then
+            local tab=info.Item[itemID]
+            if tab and tab.bag and tab.bank then
+                all=all +tab.bag
+                all=all +tab.bank
+                numPlayer=numPlayer +1
+            end
+        end
+    end
+    return all, numPlayer
+end

@@ -106,7 +106,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 C_WowTokenPublic.UpdateMarketPrice()
                 local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 if price and price>0 then
-                    local all, numPlayer= WoWTools_BagMixin:GetItem_WoW_Num(122284)--取得WOW物品数量
+                    local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)--取得WOW物品数量
                     text= all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,3)..'|A:Front-Gold-Icon:0:0|a'
                 end
             end

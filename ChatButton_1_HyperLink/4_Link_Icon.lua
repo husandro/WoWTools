@@ -158,7 +158,7 @@ local function Item(link)--物品超链接
     end
     --local bag= C_Item.GetItemCount(link, true, false, true, true)--数量
     --count = C_Item.GetItemCount(itemInfo [, includeBank [, includeUses [, includeReagentBank [, includeAccountBank]]]])
-    t=t..WoWTools_ItemMixin:GetItemCount(itemID)
+    t=t..WoWTools_ItemMixin:GetItemCount(itemID, {isWoW=true})
     --[[if bag and bag>0 then
         t=t..'|A:bag-main:0:0|a'..WoWTools_Mixin:MK(bag, 3)
     end]]
