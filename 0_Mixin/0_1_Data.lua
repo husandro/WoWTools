@@ -1,10 +1,17 @@
-WoWTools_DataMixin= {}
+WoWTools_DataMixin= {
+    isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE,
+    --isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
+    --isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC,
 
-WoWTools_DataMixin.StausText={}--属性，截取表 API_Panel.lua
-WoWTools_DataMixin.LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp'
-WoWTools_DataMixin.RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp'
-WoWTools_DataMixin.ExpansionLevel= GetExpansionLevel()--版本数据
-WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()-- 1=幻境新生：潘达利亚
+    LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
+    RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
+    ExpansionLevel= GetExpansionLevel(),--版本数据
+    Is_Timerunning= PlayerGetTimerunningSeasonID(),--1=幻境新生：潘达利亚
+    StausText={},--属性，截取表 API_Panel.lua
+}
+
+
+
 --WoWTools_DataMixin.IsSetPlayerSound= enabled--播放, 事件声音
 --WoWTools_DataMixin.ClearAllSave= true 全部重置，插件设置
 

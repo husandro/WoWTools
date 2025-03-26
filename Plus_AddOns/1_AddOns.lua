@@ -49,6 +49,7 @@ local P_Save={
 
     --disabledInfoPlus=true,禁用plus
     Bg_Alpha=0.5
+    --addonProfilerEnabled= true,--启用，CPU分析功能,默认开启
 }
 
 
@@ -131,7 +132,7 @@ local function Init()
         WoWTools_AddOnsMixin:Set_Right_Buttons()
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -178,27 +179,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
 
-            if not Save().disabled then
+            if Save().disabled then
+                self:UnregisterAllEvents()
+            else
+                if not WoWTools_DataMixin.isRetail then--测试服，出错
+                    self:UnregisterEvent('PLAYER_LOGIN')
+                end
                 AddonList:HookScript('OnShow', function()
-                    if Init() then Init=function()end end
+                    Init()
                 end)
+                self:UnregisterEvent(event)
             end
-            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_LOGIN' then
         if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
-            C_CVar.RegisterCVar("addonProfilerEnabled", "1")
-            C_CVar.SetCVar("addonProfilerEnabled", "0")
-            if not C_AddOnProfiler.IsEnabled() then
-                print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
-                    '|cnRED_FONT_COLOR:',
-                    WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)
-                )
-            end
+            WoWTools_AddOnsMixin:Set_AddonProfiler()
         end
         self:UnregisterEvent(event)
     end
 end)
---/dump format(ADDON_LIST_PERFORMANCE_PEAK_CPU or 'CPU %s', DISABLE)

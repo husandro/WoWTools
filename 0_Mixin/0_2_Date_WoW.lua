@@ -278,18 +278,19 @@ end
 
 --更新物品
 local function Update_Bag_Items()
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link=nil
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Item={}--{itemID={bag=包, bank=银行}}
+    local guid= WoWTools_DataMixin.Player.GUID
+    WoWTools_WoWDate[guid].Keystone.link=nil
+    WoWTools_WoWDate[guid].Item={}--{itemID={bag=包, bank=银行}}
     for bagID= Enum.BagIndex.Backpack,  NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
         for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local itemID = C_Container.GetContainerItemID(bagID, slotID)
             if itemID then
                 if C_Item.IsItemKeystoneByID(itemID) then--挑战
-                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
+                    WoWTools_WoWDate[guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
 
                 else
                     local bag=C_Item.GetItemCount(itemID)--物品ID
-                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Item[itemID]={
+                    WoWTools_WoWDate[guid].Item[itemID]={
                         bag=bag,
                         bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
                     }
@@ -339,23 +340,18 @@ local function Update_Currency(_, arg1)--{currencyID = 数量}
     if arg1 and arg1~=2032 then
         local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
         if info and info.quantity then
-            if C_CurrencyInfo.IsAccountWideCurrency(arg1) then
-                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]=nil
-            else
-                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]=info.quantity==0 and nil or info.quantity
+            if not C_CurrencyInfo.IsAccountWideCurrency(arg1) then
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]= info.quantity~=0 and info.quantity or nil
             end
         end
     else
         for i=1, C_CurrencyInfo.GetCurrencyListSize() do
             local link =C_CurrencyInfo.GetCurrencyListLink(i)
             local currencyID = link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
+
             local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-            if currencyID and info and info.quantity and currencyID~=2032 then
-                if C_CurrencyInfo.IsAccountWideCurrency(currencyID) then
-                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]=nil
-                else
-                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]= info.quantity<=0 and nil or info.quantity
-                end
+            if currencyID and info and info.quantity and currencyID~=2032 and not C_CurrencyInfo.IsAccountWideCurrency(currencyID) then
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[currencyID]= info.quantity~=0 and info.quantity or nil
             end
         end
     end
@@ -694,8 +690,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWTools_WoWDate= WoWTools_WoWDate or {}
 
     local day= date('%x')--日期
-    if not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID] then
-        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID]= {--默认数据
+    local guid= WoWTools_DataMixin.Player.GUID
+    if not WoWTools_WoWDate[guid] then
+        WoWTools_WoWDate[guid]= {--默认数据
             Item={},--{itemID={bag=包, bank=银行}},
             Currency={},--{currencyID = 数量}
 
@@ -716,16 +713,16 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         }
     end
 
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Bank= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Bank or {}--派系
+    WoWTools_WoWDate[guid].Bank= WoWTools_WoWDate[guid].Bank or {}--派系
 
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild or {data={}}--公会信息
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].GuildInfo=nil--清除，旧版本数据
-    
+    WoWTools_WoWDate[guid].Guild= WoWTools_WoWDate[guid].Guild or {data={}}--公会信息
+    WoWTools_WoWDate[guid].GuildInfo=nil--清除，旧版本数据
 
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].region= WoWTools_DataMixin.Player.Region
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].faction= WoWTools_DataMixin.Player.Faction--派系
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].level= WoWTools_DataMixin.Player.Level
-    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag
+
+    WoWTools_WoWDate[guid].region= WoWTools_DataMixin.Player.Region
+    WoWTools_WoWDate[guid].faction= WoWTools_DataMixin.Player.Faction--派系
+    WoWTools_WoWDate[guid].level= WoWTools_DataMixin.Player.Level
+    WoWTools_WoWDate[guid].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[guid].battleTag
 
 
     for guid, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
