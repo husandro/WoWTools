@@ -1,13 +1,15 @@
 --受限模式
+WoWTools_MailMixin={}
+
 if GameLimitedMode_IsActive() then
-    WoWTools_MailMixin={Save={disabled=true}}
+    WoWTools_MailMixin.disabled= true
     return
 end
 
-local id, e= ...
 
-WoWTools_MailMixin={
-Save={
+
+
+local P_Save={
     --hide=true,--隐藏
     --hideUIPlus=true,
     --hideSendNameList=true,
@@ -34,12 +36,11 @@ Save={
     --lastSendPlayer='Fuocco-server',--收件人
     --lastSendSub=主题
     --lastSendBody=内容
-},
 }
 
 
 local function Save()
-    return WoWTools_MailMixin.Save
+    return WoWToolsSave['Plus_Mail']
 end
 
 
@@ -223,6 +224,8 @@ local function Init()--SendMailNameEditBox
 
 --物品快捷键
     WoWTools_MailMixin:Init_Fast_Button()
+
+    Init=function()end
 end
 
 
@@ -238,39 +241,34 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('MAIL_SHOW')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_MailMixin.Save= WoWToolsSave['Plus_Mail'] or Save()
+            WoWToolsSave['Plus_Mail']= WoWToolsSave['Plus_Mail'] or P_Save
 
-            local addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
-            WoWTools_MailMixin.addName= addName
+            WoWTools_MailMixin.addName= '|A:UI-HUD-Minimap-Mail-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '邮件' or BUTTON_LAG_MAIL)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
+                name= WoWTools_MailMixin.addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MailMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
-            if not Save().disabled then
-                Is_Sandro()
-                self:RegisterEvent('MAIL_SHOW')
+            if Save().disabled then
+               self:UnregisterAllEvents()
+            else
+                self:UnregisterEvent(event)
             end
-
-            self:UnregisterEvent(event)
         end
 
     elseif event=='MAIL_SHOW' then
         set_to_send()
         Init()
         self:UnregisterEvent(event)
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Mail']=Save()
-        end
     end
 end)

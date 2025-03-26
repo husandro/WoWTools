@@ -56,6 +56,8 @@ local function Init()
             WoWTools_MoveMixin:SetPoint(currentFrame)
         end
     end)
+
+    Init=function()end
 end
 
 
@@ -64,15 +66,13 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
             WoWTools_MoveMixin.Save= WoWToolsSave['Plus_Move'] or Save()
-
-            local addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)
-            WoWTools_MoveMixin.addName= addName
+            WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)
 
             WoWTools_MoveMixin:Init_Options()
 
@@ -83,14 +83,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()--初始, 移动
             end
 
-        elseif WoWTools_MoveMixin.Events[arg1] then
-            WoWTools_MoveMixin.Events[arg1]()
+        elseif WoWToolsSave and WoWTools_MoveMixin.Events[arg1] then
+            do
+                WoWTools_MoveMixin.Events[arg1]()
+            end
             WoWTools_MoveMixin.Events[arg1]= nil
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Move']= Save()
         end
     end
 end)

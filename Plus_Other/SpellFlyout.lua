@@ -1,5 +1,5 @@
 --Flyout, 技能，提示
-local id, e= ...
+
 local Save={}
 local SpellTab={}--WoWTools_DataMixin.ChallengesSpellTabs
 local addName

@@ -5,7 +5,7 @@ end
 
 
 local function Save()
-    return WoWTools_MailMixin.Save
+    return WoWToolsSave['Plus_Mail']
 end
 
 

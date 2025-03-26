@@ -14,6 +14,11 @@ end
 
 
 local function Init()
+    if WoWToolsSave['Plus_Mail'].hideUIPlus then
+        return
+    end
+
+
     local clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailAttachment7, {size=22, atlas='bags-button-autosort-up'})
     clearSendItem:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
     clearSendItem.Text= WoWTools_LabelMixin:Create(clearSendItem)
@@ -82,6 +87,8 @@ local function Init()
             end
         end
     end
+
+    Init=function()end
 end
 
 
@@ -96,7 +103,5 @@ end
 
 
 function WoWTools_MailMixin:Init_Clear_All_Send_Items()--清除所有，要发送物品
-    if not self.Save.hideUIPlus then
-        Init()
-    end
+    Init()
 end

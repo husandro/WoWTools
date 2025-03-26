@@ -6,7 +6,7 @@ end
 --快速，加载，物品，按钮
 
 local function Save()
-    return WoWTools_MailMixin.Save
+    return WoWToolsSave['Plus_Mail']
 end
 
 local fastButton
@@ -457,9 +457,14 @@ end
 
 --快速，加载，物品，按钮
 local function Init()
+    if Save().hideItemButtonList then
+        return
+    end
+
+
     fastButton= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, name='WoWToolsMailFastItemListButton'})
     fastButton:SetPoint('BOTTOMLEFT', MailFrameCloseButton, 'BOTTOMRIGHT',0, -2)
-    
+
     fastButton.frame= CreateFrame('Frame', nil, fastButton)
     fastButton.frame:SetSize(1, 1)
     fastButton.frame:SetPoint('TOPLEFT', fastButton, 'BOTTOMLEFT')
@@ -531,9 +536,29 @@ local function Init()
     end
 
 
-    
+
+
+
+
+
+
+
 
     Init_Button()
+
+
+
+
+
+
+
+
+
+
+
+    Init=function()
+        fastButton:Settings()
+    end
 end
 
 
@@ -546,11 +571,5 @@ end
 
 
 function WoWTools_MailMixin:Init_Fast_Button()
-    if self.Save.hideItemButtonList or fastButton then
-        if fastButton then
-            fastButton:Settings()
-        end
-    else
-        Init()
-    end
+    Init()
 end

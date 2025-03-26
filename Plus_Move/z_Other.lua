@@ -123,11 +123,7 @@ local function Init()
 
 
     C_Timer.After(0.3, function()
-        if WoWTools_MailMixin.Save.disabled then--MailFrame
-            WoWTools_MoveMixin:Setup(MailFrame)
-            WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-            --WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
-        end
+
 
         if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame
             WoWTools_MoveMixin:Setup(StableFrame)

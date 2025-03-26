@@ -6,7 +6,7 @@ end
 --收件人，列表
 
 local function Save()
-    return WoWTools_MailMixin.Save
+    return WoWToolsSave['Plus_Mail']
 end
 
 
@@ -394,6 +394,13 @@ end
 
 --收件人，列表
 function Init()
+    if Save().hideSendNameList then
+        return
+    end
+
+
+
+
     --下拉，菜单
     listButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {size=22, atlas='common-icon-rotateleft'})
 
@@ -469,6 +476,11 @@ function Init()
     end)
 
 
+
+
+    Init=function()
+        listButton:Settings()
+    end
 end
 
 
@@ -486,11 +498,5 @@ end
 
 
 function WoWTools_MailMixin:Init_Send_Name_List()--收件人，列表
-    if self.Save.hideSendNameList or listButton then
-        if listButton then
-            listButton:Settings()
-        end
-    else
-        Init()
-    end
+    Init()
 end

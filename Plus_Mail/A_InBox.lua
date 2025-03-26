@@ -4,7 +4,7 @@ end
 
 
 local function Save()
-    return WoWTools_MailMixin.Save
+    return WoWToolsSave['Plus_Mail']
 end
 
 local AUCTION_REMOVED_MAIL_SUBJECT= WoWTools_TextMixin:Magic(AUCTION_REMOVED_MAIL_SUBJECT) --= "拍卖取消：%s";
@@ -752,6 +752,10 @@ end
 
 --收信箱，物品，提示
 local function Init()
+    if Save().hide then
+        return
+    end
+
     Create_DeleteAllButton()--删除所有信，按钮
     Create_ReAllButton()--退回，所有信，按钮
     Create_AllTipsLable()--总，内容，提示
@@ -769,6 +773,10 @@ local function Init()
 
     --提示，需要付钱, 可收取钱
     hooksecurefunc('OpenMail_Update', Set_OpenMail_Update)
+
+    Init=function()
+        WoWTools_MailMixin:RefreshAll()
+    end
 end
 
 
@@ -777,11 +785,5 @@ end
 
 
 function WoWTools_MailMixin:Init_InBox()--收信箱，物品，提示
-    if self.hide or InboxFrame.DeleteAllButton then
-        if InboxFrame.DeleteAllButton then
-            WoWTools_MailMixin:RefreshAll()
-        end
-        return
-    end
     Init()
 end

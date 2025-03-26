@@ -6,7 +6,7 @@ end
 --收件人，历史记录
 
 local function Save()
-    return WoWTools_MailMixin.Save
+    return WoWToolsSave['Plus_Mail']
 end
 
 
@@ -275,7 +275,25 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
+    if Save().hideHistoryList then
+        return
+    end
+
     Tab={}
 
     Button= WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, 'WoWToolsMailHistorySendNameListButton'})
@@ -321,6 +339,10 @@ local function Init()
     Frame:SetSize(1,1)
 
     Set_Button()
+
+    Init=function()
+        Button:Settings()
+    end
 end
 
 
@@ -338,11 +360,5 @@ end
 
 
 function WoWTools_MailMixin:Init_Send_History_Name()--收件人，历史记录
-    if self.Save.hideHistoryList or Button then
-        if Button then
-            Button:Settings()
-        end
-    else
-        Init()
-    end
+    Init()
 end
