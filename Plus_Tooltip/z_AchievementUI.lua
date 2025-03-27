@@ -2,7 +2,7 @@
 
 
 local function Save()
-    return WoWToolsSave['Plus_Target']
+    return WoWToolsSave['Plus_Tootips']
 end
 
 

@@ -1,7 +1,7 @@
 --添加新控制面板 Blizzard_Settings
 
 local function Save()
-    return WoWToolsSave['Plus_Target']
+    return WoWToolsSave['Plus_Tootips']
 end
 
 local Category, Layout

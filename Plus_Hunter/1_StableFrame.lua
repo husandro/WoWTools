@@ -1,6 +1,5 @@
 
 if WoWTools_DataMixin.Player.Class~='HUNTER' then
-    WoWToolsSave['Plus_StableFrame']={disabled=true}
     return
 end
 

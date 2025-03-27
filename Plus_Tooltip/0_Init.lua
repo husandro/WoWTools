@@ -36,7 +36,7 @@ local P_Save={
 
 
 local function Save()
-    return WoWToolsSave['Plus_Target']
+    return WoWToolsSave['Plus_Tootips']
 end
 
 local function Load_Addon(name, isLoaddedName)
@@ -179,7 +179,7 @@ panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Tootips'] or P_Save
+            WoWToolsSave['Plus_Tootips']= WoWToolsSave['Plus_Tootips'] or P_Save
 
 
 

@@ -31,7 +31,7 @@
 
 
 local function Init()
-    if not WoWToolsSave['Plus_Target'].ShowOptionsCVarTips then
+    if not WoWToolsSave['Plus_Tootips'].ShowOptionsCVarTips then
         return
     end
 
