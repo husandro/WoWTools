@@ -1,5 +1,4 @@
 --显示服务器名称
-local e= select(2, ...)
 local Label
 
 
@@ -95,7 +94,7 @@ end
 
 
 function WoWTools_PaperDollMixin:Settings_ServerInfo()
-    if WoWTools_PaperDollMixin.Save.hide then
+    if WoWToolsSave['Plus_PaperDoll'].hide then
         Label:SetText('')
     else
         Settings()

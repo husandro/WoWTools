@@ -1,8 +1,7 @@
 --装备管理，Plus
 --PaperDollFrame.lua
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 
 

@@ -1,6 +1,5 @@
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PetBattleMixin.Save
+    return WoWToolsSave['Plus_PetBattle2']
 end
 
 
@@ -282,6 +281,10 @@ end
 
 --提示,类型
 local function Init(isShow)
+    if WoWToolsSave['Plus_PetBattle2'].TypeButton.disabled then
+        return
+    end
+
     TypeButton= WoWTools_ButtonMixin:Cbtn(nil, {
         name='WoWToolsPetBattleTypeButton',
         size=23,
@@ -456,7 +459,9 @@ local function Init(isShow)
     end
     TypeButton:Settings(isShow)
 
-    return true
+    Init=function(show)
+        TypeButton:Settings(show)
+    end
 end
 
 
@@ -479,21 +484,14 @@ end
 
 
 function WoWTools_PetBattleMixin:Set_TypeButton(show)
-    if self.Save.TypeButton.disabled or TypeButton then
-        if TypeButton then
-            TypeButton:Settings(show)
-        end
-    end
-    if Init(show) then
-        Init=function()end
-    end
+   Init(show)
 end
 
 function WoWTools_PetBattleMixin:TypeButton_SetShown()
     if TypeButton then
         TypeButton:set_shown()
     else
-        WoWTools_PetBattleMixin:Set_TypeButton()
+        self:Set_TypeButton()
     end
 end
 

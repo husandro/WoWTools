@@ -1,7 +1,6 @@
 --物品
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 
 

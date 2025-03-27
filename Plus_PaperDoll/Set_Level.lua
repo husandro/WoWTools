@@ -1,9 +1,8 @@
 --更改,等级文本
 --PaperDollFrame.lua
 --Init_ChromieTime()--时空漫游战役, 提示
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 
 

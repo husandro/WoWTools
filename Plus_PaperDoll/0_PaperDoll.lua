@@ -1,7 +1,6 @@
-local id, e = ...
+WoWTools_PaperDollMixin={}
 
-WoWTools_PaperDollMixin={
-Save={
+local P_Save={
     --hide=true,--隐藏CreateTexture
 
     --EquipmentH=true, --装备管理, true横, false坚
@@ -17,14 +16,7 @@ Save={
     --notStatusPlusFunc=true, --属性 PLUS Func
     itemLevelBit= 1,--物品等级，位数
 
-},
-
 }
-
-local function Save()
-    return WoWTools_PaperDollMixin.Save
-end
-
 
 
 
@@ -64,53 +56,53 @@ local function Init()
         WoWTools_PaperDollMixin:Settings_Tab1()--总装等
     end)
 
-    EventRegistry:RegisterFrameEventAndCallback("SOCKET_INFO_UPDATE", function()
-        if PaperDollItemsFrame:IsShown() then
-            WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
-        end
-    end)
-
-    C_Timer.After(2, function()
-        WoWTools_PaperDollMixin:Init_TrackButton()--装备管理框
-    end)
+    Init=function()end
 end
 
 
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+panel:RegisterEvent('SOCKET_INFO_UPDATE')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_PaperDollMixin.Save= WoWToolsSave['Plus_PaperDoll'] or WoWTools_PaperDollMixin.Save
+            WoWToolsSave['Plus_PaperDoll']= WoWToolsSave['Plus_PaperDoll'] or P_Save
 
-            local addName= (
-                WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a'
-                or '|A:charactercreate-gendericon-female-selected:0:0|a'
-            )..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)
-
-            WoWTools_PaperDollMixin.addName= addName
+            WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
+                                        ..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                GetValue= function() return not Save().disabled end,
+                name= WoWTools_PaperDollMixin.addName,
+                GetValue= function() return not WoWToolsSave['Plus_PaperDoll'].disabled end,
                 SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    WoWToolsSave['Plus_PaperDoll'].disabled= not WoWToolsSave['Plus_PaperDoll'].disabled and true or nil
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName,
+                        WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Plus_PaperDoll'].disabled),
+                        WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                    )
                 end,
             })
 
-            if not Save().disabled then
+            if WoWToolsSave['Plus_PaperDoll'].disabled then
+                self:UnregisterAllEvents()
+            else
                 Init()
+                self:UnregisterEvent(event)
             end
-
-            self:UnregisterEvent(event)
         end
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_PaperDoll']=Save()
+
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        WoWTools_PaperDollMixin:Init_TrackButton()--装备管理框
+        self:UnregisterEvent(event)
+
+    elseif event=='SOCKET_INFO_UPDATE' then
+        if PaperDollItemsFrame:IsShown() then
+            WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
         end
     end
 end)

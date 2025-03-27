@@ -1,7 +1,5 @@
-local e= select(2, ...)
-
 local function Save()
-    return WoWTools_PetBattleMixin.Save
+    return WoWToolsSave['Plus_PetBattle2']
 end
 
 local Category, Layout

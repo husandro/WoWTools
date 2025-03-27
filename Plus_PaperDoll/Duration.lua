@@ -1,7 +1,6 @@
 --装备,总耐久度
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 local Frame
 

@@ -1,7 +1,6 @@
 --总装等
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 local LabelPvE, LabelPvP
 

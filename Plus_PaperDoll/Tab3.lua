@@ -1,7 +1,6 @@
 --套装，标签, 内容,提示
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 
 

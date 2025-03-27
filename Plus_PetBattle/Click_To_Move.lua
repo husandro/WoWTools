@@ -1,7 +1,6 @@
 --点击移动
-local e= select(2, ...)
 local function Save()
-    return WoWTools_PetBattleMixin.Save
+    return WoWToolsSave['Plus_PetBattle2']
 end
 
 
@@ -322,6 +321,10 @@ end
 
 
 local function Init_Button()
+    if Save().ClickMoveButton.disabled then
+        return
+    end
+
     Init_Camera_Tabs()
 
     ClickToMoveButton= WoWTools_ButtonMixin:Menu(PlayerFrame,
@@ -469,6 +472,10 @@ local function Init_Button()
     Lock_CVar('cameraSmoothStyle')
     Lock_ClickToMove_CVar()
 
+
+    Init_Button=function()
+        ClickToMoveButton:Settings()
+    end
 end
 
 
@@ -482,16 +489,5 @@ end
 
 
 function WoWTools_PetBattleMixin:ClickToMove_Button()
-
-    if Save().ClickMoveButton.disabled or ClickToMoveButton then
-        if ClickToMoveButton then
-            ClickToMoveButton:Settings()
-        end
-        return
-    end
     Init_Button()
 end
-
---[[function WoWTools_PetBattleMixin:ClickToMove_CVar()
-    Init_CVar()
-end]]

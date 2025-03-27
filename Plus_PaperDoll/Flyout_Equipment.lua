@@ -1,7 +1,7 @@
 --装备弹出
 --EquipmentFlyout.lua
 local function Save()
-    return WoWTools_PaperDollMixin.Save
+    return WoWToolsSave['Plus_PaperDoll']
 end
 
 

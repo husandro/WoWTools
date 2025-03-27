@@ -1,11 +1,11 @@
 --技能提示， 框
 --Blizzard_PetBattleUI.lua
-local e= select(2, ...)
+
 local function Save()
-    return WoWTools_PetBattleMixin.Save
+    return WoWToolsSave['Plus_PetBattle2']
 end
 
-local Buttons--5*3 技能按钮
+local Buttons={}--5*3 技能按钮
 local size= 52
 
 
@@ -1111,7 +1111,10 @@ end
 
 
 local function Init()
-    Buttons={}
+    if WoWToolsSave['Plus_PetBattle2'].AbilityButton.disabled then
+        return
+    end
+
     for _, tab in pairs({
     {
         name='Enemy',
@@ -1183,7 +1186,12 @@ local function Init()
         AbilityButton_UpdateTypeTips(self)
     end)
 
-
+    Init=function()
+        for _, btn in pairs(Buttons) do
+            btn:Settings()
+        end
+        WoWTools_Mixin:Call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
+    end
 end
 
 
@@ -1204,7 +1212,11 @@ end
 
 --激活，宠物
 local function Init_BottomFrame()
+    if WoWToolsSave['Plus_PetBattle2'].AbilityButton.disabled then
+        return
+    end
 
+    
 --宠物，属性
     hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
         local btn= self.BottomFrame.abilityButtons[1]
@@ -1269,7 +1281,7 @@ local function Init_BottomFrame()
     end)
 
 
-
+    Init_BottomFrame=function()end
 end
 
 
@@ -1286,20 +1298,11 @@ end
 
 
 function WoWTools_PetBattleMixin:Init_AbilityButton()
-    if self.Save.AbilityButton.disabled or Buttons then
-        if Buttons then
-            for _, btn in pairs(Buttons) do
-                btn:Settings()
-            end
-            WoWTools_Mixin:Call(PetBattleFrame_UpdateAllActionButtons, PetBattleFrame)
-        end
+    if C_PetBattles.IsInBattle() then
+        C_Timer.After(2, Init)
     else
-        if C_PetBattles.IsInBattle() then
-            C_Timer.After(2, Init)
-        else
-            Init()
-        end
-        Init_BottomFrame()
+        Init()
     end
+    Init_BottomFrame()
 end
 
