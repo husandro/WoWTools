@@ -20,9 +20,9 @@ local function Create_Fast_Button(indexAdd)
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
 
     btn.checkTexture= btn:CreateTexture(nil, 'OVERLAY')
-    btn.checkTexture:SetAtlas('common-dropdown-icon-checkmark-yellow')
+    btn.checkTexture:SetAtlas('GarrMission_EncounterBar-CheckMark')
     btn.checkTexture:SetPoint('BOTTOMRIGHT', 4, -2)
-    btn.checkTexture:SetSize(14,14)
+    btn.checkTexture:SetSize(16,16)
     --btn.checkTexture:SetSize(16,16)
     --btn.checkTexture:SetPoint('RIGHT', btn.Text, 'LEFT',0,-2)
 
