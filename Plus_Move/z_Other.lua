@@ -125,19 +125,19 @@ local function Init()
     C_Timer.After(0.3, function()
 
 
-        if WoWTools_DataMixin.Player.Class=='HUNTER' and WoWToolsSave['Plus_StableFrame'].disabled then--StableFrame
+        if WoWTools_DataMixin.Player.Class=='HUNTER' and WoWToolsSave['Plus_StableFrame'] and WoWToolsSave['Plus_StableFrame'].disabled then--StableFrame
             WoWTools_MoveMixin:Setup(StableFrame)
         end
 
-        if WoWToolsSave['Plus_SellBuy'].disabled then
+        if WoWToolsSave['Plus_SellBuy'] and WoWToolsSave['Plus_SellBuy'].disabled then
             WoWTools_MoveMixin:Setup(MerchantFrame)
         end
     --插件
-        if WoWToolsSave['Plus_AddOns'].disabled then
+        if WoWToolsSave['Plus_AddOns'] and WoWToolsSave['Plus_AddOns'].disabled then
             WoWTools_MoveMixin:Setup(AddonList)
         end
     --银行
-        if WoWToolsSave['Plus_Bank'].disabled then
+        if WoWToolsSave['Plus_Bank'] and WoWToolsSave['Plus_Bank'].disabled then
             WoWTools_MoveMixin:Setup(BankFrame)
             WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
         end
