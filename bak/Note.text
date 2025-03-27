@@ -388,6 +388,7 @@ SliceDemo.Texture:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled);
 SliceDemo.Texture:SetAllPoints(SliceDemo);
 SliceDemo.Texture:SetVertexColor(0, 1, 0);
 
+
 SliceDemo.ResizeButton = CreateFrame("Button", nil, SliceDemo, "PanelResizeButtonTemplate");
 SliceDemo.ResizeButton:SetPoint("BOTTOMRIGHT");
 
