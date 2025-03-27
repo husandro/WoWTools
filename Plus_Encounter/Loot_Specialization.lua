@@ -84,7 +84,7 @@ local function Init_All_Class(self, root, num)
                     specID=specID,
                 })
                 sub2:SetTooltip(function(tooltip)
-                    tooltip:AddLine(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                    tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                 end)
             end
             if n>0 then
@@ -92,7 +92,7 @@ local function Init_All_Class(self, root, num)
                 sub:CreateButton(
                     '|A:bags-button-autosort-up:0:0|a'
                     ..(n==0 and '|cff9e9e9e' or '')
-                    ..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..n,
+                    ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..n,
                 function(data)
                     Save().loot[data.class]={}
                 end, {class=classInfo.classFile})
@@ -105,7 +105,7 @@ local function Init_All_Class(self, root, num)
     root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
         ..(num==0 and '|cff9e9e9e' or '')
-        ..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..num,
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..num,
     function()
         Save().loot={[WoWTools_DataMixin.Player.Class]={}}
     end)
@@ -146,7 +146,7 @@ local function Init_Menu(self, root)
                 set_Loot_Spec_Texture(self)
             end, {dungeonEncounterID= self.dungeonEncounterID, specID=specID})
             sub:SetTooltip(function(tooltip, description)
-                tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, description.data.specID)
+                tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, description.data.specID)
             end)
         end
     end
@@ -162,7 +162,7 @@ local function Init_Menu(self, root)
         end
     end
     sub=root:CreateButton(
-        (WoWTools_Mixin.onlyChinese and '职业' or CLASS)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        (WoWTools_DataMixin.onlyChinese and '职业' or CLASS)..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function()
         return MenuResponse.Open
     end)
@@ -190,11 +190,11 @@ local function Button_OnEnter(self)
             GameTooltip:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
             local numKill=Save().wowBossKill[dungeonEncounterID]
             if numKill then
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '击杀' or KILLS, '|cnGREEN_FONT_COLOR:'..numKill..' |r'..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
             end
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
         GameTooltip:Show()
     end
 end
@@ -293,7 +293,7 @@ local function Init()
                     self.SpceLog= loot--BOSS战时, 指定拾取, 专精, 还原, 专精拾取
                     SetLootSpecialization(indicatoSpec)
                     local _, name, _, icon, role = GetSpecializationInfoByID(indicatoSpec)
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', WoWTools_DataMixin.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', WoWTools_DataMixin.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
                 end
             end
 
@@ -305,7 +305,7 @@ local function Init()
                     self.SpceLog= spec and GetSpecializationInfo(spec) or self.SpceLog
                 end
                 local _, name, _, icon, role = GetSpecializationInfoByID(self.SpceLog)
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', WoWTools_DataMixin.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_EncounterMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)..'|r', WoWTools_DataMixin.Icon[role], icon and '|T'..icon..':0|t', name and '|cffff00ff'..name)
                 self.SpceLog=nil
             end
         end

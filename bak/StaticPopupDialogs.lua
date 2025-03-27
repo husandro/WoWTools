@@ -1,8 +1,8 @@
 ---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 --[[
 https://warcraft.wiki.gg/wiki/Creating_simple_pop-up_dialog_boxes
-WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI
-WoWTools_Mixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT
+WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT
 
 exclusive=boolean 当显示任何其他弹出窗口时，隐藏，
 whileDead=boolean 即使玩家是鬼魂也会显示对话框

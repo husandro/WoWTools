@@ -19,7 +19,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     elseif info.isMajor then
         tooltip:AddLine(
             icon
-            ..(WoWTools_Mixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)
+            ..(WoWTools_DataMixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)
             ..' '
             ..info.factionID
         )
@@ -31,7 +31,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
             tooltip:AddDoubleLine(info.factionStandingtext or ' ', (info.hasRewardPending or '')..(info.valueText or '')..(info.valueText and info.isParagon and '|A:Banker:0:0|a' or ''))
         end
         if info.hasRewardPending then
-            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
         end
     else
         tooltip:AddLine(

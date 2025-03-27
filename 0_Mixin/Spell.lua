@@ -39,13 +39,13 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
     if mountID then--坐骑
         if not select(11, C_MountJournal.GetMountInfoByID(mountID)) then
             col='|cnRED_FONT_COLOR:'
-            desc='|A:Islands-QuestBangDisable:0:0|a'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED )
+            desc='|A:Islands-QuestBangDisable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED )
         end
     else
         if C_Spell.DoesSpellExist(spellID) then
             if not IsSpellKnownOrOverridesKnown(spellID) then
                 col='|cnRED_FONT_COLOR:'
-                desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'--..(WoWTools_Mixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
+                desc=(desc or '')..'|A:Islands-QuestBangDisable:0:0|a'--..(WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB)
             else
                 --local isPet= not IsPlayerSpell(spellID)
                 --desc= isPet and '|A:WildBattlePet:0:0|a' or ''
@@ -53,7 +53,7 @@ function WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
                     select(9, UnitCastingInfo('player'))==spellID
                     or select(8, UnitChannelInfo('player'))==spellID
                 then
-                    cool= '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '正在施放' or ACTION_SPELL_CAST_START)..'|r'
+                    cool= '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '正在施放' or ACTION_SPELL_CAST_START)..'|r'
                 else
                     cool=WoWTools_CooldownMixin:GetText(spellID, nil)
                 end

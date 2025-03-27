@@ -17,7 +17,7 @@ local function Init()
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
                 '|cnGREEN_FONT_COLOR:'
-                ..(WoWTools_Mixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE))
+                ..(WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE))
             )
         end
     else
@@ -26,7 +26,7 @@ local function Init()
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
                 '|cnRED_FONT_COLOR:'
-                ..(WoWTools_Mixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)),
+                ..(WoWTools_DataMixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)),
                 'CVar addonProfilerEnabled'
                 
             )

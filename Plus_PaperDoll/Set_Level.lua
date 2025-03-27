@@ -23,7 +23,7 @@ local function Init()
         end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine('name |cnGREEN_FONT_COLOR:'..info.name)
         GameTooltip:AddLine('fileName |cnGREEN_FONT_COLOR:'..info.fileName)
@@ -35,21 +35,21 @@ local function Init()
 
         local expansionID = UnitChromieTimeID('player')--时空漫游战役 PartyUtil.lua
         local option = C_ChromieTime.GetChromieTimeExpansionOption(expansionID)
-        local expansion = option and WoWTools_TextMixin:CN(option.name) or (WoWTools_Mixin.onlyChinese and '无' or NONE)
+        local expansion = option and WoWTools_TextMixin:CN(option.name) or (WoWTools_DataMixin.onlyChinese and '无' or NONE)
         if option and option.previewAtlas then
             expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
         end
-        local text= format(WoWTools_Mixin.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..WoWTools_TextMixin:GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
+        local text= format(WoWTools_DataMixin.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..WoWTools_TextMixin:GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
                                 text
                             )
         GameTooltip:AddLine(' ')
         for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
             local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
-            GameTooltip:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info2.completed))
+            GameTooltip:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info2.completed))
             --GameTooltip:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
             --GameTooltip:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
-            --GameTooltip:AddDoubleLine(' ', col..(WoWTools_Mixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info.completed))
+            --GameTooltip:AddDoubleLine(' ', col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info.completed))
         end
 
         GameTooltip:Show()

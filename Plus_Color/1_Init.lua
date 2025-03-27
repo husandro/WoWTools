@@ -32,7 +32,7 @@ local function Show_ClorFrame()
 	print(
 		WoWTools_DataMixin.Icon.icon2..WoWTools_ColorMixin.addName,
 		'|cnGREEN_FONT_COLOR:'
-		..(WoWTools_Mixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
+		..(WoWTools_DataMixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW))
 
 	)
 
@@ -91,7 +91,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			WoWToolsSave['Plus_Color']= WoWToolsSave['Plus_Color'] or P_Save
 
-			WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(WoWTools_Mixin.onlyChinese and '颜色选择器' or COLOR_PICKER)
+			WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '颜色选择器' or COLOR_PICKER)
 
 			--添加控制面板
 			WoWTools_PanelMixin:Check_Button({
@@ -100,13 +100,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
 					print(
-						WoWTools_Mixin.addName,
+						WoWTools_DataMixin.addName,
 						WoWTools_ColorMixin.addName,
 						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-						WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+						WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)
 				end,
-				buttonText='|A:colorblind-colorwheel:0:0|a'..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
+				buttonText='|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
 				buttonFunc= function()
 					WoWTools_ColorMixin:ShowColorFrame(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, 1, nil, nil)
 				end,

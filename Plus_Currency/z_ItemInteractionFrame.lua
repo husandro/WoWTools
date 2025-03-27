@@ -53,7 +53,7 @@ local function Init(self)
 					GameTooltip:ClearLines()
 					GameTooltip:SetCurrencyByID(self2.chargeCurrencyTypeId)
 					GameTooltip:AddLine(' ')
-					GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
+					GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
 					GameTooltip:Show()
 				end
 			end)

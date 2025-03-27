@@ -174,7 +174,7 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateButton(
-        (WoWTools_Mixin.onlyChinese and '禁用添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ADD))..' |cnGREEN_FONT_COLOR:#'..get_num_items()..'|r',
+        (WoWTools_DataMixin.onlyChinese and '禁用添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ADD))..' |cnGREEN_FONT_COLOR:#'..get_num_items()..'|r',
     function()
         return MenuResponse.Open
     end)
@@ -231,15 +231,15 @@ local function Init_Disabled_Button()
             end
         end
 
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            (WoWTools_Mixin.onlyChinese and '禁用物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ITEMS))..' |cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
-            WoWTools_Mixin.onlyChinese and '自动添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ADD)
+            (WoWTools_DataMixin.onlyChinese and '禁用物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, ITEMS))..' |cnGREEN_FONT_COLOR:#'..self.Text:GetText(),
+            WoWTools_DataMixin.onlyChinese and '自动添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ADD)
         )
         GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS)),
-            (WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
+            WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS)),
+            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:Show()
     end
@@ -250,8 +250,8 @@ local function Init_Disabled_Button()
         if infoType == "item" and itemID then
             Save().items[itemID]= not Save().items[itemID] and true or nil
             print(WoWTools_DataMixin.Icon.icon2.. addName,
-                Save().items[itemID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'
-                    or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'),
+                Save().items[itemID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|r'
+                    or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
             )
             ClearCursor()
@@ -324,9 +324,9 @@ local function Init()
     ScrappingMachineFrame.celarAllItem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', '|A:bags-button-autosort-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL))
+        GameTooltip:AddDoubleLine(' ', '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL))
         GameTooltip:Show()
     end)
 
@@ -339,9 +339,9 @@ local function Init()
     ScrappingMachineFrame.addAllItem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '所有' or ALL))
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '所有' or ALL))
         GameTooltip:Show()
     end)
     ScrappingMachineFrame.addAllItem:SetScript('OnClick', function()
@@ -369,9 +369,9 @@ local function Init()
     ScrappingMachineFrame.addAllGem:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(WoWTools_Mixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|T135998:0|t'..(WoWTools_DataMixin.onlyChinese and '宝石' or AUCTION_CATEGORY_GEMS))
         GameTooltip:Show()
     end)
     ScrappingMachineFrame.addAllGem:SetScript('OnClick', function()
@@ -400,9 +400,9 @@ local function Init()
     ScrappingMachineFrame.addAllEquip:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|T135995:0|t'..(WoWTools_Mixin.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT))
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|T135995:0|t'..(WoWTools_DataMixin.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT))
         GameTooltip:Show()
     end)
 
@@ -458,7 +458,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         WoWToolsSave['Other_ScrappingMachine']= WoWToolsSave['Other_ScrappingMachine'] or P_Save
 
-        addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(WoWTools_Mixin.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
+        addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(WoWTools_DataMixin.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
 
         --添加控制面板
         WoWTools_PanelMixin:OnlyCheck({
@@ -467,7 +467,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             GetValue=function() return not Save().disabled end,
             SetValue= function()
                 Save().disabled= not Save().disabled and true or nil
-                print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end,
             layout= WoWTools_OtherMixin.Layout,
             category= WoWTools_OtherMixin.Category,

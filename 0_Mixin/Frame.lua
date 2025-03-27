@@ -28,7 +28,7 @@ end
 function WoWTools_FrameMixin:ScaleFrame(frame, delta, value, func)
     local n= value
     if not frame:CanChangeAttribute() then
-        print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+        print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
     end
     if IsAltKeyDown() then
         n= n or 1
@@ -179,4 +179,21 @@ function WoWTools_FrameMixin:HelpFrame(tab)--WoWTools_FrameMixin:HelpFrame({fram
     if tab.frame.HelpTips and not tab.frame.HelpTips.onlyOne then
         tab.frame.HelpTips:SetShown(tab.show)
     end
+end
+
+
+--确认框架中心点，在屏幕内
+function WoWTools_FrameMixin:IsInSchermo(frame)
+    frame= frame.TitleContainer or frame
+
+    local isInSchermo= true
+
+    local centerX, centerY = frame:GetCenter()
+
+    local screenWidth, screenHeight = UIParent:GetWidth(), UIParent:GetHeight()
+    if centerX < 0 or centerX > screenWidth or centerY < 0 or centerY > screenHeight then
+        isInSchermo = false
+    end
+
+    return isInSchermo
 end

@@ -20,7 +20,7 @@ end
 local function Init()
     ClassTrainerFrame.BuyAll= WoWTools_ButtonMixin:Cbtn(ClassTrainerFrame, {isUI=true, size={ClassTrainerTrainButton:GetSize()}})
     ClassTrainerFrame.BuyAll:SetPoint('RIGHT', ClassTrainerTrainButton, 'LEFT',-2,0)
-    ClassTrainerFrame.BuyAll.name= WoWTools_Mixin.onlyChinese and '全部' or ALL
+    ClassTrainerFrame.BuyAll.name= WoWTools_DataMixin.onlyChinese and '全部' or ALL
     ClassTrainerFrame.BuyAll.all= 0
     ClassTrainerFrame.BuyAll.cost= 0
 	ClassTrainerFrame.BuyAll:SetText(ClassTrainerFrame.BuyAll.name)
@@ -34,10 +34,10 @@ local function Init()
         end
 		GameTooltip:SetOwner(self,"ANCHOR_BOTTOMLEFT")
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全部' or ALL, WoWTools_Mixin.onlyChinese and '学习' or LEARN)
-		GameTooltip:AddDoubleLine(text, (WoWTools_Mixin.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '全部' or ALL, WoWTools_DataMixin.onlyChinese and '学习' or LEARN)
+		GameTooltip:AddDoubleLine(text, (WoWTools_DataMixin.onlyChinese and '可用' or AVAILABLE)..': '..'|cnGREEN_FONT_COLOR:'..self.all..'|r')
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
 		GameTooltip:Show()
     end
     ClassTrainerFrame.BuyAll:SetScript("OnLeave", GameTooltip_Hide)
@@ -61,9 +61,9 @@ local function Init()
                             table.insert(tab, link)
                         end
                     else
-                        print(WoWTools_Mixin.addName,
+                        print(WoWTools_DataMixin.addName,
                             WoWTools_ProfessionMixin.addName,
-                            '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD),
+                            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '金币不足' or NOT_ENOUGH_GOLD),
                             C_CurrencyInfo.GetCoinTextureString(money)
                         )
                         break
@@ -77,7 +77,7 @@ local function Init()
                 print('|cffff00ff'..i..'|r)', link)
             end
 
-            print(WoWTools_Mixin.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(WoWTools_Mixin.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
+            print(WoWTools_DataMixin.addName, 'Tools', WoWTools_ProfessionMixin.addName, '|cffff00ff'..num..'|r '..(WoWTools_DataMixin.onlyChinese and '学习' or LEARN), (cost>0 and '|cnGREEN_FONT_COLOR:' or '')..C_CurrencyInfo.GetCoinTextureString(cost))
 
             if GameTooltip:IsOwned(self) then
                 self:set_tooltip()
@@ -130,9 +130,9 @@ local function Init()
     function btn2:set_tooltip()
         GameTooltip:SetOwner(ClassTrainerFrame.TitleContainer, "ANCHOR_TOPLEFT")
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全部学习' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, LEARN), WoWTools_TextMixin:GetShowHide(not Save().disabledClassTrainer))
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '全部学习' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, LEARN), WoWTools_TextMixin:GetShowHide(not Save().disabledClassTrainer))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
 		GameTooltip:Show()
         self:SetAlpha(1)
     end

@@ -49,13 +49,13 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local reason=UnitPhaseReason(unit)
         if reason then
             if reason==0 then
-                textLeft= (WoWTools_Mixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
+                textLeft= (WoWTools_DataMixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..textLeft
             elseif reason==1 then
-                textLeft= (WoWTools_Mixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.layer))..textLeft
+                textLeft= (WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.layer))..textLeft
             elseif reason==2 then--战争模
-                textLeft= (isWarModeDesired and (WoWTools_Mixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (WoWTools_Mixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..textLeft
+                textLeft= (isWarModeDesired and (WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF) or (WoWTools_DataMixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON))..textLeft
             elseif reason==3 then
-                textLeft= (WoWTools_Mixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..textLeft
+                textLeft= (WoWTools_DataMixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..textLeft
             end
         end
     end
@@ -152,7 +152,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
                     ..' '..WoWTools_UnitMixin:GetClassIcon(nil, classFilename)
-                    ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_Mixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
+                    ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
                     ..'  '..WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
 
             if info.runs and info.runs then
@@ -170,7 +170,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
                     ..(WoWTools_TextMixin:CN(raceName) or WoWTools_TextMixin:CN(raceFile) or '')
                     ..' '..(WoWTools_UnitMixin:GetClassIcon(nil, classFilename) or '')
-                    ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(WoWTools_Mixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
+                    ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
         end
         lineLeft3:SetText(text)
 
@@ -192,9 +192,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                     local lineRight= _G[tooltipName..'TextRight'..i]
                     if lineRight then
                         if isWarModeDesired then
-                            lineRight:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
+                            lineRight:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE))
                         else
-                            lineRight:SetText(WoWTools_Mixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)
+                            lineRight:SetText(WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)
                         end
                         lineLeft:SetShown(true)
                     end

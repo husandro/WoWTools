@@ -61,8 +61,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			Save().hide_MajorFactionRenownFrame_Button=nil
 
 
-            WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
-            WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
+            WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
+            WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
 
            WoWTools_PanelMixin:Check_Button({
                 checkName= WoWTools_MinimapMixin.addName,
@@ -71,10 +71,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save().disabled= not Save().disabled and true or nil
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
-                        WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end,
-                buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
+                buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
                     if StopwatchFrame.rest_point then
                         StopwatchFrame:rest_point()
@@ -83,7 +83,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
-                        WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION
+                        WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION
                     )
                 end
             })

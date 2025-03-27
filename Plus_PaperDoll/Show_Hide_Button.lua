@@ -85,7 +85,7 @@ end
 
 local function Init_Menu(_, root)
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
+        WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
     function()
         return not Save().hide
     end, function()
@@ -139,13 +139,13 @@ local function Init(frame)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
         
         --GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide), WoWTools_DataMixin.Icon.left)
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or SETTINGS_TITLE, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '选项' or SETTINGS_TITLE, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         self:set_alpha(true)
     end)

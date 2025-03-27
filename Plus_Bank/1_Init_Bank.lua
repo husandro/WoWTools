@@ -62,7 +62,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Bank']= WoWToolsSave['Plus_Bank'] or P_Save
 
-            WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '银行' or BANK)
+            WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
 
 --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -73,7 +73,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if not Save().disabled and Init() then
                         Init=function()end
                     else
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
                     end
                 end
             })

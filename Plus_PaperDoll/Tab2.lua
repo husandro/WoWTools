@@ -13,7 +13,7 @@ local function Init_Menu(_, root)
     local all= GetNumTitles()
     root:CreateTitle(
        ((#GetKnownTitles()-1)..'/'..GetNumTitles()..' ')
-       ..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)
+       ..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
     )
 
     local sub
@@ -100,16 +100,16 @@ local function Init_Button()
         self:settings()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '头衔' or PAPERDOLL_SIDEBAR_TITLES)--, WoWTools_PaperDollMixin.addName)
         local known= #GetKnownTitles()-1
         GameTooltip:AddDoubleLine(
             '|cnGREEN_FONT_COLOR:'..known,
-            '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or  COLLECTED)
+            '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or  COLLECTED)
         )
 
         GameTooltip:AddDoubleLine(
             '|cnRED_FONT_COLOR:'..(GetNumTitles()-known),
-            '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)
+            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
         )
         GameTooltip:Show()
         self:SetAlpha(0)

@@ -18,27 +18,27 @@ local function Init()
     function AutoRepairCheck:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
         
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|cffff00ff'..(WoWTools_Mixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave().num or 0)..' '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
+        GameTooltip:AddDoubleLine('|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER), RepairSave().date)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '修理' or MINIMAP_TRACKING_REPAIR, (RepairSave().num or 0)..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1))
         local guild= RepairSave().guild or 0
         local player= RepairSave().player or 0
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '公会' or GUILD, C_CurrencyInfo.GetCoinTextureString(guild))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '玩家' or PLAYER, C_CurrencyInfo.GetCoinTextureString(player))
         if guild>0 and player>0 then
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '合计' or TOTAL, C_CurrencyInfo.GetCoinTextureString(guild+player))
         end
         
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), WoWTools_TextMixin:GetEnabeleDisable(not Save().notAutoRepairAll))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动修理所有物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REPAIR_ALL_ITEMS), WoWTools_TextMixin:GetEnabeleDisable(not Save().notAutoRepairAll))
         if CanGuildBankRepair() then
             local m= GetGuildBankMoney() or 0
             local col= m==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:'
-            GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
+            GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), col..C_CurrencyInfo.GetCoinTextureString(m))
         else
-            GameTooltip:AddDoubleLine('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE))
+            GameTooltip:AddDoubleLine('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP), '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
         end
         GameTooltip:Show()
     end
@@ -70,7 +70,7 @@ local function Init()
                 end
                 RepairSave().guild=RepairSave().guild+Co
                 RepairSave().num=RepairSave().num+1
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '使用公会资金修理' or GUILDCONTROL_OPTION15_TOOLTIP)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                 WoWTools_Mixin:Call(MerchantFrame_Update)
             else
                 if GetMoney()>=Co then
@@ -79,10 +79,10 @@ local function Init()
                     end
                     RepairSave().player=RepairSave().player+Co
                     RepairSave().num=RepairSave().num+1
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST)..'|r', C_CurrencyInfo.GetCoinTextureString(Co))
                     WoWTools_Mixin:Call(MerchantFrame_Update)
                 else
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '失败' or FAILED)..'|r', WoWTools_Mixin.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '失败' or FAILED)..'|r', WoWTools_DataMixin.onlyChinese and '修理花费：' or REPAIR_COST, C_CurrencyInfo.GetCoinTextureString(Co))
                 end
             end
         end
@@ -125,7 +125,7 @@ local function Init()
     MerchantRepairItemButton.Text:SetPoint('TOPLEFT', 1, -1)
     MerchantRepairItemButton:SetScript('OnEnter', function(self)--替换，源FUNC
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
-		GameTooltip:SetText(WoWTools_Mixin.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
+		GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '修理一件物品' or REPAIR_AN_ITEM)
         GameTooltip:AddLine(' ')
         WoWTools_DurabiliyMixin:OnEnter()
         GameTooltip:Show()
@@ -167,11 +167,11 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         local repairAllCost, canRepair = GetRepairAllCost()
         if ( canRepair and (repairAllCost > 0) ) then
-            GameTooltip:SetText(WoWTools_Mixin.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
+            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '修理所有物品' or REPAIR_ALL_ITEMS)
             SetTooltipMoney(GameTooltip, repairAllCost)
             local personalMoney = GetMoney()
             if(repairAllCost > personalMoney) then
-                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
+                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '没有足够的资金来修理所有物品' or GUILDBANK_REPAIR_INSUFFICIENT_FUNDS))
             end
         end
         GameTooltip:AddLine(' ')

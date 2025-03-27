@@ -97,7 +97,7 @@ local function Init_Check()
         end
     end
     if text then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, '|cffff00ff'..text..'|r', '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
     end
 end
 

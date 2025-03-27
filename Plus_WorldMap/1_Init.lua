@@ -37,21 +37,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
              WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or P_Save
 
-            WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_Mixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
-            --WoWTools_WorldMapMixin.addName2= WoWTools_Mixin.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
+            WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
+            --WoWTools_WorldMapMixin.addName2= WoWTools_DataMixin.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_WorldMapMixin.addName,
-                tooltip=  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
+                tooltip=  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD,
                 GetValue= function() return not  WoWToolsSave['Plus_WorldMap'].disabled end,
                 func= function()
                      WoWToolsSave['Plus_WorldMap'].disabled= not  WoWToolsSave['Plus_WorldMap'].disabled and true or nil
                     print(
-                        WoWTools_Mixin.addName,
+                        WoWTools_DataMixin.addName,
                         WoWTools_WorldMapMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(not  WoWToolsSave['Plus_WorldMap'].disabled),
-                        WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end
             })

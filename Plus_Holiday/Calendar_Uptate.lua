@@ -28,7 +28,7 @@ local function calendar_Uptate()
             if not self.eventID then return end
             GameTooltip:SetOwner(self:GetParent(), "ANCHOR_BOTTOMRIGHT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HolidayMixin.addName)
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('https://www.wowhead.com/event='..self.eventID, WoWTools_DataMixin.Icon.left)
             GameTooltip:Show()

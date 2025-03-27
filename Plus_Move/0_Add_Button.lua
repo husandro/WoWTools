@@ -16,22 +16,22 @@ end
 local function Set_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MoveMixin.addName)
+    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MoveMixin.addName)
     GameTooltip:AddLine(format('|cffff00ff%s|r', self.name))
     GameTooltip:AddLine(' ')
 
 
     GameTooltip:AddDoubleLine(
-        WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
+        WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
         WoWTools_DataMixin.Icon.right
     )
     GameTooltip:AddDoubleLine(
-        WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,
+        WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE,
         'Alt+'..WoWTools_DataMixin.Icon.right
     )
     if self.setZoom then
         GameTooltip:AddDoubleLine(
-            (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
+            (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale[self.name] or 1),
             'Alt+'..WoWTools_DataMixin.Icon.mid
         )
     end
@@ -67,7 +67,7 @@ local function Init_Menu(self, root)
     root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'
         ..(Save().point[self.name] and '' or '|cff828282')
-        ..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION),
+        ..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION),
     function()
         Save().point[self.name]= nil
         local p=self.pointSave

@@ -52,7 +52,7 @@ local function Set_Aura()--光环取消
             if Save.aura[data.spellId] then
                 CancelUnitBuff("player", i, nil)-- 'CANCELABLE')
                 print(addName,
-                    WoWTools_Mixin.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS),
+                    WoWTools_DataMixin.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS),
                     WoWTools_SpellMixin:GetLink(data.spellId, true)
                 )
                 break
@@ -103,9 +103,9 @@ end
 
 local function Init_Menu(self, root)
     local sub
-    sub=root:CreateTitle(WoWTools_Mixin.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS))
+    sub=root:CreateTitle(WoWTools_DataMixin.onlyChinese and '取消光环' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CANCEL, AURAS))
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '仅限脱战' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限脱战' or format(LFG_LIST_CROSS_FACTION, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_OUT_OF_COMBAT))
     end)
     for spellID in pairs(Save.aura) do
         sub=root:CreateCheckbox(
@@ -167,15 +167,15 @@ local function Init()
         GameTooltip:SetItemByID(ItemID)
         GameTooltip:AddLine(' ')
         for spellID, type in pairs(Save.aura) do
-            GameTooltip:AddDoubleLine( WoWTools_SpellMixin:GetLink(spellID, true), type and	'|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)..'|r' or '...')
+            GameTooltip:AddDoubleLine( WoWTools_SpellMixin:GetLink(spellID, true), type and	'|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r' or '...')
         end
         GameTooltip:AddLine(' ')
         local key= WoWTools_KeyMixin:IsKeyValid(self)
         if key then
-            GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
+            GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '快捷键' or SETTINGS_KEYBINDINGS_LABEL), '|cnGREEN_FONT_COLOR:'..key)
         end
 
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         WoWTools_KeyMixin:SetTexture(self)
     end)
@@ -236,7 +236,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 
 
-            addName= '|T134863:0|t'..(WoWTools_Mixin.onlyChinese and '诺格弗格药剂' or ItemName)
+            addName= '|T134863:0|t'..(WoWTools_DataMixin.onlyChinese and '诺格弗格药剂' or ItemName)
 
             Save= WoWToolsSave['NoggenfoggerElixir'] or Save
             button= WoWTools_ToolsMixin:CreateButton({

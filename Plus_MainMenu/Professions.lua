@@ -18,7 +18,7 @@ local function Init()
         if prof1 and prof1>0 then
             name, icon= GetProfessionInfo(prof1)
             if name then
-                prof1Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+                prof1Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
             end
         end
 
@@ -32,7 +32,7 @@ local function Init()
         if prof2 and prof2>0 then
             name, icon= GetProfessionInfo(prof2)
             if name then
-                prof2Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+                prof2Text='|T'..(icon or 0)..':0|t'..(bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..name..'|r'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
             end
         end
         

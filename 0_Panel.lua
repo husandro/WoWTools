@@ -39,16 +39,16 @@ end
 --开始
 --####
 local function Init_Options()
-    WoWTools_PanelMixin:Header(nil, WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)
+    WoWTools_PanelMixin:Header(nil, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 
     WoWTools_PanelMixin:OnlyButton({
-        title= '|A:talents-button-undo:0:0|a'..(WoWTools_Mixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT),
-        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_Mixin.onlyChinese and '重置' or RESET ),
-        addSearchTags= WoWTools_Mixin.onlyChinese and '设置' or SETTINGS,
+        title= '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT),
+        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET ),
+        addSearchTags= WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS,
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (WoWTools_Mixin.onlyChinese and '全部重置，插件设置' or (RESET_ALL_BUTTON_TEXT..', '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, SETTINGS)))
-                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                (WoWTools_DataMixin.onlyChinese and '全部重置，插件设置' or (RESET_ALL_BUTTON_TEXT..', '..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, SETTINGS)))
+                ..'|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
             function()
                 WoWTools_DataMixin.ClearAllSave= true
@@ -61,12 +61,12 @@ local function Init_Options()
     })
 
     WoWTools_PanelMixin:OnlyButton({
-        title= WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
-        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-        addSearchTags= WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data',
+        title= WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+        buttonText= '|A:QuestArtifact:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+        addSearchTags= WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                (WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
                 nil,
                 function()
                     WoWTools_WoWDate={}
@@ -92,7 +92,7 @@ local function Init_Options()
                     local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
                     Save().useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     Set_Color()--自定义，颜色
-                    print(WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', WoWTools_Mixin.addName,   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', WoWTools_DataMixin.addName,   WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
                         setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
@@ -107,35 +107,35 @@ local function Init_Options()
                     ColorPickerFrame.Footer.OkayButton:Click()
                 end
                 Set_Color()--自定义，颜色
-                print(WoWTools_Mixin.addName, WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', (WoWTools_Mixin.onlyChinese and '颜色' or COLOR)..'|r',   WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.addName, WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', (WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)..'|r',   WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save().useColor= value
 
         end,
         GetOptions= function()
             local container = Settings.CreateControlTextContainer()
-			container:Add(1, WoWTools_Mixin.onlyChinese and '职业' or CLASS)
-			container:Add(2, WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM)
-			container:Add(3, WoWTools_Mixin.onlyChinese and '无' or NONE)
+			container:Add(1, WoWTools_DataMixin.onlyChinese and '职业' or CLASS)
+			container:Add(2, WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)
+			container:Add(3, WoWTools_DataMixin.onlyChinese and '无' or NONE)
 			return container:GetData();
         end,
         GetValue= function() return Save().useColor end,
-        name= (WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '')..(WoWTools_Mixin.onlyChinese and '颜色' or COLOR),
-        tooltip= WoWTools_Mixin.addName,
+        name= (WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '')..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
+        tooltip= WoWTools_DataMixin.addName,
     })
 
 
     if not LOCALE_zhCN then
         WoWTools_PanelMixin:OnlyCheck({
             name= 'Chinese ',
-            tooltip= WoWTools_Mixin.onlyChinese and '语言: 简体中文'
+            tooltip= WoWTools_DataMixin.onlyChinese and '语言: 简体中文'
                     or (LANGUAGE..': '..LFG_LIST_LANGUAGE_ZHCN),
             Value= Save().onlyChinese,
             GetValue= function() return Save().onlyChinese end,
             SetValue= function()
-                WoWTools_Mixin.onlyChinese= not WoWTools_Mixin.onlyChinese and true or nil
-                Save().onlyChinese = WoWTools_Mixin.onlyChinese
-                print(WoWTools_Mixin.addName,  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                WoWTools_DataMixin.onlyChinese= not WoWTools_DataMixin.onlyChinese and true or nil
+                Save().onlyChinese = WoWTools_DataMixin.onlyChinese
+                print(WoWTools_DataMixin.addName,  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
     end
@@ -170,13 +170,13 @@ local function Init_Options()
         end
 
         WoWTools_PanelMixin:OnlyCheck({
-            name= WoWTools_Mixin.onlyChinese and '服务器' or 'Realm',
+            name= WoWTools_DataMixin.onlyChinese and '服务器' or 'Realm',
             tooltip=get_tooltip(),
             Value= not Save().disabledRealm,
             GetValue= function() return not Save().disabledRealm end,
             SetValue= function()
                 Save().disabledRealm= not Save().disabledRealm and true or nil
-                print(WoWTools_Mixin.addName,  WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.addName,  WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         })
 
@@ -218,7 +218,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWToolsSave['WoWTools_Settings'] = P_Save
             end
 
-            WoWTools_Mixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
+            WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
 
             Save().useColor= Save().useColor or 1
             Save().useCustomColorTab= Save().useCustomColorTab or {r=1, g=0.82, b=0, a=1, hex='|cffffd100'}
@@ -229,7 +229,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_DataMixin.Is_Timerunning= PlayerGetTimerunningSeasonID()
 
 
-            if WoWTools_Mixin.onlyChinese then
+            if WoWTools_DataMixin.onlyChinese then
                 WoWTools_DataMixin.Player.Language= {
                     layer='位面',
                     key='关键词',
@@ -237,14 +237,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             WoWTools_DataMixin.StausText={
-                [ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
-                [ITEM_MOD_CRIT_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
-                [ITEM_MOD_MASTERY_RATING_SHORT]= WoWTools_Mixin.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 2, true),
-                [ITEM_MOD_VERSATILITY]= WoWTools_Mixin.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 2, true),
-                [ITEM_MOD_CR_AVOIDANCE_SHORT]= WoWTools_Mixin.onlyChinese and '闪' or WoWTools_TextMixin:sub(STAT_AVOIDANCE, 1, 2, true),
-                [ITEM_MOD_CR_LIFESTEAL_SHORT]= WoWTools_Mixin.onlyChinese and '吸' or WoWTools_TextMixin:sub(STAT_LIFESTEAL, 1, 2, true),
-                [ITEM_MOD_CR_SPEED_SHORT]=WoWTools_Mixin.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
-                --[ITEM_MOD_EXTRA_ARMOR_SHORT]= WoWTools_Mixin.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
+                [ITEM_MOD_HASTE_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '急' or WoWTools_TextMixin:sub(STAT_HASTE, 1, 2, true),
+                [ITEM_MOD_CRIT_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '爆' or WoWTools_TextMixin:sub(STAT_CRITICAL_STRIKE, 1, 2, true),
+                [ITEM_MOD_MASTERY_RATING_SHORT]= WoWTools_DataMixin.onlyChinese and '精' or WoWTools_TextMixin:sub(STAT_MASTERY, 1, 2, true),
+                [ITEM_MOD_VERSATILITY]= WoWTools_DataMixin.onlyChinese and '全' or WoWTools_TextMixin:sub(STAT_VERSATILITY, 1, 2, true),
+                [ITEM_MOD_CR_AVOIDANCE_SHORT]= WoWTools_DataMixin.onlyChinese and '闪' or WoWTools_TextMixin:sub(STAT_AVOIDANCE, 1, 2, true),
+                [ITEM_MOD_CR_LIFESTEAL_SHORT]= WoWTools_DataMixin.onlyChinese and '吸' or WoWTools_TextMixin:sub(STAT_LIFESTEAL, 1, 2, true),
+                [ITEM_MOD_CR_SPEED_SHORT]=WoWTools_DataMixin.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
+                --[ITEM_MOD_EXTRA_ARMOR_SHORT]= WoWTools_DataMixin.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
             }
 
 

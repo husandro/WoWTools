@@ -55,9 +55,9 @@ local function Init_PlayerFrame()--PlayerFrame.lua
     function playerFrameTargetContextual.assisterButton:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(' ', WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant()))
         GameTooltip:Show()
@@ -67,7 +67,7 @@ local function Init_PlayerFrame()--PlayerFrame.lua
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(0.7, function()
             self:set_tooltips()
-            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant()))
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant()))
         end)
     end)
     playerFrameTargetContextual.assisterIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
@@ -186,7 +186,7 @@ end)
     PlayerFrame.lootButton:SetScript('OnEnter', function()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
         local text
         local lootSpecID = GetLootSpecialization()
@@ -196,9 +196,9 @@ end)
                 text= '|T'..texture..':0|t'..name
             end
         end
-        GameTooltip:AddDoubleLine('|A:Banker:0:0|a'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION), text)
+        GameTooltip:AddDoubleLine('|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION), text)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '当前专精' or TRANSMOG_CURRENT_SPECIALIZATION, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 
@@ -232,7 +232,7 @@ end)
         local currentSpec = GetSpecialization()
         local specID= currentSpec and GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
-        print(WoWTools_DataMixin.Icon.icon2.. addName,  WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
+        print(WoWTools_DataMixin.Icon.icon2.. addName,  WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
     end)
 
 
@@ -257,7 +257,7 @@ end)
         if self.tips then
             GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             GameTooltip:AddLine(' ')
             local dungeonID= GetRaidDifficultyID()
             local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
@@ -295,11 +295,11 @@ end)
     function PlayerFrame.instanceFrame.dungeon:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
         local dungeonID= GetDungeonDifficultyID()
         local text=WoWTools_MapMixin:GetDifficultyColor(nil, dungeonID)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY), '|A:DungeonSkull:0:0|a'..text)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY), '|A:DungeonSkull:0:0|a'..text)
         GameTooltip:AddLine(' ')
         local tab={
             DifficultyUtil.ID.DungeonNormal,
@@ -312,7 +312,7 @@ end)
             local set
             if index==3 then
                 set= ((UnitIsGroupLeader("player") or not IsInGroup()) and dungeonID~=ID and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
-                    ..(WoWTools_Mixin.onlyChinese and '设置' or SETTINGS)
+                    ..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
                     ..WoWTools_DataMixin.Icon.left
             end
             GameTooltip:AddDoubleLine(text,set)
@@ -347,12 +347,12 @@ end)
                 color3= {r=1,g=1,b=1}
             end
 
-            local text3= (WoWTools_Mixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
+            local text3= (WoWTools_DataMixin.onlyChinese and '团队副本难度' or RAID_DIFFICULTY)..': '..name3..'|r'
 
             local otherDifficulty = GetLegacyRaidDifficultyID()
             local size3= otherDifficulty and DifficultyUtil.GetMaxPlayers(otherDifficulty)--UnitPopup.lua
             if size3 and not displayMythic3 then
-                text3= text3..'|n'..(WoWTools_Mixin.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (WoWTools_Mixin.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (WoWTools_Mixin.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
+                text3= text3..'|n'..(WoWTools_DataMixin.onlyChinese and '经典团队副本难度' or LEGACY_RAID_DIFFICULTY)..': '..(size3==10 and (WoWTools_DataMixin.onlyChinese and '10人' or RAID_DIFFICULTY1) or size3==25 and (WoWTools_DataMixin.onlyChinese and '25人' or RAID_DIFFICULTY2) or '')
             end
 
             if name3 and (name3~=name2 or not displayMythic3) then
@@ -368,7 +368,7 @@ end)
 
             if name2  then
                 self.dungeon:SetVertexColor(color2.r, color2.g, color2.b)
-                local text2= (WoWTools_Mixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
+                local text2= (WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY)..': '..color2.hex..name2..'|r'
 
                 if not findRiad then
                     text2= text2..(text3 and '|n|n'..text3 or '')
@@ -426,7 +426,7 @@ end)
     PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
         if WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link then
             GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
@@ -488,11 +488,11 @@ end)
     function PlayerFrame.warModeButton:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
         if not C_PvP.CanToggleWarMode(false)  then
-            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
         end
         GameTooltip:Show()
     end
@@ -681,9 +681,9 @@ local function set_memberFrame(memberFrame)
             if UnitExists(self.unit) then
                 GameTooltip:SetUnit(self.unit)
             else
-                GameTooltip:AddDoubleLine(self.unit, WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
+                GameTooltip:AddDoubleLine(self.unit, WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             end
             GameTooltip:Show()
         end)
@@ -803,10 +803,10 @@ local function set_memberFrame(memberFrame)
             if spellID then
                 GameTooltip:SetSpellByID(spellID)
             else
-                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)..' '..(self.unit or ''), WoWTools_Mixin.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
+                GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)..' '..(self.unit or ''), WoWTools_DataMixin.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL)
             end
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             GameTooltip:Show()
             self:SetAlpha(0.5)
         end)
@@ -915,9 +915,9 @@ local function set_memberFrame(memberFrame)
         combatFrame:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(self.unit, WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            GameTooltip:AddDoubleLine(self.unit, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
             GameTooltip:Show()
             self:SetAlpha(0.5)
         end)
@@ -1076,10 +1076,10 @@ local function set_memberFrame(memberFrame)
         deadFrame.Text:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '死亡' or DEAD)..' '..(self.unit or ''),
-                    format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..' '..(self.unit or ''),
+                    format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
             )
             GameTooltip:Show()
             self:SetAlpha(0.3)
@@ -1344,7 +1344,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         if d=='RightButton' and not IsModifierKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=="LeftButton" then
-            print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right, 'Alt+'..WoWTools_DataMixin.Icon.mid..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), Save().compactPartyFrameScale or 1)
+            print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)..WoWTools_DataMixin.Icon.right, 'Alt+'..WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), Save().compactPartyFrameScale or 1)
         end
     end)
     CompactPartyFrame.moveFrame:SetScript("OnLeave", ResetCursor)
@@ -1353,7 +1353,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
             return
         end
         if not self:CanChangeAttribute() then
-            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or COMBAT))
+            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or COMBAT))
             return
         end
         local sacle= Save().compactPartyFrameScale or 1
@@ -1367,7 +1367,7 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
         elseif sacle<0.5 then
             sacle=0.5
         end
-        print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE), sacle)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), sacle)
         CompactPartyFrame:SetScale(sacle)
         Save().compactPartyFrameScale=sacle
     end)
@@ -1548,8 +1548,8 @@ local function Init_BossFrame()
             if UnitExists(self.targetUnit) then
                 GameTooltip:SetUnit(self.targetUnit)
             else
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.targetUnit)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '目标的目标' or SHOW_TARGET_OF_TARGET_TEXT, self.targetUnit)
             end
             GameTooltip:Show()
         end)
@@ -1831,11 +1831,11 @@ local function Init_RaidFrame()--设置,团队
     function CompactRaidFrameContainer.moveFrame:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= UnitAffectingCombat('player') and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().raidFrameScale or 1), col..'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self:SetAlpha(1)
     end
@@ -1847,7 +1847,7 @@ local function Init_RaidFrame()--设置,团队
             return
         end
         if not self:CanChangeAttribute() then
-            print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             return
         end
         local num= Save().raidFrameScale or 1
@@ -1861,7 +1861,7 @@ local function Init_RaidFrame()--设置,团队
         Save().raidFrameScale= num
         self:set_Scale()
         self:set_Tooltips()
-        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, num)
+        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, num)
     end)
     CompactRaidFrameContainer.moveFrame:SetScript("OnLeave", function(self)
         GameTooltip:Hide()
@@ -2146,7 +2146,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_UnitFrame']= WoWToolsSave['Plus_UnitFrame'] or P_Save
 
-            addName= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(WoWTools_Mixin.onlyChinese and '单位框体' or UNITFRAME_LABEL)
+            addName= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(WoWTools_DataMixin.onlyChinese and '单位框体' or UNITFRAME_LABEL)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -2154,7 +2154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 func= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

@@ -8,7 +8,7 @@
 
 --成就 AchievementObjectiveTracker
 local function Init()
-    WoWTools_ObjectiveMixin:Add_ClearAll_Button(AchievementObjectiveTracker, WoWTools_Mixin.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS, function(self)
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(AchievementObjectiveTracker, WoWTools_DataMixin.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS, function(self)
         local num=0
         for index, achievementID in pairs(C_ContentTracking.GetTrackedIDs(Enum.ContentTrackingType.Achievement)) do
             C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementID,  Enum.ContentTrackingStopType.Manual)

@@ -13,9 +13,9 @@ local function ShowHideTitle()
     local text= ''
     if not Save().HideTitle then
         if WorldMapFrame:IsMaximized() then--WorldMapMixin:SetupTitle()
-            text= WoWTools_Mixin.onlyChinese and '地图' or WORLD_MAP
+            text= WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP
         else
-            text= WoWTools_Mixin.onlyChinese and '地图和任务日志' or MAP_AND_QUEST_LOG
+            text= WoWTools_DataMixin.onlyChinese and '地图和任务日志' or MAP_AND_QUEST_LOG
         end
     end
     WorldMapFrame.BorderFrame:SetTitle(text)
@@ -32,9 +32,9 @@ end
 local function Init_OnEnter(self)
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
-    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
+    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
     GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer, WoWTools_DataMixin.Player.Layer or (WoWTools_Mixin.onlyChinese and '无' or NONE))--位面
+    GameTooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer, WoWTools_DataMixin.Player.Layer or (WoWTools_DataMixin.onlyChinese and '无' or NONE))--位面
 
     local uiMapID = WorldMapFrame.mapID or WorldMapFrame:GetMapID("current")--地图信息
     if uiMapID then
@@ -43,7 +43,7 @@ local function Init_OnEnter(self)
             GameTooltip:AddDoubleLine(info.name, 'mapID '..info.mapID or uiMapID)--地图ID
             local uiMapGroupID = C_Map.GetMapGroupID(uiMapID)
             if uiMapGroupID then
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '区域' or FLOOR, 'uiMapGroupID g'..uiMapGroupID)
             end
         end
         local areaPoiIDs=C_AreaPoiInfo.GetAreaPOIForMap(uiMapID)
@@ -61,9 +61,9 @@ local function Init_OnEnter(self)
         if IsInInstance() then--副本数据
             local instanceID, _, LfgDungeonID =select(8, GetInstanceInfo())
             if instanceID then
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '副本' or INSTANCE, instanceID)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, instanceID)
                 if LfgDungeonID then
-                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '随机副本' or LFG_TYPE_RANDOM_DUNGEON, LfgDungeonID)
                 end
             end
         end
@@ -79,7 +79,7 @@ local function Init_OnEnter(self)
             if playerCursorMapName then
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.Player..playerCursorMapName, 'XY: '..x..' '..y)
             else
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: '..x..' '..y)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '位置' or (RESET_POSITION:gsub(RESET, WoWTools_DataMixin.Icon.Player)), 'XY: '..x..' '..y)
             end
         end
     end
@@ -115,18 +115,18 @@ local function Init_PlayerXY_Option_Menu(self, root2)
 
     sub= root:CreateButton(
         '|A:Waypoint-MapPin-ChatIcon:0:0|a'
-        ..(WoWTools_Mixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
+        ..(WoWTools_DataMixin.onlyChinese and '分享' or SOCIAL_SHARE_TEXT),
     function()
         WoWTools_WorldMapMixin:SendPlayerPoint()--发送玩家位置
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT)
 
         local mapID= C_Map.GetBestMapForUnit("player")
         local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
         if not can then
-            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
+            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图不能标记' or "Cannot set waypoints on this map"))
         end
     end)
 
@@ -135,14 +135,14 @@ local function Init_PlayerXY_Option_Menu(self, root2)
     if self==_G['WoWTools_PlayerXY_Button'] then
         root= root:CreateButton(
             '|A:mechagon-projects:0:0|a'
-            ..(WoWTools_Mixin.onlyChinese and '选项' or GAMEMENU_OPTIONS),
+            ..(WoWTools_DataMixin.onlyChinese and '选项' or GAMEMENU_OPTIONS),
         function()
             return MenuResponse.Open
         end)
     end
 
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+        WoWTools_DataMixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
     function()
         return not Save().PlayerXY_Text_toLeft
     end, function()
@@ -212,7 +212,7 @@ local function Init_Menu(self, root)
 
 --地图和任务日志
     sub= root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '地图和任务日志' or MAP_AND_QUEST_LOG,
+        WoWTools_DataMixin.onlyChinese and '地图和任务日志' or MAP_AND_QUEST_LOG,
     function()
         return not Save().HideTitle
     end, function()
@@ -227,7 +227,7 @@ local function Init_Menu(self, root)
 
 --显示地图ID
     sub= root:CreateCheckbox(
-        (WoWTools_Mixin.onlyChinese and '地图' or WORLD_MAP)..' ID',
+        (WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP)..' ID',
     function()
         return Save().ShowMapID
     end, function()
@@ -249,7 +249,7 @@ local function Init_Menu(self, root)
 
 --地图坐标
     sub= root:CreateCheckbox(
-        (WoWTools_Mixin.onlyChinese and '地图' or WORLD_MAP)..' XY',
+        (WoWTools_DataMixin.onlyChinese and '地图' or WORLD_MAP)..' XY',
     function()
         return Save().ShowMapXY
     end, function()
@@ -265,7 +265,7 @@ local function Init_Menu(self, root)
             Save().MapXY_W= value
             WoWTools_WorldMapMixin:Init_XY_Map()
         end,
-        name=WoWTools_Mixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
+        name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
         minValue=50,
         maxValue=300,
         step=1,
@@ -343,13 +343,13 @@ local function Init_Menu(self, root)
         WoWTools_WorldMapMixin:Init_AreaPOI_Name()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
 --地下城，加名称
     sub=root:CreateCheckbox(
-        '|A:Dungeon:0:0|a'..(WoWTools_Mixin.onlyChinese and '地下城' or DUNGEONS),
+        '|A:Dungeon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS),
     function()
         return Save().ShowDungeon_Name
     end, function()
@@ -357,14 +357,14 @@ local function Init_Menu(self, root)
         WoWTools_WorldMapMixin:Init_Dungeon_Name()--地下城，加名称
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
 
 --世界地图任务，加名称
     sub=root:CreateCheckbox(
-        '|A:Quest-Campaign-Available:0:0|a'..(WoWTools_Mixin.onlyChinese and '世界任务' or WORLD_MAP_FILTER_LABEL_WORLD_QUESTS_SUBMENU),
+        '|A:Quest-Campaign-Available:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界任务' or WORLD_MAP_FILTER_LABEL_WORLD_QUESTS_SUBMENU),
     function()
         return Save().ShowWorldQues_Name
     end, function()
@@ -372,8 +372,8 @@ local function Init_Menu(self, root)
         WoWTools_WorldMapMixin:Init_WorldQuest_Name()--世界地图任务，加名称
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示图标' or SELF_HIGHLIGHT_ICON)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
 

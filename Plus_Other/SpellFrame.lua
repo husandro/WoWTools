@@ -41,9 +41,9 @@ local function set_UpdateSpendText(btn)
                 if self.maxRanks then
                     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                     GameTooltip:ClearLines()
-                    GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
                     GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
                     GameTooltip:Show()
                 end
             end)
@@ -127,7 +127,7 @@ local function Init_Spec_Menu(self, root)
 
 --激活
     sub= root:CreateCheckbox(
-        self.icon..(WoWTools_Mixin.onlyChinese and '激活' or SPEC_ACTIVE),
+        self.icon..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE),
     function()
         return self.isActive
     end, function()
@@ -139,7 +139,7 @@ local function Init_Spec_Menu(self, root)
 
 --拾取
     sub= root:CreateCheckbox(
-        '|A:VignetteLoot:0:0|a'..(WoWTools_Mixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
+        '|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
     function()
         return self.isLoot
 
@@ -150,7 +150,7 @@ local function Init_Spec_Menu(self, root)
     WoWTools_SetTooltipMixin:Set_Menu(sub)
 
     sub= root:CreateCheckbox(
-        '|A:pvptalents-warmode-swords:0:0|a'..(WoWTools_Mixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE),
+        '|A:pvptalents-warmode-swords:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE),
     function()
         return C_PvP.IsWarModeDesired()
     end,function()
@@ -177,7 +177,7 @@ end
 --SetParent
     sub2=sub:CreateCheckbox(
         (PlayerSpellsFrame and '' or '|cff828282')
-        ..(WoWTools_Mixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON),
+        ..(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON),
     function()
         return not Save().specButton.isUIParent
     end, function()
@@ -214,7 +214,7 @@ end
 
 --战斗中隐藏
         sub2:CreateCheckbox(
-            WoWTools_Mixin.onlyChinese and '战斗中隐藏'
+            WoWTools_DataMixin.onlyChinese and '战斗中隐藏'
             or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
         function()
             return Save().specButton.hideInCombat
@@ -303,10 +303,21 @@ local function Create_Spec_Button(index)
         end
     end)
     btn:SetScript("OnDragStop", function()
-        SpecFrame:StopMovingOrSizing()
+        local self= SpecFrame
+
         ResetCursor()
-        Save().specButton.point= {SpecFrame:GetPoint(1)}
-        Save().specButton.point[2]= nil
+        self:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().specButton.point= {self:GetPoint(1)}
+            Save().specButton.point[2]= nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
 
@@ -335,14 +346,14 @@ local function Create_Spec_Button(index)
                         or (InCombatLockdown() and '|cff828282')
                         or '|cffffffff'
                     )
-                    ..(self.isActive and (WoWTools_Mixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
-                    or (WoWTools_Mixin.onlyChinese and '激活' or SPEC_ACTIVE))
+                    ..(self.isActive and (WoWTools_DataMixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
+                    or (WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE))
                     ..WoWTools_DataMixin.Icon.left,
 
-                    WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+                    WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
                 )
                 if SpecFrame:IsMovable() then
-                    tooltip:AddDoubleLine(' ', 'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE))
+                    tooltip:AddDoubleLine(' ', 'Alt+'..WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE))
                 end
             end
         })
@@ -465,7 +476,7 @@ local function Init_Spec_Button()
             self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -numSpec*10-18, 0)
             self:SetFrameStrata('HIGH')
         else
-            print(addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            print(addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
         end
     end
 
@@ -547,12 +558,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().specButton= Save().specButton or {}
 
-            addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
+            addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= addName,
-                tooltip= WoWTools_Mixin.onlyChinese and '法术距离, 颜色'
+                tooltip= WoWTools_DataMixin.onlyChinese and '法术距离, 颜色'
                         or (
                             format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
 
@@ -561,7 +572,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,

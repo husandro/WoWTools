@@ -4,7 +4,7 @@ local function AddRenownRewardsToTooltip(self, renownRewards)
 	if not renownRewards then
 		return
 	end
-	GameTooltip_AddHighlightLine(GameTooltip, WoWTools_Mixin.onlyChinese and '接下来的奖励：' or MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS)
+	GameTooltip_AddHighlightLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '接下来的奖励：' or MAJOR_FACTION_BUTTON_TOOLTIP_NEXT_REWARDS)
 
 	for _, rewardInfo in ipairs(renownRewards) do
 		local renownRewardString
@@ -23,7 +23,7 @@ local function TryAppendAccountReputationLineToTooltip(tooltip, factionID)
 	if not tooltip or not factionID or not C_Reputation.IsAccountWideReputation(factionID) then
 		return
 	end
-	GameTooltip_AddColoredLine(tooltip, WoWTools_Mixin.onlyChinese and '战团声望' or REPUTATION_TOOLTIP_ACCOUNT_WIDE_LABEL, ACCOUNT_WIDE_FONT_COLOR, false)
+	GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '战团声望' or REPUTATION_TOOLTIP_ACCOUNT_WIDE_LABEL, ACCOUNT_WIDE_FONT_COLOR, false)
 end
 
 
@@ -107,10 +107,10 @@ local function ShowMajorFactionRenownTooltip(self)
 
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
 
-	GameTooltip_AddHighlightLine(GameTooltip, (WoWTools_Mixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL).. majorFactionData.renownLevel)
+	GameTooltip_AddHighlightLine(GameTooltip, (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL).. majorFactionData.renownLevel)
 
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
-	GameTooltip_AddNormalLine(GameTooltip, format(WoWTools_Mixin.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, WoWTools_TextMixin:CN(majorFactionData.name)))
+	GameTooltip_AddNormalLine(GameTooltip, format(WoWTools_DataMixin.onlyChinese and '继续获取%s的声望以提升名望并解锁奖励。' or MAJOR_FACTION_RENOWN_TOOLTIP_PROGRESS, WoWTools_TextMixin:CN(majorFactionData.name)))
 
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	local nextRenownRewards = C_MajorFactions.GetRenownRewardsForLevel(self.factionID, C_MajorFactions.GetCurrentRenownLevel(self.factionID) + 1)

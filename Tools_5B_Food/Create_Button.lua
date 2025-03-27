@@ -141,7 +141,7 @@ local function Create_Button(index)
             itemID=self.itemID,
             tooltip='|n|A:dressingroom-button-appearancelist-up:0:0|a'
                 ..(can and '' or '|cff9e9e9e')
-                ..(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right,
+                ..(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right,
         })
         self:settings()
         if can then
@@ -153,10 +153,10 @@ local function Create_Button(index)
     btn:SetScript('OnMouseDown',function(self, d)
         if d=='RightButton' and self:CanChangeAttribute() then
             MenuUtil.CreateContextMenu(self, function(f, root)
-                root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE), function()
+                root:CreateButton('|T'..(C_Item.GetItemIconByID(f.itemID) or 0)..':0|t'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE), function()
                     Save().noUseItems[self.itemID]=true
                     Save().addItems[self.itemID]=nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_FoodMixin.addName, WoWTools_Mixin.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_FoodMixin.addName, WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE, WoWTools_ItemMixin:GetLink(self.itemID))
                     WoWTools_FoodMixin:Check_Items()
                 end)
             end)
@@ -269,7 +269,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
     end
 
     if isPrint then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_FoodMixin.addName, WoWTools_Mixin.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_FoodMixin.addName, WoWTools_DataMixin.onlyChinese and '查询完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WHO, COMPLETE) )
     end
     CheckFrame.isChecking=nil
 end

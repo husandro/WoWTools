@@ -104,34 +104,34 @@ local function Init()
         local autoSet, tank, tank2, healer, isSelf, target= Save().autoSet, Save().tank, Save().tank2, Save().healer, Save().isSelf, Save().target
         GameTooltip:AddDoubleLine(
             (autoSet and '|cnGREEN_FONT_COLOR:' or '|cff828282')
-            ..(WoWTools_Mixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER)),
+            ..(WoWTools_DataMixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER)),
             WoWTools_TextMixin:GetEnabeleDisable(autoSet)
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             (tank and WoWTools_MarkerMixin:GetColor(tank).col or '|cff828282')
-            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK),
+            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_DataMixin.onlyChinese and '坦克' or TANK),
            tank and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank) or ''
         )
         GameTooltip:AddDoubleLine(
             (tank2 and WoWTools_MarkerMixin:GetColor(tank2).col or '|cff828282')
-            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '坦克' or TANK)..' 2',
+            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_DataMixin.onlyChinese and '坦克' or TANK)..' 2',
            tank2 and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', tank2) or ''
         )
         GameTooltip:AddDoubleLine(
             (healer and WoWTools_MarkerMixin:GetColor(healer).col or '|cff828282')
-            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_Mixin.onlyChinese and '治疗' or HEALER),
+            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_DataMixin.onlyChinese and '治疗' or HEALER),
            healer and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', healer) or ''
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             (isSelf and WoWTools_MarkerMixin:GetColor(isSelf).col or '|cff828282')
-            ..'|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+            ..'|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
             isSelf and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', isSelf) or ''
         )
         GameTooltip:AddDoubleLine(
             (target and WoWTools_MarkerMixin:GetColor(target).col or '|cff828282')
-            ..'|A:Target:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标' or TARGET),
+            ..'|A:Target:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET),
             target and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', target) or ''
         )
         GameTooltip:AddDoubleLine()
@@ -144,7 +144,7 @@ local function Init()
         self:set_owner()
         self:tooltip()
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, (WoWTools_Mixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, (WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
 
@@ -197,7 +197,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             end
             Save().autoReadySeconds= Save().autoReadySeconds or 3
 
-            WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_Mixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
+            WoWTools_MarkerMixin.addName= '|A:Bonus-Objective-Star:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍标记' or BINDING_HEADER_RAID_TARGET)
             MarkerButton= WoWTools_ChatMixin:CreateButton('Markers', WoWTools_MarkerMixin.addName)
 
             if MarkerButton then

@@ -39,7 +39,7 @@ local function Init()
 		if not Save().notPlus then
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true})
 			if name~='' then
-				self.PlayerName:SetFormattedText(WoWTools_Mixin.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
+				self.PlayerName:SetFormattedText(WoWTools_DataMixin.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
 			end
 		end
 	end)
@@ -49,7 +49,7 @@ local function Init()
 			local data= self:GetParent().sourceCharacterData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
 			if name~='' then
-				self.Label:SetFormattedText(WoWTools_Mixin.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 			end
 		end
     end)
@@ -57,7 +57,7 @@ local function Init()
 		if not Save().notPlus then
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true, reRealm=true})
 			if name~='' then
-				self.Label:SetFormattedText(WoWTools_Mixin.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
+				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 			end
 		end
     end)

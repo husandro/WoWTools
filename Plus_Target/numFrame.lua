@@ -122,14 +122,23 @@ local function Init_Button()
     numButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().creaturePoint={self:GetPoint(1)}
-        Save().creaturePoint[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().creaturePoint={self:GetPoint(1)}
+            Save().creaturePoint[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
     numButton:SetScript("OnClick", function(self, d)
         if d=='RightButton' and IsControlKeyDown() then--还原
             Save().creaturePoint=nil
             self:set_point()
-            print(WoWTools_Mixin.addName , WoWTools_TargetMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_DataMixin.addName , WoWTools_TargetMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
         elseif d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         end
@@ -149,23 +158,23 @@ local function Init_Button()
         Save().creatureFontSize=n
         WoWTools_LabelMixin:Create(nil, {changeFont=self.Text, size=n})
         self:set_tooltip()
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName, (WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName, (WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE), '|cnGREEN_FONT_COLOR:'..Save().creatureFontSize)
     end)
 
     function numButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TargetMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_TargetMixin.addName)
         GameTooltip:AddLine(' ')
-        if WoWTools_Mixin.onlyChinese then
-            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and WoWTools_DataMixin.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
+        if WoWTools_DataMixin.onlyChinese then
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.Player.col..'怪物目标(你)|r |cnGREEN_FONT_COLOR:队友目标(你)|r |cffffffff怪物数量|r')
         else
             GameTooltip:AddLine(WoWTools_DataMixin.Player.col..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, TARGET)..'('..YOU..')|r |cnGREEN_FONT_COLOR:'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, TARGET)..'('..YOU..')|r |cffffffff'..format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CREATURE, AUCTION_HOUSE_QUANTITY_LABEL)..'|r')
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save().creatureFontSize, 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION, 'Ctrl+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE)..'|cnGREEN_FONT_COLOR:'..Save().creatureFontSize, 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
     numButton:SetScript('OnLeave', GameTooltip_Hide)

@@ -33,7 +33,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWToolsSave['ChatButton_Combat']= WoWToolsSave['ChatButton_Combat'] or P_Save
 
-            WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
+            WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
             WoWTools_CombatMixin.CombatButton= WoWTools_ChatMixin:CreateButton('Combat', WoWTools_CombatMixin.addName)
 
             if WoWTools_CombatMixin.CombatButton then--禁用Chat Button

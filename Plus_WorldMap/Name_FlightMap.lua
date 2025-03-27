@@ -51,18 +51,18 @@ local function Init()
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
+        GameTooltip:AddDoubleLine('taxiMapID '..(GetTaxiMapID() or ''), (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..(NumTaxiNodes() or 0))
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
-            '|A:FlightMaster:0:0|a'..(WoWTools_Mixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
+            '|A:FlightMaster:0:0|a'..(WoWTools_DataMixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
                 WoWTools_TextMixin:GetShowHide( WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name),
-                WoWTools_Mixin.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
+                WoWTools_DataMixin.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
             )
             ..WoWTools_DataMixin.Icon.left
         )
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_WorldMapMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_WorldMapMixin.addName)
         GameTooltip:Show()
         self:SetAlpha(1)
     end)

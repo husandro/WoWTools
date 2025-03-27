@@ -14,7 +14,7 @@ local btn
 local function Init_Menu(self, root)
 --右
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
+        WoWTools_DataMixin.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
     function()
         return not Save().targetMoveTextToLeft
     end, function()
@@ -23,7 +23,7 @@ local function Init_Menu(self, root)
     end)
 
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '名字' or NAME,
+        WoWTools_DataMixin.onlyChinese and '名字' or NAME,
     function()
         return not Save().disableTargetName
     end, function()
@@ -129,10 +129,10 @@ local function Init()
     function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_AttributesMixin.addName, '|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标移动' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TARGET, NPE_MOVE)))
+        GameTooltip:AddDoubleLine(WoWTools_AttributesMixin.addName, '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标移动' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TARGET, NPE_MOVE)))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -146,9 +146,19 @@ local function Init()
         end
     end)
     btn:SetScript("OnDragStop", function(self)
+        ResetCursor()
         self:StopMovingOrSizing()
-        Save().targetMovePoint={self:GetPoint(1)}
-        Save().targetMovePoint[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().targetMovePoint={self:GetPoint(1)}
+            Save().targetMovePoint[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
     btn:SetScript('OnMouseDown', function(self)

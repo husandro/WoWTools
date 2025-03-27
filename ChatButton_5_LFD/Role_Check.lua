@@ -101,8 +101,8 @@ local function Init_LFD()
             LFDRoleCheckPopup_UpdateAcceptButton()
         end
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(Save().sec).. '|r '..(WoWTools_Mixin.onlyChinese and '接受' or ACCEPT)..'|r',
-                '|cnRED_FONT_COLOR:'..'Alt '..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL)..': |cfff00fff'.. SecondsToTime(Save().sec).. '|r '..(WoWTools_DataMixin.onlyChinese and '接受' or ACCEPT)..'|r',
+                '|cnRED_FONT_COLOR:'..'Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
             )
         self:CancellORSetTime(Save().sec)
         self.acceptTime= C_Timer.NewTimer(Save().sec, function()
@@ -174,7 +174,7 @@ local function Init_RolePollPopup()
             self.aceTime=C_Timer.NewTimer(Save().sec, function()
                 if self.acceptButton:IsEnabled() then
                     self.acceptButton:Click()
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, WoWTools_Mixin.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, WoWTools_DataMixin.onlyChinese and '职责确认' or ROLE_POLL, icon or '')
                 end
             end)
         end

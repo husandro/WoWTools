@@ -143,7 +143,7 @@ local function Init_Menu(_, root)
     local sub
     local new= Get_Text_Table()
 
-    new[134400]= {name='|T134400:0|t'..(WoWTools_Mixin.onlyChinese and '无' or NONE)}
+    new[134400]= {name='|T134400:0|t'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)}
 
 
     for icon, tab in pairs(new or {}) do
@@ -166,7 +166,7 @@ local function Init_Menu(_, root)
         end, {icon=icon, spellID=tab.spellID, itemID=tab.itemID})
 
         sub:SetTooltip(function(tooltip, description)
-            tooltip:AddLine((WoWTools_Mixin.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)))
+            tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)))
             if description.data.itemID then
                 tooltip:AddLine(' ')
                 tooltip:AddLine(WoWTools_ItemMixin:GetName(description.data.itemID))--取得法术，名称
@@ -208,7 +208,7 @@ local function Init()
     MacroFrame.numSelectionLable:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine( WoWTools_Mixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
+        GameTooltip:AddLine( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)
         GameTooltip:Show()
         self:SetAlpha(1)
     end)
@@ -222,7 +222,7 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             '|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_Mixin.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
+            ..(WoWTools_DataMixin.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL))
             ..(icon and '|T'..icon..':0|t' or ''),
             WoWTools_DataMixin.Icon.left
         )

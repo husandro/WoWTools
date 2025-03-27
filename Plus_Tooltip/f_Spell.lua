@@ -44,13 +44,13 @@ local function Set_HunterPet(tooltip, spellID)
 
     if icon~='' then
         tooltip:AddDoubleLine(
-            WoWTools_Mixin.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES),
+            WoWTools_DataMixin.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES),
             icon
         )
     end
     if icon2~='' then
         tooltip:AddDoubleLine(
-            WoWTools_Mixin.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES),
+            WoWTools_DataMixin.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES),
             icon2
         )
     end
@@ -96,7 +96,7 @@ if overrideSpellID and overrideSpellID~=spellID then
     link= link and link..overrideSpellID or ('overrideSpellID '..overrideSpellID)
     if link then
         spellTexture=  originalIcon2 or icon2 or C_Spell.GetSpellTexture(overrideSpellID)
-        GameTooltip:AddDoubleLine(format(WoWTools_Mixin.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
+        GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '代替%s' or REPLACES_SPELL, link), spellTexture and '|T'..spellTexture..':0|t'..spellTexture)
     end
 end]]
 

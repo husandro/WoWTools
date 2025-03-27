@@ -46,7 +46,7 @@ end
 
 local function _CalendarFrame_SafeGetName(name)
 	if ( not name or name == "" ) then
-		return WoWTools_Mixin.onlyChinese and '未知' or UNKNOWN;
+		return WoWTools_DataMixin.onlyChinese and '未知' or UNKNOWN;
 	end
 	return name;
 end
@@ -80,13 +80,13 @@ local CALENDAR_CALENDARTYPE_TOOLTIP_NAMEFORMAT = {
 		[""]				= "%s",
 	},
 	["HOLIDAY"] = {
-		["START"]			= WoWTools_Mixin.onlyChinese and '%s 开始' or CALENDAR_EVENTNAME_FORMAT_START,
-		["END"]				= WoWTools_Mixin.onlyChinese and '%s 结束' or CALENDAR_EVENTNAME_FORMAT_END,
+		["START"]			= WoWTools_DataMixin.onlyChinese and '%s 开始' or CALENDAR_EVENTNAME_FORMAT_START,
+		["END"]				= WoWTools_DataMixin.onlyChinese and '%s 结束' or CALENDAR_EVENTNAME_FORMAT_END,
 		[""]				= "%s",
 		["ONGOING"]			= "%s",
 	},
 	["RAID_LOCKOUT"] = {
-		[""]				= WoWTools_Mixin.onlyChinese and '%s解锁' or CALENDAR_EVENTNAME_FORMAT_RAID_LOCKOUT,
+		[""]				= WoWTools_DataMixin.onlyChinese and '%s解锁' or CALENDAR_EVENTNAME_FORMAT_RAID_LOCKOUT,
 	},
 };
 
@@ -141,14 +141,14 @@ local function Get_Button_Text(event)
                 if event.inviteStatus== Enum.CalendarStatus.NotSignedup or event.inviteStatus == Enum.CalendarStatus.Signedup then
                     text = inviteStatusInfo.name;
                 else
-                    text = format(WoWTools_Mixin.onlyChinese and '已登记（%s）' or CALENDAR_SIGNEDUP_FOR_GUILDEVENT_WITH_STATUS, inviteStatusInfo.name);
+                    text = format(WoWTools_DataMixin.onlyChinese and '已登记（%s）' or CALENDAR_SIGNEDUP_FOR_GUILDEVENT_WITH_STATUS, inviteStatusInfo.name);
                 end
             else
                 if ( event.calendarType == "GUILD_ANNOUNCEMENT" ) then
-                    text = format(WoWTools_Mixin.onlyChinese and '由%s创建' or CALENDAR_ANNOUNCEMENT_CREATEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
+                    text = format(WoWTools_DataMixin.onlyChinese and '由%s创建' or CALENDAR_ANNOUNCEMENT_CREATEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
                     atlas= 'communities-icon-chat'
                 else
-                    text = format( WoWTools_Mixin.onlyChinese and '被%s邀请' or CALENDAR_EVENT_INVITEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
+                    text = format( WoWTools_DataMixin.onlyChinese and '被%s邀请' or CALENDAR_EVENT_INVITEDBY_PLAYER, _CalendarFrame_SafeGetName(event.invitedBy));
                 end
             end
             atlas= atlas or 'charactercreate-icon-dice'
@@ -178,7 +178,7 @@ local function Get_Button_Text(event)
 
             local isCompleted= Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
             texture= isCompleted or '|A:AutoQuest-Badge-Campaign:0:0|a'
-            title=(WoWTools_Mixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
+            title=(WoWTools_DataMixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)
             findQuest= isCompleted and true or findQuest
             icon=463446--1166[时空扭曲徽章]
 
@@ -334,7 +334,7 @@ local function Create_Button(index, last)
                 description = data[2] or holidayInfo.description;
 
                 if (holidayInfo.startTime and holidayInfo.endTime) then
-                    description=format(WoWTools_Mixin.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
+                    description=format(WoWTools_DataMixin.onlyChinese and '%1$s|n|n开始：%2$s %3$s|n结束：%4$s %5$s' or CALENDAR_HOLIDAYFRAME_BEGINSENDS,
                         WoWTools_TextMixin:CN(description),
                         FormatShortDate(holidayInfo.startTime.monthDay, holidayInfo.startTime.month, holidayInfo.startTime.year),
                         GameTime_GetFormattedTime(holidayInfo.startTime.hour, holidayInfo.startTime.minute, true),
@@ -346,7 +346,7 @@ local function Create_Button(index, last)
                 local raidInfo = C_Calendar.GetRaidInfo(self.monthOffset, self.day, self.index);
                 if raidInfo and raidInfo.calendarType == "RAID_LOCKOUT" then
                     title = GetDungeonNameWithDifficulty(raidInfo.name, raidInfo.difficultyName);
-                    description= format(WoWTools_Mixin.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, WoWTools_TextMixin:CN(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
+                    description= format(WoWTools_DataMixin.onlyChinese and '你的%1$s副本将在%2$s解锁。' or CALENDAR_RAID_LOCKOUT_DESCRIPTION, WoWTools_TextMixin:CN(title),  GameTime_GetFormattedTime(raidInfo.time.hour, raidInfo.time.minute, true))
                 end
             end
             if title or description then
@@ -361,7 +361,7 @@ local function Create_Button(index, last)
             end
         end
         GameTooltip:AddDoubleLine('eventID', self.eventID)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HolidayMixin.addName)
         GameTooltip:Show()
         WoWTools_HolidayMixin:SetTrackButtonState(true, self.text)--TrackButton，提示
     end)

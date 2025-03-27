@@ -26,7 +26,7 @@ local function Set_SaveLogList()
 			else
 				icon:SetPoint('TOP', Textures[i-1], 'BOTTOM')
 			end
-			icon.tooltip= (WoWTools_Mixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..i
+			icon.tooltip= (WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER)..' '..i
 			table.insert(Textures, icon)
 		end
 		icon.r, icon.g, icon.b, icon.a= col.r, col.g, col.b, col.a
@@ -82,7 +82,7 @@ local function Init_Menu(self, root)
 	end
 
 --当前
-	sub= root:CreateButton('|cffffd100'..(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT),
+	sub= root:CreateButton('|cffffd100'..(WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT),
 		function ()
 			return MenuResponse
 		end,
@@ -96,12 +96,12 @@ local function Init_Menu(self, root)
 	local col=select(5, WoWTools_ColorMixin:Get_ColorFrameRGBA())
 	sub= root:CreateButton(
 		(self.r==col.r and self.g==col.g and self.b==col.b and self.a==self.a and '|cff828282' or '|cnGREEN_FONT_COLOR:')
-		..(WoWTools_Mixin.onlyChinese and '替换' or REPLACE),
+		..(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE),
 	function(data)
 		Save().saveColor[self.index]= {data.r, data.g, data.b, data.a}
 		self.r, self.g, self.b, self.a= data.r, data.g, data.b, data.a
 		self:SetColorTexture(data.r, data.g, data.b)
-		print(WoWTools_ColorMixin.addName, WoWTools_Mixin.onlyChinese and '替换成功' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, COMPLETE))
+		print(WoWTools_ColorMixin.addName, WoWTools_DataMixin.onlyChinese and '替换成功' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, COMPLETE))
 		return MenuResponse
 	end, col)
 	sub:AddInitializer(add_icon)
@@ -124,7 +124,7 @@ local function Init()
 	ColorPickerFrame.Content.ColorSwatchCurrent:HookScript('OnEnter', function(self)
 		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-		GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and "当前颜色" or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, COLOR))
+		GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and "当前颜色" or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, COLOR))
 		GameTooltip:Show()
 		self:SetAlpha(0.5)
 	end)
@@ -139,7 +139,7 @@ local function Init()
 		local r,g,b,a= ColorPickerFrame:GetPreviousValues()
 		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, WoWTools_DataMixin.Icon.left)
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and "初始|n匹配值" or BATTLEGROUND_MATCHMAKING_VALUE, WoWTools_DataMixin.Icon.left)
 		if r and g and b then
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(
@@ -221,8 +221,8 @@ local function Init()
 		icon.tooltip= function(self)
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(
-				(WoWTools_Mixin.onlyChinese and '常用颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, COLOR))..' '..self.index,
-				(WoWTools_Mixin.onlyChinese and '替换' or REPLACE)..WoWTools_DataMixin.Icon.right
+				(WoWTools_DataMixin.onlyChinese and '常用颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, COLOR))..' '..self.index,
+				(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)..WoWTools_DataMixin.Icon.right
 			)
 		end
 		icon.notClick='RightButton'

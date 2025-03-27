@@ -83,8 +83,8 @@ local function Init_LFGListSearchEntry_Update(self)
         self.autoAcceptTexture:SetScript('OnEnter', function(self2)
             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动接受' or LFG_LIST_AUTO_ACCEPT)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_LFDMixin.addName)
             GameTooltip:Show()
         end)
         self.autoAcceptTexture:SetScript("OnLeave", GameTooltip_Hide)
@@ -108,8 +108,8 @@ local function Init_LFGListSearchEntry_Update(self)
             if self2.realm then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '服务器' or 'Realm', '|cnGREEN_FONT_COLOR:'..self2.realm)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_LFDMixin.addName)
                 GameTooltip:Show()
             end
         end)
@@ -260,8 +260,8 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
         end
     end
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '申请' or SIGN_UP, (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left, 0,1,0, 0,1,0)
-    tooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
+    tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '申请' or SIGN_UP, (WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left, 0,1,0, 0,1,0)
+    tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_LFDMixin.addName)
     tooltip:Show()
 end
 
@@ -286,8 +286,8 @@ local function Init_Button()--预创建队伍增强
     Button:SetScript('OnEnter', function(self2)
         GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(not WoWTools_Mixin.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', WoWTools_TextMixin:GetEnabeleDisable(Save().LFGPlus))
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
+        GameTooltip:AddDoubleLine(not WoWTools_DataMixin.onlyChinese and LFGLIST_NAME..' Plus'  or '预创建队伍增强', WoWTools_TextMixin:GetEnabeleDisable(Save().LFGPlus))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_LFDMixin.addName)
         GameTooltip:Show()
         self2:SetAlpha(1)
     end)

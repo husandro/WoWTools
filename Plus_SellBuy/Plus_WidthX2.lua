@@ -91,7 +91,7 @@ end
 
 local function Init_WidthX2()
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, format(WoWTools_Mixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), WoWTools_Mixin.onlyChinese and '插件' or ADDONS)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), WoWTools_DataMixin.onlyChinese and '插件' or ADDONS)
     end
 
     MERCHANT_ITEMS_PER_PAGE= Save().MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
@@ -272,7 +272,7 @@ local function Init_WidthX2()
         end
 
         local numMerchantItems = GetMerchantNumItems()
-        MerchantPageText:SetFormattedText(WoWTools_Mixin.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER, MerchantFrame.page, math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
+        MerchantPageText:SetFormattedText(WoWTools_DataMixin.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER, MerchantFrame.page, math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
         -- Handle paging buttons
         if ( numMerchantItems > MERCHANT_ITEMS_PER_PAGE ) then
             MerchantPageText:SetShown(true)

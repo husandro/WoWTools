@@ -38,10 +38,20 @@ local function Init()
         end
     end)
     FramerateButton:SetScript("OnDragStop", function()
-        FramerateFrame:StopMovingOrSizing()
-        Save().frameratePoint={FramerateFrame:GetPoint(1)}
-        Save().frameratePoint[2]=nil
+        local self= FramerateFrame
         ResetCursor()
+        self:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().frameratePoint={self:GetPoint(1)}
+            Save().frameratePoint[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
     FramerateButton:SetScript("OnMouseUp", ResetCursor)
     FramerateButton:SetScript('OnMouseDown', function(_, d)
@@ -55,9 +65,9 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"))
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE, (Save().framerateSize or 12)..WoWTools_DataMixin.Icon.mid)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MainMenuMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE, (Save().framerateSize or 12)..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MainMenuMixin.addName)
         GameTooltip:Show()
     end
     FramerateButton:SetScript('OnLeave', GameTooltip_Hide)

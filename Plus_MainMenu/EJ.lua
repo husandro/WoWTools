@@ -84,25 +84,25 @@ local function Init()
             if info.quantity then
                 GameTooltip:AddDoubleLine((info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..info.quantity, info.name)
             end
-            GameTooltip:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), WoWTools_Mixin.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
+            GameTooltip:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), WoWTools_DataMixin.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
             GameTooltip:AddLine(' ')
         end
 
         local bat= UnitAffectingCombat('player')
 
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
-            ..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
+            ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '旅行者日志' or MONTHLY_ACTIVITIES_TAB)..'|r'
             ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_Mixin.onlyChinese and '团队副本' or RAIDS)..'|r'
+            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
-            ..(WoWTools_Mixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
+            ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
         GameTooltip:Show()

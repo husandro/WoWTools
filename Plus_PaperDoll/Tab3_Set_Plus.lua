@@ -26,18 +26,18 @@ local function Setttings(btn)
     
     if not btn.setID and not btn.createButton  then
         btn.createButton= WoWTools_ButtonMixin:Cbtn(btn, {size=30, atlas='groupfinder-eye-highlight'})
-        btn.createButton.str= WoWTools_Mixin.onlyChinese and '空' or EMPTY
+        btn.createButton.str= WoWTools_DataMixin.onlyChinese and '空' or EMPTY
         btn.createButton:SetPoint('RIGHT', 0,-4)
         btn.createButton:SetScript('OnLeave', GameTooltip_Hide)
         btn.createButton:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(self.str,
                 C_EquipmentSet.GetEquipmentSetID(self.str)
-                and ('|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..'|r')
-                or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..'|r')
+                and ('|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..'|r')
+                or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..'|r')
             )
             GameTooltip:Show()
         end)
@@ -52,9 +52,9 @@ local function Setttings(btn)
             end
             C_EquipmentSet.CreateEquipmentSet(self.str)
             if setID then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..'|r', self.str)
             else
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..'|r', self.str)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..'|r', self.str)
             end
         end)
     end
@@ -80,7 +80,7 @@ local function Setttings(btn)
         btn:HookScript('OnEnter', function(self)
             if self.setID and not Save().hide then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
-                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(WoWTools_Mixin.onlyChinese and '装备' or EQUIPSET_EQUIP)..WoWTools_DataMixin.Icon.right)
+                GameTooltip:AddDoubleLine(notCan or ' ', (notCan and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)..WoWTools_DataMixin.Icon.right)
                 GameTooltip:Show()
             end
         end)

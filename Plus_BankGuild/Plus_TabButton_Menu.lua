@@ -66,7 +66,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
         then
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
-            print(WoWTools_GuildBankMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_Mixin.onlyChinese and '中断' or INTERRUPT  )
+            print(WoWTools_GuildBankMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT  )
             return
         end
 
@@ -80,7 +80,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
                 freeSlots = freeSlots - 1
                 itemIndex= itemIndex+ 1
-                print(itemIndex, WoWTools_Mixin.onlyChinese and '提取' or WITHDRAW, itemLink)
+                print(itemIndex, WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW, itemLink)
 
                 find=true
                 break
@@ -89,9 +89,9 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(WoWTools_GuildBankMixin.addName, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_Mixin.onlyChinese and '背包已满' or SPELL_FAILED_CUSTOM_ERROR_1059)
+                print(WoWTools_GuildBankMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '背包已满' or SPELL_FAILED_CUSTOM_ERROR_1059)
             else
-                print(WoWTools_GuildBankMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_Mixin.onlyChinese and '完成' or COMPLETE )
+                print(WoWTools_GuildBankMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE )
             end
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
@@ -245,7 +245,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
             or self.isInRun
             or GetCurrentGuildBankTab()~= tabID
         then
-            print(itemIndex, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_Mixin.onlyChinese and '中断' or INTERRUPT  )
+            print(itemIndex, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT  )
             self.isInRun=nil
             WoWTools_GuildBankMixin.isInRun= nil
             return
@@ -258,7 +258,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
             freeSlots = freeSlots- 1
             itemIndex= itemIndex+ 1
             table.remove(items, index)
-            print(itemIndex, WoWTools_Mixin.onlyChinese and '存放' or DEPOSIT, info.info.hyperlink)
+            print(itemIndex, WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT, info.info.hyperlink)
 
             find=true
             break
@@ -266,9 +266,9 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(itemIndex, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_Mixin.onlyChinese and '你的银行已满' or ERR_BANK_FULL )
+                print(itemIndex, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '你的银行已满' or ERR_BANK_FULL )
             else
-                print(itemIndex, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_Mixin.onlyChinese and '完成' or COMPLETE )
+                print(itemIndex, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE )
             end
             self.isInRun= nil
             WoWTools_GuildBankMixin.isInRun= nil
@@ -394,7 +394,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
     num= Get_Bank_Num(tabID, nil, nil, true)
     name= ((disabled or num==0) and '|cff828282' or '')
         ..'|A:Cursor_OpenHand_32:0:0|a'
-        ..(WoWTools_Mixin.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
+        ..(WoWTools_DataMixin.onlyChinese and '提取物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, ITEMS))
         ..' #'..num
     sub= root:CreateButton(
        name,
@@ -412,7 +412,7 @@ local function Init_Out_Bank_Menu(self, root, tabID, numOut)
     num= Get_Bank_Num(tabID, nil, nil, false)
     name= ((disabled or num==0) and '|cff828282' or '')
         ..'|A:Cursor_OpenHand_32:0:0|a'
-        ..(WoWTools_Mixin.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
+        ..(WoWTools_DataMixin.onlyChinese and '提取材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, BAG_FILTER_REAGENTS))
         ..' #'..num
     sub= root:CreateButton(
         name,
@@ -443,7 +443,7 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
     num= Get_Bag_Num(nil, nil, true)
     name= ((disabled or num==0) and '|cff828282' or '')
         ..'|A:Banker:0:0|a'
-        ..(WoWTools_Mixin.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
+        ..(WoWTools_DataMixin.onlyChinese and '存放物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, ITEMS))
         ..' #'..num
     sub= root:CreateButton(
         name,
@@ -461,7 +461,7 @@ local function Init_Out_Bag_Menu(self, root, tabID, numIn)
     num= Get_Bag_Num(nil, nil, false)
     name= ((disabled or num==0) and '|cff828282' or '')
         ..'|A:Banker:0:0|a'
-        ..(WoWTools_Mixin.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
+        ..(WoWTools_DataMixin.onlyChinese and '存放材料' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEPOSIT, BAG_FILTER_REAGENTS))
         ..' #'..num
     sub= root:CreateButton(
         name,
@@ -511,7 +511,7 @@ local function Init_Menu(self, root)
         ((numOut==0 or not WoWTools_GuildMixin:IsLeaderOrOfficer()) and '|cff828282' or '')
         ..'|A:bags-button-autosort-up:0:0|a'
         ..(rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
-        ..(WoWTools_Mixin.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL)
+        ..(WoWTools_DataMixin.onlyChinese and '整理' or STABLE_FILTER_BUTTON_LABEL)
         ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or ''),
     function()
         WoWTools_GuildBankMixin:Init_Plus_Sort(self)
@@ -521,7 +521,7 @@ local function Init_Menu(self, root)
 
     sub2= sub:CreateCheckbox(
         (rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
-        ..(WoWTools_Mixin.onlyChinese and '反向整理公会仓库' or REVERSE_CLEAN_UP_BAGS_TEXT:gsub(HUD_EDIT_MODE_BAGS_LABEL, GUILD_BANK))
+        ..(WoWTools_DataMixin.onlyChinese and '反向整理公会仓库' or REVERSE_CLEAN_UP_BAGS_TEXT:gsub(HUD_EDIT_MODE_BAGS_LABEL, GUILD_BANK))
         ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or ''),
     function()
         return Save().sortRightToLeft
@@ -542,7 +542,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {
         name= WoWTools_GuildBankMixin.addName,
-        name2= '|T'..(icon or 0)..':0|t'..(name  or format(WoWTools_Mixin.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)),
+        name2= '|T'..(icon or 0)..':0|t'..(name  or format(WoWTools_DataMixin.onlyChinese and '标签%d' or GUILDBANK_TAB_NUMBER, tabID)),
     })
 
     sub:CreateSpacer()
@@ -557,13 +557,13 @@ local function Init_Menu(self, root)
             end
 
         end,
-        name=WoWTools_Mixin.onlyChinese and '延迟' or LAG_TOLERANCE,
+        name=WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE,
         minValue=0.5,
         maxValue=1.5,
         step=0.1,
         bit='%.1f',
         tooltip=function(tooltip)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '延迟' or LAG_TOLERANCE)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE)
         end
     })
     sub:CreateSpacer()

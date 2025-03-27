@@ -93,7 +93,7 @@ local function Init_Buttons()--设置按钮
             GameTooltip:SetOwner(Frame.Buttons[#Frame.Buttons], "ANCHOR_TOP")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(self.text, '|T'..EmojiButton:get_texture(self:GetID())..':0|t')
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '插入' or 'Insert'), (WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL)..WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '插入' or 'Insert'), (WoWTools_DataMixin.onlyChinese and '发送' or SEND_LABEL)..WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
         end)
         btn:SetScript('OnClick', function(self, d)
@@ -182,8 +182,17 @@ local function Init_EmojiFrame()
     Frame:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().Point={self:GetPoint(1)}
-        Save().Point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().Point={self:GetPoint(1)}
+            Save().Point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
 
@@ -191,9 +200,9 @@ local function Init_EmojiFrame()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().scale or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
     Frame:SetScript("OnMouseUp", ResetCursor)
@@ -252,7 +261,7 @@ end
 local function Init_Menu(self, root)
     local sub, sub2
 
-    root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '显示' or SHOW, function()
+    root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function()
         return Frame:IsShown()
     end, function()
         self:set_frame_shown(not Frame:IsShown())
@@ -262,16 +271,16 @@ local function Init_Menu(self, root)
 
 
 --显示/隐藏
-    --sub2=sub:CreateButton(WoWTools_Mixin.onlyChinese and '显示/隐藏' or format('%s/%s', SHOW, HIDE), function() return MenuResponse.Open end)
+    --sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or format('%s/%s', SHOW, HIDE), function() return MenuResponse.Open end)
 --显示
-    root:CreateTitle(WoWTools_Mixin.onlyChinese and '显示' or SHOW)
-    root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_Mixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+    root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save().showEnter
     end, function()
         Save().showEnter = not Save().showEnter and true or nil
     end)
 
-    root:CreateCheckbox(WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '鼠标' or MOUSE_LABEL), function()
+    root:CreateCheckbox(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '鼠标' or MOUSE_LABEL), function()
         return Save().On_Click_Show
     end, function()
         Save().On_Click_Show= not Save().On_Click_Show and true or false
@@ -279,15 +288,15 @@ local function Init_Menu(self, root)
     end)
 
 --隐藏
-    root:CreateTitle(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
-    root:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_Mixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+    root:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
         return not Save().notHideCombat
     end, function()
         Save().notHideCombat = not Save().notHideCombat and true or nil
         self:set_event()
     end)
 
-    root:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), function()
+    root:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
         return not Save().notHideMoving
     end, function()
         Save().notHideMoving = not Save().notHideMoving and true or nil
@@ -296,7 +305,7 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '选项' or OPTIONS, function()
+    sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS, function()
         return MenuResponse.Open
     end)
 
@@ -313,7 +322,7 @@ local function Init_Menu(self, root)
 
 
 --数量
-    sub2=sub:CreateButton(WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
+    sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function() return MenuResponse.Open end)
     for index= 1, self.numAllFile, 1 do
         if select(2, math.modf(self.numAllFile/index))==0 then
             sub2:CreateCheckbox(
@@ -334,7 +343,7 @@ local function Init_Menu(self, root)
     sub2:SetGridMode(MenuConstants.VerticalGridDirection, 2)
 
 --聊天频道
-    sub2=sub:CreateButton((WoWTools_Mixin.onlyChinese and '聊天频道' or CHAT_CHANNELS)..' '..self.numFilter, function()
+    sub2=sub:CreateButton((WoWTools_DataMixin.onlyChinese and '聊天频道' or CHAT_CHANNELS)..' '..self.numFilter, function()
         return MenuResponse.Refresh
     end)
 
@@ -348,7 +357,7 @@ local function Init_Menu(self, root)
     end
 
 --背景
-    sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
+    sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND, function()
         return Save().show_background
     end, function()
         Save().show_background= not Save().show_background and true or nil
@@ -357,12 +366,12 @@ local function Init_Menu(self, root)
     end)
 
     sub2:CreateDivider()
-    sub2:CreateButton(WoWTools_Mixin.onlyChinese and '全选' or ALL, function()
+    sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '全选' or ALL, function()
         Save().Channels={}
         self:set_filter_event()
         return MenuResponse.Refresh
     end)
-    sub2:CreateButton(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function()
+    sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function()
         for _, channel in pairs(Channels) do
             Save().Channels[channel]=true
         end
@@ -371,7 +380,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateDivider()
-    sub:CreateButton((Save().Point and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), function()
+    sub:CreateButton((Save().Point and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION), function()
         Save().Point=nil
         Frame:set_point()
         return MenuResponse.Refresh
@@ -452,12 +461,12 @@ local function Init()
         else
             GameTooltip:AddDoubleLine(
                 format('|T%s:0|t%s', self:get_texture() or '' , self:get_emoji_text() or ''),
-                (self.chatFrameEditBox and (WoWTools_Mixin.onlyChinese and '插入' or 'Insert') or (WoWTools_Mixin.onlyChinese and '发送' or SEND_LABEL))..WoWTools_DataMixin.Icon.left
+                (self.chatFrameEditBox and (WoWTools_DataMixin.onlyChinese and '插入' or 'Insert') or (WoWTools_DataMixin.onlyChinese and '发送' or SEND_LABEL))..WoWTools_DataMixin.Icon.left
             )
         end
         if self.numFilter==0 then
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '聊天频道' or CHAT_CHANNELS, self.numFilter)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '聊天频道' or CHAT_CHANNELS, self.numFilter)
         end
         GameTooltip:Show()
     end

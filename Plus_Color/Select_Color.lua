@@ -41,7 +41,7 @@ local function Create_Texture(r,g,b,a, atlas)
 		local col= '|c'..WoWTools_ColorMixin:RGBtoHEX(self.r, self.g, self.b, self.a)
 		GameTooltip:SetOwner(ColorPickerFrame, "ANCHOR_RIGHT")
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(col..WoWTools_Mixin.addName, col..WoWTools_ColorMixin.addName)
+		GameTooltip:AddDoubleLine(col..WoWTools_DataMixin.addName, col..WoWTools_ColorMixin.addName)
 
 		GameTooltip:AddDoubleLine(
             '|cffff0000r|r|cffffffff=|r'..tonumber(format('%.2f',self.r))

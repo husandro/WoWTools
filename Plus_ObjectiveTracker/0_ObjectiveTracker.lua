@@ -29,15 +29,15 @@ function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
     btn:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName,WoWTools_ObjectiveMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName,WoWTools_ObjectiveMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '双击' or 'Double-Click')..WoWTools_DataMixin.Icon.left, (WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '双击' or 'Double-Click')..WoWTools_DataMixin.Icon.left, (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
         GameTooltip:Show()
         f:SetAlpha(1)
     end)
     btn:SetScript('OnDoubleClick', func)
     function btn:print_text(num)
-        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -140,7 +140,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             WoWToolsSave['ObjectiveTracker']= WoWToolsSave['ObjectiveTracker'] or P_Save
 
-           WoWTools_ObjectiveMixin.addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
+           WoWTools_ObjectiveMixin.addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -149,7 +149,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Init()
-                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 

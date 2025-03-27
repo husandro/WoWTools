@@ -45,13 +45,13 @@ local function Currency_Max(curID)--已达到资源上限
         for currencyID, info in pairs(tab) do
             print(
                 (WoWTools_CurrencyMixin:GetLink(currencyID) or currencyID)
-                ..(info.isMaxWeek and (WoWTools_Mixin.onlyChinese and '本周' or GUILD_CHALLENGES_THIS_WEEK) or '')
+                ..(info.isMaxWeek and (WoWTools_DataMixin.onlyChinese and '本周' or GUILD_CHALLENGES_THIS_WEEK) or '')
             )
             MaxTabs[currencyID]=true
         end
         print(
             '|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_Mixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
+            ..(WoWTools_DataMixin.onlyChinese and '已达到资源上限' or SPELL_FAILED_CUSTOM_ERROR_248)
             ..'|r'
             ..(num>1 and num or '')
         )

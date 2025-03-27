@@ -44,8 +44,8 @@ local function exit_Instance()
 
 
     print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
-        WoWTools_Mixin.onlyChinese and '离开' or LEAVE,
-        WoWTools_TextMixin:CN(name) or WoWTools_Mixin.onlyChinese and '副本' or INSTANCE,
+        WoWTools_DataMixin.onlyChinese and '离开' or LEAVE,
+        WoWTools_TextMixin:CN(name) or WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
         num
     )
     ExitIns=nil
@@ -108,7 +108,7 @@ local function Init_Frame()
             C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
             LFGTeleport(true)
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
-                WoWTools_Mixin.onlyChinese and '海岛探险' or ISLANDS_HEADER,
+                WoWTools_DataMixin.onlyChinese and '海岛探险' or ISLANDS_HEADER,
                 WoWTools_LFDMixin:Get_Instance_Num('island')
             )
             
@@ -118,7 +118,7 @@ local function Init_Frame()
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                     WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true, true)
                 end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(Save().sec))
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(Save().sec))
                 C_Timer.After(Save().sec, function()
                     if not IsModifierKeyDown() then
                         if IsInLFDBattlefield() then
@@ -141,9 +141,9 @@ end
 
 local function Init()
     StaticPopupDialogs['WoWTools_LFD_ExitIns']={
-        text =WoWTools_Mixin.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(WoWTools_Mixin.onlyChinese and '离开' or LEAVE)..'|r: ' ..(WoWTools_Mixin.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..Save().sec..' |r'..(WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
-        button1 = WoWTools_Mixin.onlyChinese and '离开' or  LEAVE,
-        button2 = WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
+        text =WoWTools_DataMixin.addName..' '..WoWTools_LFDMixin.addName..'|n|n|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)..'|r: ' ..(WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE).. '|cff00ff00 '..Save().sec..' |r'..(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS),
+        button1 = WoWTools_DataMixin.onlyChinese and '离开' or  LEAVE,
+        button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnAccept=function()
             ExitIns=true
             exit_Instance()
@@ -151,7 +151,7 @@ local function Init()
         OnCancel=function(_, _, d)
             if d=='clicked' then
                 ExitIns=nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,'|cff00ff00'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)..'|r', WoWTools_Mixin.onlyChinese and '离开' or LEAVE)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,'|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r', WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)
             end
         end,
         OnUpdate= function(self)
@@ -164,7 +164,7 @@ local function Init()
             s:SetAutoFocus(false)
             s:ClearFocus()
             ExitIns=nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,'|cff00ff00'..(WoWTools_Mixin.onlyChinese and '取消' or CANCEL)..'|r', WoWTools_Mixin.onlyChinese and '离开' or LEAVE)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,'|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r', WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)
             s:GetParent():Hide()
         end,
         whileDead=true, hideOnEscape=true, exclusive=true,

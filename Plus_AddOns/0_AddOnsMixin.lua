@@ -7,13 +7,13 @@ function WoWTools_AddOnsMixin:Get_MenoryValue(indexORname, showText)
     if value and value>0 then
         if value<1000 then
             if showText then
-                va= format(WoWTools_Mixin.onlyChinese and '插件内存：%.2f KB' or TOTAL_MEM_KB_ABBR, value)
+                va= format(WoWTools_DataMixin.onlyChinese and '插件内存：%.2f KB' or TOTAL_MEM_KB_ABBR, value)
             else
                 va= format('%iKB', value)
             end
         else
             if showText then
-                va= format(WoWTools_Mixin.onlyChinese and '插件内存：%.2f MB' or TOTAL_MEM_MB_ABBR, value/1000)
+                va= format(WoWTools_DataMixin.onlyChinese and '插件内存：%.2f MB' or TOTAL_MEM_MB_ABBR, value/1000)
             else
                 va= format('%.2fMB', value/1000)
             end
@@ -97,7 +97,7 @@ function WoWTools_AddOnsMixin:Show_Select_Tooltip(tooltip, tab)
             percentText= format('%0.2fMB',allMemo/1000)
         end
     end
-    tooltip:AddDoubleLine(' ', index..' '..(WoWTools_Mixin.onlyChinese and '插件' or ADDONS)..' '..percentText)
+    tooltip:AddDoubleLine(' ', index..' '..(WoWTools_DataMixin.onlyChinese and '插件' or ADDONS)..' '..percentText)
 
     for i, info in pairs(newTab) do
         local left=info.left

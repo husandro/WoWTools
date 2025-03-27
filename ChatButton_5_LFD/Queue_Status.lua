@@ -55,7 +55,7 @@ local function get_InviteButton_Frame(index)
         frame.InviteButton:SetScript('OnEnter', function(self2)
             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(self2:GetParent().applicantID, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '邀请' or INVITE))
+            GameTooltip:AddDoubleLine(self2:GetParent().applicantID, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '邀请' or INVITE))
             GameTooltip:AddLine(self2:GetParent().tooltip)
             GameTooltip:Show()
         end)
@@ -69,7 +69,7 @@ local function get_InviteButton_Frame(index)
         frame.ChatButton:SetScript('OnEnter', function(self2)
             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine( self2:GetParent().name, WoWTools_Mixin.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
+            GameTooltip:AddDoubleLine( self2:GetParent().name, WoWTools_DataMixin.onlyChinese and '/密语' or SLASH_SMART_WHISPER2)
             GameTooltip:AddLine(self2:GetParent().tooltip)
             GameTooltip:Show()
         end)
@@ -86,7 +86,7 @@ local function get_InviteButton_Frame(index)
         frame.DeclineButton:SetScript('OnEnter', function(self2)
             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine( self2:GetParent().applicantID, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE))
+            GameTooltip:AddDoubleLine( self2:GetParent().applicantID, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE))
             GameTooltip:AddLine(self2:GetParent().tooltip)
             GameTooltip:Show()
         end)
@@ -152,13 +152,13 @@ end
 
 
 local function get_Status_Text(status)--列表，状态，信息
-    return status=='queued' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)..'|r')
-        or status=='confirm' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '就绪' or READY)..'|r')
-        or status=='active' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '激活' or SPEC_ACTIVE)..'|r')
-        or status=='proposal' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '准备进入' or QUEUED_STATUS_PROPOSAL)..'|r')
-        or status=='error' and ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '错误' or ERRORS)..'|r')
-        or status=='none' and ('|cnYELLOW_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE)..'|r')
-        or status=='suspended' and ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
+    return status=='queued' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '在队列中' or BATTLEFIELD_QUEUE_STATUS)..'|r')
+        or status=='confirm' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '就绪' or READY)..'|r')
+        or status=='active' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)..'|r')
+        or status=='proposal' and ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '准备进入' or QUEUED_STATUS_PROPOSAL)..'|r')
+        or status=='error' and ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '错误' or ERRORS)..'|r')
+        or status=='none' and ('|cnYELLOW_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
+        or status=='suspended' and ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..'|r')
         or status or ''
 end
 
@@ -201,7 +201,7 @@ local function Set_Queue_Status()--小眼睛, 信息
     if pve then
         local _, tank, healer, dps= GetLFGRoles()--检测是否选定角色pve
         text= text and text..'|n' or ''
-        text= text..'|A:groupfinder-icon-friend:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and 'PVE' or TRANSMOG_SET_PVE)..'|r'
+        text= text..'|A:groupfinder-icon-friend:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PVE' or TRANSMOG_SET_PVE)..'|r'
                 ..(tank and INLINE_TANK_ICON or '')
                 ..(healer and INLINE_HEALER_ICON or '')
                 ..(dps and INLINE_DAMAGER_ICON or '')
@@ -218,7 +218,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 ..WoWTools_TextMixin:CN(mapName)..(queueType and ' ('..queueType..')')
                 ..(status~='queued' and ' '..get_Status_Text(status) or '')
                 ..(teamSize and teamSize>0 and ' '..teamSize or '')
-                ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(WoWTools_Mixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
+                ..(suspendedQueue and ('|cnRED_FONT_COLOR: ['..(WoWTools_DataMixin.onlyChinese and '暂停' or QUEUED_STATUS_SUSPENDED)..']|r') or '')
                 ..(WoWTools_DataMixin.Icon[role] or '')
                 ..' '.. WoWTools_TimeMixin:SecondsToClock(GetBattlefieldTimeWaited(i) / 1000)
                 ..' '
@@ -238,7 +238,7 @@ local function Set_Queue_Status()--小眼睛, 信息
 
     local queueState, _, queuedTime= C_PetBattles.GetPVPMatchmakingInfo() --PET
     if queueState then
-        local pet= '|A:worldquest-icon-petbattle:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..'|r'
+        local pet= '|A:worldquest-icon-petbattle:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)..'|r'
         if queuedTime then
             pet= pet..' '..WoWTools_TimeMixin:Info(queuedTime, true)
         end
@@ -299,7 +299,7 @@ local function Set_Queue_Status()--小眼睛, 信息
 
                 local numMembers--人数
                 if info.numMembers and info.numMembers>0 then
-                    numMembers= ' |A:socialqueuing-icon-group:0:0|a'..info.numMembers--..(WoWTools_Mixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
+                    numMembers= ' |A:socialqueuing-icon-group:0:0|a'..info.numMembers--..(WoWTools_DataMixin.onlyChinese and '队员' or PLAYERS_IN_GROUP)
                     local friendly
                     if info.numBNetFriends and info.numBNetFriends>0 then
                         friendly = (friendly and friendly..' ' or '')..info.numBNetFriends..WoWTools_DataMixin.Icon.wow2
@@ -346,7 +346,7 @@ local function Set_Queue_Status()--小眼睛, 信息
     end
     if lfg then
         text= text and text..'|n' or ''
-        text= text..'|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r #'..#LFGTab
+        text= text..'|A:charactercreate-icon-dice:0:0|a|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已登记' or QUEUED_STATUS_SIGNED_UP)..'|r #'..#LFGTab
         text= text..'|n'..lfg
     end
 
@@ -456,7 +456,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 ..' |cFF00FF00#'..applicantsNum..'|r'--数量
                 ..(info.autoAccept and '|A:runecarving-icon-reagent-empty:0:0|a' or '')--自动邀请
                 ..(name2 and ' '..name2 or '')--名称
-                ..(info.privateGroup and  (WoWTools_Mixin.onlyChinese and '私人' or LFG_LIST_PRIVATE) or '')--私人
+                ..(info.privateGroup and  (WoWTools_DataMixin.onlyChinese and '私人' or LFG_LIST_PRIVATE) or '')--私人
                 ..(info.duration and  ' '..WoWTools_TimeMixin:SecondsToClock(info.duration) or '')--时间
 
             if member and not isLeader then--不是队长, 显示, 内容
@@ -466,7 +466,7 @@ local function Set_Queue_Status()--小眼睛, 信息
         if list then
             text= (text and text..'|n' or '')
             ..(LFGListUtil_IsEntryEmpowered() and WoWTools_DataMixin.Icon.Player or '|A:auctionhouse-icon-favorite:0:0|a')
-            ..(WoWTools_Mixin.onlyChinese and '招募' or RAF_RECRUITMENT)..(info.autoAccept and ' ('..(WoWTools_Mixin.onlyChinese and '自动加入' or AUTO_JOIN)..')' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '招募' or RAF_RECRUITMENT)..(info.autoAccept and ' ('..(WoWTools_DataMixin.onlyChinese and '自动加入' or AUTO_JOIN)..')' or '')
             ..'|n'..list
         end
     end
@@ -499,7 +499,7 @@ local function Init_Menu(self, root)
 --离开所有队列
     root:CreateDivider()
     sub=root:CreateButton(
-        WoWTools_Mixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
+        WoWTools_DataMixin.onlyChinese and '离开所有队列' or LEAVE_ALL_QUEUES,
     function()
         WoWTools_LFDMixin:Leave_All_LFG()
     end)
@@ -574,10 +574,10 @@ local function Init()
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_LFDMixin.addName, WoWTools_Mixin.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
+        GameTooltip:AddDoubleLine(WoWTools_LFDMixin.addName, WoWTools_DataMixin.onlyChinese and '列表信息' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_QUEUE_TOOLTIP_HEADER, INFO))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -589,8 +589,17 @@ local function Init()
     Button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().tipsFramePoint={self:GetPoint(1)}
-        Save().tipsFramePoint[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().tipsFramePoint={self:GetPoint(1)}
+            Save().tipsFramePoint[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
     Button:SetScript("OnMouseDown", function(self, d)

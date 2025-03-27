@@ -46,7 +46,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
         frame.sumButton:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
             GameTooltip:Show()
             self:SetAlpha(1)
         end)
@@ -88,7 +88,7 @@ local function Init_Menu(self, root)
     local num=0
 --自动召唤
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
+        WoWTools_DataMixin.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
     function()
         return Save.autoSummon
     end, function()
@@ -119,7 +119,7 @@ local function Init_Menu(self, root)
     if num>1 then
         root:CreateDivider()
         root:CreateButton(
-            WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
             Save.Pets={[2780]=true}
             if PetJournal_UpdatePetList then
@@ -244,7 +244,7 @@ local function Init()
         local petID = C_PetJournal.GetSummonedPetGUID()
         if petID then
             local speciesID, customName, _, _, _, _, _, name2= C_PetJournal.GetPetInfoByPetID(petID)
-            if speciesID and self.Pets[speciesID] and WoWTools_Mixin.onlyChinese then
+            if speciesID and self.Pets[speciesID] and WoWTools_DataMixin.onlyChinese then
                 name= self.Pets[speciesID].cn
             end
             name= name or customName or name2
@@ -304,12 +304,12 @@ local function Init()
             GameTooltip:SetCompanionPet(info.petID)
         end
         GameTooltip:AddLine(' ')
-        local name = WoWTools_Mixin.onlyChinese and info.cn or info.name
+        local name = WoWTools_DataMixin.onlyChinese and info.cn or info.name
         if name then
             GameTooltip:AddDoubleLine(name, WoWTools_DataMixin.Icon.left)
         end
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), WoWTools_DataMixin.Icon.mid)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '随机偏好宠物' or SLASH_RANDOMFAVORITEPET1:gsub('/', ''), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
     button:SetScript('OnLeave', GameTooltip_Hide)
@@ -383,7 +383,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save.speciesID= Save.speciesID or 2780
 
-            addName= '|T3150958:0|t'..(WoWTools_Mixin.onlyChinese and '黛西' or 'Daisy')
+            addName= '|T3150958:0|t'..(WoWTools_DataMixin.onlyChinese and '黛西' or 'Daisy')
 
             button= WoWTools_ToolsMixin:CreateButton({
                 name='SummonPet',

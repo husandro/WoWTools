@@ -60,22 +60,22 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName)
         print(
-            '|cnGREEN_FONT_COLOR:'..(sec or ''), (WoWTools_Mixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)..'|r',
+            '|cnGREEN_FONT_COLOR:'..(sec or ''), (WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)..'|r',
 
             text,
 
             (isTank and WoWTools_DataMixin.Icon.TANK or '')
             ..(isHealer and WoWTools_DataMixin.Icon.HEALER or '')
             ..(isDamage and WoWTools_DataMixin.Icon.DAMAGER or '')
-            ..(allowMultipleRoles and '|cffff8200'..(WoWTools_Mixin.onlyChinese and '多个职责' or CLUB_FINDER_MULTIPLE_ROLES)..'|r' or ''),
+            ..(allowMultipleRoles and '|cffff8200'..(WoWTools_DataMixin.onlyChinese and '多个职责' or CLUB_FINDER_MULTIPLE_ROLES)..'|r' or ''),
 
-            (questSessionActive and '|cff00ffff'..(WoWTools_Mixin.onlyChinese and '场景战役' or SCENARIOS) or '')--场景战役
+            (questSessionActive and '|cff00ffff'..(WoWTools_DataMixin.onlyChinese and '场景战役' or SCENARIOS) or '')--场景战役
         )
         if isNativeRealm then--转服务器
              print(
                 '|cffff00ff'
                 ..format(
-                    WoWTools_Mixin.onlyChinese
+                    WoWTools_DataMixin.onlyChinese
                     and '%s邀请你加入队伍。接受邀请可能会将你传送到另外一个服务器区域。'
                     or INVITATION_XREALM:gsub('\n\n', ''),
                     WoWTools_UnitMixin:GetLink(nil, inviterGUID)
@@ -83,7 +83,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
             )
         end
         if sec then
-            print('|cnGREEN_FONT_COLOR:Alt',WoWTools_Mixin.onlyChinese and '取消' or CANCEL )
+            print('|cnGREEN_FONT_COLOR:Alt',WoWTools_DataMixin.onlyChinese and '取消' or CANCEL )
         end
         WoWTools_CooldownMixin:Setup(StaticPopupFrame, nil, sec or TimeLeft, nil, true, true, nil)--冷却条    
     end
@@ -92,10 +92,10 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
 --拒绝
     if Save().InvNoFriend[inviterGUID] then
         sec= 3
-        text= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '拒绝' or DECLINE)..' '..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum..'|r'
+        text= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '拒绝' or DECLINE)..' '..Save().InvNoFriend[inviterGUID]..'/'..Save().InvNoFriendNum..'|r'
         setPrint()
 
-        StaticPopupFrame.button3:SetText(WoWTools_Mixin.onlyChinese and '移除拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, DECLINE))
+        StaticPopupFrame.button3:SetText(WoWTools_DataMixin.onlyChinese and '移除拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, DECLINE))
 
         if InvTimer then InvTimer:Cancel() end
 
@@ -111,7 +111,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
         sec=isInLFG() and 10 or 3--是否有FB, 排除中
 
         text= '|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_Mixin.onlyChinese and '接受好友' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCEPT, FRIENDS))
+            ..(WoWTools_DataMixin.onlyChinese and '接受好友' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCEPT, FRIENDS))
             ..'|r'
         setPrint()
 
@@ -122,7 +122,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
     elseif IsResting() and Save().NoInvInResting and not questSessionActive then
         sec= 3
         text= '|cnRED_FONT_COLOR:'
-            ..(WoWTools_Mixin.onlyChinese and '休息区拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DECLINE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE)))
+            ..(WoWTools_DataMixin.onlyChinese and '休息区拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DECLINE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CALENDAR_STATUS_OUT, ZONE)))
             ..'|r'
         setPrint()
 
@@ -145,7 +145,7 @@ local function Init()
     EventRegistry:RegisterFrameEventAndCallback("PARTY_INVITE_REQUEST", Settings)
 
 
-    StaticPopupDialogs["PARTY_INVITE"].button3= WoWTools_Mixin.onlyChinese and '添加拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, DECLINE)--添加拒绝按钮
+    StaticPopupDialogs["PARTY_INVITE"].button3= WoWTools_DataMixin.onlyChinese and '添加拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, DECLINE)--添加拒绝按钮
     StaticPopupDialogs["PARTY_INVITE"].OnAlt=function()
         if not InviterPlayerGUID then
             return
@@ -155,7 +155,7 @@ local function Init()
             Save().InvNoFriend[InviterPlayerGUID] =nil
 
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
-                WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
+                WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
                 WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID)
             )
             Accept()
@@ -167,7 +167,7 @@ local function Init()
             Save().InvNoFriendNum=Save().InvNoFriendNum+1
 
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
-                WoWTools_Mixin.onlyChinese and '添加' or ADD,
+                WoWTools_DataMixin.onlyChinese and '添加' or ADD,
                 WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID)
             )
             Decline()

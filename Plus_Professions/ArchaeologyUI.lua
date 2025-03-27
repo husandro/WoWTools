@@ -40,8 +40,8 @@ local function Init_ArcheologyDigsiteProgressBar_OnShow(frame)
         function framGameTooltipButton:set_tooltips()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '声音提示' or  SOUND, WoWTools_TextMixin:GetEnabeleDisable(Save().ArcheologySound))
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '声音提示' or  SOUND, WoWTools_TextMixin:GetEnabeleDisable(Save().ArcheologySound))
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
             GameTooltip:Show()
         end
         framGameTooltipButton:SetAlpha(0.3)
@@ -156,10 +156,10 @@ local function Init()
                     local sub= raceName
                     if rarity == 0 then
                         name= '|cffffffff'..name..'|r'
-                        sub= sub.."-|cffffffff"..(WoWTools_Mixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC).."|r"
+                        sub= sub.."-|cffffffff"..(WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC).."|r"
                     else
                         name='|cff0070dd'..name..'|r'
-                        sub= sub.."-|cff0070dd"..(WoWTools_Mixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
+                        sub= sub.."-|cff0070dd"..(WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC).."|r"
                     end
                     btn.artifactName:SetText(name)
                     btn.artifactSubText:SetText(sub..' |cnGREEN_FONT_COLOR:'..completionCount..'|r')
@@ -185,7 +185,7 @@ local function Init()
                     if frame.itemID then
                         GameTooltip:SetItemByID(frame.itemID)
                     end
-                    GameTooltip:AddLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
+                    GameTooltip:AddLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
                     GameTooltip:Show()
                 end)
 
@@ -198,7 +198,7 @@ local function Init()
                     GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
                     GameTooltip:SetItemByID(87399)
-                    GameTooltip:AddLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
+                    GameTooltip:AddLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
                     GameTooltip:Show()
                 end)
 

@@ -11,7 +11,7 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
     end
 
     if Save().Sell[itemID] and not Save().notSellCustom then
-        return WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM
+        return WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM
     end
 
     if not WoWTools_DataMixin.Is_Timerunning and not Save().notSellBoss and itemLink then
@@ -19,18 +19,18 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
         if level then
             local itemLevel= C_Item.GetDetailedItemLevelInfo(itemLink) or select(4, C_Item.GetItemInfo(itemLink))
             if level== itemLevel  then
-                return WoWTools_Mixin.onlyChinese and '首领' or BOSS
+                return WoWTools_DataMixin.onlyChinese and '首领' or BOSS
             end
         end
     end
 
     if quality==0 then
         if WoWTools_CollectedMixin:GetPet9Item(itemID, true) then--宠物兑换, wow9.0
-            return WoWTools_Mixin.onlyChinese and '宠物' or PET
+            return WoWTools_DataMixin.onlyChinese and '宠物' or PET
 
         elseif not Save().notSellJunk then--垃圾
             if isBound==true then
-                return WoWTools_Mixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK
+                return WoWTools_DataMixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK
             else
                 local classID, subclassID = select(6, C_Item.GetItemInfoInstant(itemID))
                 if (classID==2 or classID==4) and subclassID~=0 then
@@ -39,7 +39,7 @@ function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
                         return
                     end
                 end
-                return WoWTools_Mixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK
+                return WoWTools_DataMixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK
             end
         end
     end

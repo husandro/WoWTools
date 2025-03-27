@@ -18,7 +18,7 @@ local function Movie_SubMenu(root, movieID, dateTime)
     if dateTime  then
 
         root:CreateCheckbox(
-            WoWTools_Mixin.onlyChinese and '移除' or REMOVE,
+            WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
         function(data)
             return Save().movie[data.movieID]
         end, function(data)
@@ -31,7 +31,7 @@ local function Movie_SubMenu(root, movieID, dateTime)
 --下载
     if not IsMovieLocal(movieID) then
         local sub=root:CreateButton(
-            WoWTools_Mixin.onlyChinese and '下载' or 'Download',
+            WoWTools_DataMixin.onlyChinese and '下载' or 'Download',
         function(data)
             PreloadMovie(data.movieID)
         end, {movieID=movieID, dateTime=dateTime})
@@ -41,7 +41,7 @@ local function Movie_SubMenu(root, movieID, dateTime)
             local inProgress, downloaded, total = GetMovieDownloadProgress(description.data.movieID)
             if inProgress and downloaded and total and total>0 then
                 tooltip:AddDoubleLine(
-                    WoWTools_Mixin.onlyChinese and '进度' or PVP_PROGRESS_REWARDS_HEADER,
+                    WoWTools_DataMixin.onlyChinese and '进度' or PVP_PROGRESS_REWARDS_HEADER,
                     format('|n%i%%', downloaded/total*100)
                 )
             end
@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
 
 --启用
     sub=root:CreateCheckbox(
-        (WoWTools_Mixin.onlyChinese and '启用' or ENABLE)..'|A:SpecDial_LastPip_BorderGlow:0:0|a',
+        (WoWTools_DataMixin.onlyChinese and '启用' or ENABLE)..'|A:SpecDial_LastPip_BorderGlow:0:0|a',
     function()
         return Save().gossip
     end, function()
@@ -80,14 +80,14 @@ local function Init_Menu(self, root)
         return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine('Alt+'..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE))
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK)
+        tooltip:AddLine('Alt+'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '暂时' or BOOSTED_CHAR_SPELL_TEMPLOCK)
     end)
 
 --唯一对话    
     root:CreateDivider()
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
+        WoWTools_DataMixin.onlyChinese and '唯一对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEM_UNIQUE, ENABLE_DIALOG),
     function()
         return  Save().unique
     end, function ()
@@ -102,7 +102,7 @@ local function Init_Menu(self, root)
     end
     sub=root:CreateButton(
         '     '
-        ..(WoWTools_Mixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
+        ..(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG))
         ..(num==0 and ' |cff9e9e9e' or ' ')
         ..num,
     function()
@@ -127,7 +127,7 @@ local function Init_Menu(self, root)
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
-            WoWTools_Mixin.onlyChinese and '清除全部' or CLEAR_ALL,
+            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
         function()
             Save().gossipOption={}
         end)
@@ -146,7 +146,7 @@ local function Init_Menu(self, root)
         num2=num2+1
     end
     sub=root:CreateCheckbox(
-        (WoWTools_Mixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
+        (WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE))
         ..WoWTools_DataMixin.Icon.mid
         ..((num+num2)==0 and '|cff9e9e9e' or '')
         ..(num..'/'..num2),
@@ -161,7 +161,7 @@ local function Init_Menu(self, root)
 
 --对话替换, 打开自定义, Frame
     sub:CreateButton(
-        '|A:mechagon-projects:0:0|a'..(WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '|A:mechagon-projects:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function ()
         WoWTools_GossipMixin:Init_Options_Frame()
         return MenuResponse.Open
@@ -174,7 +174,7 @@ local function Init_Menu(self, root)
     end
     sub:CreateDivider()
     sub:CreateCheckbox(
-        (WoWTools_Mixin.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        (WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT)..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function()
         return not Save().notGossipPlayerData
     end, function()
@@ -192,12 +192,12 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_Mixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC'))..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '..(WoWTools_DataMixin.onlyChinese and '禁用NPC' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, 'NPC'))..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function()
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '闲话/任务' or (GOSSIP_OPTIONS..'/'..QUESTS_LABEL))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '闲话/任务' or (GOSSIP_OPTIONS..'/'..QUESTS_LABEL))
     end)
 
 --列表，禁用NPC, 闲话,任务, 选项
@@ -217,7 +217,7 @@ local function Init_Menu(self, root)
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
-            WoWTools_Mixin.onlyChinese and '清除全部' or CLEAR_ALL,
+            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
         function()
             Save().NPC={}
         end)
@@ -231,7 +231,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_Mixin.onlyChinese and '选择' or CHOOSE)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function()
         return MenuResponse.Open
     end)
@@ -257,7 +257,7 @@ local function Init_Menu(self, root)
     if num>1 then
         sub:CreateDivider()
         sub:CreateButton(
-            WoWTools_Mixin.onlyChinese and '清除全部' or CLEAR_ALL,
+            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
         function()
             Save().choice={}
         end)
@@ -271,7 +271,7 @@ local function Init_Menu(self, root)
         num=num+1
     end
     sub=root:CreateButton(
-        '     '..(WoWTools_Mixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff9e9e9e' or ' ')..num,
+        '     '..(WoWTools_DataMixin.onlyChinese and '视频' or VIDEOOPTIONS_MENU)..(num==0 and ' |cff9e9e9e' or ' ')..num,
     function()
         return MenuResponse.Open
     end)
@@ -285,7 +285,7 @@ local function Init_Menu(self, root)
             MovieFrame_PlayMovie(MovieFrame, data.movieID)
         end, {movieID=movieID, dateTime=dateTime})
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '播放' or EVENTTRACE_BUTTON_PLAY)
         end)
         Movie_SubMenu(sub2, movieID, dateTime)
     end
@@ -294,7 +294,7 @@ local function Init_Menu(self, root)
     end
     if num>1 then
         sub:CreateButton(
-            WoWTools_Mixin.onlyChinese and '清除全部' or CLEAR_ALL,
+            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
         function()
             Save().movie={}
         end)
@@ -303,19 +303,19 @@ local function Init_Menu(self, root)
 
 --跳过，视频，
     sub2=sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
+        WoWTools_DataMixin.onlyChinese and '跳过' or RENOWN_LEVEL_UP_SKIP_BUTTON,
     function()
         return Save().stopMovie
     end, function()
         Save().stopMovie= not Save().stopMovie and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY))
     end)
 
 --动画字幕
     sub2=sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
+        WoWTools_DataMixin.onlyChinese and '动画字幕' or CINEMATIC_SUBTITLES,
     function()
         return C_CVar.GetCVarBool("movieSubtitle")
     end, function()

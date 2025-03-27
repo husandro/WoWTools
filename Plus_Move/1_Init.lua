@@ -73,7 +73,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or P_Save
-            WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE)
+            WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
 
             WoWTools_MoveMixin:Init_Options()
 

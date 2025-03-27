@@ -636,16 +636,16 @@ local function Init_Button_Menu(self, root)
 
     sub=root:CreateButton(
         name and color.hex..'|T'..icon..':0|t'..WoWTools_TextMixin:CN(name)
-            or '|TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_Mixin.onlyChinese and '宠物手册' or PET_JOURNAL),
+            or '|TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_DataMixin.onlyChinese and '宠物手册' or PET_JOURNAL),
     function(data)
         WoWTools_LoadUIMixin:Journal(2, {petOwner=self.petOwner, petIndex=self:getPetIndex()})
         return MenuResponse.Open
     end, name and true or false)
     sub:SetTooltip(function(tooltip, desc)
-        tooltip:AddLine(MicroButtonTooltipText(WoWTools_Mixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+        tooltip:AddLine(MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
         if desc.data then
             tooltip:AddLine(' ')
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '在手册中显示该宠物' or PET_SHOW_IN_JOURNAL)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '在手册中显示该宠物' or PET_SHOW_IN_JOURNAL)
         end
     end)
 
@@ -654,7 +654,7 @@ local function Init_Button_Menu(self, root)
     root:CreateDivider()
 --显示
     root:CreateCheckbox(
-        WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
+        WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
     function()
         return self.frame:IsShown()
     end, function()
@@ -671,7 +671,7 @@ local function Init_Button_Menu(self, root)
 
 --显示名称
     sub:CreateCheckbox(
-        '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_Mixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME),
+        '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME),
     function(data)
         return Save().AbilityButton['showName_'..self.name]
     end, function(data)
@@ -681,7 +681,7 @@ local function Init_Button_Menu(self, root)
 
 --3D
     sub:CreateCheckbox(
-        '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_Mixin.onlyChinese and '显示3D' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, '3D')),
+        '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示3D' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, '3D')),
     function(data)
         return Save().AbilityButton['petmodelShow_'..self.name]
     end, function(data)
@@ -719,7 +719,7 @@ local function Init_Button_Menu(self, root)
     sub:CreateDivider()
 --重置
     sub:CreateButton(
-        WoWTools_Mixin.onlyChinese and '重置' or RESET,
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
     function()
         for name2 in pairs(Save().AbilityButton) do
             if name2:find(self.name) then
@@ -791,10 +791,10 @@ local function Set_Move_Button(btn)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PetBattleMixin.addName5, WoWTools_PetBattleMixin.addName6)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -825,8 +825,17 @@ local function Set_Move_Button(btn)
     btn:SetScript('OnDragStop', function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().AbilityButton['point'..self.name]={self:GetPoint(1)}
-        Save().AbilityButton['point'..self.name][2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().AbilityButton['point'..self.name]={self:GetPoint(1)}
+            Save().AbilityButton['point'..self.name][2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
     btn:SetScript('OnMouseUp', ResetCursor)

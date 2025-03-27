@@ -82,9 +82,9 @@ function WoWTools_LFDMixin:Get_Instance_Num(name)
     local num = WoWToolsSave['ChatButton_LFD'].wow[name] or 0
     local text
     if num >0 then
-        text= '|cnGREEN_FONT_COLOR:#'..num..'|r '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        text= '|cnGREEN_FONT_COLOR:#'..num..'|r '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     else
-        text= '0 '..(WoWTools_Mixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        text= '0 '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
     end
     return text , num
 end
@@ -128,7 +128,7 @@ function WoWTools_LFDMixin:ShowMenu_LFGDungeonReadyDialog(root)
     root:CreateDivider()
 
     local sub= root:CreateButton(
-        WoWTools_Mixin.onlyChinese and '显示进入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, ENTER_LFG),
+        WoWTools_DataMixin.onlyChinese and '显示进入' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, ENTER_LFG),
     function()
         if LFGDungeonReadyPopup:IsShown() then
             StaticPopupSpecial_Hide(LFGDungeonReadyPopup)

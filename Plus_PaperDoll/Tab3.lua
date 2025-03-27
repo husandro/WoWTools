@@ -24,7 +24,7 @@ local function Set_Tooltip(frame)
             GameTooltip:AddLine(' ')
         end
         GameTooltip:AddDoubleLine(self.tooltip, self.tooltip2, 0,1,0,0,1,0)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:Show()
         self:SetAlpha(0)
     end)
@@ -39,7 +39,7 @@ local function Init()
     NameLabel=WoWTools_LabelMixin:Create(PaperDollSidebarTab3, {justifyH='CENTER'})
     NameLabel:SetPoint('BOTTOM', 2, 0)
     Set_Tooltip(NameLabel)
-    NameLabel.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '名称' or NAME)..'|r'
+    NameLabel.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)..'|r'
 
 --套装图标图标
     SetTexture=PaperDollSidebarTab3:CreateTexture(nil, 'OVERLAY')
@@ -53,12 +53,12 @@ local function Init()
     h, w= PaperDollSidebarTab3:GetSize()
     SpecTexture:SetSize(h/3+2, w/3+2)
     Set_Tooltip(SpecTexture)
-    SpecTexture.tooltip= '|cnGREEN_FONT_COLOR:'..format(WoWTools_Mixin.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, WoWTools_Mixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
+    SpecTexture.tooltip= '|cnGREEN_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '%s专精' or PROFESSIONS_SPECIALIZATIONS_PAGE_NAME, WoWTools_DataMixin.onlyChinese and '装备管理' or EQUIPMENT_MANAGER)..'|r'
 
 --套装数量
     NumLabel=WoWTools_LabelMixin:Create(PaperDollSidebarTab3, {justifyH='RIGHT'})
     NumLabel:SetPoint('LEFT', PaperDollSidebarTab3, 'RIGHT',0, 4)
-    NumLabel.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '装备' or EQUIPSET_EQUIP)
+    NumLabel.tooltip= '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP)
     Set_Tooltip(NumLabel)
 end
 
@@ -122,7 +122,7 @@ local function Settings()--标签, 内容,提示
 
 --套装数量
     NumLabel:SetText(nu or '')
-    NumLabel.tooltip2= nu and (WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..nu or nil
+    NumLabel.tooltip2= nu and (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..' '..nu or nil
     NumLabel.setID= setID
 end
 

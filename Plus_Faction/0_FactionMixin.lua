@@ -60,7 +60,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
             value= format('%i%%', repInfo.standing/repInfo.nextThreshold*100)
             isCapped= false
         else
-            value= '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            value= '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '已满' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
             isCapped=true
         end
         factionStandingtext = WoWTools_TextMixin:CN(repInfo.reaction)
@@ -71,7 +71,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
         isCapped=C_MajorFactions.HasMaximumRenown(factionID)
         local info = C_MajorFactions.GetMajorFactionData(factionID) or {}
         if info.renownLevel then
-            factionStandingtext= (WoWTools_Mixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel
+            factionStandingtext= (WoWTools_DataMixin.onlyChinese and '名望' or RENOWN_LEVEL_LABEL)..' '..info.renownLevel
             local levels = C_MajorFactions.GetRenownLevels(factionID)
             if levels then
                 factionStandingtext= factionStandingtext..'/'..#levels
@@ -81,7 +81,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
             value= format('%i%%', info.renownReputationEarned/info.renownLevelThreshold*100)
             barColor= GREEN_FONT_COLOR
         else
-            value= '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+            value= '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
         end
         atlas=info.textureKit and 'MajorFactions_Icons_'..info.textureKit..'512'
         isUnlocked= info.isUnlocked
@@ -116,7 +116,7 @@ function WoWTools_FactionMixin:GetInfo(factionID, index, toRight)
                     barColor= FACTION_BAR_COLORS[standingID]
                 end
             else
-                value= '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
+                value= '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '最高' or VIDEO_OPTIONS_ULTRA_HIGH)..'|r'
             end
         end
     end

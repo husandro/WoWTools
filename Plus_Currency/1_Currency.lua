@@ -76,7 +76,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 			WoWToolsSave['Currency2']= WoWToolsSave['Currency2'] or P_Save
 
-			WoWTools_CurrencyMixin.addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_Mixin.onlyChinese and '货币' or TOKENS)
+			WoWTools_CurrencyMixin.addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '货币' or TOKENS)
 
 			--添加控制面板
 			WoWTools_PanelMixin:OnlyCheck({
@@ -87,7 +87,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					print(
 						WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName,
 						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-						WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+						WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)
 				end
 			})

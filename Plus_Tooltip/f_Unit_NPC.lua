@@ -11,18 +11,18 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         tooltip.Portrait:SetShown(true)
 
     elseif UnitIsBossMob(unit) then--世界BOSS
-        text2Left= WoWTools_Mixin.onlyChinese and '首领' or BOSS
+        text2Left= WoWTools_DataMixin.onlyChinese and '首领' or BOSS
         tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
         tooltip.Portrait:SetShown(true)
     else
         local classification = UnitClassification(unit)--TargetFrame.lua
         if classification == "rareelite" then--稀有, 精英
-            text2Left= WoWTools_Mixin.onlyChinese and '稀有' or GARRISON_MISSION_RARE
+            text2Left= WoWTools_DataMixin.onlyChinese and '稀有' or GARRISON_MISSION_RARE
             tooltip.Portrait:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             tooltip.Portrait:SetShown(true)
 
         elseif classification == "rare" then--稀有
-            text2Left= WoWTools_Mixin.onlyChinese and '稀有' or GARRISON_MISSION_RARE
+            text2Left= WoWTools_DataMixin.onlyChinese and '稀有' or GARRISON_MISSION_RARE
             tooltip.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
             tooltip.Portrait:SetShown(true)
         else

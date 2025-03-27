@@ -51,17 +51,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Macro2']= WoWToolsSave['Plus_Macro2'] or P_Save
 
 
-            WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(WoWTools_Mixin.onlyChinese and '宏' or MACRO)
+            WoWTools_MacroMixin.addName= '|TInterface\\MacroFrame\\MacroFrame-Icon:0|t'..(WoWTools_DataMixin.onlyChinese and '宏' or MACRO)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_MacroMixin.addName,
-                tooltip= ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
-                    ..'|r|n'..(WoWTools_Mixin.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
+                tooltip= ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中错误' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, ERRORS)))
+                    ..'|r|n'..(WoWTools_DataMixin.onlyChinese and '备注：如果错误，请取消此选项' or 'note: If you get error, please disable this'),
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MacroMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MacroMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 
@@ -70,10 +70,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 if C_AddOns.IsAddOnLoaded("MacroToolkit") then
                     print(
-                        WoWTools_Mixin.addName,
+                        WoWTools_DataMixin.addName,
                         WoWTools_MacroMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(false), 'MacroToolkit',
-                        WoWTools_Mixin.onlyChinese and '插件' or ADDONS
+                        WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
                     )
                 end
 

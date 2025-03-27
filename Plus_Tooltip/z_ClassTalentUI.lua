@@ -25,15 +25,15 @@ local function Blizzard_ClassTalentUI(self)
             frame.specIDLabel:SetScript('OnEnter', function(s)
                 GameTooltip:SetOwner(s, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_TooltipMixin.addName)
                 local specIndex= s:GetParent().specIndex
                 if specIndex then
                     local specID, name, _, icon= GetSpecializationInfo(specIndex)
                     if specID then
                         GameTooltip:AddLine(' ')
                         GameTooltip:AddLine(name)
-                        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
-                        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
+                        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
+                        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
                         if icon then
                             GameTooltip:AddDoubleLine(icon and '|T'..icon..':0|t'..icon)
                         end

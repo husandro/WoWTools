@@ -34,7 +34,7 @@ local function Init_Menu(self, root)
     
     --追踪 AreaPoiID
         sub2= sub:CreateCheckbox(
-            '|A:VignetteKillElite:0:0|a'..(WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)..' AreaPoi',
+            '|A:VignetteKillElite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)..' AreaPoi',
         function()
             return Save().vigentteButton
         end, function()
@@ -46,7 +46,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine('WorldQuest')
             tooltip:AddLine('Vignette')
             --tooltip:AddLine(' ')
-            --tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
+            --tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
         end)
     
     --追踪 AreaPoiID 菜单
@@ -55,7 +55,7 @@ local function Init_Menu(self, root)
     
     --镜头视野范围
         sub2=sub:CreateCheckbox(
-            '|A:common-icon-zoomin:0:0|a'..(WoWTools_Mixin.onlyChinese and '镜头视野范围' or CAMERA_FOV),
+            '|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '镜头视野范围' or CAMERA_FOV),
         function()
             return Save().ZoomOutInfo
         end, function()
@@ -64,15 +64,15 @@ local function Init_Menu(self, root)
         end)
         sub2:SetTooltip(function(tooltip)
             tooltip:AddDoubleLine(
-                (WoWTools_Mixin.onlyChinese and '镜头视野范围' or CAMERA_FOV),
-                format(WoWTools_Mixin.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100))
+                (WoWTools_DataMixin.onlyChinese and '镜头视野范围' or CAMERA_FOV),
+                format(WoWTools_DataMixin.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100))
             )
         end)
     
     
     --缩小地图
         sub2=sub:CreateCheckbox(
-            '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(WoWTools_Mixin.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
+            '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(WoWTools_DataMixin.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
         function()
             return Save().ZoomOut
         end, function()
@@ -80,18 +80,18 @@ local function Init_Menu(self, root)
             WoWTools_MinimapMixin:Init_Minimap_Zoom()
         end)
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '更新地区时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UPDATE, ZONE))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '更新地区时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UPDATE, ZONE))
         end)
         WoWTools_MinimapMixin:Zoom_Menu(self, sub2)
     
     --地下城难度
         sub2=sub:CreateCheckbox(
-            '|A:DungeonSkull:0:0|a'..(WoWTools_Mixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
+            '|A:DungeonSkull:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
         function()
             return not Save().disabledInstanceDifficulty
         end, function()
             Save().disabledInstanceDifficulty= not Save().disabledInstanceDifficulty and true or nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledInstanceDifficulty), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
         )
         sub2:SetTooltip(function(tooltip)
@@ -101,14 +101,14 @@ local function Init_Menu(self, root)
     --CVar 镇民
         sub:CreateDivider()
         sub2=sub:CreateCheckbox(
-            '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
+            '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '镇民' or TOWNSFOLK_TRACKING_TEXT),
         function()
             return C_CVar.GetCVarBool("minimapTrackingShowAll")
         end, function()
             C_CVar.SetCVar('minimapTrackingShowAll', not C_CVar.GetCVarBool("minimapTrackingShowAll") and '1' or '0' )
         end)
         sub2:SetTooltip(function(tooltip)
-            tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
+            tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
             tooltip:AddLine(
             [[SetCVar("minimapTrackingShowAll", "1")]])
         end)

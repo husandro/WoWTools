@@ -31,7 +31,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Collection']= WoWToolsSave['Plus_Collection'] or P_Save
             
-            WoWTools_CollectionMixin.addName= '|A:UI-HUD-MicroMenu-Collections-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '战团收藏' or COLLECTIONS)
+            WoWTools_CollectionMixin.addName= '|A:UI-HUD-MicroMenu-Collections-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战团收藏' or COLLECTIONS)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -42,7 +42,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_CollectionMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                        WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end
             })

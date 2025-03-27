@@ -47,7 +47,7 @@ local function Init_Button()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_PaperDollMixin.addName, self.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
         self:set_alpha(false)
     end
@@ -65,15 +65,15 @@ local function Init_Button()
     function Button:set_enabel_disable()
         Save().notStatusPlus= not Save().notStatusPlus and true or nil
         self:set_texture()
-        --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().notStatusPlus), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        --print(WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().notStatusPlus), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end
 
-    Button.addName= '|A:loottoast-arrow-orange:0:0|a'..(WoWTools_Mixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+    Button.addName= '|A:loottoast-arrow-orange:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
 
     if Save().notStatusPlus then
         Button:SetupMenu(function(self, root)
             local sub= root:CreateCheckbox(
-                WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
+                WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
             function()
                 return not Save().notStatusPlus
             end, function ()
@@ -81,7 +81,7 @@ local function Init_Button()
             end)
             sub:SetTooltip(function(tooltip)
                 tooltip:AddLine(self.addName)
-                tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end)
 --/reload
             WoWTools_MenuMixin:Reload(sub)

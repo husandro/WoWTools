@@ -27,7 +27,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
 --栏位
             tooltip:AddDoubleLine(
                 (WoWTools_TextMixin:CN(_G[itemEquipLoc]) or '')..' '..(itemEquipLoc or ''),
-                ( WoWTools_Mixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot
+                ( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot
             )
             local slotLink=GetInventoryItemLink('player', slot)
             local text
@@ -55,7 +55,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
         local sourceInfo = C_TransmogCollection.GetSourceInfo(sourceID)
         if sourceInfo then
             visualID=sourceInfo.visualID
-            text2Left=sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+            text2Left=sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         end
     end
     WoWTools_TooltipMixin:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
@@ -236,7 +236,7 @@ local function Set_Item_Num(tooltip, itemID)
 
     if numPlayer>1 then
         tooltip:AddDoubleLine(
-            numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)..' '..WoWTools_Mixin:MK(bagAll+bankAll, 3),
+            numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..WoWTools_Mixin:MK(bagAll+bankAll, 3),
 
            WoWTools_Mixin:MK(bankAll,3)..'|A:Banker:0:0|a '
         ..WoWTools_Mixin:MK(bagAll, 3)..'|A:bag-main:0:0|a'
@@ -312,7 +312,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         textLeft, text2Left= Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
 
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-        text2Left= PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+        text2Left= PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
 
     elseif itemID==122284 then
         C_WowTokenPublic.UpdateMarketPrice()
@@ -342,7 +342,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     local spellName, spellID = C_Item.GetItemSpell(itemID)--物品法术
     if spellName and spellID then
         local spellTexture= C_Spell.GetSpellTexture(spellID)
-        tooltip:AddDoubleLine((itemName~=spellName and '|cff71d5ff['..spellName..']|r' or '')..(WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        tooltip:AddDoubleLine((itemName~=spellName and '|cff71d5ff['..spellName..']|r' or '')..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
     end
 
 

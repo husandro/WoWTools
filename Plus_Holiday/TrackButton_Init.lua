@@ -16,7 +16,7 @@ local function Init_Menu(self, root)
     local sub
 
     sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
+        WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
     function()
         return not Save().hide
     end, function()
@@ -28,7 +28,7 @@ local function Init_Menu(self, root)
 
 
     sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
+        WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
     function()
         return not Save().left
     end, function()
@@ -41,7 +41,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
+        WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP,
     function()
         return Save().toTopTrack
     end, function()
@@ -61,7 +61,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
+        WoWTools_DataMixin.onlyChinese and '仅限: 正在活动' or LFG_LIST_CROSS_FACTION:format(CALENDAR_TOOLTIP_ONGOING),
     function()
         return Save().onGoing
     end, function()
@@ -70,7 +70,7 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '时间' or TIME_LABEL,
+        WoWTools_DataMixin.onlyChinese and '时间' or TIME_LABEL,
     function()
         return Save().showDate
     end, function()
@@ -101,7 +101,7 @@ local function Init_Menu(self, root)
 	WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
 		Save().point=nil
 		self:set_point()
-		print(WoWTools_DataMixin.Icon.icon2..WoWTools_HolidayMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_DataMixin.Icon.icon2..WoWTools_HolidayMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
     root:CreateDivider()
@@ -143,9 +143,20 @@ local function Init()
         end
     end)
     TrackButton:SetScript("OnDragStop", function(self)
+        ResetCursor()
         self:StopMovingOrSizing()
-        Save().point={self:GetPoint(1)}
-        Save().point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            self:StopMovingOrSizing()
+            Save().point={self:GetPoint(1)}
+            Save().point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
     function TrackButton:set_Events()--设置事件
@@ -219,11 +230,11 @@ local function Init()
             end
             GameTooltip:ClearLines()
         end
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭日历' or GAMETIME_TOOLTIP_TOGGLE_CALENDAR, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HolidayMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HolidayMixin.addName)
         GameTooltip:Show()
     end
     TrackButton:SetScript('OnMouseUp', ResetCursor)

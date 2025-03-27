@@ -100,8 +100,8 @@ local function Init_Menu(_, root)
     local sub
     for _, value in pairs({'min', 2, 3, 4, 5, 'max'}) do
         sub=root:CreateRadio(
-            value=='min' and (WoWTools_Mixin.onlyChinese and '缩小' or ZOOM_OUT)
-            or (value=='max' and (WoWTools_Mixin.onlyChinese and '放大' or ZOOM_IN))
+            value=='min' and (WoWTools_DataMixin.onlyChinese and '缩小' or ZOOM_OUT)
+            or (value=='max' and (WoWTools_DataMixin.onlyChinese and '放大' or ZOOM_IN))
             or value,
         function(data)
             return data.value==Save().ZoomOut
@@ -115,7 +115,7 @@ local function Init_Menu(_, root)
             return MenuResponse.Refresh
         end, {value=value})
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '锁定' or LOCK)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
         end)
     end
 end
@@ -142,8 +142,8 @@ local function Init()
     Minimap.viewRadius:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(WoWTools_Mixin.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '镜头视野范围' or CAMERA_FOV, format(WoWTools_DataMixin.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100)))
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MinimapMixin.addName)
         GameTooltip:Show()
         self:SetAlpha(1)
     end)
@@ -155,8 +155,8 @@ local function Init()
     Minimap.zoomText:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE, self:GetText())
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_MinimapMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, self:GetText())
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MinimapMixin.addName)
         GameTooltip:Show()
         self:SetAlpha(1)
     end)

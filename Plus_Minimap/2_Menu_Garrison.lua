@@ -42,23 +42,23 @@ local GarrisonList
 local function Init_GarrisonList()
     GarrisonList={
 
-    --[[{name=WoWTools_Mixin.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
+    --[[{name=WoWTools_DataMixin.onlyChinese and '巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
     disabled=false,--not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower),
     atlas= 'dragonflight-landingbutton-up',
-    tooltip= WoWTools_Mixin.onlyChinese and '点击显示巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
+    tooltip= WoWTools_DataMixin.onlyChinese and '点击显示巨龙群岛概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
     func= function()
         ToggleExpansionLandingPage()
     end,
     },]]
-    {name=WoWTools_Mixin.onlyChinese and '卡兹阿加概要' or WAR_WITHIN_LANDING_PAGE_TITLE,--Blizzard_WarWithinLandingPage.lua
+    {name=WoWTools_DataMixin.onlyChinese and '卡兹阿加概要' or WAR_WITHIN_LANDING_PAGE_TITLE,--Blizzard_WarWithinLandingPage.lua
     garrisonType= Enum.ExpansionLandingPageType.WarWithin,
     --garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
     disabled= not C_PlayerInfo.IsExpansionLandingPageUnlockedForPlayer(LE_EXPANSION_WAR_WITHIN),
     check= function() return ExpansionLandingPage and ExpansionLandingPage:IsShown() end,
     atlas= 'warwithin-landingbutton-up',
-    --tooltip= WoWTools_Mixin.onlyChinese and '点击这里显示卡兹阿加概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
+    --tooltip= WoWTools_DataMixin.onlyChinese and '点击这里显示卡兹阿加概要' or DRAGONFLIGHT_LANDING_PAGE_TOOLTIP,
     func= function()
         ToggleExpansionLandingPage()
     end,
@@ -66,7 +66,7 @@ local function Init_GarrisonList()
 
     {name='-'},
 
-    {name=  WoWTools_Mixin.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
+    {name=  WoWTools_DataMixin.onlyChinese and '盟约圣所' or GARRISON_TYPE_9_0_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_9_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_9_0_GarrisonFollower,
     disabled= C_Covenants.GetActiveCovenantID()==0,
@@ -78,31 +78,31 @@ local function Init_GarrisonList()
         end
         return icon
     end,
-    --tooltip= WoWTools_Mixin.onlyChinese and '点击显示圣所报告' or GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
+    --tooltip= WoWTools_DataMixin.onlyChinese and '点击显示圣所报告' or GARRISON_TYPE_9_0_LANDING_PAGE_TOOLTIP,
     },
 
-    --[[{name=  WoWTools_Mixin.onlyChinese and '任务' or GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
+    --[[{name=  WoWTools_DataMixin.onlyChinese and '任务' or GARRISON_TYPE_8_0_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_8_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_8_0_GarrisonFollower,
     atlas= string.format("bfa-landingbutton-%s-up", WoWTools_DataMixin.Player.Faction),
-    tooltip= WoWTools_Mixin.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
+    tooltip= WoWTools_DataMixin.onlyChinese and '点击显示任务报告' or GARRISON_TYPE_8_0_LANDING_PAGE_TOOLTIP,
     },]]
 
-    {name=  WoWTools_Mixin.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE,
+    {name=  WoWTools_DataMixin.onlyChinese and '职业大厅' or ORDERHALL_MISSION_REPORT:match('(.-)%\n') or ORDER_HALL_LANDING_PAGE_TITLE,
     garrisonType= Enum.GarrisonType.Type_7_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_7_0_GarrisonFollower,
     frame='OrderHallMissionFrame',
     atlas= WoWTools_UnitMixin:GetClassIcon('player', nil, true),--职业图标 -- WoWTools_DataMixin.Player.Class == "EVOKER" and "UF-Essence-Icon-Active" or string.format("legionmission-landingbutton-%s-up", WoWTools_DataMixin.Player.Class),
-    --tooltip= WoWTools_Mixin.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
+    --tooltip= WoWTools_DataMixin.onlyChinese and '点击显示职业大厅报告' or MINIMAP_ORDER_HALL_LANDING_PAGE_TOOLTIP,
     },
 
-    {name= WoWTools_Mixin.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP,
+    {name= WoWTools_DataMixin.onlyChinese and '要塞' or GARRISON_LOCATION_TOOLTIP,
     garrisonType= Enum.GarrisonType.Type_6_0_Garrison,
     garrFollowerTypeID= Enum.GarrisonFollowerType.FollowerType_6_0_GarrisonFollower,
     garrFollowerTypeID2=Enum.GarrisonFollowerType.FollowerType_6_0_Boat,
     atlas= format("GarrLanding-MinimapIcon-%s-Up", WoWTools_DataMixin.Player.Faction),
     atlas2= format('Islands-%sBoat', WoWTools_DataMixin.Player.Faction),
-    --tooltip= WoWTools_Mixin.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
+    --tooltip= WoWTools_DataMixin.onlyChinese and '点击显示要塞报告' or MINIMAP_GARRISON_LANDING_PAGE_TOOLTIP,
     },
 
 
@@ -132,7 +132,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     local hasRewar= C_WeeklyRewards.HasAvailableRewards()
     sub=root:CreateCheckbox(
         (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
-        ..'|A:gficon-chest-evergreen-greatvault-collect:0:0|a'..(WoWTools_Mixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
+        ..'|A:gficon-chest-evergreen-greatvault-collect:0:0|a'..(WoWTools_DataMixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
         ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or ''),
     function()
         return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
@@ -159,7 +159,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
         end
     end
     root:CreateCheckbox(
-        format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', WoWTools_Mixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
+        format('|A:dragonriding-barbershop-icon-protodrake:0:0|a%s%s', WoWTools_DataMixin.onlyChinese and '驭空术' or GENERIC_TRAIT_FRAME_DRAGONRIDING_TITLE, numDragonriding),
     function()
         return GenericTraitFrame and GenericTraitFrame:IsShown() and GenericTraitFrame:GetConfigID() == C_Traits.GetConfigIDBySystemID(Enum.ExpansionLandingPageType.Dragonflight)
     end, function()

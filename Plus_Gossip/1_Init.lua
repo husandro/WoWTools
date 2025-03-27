@@ -99,10 +99,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or P_Save
 
-            WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_Mixin.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
+            WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
 
             WoWTools_GossipMixin.addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'
-                ..(WoWTools_Mixin.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
+                ..(WoWTools_DataMixin.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
 
              --添加控制面板
             WoWTools_PanelMixin:Check_Button({
@@ -110,9 +110,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  GetValue= function() return not Save().disabled end,
                  SetValue= function()
                      Save().disabled = not Save().disabled and true or nil
-                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_GossipMixin.addName2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_GossipMixin.addName2, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
                  end,
-                 buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
+                 buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
                      Save().point=nil
                      local btn= WoWTools_GossipMixin.GossipButton
@@ -120,7 +120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         btn:ClearAllPoints()
                         btn:set_Point()
                      end
-                     print(WoWTools_DataMixin.Icon.icon2.. WoWTools_GossipMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(WoWTools_DataMixin.Icon.icon2.. WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
                  tooltip= WoWTools_GossipMixin.addName,
                  layout= nil,

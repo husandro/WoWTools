@@ -20,8 +20,8 @@ local function create_Quest_Label(frame)
         if self.questID then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.left)
-            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
             GameTooltip:Show()
             self:SetAlpha(1)
         end
@@ -65,7 +65,7 @@ local function Init()
         local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)    
         self.Description:SetText(
             WoWTools_TextMixin:CN(description)
-            ..'|n|n'..(WoWTools_Mixin.onlyChinese and '技能' or ABILITIES)
+            ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '技能' or ABILITIES)
             ..abilityID
             ..(icon and '  |T'..icon..':0|t'..icon or '')
             ..(Save().ctrl and not UnitAffectingCombat('player') and ' |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\Wowhead.tga:0|t' or '')
@@ -81,7 +81,7 @@ local function Init()
             local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
             if data then
                 self:AddLine(' ')
-                self:AddDoubleLine(data.spellID and (WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
+                self:AddDoubleLine(data.spellID and (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
                 if data.actionID or data.itemType then
                     self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
                 end
@@ -267,7 +267,7 @@ local function Init()
                         acceto=acceto+1
                     end
                 end
-                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
+                GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
             end
         end
 
@@ -352,7 +352,7 @@ end
         if text then
             print(
                 WoWTools_TooltipMixin.addName,
-                '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..'|r',
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..'|r',
                 text
             )
         end

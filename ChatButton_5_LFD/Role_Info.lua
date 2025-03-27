@@ -139,16 +139,25 @@ local function get_Role_Info(env, Name, isT, isH, isD)
             Button:SetScript("OnDragStop", function(self)
                 ResetCursor()
                 self:StopMovingOrSizing()
-                Save().RoleInfoPoint={self:GetPoint(1)}
-                Save().RoleInfoPoint[2]=nil
+                if WoWTools_FrameMixin:IsInSchermo(self) then
+                    Save().RoleInfoPoint={self:GetPoint(1)}
+                    Save().RoleInfoPoint[2]=nil
+                else
+                    print(
+                        WoWTools_DataMixin.addName,
+                        '|cnRED_FONT_COLOR:',
+                        WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+                    )
+                end
+                self:Raise()
             end)
             Button:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_LFDMixin.addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_LFDMixin.addName)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, WoWTools_DataMixin.Icon.left)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, WoWTools_DataMixin.Icon.right)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, WoWTools_DataMixin.Icon.left)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, WoWTools_DataMixin.Icon.right)
                 GameTooltip:Show()
             end)
             Button:SetScript('OnLeave', GameTooltip_Hide)

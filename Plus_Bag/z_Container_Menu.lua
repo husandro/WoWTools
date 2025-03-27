@@ -15,7 +15,7 @@ local function MENU_CONTAINER_FRAME(self, root)
     root:CreateDivider()
 
     sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '全部启用' or ENABLE_ALL_ADDONS,
+        WoWTools_DataMixin.onlyChinese and '全部启用' or ENABLE_ALL_ADDONS,
     function(data)
         if ContainerFrameUtil_EnumerateBagGearFilters then
             for _, flag in ContainerFrameUtil_EnumerateBagGearFilters() do
@@ -36,12 +36,12 @@ local function MENU_CONTAINER_FRAME(self, root)
         return MenuResponse.Close
     end, {bagID=bagID})
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
-        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_Mixin.addName)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
+        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
 
     sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS,
+        WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS,
     function(data)
         if ContainerFrameUtil_EnumerateBagGearFilters then
             for _, flag in ContainerFrameUtil_EnumerateBagGearFilters() do
@@ -62,8 +62,8 @@ local function MENU_CONTAINER_FRAME(self, root)
         return MenuResponse.Close
     end, {bagID=bagID})
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
-        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_Mixin.addName)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '指定背包' or BAG_FILTER_ASSIGN_TO:gsub(HEADER_COLON, ''))
+        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
 end
 
@@ -84,7 +84,7 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
     root:CreateDivider()
 
     sub= root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
+        WoWTools_DataMixin.onlyChinese and '反向整理背包' or REVERSE_CLEAN_UP_BAGS_TEXT,
     function()
         return C_Container.GetSortBagsRightToLeft()
     end, function()
@@ -93,18 +93,18 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetSortBagsRightToLeft')
-        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_Mixin.addName)
+        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
 
     sub= root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
+        WoWTools_DataMixin.onlyChinese and '禁用排序' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, STABLE_FILTER_BUTTON_LABEL),
     C_Container.GetBackpackAutosortDisabled, function()
         C_Container.SetBackpackAutosortDisabled(not C_Container.GetBackpackAutosortDisabled() and true or false)
         return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('C_Container.SetBackpackAutosortDisabled')
-        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_Mixin.addName)
+        tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
 
 end

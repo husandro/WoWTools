@@ -81,7 +81,7 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
             if d=='LeftButton' then
                 local n=C_Item.GetItemCount(90146, true, false, true, false)
                 if n==0 then
-                    print(WoWTools_ItemMixin:GetLink(90146) or (WoWTools_Mixin.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '无' or NONE))
+                    print(WoWTools_ItemMixin:GetLink(90146) or (WoWTools_DataMixin.onlyChinese and '附加材料' or OPTIONAL_REAGENT_TUTORIAL_TOOLTIP_TITLE), '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
                     return
                 end
                 local isShow= ProfessionsFrame and ProfessionsFrame:IsShown()
@@ -106,8 +106,8 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
                 GameTooltip:ClearLines()
                 GameTooltip:SetSpellByID(frame.spell)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '商业技能' or TRADESKILLS), WoWTools_DataMixin.Icon.right)
-                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '需求' or NEED), (WoWTools_Mixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_Mixin.onlyChinese and '打开' or UNWRAP)..')')
+                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '商业技能' or TRADESKILLS), WoWTools_DataMixin.Icon.right)
+                GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需求' or NEED), (WoWTools_DataMixin.onlyChinese and '打开一次' or CHALLENGES_LASTRUN_TIME)..'('..(WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP)..')')
                 GameTooltip:Show()
         end)
         self.engineering:SetScript('OnLeave',GameTooltip_Hide)
@@ -178,7 +178,7 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
                     GameTooltip:SetBagItem(self2.tab.bag, self2.tab.slot)
                     if not self:CanChangeAttribute() then
                         GameTooltip:AddLine(' ')
-                        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                        GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
                     end
                     GameTooltip:Show()
                     self2:SetAlpha(0.3)
@@ -323,7 +323,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
+                GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and "装备：在竞技场和战场中将物品等级提高至%d。" or PVP_ITEM_LEVEL_TOOLTIP):format(self2.tips))
                 GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
@@ -346,7 +346,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
                 GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
@@ -387,7 +387,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
                 if self2.tips then
                     GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
-                    GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
+                    GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and "升级：" or ITEM_UPGRADE_NEXT_UPGRADE)..self2.tips)
                     GameTooltip:Show()
                     self2:SetAlpha(0.3)
                 end
@@ -420,7 +420,7 @@ local function set_Item_Tips(self, slot, link, isPaperDollItemSlot)--附魔, 使
             if self2.tips then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '|cff00ff00<由%s制造>|r' or ITEM_CREATED_BY, self2.tips))
+                GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '|cff00ff00<由%s制造>|r' or ITEM_CREATED_BY, self2.tips))
                 GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
@@ -580,7 +580,7 @@ end
             if self2.du then
                 GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(format(WoWTools_Mixin.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
+                GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '耐久度 %d / %d' or DURABILITY_TEMPLATE, min,  max), format('%i%%', self2.du))
                 GameTooltip:Show()
                 self2:SetAlpha(0.3)
             end
@@ -616,9 +616,9 @@ local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
         frame.slotText:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_PaperDollMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS, self.slot)
             local name= self:GetParent():GetName()
             if name then
                 GameTooltip:AddDoubleLine(_G[strupper(strsub(name, 10))], name)

@@ -89,7 +89,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
 
     if guid==WoWTools_DataMixin.Player.GUID or name==WoWTools_DataMixin.Player.Name or name==WoWTools_DataMixin.Player.name_realm then
-        return WoWTools_DataMixin.Icon.Player..((reName or reLink) and WoWTools_DataMixin.Player.col..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
+        return WoWTools_DataMixin.Icon.Player..((reName or reLink) and WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
     end
 
     if reLink then
@@ -192,13 +192,13 @@ end
 function WoWTools_UnitMixin:GetOnlineInfo(unit)--单位，状态信息
     if unit and UnitExists(unit) then
         if not UnitIsConnected(unit) then
-            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), WoWTools_Mixin.onlyChinese and '离线' or PLAYER_OFFLINE
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_DND), WoWTools_DataMixin.onlyChinese and '离线' or PLAYER_OFFLINE
         elseif UnitIsAFK(unit) then
-            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), WoWTools_Mixin.onlyChinese and '离开' or AFK
+            return format("\124T%s.tga:0\124t", FRIENDS_TEXTURE_AFK), WoWTools_DataMixin.onlyChinese and '离开' or AFK
         elseif UnitIsGhost(unit) then
-            return '|A:poi-soulspiritghost:0:0|a', WoWTools_Mixin.onlyChinese and '幽灵' or DEAD
+            return '|A:poi-soulspiritghost:0:0|a', WoWTools_DataMixin.onlyChinese and '幽灵' or DEAD
         elseif UnitIsDead(unit) then
-            return '|A:deathrecap-icon-tombstone:0:0|a', WoWTools_Mixin.onlyChinese and '死亡' or DEAD
+            return '|A:deathrecap-icon-tombstone:0:0|a', WoWTools_DataMixin.onlyChinese and '死亡' or DEAD
         end
     end
 end

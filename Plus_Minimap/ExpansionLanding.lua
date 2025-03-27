@@ -9,23 +9,23 @@ end
 function WoWTools_MinimapMixin:ExpansionLanding_Menu(_, root)
     root:CreateCheckbox(
         (ExpansionLandingPageMinimapButton and '' or '|cff9e9e9e')
-        ..'|A:dragonflight-landingbutton-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '隐藏要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
+        ..'|A:dragonflight-landingbutton-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '隐藏要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
     function()
         return Save().hideExpansionLandingPageMinimapButton
     end, function()
         Save().hideExpansionLandingPageMinimapButton= not Save().hideExpansionLandingPageMinimapButton and true or nil
         Save().moveExpansionLandingPageMinimapButton=nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     root:CreateCheckbox(
-        '|A:dragonflight-landingbutton-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
+        '|A:dragonflight-landingbutton-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动要塞图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NPE_MOVE, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, GARRISON_LOCATION_TOOLTIP, EMBLEM_SYMBOL))),
     function()
         return Save().moveExpansionLandingPageMinimapButton
     end, function()
         Save().moveExpansionLandingPageMinimapButton= not Save().moveExpansionLandingPageMinimapButton and true or nil
         Save().hideExpansionLandingPageMinimapButton=nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName, '|cnGREEN_FONT_COLOR:' , WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 end
 

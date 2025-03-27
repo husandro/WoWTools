@@ -76,8 +76,8 @@ local function Init()
             end
 
             GameTooltip:AddDoubleLine(
-                '|cnGREEN_FONT_COLOR:'..numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER),
-                --(WoWTools_Mixin.onlyChinese and '总计' or TOTAL)
+                '|cnGREEN_FONT_COLOR:'..numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER),
+                --(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL)
                 WoWTools_DataMixin.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
             )
         end

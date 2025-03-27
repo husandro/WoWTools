@@ -30,9 +30,19 @@ local function Init()
         end
     end)
     PlayerButton:SetScript("OnDragStop", function(self)
+        ResetCursor()
         self:StopMovingOrSizing()
-        Save().PlayerXYPoint={self:GetPoint(1)}
-        Save().PlayerXYPoint[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().PlayerXYPoint={self:GetPoint(1)}
+            Save().PlayerXYPoint[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
     PlayerButton:SetScript("OnMouseDown", function(_, d)
         if d=='RightButton' and IsAltKeyDown() then
@@ -54,20 +64,20 @@ local function Init()
     function PlayerButton:set_tooltip()
         GameTooltip:ClearLines()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_DataMixin.Icon.Player..' XY')
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_DataMixin.Icon.Player..' XY')
         GameTooltip:AddLine(' ')
 
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
 
         --[[local mapID= C_Map.GetBestMapForUnit("player")
         local can= mapID and C_Map.CanSetUserWaypointOnMap(mapID)
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.right
             ..(can and '' or '|cnRED_FONT_COLOR:')
-            ..(WoWTools_Mixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL))
+            ..(WoWTools_DataMixin.onlyChinese and '发送位置' or RESET_POSITION:gsub(RESET, SEND_LABEL))
             ..'|A:Waypoint-MapPin-ChatIcon:0:0|a'
         )]]
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
 
         GameTooltip:Show()
     end

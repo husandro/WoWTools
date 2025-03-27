@@ -72,7 +72,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_PaperDoll']= WoWToolsSave['Plus_PaperDoll'] or P_Save
 
             WoWTools_PaperDollMixin.addName= (WoWTools_DataMixin.Player.Sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a')
-                                        ..(WoWTools_Mixin.onlyChinese and '角色' or CHARACTER)
+                                        ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -83,7 +83,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Plus_PaperDoll'].disabled),
-                        WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end,
             })

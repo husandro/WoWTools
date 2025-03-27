@@ -30,25 +30,25 @@ local function Init()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName , WoWTools_AddOnsMixin.addName)
-        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '创建一个新配置方案' or CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName , WoWTools_AddOnsMixin.addName)
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '创建一个新配置方案' or CREATE_NEW_COMPACT_UNIT_FRAME_PROFILE)
         GameTooltip:AddLine(' ')
 
         WoWTools_AddOnsMixin:Show_Select_Tooltip()--提示，当前，选中
 
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine('|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine('|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 
     NewButton:SetScript('OnClick',function(self)
         WoWTools_TextureMixin:Edit_Text_Icon(self, {
-            text= WoWTools_Mixin.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET,
+            text= WoWTools_DataMixin.onlyChinese and '新的方案' or PAPERDOLL_NEWEQUIPMENTSET,
             texture= 0,
             SetValue=function(newIcon, newText)
                 local name= '|T'..(newIcon or 0)..':0|t'..newText
                 if Save().buttons[name] then
-                    print(name, '|cnRED_FONT_COLOR:',WoWTools_Mixin.onlyChinese and '替换' or REPLACE)
+                    print(name, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
                 end
                 Save().buttons[name]= select(4 ,WoWTools_AddOnsMixin:Get_AddListInfo())
                 WoWTools_Mixin:Call(AddonList_Update)
@@ -76,9 +76,9 @@ local function Init()
     NewButton.Text:SetScript('OnEnter', function (self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AddOnsMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', WoWTools_Mixin.onlyChinese and '已选中', 'Selected')
+        GameTooltip:AddDoubleLine(' ', WoWTools_DataMixin.onlyChinese and '已选中', 'Selected')
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -100,7 +100,7 @@ local function Init()
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AddOnsMixin.addName)
         GameTooltip:AddLine(' ')
 
         local newTab={}
@@ -154,8 +154,8 @@ local function Init()
         end
 
         GameTooltip:AddDoubleLine(
-            load..' |cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '已加载' or LOAD_ADDON)..'|r |cnRED_FONT_COLOR:'..allMemberText,
-            '|cffff00ff'..need..' '..(WoWTools_Mixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)
+            load..' |cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已加载' or LOAD_ADDON)..'|r |cnRED_FONT_COLOR:'..allMemberText,
+            '|cffff00ff'..need..' '..(WoWTools_DataMixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED)
         )
 
         GameTooltip:Show()
@@ -177,9 +177,9 @@ local function Init()
     NewButton.Text3:SetScript('OnEnter', function (self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_AddOnsMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_AddOnsMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', WoWTools_Mixin.onlyChinese and '已加载', LOAD_ADDON), format('|cffff00ff+%s', WoWTools_Mixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
+        GameTooltip:AddDoubleLine(format('|cnGREEN_FONT_COLOR:%s', WoWTools_DataMixin.onlyChinese and '已加载', LOAD_ADDON), format('|cffff00ff+%s', WoWTools_DataMixin.onlyChinese and '只能按需加载' or ADDON_DEMAND_LOADED))
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
@@ -247,8 +247,8 @@ local function Init_NotDisabled_Button()
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
-        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_Mixin.onlyChinese and '启用' or ENABLE, ''), WoWTools_TextMixin:GetYesNo(Save().enableAllButtn))
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部禁用' or DISABLE_ALL_ADDONS)
+        GameTooltip:AddDoubleLine(format('%s|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r', WoWTools_DataMixin.onlyChinese and '启用' or ENABLE, ''), WoWTools_TextMixin:GetYesNo(Save().enableAllButtn))
         GameTooltip:Show()
         self:SetAlpha(1)
     end
@@ -324,7 +324,7 @@ local function Init_Refresh_Button()
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '刷新' or REFRESH)
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH)
         GameTooltip:Show()
     end)
     btn:SetScript('OnClick', function()

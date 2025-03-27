@@ -111,8 +111,17 @@ local function Init()
     UseButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().point={self:GetPoint(1)}
-        Save().point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().point={self:GetPoint(1)}
+            Save().point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
     UseButton:SetScript("OnMouseDown", function(self, d)
         local itemID, itemLink = self:get_tooltip_item()
@@ -137,7 +146,7 @@ local function Init()
     UseButton:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             if not self:CanChangeAttribute() then
-                print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 WoWTools_FoodMixin:Check_Items(true)
             end
@@ -153,13 +162,13 @@ local function Init()
         GameTooltip:ClearLines()
         local itemID, itemLink = self:get_tooltip_item()
         if itemID and itemLink then
-            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), WoWTools_Mixin.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
+            GameTooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(itemID), WoWTools_DataMixin.onlyChinese and '添加自定义' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, CUSTOM))
         else
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FoodMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_FoodMixin.addName)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(WoWTools_Mixin.onlyChinese and '查询' or WHO), WoWTools_DataMixin.Icon.mid)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine((self:CanChangeAttribute() and '' or '|cff9e9e9e')..(WoWTools_DataMixin.onlyChinese and '查询' or WHO), WoWTools_DataMixin.Icon.mid)
 
             GameTooltip:AddLine(' ')
             if self.alt then
@@ -176,7 +185,7 @@ local function Init()
             end
             GameTooltip:AddDoubleLine(
                 (Save().onlyMaxExpansion and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')
-                ..(WoWTools_Mixin.onlyChinese and '仅当前版本物品'
+                ..(WoWTools_DataMixin.onlyChinese and '仅当前版本物品'
                     or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL))
                 ),
                 WoWTools_TextMixin:GetEnabeleDisable(Save().onlyMaxExpansion)

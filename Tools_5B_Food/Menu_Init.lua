@@ -127,7 +127,7 @@ end
 
 local function Check_All_Menu(_, root, setClassID)
     root:CreateDivider()
-    local sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '勾选所有' or CHECK_ALL, function(data)
+    local sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL, function(data)
         if IsControlKeyDown() or data.classID then
             do
                 if data.classID then
@@ -156,7 +156,7 @@ local function Check_All_Menu(_, root, setClassID)
     end
 
     --撤选所有
-    sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '撤选所有' or UNCHECK_ALL, function(data)
+    sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL, function(data)
         if IsControlKeyDown() or data.classID then
             if data.classID then
                 Save().class[data.classID]= nil
@@ -192,7 +192,7 @@ end
 
 local function Init_Menu(self, root)
     if not self:CanChangeAttribute() then
-        root:CreateTitle(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
 
@@ -217,14 +217,14 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         (Save().autoWho and '|cnGREEN_FONT_COLOR:' or '')
         ..'|A:common-icon-zoomin:0:0|a'
-        ..(WoWTools_Mixin.onlyChinese and '查找' or WHO)
+        ..(WoWTools_DataMixin.onlyChinese and '查找' or WHO)
         ..WoWTools_DataMixin.Icon.mid,
     function()
         WoWTools_FoodMixin:Check_Items(true)
     end)
 
 --隐藏
-    sub2=sub:CreateButton(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE, function() return MenuResponse.Open end)
+    sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE, function() return MenuResponse.Open end)
     for classID=0, 20 do
         class= C_Item.GetItemClassInfo(classID)
         if class then
@@ -239,7 +239,7 @@ local function Init_Menu(self, root)
     end
 
 --禁用
-    sub2=sub:CreateButton(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE, function() return MenuResponse.Open end)
+    sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE, function() return MenuResponse.Open end)
     find=0
     for itemID in pairs(Save().noUseItems) do
         find=find+1
@@ -253,7 +253,7 @@ local function Init_Menu(self, root)
     end
     if find>1 then
         sub2:CreateDivider()
-        sub2:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
+        sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
             Save().noUseItems={}
             WoWTools_FoodMixin:Check_Items()
         end)
@@ -263,7 +263,7 @@ local function Init_Menu(self, root)
 
 --登录游戏时: 查找
     sub:CreateDivider()
-    sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '登录游戏时: 查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_SIGN_IN, GAME)..': '..WHO, function()
+    sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '登录游戏时: 查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_SIGN_IN, GAME)..': '..WHO, function()
         return Save().autoLogin
     end, function()
         Save().autoLogin= not Save().autoLogin and true or nil
@@ -273,7 +273,7 @@ local function Init_Menu(self, root)
     end)
 
 --自动查找
-    sub2=sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '自动查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, UPDATE), function()
+    sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '自动查找' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, UPDATE), function()
         return Save().autoWho
     end, function()
         Save().autoWho= not Save().autoWho and true or nil
@@ -283,15 +283,15 @@ local function Init_Menu(self, root)
         WoWTools_FoodMixin.CheckFrame:set_event()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '事件' or EVENTS_LABEL)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '事件' or EVENTS_LABEL)
         tooltip:AddLine('BAG_UPDATE_DELAYED')
         tooltip:AddLine(' ')
-        GameTooltip_AddErrorLine(tooltip, WoWTools_Mixin.onlyChinese and '高CPU' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIGH, 'CPU'))
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '高CPU' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIGH, 'CPU'))
     end)
 
 --仅当前版本物品
     if not WoWTools_DataMixin.Is_Timerunning then--时光
-        sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)), function()
+        sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '仅当前版本物品' or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, GAME_VERSION_LABEL)), function()
             return Save().onlyMaxExpansion
         end, function()
             Save().onlyMaxExpansion= not Save().onlyMaxExpansion and true or nil
@@ -300,7 +300,7 @@ local function Init_Menu(self, root)
     end
 
 --仅限 C_Item.GetItemSpell(itemID)
-    sub2=sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '可使用' or format(LFG_LIST_CROSS_FACTION, USE), function()
+    sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '可使用' or format(LFG_LIST_CROSS_FACTION, USE), function()
         return Save().olnyUsaItem
     end, function()
         Save().olnyUsaItem= not Save().olnyUsaItem and true or nil
@@ -337,7 +337,7 @@ local function Init_Menu(self, root)
         self:set_strata()
     end)
 
-    sub2=sub:CreateButton(WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function()return MenuResponse.Open end)
+    sub2=sub:CreateButton(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, function()return MenuResponse.Open end)
     sub2:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub2, {
         getValue=function()
@@ -367,9 +367,9 @@ local function Init_Menu(self, root)
     WoWTools_ToolsMixin:OpenMenu(sub, WoWTools_FoodMixin.addName)--打开, 选项界面，菜单
 
 --自定义
-    sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '自定义' or CUSTOM, function() return MenuResponse.Open end)
+    sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM, function() return MenuResponse.Open end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '拖曳物品添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS, ADD)))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '拖曳物品添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS, ADD)))
     end)
 
     find=0
@@ -387,7 +387,7 @@ local function Init_Menu(self, root)
 --全部清除
     if find>0 then
         sub:CreateDivider()
-        sub:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
+        sub:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
             Save().addItems={}
             WoWTools_FoodMixin:Check_Items()
         end)
@@ -395,7 +395,7 @@ local function Init_Menu(self, root)
     end
 
 --总是显示
-    sub:CreateCheckbox(WoWTools_Mixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS, function()
+    sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS, function()
         return Save().addItemsShowAll
     end, function()
         Save().addItemsShowAll= not Save().addItemsShowAll and true or nil
@@ -431,8 +431,8 @@ local function Init_Menu(self, root)
                 sub:SetTooltip(function(tooltip, description)
                     tooltip:AddLine(
                         Save().class[description.data.classID]
-                        and (WoWTools_Mixin.onlyChinese and '撤选所有' or UNCHECK_ALL)
-                        or (WoWTools_Mixin.onlyChinese and '勾选所有' or CHECK_ALL)
+                        and (WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL)
+                        or (WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL)
                     )
                 end)
 

@@ -18,7 +18,7 @@ local function Init()
 --输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
     MacroFrameEnterMacroText:Hide()
-    WoWTools_EditBoxMixin:SetInstructions(MacroFrameText, WoWTools_Mixin.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
+    WoWTools_EditBoxMixin:SetInstructions(MacroFrameText, WoWTools_DataMixin.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
     WoWTools_EditBoxMixin:HookInstructions(MacroFrameText)
 
 -- "已使用%d个字符，最多255个";
@@ -91,7 +91,7 @@ local function Init()
     for index, frame in pairs(regions) do
 --标题，上升，原生看FrameStrate太低了
         if frame:GetObjectType()=='FontString' and frame:GetText()==CREATE_MACROS then
-            if WoWTools_Mixin.onlyChinese then
+            if WoWTools_DataMixin.onlyChinese then
                 frame:SetText('创建宏')
             end
             frame:SetParent(MacroFrame.TitleContainer)
@@ -126,7 +126,7 @@ local function Init()
     MacroEditButton:ClearAllPoints()
     MacroEditButton:SetPoint('BOTTOMLEFT', MacroFrameSelectedMacroButton, 'BOTTOMRIGHT', 2, -2)
     MacroEditButton:SetSize(60,22)--170 22
-    MacroEditButton:SetText(WoWTools_Mixin.onlyChinese and '修改' or EDIT)
+    MacroEditButton:SetText(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)
 
 --取消，按钮
     --MacroCancelButton:ClearAllPoints()

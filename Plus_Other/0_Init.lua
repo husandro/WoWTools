@@ -11,7 +11,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         return
     end
 
-    WoWTools_OtherMixin.addName= '|A:QuestNormal:0:0|a'..(WoWTools_Mixin.onlyChinese and '其它' or OTHER)
+    WoWTools_OtherMixin.addName= '|A:QuestNormal:0:0|a'..(WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
 
     WoWTools_OtherMixin.Category, WoWTools_OtherMixin.Layout= WoWTools_PanelMixin:AddSubCategory({name= WoWTools_OtherMixin.addName})
 

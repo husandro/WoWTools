@@ -27,7 +27,7 @@ local function Remove_Toy(itemID)--移除
         ToyButton:Init_Random(Save().lockedToy)
     end
 
-    print(WoWTools_DataMixin.Icon.icon2..WoWTools_HearthstoneMixin.addName, WoWTools_Mixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(WoWTools_DataMixin.Icon.icon2..WoWTools_HearthstoneMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 local function Add_Toy(itemID)--添加
@@ -67,7 +67,7 @@ local function ToySpellButton_UpdateButton(btn)--标记, 是否已选取
         function btn.hearthstone:set_tooltips()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HearthstoneMixin.addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HearthstoneMixin.addName)
             GameTooltip:AddLine(' ')
             local itemID=self:get_itemID()
             local icon= C_Item.GetItemIconByID(itemID)
@@ -75,7 +75,7 @@ local function ToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 (icon and '|T'..icon..':0|t' or '')..(itemID and C_ToyBox.GetToyLink(itemID) or itemID),
                 WoWTools_TextMixin:GetEnabeleDisable(Save().items[itemID])..WoWTools_DataMixin.Icon.left
             )
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
             self:SetAlpha(1)
         end

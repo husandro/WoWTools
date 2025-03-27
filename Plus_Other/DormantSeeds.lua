@@ -64,7 +64,7 @@ local function Init()
     function Button:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
         GameTooltip:AddLine(' ')
         for _, itemID in pairs(ItemTab) do
             local link= WoWTools_ItemMixin:GetLink(itemID)
@@ -83,11 +83,11 @@ local function Init()
             end
         end
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= not self:CanChangeAttribute() and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
+        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
         col= not Save().point and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
 
@@ -101,9 +101,18 @@ local function Init()
         end
     end)
     Button:SetScript("OnDragStop", function(self)
+        ResetCursor()
         self:StopMovingOrSizing()
-        Save().point={self:GetPoint(1)}
-        Save().point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().point={self:GetPoint(1)}
+            Save().point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
     end)
 
     Button:SetScript("OnMouseUp", ResetCursor)
@@ -114,7 +123,7 @@ local function Init()
             if self:CanChangeAttribute() then
                 Save().point=nil
                 self:set_Point()
-                print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end
     end)
@@ -297,7 +306,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     WoWToolsSave['Other_DormantSeeds']= WoWToolsSave['Other_DormantSeeds'] or P_Save
 
-    addName= '|T656681:0|t'..(WoWTools_Mixin.onlyChinese and '梦境之种' or 'DormantSeeds')
+    addName= '|T656681:0|t'..(WoWTools_DataMixin.onlyChinese and '梦境之种' or 'DormantSeeds')
 
     WoWTools_PanelMixin:Check_Button({
         checkName= addName,
@@ -306,13 +315,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Save().disabled = not Save().disabled and true or nil
             Init()
         end,
-        buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
         buttonFunc= function()
             Save().Point=nil
             if Button then
                 Button:set_Point()
             end
-            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip=function()
             return  WoWTools_ItemMixin:GetName(2200) or addName

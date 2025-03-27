@@ -112,20 +112,20 @@ local function Init_TrackButton()
 			GameTooltip:AddLine(' ')
 			GameTooltip:AddDoubleLine(itemLink or ('itemID'..itemID),
 					Save().item[itemID] and
-						('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
-					or ('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+						('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a')
+					or ('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
 			)
 			self:set_texture(C_Item.GetItemIconByID(itemID))
 		else
 			local canFrame= self.Frame:CanChangeAttribute() and '|cnGREEN_FONT_COLOR:' or ''
-			GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CurrencyMixin.addName)
+			GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CurrencyMixin.addName)
 			GameTooltip:AddLine(' ')
-			GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, WoWTools_DataMixin.Icon.left)
-			GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
-			GameTooltip:AddDoubleLine(canFrame..(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..WoWTools_DataMixin.Icon.right)
+			GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭货币页面' or BINDING_NAME_TOGGLECURRENCY, WoWTools_DataMixin.Icon.left)
+			GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU), WoWTools_DataMixin.Icon.right)
+			GameTooltip:AddDoubleLine(canFrame..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), 'Atl+'..WoWTools_DataMixin.Icon.right)
 			GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(Save().str, true), WoWTools_DataMixin.Icon.mid)
 			GameTooltip:AddLine(' ')
-			GameTooltip:AddDoubleLine(canFrame..(WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '追踪' or TRACKING)
+			GameTooltip:AddDoubleLine(canFrame..(WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
 		end
 		GameTooltip:Show()
 	end
@@ -141,10 +141,19 @@ local function Init_TrackButton()
 		end
 	end)
 	TrackButton:SetScript("OnDragStop", function(self)
-		ResetCursor()
-		self:StopMovingOrSizing()
-		Save().point={self:GetPoint(1)}
-		Save().point[2]=nil
+        ResetCursor()
+        self:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+			Save().point={self:GetPoint(1)}
+			Save().point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
 
@@ -157,10 +166,10 @@ local function Init_TrackButton()
 		local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
 			Save().item[itemID]= not Save().item[itemID] and true or nil
-			print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_Mixin.onlyChinese and '追踪' or TRACKING,
+			print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName, WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING,
 					Save().item[itemID] and
-					('|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-					or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
+					('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+					or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|A:common-icon-redx:0:0|a'),
 					itemLink or itemID)
 			ClearCursor()
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()

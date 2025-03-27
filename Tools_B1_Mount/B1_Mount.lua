@@ -131,7 +131,7 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_MountMixin.addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(WoWTools_Mixin.onlyChinese and '坐骑' or MOUNT)
+            WoWTools_MountMixin.addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(WoWTools_DataMixin.onlyChinese and '坐骑' or MOUNT)
 
             if WoWToolsSave['Tools_Mounts'] then
                 WoWTools_MountMixin.Save= WoWToolsSave['Tools_Mounts']

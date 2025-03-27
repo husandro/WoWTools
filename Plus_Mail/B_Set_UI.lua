@@ -196,7 +196,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, 'UI Plus')
         GameTooltip:AddLine(' ')
-        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '邮资：' or SEND_MAIL_COST)
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '邮资：' or SEND_MAIL_COST)
         GameTooltip:Show()
     end)
     if SendMailCostMoneyFrame then
@@ -220,7 +220,7 @@ local function Init()
             break
         end
     end
-    WoWTools_EditBoxMixin:SetInstructions(SendMailNameEditBox, WoWTools_Mixin.onlyChinese and '收件人' or MAIL_TO_LABEL:gsub(HEADER_COLON,''))
+    WoWTools_EditBoxMixin:SetInstructions(SendMailNameEditBox, WoWTools_DataMixin.onlyChinese and '收件人' or MAIL_TO_LABEL:gsub(HEADER_COLON,''))
     WoWTools_EditBoxMixin:HookInstructions(SendMailNameEditBox)
 
 --主题
@@ -233,7 +233,7 @@ local function Init()
             end
         end
     end
-    WoWTools_EditBoxMixin:SetInstructions(SendMailSubjectEditBox, WoWTools_Mixin.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
+    WoWTools_EditBoxMixin:SetInstructions(SendMailSubjectEditBox, WoWTools_DataMixin.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
     WoWTools_EditBoxMixin:HookInstructions(SendMailSubjectEditBox)
 
     hooksecurefunc('SendMailRadioButton_OnClick', function(index)

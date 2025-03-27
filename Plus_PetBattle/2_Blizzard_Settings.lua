@@ -15,7 +15,7 @@ local function Init()
     if Save().disabled then
         return
     end
-    WoWTools_PanelMixin:Header(Layout, WoWTools_Mixin.onlyChinese and '选项' or OPTIONS)
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
 
     local category
 
@@ -26,7 +26,7 @@ local function Init()
         SetValue= function()
             Save().Plus.disabled = not Save().Plus.disabled and true or nil
             if not WoWTools_PetBattleMixin:Set_Plus() then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName5, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName5, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
             end
         end,
         layout= Layout,
@@ -41,11 +41,11 @@ local function Init()
             Save().AbilityButton.disabled= not Save().AbilityButton.disabled and true or nil
             WoWTools_PetBattleMixin:Init_AbilityButton()
         end,
-        buttonText= WoWTools_Mixin.onlyChinese and '重置' or RESET,
+        buttonText= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
         buttonFunc= function()
             Save().AbilityButton= {disabled= Save().AbilityButton.disabled}
             WoWTools_PetBattleMixin:Init_AbilityButton()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName6, WoWTools_Mixin.onlyChinese and '重置' or RESET)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName6, WoWTools_DataMixin.onlyChinese and '重置' or RESET)
         end,
         tooltip= WoWTools_PetBattleMixin.addName,
         layout= Layout,
@@ -60,30 +60,30 @@ local function Init()
             Save().TypeButton.disabled= not Save().TypeButton.disabled and true or nil
             WoWTools_PetBattleMixin:Set_TypeButton(true)
         end,
-        buttonText= WoWTools_Mixin.onlyChinese and '重置' or RESET,
+        buttonText= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
         buttonFunc= function()
             Save().TypeButton= {
                 disabled=Save().TypeButton.disabled,
                 showBackground=true,
             }
             WoWTools_PetBattleMixin:Set_TypeButton()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip= WoWTools_PetBattleMixin.addName,
         layout= Layout,
         category= Category,
     })
 
-    WoWTools_PanelMixin:Header(Layout, WoWTools_Mixin.onlyChinese and '其它' or OTHER)
+    WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
 --[[点击移动
     WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+        name= WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
         tooltip=function()
             return
-            '|n'..(not WoWTools_Mixin.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
-            ..'|n'..(WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..WoWTools_TextMixin:GetEnabeleDisable(false)
-            ..'|n'..(WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..WoWTools_TextMixin:GetEnabeleDisable(true)
-            ..(WoWTools_DataMixin.Player.IsMaxLevel and '|n|n|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '满级' or GUILD_RECRUITMENT_MAXLEVEL) or '')
+            '|n'..(not WoWTools_DataMixin.onlyChinese and CLICK_TO_MOVE..', '..REFORGE_CURRENT or '点击移动, 当前: ')..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoInteract"))
+            ..'|n'..(WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion()..'  '..WoWTools_TextMixin:GetEnabeleDisable(false)
+            ..'|n'..(WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion()..'  '..WoWTools_TextMixin:GetEnabeleDisable(true)
+            ..(WoWTools_DataMixin.Player.IsMaxLevel and '|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '满级' or GUILD_RECRUITMENT_MAXLEVEL) or '')
         end,
         GetValue= function() return Save().clickToMove end,
         SetValue= function()
@@ -102,7 +102,7 @@ local function Init()
             Save().ClickMoveButton.disabled= not Save().ClickMoveButton.disabled and true or nil
             WoWTools_PetBattleMixin:ClickToMove_Button()
         end,
-        buttonText= WoWTools_Mixin.onlyChinese and '重置' or RESET,
+        buttonText= WoWTools_DataMixin.onlyChinese and '重置' or RESET,
         buttonFunc= function()
             Save().ClickMoveButton= {
                 disabled= Save().ClickMoveButton.disabled,
@@ -112,7 +112,7 @@ local function Init()
                 lock_cameraSmoothTrackingStyle= WoWTools_DataMixin.Player.husandro and '0' or nil,
             }
             WoWTools_PetBattleMixin:ClickToMove_Button()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName3, WoWTools_Mixin.onlyChinese and '重置' or RESET)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName3, WoWTools_DataMixin.onlyChinese and '重置' or RESET)
         end,
         layout= Layout,
         category= Category,
@@ -149,14 +149,14 @@ local function Init_Panel()
     WoWTools_PetBattleMixin.Category= Category
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
+        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_PetBattleMixin.addName,
         GetValue= function() return not Save().disabled end,
         category= Category,
         func= function()
             Save().disabled= not Save().disabled and true or nil
             WoWTools_PetBattleMixin:Set_Options()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_PetBattleMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 

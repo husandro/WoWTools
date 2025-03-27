@@ -147,7 +147,7 @@ local function Init_Buttons()
                 GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(self.name, 'skillLine '..self.skillLine)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ProfessionMixin.addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
                 GameTooltip:Show();
             end)
             button:SetScript('OnLeave',function(self)
@@ -214,13 +214,13 @@ local function Init_Menu(self, root)
 
 --启用
     sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '显示快捷按钮' or SHOW_QUICK_BUTTON,
+        WoWTools_DataMixin.onlyChinese and '显示快捷按钮' or SHOW_QUICK_BUTTON,
     function()
         return Save().setButton
     end, function()
         Save().setButton= not Save().setButton and true or nil
         if Save().showFuocoButton  then
-            print(WoWTools_Mixin.addName,  WoWTools_ProfessionMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.addName,  WoWTools_ProfessionMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
         Init()
     end)
@@ -236,9 +236,9 @@ local function Init_Menu(self, root)
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
-        tooltip:AddLine((WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT )..': '..WoWTools_TextMixin:GetShowHide(false))
+        tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT )..': '..WoWTools_TextMixin:GetShowHide(false))
         tooltip:AddLine(' ')
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
     sub:CreateDivider()
@@ -280,7 +280,7 @@ function WoWTools_ProfessionMixin:Init_ProfessionsFrame_Button()
     btn:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
 

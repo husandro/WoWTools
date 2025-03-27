@@ -60,7 +60,7 @@ local function Save_Macro_Menu(frame, root)
         header= '|T'..(icon or 134400)..':0|t'.. (name and name:gsub(' ', '') or '')..(spellName or spellID or '')..(itemName or itemLink or '')
         sub=root:CreateCheckbox(
             ((not body or body=='') and '|cff9e9e9e' or '')
-            ..(WoWTools_Mixin.onlyChinese and '保存' or SAVE)
+            ..(WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
             ..' '..header,
         function(data)
             return data.header and Save().macro[data.header]
@@ -77,7 +77,7 @@ local function Save_Macro_Menu(frame, root)
 
         WoWTools_MacroMixin:SetMenuTooltip(sub)--宏，提示
     else
-        sub=root:CreateButton(WoWTools_Mixin.onlyChinese and '保存' or SAVE, function() return MenuResponse.Open end)
+        sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '保存' or SAVE, function() return MenuResponse.Open end)
     end
 
 
@@ -99,24 +99,24 @@ local function Save_Macro_Menu(frame, root)
             if description.data.tab.body then
                 tooltip:AddLine(description.data.tab.body)
                 tooltip:AddLine(' ')
-                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left)
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left)
             else
-                tooltip:AddLine((WoWTools_Mixin.onlyChinese '无' or NONE))
+                tooltip:AddLine((WoWTools_DataMixin.onlyChinese '无' or NONE))
             end
         end)
 --删除
         sub3=sub2:CreateCheckbox(
             '|A:XMarksTheSpot:0:0|a'
-            ..(WoWTools_Mixin.onlyChinese and '删除' or DELETE),
+            ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
         function(data)
             return Save().macro[data.head2]
         end, function(data)
             Save().macro[data.head2]= not Save().macro[data.head2] and {name=data.name, icon=data.icon, body=data.body} or nil
 
             if Save().macro[data.head2] then
-                print(WoWTools_MacroMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '保存' or SAVE))
+                print(WoWTools_MacroMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '保存' or SAVE))
             else
-                print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '删除' or DELETE))
+                print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))
                 print(data.body)
             end
         end, {head2=head2, name=tab.name, icon=tab.icon, body=tab.body})
@@ -206,7 +206,7 @@ local function Init()
         local col= WoWTools_MacroMixin:IsCanCreateNewMacro() and '' or '|cff9e9e9e'
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_Mixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..col..(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
+        GameTooltip:AddDoubleLine(col..'|A:communities-chat-icon-plus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '新建' or NEW)..WoWTools_DataMixin.Icon.left, WoWTools_DataMixin.Icon.right..col..(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU))
         GameTooltip:Show()
     end
 

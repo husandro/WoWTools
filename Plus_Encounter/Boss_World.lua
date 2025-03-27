@@ -72,8 +72,8 @@ local function Create_WorldBoss_Button()
     function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_Mixin.onlyChinese and '世界BOSS和稀有怪'
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_DataMixin.onlyChinese and '世界BOSS和稀有怪'
             or format(COVENANT_RENOWN_TOAST_REWARD_COMBINER,
                     format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WORLD, 'BOSS')
                     ,GARRISON_MISSION_RARE
@@ -81,8 +81,8 @@ local function Create_WorldBoss_Button()
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hideWorldBossText), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or  NPE_MOVE, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE, (Save().EncounterJournalFontSize or 12)..WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or  NPE_MOVE, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE, (Save().EncounterJournalFontSize or 12)..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
     end
     btn:SetScript('OnLeave', GameTooltip_Hide)

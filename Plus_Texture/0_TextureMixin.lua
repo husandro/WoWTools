@@ -28,15 +28,6 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
     frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     frame.Background:SetAlpha(alpha or 1)
     frame.Background:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
-
-    frame.SliceTexture = frame:CreateTexture(nil, 'BACKGROUND')
-    frame.SliceTexture:SetTexture([[interface/soulbinds/soulbindsconduitpendinganimationmask]])
-    frame.SliceTexture:SetTextureSliceMargins(24, 24, 24, 24);
-    frame.SliceTexture:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled);
-    frame.SliceTexture:SetPoint('TOPLEFT', frame.Background)
-    frame.SliceTexture:SetPoint('BOTTOMRIGHT', frame.Background)
-    frame.SliceTexture:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
-
     return frame.Background
 end
 --[[
@@ -110,7 +101,7 @@ local function Create_IconSelectorPopupFrame()
 
     IconFrame:Hide()
 
-    IconFrame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(WoWTools_Mixin.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
+    IconFrame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(WoWTools_DataMixin.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
 
     IconFrame.BorderBox.IconSelectorEditBox:SetAutoFocus(false)
 

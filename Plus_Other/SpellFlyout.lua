@@ -204,7 +204,7 @@ local function Init_Menu(self, root)
             WoWTools_SetTooltipMixin:Set_Menu(sub)
 
             --[[sub:CreateButton(--bug
-                WoWTools_Mixin.onlyChinese and '查询' or WHO,
+                WoWTools_DataMixin.onlyChinese and '查询' or WHO,
             function(data)
                 PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID, false, true, true)--knownSpellsOnly, toggleFlyout, flyoutReason
                 return MenuResponse.Open
@@ -278,9 +278,9 @@ local function Init_All_Flyout()
                     local name2= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
                     local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then
-                        GameTooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..WoWTools_TextMixin:CN(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..WoWTools_TextMixin:CN(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)
                     else
-                        GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(WoWTools_Mixin.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)
                     end
                 end
             end
@@ -338,7 +338,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         WoWToolsSave['Other_SpellFlyout']= WoWToolsSave['Other_SpellFlyout'] or {}
 
-        addName= '|A:common-icon-backarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术弹出框' or 'SpellFlyout')
+        addName= '|A:common-icon-backarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术弹出框' or 'SpellFlyout')
 
         --添加控制面板
         WoWTools_PanelMixin:OnlyCheck({
@@ -350,7 +350,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 print(
                     WoWTools_DataMixin.Icon.icon2..addName,
                     WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Other_SpellFlyout'].disabled),
-                    WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                 )
             end,
             layout= WoWTools_OtherMixin.Layout,
@@ -361,7 +361,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
 
         else
-            if WoWTools_Mixin.onlyChinese then
+            if WoWTools_DataMixin.onlyChinese then
                 for _, info in pairs(WoWTools_DataMixin.ChallengesSpellTabs or {}) do
                     if info.spell and info.name then
                         SpellTab[info.spell]=info.name

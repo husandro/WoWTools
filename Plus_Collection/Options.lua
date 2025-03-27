@@ -18,7 +18,7 @@ local function Init_Menu(_, root)
 
 --传家宝
     sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '传家宝' or HEIRLOOMS,
+        WoWTools_DataMixin.onlyChinese and '传家宝' or HEIRLOOMS,
     function()
         return not Save().hideHeirloom
     end, function()
@@ -30,7 +30,7 @@ local function Init_Menu(_, root)
     sub:SetEnabled(not WoWTools_DataMixin.Is_Timerunning)
 
     sub:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '全职业' or ALL_CLASSES,
+        WoWTools_DataMixin.onlyChinese and '全职业' or ALL_CLASSES,
     function()
         return not Save().hideHeirloomClassList
     end, function()
@@ -43,7 +43,7 @@ local function Init_Menu(_, root)
 
 --外观：物品
     sub= root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '外观：物品' or format('%: %', WARDROBE, WARDROBE_ITEMS),
+        WoWTools_DataMixin.onlyChinese and '外观：物品' or format('%: %', WARDROBE, WARDROBE_ITEMS),
     function()
         return not Save().hideItems
     end, function()
@@ -51,12 +51,12 @@ local function Init_Menu(_, root)
         WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化 5
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
 --外观：套装
     sub= root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '外观：套装' or format('%: %', WARDROBE, WARDROBE_SETS),
+        WoWTools_DataMixin.onlyChinese and '外观：套装' or format('%: %', WARDROBE, WARDROBE_SETS),
     function()
         return not Save().hideSets
     end, function()
@@ -64,7 +64,7 @@ local function Init_Menu(_, root)
         WoWTools_CollectionMixin:Init_Wardrober_Sets()--幻化,套装 5
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
     end)
 
 

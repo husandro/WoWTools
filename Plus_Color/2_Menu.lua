@@ -9,7 +9,7 @@ end
 local function Init_Menu(self, root)
 	local sub
 	root:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '显示' or SHOW,
+		WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
 	function()
 		return self.frame:IsShown()
 	end, function()
@@ -31,7 +31,7 @@ local function Init_Menu(self, root)
 		'|A:bags-button-autosort-up:0:0|a'
 		..(num==0 and '|cff828282' or '')
 		..'#'..num
-		..(WoWTools_Mixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
+		..(WoWTools_DataMixin.onlyChinese and '清除记录' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, EVENTTRACE_LOG_HEADER)),
 	function()
 		Save().logColor={}
 		WoWTools_ColorMixin:Set_SaveLogList()
@@ -39,7 +39,7 @@ local function Init_Menu(self, root)
 	end)
 	sub:SetTooltip(function(tooltip)
 		tooltip:AddLine(
-			format((WoWTools_Mixin.onlyChinese and '最多保存%d个颜色' or 'Save up to %d colors'), Save().logMaxColor or 10)
+			format((WoWTools_DataMixin.onlyChinese and '最多保存%d个颜色' or 'Save up to %d colors'), Save().logMaxColor or 10)
 		)
 	end)
 
@@ -52,27 +52,27 @@ local function Init_Menu(self, root)
 			Save().logMaxColor=value
 			WoWTools_ColorMixin:Set_SaveLogList()--设置，记录
 		end,
-		name=WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
+		name=WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
 		minValue=0,
 		maxValue=200,
 		step=1,
 		--bit='%.2f',
 		tooltip=function(tooltip)
-			tooltip:AddLine(WoWTools_Mixin.onlyChinese and '保存' or SAVE)
+			tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '保存' or SAVE)
 		end
 	})
 	sub:CreateSpacer()
 
 --更多颜色
 	sub=root:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '更多颜色' or (COLORS..' 2'),
+		WoWTools_DataMixin.onlyChinese and '更多颜色' or (COLORS..' 2'),
 	function()
 		return Save().selectType2
 	end, function()
 		Save().selectType2 = not Save().selectType2 and true or nil
 	end)
 	sub:SetTooltip(function(tooltip)
-		tooltip:AddLine( WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+		tooltip:AddLine( WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 	end)
 
 --重新加载UI
@@ -82,7 +82,7 @@ local function Init_Menu(self, root)
 --禁止自动隐藏
 	sub=root:CreateCheckbox(
 		'|A:newplayertutorial-drag-cursor:0:0|a'
-		..(WoWTools_Mixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
+		..(WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE)),
 	function()
 		return not Save().notHideFuori
 	end, function()
@@ -90,22 +90,22 @@ local function Init_Menu(self, root)
 		self:Settings()
 	end)
 	sub:SetTooltip(function(tooltip)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
 	end)
 
 
 --自动显示
 	root:CreateDivider()
 	sub=root:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW),
+		WoWTools_DataMixin.onlyChinese and '自动显示' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SHOW),
 	function()
 		return Save().autoShow
 	end, function()
 		Save().autoShow= not Save().autoShow and true or nil
 	end)
 	sub:SetTooltip(function(tooltip)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示' or SHOW)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '登入游戏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOG_IN, GAME))
 	end)
 
 
@@ -136,11 +136,11 @@ local function Init()
 	function btn:set_tooltip()
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_ColorMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ColorMixin.addName)
 		GameTooltip:AddLine(' ')
 		GameTooltip:AddDoubleLine(
 			WoWTools_TextMixin:GetShowHide(self.frame:IsShown()),
-			(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
+			(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left
 		)
         GameTooltip:Show()
 	end
@@ -167,8 +167,8 @@ local function Init()
 	btn.autoHideTexture:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)	
 	btn.autoHideTexture:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, 'ANCHOR_RIGHT')
-		GameTooltip:SetText(WoWTools_Mixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
-		GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
+		GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
+		GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '框架外点击：自动隐藏' or 'Click outside the ColorFrame: Auto-hide')
 		GameTooltip:Show()
 		self:SetAlpha(0.3)
 	end)

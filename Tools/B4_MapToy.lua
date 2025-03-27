@@ -194,26 +194,26 @@ local function Init_Menu(self, root)
     end
 
     root:CreateDivider()
-    sub= root:CreateButton((WoWTools_Mixin.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' #'..num or ''), function() return MenuResponse.Open end)
+    sub= root:CreateButton((WoWTools_DataMixin.onlyChinese and '已完成' or CRITERIA_COMPLETED)..(num>0 and ' #'..num or ''), function() return MenuResponse.Open end)
 
-    sub2= sub:CreateCheckbox(WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil)..(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE), function()
+    sub2= sub:CreateCheckbox(WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil)..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE), function()
         return Save.no[WoWTools_DataMixin.Player.GUID]
     end, function()
         Save.no[WoWTools_DataMixin.Player.GUID]= not Save.no[WoWTools_DataMixin.Player.GUID] and true or nil
         print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[WoWTools_DataMixin.Player.GUID]), WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reLink=true, reName=true, reRealm=true}))
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
-        tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[WoWTools_DataMixin.Player.GUID]))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '如果已完成|n可以 “禁用” 禁用本模块' or ('If you are complete|nyou can \"'..DISABLE..'\" this module disabled'))
+        tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[WoWTools_DataMixin.Player.GUID]))
     end)
 
-    sub3= sub2:CreateCheckbox(WoWTools_Mixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
+    sub3= sub2:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
         return Save.autoAddDisabled
     end, function()
         Save.autoAddDisabled= not Save.autoAddDisabled and true or nil
     end)
     sub3:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.onlyChinese and '自动禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, DISABLE))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '自动禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, DISABLE))
     end)
 
     if num>0 then
@@ -235,13 +235,13 @@ local function Init_Menu(self, root)
             {guid=guid, player=player}
         )
         sub2:SetTooltip(function(tooltip, description)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
-            tooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[description.data.guid]))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
+            tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT, WoWTools_TextMixin:GetEnabeleDisable(not Save.no[description.data.guid]))
         end)
     end
 
     if num>2 then
-        sub:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
+        sub:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
             Save.no={}
         end)
     end
@@ -286,7 +286,7 @@ local function Init()
             GameTooltip:SetItemByID(self.itemID)
         else
             GameTooltip:AddDoubleLine(' ', addName)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         end
         GameTooltip:Show()
     end
@@ -388,7 +388,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             Save= WoWToolsSave['Tools_MapToy'] or Save
 
-            addName= '|A:Taxi_Frame_Yellow:0:0|a'..(WoWTools_Mixin.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
+            addName= '|A:Taxi_Frame_Yellow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '侦察地图' or ADVENTURE_MAP_TITLE)
 
             WoWTools_ToolsMixin:AddOptions(function(category, layout)
                  WoWTools_PanelMixin:Check_Button({
@@ -397,7 +397,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                      SetValue= function()
                          Save.disabled = not Save.disabled and true or nil
                      end,
-                     buttonText= WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+                     buttonText= WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
                      buttonFunc= function()
                          Save.no={}
                      end,

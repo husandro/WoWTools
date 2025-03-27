@@ -44,7 +44,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWTools_HearthstoneMixin.Save= WoWToolsSave['Tools_Hearthstone'] or WoWTools_HearthstoneMixin.Save
-            addName='|A:delves-bountiful:0:0|a'..(WoWTools_Mixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)
+            addName='|A:delves-bountiful:0:0|a'..(WoWTools_DataMixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
             ToyButton= WoWTools_ToolsMixin:CreateButton({
                 name='Hearthstone',

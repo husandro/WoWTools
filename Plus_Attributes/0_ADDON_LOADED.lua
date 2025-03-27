@@ -105,7 +105,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Attributes']= WoWToolsSave['Plus_Attributes'] or P_Save
 
-            WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_Mixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
+            WoWTools_AttributesMixin.addName= '|A:charactercreate-icon-customize-body-selected:0:0|a'..(WoWTools_DataMixin.onlyChinese and '属性' or STAT_CATEGORY_ATTRIBUTES)
             WoWTools_AttributesMixin.PanelFrame= CreateFrame('Frame')
 
             local Category= WoWTools_PanelMixin:AddSubCategory({--添加控制面板
@@ -122,7 +122,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         if Init() then Init=function()end end
                         WoWTools_AttributesMixin:Init_Options()
                     else
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AttributesMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
                     end
                 end,

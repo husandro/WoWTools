@@ -22,7 +22,7 @@ local function Init_Menu(self, root)
 	local sub, sub2
 --显示
 	sub=root:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '显示' or SHOW,
+		WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
 	function()
 		return Save().btnstr
 	end, function()
@@ -31,13 +31,13 @@ local function Init_Menu(self, root)
 		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
 	end)
 	sub:SetTooltip(function(tooltip)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
 	end)
 
 --向右平移
 	sub:CreateDivider()
 	sub:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
+		WoWTools_DataMixin.onlyChinese and '向右平移' or BINDING_NAME_STRAFERIGHT,
 	function()
 		return Save().toRightTrackText
 	end, function()
@@ -52,7 +52,7 @@ local function Init_Menu(self, root)
 --上
 	sub:CreateCheckbox(
 		'|A:bags-greenarrow:0:0|a'
-		..(WoWTools_Mixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
+		..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION_UP),
 	function()
 		return Save().toTopTrack
 	end, function()
@@ -73,7 +73,7 @@ local function Init_Menu(self, root)
 
 --隐藏名称
 	sub2=sub:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
+		WoWTools_DataMixin.onlyChinese and '隐藏名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, NAME),
 	function()
 		return Save().onlyIcon
 	end, function()
@@ -83,7 +83,7 @@ local function Init_Menu(self, root)
 	end)
 	sub2:SetTooltip(function(tooltip)
 		tooltip:AddLine(
-			WoWTools_Mixin.onlyChinese and '仅显示有图标声望'
+			WoWTools_DataMixin.onlyChinese and '仅显示有图标声望'
 			or format(LFG_LIST_CROSS_FACTION, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FACTION, EMBLEM_SYMBOL))
 		)
 		WoWTools_Mixin:Call(ReputationFrame.Update, ReputationFrame)
@@ -109,7 +109,7 @@ local function Init_Menu(self, root)
 
 --自动隐藏
 	sub2=sub:CreateCheckbox(
-		WoWTools_Mixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
+		WoWTools_DataMixin.onlyChinese and '自动隐藏' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE),
 	function()
 		return not Save().notAutoHideTrack
 	end, function()
@@ -117,11 +117,11 @@ local function Init_Menu(self, root)
 		self:set_Shown()
 	end)
 	sub2:SetTooltip(function(tooltip)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
 		tooltip:AddLine(' ')
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)
-		tooltip:AddLine(WoWTools_Mixin.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '宠物对战' or SHOW_PET_BATTLES_ON_MAP_TEXT)
+		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '在副本中' or AGGRO_WARNING_IN_INSTANCE)
 	end)
 
 --重置位置
@@ -130,7 +130,7 @@ local function Init_Menu(self, root)
 		Save().point=nil
 		self:ClearAllPoints()
 		self:set_Point()
-		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+		print(WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
 	end)
 
 	--打开选项界面
@@ -220,13 +220,13 @@ local function Init()
 	function TrackButton:set_Tooltips()
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_FactionMixin.addName)
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_FactionMixin.addName)
 		GameTooltip:AddLine(' ')
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, WoWTools_DataMixin.Icon.left)
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开/关闭声望界面' or BINDING_NAME_TOGGLECHARACTER2, WoWTools_DataMixin.Icon.left)
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
 		GameTooltip:AddLine(' ')
-		--GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
-		GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
+		--GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scaleTrackButton or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
+		GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
 		GameTooltip:Show()
 	end
 
@@ -259,10 +259,19 @@ local function Init()
 		end
 	end)
 	TrackButton:SetScript("OnDragStop", function(self)
-		ResetCursor()
-		self:StopMovingOrSizing()
-		Save().point={self:GetPoint(1)}
-		Save().point[2]=nil
+        ResetCursor()
+        self:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+			Save().point={self:GetPoint(1)}
+			Save().point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
 	end)
 	TrackButton:SetScript("OnMouseUp", ResetCursor)
 

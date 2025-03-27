@@ -96,7 +96,7 @@ local function set_buy_item()
     end
     C_Timer.After(1.5, function()
         for itemLink2, num2 in pairs(Tab) do
-            print(WoWTools_SellBuyMixin.addName, WoWTools_Mixin.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
+            print(WoWTools_SellBuyMixin.addName, WoWTools_DataMixin.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
         end
     end)
 end
@@ -131,23 +131,23 @@ local function Add_BuyItem(itemID, itemLink)
         icon= C_Item.GetItemIconByID(itemLink)
         icon= icon and '|T'..icon..':0|t' or ''
         StaticPopupDialogs['WoWTools_AutoBuy']= {
-            text =WoWTools_Mixin.addName..' '..WoWTools_SellBuyMixin.addName
-            ..'|n|n'.. (WoWTools_Mixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..icon ..itemLink
-            ..'|n|n'..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.name_realm..': ' ..(WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-            ..'|n|n0: '..(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-            ..(Save().notAutoBuy and '|n|n'..(WoWTools_Mixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..WoWTools_TextMixin:GetEnabeleDisable(false) or ''),
-            button1 = WoWTools_Mixin.onlyChinese and '购买' or PURCHASE,
-            button2 = WoWTools_Mixin.onlyChinese and '取消' or CANCEL,
+            text =WoWTools_DataMixin.addName..' '..WoWTools_SellBuyMixin.addName
+            ..'|n|n'.. (WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..icon ..itemLink
+            ..'|n|n'..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.name_realm..': ' ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+            ..'|n|n0: '..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+            ..(Save().notAutoBuy and '|n|n'..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..WoWTools_TextMixin:GetEnabeleDisable(false) or ''),
+            button1 = WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE,
+            button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
             whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
             OnAccept=function(s)
                 local num= s.editBox:GetNumber()
                 if num==0 then
                     SaveBuyItem(itemID, nil)
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
                 else
                     SaveBuyItem(itemID, num)
                     Save().Sell[itemID]=nil
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE)..'|rx|cffff00ff'..num..'|r', itemLink)
                     set_buy_item()--购买物品
                 end
                 BuyItemButton:set_text()--回购，数量，提示
@@ -212,10 +212,10 @@ local function Init()
             local icon= C_Item.GetItemIconByID(itemLink)
             local name= '|T'..(icon or 0)..':0|t'..itemLink
             if Save().Sell[itemIDorIndex] then
-                GameTooltip:AddDoubleLine(name, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB)))
+                GameTooltip:AddDoubleLine(name, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB)))
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
-                GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB)))
+                GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB)))
                 if icon then
                     self.texture:SetTexture(icon)
                 end
@@ -230,9 +230,9 @@ local function Init()
                 local name = '|T'..(icon or 0)..':0|t'..itemLink
                 local num= GetBuyNum(itemID)
                 if num then
-                    GameTooltip:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..num, '|cffff00ff'..(WoWTools_Mixin.onlyChinese and '修改' or EDIT)..WoWTools_DataMixin.Icon.left)
+                    GameTooltip:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..num, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..WoWTools_DataMixin.Icon.left)
                 else
-                    GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '购买' or PURCHASE)..WoWTools_DataMixin.Icon.left)
+                    GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE)..WoWTools_DataMixin.Icon.left)
                 end
                 if icon then
                     self.texture:SetTexture(icon)
@@ -240,12 +240,12 @@ local function Init()
             end
         else
 
-            --GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_SellBuyMixin.addName)
+            --GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
             local num= self:set_text()--回购，数量，提示
-            GameTooltip:AddDoubleLine('|T236994:0|t|cffff00ff'..(WoWTools_Mixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
+            GameTooltip:AddDoubleLine('|T236994:0|t|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_Mixin.onlyChinese and '物品' or ITEMS), WoWTools_Mixin.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         end
         GameTooltip:Show()
     end
@@ -272,12 +272,12 @@ local function Init()
         if infoType=='item' and itemID then
             if Save().Sell[itemID] then
                 Save().Sell[itemID]=nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_Mixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB, itemLink)
             else
                 Save().Sell[itemID]=true
                 Save().noSell[itemID]=nil
                 SaveBuyItem(itemID, nil)
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_Mixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)..'|r'..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB), itemLink )
                 if _G['WoWTools_AutoSellJunkCheck'] then
                     _G['WoWTools_AutoSellJunkCheck']:set_sell_junk()--出售物品
                 end
@@ -292,7 +292,7 @@ local function Init()
         else
             --WoWTools_SellBuyMixin:Init_Menu(self)
             MenuUtil.CreateContextMenu(self,  function(f, root)
-                root:CreateTitle(WoWTools_Mixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+                root:CreateTitle(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
                 root:CreateDivider()
                 WoWTools_SellBuyMixin:Player_Sell_Menu(f, root)
 

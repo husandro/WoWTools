@@ -9,7 +9,7 @@ function WoWTools_MacroMixin:GetName(name, icon)
         return
             '|T'..(icon or 134400)..':0|t'
             ..(name:gsub('  ', '')==' '
-            and (WoWTools_Mixin.onlyChinese and '(空格)' or ('('..KEY_SPACE..')'))
+            and (WoWTools_DataMixin.onlyChinese and '(空格)' or ('('..KEY_SPACE..')'))
             or name)
     end
 end
@@ -79,14 +79,14 @@ function WoWTools_MacroMixin:SetTooltips(frame, index)
                 GameTooltip:AddLine(WoWTools_SpellMixin:GetName(spellID))--取得法术，名称
                 GameTooltip:AddLine(' ')
             end
-            GameTooltip:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (WoWTools_Mixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
+            GameTooltip:AddDoubleLine(WoWTools_MacroMixin:GetName(name, icon), (WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..index)
             GameTooltip:AddLine(body, nil,nil,nil, true)
             GameTooltip:AddLine(' ')
             if frame~=MacroFrameSelectedMacroButton then
                 local col= self:IsSecure() and '|cffffffff' or '|cff9e9e9e'
                 GameTooltip:AddDoubleLine(
-                    col..(WoWTools_Mixin.onlyChinese and '删除' or DELETE),
-                    col..'Alt+'..(WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left
+                    col..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE),
+                    col..'Alt+'..(WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left
                 )
             end
 

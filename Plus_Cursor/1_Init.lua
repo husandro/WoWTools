@@ -93,7 +93,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save().disabled= nil
             end
 
-            WoWTools_CursorMixin.addName= '|A:newplayertutorial-icon-mouse-turn:0:0|a'..(WoWTools_Mixin.onlyChinese and '鼠标' or MOUSE_LABEL)
+            WoWTools_CursorMixin.addName= '|A:newplayertutorial-icon-mouse-turn:0:0|a'..(WoWTools_DataMixin.onlyChinese and '鼠标' or MOUSE_LABEL)
 
             WoWTools_CursorMixin:Init_Panel()
 

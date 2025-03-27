@@ -32,10 +32,10 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
 --挑战数据 Challenges.lua
 local function Level_Text(text)
     local tab={
-        ['Veteran']= format('%s%s|r', '|cff00ff00', WoWTools_Mixin.onlyChinese and '老兵' or 'Veteran'),
-        ['Champion']= format('%s%s|r', '|cff2aa2ff', WoWTools_Mixin.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
-        ['Hero']= format('%s%s|r', '|cffff00ff', WoWTools_Mixin.onlyChinese and '英雄' or ITEM_HEROIC),
-        ['Myth']= format('%s%s|r', '|cffb78f6a', WoWTools_Mixin.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
+        ['Veteran']= format('%s%s|r', '|cff00ff00', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
+        ['Champion']= format('%s%s|r', '|cff2aa2ff', WoWTools_DataMixin.onlyChinese and '勇士' or FOLLOWERLIST_LABEL_CHAMPIONS),
+        ['Hero']= format('%s%s|r', '|cffff00ff', WoWTools_DataMixin.onlyChinese and '英雄' or ITEM_HEROIC),
+        ['Myth']= format('%s%s|r', '|cffb78f6a', WoWTools_DataMixin.onlyChinese and '神话' or ITEM_QUALITY4_DESC),
     }
     return tab[text] or text
 end

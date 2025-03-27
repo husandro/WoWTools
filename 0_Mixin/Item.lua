@@ -216,7 +216,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
     if C_ToyBox.GetToyInfo(itemID) then
         if not PlayerHasToy(itemID) then
             col='|cnRED_FONT_COLOR:'
-            desc= '|A:Islands-QuestBangDisable:0:0|a'..(WoWTools_Mixin.onlyChinese and '未收集' or NOT_COLLECTED)
+            desc= '|A:Islands-QuestBangDisable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)
         else
             cool= WoWTools_CooldownMixin:GetText(nil, itemID)
         end
@@ -377,7 +377,7 @@ end
 --EquipmentManager.lua
 function WoWTools_ItemMixin:IsCan_EquipmentSet(setID)--装备管理，能否装备
 	if not setID or C_EquipmentSet.EquipmentSetContainsLockedItems(setID) or UnitCastingInfo("player") then
-		return '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
+		return '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你还不能那样做。' or ERR_CLIENT_LOCKED_OUT)..'|r'
 	end
 end
 

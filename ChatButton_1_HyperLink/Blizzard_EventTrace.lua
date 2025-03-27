@@ -25,11 +25,11 @@ local function Init()
     hooksecurefunc(EventTraceLogEventButtonMixin, 'OnEnter', function()
         EventTraceTooltip:AddLine(' ')
         EventTraceTooltip:AddLine(
-            (WoWTools_Mixin.onlyChinese and '双击' or BUFFER_DOUBLE)
+            (WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)
             ..WoWTools_DataMixin.Icon.left
             ..'|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_Mixin.onlyChinese and '搜索' or SEARCH)
-            --WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+            ..(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
+            --WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
         )
         EventTraceTooltip:Show()
     end)

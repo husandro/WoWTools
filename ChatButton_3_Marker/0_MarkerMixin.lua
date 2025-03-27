@@ -31,9 +31,9 @@ end
 function WoWTools_MarkerMixin:Get_ReadyTextAtlas(autoReady)
     autoReady= autoReady or WoWToolsSave['ChatButton_Markers'].autoReady
     if autoReady==1 then
-        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_Mixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
+        return format('|cff00ff00%s|r|A:common-icon-checkmark:0:0|a', WoWTools_DataMixin.onlyChinese and '就绪' or READY), 'common-icon-checkmark'
     elseif autoReady==2 then
-        return format('|cffff0000%s|r|A:XMarksTheSpot:0:0|a', WoWTools_Mixin.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
+        return format('|cffff0000%s|r|A:XMarksTheSpot:0:0|a', WoWTools_DataMixin.onlyChinese and '未就绪' or NOT_READY_FEMALE), 'XMarksTheSpot'
     end
 end
 

@@ -90,16 +90,26 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         end
     end)
 
-    frame:HookScript("OnDragStop", function(self)
-        local targetFrame= self.targetFrame or self
-        targetFrame:StopMovingOrSizing()
-        ResetCursor()
-        local name= self.name or targetFrame:GetName()
-        if targetFrame.notSave or not name then
+    frame:HookScript("OnDragStop", function(f)
+        local self= f.targetFrame or f
+        local name= self and (f.name or self:GetName())
+        if not name or self.notSave then
             return
         end
-        Save().point[name]= {targetFrame:GetPoint(1)}
-        Save().point[name][2]= nil
+
+        ResetCursor()
+        self:StopMovingOrSizing()
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().point[name]= {self:GetPoint(1)}
+            Save().point[name][2]= nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
     frame:HookScript("OnMouseDown", function(self, d)--设置, 光标

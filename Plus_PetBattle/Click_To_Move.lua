@@ -13,15 +13,15 @@ local CVarNameTabs={}
 
 local function Init_Camera_Tabs()
     CameraTabs={
-        ['1']={WoWTools_Mixin.onlyChinese and '移动时只调整水平角度' or CAMERA_SMART, WoWTools_Mixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）' or OPTION_TOOLTIP_CAMERA_SMART},
-        ['4']={WoWTools_Mixin.onlyChinese and '仅在移动时' or CAMERA_SMARTER, WoWTools_Mixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。' or OPTION_TOOLTIP_CAMERA_SMARTER},
-        ['2']={WoWTools_Mixin.onlyChinese and '总是调整视角' or CAMERA_ALWAYS, WoWTools_Mixin.onlyChinese and '设定视角，使视角总是处于你的角色后方。' or OPTION_TOOLTIP_CAMERA_ALWAYS},
-        ['0']={WoWTools_Mixin.onlyChinese and '从不调整镜头' or CAMERA_NEVER, WoWTools_Mixin.onlyChinese and '设定视角，使其固定在一点，永远不自动调节。' or OPTION_TOOLTIP_CAMERA_NEVER},
+        ['1']={WoWTools_DataMixin.onlyChinese and '移动时只调整水平角度' or CAMERA_SMART, WoWTools_DataMixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。（只调整水平角度）' or OPTION_TOOLTIP_CAMERA_SMART},
+        ['4']={WoWTools_DataMixin.onlyChinese and '仅在移动时' or CAMERA_SMARTER, WoWTools_DataMixin.onlyChinese and '将视角固定在你所设置的角度，但你的角色移动时则恢复到跟踪视角。' or OPTION_TOOLTIP_CAMERA_SMARTER},
+        ['2']={WoWTools_DataMixin.onlyChinese and '总是调整视角' or CAMERA_ALWAYS, WoWTools_DataMixin.onlyChinese and '设定视角，使视角总是处于你的角色后方。' or OPTION_TOOLTIP_CAMERA_ALWAYS},
+        ['0']={WoWTools_DataMixin.onlyChinese and '从不调整镜头' or CAMERA_NEVER, WoWTools_DataMixin.onlyChinese and '设定视角，使其固定在一点，永远不自动调节。' or OPTION_TOOLTIP_CAMERA_NEVER},
     }
     CVarNameTabs={
-        ['autoInteract']= WoWTools_DataMixin.Icon.right..(WoWTools_Mixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
-        ['cameraSmoothStyle']= WoWTools_Mixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE,
-        ['cameraSmoothTrackingStyle']= WoWTools_Mixin.onlyChinese and '点击移动镜头' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, CAMERA_LABEL)
+        ['autoInteract']= WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE),
+        ['cameraSmoothStyle']= WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE,
+        ['cameraSmoothTrackingStyle']= WoWTools_DataMixin.onlyChinese and '点击移动镜头' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, CAMERA_LABEL)
     }
 end
 
@@ -41,8 +41,8 @@ local function Lock_CVar(name)
 
     elseif value and C_CVar.GetCVar(name)~=value then
         if C_CVar.SetCVar(name, value) then
-            print(WoWTools_Mixin.addName, CVarNameTabs[name],
-                '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '锁定' or LOCK)..'|r',
+            print(WoWTools_DataMixin.addName, CVarNameTabs[name],
+                '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)..'|r',
                 name=='autoInteract' and '' or CameraTabs[value][1]
             )
         end
@@ -71,9 +71,9 @@ local function Lock_ClickToMove_CVar()
 
     if value and C_CVar.GetCVar('autoInteract')~=value then
         if C_CVar.SetCVar('autoInteract', value) then
-            print(WoWTools_Mixin.addName,
+            print(WoWTools_DataMixin.addName,
             CVarNameTabs['autoInteract'],
-                '|A:AdventureMapIcon-Lock:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '锁定' or LOCK)
+                '|A:AdventureMapIcon-Lock:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK)
             )
         end
     end
@@ -108,8 +108,8 @@ end
 local function Init_ClickToMove_Menu(self, root, col)
     local sub
     for _, tab in pairs({
-        {'0', WoWTools_Mixin.onlyChinese and '锁定禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, DISABLE)},
-        {'1', WoWTools_Mixin.onlyChinese and '锁定启用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, ENABLE)},
+        {'0', WoWTools_DataMixin.onlyChinese and '锁定禁用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, DISABLE)},
+        {'1', WoWTools_DataMixin.onlyChinese and '锁定启用' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, LOCK, ENABLE)},
     }) do
         sub=root:CreateRadio(
             '|A:AdventureMapIcon-Lock:0:0|a'..tab[2],
@@ -129,7 +129,7 @@ local function Init_ClickToMove_Menu(self, root, col)
     end
 
     sub=root:CreateRadio(
-        '|A:AdventureMapIcon-Lock:0:0|a'..(WoWTools_Mixin.onlyChinese and '自动锁定' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, LOCK)),
+        '|A:AdventureMapIcon-Lock:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动锁定' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, LOCK)),
     function()
         return Save().ClickMoveButton.AutoClickToMove
     end, function()
@@ -139,8 +139,8 @@ local function Init_ClickToMove_Menu(self, root, col)
         return MenuResponse.CloseAll
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(false))
-        tooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(true))
+        tooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' < '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(false))
+        tooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..' = '..GetMaxLevelForLatestExpansion(), WoWTools_TextMixin:GetEnabeleDisable(true))
     end)
 end
 
@@ -182,7 +182,7 @@ local function Init_CVar_Menu(root, name, col)
         sub:CreateCheckbox(
             '|A:AdventureMapIcon-Lock:0:0|a'
             ..col
-            ..(WoWTools_Mixin.onlyChinese and '锁定' or LOCK),
+            ..(WoWTools_DataMixin.onlyChinese and '锁定' or LOCK),
 
         function(data)
             return Save().ClickMoveButton['lock_'..data.name]==data.value
@@ -233,7 +233,7 @@ local function Init_Menu(self, root)
 
     sub:SetTooltip(function(tooltip)
         if UnitAffectingCombat('player') then
-            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
         end
     end)
     root:CreateSpacer()
@@ -244,7 +244,7 @@ local function Init_Menu(self, root)
 --点击移动, 镜头跟随模式
     Init_CVar_Menu(sub, 'cameraSmoothTrackingStyle', col)
     sub:CreateDivider()
-    sub:CreateTitle(WoWTools_Mixin.onlyChinese and '点击移动' or CLICK_TO_MOVE)
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '点击移动' or CLICK_TO_MOVE)
 
 
 
@@ -252,14 +252,14 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(
         (Is_Lock_CVar('cameraSmoothStyle') or '')
         ..col
-        ..(WoWTools_Mixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE),
+        ..(WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE),
     function()
         return MenuResponse.Open
     end)
     Init_CVar_Menu(sub, 'cameraSmoothStyle', col)
 
     sub:CreateDivider()
-    sub:CreateTitle(WoWTools_Mixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE)
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '镜头跟随模式' or CAMERA_FOLLOWING_STYLE)
 
     root:CreateSpacer()
 --打开选项界面
@@ -288,7 +288,7 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
 --重置
     sub:CreateButton(
-        (WoWTools_Mixin.onlyChinese and '重置' or RESET),
+        (WoWTools_DataMixin.onlyChinese and '重置' or RESET),
     function()
         Save().ClickMoveButton={
             PlayerFrame=true,
@@ -420,7 +420,7 @@ local function Init_Button()
         )
 
         GameTooltip:AddDoubleLine(
-            WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
+            WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
 
             WoWTools_DataMixin.Icon.right
         )
@@ -428,7 +428,7 @@ local function Init_Button()
         if not Save().ClickMoveButton.PlayerFrame then
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(
-                WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE,
+                WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE,
                 'Alt+'..WoWTools_DataMixin.Icon.right
             )
         end
@@ -449,8 +449,17 @@ local function Init_Button()
     ClickToMoveButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().ClickMoveButton.Point={self:GetPoint(1)}
-        Save().ClickMoveButton.Point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().ClickMoveButton.Point={self:GetPoint(1)}
+            Save().ClickMoveButton.Point[2]=nil
+        else
+            print(
+                WoWTools_DataMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
+            )
+        end
+        self:Raise()
     end)
 
     ClickToMoveButton:SetScript("OnMouseUp", ResetCursor)

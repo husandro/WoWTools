@@ -68,7 +68,7 @@ local function select_Reward(questID)--自动:选择奖励
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                         GameTooltip:ClearLines()
                         GameTooltip:AddDoubleLine('questID: |cnGREEN_FONT_COLOR:'..self.questID..'|r', self.index)
-                        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
+                        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName2)
                         GameTooltip:Show()
                     end
                 end)
@@ -132,7 +132,7 @@ local function select_Reward(questID)--自动:选择奖励
     if bestItem and not IsModifierKeyDown() then
         _G['QuestInfoRewardsFrameQuestInfoItem'..bestItem]:Click()--QuestFrame.lua
         if selectItemLink then
-            print(WoWTools_DataMixin.Icon.icon2..'|cffff00ff'..(WoWTools_Mixin.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
+            print(WoWTools_DataMixin.Icon.icon2..'|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '选择' or CHOOSE)..'|r', selectItemLink)
         end
     end
 end
@@ -282,13 +282,13 @@ local function Init_Quest()
     function QuestButton:tooltip_Show()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName2)
         GameTooltip:AddLine(' ')
         WoWTools_QuestMixin:GetQuestAll()--所有，任务，提示
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetEnabeleDisable(Save().quest),WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),WoWTools_DataMixin.Icon.right)
-        --GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '选项' or OPTIONS, WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU),WoWTools_DataMixin.Icon.right)
+        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS, WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()
         self.texture:SetAlpha(1)
         self:set_Only_Show_Zone_Quest()
@@ -372,7 +372,7 @@ local function Init_Quest()
         end
     end)
     --[[QuestButton:SetScript('OnMouseWheel', function()
-        WoWTools_PanelMixin:Open(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_Mixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
+        WoWTools_PanelMixin:Open(nil, '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
     end)]]
 
     QuestButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_Alpha() end)
@@ -392,14 +392,14 @@ local function Init_Quest()
 
     QuestFrame.sel=CreateFrame("CheckButton", nil, QuestFrame, 'InterfaceOptionsCheckButtonTemplate')--禁用此npc,任务,选项
     QuestFrame.sel:SetPoint("TOPLEFT", QuestFrame, 40, 20)
-    QuestFrame.sel.Text:SetText(WoWTools_Mixin.onlyChinese and '禁用' or DISABLE)
+    QuestFrame.sel.Text:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
     QuestFrame.sel.questIDLabel= WoWTools_LabelMixin:Create(QuestFrame.sel, {mouse=true})--任务ID
     QuestFrame.sel.questIDLabel:SetPoint('LEFT', QuestFrame.sel.Text, 'RIGHT', 12, 0)
     QuestFrame.sel:SetScript("OnLeave", GameTooltip_Hide)
     QuestFrame.sel:SetScript('OnEnter',function (self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_GossipMixin.addName2)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName2)
         if self.npc and self.name then
             GameTooltip:AddDoubleLine(self.name, 'NPC '..self.npc)
         else
@@ -430,7 +430,7 @@ local function Init_Quest()
         GameTooltip:ClearLines()
         GameTooltip_AddQuest(GameTooltip, questID)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '超链接' or COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
     QuestFrame.sel.questIDLabel:SetScript('OnMouseDown',function(self)

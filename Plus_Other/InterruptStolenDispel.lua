@@ -66,7 +66,7 @@ local function Init_Panel()
 
     WoWToolsSave['Interrupts_Tolen']= WoWToolsSave['Interrupts_Tolen'] or P_Save
 
-    addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_Mixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
+    addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
 
     --添加控制面板
     local root= WoWTools_PanelMixin:OnlyCheck({
@@ -81,13 +81,13 @@ local function Init_Panel()
     })
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '团队' or RAID),
+        name= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '团队' or RAID),
         GetValue= function() return Save().enabledInRaid end,
         SetValue= function()
             Save().enabledInRaid = not Save().enabledInRaid and true or nil
             Set_Event(panel)
         end,
-        tooltip=(WoWTools_Mixin.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
+        tooltip=(WoWTools_DataMixin.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
         layout= WoWTools_OtherMixin.Layout,
         category= WoWTools_OtherMixin.Category,
     }, root)

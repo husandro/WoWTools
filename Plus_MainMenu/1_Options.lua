@@ -17,7 +17,7 @@ local function Init_Options()--初始, 选项
     )
 
     local initializer2= WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_Mixin.onlyChinese and '启用' or ENABLE,
+        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_MainMenuMixin.addName,
         GetValue= function() return not Save().disabled end,
         category= Category,
@@ -26,13 +26,13 @@ local function Init_Options()--初始, 选项
             if not Save().disabled then
                 WoWTools_MainMenuMixin:Settings()
             else
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
             end
         end
     })
 
     local initializer= WoWTools_Mixin:OnlySlider({
-        name= WoWTools_Mixin.onlyChinese and '字体大小' or FONT_SIZE,
+        name= WoWTools_DataMixin.onlyChinese and '字体大小' or FONT_SIZE,
         GetValue= function() return Save().size end,
         minValue= 8,
         maxValue= 18,
@@ -49,12 +49,12 @@ local function Init_Options()--初始, 选项
     initializer:SetParentInitializer(initializer2, function() if Save().plus then return true else return false end end)
 
     initializer= WoWTools_Mixin:Check_Slider({
-        checkName= WoWTools_Mixin.onlyChinese and '透明度' or 'Alpha',
+        checkName= WoWTools_DataMixin.onlyChinese and '透明度' or 'Alpha',
         checkGetValue= function() return Save().enabledMainMenuAlpha end,
         checkTooltip= WoWTools_MainMenuMixin.addName,
         checkSetValue= function()
             Save().enabledMainMenuAlpha= not Save().enabledMainMenuAlpha and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save().mainMenuAlphaValue end,
         minValue= 0,
@@ -73,25 +73,25 @@ local function Init_Options()--初始, 选项
 
     WoWTools_PanelMixin:Header(Layout,
         (Save().frameratePlus and '' or '|cff828282')
-        ..'2) '..(WoWTools_Mixin.onlyChinese and '系统' or SYSTEM)
+        ..'2) '..(WoWTools_DataMixin.onlyChinese and '系统' or SYSTEM)
     )
 
     initializer2= WoWTools_PanelMixin:OnlyCheck({
-        name= (WoWTools_Mixin.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
+        name= (WoWTools_DataMixin.onlyChinese and '每秒帧数:' or FRAMERATE_LABEL)..' Plus',
         tooltip= MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
         GetValue= function() return Save().frameratePlus end,
         category= Category,
         SetValue= function()
             Save().frameratePlus= not Save().frameratePlus and true or nil
             if _G['WoWToolsPlusFramerateButton'] then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(Save().frameratePlus), WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(Save().frameratePlus), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
             else
                 WoWTools_MainMenuMixin:Init_Framerate_Plus()
             end
         end
     })
     initializer= WoWTools_PanelMixin:OnlyCheck({
-        name= (WoWTools_Mixin.onlyChinese and '登入' or LOG_IN)..' WoW: '..(WoWTools_Mixin.onlyChinese and '显示' or SHOW),
+        name= (WoWTools_DataMixin.onlyChinese and '登入' or LOG_IN)..' WoW: '..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
         tooltip=  MicroButtonTooltipText(FRAMERATE_LABEL, "TOGGLEFPS"),
         GetValue= function() return Save().framerateLogIn end,
         category= Category,

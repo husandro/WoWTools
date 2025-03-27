@@ -65,8 +65,8 @@ local function UpdateButton(_, button)
                 if self2.maxUp and self2.upgradeLevel then
                     GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
-                    GameTooltip:AddLine(format(WoWTools_Mixin.onlyChinese and '传家宝升级等级：%d/%d' or HEIRLOOM_UPGRADE_TOOLTIP_FORMAT, self2.upgradeLevel, self2.maxUp))
-                    GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
+                    GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '传家宝升级等级：%d/%d' or HEIRLOOM_UPGRADE_TOOLTIP_FORMAT, self2.upgradeLevel, self2.maxUp))
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
                     GameTooltip:Show()
                 end
             end)
@@ -99,8 +99,8 @@ local function UpdateButton(_, button)
         button.isPvP:SetScript('OnEnter', function(self2)
             GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '竞技装备' or ITEM_TOURNAMENT_GEAR)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
             GameTooltip:Show()
         end)
         button.isPvP:SetScript('OnMouseDown', function(self2)
@@ -162,15 +162,15 @@ local function Init_ClassListButton()
     function ListButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
 
         if UnitAffectingCombat('player') then
-            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+            GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
         end
 
-        GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().Heirlooms_Class_Scale or 0), WoWTools_DataMixin.Icon.mid)
+        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().Heirlooms_Class_Scale or 0), WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '全职业' or ALL_CLASSES, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '全职业' or ALL_CLASSES, WoWTools_DataMixin.Icon.left)
 
         GameTooltip:Show()
     end
@@ -231,9 +231,9 @@ local function Init_ClassListButton()
             if UnitAffectingCombat('player') then
                 GameTooltip:SetOwner(f, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_CollectionMixin.addName)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
+                GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '请不要在战斗中使用' or 'Please do not use in combat'))
                 GameTooltip:Show()
             end
         end)

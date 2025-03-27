@@ -36,7 +36,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			Save().hideRenownFrame= Save().hideRenownFrame or {}
 
 
-			WoWTools_FactionMixin.addName= format('|A:%s:0:0|a%s', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or 'ParagonReputation_Glow', WoWTools_Mixin.onlyChinese and '声望' or REPUTATION)
+			WoWTools_FactionMixin.addName= format('|A:%s:0:0|a%s', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or 'ParagonReputation_Glow', WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION)
 
 			--添加控制面板
 			WoWTools_PanelMixin:OnlyCheck({
@@ -47,7 +47,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					print(
 						WoWTools_DataMixin.Icon.icon2..WoWTools_FactionMixin.addName,
 						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-						WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+						WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
 					)
 				end
 			})

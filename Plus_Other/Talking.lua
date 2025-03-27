@@ -55,15 +55,15 @@ end
 local function ADDON_LOADED()
     WoWToolsSave['Other_VoiceTalking']= WoWToolsSave['Other_VoiceTalking'] or {}
 
-    addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(WoWTools_Mixin.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
+    addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(WoWTools_DataMixin.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
 
     --添加控制面板
     local root= WoWTools_PanelMixin:OnlyCheck({
         name= addName,
-        tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_Mixin.onlyChinese and '隐藏' or HIDE , WoWTools_Mixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
-                ..'|n|n'..(WoWTools_Mixin.onlyChinese and '声音' or SOUND)
-                ..'|nChat Button, '..(WoWTools_Mixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-                ..'|n'..(WoWTools_Mixin.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
+        tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE , WoWTools_DataMixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
+                ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '声音' or SOUND)
+                ..'|nChat Button, '..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+                ..'|n'..(WoWTools_DataMixin.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
         GetValue= function() return not WoWToolsSave['Other_VoiceTalking'].disabled end,
         SetValue= function()
             WoWToolsSave['Other_VoiceTalking'].disabled= not WoWToolsSave['Other_VoiceTalking'].disabled and true or nil
@@ -74,9 +74,9 @@ local function ADDON_LOADED()
     })
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_Mixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+        name= WoWTools_DataMixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
         GetValue= function() return not WoWToolsSave['Other_VoiceTalking'].notPrint end,
-        tooltip= WoWTools_Mixin.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',
+        tooltip= WoWTools_DataMixin.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',
         SetValue= function()
             WoWToolsSave['Other_VoiceTalking'].notPrint= not WoWToolsSave['Other_VoiceTalking'].notPrint and true or nil
         end,

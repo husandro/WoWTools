@@ -94,7 +94,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Target'] or P_Save
 
-        WoWTools_TargetMixin.addName= '|A:common-icon-rotateright:0:0|a'..(WoWTools_Mixin.onlyChinese and '目标' or TARGET)
+        WoWTools_TargetMixin.addName= '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
 
 
         WoWTools_TargetMixin:Set_All_Init()

@@ -108,7 +108,7 @@ local function Init()
                 AddonList.ForceLoad:HookScript('OnEnter', function(self)
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
-                    GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
+                    GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '加载过期插件' or ADDON_FORCE_LOAD)
                     GameTooltip:Show()
                 end)
                 AddonList.ForceLoad:HookScript('OnLeave', GameTooltip_Hide)
@@ -157,7 +157,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_AddOns']= WoWToolsSave['Plus_AddOns'] or P_Save
-            WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_Mixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
+            WoWTools_AddOnsMixin.addName='|A:Garr_Building-AddFollowerPlus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '插件管理' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADDONS, CHAT_MODERATE))
 
             Save().Bg_Alpha = Save().Bg_Alpha or 0.5
 
@@ -174,7 +174,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             return
                         end
                     end
-                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_AddOnsMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_AddOnsMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
                 end
             })
 

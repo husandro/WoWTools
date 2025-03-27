@@ -69,20 +69,20 @@ local function Init()
                 if isKilled then
                     text= text
                         ..'|A:common-icon-checkmark:0:0|a|cnRED_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
-                        ..'|r |cffffffff'..(WoWTools_Mixin.onlyChinese and '已消灭' or BOSS_DEAD)..'|r'
+                        ..'|r |cffffffff'..(WoWTools_DataMixin.onlyChinese and '已消灭' or BOSS_DEAD)..'|r'
                     dead= dead+1
                 else
                     text= text
                         ..'|A:QuestLegendary:0:0|a|cnGREEN_FONT_COLOR:'..WoWTools_TextMixin:CN(bossName)
-                        ..'|r |cffffffff'..(WoWTools_Mixin.onlyChinese and '可消灭' or BOSS_ALIVE)..'|r'
+                        ..'|r |cffffffff'..(WoWTools_DataMixin.onlyChinese and '可消灭' or BOSS_ALIVE)..'|r'
                 end
             end
         end
 
         if text then
             text= (numBosses==dead and '|cff9e9e9e' or '|cffffffff')
-                ..(WoWTools_Mixin.onlyChinese and '首领：' or BOSSES)
-                ..format(WoWTools_Mixin.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
+                ..(WoWTools_DataMixin.onlyChinese and '首领：' or BOSSES)
+                ..format(WoWTools_DataMixin.onlyChinese and '已消灭%d/%d个首领' or BOSSES_KILLED, dead, numBosses)
                 ..'|r|n|n'
                 ..text
                 ..'|n|n'..WoWTools_ChatMixin.addName..' '..WoWTools_LFDMixin.addName
@@ -94,7 +94,7 @@ local function Init()
     LFGDungeonReadyDialogCloseButton:HookScript('OnLeave', GameTooltip_Hide)
     LFGDungeonReadyDialogCloseButton:HookScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(WoWTools_Mixin.onlyChinese and '隐藏' or HIDE)
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
         GameTooltip:Show()
     end)
 

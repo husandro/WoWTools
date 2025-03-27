@@ -74,7 +74,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
             Save().classPowerNumSize= Save().classPowerNumSize or 12
 
-            WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_Mixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
+            WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
             WoWTools_TextureMixin:Init_Options()
 

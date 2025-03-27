@@ -70,7 +70,7 @@ local function Init_Menu(self, root)
 
 --显示
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '显示' or SHOW,
+        WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
     function()
         return Save().fastShow
     end, function()
@@ -207,11 +207,11 @@ local function Fast_Button_Set_Menu(self, root, showName, setName)
         tooltip:AddLine(description.data.name)
         local findName= Save().fast[self.name]
         if findName==description.data.name then
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
         elseif findName then
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '替换' or REPLACE)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '替换' or REPLACE)
         else
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '添加' or ADD)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
         end
         tooltip:AddLine(WoWTools_MailMixin:GetRealmInfo(description.data.name))
     end)
@@ -240,7 +240,7 @@ local function Init_Fast_Button_Menu(self, root)
 
     root:CreateTitle(
         '|T'..(self:GetNormalTexture():GetTexture() or 0)..':0|t'
-        ..(WoWTools_Mixin.onlyChinese and '收件人：' or MAIL_TO_LABEL)
+        ..(WoWTools_DataMixin.onlyChinese and '收件人：' or MAIL_TO_LABEL)
     )
     root:CreateDivider()
 
@@ -264,7 +264,7 @@ local function Init_Fast_Button_Menu(self, root)
 
 --我
     sub= root:CreateButton(
-        '|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_Mixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+        '|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
     function()
         return MenuResponse.Open
     end)
@@ -297,38 +297,38 @@ end
 
 local function Init_Button()
     local fast={
-        {C_Spell.GetSpellTexture(3908) or 4620681, 7, 5, WoWTools_Mixin.onlyChinese and '布'},--1
-        {C_Spell.GetSpellTexture(2108) or 4620678, 7, 6, WoWTools_Mixin.onlyChinese and '皮革'},--2
-        {C_Spell.GetSpellTexture(2656) or 4625105, 7, 7, WoWTools_Mixin.onlyChinese and '金属 矿石'},--3
-        {C_Spell.GetSpellTexture(2550) or 4620671, 7, 8, WoWTools_Mixin.onlyChinese and '烹饪'},--4
-        {C_Spell.GetSpellTexture(2383) or 133939, 7, 9, WoWTools_Mixin.onlyChinese and '草药'},--5
-        {C_Spell.GetSpellTexture(7411) or 4620672, 7, 12, WoWTools_Mixin.onlyChinese and '附魔'},--6
-        {C_Spell.GetSpellTexture(45357) or 4620676, 7, 16, WoWTools_Mixin.onlyChinese and '铭文'},--7
-        {C_Spell.GetSpellTexture(25229) or 4620677, 7, 4, WoWTools_Mixin.onlyChinese and '珠宝加工'},--8
+        {C_Spell.GetSpellTexture(3908) or 4620681, 7, 5, WoWTools_DataMixin.onlyChinese and '布'},--1
+        {C_Spell.GetSpellTexture(2108) or 4620678, 7, 6, WoWTools_DataMixin.onlyChinese and '皮革'},--2
+        {C_Spell.GetSpellTexture(2656) or 4625105, 7, 7, WoWTools_DataMixin.onlyChinese and '金属 矿石'},--3
+        {C_Spell.GetSpellTexture(2550) or 4620671, 7, 8, WoWTools_DataMixin.onlyChinese and '烹饪'},--4
+        {C_Spell.GetSpellTexture(2383) or 133939, 7, 9, WoWTools_DataMixin.onlyChinese and '草药'},--5
+        {C_Spell.GetSpellTexture(7411) or 4620672, 7, 12, WoWTools_DataMixin.onlyChinese and '附魔'},--6
+        {C_Spell.GetSpellTexture(45357) or 4620676, 7, 16, WoWTools_DataMixin.onlyChinese and '铭文'},--7
+        {C_Spell.GetSpellTexture(25229) or 4620677, 7, 4, WoWTools_DataMixin.onlyChinese and '珠宝加工'},--8
 
-        {"Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, WoWTools_Mixin.onlyChinese and '零部'},--9
-        {"Interface/Icons/INV_Elemental_Primal_Air", 7, 10, WoWTools_Mixin.onlyChinese and '元素'},--10
-        {"Interface/Icons/INV_Bijou_Green", 7, 18, WoWTools_Mixin.onlyChinese and '可选材料'},--11
-        {"Interface/Icons/INV_Misc_Rune_09", 7, 11, WoWTools_Mixin.onlyChinese and '其它'},--12
-        {"Interface/Icons/Ability_Ensnare", 7, 0, WoWTools_Mixin.onlyChinese and '贸易品'},--13
+        {"Interface/Icons/INV_Gizmo_FelIronCasing", 7, 1, WoWTools_DataMixin.onlyChinese and '零部'},--9
+        {"Interface/Icons/INV_Elemental_Primal_Air", 7, 10, WoWTools_DataMixin.onlyChinese and '元素'},--10
+        {"Interface/Icons/INV_Bijou_Green", 7, 18, WoWTools_DataMixin.onlyChinese and '可选材料'},--11
+        {"Interface/Icons/INV_Misc_Rune_09", 7, 11, WoWTools_DataMixin.onlyChinese and '其它'},--12
+        {"Interface/Icons/Ability_Ensnare", 7, 0, WoWTools_DataMixin.onlyChinese and '贸易品'},--13
         '-',
-        {132690, 4, 1, WoWTools_Mixin.onlyChinese and '布甲'},--1
-        {132722, 4, 2, WoWTools_Mixin.onlyChinese and '皮甲'},--2
-        {132629, 4, 3, WoWTools_Mixin.onlyChinese and '锁甲'},--3
-        {132738, 4, 4, WoWTools_Mixin.onlyChinese and '板甲'},--4
-        {134966, 4, 6, WoWTools_Mixin.onlyChinese and '盾牌'},--5
-        {135317, 2, nil, WoWTools_Mixin.onlyChinese and '武器'},--6
-        {644389, 15, 2, WoWTools_Mixin.onlyChinese and '宠物' or PET, 'Hbattlepet'},--7
+        {132690, 4, 1, WoWTools_DataMixin.onlyChinese and '布甲'},--1
+        {132722, 4, 2, WoWTools_DataMixin.onlyChinese and '皮甲'},--2
+        {132629, 4, 3, WoWTools_DataMixin.onlyChinese and '锁甲'},--3
+        {132738, 4, 4, WoWTools_DataMixin.onlyChinese and '板甲'},--4
+        {134966, 4, 6, WoWTools_DataMixin.onlyChinese and '盾牌'},--5
+        {135317, 2, nil, WoWTools_DataMixin.onlyChinese and '武器'},--6
+        {644389, 15, 2, WoWTools_DataMixin.onlyChinese and '宠物' or PET, 'Hbattlepet'},--7
 
-        --{133035, 0, 0, WoWTools_Mixin.onlyChinese and '装置'},
-        {463931, 0, 1, WoWTools_Mixin.onlyChinese and '药水'},
-        {609902, 0, 3, WoWTools_Mixin.onlyChinese and '合计'},
-        --{609902, 0, 7, WoWTools_Mixin.onlyChinese and '绷带'},
-        {133974, 0, 5, WoWTools_Mixin.onlyChinese and '食物'},
-        {1528795, 0, 9, WoWTools_Mixin.onlyChinese and '符文'},
+        --{133035, 0, 0, WoWTools_DataMixin.onlyChinese and '装置'},
+        {463931, 0, 1, WoWTools_DataMixin.onlyChinese and '药水'},
+        {609902, 0, 3, WoWTools_DataMixin.onlyChinese and '合计'},
+        --{609902, 0, 7, WoWTools_DataMixin.onlyChinese and '绷带'},
+        {133974, 0, 5, WoWTools_DataMixin.onlyChinese and '食物'},
+        {1528795, 0, 9, WoWTools_DataMixin.onlyChinese and '符文'},
 
-        {466645, 3, nil, WoWTools_Mixin.onlyChinese and '宝石'},
-        {463531, 8, nil, WoWTools_Mixin.onlyChinese and '附魔'},
+        {466645, 3, nil, WoWTools_DataMixin.onlyChinese and '宝石'},
+        {463531, 8, nil, WoWTools_DataMixin.onlyChinese and '附魔'},
     }
 
     local x, y=0, 0
@@ -416,16 +416,16 @@ local function Init_Button()
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine('|T'..(self:GetNormalTexture():GetTexture() or 0)..':0|t'..self.name, WoWTools_MailMixin:GetNameInfo(playerName))
-                GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '添加' or ADD)..WoWTools_DataMixin.Icon.left, playerName and playerName~=playerNameInfo and playerName)
+                GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '添加' or ADD)..WoWTools_DataMixin.Icon.left, playerName and playerName~=playerNameInfo and playerName)
                 GameTooltip:AddLine(' ')
                 if self.classID==2 or self.classID==4 then
-                    GameTooltip:AddDoubleLine(format(WoWTools_Mixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, WoWTools_Mixin.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
+                    GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, WoWTools_DataMixin.onlyChinese and '你还没有收藏过此外观' or TRANSMOGRIFY_STYLE_UNCOLLECTED))
                 end
                 GameTooltip:AddDoubleLine(self.classID and 'ClassID '..self.classID or '', self.subClassID and 'SubClassID '..self.subClassID or '')
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self.num)
-                GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '组数' or AUCTION_NUM_STACKS, self.stack)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL, self.num)
+                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '组数' or AUCTION_NUM_STACKS, self.stack)
                 GameTooltip:AddLine(' ')
-                GameTooltip:AddLine((WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right)
+                GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.right)
                 GameTooltip:Show()
                 self:SetAlpha(1)
             end)
@@ -483,9 +483,9 @@ local function Init()
     function fastButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_Mixin.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL))
+        GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_DataMixin.onlyChinese and '物品快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, SETTINGS_KEYBINDINGS_LABEL))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end
     fastButton:SetScript('OnLeave', function()

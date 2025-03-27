@@ -31,10 +31,10 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         end
         tooltip:AddDoubleLine(abilityIconA, abilityIconB)
         if not isTradeable then
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
         end
         if not canBattle then
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE, 1,0,0)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE, 1,0,0)
         end
     end
 
@@ -68,7 +68,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
             --PetJournalSearchBox:SetText(speciesName)
         end
         tooltip:AddLine(' ')
-        tooltip:AddLine('|A:NPE_Icon:0:0|aAlt |TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_Mixin.onlyChinese and '搜索' or SEARCH))
+        tooltip:AddLine('|A:NPE_Icon:0:0|aAlt |TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH))
     end
 
 

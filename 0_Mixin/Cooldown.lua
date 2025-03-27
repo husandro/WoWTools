@@ -28,7 +28,7 @@ function WoWTools_CooldownMixin:GetText(spellID, itemID)--法术,物品,冷却
                 return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
 
             elseif data.isEnabled==false then
-                return '|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+                return '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
             end
         end
     elseif itemID then
@@ -42,7 +42,7 @@ function WoWTools_CooldownMixin:GetText(spellID, itemID)--法术,物品,冷却
             t= duration-t
             t= t<0 and 0 or t
             if enable==false then
-                return '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
+                return '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '即时冷却' or SPELL_RECAST_TIME_INSTANT)..'|r'
             else
                 return '|cnRED_FONT_COLOR:'..SecondsToTime(t)..'|r'
             end

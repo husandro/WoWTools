@@ -10,17 +10,17 @@ end
 
 --收藏,菜单
 local function Init_Fvorite_Menu(self, root)
-    local sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES, function()
+    local sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES, function()
         return self:get_save()
     end, function()
         self:setup()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.addName)
+        tooltip:AddLine(WoWTools_DataMixin.addName)
         tooltip:AddLine(WoWTools_EncounterMixin.addName)
     end)
     root:CreateDivider()
-    root:CreateButton(WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
+    root:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
         Save().favorites={}
         WoWTools_Mixin:Call(EncounterJournal_ListInstances)
     end)
@@ -118,14 +118,14 @@ local function Create(button)
     end
 
 --界面,击杀,数据
-    button.tipsText=WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10, copyFont= not WoWTools_Mixin.onlyChinese and button.name or nil})--10, button.name)
+    button.tipsText=WoWTools_LabelMixin:Create(button, {size=WoWTools_DataMixin.onlyChinese and 12 or 10, copyFont= not WoWTools_DataMixin.onlyChinese and button.name or nil})--10, button.name)
     button.tipsText:SetPoint('BOTTOMRIGHT', -8, 8)
     button.tipsText:SetJustifyH('RIGHT')
 
 --挑战，数据
-    button.challengeText= WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10})
+    button.challengeText= WoWTools_LabelMixin:Create(button, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
     button.challengeText:SetPoint('BOTTOMLEFT',4,4)
-    button.challengeText2= WoWTools_LabelMixin:Create(button, {size=WoWTools_Mixin.onlyChinese and 12 or 10})
+    button.challengeText2= WoWTools_LabelMixin:Create(button, {size=WoWTools_DataMixin.onlyChinese and 12 or 10})
     button.challengeText2:SetPoint('BOTTOMLEFT', button.challengeText, 'BOTTOMRIGHT')
    
 
@@ -143,8 +143,8 @@ local function Create(button)
         if link then
             GameTooltip:SetHyperlink(link)
         else
-            GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
-            GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
+            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '挑战' or PLAYER_DIFFICULTY5)
         end
         GameTooltip:Show()
         self:SetAlpha(0.3)
@@ -169,8 +169,8 @@ local function Create(button)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_Mixin.onlyChinese and '收藏' or FAVORITES), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddDoubleLine('|A:PetJournal-FavoritesIcon:0:0|a'..(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine('|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         self:set_alpha()
     end)
@@ -228,7 +228,7 @@ local function Create(button)
         if WoWTools_EncounterMixin:GetInstanceData(self, true) then--界面,击杀,数据
             GameTooltip:AddLine(' ')
         end
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
         GameTooltip:Show()
         self.Favorites2:set_alpha()
     end)

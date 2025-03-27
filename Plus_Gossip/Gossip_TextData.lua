@@ -75,7 +75,7 @@ local function Init_Data()
 
     for gossipID, tab in pairs(PlayerGossipTab) do
         local name
-        if WoWTools_Mixin.onlyChinese then
+        if WoWTools_DataMixin.onlyChinese then
             name= tab.cn
         elseif tab.mapID then
             local info = C_Map.GetMapInfo(tab.mapID) or {}
@@ -107,7 +107,7 @@ local function Init_Data()
         local icon= tab.icon and tab.icon~='' and tab.icon or nil
         local name= tab.name and tab.name~='' and tab.name or nil
         if hex or icon or name then
-            if WoWTools_Mixin.onlyChinese then
+            if WoWTools_DataMixin.onlyChinese then
                 GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
             else
                 GossipTextIcon[gossipID]= {icon=icon, hex=hex}
@@ -148,7 +148,7 @@ local function Init_Menu(_, root)
     if num>0 then
         WoWTools_MenuMixin:SetScrollMode(root)
     else
-        root:CreateTitle(WoWTools_Mixin.onlyChinese and '无' or NONE)
+        root:CreateTitle(WoWTools_DataMixin.onlyChinese and '无' or NONE)
     end
 end
 

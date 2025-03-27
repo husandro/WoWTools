@@ -135,7 +135,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID]= WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID] or {}
             WoWToolsSave['Plus_SellBuy'].WoWBuyItems= WoWToolsSave['Plus_SellBuy'].WoWBuyItems or {}
 
-            WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_Mixin.onlyChinese and '商人' or MERCHANT)
+            WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
@@ -146,7 +146,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                        WoWTools_Mixin.onlyChinese and '重新加载UI' or RELOADUI
+                        WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
                     )
                 end
             })

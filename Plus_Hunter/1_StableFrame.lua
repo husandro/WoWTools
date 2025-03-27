@@ -33,7 +33,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_StableFrame']= WoWToolsSave['Plus_StableFrame'] or P_Save
 
-            WoWTools_HunterMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(WoWTools_Mixin.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
+            WoWTools_HunterMixin.addName= '|A:groupfinder-icon-class-hunter:0:0|a'..(WoWTools_DataMixin.onlyChinese and '猎人兽栏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UnitClass('player'), STABLE_STABLED_PET_LIST_LABEL))
 
             --添加控制面板
                 WoWTools_PanelMixin:OnlyCheck({
@@ -45,7 +45,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_HunterMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                        WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
+                        WoWTools_DataMixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD
                     )
                 end
             })

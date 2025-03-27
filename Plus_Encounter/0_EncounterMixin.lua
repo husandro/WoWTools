@@ -32,7 +32,7 @@ local function Set_WorldData_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
     GameTooltip:ClearLines()
     GameTooltip:AddDoubleLine(format('%s %s',
-        WoWTools_Mixin.onlyChinese and '世界BOSS/稀有 ' or format('%s/%s', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHANNEL_CATEGORY_WORLD, BOSS), GARRISON_MISSION_RARE),
+        WoWTools_DataMixin.onlyChinese and '世界BOSS/稀有 ' or format('%s/%s', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHANNEL_CATEGORY_WORLD, BOSS), GARRISON_MISSION_RARE),
         WoWTools_TextMixin:GetShowHide(WoWToolsSave['Adventure_Journal'].showWorldBoss)
     ), WoWTools_DataMixin.Icon.left)
 

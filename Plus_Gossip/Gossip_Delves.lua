@@ -77,7 +77,7 @@ local function Init_OnShow(self)
             end
         end
         btn:Click()
-        print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', WoWTools_Mixin.onlyChinese and '取消' or CANCEL)
+        print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
     end
 end
 
@@ -98,13 +98,13 @@ local function Init_Menu(_, root)
         return;
     end
     root:CreateDivider()
-    local sub= root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '最高等级' or BEST, function()
+    local sub= root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '最高等级' or BEST, function()
         return Save().delvesDifficultyMaxLevel
     end, function()
         Save().delvesDifficultyMaxLevel= not Save().delvesDifficultyMaxLevel and true or nil
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_Mixin.addName)
+        tooltip:AddLine(WoWTools_DataMixin.addName)
         tooltip:AddDoubleLine(WoWTools_GossipMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(Save().delvesDifficultyMaxLevel))
     end)
     sub:SetEnabled(Save().gossip and true or false)

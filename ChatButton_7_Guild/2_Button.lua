@@ -48,7 +48,7 @@ local function Set_Text(self)
     if isInGuild then
 --弹劾
         if CanReplaceGuildMaster() then--弹劾
-            self.bottomText:SetText(WoWTools_Mixin.onlyChinese and '弹' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))
+            self.bottomText:SetText(WoWTools_DataMixin.onlyChinese and '弹' or  WoWTools_TextMixin:sub(GUILD_IMPEACH_POPUP_CONFIRM, 2, 5,true))
         elseif WoWTools_GuildMixin:IsLeaderOrOfficer() and CanGuildInvite() then
             self.bottomText:SetText(WoWTools_GuildMixin:GetClubFindDay(nil) or '')--Club,列出查找，过期时间
         end
@@ -116,8 +116,8 @@ local function Init(GuildButton)
                     if isInit then
                         print(WoWTools_DataMixin.Icon.icon2..WoWTools_GuildMixin.addName,
                             '|cffff00ff'
-                            ..(WoWTools_Mixin.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
-                            ..(WoWTools_Mixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
+                            ..(WoWTools_DataMixin.onlyChinese and '新' or NEW)..'|r|A:communities-icon-invitemail:0:0|a|cnGREEN_FONT_COLOR:'
+                            ..(WoWTools_DataMixin.onlyChinese and '申请人' or CLUB_FINDER_APPLICANTS)
                         )
                     end
                 end
@@ -138,7 +138,7 @@ local function Init(GuildButton)
     function GuildButton:set_tooltip()
         self:set_owner()
         if not IsInGuild() then
-            GameTooltip:AddLine('|cff9e9e9e'..(WoWTools_Mixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddLine('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '无公会' or ITEM_REQ_PURCHASE_GUILD)..WoWTools_DataMixin.Icon.left)
         else
             WoWTools_GuildMixin:Load_Club(nil)--加载，Club,数据
         end

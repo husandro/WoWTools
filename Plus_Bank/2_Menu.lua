@@ -25,7 +25,7 @@ local function Init_Menu(self, root)
 
 --自动打开背包栏位
     sub=root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '自动打开背包栏位' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOTTEXT)),
+        WoWTools_DataMixin.onlyChinese and '自动打开背包栏位' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, BAGSLOTTEXT)),
     function()
         return Save().openBagInBank
     end, function()
@@ -39,12 +39,12 @@ local function Init_Menu(self, root)
         sub:SetEnabled(false)
     else
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '跟背包插件冲突' or format(ALREADY_BOUND, 'Backpack Addon'))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '跟背包插件冲突' or format(ALREADY_BOUND, 'Backpack Addon'))
         end)
     end
 
 --索引
-    root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '索引' or 'Index', function()
+    root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '索引' or 'Index', function()
         return Save().showIndex
     end, function()
         Save().showIndex= not Save().showIndex and true or nil--显示，索引
@@ -54,7 +54,7 @@ local function Init_Menu(self, root)
 
 --显示背景
     root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
+        WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
     function()
         return Save().showBackground
     end, function()
@@ -65,7 +65,7 @@ local function Init_Menu(self, root)
     end)
 
 --左边列表
-    sub=root:CreateCheckbox(WoWTools_Mixin.onlyChinese and '物品列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, TYPE), function()
+    sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '物品列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, TYPE), function()
         return Save().left_List
     end, function()
         Save().left_List= not Save().left_List and true or nil
@@ -80,21 +80,21 @@ local function Init_Menu(self, root)
 
     for _, info in pairs({
         {name='bankConfirmTabCleanUp',
-        text=WoWTools_Mixin.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK,
+        text=WoWTools_DataMixin.onlyChinese and '清理战团银行' or BAG_CLEANUP_ACCOUNT_BANK,
         tooltip=function(tooltip, desc)
             tooltip:AddLine(desc.data.name)
             tooltip:AddLine(' ')
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and "你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。" or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '确认清理战团银行' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RPE_CONFIRM, BAG_CLEANUP_ACCOUNT_BANK))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and "你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。" or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT)
         end,
         func=nil},
         {name='bankAutoDepositReagents',
-        text=WoWTools_Mixin.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL,
+        text=WoWTools_DataMixin.onlyChinese and '包括可交易的材料' or BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL,
         tooltip=function(tooltip, desc)
             tooltip:AddLine(desc.data.name)
             tooltip:AddLine(' ')
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '存放: 包括可交易的材料' or (BANK_DEPOSIT_MONEY_BUTTON_LABEL..': '..BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '存放: 包括可交易的材料' or (BANK_DEPOSIT_MONEY_BUTTON_LABEL..': '..BANK_DEPOSIT_INCLUDE_REAGENTS_CHECKBOX_LABEL))
         end,
         func=function()
             local check= AccountBankPanel.ItemDepositFrame.IncludeReagentsCheckbox
@@ -115,7 +115,7 @@ local function Init_Menu(self, root)
             return C_CVar.GetCVarBool(data.name)
         end, function(data)
             if InCombatLockdown() then
-                print(WoWTools_Mixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
+                print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
             else
                 C_CVar.SetCVar(data.name, C_CVar.GetCVarBool(data.name) and '0' or '1')
                 if data.func then
@@ -129,18 +129,18 @@ local function Init_Menu(self, root)
 
     local function settings(desc, type)
         desc:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_Mixin.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED)
         end)
         desc:SetEnabled(type)
     end
     
 --银行
-    root:CreateTitle(WoWTools_Mixin.onlyChinese and '银行' or BANK)
-    --sub= root:CreateButton(WoWTools_Mixin.onlyChinese and '银行' or BANK, function() return MenuResponse.Open end)
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
+    --sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '银行' or BANK, function() return MenuResponse.Open end)
 
 --银行背包
     sub=root:CreateCheckbox(
-        '1 '..(WoWTools_Mixin.onlyChinese and '银行背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BANK, BAGSLOT)),
+        '1 '..(WoWTools_DataMixin.onlyChinese and '银行背包' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BANK, BAGSLOT)),
     function()
         return not Save().disabledBankBag
     end, function()
@@ -156,7 +156,7 @@ local function Init_Menu(self, root)
 
 --材料银行
     sub=root:CreateCheckbox(
-        '2 '..(WoWTools_Mixin.onlyChinese and '材料银行' or REAGENT_BANK),
+        '2 '..(WoWTools_DataMixin.onlyChinese and '材料银行' or REAGENT_BANK),
     function()
         return not Save().disabledReagentFrame
     end, function()
@@ -170,7 +170,7 @@ local function Init_Menu(self, root)
 
 --战团银行
     sub=root:CreateCheckbox(
-        '3 '..(WoWTools_Mixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE),
+        '3 '..(WoWTools_DataMixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE),
     function()
         return not Save().disabledAccountBag
     end, function()
@@ -182,9 +182,9 @@ local function Init_Menu(self, root)
 
 
 --战团银行,整合
-    root:CreateTitle(WoWTools_Mixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)
     sub= root:CreateCheckbox(
-        WoWTools_Mixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE,
+        WoWTools_DataMixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE,
     function()
         return Save().allAccountBag
     end, function()
@@ -207,7 +207,7 @@ root:CreateDivider()
             Save().num=value
             WoWTools_BankMixin:Init_Plus()
         end,
-        name=WoWTools_Mixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+        name=WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
         minValue=4,
         maxValue=32,
         step=1,
@@ -224,7 +224,7 @@ root:CreateDivider()
             Save().line=value
             WoWTools_BankMixin:Init_Plus()
         end,
-        name=WoWTools_Mixin.onlyChinese and '间隔' or 'Interval',
+        name=WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval',
         minValue=0,
         maxValue=32,
         step=1,
@@ -266,7 +266,7 @@ local function Init()
     OptionButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         GameTooltip:Show()
     end)
 
