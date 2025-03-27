@@ -2,9 +2,9 @@ if PlayerGetTimerunningSeasonID() then
     return
 end
 
-local e= select(2, ...)
+
 local function Save()
-    return WoWTools_ProfessionMixin.Save
+    return WoWToolsSave['Plus_Professions']
 end
 
 
@@ -238,6 +238,10 @@ local function Init()
     end)
 
     ArchaeologyFrameInfoButton:SetFrameStrata('DIALOG')
+
+    ArcheologyDigsiteProgressBar:HookScript('OnShow', Init_ArcheologyDigsiteProgressBar_OnShow)
+
+    Init=function()end
 end
 
 
@@ -251,5 +255,4 @@ end
 
 function WoWTools_ProfessionMixin:Init_Archaeology()
     Init()
-    ArcheologyDigsiteProgressBar:HookScript('OnShow', Init_ArcheologyDigsiteProgressBar_OnShow)
 end

@@ -2,21 +2,22 @@ if PlayerGetTimerunningSeasonID() then
     return
 end
 
-local e= select(2, ...)
+
 local function Save()
-    return WoWTools_ProfessionMixin.Save
+    return WoWToolsSave['Plus_Professions']
 end
+
+
+local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
+
+
+
 
 
 
 
 --专业书
 local function Init()
-    --自动输入，忘却，文字，专业
-    --[[if IsPublicBuild() then
-        return
-    end]]
-
     local btn2= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrame, {size=22})
     btn2:SetPoint('TOP', ProfessionsBookFramePortrait, 'BOTTOM')
     function btn2:set_alpha()
@@ -42,6 +43,15 @@ local function Init()
     btn2:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha()end)
     btn2:SetScript('OnEnter', btn2.set_tooltips)
     btn2:set_alpha()
+
+    --自动输入，忘却，文字，专业
+    hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow", function(self)
+        if Save().wangquePrefessionText or IsPublicBuild() then
+            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
+        end
+    end)
+
+    Init=function()end
 end
 
 

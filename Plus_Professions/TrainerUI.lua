@@ -4,9 +4,8 @@ end
 
 
 --Blizzard_TrainerUI
-local e= select(2, ...)
 local function Save()
-    return WoWTools_ProfessionMixin.Save
+    return WoWToolsSave['Plus_Professions']
 end
 
 
@@ -161,6 +160,8 @@ local function Init()
         end
         skillButton.name:SetTextColor(r or 1, g or 1, b or 1)
     end)
+
+    Init=function()end
 end
 
 
