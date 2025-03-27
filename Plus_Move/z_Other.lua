@@ -125,11 +125,11 @@ local function Init()
     C_Timer.After(0.3, function()
 
 
-        if not WoWTools_StableFrameMixin or WoWTools_StableFrameMixin.Save.disabled then--StableFrame
+        if WoWTools_DataMixin.Player.Class=='HUNTER' and WoWToolsSave['Plus_StableFrame'].disabled then--StableFrame
             WoWTools_MoveMixin:Setup(StableFrame)
         end
 
-        if WoWTools_SellBuyMixin.Save.disabled then
+        if WoWToolsSave['Plus_SellBuy'].disabled then
             WoWTools_MoveMixin:Setup(MerchantFrame)
         end
     --插件

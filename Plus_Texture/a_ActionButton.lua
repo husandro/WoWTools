@@ -1,14 +1,4 @@
 --动作条
-
-
-
-
-
-
-
-
-
-
 local function Set_Texture(btn)
     WoWTools_TextureMixin:HideTexture(btn.SlotArt)
     WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块

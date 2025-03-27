@@ -1,8 +1,7 @@
 --回购物品
-local e= select(2, ...)
 
 local function Save()
-    return WoWTools_SellBuyMixin.Save
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 

@@ -15,7 +15,7 @@ end
 
 --宠物，信息，提示
 local function SetTooltip(frame, pet)
-    if WoWTools_StableFrameMixin.Save.HideTips then
+    if WoWToolsSave['Plus_StableFrame'].HideTips then
         return
     end
 
@@ -32,7 +32,7 @@ local function SetTooltip(frame, pet)
                         and (WoWTools_Mixin.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES))
                         or (WoWTools_Mixin.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES))
                     ),
-                    WoWTools_StableFrameMixin:GetAbilitieIconForTab(name, false)
+                    WoWTools_HunterMixin:GetAbilitieIconForTab(name, false)
                 )
             end
 
@@ -83,6 +83,6 @@ end
 
 
 
-function WoWTools_StableFrameMixin:Set_Tooltips(frame, petInfo)
+function WoWTools_HunterMixin:Set_Tooltips(frame, petInfo)
     SetTooltip(frame, petInfo)
 end

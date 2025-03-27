@@ -1,32 +1,30 @@
-
-local addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips'
-
 WoWTools_TooltipMixin={
-    Save={
-        setDefaultAnchor=true,--指定点
-        --AnchorPoint={},--指定点，位置
-        --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
-
-        setCVar=WoWTools_DataMixin.Player.husandro,
-        ShowOptionsCVarTips=WoWTools_DataMixin.Player.husandro,--显示选项中的CVar
-        inCombatDefaultAnchor=true,
-        ctrl= WoWTools_DataMixin.Player.husandro,--取得网页，数据链接
-
-        --模型
-        modelSize=100,--大小
-        --modelLeft=true,--左边
-        modelX= 0,
-        modelY= -15,
-        modelFacing= -0.3,--方向
-        showModelFileID=WoWTools_DataMixin.Player.husandro,--显示，文件ID
-        --WidgetSetID=848,--自定义，监视 WidgetSetID
-        --disabledNPCcolor=true,--禁用NPC颜色
-        --hideHealth=true,----生命条提示
-        --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体>
-    },
-    addName=addName,
     WoWHead= 'https://www.wowhead.com/',
     AddOn={},
+    addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips'
+}
+
+local P_Save={
+    setDefaultAnchor=true,--指定点
+    --AnchorPoint={},--指定点，位置
+    --cursorRight=nil,--'ANCHOR_CURSOR_RIGHT',
+
+    setCVar=WoWTools_DataMixin.Player.husandro,
+    ShowOptionsCVarTips=WoWTools_DataMixin.Player.husandro,--显示选项中的CVar
+    inCombatDefaultAnchor=true,
+    ctrl= WoWTools_DataMixin.Player.husandro,--取得网页，数据链接
+
+    --模型
+    modelSize=100,--大小
+    --modelLeft=true,--左边
+    modelX= 0,
+    modelY= -15,
+    modelFacing= -0.3,--方向
+    showModelFileID=WoWTools_DataMixin.Player.husandro,--显示，文件ID
+    --WidgetSetID=848,--自定义，监视 WidgetSetID
+    --disabledNPCcolor=true,--禁用NPC颜色
+    --hideHealth=true,----生命条提示
+    --UNIT_POPUP_RIGHT_CLICK= true,--<右键点击设置框体>
 }
 
 
@@ -38,7 +36,7 @@ WoWTools_TooltipMixin={
 
 
 local function Save()
-    return WoWTools_TooltipMixin.Save
+    return WoWToolsSave['Plus_Target']
 end
 
 local function Load_Addon(name, isLoaddedName)
@@ -50,7 +48,7 @@ local function Load_Addon(name, isLoaddedName)
     if name and WoWTools_TooltipMixin.AddOn[name] and not Save().disabled then
         WoWTools_TooltipMixin.AddOn[name]()
     end
-    
+
 end
 
 
@@ -153,7 +151,7 @@ local function Init()
     if not Save().UNIT_POPUP_RIGHT_CLICK then
         function UnitFrame_UpdateTooltip (self)
             GameTooltip_SetDefaultAnchor(GameTooltip, self);
-            if ( GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) ) then    
+            if ( GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip) ) then
                 self.UpdateTooltip = UnitFrame_UpdateTooltip;
             else
                 self.UpdateTooltip = nil;
@@ -173,7 +171,6 @@ end
 --Save().WidgetSetID = Save().WidgetSetID or 0
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 
@@ -182,8 +179,8 @@ panel:RegisterEvent('PLAYER_LEAVING_WORLD')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_TooltipMixin.Save= WoWToolsSave['Plus_Tootips'] or WoWTools_TooltipMixin.Save
-            WoWTools_TooltipMixin.addName= addName
+            WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Tootips'] or P_Save
+
 
 
             WoWTools_TooltipMixin:Init_Category()
@@ -198,13 +195,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
             Init()--初始
-            
+
         else
             Load_Addon(arg1)
-
-            --[[if arg1=='Blizzard_Settings' then
-                WoWTools_TooltipMixin:Init_CVar_Value() --显示选项中的CVar
-            end]]
         end
 
 
@@ -222,11 +215,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Save().graphicsViewDistance=nil
             end
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Plus_Tootips']=Save()
         end
     end
 end)

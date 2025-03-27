@@ -10,7 +10,7 @@ local btn
 
 local function Set_Text(self)
     local text
-    if self.taxiNodeData and WoWTools_WorldMapMixin.Save.ShowFlightMap_Name then
+    if self.taxiNodeData and  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name then
         if not self.Text and self.taxiNodeData.name then
             self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
             self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
@@ -43,7 +43,7 @@ local function Init()
 
     btn:SetAlpha(0.5)
     btn:SetScript('OnClick', function(self)
-        WoWTools_WorldMapMixin.Save.ShowFlightMap_Name= not WoWTools_WorldMapMixin.Save.ShowFlightMap_Name and true or nil
+         WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name= not  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name and true or nil
         CloseTaxiMap()
         self:Settings()
     end)
@@ -57,7 +57,7 @@ local function Init()
             '|A:FlightMaster:0:0|a'..(WoWTools_Mixin.onlyChinese and '飞行点' or MAP_LEGEND_FLIGHTPOINT),
             format(
                 CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,
-                WoWTools_TextMixin:GetShowHide(WoWTools_WorldMapMixin.Save.ShowFlightMap_Name),
+                WoWTools_TextMixin:GetShowHide( WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name),
                 WoWTools_Mixin.onlyChinese and '名称' or  COMMUNITIES_SETTINGS_NAME_LABEL
             )
             ..WoWTools_DataMixin.Icon.left
@@ -68,7 +68,7 @@ local function Init()
     end)
 
     function btn:Settings()
-        self:SetNormalAtlas(not WoWTools_WorldMapMixin.Save.ShowFlightMap_Name and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
+        self:SetNormalAtlas(not  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
     end
     btn:Settings()
 

@@ -2,7 +2,7 @@
 local Frame
 
 local function Save()
-    return WoWTools_TargetMixin.Save
+    return WoWToolsSave['Plus_Target']
 end
 
 local function set_Target_Color(self, isInCombat)--设置，颜色
@@ -99,7 +99,7 @@ end
 
 
 
-local function Init()
+local function Init_Options()
     if Save().disabled then
         return
     end
@@ -701,9 +701,9 @@ local function Init()
     local questAllFactionCheck= CreateFrame("CheckButton", nil, Frame, "InterfaceOptionsCheckButtonTemplate")
     questAllFactionCheck.Text:SetFormattedText(
         '%s|A:%s:0:0|a|A:%s:0:0|a',
----@diagnostic disable-next-line: undefined-global
         WoWTools_Mixin.onlyChinese and '所有阵营' or TRANSMOG_SHOW_ALL_FACTIONS or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, FACTION),
-        WoWTools_DataMixin.Icon.Horde, WoWTools_DataMixin.Icon.NONE)
+        WoWTools_DataMixin.Icon.Horde, WoWTools_DataMixin.Icon.Alliance)
+
     questAllFactionCheck:SetPoint('LEFT', questCheck.Text, 'RIGHT',2,0)
     questAllFactionCheck:SetChecked(Save().questShowAllFaction)
     questAllFactionCheck:SetScript('OnClick', function()
@@ -729,7 +729,12 @@ local function Init()
         WoWTools_TargetMixin:Set_All_Init()
     end)
 
-    return true
+
+
+
+
+
+    Init_Options=function()end
 end
 
 
@@ -747,7 +752,7 @@ end
 
 
 --添加控制面板
-local function Init_Options()
+local function Init()
     Frame= CreateFrame('Frame', nil, SettingsPanel)
 
     WoWTools_PanelMixin:AddSubCategory({
@@ -759,34 +764,35 @@ local function Init_Options()
     WoWTools_PanelMixin:ReloadButton({panel=Frame, addName= WoWTools_TargetMixin.addName, restTips=nil, checked=not Save().disabled, clearTips=nil, reload=false,--重新加载UI, 重置, 按钮
         disabledfunc=function()
             Save().disabled= not Save().disabled and true or nil
-            WoWTools_TargetMixin:Blizzard_Settings()
+
+            Init()
+            WoWTools_TargetMixin:Set_All_Init()
 
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), Save().disabled and (WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD) or '')
+
         end,
-        clearfunc= function() WoWTools_TargetMixin.Save=nil WoWTools_Mixin:Reload() end}
+        clearfunc= function() WoWToolsSave['Plus_Target']=nil WoWTools_Mixin:Reload() end}
     )
-end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_TargetMixin:Init_Options()
     Init_Options()
+
+    Init=function()
+        Init_Options()
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 function WoWTools_TargetMixin:Blizzard_Settings()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end

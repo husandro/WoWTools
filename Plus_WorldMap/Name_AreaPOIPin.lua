@@ -42,7 +42,7 @@ local function Init(frame)
         return
     end
 
-    local isEnabled= WoWTools_WorldMapMixin.Save.ShowAreaPOI_Name
+    local isEnabled=  WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name
 
 
     frame.updateWidgetID=nil
@@ -120,7 +120,7 @@ end
 
 --BaseMapPoiPinMixin
 function WoWTools_WorldMapMixin:Init_AreaPOI_Name()
-    if IsSetup or not self.Save.ShowAreaPOI_Name then
+    if IsSetup or not WoWToolsSave['Plus_WorldMap'].ShowAreaPOI_Name then
         return
     end
 

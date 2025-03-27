@@ -114,7 +114,7 @@ end
 
 
 local function Init_Texture()
-    local show= WoWTools_StableFrameMixin.Save.showTexture
+    local show= WoWToolsSave['Plus_StableFrame'].showTexture
 
     WoWTools_TextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
     WoWTools_TextureMixin:SetNineSlice(StableFrame, true, nil, nil)
@@ -146,11 +146,11 @@ end
 
 
 
-function WoWTools_StableFrameMixin:Init_UI()
+function WoWTools_HunterMixin:Init_UI()
     Init_UI()
     Init_Texture()
 end
 
-function WoWTools_StableFrameMixin:Set_UI_Texture()
+function WoWTools_HunterMixin:Set_UI_Texture()
     Init_Texture()
 end

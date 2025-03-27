@@ -2,7 +2,7 @@
 local isMeFrame
 
 local function Save()
-    return WoWTools_TargetMixin.Save
+    return WoWToolsSave['Plus_Target']
 end
 
 

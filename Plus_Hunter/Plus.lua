@@ -33,11 +33,11 @@ local function GetAbilitiesIcons(pet, line)--取得，宠物，技能，图标
         return ''
     end
 
-    local text= WoWTools_StableFrameMixin:GetAbilitieIconForTab(pet.specAbilities, line)
+    local text= WoWTools_HunterMixin:GetAbilitieIconForTab(pet.specAbilities, line)
     if text~='' then
         text= text..(not line and '  ' or '   |n')
     end
-    return text..WoWTools_StableFrameMixin:GetAbilitieIconForTab(pet.petAbilities or pet.abilities, line)
+    return text..WoWTools_HunterMixin:GetAbilitieIconForTab(pet.petAbilities or pet.abilities, line)
 end
 
 
@@ -151,11 +151,11 @@ local function created_model(btn, setBg)
 
     btn:HookScript('OnHide', btn.set_pet)
     btn:HookScript('OnEnter', function(self)--信息，提示
-        if WoWTools_StableFrameMixin.Save.HideTips then
+        if WoWToolsSave['Plus_StableFrame'].HideTips then
             return
         end
         if self.petData and not self.locked and self:IsEnabled() then
-            WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
+            WoWTools_HunterMixin:Set_Tooltips(self, self.petData)
             GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '放入兽栏' or STABLE_PET_BUTTON_LABEL, WoWTools_DataMixin.Icon.right)
             if self:GetID()==EXTRA_PET_STABLE_SLOT_LUA_INDEX then
                 GameTooltip:AddDoubleLine(
@@ -206,7 +206,7 @@ local function Set_SetPet(btn)
     end
     btn:HookScript('OnEnter', function(self)--信息，提示
         if self.petData then
-            WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
+            WoWTools_HunterMixin:Set_Tooltips(self, self.petData)
             GameTooltip:Show()
         end
     end)
@@ -293,6 +293,7 @@ end
 
 
 
-function WoWTools_StableFrameMixin:Init_StableFrame_Plus()
+function WoWTools_HunterMixin:Init_StableFrame_Plus()
     Init()
 end
+

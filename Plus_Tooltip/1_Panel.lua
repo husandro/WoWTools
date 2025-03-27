@@ -1,7 +1,7 @@
 --添加新控制面板 Blizzard_Settings
 
 local function Save()
-    return WoWTools_TooltipMixin.Save
+    return WoWToolsSave['Plus_Target']
 end
 
 local Category, Layout

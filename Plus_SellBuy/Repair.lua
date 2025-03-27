@@ -1,11 +1,9 @@
-local e= select(2, ...)
-
 local function Save()
-    return WoWTools_SellBuyMixin.Save
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 local function RepairSave()
-    return WoWTools_SellBuyMixin.Save.repairItems
+    return WoWToolsSave['Plus_SellBuy'].repairItems
 end
 
 
@@ -165,7 +163,7 @@ local function Init()
         end
     end)
 
-    MerchantRepairAllButton:SetScript('OnEnter', function(self)--替换，源FUNC
+    MerchantRepairAllButton:SetScript('OnEnter', function(self)--替换，源生
         GameTooltip:SetOwner(self, "ANCHOR_BOTTOM")
         local repairAllCost, canRepair = GetRepairAllCost()
         if ( canRepair and (repairAllCost > 0) ) then

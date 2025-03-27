@@ -1,10 +1,5 @@
-local e= select(2, ...)
-
-
-
-
-
 --自动拾取 Plus
+
 local function Init()
     local check=CreateFrame("CheckButton", nil, LootFrame.TitleContainer, "InterfaceOptionsCheckButtonTemplate")
     check:SetPoint('TOPLEFT',-27,2)
@@ -74,7 +69,7 @@ end
 
 
 function WoWTools_SellBuyMixin:Init_AutoLoot()
-    if not self.Save.notAutoLootPlus then
+    if not WoWToolsSave['Plus_SellBuy'].notAutoLootPlus then
         Init()
     end
 end

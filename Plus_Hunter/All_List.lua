@@ -11,7 +11,7 @@ local NUM_PET_SLOTS_HUNTER = Constants.PetConsts_PostCata.NUM_PET_SLOTS_HUNTER o
 
 
 local function Save()
-    return WoWTools_StableFrameMixin.Save
+    return WoWToolsSave['Plus_StableFrame']
 end
 
 
@@ -117,7 +117,7 @@ local function created_button(index)
     local btn= CreateFrame('Button', nil, AllListFrame, 'StableActivePetButtonTemplate', index)
     btn:HookScript('OnEnter', function(self)
         if self.petData then
-            WoWTools_StableFrameMixin:Set_Tooltips(self, self.petData)
+            WoWTools_HunterMixin:Set_Tooltips(self, self.petData)
             GameTooltip:Show()
         end
     end)
@@ -264,10 +264,10 @@ end
 
 
 
-function WoWTools_StableFrameMixin:Set_StableFrame_List()
+function WoWTools_HunterMixin:Set_StableFrame_List()
     Init()
 end
 
-function WoWTools_StableFrameMixin:sort_pets_list(type)
+function WoWTools_HunterMixin:sort_pets_list(type)
     sort_pets_list(type)
 end

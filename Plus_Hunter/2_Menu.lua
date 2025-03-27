@@ -5,7 +5,7 @@ end
 
 
 local function Save()
-    return WoWTools_StableFrameMixin.Save
+    return WoWToolsSave['Plus_StableFrame']
 end
 
 
@@ -29,7 +29,7 @@ local function Init_Menu(_, root)
             return Save().show_All_List
         end, function()
             Save().show_All_List= not Save().show_All_List and true or nil
-            WoWTools_StableFrameMixin:Set_StableFrame_List()--初始，宠物列表
+            WoWTools_HunterMixin:Set_StableFrame_List()--初始，宠物列表
             return MenuResponse.Close
         end)
 
@@ -60,7 +60,7 @@ local function Init_Menu(_, root)
                 {name=WoWTools_Mixin.onlyChinese and '族系' or STABLE_SORT_TYPE_LABEL, type="familyName"}
             }) do
                 sub=root:CreateButton(tab.name, function(data)
-                    WoWTools_StableFrameMixin:sort_pets_list(data.type)
+                    WoWTools_HunterMixin:sort_pets_list(data.type)
                     return MenuResponse.Open
                 end, {type=tab.type})
                 sub:SetTooltip(function(tooltip)
@@ -96,8 +96,8 @@ local function Init_Menu(_, root)
             return Save().showTexture
         end, function()
             Save().showTexture= not Save().showTexture and true or nil
-            WoWTools_StableFrameMixin:Set_UI_Texture()
-            WoWTools_StableFrameMixin:Set_StableFrame_List()
+            WoWTools_HunterMixin:Set_UI_Texture()
+            WoWTools_HunterMixin:Set_StableFrame_List()
         end)
 
         root:CreateCheckbox(
@@ -111,7 +111,7 @@ local function Init_Menu(_, root)
 
     --选项
         root:CreateDivider()
-        WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_StableFrameMixin.addName})
+        WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_HunterMixin.addName})
     end
 
 
@@ -127,7 +127,7 @@ local function Init()
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_StableFrameMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName, WoWTools_HunterMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(
@@ -179,6 +179,6 @@ end
 
 
 
-function WoWTools_StableFrameMixin:Init_Menu()
+function WoWTools_HunterMixin:Init_Menu()
     Init()
 end

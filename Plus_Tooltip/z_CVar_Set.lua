@@ -86,7 +86,7 @@ end
 
 
 function WoWTools_TooltipMixin:Init_CVar()
-    if self.Save.setCVar then
+    if WoWToolsSave['Plus_Tootips'].setCVar then
         WoWTools_TooltipMixin:Set_CVar(nil, nil, true)--设置CVar
 
         if LOCALE_zhCN then

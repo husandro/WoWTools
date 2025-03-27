@@ -2,7 +2,7 @@
 --实时玩家当前坐标
 
 local function Save()
-    return WoWTools_WorldMapMixin.Save
+    return  WoWToolsSave['Plus_WorldMap']
 end
 
 
@@ -137,7 +137,7 @@ function WoWTools_WorldMapMixin:Init_XY_Player()
     if PlayerButton then
         PlayerButton:Settings()
 
-    elseif self.Save.ShowPlayerXY then
+    elseif WoWToolsSave['Plus_WorldMap'].ShowPlayerXY then
         Init()
     end
 end

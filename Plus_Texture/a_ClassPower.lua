@@ -3,17 +3,6 @@ local function Save()
     return WoWToolsSave['Plus_Texture'] or {}
 end
 
-local IsHook
-
-
-
-
-
-
-
-
-
-
 local function set_Num_Texture(self, num, color, parent)
     if self and not self.numTexture and (self.layoutIndex or num) then
         self.numTexture= (parent or self):CreateTexture(nil, 'OVERLAY', nil, 7)
@@ -31,23 +20,8 @@ local function set_Num_Texture(self, num, color, parent)
     end
 end
 
-local function set_MonkHarmonyBarFrame(btn)
-    if btn then
-        WoWTools_TextureMixin:HideTexture(btn.Chi_BG_Active)
-        WoWTools_TextureMixin:HideTexture(btn.BGInactive)
-        WoWTools_TextureMixin:SetAlphaColor(btn.Chi_BG, nil, nil, 0.2)
-        set_Num_Texture(btn, nil, false)
-    end
-end
 
 
-local function set_DruidComboPointBarFrame(frame)
-    for btn, _ in pairs(frame or {}) do
-        WoWTools_TextureMixin:HideTexture(btn.BG_Active)
-        WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
-        set_Num_Texture(btn)
-    end
-end
 
 
 
@@ -62,10 +36,6 @@ end
 
 --PALADIN QS
 local function QS()
-    if not PaladinPowerBarFrame then
-        return
-    end
-
     WoWTools_TextureMixin:SetAlphaColor(PaladinPowerBarFrame.Background, nil, nil,0.3)
     WoWTools_TextureMixin:SetAlphaColor(PaladinPowerBarFrame.ActiveTexture, nil, nil, 0.3)
     PaladinPowerBarFrame.Background:SetShown(false)
@@ -82,11 +52,6 @@ local function QS()
         set_Num_Texture(holyRune, i, false)
     end
 
-    if IsHook then
-        return
-    end
-
-
     PaladinPowerBarFrame:HookScript('OnEnter', function(self)
         self.Background:SetShown(true)
         self.ActiveTexture:SetShown(true)
@@ -102,10 +67,6 @@ end
 
 --MAGE 法师
 local function FS()
-    if not MageArcaneChargesFrame then
-        return
-    end
-
     for _, mage in pairs(MageArcaneChargesFrame.classResourceButtonTable) do
         WoWTools_TextureMixin:HideTexture(mage.ArcaneBG)
     end
@@ -122,9 +83,15 @@ end
 
 ---DRUID
 local function XD()
-    if not DruidComboPointBarFrame then
-        return
+
+    local function set_DruidComboPointBarFrame(frame)
+        for btn, _ in pairs(frame or {}) do
+            WoWTools_TextureMixin:HideTexture(btn.BG_Active)
+            WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
+            set_Num_Texture(btn)
+        end
     end
+
 
     set_DruidComboPointBarFrame(DruidComboPointBarFrame.classResourceButtonPool.activeObjects)
 
@@ -132,10 +99,6 @@ local function XD()
         WoWTools_TextureMixin:HideTexture(btn.BG_Active)
         WoWTools_TextureMixin:HideTexture(btn.BG_Inactive)
         set_Num_Texture(btn)
-    end
-
-    if IsHook then
-        return
     end
 
     DruidComboPointBarFrame:HookScript('OnEvent', function(self)
@@ -152,10 +115,6 @@ end
 
 --ROGUE
 local function DZ()
-    if not RogueComboPointBarFrame or IsHook then
-        return
-    end
-
     hooksecurefunc(RogueComboPointBarFrame, 'UpdateMaxPower',function(self)
         C_Timer.After(0.5, function()
             for _, btn in pairs(self.classResourceButtonTable or {}) do
@@ -187,8 +146,14 @@ end
 
 --MONK
 local function WS()
-    if not MonkHarmonyBarFrame or IsHook then
-        return
+
+    local function set_MonkHarmonyBarFrame(btn)
+        if btn then
+            WoWTools_TextureMixin:HideTexture(btn.Chi_BG_Active)
+            WoWTools_TextureMixin:HideTexture(btn.BGInactive)
+            WoWTools_TextureMixin:SetAlphaColor(btn.Chi_BG, nil, nil, 0.2)
+            set_Num_Texture(btn, nil, false)
+        end
     end
 
     hooksecurefunc(MonkHarmonyBarFrame, 'UpdateMaxPower', function(self)
@@ -230,9 +195,6 @@ end
 
 --DEATHKNIGHT
 local function DK()
-    if not RuneFrame then
-        return
-    end
 
     for _, btn in pairs(RuneFrame.Runes or {}) do
         WoWTools_TextureMixin:HideTexture(btn.BG_Active)
@@ -252,16 +214,8 @@ end
 
 --SHAMAN
 local function SM()
-    if not TotemButtonMixin then
-        return
-    end
-
     for btn in TotemFrame.totemPool:EnumerateActive() do
         WoWTools_TextureMixin:SetAlphaColor(btn.Border, nil, nil, 0.3)
-    end
-
-    if IsHook then
-        return
     end
 
     hooksecurefunc(TotemButtonMixin, 'OnLoad', function(self)
@@ -278,10 +232,6 @@ end
 
 --EVOKER EssenceFramePlayer.lua
 local function EV()
-    if not EssencePlayerFrame then
-        return
-    end
-
     for _, btn in pairs(EssencePlayerFrame.classResourceButtonTable or {}) do
         WoWTools_TextureMixin:SetAlphaColor(btn.EssenceFillDone.CircBGActive, true)
         set_Num_Texture(btn, nil, false)
@@ -304,18 +254,17 @@ local function Init()
         return
     end
 
-    do
-        QS()
-        FS()
-        XD()
-        DZ()
-        WS()
-        DK()
-        SM()
-        C_Timer.After(2, EV)
-    end
 
-    IsHook=true
+    QS()
+    FS()
+    XD()
+    DZ()
+    WS()
+    DK()
+    SM()
+    C_Timer.After(2, EV)
+
+    Init=function()end
 end
 
 

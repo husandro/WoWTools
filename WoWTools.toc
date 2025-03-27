@@ -314,11 +314,12 @@ Plus_Collection\Options.lua
 
 
 ##世界地图，增强
-Plus_WorldMap\0_WorldMap.lua
-Plus_WorldMap\1_Menu.lua
-Plus_WorldMap\2_MapID.lua
-Plus_WorldMap\3_XY_Map.lua
-Plus_WorldMap\4_XY_Player.lua
+Plus_WorldMap\0_WorldMapMixin.lua
+Plus_WorldMap\1_Init.lua
+Plus_WorldMap\2_Menu.lua
+Plus_WorldMap\3_MapID.lua
+Plus_WorldMap\4_XY_Map.lua
+Plus_WorldMap\5_XY_Player.lua
 Plus_WorldMap\Name_AreaPOIPin.lua
 Plus_WorldMap\Name_Dungeon.lua
 Plus_WorldMap\Name_FlightMap.lua
@@ -334,8 +335,9 @@ Plus\FriendsList.lua
 
 
 ##卖买
-Plus_SellBuy\0_SellBuy.lua
-Plus_SellBuy\Menu.lua
+Plus_SellBuy\0_SellBuyMixin.lua
+Plus_SellBuy\1_Init.lua
+Plus_SellBuy\2_Menu.lua
 Plus_SellBuy\DELETE.lua
 Plus_SellBuy\Loot_Plus.lua
 Plus_SellBuy\Repair.lua
@@ -472,7 +474,7 @@ Plus\Gem.lua
 
 ##目标指示
 Plus_Target\1_Init.lua
-Plus_Target\2_Options.lua
+Plus_Target\2_Blizzard_Settings.lua
 Plus_Target\targetFrame.lua
 Plus_Target\questFrame.lua
 Plus_Target\isMeFrame.lua
@@ -528,13 +530,13 @@ Plus_Professions\TrainerUI.lua
 
 
 ##仅限猎人加载，专门，宠物管理，增强
-Plus_StableFrame\0_StableFrameMixin.lua
-Plus_StableFrame\1_StableFrame.lua
-Plus_StableFrame\All_List.lua
-Plus_StableFrame\Menu.lua
-Plus_StableFrame\Plus.lua
-Plus_StableFrame\Tooltips.lua
-Plus_StableFrame\UI.lua
+Plus_Hunter\0_HunterMixin.lua
+Plus_Hunter\1_StableFrame.lua
+Plus_Hunter\2_Menu.lua
+Plus_Hunter\All_List.lua
+Plus_Hunter\Plus.lua
+Plus_Hunter\Tooltips.lua
+Plus_Hunter\UI.lua
 
 
 ##其它

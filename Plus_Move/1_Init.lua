@@ -3,7 +3,7 @@ WoWTools_MoveMixin={
     Events={}
 }
 
-P_Save={
+local P_Save={
     --disabledMove=true,--禁用移动
     point={},--移动
     SavePoint= WoWTools_DataMixin.Player.husandro,--保存窗口,位置

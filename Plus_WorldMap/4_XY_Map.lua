@@ -2,7 +2,7 @@
 --地图坐标
 
 local function Save()
-    return WoWTools_WorldMapMixin.Save
+    return  WoWToolsSave['Plus_WorldMap']
 end
 
 local MapXYButton
@@ -254,7 +254,7 @@ function WoWTools_WorldMapMixin:Init_XY_Map()
     if MapXYButton then
         MapXYButton:Settings()
 
-    elseif self.Save.ShowMapXY then
+    elseif WoWToolsSave['Plus_WorldMap'].ShowMapXY then
         Init()
     end
 end

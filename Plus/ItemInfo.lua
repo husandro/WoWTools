@@ -222,7 +222,7 @@ local function Setup(self, tab)
         end]]
 
         local sellItem
-        if tab.bag and containerInfo and not containerInfo.isLocked and WoWTools_SellBuyMixin and WoWTools_SellBuyMixin.CheckSellItem then
+        if tab.bag and containerInfo and not containerInfo.isLocked then
             sellItem= WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, itemQuality, isBound)--检测是否是出售物品
         end
 

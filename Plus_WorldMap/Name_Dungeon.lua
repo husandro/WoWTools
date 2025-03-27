@@ -6,7 +6,7 @@ local IsSetup
 
 local function Dungeon_Name(self)
     local text
-    if WoWTools_WorldMapMixin.Save.ShowDungeon_Name and self.name then
+    if  WoWToolsSave['Plus_WorldMap'].ShowDungeon_Name and self.name then
         if not self.Text then
             self.Text= WoWTools_WorldMapMixin:Create_Wolor_Font(self, 10)
             self.Text:SetPoint('TOP', self, 'BOTTOM', 0, 3)
@@ -22,7 +22,7 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_Dungeon_Name()
-    if IsSetup or not self.Save.ShowDungeon_Name then
+    if IsSetup or not WoWToolsSave['Plus_WorldMap'].ShowDungeon_Name then
         return
     end
 

@@ -5,7 +5,7 @@ local isHooked
 local function Init(self)--WorldQuestDataProvider.lua self.tagInfo
     if UnitAffectingCombat('player') then
         return
-    elseif not WoWTools_WorldMapMixin.Save.ShowWorldQues_Name or not self.questID then-- or self.questID<=0 or self.questID>=2147483647 then
+    elseif not  WoWToolsSave['Plus_WorldMap'].ShowWorldQues_Name or not self.questID then-- or self.questID<=0 or self.questID>=2147483647 then
         if self.Text then self.Text:SetText('') end
         if self.worldQuestTypeTips then self.worldQuestTypeTips:SetShown(false) end
         return
@@ -117,7 +117,7 @@ end
 
 
 function WoWTools_WorldMapMixin:Init_WorldQuest_Name()
-    if isHooked or not self.Save.ShowWorldQues_Name then
+    if isHooked or not WoWToolsSave['Plus_WorldMap'].ShowWorldQues_Name then
         return
     end
     hooksecurefunc(WorldQuestPinMixin, 'RefreshVisuals', Init)--世界地图任务

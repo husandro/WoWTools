@@ -1,11 +1,6 @@
-
-local e= select(2, ...)
-
-
-
-
-
 --堆叠,数量,框架 StackSplitFrame.lua
+
+
 local function Init()
     local frame= StackSplitFrame
     frame.restButton=WoWTools_ButtonMixin:Cbtn(frame, {size=22})--重置

@@ -2,7 +2,7 @@
 --地图ID，信息
 
 local function Save()
-    return WoWTools_WorldMapMixin.Save
+    return  WoWToolsSave['Plus_WorldMap']
 end
 local Frame
 
@@ -145,7 +145,7 @@ function WoWTools_WorldMapMixin:Init_MpaID()
     if Frame then
         Frame:Settings()
 
-    elseif self.Save.ShowMapID then
+    elseif WoWToolsSave['Plus_WorldMap'].ShowMapID then
         Init()
     end
 end

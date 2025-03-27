@@ -4,7 +4,7 @@
 --生命条提示
 --#########
 function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
-    if self.Save.hideHealth then
+    if WoWToolsSave['Plus_Tootips'].hideHealth then
         return
     end
     unit= unit or select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
@@ -76,7 +76,7 @@ end
 
 
 function WoWTools_TooltipMixin:Init_StatusBar()
-    if not self.Save.hideHealth then
+    if not WoWToolsSave['Plus_Tootips'].hideHealth then
         Init()
     end
 end

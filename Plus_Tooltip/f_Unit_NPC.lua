@@ -63,7 +63,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     tooltip.textRight:SetText(textRight)
     tooltip.text2Right:SetText(text2Right)
 
-    if not self.Save.disabledNPCcolor then
+    if not WoWToolsSave['Plus_Tootips'].disabledNPCcolor then
         local r, g, b = select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))--颜色
         local lineLeft, lineRight
         local tooltipName=tooltip:GetName() or 'GameTooltip'

@@ -1,16 +1,14 @@
 --购买物品
-local e= select(2, ...)
-
 local function Save()
-    return WoWTools_SellBuyMixin.Save
+    return WoWToolsSave['Plus_SellBuy']
 end
 
 local function GetBuyNum(itemID)
-    return WoWTools_SellBuyMixin.Save.buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+    return WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]
 end
 
 local function SaveBuyItem(itemID, num)--当num=nil时，会清除
-    WoWTools_SellBuyMixin.Save.buyItems[WoWTools_DataMixin.Player.GUID][itemID]=num
+    WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]=num
 end
 
 local BuyItemButton

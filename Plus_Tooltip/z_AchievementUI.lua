@@ -2,7 +2,7 @@
 
 
 local function Save()
-    return WoWTools_TooltipMixin.Save
+    return WoWToolsSave['Plus_Target']
 end
 
 

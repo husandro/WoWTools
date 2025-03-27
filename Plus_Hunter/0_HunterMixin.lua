@@ -1,9 +1,9 @@
 
-WoWTools_StableFrameMixin={}
+WoWTools_HunterMixin={}
 
 
 
-function WoWTools_StableFrameMixin:GetAbilitieIconForTab(tab, line)
+function WoWTools_HunterMixin:GetAbilitieIconForTab(tab, line)
     local text=''
     for _, spellID in pairs(tab or {}) do
         WoWTools_Mixin:Load({id=spellID, type='spell'})

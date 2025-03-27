@@ -2,7 +2,7 @@
 
 
 local function Save()
-    return WoWTools_WorldMapMixin.Save
+    return  WoWToolsSave['Plus_WorldMap']
 end
 
 
