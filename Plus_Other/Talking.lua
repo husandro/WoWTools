@@ -1,88 +1,108 @@
-local id, e = ...
-local Save={
-    --notPrint= WoWTools_DataMixin.Player.husandro
-}
-local addName
 --TalkingHeadUI.lua
-
-
-
-
-
-
+local addName
 local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
 
-function panel:set_event()
-    if not Save.disabled then
-        self:RegisterEvent('TALKINGHEAD_REQUESTED')
-    else
-        self:UnregisterEvent('TALKINGHEAD_REQUESTED')
+
+
+
+
+
+
+local voHandle
+local function TALKINGHEAD_REQUESTED()
+    local _, _, vo, _, _, _, name, text = C_TalkingHead.GetCurrentLineInfo()
+    TalkingHeadFrame:CloseImmediately()
+    if vo and vo>0 then
+        if voHandle then
+            StopSound(voHandle)
+            voHandle = nil
+        end
+        local success, vo2 = WoWTools_Mixin:PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
+        if success then
+            voHandle = vo2
+        end
+    end
+
+    if not WoWToolsSave['Other_VoiceTalking'].notPrint and (text or voHandle) then
+        print(
+            '|cff00ff00'..name..'|r',
+            '|cffff00ff'..text..'|r',
+            WoWTools_DataMixin.Icon.icon2..addName,
+            'soundKitID',
+            vo
+        )
     end
 end
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:SetScript("OnEvent", function(self, event, arg1)
+
+
+
+local function Set_Event()
+    if not WoWToolsSave['Other_VoiceTalking'].disabled then
+        panel:RegisterEvent('TALKINGHEAD_REQUESTED')
+    else
+        panel:UnregisterEvent('TALKINGHEAD_REQUESTED')
+    end
+end
+
+
+
+
+
+
+
+local function ADDON_LOADED()
+    WoWToolsSave['Other_VoiceTalking']= WoWToolsSave['Other_VoiceTalking'] or {}
+
+    addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(WoWTools_Mixin.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
+
+    --添加控制面板
+    local root= WoWTools_PanelMixin:OnlyCheck({
+        name= addName,
+        tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_Mixin.onlyChinese and '隐藏' or HIDE , WoWTools_Mixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
+                ..'|n|n'..(WoWTools_Mixin.onlyChinese and '声音' or SOUND)
+                ..'|nChat Button, '..(WoWTools_Mixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+                ..'|n'..(WoWTools_Mixin.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
+        GetValue= function() return not WoWToolsSave['Other_VoiceTalking'].disabled end,
+        SetValue= function()
+            WoWToolsSave['Other_VoiceTalking'].disabled= not WoWToolsSave['Other_VoiceTalking'].disabled and true or nil
+            Set_Event()--设置事件
+        end,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
+    })
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_Mixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL,
+        GetValue= function() return not WoWToolsSave['Other_VoiceTalking'].notPrint end,
+        tooltip= WoWTools_Mixin.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',
+        SetValue= function()
+            WoWToolsSave['Other_VoiceTalking'].notPrint= not WoWToolsSave['Other_VoiceTalking'].notPrint and true or nil
+        end,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
+    }, root)
+
+
+    Set_Event()--设置事件
+
+    ADDON_LOADED=function()end
+
+    panel:UnregisterEvent('ADDON_LOADED')
+end
+
+
+
+
+
+panel:SetScript("OnEvent", function(_, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-
-            Save= WoWToolsSave['Other_VoiceTalking'] or Save
-
-            addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(WoWTools_Mixin.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
-
-            --添加控制面板
-            local initializer2= WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                tooltip=format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_Mixin.onlyChinese and '隐藏' or HIDE , WoWTools_Mixin.onlyChinese and '对话特写头像' or HUD_EDIT_MODE_TALKING_HEAD_FRAME_LABEL)
-                        ..'|n|n'..(WoWTools_Mixin.onlyChinese and '声音' or SOUND)
-                        ..'|nChat Button, '..(WoWTools_Mixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-                        ..'|n'..(WoWTools_Mixin.onlyChinese and '事件声音' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, EVENTS_LABEL, SOUND)),
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    self:set_event()--设置事件
-                end,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            })
-
-            WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_Mixin.onlyChinese and '文本' or LOCALE_TEXT_LABEL,                
-                GetValue= function() return not Save.notPrint end,
-                tooltip= WoWTools_Mixin.onlyChinese and '聊天框提示，内容' or 'ChatBox input text',
-                SetValue= function()
-                    Save.notPrint= not Save.notPrint and true or nil
-                end,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            }, initializer2)
-
-
-            self:set_event()--设置事件
-            self:UnregisterEvent(event)
+            ADDON_LOADED()
         end
 
     elseif event=='TALKINGHEAD_REQUESTED' then
-        local _, _, vo, _, _, _, name, text = C_TalkingHead.GetCurrentLineInfo()
-        TalkingHeadFrame:CloseImmediately()
-        if vo and vo>0 then
-            if ( self.voHandle ) then
-                StopSound(self.voHandle)
-                self.voHandle = nil
-            end
-            local success, voHandle = WoWTools_Mixin:PlaySound(vo, true)--PlaySound(vo, "Talking Head", true, true)
-            if ( success ) then
-                self.voHandle = voHandle
-            end
-        end
-        if not Save.notPrint and (text or self.voHandle) then
-            print('|cff00ff00'..name..'|r','|cffff00ff'..text..'|r',id, addName, 'soundKitID', vo)
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Other_VoiceTalking']=Save
-        end
+        TALKINGHEAD_REQUESTED()
     end
-
 end)

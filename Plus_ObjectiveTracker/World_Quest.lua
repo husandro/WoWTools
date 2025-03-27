@@ -7,7 +7,7 @@
 
 --世界，任务 WorldQuestObjectiveTracker
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(WorldQuestObjectiveTracker, WoWTools_Mixin.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, function(self)
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(WorldQuestObjectiveTracker, WoWTools_Mixin.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, function(self)
         local questIDS={}
         for i= 1, C_QuestLog.GetNumWorldQuestWatches() or 0, 1 do
             local questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)
@@ -32,6 +32,6 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_World_Quest()
+function WoWTools_ObjectiveMixin:Init_World_Quest()
     Init()
 end

@@ -3,12 +3,12 @@ if PlayerGetTimerunningSeasonID() then
     return
 end
 
-local id, e = ...
+
 if WoWTools_DataMixin.Player.Level<70 then
     return
 end
 
-local Save={
+local P_Save={
     disabled= not WoWTools_DataMixin.Player.husandro,
     scale= WoWTools_DataMixin.Player.husandro and 0.85 or 1,
 }
@@ -28,14 +28,19 @@ end
 
 
 
-
-
+local function Save()
+    return WoWToolsSave['Other_DormantSeeds']
+end
 
 
 
 
 
 local function Init()
+    if Save().disabled then
+        return
+    end
+
     Button= WoWTools_ButtonMixin:Cbtn(nil, {size=22})
 
     function Button:set_Point()
@@ -43,8 +48,8 @@ local function Init()
             return
         end
         self:ClearAllPoints()
-        if Save.point then
-            self:SetPoint(Save.point[1], UIParent, Save.point[3], Save.point[4], Save.point[5])
+        if Save().point then
+            self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
         elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('TOPRIGHT', PlayerFrame, 'TOPLEFT',0,15)
         else
@@ -53,7 +58,7 @@ local function Init()
     end
     function Button:set_Scale()
         if self:CanChangeAttribute() then
-            self:SetScale(Save.scale or 1)
+            self:SetScale(Save().scale or 1)
         end
     end
     function Button:set_Tooltips()
@@ -80,8 +85,8 @@ local function Init()
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_Mixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
         local col= not self:CanChangeAttribute() and '|cff9e9e9e' or ''
-        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save.scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
-        col= not Save.point and '|cff9e9e9e' or ''
+        GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '缩放' or UI_SCALE)..' '..(Save().scale or 1), col..('Alt+'..WoWTools_DataMixin.Icon.mid))
+        col= not Save().point and '|cff9e9e9e' or ''
         GameTooltip:AddDoubleLine(col..(WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION), col..'Ctrl+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
@@ -97,8 +102,8 @@ local function Init()
     end)
     Button:SetScript("OnDragStop", function(self)
         self:StopMovingOrSizing()
-        Save.point={self:GetPoint(1)}
-        Save.point[2]=nil
+        Save().point={self:GetPoint(1)}
+        Save().point[2]=nil
     end)
 
     Button:SetScript("OnMouseUp", ResetCursor)
@@ -107,7 +112,7 @@ local function Init()
             SetCursor('UI_MOVE_CURSOR');
         elseif d=='RightButton' and IsControlKeyDown() then--还原
             if self:CanChangeAttribute() then
-                Save.point=nil
+                Save().point=nil
                 self:set_Point()
                 print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
             end
@@ -117,7 +122,7 @@ local function Init()
         if not IsAltKeyDown() or not self:CanChangeAttribute() then
             return
         end
-        local scale= Save.scale or 1
+        local scale= Save().scale or 1
         if d==1 then
             scale= scale+ 0.05
         elseif d==-1 then
@@ -125,7 +130,7 @@ local function Init()
         end
         scale= scale>4 and 4 or scale
         scale= scale<0.4 and 0.4 or scale
-        Save.scale=scale
+        Save().scale=scale
         self:set_Scale()
         self:set_Tooltips()
     end)
@@ -263,7 +268,10 @@ local function Init()
     Button:get_UIMapID()
     Button:set_Event()
 
-    return true
+    Init=function()
+        Button:set_Shown(not Save().disabled)
+        Button:set_button(not Save().disabled)
+    end
 end
 
 
@@ -276,56 +284,45 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
-            WoWToolsSave['DormantSeeds']= nil
-            Save= WoWToolsSave['Other_DormantSeeds'] or Save
-
-            if not PlayerGetTimerunningSeasonID() then
-                addName= '|T656681:0|t'..(WoWTools_Mixin.onlyChinese and '梦境之种' or 'DormantSeeds')
-
-                WoWTools_PanelMixin:Check_Button({
-                    checkName= addName,
-                    GetValue= function() return not Save.disabled end,
-                    SetValue= function()
-                        Save.disabled = not Save.disabled and true or nil
-                        if Button then
-                            Button:set_Shown(not Save.disabled)
-                            Button:set_button(not Save.disabled)
-                            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需求重新加载' or REQUIRES_RELOAD)
-                        elseif not Save.disabled then
-                            if Init() then Init=function()end end
-                        end
-                    end,
-                    buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
-                    buttonFunc= function()
-                        Save.Point=nil
-                        if Button then
-                            Button:set_Point()
-                        end
-                        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
-                    end,
-                    tooltip=function()
-                        return WoWTools_TextMixin:CN(C_Item.GetItemNameByID(2200), {itemID=2200, isName=true}) or addName
-                    end,
-                    layout= WoWTools_OtherMixin.Layout,
-                    category= WoWTools_OtherMixin.Category,
-                })
-
-                if not Save.disabled then
-                    if Init() then Init=function()end end
-                end
-            end
-
-            self:UnregisterEvent(event)
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Other_DormantSeeds']=Save
-        end
+    if arg1~= 'WoWTools' then
+        return
     end
+
+    if PlayerGetTimerunningSeasonID() then
+        self:UnregisterEvent(event)
+        return
+    end
+
+    WoWToolsSave['Other_DormantSeeds']= WoWToolsSave['Other_DormantSeeds'] or P_Save
+
+    addName= '|T656681:0|t'..(WoWTools_Mixin.onlyChinese and '梦境之种' or 'DormantSeeds')
+
+    WoWTools_PanelMixin:Check_Button({
+        checkName= addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled = not Save().disabled and true or nil
+            Init()
+        end,
+        buttonText= WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION,
+        buttonFunc= function()
+            Save().Point=nil
+            if Button then
+                Button:set_Point()
+            end
+            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_Mixin.onlyChinese and '重置位置' or RESET_POSITION)
+        end,
+        tooltip=function()
+            return  WoWTools_ItemMixin:GetName(2200) or addName
+        end,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
+    })
+
+    Init()
+
+    self:UnregisterEvent(event)
 end)
 

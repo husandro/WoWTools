@@ -1,6 +1,6 @@
-local id, e = ...
+
 local addName
-local Save={
+local P_Save={
     specButton={
     --isUIParent=true
     --scale=1
@@ -10,6 +10,11 @@ local Save={
     --hideInCombat=true
     }
 }
+
+local function Save()
+    return WoWToolsSave['Other_SpellFrame']
+end
+
 local SpecFrame
 
 
@@ -174,27 +179,27 @@ end
         (PlayerSpellsFrame and '' or '|cff828282')
         ..(WoWTools_Mixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON),
     function()
-        return not Save.specButton.isUIParent
+        return not Save().specButton.isUIParent
     end, function()
-        Save.specButton.isUIParent= not Save.specButton.isUIParent and true or nil
+        Save().specButton.isUIParent= not Save().specButton.isUIParent and true or nil
         SpecFrame:Settings()
         SpecFrame:set_point()
         return MenuResponse.Close
     end)
     sub2:SetTooltip(function(tooltip)
-        local isUIParent= Save.specButton.isUIParent
+        local isUIParent= Save().specButton.isUIParent
         tooltip:AddLine('SetParent')
         tooltip:AddDoubleLine(' ',  (isUIParent and '|cnGREEN_FONT_COLOR:' or '').. 'UIParent')
         tooltip:AddDoubleLine(' ', (isUIParent and '' or '|cnGREEN_FONT_COLOR:').. 'PlayerSpellsFrame')
     end)
 
-    if Save.specButton.isUIParent then
+    if Save().specButton.isUIParent then
 
 --向上
         WoWTools_MenuMixin:ToTop(sub2, {GetValue=function()
-            return Save.specButton.isToTOP
+            return Save().specButton.isToTOP
         end, SetValue=function ()
-            Save.specButton.isToTOP= not Save.specButton.isToTOP and true or nil
+            Save().specButton.isToTOP= not Save().specButton.isToTOP and true or nil
             SpecFrame:Settings()
 
         end})
@@ -203,7 +208,7 @@ end
         WoWTools_MenuMixin:FrameStrata(sub2, function(data)
             return SpecFrame:GetFrameStrata()==data
         end, function(data)
-            Save.specButton.strata= data
+            Save().specButton.strata= data
             SpecFrame:set_strata()
         end)
 
@@ -212,9 +217,9 @@ end
             WoWTools_Mixin.onlyChinese and '战斗中隐藏'
             or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, HIDE),
         function()
-            return Save.specButton.hideInCombat
+            return Save().specButton.hideInCombat
         end, function()
-            Save.specButton.hideInCombat= not Save.specButton.hideInCombat and true or nil
+            Save().specButton.hideInCombat= not Save().specButton.hideInCombat and true or nil
             SpecFrame:Settings()
         end)
     end
@@ -225,9 +230,9 @@ end
 --    sub:CreateDivider()
 --缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save.specButton.scale or 1
+        return Save().specButton.scale or 1
     end, function(value)
-        Save.specButton.scale= value
+        Save().specButton.scale= value
         SpecFrame:Settings()
     end)
 
@@ -300,8 +305,8 @@ local function Create_Spec_Button(index)
     btn:SetScript("OnDragStop", function()
         SpecFrame:StopMovingOrSizing()
         ResetCursor()
-        Save.specButton.point= {SpecFrame:GetPoint(1)}
-        Save.specButton.point[2]= nil
+        Save().specButton.point= {SpecFrame:GetPoint(1)}
+        Save().specButton.point[2]= nil
     end)
 
 
@@ -392,11 +397,11 @@ end
 --天赋，添加专精按钮
 local function Init_Spec_Button()
     local numSpec= GetNumSpecializations(false, false) or 0
-    if SpecFrame or numSpec==0 or (not Save.specButton.isUIParent and not PlayerSpellsFrame) then--not C_SpecializationInfo.IsInitialized() or
+    if numSpec==0 or (not Save().specButton.isUIParent and not PlayerSpellsFrame) then--not C_SpecializationInfo.IsInitialized() or
         return
     end
 
-    SpecFrame= CreateFrame('Frame', 'WoWToolsOtherSpecFrame', Save.specButton.isUIParent and UIParent or PlayerSpellsFrame)
+    SpecFrame= CreateFrame('Frame', 'WoWToolsOtherSpecFrame', Save().specButton.isUIParent and UIParent or PlayerSpellsFrame)
     SpecFrame:SetSize(10,10)
 
     SpecFrame.numSpec= numSpec
@@ -409,8 +414,8 @@ local function Init_Spec_Button()
 
 
     function SpecFrame:Settings()
-        local isToTOP= Save.specButton.isToTOP
-        local isUIParent= Save.specButton.isUIParent
+        local isToTOP= Save().specButton.isToTOP
+        local isUIParent= Save().specButton.isUIParent
         for index, btn in pairs(self.Buttons) do
             btn:ClearAllPoints()
             if isToTOP and isUIParent then
@@ -424,7 +429,7 @@ local function Init_Spec_Button()
 
         self:SetMovable(isUIParent and true or false)
         self:SetClampedToScreen(isUIParent and true or false)
-        self:SetScale(Save.specButton.scale or 1)
+        self:SetScale(Save().specButton.scale or 1)
 
         if isUIParent then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -436,13 +441,13 @@ local function Init_Spec_Button()
     end
 
     function SpecFrame:set_strata()
-        self:SetFrameStrata(Save.specButton.strata or 'MEDIUM')
+        self:SetFrameStrata(Save().specButton.strata or 'MEDIUM')
     end
 
     function SpecFrame:set_point()
       self:ClearAllPoints()
-        if Save.specButton.isUIParent then
-            local p= Save.specButton.point
+        if Save().specButton.isUIParent then
+            local p= Save().specButton.point
             if p then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
 
@@ -465,7 +470,7 @@ local function Init_Spec_Button()
     end
 
     SpecFrame:SetScript('OnEvent', function(self, event)
-        local hide= Save.specButton.hideInCombat
+        local hide= Save().specButton.hideInCombat
         local show= event=='PLAYER_REGEN_ENABLED'
         if hide then
             self:SetShown(show)
@@ -479,6 +484,9 @@ local function Init_Spec_Button()
 
     SpecFrame:Settings()
     SpecFrame:set_point()
+
+
+    Init_Spec_Button=function()end
 end
 
 
@@ -497,7 +505,24 @@ end
 
 
 
+local function Blizzard_PlayerSpells()
+    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
 
+    Init_Spec_Button()
+
+    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+        frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
+        if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
+            frame.Button.Arrow:SetVertexColor(1,0,1)
+            frame.Button.Border:SetVertexColor(1,0,1)
+        else
+            frame.Button.Arrow:SetVertexColor(1,1,1)
+            frame.Button.Border:SetVertexColor(1,1,1)
+        end
+    end)
+
+    Blizzard_PlayerSpells=function()end
+end
 
 
 
@@ -512,13 +537,15 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
+    if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            Save= WoWToolsSave['Other_SpellFrame'] or Save
-            Save.specButton= Save.specButton or {}
+            WoWToolsSave['Other_SpellFrame'] = WoWToolsSave['Other_SpellFrame'] or P_Save
+
+            Save().specButton= Save().specButton or {}
 
             addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
 
@@ -530,45 +557,33 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                             format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
 
                     ),
-                Value= not Save.disabled,
-                GetValue=function() return not Save.disabled end,
+                Value= not Save().disabled,
+                GetValue=function() return not Save().disabled end,
                 SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Save().disabled= not Save().disabled and true or nil
+                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end,
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,
             })
 
-            if Save.disabled then
+            if Save().disabled then
+                self:UnregisterAllEvents()
+                
+            elseif C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+                Blizzard_PlayerSpells()
                 self:UnregisterEvent(event)
-            else
-                C_Timer.After(1, Init_Spec_Button)
-
-    --法术按键, 颜色
-                hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
             end
 
-        elseif arg1=='Blizzard_PlayerSpells' then--天赋
-            hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-
-            Init_Spec_Button()
-
-            hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-                frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-                if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
-                    frame.Button.Arrow:SetVertexColor(1,0,1)
-                    frame.Button.Border:SetVertexColor(1,0,1)
-                else
-                    frame.Button.Arrow:SetVertexColor(1,1,1)
-                    frame.Button.Border:SetVertexColor(1,1,1)
-                end
-            end)
+        elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--天赋
+            Blizzard_PlayerSpells()
+            self:UnregisterEvent(event)
         end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Other_SpellFrame']=Save
-        end
+    
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        Init_Spec_Button()
+    --法术按键, 颜色
+        hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
+        self:UnregisterEvent(event)
     end
 end)

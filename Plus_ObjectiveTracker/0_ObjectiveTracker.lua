@@ -1,15 +1,14 @@
-local id, e = ...
-WoWTools_ObjectiveTrackerMixin={
-Save={
+
+WoWTools_ObjectiveMixin={}
+local P_Save={
     disabled= not WoWTools_DataMixin.Player.husandro,
     scale= WoWTools_DataMixin.Player.husandro and 0.85 or 1,
     autoHide= WoWTools_DataMixin.Player.husandro and true or nil
-},
 }
 
-local addName
+
 local function Save()
-    return WoWTools_ObjectiveTrackerMixin.Save
+    return WoWToolsSave['ObjectiveTracker']
 end
 
 
@@ -20,7 +19,7 @@ end
 
 
 --清除，全部，按钮
-function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func)
+function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
     if WoWTools_Mixin:IsLockFrame(frame) then
         return
     end
@@ -30,7 +29,7 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     btn:SetScript('OnEnter', function(f)
         GameTooltip:SetOwner(f, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName,addName)
+        GameTooltip:AddDoubleLine(WoWTools_Mixin.addName,WoWTools_ObjectiveMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine((WoWTools_Mixin.onlyChinese and '双击' or 'Double-Click')..WoWTools_DataMixin.Icon.left, (WoWTools_Mixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''))
         GameTooltip:Show()
@@ -38,7 +37,7 @@ function WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(frame, tooltip, func
     end)
     btn:SetScript('OnDoubleClick', func)
     function btn:print_text(num)
-        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_Mixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end
@@ -47,7 +46,7 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, icon, type)
+function WoWTools_ObjectiveMixin:Set_Block_Icon(block, icon, type)
     if WoWTools_Mixin:IsLockFrame(block) then
         return
     end
@@ -86,7 +85,7 @@ function WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, icon, type)
 end
 
 
-function WoWTools_ObjectiveTrackerMixin:Set_Line_Icon(line, icon)
+function WoWTools_ObjectiveMixin:Set_Line_Icon(line, icon)
     if icon and not line.Icon2 then
         line.Icon2= line:CreateTexture(nil, 'OVERLAY')
         line.Icon2:SetPoint('RIGHT', line.Text)
@@ -104,7 +103,7 @@ function WoWTools_ObjectiveTrackerMixin:Set_Line_Icon(line, icon)
 end
 
 
-function WoWTools_ObjectiveTrackerMixin:Get_Block(f, index)
+function WoWTools_ObjectiveMixin:Get_Block(f, index)
     if f.usedBlocks[f.blockTemplate] then
         return f.usedBlocks[f.blockTemplate][index]
     end
@@ -115,46 +114,50 @@ end
 
 
 
+local function Init()
+    WoWTools_ObjectiveMixin:Init_Quest()
+    WoWTools_ObjectiveMixin:Init_Campaign_Quest()
+    WoWTools_ObjectiveMixin:Init_World_Quest()
+    WoWTools_ObjectiveMixin:Init_Achievement()
+    WoWTools_ObjectiveMixin:Init_Professions()
+    WoWTools_ObjectiveMixin:Init_MonthlyActivities()
+    WoWTools_ObjectiveMixin:Init_ScenarioObjective()
+    WoWTools_ObjectiveMixin:Init_ObjectiveTrackerFrame()
+    WoWTools_ObjectiveMixin:Init_ObjectiveTrackerShared()
+
+    Init=function()end
+end
+
+
+
+
+
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWTools_ObjectiveTrackerMixin.Save= WoWToolsSave['ObjectiveTracker'] or WoWTools_ObjectiveTrackerMixin.Save
+            WoWToolsSave['ObjectiveTracker']= WoWToolsSave['ObjectiveTracker'] or P_Save
 
-           addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
-           WoWTools_ObjectiveTrackerMixin.addName= addName
+           WoWTools_ObjectiveMixin.addName= '|A:Objective-Nub:0:0|a|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '目标追踪栏' or HUD_EDIT_MODE_OBJECTIVE_TRACKER_LABEL)..'|r'
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name=addName,
+                name=WoWTools_ObjectiveMixin.addName,
                 tooltip='|cnRED_FONT_COLOR:Bug',
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    Init()
+                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
             })
 
             if not Save().disabled then
-                WoWTools_ObjectiveTrackerMixin:Init_Quest()
-                WoWTools_ObjectiveTrackerMixin:Init_Campaign_Quest()
-                WoWTools_ObjectiveTrackerMixin:Init_World_Quest()
-                WoWTools_ObjectiveTrackerMixin:Init_Achievement()
-                WoWTools_ObjectiveTrackerMixin:Init_Professions()
-                WoWTools_ObjectiveTrackerMixin:Init_MonthlyActivities()
-                WoWTools_ObjectiveTrackerMixin:Init_ScenarioObjective()
-                WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerFrame()
-                WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerShared()
+                Init()
             end
 
             self:UnregisterEvent(event)
-        end
-
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['ObjectiveTracker']= Save()
         end
     end
 end)

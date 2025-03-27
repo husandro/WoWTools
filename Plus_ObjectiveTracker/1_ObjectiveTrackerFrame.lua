@@ -2,7 +2,7 @@
 --ObjectiveTrackerFrame
 
 local function Save()
-    return WoWTools_ObjectiveTrackerMixin.Save
+    return WoWToolsSave['ObjectiveTracker']
 end
 
 local function set_scale(isInit)
@@ -65,7 +65,7 @@ local function Init_Menu(self, root)
         set_scale()
     end)
 
-    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveTrackerMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName})
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
     end)
@@ -103,7 +103,7 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerFrame()
+function WoWTools_ObjectiveMixin:Init_ObjectiveTrackerFrame()
     Init()
 end
 
@@ -136,7 +136,7 @@ end
 缩放
     btn:HookScript('OnMouseWheel', function(self, d)
         Save().scale= WoWTools_FrameMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save().scale, function()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveTrackerMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             print('|cnRED_FONT_COLOR:', WoWTools_Mixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
         end)
         self:set_tooltip()

@@ -32,6 +32,6 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_ScenarioObjective()
+function WoWTools_ObjectiveMixin:Init_ScenarioObjective()
     Init()
 end

@@ -8,7 +8,7 @@
 
 --成就 AchievementObjectiveTracker
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(AchievementObjectiveTracker, WoWTools_Mixin.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS, function(self)
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(AchievementObjectiveTracker, WoWTools_Mixin.onlyChinese and '成就' or TRACKER_HEADER_ACHIEVEMENTS, function(self)
         local num=0
         for index, achievementID in pairs(C_ContentTracking.GetTrackedIDs(Enum.ContentTrackingType.Achievement)) do
             C_ContentTracking.StopTracking(Enum.ContentTrackingType.Achievement, achievementID,  Enum.ContentTrackingStopType.Manual)
@@ -24,13 +24,13 @@ local function Init()
 
 
     hooksecurefunc(AchievementObjectiveTracker, 'AddAchievement', function(self, achievementID)
-        local block = WoWTools_ObjectiveTrackerMixin:Get_Block(self, achievementID)
+        local block = WoWTools_ObjectiveMixin:Get_Block(self, achievementID)
         if not block then
             return
         end
 
         local icon= select(10, GetAchievementInfo(achievementID))
-        WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, icon, 'isAchievement')
+        WoWTools_ObjectiveMixin:Set_Block_Icon(block, icon, 'isAchievement')
 
 
         for index, line in pairs(block.usedLines or {}) do
@@ -40,7 +40,7 @@ local function Init()
                 local assetID= select(8, GetAchievementCriteriaInfoByID(achievementID, index))
                 subIcon = assetID and select(10, GetAchievementInfo(assetID))
             end
-            WoWTools_ObjectiveTrackerMixin:Set_Line_Icon(line, subIcon)
+            WoWTools_ObjectiveMixin:Set_Line_Icon(line, subIcon)
         end
     end)
 
@@ -51,6 +51,6 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_Achievement()
+function WoWTools_ObjectiveMixin:Init_Achievement()
     Init()
 end

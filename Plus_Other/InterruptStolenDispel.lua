@@ -1,17 +1,20 @@
 
+local panel= CreateFrame("Frame")
+panel:RegisterEvent("ADDON_LOADED")
 
-local Save={
+local P_Save={
     --enabledInRaid=true--在团队中启用会掉帧
 }
+
+local function Save()
+    return WoWToolsSave['Interrupts_Tolen']
+end
+
 local addName
 local de='>'--分隔符
-if WoWTools_DataMixin.Player.Region==4 or WoWTools_DataMixin.Player.Region==5 then de='→' end
-local UMark={[1]='{rt1}', [2]='{rt2}', [4]='{rt3}', [8]='{rt4}', [16]='{rt5}', [32]='{rt6}', [64]='{rt7}', [128]='{rt8}'}
+local UMark
 
-
-
-local eventFrame= CreateFrame("Frame")
-eventFrame:SetScript('OnEvent', function()
+local function COMBAT_LOG_EVENT_UNFILTERED()
     local _, eventType, _, sourceGUID, _, _, sourceRaidFlags, destGUID, _, _, destRaidFlags ,spellID, _,_, extraSpellID= CombatLogGetCurrentEventInfo()
     if
         sourceGUID~=WoWTools_DataMixin.Player.GUID--不是自已
@@ -30,25 +33,24 @@ eventFrame:SetScript('OnEvent', function()
     else
         WoWTools_ChatMixin:Chat(text, nil, nil)
     end
-end)
+end
 
 
 
 
-local panel= CreateFrame("Frame")
-function panel:Set_Event()
-    if Save.disabled then
-        self:UnregisterEvent('GROUP_ROSTER_UPDATE')
-        self:UnregisterEvent('GROUP_LEFT')
-    else
+
+
+
+local function Set_Event(self)
+    self:UnregisterAllEvents()
+
+    if not Save().disabled then
         self:RegisterEvent('GROUP_ROSTER_UPDATE')
         self:RegisterEvent('GROUP_LEFT')
-    end
 
-    if (not IsInRaid() or Save.enabledInRaid) and not Save.disabled then
-        eventFrame:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-    else
-        eventFrame:UnregisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+        if not IsInRaid() or Save().enabledInRaid then
+            self:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+        end
     end
 end
 
@@ -56,53 +58,74 @@ end
 
 
 
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
+
+
+
+local function Init_Panel()
+
+    WoWToolsSave['Interrupts_Tolen']= WoWToolsSave['Interrupts_Tolen'] or P_Save
+
+    addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_Mixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
+
+    --添加控制面板
+    local root= WoWTools_PanelMixin:OnlyCheck({
+        name= addName,
+        GetValue= function() return not Save().disabled end,
+        SetValue= function()
+            Save().disabled = not Save().disabled and true or nil
+            Set_Event(panel)
+        end,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
+    })
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '团队' or RAID),
+        GetValue= function() return Save().enabledInRaid end,
+        SetValue= function()
+            Save().enabledInRaid = not Save().enabledInRaid and true or nil
+            Set_Event(panel)
+        end,
+        tooltip=(WoWTools_Mixin.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
+        layout= WoWTools_OtherMixin.Layout,
+        category= WoWTools_OtherMixin.Category,
+    }, root)
+
+    if WoWTools_DataMixin.Player.Region==4 or WoWTools_DataMixin.Player.Region==5 then de='→' end
+
+    UMark={[1]='{rt1}', [2]='{rt2}', [4]='{rt3}', [8]='{rt4}', [16]='{rt5}', [32]='{rt6}', [64]='{rt7}', [128]='{rt8}'}
+
+    if not Save().disabled then
+        Set_Event(panel)
+    end
+
+    panel:UnregisterEvent('ADDON_LOADED')
+
+    Init_Panel=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-
-            Save= WoWToolsSave['Interrupts_Tolen'] or Save
-
-            addName= '|A:nameplates-holypower2-on:0:0|a'..(WoWTools_Mixin.onlyChinese and '断驱散' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INTERRUPTS, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISPELS, ACTION_SPELL_STOLEN)))
-
-            --添加控制面板
-            local root= WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                GetValue= function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled = not Save.disabled and true or nil
-                    self:Set_Event()
-                end,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            })
-
-            WoWTools_PanelMixin:OnlyCheck({
-                name= '|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '团队' or RAID),
-                GetValue= function() return Save.enabledInRaid end,
-                SetValue= function()
-                    Save.enabledInRaid = not Save.enabledInRaid and true or nil
-                    self:Set_Event()
-                end,
-                tooltip=(WoWTools_Mixin.onlyChinese and '掉帧' or 'Dropped Frames')..'|n|n'..addName,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            }, root)
-
-            if not Save.disabled then
-                self:Set_Event()
-            end
-            self:UnregisterEvent(event)
+            Init_Panel()
         end
 
     elseif event=='GROUP_ROSTER_UPDATE' or event=='GROUP_LEFT' then
-        self:Set_Event()
+        Set_Event(self)
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Interrupts_Tolen']=Save
-        end
+    elseif event=='COMBAT_LOG_EVENT_UNFILTERED' then
+        COMBAT_LOG_EVENT_UNFILTERED()
     end
 end)
 

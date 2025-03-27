@@ -5,7 +5,7 @@
 
 --专业技能 ProfessionsRecipeTracker
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(ProfessionsRecipeTracker, WoWTools_Mixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, function(self)
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(ProfessionsRecipeTracker, WoWTools_Mixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, function(self)
         local num= 0
         local function clear_Recipe(isRecrafting)
             for index, recipeID in pairs(C_TradeSkillUI.GetRecipesTracked(isRecrafting) or {}) do
@@ -25,7 +25,7 @@ local function Init()
 
     hooksecurefunc(ProfessionsRecipeTracker, 'AddRecipe', function(self, recipeID, isRecraft)
         local blockID = NegateIf(recipeID, isRecraft);
-	    local block = WoWTools_ObjectiveTrackerMixin:Get_Block(self, blockID)
+	    local block = WoWTools_ObjectiveMixin:Get_Block(self, blockID)
 
         if not block then
             return
@@ -33,7 +33,7 @@ local function Init()
 
         local data=  C_TradeSkillUI.GetRecipeInfo(recipeID)
         if data then
-            WoWTools_ObjectiveTrackerMixin:Set_Block_Icon(block, data.icon, 'isRecipe')
+            WoWTools_ObjectiveMixin:Set_Block_Icon(block, data.icon, 'isRecipe')
         end
 
         local recipeSchematic = C_TradeSkillUI.GetRecipeSchematic(recipeID, isRecraft)
@@ -59,7 +59,7 @@ local function Init()
                 end
             end
 
-            WoWTools_ObjectiveTrackerMixin:Set_Line_Icon(line, subIcon)
+            WoWTools_ObjectiveMixin:Set_Line_Icon(line, subIcon)
         end
     end)
 end
@@ -69,6 +69,6 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_Professions()
+function WoWTools_ObjectiveMixin:Init_Professions()
     Init()
 end

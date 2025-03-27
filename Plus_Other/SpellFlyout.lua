@@ -1,6 +1,6 @@
 --Flyout, 技能，提示
 
-local Save={}
+
 local SpellTab={}--WoWTools_DataMixin.ChallengesSpellTabs
 local addName
 
@@ -20,6 +20,8 @@ local CALL_PET_SPELL_IDS = {
 	[83244]=4,
 	[83245]=5,
 }
+
+
 
 
 local function GetHunterPetSpellText(spellID, isLeftPoint)
@@ -315,6 +317,8 @@ local function Init_All_Flyout()
 
     end
 
+
+    Init_All_Flyout=function()end
 end
 
 
@@ -328,50 +332,55 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
-            Save= WoWToolsSave['Other_SpellFlyout'] or Save
+    if arg1== 'WoWTools' then
 
-            addName= '|A:common-icon-backarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术弹出框' or 'SpellFlyout')
+        WoWToolsSave['Other_SpellFlyout']= WoWToolsSave['Other_SpellFlyout'] or {}
 
-            --添加控制面板
-            WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                Value= not Save.disabled,
-                GetValue=function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            })
+        addName= '|A:common-icon-backarrow:0:0|a'..(WoWTools_Mixin.onlyChinese and '法术弹出框' or 'SpellFlyout')
 
-            if Save.disabled then
-                self:UnregisterEvent(event)
-            else
-                if WoWTools_Mixin.onlyChinese then
-                    for _, info in pairs(WoWTools_DataMixin.ChallengesSpellTabs or {}) do
-                        if info.spell and info.name then
-                            SpellTab[info.spell]=info.name
-                        end
+        --添加控制面板
+        WoWTools_PanelMixin:OnlyCheck({
+            name= addName,
+            Value= not WoWToolsSave['Other_SpellFlyout'].disabled,
+            GetValue=function() return not WoWToolsSave['Other_SpellFlyout'].disabled end,
+            SetValue= function()
+                WoWToolsSave['Other_SpellFlyout'].disabled= not WoWToolsSave['Other_SpellFlyout'].disabled and true or nil
+                print(
+                    WoWTools_DataMixin.Icon.icon2..addName,
+                    WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Other_SpellFlyout'].disabled),
+                    WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end,
+            layout= WoWTools_OtherMixin.Layout,
+            category= WoWTools_OtherMixin.Category,
+        })
+
+        if WoWToolsSave['Other_SpellFlyout'].disabled then
+            self:UnregisterEvent(event)
+
+        else
+            if WoWTools_Mixin.onlyChinese then
+                for _, info in pairs(WoWTools_DataMixin.ChallengesSpellTabs or {}) do
+                    if info.spell and info.name then
+                        SpellTab[info.spell]=info.name
                     end
                 end
-
-                hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
-
-                hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
             end
 
-        elseif arg1=='Blizzard_PlayerSpells' then--天赋
-            Init_All_Flyout()
+            hooksecurefunc(SpellFlyoutPopupButtonMixin, 'UpdateGlyphState', set_SpellFlyoutButton_UpdateGlyphState)
+
+            hooksecurefunc(SpellFlyout, 'Toggle',  GameTooltip_Hide)--隐藏
+
+            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+                Init_All_Flyout()
+                self:UnregisterEvent(event)
+            end
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Other_SpellFlyout']=Save
-        end
+    elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--天赋
+        Init_All_Flyout()
+        self:UnregisterEvent(event)
     end
 end)

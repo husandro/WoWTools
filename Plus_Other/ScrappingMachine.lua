@@ -1,5 +1,5 @@
 
-local Save={
+local P_Save={
     items={--禁用，自动添加，物品
         --+精通
         [210715]=true,--缺口精湛紫晶 
@@ -30,7 +30,9 @@ local Save={
 local MaxNumeri= 9
 local addName
 
-
+local function Save()
+    return WoWToolsSave['Other_ScrappingMachine']
+end
 
 
 
@@ -74,7 +76,7 @@ local function can_scrap_item(bag, slot, onlyEquip, classID)
     local itemLocation= ItemLocation:CreateFromBagAndSlot(bag, slot)
     if itemLocation and itemLocation:IsValid() and C_Item.CanScrapItem(itemLocation) then
         local itemID= C_Item.GetItemID(itemLocation)
-        if Save.items[itemID] then--禁用，自动添加，物品
+        if Save().items[itemID] then--禁用，自动添加，物品
             return
         end
 
@@ -116,9 +118,9 @@ local function Init_SubItem_Menu(self, sub, items)
         sub2=sub:CreateCheckbox(
             WoWTools_ItemMixin:GetName(itemID),
         function(data)
-            return Save.items[data.itemID]
+            return Save().items[data.itemID]
         end, function(data)
-            Save.items[data.itemID]= not Save.items[data.itemID] and true or nil
+            Save().items[data.itemID]= not Save().items[data.itemID] and true or nil
             self:settings()
         end, {itemID=itemID})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
@@ -176,7 +178,7 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
-    Init_SubItem_Menu(self, sub, Save.items)
+    Init_SubItem_Menu(self, sub, Save().items)
 end
 
 
@@ -205,7 +207,7 @@ local function Init_Disabled_Button()
     btn:SetPoint('RIGHT', -10,0)
     function btn:get_num()
         local n=0
-        for _ in pairs(Save.items) do
+        for _ in pairs(Save().items) do
             n=n+1
         end
         return n
@@ -246,9 +248,9 @@ local function Init_Disabled_Button()
     btn:SetScript('OnMouseDown', function(self)
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID then
-            Save.items[itemID]= not Save.items[itemID] and true or nil
+            Save().items[itemID]= not Save().items[itemID] and true or nil
             print(WoWTools_DataMixin.Icon.icon2.. addName,
-                Save.items[itemID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'
+                Save().items[itemID] and '|cnGREEN_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '添加' or ADD)..'|r'
                     or ('|cnRED_FONT_COLOR:'..(WoWTools_Mixin.onlyChinese and '移除' or REMOVE)..'|r'),
                 itemLink or itemID
             )
@@ -429,6 +431,11 @@ local function Init()
         self.celarAllItem:SetAlpha(C_ScrappingMachineUI.HasScrappableItems() and 1 or 0.3)
         self.addAllItem:SetAlpha(MaxNumeri> get_num_items() and 1 or 0.3)
     end)
+
+
+    Init_Disabled_Button()
+
+    Init=function()end
 end
 
 
@@ -445,40 +452,38 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
+    if arg1== 'WoWTools' then
 
-            Save= WoWToolsSave['Other_ScrappingMachine'] or Save
+        WoWToolsSave['Other_ScrappingMachine']= WoWToolsSave['Other_ScrappingMachine'] or P_Save
 
-            addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(WoWTools_Mixin.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
+        addName= '|TInterface\\Icons\\inv_gizmo_03:0|t'..(WoWTools_Mixin.onlyChinese and '拆解大师Mk1型' or SCRAPPING_MACHINE_TITLE)
 
-            --添加控制面板
-             WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                Value= not Save.disabled,
-                GetValue=function() return not Save.disabled end,
-                SetValue= function()
-                    Save.disabled= not Save.disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(Save.disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            })
+        --添加控制面板
+        WoWTools_PanelMixin:OnlyCheck({
+            name= addName,
+            Value= not Save().disabled,
+            GetValue=function() return not Save().disabled end,
+            SetValue= function()
+                Save().disabled= not Save().disabled and true or nil
+                print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(Save().disabled), WoWTools_Mixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            end,
+            layout= WoWTools_OtherMixin.Layout,
+            category= WoWTools_OtherMixin.Category,
+        })
 
-            if Save.disabled then
+        if Save().disabled then
+            self:UnregisterEvent(event)
+        else
+            if C_AddOns.IsAddOnLoaded('Blizzard_ScrappingMachineUI') then
+                Init()
                 self:UnregisterEvent(event)
             end
-
-        elseif arg1=='Blizzard_ScrappingMachineUI' then--分解 ScrappingMachineFrame
-            Init()
-            Init_Disabled_Button()
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Other_ScrappingMachine']=Save
-        end
+    elseif arg1=='Blizzard_ScrappingMachineUI' and WoWToolsSave then--分解 ScrappingMachineFrame
+        Init()
+        self:UnregisterEvent(event)
     end
 end)

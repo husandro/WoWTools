@@ -4,7 +4,7 @@
 
 --战役，任务 CampaignQuestObjectiveTracker
 local function Init()
-    WoWTools_ObjectiveTrackerMixin:Add_ClearAll_Button(CampaignQuestObjectiveTracker, WoWTools_Mixin.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, function(self)
+    WoWTools_ObjectiveMixin:Add_ClearAll_Button(CampaignQuestObjectiveTracker, WoWTools_Mixin.onlyChinese and '战役' or TRACKER_HEADER_CAMPAIGN_QUESTS, function(self)
         local questIDS, num= {}, 0
         for i= 1, C_QuestLog.GetNumQuestWatches() or 0, 1 do
             local questID= C_QuestLog.GetQuestIDForQuestWatchIndex(i)
@@ -26,6 +26,6 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_Campaign_Quest()
+function WoWTools_ObjectiveMixin:Init_Campaign_Quest()
     Init()
 end

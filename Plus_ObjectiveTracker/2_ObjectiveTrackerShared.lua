@@ -11,6 +11,6 @@ end
 
 
 
-function WoWTools_ObjectiveTrackerMixin:Init_ObjectiveTrackerShared()
+function WoWTools_ObjectiveMixin:Init_ObjectiveTrackerShared()
     Init()
 end
