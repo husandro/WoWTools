@@ -7,8 +7,8 @@ end
 
 
 
-
-local qualityToIconBorderAtlas ={
+--圆形 11.1.5
+local qualityToIconBorderAtlas = AUCTION_HOUSE_ITEM_QUALITY_ICON_BORDER_ATLASES  or {
 	[Enum.ItemQuality.Poor] = "auctionhouse-itemicon-border-gray",
 	[Enum.ItemQuality.Common] = "auctionhouse-itemicon-border-white",
 	[Enum.ItemQuality.Uncommon] = "auctionhouse-itemicon-border-green",

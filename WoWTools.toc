@@ -55,7 +55,8 @@ Init.xml
 0_Mixin\Unit.lua
 0_Mixin\Week.lua
 0_Mixin\3_Panel.lua
-Panel.lua
+
+0_Panel.lua
 
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua

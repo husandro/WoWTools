@@ -83,8 +83,8 @@ WoWTools_DataMixin.Icon={
     --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=WoWTools_DataMixin.Player.GUID , race=nil , sex=WoWTools_DataMixin.Player.Sex , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools:0|t',
-    --disabled='talents-button-reset',
-    --select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
+    
+    
     right='|A:NPE_RightClick:0:0|a',
     left='|A:NPE_LeftClick:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
@@ -101,8 +101,9 @@ WoWTools_DataMixin.Icon={
     Alliance='charcreatetest-logo-alliance',
     Horde='charcreatetest-logo-horde',
     Neutral='nameplates-icon-flag-neutral',
-
-    [Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",--0  C_Item.GetItemQualityByID(ID)
+    
+--ColorConstants.lua
+    [Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",--0  C_Item.GetItemQualityByID(ID) 方块
 	[Enum.ItemQuality.Common] = "dressingroom-itemborder-white",
 	[Enum.ItemQuality.Uncommon] = "dressingroom-itemborder-green",
 	[Enum.ItemQuality.Rare] = "dressingroom-itemborder-blue",
@@ -117,8 +118,9 @@ WoWTools_DataMixin.Icon={
     [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
 }
 
-
-
+--disabled='talents-button-reset',
+--select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
+--common-dropdown-icon-checkmark-yellow 黄色
 
 
 
