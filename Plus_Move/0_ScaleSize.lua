@@ -4,6 +4,12 @@ local function Save()
 end
 
 
+local P_UIPanelWindows= {}
+
+
+
+
+
 
 function WoWTools_MoveMixin:Set_SizeScale(frame)
     local name= frame and frame:GetName()
@@ -627,6 +633,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     btn:SetFrameStrata('DIALOG')
     btn:SetFrameLevel(frame:GetFrameLevel()+7)
     btn:SetSize(16, 16)
+
 
     if setResizeButtonPoint then
         btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)

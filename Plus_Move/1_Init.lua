@@ -21,6 +21,8 @@ local P_Save={
     --notMoveAlpha=true,--是否设置，移动时，设置透明度
     alpha=0.5,
     disabledAlpha={},
+
+    UIPanelWindows={}
 }
 
 local function Save()
@@ -73,6 +75,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Move']= WoWToolsSave['Plus_Move'] or P_Save
+            Save().UIPanelWindows= Save().UIPanelWindows or {}
+
             WoWTools_MoveMixin.addName= '|TInterface\\Cursor\\UI-Cursor-Move:0|t'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE)
 
             WoWTools_MoveMixin:Init_Options()
