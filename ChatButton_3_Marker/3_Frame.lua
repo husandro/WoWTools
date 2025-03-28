@@ -38,7 +38,7 @@ local function Init()--设置标记, 框架
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().markersFramePoint={frame:GetPoint(1)}
+            Save().markersFramePoint={self:GetPoint(1)}
             Save().markersFramePoint[2]=nil
         else
             print(
