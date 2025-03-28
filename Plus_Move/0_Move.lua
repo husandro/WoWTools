@@ -105,12 +105,12 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().point[name]= {self:GetPoint(1)}
             Save().point[name][2]= nil
-        else
+        --[[else
             print(
-                WoWTools_DataMixin.addName,
+                WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName,
                 '|cnRED_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
+            )]]
         end
         self:Raise()
     end)
