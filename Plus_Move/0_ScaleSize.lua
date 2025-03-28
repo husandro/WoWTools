@@ -88,6 +88,7 @@ end
 --菜单
 local function Init_Menu(self, root)
     root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
+
     local sub, sub2
     if not self:IsCanChange() then
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
@@ -216,25 +217,77 @@ local function Init_Menu(self, root)
     end
 
 --清除，位置，数据
-    --if not Save().disabledMove then
-        root:CreateDivider()
-        root:CreateRadio(
-            (Save().point[self.name] and '' or '|cff9e9e9e')
-            ..(WoWTools_DataMixin.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
-        function()
-            return Save().point[self.name]
-        end, function()
-            if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and self:IsCanChange() then
-                Save().point[self.name]=nil
-                if self.restPointFunc then
-                    self.restPointFunc(self)
-                elseif not self.notUpdatePositon then
-                    WoWTools_Mixin:Call(UpdateUIPanelPositions, self.targetFrame)
-                end
+
+    root:CreateDivider()
+    sub=root:CreateCheckbox(
+        (Save().point[self.name] and '' or '|cff9e9e9e')
+        ..(WoWTools_DataMixin.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
+    function()
+        return Save().point[self.name]
+    end, function()
+        if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and self:IsCanChange() then
+
+            if UIPanelWindows and P_UIPanelWindows[self].name then
+                UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
+                P_UIPanelWindows[self.name]= nil
             end
-            return MenuResponse.Refresh
-        end)
-   -- end
+
+            Save().point[self.name]=nil
+
+            if self.restPointFunc then
+                self.restPointFunc(self)
+            elseif not self.notUpdatePositon then
+                WoWTools_Mixin:Call(UpdateUIPanelPositions, self.targetFrame)
+            end
+
+        end
+        return MenuResponse.Refresh
+    end)
+
+--当显示时，锁定框体位置
+if UIPanelWindows then
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '锁定框体位置' or LOCK_FOCUS_FRAME,
+    function()
+        return Save().UIPanelWindows[self.name]
+    end, function()
+        Save().UIPanelWindows[self.name]= not Save().UIPanelWindows[self.name] and true or nil
+
+--禁用，自动设置
+        if Save().UIPanelWindows[self.name] then
+            if UIPanelWindows[self.name] then
+                P_UIPanelWindows[self.name]= UIPanelWindows[self.name]
+                UIPanelWindows[self.name]= nil
+            end
+--启用，自动设置
+        else
+            if P_UIPanelWindows[self.name] then
+                UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
+                P_UIPanelWindows[self.name]= nil
+            end
+        end
+    end)
+    --sub2:SetEnabled((P_UIPanelWindows[self.name] or UIPanelWindows[self.name]) and Save().point[self.name])
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(self.name)
+         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示时，自定义位置' or  'When show, custom position')
+        local tab= P_UIPanelWindows[self.name] or UIPanelWindows[self.name]
+        if tab then
+            tooltip:AddLine(' ')
+            local t
+            for name, value in pairs(tab) do
+                t=type(value)
+                tooltip:AddDoubleLine(name,
+                    (t=='string' or t=='number') and value
+                    or (value==true and 'true') or (value==false and 'false')
+                    or t
+                )
+            end
+        end
+    end)
+end
+
+
 
 --打开，选项
     root:CreateDivider()
@@ -736,6 +789,11 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     if not btn.notMoveAlpha then--移动时，设置透明度
         Set_Move_Alpha(frame)
+    end
+
+
+    if UIPanelWindows then
+
     end
 end
 
