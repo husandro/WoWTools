@@ -282,8 +282,9 @@ local function Set_Queue_Status()--小眼睛, 信息
         local _, appStatus, _, appDuration, role = C_LFGList.GetApplicationInfo(applicantID)-- id, appStatus, pendingStatus, appDuration, role 
         if appStatus == "applied"  and appDuration and appDuration>0 then--invited,none
             local info = C_LFGList.GetSearchResultInfo(applicantID) or {}
-            local activityName = C_LFGList.GetActivityFullName(info.activityID, nil, info.isWarMode)
-            if info and info.name and not info.autoAccept and not info.isDelisted then
+
+            if info and info.activityID and info.name and not info.autoAccept and not info.isDelisted then
+
                 local pvpRating--PVP分数
                 local pvpIcon
                 if info.leaderPvpRatingInfo then
@@ -326,6 +327,8 @@ local function Set_Queue_Status()--小眼睛, 信息
                 if role~='NONE' then
                     roleText= WoWTools_DataMixin.Icon[role]
                 end
+
+                local activityName = C_LFGList.GetActivityFullName(info.activityID, nil, info.isWarMode)
 
                 lfg= lfg and lfg..'\n   ' or '   '
                 lfg= lfg..index..') '..WoWTools_TextMixin:CN(info.name)
