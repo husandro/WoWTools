@@ -45,7 +45,7 @@ end
 
 --任务选择
 WoWTools_MoveMixin.Events['Blizzard_PlayerChoice']= function()
-    WoWTools_MoveMixin:Setup(PlayerChoiceFrame, {notZoom=true, notSave=true})
+    WoWTools_MoveMixin:Setup(PlayerChoiceFrame, {notZoom=true})
 end
 
 --公会银行

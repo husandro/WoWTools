@@ -91,14 +91,17 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
     end)
 
     frame:HookScript("OnDragStop", function(f)
+
         local self= f.targetFrame or f
-        local name= self and (f.name or self:GetName())
+        local name= f.name or self:GetName()
+
+        ResetCursor()
+        self:StopMovingOrSizing()
+
         if not name or self.notSave then
             return
         end
 
-        ResetCursor()
-        self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().point[name]= {self:GetPoint(1)}
             Save().point[name][2]= nil

@@ -31,7 +31,7 @@ local function Init()
     end})
 
 --选项
-    WoWTools_MoveMixin:Setup(SettingsPanel, {notSave=true, setSize=true, minW=800, minH=200, initFunc=function(btn)
+    WoWTools_MoveMixin:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, initFunc=function(btn)
         for _, region in pairs({btn.targetFrame:GetRegions()}) do
             if region:GetObjectType()=='Texture' then
                 region:SetPoint('BOTTOMRIGHT', -12, 38)
@@ -87,7 +87,7 @@ local function Init()
     WoWTools_MoveMixin:Setup(ChatConfigFrame.Border, {frame=ChatConfigFrame})
     ObjectiveTrackerFrame:SetClampedToScreen(false)
 
-    WoWTools_MoveMixin:Setup(GameMenuFrame, {notSave=true})--菜单
+    WoWTools_MoveMixin:Setup(GameMenuFrame)--菜单
     WoWTools_MoveMixin:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
     WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags)
     --WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
