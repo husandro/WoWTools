@@ -194,7 +194,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event=='PLAYER_LOGIN' then
         if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
-            WoWTools_AddOnsMixin:Set_AddonProfiler()
+            --WoWTools_AddOnsMixin:Set_AddonProfiler()
         end
         self:UnregisterEvent(event)
     end

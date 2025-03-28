@@ -101,6 +101,7 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [438]= {spell=410080, ins=68, name='旋云之巅', spellName='风神领域之路', spellDes='传送到|cff00ccff旋云之巅|r的入口。'},--旋云之巅
 
     [353]= {spell=464256, ins=1023, name='围攻伯拉勒斯', spellName='困守孤港之路', spellDes='传送到|cff00ccff围攻伯拉勒斯|r的入口。'},--围攻伯拉勒斯
+    [247]={spell=467553 , ins=1012, name='暴富矿区', spellName=, spellDes='传送至|cff00ccff暴富矿区|！！r入口处。'},
 
     [2]={spell=131204, ins=313, name='青龙寺', spellDes='将施法者传送到|cff00ccff青龙寺|r入口。'},
     [200]={spell=393764, ins=721, name='英灵殿', spellName='证明价值之路', spellDes='传送到|cff00ccff英灵殿|r的入口。'},
@@ -144,6 +145,7 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [382]={spell=354467, ins=1187, name='伤逝剧场', spellName='不败之路', spellDes='传送到|cff00ccff伤逝剧场|r的入口。'},
     [376]={spell=354462, ins=1182, name='通灵战潮', spellName='勇者之路', spellDes='传送到|cff00ccff通灵战潮|r的入口。'},
     [381]={spell=354466, ins=1186, name='晋升高塔', spellName='晋升者之路', spellDes='传送到|cff00ccff晋升高塔|r的入口。'},
+    
 
     [499]= {spell=445444, ins=1267, name='圣焰隐修院', spellName='圣焰隐修院之路', spellDes='传送至|cff00ccff圣焰隐修院|r入口处。'},
     [500]= {spell=445443, ins=1268, name='驭雷栖巢', spellName='驭雷栖巢之路', spellDes='传送至|cff00ccff驭雷栖巢|r入口处。'},
