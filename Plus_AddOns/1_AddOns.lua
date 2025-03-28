@@ -182,9 +182,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
-                if not WoWTools_DataMixin.isRetail then--测试服，出错
-                    self:UnregisterEvent('PLAYER_LOGIN')
-                end
                 AddonList:HookScript('OnShow', function()
                     Init()
                 end)
