@@ -101,7 +101,7 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [438]= {spell=410080, ins=68, name='旋云之巅', spellName='风神领域之路', spellDes='传送到|cff00ccff旋云之巅|r的入口。'},--旋云之巅
 
     [353]= {spell=464256, ins=1023, name='围攻伯拉勒斯', spellName='困守孤港之路', spellDes='传送到|cff00ccff围攻伯拉勒斯|r的入口。'},--围攻伯拉勒斯
-    [247]={spell=467553 , ins=1012, name='暴富矿区', spellName=, spellDes='传送至|cff00ccff暴富矿区|！！r入口处。'},
+    [247]={spell=467553 , ins=1012, name='暴富矿区', spellName='艾泽里特精炼厂之路', spellDes='传送至|cff00ccff暴富矿区|！！r入口处。'},
 
     [2]={spell=131204, ins=313, name='青龙寺', spellDes='将施法者传送到|cff00ccff青龙寺|r入口。'},
     [200]={spell=393764, ins=721, name='英灵殿', spellName='证明价值之路', spellDes='传送到|cff00ccff英灵殿|r的入口。'},
