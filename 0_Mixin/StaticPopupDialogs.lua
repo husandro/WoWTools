@@ -380,7 +380,11 @@ StaticPopup_Show('WoWTools_OK',
         end,
         whileDead=true, hideOnEscape=true, exclusive=true, showAlert=true,
     }
-    return true
+
+
+
+
+    Init=function()end
 end
 
 
@@ -409,6 +413,6 @@ StaticPopup_Show("PERKS_PROGRAM_CONFIRM_PURCHASE", product.price, markup, data);
 
 
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGIN", function(owner)
-    if Init() then Init=function()end end
+    Init()
     EventRegistry:UnregisterCallback('PLAYER_LOGIN', owner)
 end)

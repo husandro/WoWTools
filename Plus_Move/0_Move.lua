@@ -166,7 +166,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     local notFuori=  not moveToScreenFuori and SavePoint or tab.notFuori
     local isAltKeyDown= tab.isAltKeyDown
 
-    if not frame or not name then --or not frame.setMoveFrame then
+    if not frame or not name then
         return
     end
 
