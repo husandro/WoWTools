@@ -338,7 +338,7 @@ local function All_Player_Info()--所以角色信息
                     end
                 end)
 
-                local score= WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
+                local score= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
                 local weekNum= info.Keystone.weekNum and info.Keystone.weekNum>0 and info.Keystone.weekNum
                 local weekLevel= info.Keystone.weekLevel and info.Keystone.weekLevel>0 and info.Keystone.weekLevel
 --[[
@@ -516,7 +516,7 @@ local function set_All_Text()--所有记录
                     local text2= tab.c..'/'..tab.t
                     if tab.isCurrent then
                         local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-                        local score, col= WoWTools_WeekMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
+                        local score, col= WoWTools_ChallengeMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
                         text= (col and col:WrapTextInColorCode(text) or text)..score
                         text2= col and col:WrapTextInColorCode(text2) or text2
                     else
@@ -589,7 +589,7 @@ local function set_All_Text()--所有记录
             end
             weekText= weekText and weekText..'|n' or ''
             local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-            local score= WoWTools_WeekMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
+            local score= WoWTools_ChallengeMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
 
             weekText= weekText..(texture and '|T'..texture..':0|t' or '')
                     ..(tab.c>0 and '|cff00ff00' or '|cff828282')..tab.c..'|r/'..tab.t
@@ -606,7 +606,7 @@ local function set_All_Text()--所有记录
     end
     ChallengesFrame.weekCompledLabel:SetText(
         (WoWTools_DataMixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
-        ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(WoWTools_WeekMixin:GetRewardText(1) or '')
+        ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(WoWTools_ChallengeMixin:GetRewardText(1) or '')
         ..(weekText and '|n'..weekText or '')
     )
     last= ChallengesFrame.weekCompledLabel
@@ -896,7 +896,7 @@ local function set_Update()--Blizzard_ChallengesUI.lua
                         end)
                     end
                 end
-                frame.scoreLable:SetText((overAllScore and not Save().hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..WoWTools_WeekMixin:KeystoneScorsoColor(overAllScore,nil,true) or '')
+                frame.scoreLable:SetText((overAllScore and not Save().hideIns) and '|A:AdventureMapIcon-MissionCombat:16:16|a'..WoWTools_ChallengeMixin:KeystoneScorsoColor(overAllScore,nil,true) or '')
                 frame.scoreLable.score= overAllScore
                 frame.scoreLable:SetScale(Save().insScale or 1)
 
@@ -1300,7 +1300,7 @@ local function Init()
     --Init_Affix()
 
     --周奖励，提示
-    WoWTools_WeekMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
+    WoWTools_ChallengeMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
 
     All_Player_Info()--所以角色信息
     C_Timer.After(2, set_All_Text)--所有记录
@@ -1310,7 +1310,7 @@ local function Init()
     ChallengesFrame:HookScript('OnShow', function()
         --Affix()
         --周奖励，提示
-        WoWTools_WeekMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
+        WoWTools_ChallengeMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
         C_Timer.After(2, set_All_Text)--所有记录
         --set_Update()
     end)

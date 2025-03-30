@@ -138,7 +138,7 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
         return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
     end, WoWTools_LoadUIMixin.WeeklyRewards)
     sub:SetTooltip(function(tooltip)
-        WoWTools_WeekMixin:Activities({showTooltip=true, tooltip=tooltip})--周奖励，提示
+        WoWTools_ChallengeMixin:Activities({showTooltip=true, tooltip=tooltip})--周奖励，提示
     end)
 
 

@@ -135,7 +135,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
 
         info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-            key= WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
+            key= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
         end
     end
 

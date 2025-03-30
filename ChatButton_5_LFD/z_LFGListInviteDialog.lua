@@ -29,7 +29,7 @@ local function Settings(self)
         WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
 
         info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and
-            '|T4352494:0|t'..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore)
+            '|T4352494:0|t'..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore)
         or '',--地下城史诗,分数
 
         info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 and

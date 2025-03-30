@@ -432,7 +432,7 @@ end)
             GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
             GameTooltip:AddLine(' ')
         end
-        WoWTools_WeekMixin:Activities({showTooltip=true})
+        WoWTools_ChallengeMixin:Activities({showTooltip=true})
         GameTooltip:AddLine(' ')
         WoWTools_LabelMixin:ItemCurrencyTips({showTooltip=true, showName=true, showAll=true})
         GameTooltip:Show()
@@ -442,9 +442,9 @@ end)
         local text
         local score= C_ChallengeMode.GetOverallDungeonScore()
         if score and score>0 then
-            local activeText= WoWTools_WeekMixin:GetRewardText(1)--得到，周奖励，信息
+            local activeText= WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
             activeText= activeText and ' ('..activeText..') '
-            text= WoWTools_WeekMixin:KeystoneScorsoColor(score)..(activeText or '')--分数
+            text= WoWTools_ChallengeMixin:KeystoneScorsoColor(score)..(activeText or '')--分数
             local info = C_MythicPlus.GetRunHistory(false, true) or {}--次数
             local num= #info
             if num>0 then

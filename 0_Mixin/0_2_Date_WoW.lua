@@ -16,10 +16,10 @@ WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID]={
         week= WoWTools_DataMixin.Player.Week,
         weekNum= weekNum,
         weekLevel= weekLevel,
-        weekPvE= WoWTools_WeekMixin:GetRewardText(3),--Raid
-        weekMythicPlus= WoWTools_WeekMixin:GetRewardText(1),--MythicPlus
-        weekPvP= WoWTools_WeekMixin:GetRewardText(2),--RankedPvP
-        weekWorld= WoWTools_WeekMixin:GetRewardText(6),--世界
+        weekPvE= WoWTools_ChallengeMixin:GetRewardText(3),--Raid
+        weekMythicPlus= WoWTools_ChallengeMixin:GetRewardText(1),--MythicPlus
+        weekPvP= WoWTools_ChallengeMixin:GetRewardText(2),--RankedPvP
+        weekWorld= WoWTools_ChallengeMixin:GetRewardText(6),--世界
         link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
     },
     Item={
@@ -258,10 +258,10 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         weekNum= weekNum,
         weekLevel= weekLevel,
 
-        weekPvE= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Raid),--Raid
-        weekMythicPlus= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Activities),--MythicPlus
-        weekPvP= WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.RankedPvP),--RankedPvP
-        weekWorld=WoWTools_WeekMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
+        weekPvE= WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Raid),--Raid
+        weekMythicPlus= WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Activities),--MythicPlus
+        weekPvP= WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.RankedPvP),--RankedPvP
+        weekWorld=WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
         link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
     }
 end

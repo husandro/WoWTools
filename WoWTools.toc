@@ -53,7 +53,6 @@ Init.xml
 0_Mixin\SetTooltip.lua
 0_Mixin\SetTooltip_Faction.lua
 0_Mixin\Unit.lua
-0_Mixin\Week.lua
 0_Mixin\3_Panel.lua
 
 0_Panel.lua

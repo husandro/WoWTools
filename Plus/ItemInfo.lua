@@ -250,7 +250,7 @@ local function Setup(self, tab)
                 if name then
                     bottomLeftText= WoWTools_TextMixin:sub(name, 3,6, true)
                 end
-                local text= WoWTools_WeekMixin:GetRewardText(1)--得到，周奖励，信息
+                local text= WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
                 if text then
                     leftText='|cnGREEN_FONT_COLOR:'..text..'|r'
                 end

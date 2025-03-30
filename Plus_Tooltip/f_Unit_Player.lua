@@ -153,7 +153,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
                     ..' '..WoWTools_UnitMixin:GetClassIcon(nil, classFilename)
                     ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
-                    ..'  '..WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
+                    ..'  '..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
 
             if info.runs and info.runs then
                 local bestRunLevel=0

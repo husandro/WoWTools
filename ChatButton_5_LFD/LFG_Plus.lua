@@ -39,9 +39,9 @@ local function Init_LFGListSearchEntry_Update(self)
     local text, color, autoAccept = nil, nil, nil
     text=''
     if not isAppFinished then
-        text, color= WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
+        text, color= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true)--地下城, 分数
         if info.leaderPvpRatingInfo and info.leaderPvpRatingInfo.rating and info.leaderPvpRatingInfo.rating>0 then--PVP, 分数
-            local text2, color2=WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
+            local text2, color2=WoWTools_ChallengeMixin:KeystoneScorsoColor(info.leaderPvpRatingInfo.rating)
             local icon= info.leaderPvpRatingInfo.tier and info.leaderPvpRatingInfo.tier>0 and ('|A:honorsystem-icon-prestige-'..info.leaderPvpRatingInfo.tier..':0:0|a') or '|A:pvptalents-warmode-swords:0:0|a'
             if info.isWarMode then
                 text= icon..text2..' '..text

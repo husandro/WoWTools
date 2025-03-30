@@ -334,7 +334,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                 lfg= lfg..index..') '..WoWTools_TextMixin:CN(info.name)
                     ..' '.. (WoWTools_TextMixin:CN(activityName) or '')
                     ..(numMembers or '')
-                    ..(info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and ' '..WoWTools_WeekMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true) or '')
+                    ..(info.leaderOverallDungeonScore and info.leaderOverallDungeonScore>0 and ' '..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.leaderOverallDungeonScore, true) or '')
                     ..(pvpIcon or '')
                     ..(pvpRating or '')
                     ..(info.questID and '|A:AutoQuest-Badge-Campaign:0:0|a' or '')
@@ -403,7 +403,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                     end
                                 end
 
-                                local scorsoText= WoWTools_WeekMixin:KeystoneScorsoColor(dungeonScore, false) or ''--挑战分数，荣誉等级
+                                local scorsoText= WoWTools_ChallengeMixin:KeystoneScorsoColor(dungeonScore, false) or ''--挑战分数，荣誉等级
                                 if honorLevel and honorLevel>1 then
                                     scorsoText= scorsoText~='' and scorsoText..' ' or scorsoText
                                     scorsoText= scorsoText..'|A:pvptalents-warmode-swords:0:0|a'..honorLevel

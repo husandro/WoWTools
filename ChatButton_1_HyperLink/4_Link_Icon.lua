@@ -383,7 +383,7 @@ end
 
 local function DungeonScore(link)--史诗钥石评分
     local score, guid, itemLv=link:match('|HdungeonScore:(%d+):(.-):.-:%d+:(%d+):')
-    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..WoWTools_WeekMixin:KeystoneScorsoColor(score)
+    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..WoWTools_ChallengeMixin:KeystoneScorsoColor(score)
     t=t..cn_Link_Text(link)
     if itemLv and itemLv~='0' then
         t=t..'|A:charactercreate-icon-customize-body-selected:0:0|a'..itemLv

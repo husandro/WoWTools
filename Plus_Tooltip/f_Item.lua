@@ -115,16 +115,16 @@ local function Set_keystonee(tooltip)
 
     for guid, info in pairs(WoWTools_WoWDate or {}) do
         if guid and guid~=WoWTools_DataMixin.Player.GUID and info.Keystone.link then
-            WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
+            WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
             tooltip:AddDoubleLine(
                 (info.Keystone.weekNum==0 and '|cff9e9e9e0|r' or info.Keystone.weekNum or '')
                 ..(info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                 ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                ..WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)..(WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score,true)),
+                ..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score,true)),
                 info.Keystone.link)
         end
     end
-    local text=WoWTools_WeekMixin:GetRewardText(1)--得到，周奖励，信息
+    local text=WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
     --[[
     for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成
         if activities.level and activities.level>=0 and activities.type==1 then--Enum.WeeklyRewardChestThresholdType.MythicPlus 1
@@ -132,7 +132,7 @@ local function Set_keystonee(tooltip)
         end
     end]]
 
-    local score= WoWTools_WeekMixin:KeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore(), true)
+    local score= WoWTools_ChallengeMixin:KeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore(), true)
     if text or score then
         textLeft=(text and '|cnGREEN_FONT_COLOR:'..text..'|r ' or '')..(score or '')
     end

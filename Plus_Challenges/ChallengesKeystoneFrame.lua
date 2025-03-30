@@ -158,7 +158,7 @@ local function UI_Party_Info(self)--队友位置
 
             local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
             if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
+                text= text..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
                 if info.runs and info.runs then
                     local bestRunLevel=0
                     for _, run in pairs(info.runs) do
@@ -330,7 +330,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
         end
 
         getBagKey(self, 'BOTTOMRIGHT', -15, 170, KeyFrame)--KEY链接
-        
+
         UI_Party_Info(self)
 
         self.inseSayTips=true--插入, KEY时, 说
@@ -374,7 +374,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
                 end)
             end
             self.dungeonScoreLink.link= link
-            self.dungeonScoreLink:SetText(WoWTools_WeekMixin:KeystoneScorsoColor(dungeonScore))
+            self.dungeonScoreLink:SetText(WoWTools_ChallengeMixin:KeystoneScorsoColor(dungeonScore))
         end
     end)
 

@@ -22,7 +22,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
                 (info.Keystone.weekNum or 0)
                 .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
                 ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                ..(info.Keystone.score and ' ' or '')..(WoWTools_WeekMixin:KeystoneScorsoColor(info.Keystone.score)),
+                ..(info.Keystone.score and ' ' or '')..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score)),
                 info.Keystone.link)
         end
     end
