@@ -100,8 +100,8 @@ local function FrameOnShow_SetPoint(self, isSet)
     end
 
     if isSet then
-        self.targetFrame:SetAttribute("UIPanelLayout-defined", true)
-        SetUIPanelAttribute(self.targetFrame, self.name, attributes)
+        --self.targetFrame:SetAttribute("UIPanelLayout-defined", true)
+        SetUIPanelAttribute(self.targetFrame, self.name, true)
         UpdateUIPanelPositions(self.targetFrame)
     else
 
@@ -140,12 +140,10 @@ local function Init_Point_Menu(self, root)
                 FrameOnShow_SetPoint(self, false)
             end
     --还原
-        else
-            if P_UIPanelWindows[self.name] then
-                UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
-                P_UIPanelWindows[self.name]= nil
-                FrameOnShow_SetPoint(self, true)
-            end
+        elseif P_UIPanelWindows[self.name] then
+            UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
+            P_UIPanelWindows[self.name]= nil
+            FrameOnShow_SetPoint(self, true)
         end
     end)
 
@@ -190,7 +188,7 @@ local function Init_Point_Menu(self, root)
                 return Save().UIPanelWindows[data.name]
             end, function(data)
                 Save().UIPanelWindows[data.name]= not Save().UIPanelWindows[data.name] and true or nil
-                FrameOnShow_SetPoint(self.targetFrame, Save().UIPanelWindows[data.name])
+                FrameOnShow_SetPoint(self, Save().UIPanelWindows[data.name])
             end, {name=name})
             sub:SetTooltip(function(tooltip, desc)
                 tooltip:AddLine(desc.data.name)
