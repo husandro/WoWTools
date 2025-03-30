@@ -192,7 +192,7 @@ end
 
 
 local function scaleStoppedFunc(btn)
-    local self= btn.target
+    local self= btn.targetFrame
     local sacle= self:GetScale()
     local name= btn.name
     if ProfessionsUtil.IsCraftingMinimized() then
@@ -208,7 +208,7 @@ end
 
 
 local function scaleRestFunc(btn)
-    local self= btn.target
+    local self= btn.targetFrame
     local name= btn.name
     if ProfessionsUtil.IsCraftingMinimized() then
         Save().scale[name..'Mini']= nil
@@ -227,9 +227,9 @@ local function sizeRestTooltipColorFunc(btn)
     local name= btn.name
     if ProfessionsUtil.IsCraftingMinimized() then
         return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
-    elseif btn.target.TabSystem.selectedTabID==2 then
+    elseif btn.targetFrame.TabSystem.selectedTabID==2 then
         return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
-    elseif btn.target.TabSystem.selectedTabID==3 then
+    elseif btn.targetFrame.TabSystem.selectedTabID==3 then
         return Save().size[name..'Order'] and '' or '|cff9e9e9e'
     else
         return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
@@ -239,7 +239,7 @@ end
 
 
 local function sizeStopFunc(btn)
-    local self= btn.target
+    local self= btn.targetFrame
     local name= btn.name
     local size= {self:GetSize()}
     if ProfessionsUtil.IsCraftingMinimized() then
@@ -261,7 +261,7 @@ end
 
 
 local function sizeRestFunc(btn)
-    local self= btn.target
+    local self= btn.targetFrame
     local name= btn.name
     if ProfessionsUtil.IsCraftingMinimized() then
         self:SetSize(404, 658)

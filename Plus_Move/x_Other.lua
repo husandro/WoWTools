@@ -6,7 +6,7 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
         hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
             ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
         end)
-        btn.target.ScrollBox:ClearAllPoints()
+        btn.targetFrame.ScrollBox:ClearAllPoints()
     end, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(338, 424)
     end})

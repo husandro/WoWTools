@@ -5486,7 +5486,8 @@
         "ADDON_LIST_PERFORMANCE_PEAK_CPU",
         "AUCTION_HOUSE_ITEM_QUALITY_ICON_BORDER_ATLASES",
         "TRANSMOG_SHOW_ALL_FACTIONS",
-        "LOCK_FOCUS_FRAME"
+        "LOCK_FOCUS_FRAME",
+        "SetUIPanelAttribute"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

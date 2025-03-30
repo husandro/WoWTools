@@ -697,18 +697,18 @@ local function Init()
     sizeRestFunc= function(btn)
         Save().otherSize= nil
         Save().num=15
-        if btn.target.mode== "bank" then
-            Init_Button(btn.target)
+        if btn.targetFrame.mode== "bank" then
+            Init_Button(btn.targetFrame)
         else
-            Set_Frame_Size(btn.target, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
+            Set_Frame_Size(btn.targetFrame, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
         end
     end, sizeStopFunc= function(btn)
-        if btn.target.mode== "bank" then
+        if btn.targetFrame.mode== "bank" then
             local h= math.ceil((GuildBankFrame:GetHeight()-90)/(Save().line+37))
             Save().num= h
-            Init_Button(btn.target)
+            Init_Button(btn.targetFrame)
         else
-            Save().otherSize= {btn.target:GetSize()}
+            Save().otherSize= {btn.targetFrame:GetSize()}
         end
     end})
 

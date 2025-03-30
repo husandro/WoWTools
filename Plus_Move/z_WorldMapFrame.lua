@@ -65,8 +65,9 @@ local function Init()
         sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
             set_min_max_value({btn.targetFrame:GetSize()})
         end,
-        sizeRestFunc= function(self)
-            local target=self.target
+        sizeRestFunc= function(btn)
+            local target=btn.targetFrame
+           
             target.minimizedWidth= minimizedWidth
             target.minimizedHeight= minimizedHeight
             target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)

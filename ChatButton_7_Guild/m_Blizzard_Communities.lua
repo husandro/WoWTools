@@ -91,7 +91,7 @@ local function Init()
     WoWTools_MoveMixin:Setup(CommunitiesFrame, {
         setSize=true,
         scaleStoppedFunc= function(btn)
-            local self= btn.target
+            local self= btn.targetFrame
             local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save().scale['CommunitiesFrameMINIMIZED']= self:GetScale()
@@ -108,7 +108,7 @@ local function Init()
             end
         end,
         sizeStopFunc=function(btn)
-            local self= btn.target
+            local self= btn.targetFrame
             local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save().size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
@@ -117,7 +117,7 @@ local function Init()
             end
         end,
         sizeRestFunc=function(btn)
-            local self= btn.target
+            local self= btn.targetFrame
             local displayMode = self:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save().size['CommunitiesFrameMINIMIZED']=nil
@@ -173,14 +173,14 @@ local function Init()
     WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
-        btn.target:SetSize(384, 432)
+        btn.targetFrame:SetSize(384, 432)
     end})
 
 --[[公会信息， 点击以编辑
     WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
-        btn.target:SetSize(295, 295)
+        btn.targetFrame:SetSize(295, 295)
     end})
     ]]
     CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')

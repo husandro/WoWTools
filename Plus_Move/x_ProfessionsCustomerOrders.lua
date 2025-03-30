@@ -64,7 +64,7 @@ local function initFunc()
 end
 
 local function scaleStoppedFunc(btn)
-    local self= btn.target
+    local self= btn.targetFrame
     local name= btn.name
     if self.Form:IsShown() then
         Save().scale[name..'From']= self:GetScale()
@@ -75,7 +75,7 @@ end
 
 local function scaleRestFunc(btn)
     local name= btn.name
-    if btn.target.Form:IsShown() then
+    if btn.targetFrame.Form:IsShown() then
         Save().scale[name..'From']= nil
     else
         Save().scale[name]= nil

@@ -104,7 +104,7 @@ local function Init()
             end
         end,
         sizeStopFunc=function(btn)
-            local self= btn.target
+            local self= btn.targetFrame
             if CharacterFrame.Expanded then
                 Save().size['CharacterFrameExpanded']={self:GetSize()}
             else

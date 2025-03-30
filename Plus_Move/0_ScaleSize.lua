@@ -77,6 +77,31 @@ end
 
 
 
+local function ClearFrameAttributes(frame, attributes)
+    --frame:SetAttribute("UIPanelLayout-defined", true)
+    for name in pairs(attributes or {}) do
+        frame:SetAttribute("UIPanelLayout-"..name, nil)
+    end
+end
+
+
+
+local function FrameOnShow_SetPoint(self, isSet)
+    if not self.targetFrame:CanChangeAttribute() then
+        return
+    end
+
+    if isSet then
+        SetUIPanelAttribute(self.targetFrame, self.name, P_UIPanelWindows[self.name] or UIPanelWindows[self.name])
+    else
+        ClearFrameAttributes(self.targetFrame, P_UIPanelWindows[self.name] or UIPanelWindows[self.name])
+    end
+end
+
+
+
+
+
 
 
 
@@ -227,7 +252,7 @@ local function Init_Menu(self, root)
     end, function()
         if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and self:IsCanChange() then
 
-            if UIPanelWindows and P_UIPanelWindows[self].name then
+            if UIPanelWindows and P_UIPanelWindows[self.name] then
                 UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
                 P_UIPanelWindows[self.name]= nil
             end
@@ -258,19 +283,22 @@ if UIPanelWindows then
             if UIPanelWindows[self.name] then
                 P_UIPanelWindows[self.name]= UIPanelWindows[self.name]
                 UIPanelWindows[self.name]= nil
+                FrameOnShow_SetPoint(self, false)
             end
---启用，自动设置
+--还原
         else
             if P_UIPanelWindows[self.name] then
                 UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
                 P_UIPanelWindows[self.name]= nil
+                FrameOnShow_SetPoint(self, true)
             end
         end
     end)
-    --sub2:SetEnabled((P_UIPanelWindows[self.name] or UIPanelWindows[self.name]) and Save().point[self.name])
+
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(self.name)
-         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示时，自定义位置' or  'When show, custom position')
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示时，自定义位置' or  'When show, custom position')
+        tooltip:AddLine('|A:NPE_Icon:0:0|aEsc '..(WoWTools_DataMixin.onlyChinese and '无效' or DISABLE))
         local tab= P_UIPanelWindows[self.name] or UIPanelWindows[self.name]
         if tab then
             tooltip:AddLine(' ')
@@ -285,6 +313,12 @@ if UIPanelWindows then
             end
         end
     end)
+
+    sub2:SetEnabled(
+        (P_UIPanelWindows[self.name] or UIPanelWindows[self.name])
+        and Save().point[self.name]
+        and self.targetFrame:CanChangeAttribute()
+    )
 end
 
 
@@ -791,9 +825,11 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         Set_Move_Alpha(frame)
     end
 
-
-    if UIPanelWindows then
-
+--当显示时，锁定框体位置
+    if UIPanelWindows and Save().UIPanelWindows[name] and UIPanelWindows[name] then
+        P_UIPanelWindows[name]= UIPanelWindows[name]
+        UIPanelWindows[name]= nil
+        FrameOnShow_SetPoint(btn, false)
     end
 end
 
