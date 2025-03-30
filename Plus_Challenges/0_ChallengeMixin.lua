@@ -1,0 +1,3 @@
+WoWTools_ChallengeMixin={}
+
+

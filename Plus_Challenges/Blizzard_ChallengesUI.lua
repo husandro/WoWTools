@@ -1,160 +1,11 @@
-
-if (not WoWTools_DataMixin.Player.IsMaxLevel or PlayerGetTimerunningSeasonID()) and (not IsTestBuild() or not WoWTools_DataMixin.Player.husandro) then
-    WoWTools_DataMixin.ChallengesSpellTabs={}
-    return
-end
-
-for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
-    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
-end
-
-local P_Save= {
-    --hideIns=true,--隐藏，副本，挑战，信息
-    --insScale=0.8,--副本，缩放
-
-    --hideTips=true,--提示信息
-    --tipsScale=0.8,--提示信息，缩放
-    rightX= 2,--右边，提示，位置
-    rightY= -22,
-
-    hidePort= not WoWTools_DataMixin.Player.husandro,--传送门
-    portScale=WoWTools_DataMixin.Player.husandro and 0.85 or 1,--传送门, 缩放
-
-    --hideKeyUI=true,--挑战,钥石,插入界面
-    slotKeystoneSay=WoWTools_DataMixin.Player.husandro,--插入, KEY时, 说
-}
-local addName
-local TipsFrame
-local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
-
 local function Save()
     return WoWToolsSave['Plus_Challenges'] or {}
 end
 
+local TipsFrame
+local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
 
 
-
-
-
-
-
-
-
-if not WoWTools_DataMixin.Player.IsMaxLevel then
-    local panels = {
-        { name = "GroupFinderFrame", addon = nil },
-        { name = "PVPUIFrame", addon = "Blizzard_PVPUI" },
-        { name = "ChallengesFrame", addon = "Blizzard_ChallengesUI", hideLeftInset = true },
-        { name = "DelvesDashboardFrame", addon = "Blizzard_DelvesDashboardUI", hideLeftInset = true },
-    }
-
-
-
-    PVEFrame:SetScript('OnShow', function(self)
-        for index in pairs(panels) do
-            PanelTemplates_ShowTab(self, index)
-        end	
-
-        -- If timerunning enabled, hide PVP and M+, and re-anchor delves to Dungeons tab
-        if self:TimerunningEnabled() then
-            self.tab2:Hide();
-            self.tab3:Hide();
-            if self.tab4:IsShown() then
-                self.tab4:SetPoint("TOPLEFT", self.tab1, "TOPRIGHT", 3, 0);
-            end
-        else
-
-        -- Otherwise, anchor Delves tab to PVP if M+ hidden, or to M+ if both are shown - to prevent a gap if the player is ineligible for M+ and we hide the tab
-            self.tab3:SetShown(true)
-            if self.tab4:IsShown() then
-                if self.tab2:IsShown() and not self.tab3:IsShown() then
-                    self.tab4:SetPoint("TOPLEFT", self.tab2, "TOPRIGHT", 3, 0);
-                elseif self.tab2:IsShown() and self.tab3:IsShown() then
-                    self.tab4:SetPoint("TOPLEFT", self.tab3, "TOPRIGHT", 3, 0);
-                end
-            end
-        end
-
-        UpdateMicroButtons();
-
-        PlaySound(SOUNDKIT.IG_CHARACTER_INFO_OPEN);
-
-        EventRegistry:TriggerEvent("PlunderstormQueueTutorial.Update")
-    end)
-
-    function PVEFrame_ShowFrame(sidePanelName, selection)
-        local self = PVEFrame;
-        -- find side panel
-        local tabIndex;
-        if ( sidePanelName ) then
-            for index, data in pairs(panels) do
-                if ( data.name == sidePanelName ) then
-                    tabIndex = index;
-                    break;
-                end
-            end
-        else
-            -- no side panel specified, check current panel
-            if ( self.activeTabIndex ) then
-                tabIndex = self.activeTabIndex;
-            else
-                -- no current panel, go to the first panel
-                tabIndex = 1;
-            end
-        end
-        if ( not tabIndex ) then
-            return;
-        end
-        if ( panels[tabIndex].check and not panels[tabIndex].check() ) then
-            tabIndex = self.activeTabIndex or 1;
-        end
-
-        -- load addon if needed
-        if ( panels[tabIndex].addon ) then
-            print(panels[tabIndex].addon)
-            UIParentLoadAddOn(panels[tabIndex].addon);
-            panels[tabIndex].addon = nil;
-        end
-
-        -- we've loaded the AddOn, so try to dereference the selection if needed
-        if ( type(selection) == "string" ) then
-            selection = _G[selection];
-        end
-
-        -- Hide the left panel if the panel doesn't need it
-        if ( panels[tabIndex].hideLeftInset ) then
-            PVEFrame_HideLeftInset();
-        else
-            PVEFrame_ShowLeftInset();
-        end
-
-        -- show it
-        ShowUIPanel(self);
-
-        self.activeTabIndex = tabIndex;
-        PanelTemplates_SetTab(self, tabIndex);
-        if ( panels[tabIndex].width ) then
-            self:SetWidth(panels[tabIndex].width);
-        else
-            self:SetWidth(PVE_FRAME_BASE_WIDTH);
-        end
-
-        UpdateUIPanelPositions(PVEFrame);
-
-        for index, data in pairs(panels) do
-            local panel = _G[data.name];
-            if ( index == tabIndex ) then
-                panel:Show();
-                if( panel.update ) then
-                    panel:update(selection);
-                end
-            elseif ( panel ) then
-                panel:Hide();
-            end
-        end
-
-    end
-end
 
 
 
@@ -231,409 +82,10 @@ local affixSchedule = {--C_MythicPlus.GetCurrentSeason() C_MythicPlus.GetCurrent
 
 
 
-local function getBagKey(self, point, x, y, parent) --KEY链接
-    local find=point:find('LEFT')
-    local i=1
-    for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
-        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
-            local icon, itemLink, itemID
-            local info= C_Container.GetContainerItemInfo(bagID, slotID)
-            if info then
-                icon=info.iconFileID
-                itemLink=info.hyperlink
-                itemID= info.itemID
-            end
-            if itemID and itemLink and C_Item.IsItemKeystoneByID(itemID) then
-                if not self['key'..i] then
-                    self['key'..i]= WoWTools_ButtonMixin:Cbtn(parent or self, {size=16, texture=icon})
-                    --[[CreateFrame("Button", nil, parent or self)
-,                   self['key'..i]:SetHighlightAtlas('Forge-ColorSwatchSelection')
-                    self['key'..i]:SetPushedTexture('Interface\\Buttons\\UI-Quickslot-Depress')
-                    self['key'..i]:SetSize(16, 16)
-                    self['key'..i]:SetNormalTexture(icon)]]
-                    self['key'..i].item=itemLink
-                    if i==1 then
-                        self['key'..i]:SetPoint(point, self, x, y)
-                    else
-                        if find then
-                            self['key'..i]:SetPoint(point, self['key'..(i-1)], 'TOPLEFT', 0, 0)
-                        else
-                            self['key'..i]:SetPoint(point, self['key'..(i-1)], 'TOPRIGHT', 0, 0)
-                        end
-                    end
-                    self['key'..i]:SetScript("OnMouseDown",function(self2, d2)--发送链接
-                            if d2=='LeftButton' then
-                                WoWTools_ChatMixin:Chat(self2.item, nil, nil)
-                            else
-                                WoWTools_ChatMixin:Chat(self2.item, nil, true)
-                                --if not ChatEdit_InsertLink(self2.item) then
-                                    --ChatFrame_OpenChat(self2.item)
-                                --end
-                            end
-                    end)
-                    self['key'..i]:SetScript("OnEnter",function(self2)
-                            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-                            GameTooltip:ClearLines()
-                            GameTooltip:SetHyperlink(self2.item)
-                            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE, WoWTools_DataMixin.Icon.left)
-                            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.right)
-                            GameTooltip:Show()
-                    end)
-                    self['key'..i]:SetScript("OnLeave",function()
-                            GameTooltip:Hide()
-                    end)
-                    self['key'..i].bag=WoWTools_LabelMixin:Create(self['key'..i])
-                    if point:find('LEFT') then
-                        self['key'..i].bag:SetPoint('LEFT', self['key'..i], 'RIGHT', 0, 0)
-                    else
-                        self['key'..i].bag:SetPoint('RIGHT', self['key'..i], 'LEFT', 0, 0)
-                    end
-                    self['key'..i].bag:SetText(itemLink)
-                end
-                if self['key'..i] and self==ChallengesFrame then
-                    self['key'..i]:SetShown(not Save().hideTips)
-                end
-                i=i+1
-            end
-        end
-    end
-end
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---##################
---挑战,钥石,插入,界面
---##################
-local function UI_Party_Info(self)--队友位置
-    if Save().hideKeyUI then
-        return
-    end
-    local UnitTab={}
-    local name, uiMapID=WoWTools_MapMixin:GetUnit('player')
-    local text
-    local all= GetNumGroupMembers()
-    for i=1, all do
-        local unit='party'..i
-        if i==all then
-            unit='player'
-        end
-        local guid=UnitGUID(unit)
-        if guid then
-            text= text and text..'|n' or ''
-
-            local stat=GetReadyCheckStatus(unit)
-            if stat=='ready' then
-                text= text..format('|A:%s:0:0|a', 'common-icon-checkmark')
-            elseif stat=='waiting' then
-                text= text..'  '
-            elseif stat=='notready' then
-                text= format('%s|A:%s:0:0|a', text, 'talents-button-reset')
-            end
-
-            local tab= WoWTools_DataMixin.UnitItemLevel[guid]--装等
-            if tab then
-                if tab.itemLevel then
-                    text= text..'|A:charactercreate-icon-customize-body-selected:0:0|a'..tab.itemLevel
-                else
-                    table.insert(UnitTab, unit)
-                end
-            end
-
-            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
-            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= text..WoWTools_WeekMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
-                if info.runs and info.runs then
-                    local bestRunLevel=0
-                    for _, run in pairs(info.runs) do
-                        if run.bestRunLevel and run.bestRunLevel>bestRunLevel then
-                            bestRunLevel=run.bestRunLevel
-                        end
-                    end
-                    if bestRunLevel>0 then
-                        text= text..'('..bestRunLevel..')'
-                    end
-                end
-            end
-
-            text= text..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, unit=unit, name=name, reName=true, reRealm=true})--信息
-
-            local name2, uiMapID2=WoWTools_MapMixin:GetUnit(unit)
-            if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字
-                text=text..format('|A:%s:0:0|a', 'common-icon-checkmark')
-            elseif name2 then
-                text=text ..'|A:poi-islands-table:0:0|a'..name2
-            else
-                text= text.. '|A:questlegendary:0:0|a'
-            end
-
-            local reason=UnitPhaseReason(unit)--位面
-            if reason then
-                if reason==0 then--不同了阶段
-                    text= text ..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不同了阶段' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('',  MAP_BAR_THUNDER_ISLE_TITLE0:gsub('1','')))..'|r'
-                elseif reason==1 then--不在同位面
-                    text= text ..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不在同位面' or ERR_ARENA_TEAM_PLAYER_NOT_IN_TEAM_SS:format('', WoWTools_DataMixin.Player.Language.layer))..'|r'
-                elseif reason==2 then--战争模式
-                    text= text ..(C_PvP.IsWarModeDesired() and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '关闭战争模式' or ERR_PVP_WARMODE_TOGGLE_OFF)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开启战争模式' or ERR_PVP_WARMODE_TOGGLE_ON)..'|r')
-                elseif reason==3 then
-                    text= text..'|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '时空漫游' or PLAYER_DIFFICULTY_TIMEWALKER)..'|r'
-                end
-            end
-
-
-        end
-    end
-    if not self.partyLable then
-        self.partyLable=WoWTools_LabelMixin:Create(self.keyFrame)--队伍信息
-        --self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
-        self.partyLable:SetPoint('TOPLEFT', self, 'TOPRIGHT')
-    end
-    self.partyLable:SetText(text or '')
-    WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
-end
-
-local function init_Blizzard_ChallengesUI()--挑战,钥石,插入界面
-    local self=ChallengesKeystoneFrame
-
-    self.keyFrame= CreateFrame('Frame', nil, self)
-    self.keyFrame:SetPoint('TOPLEFT')
-    self.keyFrame:SetSize(1,1)
-    self.keyFrame:SetFrameStrata('HIGH')
-    self.keyFrame:SetFrameLevel(7)
-
-    self.ready = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--就绪
-    self.ready:SetText((WoWTools_DataMixin.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-    self.ready:SetPoint('LEFT', self.StartButton, 'RIGHT',2, 0)
-    self.ready:SetSize(100,24)
-    self.ready:SetScript("OnMouseDown", DoReadyCheck)
-
-    self.mark = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--标记
-    self.mark:SetText(WoWTools_DataMixin.Icon['TANK']..(WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon['HEALER'])
-    self.mark:SetPoint('RIGHT', self.StartButton, 'LEFT',-2, 0)
-    self.mark:SetSize(100,24)
-    self.mark:SetScript("OnMouseDown",function()
-        local n=GetNumGroupMembers()
-        for i=1,n  do
-            local u='party'..i
-            if i==n then u='player' end
-            if CanBeRaidTarget(u) then
-                local r=UnitGroupRolesAssigned(u)
-                local index=GetRaidTargetIndex(u)
-                if r=='TANK' then
-                    if index~=2 then SetRaidTarget(u, 2) end
-                elseif r=='HEALER' then
-                    if index~=1 then SetRaidTarget(u, 1) end
-                else
-                    if index and index>0 then SetRaidTarget(u, 0) end
-                end
-            end
-        end
-    end)
-
-    self.clear = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--清除KEY
-    self.clear:SetPoint('RIGHT', self, -15, -50)
-    self.clear:SetSize(70,24)
-    self.clear:SetText(WoWTools_DataMixin.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
-    self.clear:SetScript("OnMouseDown",function()
-        C_ChallengeMode.RemoveKeystone()
-        ChallengesKeystoneFrame:Reset()
-        ItemButtonUtil.CloseFilteredBags(ChallengesKeystoneFrame)
-        ClearCursor()
-    end)
-
-    self.ins = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--插入
-    self.ins:SetPoint('BOTTOMRIGHT', self.clear, 'TOPRIGHT', 0, 2)
-    self.ins:SetSize(70,24)
-    self.ins:SetText(WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-    self.ins:SetScript("OnMouseDown",function()
-            if UnitAffectingCombat('player') then
-                print(WoWTools_DataMixin.Icon.icon2.. addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-                return
-            end
-            ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
-
-            if ItemButtonUtil.GetItemContext() == nil then return end
-
-            local itemLocation = ItemLocation:CreateEmpty()
-            for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--ContainerFrame.lua
-                for slotIndex = 1, ContainerFrame_GetContainerNumSlots(bagID) do
-                    itemLocation:SetBagAndSlot(bagID, slotIndex)
-                    if ItemButtonUtil.GetItemContextMatchResultForItem(itemLocation) == ItemButtonUtil.ItemContextMatchResult.Match then
-                        C_Container.UseContainerItem(bagID, slotIndex)
-                        return
-                    end
-                end
-            end
-            print(WoWTools_DataMixin.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
-    end)
-
-    self:HookScript('OnShow', function(self2)
-        if Save().hideKeyUI then
-            return
-        end
-        getBagKey(self2, 'BOTTOMRIGHT', -15, 170, self2.keyFrame)--KEY链接
-        UI_Party_Info(self2)
-        self2.inseSayTips=true--插入, KEY时, 说
-
-        --地下城挑战，分数，超链接
-        local dungeonScore = C_ChallengeMode.GetOverallDungeonScore()--DungeonScoreInfoMixin:OnClick() Blizzard_ChallengesUI.lua
-        if dungeonScore and dungeonScore>0 then
-            local link = GetDungeonScoreLink(dungeonScore, UnitName("player"))
-            if not self2.dungeonScoreLink then
-                self2.dungeonScoreLink= WoWTools_LabelMixin:Create(self2.keyFrame, {mouse=true, size=16})
-                self2.dungeonScoreLink:SetPoint('BOTTOMRIGHT', ChallengesKeystoneFrame, -15, 145)
-                self2.dungeonScoreLink:SetScript('OnMouseDown', function(self3, d)
-                    if not self3.link then
-                        return
-                    end
-                    if d=='LeftButton' then
-                       WoWTools_ChatMixin:Chat(self3.link, nil, nil)
-                    elseif d=='RightButton' then
-                        WoWTools_ChatMixin:Chat(self3.link, nil, true)
-                        --if not ChatEdit_InsertLink(self3.link) then
-                        --ChatFrame_OpenChat(self3.link)
-                    end
-                    self3:SetAlpha(0.5)
-                end)
-                self2.dungeonScoreLink:SetScript('OnEnter', function(self3)
-                    self3:SetAlpha(0.7)
-                    GameTooltip:SetOwner(self3, "ANCHOR_LEFT")
-                    GameTooltip:ClearLines()
-                    GameTooltip:AddLine(self3.link)
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE, WoWTools_DataMixin.Icon.left)
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.right)
-                    GameTooltip:Show()
-                end)
-                self2.dungeonScoreLink:SetScript('OnLeave', function(self3)
-                    self3:SetAlpha(1)
-                    GameTooltip:Hide()
-                end)
-                self2.dungeonScoreLink:SetScript('OnMouseUp', function(self3)
-                    self3:SetAlpha(0.7)
-                end)
-            end
-            self2.dungeonScoreLink.link= link
-            self2.dungeonScoreLink:SetText(WoWTools_WeekMixin:KeystoneScorsoColor(dungeonScore))
-        end
-    end)
-
-    if self.DungeonName then
-        self.DungeonName:ClearAllPoints()
-        self.DungeonName:SetPoint('BOTTOMLEFT', self, 'BOTTOMLEFT', 15, 110)
-        self.DungeonName:SetJustifyH('LEFT')
-    end
-    if self.TimeLimit then
-        self.TimeLimit:ClearAllPoints()
-        self.TimeLimit:SetPoint('BOTTOMRIGHT', self, 'BOTTOMRIGHT', -15, 120)
-        self.TimeLimit:SetJustifyH('RIGHT')
-    end
-
-    --##############
-    --插入, KEY时, 说
-    --##############
-    local check= CreateFrame("CheckButton", nil, self.keyFrame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
-    check:SetPoint('RIGHT', self.ins, 'LEFT')
-    check:SetChecked(Save().slotKeystoneSay)
-    --check:SetAlpha(0.5)
-    check:SetScript('OnMouseDown', function()
-        Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
-    end)
-    check:SetScript('OnEnter', function(self2)
-        GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY))
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(1, WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-        GameTooltip:AddDoubleLine(2, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
-        GameTooltip:Show()
-        self2:SetAlpha(1)
-    end)
-    check:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(0.5) end)
-    hooksecurefunc(self, 'OnKeystoneSlotted',function(self2)--插入, KEY时, 说
-        if not Save().slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self2.inseSayTips then
-            return
-        end
-        local mapChallengeModeID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
-        if not mapChallengeModeID then
-            return
-        end
-        local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-        if not name then
-            return
-        end
-        local journalInstanceID= WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID] and WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID].ins
-        if journalInstanceID then
-            name = select(8, EJ_GetInstanceInfo(journalInstanceID)) or name
-        end
-        local m= name..'('.. powerLevel..'): '
-        for _,v in pairs(affixes or {}) do
-            local name2=C_ChallengeMode.GetAffixInfo(v)
-            if name2 then
-                m=m..name2..', '
-            end
-        end
-        m=m..WoWTools_TimeMixin:SecondsToClock(timeLimit)
-        WoWTools_ChatMixin:Chat(m, nil, nil)
-        self2.inseSayTips=nil
-    end)
-
-    self:HookScript("OnUpdate", function (self2, elapsed)--更新队伍数据
-        self.elapsed= (self.elapsed or 0.8) + elapsed
-        if self.elapsed > 0.8 then
-            self.elapsed=0
-            UI_Party_Info(self2)
-        end
-        local inse= C_ChallengeMode.HasSlottedKeystone()
-        self2.ins:SetEnabled(not inse)
-        self2.clear:SetEnabled(inse)
-    end)
-
-
-    self.countdown = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--倒计时7秒
-    self.countdown:SetText((WoWTools_DataMixin.onlyChinese and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
-    self.countdown:SetPoint('TOP', self, 'BOTTOM',100, 5)
-    self.countdown:SetSize(150,24)
-    self.countdown:SetScript("OnMouseDown",function()
-        C_PartyInfo.DoCountdown(7)
-    end)
-    self.countdown2 = CreateFrame("Button",nil, self.keyFrame, 'UIPanelButtonTemplate')--倒计时7秒
-    self.countdown2:SetText((WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..' 0')
-    self.countdown2:SetPoint('TOP', self, 'BOTTOM',-100, 5)
-    self.countdown2:SetSize(100,24)
-    self.countdown2:SetScript("OnMouseDown",function()
-        C_PartyInfo.DoCountdown(0)
-        WoWTools_ChatMixin:Chat(WoWTools_DataMixin.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!', nil, nil)
-    end)
-    self.countdown2:SetScript('OnLeave', GameTooltip_Hide)
-    self.countdown2:SetScript('OnEnter', function(frame)
-        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', '|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
-        GameTooltip:Show()
-    end)
-end
 
 
 
@@ -727,7 +179,7 @@ local function Init_Affix()
             label:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
-                GameTooltip:AddLine(addName)
+                GameTooltip:AddLine(WoWTools_ChallengeMixin.addName)
                 GameTooltip:AddLine(' ')
                 for idx=1, self.max do
                     local tab= self.affixSchedule[idx]
@@ -983,7 +435,7 @@ local function set_All_Text()--所有记录
         function ChallengesFrame.moveRightTipsButton:set_tooltips()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
             GameTooltip:AddDoubleLine('x: '..Save().rightX, 'Shift+'..WoWTools_DataMixin.Icon.mid)
@@ -1659,190 +1111,6 @@ end
 
 
 
---周奖励界面界面
---#############
-local function Init_Blizzard_WeeklyRewards()
-    --添加一个按钮，打开挑战界面
-    WeeklyRewardsFrame.showChallenges =WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size=42})--所有角色,挑战
-    WeeklyRewardsFrame.showChallenges:SetPoint('RIGHT',-4,-42)
-    WeeklyRewardsFrame.showChallenges:SetFrameStrata('HIGH')
-
-    WeeklyRewardsFrame.showChallenges:SetScript('OnEnter', function(self2)
-        GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
-        GameTooltip:ClearLines();
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, WoWTools_DataMixin.Icon.left)
-        GameTooltip:Show()
-        self2:SetButtonState('NORMAL')
-    end)
-    WeeklyRewardsFrame.showChallenges:SetScript("OnLeave",GameTooltip_Hide)
-    WeeklyRewardsFrame.showChallenges:SetScript('OnMouseDown', function()
-        PVEFrame_ToggleFrame('ChallengesFrame', 3)
-    end)
-    WeeklyRewardsFrame:HookScript('OnShow', function(self)
-        self.showChallenges:SetButtonState('NORMAL')
-    end)
-
-    --移动，图片
-    hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
-        if self.Overlay and self.Overlay:IsShown() then--未提取,提示
-            --self.Overlay:SetScale(0.61)
-            self.Overlay:ClearAllPoints()
-            self.Overlay:SetPoint('TOPLEFT', 2,-2)
-        end
-    end)
-
-    --未提取,提示
-    if WeeklyRewardExpirationWarningDialog then
-        function WeeklyRewardExpirationWarningDialog:set_hide()--GreatVaultRetirementWarningFrameMixin:OnShow()
-            if not C_WeeklyRewards.HasInteraction() then
-                local title = _G["EXPANSION_NAME"..LE_EXPANSION_LEVEL_CURRENT];
-                local text
-                if title then
-                    title= WoWTools_TextMixin:CN(title)
-                    if C_WeeklyRewards.ShouldShowFinalRetirementMessage() then
-                        text= format(WoWTools_DataMixin.onlyChinese and '所有未领取的奖励都会在%s上线后消失。' or GREAT_VAULT_RETIRE_WARNING_FINAL_WEEK, title)
-                    elseif C_WeeklyRewards.HasAvailableRewards() or C_WeeklyRewards.HasGeneratedRewards() or C_WeeklyRewards.CanClaimRewards() then
-                        text= format(WoWTools_DataMixin.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
-                    end
-                    if text then
-                        print(WoWTools_DataMixin.Icon.icon2.. addName,'|n|cffff00ff',text)
-                    end
-                end
-            end
-            self:Hide()
-        end
-        WeeklyRewardExpirationWarningDialog:HookScript('OnShow', WeeklyRewardExpirationWarningDialog.set_hide)
-        if WeeklyRewardExpirationWarningDialog:IsShown() then
-            WeeklyRewardExpirationWarningDialog:set_hide()
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---########################
---打开周奖励时，提示拾取专精
---########################
-local WeekRewardLookFrame
-local function set_Week_Reward_Look_Specialization()
-    local hasReward= C_WeeklyRewards.HasAvailableRewards()
-    if hasReward==nil then
-        return
-    elseif hasReward==false then
-        return true
-
-    elseif hasReward then
-        print(WoWTools_DataMixin.Icon.icon2.. addName,'|cffff00ff'..(WoWTools_DataMixin.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM))
-    end
-
-    WeekRewardLookFrame= CreateFrame('Frame')
-    WeekRewardLookFrame:SetSize(40,40)
-    WeekRewardLookFrame:SetPoint("CENTER", -100, 60)
-    WeekRewardLookFrame:SetShown(false)
-
-    WeekRewardLookFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
-    WeekRewardLookFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-
-    function WeekRewardLookFrame:set_Event()
-        if not C_WeeklyRewards.HasAvailableRewards() then
-            self:UnregisterAllEvents()
-            self:SetShown(false)
-            return
-        end
-
-        
-        if IsResting() then
-            self:RegisterEvent('UNIT_SPELLCAST_SENT')
-        else
-            self:UnregisterEvent('UNIT_SPELLCAST_SENT')
-        end
-    end
-
-    function WeekRewardLookFrame:set_Show(show)
-        if self.time and not self.time:IsCancelled() then
-            self.time:Cancel()
-        end
-        self:SetShown(show)
-        WoWTools_CooldownMixin:Setup(self, nil, show and 4 or 0, nil, true, true, true)
-    end
-
-    function WeekRewardLookFrame:set_Texture()
-        if not self.texture then
-            self.texture= self:CreateTexture(nil, 'BACKGROUND')
-            self.texture:SetAllPoints(self)
-            self:SetScript('OnEnter', function(frame)
-                frame:set_Show(false)
-                print(WoWTools_DataMixin.Icon.icon2.. addName, '|cffff00ff', WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION)
-            end)
-            local texture= self:CreateTexture(nil,'BORDER')
-            texture:SetSize(60,60)
-            texture:SetPoint('CENTER',3,-3)
-            texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
-        end
-        self:set_Show(true)
-        self.time= C_Timer.NewTimer(4, function()
-            self:SetShown(false)
-        end)
-        local loot = GetLootSpecialization()
-        local texture
-        if loot and loot>0 then
-            texture= select(4, GetSpecializationInfoByID(loot))
-        else
-            texture= select(4, GetSpecializationInfo(GetSpecialization() or 0))
-        end
-        SetPortraitToTexture(self.texture, texture or 0)
-    end
-
-    WeekRewardLookFrame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
-        if event=='PLAYER_UPDATE_RESTING' or event=='PLAYER_ENTERING_WORLD' then
-            self:set_Event()
-
-        elseif (spellID==392391 or spellID==449976) and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
-            self:set_Texture()
-        end
-    end)
-
-    WeekRewardLookFrame:set_Event()
-
-    set_Week_Reward_Look_Specialization=function()end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1860,7 +1128,7 @@ end
 --####
 --初始
 --####
-local function Init_Blizzard_ChallengesUI()
+local function Init()
     TipsFrame= CreateFrame("Frame",nil, ChallengesFrame)
     TipsFrame:SetFrameStrata('HIGH')
     TipsFrame:SetFrameLevel(7)
@@ -1898,7 +1166,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName, WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         Save().insScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1909,7 +1177,7 @@ local function Init_Blizzard_ChallengesUI()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '信息' or INFO))
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save().insScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
         GameTooltip:Show()
     end
     check:SetScript("OnEnter",function(self)
@@ -1943,7 +1211,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '信息' or INFO,  WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName, WoWTools_DataMixin.onlyChinese and '信息' or INFO,  WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
         SavGameTooltipScale= scale==1 and nil or scale
         TipsFrame:SetScale(scale)
         self:set_Tooltips()
@@ -1954,7 +1222,7 @@ local function Init_Blizzard_ChallengesUI()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '信息' or INFO))
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(SavGameTooltipScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
         GameTooltip:Show()
     end
     tipsButton:SetScript('OnEnter', function(self)
@@ -1986,7 +1254,7 @@ local function Init_Blizzard_ChallengesUI()
         end
         scale= scale>2.5 and 2.5 or scale
         scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_DataMixin.Icon.icon2.. addName, format(WoWTools_DataMixin.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
+        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName, format(WoWTools_DataMixin.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
         Save().portScale= scale==1 and nil or scale
         set_Update()
         self:set_Tooltips()
@@ -1996,11 +1264,13 @@ local function Init_Blizzard_ChallengesUI()
         if WoWTools_DataMixin.onlyChinese then
             GameTooltip:AddDoubleLine('挑战20层','限时传送门')
             GameTooltip:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
+            GameTooltip:AddDoubleLine('战斗中', '不能关闭，窗口')
         else
             GameTooltip:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
             GameTooltip:AddDoubleLine(LABEL_NOTE, 'If you get error, please disable this')
+            GameTooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, 'Cannot close window')
         end
-        GameTooltip:AddLine(' ')
+        --[[GameTooltip:AddLine(' ')
         for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
             local spellLink= C_Spell.GetSpellLink(tab.spell) or C_Spell.GetSpellName(tab.spell) or ('ID'.. tab.spell)
             local icon= C_Spell.GetSpellTexture(tab.spell)
@@ -2010,12 +1280,12 @@ local function Init_Blizzard_ChallengesUI()
                                                         or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
                                 )
                             )
-        end
+        end]]
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save().portScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
         GameTooltip:Show()
     end
     spellButton:SetScript('OnLeave', function(self)
@@ -2057,7 +1327,7 @@ local function Init_Blizzard_ChallengesUI()
             local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
             if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
                 ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-                print(WoWTools_DataMixin.Icon.icon2.. addName)
+                print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName)
                 print('|cffff00ff',text)
             end
         end
@@ -2068,339 +1338,14 @@ local function Init_Blizzard_ChallengesUI()
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 0, -55)
     end
 
-    --#################
-    --挑战,钥石,插入界面
-    --#################
-    local btn= WoWTools_ButtonMixin:Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon= not Save().hideKeyUI})
-    btn:SetFrameStrata('HIGH')
-    btn:SetFrameLevel(7)
-    btn:SetAlpha(0.5)
-    if _G['MoveZoomInButtonPerChallengesKeystoneFrame'] then
-        btn:SetPoint('LEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'], 'RIGHT')
-    else
-        btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
-    end
-    btn:SetScript("OnClick", function(self)
-        Save().hideKeyUI = not Save().hideKeyUI and true or nil
-        if ChallengesKeystoneFrame.keyFrame then
-            ChallengesKeystoneFrame.keyFrame:SetShown(not Save().hideKeyUI)
-        elseif not Save().hideKeyUI then
-            init_Blizzard_ChallengesUI()
-        end
-        self:SetNormalAtlas(not Save().hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
-    end)
-    btn:SetScript("OnEnter",function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-        GameTooltip:Show()
-        self:SetAlpha(1)
-    end)
-    btn:SetScript("OnLeave",function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(0.5)
-    end)
-    if not Save().hideKeyUI then
-        init_Blizzard_ChallengesUI()
-    end
 
 
 
 end
 
 
-
-
-
-
-
-
-
-
-
-local SayButton
-local function Say_ChallengeComplete()
-    if not Save().slotKeystoneSay or SayButton then
-        if SayButton then
-            SayButton:SetShown(Save().slotKeystoneSay)
-        end
-        return
-    end
-
-    SayButton= WoWTools_ButtonMixin:Cbtn(nil, {
-        isItem=true,
-        size=36,
-        name='WoWToolsPlusChallengesSayItemLinkButton',
-    })
-    SayButton.Text= WoWTools_LabelMixin:Create(SayButton)
-    SayButton.Text:SetPoint('LEFT', SayButton, 'RIGHT')
-
-    SayButton:Hide()
-
-    SayButton:SetMovable(true)
-    SayButton:RegisterForDrag("RightButton")
-    SayButton:SetClampedToScreen(true)
-    SayButton:SetFrameStrata('HIGH')
-
-    SayButton:SetScript("OnDragStart", function(self,d )
-        if d=='RightButton' and IsAltKeyDown() then
-            self:StartMoving()
-        end
-    end)
-
-    SayButton:SetScript("OnDragStop", function(self)
-        ResetCursor()
-        self:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().sayButtonPoint={self:GetPoint(1)}
-            Save().sayButtonPoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
-        end
-        self:Raise()
-    end)
-
-    SayButton:SetScript("OnMouseUp", ResetCursor)
-    SayButton:SetScript("OnMouseDown", function(self, d)
-        if IsAltKeyDown() and d=='RightButton' then--移动光标
-            SetCursor('UI_MOVE_CURSOR')
-        elseif d=='LeftButton' then
-            self:Settings(true)
-        else
-             MenuUtil.CreateContextMenu(self, function(_, root)
-                local sub, sub2
-                root:CreateButton(
-                    ( WoWTools_BagMixin:Ceca(nil, {isKeystone=true}) and '' or '|cff828282')
-                    ..('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY)),
-                function()
-                    self:Settings(true)
-                    return MenuResponse.Open
-                end)
-
-                root:CreateDivider()
-                root:CreateButton(
-                    WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE,
-                self.Hide)
-
-                root:CreateDivider()
-                sub= WoWTools_MenuMixin:OpenOptions(root, {name=addName})
-                sub2=sub:CreateCheckbox(
-                    WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-                function()
-                    return Save().slotKeystoneSay
-                end, function()
-                    Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
-                end)
-                sub2:SetTooltip(function(tooltip)
-                    GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY))
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(1, WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-                    GameTooltip:AddDoubleLine(2, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
-                end)
-             end)
-        end
-    end)
-    SayButton:SetScript('OnLeave', GameTooltip_Hide)
-    SayButton:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE, 'Alt+'..WoWTools_DataMixin.Icon.right)
-        GameTooltip:Show()
-    end)
-
-    if Save().sayButtonPoint then
-        SayButton:SetPoint(Save().sayButtonPoint[1], UIParent, Save().sayButtonPoint[3], Save().sayButtonPoint[4], Save().sayButtonPoint[5])
-    else
-        SayButton:SetPoint('CENTER', 100, 100)
-    end
-
-
-    function SayButton:Settings(isSay)
-        local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
-        local level= C_MythicPlus.GetOwnedKeystoneLevel()
-        if bagID and slotID then
-
-           self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
-        else
-            self:Reset()
-            self:SetItemButtonTexture(WoWTools_DataMixin.Icon.icon)
-        end
-        self:SetItemButtonCount(level)
-        self.Text:SetText(info and info.hyperlink or '')
-        if isSay and info.hyperlink then
-            WoWTools_ChatMixin:Chat(info.hyperlink, nil, nil)
-        end
-    end
-
-    SayButton:SetScript('OnHide', function(self)
-        self:UnregisterAllEvents()
-        self:Reset()
-        self.Text:SeText('')
-    end)
-    SayButton:SetScript('OnShow', function(self)
-        self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
-        self:Settings()
-    end)
-
-    SayButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' then
-            C_Timer.After(2, function()
-                if not IsInInstance() then
-                    self:Hide()
-                end
-            end)
-        else
-            self:Settings()
-        end
-    end)
-    SayButton:Show()
+function WoWTools_ChallengeMixin:Blizzard_ChallengesUI()
+    Init()
 end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local panel= CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
-
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event == "ADDON_LOADED" then
-        if arg1== 'WoWTools' then
-
-            WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
-
-            if PlayerGetTimerunningSeasonID() then
-                self:UnregisterAllEvents()
-                WoWTools_DataMixin.ChallengesSpellTabs={}
-                return
-            end
-
-            addName= '|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
-
-            --添加控制面板
-            WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                GetValue= function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end
-            })
-
-            if Save().disabled then
-                self:UnregisterAllEvents()
-                
-            else
-                if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
-                    Init_Blizzard_WeeklyRewards()
-                end
-                if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                    Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
-                end
-            end
-
-        elseif arg1=='Blizzard_ChallengesUI' and WoWToolsSave then--挑战,钥石,插入界面
-            Init_Blizzard_ChallengesUI()--史诗钥石地下城, 界面
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
-                self:UnregisterEvent(event)
-            end
-
-        elseif arg1=='Blizzard_WeeklyRewards' and WoWToolsSave then
-            Init_Blizzard_WeeklyRewards()
-            set_Week_Reward_Look_Specialization() --打开周奖励时，提示拾取专精
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                self:UnregisterEvent(event)
-            end
-        end
-
-    elseif event=='CHALLENGE_MODE_COMPLETED' then
-        Say_ChallengeComplete()
-
-    elseif event=='PLAYER_ENTERING_WORLD' then
-        set_Week_Reward_Look_Specialization()--打开周奖励时，提示拾取专精
-        self:UnregisterEvent(event)
-    end
-end)
-
-
-
-
-
-
-
-
-
-
---panel:RegisterEvent('CHALLENGE_MODE_START')
---[[elseif event=='CHALLENGE_MODE_START' then -赏金, 说 Bounty
-    if Save().hideKeyUI then
-        return
-    end
-    local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
-    for _, info  in pairs(tab) do
-        local activeAffixID=select(3, C_ChallengeMode.GetAffixInfo(info))
-        if activeAffixID==136177 then
-            C_Timer.After(6, function()
-                local chat={}
-
-                local n=GetNumGroupMembers()
-                local IDs2={373113, 373108, 373116, 373121}
-                for i=1, n do
-                    local u= i==n and 'player' or 'party'..i
-                    local name2=i==n and COMBATLOG_FILTER_STRING_M or UnitName(u)
-                    if UnitExists(u) and name2 then
-                        local buff
-                        for _, v in pairs(IDs2) do
-                            local name=WoWTools_AuraMixin:Get(u, v)
-                            if  name then
-                                local link= C_Spell.GetSpellLink(v)
-                                if link or name then
-                                    buff=i..')'..name2..': '..(link or name)
-                                    break
-                                end
-                            end
-                        end
-                        buff=buff or (i..')'..name2..': '..NONE)
-                        table.insert(chat, buff)
-                    end
-                end
-
-                for _, v in pairs(chat) do
-                    if not Save().slotKeystoneSay then
-                        print(v)
-                    else
-                        WoWTools_ChatMixin:Chat(v)
-                    end
-                end
-            end)
-            break
-        end
-    end
-end]]
