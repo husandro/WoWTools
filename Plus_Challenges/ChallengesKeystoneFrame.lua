@@ -235,7 +235,7 @@ end
 
 
 local function Create_Buttons()--挑战,钥石,插入界面
-    if not Save().hideKeyUI then
+    if Save().hideKeyUI then
         return
     end
 
