@@ -5487,7 +5487,15 @@
         "AUCTION_HOUSE_ITEM_QUALITY_ICON_BORDER_ATLASES",
         "TRANSMOG_SHOW_ALL_FACTIONS",
         "LOCK_FOCUS_FRAME",
-        "SetUIPanelAttribute"
+        "SetUIPanelAttribute",
+        "PVEFrame_HideLeftInset",
+        "PVEFrame_ShowLeftInset",
+        "PVEFrameMixin",
+        "UpdateMicroButtons",
+        "PanelTemplates_HideTab",
+        "PanelTemplates_ShowTab",
+        "PanelTemplates_DisableTab",
+        "PanelTemplates_EnableTab"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

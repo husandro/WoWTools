@@ -100,8 +100,11 @@ local function FrameOnShow_SetPoint(self, isSet)
     end
 
     if isSet then
-        --self.targetFrame:SetAttribute("UIPanelLayout-defined", true)
         SetUIPanelAttribute(self.targetFrame, self.name, true)
+        self.targetFrame:SetAttribute("UIPanelLayout-defined", true)
+        for name, att in pairs(attributes) do
+            self.targetFrame:SetAttribute("UIPanelLayout-"..name, att)
+        end
         UpdateUIPanelPositions(self.targetFrame)
     else
 
