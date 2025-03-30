@@ -4,8 +4,8 @@ local function Save()
 end
 
 local KeyFrame
-
-
+local clear
+local ins
 
 
 
@@ -125,6 +125,7 @@ local function UI_Party_Info(self)--队友位置
     if Save().hideKeyUI then
         return
     end
+
     local UnitTab={}
     local name, uiMapID=WoWTools_MapMixin:GetUnit('player')
     local text
@@ -274,7 +275,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
         end
     end)
 
-    local clear = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--清除KEY
+     clear = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--清除KEY
     clear:SetPoint('RIGHT', ChallengesKeystoneFrame, -15, -50)
     clear:SetSize(70,24)
     clear:SetText(WoWTools_DataMixin.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
@@ -285,30 +286,30 @@ local function Create_Buttons()--挑战,钥石,插入界面
         ClearCursor()
     end)
 
-    local ins = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--插入
+     ins = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--插入
     ins:SetPoint('BOTTOMRIGHT', clear, 'TOPRIGHT', 0, 2)
     ins:SetSize(70,24)
     ins:SetText(WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
     ins:SetScript("OnMouseDown",function()
-            if UnitAffectingCombat('player') then
-                print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-                return
-            end
-            ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
+        if UnitAffectingCombat('player') then
+            print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+            return
+        end
+        ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
 
-            if ItemButtonUtil.GetItemContext() == nil then return end
+        if ItemButtonUtil.GetItemContext() == nil then return end
 
-            local itemLocation = ItemLocation:CreateEmpty()
-            for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--ContainerFrame.lua
-                for slotIndex = 1, ContainerFrame_GetContainerNumSlots(bagID) do
-                    itemLocation:SetBagAndSlot(bagID, slotIndex)
-                    if ItemButtonUtil.GetItemContextMatchResultForItem(itemLocation) == ItemButtonUtil.ItemContextMatchResult.Match then
-                        C_Container.UseContainerItem(bagID, slotIndex)
-                        return
-                    end
+        local itemLocation = ItemLocation:CreateEmpty()
+        for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do--ContainerFrame.lua
+            for slotIndex = 1, ContainerFrame_GetContainerNumSlots(bagID) do
+                itemLocation:SetBagAndSlot(bagID, slotIndex)
+                if ItemButtonUtil.GetItemContextMatchResultForItem(itemLocation) == ItemButtonUtil.ItemContextMatchResult.Match then
+                    C_Container.UseContainerItem(bagID, slotIndex)
+                    return
                 end
             end
-            print(WoWTools_DataMixin.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
+        end
+        print(WoWTools_DataMixin.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
     end)
 
 
@@ -451,8 +452,8 @@ local function Create_Buttons()--挑战,钥石,插入界面
             UI_Party_Info(self)
         end
         local inse= C_ChallengeMode.HasSlottedKeystone()
-        self.ins:SetEnabled(not inse)
-        self.clear:SetEnabled(inse)
+        ins:SetEnabled(not inse)
+        clear:SetEnabled(inse)
     end)
 
 
@@ -482,6 +483,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
         GameTooltip:Show()
     end)
 
+    KeyFrame:SetShown(not Save().hideKeyUI)
 
     Create_Buttons= function()
         KeyFrame:SetShown(not Save().hideKeyUI)
@@ -542,9 +544,7 @@ local function Init()
 
     btn:set_texture()
 
-    if not Save().hideKeyUI then
-        Create_Buttons()
-    end
+    Create_Buttons()
 end
 
 
