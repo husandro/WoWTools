@@ -124,6 +124,13 @@ local function Init()
 
 
     Init=function()end
+
+    C_Timer.After(1, function()
+        if ChallengesKeystoneFrame then
+            ChallengesKeystoneFrame:Show()
+        end
+    end)
+    
 end
 
 

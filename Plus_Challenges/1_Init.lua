@@ -70,6 +70,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
                     WoWTools_ChallengeMixin:Blizzard_ChallengesUI()--史诗钥石地下城, 界面
+                    WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
                 end
 
                 WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
@@ -79,6 +80,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ChallengesUI' and WoWToolsSave then--挑战,钥石,插入界面
             WoWTools_ChallengeMixin:Blizzard_ChallengesUI()--史诗钥石地下城, 界面
+            WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
 
             if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
                 self:UnregisterEvent(event)

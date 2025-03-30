@@ -512,16 +512,20 @@ end
 
 local function Init()
 
-    local btn= WoWTools_ButtonMixin:Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon= not Save().hideKeyUI})
+    local btn= WoWTools_ButtonMixin:Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon='hide'})
     btn:SetFrameStrata('HIGH')
     btn:SetFrameLevel(7)
     btn:SetAlpha(0.5)
     btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
 
+    function btn:set_texture()
+        self:SetNormalAtlas(not Save().hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+    end
+
     btn:SetScript("OnClick", function(self)
         Save().hideKeyUI = not Save().hideKeyUI and true or nil
         Create_Buttons()
-        self:SetNormalAtlas(not Save().hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        self:set_texture()
     end)
     btn:SetScript("OnEnter",function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -536,6 +540,8 @@ local function Init()
         self:SetAlpha(0.5)
     end)
 
+    btn:set_texture()
+
     if not Save().hideKeyUI then
         Create_Buttons()
     end
@@ -543,6 +549,6 @@ end
 
 
 
-    function WoWTools_ChallengeMixin:KeystoneFrame()
-        Init()
-    end
+function WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
+    Init()
+end
