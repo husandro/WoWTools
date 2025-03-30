@@ -2154,7 +2154,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
 
             if PlayerGetTimerunningSeasonID() then
-                self:UnregisterEvent(event)
+                self:UnregisterAllEvents()
                 WoWTools_DataMixin.ChallengesSpellTabs={}
                 return
             end
@@ -2173,6 +2173,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 self:UnregisterAllEvents()
+                
             else
                 if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
                     Init_Blizzard_WeeklyRewards()
