@@ -9,13 +9,11 @@ local Frame
 
 
 local function Init()
-    local hasReward= C_WeeklyRewards.HasAvailableRewards()
-
-    if not hasReward then
+    if not C_WeeklyRewards.HasAvailableRewards() then
         Init=function()end
         return
 
-    elseif hasReward then
+    else
         print(
             WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
             '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM)
