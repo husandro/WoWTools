@@ -3,7 +3,7 @@ local function Save()
 end
 
 local TipsFrame
-local LimitMaxKeyLevel=20--限制，显示等级,不然，数据会出错
+
 
 
 
@@ -416,268 +416,6 @@ end
 
 
 
-
-
-
-
-
-local function set_All_Text()--所有记录
-    --###
-    --历史
-    --####
-    local last
-    if not ChallengesFrame.runHistoryLable then
-        ChallengesFrame.runHistoryLable= WoWTools_LabelMixin:Create(TipsFrame, {mouse=true, size=14})--最右边, 数据
-        ChallengesFrame.moveRightTipsButton= WoWTools_ButtonMixin:Cbtn(TipsFrame, {size=22, atlas='common-icon-rotateright'})
-        ChallengesFrame.moveRightTipsButton:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
-        ChallengesFrame.moveRightTipsButton:SetPoint('TOP', PVEFrameCloseButton, 'BOTTOM', -8, 0)
-        ChallengesFrame.moveRightTipsButton:SetAlpha(0.3)
-        function ChallengesFrame.moveRightTipsButton:set_tooltips()
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移动' or BUTTON_LAG_MOVEMENT)
-            GameTooltip:AddDoubleLine('x: '..Save().rightX, 'Shift+'..WoWTools_DataMixin.Icon.mid)
-            GameTooltip:AddDoubleLine('y: '..Save().rightY, 'Alt+'..WoWTools_DataMixin.Icon.mid)
-            GameTooltip:Show()
-            self:SetAlpha(1)
-        end
-        ChallengesFrame.moveRightTipsButton:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
-        ChallengesFrame.moveRightTipsButton:SetScript('OnEnter', ChallengesFrame.moveRightTipsButton.set_tooltips)
-        function ChallengesFrame.moveRightTipsButton:set_point()
-            ChallengesFrame.runHistoryLable:ClearAllPoints()
-            ChallengesFrame.runHistoryLable:SetPoint('TOPLEFT', ChallengesFrame, 'TOPRIGHT', Save().rightX, Save().rightY)
-        end
-        ChallengesFrame.moveRightTipsButton:SetScript('OnMouseWheel', function(self, d)
-            local x= Save().rightX
-            local y= Save().rightY
-            if IsShiftKeyDown() then
-                x= d==1 and x+5 or x-5
-            elseif IsAltKeyDown() then
-                y= d==1 and y+5 or y-5
-            end
-            Save().rightX= x
-            Save().rightY= y
-            self:set_point()
-            self:set_tooltips()
-        end)
-        ChallengesFrame.moveRightTipsButton:set_point()
-
-
-        ChallengesFrame.runHistoryLable:SetScript('OnLeave', function(self2) self2:SetAlpha(1) end)
-        ChallengesFrame.runHistoryLable:SetScript('OnEnter', function(self2)
-            GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-
-            local curMaps = {}
-            for _, v in pairs( (C_ChallengeMode.GetMapTable() or {})) do
-                curMaps[v]=true
-            end
-
-            local tabs={}
-            local completed, all= 0,0
-            for _, info in pairs(C_MythicPlus.GetRunHistory(true, true) or {}) do
-                local mapID=info.mapChallengeModeID
-                tabs[mapID]= tabs[mapID] or
-                            {
-                                level=0,--最高等级
-                                c=0,
-                                t=0,
-                                mapID= mapID,
-                                isCurrent= curMaps[mapID],--本赛季
-                            }
-                tabs[mapID].t= tabs[mapID].t+1
-                if info.completed then
-                    tabs[mapID].c= tabs[mapID].c+1
-                    tabs[mapID].level= (info.level and info.level>tabs[mapID].level) and info.level or tabs[mapID].level
-                    completed= completed+ 1
-                end
-                all= all+1
-            end
-
-            local newTab={}
-            for _, tab in pairs(tabs) do
-                if tab.isCurrent then
-                    table.insert(newTab, tab)
-                else
-                    table.insert(newTab, 1, tab)
-                end
-            end
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '历史' or HISTORY, completed..'/'..all)
-
-            for _, tab in pairs(newTab) do
-                local name, _, _, texture= C_ChallengeMode.GetMapUIInfo(tab.mapID)
-                if name then
-                    if WoWTools_DataMixin.onlyChinese and not LOCALE_zhCN then
-                        name= WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID] and WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID].name or name
-                    end
-                    local text= (texture and '|T'..texture..':0|t' or '').. name..' ('..tab.level..') '
-                    local text2= tab.c..'/'..tab.t
-                    if tab.isCurrent then
-                        local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-                        local score, col= WoWTools_ChallengeMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
-                        text= (col and col:WrapTextInColorCode(text) or text)..score
-                        text2= col and col:WrapTextInColorCode(text2) or text2
-                    else
-                        text='|cff828282'..text
-                        text2='|cff828282'..text2
-                    end
-                    GameTooltip:AddDoubleLine(text, text2)
-                end
-            end
-            GameTooltip:Show()
-            self2:SetAlpha(0.5)
-        end)
-    end
-    ChallengesFrame.runHistoryLable:SetText(
-        (WoWTools_DataMixin.onlyChinese and '历史' or HISTORY)
-        ..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true)
-        ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
-    )
-    last= ChallengesFrame.runHistoryLable
-
-
-
-    --#######
-    --本周记录
-    --#######
-    local completed, all= 0,0
-    local tabs={}
-    for _, tab in pairs(C_MythicPlus.GetRunHistory(false, true) or {}) do
-        local mapID= tab.mapChallengeModeID
-        if tab and tab.level and mapID and mapID>0 and tab.thisWeek then
-            if not tabs[mapID] then
-                tabs[mapID]={
-                    LV={},--{level, completed}
-                    runScore= 0,--分数
-                    c=0,
-                    t=0,
-                    completed=false,
-                    mapID= mapID,
-                }
-            end
-
-            tabs[mapID].runScore= (tab.runScore and tab.runScore> tabs[mapID].runScore) and tab.runScore or tabs[mapID].runScore
-
-            table.insert(tabs[mapID].LV, {
-                level=tab.level,
-                text=tab.completed and '|cff00ff00'..tab.level..'|r' or '|cff828282'..tab.level..'|r'})
-
-            if tab.completed then
-                completed= completed+1
-                tabs[mapID].c= tabs[mapID].c +1
-            end
-            tabs[mapID].t=tabs[mapID].t+1
-            all= all+1
-        end
-    end
-
-    local newTab={}
-    for _, tab in pairs(tabs) do
-        table.insert(newTab, tab)
-    end
-    table.sort(newTab, function(a, b)  return a.runScore> b.runScore end)
-
-
-    local weekText
-    for _, tab in pairs(newTab) do
-        local name, _, _, texture = C_ChallengeMode.GetMapUIInfo(tab.mapID)
-        if name then
-            if WoWTools_DataMixin.onlyChinese then
-                name= WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID] and WoWTools_DataMixin.ChallengesSpellTabs[tab.mapID].name or name
-            end
-            weekText= weekText and weekText..'|n' or ''
-            local bestOverAllScore = select(2, C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(tab.mapID)) or 0
-            local score= WoWTools_ChallengeMixin:KeystoneScorsoColor(bestOverAllScore, nil, true)
-
-            weekText= weekText..(texture and '|T'..texture..':0|t' or '')
-                    ..(tab.c>0 and '|cff00ff00' or '|cff828282')..tab.c..'|r/'..tab.t
-                    ..' '..score..' '..name--(col and col:WrapTextInColorCode(name) or name)
-            table.sort(tab.LV, function(a, b) return a.level> b.level end)
-            for _,v2 in pairs(tab.LV) do
-                weekText= weekText..' '..v2.text
-            end
-        end
-    end
-    if not ChallengesFrame.weekCompledLabel then
-        ChallengesFrame.weekCompledLabel= WoWTools_LabelMixin:Create(TipsFrame)--最右边, 数据
-        ChallengesFrame.weekCompledLabel:SetPoint('TOPLEFT', last, 'BOTTOMLEFT')
-    end
-    ChallengesFrame.weekCompledLabel:SetText(
-        (WoWTools_DataMixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)
-        ..' |cff00ff00'..completed..'|r/'..all--.. ' '..(WoWTools_ChallengeMixin:GetRewardText(1) or '')
-        ..(weekText and '|n'..weekText or '')
-    )
-    last= ChallengesFrame.weekCompledLabel
-
-
-    --#############
-    --难度 每周 掉落
-    --#############
-    if not ChallengesFrame.weekLootItemLevelLable then
-        ChallengesFrame.weekLootItemLevelLable= WoWTools_LabelMixin:Create(TipsFrame, {mouse=true})--最右边, 数据
-        ChallengesFrame.weekLootItemLevelLable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-12)
-        function ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
-            --local col= self.curLevel==level and '|cff00ff00' or (select(2, math.modf(level/2))==0 and '|cffff8200') or '|cffffffff'
-            local weeklyRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
-            weeklyRewardLevel2= max(weeklyRewardLevel2, 2)
-            weeklyRewardLevel2= min(weeklyRewardLevel2, LimitMaxKeyLevel)
-            local week= level..') '..(WoWTools_DataMixin.GetChallengesWeekItemLevel(level, LimitMaxKeyLevel) or '')
-            local curkey= self.curKey==level and '|T4352494:0|t' or ''
-            local curLevel= self.curLevel==level and format('|A:%s:0:0|a', 'common-icon-checkmark') or ''
-            return week..curkey..curLevel
-        end
-        ChallengesFrame.weekLootItemLevelLable:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
-        ChallengesFrame.weekLootItemLevelLable:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:AddLine(self:GetText())
-            for level=2, LimitMaxKeyLevel do--限制，显示等级                
-                GameTooltip:AddLine(self:get_Loot_itemLevel(level))
-            end
-            GameTooltip:Show()
-            self:SetAlpha(0.5)
-        end)
-    end
-    ChallengesFrame.weekLootItemLevelLable:SetText(WoWTools_DataMixin.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
-
-    local lootText
-
-    --限制，显示等级
-    local curLevel=0
-    local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-    local runInfo = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
-    for _, runs  in pairs(runInfo) do
-        curLevel= runs and runs.level and runs.level>curLevel and runs.level or curLevel
-    end
-    curLevel= max(curLevel, curKey)
-    local minNum= max(2, curLevel-3)
-    local maxNum = min(curLevel+3, LimitMaxKeyLevel)
-
-    ChallengesFrame.weekLootItemLevelLable.curLevel= curLevel
-    ChallengesFrame.weekLootItemLevelLable.curKey= curKey
-
-    for level=minNum, maxNum do--显示，物品等级
-        local text= ChallengesFrame.weekLootItemLevelLable:get_Loot_itemLevel(level)
-        if text then
-            lootText= lootText and lootText..'|n'..text or text
-        end
-    end
-
-    if not ChallengesFrame.weekLootItemLevelLable2 then
-        ChallengesFrame.weekLootItemLevelLable2= WoWTools_LabelMixin:Create(TipsFrame)--最右边, 数据
-        ChallengesFrame.weekLootItemLevelLable2:SetPoint('TOPLEFT', ChallengesFrame.weekLootItemLevelLable, 'BOTTOMLEFT')
-    end
-    ChallengesFrame.weekLootItemLevelLable2:SetText(lootText or '')
-    last= ChallengesFrame.weekLootItemLevelLable2
-
-
-
-    --物品，货币提示
-    WoWTools_LabelMixin:ItemCurrencyTips({frame=TipsFrame, point={'TOPLEFT', last, 'BOTTOMLEFT',0, -12}})
-    last=nil
-end
 
 
 
@@ -1129,191 +867,29 @@ end
 --初始
 --####
 local function Init()
-    TipsFrame= CreateFrame("Frame",nil, ChallengesFrame)
+    TipsFrame= CreateFrame("Frame", 'WoWToolsChallengesUITipsFrame', ChallengesFrame)
     TipsFrame:SetFrameStrata('HIGH')
     TipsFrame:SetFrameLevel(7)
     TipsFrame:SetPoint('CENTER')
     TipsFrame:SetSize(1, 1)
-    TipsFrame:SetShown(not Save().hideTips)
-    TipsFrame:SetScale(SavGameTooltipScale or 1)
-
-    local check= WoWTools_ButtonMixin:Cbtn(ChallengesFrame, {size=18})
-    check.texture= check:CreateTexture()
-    check.texture:SetAllPoints()
-    check.texture:SetAlpha(0.3)
-    function check:set_Texture()
-        self.texture:SetAtlas(not Save().hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
-    end
-    check:set_Texture()
-    check:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
-    if _G['MoveZoomInButtonPerPVEFrame'] then
-        check:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT', -18,0)
-    else
-        check:SetPoint('LEFT', PVEFrame.TitleContainer)
-    end
-    check:SetScript("OnClick", function(self)
-        Save().hideIns = not Save().hideIns and true or nil
-        --self:SetNormalAtlas(not Save().hideIns and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
-        self:set_Texture()
-        set_Update()
-    end)
-    check:SetScript('OnMouseWheel', function(self, d)--缩放
-        local scale= Save().insScale or 1
-        if d==1 then
-            scale= scale-0.05
-        else
-            scale= scale+0.05
-        end
-        scale= scale>2.5 and 2.5 or scale
-        scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName, WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
-        Save().insScale= scale==1 and nil or scale
-        set_Update()
-        self:set_Tooltips()
-    end)
-    function check:set_Tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, (WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '信息' or INFO))
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(Save().insScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
-        GameTooltip:Show()
-    end
-    check:SetScript("OnEnter",function(self)
-        self:set_Tooltips()
-        self.texture:SetAlpha(1)
-    end)
-    check:SetScript("OnLeave",function(self)
-        GameTooltip:Hide()
-        self.texture:SetAlpha(0.3)
-    end)
 
 
-    local tipsButton= WoWTools_ButtonMixin:Cbtn(check, {size=18, atlas=not Save().hideTips and 'FXAM-QuestBang' or 'talents-button-reset'})
-    if _G['MoveZoomInButtonPerPVEFrame'] then
-        tipsButton:SetPoint('RIGHT', _G['MoveZoomInButtonPerPVEFrame'], 'LEFT')
-    else
-        tipsButton:SetPoint('LEFT', check, 'RIGHT')
+    function TipsFrame:Settings()
+        self:SetShown(not Save().hideTips)
+        self:SetScale(Save().tipsScale or 1)
     end
-    tipsButton:SetAlpha(0.5)
-    tipsButton:SetScript('OnClick', function(self)
-        Save().hideTips= not Save().hideTips and true or nil
-        TipsFrame:SetShown(not Save().hideTips)
-        self:SetNormalAtlas(not Save().hideTips and 'FXAM-QuestBang' or 'talents-button-reset')
-    end)
-    tipsButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        local scale= SavGameTooltipScale or 1
-        if d==1 then
-            scale= scale-0.05
-        else
-            scale= scale+0.05
-        end
-        scale= scale>2.5 and 2.5 or scale
-        scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName, WoWTools_DataMixin.onlyChinese and '信息' or INFO,  WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..scale)
-        SavGameTooltipScale= scale==1 and nil or scale
-        TipsFrame:SetScale(scale)
-        self:set_Tooltips()
-    end)
-    function tipsButton:set_Tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '信息' or INFO))
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,'|cnGREEN_FONT_COLOR:'..(SavGameTooltipScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
-        GameTooltip:Show()
-    end
-    tipsButton:SetScript('OnEnter', function(self)
-        self:set_Tooltips()
-        self:SetAlpha(1)
-    end)
-    tipsButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
 
-
-    --传送门
-    local spellButton= WoWTools_ButtonMixin:Cbtn(check, {size={18,18}, atlas= not Save().hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset'})
-    spellButton:SetPoint('LEFT', _G['MoveZoomInButtonPerPVEFrame'] or tipsButton, 'RIGHT')
-    spellButton:SetAlpha(0.5)
-    spellButton:SetScript('OnClick', function(self)
-        Save().hidePort= not Save().hidePort and true or nil
-        set_Update()
-        self:SetNormalAtlas(not Save().hidePort and 'WarlockPortal-Yellow-32x32' or 'talents-button-reset')
-    end)
-    spellButton:SetScript('OnMouseWheel', function(self, d)--缩放
-        if not self:CanChangeAttribute() then
-            print(WoWTools_DataMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
-            return
-        end
-        local scale= Save().portScale or 1
-        if d==1 then
-            scale= scale-0.05
-        else
-            scale= scale+0.05
-        end
-        scale= scale>2.5 and 2.5 or scale
-        scale= scale<0.4 and 0.4 or scale
-        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName, format(WoWTools_DataMixin.onlyChinese and "%s的传送门" or UNITNAME_SUMMON_TITLE14, WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..scale)
-        Save().portScale= scale==1 and nil or scale
-        set_Update()
-        self:set_Tooltips()
-    end)
-    function spellButton:set_Tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        if WoWTools_DataMixin.onlyChinese then
-            GameTooltip:AddDoubleLine('挑战20层','限时传送门')
-            GameTooltip:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
-            GameTooltip:AddDoubleLine('战斗中', '不能关闭，窗口')
-        else
-            GameTooltip:AddLine(format(UNITNAME_SUMMON_TITLE14, CHALLENGE_MODE..' (20) '))
-            GameTooltip:AddDoubleLine(LABEL_NOTE, 'If you get error, please disable this')
-            GameTooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, 'Cannot close window')
-        end
-        --[[GameTooltip:AddLine(' ')
-        for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
-            local spellLink= C_Spell.GetSpellLink(tab.spell) or C_Spell.GetSpellName(tab.spell) or ('ID'.. tab.spell)
-            local icon= C_Spell.GetSpellTexture(tab.spell)
-            GameTooltip:AddDoubleLine((icon and '|T'..icon..':0|t' or '')..spellLink,
-                                'spellID '..tab.spell..' '..
-                                (IsSpellKnownOrOverridesKnown(tab.spell) and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已获得' or ACHIEVEMENTFRAME_FILTER_COMPLETED)
-                                                        or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未获得' or FOLLOWERLIST_LABEL_UNCOLLECTED))
-                                )
-                            )
-        end]]
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or WoWTools_TextMixin:GetShowHide(nil, true), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE, '|cnGREEN_FONT_COLOR:'..(Save().portScale or 1)..'|r'.. WoWTools_DataMixin.Icon.mid)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
-        GameTooltip:Show()
-    end
-    spellButton:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(0.5)
-    end)
-    spellButton:SetScript('OnEnter', function(self)
-        self:set_Tooltips()
-        self:SetAlpha(1)
-    end)
 
     --Init_Affix()
 
-    --周奖励，提示
-    WoWTools_ChallengeMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
 
     All_Player_Info()--所以角色信息
-    C_Timer.After(2, set_All_Text)--所有记录
+
+    
 
     hooksecurefunc(ChallengesFrame, 'Update', set_Update)
 
-    ChallengesFrame:HookScript('OnShow', function()
-        --Affix()
-        --周奖励，提示
-        WoWTools_ChallengeMixin:Activities({frame=TipsFrame, point={'TOPLEFT', ChallengesFrame, 'TOPLEFT', 10, -53}})
-        C_Timer.After(2, set_All_Text)--所有记录
-        --set_Update()
-    end)
+
 
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
@@ -1340,7 +916,10 @@ local function Init()
 
 
 
-    Init=function()end
+    Init=function()
+        set_Update()
+        TipsFrame:Settings()
+    end
 end
 
 
@@ -1351,7 +930,7 @@ end
 
 
 
-function WoWTools_ChallengeMixin:Blizzard_ChallengesUI()
+function WoWTools_ChallengeMixin:ChallengesUI_Porta()
     Init()
 end
 

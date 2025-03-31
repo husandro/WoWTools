@@ -98,10 +98,21 @@ end
 
 local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，物品，货币提示
     local frame= settings.frame
+    local isClear= settings.frame and settings.isClear
+
     local point= settings.point
     local showName= settings.showName
     local showAll= settings.showAll
     local showTooltip= settings.showTooltip
+
+    if isClear then
+        for _, label in pairs(frame.framGameTooltipLabels or {}) do
+            label:SetText("")
+            label.id= nil
+            label.type= nil
+        end
+        return
+    end
 
     local R={}
     for _, tab in pairs(WoWTools_DataMixin.ItemCurrencyTips) do
@@ -183,6 +194,8 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
             local lable= frame.framGameTooltipLabels[i]
             if lable then
                 lable:SetText("")
+                lable.id= nil
+                lable.type= nil
             end
         end
     end

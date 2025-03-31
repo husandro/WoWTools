@@ -10,7 +10,7 @@ local Frame
 
 local function Init()
     local hasReward= C_WeeklyRewards.HasAvailableRewards()
-    print(hasReward)
+
     if not hasReward then
         Init=function()end
         return

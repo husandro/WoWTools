@@ -103,7 +103,7 @@ local function Settings()
     end
 
     --周奖励，提示
-    local last= WoWTools_ChallengeMixin:Activities({frame=Frame, point={'TOPLEFT', Frame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
+    local last= WoWTools_ChallengeMixin:ActivitiesFrame(Frame, {point={'TOPLEFT', Frame.weekLable, 'BOTTOMLEFT', 0, -2}, anchor='ANCHOR_RIGHT'})
 
     --物品，货币提示
     WoWTools_LabelMixin:ItemCurrencyTips({frame=Frame, point={'TOPLEFT', last or Frame.label, 'BOTTOMLEFT', 0, -12}})--, showAll=true})

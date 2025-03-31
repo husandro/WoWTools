@@ -432,7 +432,7 @@ end)
             GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
             GameTooltip:AddLine(' ')
         end
-        WoWTools_ChallengeMixin:Activities({showTooltip=true})
+        WoWTools_ChallengeMixin:ActivitiesTooltip()
         GameTooltip:AddLine(' ')
         WoWTools_LabelMixin:ItemCurrencyTips({showTooltip=true, showName=true, showAll=true})
         GameTooltip:Show()

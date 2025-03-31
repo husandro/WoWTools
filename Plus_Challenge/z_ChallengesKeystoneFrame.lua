@@ -399,6 +399,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
     check:SetChecked(Save().slotKeystoneSay)
     check:SetScript('OnMouseDown', function()
         Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
+        WoWTools_ChallengeMixin:Say_ChallengeComplete()
     end)
     check:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")

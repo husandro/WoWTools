@@ -32,7 +32,7 @@ local function Init()
         self.setTextFrame:settings()
         GameTooltip:AddLine(' ')
 
-        local find= WoWTools_ChallengeMixin:Activities({showTooltip=true})--周奖励，提示
+        local find= WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
         local link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
         if link then
             GameTooltip:AddLine('|T4352494:0|t'..link)

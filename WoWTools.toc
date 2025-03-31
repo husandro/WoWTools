@@ -412,12 +412,17 @@ Plus_Encounter\UI_ListInstances.lua
 ##史诗钥石地下城, 挑战增强
 Plus_Challenge\0_ChallengeMixin.lua
 Plus_Challenge\1_Init.lua
-Plus_Challenge\AvailableRewards.lua
-Plus_Challenge\Blizzard_ChallengesUI.lua
-Plus_Challenge\Blizzard_WeeklyRewards.lua
-Plus_Challenge\ChallengesKeystoneFrame.lua
-Plus_Challenge\Is_HuSandro.lua
-Plus_Challenge\Say_ChallengeComplete.lua
+
+Plus_Challenge\ChallengesUI_Porta.lua
+Plus_Challenge\ChallengesUI_Activities.lua
+Plus_Challenge\ChallengesUI_Right.lua
+Plus_Challenge\ChallengesUI_Menu.lua
+
+Plus_Challenge\z_ChallengesKeystoneFrame.lua
+Plus_Challenge\z_Blizzard_WeeklyRewards.lua
+Plus_Challenge\z_Rewards.lua
+Plus_Challenge\z_Say_ChallengeComplete.lua
+Plus_Challenge\z_Is_HuSandro.lua
 Plus_Challenge\m_Blizzard_ChallengesUI.lua
 Plus_Challenge\t_Blizzard_ChallengesUI.lua
 

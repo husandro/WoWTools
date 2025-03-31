@@ -24,9 +24,26 @@ local P_Save= {
 }
 
 
+
+
+
+
 local function Save()
     return WoWToolsSave['Plus_Challenges']
 end
+
+
+local function Init()
+
+    WoWTools_ChallengeMixin:ChallengesUI_Porta()--史诗钥石地下城, 界面
+    WoWTools_ChallengeMixin:ChallengesUI_Right()
+    WoWTools_ChallengeMixin:ChallengesUI_Activities()
+    WoWTools_ChallengeMixin:ChallengesUI_Menu()
+
+    WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
+end
+
+
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
@@ -70,16 +87,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                    WoWTools_ChallengeMixin:Blizzard_ChallengesUI()--史诗钥石地下城, 界面
-                    WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
+                    Init()
                 end
 
             end
 
         elseif arg1=='Blizzard_ChallengesUI' and WoWToolsSave then--挑战,钥石,插入界面
-            WoWTools_ChallengeMixin:Blizzard_ChallengesUI()--史诗钥石地下城, 界面
-            WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
-
+            Init()
+            
             if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
                 self:UnregisterEvent(event)
             end

@@ -39,24 +39,37 @@ local function Level_Text(text)
     }
     return tab[text] or text
 end
-function WoWTools_DataMixin.GetChallengesWeekItemLevel(level, limitMaxKeyLevel)--LimitMaxKeyLevel --限制，显示等级,不然，数据会出错
-    level= min(limitMaxKeyLevel or 20, level)
-    level= max(2, level)
-    local tab={
-        [2]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t10',
-        [3]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t12',
-        [4]='642'..Level_Text('Champion')..'3/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t14',
-        [5]='645'..Level_Text('Champion')..'4/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t16',
-        [6]='649'..Level_Text('Hero')..'1/6  655'..Level_Text('Hero')..'3/6|T5872051:0|t18',
 
-        [7]='649'..Level_Text('Hero')..'1/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t10',
-        [8]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t12',
-        [9]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t14',
-        [10]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t16',
-        [11]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t18',
-        [12]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t20',
-    }
-    return tab[level] or tab[10]
+
+
+local WeekItemLevel={
+    [2]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t10',
+    [3]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t12',
+    [4]='642'..Level_Text('Champion')..'3/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t14',
+    [5]='645'..Level_Text('Champion')..'4/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t16',
+    [6]='649'..Level_Text('Hero')..'1/6  655'..Level_Text('Hero')..'3/6|T5872051:0|t18',
+
+    [7]='649'..Level_Text('Hero')..'1/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t10',
+    [8]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t12',
+    [9]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t14',
+    [10]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t16',
+    [11]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t18',
+    [12]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t20',
+
+    min=2,
+    max=12,
+}
+
+
+
+function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)--LimitMaxKeyLevel --限制，显示等级,不然，数据会出错
+    if isGetNum then
+        return WeekItemLevel.min, WeekItemLevel.max
+    else
+        level= math.min(WeekItemLevel.max, level or 0)
+        level= math.max(WeekItemLevel.min, level or 0)
+        return WeekItemLevel[level]
+    end
 end
 
 
@@ -145,7 +158,7 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [382]={spell=354467, ins=1187, name='伤逝剧场', spellName='不败之路', spellDes='传送到|cff00ccff伤逝剧场|r的入口。'},
     [376]={spell=354462, ins=1182, name='通灵战潮', spellName='勇者之路', spellDes='传送到|cff00ccff通灵战潮|r的入口。'},
     [381]={spell=354466, ins=1186, name='晋升高塔', spellName='晋升者之路', spellDes='传送到|cff00ccff晋升高塔|r的入口。'},
-    
+
 
     [499]= {spell=445444, ins=1267, name='圣焰隐修院', spellName='圣焰隐修院之路', spellDes='传送至|cff00ccff圣焰隐修院|r入口处。'},
     [500]= {spell=445443, ins=1268, name='驭雷栖巢', spellName='驭雷栖巢之路', spellDes='传送至|cff00ccff驭雷栖巢|r入口处。'},

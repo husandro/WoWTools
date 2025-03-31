@@ -42,7 +42,7 @@ local function Init()
 
     function LFDButton:set_tooltip()
         self:set_owner()
-        WoWTools_ChallengeMixin:Activities({showTooltip=true})--周奖励，提示
+        WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
 
         if self.name and (self.dungeonID or self.RaidID) then
             GameTooltip:AddLine(' ')
