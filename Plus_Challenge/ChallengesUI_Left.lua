@@ -263,6 +263,9 @@ end
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Left()
+    if not WoWTools_DataMixin.Player.husandro then
+        return
+    end
     Init()
 end
 
