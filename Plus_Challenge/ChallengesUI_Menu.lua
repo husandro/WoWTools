@@ -5,7 +5,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub
+    local sub, sub2
     local isInCombat= InCombatLockdown()
 --副本信息
     sub= root:CreateCheckbox(
@@ -110,17 +110,34 @@ local function Init_Menu(self, root)
 
 
 --宏伟宝库
+    local hasRewar= C_WeeklyRewards.HasAvailableRewards()
     sub= root:CreateCheckbox(
-        '|A:'..(WoWTools_DataMixin.Player.Faction=='Alliance' and 'activities-chest-sw' or 'activities-chest-org')..':0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT),
+        (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
+        ..'|A:'..(WoWTools_DataMixin.Player.Faction=='Alliance' and 'activities-chest-sw' or 'activities-chest-org')..':0:0|a'
+        ..(WoWTools_DataMixin.Player.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
+        ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or ''),
     function()
         return not Save().hideActivities
     end, function()
         Save().hideActivities= not Save().hideActivities and true or nil
         WoWTools_ChallengeMixin:ChallengesUI_Activities()
     end)
+    sub:SetTooltip(function(tooltip)
+        WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)--周奖励，提示
+    end)
+
+--打开
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP,
+    function()
+        return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
+    end, WoWTools_LoadUIMixin.WeeklyRewards)
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.Player.onlyChinese and '点击预览宏伟宝库' or WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS)
+    end)
 
 --缩放
+    sub:CreateDivider()
     WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().activitiesScale or 1
     end, function(value)

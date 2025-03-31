@@ -5495,7 +5495,8 @@
         "PanelTemplates_HideTab",
         "PanelTemplates_ShowTab",
         "PanelTemplates_DisableTab",
-        "PanelTemplates_EnableTab"
+        "PanelTemplates_EnableTab",
+        "WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

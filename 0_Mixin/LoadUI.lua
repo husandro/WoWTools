@@ -206,14 +206,18 @@ end
 
 --宏伟宝库
 function WoWTools_LoadUIMixin:WeeklyRewards()
-    if not InCombatLockdown() then
-        if not WeeklyRewardsFrame then
-            WeeklyRewards_LoadUI()
-        elseif WeeklyRewardsFrame:IsShown() then
-            WeeklyRewardsFrame:Hide()
-        else
-            WeeklyRewards_ShowUI()--WeeklyReward.lua
-        end
+    if InCombatLockdown() then
+        return
+    end
+
+    if not WeeklyRewardsFrame then
+        WeeklyRewards_LoadUI()
+    end
+    
+    if WeeklyRewardsFrame and WeeklyRewardsFrame:IsVisible()then
+        WeeklyRewardsFrame:Hide()
+    else
+        WeeklyRewards_ShowUI()--WeeklyReward.lua
     end
 end
 
