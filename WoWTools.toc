@@ -415,6 +415,7 @@ Plus_Challenge\1_Init.lua
 
 Plus_Challenge\ChallengesUI_Porta.lua
 Plus_Challenge\ChallengesUI_Activities.lua
+Plus_Challenge\ChallengesUI_Left.lua
 Plus_Challenge\ChallengesUI_Right.lua
 Plus_Challenge\ChallengesUI_Menu.lua
 

@@ -36,6 +36,7 @@ end
 local function Init()
 
     WoWTools_ChallengeMixin:ChallengesUI_Porta()--史诗钥石地下城, 界面
+    WoWTools_ChallengeMixin:ChallengesUI_Left()
     WoWTools_ChallengeMixin:ChallengesUI_Right()
     WoWTools_ChallengeMixin:ChallengesUI_Activities()
     WoWTools_ChallengeMixin:ChallengesUI_Menu()
