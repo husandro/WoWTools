@@ -200,7 +200,7 @@ end
 
 
 local function Init_List()
-    Frame.view:SetElementInitializer('')
+    Frame.view:SetElementInitializer('Frame')
 end
 
 
