@@ -1,5 +1,4 @@
-
-if (not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro)  or PlayerGetTimerunningSeasonID() then
+if (not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro) or PlayerGetTimerunningSeasonID() then
     WoWTools_DataMixin.ChallengesSpellTabs={}
     return
 end
@@ -25,12 +24,14 @@ local P_Save= {
 }
 
 
-
-
+local function Save()
+    return WoWToolsSave['Plus_Challenges']
+end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -49,18 +50,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_ChallengeMixin.addName,
-                GetValue= function() return not WoWToolsSave['Plus_Challenges'].disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    WoWToolsSave['Plus_Challenges'].disabled= not WoWToolsSave['Plus_Challenges'].disabled and true or nil
+                    Save().disabled= not Save().disabled and true or nil
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Plus_Challenges'].disabled),
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                         WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end
             })
 
-            if WoWToolsSave['Plus_Challenges'].disabled then
+            if Save().disabled then
                 self:UnregisterAllEvents()
 
             else
@@ -73,9 +74,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
                 end
 
-                WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
-
-                WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
             end
 
         elseif arg1=='Blizzard_ChallengesUI' and WoWToolsSave then--挑战,钥石,插入界面
@@ -97,6 +95,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         WoWTools_ChallengeMixin:Say_ChallengeComplete()
 
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
+        WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
+        self:UnregisterEvent(event)
     end
 end)
 
@@ -111,7 +113,7 @@ end)
 
 --panel:RegisterEvent('CHALLENGE_MODE_START')
 --[[elseif event=='CHALLENGE_MODE_START' then -赏金, 说 Bounty
-    if WoWToolsSave['Plus_Challenges'].hideKeyUI then
+    if Save().hideKeyUI then
         return
     end
     local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
@@ -144,7 +146,7 @@ end)
                 end
 
                 for _, v in pairs(chat) do
-                    if not WoWToolsSave['Plus_Challenges'].slotKeystoneSay then
+                    if not Save().slotKeystoneSay then
                         print(v)
                     else
                         WoWTools_ChatMixin:Chat(v)

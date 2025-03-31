@@ -545,6 +545,8 @@ local function Init()
     btn:set_texture()
 
     Create_Buttons()
+
+    Init=function()end
 end
 
 

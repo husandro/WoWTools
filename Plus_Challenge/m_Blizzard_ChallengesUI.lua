@@ -1,10 +1,4 @@
 --挑战, 钥匙插件, 界面
-local function Save()
-    return WoWToolsSave['Plus_Move']
-end
-
-
-
 
 function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
     WoWTools_MoveMixin:Setup(ChallengesKeystoneFrame)
@@ -23,7 +17,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
             if not frame.ResizeButton or frame.ResizeButton.disabledSize or not frame:CanChangeAttribute() then
                 return
             end
-            local size= Save().size['PVEFrame_KEY']
+            local size= WoWToolsSave['Plus_Move'].size['PVEFrame_KEY']
             frame.ResizeButton.setSize= true
             if size then
                 frame:SetSize(size[1], size[2])

@@ -129,7 +129,6 @@ Plus_Move\Options.lua
 
 Plus_Move\x_AchievementUI.lua
 Plus_Move\x_AuctionHouseUI.lua
-Plus_Move\x_ChallengesUI.lua
 Plus_Move\x_Collections.lua
 Plus_Move\x_DebugTools.lua
 Plus_Move\x_EncounterJournal.lua
@@ -411,15 +410,16 @@ Plus_Encounter\UI_ListInstances.lua
 
 
 ##史诗钥石地下城, 挑战增强
-Plus_Challenges\0_ChallengeMixin.lua
-Plus_Challenges\1_Init.lua
-Plus_Challenges\AvailableRewards.lua
-Plus_Challenges\Blizzard_ChallengesUI.lua
-Plus_Challenges\Blizzard_WeeklyRewards.lua
-Plus_Challenges\ChallengesKeystoneFrame.lua
-Plus_Challenges\Is_HuSandro.lua
-Plus_Challenges\Say_ChallengeComplete.lua
-
+Plus_Challenge\0_ChallengeMixin.lua
+Plus_Challenge\1_Init.lua
+Plus_Challenge\AvailableRewards.lua
+Plus_Challenge\Blizzard_ChallengesUI.lua
+Plus_Challenge\Blizzard_WeeklyRewards.lua
+Plus_Challenge\ChallengesKeystoneFrame.lua
+Plus_Challenge\Is_HuSandro.lua
+Plus_Challenge\Say_ChallengeComplete.lua
+Plus_Challenge\m_Blizzard_ChallengesUI.lua
+Plus_Challenge\t_Blizzard_ChallengesUI.lua
 
 ##邮件，增加
 Plus_Mail\1_mail.lua

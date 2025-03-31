@@ -1340,8 +1340,15 @@ local function Init()
 
 
 
-
+    Init=function()end
 end
+
+
+
+
+
+
+
 
 
 function WoWTools_ChallengeMixin:Blizzard_ChallengesUI()

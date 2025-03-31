@@ -1,7 +1,7 @@
 --########################
 --打开周奖励时，提示拾取专精
 --########################
-local WeekRewardLookFrame
+local Frame
 
 
 
@@ -10,11 +10,10 @@ local WeekRewardLookFrame
 
 local function Init()
     local hasReward= C_WeeklyRewards.HasAvailableRewards()
-    if hasReward==nil then
+    print(hasReward)
+    if not hasReward then
         Init=function()end
         return
-    elseif hasReward==false then
-        return true
 
     elseif hasReward then
         print(
@@ -23,16 +22,39 @@ local function Init()
         )
     end
 
-    WeekRewardLookFrame= CreateFrame('Frame')
-    WeekRewardLookFrame:SetSize(40,40)
-    WeekRewardLookFrame:SetPoint("CENTER", -100, 60)
-    WeekRewardLookFrame:SetShown(false)
+    Frame= CreateFrame('Frame')
 
-    WeekRewardLookFrame:RegisterEvent('PLAYER_UPDATE_RESTING')
-    WeekRewardLookFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    Frame.texture= Frame:CreateTexture(nil, 'BACKGROUND')
+    Frame.texture:SetAllPoints()
+
+    local border= Frame:CreateTexture(nil,'BORDER')
+    border:SetSize(60,60)
+    border:SetPoint('CENTER',3,-3)
+    border:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
+
+    Frame:SetSize(40,40)
+    Frame:SetPoint("CENTER", -100, 60)
+    Frame:SetShown(false)
+
+    Frame:RegisterEvent('PLAYER_UPDATE_RESTING')
+    Frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+
+    Frame:SetScript('OnEnter', function(frame)
+        frame:set_Show(false)
+        print(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
+            '|cffff00ff',
+            WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION
+        )
+    end)
+
+    Frame:SetScript('OnHide', function(self)
+        if self.time then self.time:Cancel() end
+        WoWTools_CooldownMixin:Setup(self)
+    end)
 
 
-    function WeekRewardLookFrame:set_Event()
+    function Frame:set_Event()
         if not C_WeeklyRewards.HasAvailableRewards() then
             self:UnregisterAllEvents()
             self:SetShown(false)
@@ -45,33 +67,14 @@ local function Init()
         end
     end
 
-    function WeekRewardLookFrame:set_Show(show)
-        if self.time and not self.time:IsCancelled() then
-            self.time:Cancel()
-        end
+    function Frame:set_Show(show)
         self:SetShown(show)
         WoWTools_CooldownMixin:Setup(self, nil, show and 4 or 0, nil, true, true, true)
     end
 
-    function WeekRewardLookFrame:set_Texture()
-        if not self.texture then
-            self.texture= self:CreateTexture(nil, 'BACKGROUND')
-            self.texture:SetAllPoints(self)
-            self:SetScript('OnEnter', function(frame)
-                frame:set_Show(false)
-                print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
-                    '|cffff00ff',
-                    WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION
-                )
-            end)
-            local texture= self:CreateTexture(nil,'BORDER')
-            texture:SetSize(60,60)
-            texture:SetPoint('CENTER',3,-3)
-            texture:SetAtlas('UI-HUD-UnitFrame-TotemFrame-2x')
-        end
+    function Frame:set_Texture()
         self:set_Show(true)
-        
+
         self.time= C_Timer.NewTimer(4, function()
             self:SetShown(false)
         end)
@@ -87,16 +90,17 @@ local function Init()
         SetPortraitToTexture(self.texture, texture or 0)
     end
 
-    WeekRewardLookFrame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
+    Frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
         if event=='PLAYER_UPDATE_RESTING' or event=='PLAYER_ENTERING_WORLD' then
             self:set_Event()
 
         elseif (spellID==392391 or spellID==449976) and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then
             self:set_Texture()
+            self:UnregisterAllEvents()
         end
     end)
 
-    WeekRewardLookFrame:set_Event()
+    Frame:set_Event()
 
     Init=function()end
 end
