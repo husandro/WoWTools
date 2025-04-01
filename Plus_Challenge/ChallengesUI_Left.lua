@@ -271,15 +271,10 @@ print(btn.pve)
         reAtlas=true,
     } or ''))
 
-    btn.pve:SetText( 'aaaaaaa')
-    btn.mythic:SetText('aaaaaaa')    
-    btn.world:SetText( 'aaaaaaaaaaa')
-    btn.pvp:SetText( 'aaaaaa')
-
-    --[[btn.pve:SetText(data.pve or '')
+    btn.pve:SetText(data.pve or '')
     btn.mythic:SetText(data.mythic or '')
     btn.pvp:SetText(data.pvp or '')
-    btn.world:SetText(data.world or '')]]
+    btn.world:SetText(data.world or '')
     
 
     btn.Name:SetText(data.itemLink or '')
