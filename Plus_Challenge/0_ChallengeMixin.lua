@@ -22,7 +22,7 @@ function WoWTools_ChallengeMixin:GetRewardText(type)--得到，周奖励，信�
         end
     end
     if text=='0/0/0' then
-        text= nil
+        --text= nil
     end
     return text
 end

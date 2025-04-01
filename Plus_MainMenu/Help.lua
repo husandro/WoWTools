@@ -15,7 +15,7 @@
 
 
 local function Init()
-    local frame= CreateFrame('Frame')
+    local frame= CreateFrame('Frame', MainMenuMicroButton)
 
     frame:SetPoint('TOP')
     frame:SetSize(1,1)
@@ -89,7 +89,7 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    --Blizzard_GameMenu/Standard/GameMenuFrame.lua
+--Blizzard_GameMenu/Standard/GameMenuFrame.lua
     MainMenuMicroButton:HookScript('OnClick', function(_, d)
         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
             if C_AddOns.GetNumAddOns() > 0 then
@@ -130,6 +130,14 @@ local function Init()
             WoWTools_Mixin:Call(ShowMacroFrame)
         end
     end)
+
+--self.NotificationOverlay:SetShown(C_SocialRestrictions.CanReceiveChat() and (self:HasUnseenInvitations() or CommunitiesUtil.DoesAnyCommunityHaveUnreadMessages()));
+    if MainMenuMicroButton.NotificationOverlay then
+        MainMenuMicroButton.NotificationOverlay:ClearAllPoints()
+        MainMenuMicroButton.NotificationOverlay:SetSize(1,1)
+        MainMenuMicroButton.NotificationOverlay:SetPoint('CENTER', MainMenuMicroButton, 0,4)
+        MainMenuMicroButton.NotificationOverlay:SetAlpha(0.7)
+    end
 
     Init=function()end
 end

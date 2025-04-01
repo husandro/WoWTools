@@ -114,8 +114,8 @@ local function Int_All_Player()--所以角色信息
         if
             info.region==WoWTools_DataMixin.Player.Region
             and (guid~=WoWTools_DataMixin.Player.GUID or WoWTools_DataMixin.Player.husandro)
-            and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld) 
-        
+            and (link or weekPvE or weekMythicPlus or weekPvP or weekWorld)
+
         then
 
             local _, englishClass, _, _, _, namePlayer, realm = GetPlayerInfoByGUID(guid)
@@ -129,7 +129,7 @@ local function Int_All_Player()--所以角色信息
 
                 btn.link=link
 
-                
+
 
                 local score= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
                 local weekNum= info.Keystone.weekNum and info.Keystone.weekNum>0 and info.Keystone.weekNum
@@ -192,17 +192,151 @@ local function Int_All_Player()--所以角色信息
 end
 
 
+--[[
+local ScrollBox = CreateFrame("Frame", nil, UIParent, "WowScrollBoxList")
+ScrollBox:SetPoint("CENTER")
+ScrollBox:SetSize(300, 300)
 
+local ScrollBar = CreateFrame("EventFrame", nil, UIParent, "MinimalScrollBar")
+ScrollBar:SetPoint("TOPLEFT", ScrollBox, "TOPRIGHT")
+ScrollBar:SetPoint("BOTTOMLEFT", ScrollBox, "BOTTOMRIGHT")
 
+local DataProvider = CreateDataProvider()
+local ScrollView = CreateScrollBoxListLinearView()
+ScrollView:SetDataProvider(DataProvider)
 
+ScrollUtil.InitScrollBoxListWithScrollBar(ScrollBox, ScrollBar, ScrollView)
 
-
-
-
-local function Init_List()
-    Frame.view:SetElementInitializer('Frame')
+-- The 'button' argument is the frame that our data will inhabit in our list
+-- The 'data' argument will be the data table mentioned above
+local function Initializer(button, data)
+    local playerName = data.PlayerName
+    local playerClass = data.PlayerClass
+    button:SetScript("OnClick", function()
+        print(playerName .. ": " .. playerClass)
+    end)
+    button:SetText(playerName)
 end
 
+-- The first argument here can either be a frame type or frame template. We're just passing the "UIPanelButtonTemplate" template here
+ScrollView:SetElementInitializer("UIPanelButtonTemplate", Initializer)
+
+ -- Optional Resetter function which you can use to reset your frame or data element.
+local function Resetter(frame, data)
+   
+    -- Insert reset code here
+
+end
+ScrollView:SetElementResetter(Resetter)
+
+local myData = {
+    PlayerName = "Ghost",
+    PlayerClass = "Priest"
+}
+
+DataProvider:Insert(myData)
+]]
+
+
+
+
+
+
+local function Create_Label(btn)
+    if btn.pve then
+        return
+    end
+
+    btn.pve= WoWTools_LabelMixin:Create(btn, {size=12, mouse=true, color={r=1,g=1,b=1}})
+    btn.pve:SetPoint('TOPRIGHT')
+
+    btn.mythic= WoWTools_LabelMixin:Create(btn, {size=12, mouse=true, color={r=1,g=1,b=1}})
+    btn.mythic:SetPoint('TOPLEFT', btn.pve, 'BOTTOMLEFT')
+
+    btn.world= WoWTools_LabelMixin:Create(btn, {size=12, mouse=true, color={r=1,g=1,b=1}})
+    btn.world:SetPoint('TOPLEFT', btn.pvp, 'BOTTOMLEFT')
+
+    btn.pvp= WoWTools_LabelMixin:Create(btn, {size=12, mouse=true, color={r=1,g=1,b=1}})
+    btn.pvp:SetPoint('TOPLEFT', btn.mythic, 'BOTTOMLEFT')
+end
+
+
+
+
+local function Initializer(btn, data)
+    Create_Label(btn)
+print(btn.pve)
+    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon({
+        guid=data.guid,
+        reAtlas=true,
+    } or ''))
+
+    btn.pve:SetText( 'aaaaaaa')
+    btn.mythic:SetText('aaaaaaa')    
+    btn.world:SetText( 'aaaaaaaaaaa')
+    btn.pvp:SetText( 'aaaaaa')
+
+    --[[btn.pve:SetText(data.pve or '')
+    btn.mythic:SetText(data.mythic or '')
+    btn.pvp:SetText(data.pvp or '')
+    btn.world:SetText(data.world or '')]]
+    
+
+    btn.Name:SetText(data.itemLink or '')
+
+    btn.itemLink= data.itemLink
+
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
+        WoWTools_SetTooltipMixin:Frame(self)
+    end)
+    btn:SetScript('OnHide', function(self)
+        self.Icon:SetTexture(0)
+        self.Name:SetText('')
+
+        self.settings=nil
+        self.itemLink=nil
+
+        self.pve:SetText('')
+        self.mythic:SetText('')
+        self.pvp:SetText('')
+        self.world:SetText( '')
+        
+        self:SetScript('OnLeave', nil)
+        self:SetScript('OnEnter', nil)
+        self:SetScript('OnHide', nil)
+    end)
+
+end
+
+
+
+
+
+
+local function Set_List()
+    local data = CreateDataProvider()
+    for guid, info in pairs(WoWTools_WoWDate) do
+        if info.Keystone.link then
+            print(
+                info.Keystone.weekPvE,
+               info.Keystone.weekMythicPlus,
+               info.Keystone.weekPvP,
+                info.Keystone.weekWorld
+            )
+            data:Insert({
+                guid=guid,
+                itemLink= info.Keystone.link,
+                pve= info.Keystone.weekPvE,
+                mythic= info.Keystone.weekMythicPlus,
+                pvp= info.Keystone.weekPvP,
+                world= info.Keystone.weekWorld,
+            })
+        end
+    end
+    Frame.view:SetDataProvider(data,  ScrollBoxConstants.RetainScrollPosition)
+   -- Frame:FullUpdate()
+end
 
 
 local function Init()
@@ -220,29 +354,38 @@ local function Init()
 --显示背景 Background
     WoWTools_TextureMixin:CreateBackground(Frame, {isAllPoint=true})
 
+
+
     Frame.ScrollBar  = CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 8,0)
     Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT",8,12)
 
     Frame.view = CreateScrollBoxListLinearView()
+    Frame.view:SetDataProvider(CreateDataProvider())
+
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame, Frame.ScrollBar, Frame.view)
 
-    
+    Frame.view:SetElementInitializer('LargeItemButtonTemplate', Initializer)
+
+
+
 
 
     function Frame:Settings()
         --self:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT', Save().leftX or -4, Save().leftY or 0)
-        self:SetWidth(200)
+        self:SetWidth(250)
         self:SetShown(not Save().hideLeft)
         self:SetScale(Save().leftScale or 1)
      end
 
-    Frame:SetScript('OnShow', function(self)
-        Init_List()
-    end)
-    Frame:SetScript('OnHide', function(self)
 
+
+
+    Frame:SetScript('OnShow', function()
+        Set_List()
     end)
+
+
 
     Frame:Settings()
 
