@@ -247,6 +247,7 @@ local function Create_Label(btn)
         return
     end
 
+    btn.NameFrame:SetPoint('RIGHT')
     btn.pve= WoWTools_LabelMixin:Create(btn, {size=12, mouse=true, color={r=1,g=1,b=1}})
     btn.pve:SetPoint('TOPRIGHT')
 
@@ -264,8 +265,26 @@ end
 
 
 local function Initializer(btn, data)
-    Create_Label(btn)
-print(btn.pve)
+    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon({
+        guid=data.guid,
+        reAtlas=true,
+    } or ''))
+
+    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
+
+    btn.Name:SetText(data.itemLink)
+
+    btn.Name2:SetText(
+        (WoWTools_UnitMixin:GetFullName(nil, nil, data.guid) or '')--取得全名
+        ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
+    )
+   
+    btn.Name2:SetTextColor(col.r, col.g, col.b)
+
+    btn.itemLink= data.itemLink
+    
+    --[[Create_Label(btn)
+
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon({
         guid=data.guid,
         reAtlas=true,
@@ -300,7 +319,7 @@ print(btn.pve)
         self:SetScript('OnLeave', nil)
         self:SetScript('OnEnter', nil)
         self:SetScript('OnHide', nil)
-    end)
+    end)]]
 
 end
 
@@ -312,15 +331,12 @@ end
 local function Set_List()
     local data = CreateDataProvider()
     for guid, info in pairs(WoWTools_WoWDate) do
+     
         if info.Keystone.link then
-            print(
-                info.Keystone.weekPvE,
-               info.Keystone.weekMythicPlus,
-               info.Keystone.weekPvP,
-                info.Keystone.weekWorld
-            )
+           
             data:Insert({
                 guid=guid,
+                faction=info.faction,
                 itemLink= info.Keystone.link,
                 pve= info.Keystone.weekPvE,
                 mythic= info.Keystone.weekMythicPlus,
@@ -360,7 +376,7 @@ local function Init()
 
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame, Frame.ScrollBar, Frame.view)
 
-    Frame.view:SetElementInitializer('LargeItemButtonTemplate', Initializer)
+    Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
 
 

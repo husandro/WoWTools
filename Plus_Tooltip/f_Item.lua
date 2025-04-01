@@ -218,7 +218,7 @@ local function Set_Item_Num(tooltip, itemID)
         table.sort(new, function(n1, n2) return n1.num> n2.num end)
 
         for index, info in pairs(new) do
-            local col= select(5, WoWTools_UnitMixin:Get_Unit_Color(nil, info.guid))
+            local col= select(5, WoWTools_UnitMixin:GetColor(nil, info.guid))
 
             tooltip:AddDoubleLine(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),

@@ -25,7 +25,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     local source= data and data.sourceUnit
     if source then--来源
         if source then
-            local r, g ,b , col= select(2, WoWTools_UnitMixin:Get_Unit_Color(source, nil))
+            local r, g ,b , col= select(2, WoWTools_UnitMixin:GetColor(source, nil))
             if r and g and b and tooltip.backgroundColor then
                 tooltip.backgroundColor:SetColorTexture(r, g, b, 0.3)
                 tooltip.backgroundColor:SetShown(true)

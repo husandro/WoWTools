@@ -229,7 +229,7 @@ local function Init_Menu(self, root)
             end, tab)
 
             sub2:SetTooltip(function(tooltip, description)
-                col= select(5, WoWTools_UnitMixin:Get_Unit_Color(nil, description.data.guid))
+                col= select(5, WoWTools_UnitMixin:GetColor(nil, description.data.guid))
                 local find
                 for _, msg in pairs(description.data.msg) do
                     local player= msg.player and msg.player~=WoWTools_DataMixin.Player.name_realm and msg.player
@@ -255,7 +255,7 @@ local function Init_Menu(self, root)
             end)
 
             sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function(data)
-                col= select(5, WoWTools_UnitMixin:Get_Unit_Color(nil, data.guid)) or '|cffffffff'
+                col= select(5, WoWTools_UnitMixin:GetColor(nil, data.guid)) or '|cffffffff'
                 local text= '|cff9e9e9e'..WoWTools_DataMixin.Player.name_realm..'|r'..WoWTools_DataMixin.Icon.Player..' <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n|n'
                 local playerList={}
                 for _, msg in pairs(data.msg) do

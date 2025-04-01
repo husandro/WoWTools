@@ -22,7 +22,7 @@ function WoWTools_UnitMixin:Get_NPC_Name()
         local name= GetUnitName('npc')
         if name then
             return
-                select(5, self:Get_Unit_Color('npc', nil))
+                select(5, self:GetColor('npc', nil))
                 ..WoWTools_TextMixin:CN(name, {unit='npc', isName=true})
                 ..'|r'
         end
@@ -32,7 +32,7 @@ end
 
 
 --职业颜色
-function WoWTools_UnitMixin:Get_Unit_Color(unit, guid)
+function WoWTools_UnitMixin:GetColor(unit, guid)
     local r, g, b, hex, classFilename
     if UnitExists(unit) then
         if UnitIsUnit('player', unit) then

@@ -121,7 +121,7 @@ local function Get_Player_Info(_, guid)--取得玩家信息
         return
     end
 
-    local r, g, b, hex= select(2, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
+    local r, g, b, hex= select(2, WoWTools_UnitMixin:GetColor(unit, nil))
     WoWTools_DataMixin.UnitItemLevel[guid] = {--玩家装等
         itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel),
         specID= GetInspectSpecialization(unit),
@@ -285,9 +285,10 @@ local function Update_Bag_Items()
         for slotID=1, C_Container.GetContainerNumSlots(bagID) do
             local itemID = C_Container.GetContainerItemID(bagID, slotID)
             if itemID then
+
                 if C_Item.IsItemKeystoneByID(itemID) then--挑战
                     WoWTools_WoWDate[guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
-
+                    print(WoWTools_WoWDate[guid].Keystone.link)
                 else
                     local bag=C_Item.GetItemCount(itemID)--物品ID
                     WoWTools_WoWDate[guid].Item[itemID]={
@@ -611,7 +612,9 @@ EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", RequestRaidInfo)
 EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", Update_Currency)
 
 --更新物品
-EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", Update_Bag_Items)
+EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", function()
+    Update_Bag_Items()
+end)
 
 --副本
 EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", Update_Instance)
@@ -635,13 +638,13 @@ EventRegistry:RegisterFrameEventAndCallback("NEUTRAL_FACTION_SELECT_RESULT", fun
 end)
 
 --取得装等, 更新自已
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_EQUIPMENT_CHANGED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_EQUIPMENT_CHANGED", function()
     WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_SPECIALIZATION_CHANGED", function()
     WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_AVG_ITEM_LEVEL_UPDATE", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_AVG_ITEM_LEVEL_UPDATE", function()
     WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得装等
 end)
 
@@ -654,7 +657,9 @@ EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_END", function(_, arg1)
 end)]]
 
 --战网，好友GUID
-EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", Get_WoW_GUID_Info)
+EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", function()
+    Get_WoW_GUID_Info()
+end)
 
 EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, arg1)
     if arg1 then
@@ -725,19 +730,19 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWTools_WoWDate[guid].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[guid].battleTag
 
 
-    for guid, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
+    for guid2, tab in pairs(WoWTools_WoWDate) do--清除不是本周数据
         if tab.Keystone.week ~=WoWTools_DataMixin.Player.Week then
-            WoWTools_WoWDate[guid].Keystone={week=WoWTools_DataMixin.Player.Week}
+            WoWTools_WoWDate[guid2].Keystone={week=WoWTools_DataMixin.Player.Week}
         end
         if tab.Instance.week~=WoWTools_DataMixin.Player.Week or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
-            WoWTools_WoWDate[guid].Instance={ins={}, day=day}
+            WoWTools_WoWDate[guid2].Instance={ins={}, day=day}
         end
         if (tab.Worldboss.week~=WoWTools_DataMixin.Player.Week) or (PlayerGetTimerunningSeasonID() and tab.Keystone.day and tab.Keystone.day~=day) then
-            WoWTools_WoWDate[guid].Worldboss={boss={}, day=day}
+            WoWTools_WoWDate[guid2].Worldboss={boss={}, day=day}
         end
 
         if tab.Rare.day~=day then
-            WoWTools_WoWDate[guid].Rare={day=day,boss={}}
+            WoWTools_WoWDate[guid2].Rare={day=day,boss={}}
         end
     end
 
@@ -754,7 +759,7 @@ end)
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(owner)
     Get_Info_Challenge()--挑战
 
     --C_MajorFactions.RequestCatchUpState()
@@ -765,12 +770,12 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(ow
     C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
     RequestRaidInfo()
 
-    C_Calendar.OpenCalendar()
+    --C_Calendar.OpenCalendar()
     WoWTools_UnitMixin:GetNotifyInspect(nil, 'player')--取得,自已, 装等
     GetGroupGuidDate()--队伍数据收集
 
-    Update_Currency()--{currencyID = 数量}
-    Update_Bag_Items()
+    --Update_Currency()--{currencyID = 数量}
+    --Update_Bag_Items()
     Set_Money()--钱
     Update_Challenge_Mode()
     --################
@@ -789,6 +794,6 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(ow
 
     Get_WoW_GUID_Info()--战网，好友GUID
 
-    EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
+    EventRegistry:UnregisterCallback('LOADING_SCREEN_DISABLED', owner)
 end)
 

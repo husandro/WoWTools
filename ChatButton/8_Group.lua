@@ -457,7 +457,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             if maxHP and role then
                 info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
                 info.maxHP= maxHP
-                info.col= select(5, WoWTools_UnitMixin:Get_Unit_Color(unit, nil))
+                info.col= select(5, WoWTools_UnitMixin:GetColor(unit, nil))
                 if uiMapID then--不在同地图
                     local text, mapID=WoWTools_MapMixin:GetUnit(unit)
                     if text and mapID and mapID~=uiMapID then

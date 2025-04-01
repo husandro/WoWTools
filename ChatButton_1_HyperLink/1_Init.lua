@@ -1,5 +1,5 @@
 local addName
-WoWTools_HyperLink={}
+
 
 local P_Save={
 
