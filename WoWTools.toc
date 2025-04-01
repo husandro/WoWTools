@@ -576,7 +576,7 @@ ChatButton\0_1_Button_ChatMixin.lua
 ChatButton\0_2_Init_Button.lua
 
 ##超链接， 欢迎, 一些其他功能
-ChatButton\0_HyperLinkMixin.lua
+ChatButton_1_HyperLink\0_HyperLinkMixin.lua
 ChatButton_1_HyperLink\1_Init.lua
 ##ChatButton_1_HyperLink\2_Button.lua
 ChatButton_1_HyperLink\3_Menu.lua
