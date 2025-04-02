@@ -1,12 +1,12 @@
 WoWTools_DataMixin= {
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false,
-    
+
     isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and not IsTestBuild(),
     --isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
     --isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC,
     --IsPublicBuild()
-    
+
     LeftButtonDown = C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
     RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
     ExpansionLevel= GetExpansionLevel(),--版本数据
@@ -87,8 +87,8 @@ WoWTools_DataMixin.Icon={
     --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=WoWTools_DataMixin.Player.GUID , race=nil , sex=WoWTools_DataMixin.Player.Sex , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
     icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools:0|t',
-    
-    
+
+
     right='|A:NPE_RightClick:0:0|a',
     left='|A:NPE_LeftClick:0:0|a',
     mid='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
@@ -105,7 +105,7 @@ WoWTools_DataMixin.Icon={
     Alliance='charcreatetest-logo-alliance',
     Horde='charcreatetest-logo-horde',
     Neutral='nameplates-icon-flag-neutral',
-    
+
 --ColorConstants.lua
     [Enum.ItemQuality.Poor] = "dressingroom-itemborder-gray",--0  C_Item.GetItemQualityByID(ID) 方块
 	[Enum.ItemQuality.Common] = "dressingroom-itemborder-white",

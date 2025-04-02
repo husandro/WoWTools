@@ -1,4 +1,4 @@
-if (not WoWTools_DataMixin.Player.IsMaxLevel and not WoWTools_DataMixin.Player.husandro) or PlayerGetTimerunningSeasonID() then
+if PlayerGetTimerunningSeasonID() then
     WoWTools_DataMixin.ChallengesSpellTabs={}
     return
 end

@@ -421,7 +421,7 @@ Plus_Challenge\ChallengesUI_Menu.lua
 
 Plus_Challenge\z_ChallengesKeystoneFrame.lua
 Plus_Challenge\z_Blizzard_WeeklyRewards.lua
-Plus_Challenge\z_Rewards.lua
+Plus_Challenge\z_AvailableRewards.lua
 Plus_Challenge\z_Say_ChallengeComplete.lua
 Plus_Challenge\z_Is_HuSandro.lua
 Plus_Challenge\m_Blizzard_ChallengesUI.lua

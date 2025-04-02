@@ -1,6 +1,3 @@
-local addName
-
-
 local P_Save={
 
     linkIcon=true, --超链接，图标
@@ -100,11 +97,10 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
 
-            addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
-            LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', addName)
+            WoWTools_HyperLink.addName= '|A:voicechat-icon-STT-on:0:0|a'..(WoWTools_DataMixin.onlyChinese and '超链接图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMMUNITIES_INVITE_MANAGER_COLUMN_TITLE_LINK, EMBLEM_SYMBOL))
+            LinkButton= WoWTools_ChatMixin:CreateButton('HyperLink', WoWTools_HyperLink.addName)
 
             WoWTools_HyperLink.LinkButton= LinkButton
-            WoWTools_HyperLink.addName= addName
 
             if LinkButton then
                 Init()
