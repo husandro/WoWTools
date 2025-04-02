@@ -18,7 +18,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
     <Layers>
         <Layer level="BACKGROUND">
-            <Texture parentKey="Background" atlas="QuestItemBorder" setAllPoints="true" alpha="0.7">
+            <Texture parentKey="Background" atlas="QuestItemBorder" setAllPoints="true">
                 <TexCoords left="1" right="0" top="0" bottom="1" />
             </Texture>
             <Texture parentKey="Select" atlas="auctionhouse-nav-button-select" setAllPoints="true" hidden='true' alpha="0.7"/>

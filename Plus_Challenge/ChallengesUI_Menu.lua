@@ -5,12 +5,76 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2
+    local sub, sub2, name
     local isInCombat= InCombatLockdown()
---副本信息
+
+
+    name= '|T525134:0|t'..(WoWTools_DataMixin.Player.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
     sub= root:CreateCheckbox(
-        '|A:QuestLegendary:0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '副本信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, INFO)),
+        name,
+    function()
+        return not Save().hideLeft
+    end, function()
+        Save().hideLeft= not Save().hideLeft and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end)
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().leftWidth or 230
+        end, setValue=function(value)
+            Save().leftWidth=value
+            WoWTools_ChallengeMixin:ChallengesUI_Left()
+        end,
+        name=WoWTools_DataMixin.Player.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
+        minValue=100,
+        maxValue=640,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().leftAlpha or 0.75
+        end, setValue=function(value)
+            Save().leftAlpha=value
+            WoWTools_ChallengeMixin:ChallengesUI_Left()
+        end,
+        name=WoWTools_DataMixin.Player.onlyChinese and '透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step='0.05',
+        bit='%.2f',
+    })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().leftScale or 1
+    end, function(value)
+        Save().leftScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end, function()
+        Save().leftScale=nil
+        Save().leftWidth=nil
+        Save().leftAlpha=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end)
+
+--sub 提示
+    sub:CreateDivider()
+    sub:CreateTitle(name)
+
+
+
+
+--副本信息
+    name='|A:QuestLegendary:0:0|a'..(WoWTools_DataMixin.Player.onlyChinese and '副本信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, INFO))
+    sub= root:CreateCheckbox(
+        name,
     function()
         return not Save().hideIns
     end, function()
@@ -19,18 +83,38 @@ local function Init_Menu(self, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
         return Save().insScale or 1
     end, function(value)
-        Save().insScale= value
+        Save().insScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+    end, function()
+        Save().insScale=nil
         WoWTools_ChallengeMixin:ChallengesUI_Porta()
     end)
 
+--sub 提示
+    sub:CreateDivider()
+    sub:CreateTitle(name)
+
+
+
+
+
+
+
+
+
+
+
 --传送门
-    sub= root:CreateCheckbox(
-        '|A:WarlockPortal-Yellow-32x32:0:0|a'
+    name= '|A:WarlockPortal-Yellow-32x32:0:0|a'
         ..'|cnRED_FONT_COLOR:'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '传送门' or SPELLS),
+        ..(WoWTools_DataMixin.Player.onlyChinese and '传送门' or SPELLS)
+
+    sub= root:CreateCheckbox(
+       name,
     function()
         return not Save().hidePort
     end, function()
@@ -49,30 +133,133 @@ local function Init_Menu(self, root)
     sub:SetEnabled(not isInCombat)
 
 --缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
         return Save().portScale or 1
     end, function(value)
-        Save().portScale= value
+        Save().portScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+    end, function()
+        Save().portScale=nil
         WoWTools_ChallengeMixin:ChallengesUI_Porta()
     end)
+--sub 提示
+    sub:CreateDivider()
+    sub:CreateTitle(name)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--宏伟宝库，内，左侧
+    local hasRewar= C_WeeklyRewards.HasAvailableRewards()
+    name= (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
+        ..'|A:'..(WoWTools_DataMixin.Player.Faction=='Alliance' and 'activities-chest-sw' or 'activities-chest-org')..':0:0|a'
+        ..(WoWTools_DataMixin.Player.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
+        ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or '')
+
+    sub= root:CreateCheckbox(
+        name,
+    function()
+        return not Save().hideActivities
+    end, function()
+        Save().hideActivities= not Save().hideActivities and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Activities()
+    end)
+    sub:SetTooltip(function(tooltip)
+        WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)--周奖励，提示
+    end)
+
+    --打开
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP,
+    function()
+        return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
+    end, WoWTools_LoadUIMixin.WeeklyRewards)
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.Player.onlyChinese and '点击预览宏伟宝库' or WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS)
+    end)
+
+--X
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().activitiesX or 10
+        end, setValue=function(value)
+            Save().activitiesX=value
+            WoWTools_ChallengeMixin:ChallengesUI_Activities()
+        end,
+        name='X',
+        minValue=-1024,
+        maxValue=1024,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+    --Y
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().activitiesY or -53
+        end, setValue=function(value)
+            Save().activitiesY=value
+            WoWTools_ChallengeMixin:ChallengesUI_Activities()
+        end,
+        name='X',
+        minValue=-1024,
+        maxValue=1024,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().activitiesScale or 1
+    end, function(value)
+        Save().activitiesScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Activities()
+    end, function()
+        Save().activitiesScale=nil
+        Save().activitiesX=nil
+        Save().activitiesY=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Activities()
+    end)
+
+--sub 提示
+    sub:CreateDivider()
+    sub:CreateTitle(name)
+
+
+
+
+
+
+
+
+
 
 
 --挑战信息 right
+    name= '|A:challenges-medal-gold:0:0|a'
+        ..(WoWTools_DataMixin.Player.onlyChinese and '挑战信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, INFO))
     sub= root:CreateCheckbox(
-        '|A:challenges-medal-gold:0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '挑战信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, INFO)),
+        name,
     function()
         return not Save().hideRight
     end, function()
         Save().hideRight= not Save().hideRight and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Right()
-    end)
-
---缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save().rightScale or 1
-    end, function(value)
-        Save().rightScale= value
         WoWTools_ChallengeMixin:ChallengesUI_Right()
     end)
 
@@ -108,80 +295,32 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
-
---宏伟宝库
-    local hasRewar= C_WeeklyRewards.HasAvailableRewards()
-    sub= root:CreateCheckbox(
-        (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
-        ..'|A:'..(WoWTools_DataMixin.Player.Faction=='Alliance' and 'activities-chest-sw' or 'activities-chest-org')..':0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
-        ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or ''),
-    function()
-        return not Save().hideActivities
-    end, function()
-        Save().hideActivities= not Save().hideActivities and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Activities()
-    end)
-    sub:SetTooltip(function(tooltip)
-        WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)--周奖励，提示
-    end)
-
---打开
-    sub2=sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP,
-    function()
-        return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
-    end, WoWTools_LoadUIMixin.WeeklyRewards)
-    sub2:SetTooltip(function (tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.Player.onlyChinese and '点击预览宏伟宝库' or WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS)
-    end)
-
 --缩放
-    sub:CreateDivider()
-    WoWTools_MenuMixin:Scale(self, sub, function()
-        return Save().activitiesScale or 1
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().rightScale or 1
     end, function(value)
-        Save().activitiesScale= value
-        WoWTools_ChallengeMixin:ChallengesUI_Activities()
+        Save().rightScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
+    end, function()
+        Save().rightScale=nil
+        Save().rightX=nil
+        Save().rightY=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
     end)
 
---X
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().activitiesX or 10
-        end, setValue=function(value)
-            Save().activitiesX=value
-            WoWTools_ChallengeMixin:ChallengesUI_Activities()
-        end,
-        name='X',
-        minValue=-1024,
-        maxValue=1024,
-        step=1,
-    })
-    sub:CreateSpacer()
+--sub 提示
+    sub:CreateDivider()
+    sub:CreateTitle(name)
 
---Y
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().activitiesY or -53
-        end, setValue=function(value)
-            Save().activitiesY=value
-            WoWTools_ChallengeMixin:ChallengesUI_Activities()
-        end,
-        name='X',
-        minValue=-1024,
-        maxValue=1024,
-        step=1,
-    })
-    sub:CreateSpacer()
+
 
 
 --其他信息
+    name= '|A:ChallengeMode-Chest:0:0|a'
+        ..(WoWTools_DataMixin.Player.onlyChinese and '其他信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, INFO))
     sub= root:CreateCheckbox(
-        '|A:ChallengeMode-Chest:0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '其他信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, INFO)),
+        name,
     function()
         return not Save().hideTips
     end, function()
@@ -190,12 +329,20 @@ local function Init_Menu(self, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
         return Save().tipsScale or 1
     end, function(value)
-        Save().tipsScale= value
+        Save().tipsScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+    end, function()
+        Save().tipsScale=nil
         WoWTools_ChallengeMixin:ChallengesUI_Porta()
     end)
+
+--sub 提示
+    sub:CreateDivider()
+    sub:CreateTitle(name)
 
 end
 

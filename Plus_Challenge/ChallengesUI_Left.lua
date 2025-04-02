@@ -5,8 +5,8 @@ end
 local Frame
 local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '')
 
-
-
+local SearchBox
+local IsInSearch
 
 
 local function Initializer(btn, data)
@@ -36,17 +36,39 @@ local function Initializer(btn, data)
         or 'StoryHeader-BG'
     )
 
-    btn.RaidText:SetText(data.pve or '|cff8282820/0/0')
-    btn.DungeonText:SetText(data.mythic or '|cff8282820/0/0')
-    btn.WorldText:SetText(data.world or '|cff8282820/0/0')
-    btn.PvPText:SetText(data.pvp or '|cff8282820/0/0')
+    btn.RaidText:SetText(data.pve or '|cff8282822/4/8')
+    btn.DungeonText:SetText(data.mythic or '|cff8282822/4/8')
+    btn.WorldText:SetText(data.world or '|cff8282822/4/8')
+    btn.PvPText:SetText(data.pvp or '|cff8282822/4/8')
 
-    btn.ScoreText:SetText((data.score==0 and '|cff828282' or '')..data.score)
-    btn.WeekNumText:SetText((data.weekNum==0 and '|cff828282' or '')..data.weekNum)
-    btn.WeekLevelText:SetText((data.weekLevel==0 and '|cff828282' or '')..data.weekLevel)
+--分数
+    btn.ScoreText:SetText(
+        data.score==0 and '|cff8282820' or
+        WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
+    )
+--本周次数
+    btn.WeekNumText:SetText(
+        (data.weekNum==0 and '|cff828282' or '')
+        ..data.weekNum
+    )
+
+--本周最高
+    btn.WeekLevelText:SetText(
+        (data.weekLevel==0 and '|cff828282' or '')
+        ..data.weekLevel
+    )
 
     btn.itemLink= data.itemLink
+
+    btn.Background:SetAlpha(Save().leftAlpha or 0.75)
 end
+
+
+
+
+
+
+
 
 
 local function Sort_Order(a,b)
@@ -68,34 +90,70 @@ end
 
 
 local function Set_List()
+    if IsInSearch then
+        return
+    else
+        IsInSearch=true
+    end
+
+
+    local findText= SearchBox:HasFocus() and SearchBox:GetText() or ''
+    findText= findText:upper()
+
+    local isFind= findText~=''
+    local num=0
+
     local data = CreateDataProvider()
-    
     for guid, info in pairs(WoWTools_WoWDate) do
+
         if info.Keystone.link then
-            data:Insert({
-                guid=guid,
-                name= WoWTools_UnitMixin:GetFullName(nil, nil, guid),
-                faction=info.faction,
-                itemLink= info.Keystone.link,
+            num= num+1
 
-                score= info.score or 0,
-                weekNum= info.weekNum or 0,
-                weekLevel= info.weekLevel or 0,
+            local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
+            local link= isFind and info.Keystone.link:match('|h%[(.-)]|h'):upper()
+
+            if (isFind and (link:find(findText) or name:find(findText))) or not isFind then
+
+                data:Insert({
+                    guid=guid,
+                    name= WoWTools_UnitMixin:GetFullName(nil, nil, guid),
+                    faction=info.faction,
+                    itemLink= info.Keystone.link,
+
+                    score= info.score or 0,
+                    weekNum= info.weekNum or 0,
+                    weekLevel= info.weekLevel or 0,
 
 
-                pve= info.Keystone.weekPvE,
-                mythic= info.Keystone.weekMythicPlus,
-                world= info.Keystone.weekWorld,
-                pvp= info.Keystone.weekPvP,
-            })
+                    pve= info.Keystone.weekPvE,
+                    mythic= info.Keystone.weekMythicPlus,
+                    world= info.Keystone.weekWorld,
+                    pvp= info.Keystone.weekPvP,
+                })
 
+            end
         end
     end
 
     data:SetSortComparator(Sort_Order)
 
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
+
+    SearchBox:SetShown(num>6)
+    IsInSearch= nil
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -110,30 +168,42 @@ local function Init()
         return
     end
 
-    Frame= CreateFrame('Frame', nil, ChallengesFrame, 'WowScrollBoxList')
+    Frame= CreateFrame('Frame', nil, ChallengesFrame)
     Frame:Hide()
 
     Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Frame:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT')
     Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMLEFT')
-    Frame:SetWidth(250)
 
-    Frame.ScrollBar= CreateFrame("EventFrame", nil, ChallengesFrame, "MinimalScrollBar")
+    SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
+        isSearch=true,
+    })
+    SearchBox:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 0,2)
+    SearchBox:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
+    SearchBox.Instructions:SetText(
+        WoWTools_DataMixin.Player.onlyChinese and '角色名称，副本'
+        or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
+    )
+    SearchBox:HookScript('OnTextChanged', Set_List)
+
+    Frame.ScrollList= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
+    Frame.ScrollList:SetAllPoints()
+
+    Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar:SetPoint("TOPRIGHT", Frame, "TOPLEFT", -6,-12)
     Frame.ScrollBar:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMLEFT", -6,12)
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
 
     Frame.view = CreateScrollBoxListLinearView()
-    ScrollUtil.InitScrollBoxListWithScrollBar(Frame, Frame.ScrollBar, Frame.view)
-
+    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollList, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
 
 
     function Frame:Settings()
-        self:SetWidth(250)
-        self:SetShown(not Save().hideLeft)
+        self:SetWidth(Save().leftWidth or 230)
         self:SetScale(Save().leftScale or 1)
+        self:SetShown(not Save().hideLeft)
     end
 
     Frame:SetScript('OnHide', function(self)
@@ -149,6 +219,7 @@ local function Init()
    -- WoWTools_TextureMixin:CreateBackground(Frame, {isAllPoint=true})
 
     Init= function()
+        Frame:SetShown(false)
         Frame:Settings()
     end
 end
@@ -167,4 +238,3 @@ end
 function WoWTools_ChallengeMixin:ChallengesUI_Left()
     Init()
 end
-

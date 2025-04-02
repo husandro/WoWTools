@@ -56,7 +56,7 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
     self.index= self.index+1
     local name= tab.name or format('%s%d', 'WoWTools_EditBox', self.index)
     local font= tab.font or 'ChatFontNormal'
-    local template= tab.Template--SearchBoxTemplate
+    local template= tab.isSearch and 'SearchBoxTemplate' or tab.Template--SearchBoxTemplate
     local setID= tab.setID
 
     local editBox= CreateFrame('EditBox', name, frame, template, setID)
@@ -64,10 +64,11 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
     editBox:ClearFocus()
     editBox:SetFontObject(font)
     editBox:SetTextColor(1,1,1)
+    editBox:SetHeight(23)
 
     editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
     editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
-
+    WoWTools_TextureMixin:SetSearchBox(editBox)
     return editBox
 end
 
