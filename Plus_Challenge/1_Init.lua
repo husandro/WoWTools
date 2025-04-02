@@ -34,14 +34,16 @@ end
 
 
 local function Init()
-
-    WoWTools_ChallengeMixin:ChallengesUI_Porta()--史诗钥石地下城, 界面
+    WoWTools_ChallengeMixin:ChallengesUI_Info()
+    WoWTools_ChallengeMixin:ChallengesUI_Porta()
     WoWTools_ChallengeMixin:ChallengesUI_Left()
     WoWTools_ChallengeMixin:ChallengesUI_Right()
     WoWTools_ChallengeMixin:ChallengesUI_Activities()
     WoWTools_ChallengeMixin:ChallengesUI_Menu()
 
     WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
+
+    Init=function()end
 end
 
 
@@ -95,17 +97,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_ChallengesUI' and WoWToolsSave then--挑战,钥石,插入界面
             Init()
-            
-            if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
-                self:UnregisterEvent(event)
-            end
 
         elseif arg1=='Blizzard_WeeklyRewards' and WoWToolsSave then
             WoWTools_ChallengeMixin:Blizzard_WeeklyRewards()
-
-            if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
-                self:UnregisterEvent(event)
-            end
         end
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then

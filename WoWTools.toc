@@ -415,7 +415,7 @@ Plus_Encounter\UI_ListInstances.lua
 ##史诗钥石地下城, 挑战增强
 Plus_Challenge\0_ChallengeMixin.lua
 Plus_Challenge\1_Init.lua
-
+Plus_Challenge\ChallengesUI_Info.lua
 Plus_Challenge\ChallengesUI_Porta.lua
 Plus_Challenge\ChallengesUI_Activities.lua
 Plus_Challenge\ChallengesUI_Left.xml

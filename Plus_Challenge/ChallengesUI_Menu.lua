@@ -37,9 +37,9 @@ local function Init_Menu(self, root)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return Save().leftAlpha or 0.75
+            return Save().leftBgAlpha or 0.75
         end, setValue=function(value)
-            Save().leftAlpha=value
+            Save().leftBgAlpha=value
             WoWTools_ChallengeMixin:ChallengesUI_Left()
         end,
         name=WoWTools_DataMixin.Player.onlyChinese and '透明度' or CHANGE_OPACITY,
@@ -60,7 +60,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().leftScale=nil
         Save().leftWidth=nil
-        Save().leftAlpha=nil
+        Save().leftBgAlpha=nil
         WoWTools_ChallengeMixin:ChallengesUI_Left()
     end)
 
@@ -146,8 +146,8 @@ local function Init_Menu(self, root)
 --sub 提示
     sub:CreateDivider()
     sub:CreateTitle(name)
-
-
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub)--重新加载UI
 
 
 

@@ -22,6 +22,12 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <TexCoords left="1" right="0" top="0" bottom="1" />
             </Texture>
             <Texture parentKey="Select" atlas="auctionhouse-nav-button-select" setAllPoints="true" hidden='true' alpha="0.7"/>
+            <Texture parentKey="Class" alpha="0.5">
+                <Size x="66" y="66"/>
+                 <Anchors>
+                    <Anchor point="TOP" x="0" y="-4"/>
+                </Anchors>
+            </Texture> 
         </Layer>
 
         <Layer level="BORDER">
@@ -166,9 +172,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
         <Layer level="ARTWORK">
             <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT">
-                <Size x="0" y="14"/>
+                <Size x="0" y="16"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="2"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>
@@ -182,7 +188,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name"  relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
                 <Shadow>
-                    <Offset x="1" y="-1"/>
+                    <Offset x="2" y="-2"/>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
                 <Scripts>

@@ -3,13 +3,14 @@ local function Save()
     return WoWToolsSave['Plus_Challenges'] or {}
 end
 local Frame
-local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '')
+local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.-)]|h')
 
-local SearchBox
 local IsInSearch
 
 
 local function Initializer(btn, data)
+    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
+
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon({
         guid=data.guid,
@@ -17,17 +18,21 @@ local function Initializer(btn, data)
     } or ''))
 
 --玩家，名称
-    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
+
     local name= data.name or ''
     btn.Name:SetText(
         name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
-        ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, data.guid) or '')
         ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
     )
     btn.Name:SetTextColor(col.r, col.g, col.b)
+--职业
+    btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
 --钥石，名称
-    btn.Name2:SetText(data.itemLink:gsub(CHALLENGE_MODE_KEYSTONE_NAME, '') or data.itemLink)
+    btn.Name2:SetText(
+        data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME)
+        or data.itemLink
+    )
 
 --背景
     btn.Background:SetAtlas(
@@ -35,6 +40,7 @@ local function Initializer(btn, data)
         or (data.faction=='Horde' and 'Campaign_Horde')
         or 'StoryHeader-BG'
     )
+
 
     btn.RaidText:SetText(data.pve or '|cff8282822/4/8')
     btn.DungeonText:SetText(data.mythic or '|cff8282822/4/8')
@@ -60,7 +66,7 @@ local function Initializer(btn, data)
 
     btn.itemLink= data.itemLink
 
-    btn.Background:SetAlpha(Save().leftAlpha or 0.75)
+    btn.Background:SetAlpha(Save().leftBgAlpha or 0.75)
 end
 
 
@@ -97,7 +103,7 @@ local function Set_List()
     end
 
 
-    local findText= SearchBox:HasFocus() and SearchBox:GetText() or ''
+    local findText= Frame.SearchBox:HasFocus() and Frame.SearchBox:GetText() or ''
     findText= findText:upper()
 
     local isFind= findText~=''
@@ -139,7 +145,10 @@ local function Set_List()
 
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
 
-    SearchBox:SetShown(num>6)
+    Frame.SearchBox:SetShown(num>6)
+
+    Frame.NumLabel:SetText(num)
+
     IsInSearch= nil
 end
 
@@ -175,16 +184,39 @@ local function Init()
     Frame:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT')
     Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMLEFT')
 
-    SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
+
+
+
+    Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
         isSearch=true,
     })
-    SearchBox:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 0,2)
-    SearchBox:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
-    SearchBox.Instructions:SetText(
+    Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 4, 2)
+    Frame.SearchBox:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
+    Frame.SearchBox:SetAlpha(0.3)
+    Frame.SearchBox.Instructions:SetText(
         WoWTools_DataMixin.Player.onlyChinese and '角色名称，副本'
         or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     )
-    SearchBox:HookScript('OnTextChanged', Set_List)
+    Frame.SearchBox:HookScript('OnTextChanged', function()
+        Set_List()
+    end)
+    Frame.SearchBox:HookScript('OnEditFocusGained', function(self)
+        self:SetAlpha(1)
+    end)
+    Frame.SearchBox:HookScript('OnEditFocusLost', function(self)
+        self:SetAlpha((self:HasFocus() or GameTooltip:IsOwned(self)) and 1 or 0.3)
+    end)
+    Frame.SearchBox:SetScript('OnEnter', function(self)
+        self:SetAlpha(1)
+    end)
+    Frame.SearchBox:SetScript('OnLeave', function(self)
+        self:SetAlpha(self:HasFocus() and 1 or 0.3)
+    end)
+
+    Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
+    Frame.NumLabel:SetPoint('BOTTOMRIGHT', Frame.SearchBox, 'BOTTOMLEFT')
+
+
 
     Frame.ScrollList= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollList:SetAllPoints()
