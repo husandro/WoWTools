@@ -99,7 +99,6 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
 
             if frame.spellPort:CanChangeAttribute() then
                 frame.spellPort:SetAttribute("spell", spellID)--local name= C_Spell.GetSpellName(frame.spellID) 
-
                 frame.spellPort:SetShown(not Save().hidePort)
                 frame.spellPort:SetScale(Save().portScale or 1)
             end

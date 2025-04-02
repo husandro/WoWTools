@@ -8,6 +8,21 @@ local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.
 local IsInSearch
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Initializer(btn, data)
     local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
 
@@ -18,7 +33,6 @@ local function Initializer(btn, data)
     } or ''))
 
 --玩家，名称
-
     local name= data.name or ''
     btn.Name:SetText(
         name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
@@ -93,6 +107,13 @@ local function Sort_Order(a,b)
         return a.faction==WoWTools_DataMixin.Player.Faction
     end
 end
+
+
+
+
+
+
+
 
 
 
@@ -245,16 +266,13 @@ local function Init()
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
 
 
-    --Frame.view:SetDataProvider(CreateDataProvider(), ScrollBoxConstants.RetainScrollPosition)
-
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollList, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
-    --Frame.ScrollBar:SetHideTrackIfThumbExceedsTrack(true)
     Frame.ScrollBar:SetHideIfUnscrollable(true)
-    
-    
+
+
     function Frame:Settings()
         self:SetWidth(Save().leftWidth or 230)
         self:SetScale(Save().leftScale or 1)
