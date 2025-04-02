@@ -79,7 +79,7 @@ local function Init_Menu(self, root)
         return not Save().hideIns
     end, function()
         Save().hideIns = not Save().hideIns and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+        WoWTools_ChallengeMixin:ChallengesUI_Info()
     end)
 
 --缩放
@@ -88,10 +88,10 @@ local function Init_Menu(self, root)
         return Save().insScale or 1
     end, function(value)
         Save().insScale=value
-        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+        WoWTools_ChallengeMixin:ChallengesUI_Info()
     end, function()
         Save().insScale=nil
-        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+        WoWTools_ChallengeMixin:ChallengesUI_Info()
     end)
 
 --sub 提示

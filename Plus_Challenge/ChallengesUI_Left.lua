@@ -150,6 +150,7 @@ local function Set_List()
 
     Frame.NumLabel:SetText(num)
 
+
     IsInSearch= nil
 end
 
@@ -244,12 +245,16 @@ local function Init()
     Frame.ScrollBar:SetPoint("BOTTOMRIGHT", Frame, "BOTTOMLEFT", -6,12)
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
 
+
+    --Frame.view:SetDataProvider(CreateDataProvider(), ScrollBoxConstants.RetainScrollPosition)
+
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollList, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
-
-
+    --Frame.ScrollBar:SetHideTrackIfThumbExceedsTrack(true)
+    Frame.ScrollBar:SetHideIfUnscrollable(true)
+    
     
     function Frame:Settings()
         self:SetWidth(Save().leftWidth or 230)

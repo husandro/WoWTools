@@ -723,8 +723,7 @@ end
 --####
 local function Init()
     Frame= CreateFrame("Frame", 'WoWToolsChallengesUITipsFrame', ChallengesFrame)
-    Frame:SetFrameStrata('HIGH')
-    Frame:SetFrameLevel(7)
+    Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Frame:SetPoint('CENTER')
     Frame:SetSize(1, 1)
 
