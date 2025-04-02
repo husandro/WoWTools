@@ -22,15 +22,17 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <TexCoords left="1" right="0" top="0" bottom="1" />
             </Texture>
             <Texture parentKey="Select" atlas="auctionhouse-nav-button-select" setAllPoints="true" hidden='true' alpha="0.7"/>
+            
+        </Layer>
+
+        <Layer level="BORDER">
             <Texture parentKey="Class" alpha="0.5">
                 <Size x="66" y="66"/>
                  <Anchors>
                     <Anchor point="TOP" x="0" y="-4"/>
                 </Anchors>
             </Texture> 
-        </Layer>
 
-        <Layer level="BORDER">
             <Texture parentKey="Raid" atlas="worldquest-icon-raid" enableMouse="true">
                 <Size x="16" y="16"/>
                 <Anchors>
@@ -49,7 +51,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <Texture parentKey="Dungeon" atlas="worldquest-icon-dungeon" enableMouse="true">
+            <Texture parentKey="Dungeon" atlas="questlog-questtypeicon-group" enableMouse="true">
                 <Size x="16" y="16"/>
                 <Anchors>
                     <Anchor point="TOPLEFT" relativeKey="$parent.Raid" relativePoint="BOTTOMLEFT"/>
@@ -172,9 +174,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
         <Layer level="ARTWORK">
             <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT">
-                <Size x="0" y="16"/>
+                <Size x="0" y="14"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="2"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="-2"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>

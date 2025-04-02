@@ -8,8 +8,6 @@ end
 
 
 
-
-
 local function Create_Button(frame)
     if frame.spellPort then
         return
@@ -22,12 +20,12 @@ local function Create_Button(frame)
     })
 
     function frame.spellPort:set_alpha()
-        --[[frame.spellPort:SetAlpha(
+        frame.spellPort:SetAlpha(
             (
                 IsSpellKnownOrOverridesKnown(self.spellID)
                 or GameTooltip:IsOwned(self)
             ) and 1 or 0.3
-        )]]
+        )
     end
 
     frame.spellPort:SetAttribute("type", "spell")
@@ -93,7 +91,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
                 frame.spellPort:SetNormalAtlas('WarlockPortal-Yellow-32x32')
             end
 
-            --frame.spellPort:GetNormalTexture():SetDesaturated(not IsSpellKnownOrOverridesKnown(spellID))
+            frame.spellPort:GetNormalTexture():SetDesaturated(not IsSpellKnownOrOverridesKnown(spellID))
 
             WoWTools_CooldownMixin:SetFrame(frame.spellPort, {spell=spellID})
 
@@ -125,26 +123,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --####
 --初始
 --####
@@ -152,17 +130,6 @@ local function Init()
     if Save().hidePort then
         return
     end
-
-    --[[Frame= CreateFrame("Frame", nil, ChallengesFrame)
-    Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
-    Frame:SetPoint('TOPLEFT')
-    Frame:SetSize(1, 1)
-
-    function Frame:Settings()
-        self:SetShown(not Save().hideTips)
-        self:SetScale(Save().tipsScale or 1)
-    end]]
-
 
     hooksecurefunc(ChallengesFrame, 'Update', Set_Update)
 

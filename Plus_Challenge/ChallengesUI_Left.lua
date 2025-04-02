@@ -113,7 +113,7 @@ local function Set_List()
     local data = CreateDataProvider()
     for guid, info in pairs(WoWTools_WoWDate) do
 
-        if info.Keystone.link then
+        if info.Keystone.link and guid~=WoWTools_DataMixin.Player.GUID then
             num= num+1
 
             local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
@@ -215,11 +215,10 @@ local function Init()
         self:SetAlpha(self:HasFocus() and 1 or 0.3)
     end)
 
-  
 
 --数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel:SetPoint('BOTTOMRIGHT', Frame.ScrollBar, 'TOPRIGHT', 8, 2)
+    Frame.NumLabel:SetPoint('TOPRIGHT', Frame, 'TOPLEFT', -2, 2)
     Frame.NumLabel:EnableMouse(true)
     Frame.NumLabel:SetScript('OnLeave', function(self)
         self:SetAlpha(1)

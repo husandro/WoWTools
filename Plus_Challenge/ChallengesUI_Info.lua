@@ -2,7 +2,7 @@ local function Save()
     return WoWToolsSave['Plus_Challenges'] or {}
 end
 
-local Frame
+
 
 
 
@@ -606,69 +606,11 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
             if frame.currentKey then
                 frame.currentKey:SetScale(Save().insScale or 1)
                 frame.currentKey:SetShown(findKey)
+                frame.currentKey.label:SetScale(Save().insScale or 1)
+                frame.currentKey.label:SetShown(findKey)
                 frame.currentKey.label:SetText(keyStoneLevel or '')
             end
 
-            --[[-#####
-            --传送门
-            --#####
-            if not Save().hidePort then
-                if frame.spellID then
-                    if not frame.spellPort then
-                        local h=frame:GetWidth()/3 +8
-                        local texture= C_Spell.GetSpellTexture(frame.spellID)
-                        frame.spellPort= WoWTools_ButtonMixin:Cbtn(frame, {
-                            isSecure=true,
-                            size=h,
-                            texture= texture,
-                            atlas=not texture and 'WarlockPortal-Yellow-32x32',
-                            --pushe=not texture
-                        })
-                        frame.spellPort:SetPoint('BOTTOMRIGHT', frame)--, 4,-4)
-                        frame.spellPort:SetScript("OnEnter",function(self2)
-                            local parent= self2:GetParent()
-                            if parent.spellID then
-                                GameTooltip:SetOwner(parent, "ANCHOR_RIGHT")
-                                GameTooltip:ClearLines()
-                                GameTooltip:SetSpellByID(parent.spellID)
-                                if not IsSpellKnownOrOverridesKnown(parent.spellID) then--没学会
-                                    GameTooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '法术尚未学会' or SPELL_FAILED_NOT_KNOWN))
-                                end
-                                GameTooltip:Show()
-                                self2:SetAlpha(1)
-                            end
-                        end)
-                        frame.spellPort:SetScript("OnLeave",function(self2)
-                            GameTooltip:Hide()
-                            local spellID=self2:GetParent().spellID
-                            self2:SetAlpha(spellID and IsSpellKnownOrOverridesKnown(spellID) and 1 or 0.3)
-                        end)
-                        frame.spellPort:SetScript('OnHide', function(self2)
-                            self2:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-                        end)
-                        frame.spellPort:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                        frame.spellPort:SetScript('OnShow', function(self2)
-                            self2:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                            WoWTools_CooldownMixin:SetFrame(self2, {spell=self2:GetParent().spellID})
-                        end)
-                        frame.spellPort:SetScript('OnEvent', function(self2)
-                            WoWTools_CooldownMixin:SetFrame(self2, {spell=self2:GetParent().spellID})
-                        end)
-                    end
-                end
-            end
-            if frame.spellPort and frame.spellPort:CanChangeAttribute() then
-                if frame.spellID and IsSpellKnownOrOverridesKnown(frame.spellID) then
-                    local name= C_Spell.GetSpellName(frame.spellID)
-                    frame.spellPort:SetAttribute("type", "spell")
-                    frame.spellPort:SetAttribute("spell", name or frame.spellID)
-                    frame.spellPort:SetAlpha(1)
-                else
-                    frame.spellPort:SetAlpha(0.3)
-                end
-                frame.spellPort:SetShown(not Save().hidePort)
-                frame.spellPort:SetScale(Save().portScale or 1)
-            end]]
         end
     end
 
@@ -722,6 +664,11 @@ end
 --初始
 --####
 local function Init()
+    if Save().hideIns then
+        return
+    end
+
+--[[
     Frame= CreateFrame("Frame", 'WoWToolsChallengesUITipsFrame', ChallengesFrame)
     Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Frame:SetPoint('CENTER')
@@ -729,9 +676,9 @@ local function Init()
 
 
     function Frame:Settings()
-        self:SetShown(not Save().hideTips)
-        self:SetScale(Save().tipsScale or 1)
-    end
+        self:SetShown(not Save().hideIns)
+        self:SetScale(Save().insScale or 1)
+    end]]
 
 
     --Init_Affix()
@@ -772,7 +719,6 @@ local function Init()
 
     Init=function()
         Set_Update()
-        Frame:Settings()
     end
 end
 

@@ -24,7 +24,8 @@ local function Init()
         name='WoWToolsPlusChallengesSayItemLinkButton',
     })
     SayButton.Text= WoWTools_LabelMixin:Create(SayButton)
-    SayButton.Text:SetPoint('LEFT', SayButton, 'RIGHT')
+    SayButton.Text:SetPoint('BOTTOM', SayButton, 'TOP',0, 4)
+
 
     SayButton:Hide()
 
@@ -133,7 +134,6 @@ local function Init()
     SayButton:SetScript('OnHide', function(self)
         self:UnregisterAllEvents()
         self:Reset()
-        self.Text:SeText('')
     end)
     SayButton:SetScript('OnShow', function(self)
         self:RegisterEvent('BAG_UPDATE_DELAYED')

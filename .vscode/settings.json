@@ -5498,7 +5498,8 @@
         "PanelTemplates_EnableTab",
         "WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS",
         "WEEKLY_REWARDS_MYTHIC_KEYSTONE",
-        "REPORTING_MINOR_CATEGORY_CHARACTER_NAME"
+        "REPORTING_MINOR_CATEGORY_CHARACTER_NAME",
+        "CHALLENGE_MODE_INSERT_KEYSTONE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

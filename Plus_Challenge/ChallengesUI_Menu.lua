@@ -8,7 +8,7 @@ local function Init_Menu(self, root)
     local sub, sub2, name
     local isInCombat= InCombatLockdown()
 
-
+--史诗钥石
     name= '|T525134:0|t'..(WoWTools_DataMixin.Player.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
     sub= root:CreateCheckbox(
         name,
@@ -65,8 +65,15 @@ local function Init_Menu(self, root)
     end)
 
 --sub 提示
-    sub:CreateDivider()
+    sub:CreateSpacer()
     sub:CreateTitle(name)
+
+
+
+
+
+
+
 
 
 
@@ -95,6 +102,7 @@ local function Init_Menu(self, root)
     end)
 
 --sub 提示
+    sub:CreateSpacer()
     sub:CreateTitle(name)
 
 
@@ -143,9 +151,8 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:ChallengesUI_Porta()
     end)
 --sub 提示
-    sub:CreateDivider()
+    sub:CreateSpacer()
     sub:CreateTitle(name)
-    sub:CreateDivider()
     WoWTools_MenuMixin:Reload(sub)--重新加载UI
 
 
@@ -237,7 +244,7 @@ local function Init_Menu(self, root)
     end)
 
 --sub 提示
-    sub:CreateDivider()
+    sub:CreateSpacer()
     sub:CreateTitle(name)
 
 
@@ -309,13 +316,42 @@ local function Init_Menu(self, root)
     end)
 
 --sub 提示
-    sub:CreateDivider()
+    sub:CreateSpacer()
     sub:CreateTitle(name)
 
 
 
 
---其他信息
+
+
+
+
+
+--插入史诗钥石，打开界面
+    root:CreateDivider()
+    sub=root:CreateButton(
+        '|A:ChallengeMode-KeystoneSlotFrame:0:0|a'
+        ..(WoWTools_DataMixin.Player.onlyChinese and '插入史诗钥石' or CHALLENGE_MODE_INSERT_KEYSTONE),
+    function()
+        ChallengesKeystoneFrame:SetShown(not ChallengesKeystoneFrame:IsShown())
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.Player.onlyChinese and '显示UI' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, 'UI'))
+    end)
+
+
+
+
+
+
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ChallengeMixin.addName})
+end
+
+
+
+--[[其他信息
     name= '|A:ChallengeMode-Chest:0:0|a'
         ..(WoWTools_DataMixin.Player.onlyChinese and '其他信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, INFO))
     sub= root:CreateCheckbox(
@@ -341,9 +377,9 @@ local function Init_Menu(self, root)
 
 --sub 提示
     sub:CreateDivider()
-    sub:CreateTitle(name)
+    sub:CreateTitle(name)]]
 
-end
+
 
 
 
