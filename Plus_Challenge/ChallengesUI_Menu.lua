@@ -95,7 +95,6 @@ local function Init_Menu(self, root)
     end)
 
 --sub 提示
-    sub:CreateDivider()
     sub:CreateTitle(name)
 
 
