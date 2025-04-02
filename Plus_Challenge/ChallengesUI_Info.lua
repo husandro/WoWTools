@@ -609,7 +609,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
                 frame.currentKey.label:SetText(keyStoneLevel or '')
             end
 
-            --#####
+            --[[-#####
             --传送门
             --#####
             if not Save().hidePort then
@@ -668,7 +668,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
                 end
                 frame.spellPort:SetShown(not Save().hidePort)
                 frame.spellPort:SetScale(Save().portScale or 1)
-            end
+            end]]
         end
     end
 

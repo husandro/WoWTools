@@ -30,9 +30,10 @@ local function Initializer(btn, data)
 
 --钥石，名称
     btn.Name2:SetText(
+        WoWTools_TextMixin:CN(
         data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME)
         or data.itemLink
-    )
+    ))
 
 --背景
     btn.Background:SetAtlas(
@@ -186,7 +187,7 @@ local function Init()
 
 
 
-
+--SearchBox
     Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
         isSearch=true,
     })
@@ -213,8 +214,25 @@ local function Init()
         self:SetAlpha(self:HasFocus() and 1 or 0.3)
     end)
 
+  
+
+--数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel:SetPoint('BOTTOMRIGHT', Frame.SearchBox, 'BOTTOMLEFT')
+    Frame.NumLabel:SetPoint('BOTTOMRIGHT', Frame.ScrollBar, 'TOPRIGHT', 8, 2)
+    Frame.NumLabel:EnableMouse(true)
+    Frame.NumLabel:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    Frame.NumLabel:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+        GameTooltip:Show()
+        self:SetAlpha(0.3)
+    end)
+
+
+
 
 
 
@@ -232,6 +250,7 @@ local function Init()
 
 
 
+    
     function Frame:Settings()
         self:SetWidth(Save().leftWidth or 230)
         self:SetScale(Save().leftScale or 1)
@@ -246,9 +265,6 @@ local function Init()
     end)
 
     Frame:Settings()
-
-    --显示背景 Background
-   -- WoWTools_TextureMixin:CreateBackground(Frame, {isAllPoint=true})
 
     Init= function()
         Frame:SetShown(false)
