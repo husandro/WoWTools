@@ -292,7 +292,7 @@ local function Init_ClassListButton()
         if classFile==WoWTools_DataMixin.Player.Class then
             atlas= 'auctionhouse-icon-favorite'
         else
-            atlas= WoWTools_UnitMixin:GetClassIcon(nil, classFile, true)
+            atlas= WoWTools_UnitMixin:GetClassIcon(classFile, nil, nil, true)
         end
         if atlas then
             local btn= ListButton:cereate_button(classID, 0, nil, atlas)

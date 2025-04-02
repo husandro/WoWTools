@@ -319,11 +319,11 @@ end
 
 
 function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
+    data= data or {}
     tooltip= tooltip or GameTooltip
-    tooltip:SetOwner(frame, "ANCHOR_LEFT");
+    tooltip:SetOwner(data.owner or frame,data.anchor or "ANCHOR_LEFT")
     tooltip:ClearLines()
     if frame.itemLink and (not data or not data.itemLink) then
-        data= data or {}
         data.itemLink= frame.itemLink
     end
     if self:Setup(tooltip, data) then

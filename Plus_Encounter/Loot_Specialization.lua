@@ -60,7 +60,7 @@ local function Init_All_Class(self, root, num)
             end
             
             sub=root:CreateButton(
-                (WoWTools_UnitMixin:GetClassIcon(nil, classInfo.classFile) or '')
+                (WoWTools_UnitMixin:GetClassIcon(classInfo.classFile) or '')
                 ..col
                 ..WoWTools_TextMixin:CN(classInfo.className)
                 ..(WoWTools_DataMixin.Player.Class==classInfo.classFile and '|A:auctionhouse-icon-favorite:0:0|a' or '')

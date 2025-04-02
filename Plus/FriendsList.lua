@@ -715,7 +715,7 @@ local function Init_RaidGroupFrame_Update()--团队, 模块
                             text= "|T"..texture..':0|t'
                         end
                     end
-                    text= text or WoWTools_UnitMixin:GetClassIcon(nil, fileName)--职业图标
+                    text= text or WoWTools_UnitMixin:GetClassIcon(fileName)--职业图标
 
                     if text then
                         if guid and WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then
@@ -802,7 +802,7 @@ local function set_WhoList_Update()--查询, 名单列表
                 local info = index and C_FriendList.GetWhoInfo(index)
                 if info and info.fullName then
                     GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight))
-                                ..(WoWTools_UnitMixin:GetClassIcon(nil, info.filename) or '')
+                                ..(WoWTools_UnitMixin:GetClassIcon(info.filename) or '')
                                 ..self.col
                                 ..info.fullName
                                 ..(WoWTools_UnitMixin:GetIsFriendIcon(info.fullName) or '')
@@ -832,7 +832,7 @@ local function set_WhoList_Update()--查询, 名单列表
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
                 hex= RAID_CLASS_COLORS[info.filename]:GenerateHexColor()
-                local class=  WoWTools_UnitMixin:GetClassIcon(nil, info.filename)
+                local class=  WoWTools_UnitMixin:GetClassIcon(info.filename)
                 if class and btn.Class then
                     btn.Class:SetText(class)
                 end

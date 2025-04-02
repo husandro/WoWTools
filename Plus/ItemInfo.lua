@@ -36,7 +36,7 @@ local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
 for classID= 1, GetNumClasses() do
     local classInfo = C_CreatureInfo.GetClassInfo(classID)
     if classInfo and classInfo.className and classInfo.classFile then
-        ClassNameIconTab[classInfo.className]= WoWTools_UnitMixin:GetClassIcon(nil, classInfo.classFile, false)--职业图标
+        ClassNameIconTab[classInfo.className]= WoWTools_UnitMixin:GetClassIcon(classInfo.classFile)--职业图标
     end
 end
 

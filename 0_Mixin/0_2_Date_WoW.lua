@@ -288,7 +288,6 @@ local function Update_Bag_Items()
 
                 if C_Item.IsItemKeystoneByID(itemID) then--挑战
                     WoWTools_WoWDate[guid].Keystone.link= C_Container.GetContainerItemLink(bagID, slotID)
-                    print(WoWTools_WoWDate[guid].Keystone.link)
                 else
                     local bag=C_Item.GetItemCount(itemID)--物品ID
                     WoWTools_WoWDate[guid].Item[itemID]={

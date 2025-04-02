@@ -112,7 +112,7 @@ local function Init()
         local text= col.r..col.g..col.b.. (col.a or 1)
         if not colorTab[text] then
             colorTab[text]= true
-            local texture= Create_Texture(col.r, col.g, col.b, col.a, WoWTools_UnitMixin:GetClassIcon(nil, className, true))
+            local texture= Create_Texture(col.r, col.g, col.b, col.a, WoWTools_UnitMixin:GetClassIcon(className, nil, nil, true))
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             --local hex= col:GenerateHexColor()
             texture.tooltip= 'RAID_CLASS_COLORS["'..className..'"]'

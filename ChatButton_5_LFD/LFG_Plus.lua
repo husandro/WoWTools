@@ -163,7 +163,7 @@ local function Init_LFGListSearchEntry_Update(self)
     for i = 1, 5 do
         local class, specLocalized, isLeader
         if orderIndexes[i] then
-            class= WoWTools_UnitMixin:GetClassIcon(nil, orderIndexes[i][2], true)
+            class= WoWTools_UnitMixin:GetClassIcon(orderIndexes[i][2], nil, nil, true)
             specLocalized= orderIndexes[i][3]
             isLeader= orderIndexes[i][4]
         end
@@ -256,7 +256,7 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
                 end
                 text= text.. roleText
             end
-            tooltip:AddDoubleLine(WoWTools_UnitMixin:GetClassIcon(nil, classInfo.classFile).. (text or ''), col..i)
+            tooltip:AddDoubleLine(WoWTools_UnitMixin:GetClassIcon(classInfo.classFile).. (text or ''), col..i)
         end
     end
     tooltip:AddLine(' ')

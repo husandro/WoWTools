@@ -18,10 +18,13 @@
 ##以Mixin.lua为结尾，请不要关，其它功能可能会调用
 
 ##调用库，不能删除
-Init.xml
+Sesource\Libs\LibStub.lua
+Sesource\Libs\CallbackHandler-1.0.lua
+Sesource\Libs\LibDataBroker-1.1.lua
+Sesource\Libs\LibDBIcon-1.0.lua
+Sesource\Libs\LibRangeCheck-3.0.lua
 
 ##主要function，不能删除
-Template.xml
 0_Mixin\3_Mixin.lua
 0_Mixin\0_1_Data.lua
 0_Mixin\0_2_Date_WoW.lua
@@ -415,6 +418,7 @@ Plus_Challenge\1_Init.lua
 
 Plus_Challenge\ChallengesUI_Porta.lua
 Plus_Challenge\ChallengesUI_Activities.lua
+Plus_Challenge\ChallengesUI_Left.xml
 Plus_Challenge\ChallengesUI_Left.lua
 Plus_Challenge\ChallengesUI_Right.lua
 Plus_Challenge\ChallengesUI_Menu.lua

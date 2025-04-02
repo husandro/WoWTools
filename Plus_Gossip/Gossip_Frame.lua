@@ -121,7 +121,7 @@ local function Init()
     Menu.bg:SetPoint('BOTTOMRIGHT',35, -72)
     Menu.bg:SetAtlas('QuestBG-Trading-Post')
 
-    Menu.ScrollBar  = CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
+    Menu.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Menu.ScrollBar:SetPoint("TOPLEFT", Menu, "TOPRIGHT", 8,0)
     Menu.ScrollBar:SetPoint("BOTTOMLEFT", Menu, "BOTTOMRIGHT",8,12)
 

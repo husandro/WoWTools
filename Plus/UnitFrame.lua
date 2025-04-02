@@ -733,7 +733,7 @@ local function set_memberFrame(memberFrame)
                 end
 
                 if UnitIsPlayer(self.unit) then
-                    self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(self.unit, nil, true))
+                    self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(nil, self.unit, nil, true))
                 elseif UnitIsBossMob(self.unit) then
                     self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
                 else
@@ -1227,7 +1227,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                                     find2= true
                                 end
                             else
-                                local class= WoWTools_UnitMixin:GetClassIcon(unit2, nil, true)--职业, 图标
+                                local class= WoWTools_UnitMixin:GetClassIcon(nil, unit2, nil, true)--职业, 图标
                                 if class then
                                     self.Portrait:SetAtlas(class)
                                     find2=true

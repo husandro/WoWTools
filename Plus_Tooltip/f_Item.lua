@@ -80,7 +80,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
                     player=player..'|T'..icon2..':0|t'
 
                 elseif not otherTab[classFile] then
-                    other= other..(WoWTools_UnitMixin:GetClassIcon(nil, classFile, false) or '')
+                    other= other..(WoWTools_UnitMixin:GetClassIcon(classFile) or '')
                     --otherTab[classFile]= true
                 end
             end

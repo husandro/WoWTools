@@ -64,7 +64,7 @@ local function Get_Unit_Text(self, unit)
         local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save().questShowAllFaction)--检查, 是否同一阵营
         local text
         if Save().questShowPlayerClass then
-            text= WoWTools_UnitMixin:GetClassIcon(unit)
+            text= WoWTools_UnitMixin:GetClassIcon(nil, unit)
         end
         if wow or faction then
             text= (text or '')..(wow or '')..(faction or '')
