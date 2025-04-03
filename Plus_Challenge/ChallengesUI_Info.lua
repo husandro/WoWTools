@@ -173,7 +173,7 @@ local function Create_Label(frame)
     frame.completedLable:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     frame.completedLable:SetScript('OnEnter', function(self)
         if self.all or self.week then
-            GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(
                 WoWTools_DataMixin.onlyChinese and '历史 |cnGREEN_FONT_COLOR:完成|r/总计' or (HISTORY..' |cnGREEN_FONT_COLOR:'..COMPLETE..'|r/'..TOTAL) ,
@@ -202,13 +202,11 @@ local function Create_Label(frame)
     frame.scoreLable:SetPoint('BOTTOMLEFT', frame, 0, 24)
     frame.scoreLable:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     frame.scoreLable:SetScript('OnEnter', function(self)
-        if self.score then
-            GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self.score))
             GameTooltip:Show()
             self:SetAlpha(0.3)
-        end
     end)
 
 
@@ -468,7 +466,9 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
             local numText
             local all, completed, totale= GetNum(frame.mapID, true)
             local week= GetNum(frame.mapID)--本周
+
             numText= (all or '')..((week and week~=all) and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
+
             frame.completedLable.all=all or week
             frame.completedLable.week= week
             frame.completedLable.completed= completed
