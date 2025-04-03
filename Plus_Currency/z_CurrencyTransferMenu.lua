@@ -71,7 +71,7 @@ local function Init()
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', GameTooltip_Hide)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnEnter', function(self)
 		if not Save().notPlus then
-			WoWTools_SetTooltipMixin:Frame(self, nil, {currencyID=self.currencyID})
+			WoWTools_SetTooltipMixin:Frame(self)
 		end
 	end)
 

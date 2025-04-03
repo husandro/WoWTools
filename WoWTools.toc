@@ -184,6 +184,7 @@ Plus_Tooltip\1_Panel.lua
 Plus_Tooltip\2_Hook.lua
 Plus_Tooltip\2_Settings.lua
 Plus_Tooltip\3_Set_Point.lua
+Plus_Tooltip\4_PlayerModel.lua
 Plus_Tooltip\f_Achievement.lua
 Plus_Tooltip\f_Aura.lua
 Plus_Tooltip\f_Azerite.lua
@@ -194,7 +195,7 @@ Plus_Tooltip\f_Item.lua
 Plus_Tooltip\f_Mount.lua
 Plus_Tooltip\f_Pet.lua
 Plus_Tooltip\f_Pet_BattlePet.lua
-Plus_Tooltip\f_PlayerModel.lua
+
 Plus_Tooltip\f_Quest.lua
 Plus_Tooltip\f_Spell.lua
 Plus_Tooltip\f_Unit_NPC.lua

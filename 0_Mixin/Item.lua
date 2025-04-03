@@ -417,12 +417,16 @@ end
 function WoWTools_ItemMixin:GetWoWCount(itemID)--WoWTools_BagMixin:GetItem_WoW_Num()--取得WOW物品数量
     local all,numPlayer=0,0
     for guid, info in pairs(WoWTools_WoWDate) do
-        if guid and info and info.region==WoWTools_DataMixin.Player.Region then --and guid~=WoWTools_DataMixin.Player.GUID then
-            local tab=info.Item[itemID]
-            if tab and tab.bag and tab.bank then
-                all=all +tab.bag
-                all=all +tab.bank
+        if info.region==WoWTools_DataMixin.Player.Region and guid~=WoWTools_DataMixin.Player.GUID then
+            if C_Item.IsItemKeystoneByID(itemID) and info.Keystone.link then--Keystone
+                all=all +1
                 numPlayer=numPlayer +1
+            else
+                local tab=info.Item[itemID]
+                if tab and tab.bag and tab.bank then
+                    all=all + tab.bag+ tab.bank
+                    numPlayer=numPlayer +1
+                end
             end
         end
     end

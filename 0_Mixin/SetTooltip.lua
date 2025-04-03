@@ -333,8 +333,8 @@ function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
     tooltip= tooltip or GameTooltip
 
     tooltip:SetOwner(
-        data and data.owner or frame,
-        data and data.anchor or "ANCHOR_LEFT"
+        data and data.owner or frame.owner or frame,
+        data and data.anchor or frame.anchor or "ANCHOR_LEFT"
     )
     tooltip:ClearLines()
 

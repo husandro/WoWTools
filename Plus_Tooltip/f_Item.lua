@@ -108,29 +108,71 @@ end
 
 
 
-
+--[[
+score= score,
+all= all,
+weekNum= weekNum,
+weekLevel= weekLevel,
+]]
 
 local function Set_keystonee(tooltip)
-    local textLeft, text2Left
+    local textLeft, text2Left, text2Right
+
+    local new={}
 
     for guid, info in pairs(WoWTools_WoWDate or {}) do
-        if guid and guid~=WoWTools_DataMixin.Player.GUID and info.Keystone.link then
-            WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)
-            tooltip:AddDoubleLine(
-                (info.Keystone.weekNum==0 and '|cff9e9e9e0|r' or info.Keystone.weekNum or '')
-                ..(info.Keystone.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
-                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
-                ..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score, false, nil)..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score,true)),
-                info.Keystone.link)
+        if info.Keystone.link then
+            if guid==WoWTools_DataMixin.Player.GUID then
+                text2Right= info.Keystone.link
+            else
+                table.insert(new, {
+                    guid=guid,
+                    faction=info.faction,
+
+                    score= info.Keystone.score or 0,
+                    weekNum= info.Keystone.weekNum or 0,
+                    weekLevel= info.Keystone.weekLevel or 0,
+
+                    weekMythicPlus= info.Keystone.weekMythicPlus,
+                    link= info.Keystone.link
+                })
+            end
         end
     end
-    local text=WoWTools_ChallengeMixin:GetRewardText(1)--得到，周奖励，信息
-    --[[
-    for _, activities in pairs(C_WeeklyRewards.GetActivities(1) or {}) do--本周完成
-        if activities.level and activities.level>=0 and activities.type==1 then--Enum.WeeklyRewardChestThresholdType.MythicPlus 1
-            text= (text and text..'/' or '')..activities.level
+
+    local num= #new
+    table.sort(new, function(a, b)
+        if a.score==b.score then
+            if b.weekNum==a.weekNum then
+                return b.weekLevel>a.weekLevel
+            else
+                return b.weekNum>a.weekNum
+            end
+        else
+            return b.score>a.score
         end
-    end]]
+    end)
+
+    for index, info in pairs(new) do
+        tooltip:AddDoubleLine(
+            (info.weekNum==0 and '|cff9e9e9e0|r' or info.weekNum or '')
+            ..(info.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.weekMythicPlus..') ' or '')
+            ..WoWTools_UnitMixin:GetPlayerInfo({guid=info.guid, faction=info.faction, reName=true, reRealm=true})
+            ..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score, false, nil)..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score,true)),
+
+            info.link
+        )
+        if index>2 and not IsShiftKeyDown() then
+            if num>index then
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:<Shift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..num..'>')
+            end
+            break
+        end
+    end
+
+
+    local text=WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.Activities)--得到，周奖励，信息
+
 
     local score= WoWTools_ChallengeMixin:KeystoneScorsoColor(C_ChallengeMode.GetOverallDungeonScore(), true)
     if text or score then
@@ -138,7 +180,8 @@ local function Set_keystonee(tooltip)
     end
 
     local info = C_MythicPlus.GetRunHistory(false, true) or {}--本周记录
-    local num= 0
+
+    num= 0
     local completedNum=0
     for _, runs  in pairs(info) do
         if runs and runs.level then
@@ -152,28 +195,8 @@ local function Set_keystonee(tooltip)
         text2Left=num..'|cnGREEN_FONT_COLOR:('..completedNum..')|r'
     end
 
-    return textLeft, text2Left
+    return textLeft, text2Left, text2Right
 end
-
-
---[[
-local function Set_Player(tooltip, itemID)
-    tooltip.textRight:SetText(
-        WoWTools_ItemMixin:GetCount(itemID, {isWoW= not UnitAffectingCombat('player')})
-    )
-end
-    local wowNum= 0--WoW 数量    
-    local bag= C_Item.GetItemCount(itemID, false, false, false, false)--物品数量
-    local bank= C_Item.GetItemCount(itemID, true, false, true, false) --bank
-    local net= C_Item.GetItemCount(itemID, false, false, false, true)--战团
-    bank= bank- bag
-    net= net-bag
-
-    tooltip.textRight:SetText(
-        WoWTools_ItemMixin:GetCount(itemID, {isWoW= not UnitAffectingCombat('player')})
-    )
-
-end]]
 
 
 
@@ -193,22 +216,21 @@ end]]
 local function Set_Item_Num(tooltip, itemID)
     local bagAll,bankAll,numPlayer=0,0,0--帐号数据
     local new={}
-
+    local tab
     for guid, info in pairs(WoWTools_WoWDate or {}) do
-        local tab=info.Item[itemID]
-        if tab and guid and guid~=WoWTools_DataMixin.Player.GUID then
-            if tab.bag>0 or tab.bank>0 then
-                table.insert(new, {
-                    guid= guid,
-                    faction= info.faction,
-                    bag= tab.bag,
-                    bank= tab.bank,
-                    num= tab.bag+tab.bank,
-                })
-                bagAll=bagAll +tab.bag
-                bankAll=bankAll +tab.bank
-                numPlayer=numPlayer +1
-            end
+        tab=info.Item[itemID]
+        if tab and guid~=WoWTools_DataMixin.Player.GUID and (tab.bag>0 or tab.bank>0)  then
+            table.insert(new, {
+                guid= guid,
+                faction= info.faction,
+                bag= tab.bag,
+                bank= tab.bank,
+                num= tab.bag+tab.bank,
+            })
+
+            bagAll=bagAll +tab.bag
+            bankAll=bankAll +tab.bank
+            numPlayer=numPlayer +1
         end
     end
 
@@ -227,21 +249,16 @@ local function Set_Item_Num(tooltip, itemID)
                 ..(info.bag==0 and '|cff9e9e9e' or col)..WoWTools_Mixin:MK(info.bag, 3)..'|r|A:bag-main:0:0|a'
             )
 
-            if index>4 then
+            if index>2 and not IsShiftKeyDown() then
+                if numPlayer>index then
+                    tooltip:AddLine('|cnGREEN_FONT_COLOR:<Shift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..'>')
+                end
                 break
             end
         end
 
     end
 
-    if numPlayer>1 then
-        tooltip:AddDoubleLine(
-            numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..WoWTools_Mixin:MK(bagAll+bankAll, 3),
-
-           WoWTools_Mixin:MK(bankAll,3)..'|A:Banker:0:0|a '
-        ..WoWTools_Mixin:MK(bagAll, 3)..'|A:bag-main:0:0|a'
-        )
-    end
 end
 
 
@@ -281,8 +298,8 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     tooltip:AddLine(' ')
 
-    local text2Left, textLeft
-    local isInCombat= UnitAffectingCombat('player')
+    local text2Left, textLeft, textRight, text2Right
+    --local isInCombat= UnitAffectingCombat('player')
 
 --版本数据, 图标，名称，版本
     if expacID or setID then
@@ -347,21 +364,21 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
-        textLeft, text2Left= Set_keystonee(tooltip)
+        textLeft, text2Left, text2Right= Set_keystonee(tooltip)
     else
         Set_Item_Num(tooltip, itemID)
     end
 
+
 --数量
-    tooltip.textRight:SetText(
-        WoWTools_ItemMixin:GetCount(itemID)
-    )
+    tooltip.textRight:SetText(textRight or WoWTools_ItemMixin:GetCount(itemID))
+    tooltip.text2Right:SetText(text2Right or '')
 
     --setItemCooldown(tooltip, itemID)--物品冷却
 
     tooltip.textLeft:SetText(textLeft or '')
     tooltip.text2Left:SetText(text2Left or '')
-    
+
 
     tooltip.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
     tooltip.backgroundColor:SetShown(true)
