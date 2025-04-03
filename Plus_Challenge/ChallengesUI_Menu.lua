@@ -119,7 +119,6 @@ local function Init_Menu(self, root)
     name= '|A:WarlockPortal-Yellow-32x32:0:0|a'
         ..'|cnRED_FONT_COLOR:'
         ..(WoWTools_DataMixin.Player.onlyChinese and '传送门' or SPELLS)
-
     sub= root:CreateCheckbox(
        name,
     function()
@@ -130,14 +129,16 @@ local function Init_Menu(self, root)
     end)
     sub:SetTooltip(function(tooltip)
         if WoWTools_DataMixin.onlyChinese then
-            tooltip:AddDoubleLine('提示：', '如果出现错误，请禁用此功能')
-            tooltip:AddDoubleLine('战斗中', '不能关闭，窗口')
+            tooltip:AddDoubleLine('提示：', '|cnRED_FONT_COLOR:如果出现错误，请禁用此功能')
+            tooltip:AddDoubleLine('战斗中', '|cnRED_FONT_COLOR:不能关闭，窗口')
         else
-            tooltip:AddDoubleLine(LABEL_NOTE, 'If you get error, please disable this')
-            tooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, 'Cannot close window')
+            tooltip:AddDoubleLine(LABEL_NOTE, '|cnRED_FONT_COLOR:If you get error, please disable this')
+            tooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, '|cnRED_FONT_COLOR:Cannot close window')
         end
     end)
     sub:SetEnabled(not isInCombat)
+
+
 
 --缩放
     WoWTools_MenuMixin:ScaleRoot(self, sub,

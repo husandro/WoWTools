@@ -79,6 +79,8 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
 
         local spellID= data and data.spell
 
+        --spellID= 1543
+
         if spellID then
             Create_Button(frame)
 
@@ -98,7 +100,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
             frame.spellPort:set_alpha()
 
             if frame.spellPort:CanChangeAttribute() then
-                frame.spellPort:SetAttribute("spell", spellID)--local name= C_Spell.GetSpellName(frame.spellID) 
+                frame.spellPort:SetAttribute("spell",  spellID)--local name= C_Spell.GetSpellName(frame.spellID) 
                 frame.spellPort:SetShown(not Save().hidePort)
                 frame.spellPort:SetScale(Save().portScale or 1)
             end
@@ -111,9 +113,24 @@ end
 
 
 
-
-
-
+local IsInCombat
+local function Is_Check()
+    if InCombatLockdown() then
+        if not IsInCombat then
+            IsInCombat= true
+            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+                if ChallengesFrame and ChallengesFrame:IsVisible() and IsInCombat then
+                    Set_Update()
+                end
+                IsInCombat= nil
+                EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+            end)
+        end
+    else
+        Set_Update()
+        IsInCombat= nil
+    end
+end
 
 
 
@@ -130,10 +147,12 @@ local function Init()
         return
     end
 
-    hooksecurefunc(ChallengesFrame, 'Update', Set_Update)
+    hooksecurefunc(ChallengesFrame, 'Update', function()
+        Is_Check()
+    end)
 
     Init=function()
-        Set_Update()
+        Is_Check()
     end
 end
 

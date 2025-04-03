@@ -203,19 +203,29 @@ end
 
 
 
-function WoWTools_SetTooltipMixin:Setup(tooltip, data)
-    if type(data)~='table' then
+function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
+    frame= frame or data.frame
+
+    data= data or frame
+
+    if not data then
         return
     end
 
-    local itemLink= data.link or data.itemLink or data.spellLink
+    local hyperLink=
+            data.link
+            or data.itemLink
+            or data.spellLink
+            or data.hyperLink
+            or data.battlePetLink 
+
     local itemID= data.itemID
     local spellID= data.spellID
     local currencyID= data.currencyID
     local achievementID= data.achievementID
 
     local questID= data.questID
-    local frame= data.frame
+
     local rewardQuestID= data.rewardQuestID
 
     local widgetSetID= data.widgetSetID
@@ -230,19 +240,20 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
     local specIndex= data.specIndex--天赋，专精
     local specID= data.specID
 
-    local tip= data.tooltip--添加，提示
+    local addTooltip= data.tooltip--添加，提示
+
 
     tooltip= tooltip or GameTooltip
-
     local cooldown--冷却时间剩余
 
-    if itemLink then
-        if tooltip==BattlePetTooltip or itemLink:find('Hbattlepet:%d+') then
-            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(itemLink))
-            Add_Tooltip(BattlePetTooltip, tip, data)
+    if hyperLink then
+        if tooltip==BattlePetTooltip or hyperLink:find('Hbattlepet:%d+') then
+            BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(hyperLink))
+            --BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
+            Add_Tooltip(BattlePetTooltip, addTooltip, data)
             return
         else
-            tooltip:SetHyperlink(itemLink)
+            tooltip:SetHyperlink(hyperLink)
         end
 
     elseif itemID then
@@ -288,7 +299,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         end
         if petID then
             tooltip:SetCompanionPet(petID)
-        elseif speciesID then
+        --elseif speciesID then
 
         end
 
@@ -297,8 +308,8 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data)
         Set_Specialization(tooltip, specIndex, specID)
     end
 
-    Add_Tooltip(tooltip, tip, data)
-    
+    Add_Tooltip(tooltip, addTooltip, data)
+
 --冷却时间剩余
     if cooldown then
         Add_Tooltip(tooltip, ' ', nil)
@@ -319,17 +330,21 @@ end
 
 
 function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
-    data= data or {}
     tooltip= tooltip or GameTooltip
-    tooltip:SetOwner(data.owner or frame,data.anchor or "ANCHOR_LEFT")
+    
+    tooltip:SetOwner(
+        data and data.owner or frame,
+        data and data.anchor or "ANCHOR_LEFT"
+    )
     tooltip:ClearLines()
-    if frame.itemLink and (not data or not data.itemLink) then
-        data.itemLink= frame.itemLink
-    end
-    if self:Setup(tooltip, data) then
+
+    if self:Setup(tooltip, data, frame) then
         tooltip:Show()
     end
+
 end
+
+
 
 function WoWTools_SetTooltipMixin:Set_Menu(root)
     root:SetTooltip(function(tooltip, description)

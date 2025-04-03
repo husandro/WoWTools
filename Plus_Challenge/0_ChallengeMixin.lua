@@ -278,6 +278,35 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
         end
     end
 
+    if settings.isPvP then
+        local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
+        for i = 2, 4 do
+            local rating, seasonBest, weeklyBest, seasonPlayed, seasonWon, weeklyPlayed, weeklyWon, lastWeeksBest, hasWon, pvpTier, ranking, roundsSeasonPlayed, roundsSeasonWon, roundsWeeklyPlayed, roundsWeeklyWon = GetPersonalRatedInfo(1)
+            local tierInfo = pvpTier and C_PvP.GetPvpTierInfo(pvpTier)
+            if tierInfo and rating then
+                seasonBest= seasonBest or 0
+                seasonPlayed= seasonPlayed or 0
+                seasonWon= seasonWon or 0
+                local text=''
+                if seasonPlayed>0 then
+                    local best=''
+                    if seasonBest>0 and seasonBest~=rating then
+                        best= '|cff9e9e9e'..seasonBest..'|r '
+                    end
+                    text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
+                end
+                text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
+                
+                local head= CONQUEST_SIZE_STRINGS[i]
+
+                local label= frame.WeekRewards['rewardChestHead'..head] or Create_Activities_HeaderLable(frame, head, nil, last)
+                label:SetText(text)
+                last= label
+
+            end
+        end
+    end
+
     return last
 end
 

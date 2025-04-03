@@ -227,30 +227,13 @@ end
 
 
 local function Init_All_Flyout()
-    --if not WoWTools_DataMixin.Player.IsMaxLevel or WoWTools_DataMixin.Is_Timerunning then return end
-    --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
-    local tab={
-        232,--'英雄之路：地心之战--11
-        231,--英雄之路：巨龙时代团队副本
-        227,--巨龙时代 10
 
-        220,--暗影国度 9
-        222,--英雄之路：暗影国度团队副本
-
-        223,--争霸艾泽拉斯 8
-        224,--军团再临 7
-        96,--德拉诺这王 6
-        84,--熊猫人之谜 5
-        230,--大地的裂变 4
-        --巫妖王之怒 3
-        --燃烧的远征 2
-        --经典旧世 1
-    }
     local y= -145
-    for _, flyoutID in pairs(tab) do--1024 MAX_SPELLS
+    for _, data in pairs(WoWTools_DataMixin.FlyoutID) do--1024 MAX_SPELLS
 
         local btn= WoWTools_ButtonMixin:Cbtn(PlayerSpellsFrame.SpellBookFrame.PagedSpellsFrame, {
-            texture=519384,
+            atlas= data.isRaid and 'Raid',
+            texture=not data.isRaid and 519384,
             size=32
         })
 
@@ -265,6 +248,11 @@ local function Init_All_Flyout()
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
 
+            local spells={}
+            for _, spellinfo in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
+                spells[spellinfo.spell]=true
+            end
+
             local name, description, numSlots2= GetFlyoutInfo(self.flyoutID)
             GameTooltip:AddLine(name, 1,1,1)
             GameTooltip:AddLine(description, nil,nil,nil,true)
@@ -278,7 +266,18 @@ local function Init_All_Flyout()
                     local name2= WoWTools_TextMixin:CN(C_Spell.GetSpellName(spellID), {spellID=spellID, isName=true})
                     local icon= C_Spell.GetSpellTexture(spellID)
                     if name2 and icon then
-                        GameTooltip:AddDoubleLine('|T'..icon..':0|t'..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..WoWTools_TextMixin:CN(name2)..'|r', (not isKnown2 and '|cnRED_FONT_COLOR:' or '').. spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)
+                        GameTooltip:AddDoubleLine(
+                            '|T'..icon..':0|t'
+                            ..(not isKnown2 and ' |cnRED_FONT_COLOR:' or '')
+                            ..WoWTools_TextMixin:CN(name2)..'|r',
+                            
+                            (not isKnown2 and '|cnRED_FONT_COLOR:' or '')
+                            ..spellID
+                            ..' '
+                            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
+                            ..'('..slot
+                            ..(spells[spellID] and '' or '|A:UI-LFG-PendingMark:0:0|a')
+                        )
                     else
                         GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)
                     end
@@ -288,11 +287,18 @@ local function Init_All_Flyout()
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('flyoutID '..self.flyoutID, addName)
             GameTooltip:Show()
+            spells=nil
         end)
 
         btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
         btn.Text:SetPoint('BOTTOM',0,2)
-        btn.flyoutID= flyoutID
+
+--版本
+        btn.ver= btn:CreateTexture(nil, "BORDER")
+        btn.ver:SetSize(24,12)
+        btn.ver:SetPoint('TOP', btn, 'BOTTOM', 0, 2)
+        WoWTools_TextureMixin:GetWoWLog(data.ver, btn.ver)
+
 
         function btn:set_text()
             local numSlots= select(3, GetFlyoutInfo(self.flyoutID)) or 0
@@ -310,10 +316,15 @@ local function Init_All_Flyout()
             )
         end
 
+
+
+        btn.flyoutID= data.flyoutID
+
         btn:set_text()
+
         btn:SetScript('OnShow', btn.set_text)
 
-        y= y-46
+        y= y-52
 
     end
 

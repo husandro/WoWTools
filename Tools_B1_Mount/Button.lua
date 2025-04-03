@@ -203,11 +203,14 @@ local function setClickAtt()--设置 Click属性
         MountButton.Combat=true
         return
     end
+
     local isFlyableArea= IsFlyableArea()
     local isMoving= IsPlayerMoving()
     local isBat= UnitAffectingCombat('player')
     local spellID
     local isAdvancedFlyableArea = IsAdvancedFlyableArea()
+
+
     if XD then
         if IsSubmerged() then
             spellID= 783
@@ -260,12 +263,24 @@ local function setClickAtt()--设置 Click属性
             MountButton.Combat=true
         end
 
+
+
     elseif MountButton.itemID then
         name= C_Item.GetItemNameByID(MountButton.itemID)
         icon= C_Item.GetItemIconByID(MountButton.itemID)
-        MountButton:SetAttribute("type1", "item")
-        MountButton:SetAttribute("item1", name)
-        MountButton:SetAttribute('unit', nil)
+        if name then
+            if PlayerHasToy(MountButton.itemID) then
+                MountButton:SetAttribute("type1", "macro")
+                MountButton:SetAttribute("macrotext1",  '/usetoy '..name)
+            else
+                MountButton:SetAttribute("type1", "item")
+                MountButton:SetAttribute("item1", name)
+            end
+            MountButton:SetAttribute('unit', nil)
+        else
+            WoWTools_Mixin:Load({id=MountButton.itemID, type='item'})
+            MountButton.Combat=true
+        end
     else
         MountButton:SetAttribute("item1", nil)
         MountButton:SetAttribute("spell1", nil)

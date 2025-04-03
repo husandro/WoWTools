@@ -5499,7 +5499,8 @@
         "WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS",
         "WEEKLY_REWARDS_MYTHIC_KEYSTONE",
         "REPORTING_MINOR_CATEGORY_CHARACTER_NAME",
-        "CHALLENGE_MODE_INSERT_KEYSTONE"
+        "CHALLENGE_MODE_INSERT_KEYSTONE",
+        "ExportUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

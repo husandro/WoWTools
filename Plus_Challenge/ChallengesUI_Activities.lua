@@ -5,7 +5,7 @@ end
 local Frame
 
 local function Set_Text(self)
-    WoWTools_ChallengeMixin:ActivitiesFrame(self)
+    WoWTools_ChallengeMixin:ActivitiesFrame(self, {isPvP=true})
 end
 
 
