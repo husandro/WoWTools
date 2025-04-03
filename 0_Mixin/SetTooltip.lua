@@ -217,7 +217,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
             or data.itemLink
             or data.spellLink
             or data.hyperLink
-            or data.battlePetLink 
+            or data.battlePetLink
 
     local itemID= data.itemID
     local spellID= data.spellID
@@ -331,7 +331,7 @@ end
 
 function WoWTools_SetTooltipMixin:Frame(frame, tooltip, data)
     tooltip= tooltip or GameTooltip
-    
+
     tooltip:SetOwner(
         data and data.owner or frame,
         data and data.anchor or "ANCHOR_LEFT"

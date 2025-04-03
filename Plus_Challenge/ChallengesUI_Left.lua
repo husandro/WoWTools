@@ -169,7 +169,7 @@ local function Set_List()
 
     Frame.SearchBox:SetShown(num>6)
 
-    Frame.NumLabel:SetText(num)
+    Frame.NumLabel:SetText(num>0 and num or '')
 
 
     IsInSearch= nil
