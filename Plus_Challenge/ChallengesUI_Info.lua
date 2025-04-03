@@ -22,9 +22,143 @@ local function GetNum(mapID, all)--取得完成次数,如 1/10
         end
     end
     --if to>0 then
-        return '|cff00ff00'..nu..'|r/'..to, nu, to
+        return (nu==0 and '|cff828282' or '|cff00ff00')..nu..(nu==0 and '/' or '|r/')..to, nu, to
     --end
 end
+
+
+
+
+
+
+
+
+
+local function Set_OnEnter(self)
+    local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self.mapID)
+    if intimeInfo then
+        GameTooltip:AddLine(' ')
+        for index, info in pairs(intimeInfo.members) do
+            if info.name then
+                if index==1 then
+                    if intimeInfo.completionDate and intimeInfo.level then--完成,日期
+                        local d=intimeInfo.completionDate
+                        local time= format('|cnGREEN_FONT_COLOR:%s:%s %d/%d/%d %s', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year, '('..intimeInfo.level..')')
+                        local time2
+                        if overtimeInfo and overtimeInfo.completionDate and overtimeInfo.level then
+                            d=overtimeInfo.completionDate
+                            time2= format('|cffff0000%s %s:%s %d/%d/%d', '('..overtimeInfo.level..')', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
+                        end
+                        GameTooltip:AddDoubleLine(time, time2)
+                    end
+                end
+
+                local text, text2= '', nil
+                if info.specID then
+                    local icon, role= select(4, GetSpecializationInfoByID(info.specID))
+                    text= WoWTools_DataMixin.Icon[role]..'|T'..icon..':0|t'
+                end
+                text= info.name== WoWTools_DataMixin.Player.Name and text..info.name..'|A:auctionhouse-icon-favorite:0:0|a' or text..info.name
+                if info.classID then
+                    local classFile= select(2, GetClassInfo(info.classID))
+                    local argbHex = classFile and select(4, GetClassColor(classFile))
+                    if argbHex then
+                        text= '|c'..argbHex..text..'|r'
+                    end
+                end
+                if overtimeInfo and overtimeInfo.members and overtimeInfo.members[index] and overtimeInfo.members[index].name then
+                    local info2= overtimeInfo.members[index]
+                    text2= info2.name== WoWTools_DataMixin.Player.Name and ('|A:auctionhouse-icon-favorite:0:0|a'..info2.name) or info2.name
+                    if info2.specID then
+                        local icon, role= select(4, GetSpecializationInfoByID(info.specID))
+                        text2= text2..'|T'..icon..':0|t'..WoWTools_DataMixin.Icon[role]
+                    end
+                    if info2.classID then
+                        local classFile= select(2, GetClassInfo(info2.classID))
+                        local argbHex = classFile and select(4, GetClassColor(classFile))
+                        if argbHex then
+                            text2= '|c'..argbHex..text2..'|r'
+                        end
+                    end
+                end
+                GameTooltip:AddDoubleLine(text, text2)
+
+                if index==#intimeInfo.members and intimeInfo.affixIDs then
+                    local affix, affix2='', ''
+                    for index2, v in pairs(intimeInfo.affixIDs) do
+                        local filedataid = select(3, C_ChallengeMode.GetAffixInfo(v))
+                        if filedataid then
+                            affix= affix.. '|T'..filedataid..':0|t'
+                        end
+                        if overtimeInfo and overtimeInfo.affixIDs and overtimeInfo.affixIDs[index2] then
+                            filedataid = select(3, C_ChallengeMode.GetAffixInfo(overtimeInfo.affixIDs[index2]))
+                            if filedataid then
+                                affix2= affix2.. '|T'..filedataid..':0|t'
+                            end
+                        end
+                    end
+                    if affix ~='' then
+                        GameTooltip:AddDoubleLine(affix, affix2)
+                    end
+                end
+            end
+        end
+    end
+
+    GameTooltip:AddLine(' ')
+
+    local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self.mapID))
+
+    local a=GetNum(self.mapID, true)--所有
+        or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
+
+    local w=GetNum(self.mapID)--本周
+        or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r')
+
+    GameTooltip:AddDoubleLine(
+        (WoWTools_DataMixin.onlyChinese and '历史' or HISTORY)..': '..a,
+        (WoWTools_DataMixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w
+    )
+    GameTooltip:AddLine(' ')
+
+    GameTooltip:AddDoubleLine(
+        'mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self.mapID..'|r',
+        timeLimit and (WoWTools_DataMixin.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)
+        ..' '
+        .. SecondsToTime(timeLimit)
+    )
+
+    if texture and backgroundTexture then
+        GameTooltip:AddDoubleLine(
+            '|T'..texture..':0|t'..texture,
+            '|T'..backgroundTexture..':0|t'..backgroundTexture
+        )
+    end
+
+    if self.journalInstanceID then
+
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(
+            
+            (InCombatLockdown() and '|cff828282' or '|cnGREEN_FONT_COLOR:')
+            ..'<'
+            ..WoWTools_DataMixin.Icon.left
+            ..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
+            ..'>'
+        )
+    end
+
+    GameTooltip:Show()
+end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -51,7 +185,7 @@ local function Create_Label(frame)
                 GameTooltip:AddDoubleLine(self.totale..' - |cnGREEN_FONT_COLOR:'..self.completed..'|r =', '|cnRED_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '%s (超时)' or DUNGEON_SCORE_OVERTIME_TIME, self.totale-self.completed))
             end
             GameTooltip:Show()
-            self:SetAlpha(0.5)
+            self:SetAlpha(0.3)
         end
     end)
 
@@ -73,9 +207,14 @@ local function Create_Label(frame)
             GameTooltip:ClearLines()
             GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self.score))
             GameTooltip:Show()
-            self:SetAlpha(0.5)
+            self:SetAlpha(0.3)
         end
     end)
+
+
+
+
+
 
 --移动层数位置
     if frame.HighestLevel then
@@ -91,6 +230,12 @@ local function Create_Label(frame)
             self:SetAlpha(0.5)
         end)
     end
+
+
+
+
+
+
 
 
 --提示, 包里KEY地图
@@ -147,100 +292,28 @@ local function Create_Label(frame)
 
 
 --提示
+    frame:EnableMouse(true)
     frame:HookScript('OnEnter', function(self)
         if Save().hideIns then
             return
         end
-        local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self.mapID)
-        if intimeInfo then
-            GameTooltip:AddLine(' ')
-            for index, info in pairs(intimeInfo.members) do
-                if info.name then
-                    if index==1 then
-                        if intimeInfo.completionDate and intimeInfo.level then--完成,日期
-                            local d=intimeInfo.completionDate
-                            local time= format('|cnGREEN_FONT_COLOR:%s:%s %d/%d/%d %s', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year, '('..intimeInfo.level..')')
-                            local time2
-                            if overtimeInfo and overtimeInfo.completionDate and overtimeInfo.level then
-                                d=overtimeInfo.completionDate
-                                time2= format('|cffff0000%s %s:%s %d/%d/%d', '('..overtimeInfo.level..')', d.hour<10 and '0'..d.hour or d.hour, d.minute<10 and '0'..d.minute or d.minute, d.day, d.month, d.year)
-                            end
-                            GameTooltip:AddDoubleLine(time, time2)
-                        end
-                    end
-
-                    local text, text2= '', nil
-                    if info.specID then
-                        local icon, role= select(4, GetSpecializationInfoByID(info.specID))
-                        text= WoWTools_DataMixin.Icon[role]..'|T'..icon..':0|t'
-                    end
-                    text= info.name== WoWTools_DataMixin.Player.Name and text..info.name..'|A:auctionhouse-icon-favorite:0:0|a' or text..info.name
-                    if info.classID then
-                        local classFile= select(2, GetClassInfo(info.classID))
-                        local argbHex = classFile and select(4, GetClassColor(classFile))
-                        if argbHex then
-                            text= '|c'..argbHex..text..'|r'
-                        end
-                    end
-                    if overtimeInfo and overtimeInfo.members and overtimeInfo.members[index] and overtimeInfo.members[index].name then
-                        local info2= overtimeInfo.members[index]
-                        text2= info2.name== WoWTools_DataMixin.Player.Name and ('|A:auctionhouse-icon-favorite:0:0|a'..info2.name) or info2.name
-                        if info2.specID then
-                            local icon, role= select(4, GetSpecializationInfoByID(info.specID))
-                            text2= text2..'|T'..icon..':0|t'..WoWTools_DataMixin.Icon[role]
-                        end
-                        if info2.classID then
-                            local classFile= select(2, GetClassInfo(info2.classID))
-                            local argbHex = classFile and select(4, GetClassColor(classFile))
-                            if argbHex then
-                                text2= '|c'..argbHex..text2..'|r'
-                            end
-                        end
-                    end
-                    GameTooltip:AddDoubleLine(text, text2)
-
-                    if index==#intimeInfo.members and intimeInfo.affixIDs then
-                        local affix, affix2='', ''
-                        for index2, v in pairs(intimeInfo.affixIDs) do
-                            local filedataid = select(3, C_ChallengeMode.GetAffixInfo(v))
-                            if filedataid then
-                                affix= affix.. '|T'..filedataid..':0|t'
-                            end
-                            if overtimeInfo and overtimeInfo.affixIDs and overtimeInfo.affixIDs[index2] then
-                                filedataid = select(3, C_ChallengeMode.GetAffixInfo(overtimeInfo.affixIDs[index2]))
-                                if filedataid then
-                                    affix2= affix2.. '|T'..filedataid..':0|t'
-                                end
-                            end
-                        end
-                        if affix ~='' then
-                            GameTooltip:AddDoubleLine(affix, affix2)
-                        end
-                    end
-                end
-            end
-        end
-
-        GameTooltip:AddLine(' ')
-        local timeLimit, texture, backgroundTexture = select(3, C_ChallengeMode.GetMapUIInfo(self.mapID))
-        local a=GetNum(self.mapID, true) or RED_FONT_COLOR_CODE..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r'--所有
-        local w=GetNum(self.mapID) or RED_FONT_COLOR_CODE..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r'--本周
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '历史' or HISTORY)..': '..a, (WoWTools_DataMixin.onlyChinese and '本周' or CHALLENGE_MODE_THIS_WEEK)..': '..w)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('mapChallengeModeID |cnGREEN_FONT_COLOR:'.. self.mapID..'|r', timeLimit and (WoWTools_DataMixin.onlyChinese and '限时' or GROUP_FINDER_PVE_PLAYSTYLE3)..' '.. SecondsToTime(timeLimit))
-        if texture and backgroundTexture then
-            GameTooltip:AddDoubleLine('|T'..texture..':0|t'..texture, '|T'..backgroundTexture..':0|t'..backgroundTexture)
-        end
-        GameTooltip:Show()
+        Set_OnEnter(self)
     end)
-
-    frame:EnableMouse(true)
     frame:SetScript('OnMouseDown', function(self)
-        if self.journalInstanceID then
+        if self.journalInstanceID and not InCombatLockdown() then
             WoWTools_LoadUIMixin:JournalInstance(self.journalInstanceID)
         end
     end)
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -336,6 +409,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
 
             if not frame.currentKey then
                 Create_Label(frame)
+
             end
 
 --名称, 缩写
@@ -362,18 +436,20 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
             overAllScore= overAllScore or 0
             frame.scoreLable.score= overAllScore
             frame.scoreLable:SetText(
-                overAllScore and
+                
                     '|A:AdventureMapIcon-MissionCombat:16:16|a'
-                    ..WoWTools_ChallengeMixin:KeystoneScorsoColor(overAllScore,nil,true)
-                or ''
+                    ..(overAllScore==0 and '|cff8282820'
+                        or WoWTools_ChallengeMixin:KeystoneScorsoColor(overAllScore,nil,true)
+                    )
+                
             )
-           
+
             local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
             local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
             local text, label, level, icon
             for _, info in ipairs(affixScores) do
                 if info.name == nameA or info.name==nameB then
-                    
+
                     label= frame['affixInfo'..info.name] or Create_Affix_Label(frame, info.name, nameA)
 
                     level= info.overTime and '|cff828282'..info.level..'|r' or info.level
@@ -398,7 +474,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
             frame.completedLable.completed= completed
             frame.completedLable.totale= totale
             frame.completedLable:SetText(numText or '0')
-            
+
 --提示, 包里KEY地图
             local findKey= currentChallengeMapID== frame.mapID
 
@@ -461,12 +537,14 @@ local function Init()
     end
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
-    Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
+    Frame:SetFrameStrata('HIGH')
+    Frame:SetFrameLevel(10)
     Frame:SetSize(1,1)
+    Frame:SetPoint('TOPLEFT')
 
     function Frame:Settings()
         local show= not Save().hideIns
-        
+
         self:SetScale(Save().insScale or 1)
 
         if show then
