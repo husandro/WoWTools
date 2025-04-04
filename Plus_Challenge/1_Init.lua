@@ -84,7 +84,7 @@ local function Init()
     WoWTools_ChallengeMixin:ChallengesUI_Left()
     WoWTools_ChallengeMixin:ChallengesUI_Right()
     WoWTools_ChallengeMixin:ChallengesUI_Activities()
-    WoWTools_ChallengeMixin:Init_Affix()
+    WoWTools_ChallengeMixin:ChallengesUI_Affix()
     WoWTools_ChallengeMixin:ChallengesUI_Menu()
     WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
 

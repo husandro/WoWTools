@@ -162,7 +162,7 @@ function WoWTools_MenuMixin:ScaleRoot(frame, root, GetValue, SetValue, ResetValu
         getValue=GetValue,
         setValue=SetValue,
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
-        minValue=0.4,
+        minValue=0.2,
         maxValue=4,
         step=0.05,
         bit='%0.2f',

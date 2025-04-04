@@ -110,17 +110,24 @@ end
 
 
 local function Initializer(btn, data)
-
+    local isCurrent= data.index==CurrentWeek
     for index, affixID in pairs(data.data) do
         local frame= btn['Affix'..index]
         if frame then
             frame:SetUp(affixID)
-            btn.Text:SetText(
-                (CurrentWeek==data.index and '|cnGREEN_FONT_COLOR:' or '')
-                ..data.index
-            )
+            if isCurrent then
+                frame.Border:SetVertexColor(0, 1, 0)
+            else
+                frame.Border:SetVertexColor(1, 1, 1)
+            end
         end
     end
+    
+    btn.Text:SetText(
+        (isCurrent and '|cnGREEN_FONT_COLOR:' or '')
+        ..data.index
+    )
+   
     --local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
 end
 
@@ -151,7 +158,7 @@ local function Init()
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
     Frame:SetFrameLevel(ChallengesFrame.WeeklyInfo.Child.AffixesContainer:GetFrameLevel()+3)
-    Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -38, Save().affixY or 250)
+    
     Frame:Hide()
 
 
@@ -174,7 +181,8 @@ local function Init()
 
 
     function Frame:Settings()
-        self:SetSize(Save().affixWidth or 230, Save().affixHeight or 170)
+        self:SetSize(Save().affixW or 240, Save().affixH or 179)
+        Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 250)
         self:SetScale(Save().affixScale or 0.4)
         self:SetShown(not Save().hideAffix)
     end
@@ -188,10 +196,11 @@ local function Init()
 
     Frame:Settings()
 
-    print(CurrentWeek/#WoWTools_DataMixin.affixSchedule*100)
+    
+
 
     Frame.ScrollBar:SetScrollPercentage(
-        100-(CurrentWeek/#WoWTools_DataMixin.affixSchedule*100)
+        CurrentWeek/#WoWTools_DataMixin.affixSchedule*100
     )
 
     Init=function()
@@ -200,7 +209,7 @@ local function Init()
 end
 
 
-function WoWTools_ChallengeMixin:Init_Affix()
+function WoWTools_ChallengeMixin:ChallengesUI_Affix()
     Init()
 end
 

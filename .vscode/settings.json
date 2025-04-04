@@ -5501,7 +5501,8 @@
         "REPORTING_MINOR_CATEGORY_CHARACTER_NAME",
         "CHALLENGE_MODE_INSERT_KEYSTONE",
         "ExportUtil",
-        "EJ_ContentTab_SetEnabled"
+        "EJ_ContentTab_SetEnabled",
+        "MYTHIC_PLUS_SEASON_DESC3"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

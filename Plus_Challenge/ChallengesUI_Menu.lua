@@ -393,6 +393,115 @@ sub:CreateSpacer()
 
 
 
+--词缀, 右下角
+    name= '|T463829:0|t'
+        ..(WoWTools_DataMixin.onlyChinese and '词缀列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'Affix', INFO))
+    sub= root:CreateCheckbox(
+        name,
+    function()
+        return not Save().hideAffix
+    end, function()
+        Save().hideAffix= not Save().hideAffix and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '全新赛季词缀：%s' or MYTHIC_PLUS_SEASON_DESC3, ''))
+    end)
+
+
+--W
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save().affixW or 240
+    end, setValue=function(value)
+        Save().affixW=value
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end,
+        name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
+        minValue=220,
+        maxValue=1024,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--H
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save().affixH or 179
+    end, setValue=function(value)
+        Save().affixH=value
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end,
+        name=WoWTools_DataMixin.onlyChinese and '高度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_HEIGHT,
+        minValue=58,
+        maxValue=1024,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+
+--X
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save().affixX or -45
+    end, setValue=function(value)
+        Save().affixX=value
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end,
+        name='X',
+        minValue=-2048,
+        maxValue=2048,
+        step=1,
+    })
+sub:CreateSpacer()
+
+--Y
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save().affixY or 250
+    end, setValue=function(value)
+        Save().affixY=value
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end,
+        name='Y',
+        minValue=-2048,
+        maxValue=2048,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().affixScale or 0.4
+    end, function(value)
+        Save().affixScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end, function()
+        Save().affixScale=nil
+        Save().affixW=nil
+        Save().affixH=nil
+        Save().affixX=nil
+        Save().affixY=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    end)
+
+--sub 提示
+sub:CreateSpacer()
+sub:CreateTitle(name)
+
+
+
+
+
+
+
+
+
 --插入史诗钥石，打开界面
     root:CreateDivider()
     sub=root:CreateButton(
