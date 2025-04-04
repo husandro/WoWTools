@@ -5,7 +5,7 @@ end
 local Frame
 
 local function Set_Text(self)
-    WoWTools_ChallengeMixin:ActivitiesFrame(self, {isPvP=true})
+    WoWTools_ChallengeMixin:ActivitiesFrame(self, {isPvP=not Save().activitiesHidePvP})
 end
 
 
@@ -27,12 +27,14 @@ local function Init()
     Frame:SetSize(1,1)
     Frame:Hide()
 
-
     function Frame:Settings()
+        local show= not Save().hideActivities
         self:SetPoint('TOPLEFT', ChallengesFrame, 'TOPLEFT', Save().activitiesX or 10, Save().activitiesY or -53)
-        self:SetShown(not Save().hideActivities)
+        self:SetShown(show)
         self:SetScale(Save().activitiesScale or 1)
      end
+
+    Frame:Settings()
 
     Frame:SetScript('OnShow', function(self)
         Set_Text(self)
@@ -46,9 +48,8 @@ local function Init()
         Set_Text(self)
     end)
 
-    Frame:Settings()
-
     Init= function()
+        Frame:SetShown(false)
         Frame:Settings()
     end
 end

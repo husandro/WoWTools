@@ -2,7 +2,7 @@ local function Save()
     return WoWToolsSave['Plus_Challenges'] or {}
 end
 local Frame
-
+local OpenRewardsButton
 
 
 local function GetNum(mapID, all)--取得完成次数,如 1/10
@@ -535,6 +535,13 @@ end
 
 
 
+
+
+
+
+
+
+
 --####
 --初始
 --####
@@ -596,6 +603,10 @@ local function Init()
     end
 
     Frame:Settings()
+
+
+
+
 
     Init=function()
         Frame:Settings()

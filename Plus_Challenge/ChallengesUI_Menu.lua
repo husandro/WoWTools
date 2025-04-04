@@ -142,7 +142,7 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:ChallengesUI_Left()
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '小号' or ACCOUNT_QUEST_LABEL)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '小号钥石列表' or ACCOUNT_QUEST_LABEL)
     end)
 
     sub:CreateSpacer()
@@ -239,7 +239,7 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:ActivitiesTooltip(tooltip)--周奖励，提示
     end)
 
-    --打开
+--打开
     sub2=sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT,
     function()
@@ -248,8 +248,22 @@ local function Init_Menu(self, root)
     sub2:SetTooltip(function (tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '点击预览宏伟宝库' or WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS)
     end)
+    sub:CreateDivider()
+
+--PvP信息
+    sub:CreateCheckbox(
+        'PvP '
+        ..(WoWTools_DataMixin.onlyChinese and '信息' or INFO),
+    function()
+        return not Save().activitiesHidePvP
+    end, function()
+        Save().activitiesHidePvP= not Save().activitiesHidePvP and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Activities()
+    end)
+ 
 
 --X
+sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -265,7 +279,7 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
-    --Y
+--Y
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
