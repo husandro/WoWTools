@@ -269,7 +269,9 @@ local function Create_Label(frame)
 
 --名称, 缩写
     frame.nameLable=WoWTools_LabelMixin:Create(Frame, {size=10, mouse= true, justifyH='CENTER'})
-    frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
+    --frame.nameLable:SetPoint('BOTTOM', frame, 'TOP', 0, 3)
+    frame.nameLable:SetPoint('BOTTOMLEFT', frame, 'TOPLEFT', 0, 3)
+    frame.nameLable:SetPoint('BOTTOMRIGHT', frame, 'TOPRIGHT', 0, 3)
     frame.nameLable:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
         self:SetAlpha(1)
@@ -386,7 +388,7 @@ end
 
 local function SetUp(self)
     local insTab= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID]
-    
+
     if not insTab then
         return
     end
@@ -400,8 +402,11 @@ local function SetUp(self)
 
 
 --名称, 缩写
+    local insNamegsub= Save().insNamegsub
     local nameText = C_ChallengeMode.GetMapUIInfo(self.mapID)--名称
-    --[[if (WoWTools_DataMixin.onlyChinese or LOCALE_zhCN) and WoWTools_DataMixin.ChallengesSpellTabs[self.mapID] then
+    self.nameLable.name= nameText
+
+    if WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.ChallengesSpellTabs[self.mapID] then
         nameText= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID].name
     else
         nameText=nameText:match('%((.+)%)') or nameText
@@ -409,8 +414,12 @@ local function SetUp(self)
         nameText=nameText:match('%- (.+)') or nameText
         nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
         nameText=nameText:match('·(.+)') or nameText
-        nameText=WoWTools_TextMixin:sub(nameText, 5, 12)
-    end]]
+    end
+
+    if insNamegsub then
+        nameText= WoWTools_TextMixin:sub(nameText, insNamegsub)
+    end
+
     self.nameLable.name= nameText
     self.nameLable:SetText(nameText or '0')
 

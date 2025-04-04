@@ -8,7 +8,130 @@ local function Init_Menu(self, root)
     local sub, sub2, name
     local isInCombat= InCombatLockdown()
 
---史诗钥石
+
+
+
+
+
+
+
+
+--副本信息
+    name='|A:QuestLegendary:0:0|a'..(WoWTools_DataMixin.onlyChinese and '副本信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, INFO))
+    sub= root:CreateCheckbox(
+        name,
+    function()
+        return not Save().hideIns
+    end, function()
+        Save().hideIns = not Save().hideIns and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Info()
+    end)
+
+--gsub
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().insNamegsub or 0
+        end, setValue=function(value)
+            Save().insNamegsub=value>0 and value or nil
+            WoWTools_ChallengeMixin:ChallengesUI_Info()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '截取' or 'gsub',
+        minValue=0,
+        maxValue=30,
+        tooltip=function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '副本名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, NAME))
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '截取' or 'gsub')
+            tooltip:AddLine(" ")
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '0-不截取' or '0-Not gsub')
+        end,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().insScale or 1
+    end, function(value)
+        Save().insScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Info()
+    end, function()
+        Save().insScale=nil
+        Save().insNamegsub=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Info()
+    end)
+
+--sub 提示
+    sub:CreateSpacer()
+    sub:CreateTitle(name)
+
+
+
+
+
+
+
+
+
+
+
+--传送门
+    name= '|A:WarlockPortal-Yellow-32x32:0:0|a'
+        ..'|cnRED_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '传送门' or SPELLS)
+    sub= root:CreateCheckbox(
+    name,
+    function()
+        return not Save().hidePort
+    end, function()
+        Save().hidePort = not Save().hidePort and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+    end)
+    sub:SetTooltip(function(tooltip)
+        if WoWTools_DataMixin.onlyChinese then
+            tooltip:AddDoubleLine('提示：', '|cnRED_FONT_COLOR:如果出现错误，请禁用此功能')
+            tooltip:AddDoubleLine('战斗中', '|cnRED_FONT_COLOR:不能关闭，窗口')
+        else
+            tooltip:AddDoubleLine(LABEL_NOTE, '|cnRED_FONT_COLOR:If you get error, please disable this')
+            tooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, '|cnRED_FONT_COLOR:Cannot close window')
+        end
+    end)
+    sub:SetEnabled(not isInCombat)
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().portScale or 1
+    end, function(value)
+        Save().portScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+    end, function()
+        Save().portScale=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Porta()
+    end)
+
+--sub 提示
+    sub:CreateSpacer()
+    sub:CreateTitle(name)
+    WoWTools_MenuMixin:Reload(sub)--重新加载UI
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--小号. 史诗钥石
+    root:CreateDivider()
     name= '|T525134:0|t'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
     sub= root:CreateCheckbox(
         name,
@@ -81,83 +204,8 @@ local function Init_Menu(self, root)
 
 
 
---副本信息
-    name='|A:QuestLegendary:0:0|a'..(WoWTools_DataMixin.onlyChinese and '副本信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, INFO))
-    sub= root:CreateCheckbox(
-        name,
-    function()
-        return not Save().hideIns
-    end, function()
-        Save().hideIns = not Save().hideIns and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Info()
-    end)
-
---缩放
-    WoWTools_MenuMixin:ScaleRoot(self, sub,
-    function()
-        return Save().insScale or 1
-    end, function(value)
-        Save().insScale=value
-        WoWTools_ChallengeMixin:ChallengesUI_Info()
-    end, function()
-        Save().insScale=nil
-        WoWTools_ChallengeMixin:ChallengesUI_Info()
-    end)
-
---sub 提示
-    sub:CreateSpacer()
-    sub:CreateTitle(name)
 
 
-
-
-
-
-
-
-
-
-
---传送门
-    name= '|A:WarlockPortal-Yellow-32x32:0:0|a'
-        ..'|cnRED_FONT_COLOR:'
-        ..(WoWTools_DataMixin.onlyChinese and '传送门' or SPELLS)
-    sub= root:CreateCheckbox(
-       name,
-    function()
-        return not Save().hidePort
-    end, function()
-        Save().hidePort = not Save().hidePort and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Porta()
-    end)
-    sub:SetTooltip(function(tooltip)
-        if WoWTools_DataMixin.onlyChinese then
-            tooltip:AddDoubleLine('提示：', '|cnRED_FONT_COLOR:如果出现错误，请禁用此功能')
-            tooltip:AddDoubleLine('战斗中', '|cnRED_FONT_COLOR:不能关闭，窗口')
-        else
-            tooltip:AddDoubleLine(LABEL_NOTE, '|cnRED_FONT_COLOR:If you get error, please disable this')
-            tooltip:AddDoubleLine(HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT, '|cnRED_FONT_COLOR:Cannot close window')
-        end
-    end)
-    sub:SetEnabled(not isInCombat)
-
-
-
---缩放
-    WoWTools_MenuMixin:ScaleRoot(self, sub,
-    function()
-        return Save().portScale or 1
-    end, function(value)
-        Save().portScale=value
-        WoWTools_ChallengeMixin:ChallengesUI_Porta()
-    end, function()
-        Save().portScale=nil
-        WoWTools_ChallengeMixin:ChallengesUI_Porta()
-    end)
---sub 提示
-    sub:CreateSpacer()
-    sub:CreateTitle(name)
-    WoWTools_MenuMixin:Reload(sub)--重新加载UI
 
 
 
@@ -193,7 +241,7 @@ local function Init_Menu(self, root)
 
     --打开
     sub2=sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '打开' or UNWRAP,
+        WoWTools_DataMixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT,
     function()
         return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
     end, WoWTools_LoadUIMixin.WeeklyRewards)
