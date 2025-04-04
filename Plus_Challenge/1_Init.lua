@@ -1,5 +1,6 @@
 if PlayerGetTimerunningSeasonID() then
     WoWTools_DataMixin.ChallengesSpellTabs={}
+    WoWTools_DataMixin.affixSchedule={}
     return
 end
 
@@ -83,11 +84,9 @@ local function Init()
     WoWTools_ChallengeMixin:ChallengesUI_Left()
     WoWTools_ChallengeMixin:ChallengesUI_Right()
     WoWTools_ChallengeMixin:ChallengesUI_Activities()
+    WoWTools_ChallengeMixin:Init_Affix()
     WoWTools_ChallengeMixin:ChallengesUI_Menu()
-
     WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
-
-    --Set_Data()
 
     Init=function()end
 end
@@ -123,6 +122,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if PlayerGetTimerunningSeasonID() or not C_MythicPlus.GetCurrentSeason() then
                 self:UnregisterAllEvents()
                 WoWTools_DataMixin.ChallengesSpellTabs={}
+                WoWTools_DataMixin.affixSchedule={}
                 return
             end
 

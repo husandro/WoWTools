@@ -2,7 +2,6 @@ local function Save()
     return WoWToolsSave['Plus_Challenges'] or {}
 end
 local Frame
-local OpenRewardsButton
 
 
 local function GetNum(mapID, all)--取得完成次数,如 1/10
@@ -577,36 +576,26 @@ local function Init()
         end
     end)
 
-    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
-        if ChallengesFrame.WeeklyInfo.Child.SeasonBest then
-            ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')
-        end
-   end
+    
+    ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')--隐藏, 赛季最佳
 
-    if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then
-        if ChallengesFrame.WeeklyInfo.Child.Description and ChallengesFrame.WeeklyInfo.Child.Description:IsVisible() then
-            local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
-            if text==MYTHIC_PLUS_MISSING_KEYSTONE_MESSAGE then
-                ChallengesFrame.WeeklyInfo.Child.Description:SetText()
-                print(
-                    WoWTools_DataMixin.Icon.icon2
-                    ..WoWTools_ChallengeMixin.addName
-                )
-                print('|cffff00ff',text)
-            end
-        end
-    end
 
-    if C_AddOns.IsAddOnLoaded("AngryKeystones") then
+    --[[if C_AddOns.IsAddOnLoaded("AngryKeystones") then
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
         ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 0, -55)
-    end
+    end]]
+
+    C_Timer.After(0.3, function()
+        if ChallengesFrame.WeeklyInfo.Child.Description:IsShown() then
+            local text= ChallengesFrame.WeeklyInfo.Child.Description:GetText()
+            ChallengesFrame.WeeklyInfo.Child.Description:SetText('')
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName)
+            print(text)
+        end
+    end)
+
 
     Frame:Settings()
-
-
-
-
 
     Init=function()
         Frame:Settings()
