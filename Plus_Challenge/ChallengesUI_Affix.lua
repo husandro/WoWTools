@@ -2,7 +2,7 @@ local function Save()
     return WoWToolsSave['Plus_Challenges'] or {}
 end
 local CurrentWeek
-
+local Frame
 
 
 
@@ -154,6 +154,12 @@ local function Set_List()
     end
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
     Frame.ScrollBox:ScrollToElementDataIndex(CurrentWeek or 1)
+
+    local season= C_MythicPlus.GetCurrentSeason()
+    Frame.Text:SetText(
+        (season==WoWTools_DataMixin.affixScheduleSeason and '' or '|cff828282')
+        ..season
+    )
 end
 
 
@@ -170,7 +176,6 @@ end
 
 
 local function Init()
-
     if Save().hideAffix then
         return
     end
@@ -203,7 +208,7 @@ local function Init()
 
 
     function Frame:Settings()
-        self:SetSize(Save().affixW or 248, Save().affixH or 179)
+        self:SetSize(Save().affixW or 248, Save().affixH or 177)
         Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 300)
         self:SetScale(Save().affixScale or 0.4)
         self:SetShown(not Save().hideAffix)
@@ -216,14 +221,13 @@ local function Init()
         self.view:SetDataProvider(CreateDataProvider())
     end)
 
-    Frame:Settings()
+    
 
 
 
 --第几赛季
     Frame.Text= WoWTools_LabelMixin:Create(Frame, {color=true, mouse=true, size=32})
-    --Frame.Text:SetPoint('BOTTOM', Frame, 'TOP', 0, 2)
-    Frame.Text:SetPoint('BOTTOMRIGHT', Frame.ScrollBar, 'TOPRIGHT')
+    Frame.Text:SetPoint('BOTTOMRIGHT', Frame.ScrollBar, 'TOPRIGHT',9, 3)
     Frame.Text:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
         GameTooltip:Hide()
@@ -232,6 +236,8 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local sea=  C_MythicPlus.GetCurrentSeason() or 0
+        local isCurrentWeek= sea==WoWTools_DataMixin.affixScheduleSeason
+
         GameTooltip:AddLine(
             format(
                 WoWTools_DataMixin.onlyChinese and '%s第%d赛季' or EXPANSION_SEASON_NAME,
@@ -239,7 +245,14 @@ local function Init()
                 sea
             )
         )
-        if sea~=WoWTools_DataMixin.affixScheduleSeason then
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.left
+            ..(isCurrentWeek and '' or '|cff828282')
+            ..(WoWTools_DataMixin.onlyChinese and '当前：' or ITEM_UPGRADE_CURRENT)
+            ..(CurrentWeek or 1)
+        )
+        if not isCurrentWeek then
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(
                 '|cnRED_FONT_COLOR:'
@@ -249,26 +262,31 @@ local function Init()
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
-
-    local season= C_MythicPlus.GetCurrentSeason()
-    Frame.Text:SetText(
-        (season==WoWTools_DataMixin.affixScheduleSeason and '' or '|cff828282')
-        ..season
-    )
-
     Frame.Text:SetScript('OnMouseDown', function(self)
         self:GetParent().ScrollBox:ScrollToElementDataIndex(CurrentWeek or 1)
     end)
 
-    if WoWTools_DataMixin.Player.husandro and season~=WoWTools_DataMixin.affixScheduleSeason then
+
+    if WoWTools_DataMixin.Player.husandro and C_MythicPlus.GetCurrentSeason()~=WoWTools_DataMixin.affixScheduleSeason then
         print('|cnRED_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
     end
 
+
+
+
+
+
+    Frame:Settings()
 
     Init=function()
         Frame:Settings()
     end
 end
+
+
+
+
+
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Affix()

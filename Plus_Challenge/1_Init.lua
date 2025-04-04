@@ -85,6 +85,7 @@ local function Init()
     WoWTools_ChallengeMixin:ChallengesUI_Right()
     WoWTools_ChallengeMixin:ChallengesUI_Activities()
     WoWTools_ChallengeMixin:ChallengesUI_Affix()
+    --WoWTools_ChallengeMixin:ChallengesUI_Guild()
     WoWTools_ChallengeMixin:ChallengesUI_Menu()
     WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
 
@@ -119,7 +120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
 
-            if PlayerGetTimerunningSeasonID() or not C_MythicPlus.GetCurrentSeason() then
+            if PlayerGetTimerunningSeasonID() then
                 self:UnregisterAllEvents()
                 WoWTools_DataMixin.ChallengesSpellTabs={}
                 WoWTools_DataMixin.affixSchedule={}

@@ -440,7 +440,7 @@ sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
     getValue=function()
-        return Save().affixH or 179
+        return Save().affixH or 177
     end, setValue=function(value)
         Save().affixH=value
         WoWTools_ChallengeMixin:ChallengesUI_Affix()
