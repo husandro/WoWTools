@@ -328,6 +328,7 @@ sub:CreateSpacer()
 --公会挑战，内侧，右上角
 
     name= '|A:communities-guildbanner-background:0:0|a'
+        ..(IsInGuild() and '' or '|cff828282')
         ..(WoWTools_DataMixin.onlyChinese and '公会挑战' or GUILD_CHALLENGE_LABEL)
     sub= root:CreateCheckbox(
         name,

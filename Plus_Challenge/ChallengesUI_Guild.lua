@@ -141,7 +141,7 @@ local function Init()
     function Frame:Settings()
         self:SetPoint('TOPRIGHT', ChallengesFrame, Save().guildX or -15, Save().guildY or -32)        
         self:SetScale(Save().guildScale or 1)
-        self:SetShown(not Save().hideGuild)
+        self:SetShown(not Save().hideGuild and IsInGuild())
      end
 
      Frame:SetScript('OnShow', function(self)
