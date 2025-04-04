@@ -152,6 +152,7 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
         for _, tab in pairs(R) do
             GameTooltip:AddLine(tab.text)
         end
+
     elseif frame then
         frame.framGameTooltipLabels= frame.framGameTooltipLabels or {}
         local index=0
@@ -198,6 +199,7 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
                 lable.type= nil
             end
         end
+        return last
     end
 end
 

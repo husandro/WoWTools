@@ -884,7 +884,7 @@ local function Frame_Init(rest)
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
                 frame.bg:SetAlpha(0.5)
-                frame.bg:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+                frame.bg:SetAtlas('ChallengeMode-guild-background')
 
                 frame.bar= CreateFrame('StatusBar', nil, frame)
                 frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)

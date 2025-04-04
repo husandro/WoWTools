@@ -120,7 +120,7 @@ function WoWTools_ChatMixin:Init()
 
         ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
         ChatButton.Background:SetPoint('BOTTOMLEFT', Buttons[1])
-        ChatButton.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        ChatButton.Background:SetAtlas('ChallengeMode-guild-background')
         --ChatButton.Background:SetAlpha(0.7)
 
         function ChatButton:set_backgroud()

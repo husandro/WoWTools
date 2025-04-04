@@ -183,7 +183,7 @@ local function Init_BankSlotsFrame()
 
 
 --背景
-    BankFrameBg:SetAtlas('UI-Frame-DialogBox-BackgroundTile',true, 'NEAREST')
+    BankFrameBg:SetAtlas('ChallengeMode-guild-background',true, 'NEAREST')
     BankFrameBg:SetAlpha(0.5)
 
 --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"

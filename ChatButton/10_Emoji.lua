@@ -126,7 +126,7 @@ local function Init_Buttons()--设置按钮
     end
 
     Frame.texture2= Frame:CreateTexture(nil, 'BACKGROUND')
-    Frame.texture2:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    Frame.texture2:SetAtlas('ChallengeMode-guild-background')
     Frame.texture2:SetAlpha(0.5)
 
     function Frame:set_background()

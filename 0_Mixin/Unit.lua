@@ -32,8 +32,8 @@ end
 
 
 --职业颜色
-function WoWTools_UnitMixin:GetColor(unit, guid)
-    local r, g, b, hex, classFilename
+function WoWTools_UnitMixin:GetColor(unit, guid, classFilename)
+    local r, g, b, hex
     if UnitExists(unit) then
         if UnitIsUnit('player', unit) then
             r,g,b,hex= WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b, WoWTools_DataMixin.Player.col

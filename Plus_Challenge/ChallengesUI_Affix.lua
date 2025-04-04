@@ -6,7 +6,13 @@ local Frame
 
 
 
+
+
 local function Find_Cursor_Affix()
+    if CurrentWeek then
+        return
+    end
+
     local currentAffixes={}
     for _, affix in pairs(C_MythicPlus.GetCurrentAffixes() or {}) do
         currentAffixes[affix.id]= true
@@ -29,72 +35,6 @@ local function Find_Cursor_Affix()
         end
     end
 end
-
-
-
-
-
-
-
-
-
-local function Init_Affix()
-    do
-        Find_Cursor_Affix()
-    end
-
-    if not CurrentWeek then
-        WoWTools_ChallengeMixin.notFindAffix= true
-        MaxAffix= nil
-        WoWTools_DataMixin.affixSchedule={}
-        return
-    end
-
-    local nextAffix= CurrentWeek+1
-    nextAffix= nextAffix>MaxAffix and 1 or nextAffix
-
-    for i=1, MaxAffix do
-        local btn= WoWTools_ButtonMixin:Cbtn(Frame, {--建立 Affix 按钮
-            size=22,
-            isType2=true
-        })
-
-        local affixID= WoWTools_DataMixin.affixSchedule[nextAffix][i]
-        btn.affixInfo= affixID
-        btn.border:SetAtlas('ChallengeMode-AffixRing-Sm')
-
-        local _, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID);
-        SetPortraitToTexture(btn.texture, filedataid)
-
-        btn:SetScript("OnEnter", ChallengesKeystoneFrameAffixMixin.OnEnter)
-        btn:SetScript("OnLeave", GameTooltip_Hide)
-        btn.affixID = affixID
-        btn:SetPoint('TOP', ChallengesFrame.WeeklyInfo.Child.AffixesContainer, 'BOTTOM', ((i-1)*24)-24, -3)
-
-        if i==1 then
-            local label= WoWTools_LabelMixin:Create(btn)
-            label:SetPoint('RIGHT', btn, 'LEFT')
-            label:SetText(nextAffix)
-            --if index==1 then
-            --label:SetTextColor(0,1,0)
-            label:EnableMouse(true)
-            --label.affixSchedule= WoWTools_DataMixin.affixSchedule
-            --label.CurrentWeek= CurrentWeek
-            label.max= max
-
-            --end
-        end
-    end
-    --end
-    --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
-    --ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', 0, -12)
-end
-
-
-
-
-
-
 
 
 
@@ -145,6 +85,8 @@ end
 
 
 local function Set_List()
+    Find_Cursor_Affix()
+
     local data = CreateDataProvider()
     for index, info in pairs(WoWTools_DataMixin.affixSchedule) do
         data:Insert({
@@ -180,15 +122,13 @@ local function Init()
         return
     end
 
-    Find_Cursor_Affix()
+    
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
     Frame:SetFrameStrata('HIGH')
     Frame:SetFrameLevel(3)
-    Frame:Hide()
 
-
-
+   
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollBox:SetAllPoints()
 
@@ -204,24 +144,27 @@ local function Init()
 
 
 
-
-
-
     function Frame:Settings()
         self:SetSize(Save().affixW or 248, Save().affixH or 177)
-        Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 300)
+        self:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 300)
         self:SetScale(Save().affixScale or 0.4)
         self:SetShown(not Save().hideAffix)
     end
 
-    Frame:SetScript('OnShow', function()
+    Frame:SetScript('OnShow', function(self)
         Set_List()
+        self:RegisterEvent('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE')
     end)
+    
     Frame:SetScript('OnHide', function(self)
-        self.view:SetDataProvider(CreateDataProvider())
+        self.view:SetDataProvider(CreateDataProvider())        
+        self:UnregisterEvent('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE')
     end)
 
-    
+  
+    Frame:SetScript('OnEvent', function()
+        Set_List()
+    end)
 
 
 
@@ -267,9 +210,29 @@ local function Init()
     end)
 
 
+
+
+
+
+
+
+
     if WoWTools_DataMixin.Player.husandro and C_MythicPlus.GetCurrentSeason()~=WoWTools_DataMixin.affixScheduleSeason then
         print('|cnRED_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
     end
+
+
+
+
+
+    WoWTools_TextureMixin:CreateBackground(Frame,{point=function(texture)
+        texture:SetPoint('TOPLEFT', -2, 6)
+        texture:SetPoint('BOTTOMLEFT', -2, -2)
+        texture:SetPoint('RIGHT', Frame.ScrollBar, 10, 0)
+    end})
+
+
+
 
 
 
@@ -282,6 +245,13 @@ local function Init()
         Frame:Settings()
     end
 end
+
+
+
+
+
+
+
 
 
 

@@ -122,10 +122,12 @@ WoWTools_DataMixin.Icon={
     [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
 }
 
---disabled='talents-button-reset',
---select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
---common-dropdown-icon-checkmark-yellow 黄色
-
+--[[
+disabled='talents-button-reset',
+select='common-icon-checkmark',--'GarrMission_EncounterBar-CheckMark',--绿色√   
+common-dropdown-icon-checkmark-yellow 黄色
+ChallengeMode-RankLineDivider
+]]
 
 
 

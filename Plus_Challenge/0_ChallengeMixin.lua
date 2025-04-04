@@ -238,6 +238,10 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
 
     frame.WeekRewards= frame.WeekRewards or {}
 
+    WoWTools_TextureMixin:CreateBackground(frame)
+    frame.Background:SetPoint('TOPLEFT', -2, 2)
+    local w=0
+
     local R= GetActivities()
     local last
     local point= settings.point
@@ -246,7 +250,10 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
     for head, tab in pairs(R) do
         local label= frame.WeekRewards['rewardChestHead'..head] or Create_Activities_HeaderLable(frame, head, point, last)
         label:SetText('|A:common-icon-rotateright:0:0|a'..head)
+
         last= label
+
+        w= math.max(w, label:GetWidth())
 
         for index, info in pairs(tab) do
             label= frame.WeekRewards['rewardChestSub'..head..index] or Create_Activities_SubLable(frame, head, index, last)
@@ -275,8 +282,12 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
                 end
             end
             label:SetText(text or '')
+
+            w= math.max(w, label:GetWidth())
         end
     end
+
+    
 
     if settings.isPvP then
         local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
@@ -303,9 +314,13 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
                 label:SetText(text)
                 last= label
 
+                w= math.max(w, label:GetWidth())
             end
         end
     end
+
+    frame.Background:SetPoint('BOTTOMLEFT', last or frame, 0, -2)
+    frame.Background:SetWidth(w+2)
 
     return last
 end

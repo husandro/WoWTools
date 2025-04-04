@@ -25,7 +25,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
         point(frame.Background)
     end
 
-    frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    frame.Background:SetAtlas('ChallengeMode-guild-background')--' UI-Frame-DialogBox-BackgroundTile ')
     frame.Background:SetAlpha(alpha or 1)
     frame.Background:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
     return frame.Background

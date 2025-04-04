@@ -323,27 +323,30 @@ sub:CreateSpacer()
 
 
 
---挑战信息 right
-    name= '|A:challenges-medal-gold:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '挑战信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, INFO))
+
+
+--公会挑战，内侧，右上角
+
+    name= '|A:communities-guildbanner-background:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '公会挑战' or GUILD_CHALLENGE_LABEL)
     sub= root:CreateCheckbox(
         name,
     function()
-        return not Save().hideRight
+        return not Save().hideGuild
     end, function()
-        Save().hideRight= not Save().hideRight and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Right()
+        Save().hideGuild= not Save().hideGuild and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Guild()
     end)
 
 --X
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().rightX or 10
-        end, setValue=function(value)
-            Save().rightX=value
-            WoWTools_ChallengeMixin:ChallengesUI_Right()
-        end,
+    getValue=function()
+        return Save().guildX or -15
+    end, setValue=function(value)
+        Save().guildX=value
+        WoWTools_ChallengeMixin:ChallengesUI_Guild()
+    end,
         name='X',
         minValue=-1024,
         maxValue=1024,
@@ -354,12 +357,12 @@ sub:CreateSpacer()
 --Y
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().rightY or -53
-        end, setValue=function(value)
-            Save().rightY=value
-            WoWTools_ChallengeMixin:ChallengesUI_Right()
-        end,
+    getValue=function()
+        return Save().guildY or -32
+    end, setValue=function(value)
+        Save().guildY=value
+        WoWTools_ChallengeMixin:ChallengesUI_Guild()
+    end,
         name='X',
         minValue=-1024,
         maxValue=1024,
@@ -370,15 +373,15 @@ sub:CreateSpacer()
 --缩放
     WoWTools_MenuMixin:ScaleRoot(self, sub,
     function()
-        return Save().rightScale or 1
+        return Save().guildScale or 1
     end, function(value)
-        Save().rightScale=value
-        WoWTools_ChallengeMixin:ChallengesUI_Right()
+        Save().guildScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Guild()
     end, function()
-        Save().rightScale=nil
-        Save().rightX=nil
-        Save().rightY=nil
-        WoWTools_ChallengeMixin:ChallengesUI_Right()
+        Save().guildScale=nil
+        Save().guildX=nil
+        Save().guildY=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Guild()
     end)
 
 --sub 提示
@@ -507,6 +510,80 @@ sub:CreateTitle(name)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+--挑战信息 right
+    name= '|A:challenges-medal-gold:0:0|a'
+    ..(WoWTools_DataMixin.onlyChinese and '挑战信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, INFO))
+    sub= root:CreateCheckbox(
+        name,
+    function()
+        return not Save().hideRight
+    end, function()
+        Save().hideRight= not Save().hideRight and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
+    end)
+
+--X
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save().rightX or 10
+    end, setValue=function(value)
+        Save().rightX=value
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
+    end,
+        name='X',
+        minValue=-1024,
+        maxValue=1024,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--Y
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+    getValue=function()
+        return Save().rightY or -53
+    end, setValue=function(value)
+        Save().rightY=value
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
+    end,
+        name='X',
+        minValue=-1024,
+        maxValue=1024,
+        step=1,
+        })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().rightScale or 1
+    end, function(value)
+        Save().rightScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
+    end, function()
+        Save().rightScale=nil
+        Save().rightX=nil
+        Save().rightY=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Right()
+    end)
+
+    --sub 提示
+    sub:CreateSpacer()
+    sub:CreateTitle(name)
 
 
 

@@ -5503,7 +5503,17 @@
         "ExportUtil",
         "EJ_ContentTab_SetEnabled",
         "MYTHIC_PLUS_SEASON_DESC3",
-        "EXPANSION_SEASON_NAME"
+        "EXPANSION_SEASON_NAME",
+        "LE_WORLD_ELAPSED_TIMER_TYPE_CHALLENGE_MODE",
+        "CHALLENGE_MODE_DEATH_COUNT_TITLE",
+        "CHALLENGE_MODE_DEATH_COUNT_DESCRIPTION",
+        "TRACKER_HEADER_DUNGEON",
+        "SCENARIO_STAGE_FINAL",
+        "SCENARIO_STAGE",
+        "CHALLENGE_MODE_POWER_LEVEL",
+        "MALE",
+        "FEMALE",
+        "GUILD_CHALLENGE_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

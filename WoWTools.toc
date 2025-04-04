@@ -423,7 +423,7 @@ Plus_Challenge\ChallengesUI_Activities.lua
 Plus_Challenge\ChallengesUI_Left.lua
 Plus_Challenge\ChallengesUI_Right.lua
 Plus_Challenge\ChallengesUI_Affix.lua
-##Plus_Challenge\ChallengesUI_Guild.lua
+Plus_Challenge\ChallengesUI_Guild.lua
 Plus_Challenge\ChallengesUI_Menu.lua
 Plus_Challenge\z_ChallengesKeystoneFrame.lua
 Plus_Challenge\z_Blizzard_WeeklyRewards.lua

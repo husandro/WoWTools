@@ -63,7 +63,7 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
 
 
         frame.itemBG= frame:CreateTexture(nil, 'BACKGROUND')
-        frame.itemBG:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+        frame.itemBG:SetAtlas('ChallengeMode-guild-background')
         frame.itemBG:SetAlpha(0.7)
         --frame.itemBG:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
         frame.itemBG:SetPoint('TOPLEFT', frame.itemLinkText)

@@ -439,7 +439,7 @@ local function Init()
         local showLeftList= Save().showLeftList
         if show and showLeftList then
             local showBackground= Save().showBackground
-            self.frame.Background:SetAtlas(showBackground and 'bank-frame-background' or 'UI-Frame-DialogBox-BackgroundTile')
+            self.frame.Background:SetAtlas(showBackground and 'bank-frame-background' or 'ChallengeMode-guild-background')
             self.frame.Background:SetAlpha(showBackground and 1 or 0.7)
             self.frame:SetScale(Save().leftListScale or 1)
         else

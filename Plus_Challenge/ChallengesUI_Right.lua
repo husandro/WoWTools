@@ -8,6 +8,8 @@ local Frame
 
 
 local function Set_Text()--所有记录
+    local w= 0
+
 --历史
 
     Frame.history:SetText(
@@ -15,7 +17,8 @@ local function Set_Text()--所有记录
         ..' |cff00ff00'..#C_MythicPlus.GetRunHistory(true)
         ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
     )
-
+    w= Frame.history:GetStringWidth()
+    
 
 --本周记录
     local completed, all= 0,0
@@ -83,10 +86,13 @@ local function Set_Text()--所有记录
         ..(weekText and '|n'..weekText or '')
     )
 
+    w= math.max(Frame.week:GetStringWidth(), w)
 
 --难度 每周 掉落
     Frame.loot:SetText(WoWTools_DataMixin.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
-
+    w= math.max(Frame.loot:GetStringWidth(), w)
+    w= math.max(Frame.week:GetStringWidth(), w)
+    
 --限制，显示等级
     local curLevel=0
     local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
@@ -115,9 +121,16 @@ local function Set_Text()--所有记录
         end
     end
     Frame.loot2:SetText(lootText or '')
+    w= math.max(Frame.loot2:GetStringWidth(), w)
 
     --物品，货币提示
-    WoWTools_LabelMixin:ItemCurrencyTips({frame=Frame, point={'TOPLEFT', Frame.loot2, 'BOTTOMLEFT',0, -12}})
+    local last= WoWTools_LabelMixin:ItemCurrencyTips({frame=Frame, point={'TOPLEFT', Frame.loot2, 'BOTTOMLEFT',0, -12}})
+    if last then
+        w= math.max(last:GetStringWidth(), w)
+    end
+
+    Frame.Background:SetPoint('BOTTOM', last or Frame.loot2, 0, -6)
+    Frame.Background:SetWidth(w+4)
 end
 
 
@@ -301,9 +314,17 @@ local function Init()
         self.loot2:SetText('')
         WoWTools_LabelMixin:ItemCurrencyTips({frame=Frame, isClear=true})
     end)
-    Frame:SetScript('OnEvent', function(self)
+    Frame:SetScript('OnEvent', function()
         Set_Text()
     end)
+
+
+
+    WoWTools_TextureMixin:CreateBackground(Frame,{point=function(texture)
+        texture:SetPoint('TOPLEFT', -2, 6)
+    end})
+
+
 
     Frame:Settings()
 

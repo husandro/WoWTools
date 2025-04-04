@@ -393,8 +393,8 @@ C_Timer.After(1, function()
     mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
 
 
-    ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
-    ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('ChallengeMode-guild-background')
+    ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('ChallengeMode-guild-background')
     mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.BottomLeft)
     mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.BottomRight)
     mixin:SetFrame(ContainerFrameCombinedBags.Bg)

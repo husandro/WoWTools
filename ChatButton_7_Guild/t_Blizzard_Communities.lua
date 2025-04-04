@@ -102,7 +102,7 @@
     --mixin:SetNineSlice(TabardFrameInset)
     TabardFrameInset:Hide()
     mixin:SetNineSlice(TabardFrame)
-    TabardFrameBg:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    TabardFrameBg:SetAtlas('ChallengeMode-guild-background')
 
     mixin:SetAlphaColor(TabardFrameBg, nil, nil, true)
 
