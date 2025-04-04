@@ -139,7 +139,7 @@ local function Set_OnEnter(self)
 
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
-            
+
             (InCombatLockdown() and '|cff828282' or '|cnGREEN_FONT_COLOR:')
             ..'<'
             ..WoWTools_DataMixin.Icon.left
@@ -173,7 +173,7 @@ local function Create_Label(frame)
     frame.completedLable:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     frame.completedLable:SetScript('OnEnter', function(self)
         if self.all or self.week then
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(
                 WoWTools_DataMixin.onlyChinese and '历史 |cnGREEN_FONT_COLOR:完成|r/总计' or (HISTORY..' |cnGREEN_FONT_COLOR:'..COMPLETE..'|r/'..TOTAL) ,
@@ -202,7 +202,7 @@ local function Create_Label(frame)
     frame.scoreLable:SetPoint('BOTTOMLEFT', frame, 0, 24)
     frame.scoreLable:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     frame.scoreLable:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '史诗钥石评分：%s' or CHALLENGE_COMPLETE_DUNGEON_SCORE, self.score))
             GameTooltip:Show()
@@ -221,11 +221,11 @@ local function Create_Label(frame)
         frame.HighestLevel:EnableMouse(true)
         frame.HighestLevel:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
         frame.HighestLevel:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..': '..self:GetText()))
             GameTooltip:Show()
-            self:SetAlpha(0.5)
+            self:SetAlpha(0.3)
         end)
     end
 
@@ -250,7 +250,7 @@ local function Create_Label(frame)
     end)
 
     frame.currentKey:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         local bagID, slotID= select(2, WoWTools_BagMixin:Ceca(nil, {isKeystone=true}))--查找，包的key
         if bagID and slotID then
@@ -281,7 +281,7 @@ local function Create_Label(frame)
             GameTooltip:AddLine(self.name)
             GameTooltip:Show()
         end
-        self:SetAlpha(0.5)
+        self:SetAlpha(0.3)
     end)
 
 
@@ -338,7 +338,7 @@ local function Create_Affix_Label(frame, name, nameA)
     end)
 
     label:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
             format(
@@ -356,7 +356,7 @@ local function Create_Affix_Label(frame, name, nameA)
                 WoWTools_TimeMixin:SecondsToClock(self.durationSec)
         )
         GameTooltip:Show()
-        self:SetAlpha(0.5)
+        self:SetAlpha(0.3)
     end)
 
     frame['affixInfo'..name] = label
@@ -384,143 +384,141 @@ end
 
 
 
-local function Set_Update()--Blizzard_ChallengesUI.lua
-    local self= ChallengesFrame
-    if not self.maps or #self.maps==0 or not Frame:IsShown() then
+local function SetUp(self)
+    local insTab= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID]
+    
+    if not insTab then
         return
     end
 
+    self.spellID= insTab.spell
+    self.journalInstanceID= insTab.ins
 
-    local currentChallengeMapID= C_MythicPlus.GetOwnedKeystoneChallengeMapID()--当前, KEY地图,ID
-    local keyStoneLevel = C_MythicPlus.GetOwnedKeystoneLevel()--当前KEY，等级
+    if not self.currentKey then
+        Create_Label(self)
+    end
 
-
-
-    for i=1, #self.maps do
-        local frame = self.DungeonIcons[i]
-        local insTab= frame and WoWTools_DataMixin.ChallengesSpellTabs[frame.mapID]
-
-        if insTab then
-
-            frame.spellID= insTab.spell
-            frame.journalInstanceID= insTab.ins
-
-            if not frame.currentKey then
-                Create_Label(frame)
-
-            end
 
 --名称, 缩写
-            local nameText = C_ChallengeMode.GetMapUIInfo(frame.mapID)--名称
-            if (WoWTools_DataMixin.onlyChinese or LOCALE_zhCN) and WoWTools_DataMixin.ChallengesSpellTabs[frame.mapID] then
-                nameText= WoWTools_DataMixin.ChallengesSpellTabs[frame.mapID].name
-            else
-                nameText=nameText:match('%((.+)%)') or nameText
-                nameText=nameText:match('%（(.+)%）') or nameText
-                nameText=nameText:match('%- (.+)') or nameText
-                nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
-                nameText=nameText:match('·(.+)') or nameText
-                nameText=WoWTools_TextMixin:sub(nameText, 5, 12)
-            end
-            frame.nameLable.name= nameText
-            frame.nameLable:SetText(nameText or '0')
+    local nameText = C_ChallengeMode.GetMapUIInfo(self.mapID)--名称
+    --[[if (WoWTools_DataMixin.onlyChinese or LOCALE_zhCN) and WoWTools_DataMixin.ChallengesSpellTabs[self.mapID] then
+        nameText= WoWTools_DataMixin.ChallengesSpellTabs[self.mapID].name
+    else
+        nameText=nameText:match('%((.+)%)') or nameText
+        nameText=nameText:match('%（(.+)%）') or nameText
+        nameText=nameText:match('%- (.+)') or nameText
+        nameText=nameText:match(HEADER_COLON..'(.+)') or nameText
+        nameText=nameText:match('·(.+)') or nameText
+        nameText=WoWTools_TextMixin:sub(nameText, 5, 12)
+    end]]
+    self.nameLable.name= nameText
+    self.nameLable:SetText(nameText or '0')
 
 
 
 --分数，最佳
-           -- local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(frame.mapID)
-            local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(frame.mapID)
-            affixScores= affixScores or {}
-            overAllScore= overAllScore or 0
-            frame.scoreLable.score= overAllScore
-            frame.scoreLable:SetText(
-                
-                    '|A:AdventureMapIcon-MissionCombat:16:16|a'
-                    ..(overAllScore==0 and '|cff8282820'
-                        or WoWTools_ChallengeMixin:KeystoneScorsoColor(overAllScore,nil,true)
-                    )
-                
+    -- local intimeInfo, overtimeInfo = C_MythicPlus.GetSeasonBestForMap(self.mapID)
+    local affixScores, overAllScore = C_MythicPlus.GetSeasonBestAffixScoreInfoForMap(self.mapID)
+    overAllScore= overAllScore or 0
+    self.scoreLable.score= overAllScore
+    self.scoreLable:SetText(
+            '|A:AdventureMapIcon-MissionCombat:16:16|a'
+            ..(
+                overAllScore==0 and '|cff8282820'
+                or WoWTools_ChallengeMixin:KeystoneScorsoColor(overAllScore,nil,true)
             )
+    )
 
-            local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
-            local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
-            local text, label, level, icon
-            for _, info in ipairs(affixScores) do
-                if info.name == nameA or info.name==nameB then
+    local nameA, _, filedataidA = C_ChallengeMode.GetAffixInfo(10)
+    local nameB, _, filedataidB = C_ChallengeMode.GetAffixInfo(9)
+    local text, label, level, icon
+    if not affixScores then
+        affixScores={
+            {name=nameA, level=0, overTime=true, durationSec=0, score=0},
+            {name=nameB, level=0, overTime=true, durationSec=0, score=0},
+        }
+    end
+    for _, info in pairs(affixScores) do
+        if info.name == nameA or info.name==nameB then
 
-                    label= frame['affixInfo'..info.name] or Create_Affix_Label(frame, info.name, nameA)
+            label= self['affixInfo'..info.name] or Create_Affix_Label(self, info.name, nameA)
 
-                    level= info.overTime and '|cff828282'..info.level..'|r' or info.level
-                    icon='|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'
-                    text= icon..level
+            level= info.overTime and '|cff828282'..info.level..'|r' or info.level
+            icon='|T'..(info.name == nameA and filedataidA or filedataidB)..':0|t'
+            text= icon..level
 
-                    label.overTime= info.overTime
-                    label.durationSec= info.durationSec
-                    label.name= icon..info.name..': '..level
+            label.overTime= info.overTime
+            label.durationSec= info.durationSec
+            label.name= icon..(WoWTools_TextMixin:CN(info.name))..': '..level
 
-                    label:SetText(text or '0')
-                end
-            end
-
---副本 完成/总次数 (全部)
-            local numText
-            local all, completed, totale= GetNum(frame.mapID, true)
-            local week= GetNum(frame.mapID)--本周
-
-            numText= (all or '')..((week and week~=all) and ' |cffffffff(|r'..week..'|cffffffff)|r' or '')
-
-            frame.completedLable.all=all or week
-            frame.completedLable.week= week
-            frame.completedLable.completed= completed
-            frame.completedLable.totale= totale
-            frame.completedLable:SetText(numText or '0')
-
---提示, 包里KEY地图
-            local findKey= currentChallengeMapID== frame.mapID
-
-            frame.currentKey:SetShown(findKey)
-            frame.currentKey.label:SetShown(findKey)
-            frame.currentKey.label:SetText(keyStoneLevel or '0')
+            label:SetText(text or '0')
         end
     end
+
+--副本 完成/总次数 (全部)
+    local numText
+    local allText, completed, totale= GetNum(self.mapID, true)--所有
+
+    local weekText= GetNum(self.mapID)--本周
+
+    numText= allText
+        ..(
+            weekText~=allText
+            and ' |cffffffff(|r'..weekText..'|cffffffff)|r'
+            or ''
+        )
+
+    self.completedLable.all=allText
+    self.completedLable.week= weekText
+    self.completedLable.completed= completed
+    self.completedLable.totale= totale
+    self.completedLable:SetText(numText)
+
+--提示, 包里KEY地图
+    local findKey= C_MythicPlus.GetOwnedKeystoneChallengeMapID()== self.mapID
+    self.currentKey:SetShown(findKey)
+
+--当前KEY，等级
+    self.currentKey.label:SetText(findKey and (C_MythicPlus.GetOwnedKeystoneLevel() or '0') or '')
 end
 
 
- --[[if ChallengesFrame.WeeklyInfo.Child.WeeklyChest and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus and ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:GetText()==MYTHIC_PLUS_COMPLETE_MYTHIC_DUNGEONS then
-        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetText('')--隐藏，完成史诗钥石地下城即可获得
-        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:Hide()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Set_Update(self)--Blizzard_ChallengesUI.lua
+    for _, frame in pairs(self.DungeonIcons or {}) do
+        SetUp(frame)
     end
-    if ChallengesFrame and ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child and ChallengesFrame.WeeklyInfo.Child.Description then
-        ChallengesFrame.WeeklyInfo.Child.Description:SetText('')
-        ChallengesFrame.WeeklyInfo.Child.Description:Hide()
-    end]]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+end
 
 
 
@@ -544,17 +542,24 @@ local function Init()
 
     function Frame:Settings()
         local show= not Save().hideIns
-
         self:SetScale(Save().insScale or 1)
-
-        if show then
-            Set_Update()
-        end
-
         self:SetShown(show)
-     end
+        if show then
+            Set_Update(_G['ChallengesFrame'])
+        end
+    end
 
-    hooksecurefunc(ChallengesFrame, 'Update', Set_Update)
+    --[[hooksecurefunc(ChallengesDungeonIconMixin, 'SetUp', function(self, mapInfo)
+        if not Save().hideIns then
+            SetUp(self)
+        end
+    end)]]
+
+    hooksecurefunc(ChallengesFrame, 'Update', function(self)
+        if not Save().hideIns then
+            Set_Update(self)
+        end
+    end)
 
     if ChallengesFrame.WeeklyInfo and ChallengesFrame.WeeklyInfo.Child then--隐藏, 赛季最佳
         if ChallengesFrame.WeeklyInfo.Child.SeasonBest then
@@ -599,5 +604,3 @@ end
 function WoWTools_ChallengeMixin:ChallengesUI_Info()
     Init()
 end
-
-

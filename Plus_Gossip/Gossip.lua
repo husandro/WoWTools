@@ -105,8 +105,8 @@ local function Set_Gossip_Text(self, info)
 
     if text then
         if isChangFont then
-            self:GetFontString():SetFont('Interface\\AddOns\\WoWTools\\Sesource\\ARHei.TTF', size)
-            --self:GetFontString():SetFont('Fonts\\ARHei.ttf', size)
+            --self:GetFontString():SetFont('Interface\\AddOns\\WoWTools\\Sesource\\ARHei.TTF', size)
+            self:GetFontString():SetFont('Fonts\\ARHei.ttf', size)
         else
             self:GetFontString():SetFontObject('QuestFontLeft')
         end

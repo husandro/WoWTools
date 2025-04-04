@@ -106,7 +106,7 @@ local Tab={
         end,
     },
     {
-        name='HEX',--..(WoWTools_DataMixin.Player.onlyChinese and '颜色码' or COLOR_PICKER_HEX),--..' AARRGGBB',
+        name='HEX',--..(WoWTools_DataMixin.onlyChinese and '颜色码' or COLOR_PICKER_HEX),--..' AARRGGBB',
         get_value= function(text)
             return WoWTools_ColorMixin:HEXtoRGB(text)
         end,

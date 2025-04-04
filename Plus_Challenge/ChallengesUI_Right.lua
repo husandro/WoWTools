@@ -214,7 +214,7 @@ local function Create_Label()
 --历史
     Frame.history= WoWTools_LabelMixin:Create(Frame, {mouse=true, size=14})
     Frame.history:SetPoint('TOPLEFT')
-    Frame.history:SetScript('OnLeave', function(self) self:SetAlpha(1) end)
+    Frame.history:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
     Frame.history:SetScript('OnEnter', function(self)
         History_Tooltip(self)
         self:SetAlpha(0.5)

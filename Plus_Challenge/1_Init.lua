@@ -3,9 +3,7 @@ if PlayerGetTimerunningSeasonID() then
     return
 end
 
-for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
-    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
-end
+
 
 local P_Save= {
     --hideIns=true,--隐藏，副本，挑战，信息
@@ -33,6 +31,52 @@ local function Save()
 end
 
 
+
+
+--[[local function Set_Data()
+    local cur= EJ_GetCurrentTier()
+    local max= EJ_GetNumTiers()
+
+    if not max or max==0 then
+        return
+    end
+
+    if max and cur~=max then
+        EJ_SelectTier(max)
+    end
+
+    local data={}
+    local find
+    for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
+        local name, mapID  = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+        if mapID and name and not WoWTools_DataMixin.ChallengesSpellTabs[mapID] then
+            data[name]= mapID
+            find=true
+        end
+    end
+
+    if not find then
+        return
+    end
+
+    local dataIndex=1
+    local instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
+    while instanceID ~= nil do
+        dataIndex = dataIndex + 1;
+        local mapID= data[name]
+        if mapID then
+            WoWTools_DataMixin.ChallengesSpellTabs[mapID]={ins= instanceID}
+        end
+        instanceID, name = EJ_GetInstanceByIndex(dataIndex, false)
+    end
+
+    if not InCombatLockdown() then
+        EJ_SelectTier(cur or max)
+    end
+end]]
+
+
+
 local function Init()
     WoWTools_ChallengeMixin:ChallengesUI_Info()
     WoWTools_ChallengeMixin:ChallengesUI_Porta()
@@ -43,8 +87,14 @@ local function Init()
 
     WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
 
+    --Set_Data()
+
     Init=function()end
 end
+
+
+
+
 
 
 
@@ -62,6 +112,7 @@ local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
 panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+panel:RegisterEvent('CHALLENGE_MODE_START')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -69,7 +120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Challenges']= WoWToolsSave['Plus_Challenges'] or P_Save
 
-            if PlayerGetTimerunningSeasonID() then
+            if PlayerGetTimerunningSeasonID() or not C_MythicPlus.GetCurrentSeason() then
                 self:UnregisterAllEvents()
                 WoWTools_DataMixin.ChallengesSpellTabs={}
                 return
@@ -95,6 +146,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
 
             else
+
+                for _, tab in pairs(WoWTools_DataMixin.ChallengesSpellTabs) do
+                    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
+                end
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_WeeklyRewards') then
                     WoWTools_ChallengeMixin:Blizzard_WeeklyRewards()
                 end
@@ -102,7 +158,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 if C_AddOns.IsAddOnLoaded('Blizzard_ChallengesUI') then
                     Init()
                 end
-
             end
 
         elseif arg1=='Blizzard_ChallengesUI' and WoWToolsSave then--挑战,钥石,插入界面
@@ -115,65 +170,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_COMPLETED' then
         WoWTools_ChallengeMixin:Say_ChallengeComplete()
 
+    elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
+        WoWTools_ChallengeMixin:Chat_Affix()
+
     elseif event=='LOADING_SCREEN_DISABLED' then
         WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
         WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
         self:UnregisterEvent(event)
     end
 end)
-
-
-
-
-
-
-
-
-
-
---panel:RegisterEvent('CHALLENGE_MODE_START')
---[[elseif event=='CHALLENGE_MODE_START' then -赏金, 说 Bounty
-    if Save().hideKeyUI then
-        return
-    end
-    local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
-    for _, info  in pairs(tab) do
-        local activeAffixID=select(3, C_ChallengeMode.GetAffixInfo(info))
-        if activeAffixID==136177 then
-            C_Timer.After(6, function()
-                local chat={}
-
-                local n=GetNumGroupMembers()
-                local IDs2={373113, 373108, 373116, 373121}
-                for i=1, n do
-                    local u= i==n and 'player' or 'party'..i
-                    local name2=i==n and COMBATLOG_FILTER_STRING_M or UnitName(u)
-                    if UnitExists(u) and name2 then
-                        local buff
-                        for _, v in pairs(IDs2) do
-                            local name=WoWTools_AuraMixin:Get(u, v)
-                            if  name then
-                                local link= C_Spell.GetSpellLink(v)
-                                if link or name then
-                                    buff=i..')'..name2..': '..(link or name)
-                                    break
-                                end
-                            end
-                        end
-                        buff=buff or (i..')'..name2..': '..NONE)
-                        table.insert(chat, buff)
-                    end
-                end
-
-                for _, v in pairs(chat) do
-                    if not Save().slotKeystoneSay then
-                        print(v)
-                    else
-                        WoWTools_ChatMixin:Chat(v)
-                    end
-                end
-            end)
-            break
-        end
-    end
-end]]

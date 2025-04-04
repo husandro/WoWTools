@@ -36,12 +36,13 @@ local function Init_EncounterJournal()--冒险指南界面
     WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精
 
 
-    if not Save().hideEncounterJournal and Save().EncounterJournalTier then--记录上次选择TAB
+    --[[if not Save().hideEncounterJournal and Save().EncounterJournalTier and not InCombatLockdown() then--记录上次选择TAB
         local max= EJ_GetNumTiers()
         if max then
             local tier= math.min(Save().EncounterJournalTier, max)
             if tier~= max then
                 EJ_SelectTier(tier)
+                print('a', tier)
             end
         end
     end
@@ -49,7 +50,8 @@ local function Init_EncounterJournal()--冒险指南界面
     --记录上次选择版本
     hooksecurefunc('EJ_SelectTier', function(tier)
         Save().EncounterJournalTier=tier
-    end)
+        print('b', tier)
+    end)]]
 
     Init_EncounterJournal=function()end
 end
@@ -64,10 +66,9 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('BOSS_KILL')
 panel:RegisterEvent('PLAYER_LOGIN')
 
-panel:SetScript("OnEvent", function(self, event, arg1)
+panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
@@ -88,11 +89,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:UnregisterEvent(event)
-                self:UnregisterEvent('PLAYER_LOGIN')
+                self:UnregisterAllEvents()
             else
                 self:RegisterEvent('UPDATE_INSTANCE_INFO')
                 self:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+                self:RegisterEvent('BOSS_KILL')
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                     Init_EncounterJournal()--冒险指南界面
@@ -116,7 +117,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
-
+    
     elseif event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据

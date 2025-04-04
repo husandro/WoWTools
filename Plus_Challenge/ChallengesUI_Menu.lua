@@ -9,7 +9,7 @@ local function Init_Menu(self, root)
     local isInCombat= InCombatLockdown()
 
 --史诗钥石
-    name= '|T525134:0|t'..(WoWTools_DataMixin.Player.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
+    name= '|T525134:0|t'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
     sub= root:CreateCheckbox(
         name,
     function()
@@ -17,6 +17,9 @@ local function Init_Menu(self, root)
     end, function()
         Save().hideLeft= not Save().hideLeft and true or nil
         WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '小号' or ACCOUNT_QUEST_LABEL)
     end)
 
     sub:CreateSpacer()
@@ -27,7 +30,7 @@ local function Init_Menu(self, root)
             Save().leftWidth=value
             WoWTools_ChallengeMixin:ChallengesUI_Left()
         end,
-        name=WoWTools_DataMixin.Player.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
+        name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
         minValue=100,
         maxValue=640,
         step=1,
@@ -42,7 +45,7 @@ local function Init_Menu(self, root)
             Save().leftBgAlpha=value
             WoWTools_ChallengeMixin:ChallengesUI_Left()
         end,
-        name=WoWTools_DataMixin.Player.onlyChinese and '透明度' or CHANGE_OPACITY,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         minValue=0,
         maxValue=1,
         step='0.05',
@@ -79,7 +82,7 @@ local function Init_Menu(self, root)
 
 
 --副本信息
-    name='|A:QuestLegendary:0:0|a'..(WoWTools_DataMixin.Player.onlyChinese and '副本信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, INFO))
+    name='|A:QuestLegendary:0:0|a'..(WoWTools_DataMixin.onlyChinese and '副本信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INSTANCE, INFO))
     sub= root:CreateCheckbox(
         name,
     function()
@@ -118,7 +121,7 @@ local function Init_Menu(self, root)
 --传送门
     name= '|A:WarlockPortal-Yellow-32x32:0:0|a'
         ..'|cnRED_FONT_COLOR:'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '传送门' or SPELLS)
+        ..(WoWTools_DataMixin.onlyChinese and '传送门' or SPELLS)
     sub= root:CreateCheckbox(
        name,
     function()
@@ -173,7 +176,7 @@ local function Init_Menu(self, root)
     local hasRewar= C_WeeklyRewards.HasAvailableRewards()
     name= (hasRewar and '|cnGREEN_FONT_COLOR:' or '')
         ..'|A:'..(WoWTools_DataMixin.Player.Faction=='Alliance' and 'activities-chest-sw' or 'activities-chest-org')..':0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
+        ..(WoWTools_DataMixin.onlyChinese and '宏伟宝库' or RATED_PVP_WEEKLY_VAULT)
         ..(hasRewar and '|A:BonusLoot-Chest:0:0|a' or '')
 
     sub= root:CreateCheckbox(
@@ -195,7 +198,7 @@ local function Init_Menu(self, root)
         return WeeklyRewardsFrame and WeeklyRewardsFrame:IsShown()
     end, WoWTools_LoadUIMixin.WeeklyRewards)
     sub2:SetTooltip(function (tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.Player.onlyChinese and '点击预览宏伟宝库' or WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '点击预览宏伟宝库' or WEEKLY_REWARDS_CLICK_TO_PREVIEW_INSTRUCTIONS)
     end)
 
 --X
@@ -260,7 +263,7 @@ local function Init_Menu(self, root)
 
 --挑战信息 right
     name= '|A:challenges-medal-gold:0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '挑战信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, INFO))
+        ..(WoWTools_DataMixin.onlyChinese and '挑战信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, INFO))
     sub= root:CreateCheckbox(
         name,
     function()
@@ -332,13 +335,13 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateButton(
         '|A:ChallengeMode-KeystoneSlotFrame:0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '插入史诗钥石' or CHALLENGE_MODE_INSERT_KEYSTONE),
+        ..(WoWTools_DataMixin.onlyChinese and '插入史诗钥石' or CHALLENGE_MODE_INSERT_KEYSTONE),
     function()
         ChallengesKeystoneFrame:SetShown(not ChallengesKeystoneFrame:IsShown())
         return MenuResponse.Open
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.Player.onlyChinese and '显示UI' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, 'UI'))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示UI' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, 'UI'))
     end)
 
 
@@ -354,7 +357,7 @@ end
 
 --[[其他信息
     name= '|A:ChallengeMode-Chest:0:0|a'
-        ..(WoWTools_DataMixin.Player.onlyChinese and '其他信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, INFO))
+        ..(WoWTools_DataMixin.onlyChinese and '其他信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, INFO))
     sub= root:CreateCheckbox(
         name,
     function()
