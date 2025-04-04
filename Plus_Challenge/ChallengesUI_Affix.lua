@@ -222,7 +222,8 @@ local function Init()
 
 --第几赛季
     Frame.Text= WoWTools_LabelMixin:Create(Frame, {color=true, mouse=true, size=32})
-    Frame.Text:SetPoint('BOTTOM', Frame, 'TOP', 0, 2)
+    --Frame.Text:SetPoint('BOTTOM', Frame, 'TOP', 0, 2)
+    Frame.Text:SetPoint('BOTTOMRIGHT', Frame.ScrollBar, 'TOPRIGHT')
     Frame.Text:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
         GameTooltip:Hide()
@@ -254,6 +255,10 @@ local function Init()
         (season==WoWTools_DataMixin.affixScheduleSeason and '' or '|cff828282')
         ..season
     )
+
+    Frame.Text:SetScript('OnMouseDown', function(self)
+        self:GetParent().ScrollBox:ScrollToElementDataIndex(CurrentWeek or 1)
+    end)
 
     if WoWTools_DataMixin.Player.husandro and season~=WoWTools_DataMixin.affixScheduleSeason then
         print('|cnRED_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
