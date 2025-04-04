@@ -166,8 +166,5 @@ end
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Guild()
-    if not IsInGuild() or not WoWTools_DataMixin.Player.husandro then
-        return
-    end
     Init()
 end
