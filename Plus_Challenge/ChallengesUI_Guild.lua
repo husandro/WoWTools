@@ -43,22 +43,6 @@ local function Set_Text()
     local text= WoWTools_DataMixin.onlyChinese and '公会挑战' or GUILD_CHALLENGE_LABEL
 
 
-    if WoWTools_DataMixin.Player.husandro and #data==0 then
-        data={
-            name= WoWTools_DataMixin.Player.name_realm,
-            classFilename= UnitClassBase('player'),
-            keystoneLevel=11,
-            mapChallengeModeID=247,
-            isYou= true,
-            members= {
-                {
-                    name= WoWTools_DataMixin.Player.name_realm,
-                    classFileName= UnitClassBase('player'),
-                },
-            },
-        }
-    end
-    
     if not data or not data.mapChallengeModeID then
         Frame.Text:SetText(text)
         Frame.Background:SetAtlas('ChallengeMode-guild-background')

@@ -201,6 +201,8 @@ local function Init()
     end
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
+    Frame:SetFrameStrata('HIGH')
+    Frame:SetFrameLevel(3)
     Frame:Hide()
 
     Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
