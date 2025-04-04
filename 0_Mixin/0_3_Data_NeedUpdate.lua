@@ -81,6 +81,7 @@ end
 -- TWW Season 2 (Sort:[1](Level 4+);[2](Level 7+);[3](Level 10+);[4](Level 12+))
 -- Information from(资料来自)：https://www.wowhead.com/guide/mythic-plus-dungeons/the-war-within-season-2/overview
 -- AngryKeystones Schedule
+WoWTools_DataMixin.affixScheduleSeason= 14--第几赛季--C_MythicPlus.GetCurrentSeason()
 WoWTools_DataMixin.affixSchedule = {
 	{ 148, 9 , 10, 147, },
 	{ 162, 10, 9 , 147, },
@@ -91,7 +92,6 @@ WoWTools_DataMixin.affixSchedule = {
 	{ 160, 9 , 10, 147, },
 	{ 158, 10, 9 , 147, },
 }
-
 
 
 

@@ -123,7 +123,11 @@ local function Initializer(btn, data)
         end
     end
     
-    btn.Text:SetText(isCurrent and '|A:common-icon-rotateright:0:0|a' or data.index)
+    --btn.Text:SetText(isCurrent and '|A:common-icon-rotateright:0:0|a' or data.index)
+    btn.Text:SetText(
+        (isCurrent and '|cnGREEN_FONT_COLOR:' or '')
+        .. data.index
+    )
    
     --local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
 end
@@ -226,18 +230,34 @@ local function Init()
     Frame.Text:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
+        local sea=  C_MythicPlus.GetCurrentSeason() or 0
         GameTooltip:AddLine(
             format(
                 WoWTools_DataMixin.onlyChinese and '%s第%d赛季' or EXPANSION_SEASON_NAME,
                 WoWTools_DataMixin.Icon.wow2,
-                C_MythicPlus.GetCurrentSeason() or 0
+                sea
             )
         )
+        if sea~=WoWTools_DataMixin.affixScheduleSeason then
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(
+                '|cnRED_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '当前赛季数据不匹配' or 'Current season data mismatch')
+            )
+        end
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
-    Frame.Text:SetText(C_MythicPlus.GetCurrentSeason())
 
+    local season= C_MythicPlus.GetCurrentSeason()
+    Frame.Text:SetText(
+        (season==WoWTools_DataMixin.affixScheduleSeason and '' or '|cff828282')
+        ..season
+    )
+
+    if WoWTools_DataMixin.Player.husandro and season~=WoWTools_DataMixin.affixScheduleSeason then
+        print('|cnRED_FONT_COLOR:需要更新赛季数据', '0_3_Data_NeedUpdate.lua' )
+    end
 
 
     Init=function()
