@@ -413,7 +413,7 @@ sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
     getValue=function()
-        return Save().affixW or 240
+        return Save().affixW or 248
     end, setValue=function(value)
         Save().affixW=value
         WoWTools_ChallengeMixin:ChallengesUI_Affix()
@@ -462,7 +462,7 @@ sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
     getValue=function()
-        return Save().affixY or 250
+        return Save().affixY or 300
     end, setValue=function(value)
         Save().affixY=value
         WoWTools_ChallengeMixin:ChallengesUI_Affix()

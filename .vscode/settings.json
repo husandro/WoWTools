@@ -5502,7 +5502,8 @@
         "CHALLENGE_MODE_INSERT_KEYSTONE",
         "ExportUtil",
         "EJ_ContentTab_SetEnabled",
-        "MYTHIC_PLUS_SEASON_DESC3"
+        "MYTHIC_PLUS_SEASON_DESC3",
+        "EXPANSION_SEASON_NAME"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5528,5 +5529,6 @@
         "assign-type-mismatch",
         "undefined-field",
         "param-type-mismatch",
+        "trailing-space"
     ],
 }

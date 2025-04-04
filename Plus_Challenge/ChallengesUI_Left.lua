@@ -257,8 +257,8 @@ local function Init()
 
 
 
-    Frame.ScrollList= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
-    Frame.ScrollList:SetAllPoints()
+    Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
+    Frame.ScrollBox:SetAllPoints()
 
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar:SetPoint("TOPRIGHT", Frame, "TOPLEFT", -6,-12)
@@ -267,7 +267,7 @@ local function Init()
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
 
     Frame.view = CreateScrollBoxListLinearView()
-    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollList, Frame.ScrollBar, Frame.view)
+    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
     function Frame:Settings()

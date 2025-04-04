@@ -123,13 +123,19 @@ local function Initializer(btn, data)
         end
     end
     
-    btn.Text:SetText(
-        (isCurrent and '|cnGREEN_FONT_COLOR:' or '')
-        ..data.index
-    )
+    btn.Text:SetText(isCurrent and '|A:common-icon-rotateright:0:0|a' or data.index)
    
     --local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -143,7 +149,18 @@ local function Set_List()
         })
     end
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
+    Frame.ScrollBox:ScrollToElementDataIndex(CurrentWeek or 1)
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -157,13 +174,14 @@ local function Init()
     Find_Cursor_Affix()
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
-    Frame:SetFrameLevel(ChallengesFrame.WeeklyInfo.Child.AffixesContainer:GetFrameLevel()+3)
-    
+    Frame:SetFrameStrata('HIGH')
+    Frame:SetFrameLevel(3)
     Frame:Hide()
 
 
-    Frame.ScrollList= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
-    Frame.ScrollList:SetAllPoints()
+
+    Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
+    Frame.ScrollBox:SetAllPoints()
 
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 6,-12)
@@ -172,7 +190,7 @@ local function Init()
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
 
     Frame.view = CreateScrollBoxListLinearView()
-    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollList, Frame.ScrollBar, Frame.view)
+    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsAffixTemplate', Initializer)
 
 
@@ -181,8 +199,8 @@ local function Init()
 
 
     function Frame:Settings()
-        self:SetSize(Save().affixW or 240, Save().affixH or 179)
-        Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 250)
+        self:SetSize(Save().affixW or 248, Save().affixH or 179)
+        Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 300)
         self:SetScale(Save().affixScale or 0.4)
         self:SetShown(not Save().hideAffix)
     end
@@ -196,12 +214,31 @@ local function Init()
 
     Frame:Settings()
 
-    
 
 
-    Frame.ScrollBar:SetScrollPercentage(
-        CurrentWeek/#WoWTools_DataMixin.affixSchedule*100
-    )
+--第几赛季
+    Frame.Text= WoWTools_LabelMixin:Create(Frame, {color=true, mouse=true, size=32})
+    Frame.Text:SetPoint('BOTTOM', Frame, 'TOP', 0, 2)
+    Frame.Text:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    Frame.Text:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(
+            format(
+                WoWTools_DataMixin.onlyChinese and '%s第%d赛季' or EXPANSION_SEASON_NAME,
+                WoWTools_DataMixin.Icon.wow2,
+                C_MythicPlus.GetCurrentSeason() or 0
+            )
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.3)
+    end)
+    Frame.Text:SetText(C_MythicPlus.GetCurrentSeason())
+
+
 
     Init=function()
         Frame:Settings()
