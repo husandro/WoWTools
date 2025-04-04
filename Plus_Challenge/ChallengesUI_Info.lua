@@ -221,7 +221,7 @@ local function Create_Label(frame)
         frame.HighestLevel:EnableMouse(true)
         frame.HighestLevel:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
         frame.HighestLevel:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+            GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '最佳%s' or DUNGEON_SCORE_BEST_AFFIX, (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)..': '..self:GetText()))
             GameTooltip:Show()
@@ -250,7 +250,7 @@ local function Create_Label(frame)
     end)
 
     frame.currentKey:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         local bagID, slotID= select(2, WoWTools_BagMixin:Ceca(nil, {isKeystone=true}))--查找，包的key
         if bagID and slotID then
@@ -276,7 +276,7 @@ local function Create_Label(frame)
     end)
     frame.nameLable:SetScript('OnEnter', function(self)
         if self.name then
-            GameTooltip:SetOwner(self:GetParent(), "ANCHOR_LEFT")
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(self.name)
             GameTooltip:Show()
@@ -338,7 +338,7 @@ local function Create_Affix_Label(frame, name, nameA)
     end)
 
     label:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self:GetParent(), "ANCHOR_RIGHT")
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(
             format(
