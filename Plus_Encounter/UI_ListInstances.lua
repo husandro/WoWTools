@@ -133,7 +133,7 @@ local function Create(button)
 
 --当前, KEY地图,ID
     button.KeyTexture= button:CreateTexture(nil, 'OVERLAY')
-    button.KeyTexture:SetPoint('TOPLEFT', -4, 0)
+    button.KeyTexture:SetPoint('TOPLEFT', -4, -2)
     button.KeyTexture:SetSize(26,26)
     button.KeyTexture:SetAtlas('common-icon-checkmark')
     button.KeyTexture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) self.label:SetAlpha(1) end)
@@ -154,7 +154,7 @@ local function Create(button)
 
 --当前KEY，等级
     button.KeyTexture.label=WoWTools_LabelMixin:Create(button, {r=1, g=1, b=1})
-    button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -8)
+    button.KeyTexture.label:SetPoint('TOP', button.KeyTexture, -2, -10)
 
 --收藏
     button.Favorites2=WoWTools_ButtonMixin:Cbtn(button, {atlas='PetJournal-FavoritesIcon', size=25, isType2=true})

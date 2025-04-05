@@ -1,7 +1,7 @@
 local P_Save={
     wowBossKill={},
-    loot= {[WoWTools_DataMixin.Player.Class]= {}},
-    favorites={},--副本收藏
+    loot= {},--[WoWTools_DataMixin.Player.Class]= {}
+    favorites={},--副本收藏 WoWTools_DataMixin.Player.GUID= {}
 }
 
 
@@ -75,7 +75,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             WoWToolsSave['Adventure_Journal']= WoWToolsSave['Adventure_Journal'] or P_Save
 
             Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错
-
+            Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
+            
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
             --添加控制面板
@@ -91,6 +92,8 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
+                
+
                 self:RegisterEvent('UPDATE_INSTANCE_INFO')
                 self:RegisterEvent('WEEKLY_REWARDS_UPDATE')
                 self:RegisterEvent('BOSS_KILL')
