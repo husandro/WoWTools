@@ -9,13 +9,12 @@ local function Affix_136177()
     local chat={}
 
     local n=GetNumGroupMembers()
-    local IDs2={373113, 373108, 373116, 373121}
     for i=1, n do
         local u= i==n and 'player' or 'party'..i
         local name2= i==n and COMBATLOG_FILTER_STRING_ME or UnitName(u)
         if UnitExists(u) and name2 then
             local buff
-            for _, v in pairs(IDs2) do
+            for _, v in pairs({373113, 373108, 373116, 373121}) do
                 local name=WoWTools_AuraMixin:Get(u, v)
                 if  name then
                     local link= C_Spell.GetSpellLink(v)

@@ -75,7 +75,8 @@ local function Set_Button_ChallengData(button)
                 leavel= intimeInfo.level
             end
             if all>0 then
-                local text= '|cff00ff00'..nu..'|r/'..all
+                local text
+                text= '|cff00ff00'..nu..'|r/'..all
                 ..'|n'..'|T4352494:0|t'..leavel
                 ..'|n'..'|A:AdventureMapIcon-MissionCombat:0:0|a'..runScore
                 ..(affix and '|n'..affix or '')
@@ -287,9 +288,10 @@ local function Init_ListInstances()
             button.challengeText2:SetText(challengeText2 or '')
 
 --当前, KEY地图,ID
+            local isCurrent=  CurMaphallengeModeID and CurMaphallengeModeID==C_MythicPlus.GetOwnedKeystoneChallengeMapID() 
             button.mapChallengeModeID= CurMaphallengeModeID
-            button.KeyTexture:SetShown(CurMaphallengeModeID and CurMaphallengeModeID==C_MythicPlus.GetOwnedKeystoneChallengeMapID())
-            button.KeyTexture.label:SetText(C_MythicPlus.GetOwnedKeystoneLevel() or '')--当前KEY，等级
+            button.KeyTexture:SetShown(isCurrent)
+            button.KeyTexture.label:SetText(isCurrent and C_MythicPlus.GetOwnedKeystoneLevel() or '')--当前KEY，等级
 
 --收藏
             button.Favorites2:set_alpha()
