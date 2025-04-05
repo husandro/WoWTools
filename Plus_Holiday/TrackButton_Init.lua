@@ -128,6 +128,9 @@ local function Init()
     TrackButton.texture:SetPoint('CENTER')
     TrackButton.texture:SetSize(12,10)
 
+--显示背景 Background
+    --WoWTools_TextureMixin:CreateBackground(TrackButton.Frame)
+
     TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
     TrackButton.Frame:SetPoint('BOTTOM')
     TrackButton.Frame:SetSize(1,1)
@@ -331,6 +334,9 @@ end
 function WoWTools_HolidayMixin:Init_TrackButton()
     Init()
 end
+
+
+
 function WoWTools_HolidayMixin:Init_Menu(frame)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
