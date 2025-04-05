@@ -148,6 +148,8 @@ local function Init()
             btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
     })
+
+    Inti=function()end
 end
 
 
@@ -157,5 +159,7 @@ end
 
 
 function WoWTools_MoveMixin:Init_CharacterFrame()--角色
-    Init()
+    C_Timer.After(0.3, function()
+        Init()
+    end)
 end
