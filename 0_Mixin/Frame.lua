@@ -184,6 +184,10 @@ end
 
 --确认框架中心点，在屏幕内
 function WoWTools_FrameMixin:IsInSchermo(frame)
+    if not frame or not frame:IsVisible() then
+        return false
+    end
+    
     frame= frame.TitleContainer or frame
 
     local isInSchermo= true
@@ -191,6 +195,11 @@ function WoWTools_FrameMixin:IsInSchermo(frame)
     local centerX, centerY = frame:GetCenter()
 
     local screenWidth, screenHeight = UIParent:GetWidth(), UIParent:GetHeight()
+
+    if not screenWidth or not screenHeight or not centerX or centerY then
+        return false
+    end
+
     if centerX < 0 or centerX > screenWidth or centerY < 0 or centerY > screenHeight then
         isInSchermo = false
     end
