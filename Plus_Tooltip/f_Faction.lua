@@ -9,22 +9,25 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     if not info.factionID then
         return
     end
-    local icon= info.texture and ('|T'..info.texture..':0|t'..info.texture)
+    local icon= info.texture and ('|T'..info.texture..':0|t')
                 or (info.atlas and '|A:'..info.atlas..':0:0|a')--..info.atlas)
+                or info.textureKit and ('|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a')--..info.textureKit)
+                or ''
     if info.friendshipID then
         tooltip:AddDoubleLine(
             'friendshipID '..info.friendshipID,
-            (factionID~=info.friendshipID and 'factionID '..info.factionID..' ' or '')..icon..info.texture
+            (factionID~=info.friendshipID and 'factionID '..info.factionID..' ' or '')
+            ..icon..(info.texture or '')
         )
     elseif info.isMajor then
         tooltip:AddLine(
-            icon
+            icon 
             ..(WoWTools_DataMixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)
             ..' '
             ..info.factionID
         )
     else
-        tooltip:AddDoubleLine('factionID '..info.factionID, icon..info.texture)
+        tooltip:AddDoubleLine('factionID '..info.factionID, icon..(info.texture or ''))
     end
     if info.isUnlocked then
         if info.factionStandingtext or info.valueText then

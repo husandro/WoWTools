@@ -110,8 +110,8 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 		end
 	end
 	if completedParagon and not frame.completed then
-		frame.completed= WoWTools_LabelMixin:Create(bar)
-		frame.completed:SetPoint('RIGHT', frame.ParagonIcon, 'LEFT', 4,0)
+		frame.completed= WoWTools_LabelMixin:Create(frame.ParagonIcon, {size=10})
+		frame.completed:SetPoint('BOTTOMRIGHT', frame.ParagonIcon)
 	end
 	if frame.completed then
 		frame.completed:SetText(completedParagon or '')
