@@ -102,13 +102,15 @@ local function Init_Fuoco_Button(button)
     end)
 
     btn:SetAttribute('type1', 'spell')
-    btn:SetAttribute('spell1',  C_Spell.GetSpellName(818) or 818)
+    btn:SetAttribute('spell1',  818)--C_Spell.GetSpellName(818)
     btn:SetAttribute('unit', 'player')
 
     local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
     btn:SetAttribute('type2', 'item')
     btn:SetAttribute('item2', toyName or 134020)
     btn.toyName= toyName
+
+
 end
 
 
