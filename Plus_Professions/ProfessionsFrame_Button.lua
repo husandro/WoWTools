@@ -70,47 +70,74 @@ local function Init_Fuoco_Button(button)
     })
     btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
-    function btn:set_event()
+    btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+    WoWTools_CooldownMixin:SetFrame(btn, {spell=818})
+
+    btn:SetScript('OnEvent', function (self)
         WoWTools_CooldownMixin:SetFrame(self, {spell=818})
-    end
-    function btn:settings()
-        if self:IsVisible() then
-            self:set_event()
-            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-        else
-            WoWTools_CooldownMixin:SetFrame(self)
-            self:UnregisterAllEvents()
-        end
-    end
-    btn:SetScript('OnEvent', btn.set_event)
-    btn:SetScript('OnShow', btn.settings)
-    btn:SetScript('OnHide', btn.settings)
-    btn:settings()
+    end)
+
+    btn:SetScript('OnShow', function (self)
+        self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        WoWTools_CooldownMixin:SetFrame(self, {spell=818})
+    end)
+
+    btn:SetScript('OnHide', function (self)
+        WoWTools_CooldownMixin:SetFrame(self)
+        self:UnregisterAllEvents()
+        self:SetScript('OnUpdate', nil)
+    end)
 
 
-    btn:SetScript('OnLeave', GameTooltip_Hide)
-    btn:SetScript('OnEnter', function(self)
+    function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:SetSpellByID(818)
-
-        if self.toyName then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('|T236571:0|t|cnGREEN_FONT_COLOR:'..self.toyName, WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddLine(' ')
+        local text= self:GetAttribute('macrotext*')
+        if text then
+            GameTooltip:AddLine(text)
+        else
+            text= self:GetAttribute('item2')
+            if text then
+                GameTooltip:AddLine(text..WoWTools_DataMixin.Icon.right)
+            end
         end
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
         GameTooltip:Show()
+    end
+
+    btn:SetScript('OnLeave', function(self)
+        self:SetScript('OnUpdate', nil)
+        GameTooltip:Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+        self:SetScript('OnUpdate', function(f, elapsed)
+            f.elapsed= (f.elapsed or 0) + elapsed
+            if f.elapsed >= 1 then
+                f.elapsed= 0
+                self:set_tooltip()
+            end
+        end)
     end)
 
-    btn:SetAttribute('type1', 'spell')
-    btn:SetAttribute('spell1',  818)--C_Spell.GetSpellName(818)
-    btn:SetAttribute('unit', 'player')
-
+    local name= C_Spell.GetSpellName(818)
     local toyName=C_Item.GetItemNameByID(134020)--玩具,大厨的帽子
-    btn:SetAttribute('type2', 'item')
-    btn:SetAttribute('item2', toyName or 134020)
-    btn.toyName= toyName
 
+    if name and toyName then
+        --toyName= '世界缩小器'
+        btn:SetAttribute('type*', 'macro')
+        btn:SetAttribute('macrotext*',  '/usetoy '..toyName..'\n/cast [@cursor]'..name)
+    else
 
+        btn:SetAttribute('type1', 'spell')
+        btn:SetAttribute('spell1', 818)
+        btn:SetAttribute('unit', 'player')
+
+        btn:SetAttribute('type2', 'item')
+        btn:SetAttribute('item2', toyName or 134020)    
+    end
 end
 
 
