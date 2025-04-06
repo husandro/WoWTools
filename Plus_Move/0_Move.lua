@@ -112,7 +112,9 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )]]
         end
-        self:Raise()
+        if not WoWTools_FrameMixin:IsLocked(f) then
+            f:Raise()
+        end
     end)
 
     frame:HookScript("OnMouseDown", function(self, d)--设置, 光标
