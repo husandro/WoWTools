@@ -112,7 +112,6 @@ local function Init()
             colorTab[text]= true
             local texture= Create_Texture(col.r, col.g, col.b, col.a, WoWTools_UnitMixin:GetClassIcon(className, nil, nil, true))
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-            --local hex= col:GenerateHexColor()
             texture.tooltip= 'RAID_CLASS_COLORS["'..className..'"]'
 
             if n==7 then
@@ -128,31 +127,21 @@ local function Init()
 
 --物品 UIParent.lua
     size, x, y, n= 16, x+size, -15, 0
-    --for index, col in pairs(ITEM_QUALITY_COLORS) do
+
     for index = 0, Enum.ItemQualityMeta.NumValues - 1 do
         local r,g,b= C_Item.GetItemQualityColor(index)
 
        
         local text= r..g..b..1
-
-        if not colorTab[text] then
-            colorTab[text]= true
-            local texture= Create_Texture(r,g,b,1)
-            texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
-            texture.tooltip= WoWTools_TextMixin:CN(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
-            if n==10 then
-                n=0
-                x= x+ size
-                y= -15
-            else
-                y= y- size
-            end
-            n=n+1
-        end
+        colorTab[text]= true
+        local texture= Create_Texture(r,g,b,1)
+        texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
+        texture.tooltip= WoWTools_TextMixin:CN(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
+        y= y- size
     end
 
 --SharedColorConstants.lua
-    n=n+1
+    size, x, y, n= 16, x+size, -15, 0
     for name, col in pairs(MATERIAL_TEXT_COLOR_TABLE) do
         local text= col.r..col.g..col.b.. (col.a or 1)
         if not colorTab[text] then
@@ -160,13 +149,8 @@ local function Init()
             local texture= Create_Texture(col.r, col.g, col.b, col.a)
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             texture.tooltip= 'MATERIAL_TEXT_COLOR_TABLE'..'["'..name..'"]'
-            if n==9 then
-                n=0
-                x= x+ size
-                y= -15
-            else
-                y= y- size
-            end
+           
+            y= y- size
             n=n+1
         end
     end
@@ -287,6 +271,9 @@ local function Init()
 			end
 		end
 	end
+
+    colorTab=nil
+    Init=function()end
 end
 
 

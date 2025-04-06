@@ -176,6 +176,7 @@ Plus_Color\Log.lua
 Plus_Color\Edit.lua
 Plus_Color\Select_Color.lua
 Plus_Color\Other.lua
+Plus_Color\CODE.lua
 
 
 ##鼠标，提示

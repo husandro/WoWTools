@@ -235,6 +235,10 @@ local function Create_EditBox(index, tab)
     frame:SetAutoFocus(false)
     frame:ClearFocus()
 
+    if tab.name=='CODE' then
+        WoWTools_ColorMixin:Init_CODE(frame)
+    end
+
     frame.get_value= tab.get_value
     frame.get_text= tab.get_text
     frame.name=tab.name
@@ -286,6 +290,11 @@ local function Create_EditBox(index, tab)
             self:set_tooltip()
         end]]
     end)
+    function frame:Setup()
+        Set_Color(self.get_value(self:GetText()))
+        self.clearButton:SetShown(self:HasText())
+    end
+
 
 --OnEscapePressed
     frame:SetScript('OnEscapePressed', frame.ClearFocus)

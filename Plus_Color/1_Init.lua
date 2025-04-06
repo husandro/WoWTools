@@ -88,12 +88,6 @@ panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-			
-			for index = 0, Enum.ItemQualityMeta.NumValues - 1 do
-				local r,g,b= C_Item.GetItemQualityColor(index)
-				print(index, r,g,b)
-			end
-					
 			WoWToolsSave['Plus_Color']= WoWToolsSave['Plus_Color'] or P_Save
 
 			WoWTools_ColorMixin.addName= '|A:colorblind-colorwheel:0:0|a'..(WoWTools_DataMixin.onlyChinese and '颜色选择器' or COLOR_PICKER)
