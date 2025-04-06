@@ -5513,7 +5513,8 @@
         "CHALLENGE_MODE_POWER_LEVEL",
         "MALE",
         "FEMALE",
-        "GUILD_CHALLENGE_LABEL"
+        "GUILD_CHALLENGE_LABEL",
+        "BACKDROP_SLIDER_8_8"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -99,8 +99,6 @@ end
 
 
 
-
-
 local function Init()
 
 
@@ -130,11 +128,16 @@ local function Init()
 
 --物品 UIParent.lua
     size, x, y, n= 16, x+size, -15, 0
-    for index, col in pairs(ITEM_QUALITY_COLORS) do
-        local text= col.r..col.g..col.b.. (col.a or 1)
+    --for index, col in pairs(ITEM_QUALITY_COLORS) do
+    for index = 0, Enum.ItemQualityMeta.NumValues - 1 do
+        local r,g,b= C_Item.GetItemQualityColor(index)
+
+       
+        local text= r..g..b..1
+
         if not colorTab[text] then
             colorTab[text]= true
-            local texture= Create_Texture(col.r, col.g, col.b, col.a)
+            local texture= Create_Texture(r,g,b,1)
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             texture.tooltip= WoWTools_TextMixin:CN(_G["ITEM_QUALITY" .. index.. "_DESC"])..'|nITEM_QUALITY' ..index.. '_DESC'
             if n==10 then
