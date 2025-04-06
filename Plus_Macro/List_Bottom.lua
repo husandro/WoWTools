@@ -403,7 +403,7 @@ local function Sub_Menu(root, tab)
             '|T'..(tab.icon or 0)..':0|t'
             ..(WoWTools_DataMixin.onlyChinese and '设置图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, EMBLEM_SYMBOL)),
         function(data)
-            if WoWTools_MacroMixin:IsSecure() then
+            if not WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 WoWTools_MacroMixin:SetMacroTexture(data.icon)
             end
             return MenuResponse.Open
@@ -456,7 +456,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
 
-        if not WoWTools_MacroMixin:IsSecure() then
+        if WoWTools_FrameMixin:IsLocked(MacroFrame) then
             return
         end
 
@@ -556,7 +556,7 @@ local function Init_SpellBook_Menu(self, root)
         local sub=root:CreateButton(
             WoWTools_DataMixin.onlyChinese and '解散水元素' or 'PetDismiss',
         function()
-            if not WoWTools_MacroMixin:IsSecure() then
+            if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 return
             end
             MacroFrameText:Insert('/script PetDismiss()\n')
@@ -669,7 +669,7 @@ local function Init_Equip_Menu(_, root)
                     ..(spellID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
 
                 function(data)
-                    if not WoWTools_MacroMixin:IsSecure() then
+                    if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                         return
                     end
                     MacroFrameText:Insert((data.spellID and '/use ' or '/equip ')..data.name..'\n')
@@ -721,7 +721,7 @@ local function Init_Chat_Menu(root, listTab)
             sub=root:CreateButton(
                 WoWTools_TextMixin:CN(label),
             function(data)
-                if not WoWTools_MacroMixin:IsSecure() then
+                if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                     return
                 end
                 MacroFrameText:Insert(data.label..'\n')
@@ -750,7 +750,7 @@ local function Init_MacroList_Menu(_, root)
         sub=root:CreateButton(
             info.text,
         function(data)
-            if WoWTools_MacroMixin:IsSecure() and data.macro then
+            if not WoWTools_FrameMixin:IsLocked(MacroFrame) and data.macro then
                 MacroFrameText:Insert(data.macro)
                 MacroFrameText:SetFocus()
             end
@@ -767,7 +767,7 @@ local function Init_MacroList_Menu(_, root)
             sub:CreateButton(
                 macro.text:gsub('\n', ' '),
             function(data)
-                if WoWTools_MacroMixin:IsSecure()  then
+                if not WoWTools_FrameMixin:IsLocked(MacroFrame)  then
                     MacroFrameText:Insert(data.text)
                     MacroFrameText:SetFocus()
                 end

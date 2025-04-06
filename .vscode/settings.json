@@ -5536,7 +5536,8 @@
         "QUEST_OBJECTIVE_FONT_COLOR_CODE",
         "RARE_BLUE_COLOR_CODE",
         "UNCOMMON_GREEN_COLOR_CODE",
-        "LIGHTBLUE_FONT_COLOR_CODE"
+        "LIGHTBLUE_FONT_COLOR_CODE",
+        "NPE_CONTROLS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

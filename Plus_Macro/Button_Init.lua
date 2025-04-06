@@ -63,7 +63,7 @@ local function Init_Menu(self, root)
             function(data)
                 return Save().toRightLeft==data.value
             end, function(data)
-                if WoWTools_MacroMixin:IsSecure() then
+                if not WoWTools_FrameMixin:IsLocked(MacroFrame) then
                     Save().toRightLeft=data.value
                     --self:set_texture()
                     WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 1)
@@ -114,7 +114,7 @@ local function Init_Menu(self, root)
         '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
-            if not WoWTools_MacroMixin:IsSecure() then
+            if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 return
             end
             print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))
@@ -140,7 +140,7 @@ local function Init_Menu(self, root)
         '|A:XMarksTheSpot:32:32|a|n'..data.text..'|n|n',
         nil,
         {SetValue=function()
-            if not WoWTools_MacroMixin:IsSecure() then
+            if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 return
             end
             print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))

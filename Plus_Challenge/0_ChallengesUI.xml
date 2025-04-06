@@ -282,6 +282,12 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Shadow>
             </FontString>
 
+            <FontString parentKey="AffixText" inherits="ChatFontNormal" justifyH="CENTER">
+                <Size x="0" y="24"/>
+                <Anchors>
+                   <Anchor point="TOP" x="0" y="2"/>
+                </Anchors>
+            </FontString>
         </Layer>
     </Layers>
 </Frame>

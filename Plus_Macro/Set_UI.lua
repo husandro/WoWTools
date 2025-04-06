@@ -171,7 +171,7 @@ local function Init_Scroll()
 
 
     hooksecurefunc(MacroFrame, "SelectMacro", function(self)
-        if ScrollFrame.tempScrollPer and WoWTools_MacroMixin:IsSecure() then-- 恢复宏选择框的滚动条位置
+        if ScrollFrame.tempScrollPer and not WoWTools_FrameMixin:IsLocked(MacroFrame) then-- 恢复宏选择框的滚动条位置
             self.MacroSelector.ScrollBox:SetScrollPercentage(ScrollFrame.tempScrollPer)
         end
         ScrollFrame.tempScrollPer = nil
@@ -183,7 +183,7 @@ local function Init_Scroll()
         self:RegisterEvent("UPDATE_MACROS")
         C_Timer.After(0.1, function()
             local index= self.selectionIndex
-            if index and WoWTools_MacroMixin:IsSecure() then
+            if index and not WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 if index>MAX_ACCOUNT_MACROS then
                     index= index-MAX_ACCOUNT_MACROS
                     WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 2)

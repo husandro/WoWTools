@@ -19,7 +19,7 @@ local ScrollBoxBackground
 
 --设置，列表
 local function Init_ChangeTab(self, tabID)
-    if WoWTools_FrameMixin:IsLocked(self) or not WoWTools_MacroMixin:IsSecure() then
+    if WoWTools_FrameMixin:IsLocked(MacroFrame) then
         return
     end
 

@@ -249,8 +249,8 @@ end
 local function Init_Menu(self, root)
     root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
 
-    local sub, sub2
-    if WoWTools_FrameMixin:IsLocked(self) then
+    local sub, sub2    
+    if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -259,12 +259,12 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(self, root, function()
         return self.targetFrame:GetScale()
     end, function(value)
-        if not WoWTools_FrameMixin:IsLocked(self) then
+        if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
             Save().scale[self.name]=value
             self.targetFrame:SetScale(value)
         end
     end, function()
-        if not WoWTools_FrameMixin:IsLocked(self) then
+        if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
             Save().scale[self.name]=nil
             if self.scaleRestFunc then
                 self.scaleRestFunc(self)
@@ -287,7 +287,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetWidth())
             end, setValue=function(value)
-                if not WoWTools_FrameMixin:IsLocked(self) then
+                if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
                     self.targetFrame:SetWidth(value)
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
@@ -310,7 +310,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetHeight())
             end, setValue=function()
-                if not WoWTools_FrameMixin:IsLocked(self) then
+                if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
                         self:sizeUpdateFunc()
@@ -346,7 +346,7 @@ local function Init_Menu(self, root)
             return Save().size[self.name]
         end, function()
             Save().size[self.name]=nil
-            if not WoWTools_FrameMixin:IsLocked(self) then
+            if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
                 if self.sizeRestFunc then--还原
                     self:sizeRestFunc()
                 end
@@ -385,7 +385,10 @@ local function Init_Menu(self, root)
     function()
         return Save().point[self.name]
     end, function()
-        if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and not WoWTools_FrameMixin:IsLocked(self) then
+        if self.targetFrame.setMoveFrame
+            and not self.targetFrame.notSave
+            and not WoWTools_FrameMixin:IsLocked(self.targetFrame)
+        then
 
             if P_UIPanelWindows[self.name] then
                 UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
@@ -452,8 +455,10 @@ local function Set_Move_Alpha(frame)
         local target= self.targetFrame or self:GetParent()
         if event=='PLAYER_STARTED_MOVING' then
             target:SetAlpha(Save().alpha)
-        else
+
+        elseif event=='PLAYER_STOPPED_MOVING' then
             target:SetAlpha(1)
+
         end
     end)
     frame:HookScript('OnEnter', function(self)
@@ -519,10 +524,16 @@ local function Set_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
 
-    if not WoWTools_FrameMixin:IsLocked(self) then
+    if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
         GameTooltip:Show()
         return
+    elseif self.targetFrame:IsProtected() then
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
+            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁止操作' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, NPE_CONTROLS))
+        )
+        GameTooltip:AddLine(' ')
     end
 
     GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', WoWTools_DataMixin.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
@@ -622,7 +633,7 @@ local function Set_OnMouseUp(self, d)
     self:SetScript("OnUpdate", nil)
     self.isActive= nil
 
-    if WoWTools_FrameMixin:IsLocked(self) then
+    if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         return
     end
 
@@ -653,7 +664,7 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive or WoWTools_FrameMixin:IsLocked(self) then
+    if self.isActive or WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         return
     end
 
@@ -667,6 +678,7 @@ local function Set_OnMouseDown(self, d)
         self.SOS.dist = GetScaleDistance(self.SOS)
         self:SetScript("OnUpdate", function(frame2)
             if WoWTools_FrameMixin:IsLocked(frame2) then
+                self:SetScript("OnUpdate", nil)
                 return
             end
             local SOS= frame2.SOS
@@ -704,12 +716,19 @@ local function Set_OnMouseDown(self, d)
             self.targetFrame:StartSizing("BOTTOMRIGHT", true)
         end
         self:SetScript('OnUpdate', function(f)
-            Set_Tooltip(f)
-            if f.sizeUpdateFunc then
+            if WoWTools_FrameMixin:IsLocked(f.targetFrame) then
+                self:SetScript("OnUpdate", nil)
+                self.targetFrame:StopMovingOrSizing()
+
+            elseif f.sizeUpdateFunc then
                 f.sizeUpdateFunc(f)
+                
             end
+            Set_Tooltip(f)
         end)
     end
+
+
 
     Set_Tooltip(self)
 end

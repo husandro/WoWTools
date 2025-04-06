@@ -42,7 +42,10 @@ local function Initializer(btn, data)
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
---钥石，名称
+--Affix
+    btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or '')
+    
+--钥石，名称  
     btn.Name2:SetText(
         WoWTools_TextMixin:CN(
         data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME)
@@ -56,11 +59,10 @@ local function Initializer(btn, data)
         or 'StoryHeader-BG'
     )
 
-
     btn.RaidText:SetText(data.pve or '|cff8282822/4/8')
     btn.DungeonText:SetText(data.mythic or '|cff8282822/4/8')
     btn.WorldText:SetText(data.world or '|cff8282822/4/8')
-    btn.PvPText:SetText(data.pvp or '|cff8282822/4/8')
+    btn.PvPText:SetText(data.pvp or '')
 
 --分数
     btn.ScoreText:SetText(
