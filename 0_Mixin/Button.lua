@@ -60,6 +60,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isItem= tab.isItem
     local isSecure= tab.isSecure
     local isType2= tab.isType2
+    local isMask= tab.isMask
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
@@ -83,6 +84,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local btn= CreateFrame(frameType, name, frame or UIParent, template, setID)
 
 --圆形按钮
+    
     if isType2 then
         btn.mask= btn:CreateMaskTexture()
         btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
@@ -106,6 +108,12 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn.border:SetAllPoints(btn)
         btn.border:SetAtlas('bag-reagent-border')
         WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
+    elseif isMask then--遮罩
+        btn.mask= btn:CreateMaskTexture()
+        btn.mask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+        btn.mask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
+        btn.mask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
+        --btn:GetNormalTexture():AddMaskTexture(btn.mask)
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
