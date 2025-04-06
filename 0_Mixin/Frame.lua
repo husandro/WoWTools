@@ -6,6 +6,22 @@ local Index=0
 WoWTools_FrameMixin= {}
 
 
+
+function WoWTools_FrameMixin:IsLocked(frame)
+    local disabled= frame:IsProtected() or issecure()
+    if WoWTools_DataMixin.Player.husandro and disabled then
+        local name= frame.GetName and frame:GetName()
+        print(name, 'IsProtected', frame:IsProtected() , 'issecure', issecure() )
+    end
+    return disabled
+end
+
+
+
+
+
+
+
 local function getSize(value)
     local w, h
     local t= type(value)

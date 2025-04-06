@@ -16,7 +16,7 @@ end
 --自动选取当前专精
 --###############
 local function set_RequestToJoinFrame(frame)
-    if WoWTools_Mixin:IsLockFrame(frame) then
+    if WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
 

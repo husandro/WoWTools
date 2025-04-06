@@ -10,7 +10,7 @@ end
 
 --世界地图，副本，提示
 local function Init(frame)
-    if frame.setEnter or Save().hideEncounterJournal or WoWTools_Mixin:IsLockFrame(frame) then
+    if frame.setEnter or Save().hideEncounterJournal or WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
 

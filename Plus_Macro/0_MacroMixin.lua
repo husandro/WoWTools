@@ -1,7 +1,7 @@
 WoWTools_MacroMixin={}
 
 function WoWTools_MacroMixin:IsSecure()
-    return not (WoWTools_Mixin:IsLockFrame(MacroFrame) or issecure() or InCombatLockdown())
+    return not (WoWTools_FrameMixin:IsLocked(MacroFrame) or issecure() or InCombatLockdown())
 end
 
 function WoWTools_MacroMixin:GetName(name, icon)

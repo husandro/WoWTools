@@ -20,7 +20,7 @@ end
 
 --清除，全部，按钮
 function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
-    if WoWTools_Mixin:IsLockFrame(frame) then
+    if WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.3})
@@ -47,7 +47,7 @@ end
 
 
 function WoWTools_ObjectiveMixin:Set_Block_Icon(block, icon, type)
-    if WoWTools_Mixin:IsLockFrame(block) then
+    if WoWTools_FrameMixin:IsLocked(block) then
         return
     end
     if icon and not block.Icon2 then

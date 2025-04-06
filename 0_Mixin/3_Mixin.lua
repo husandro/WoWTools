@@ -8,14 +8,6 @@ function WoWTools_Mixin:Call(func, ...)
     end
 end
 
-function WoWTools_Mixin:IsLockFrame(frame)
-    local disabled= frame:IsProtected() or issecure()
-    if WoWTools_DataMixin.Player.husandro and disabled then
-        local name= frame.GetName and frame:GetName()
-        print(name, 'IsProtected', frame:IsProtected() , 'issecure', issecure() )
-    end
-    return disabled
-end
 
 
 --[[
