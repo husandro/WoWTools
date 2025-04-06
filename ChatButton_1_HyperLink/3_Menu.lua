@@ -95,7 +95,7 @@ local function Init_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE),
     C_SocialRestrictions.IsChatDisabled,
     function()
-        if not issecure() then
+        if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
             Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
         end
         return MenuResponse.Open
@@ -177,7 +177,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateButton(
         col..(WoWTools_DataMixin.onlyChinese and '音频' or AUDIO_LABEL),
     function()
-        if not issecure() then
+        if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
             Settings.OpenToCategory(Settings.AUDIO_CATEGORY_ID)--ItemRef.lua
         end
         return MenuResponse.Open

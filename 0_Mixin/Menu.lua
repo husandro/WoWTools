@@ -598,8 +598,13 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
     local showText= name2 or name
     showText= showText and showText..'|A:OptionsIcon-Brown:0:0|a' or ('|A:OptionsIcon-Brown:0:0|a'..(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS))
 
-    local sub=root:CreateButton(showText, function(data)
-        if SettingsPanel:IsVisible() and not WoWTools_FrameMixin:IsLocked(SettingsPanel) then--ToggleGameMenu()
+    local sub=root:CreateButton(
+        (WoWTools_FrameMixin:IsLocked(SettingsPanel) and '|cff828282' or '')
+        ..showText,
+    function(data)
+        if WoWTools_FrameMixin:IsLocked(SettingsPanel) then
+            return
+        elseif SettingsPanel:IsVisible() then--ToggleGameMenu()
             SettingsPanel:Close()
         end
         WoWTools_PanelMixin:Open(data.category, data.name)

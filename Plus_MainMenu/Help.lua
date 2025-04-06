@@ -69,20 +69,23 @@ local function Init()
 
         GameTooltip:AddLine(' ')
 
-        local bat= UnitAffectingCombat('player')
+        local bat= InCombatLockdown() or issecure() 
 
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '设置选项' or GAMEMENU_OPTIONS)..'|r'
+            (GenerateFlatClosure(SettingsPanel.Open, SettingsPanel) and '|cffffffff' or'|cff828282')
+            ..(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)..'|r'
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '插件' or ADDONS)..'|r'
+            (GenerateFlatClosure(ShowUIPanel, AddonList, nil, G_GameMenuFrameContextKey) and C_AddOns.GetNumAddOns()> 0 and '|cffffffff' or '|cff828282')
+            ..(WoWTools_DataMixin.onlyChinese and '插件' or ADDONS)
             ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '宏命令设置' or MACROS)..'|r'
+            (bat and '|cff828282' or '|cffffffff')
             ..WoWTools_DataMixin.Icon.mid
+            ..(WoWTools_DataMixin.onlyChinese and '宏命令设置' or MACROS)
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
 
@@ -91,7 +94,7 @@ local function Init()
 
 --Blizzard_GameMenu/Standard/GameMenuFrame.lua
     MainMenuMicroButton:HookScript('OnClick', function(_, d)
-        if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
+         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() and not issecure() then
             if C_AddOns.GetNumAddOns() > 0 then
                 local func= GenerateFlatClosure(ShowUIPanel, AddonList, nil, G_GameMenuFrameContextKey)
                 if func then
@@ -112,7 +115,7 @@ local function Init()
             local func= GenerateFlatClosure(SettingsPanel.Open, SettingsPanel)
             if func then
                 func()
-            else
+            elseif not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
                 Settings.OpenToCategory()
             end
         else

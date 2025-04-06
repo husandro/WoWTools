@@ -14,8 +14,7 @@ local P_UIPanelWindows= {}
 function WoWTools_MoveMixin:Set_SizeScale(frame)
     local name= frame and frame:GetName()
     if not name
-        or (frame:IsProtected() and InCombatLockdown())
-        or issecure()
+        or WoWTools_FrameMixin:IsLocked(frame)
         or not frame.ResizeButton
     then
         return
@@ -251,7 +250,7 @@ local function Init_Menu(self, root)
     root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
 
     local sub, sub2
-    if not self:IsCanChange() then
+    if WoWTools_FrameMixin:IsLocked(self) then
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
@@ -260,12 +259,12 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:Scale(self, root, function()
         return self.targetFrame:GetScale()
     end, function(value)
-        if self:IsCanChange() then
+        if not WoWTools_FrameMixin:IsLocked(self) then
             Save().scale[self.name]=value
             self.targetFrame:SetScale(value)
         end
     end, function()
-        if self:IsCanChange() then
+        if not WoWTools_FrameMixin:IsLocked(self) then
             Save().scale[self.name]=nil
             if self.scaleRestFunc then
                 self.scaleRestFunc(self)
@@ -288,7 +287,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetWidth())
             end, setValue=function(value)
-                if self:IsCanChange() then
+                if not WoWTools_FrameMixin:IsLocked(self) then
                     self.targetFrame:SetWidth(value)
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
@@ -311,7 +310,7 @@ local function Init_Menu(self, root)
             getValue=function()
                 return math.modf(self.targetFrame:GetHeight())
             end, setValue=function()
-                if self:IsCanChange() then
+                if not WoWTools_FrameMixin:IsLocked(self) then
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
                         self:sizeUpdateFunc()
@@ -347,7 +346,7 @@ local function Init_Menu(self, root)
             return Save().size[self.name]
         end, function()
             Save().size[self.name]=nil
-            if self:IsCanChange() then
+            if not WoWTools_FrameMixin:IsLocked(self) then
                 if self.sizeRestFunc then--还原
                     self:sizeRestFunc()
                 end
@@ -386,7 +385,7 @@ local function Init_Menu(self, root)
     function()
         return Save().point[self.name]
     end, function()
-        if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and self:IsCanChange() then
+        if self.targetFrame.setMoveFrame and not self.targetFrame.notSave and not WoWTools_FrameMixin:IsLocked(self) then
 
             if P_UIPanelWindows[self.name] then
                 UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
@@ -520,7 +519,7 @@ local function Set_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
 
-    if not self:IsCanChange() then
+    if not WoWTools_FrameMixin:IsLocked(self) then
         GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
         GameTooltip:Show()
         return
@@ -621,12 +620,13 @@ end
 
 local function Set_OnMouseUp(self, d)
     self:SetScript("OnUpdate", nil)
+    self.isActive= nil
 
-    if not self:CanChangeAttribute() then
+    if WoWTools_FrameMixin:IsLocked(self) then
         return
     end
 
-    self.isActive= nil
+   
     if d=='LeftButton' then--保存，缩放
         if self.scaleStoppedFunc then
             self.scaleStoppedFunc(self)
@@ -653,8 +653,7 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive then
-    elseif InCombatLockdown() and self:IsProtected() then
+    if self.isActive or WoWTools_FrameMixin:IsLocked(self) then
         return
     end
 
@@ -667,7 +666,7 @@ local function Set_OnMouseDown(self, d)
         self.SOS.EFscale = target:GetEffectiveScale()
         self.SOS.dist = GetScaleDistance(self.SOS)
         self:SetScript("OnUpdate", function(frame2)
-            if InCombatLockdown() and self:IsProtected() then
+            if WoWTools_FrameMixin:IsLocked(frame2) then
                 return
             end
             local SOS= frame2.SOS
@@ -724,7 +723,7 @@ end
 
 
 local function Set_OnShow(self)
-    if self:IsProtected() and InCombatLockdown() then
+    if WoWTools_FrameMixin:IsLocked(self) then
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, frame)
             WoWTools_MoveMixin:Set_SizeScale(frame)
             EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
@@ -738,7 +737,7 @@ end
 
 
 local function Set_Init_Frame(btn, target, size, initFunc)
-    if target:IsProtected() and InCombatLockdown() then--not InCombatLockdown() or not sel:IsProtected() 
+    if WoWTools_FrameMixin:IsLocked(target) then--not InCombatLockdown() or not sel:IsProtected() 
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
             if tab.size then
                 tab.target:SetSize(tab.size[1], tab.size[2])
@@ -790,6 +789,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         or frame.ResizeButton
         or tab.frame
         or _G['WoWToolsResizeButton'..name]
+
     then
         return
     end
@@ -819,9 +819,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         btn:SetPoint('BOTTOMRIGHT', frame)--m, 6,-6)
     end
 
-    function btn:IsCanChange()
-        return not self.targetFrame:IsProtected() or not InCombatLockdown()
-    end
 
     frame.ResizeButton= btn
 
@@ -881,7 +878,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
     local scale= Save().scale[name]
     if scale and scale~=1 then
-        if InCombatLockdown() and frame:IsProtected() then
+        if WoWTools_FrameMixin:IsLocked(frame) then
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, info)
                 info.frame:SetScale(info.scale)
                 EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)

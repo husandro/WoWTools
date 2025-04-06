@@ -61,8 +61,11 @@ local function Init()
         Save().linkIcon= not Save().linkIcon and true or nil
         WoWTools_HyperLink:Init_Link_Icon()
         local isDisabled= C_SocialRestrictions.IsChatDisabled()
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon))
-        if Save().linkIcon and isDisabled and not issecure() then
+        print(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName,
+            WoWTools_TextMixin:GetEnabeleDisable(not isDisabled and Save().linkIcon)
+        )
+        if Save().linkIcon and isDisabled and not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
             Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
         end
     end
