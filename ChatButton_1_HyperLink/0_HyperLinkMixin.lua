@@ -17,21 +17,15 @@ end
 
 function WoWTools_HyperLink:GetKeyAffix(link, tab)
     if not tab and link then
-        local affix1, affix2, affix3, affix4= link:match('Hkeystone:%d+:%d+:%d+:(%d+):(%d+):(%d+):(%d+)')
-        tab= {affix1, affix2, affix3, affix4}
-        print(affix1, affix2, affix3, affix4)
+        tab= {link:match('Hkeystone:%d+:%d+:%d+:(%d+):(%d+):(%d+):(%d+)')}
     end
     local icon
 
-    for _, v in pairs(tab or {}) do
+    for _, v in pairs(tab) do
         if v and v ~='0' then
             local texture= select(3, C_ChallengeMode.GetAffixInfo(v))
-            if texture then
-
+            if texture and texture>0 then
                 icon=(icon or '')..'|T'..texture..':0|t'
-                print(v, '|T'..texture..':0|t')
-            else
-                
             end
         end
     end
