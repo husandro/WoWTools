@@ -21,8 +21,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             <Texture parentKey="Background" atlas="QuestItemBorder" setAllPoints="true">
                 <TexCoords left="1" right="0" top="0" bottom="1" />
             </Texture>
-            <Texture parentKey="Select" atlas="auctionhouse-nav-button-select" setAllPoints="true" hidden='true' alpha="0.7"/>
-            
+            <Texture parentKey="Select" atlas="auctionhouse-nav-button-select" hidden='true' alpha="0.9">
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="-4" y="4"/>
+                    <Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+                </Anchors>
+            </Texture>
+
         </Layer>
 
         <Layer level="BORDER">
@@ -173,10 +178,10 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
         </Layer>
 
         <Layer level="ARTWORK">
-            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT">
+            <FontString parentKey="Name2" inherits="ChatFontNormal" justifyH="RIGHT">
                 <Size x="0" y="14"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="-2"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>
@@ -184,10 +189,10 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Shadow>
             </FontString>
 
-            <FontString parentKey="Name2" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
+            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Size x="0" y="14"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name"  relativePoint="BOTTOMRIGHT"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name2"  relativePoint="BOTTOMRIGHT" x="0" y="-2"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="2" y="-2"/>
@@ -204,6 +209,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnEnter>
                 </Scripts>
             </FontString>
+
+            <Texture parentKey="NameBackground" atlas="ChallengeMode-guild-background" alpha="0.5">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Name"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
+                </Anchors>
+            </Texture>
 
             <FontString parentKey="RaidText" inherits="ChatFontNormal">
                 <Size x="0" y="14"/>
@@ -285,7 +297,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             <FontString parentKey="AffixText" inherits="ChatFontNormal" justifyH="CENTER">
                 <Size x="0" y="24"/>
                 <Anchors>
-                   <Anchor point="TOP" x="0" y="2"/>
+                   <Anchor point="TOP" relativeKey="$parent" x="0" y="4"/>
                 </Anchors>
             </FontString>
         </Layer>

@@ -13,7 +13,7 @@ local function Create_Button(frame)
         return
     end
 
-    frame.spellPort= WoWTools_ButtonMixin:Cbtn(frame, {
+    frame.spellPort= WoWTools_ButtonMixin:Cbtn(nil, {
         isSecure=true,
         size= 26,--52
         icon= 'hide',
@@ -27,6 +27,9 @@ local function Create_Button(frame)
             ) and 1 or 0.3
         )
     end
+    
+    frame.spellPort:SetFrameStrata('HIGH')
+
 
     frame.spellPort:SetAttribute("type", "spell")
     frame.spellPort:RegisterEvent('SPELL_UPDATE_COOLDOWN')
@@ -51,9 +54,34 @@ local function Create_Button(frame)
         WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
     end)
 
-    frame.spellPort:SetScript('OnEvent', function(self)
-        WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
+    frame.spellPort:SetScript('OnEvent', function(self, event)
+        if event=='SPELL_UPDATE_COOLDOWN' then
+            WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
+
+        elseif event=='PLAYER_REGEN_DISABLED' then
+            self:SetShown(false)
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            self:SetShown(true)
+        end
     end)
+
+
+    frame:HookScript('OnShow', function(self)
+        if not InCombatLockdown() then
+            self.spellPort:SetShown(true)
+        end
+        self.spellPort:RegisterEvent('PLAYER_REGEN_DISABLED')
+        self.spellPort:RegisterEvent('PLAYER_REGEN_ENABLED')
+    end)
+    frame:HookScript('OnHide', function(self)
+        if not InCombatLockdown() then
+            self.spellPort:SetShown(false)
+        end
+        self.spellPort:UnregisterAllEvents()
+    end)
+
+    frame.spellPort:RegisterEvent('PLAYER_REGEN_DISABLED')
+    frame.spellPort:RegisterEvent('PLAYER_REGEN_ENABLED')
 end
 
 
