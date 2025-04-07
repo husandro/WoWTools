@@ -72,7 +72,7 @@ local function return_delete_InBox(openMailID)--删除，或退信
 
     print('|cFFFF00FF'..openMailID..')|r',
         ((icon and not itemName) and '|T'..icon..':0|t' or '')..delOrRe,
-        WoWTools_UnitMixin:GetLink(sender, nil, true),
+        WoWTools_UnitMixin:GetLink(nil, nil, sender, false),
         subject,
         itemName or '',
         (money and money>0) and GetMoneyString(money, true) or '',

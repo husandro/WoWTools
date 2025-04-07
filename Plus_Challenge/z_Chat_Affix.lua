@@ -10,27 +10,27 @@ local function Affix_136177()
 
     local n=GetNumGroupMembers()
     for i=1, n do
-        local u= i==n and 'player' or 'party'..i
-        local name2= i==n and COMBATLOG_FILTER_STRING_ME or UnitName(u)
-        if UnitExists(u) and name2 then
+        local unit= i==n and 'player' or 'party'..i
+        local link= WoWTools_UnitMixin:GetLink(unit, nil, nil, true)
+        if UnitExists(unit) then
             local buff
-            for _, v in pairs({373113, 373108, 373116, 373121}) do
-                local name=WoWTools_AuraMixin:Get(u, v)
-                if  name then
-                    local link= C_Spell.GetSpellLink(v)
-                    if link or name then
-                        buff=i..')'..name2..': '..(link or name)
-                        break
-                    end
+            for _, spellID in pairs({373113, 373108, 373116, 373121}) do
+                local name=WoWTools_AuraMixin:Get(unit, spellID)
+                if name then
+                    buff=i..')'..link..': '..(C_Spell.GetSpellLink(spellID) or name)
+                    break
                 end
             end
-            buff=buff or (i..')'..name2..': '..NONE)
+            buff=buff or (WoWTools_UnitMixin:GetLink(unit, nil, nil, true)..': '..NONE)
             table.insert(chat, buff)
         end
     end
 
-    for _, v in pairs(chat) do
-        WoWTools_ChatMixin:Chat(v)
+    if #chat>0 then
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName)
+        for _, v in pairs(chat) do
+            WoWTools_ChatMixin:Chat(v)
+        end
     end
 end
 
@@ -40,13 +40,25 @@ end
 
 
 local function Chat_Affix()
-    local tab = select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}
-    for _, info  in pairs(tab) do
-        local activeAffixID=select(3, C_ChallengeMode.GetAffixInfo(info))
-        if activeAffixID==136177 then--赏金
+    if not Save().slotKeystoneSay then
+        return
+    end
+
+    local chat, name,_, filedataid
+
+    for _, affixID  in pairs(select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}) do
+        name,_, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
+        if filedataid == 136177 then--赏金
             C_Timer.After(6, Affix_136177)
-            break
+            return
+        elseif affixID~=9 and affixID~=10 and name and name~='' then
+            chat= (chat and chat..', ' or '')..name
         end
+    end
+
+    if chat then
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName)
+        WoWTools_ChatMixin:Chat(PLAYER_DIFFICULTY5..': '..chat)
     end
 end
 
@@ -54,10 +66,6 @@ end
 
 
 
-
 function WoWTools_ChallengeMixin:Chat_Affix()
-    --if not Save().hideKeyUI and Save().slotKeystoneSay then
-    if WoWTools_DataMixin.Player.husandro then
-        Chat_Affix()
-    end
+    Chat_Affix()
 end

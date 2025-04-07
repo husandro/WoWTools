@@ -28,7 +28,7 @@ local function InvPlateGuidFunc()--从已邀请过列表里, 再次邀请
             C_PartyInfo.InviteUnit(name)
             n=n+1
 
-            print(n..')'..WoWTools_UnitMixin:GetLink(name, guid))
+            print(n..')'..WoWTools_UnitMixin:GetLink(nil, guid, name, false))
         end
     end
 end

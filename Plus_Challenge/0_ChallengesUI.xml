@@ -22,7 +22,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <TexCoords left="1" right="0" top="0" bottom="1" />
                 <Anchors>
                     <Anchor point="TOPLEFT"/>
-                    <Anchor point="BOTTOMRIGHT" x="0" y="-8"/>
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-6"/>
                 </Anchors>
             </Texture>
         </Layer>
@@ -46,7 +46,8 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-            <MaskTexture parentKey="IconMask" atlas="UI-HUD-UnitFrame-Player-Portrait-Mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+            
+            <!--MaskTexture parentKey="IconMask" atlas="UI-HUD-UnitFrame-Player-Portrait-Mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
                 <Size x="36" y="36"/>
                 <Anchors>
                     <Anchor point="CENTER" relativeKey="$parent.Icon" x="0" y="2"/>
@@ -54,13 +55,49 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <MaskedTextures>
                     <MaskedTexture childKey="Icon"/>
                 </MaskedTextures>
-            </MaskTexture>
+            </MaskTexture-->
         
+
+            <Texture parentKey="Spec" enableMouse="true">
+                <Size x="14" y="14"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local parent= self:GetParent()
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.specID, owner=self})
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+
+            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
+                <Anchors>
+                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
 
 
             <FontString parentKey="Name2" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Spec" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>
@@ -119,42 +156,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Anchors>
             </Texture>
 
-
-            <Texture parentKey="Spec" enableMouse="true">
-                <Size x="14" y="14"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.specID, owner=self})
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-
-            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
-                <Anchors>
-                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
 
 
 
@@ -368,6 +369,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
             <FontString parentKey="AffixText" inherits="ChatFontNormal" justifyH="CENTER">
+                <Size x="0" y="19.5"/>
                 <Anchors>
                    <Anchor point="TOP" relativeKey="$parent"/>
                 </Anchors>

@@ -145,7 +145,7 @@ local function Init()
 
 
     function Frame:Settings()
-        self:SetSize(Save().affixW or 248, Save().affixH or 177)
+        self:SetSize(Save().affixW or 238, Save().affixH or 177)
         self:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMRIGHT', Save().affixX or -45, Save().affixY or 300)
         self:SetScale(Save().affixScale or 0.4)
         self:SetShown(not Save().hideAffix)

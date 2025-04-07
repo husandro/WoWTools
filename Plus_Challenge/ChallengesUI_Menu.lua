@@ -130,10 +130,19 @@ local function Init_Menu(self, root)
 
 
 --小号. 史诗钥石
+    local num=0
+    for guid, info in pairs(WoWTools_WoWDate) do
+        if info.Keystone.link
+            and guid~=WoWTools_DataMixin.Player.GUID
+            and info.region==WoWTools_DataMixin.Player.Region
+        then
+            num= num+1
+        end
+    end
     root:CreateDivider()
     name= '|T525134:0|t'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
     sub= root:CreateCheckbox(
-        name,
+        name..' #'..num,
     function()
         return not Save().hideLeft
     end, function()
@@ -259,10 +268,10 @@ local function Init_Menu(self, root)
         Save().activitiesHidePvP= not Save().activitiesHidePvP and true or nil
         WoWTools_ChallengeMixin:ChallengesUI_Activities()
     end)
- 
+
 
 --X
-sub:CreateSpacer()
+    sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -287,7 +296,7 @@ sub:CreateSpacer()
             Save().activitiesY=value
             WoWTools_ChallengeMixin:ChallengesUI_Activities()
         end,
-        name='X',
+        name='Y',
         minValue=-1024,
         maxValue=1024,
         step=1,
@@ -363,7 +372,7 @@ sub:CreateSpacer()
         Save().guildY=value
         WoWTools_ChallengeMixin:ChallengesUI_Guild()
     end,
-        name='X',
+        name='Y',
         minValue=-1024,
         maxValue=1024,
         step=1,
@@ -427,7 +436,7 @@ sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
     getValue=function()
-        return Save().affixW or 248
+        return Save().affixW or 238
     end, setValue=function(value)
         Save().affixW=value
         WoWTools_ChallengeMixin:ChallengesUI_Affix()
@@ -560,7 +569,7 @@ sub:CreateTitle(name)
         Save().rightY=value
         WoWTools_ChallengeMixin:ChallengesUI_Right()
     end,
-        name='X',
+        name='Y',
         minValue=-1024,
         maxValue=1024,
         step=1,

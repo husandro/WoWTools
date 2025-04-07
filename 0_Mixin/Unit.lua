@@ -93,7 +93,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     end
 
     if reLink then
-        return self:GetLink(name, guid, true) --玩家超链接
+        return self:GetLink(unit, guid, name, true) --玩家超链接
     end
 
 
@@ -148,7 +148,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
     if (not text or text=='') and name then
         if reLink then
-            return self:GetLink(name, nil, true) --玩家超链接
+            return self:GetLink(unit, guid, name, true) --玩家超链接
 
         elseif reName then
             if not reRealm then
@@ -211,12 +211,25 @@ end
 
 
 
+--[[
+local isCharacterClub = clubInfo.clubType == Enum.ClubType.Character;
+local inviterName = inviterInfo.name or "";
+local classInfo = inviterInfo.classID and C_CreatureInfo.GetClassInfo(inviterInfo.classID);
+local inviterText;
+if isCharacterClub and classInfo then
+    local classColorInfo = RAID_CLASS_COLORS[classInfo.classFile];
+    inviterText = GetPlayerLink(inviterName, ("[%s]"):format(WrapTextInColorCode(inviterName, classColorInfo.colorStr)));
+elseif isCharacterClub then
+    inviterText = GetPlayerLink(inviterName, ("[%s]"):format(inviterName));
+else
+    inviterText = inviterName;
+end
+]]
 
-
-function WoWTools_UnitMixin:GetLink(name, guid, onlyLink) --玩家超链接
-    guid= guid or self:GetGUID(nil, name)
+function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链接
+    guid= guid or self:GetGUID(unit, name)
     if guid==WoWTools_DataMixin.Player.GUID then--自已
-        return (not onlyLink and WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.name_realm..'|h['..WoWTools_DataMixin.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
+        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.name_realm..'|h['..WoWTools_DataMixin.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
@@ -225,14 +238,13 @@ function WoWTools_UnitMixin:GetLink(name, guid, onlyLink) --玩家超链接
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
-            return (not onlyLink and self:GetRaceIcon({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}) or '')..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
+            return (onlyLink and '' or self:GetRaceIcon({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}))..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
         return '|Hplayer:'..name..'|h['..self:NameRemoveRealm(name)..']|h'
     end
     return ''
 end
-
 
 
 

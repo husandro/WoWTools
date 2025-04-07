@@ -50,9 +50,20 @@ local function Inv_All_Unit()
                         if not WoWTools_InviteMixin.InvPlateGuid[guid] then
                             C_PartyInfo.InviteUnit(name)
                             WoWTools_InviteMixin.InvPlateGuid[guid]=name
-                            print(WoWTools_DataMixin.addName, '|cnGREEN_FONT_COLOR:'..n..'|r)', WoWTools_DataMixin.onlyChinese and '邀请' or INVITE ,WoWTools_UnitMixin:GetLink(name, guid))
+                            print(
+                                WoWTools_DataMixin.addName,
+                                '|cnGREEN_FONT_COLOR:'..n..'|r)',
+                                WoWTools_DataMixin.onlyChinese and '邀请' or INVITE,
+                                WoWTools_UnitMixin:GetLink(nil, guid, name, false)
+                            )
                             if not raid and n +co>=5  then
-                                print(WoWTools_DataMixin.addName, WoWTools_InviteMixin.addName, format(PETITION_TITLE, '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '转团' or CONVERT_TO_RAID)..'|r'))
+                                print(
+                                    WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
+                                    format(WoWTools_DataMixin.onlyChinese and '需求：%s' or PETITION_TITLE,
+                                        '|cff00ff00'
+                                        ..(WoWTools_DataMixin.onlyChinese and '转团' or CONVERT_TO_RAID)
+                                    )
+                                )
                                 break
                             end
                             n=n+1

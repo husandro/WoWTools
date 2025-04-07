@@ -78,7 +78,7 @@ local function Settings(_, name, isTank, isHealer, isDamage, isNativeRealm, allo
                     WoWTools_DataMixin.onlyChinese
                     and '%s邀请你加入队伍。接受邀请可能会将你传送到另外一个服务器区域。'
                     or INVITATION_XREALM:gsub('\n\n', ''),
-                    WoWTools_UnitMixin:GetLink(nil, inviterGUID)
+                    WoWTools_UnitMixin:GetLink(nil, inviterGUID, name, false)
                 )
             )
         end
@@ -156,7 +156,7 @@ local function Init()
 
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
                 WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
-                WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID)
+                WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID, nil, false)
             )
             Accept()
 
@@ -168,7 +168,7 @@ local function Init()
 
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName,
                 WoWTools_DataMixin.onlyChinese and '添加' or ADD,
-                WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID)
+                WoWTools_UnitMixin:GetLink(nil, InviterPlayerGUID, nil, false)
             )
             Decline()
         end

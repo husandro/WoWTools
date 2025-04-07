@@ -284,16 +284,25 @@ local function Init_Menu(self, root)
 
 
             sub2:CreateDivider()
-            sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, function(data)
-                local findIndex= findWhisper(data)
+            sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+            function(data)
+                local findIndex= findWhisper(data.name)
                 if findIndex then
                     Save().WhisperTab[findIndex]=nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', WoWTools_UnitMixin:GetLink(data))
+                    print(
+                        WoWTools_DataMixin.Icon.icon2.. addName,
+                        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r',
+                        WoWTools_UnitMixin:GetLink(data.unit, data.guid, data.name, false)
+                    )
                 else
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', WoWTools_UnitMixin:GetLink(data))
+                    print(
+                        WoWTools_DataMixin.Icon.icon2.. addName,
+                        '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r',
+                        WoWTools_UnitMixin:GetLink(data.unit, data.guid, data.name, false)
+                    )
                 end
                 return MenuResponse.Open
-            end, tab.name)
+            end, tab)
         end
         WoWTools_MenuMixin:SetGridMode(sub, num)
     end

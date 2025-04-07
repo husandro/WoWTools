@@ -534,7 +534,7 @@ local function New_AddMessage(self, s, ...)
                 if unitName==WoWTools_DataMixin.Player.Name or unitName==YOU then
                     s=s:gsub(unitName, '[|A:auctionhouse-icon-favorite:0:0|a'..WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r]')
                 else
-                    s=s:gsub(WoWTools_TextMixin:Magic(unitName), WoWTools_UnitMixin:GetLink(unitName))
+                    s=s:gsub(WoWTools_TextMixin:Magic(unitName), WoWTools_UnitMixin:GetLink(nil, nil, unitName, false))
                 end
             end
         end
