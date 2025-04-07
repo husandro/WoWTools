@@ -224,10 +224,41 @@ end
 
 
 
+--插入, KEY时, 说
+
+local function Set_SlotKeystoneSay()
+    local mapChallengeModeID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
+    if not Save().slotKeystoneSay
+        or ChallengesKeystoneFrame:IsVisible()
+        or not mapChallengeModeID
+    then
+        return
+    end
+
+    local name, _, timeLimit= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+
+    if not name then
+        return
+    end
 
 
+    local journalInstanceID= WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID] and WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID].ins
+    if journalInstanceID then
+        name = select(8, EJ_GetInstanceInfo(journalInstanceID)) or ('|Hjournal:0:'..journalInstanceID..':23|h['..name..']|h')
+    end
 
+    local m= name..'('.. powerLevel..'): '
 
+    for _,v in pairs(affixes or {}) do
+        local name2=C_ChallengeMode.GetAffixInfo(v)
+        if name2 then
+            m=m..name2..', '
+        end
+    end
+    m=m..WoWTools_TimeMixin:SecondsToClock(timeLimit)
+    WoWTools_ChatMixin:Chat(m, nil, nil)
+
+end
 
 
 
@@ -334,7 +365,6 @@ local function Create_Buttons()--挑战,钥石,插入界面
 
         UI_Party_Info(self)
 
-        self.inseSayTips=true--插入, KEY时, 说
 
         --地下城挑战，分数，超链接
         local dungeonScore = C_ChallengeMode.GetOverallDungeonScore()--DungeonScoreInfoMixin:OnClick() Blizzard_ChallengesUI.lua
@@ -413,38 +443,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
     end)
     check:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
 
-    hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted',function(self)--插入, KEY时, 说
 
-        if not Save().slotKeystoneSay or not C_ChallengeMode.HasSlottedKeystone() or not self.inseSayTips then
-            return
-        end
-
-        local mapChallengeModeID, affixes, powerLevel = C_ChallengeMode.GetSlottedKeystoneInfo()
-        if not mapChallengeModeID then
-            return
-        end
-
-        local name,_, timeLimit= C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
-
-        if not name then
-            return
-        end
-
-        local journalInstanceID= WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID] and WoWTools_DataMixin.ChallengesSpellTabs[mapChallengeModeID].ins
-        if journalInstanceID then
-            name = select(8, EJ_GetInstanceInfo(journalInstanceID)) or name
-        end
-        local m= name..'('.. powerLevel..'): '
-        for _,v in pairs(affixes or {}) do
-            local name2=C_ChallengeMode.GetAffixInfo(v)
-            if name2 then
-                m=m..name2..', '
-            end
-        end
-        m=m..WoWTools_TimeMixin:SecondsToClock(timeLimit)
-        WoWTools_ChatMixin:Chat(m, nil, nil)
-        self.inseSayTips=nil
-    end)
 
     ChallengesKeystoneFrame:HookScript("OnUpdate", function (self, elapsed)--更新队伍数据
         self.elapsed= (self.elapsed or 0.8) + elapsed
@@ -512,42 +511,56 @@ end
 
 
 
+local function Init_Menu(_, root)
+    root:CreateCheckbox(
+        'Plus',
+    function()
+        return not Save().hideKeyUI
+    end, function()
+        Save().hideKeyUI= not Save().hideKeyUI and true or nil
+        Create_Buttons()
+    end)
+
+--说
+    root:CreateDivider()
+    root:CreateTitle(
+        '|A:transmog-icon-chat:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '说' or SAY)
+    )
+
+--插入史诗钥石
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '插入史诗钥石' or  CHALLENGE_MODE_INSERT_KEYSTONE,
+    function()
+        return Save().slotKeystoneSay
+    end, function()
+        Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
+
+
+    end)
+end
+
+
+
+
+
+
+
+
 
 local function Init()
-
-    local btn= WoWTools_ButtonMixin:Cbtn(ChallengesKeystoneFrame, {size={18,18}, icon='hide'})
-    btn:SetFrameStrata('HIGH')
-    btn:SetFrameLevel(7)
-    btn:SetAlpha(0.5)
+    local btn= WoWTools_ButtonMixin:Menu(ChallengesKeystoneFrame.CloseButton)
     btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
 
-    function btn:set_texture()
-        self:SetNormalAtlas(not Save().hideKeyUI and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
-    end
+    btn:SetupMenu(Init_Menu)
 
-    btn:SetScript("OnClick", function(self)
-        Save().hideKeyUI = not Save().hideKeyUI and true or nil
-        Create_Buttons()
-        self:set_texture()
-    end)
-    btn:SetScript("OnEnter",function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or SHOW..'/'..HIDE, WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
-        GameTooltip:Show()
-        self:SetAlpha(1)
-    end)
-    btn:SetScript("OnLeave",function(self)
-        GameTooltip:Hide()
-        self:SetAlpha(0.5)
-    end)
-
-    btn:set_texture()
+    hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted', Set_SlotKeystoneSay)--插入, KEY时, 说
 
     Create_Buttons()
 
-    Init=function()end
+    Init=function()
+        Create_Buttons()
+    end
 end
 
 

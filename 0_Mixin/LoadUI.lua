@@ -377,10 +377,31 @@ function WoWTools_LoadUIMixin:Achievement(achievementID)
 end
 
 
---Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
---战斗中，打不开
-function WoWTools_LoadUIMixin:JournalInstance(journalInstanceID)
-    do
+
+--[[
+战斗中，打不开
+journalType 0=Instance, 1=Encounter, 2=Section.
+journalID InstanceID, EncounterID, or SectionID.
+difficulty DifficultyID of the instance.
+
+AdventureGuideUtil.lua
+https://warcraft.wiki.gg/wiki/DifficultyID
+Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
+
+|Hjournal:1:2568:23|h[虚空石畸体]|h
+
+
+]]
+function WoWTools_LoadUIMixin:JournalInstance(journalType, journalID, difficultyID)
+    if not AdventureGuideUtil.IsAvailable()
+        or not journalID
+        or (InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown()))
+    then
+        return
+    end
+    AdventureGuideUtil.OpenJournalLink(journalType or 0, journalID, difficultyID or 23)
+end
+    --[[do
         EncounterJournal_LoadUI()
     end
     if journalInstanceID then
@@ -391,4 +412,4 @@ function WoWTools_LoadUIMixin:JournalInstance(journalInstanceID)
         end
         EncounterJournal_OpenJournal(nil, journalInstanceID)
     end
-end
+end]]

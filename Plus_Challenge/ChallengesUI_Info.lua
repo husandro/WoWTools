@@ -135,11 +135,12 @@ local function Set_OnEnter(self)
     end
 
     if self.journalInstanceID then
-
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(
-
-            (InCombatLockdown() and '|cff828282' or '|cnGREEN_FONT_COLOR:')
+            ((InCombatLockdown() and (not EncounterJournal or not EncounterJournal:IsShown())
+                or not AdventureGuideUtil.IsAvailable())
+                and '|cff828282' or '|cnGREEN_FONT_COLOR:'
+            )
             ..'<'
             ..WoWTools_DataMixin.Icon.left
             ..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
@@ -299,9 +300,7 @@ local function Create_Label(frame)
         Set_OnEnter(self)
     end)
     frame:SetScript('OnMouseDown', function(self)
-        if self.journalInstanceID and not InCombatLockdown() then
-            WoWTools_LoadUIMixin:JournalInstance(self.journalInstanceID)
-        end
+        WoWTools_LoadUIMixin:JournalInstance(nil, self.journalInstanceID)
     end)
 end
 
