@@ -152,7 +152,6 @@ local function Get_Player_Info(_, guid)--取得玩家信息
     if guid==WoWTools_DataMixin.Player.GUID then
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel= itemLevel
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].specID= specID
-        print(itemLevel, specID, unit)
     end
     --if UnitIsUnit(unit, 'mouseover') and GameTooltip.textLeft and GameTooltip:IsShown() then
 end
@@ -673,6 +672,7 @@ end)
 EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, arg1)
     if arg1 then
         WoWTools_DataMixin.Player.Sex= UnitSex("player")
+
         WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false})
     end
 end)
@@ -732,8 +732,6 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWTools_WoWDate[guid].Bank= WoWTools_WoWDate[guid].Bank or {}--派系
 
     WoWTools_WoWDate[guid].Guild= WoWTools_WoWDate[guid].Guild or {data={}}--公会信息
-    WoWTools_WoWDate[guid].GuildInfo=nil--清除，旧版本数据
-
 
     WoWTools_WoWDate[guid].region= WoWTools_DataMixin.Player.Region
     WoWTools_WoWDate[guid].faction= WoWTools_DataMixin.Player.Faction--派系

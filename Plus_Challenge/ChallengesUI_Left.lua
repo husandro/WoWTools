@@ -45,15 +45,14 @@ local function Initializer(btn, data)
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
-
 --Affix
     btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or '')
 
 --专精，天赋
-    btn.Spec:SetTexture(data.specID and select(4, GetSpecializationInfoForClassID(data.specID)) or 136224)
+    local sex=  select(5, GetPlayerInfoByGUID(data.guid))
+    btn.Spec:SetTexture(data.specID>0 and select(4, GetSpecializationInfoForSpecID(data.specID, sex)) or 0)
 
 --装等
-
     if data.itemLevel then
         local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
         btn.ItemLevelText:SetText(
@@ -122,7 +121,12 @@ local function Sort_Order(a,b)
     if a.faction==b.faction then
         if a.score==b.score then
             if a.weekNum== b.weekNum then
-                return b.weekLevel> a.weekLevel
+                if a.itemLevel==b.itemLevel then
+                    return b.weekLevel> a.weekLevel
+                else
+                    return b.itemLevel>a.itemLevel
+                end
+
             else
                 return b.weekNum> a.weekNum
             end
@@ -188,12 +192,13 @@ local function Set_List()
                     pvp= info.Keystone.weekPvP,
 
                     battleTag= info.battleTag,
-                    specID= info.specID,
-                    itemLevel= info.itemLevel
+                    specID= info.specID or 0,
+                    itemLevel= info.itemLevel or 0
                 })
             end
         end
     end
+
 
     data:SetSortComparator(Sort_Order)
 
