@@ -45,13 +45,15 @@ local function Initializer(btn, data)
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
+
 --Affix
     btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or '')
 
 --专精，天赋
-    btn.Spec:SetTexture(data.specID and select(4, GetSpecializationInfoForClassID(data.specID) or 136224))
+    btn.Spec:SetTexture(data.specID and select(4, GetSpecializationInfoForClassID(data.specID)) or 136224)
 
 --装等
+
     if data.itemLevel then
         local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
         btn.ItemLevelText:SetText(
@@ -61,7 +63,6 @@ local function Initializer(btn, data)
     else
         btn.ItemLevelText:SetText('')
     end
-print(data.itemLevel,data.specID, data.specID and select(4, GetSpecializationInfoForClassID(data.specID)))
 
 --钥石，名称  
     btn.Name2:SetText(

@@ -21,7 +21,7 @@ function WoWTools_HyperLink:GetKeyAffix(link, tab)
     end
     local icon
 
-    for _, v in pairs(tab) do
+    for _, v in pairs(tab or {}) do
         if v and v ~='0' then
             local texture= select(3, C_ChallengeMode.GetAffixInfo(v))
             if texture and texture>0 then
