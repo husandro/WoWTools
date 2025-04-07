@@ -46,7 +46,7 @@ local function Initializer(btn, data)
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
 --Affix
-    btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or '')
+    btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil)..'|A:Campaign_Alliance:0:0|a' or '')
 
 --专精，天赋
     local sex=  select(5, GetPlayerInfoByGUID(data.guid))
@@ -119,19 +119,18 @@ end
 
 local function Sort_Order(a,b)
     if a.faction==b.faction then
-        if a.score==b.score then
-            if a.weekNum== b.weekNum then
-                if a.itemLevel==b.itemLevel then
+        if a.itemLevel==b.itemLevel then
+            if a.score==b.score then
+                if a.weekNum== b.weekNum then
                     return b.weekLevel> a.weekLevel
                 else
-                    return b.itemLevel>a.itemLevel
+                    return b.weekNum> a.weekNum
                 end
-
             else
-                return b.weekNum> a.weekNum
+                return b.score>a.score
             end
         else
-            return b.score>a.score
+            return b.itemLevel>a.itemLevel
         end
     else
         return a.faction==WoWTools_DataMixin.Player.Faction

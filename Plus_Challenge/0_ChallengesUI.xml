@@ -18,38 +18,43 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
     <Layers>
         <Layer level="BACKGROUND" textureSubLevel="1">
-            <Texture parentKey="Background" atlas="QuestItemBorder" setAllPoints="true">
+            <Texture parentKey="Background" atlas="QuestItemBorder">
                 <TexCoords left="1" right="0" top="0" bottom="1" />
+                <Anchors>
+                    <Anchor point="TOPLEFT"/>
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-10"/>
+                </Anchors>
             </Texture>
         </Layer>
          <Layer level="BACKGROUND" textureSubLevel="2">
             <Texture parentKey="Class" alpha="0.5">
-                <Size x="66" y="66"/>
+                <Size x="82" y="82"/>
                  <Anchors>
-                    <Anchor point="TOP" x="0" y="-4"/>
+                    <Anchor point="TOP"/>
                 </Anchors>
             </Texture> 
          </Layer>
         <Layer level="BACKGROUND" textureSubLevel="3">
-            <Texture parentKey="Select" atlas="auctionhouse-nav-button-select" hidden='true'>
-                <Anchors>
-                    <Anchor point="TOPLEFT" x="-4" y="4"/>
-                    <Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
-                </Anchors>
-            </Texture>
+            <Texture parentKey="Select" atlas="GarrMission_FollowerListButton-Select" hidden='true' setAllPoints="true"/>
         </Layer>
         
         <Layer level="BORDER">
-
+      
             <Texture parentKey="Icon">
                 <Size x="36" y="36"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" x="-4" y="-4"/>
+                    <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-
-
-
+            <MaskTexture parentKey="IconMask" atlas="UI-HUD-UnitFrame-Player-Portrait-Mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
+                <Size x="36" y="36"/>
+                <Anchors>
+                    <Anchor point="CENTER" relativeKey="$parent.Icon" x="0" y="2"/>
+                </Anchors>
+                <MaskedTextures>
+                    <MaskedTexture childKey="Icon"/>
+                </MaskedTextures>
+            </MaskTexture>
         
             <FontString parentKey="Name2" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
@@ -63,18 +68,20 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <OnLeave>
                         GameTooltip:Hide()
                         self:SetAlpha(1)
+                        self:GetParent().Select:SetShown(false)
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.itemLink})
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.itemLink, owner=self})                        
                         self:SetAlpha(0.3)
+                        parent.Select:SetShown(true)
                     </OnEnter>
                 </Scripts>
             </FontString>
 
             <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name2"  relativePoint="BOTTOMRIGHT" x="0" y="-2"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name2"  relativePoint="BOTTOMRIGHT" x="0" y="0"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="2" y="-2"/>
@@ -111,6 +118,34 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
                 </Anchors>
             </Texture>
+
+
+            <Texture parentKey="Spec" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                        self:GetParent().Select:SetShown(false)
+                    </OnLeave>
+                    <OnEnter>
+                        local parent= self:GetParent()
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.specID, owner=self})
+                        parent.Select:SetShown(true)
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+
+            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
+                <Anchors>
+                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
+                </Anchors>
+            </FontString>
+
 
 
 
@@ -328,30 +363,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Anchors>
             </FontString>
 
-            <Texture parentKey="Spec" enableMouse="true">
-                <Size x="16" y="16"/>
-                <Anchors>
-                    <Anchor point="TOP" relativeKey="$parent.AffixText" relativePoint="BOTTOM"/>
-                    <Anchor point="RIGHT" relativeKey="$parent.Class"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.specID})
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-
-            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal" justifyH="RIGHT">
-                <Anchors>
-                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
-                </Anchors>
-            </FontString>
+           
 
         </Layer>
     </Layers>
@@ -399,9 +411,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
     <Layers>
         <Layer level="BORDER">        
-             <FontString parentKey="Text" inherits="Game40Font" justifyH="RIGHT">
+             <FontString parentKey="Text" inherits="Game30Font" justifyH="RIGHT">
                 <Anchors>
-                    <Anchor point="RIGHT" relativeKey="$parent.Affix1" relativePoint="LEFT"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.Affix1" relativePoint="LEFT" x="-4" y="0"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>

@@ -3,13 +3,17 @@ WoWTools_LabelMixin={}
 
 
 
---[[function WoWTools_LabelMixin:Size(lable, size)
+--[[
+SharedFonts.xml
+
+function WoWTools_LabelMixin:Size(lable, size)
     if not lable or not size then
         return
     end
     local font, _, flag= lable:GetFont()
     lable:SetFont(font, size, flag)
-end]]
+end
+]]
 
 
 
