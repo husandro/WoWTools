@@ -45,8 +45,18 @@ SmallItemButtonTemplate <Size x="134" y="30"/>
 
 ItemButtonTemplate.xml
 ]]
+--遮罩
+function WoWTools_ButtonMixin:Mask(btn)
 
-
+    btn.mask= btn.mask or btn:CreateMaskTexture()
+    btn.mask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+    btn.mask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
+    btn.mask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
+    local icon= btn:GetNormalTexture()
+    if icon then
+        icon:AddMaskTexture(btn.mask)
+    end
+end
 
 
 function WoWTools_ButtonMixin:Cbtn(frame, tab)
@@ -108,12 +118,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn.border:SetAllPoints(btn)
         btn.border:SetAtlas('bag-reagent-border')
         WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
-    elseif isMask then--遮罩
-        btn.mask= btn:CreateMaskTexture()
-        btn.mask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-        btn.mask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
-        btn.mask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
-        --btn:GetNormalTexture():AddMaskTexture(btn.mask)
+   
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
@@ -124,12 +129,15 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         pushedAtlas, highlightAtlas= 'bag-border-highlight', 'bag-border'
 
     elseif atlas then
+        
         if atlas:find('Cursor_OpenHand_(%d+)') then--提取(手)按钮
             highlightAtlas= 'Cursor_OpenHandGlow_'..atlas:match('Cursor_OpenHand_(%d+)')
 
         elseif atlas=='ui-questtrackerbutton-filter' then--菜单按钮
             pushedAtlas='ui-questtrackerbutton-filter-pressed'
             highlightAtlas= 'ui-questtrackerbutton-red-highlight'
+        else
+            self:Mask(btn)
         end
     end
     btn:SetPushedAtlas(pushedAtlas)
@@ -144,12 +152,10 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         elseif texture then
             btn.texture:SetTexture(texture)
         end
-    else
-        if atlas then
-            btn:SetNormalAtlas(atlas)
-        elseif texture then
-            btn:SetNormalTexture(texture)
-        end
+    elseif atlas then
+        btn:SetNormalAtlas(atlas)
+    elseif texture then
+        btn:SetNormalTexture(texture)       
     end
 
 --设置大小
@@ -177,6 +183,10 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn:SetAlpha(alpha)
     end
 
+--遮罩
+    if isMask or ((atlas or texture) and not pushedAtlas and not isType2) then
+        self:Mask(btn)
+    end
     return btn
 end
 
