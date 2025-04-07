@@ -22,15 +22,15 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <TexCoords left="1" right="0" top="0" bottom="1" />
                 <Anchors>
                     <Anchor point="TOPLEFT"/>
-                    <Anchor point="BOTTOMRIGHT" x="0" y="-10"/>
+                    <Anchor point="BOTTOMRIGHT" x="0" y="-8"/>
                 </Anchors>
             </Texture>
         </Layer>
          <Layer level="BACKGROUND" textureSubLevel="2">
             <Texture parentKey="Class" alpha="0.5">
-                <Size x="82" y="82"/>
+                <Size x="78" y="78"/>
                  <Anchors>
-                    <Anchor point="TOP"/>
+                    <Anchor point="TOP" x="0" y="0"/>
                 </Anchors>
             </Texture> 
          </Layer>
@@ -38,8 +38,8 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             <Texture parentKey="Select" atlas="GarrMission_FollowerListButton-Select" hidden='true' setAllPoints="true"/>
         </Layer>
         
+        
         <Layer level="BORDER">
-      
             <Texture parentKey="Icon">
                 <Size x="36" y="36"/>
                 <Anchors>
@@ -56,6 +56,8 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </MaskedTextures>
             </MaskTexture>
         
+
+
             <FontString parentKey="Name2" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
@@ -68,20 +70,18 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <OnLeave>
                         GameTooltip:Hide()
                         self:SetAlpha(1)
-                        self:GetParent().Select:SetShown(false)
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
                         WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.itemLink, owner=self})                        
                         self:SetAlpha(0.3)
-                        parent.Select:SetShown(true)
                     </OnEnter>
                 </Scripts>
             </FontString>
 
             <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name2"  relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name2"  relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="2" y="-2"/>
@@ -121,7 +121,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
             <Texture parentKey="Spec" enableMouse="true">
-                <Size x="16" y="16"/>
+                <Size x="14" y="14"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
@@ -129,12 +129,10 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <OnLeave>
                         GameTooltip:Hide()
                         self:SetAlpha(1)
-                        self:GetParent().Select:SetShown(false)
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
                         WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.specID, owner=self})
-                        parent.Select:SetShown(true)
                         self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
@@ -144,6 +142,18 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Anchors>
                    <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
                 </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
             </FontString>
 
 

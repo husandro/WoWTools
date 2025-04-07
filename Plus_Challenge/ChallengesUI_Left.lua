@@ -46,7 +46,7 @@ local function Initializer(btn, data)
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
 --Affix
-    btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil)..'|A:Campaign_Alliance:0:0|a' or '')
+    btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or '')
 
 --专精，天赋
     local sex=  select(5, GetPlayerInfoByGUID(data.guid))
