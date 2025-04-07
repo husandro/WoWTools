@@ -29,7 +29,7 @@ WoWTools_DataMixin.ItemCurrencyTips= {---物品升级界面，挑战界面，物
 
 
 
---挑战数据 Challenges.lua
+--挑战数据 Challenges.lua C_MythicPlus.GetRewardLevelForDifficultyLevel(
 local function Level_Text(text)
     local tab={
         ['Veteran']= format('%s%s|r', '|cff00ff00', WoWTools_DataMixin.onlyChinese and '老兵' or 'Veteran'),
@@ -40,35 +40,54 @@ local function Level_Text(text)
     return tab[text] or text
 end
 
-
+local endOfRunRewardLevel={
+[2]=639,
+[3]=639,
+[4]=642,
+[5]=645,
+[6]=649,
+[7]=649,
+[8]=652,
+[9]=652,
+[10]=655,
+[11]=655,
+[12]=655,
+}
 
 local WeekItemLevel={
-    [2]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t10',
-    [3]='639'..Level_Text('Champion')..'2/8  649'..Level_Text('Hero')..'1/6|T5872051:0|t12',
-    [4]='642'..Level_Text('Champion')..'3/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t14',
-    [5]='645'..Level_Text('Champion')..'4/8  652'..Level_Text('Hero')..'2/6|T5872051:0|t16',
-    [6]='649'..Level_Text('Hero')..'1/6  655'..Level_Text('Hero')..'3/6|T5872051:0|t18',
+    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',
+    [3]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t12',
+    [4]='%d'..Level_Text('Champion')..'3/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t14',
+    [5]='%d'..Level_Text('Champion')..'4/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t16',
+    [6]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'3/6|T5872051:0|t18',
 
-    [7]='649'..Level_Text('Hero')..'1/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t10',
-    [8]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t12',
-    [9]='652'..Level_Text('Hero')..'2/6  658'..Level_Text('Hero')..'4/6|T5872049:0|t14',
-    [10]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t16',
-    [11]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t18',
-    [12]='655'..Level_Text('Hero')..'3/6  662'..Level_Text('Myth')..'1/6|T5872049:0|t20',
+    [7]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t10',
+    [8]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t12',
+    [9]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t14',
+    [10]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t16',
+    [11]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t18',
+    [12]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t20',
 
     min=2,
     max=12,
 }
 
 
-
-function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)--LimitMaxKeyLevel --限制，显示等级,不然，数据会出错
+function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
     if isGetNum then
         return WeekItemLevel.min, WeekItemLevel.max
     else
-        level= math.min(WeekItemLevel.max, level or 0)
-        level= math.max(WeekItemLevel.min, level or 0)
-        return WeekItemLevel[level]
+        level= math.min(WeekItemLevel.max, level or WeekItemLevel.min)
+        level= math.max(WeekItemLevel.min, level or WeekItemLevel.max)
+
+        local weekly, endOfRun= C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
+        endOfRun= (endOfRun and endOfRun>0) and endOfRun or endOfRunRewardLevel[level] or 0
+        weekly= weekly or 0
+
+        if weekly==0 and WoWTools_DataMixin.Player.husandro then
+            print('GetChallengesWeekItemLevel 数据出错，需要更新')
+        end
+        return format(WeekItemLevel[level], endOfRun, weekly)
     end
 end
 

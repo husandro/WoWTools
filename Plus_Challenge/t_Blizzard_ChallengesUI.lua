@@ -1,6 +1,7 @@
 local function Init(mixin)
     mixin:SetAlphaColor(ChallengesFrameInset.Bg)
 
+    mixin:SetNineSlice(ChallengesFrameInset)
     mixin:SetFrame(ChallengesKeystoneFrame, {index=1})
     mixin:HideTexture(ChallengesKeystoneFrame.InstructionBackground)
 

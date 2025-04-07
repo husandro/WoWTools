@@ -5563,6 +5563,5 @@
         "assign-type-mismatch",
         "undefined-field",
         "param-type-mismatch",
-        "trailing-space"
     ],
 }

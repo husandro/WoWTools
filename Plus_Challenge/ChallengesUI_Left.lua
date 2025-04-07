@@ -36,6 +36,9 @@ local function Initializer(btn, data)
     local name= data.name or ''
     btn.Name:SetText(
         name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
+        ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
+            and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
+        )
         ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
     )
     btn.Name:SetTextColor(col.r, col.g, col.b)
@@ -44,7 +47,22 @@ local function Initializer(btn, data)
 
 --Affix
     btn.AffixText:SetText(WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or '')
-    
+
+--专精，天赋
+    btn.Spec:SetTexture(data.specID and select(4, GetSpecializationInfoForClassID(data.specID) or 136224))
+
+--装等
+    if data.itemLevel then
+        local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
+        btn.ItemLevelText:SetText(
+            (item>6 and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+            ..data.itemLevel
+        )
+    else
+        btn.ItemLevelText:SetText('')
+    end
+print(data.itemLevel,data.specID, data.specID and select(4, GetSpecializationInfoForClassID(data.specID)))
+
 --钥石，名称  
     btn.Name2:SetText(
         WoWTools_TextMixin:CN(
@@ -81,9 +99,14 @@ local function Initializer(btn, data)
         ..data.weekLevel
     )
 
-    btn.itemLink= data.itemLink
-
+--背景
     btn.Background:SetAlpha(Save().leftBgAlpha or 0.75)
+
+--数据
+    btn.itemLink= data.itemLink
+    btn.battleTag= data.battleTag
+    btn.specID= data.specID
+    btn.itemLevel= data.itemLevel
 end
 
 
@@ -136,7 +159,10 @@ local function Set_List()
     local data = CreateDataProvider()
     for guid, info in pairs(WoWTools_WoWDate) do
 
-        if info.Keystone.link and guid~=WoWTools_DataMixin.Player.GUID then
+        if info.Keystone.link
+            and guid~=WoWTools_DataMixin.Player.GUID
+            and info.region==WoWTools_DataMixin.Player.Region
+        then
             num= num+1
 
             local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
@@ -159,8 +185,11 @@ local function Set_List()
                     mythic= info.Keystone.weekMythicPlus,
                     world= info.Keystone.weekWorld,
                     pvp= info.Keystone.weekPvP,
-                })
 
+                    battleTag= info.battleTag,
+                    specID= info.specID,
+                    itemLevel= info.itemLevel
+                })
             end
         end
     end

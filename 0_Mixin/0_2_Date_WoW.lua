@@ -32,6 +32,8 @@ WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID]={
     level=
     faction=
     region=
+    specID 专精
+    itemLevel 装等
 }
 
 WoWTools_DataMixin.UnitItemLevel=[guid] = {--玩家装等
@@ -122,9 +124,11 @@ local function Get_Player_Info(_, guid)--取得玩家信息
     end
 
     local r, g, b, hex= select(2, WoWTools_UnitMixin:GetColor(unit, nil))
+    local itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel)
+    local specID= GetInspectSpecialization(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].specID)
     WoWTools_DataMixin.UnitItemLevel[guid] = {--玩家装等
-        itemLevel= C_PaperDollInfo.GetInspectItemLevel(unit) or (WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel),
-        specID= GetInspectSpecialization(unit),
+        itemLevel= itemLevel,
+        specID=specID,
         faction= UnitFactionGroup(unit),
         col= hex,
         r=r,
@@ -144,6 +148,12 @@ local function Get_Player_Info(_, guid)--取得玩家信息
         TargetFrame.classFrame:set_settings(guid)
     end
 
+--保存，自已，装等
+    if guid==WoWTools_DataMixin.Player.GUID then
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel= itemLevel
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].specID= specID
+        print(itemLevel, specID, unit)
+    end
     --if UnitIsUnit(unit, 'mouseover') and GameTooltip.textLeft and GameTooltip:IsShown() then
 end
 
@@ -714,6 +724,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             --Money=钱
             Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
             region= WoWTools_DataMixin.Player.Region
+            --specID 专精
+            --itemLevel 装等
         }
     end
 
