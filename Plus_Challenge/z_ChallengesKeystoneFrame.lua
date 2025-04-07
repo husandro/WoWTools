@@ -423,7 +423,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
 
 
 
---插入, KEY时, 说
+--[[插入, KEY时, 说
     local check= CreateFrame("CheckButton", nil, KeyFrame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
     check:SetPoint('RIGHT', ins, 'LEFT')
     check:SetChecked(Save().slotKeystoneSay)
@@ -442,7 +442,7 @@ local function Create_Buttons()--挑战,钥石,插入界面
         self:SetAlpha(1)
     end)
     check:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
-
+]]
 
 
     ChallengesKeystoneFrame:HookScript("OnUpdate", function (self, elapsed)--更新队伍数据
