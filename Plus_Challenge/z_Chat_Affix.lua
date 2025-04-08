@@ -40,7 +40,7 @@ end
 
 
 local function Chat_Affix()
-    if not Save().affixSay then
+    if Save().hideAffixSay then
         return
     end
 

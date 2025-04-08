@@ -213,7 +213,7 @@ function WoWTools_FrameMixin:IsInSchermo(frame)
 
     local screenWidth, screenHeight = UIParent:GetWidth(), UIParent:GetHeight()
 
-    if not screenWidth or not screenHeight or not centerX or centerY then
+    if not centerX or not centerY then
         return false
     end
 

@@ -8,21 +8,52 @@ local SayButton
 
 
 
+local function Init_Menu(self, root)
+    local sub
+    sub=root:CreateButton(
+        ( WoWTools_BagMixin:Ceca(nil, {isKeystone=true}) and '' or '|cff828282')
+        ..('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY)),
+    function()
+        self:Settings(true)
+        return MenuResponse.Open
+    end)
+    
+--缩放
+    WoWTools_MenuMixin:Scale(self, sub, function()
+        return Save().endKeystoneSayScale or 1
+    end, function(value)
+        Save().endKeystoneSayScale= value
+        self:set_scale()
+    end)
+
+    root:CreateDivider()
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE,
+    function()
+        self:Hide()
+    end)
+    WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(self, sub)
+end
+
+
+
+
+
 
 
 
 
 local function Init()
-    if not Save().slotKeystoneSay then
+    if Save().hideEndKeystoneSay then
         return
     end
 
 
     SayButton= WoWTools_ButtonMixin:Cbtn(nil, {
         isItem=true,
-        size=36,
         name='WoWToolsPlusChallengesSayItemLinkButton',
     })
+   
     SayButton.Text= WoWTools_LabelMixin:Create(SayButton)
     SayButton.Text:SetPoint('BOTTOM', SayButton, 'TOP',0, 4)
 
@@ -43,16 +74,7 @@ local function Init()
     SayButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().sayButtonPoint={self:GetPoint(1)}
-            Save().sayButtonPoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
-        end
+        Save().sayButtonPoint={self:GetPoint(1)}
         self:Raise()
     end)
 
@@ -63,36 +85,8 @@ local function Init()
         elseif d=='LeftButton' then
             self:Settings(true)
         else
-             MenuUtil.CreateContextMenu(self, function(_, root)
-                local sub, sub2
-                root:CreateButton(
-                    ( WoWTools_BagMixin:Ceca(nil, {isKeystone=true}) and '' or '|cff828282')
-                    ..('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY)),
-                function()
-                    self:Settings(true)
-                    return MenuResponse.Open
-                end)
-
-                root:CreateDivider()
-                root:CreateButton(
-                    WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE,
-                self.Hide)
-
-                root:CreateDivider()
-                sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ChallengeMixin.addName})
-                sub2=sub:CreateCheckbox(
-                    WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-                function()
-                    return Save().slotKeystoneSay
-                end, function()
-                    Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
-                end)
-                sub2:SetTooltip(function(tooltip)
-                    GameTooltip:AddDoubleLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY))
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(1, WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-                    GameTooltip:AddDoubleLine(2, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
-                end)
+             MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
              end)
         end
     end)
@@ -112,7 +106,9 @@ local function Init()
     else
         SayButton:SetPoint('CENTER', 100, 100)
     end
-
+    function SayButton:set_scale()
+        self:SetScale(Save().endKeystoneSayScale or 1)
+    end
 
     function SayButton:Settings(isSay)
         local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
@@ -122,11 +118,15 @@ local function Init()
            self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
         else
             self:Reset()
-            self:SetItemButtonTexture(WoWTools_DataMixin.Icon.icon)
+            local icon = GetItemButtonIconTexture(self)
+            if icon then
+                icon:SetAtlas(WoWTools_DataMixin.Icon.icon)
+            end
         end
         self:SetItemButtonCount(level)
-        self.Text:SetText(info and info.hyperlink or '')
-        if isSay and info.hyperlink then
+        self.Text:SetText(info and info.hyperlink or (WoWTools_DataMixin.onlyChinese and '无' or NONE))
+
+        if isSay and info and info.hyperlink then
             WoWTools_ChatMixin:Chat(info.hyperlink, nil, nil)
         end
     end
@@ -154,10 +154,10 @@ local function Init()
     end)
     SayButton:Show()
 
-
+    SayButton:set_scale()
 
     Init=function()
-        SayButton:SetShown(Save().slotKeystoneSay)
+        SayButton:SetShown(not Save().hideEndKeystoneSay)
     end
 end
 

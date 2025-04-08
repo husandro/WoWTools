@@ -80,7 +80,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local template= tab.template
                     or (isSecure and 'SecureActionButtonTemplate')
                     or (tab.isUI and 'UIPanelButtonTemplate')
-                    or (isType2 and isItem and 'CircularItemButtonTemplate')
+                    --or (isType2 and isItem and 'CircularItemButtonTemplate')
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
     

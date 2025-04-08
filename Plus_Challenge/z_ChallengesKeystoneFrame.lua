@@ -495,17 +495,33 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
     end)
 
---插入史诗钥石
+--挑战开始
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '挑战开始' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, START),
     function()
-        return Save().affixSay
+        return not Save().hideAffixSay
     end, function()
-        Save().affixSay= not Save().affixSay and true or nil
+        Save().hideAffixSay= not Save().hideAffixSay and true or nil
     end)
     sub:SetTooltip(function(tootip)
         tootip:AddLine('CHALLENGE_MODE_START')
     end)
+
+--挑战结束
+    sub= root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '挑战结束' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, COMPLETE),
+    function()
+        return not Save().hideEndKeystoneSay
+    end, function()
+        Save().hideEndKeystoneSay= not Save().hideEndKeystoneSay and true or nil
+        WoWTools_ChallengeMixin:Say_ChallengeComplete()
+    end)
+    sub:SetTooltip(function(tootip)
+        tootip:AddLine('CHALLENGE_MODE_START')
+    end)
+    
+    root:CreateDivider()
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ChallengeMixin.addName})
 end
 
 
