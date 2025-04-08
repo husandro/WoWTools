@@ -55,7 +55,7 @@ local function Initializer(btn, data)
     btn.Spec:SetTexture(data.specID>0 and select(4, GetSpecializationInfoForSpecID(data.specID, sex)) or 0)
 
 --装等
-    if data.itemLevel then
+    if data.itemLevel and data.itemLevel>0 then
         local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
         btn.ItemLevelText:SetText(
             (item>6 and '|cnGREEN_FONT_COLOR:' or '|cffffffff')

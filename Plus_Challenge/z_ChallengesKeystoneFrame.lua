@@ -268,8 +268,8 @@ local function Init_Buttons()--挑战,钥石,插入界面
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         WoWTools_SetTooltipMixin:Frame(self, nil, {dungeonScore= WoWTools_ChallengeMixin:GetDungeonScoreLink()})
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>', WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>', WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>'..WoWTools_DataMixin.Icon.left..'|A:transmog-icon-chat:0:0|a')
+        GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>'..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
         WoWTools_ChatMixin:Chat(self.dungeonScore, nil, nil)
     end)
@@ -303,8 +303,8 @@ local function Init_Buttons()--挑战,钥石,插入界面
             GameTooltip:ClearLines()
             WoWTools_SetTooltipMixin:Frame(self)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>', WoWTools_DataMixin.Icon.left)
-            GameTooltip:AddDoubleLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>', WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>'..WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
     end)
     KeyFrame.KeyButton.Text=WoWTools_LabelMixin:Create(KeyFrame.KeyButton, {size=14})
@@ -314,6 +314,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
         if info then
             self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
             self.Text:SetText(info.hyperlink)
+            self:SetItemButtonCount(C_MythicPlus.GetOwnedKeystoneLevel())
         end
         self:SetShown(info and true or false)
     end

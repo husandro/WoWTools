@@ -20,6 +20,8 @@ local P_Save= {
 
     --hideKeyUI=true,--挑战,钥石,插入界面
     slotKeystoneSay=WoWTools_DataMixin.Player.husandro,--插入, KEY时, 说
+
+    EndKeystoneSayText= WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ' or '{rt1}Want to continue? ',
 }
 
 
@@ -169,7 +171,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='CHALLENGE_MODE_COMPLETED' then
-        WoWTools_ChallengeMixin:Say_ChallengeComplete()
+        WoWTools_ChallengeMixin:Say_ChallengeComplete()--挑战结束时， 显示按钮
 
     elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
         WoWTools_ChallengeMixin:Chat_Affix()
@@ -177,6 +179,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='LOADING_SCREEN_DISABLED' then
         WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
         WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
+
+--总是显示
+        if Save().allShowEndKeystoneSay then
+            WoWTools_ChallengeMixin:Say_ChallengeComplete()--挑战结束时， 显示按钮
+        end
         self:UnregisterEvent(event)
     end
 end)

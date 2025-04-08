@@ -146,7 +146,7 @@ local function Set_Specialization(tooltip, specIndex, specID)
         specID, name, description, icon, role, primaryStat= GetSpecializationInfo(specIndex, false, false, nil, UnitSex("player"))
         roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
 
-    elseif specID then
+    elseif specID and specID>0 then
         specID, name, description, icon, role, primaryStat = GetSpecializationInfoByID(specID)
         roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnumByID(specID))
     end
