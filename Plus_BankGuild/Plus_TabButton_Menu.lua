@@ -244,8 +244,14 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
            not self:IsVisible()
             or self.isInRun
             or GetCurrentGuildBankTab()~= tabID
+            or InCombatLockdown()
         then
-            print(itemIndex, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT  )
+            print(
+                itemIndex,
+                '|cnRED_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)
+                ..'|r', WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT
+            )
             self.isInRun=nil
             WoWTools_GuildBankMixin.isInRun= nil
             return

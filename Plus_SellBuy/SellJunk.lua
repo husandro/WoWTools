@@ -44,11 +44,16 @@ local function Init()
 
 
     function AutoSellJunkCheck:set_sell_junk()--出售物品
-        if IsModifierKeyDown() or not C_MerchantFrame.IsSellAllJunkEnabled() or UnitAffectingCombat('player') then
+        if IsModifierKeyDown()
+            or not C_MerchantFrame.IsSellAllJunkEnabled()
+            or InCombatLockdown()
+        then
             return
         end
-        local save= Save()
+
+        local Sell, notSellCustom= Save().Sell, Save().notSellCustom
         local num, gruop, preceTotale= 0, 0, 0
+
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
                 local info = C_Container.GetContainerItemInfo(bag,slot)
@@ -56,7 +61,7 @@ local function Init()
                     and info.hyperlink
                     and info.itemID
                     and info.quality
-                    and (info.quality<5 or save.Sell[info.itemID] and not save.notSellCustom)
+                    and (info.quality<5 or Sell[info.itemID] and not notSellCustom)
                 then
                     local checkText= WoWTools_SellBuyMixin:CheckSellItem(info.itemID, info.hyperlink, info.quality, info.isBound)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                     if not info.isLocked and checkText then

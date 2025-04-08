@@ -4,60 +4,6 @@ local function Save()
 end
 
 local KeyFrame
-local clear
-local ins
-
-
-
-
-
-
-
-local function Create_Key(btn, point, x, y, parent, i, find)
-    if btn['key'..i] then
-        return
-    end
-
-    btn['key'..i]= WoWTools_ButtonMixin:Cbtn(parent or btn, {size=16, icon='hide'})
-
-    if i==1 then
-        btn['key'..i]:SetPoint(point, btn, x, y)
-    else
-        if find then
-            btn['key'..i]:SetPoint(point, btn['key'..(i-1)], 'TOPLEFT', 0, 0)
-        else
-            btn['key'..i]:SetPoint(point, btn['key'..(i-1)], 'TOPRIGHT', 0, 0)
-        end
-    end
-
-    btn['key'..i]:SetScript("OnMouseDown",function(self, d2)--发送链接
-            if d2=='LeftButton' then
-                WoWTools_ChatMixin:Chat(self.item, nil, nil)
-            else
-                WoWTools_ChatMixin:Chat(self.item, nil, true)
-            end
-    end)
-
-    btn['key'..i]:SetScript("OnEnter",function(self)
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:SetHyperlink(self.item)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE, WoWTools_DataMixin.Icon.left)
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.right)
-            GameTooltip:Show()
-    end)
-    btn['key'..i]:SetScript("OnLeave",function()
-            GameTooltip:Hide()
-    end)
-
-    btn['key'..i].bag=WoWTools_LabelMixin:Create(btn['key'..i])
-
-    if point:find('LEFT') then
-        btn['key'..i].bag:SetPoint('LEFT', btn['key'..i], 'RIGHT', 0, 0)
-    else
-        btn['key'..i].bag:SetPoint('RIGHT', btn['key'..i], 'LEFT', 0, 0)
-    end
-end
 
 
 
@@ -67,34 +13,6 @@ end
 
 
 
-local function getBagKey(frame, point, x, y, parent) --KEY链接
-    local find=point:find('LEFT')
-    local i=1
-    for bagID= Enum.BagIndex.Backpack, NUM_BAG_FRAMES do
-        for slotID=1, C_Container.GetContainerNumSlots(bagID) do
-            local icon, itemLink, itemID
-            local info= C_Container.GetContainerItemInfo(bagID, slotID)
-            if info then
-                icon=info.iconFileID
-                itemLink=info.hyperlink
-                itemID= info.itemID
-            end
-            if itemID and itemLink and C_Item.IsItemKeystoneByID(itemID) then
-
-                Create_Key(frame, point, x, y, parent, i, find)
-
-                frame['key'..i].item=itemLink
-                frame['key'..i].bag:SetText(itemLink)
-                frame['key'..i]:SetNormalTexture(icon)
-                if frame['key'..i] and frame==ChallengesFrame then
-                    frame['key'..i]:SetShown(not Save().hideTips)
-                end
-
-                i=i+1
-            end
-        end
-    end
-end
 
 
 
@@ -121,15 +39,12 @@ end
 --##################
 --挑战,钥石,插入,界面
 --##################
-local function UI_Party_Info(self)--队友位置
-    if Save().hideKeyUI then
-        return
-    end
-
+local function UI_Party_Info()--队友位置
     local UnitTab={}
     local name, uiMapID=WoWTools_MapMixin:GetUnit('player')
     local text
     local all= GetNumGroupMembers()
+    all= all==0 and 1 or all--没有队友, 1人
     for i=1, all do
         local unit='party'..i
         if i==all then
@@ -200,12 +115,8 @@ local function UI_Party_Info(self)--队友位置
 
         end
     end
-    if not self.partyLable then
-        self.partyLable=WoWTools_LabelMixin:Create(KeyFrame)--队伍信息
-        --self.party:SetPoint('BOTTOMLEFT', _G['MoveZoomInButtonPerChallengesKeystoneFrame'] or self, 'TOPLEFT')
-        self.partyLable:SetPoint('TOPLEFT', self, 'TOPRIGHT')
-    end
-    self.partyLable:SetText(text or '')
+
+    KeyFrame.PartyInfoText:SetText(text or '')
     WoWTools_UnitMixin:GetNotifyInspect(UnitTab)--取得装等
 end
 
@@ -257,7 +168,6 @@ local function Set_SlotKeystoneSay()
     end
     m=m..WoWTools_TimeMixin:SecondsToClock(timeLimit)
     WoWTools_ChatMixin:Chat(m, nil, nil)
-
 end
 
 
@@ -265,65 +175,34 @@ end
 
 
 
-local function Create_Buttons()--挑战,钥石,插入界面
-    if Save().hideKeyUI then
-        return
-    end
 
 
-    KeyFrame= CreateFrame('Frame', nil, ChallengesKeystoneFrame)
-    KeyFrame:SetPoint('TOPLEFT')
-    KeyFrame:SetSize(1,1)
-    KeyFrame:SetFrameStrata('HIGH')
-    KeyFrame:SetFrameLevel(7)
 
-    local ready = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--就绪
-    ready:SetText((WoWTools_DataMixin.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
-    ready:SetPoint('LEFT', ChallengesKeystoneFrame.StartButton, 'RIGHT',2, 0)
-    ready:SetSize(100,24)
-    ready:SetScript("OnMouseDown", DoReadyCheck)
 
-    local mark = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--标记
-    mark:SetText(WoWTools_DataMixin.Icon['TANK']..(WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon['HEALER'])
-    mark:SetPoint('RIGHT', ChallengesKeystoneFrame.StartButton, 'LEFT',-2, 0)
-    mark:SetSize(100,24)
-    mark:SetScript("OnMouseDown",function()
-        local n=GetNumGroupMembers()
-        for i=1,n  do
-            local u='party'..i
-            if i==n then u='player' end
-            if CanBeRaidTarget(u) then
-                local r=UnitGroupRolesAssigned(u)
-                local index=GetRaidTargetIndex(u)
-                if r=='TANK' then
-                    if index~=2 then SetRaidTarget(u, 2) end
-                elseif r=='HEALER' then
-                    if index~=1 then SetRaidTarget(u, 1) end
-                else
-                    if index and index>0 then SetRaidTarget(u, 0) end
-                end
-            end
-        end
-    end)
 
-     clear = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--清除KEY
-    clear:SetPoint('RIGHT', ChallengesKeystoneFrame, -15, -50)
-    clear:SetSize(70,24)
-    clear:SetText(WoWTools_DataMixin.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
-    clear:SetScript("OnMouseDown",function()
-        C_ChallengeMode.RemoveKeystone()
-        ChallengesKeystoneFrame:Reset()
-        ItemButtonUtil.CloseFilteredBags(ChallengesKeystoneFrame)
-        ClearCursor()
-    end)
 
-     ins = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--插入
-    ins:SetPoint('BOTTOMRIGHT', clear, 'TOPRIGHT', 0, 2)
-    ins:SetSize(70,24)
-    ins:SetText(WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-    ins:SetScript("OnMouseDown",function()
-        if UnitAffectingCombat('player') then
-            print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+
+
+
+
+
+
+
+
+local function Init_Buttons()--挑战,钥石,插入界面
+
+--插入, KEY
+    KeyFrame.InsetKeyButton = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--插入
+    KeyFrame.InsetKeyButton:SetPoint('RIGHT', ChallengesKeystoneFrame, -15, 0)
+    KeyFrame.InsetKeyButton:SetSize(70,24)
+    KeyFrame.InsetKeyButton:SetText(WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
+    KeyFrame.InsetKeyButton:SetScript("OnMouseDown",function()
+        if InCombatLockdown() then
+            print(
+                WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName,
+                '|cnRED_FONT_COLOR:',
+                WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
+            )
             return
         end
         ItemButtonUtil.OpenAndFilterBags(ChallengesKeystoneFrame)
@@ -347,6 +226,17 @@ local function Create_Buttons()--挑战,钥石,插入界面
 
 
 
+--清除, KEY
+    KeyFrame.ClearKeyButton = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--清除KEY
+    KeyFrame.ClearKeyButton:SetPoint('TOPRIGHT', KeyFrame.InsetKeyButton, 'BOTTOMRIGHT', 0, -4)
+    KeyFrame.ClearKeyButton:SetSize(70,24)
+    KeyFrame.ClearKeyButton:SetText(WoWTools_DataMixin.onlyChinese and '清除' or  SLASH_STOPWATCH_PARAM_STOP2)
+    KeyFrame.ClearKeyButton:SetScript("OnMouseDown",function()
+        C_ChallengeMode.RemoveKeystone()
+        ChallengesKeystoneFrame:Reset()
+        ItemButtonUtil.CloseFilteredBags(ChallengesKeystoneFrame)
+        ClearCursor()
+    end)
 
 
 
@@ -356,107 +246,140 @@ local function Create_Buttons()--挑战,钥石,插入界面
 
 
 
-    ChallengesKeystoneFrame:HookScript('OnShow', function(self)
-        if Save().hideKeyUI then
-            return
-        end
-
-        getBagKey(self, 'BOTTOMRIGHT', -15, 170, KeyFrame)--KEY链接
-
-        UI_Party_Info(self)
 
 
-        --地下城挑战，分数，超链接
-        local dungeonScore = C_ChallengeMode.GetOverallDungeonScore()--DungeonScoreInfoMixin:OnClick() Blizzard_ChallengesUI.lua
-        if dungeonScore and dungeonScore>0 then
-            local link = GetDungeonScoreLink(dungeonScore, UnitName("player"))
-            if not self.dungeonScoreLink then
-                self.dungeonScoreLink= WoWTools_LabelMixin:Create(KeyFrame, {mouse=true, size=16})
-                self.dungeonScoreLink:SetPoint('BOTTOMRIGHT', ChallengesKeystoneFrame, -15, 145)
-                self.dungeonScoreLink:SetScript('OnMouseDown', function(self3, d)
-                    if not self3.link then
-                        return
-                    end
-                    if d=='LeftButton' then
-                       WoWTools_ChatMixin:Chat(self3.link, nil, nil)
-                    elseif d=='RightButton' then
-                        WoWTools_ChatMixin:Chat(self3.link, nil, true)
-                        --if not ChatEdit_InsertLink(self3.link) then
-                        --ChatFrame_OpenChat(self3.link)
-                    end
-                    self3:SetAlpha(0.5)
-                end)
-                self.dungeonScoreLink:SetScript('OnEnter', function(self3)
-                    self3:SetAlpha(0.7)
-                    GameTooltip:SetOwner(self3, "ANCHOR_LEFT")
-                    GameTooltip:ClearLines()
-                    GameTooltip:AddLine(self3.link)
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE, WoWTools_DataMixin.Icon.left)
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.right)
-                    GameTooltip:Show()
-                end)
-                self.dungeonScoreLink:SetScript('OnLeave', function(self3)
-                    self3:SetAlpha(1)
-                    GameTooltip:Hide()
-                end)
-                self.dungeonScoreLink:SetScript('OnMouseUp', function(self3)
-                    self3:SetAlpha(0.7)
-                end)
-            end
-            self.dungeonScoreLink.link= link
-            self.dungeonScoreLink:SetText(WoWTools_ChallengeMixin:KeystoneScorsoColor(dungeonScore))
+
+--发送链接
+    KeyFrame.KeyButton= CreateFrame("ItemButton", nil, KeyFrame)-- WoWTools_ButtonMixin:Cbtn(KeyFrame)
+    KeyFrame.KeyButton:SetPoint('TOPRIGHT', KeyFrame.ClearKeyButton, 'BOTTOMRIGHT', 0, -4)
+    KeyFrame.KeyButton:SetScript("OnClick",function(self, d)
+        if d=='LeftButton' then
+            WoWTools_ChatMixin:Chat(self.item, nil, nil)
+        else
+            WoWTools_ChatMixin:Chat(self.item, nil, true)
         end
     end)
 
-    if ChallengesKeystoneFrame.DungeonName then
-        ChallengesKeystoneFrame.DungeonName:ClearAllPoints()
-        ChallengesKeystoneFrame.DungeonName:SetPoint('BOTTOMLEFT', ChallengesKeystoneFrame, 'BOTTOMLEFT', 15, 110)
-        ChallengesKeystoneFrame.DungeonName:SetJustifyH('LEFT')
-    end
-    if ChallengesKeystoneFrame.TimeLimit then
-        ChallengesKeystoneFrame.TimeLimit:ClearAllPoints()
-        ChallengesKeystoneFrame.TimeLimit:SetPoint('BOTTOMRIGHT', ChallengesKeystoneFrame, 'BOTTOMRIGHT', -15, 120)
-        ChallengesKeystoneFrame.TimeLimit:SetJustifyH('RIGHT')
-    end
-
-
-
-
---[[插入, KEY时, 说
-    local check= CreateFrame("CheckButton", nil, KeyFrame, "InterfaceOptionsCheckButtonTemplate")--插入, KEY时, 说
-    check:SetPoint('RIGHT', ins, 'LEFT')
-    check:SetChecked(Save().slotKeystoneSay)
-    check:SetScript('OnMouseDown', function()
-        Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
-        WoWTools_ChallengeMixin:Say_ChallengeComplete()
+    KeyFrame.KeyButton:SetScript("OnLeave", GameTooltip_Hide)
+    KeyFrame.KeyButton:SetScript("OnEnter",function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            WoWTools_SetTooltipMixin:Frame(self)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE, WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.right)
+            GameTooltip:Show()
     end)
-    check:SetScript('OnEnter', function(self)
+    KeyFrame.KeyButton.Text=WoWTools_LabelMixin:Create(KeyFrame.KeyButton)
+    KeyFrame.KeyButton.Text:SetPoint('RIGHT', KeyFrame.KeyButton, 'LEFT')
+    function KeyFrame.KeyButton:set_text()
+        local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
+        if info then
+            self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
+            self.Text:SetText(info.hyperlink)
+        end
+        self:SetShown(info and true or false)
+    end
+ 
+
+
+
+
+
+
+
+
+--地下城挑战，分数，超链接
+    KeyFrame.ScoreText= WoWTools_LabelMixin:Create(KeyFrame, {mouse=true, size=16})
+
+    KeyFrame.ScoreText:SetPoint('TOPRIGHT', KeyFrame.KeyButton, 'BOTTOMRIGHT', 0, -4)
+    KeyFrame.ScoreText:SetScript('OnMouseDown', function(self, d)
+        print('a', d, self.link)
+         if d=='LeftButton' then
+            WoWTools_ChatMixin:Chat(self.link, nil, nil)
+        else
+            WoWTools_ChatMixin:Chat(self.link, nil, true)
+        end
+        self:SetAlpha(0.3)
+    end)
+    KeyFrame.ScoreText:SetScript('OnEnter', function(self)
+        self:SetAlpha(0.7)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY))
+        WoWTools_SetTooltipMixin:Frame(self)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(1, WoWTools_DataMixin.onlyChinese and '插入' or  COMMUNITIES_ADD_DIALOG_INVITE_LINK_JOIN)
-        GameTooltip:AddDoubleLine(2, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE, WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
+        WoWTools_ChatMixin:Chat(self.dungeonScore, nil, nil)
+    end)
+    KeyFrame.ScoreText:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
+        GameTooltip:Hide()
     end)
-    check:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.5) end)
-]]
+    KeyFrame.ScoreText:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.7)
+    end)
+    function KeyFrame.ScoreText:set_text()
+        local dungeonScore = C_ChallengeMode.GetOverallDungeonScore() or 0--DungeonScoreInfoMixin:OnClick() Blizzard_ChallengesUI.lua
+        local link = GetDungeonScoreLink(dungeonScore, UnitName("player"))
+
+        self.dungeonScore= link
+        self:SetText((WoWTools_ChallengeMixin:KeystoneScorsoColor(dungeonScore) or '')..link)
+    end
+  
 
 
-    ChallengesKeystoneFrame:HookScript("OnUpdate", function (self, elapsed)--更新队伍数据
-        self.elapsed= (self.elapsed or 0.8) + elapsed
-        if self.elapsed > 0.8 then
-            self.elapsed=0
-            UI_Party_Info(self)
+
+
+
+
+
+
+
+--就绪
+    local ready = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--就绪
+    ready:SetText((WoWTools_DataMixin.onlyChinese and '就绪' or READY)..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+    ready:SetPoint('LEFT', ChallengesKeystoneFrame.StartButton, 'RIGHT',2, 0)
+    ready:SetSize(100,24)
+    ready:SetScript("OnMouseDown", DoReadyCheck)
+
+
+
+
+
+
+--标记
+    local mark = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--标记
+    mark:SetText(WoWTools_DataMixin.Icon['TANK']..(WoWTools_DataMixin.onlyChinese and '标记' or EVENTTRACE_MARKER)..WoWTools_DataMixin.Icon['HEALER'])
+    mark:SetPoint('RIGHT', ChallengesKeystoneFrame.StartButton, 'LEFT',-2, 0)
+    mark:SetSize(100,24)
+    mark:SetScript("OnMouseDown",function()
+        local n=GetNumGroupMembers()
+        for i=1,n  do
+            local u='party'..i
+            if i==n then u='player' end
+            if CanBeRaidTarget(u) then
+                local r=UnitGroupRolesAssigned(u)
+                local index=GetRaidTargetIndex(u)
+                if r=='TANK' then
+                    if index~=2 then SetRaidTarget(u, 2) end
+                elseif r=='HEALER' then
+                    if index~=1 then SetRaidTarget(u, 1) end
+                else
+                    if index and index>0 then SetRaidTarget(u, 0) end
+                end
+            end
         end
-        local inse= C_ChallengeMode.HasSlottedKeystone()
-        ins:SetEnabled(not inse)
-        clear:SetEnabled(inse)
     end)
 
 
+
+
+
+
+
+
+--倒计时7秒
     local countdown = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--倒计时7秒
     countdown:SetText((WoWTools_DataMixin.onlyChinese and '倒计时' or PLAYER_COUNTDOWN_BUTTON)..' 7')
     countdown:SetPoint('TOP', ChallengesKeystoneFrame, 'BOTTOM',100, 5)
@@ -465,6 +388,15 @@ local function Create_Buttons()--挑战,钥石,插入界面
         C_PartyInfo.DoCountdown(7)
     end)
 
+
+
+
+
+
+
+
+
+--停止， 倒计时
     local stop = CreateFrame("Button",nil, KeyFrame, 'UIPanelButtonTemplate')--倒计时7秒
     stop:SetText((WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..' 0')
     stop:SetPoint('TOP', ChallengesKeystoneFrame, 'BOTTOM',-100, 5)
@@ -483,11 +415,28 @@ local function Create_Buttons()--挑战,钥石,插入界面
         GameTooltip:Show()
     end)
 
-    KeyFrame:SetShown(not Save().hideKeyUI)
 
-    Create_Buttons= function()
-        KeyFrame:SetShown(not Save().hideKeyUI)
-    end
+
+
+
+
+
+
+
+--移动
+    ChallengesKeystoneFrame.DungeonName:ClearAllPoints()
+    ChallengesKeystoneFrame.DungeonName:SetPoint('BOTTOMLEFT', ChallengesKeystoneFrame, 'BOTTOMLEFT', 15, 110)
+    ChallengesKeystoneFrame.DungeonName:SetJustifyH('LEFT')
+
+    ChallengesKeystoneFrame.TimeLimit:ClearAllPoints()
+    ChallengesKeystoneFrame.TimeLimit:SetPoint('BOTTOMRIGHT', ChallengesKeystoneFrame, 'BOTTOMRIGHT', -15, 120)
+    ChallengesKeystoneFrame.TimeLimit:SetJustifyH('RIGHT')
+
+
+
+
+
+    Create_Buttons= function()end
 end
 
 
@@ -518,7 +467,7 @@ local function Init_Menu(_, root)
         return not Save().hideKeyUI
     end, function()
         Save().hideKeyUI= not Save().hideKeyUI and true or nil
-        Create_Buttons()
+        WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
     end)
 
 --说
@@ -535,8 +484,6 @@ local function Init_Menu(_, root)
         return Save().slotKeystoneSay
     end, function()
         Save().slotKeystoneSay= not Save().slotKeystoneSay and true or nil
-
-
     end)
 end
 
@@ -554,12 +501,69 @@ local function Init()
 
     btn:SetupMenu(Init_Menu)
 
+    KeyFrame= CreateFrame('Frame', nil, ChallengesKeystoneFrame.CloseButton)
+    KeyFrame:SetFrameLevel(ChallengesKeystoneFrame.CloseButton:GetFrameLevel()+1)
+    KeyFrame:SetPoint('TOPLEFT')
+    KeyFrame:SetSize(1,1)
+    KeyFrame:Hide()
+
+
+--队伍信息
+    KeyFrame.PartyInfoText=WoWTools_LabelMixin:Create(KeyFrame, {size=16})
+    KeyFrame.PartyInfoText:SetPoint('TOPLEFT', ChallengesKeystoneFrame, 'TOPRIGHT', 2, 0)
+
+
+    Init_Buttons()
+
+
+    KeyFrame:SetScript("OnUpdate", function (self, elapsed)--更新队伍数据
+        self.elapsed= (self.elapsed or 0.8) + elapsed
+        if self.elapsed > 0.8 then
+            self.elapsed=0
+            UI_Party_Info()
+        end
+
+        local has= C_ChallengeMode.HasSlottedKeystone()
+        self.InsetKeyButton:SetEnabled(not has)
+        self.ClearKeyButton:SetEnabled(has)
+    end)
+
+
+
+
+    KeyFrame:SetScript('OnHide', function(self)
+        self.elapsed=nil
+        self.KeyButton:Reset()
+        self.KeyButton.Text:SetText('')
+
+        self.ScoreText:SetText('')
+        self.ScoreText.dungeonScore=nil
+
+        self.PartyInfoText:SetText('')
+        self:UnregisterAllEvents()
+    end)
+
+    KeyFrame:SetScript('OnShow', function(self)
+        self.ScoreText:set_text()--地下城挑战，分数，超链接
+        self.KeyButton:set_text()--发送链接
+        self:RegisterEvent('BAG_UPDATE_DELAYED')
+    end)
+
+    KeyFrame:SetScript('OnEvent', function(self)
+        self.KeyButton:set_text()--发送链接
+    end)
+
+    function KeyFrame:settings()
+        KeyFrame:SetShown(not Save().hideKeyUI)
+    end
+
+--插入, KEY时, 说
     hooksecurefunc(ChallengesKeystoneFrame, 'OnKeystoneSlotted', Set_SlotKeystoneSay)--插入, KEY时, 说
 
-    Create_Buttons()
 
+    KeyFrame:settings()
     Init=function()
-        Create_Buttons()
+        KeyFrame:settings()
     end
 end
 

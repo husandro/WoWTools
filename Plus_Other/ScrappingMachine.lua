@@ -346,7 +346,7 @@ local function Init()
     end)
     ScrappingMachineFrame.addAllItem:SetScript('OnClick', function()
         local free= MaxNumeri-get_num_items()
-        if free==0 then
+        if free==0 or InCombatLockdown() then
             return
         end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
@@ -376,7 +376,7 @@ local function Init()
     end)
     ScrappingMachineFrame.addAllGem:SetScript('OnClick', function()
         local free= MaxNumeri- get_num_items()
-        if free==0 then
+        if free==0 or InCombatLockdown() then
             return
         end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do
@@ -408,7 +408,7 @@ local function Init()
 
     ScrappingMachineFrame.addAllEquip:SetScript('OnClick', function()
         local free= MaxNumeri-get_num_items()
-        if free==0 then
+        if free==0 or InCombatLockdown() then
             return
         end
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES+NUM_REAGENTBAG_FRAMES do

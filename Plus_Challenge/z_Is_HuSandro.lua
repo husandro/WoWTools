@@ -21,7 +21,7 @@ local function Init()
     PVEFrame:SetScript('OnShow', function(self)
         for index in pairs(panels) do
             PanelTemplates_ShowTab(self, index)
-        end	
+        end
 
         -- If timerunning enabled, hide PVP and M+, and re-anchor delves to Dungeons tab
         if self:TimerunningEnabled() then
@@ -125,7 +125,9 @@ local function Init()
 
     EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
         if arg1=='Blizzard_ChallengesUI' then
-            ChallengesKeystoneFrame:Show()
+            C_Timer.After(0.3, function()
+                ChallengesKeystoneFrame:Show()
+            end)
             EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
         end
     end)

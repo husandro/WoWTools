@@ -177,6 +177,10 @@ end
 --取出，物品
 
 function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onlyTab, checkBagFunc)
+    if InCombatLockdown() then
+        return
+    end
+    
     index= self:GetIndex(index)
 
     local _, isReagent, isAccount= WoWTools_BankMixin:GetActive(index)

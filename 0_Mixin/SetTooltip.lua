@@ -185,6 +185,109 @@ end
 
 
 
+--地下城挑战，分数，超链接
+local function Set_DungeonScore(self, link)
+    local splits  = StringSplitIntoTable(":", link)
+
+	--Bad Link, Return. 
+	if(not splits) then
+		return
+	end
+
+	local dungeonScore = tonumber(splits[2])
+	local playerName = splits[4]
+	local playerClass = splits[5]
+	local playerItemLevel = tonumber(splits[6])
+	local playerLevel = tonumber(splits[7])
+	local className, classFileName = GetClassInfo(playerClass)
+	local classColor = C_ClassColor.GetClassColor(classFileName)
+	local runsThisSeason = tonumber(splits[8])
+	local bestSeasonScore = tonumber(splits[9])
+	local bestSeasonNumber = tonumber(splits[10])
+
+	--Bad Link..
+	if(not playerName or not playerClass or not playerItemLevel or not playerLevel) then
+		return
+	end
+
+	--Bad Link..
+	if(not className or not classFileName or not classColor) then
+		return
+	end
+
+	GameTooltip_SetTitle(self, classColor:WrapTextInColorCode(playerName))
+	GameTooltip_AddColoredLine(self, format(
+        WoWTools_DataMixin.onlyChinese and '等级%d %s' or DUNGEON_SCORE_LINK_LEVEL_CLASS_FORMAT_STRING,
+        playerLevel, className
+    ), HIGHLIGHT_FONT_COLOR)
+	GameTooltip_AddNormalLine(self, format(
+        WoWTools_DataMixin.onlyChinese and '物品等级：|cffffffff%d|r' or DUNGEON_SCORE_LINK_ITEM_LEVEL,
+        playerItemLevel
+    ))
+
+	local color = C_ChallengeMode.GetDungeonScoreRarityColor(dungeonScore) or HIGHLIGHT_FONT_COLOR
+	GameTooltip_AddNormalLine(self, format(
+        WoWTools_DataMixin.onlyChinese and '史诗钥石评分：%s' or DUNGEON_SCORE_LINK_RATING,
+        color:WrapTextInColorCode(dungeonScore)
+    ))
+
+	GameTooltip_AddNormalLine(self, format(
+        WoWTools_DataMixin.onlyChinese and '本赛季尝试次数：|cffffffff%d|r' or DUNGEON_SCORE_LINK_RUNS_SEASON,
+        runsThisSeason
+    ))
+
+	if(bestSeasonScore ~= 0) then
+		local bestSeasonColor = C_ChallengeMode.GetDungeonScoreRarityColor(bestSeasonScore) or HIGHLIGHT_FONT_COLOR
+		GameTooltip_AddNormalLine(self, format(
+            WoWTools_DataMixin.onlyChinese and '之前的最高记录： %s|cff808080（第%d赛季）' or DUNGEON_SCORE_LINK_PREVIOUS_HIGH,
+            bestSeasonColor:WrapTextInColorCode(bestSeasonScore), bestSeasonNumber)
+        )
+	end
+	GameTooltip_AddBlankLineToTooltip(self)
+
+	local sortTable = { }
+    local DUNGEON_SCORE_LINK_INDEX_START = 11
+    local DUNGEON_SCORE_LINK_ITERATE = 3
+	for i = DUNGEON_SCORE_LINK_INDEX_START, (#splits), DUNGEON_SCORE_LINK_ITERATE do
+		local mapChallengeModeID = tonumber(splits[i])
+		local completedInTime = splits[i + 1] == "1"
+		local level = tonumber(splits[i + 2])
+		local mapName = C_ChallengeMode.GetMapUIInfo(mapChallengeModeID)
+
+		--If any of the maps don't exist.. this is a bad link
+		if(not mapName) then
+			return
+		end
+
+		table.insert(sortTable, {
+            mapName =WoWTools_TextMixin:CN(mapName),
+            completedInTime = completedInTime,
+            level = level or 0,
+        })
+	end
+
+	-- Sort Alphabetically. 
+	table.sort(sortTable, function(a, b)
+---@diagnostic disable-next-line: missing-return
+        strcmputf8i(a.mapName, b.mapName)
+    end)
+
+	for i = 1, #sortTable do
+		local textColor = sortTable[i].completedInTime and HIGHLIGHT_FONT_COLOR or GRAY_FONT_COLOR
+		GameTooltip_AddColoredDoubleLine(self,
+            format('%s', sortTable[i].mapName),
+            (sortTable[i].level > 0 and  DUNGEON_SCORE_LINK_TEXT2:format(sortTable[i].level) or DUNGEON_SCORE_LINK_NO_SCORE),
+            NORMAL_FONT_COLOR,
+            textColor
+        )
+	end
+end
+
+
+
+
+
+
 
 
 local function Add_Tooltip(tooltip, tip, data)
@@ -240,6 +343,8 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
     local specIndex= data.specIndex--天赋，专精
     local specID= data.specID
 
+    local dungeonScore= data.dungeonScore
+
     local addTooltip= data.tooltip--添加，提示
 
 
@@ -249,7 +354,7 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
     if hyperLink then
         if tooltip==BattlePetTooltip or hyperLink:find('Hbattlepet:%d+') then
             BattlePetToolTip_Show(BattlePetToolTip_UnpackBattlePetLink(hyperLink))
-            --BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink);
+            --BattlePetToolTip_ShowLink(itemKeyInfo.battlePetLink)
             Add_Tooltip(BattlePetTooltip, addTooltip, data)
             return
         else
@@ -306,6 +411,9 @@ function WoWTools_SetTooltipMixin:Setup(tooltip, data, frame)
 
     elseif specIndex or specID then
         Set_Specialization(tooltip, specIndex, specID)
+
+    elseif dungeonScore then
+        Set_DungeonScore(tooltip, dungeonScore)--地下城挑战，分数，超链接
     end
 
     Add_Tooltip(tooltip, addTooltip, data)
