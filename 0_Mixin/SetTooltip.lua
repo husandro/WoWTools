@@ -194,16 +194,16 @@ local function Set_DungeonScore(self, link)
 		return
 	end
 
-	local dungeonScore = tonumber(splits[2])
+	local dungeonScore = tonumber(splits[2]) or 0
 	local playerName = splits[4]
 	local playerClass = splits[5]
-	local playerItemLevel = tonumber(splits[6])
-	local playerLevel = tonumber(splits[7])
+	local playerItemLevel = tonumber(splits[6]) or 0
+	local playerLevel = tonumber(splits[7]) or 0
 	local className, classFileName = GetClassInfo(playerClass)
 	local classColor = C_ClassColor.GetClassColor(classFileName)
-	local runsThisSeason = tonumber(splits[8])
-	local bestSeasonScore = tonumber(splits[9])
-	local bestSeasonNumber = tonumber(splits[10])
+	local runsThisSeason = tonumber(splits[8]) or 0
+	local bestSeasonScore = tonumber(splits[9]) or 0
+	local bestSeasonNumber = tonumber(splits[10]) or 0
 
 	--Bad Link..
 	if(not playerName or not playerClass or not playerItemLevel or not playerLevel) then
@@ -221,13 +221,13 @@ local function Set_DungeonScore(self, link)
         playerLevel, className
     ), HIGHLIGHT_FONT_COLOR)
 	GameTooltip_AddNormalLine(self, format(
-        WoWTools_DataMixin.onlyChinese and '物品等级：|cffffffff%d|r' or DUNGEON_SCORE_LINK_ITEM_LEVEL,
+        WoWTools_DataMixin.onlyChinese and '物品等级：|A:charactercreate-icon-customize-body-selected:0:0|a|cffffffff%d|r' or DUNGEON_SCORE_LINK_ITEM_LEVEL,
         playerItemLevel
     ))
 
 	local color = C_ChallengeMode.GetDungeonScoreRarityColor(dungeonScore) or HIGHLIGHT_FONT_COLOR
 	GameTooltip_AddNormalLine(self, format(
-        WoWTools_DataMixin.onlyChinese and '史诗钥石评分：%s' or DUNGEON_SCORE_LINK_RATING,
+        WoWTools_DataMixin.onlyChinese and '史诗钥石评分：|A:recipetoast-icon-star:0:0|a%s' or DUNGEON_SCORE_LINK_RATING,
         color:WrapTextInColorCode(dungeonScore)
     ))
 
