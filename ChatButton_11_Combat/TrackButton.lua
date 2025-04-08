@@ -31,7 +31,7 @@ local EventTab={
     'PET_BATTLE_FINAL_ROUND',
     'PET_BATTLE_CAPTURED',
     'PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE',
-    'PLAYER_ENTERING_WORLD',--副本,杀怪,死亡
+    'LOADING_SCREEN_DISABLED',--副本,杀怪,死亡
     'PLAYER_REGEN_DISABLED',
     'PLAYER_REGEN_ENABLED',
 }
@@ -422,7 +422,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
         elseif event=='PET_BATTLE_CLOSE' then
             TrackButton_Frame_Init_Date(self)--初始, 数据
 
-        elseif event=='PLAYER_ENTERING_WORLD' then--副本,杀怪,死亡
+        elseif event=='LOADING_SCREEN_DISABLED' then--副本,杀怪,死亡
             TrackButton_Frame_Init_Date(self)--初始, 数据
             self:set_instance_evnet()
             IsInArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中

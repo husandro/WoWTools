@@ -259,7 +259,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
                     if find then
                         set_Button()
                         panel:RegisterEvent('CHALLENGE_MODE_START')
-                        panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+                        panel:RegisterEvent('LOADING_SCREEN_DISABLED')
                         panel:UnregisterEvent('ADDON_LOADED')
                     else
                         --check.text:SetTextColor(0.5,0.5,0.5)
@@ -277,7 +277,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, arg3)
             WoWToolsSave[addName]=Save
         end
 
-    elseif event=='CHALLENGE_MODE_START' or event=='PLAYER_ENTERING_WORLD' then
+    elseif event=='CHALLENGE_MODE_START' or event=='LOADING_SCREEN_DISABLED' then
         C_Timer.After(1, set_Button)
     end
 end)

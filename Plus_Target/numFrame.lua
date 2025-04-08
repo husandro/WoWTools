@@ -13,7 +13,7 @@ local EventTab= {
     'NAME_PLATE_UNIT_ADDED',
     'NAME_PLATE_UNIT_REMOVED',
     'UNIT_TARGET',
-    'PLAYER_ENTERING_WORLD'
+    'LOADING_SCREEN_DISABLED'
     --'FORBIDDEN_NAME_PLATE_UNIT_ADDED',
     --'FORBIDDEN_NAME_PLATE_UNIT_REMOVED',
 }
@@ -256,7 +256,7 @@ local function Init()
         end
 
         Frame:SetScript('OnEvent', function(self, event)
-            if event=='PLAYER_ENTERING_WORLD' then
+            if event=='LOADING_SCREEN_DISABLED' then
                 Get_IsInPvPZone(self)
             end
             Set_Text(self)

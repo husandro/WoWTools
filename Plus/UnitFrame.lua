@@ -221,7 +221,7 @@ end)
         self:SetShown(find)
     end
 
-    PlayerFrame.lootButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    PlayerFrame.lootButton:RegisterEvent('LOADING_SCREEN_DISABLED')
     PlayerFrame.lootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
     PlayerFrame.lootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
     PlayerFrame.lootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
@@ -386,9 +386,9 @@ end)
     PlayerFrame.instanceFrame.dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
     PlayerFrame.instanceFrame.raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
     PlayerFrame.instanceFrame.legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
-    PlayerFrame.instanceFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    PlayerFrame.instanceFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
     PlayerFrame.instanceFrame:SetScript('OnEvent', function(self, event, arg1)
-        if event=='PLAYER_ENTERING_WORLD' then
+        if event=='LOADING_SCREEN_DISABLED' then
             if IsInInstance() then
                 self:UnregisterEvent('CHAT_MSG_SYSTEM')--会出错误，冒险指南，打开世界BOSS
             else
@@ -455,7 +455,7 @@ end)
         self:SetShown(not IsInInstance() and text~=nil)
     end
 
-    PlayerFrame.keystoneFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    PlayerFrame.keystoneFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
     PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
     PlayerFrame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
     PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
@@ -497,7 +497,7 @@ end)
         GameTooltip:Show()
     end
     PlayerFrame.warModeButton:SetScript('OnEnter', PlayerFrame.warModeButton.set_tooltips)
-    PlayerFrame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    PlayerFrame.warModeButton:RegisterEvent('LOADING_SCREEN_DISABLED')
     PlayerFrame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
     PlayerFrame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
     function PlayerFrame.warModeButton:set_settings()
@@ -508,11 +508,7 @@ end)
         self:SetShown(isCan)
     end
     PlayerFrame.warModeButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' then
-            C_Timer.After(2, function() self:set_settings() end)
-        else
-            C_Timer.After(1, function() self:set_settings() end)
-        end
+        C_Timer.After(1, function() self:set_settings() end)
     end)
 
 
@@ -993,7 +989,7 @@ local function set_memberFrame(memberFrame)
     positionFrame.isPlayer= isPlayer
     positionFrame.Text:SetTextColor(r, g, b)
     positionFrame.unit= unit
-    positionFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    positionFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
     positionFrame:set_evnet()
     positionFrame:set_shown()
 
@@ -1048,13 +1044,13 @@ local function set_memberFrame(memberFrame)
             end
         end
         function deadFrame:set_event()
-            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('LOADING_SCREEN_DISABLED')
             self:RegisterEvent('CHALLENGE_MODE_START')
             self:RegisterUnitEvent('UNIT_FLAGS', unit)
             self:RegisterUnitEvent('UNIT_HEALTH', unit)
         end
         deadFrame:SetScript('OnEvent', function(self, event)
-            if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
+            if event=='LOADING_SCREEN_DISABLED' or event=='CHALLENGE_MODE_START' then
                 self.dead= 0
             end
             self:set_settings()

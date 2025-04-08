@@ -19,7 +19,7 @@ local function Init()
         local lv= C_MythicPlus.GetOwnedKeystoneLevel() or 0
         self.Text:SetText(lv>0 and lv or '')
     end
-    frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    frame:RegisterEvent('LOADING_SCREEN_DISABLED')
     frame:RegisterEvent('BAG_UPDATE_DELAYED')
     frame:SetScript('OnEvent', frame.settings)
 

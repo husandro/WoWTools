@@ -65,7 +65,7 @@ end
 local function Init_Frame()
     local frame= CreateFrame('Frame')
     frame:RegisterEvent('LFG_COMPLETION_REWARD')
-    frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    frame:RegisterEvent('LOADING_SCREEN_DISABLED')
     frame:RegisterEvent('ISLAND_COMPLETED')
     frame:RegisterEvent('PVP_MATCH_COMPLETE')
 
@@ -91,7 +91,7 @@ local function Init_Frame()
                     WoWTools_CooldownMixin:Setup(WoWTools_Mixin:StaticPopup_FindVisible('WoWTools_LFD_ExitIns') or StaticPopup1, nil, leaveSce, nil, true, true)--冷却条
             end
 
-        elseif event=='PLAYER_ENTERING_WORLD' then
+        elseif event=='LOADING_SCREEN_DISABLED' then
             if IsInInstance() then--自动离开
                 self:RegisterEvent('LOOT_CLOSED')
             else

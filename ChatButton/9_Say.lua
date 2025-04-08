@@ -95,7 +95,7 @@ end
 
 
 local function set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
-    if Save().inInstanceBubblesDisabled and not UnitAffectingCombat('player') then
+    if Save().inInstanceBubblesDisabled and not InCombatLockdown() then
         if IsInInstance() then
             C_CVar.SetCVar("chatBubbles", '0')
         else
@@ -558,7 +558,7 @@ panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
 panel:RegisterEvent("CHAT_MSG_WHISPER")
 panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
 panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 panel:RegisterEvent('CVAR_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
@@ -588,7 +588,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
 
-    elseif event== 'PLAYER_ENTERING_WORLD' then
+    elseif event== 'LOADING_SCREEN_DISABLED' then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
 
     elseif event=='CVAR_UPDATE' then

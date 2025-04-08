@@ -348,18 +348,18 @@ local function Init()
     end)
     SayButton:SetScript('OnShow', function(self)
         self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
         Settings(false)
     end)
 
     SayButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' then
-            C_Timer.After(2, function()
+        if event=='LOADING_SCREEN_DISABLED' then
+            if not Save().allShowEndKeystoneSay then
                 if not IsInInstance() then
                     self:Hide()
                 end
-            end)
-        else
+            end
+        elseif event=='BAG_UPDATE_DELAYED' then
             Settings(false)
         end
     end)

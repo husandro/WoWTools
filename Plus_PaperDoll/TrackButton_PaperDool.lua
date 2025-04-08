@@ -380,7 +380,7 @@ local function Init_TrackButton()--添加装备管理框
         self:RegisterEvent('EQUIPMENT_SETS_CHANGED')
         self:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
         self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
         self:RegisterEvent('READY_CHECK')
         self:RegisterEvent('PET_BATTLE_OPENING_DONE')
         self:RegisterEvent('PET_BATTLE_CLOSE')
@@ -477,7 +477,7 @@ local function Init_TrackButton()--添加装备管理框
     end)
 
     TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='READY_CHECK' then
+        if event=='LOADING_SCREEN_DISABLED' or event=='READY_CHECK' then
             self:tips_not_equipment()
 
         elseif event=='PET_BATTLE_CLOSE'

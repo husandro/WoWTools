@@ -173,7 +173,7 @@ local function Init()
 
     function Button:set_Event()
         self:UnregisterAllEvents()
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
         self:RegisterEvent('PLAYER_MAP_CHANGED')
         if self.uiMapID then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -199,7 +199,7 @@ local function Init()
         self.uiMapID= C_Map.GetBestMapForUnit('player')==2200 and true or false
     end
     Button:SetScript("OnEvent", function(self, event, arg1)
-        if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then
+        if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then
             self:get_UIMapID()
             if self:CanChangeAttribute() then
                 self:set_Event()

@@ -40,7 +40,7 @@ local function Init()
     frame:RegisterEvent('EQUIPMENT_SWAP_FINISHED')
     frame:RegisterEvent('PLAYER_EQUIPMENT_CHANGED')
     frame:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
-    frame:RegisterEvent('PLAYER_ENTERING_WORLD')
+    frame:RegisterEvent('LOADING_SCREEN_DISABLED')
     frame:SetScript('OnEvent', function(self) C_Timer.After(0.6, function() self:settings() end) end)
     --C_Timer.After(2, function() frame:settings() end)
 

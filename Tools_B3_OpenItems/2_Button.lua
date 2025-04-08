@@ -166,7 +166,7 @@ local function Init(OpenButton)
 
     OpenButton:SetScript('OnEvent', function(self, event)
 
-        if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
+        if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then--出进副本
             self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
             self:settings()
 
@@ -205,7 +205,7 @@ local function Init(OpenButton)
 
 
     OpenButton:RegisterEvent('PLAYER_MAP_CHANGED')
-    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')
+    OpenButton:RegisterEvent('LOADING_SCREEN_DISABLED')
 
     function OpenButton:settings()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())

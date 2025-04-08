@@ -254,7 +254,7 @@ local function Init()
 
     function button:set_event()
         self:UnregisterAllEvents()
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
         if WoWTools_MapMixin:IsInPvPArea() then
             return
         end
@@ -331,7 +331,7 @@ local function Init()
                 end
             end
 
-        elseif event=='PLAYER_REGEN_ENABLED' or event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_ENTERING_WORLD' then
+        elseif event=='PLAYER_REGEN_ENABLED' or event=='PLAYER_REGEN_DISABLED' or event=='LOADING_SCREEN_DISABLED' then
             self:set_event()
 
         elseif event=='NEW_PET_ADDED' then

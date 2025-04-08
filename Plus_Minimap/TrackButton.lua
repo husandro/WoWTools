@@ -1143,7 +1143,7 @@ local function Init_Button()
         self:UnregisterAllEvents()
 
         self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-        self:RegisterEvent('PLAYER_ENTERING_WORLD')
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
 
         if Save().vigentteButton and (not IsInInstance() or WoWTools_MapMixin:IsInDelve()) then
             self:RegisterEvent('PET_BATTLE_OPENING_DONE')
@@ -1162,7 +1162,7 @@ local function Init_Button()
     end
 
     TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then
+        if event=='LOADING_SCREEN_DISABLED' or event=='ZONE_CHANGED_NEW_AREA' then
             self.SpeakTextTab=nil
             self:set_event()
             self:set_shown()

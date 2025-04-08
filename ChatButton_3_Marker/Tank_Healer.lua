@@ -148,7 +148,7 @@ local function Init()
 
     function frame:set_Enabel_Event()
         if Save().autoSet then
-            self:RegisterEvent('PLAYER_ENTERING_WORLD')
+            self:RegisterEvent('LOADING_SCREEN_DISABLED')
             self:set_event()
         else
             self:UnregisterAllEvents()
@@ -157,7 +157,7 @@ local function Init()
     end
 
     frame:SetScript('OnEvent', function(self, event)
-        if event=='PLAYER_ENTERING_WORLD' then
+        if event=='LOADING_SCREEN_DISABLED' then
             self:set_event()
         else
             Set_TankHealer()--设置队伍标记

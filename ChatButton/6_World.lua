@@ -1171,7 +1171,7 @@ end
 --###########
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_ENTERING_WORLD')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -1192,7 +1192,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event== 'PLAYER_ENTERING_WORLD' then
+    elseif event== 'LOADING_SCREEN_DISABLED' then
         FilterTextTab={}--记录, 屏蔽内容
 
     end

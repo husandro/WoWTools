@@ -172,9 +172,9 @@ local function Init()
         self:set_Shown()
     end
 
-    button:RegisterEvent('PLAYER_ENTERING_WORLD')
+    button:RegisterEvent('LOADING_SCREEN_DISABLED')
     button:SetScript('OnEvent', function(self, event, _, arg2)
-        if event=='PLAYER_ENTERING_WORLD' then
+        if event=='LOADING_SCREEN_DISABLED' then
             self:set_Event()
         elseif event=='UNIT_AURA' then
             if arg2 and arg2.addedAuras then

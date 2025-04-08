@@ -73,14 +73,16 @@ local function Init(btn)
 
     btn:RegisterEvent('PLAYER_REGEN_DISABLED')
     btn:RegisterEvent('PLAYER_REGEN_ENABLED')
-    btn:RegisterEvent('PLAYER_ENTERING_WORLD')
+    --btn:RegisterEvent('PLAYER_ENTERING_WORLD')
     btn:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
 
     btn:SetScript("OnEvent", function(self, event)--提示，战斗中, 是否在战场
         if event=='PLAYER_REGEN_ENABLED' then
             self:set_Sacle_InCombat(false)--提示，战斗中
+            
         elseif event=='PLAYER_REGEN_DISABLED' then
             self:set_Sacle_InCombat(true)
+
         elseif event=='NEUTRAL_FACTION_SELECT_RESULT' then
             self:set_texture()
         end

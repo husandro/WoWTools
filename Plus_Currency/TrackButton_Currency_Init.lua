@@ -77,7 +77,7 @@ local function Init_TrackButton()
 			self:UnregisterAllEvents()
 		else
 			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-			self:RegisterEvent('PLAYER_ENTERING_WORLD')
+			self:RegisterEvent('LOADING_SCREEN_DISABLED')
 			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
 			self:RegisterEvent('PET_BATTLE_CLOSE')
 			self:RegisterUnitEvent('UNIT_EXITED_VEHICLE', 'player')

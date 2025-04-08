@@ -188,9 +188,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 Load_Addon= function()end
-                self:UnregisterEvent('PLAYER_ENTERING_WORLD')
-                self:UnregisterEvent('PLAYER_LEAVING_WORLD')
-                self:UnregisterEvent(event)
+                self:UnregisterAllEvents()
                 return
             end
 
