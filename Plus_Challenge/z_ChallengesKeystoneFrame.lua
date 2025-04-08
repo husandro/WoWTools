@@ -501,7 +501,7 @@ local function Init_Menu(self, root)
     function()
         return Save().affixSay
     end, function()
-        Save().slotKeysaffixSayoneSay= not Save().affixSay and true or nil
+        Save().affixSay= not Save().affixSay and true or nil
     end)
     sub:SetTooltip(function(tootip)
         tootip:AddLine('CHALLENGE_MODE_START')
