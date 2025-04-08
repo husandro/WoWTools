@@ -159,6 +159,7 @@ local function Init_Menu(self, root)
     end)
 
 --总是显示
+    sub:CreateDivider()
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
     function()
