@@ -17,7 +17,7 @@ local function Init_Menu(self, root)
         self:Settings(true)
         return MenuResponse.Open
     end)
-    
+
 --缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
         return Save().endKeystoneSayScale or 1
@@ -53,7 +53,7 @@ local function Init()
         isItem=true,
         name='WoWToolsPlusChallengesSayItemLinkButton',
     })
-   
+
     SayButton.Text= WoWTools_LabelMixin:Create(SayButton)
     SayButton.Text:SetPoint('BOTTOM', SayButton, 'TOP',0, 4)
 
@@ -176,4 +176,10 @@ end
 
 function WoWTools_ChallengeMixin:Say_ChallengeComplete()
     Init()
+end
+
+function WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(_, root)
+    if SayButton then
+        Init_Menu(SayButton, root)
+    end
 end

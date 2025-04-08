@@ -520,6 +520,8 @@ local function Init_Menu(self, root)
         tootip:AddLine('CHALLENGE_MODE_START')
     end)
     
+    WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(self, sub)
+
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ChallengeMixin.addName})
 end
@@ -613,6 +615,8 @@ function WoWTools_ChallengeMixin:ChallengesKeystoneFrame()
     Init()
 end
 
-function WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(frame, root)
-    Init_Menu(frame, root)
+function WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(_, root)
+    if KeyFrame then
+        Init_Menu(KeyFrame, root)
+    end
 end
