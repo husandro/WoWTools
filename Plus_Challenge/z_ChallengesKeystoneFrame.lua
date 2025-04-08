@@ -517,6 +517,7 @@ local function Init_Menu(self, root)
         WoWTools_ChallengeMixin:Say_ChallengeComplete()
     end)
     sub:SetTooltip(function(tootip)
+        tootip:AddLine('Button')
         tootip:AddLine('CHALLENGE_MODE_START')
     end)
     
