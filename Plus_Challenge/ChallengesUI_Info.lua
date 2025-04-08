@@ -575,14 +575,25 @@ local function Init()
         end
     end)
 
-    
+--替换，原生
+    ChallengesFrame.WeeklyInfo.Child.DungeonScoreInfo:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", 0, 0)
+        local desc= WoWTools_DataMixin.onlyChinese
+                    and '基于你在每个地下城的最佳成绩得出的总体评分。你可以通过更迅速地完成地下城或者完成更高难度的地下城来提高你的评分。|n|n提升你的史诗地下城评分后，你就能把你的地下城装备升级到最高等级。|n|cff1eff00<Shift+点击以链接到聊天栏>|r'
+                    or DUNGEON_SCORE_DESC
+        if not Save().hideIns then
+            WoWTools_SetTooltipMixin:Frame(self, GameTooltip, {dungeonScore= WoWTools_ChallengeMixin:GetDungeonScoreLink()})
+            GameTooltip:AddLine(' ')
+            GameTooltip_AddColoredLine(GameTooltip, desc, HIGHLIGHT_FONT_COLOR)
+        else
+            GameTooltip_SetTitle(GameTooltip, WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
+            GameTooltip_AddNormalLine(GameTooltip, desc)
+        end
+
+        GameTooltip:Show()
+    end)
+
     ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')--隐藏, 赛季最佳
-
-
-    --[[if C_AddOns.IsAddOnLoaded("AngryKeystones") then
-        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:ClearAllPoints()
-        ChallengesFrame.WeeklyInfo.Child.WeeklyChest.RunStatus:SetPoint('BOTTOM', ChallengesFrame.WeeklyInfo.Child.WeeklyChest, 0, -55)
-    end]]
 
     C_Timer.After(0.3, function()
         if ChallengesFrame.WeeklyInfo.Child.Description:IsShown() then

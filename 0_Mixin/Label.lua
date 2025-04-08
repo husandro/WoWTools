@@ -6,12 +6,12 @@ WoWTools_LabelMixin={}
 --[[
 SharedFonts.xml
 
-function WoWTools_LabelMixin:Size(lable, size)
-    if not lable or not size then
+function WoWTools_LabelMixin:Size(label, size)
+    if not label or not size then
         return
     end
-    local font, _, flag= lable:GetFont()
-    lable:SetFont(font, size, flag)
+    local font, _, flag= label:GetFont()
+    label:SetFont(font, size, flag)
 end
 ]]
 
@@ -91,7 +91,35 @@ end
 
 
 
-
+local function Create_Tooltip_Label(frame, index, point, line)
+    local label=WoWTools_LabelMixin:Create(frame, {mouse=true})
+    if index==1 then
+        if point then
+            label:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
+        else
+            label:SetPoint('TOPLEFT', frame)
+        end
+    else
+        label:SetPoint('TOPLEFT', frame.framGameTooltipLabels[index-1], 'BOTTOMLEFT',0, line and -6 or -2)
+    end
+    label:SetScript("OnEnter",function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        if self.type=='currency' then
+            GameTooltip:SetCurrencyByID(self.id)
+        elseif self.type=='item' then
+            GameTooltip:SetItemByID(self.id)
+        end
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    label:SetScript("OnLeave",function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    frame.framGameTooltipLabels[index]= label
+    return label
+end
 
 
 
@@ -108,6 +136,7 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
     local showName= settings.showName
     local showAll= settings.showAll
     local showTooltip= settings.showTooltip
+    local line= settings.line
 
     if isClear then
         for _, label in pairs(frame.framGameTooltipLabels or {}) do
@@ -121,8 +150,8 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
     local R={}
     for _, tab in pairs(WoWTools_DataMixin.ItemCurrencyTips) do
         local text=''
-        if tab.type=='currency' and tab.id and tab.id>0 then
-            local info, num, totale, percent, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(tab.id)
+        if tab.type=='currency' and tab.id and tab.id>0 then            
+            local info, num, _, percent, isMax= WoWTools_CurrencyMixin:GetInfo(tab.id)
             if info and num and (num>0 or showAll or tab.show) then
                 if isMax then
                     text= text..format('|cnRED_FONT_COLOR:%s|r', WoWTools_Mixin:MK(num,3))
@@ -164,43 +193,20 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
 
         for _, tab in pairs(R) do
             index= index +1
-            local lable= frame.framGameTooltipLabels[index]
-            if not lable then
-                lable=WoWTools_LabelMixin:Create(frame, {mouse=true})
-                if last then
-                    lable:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, tab.line and -6 or -2)
-                elseif point then
-                    lable:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
-                end
-                lable:SetScript("OnEnter",function(self)
-                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                    GameTooltip:ClearLines()
-                    if self.type=='currency' then
-                        GameTooltip:SetCurrencyByID(self.id)
-                    elseif self.type=='item' then
-                        GameTooltip:SetItemByID(self.id)
-                    end
-                    GameTooltip:Show()
-                    self:SetAlpha(0.5)
-                end)
-                lable:SetScript("OnLeave",function(self)
-                    GameTooltip:Hide()
-                    self:SetAlpha(1)
-                end)
-                frame.framGameTooltipLabels[index]= lable
-                last= lable
-            end
-            lable.id= tab.id
-            lable.type= tab.type
-            lable:SetText(tab.text)
+            local label= frame.framGameTooltipLabels[index] or Create_Tooltip_Label(frame, index, point, line)
+
+            last= label
+            label.id= tab.id
+            label.type= tab.type
+            label:SetText(tab.text)
         end
 
         for i= index+1, #frame.framGameTooltipLabels do
-            local lable= frame.framGameTooltipLabels[i]
-            if lable then
-                lable:SetText("")
-                lable.id= nil
-                lable.type= nil
+            local label= frame.framGameTooltipLabels[i]
+            if label then
+                label:SetText("")
+                label.id= nil
+                label.type= nil
             end
         end
         return last
@@ -213,7 +219,7 @@ end
 
 
 function WoWTools_LabelMixin:ItemCurrencyTips(settings)--物品升级界面，挑战界面，物品，货币提示
-    ItemCurrencyTips(settings or {})
+    return ItemCurrencyTips(settings or {})
 end
 
 

@@ -611,7 +611,8 @@ sub:CreateTitle(name)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示UI' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, 'UI'))
     end)
-
+--菜单
+    WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(self, sub)
 
 
 

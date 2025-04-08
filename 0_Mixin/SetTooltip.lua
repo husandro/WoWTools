@@ -185,6 +185,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 --地下城挑战，分数，超链接
 local function Set_DungeonScore(self, link)
     local splits  = StringSplitIntoTable(":", link)
@@ -195,12 +203,13 @@ local function Set_DungeonScore(self, link)
 	end
 
 	local dungeonScore = tonumber(splits[2]) or 0
+    local guid= splits[3]
 	local playerName = splits[4]
 	local playerClass = splits[5]
 	local playerItemLevel = tonumber(splits[6]) or 0
 	local playerLevel = tonumber(splits[7]) or 0
 	local className, classFileName = GetClassInfo(playerClass)
-	local classColor = C_ClassColor.GetClassColor(classFileName)
+	--local classColor = C_ClassColor.GetClassColor(classFileName)
 	local runsThisSeason = tonumber(splits[8]) or 0
 	local bestSeasonScore = tonumber(splits[9]) or 0
 	local bestSeasonNumber = tonumber(splits[10]) or 0
@@ -211,14 +220,16 @@ local function Set_DungeonScore(self, link)
 	end
 
 	--Bad Link..
-	if(not className or not classFileName or not classColor) then
+	if not className or not guid then
 		return
 	end
 
-	GameTooltip_SetTitle(self, classColor:WrapTextInColorCode(playerName))
+    GameTooltip_SetTitle(self, WoWTools_UnitMixin:GetPlayerInfo(nil, guid, playerName, {reName=true}))
+
+	--GameTooltip_SetTitle(self, classColor:WrapTextInColorCode(playerName))
 	GameTooltip_AddColoredLine(self, format(
         WoWTools_DataMixin.onlyChinese and '等级%d %s' or DUNGEON_SCORE_LINK_LEVEL_CLASS_FORMAT_STRING,
-        playerLevel, className
+        playerLevel, (WoWTools_UnitMixin:GetClassIcon(classFileName, nil, guid, false) or '').. WoWTools_TextMixin:CN(className)
     ), HIGHLIGHT_FONT_COLOR)
 	GameTooltip_AddNormalLine(self, format(
         WoWTools_DataMixin.onlyChinese and '物品等级：|A:charactercreate-icon-customize-body-selected:0:0|a|cffffffff%d|r' or DUNGEON_SCORE_LINK_ITEM_LEVEL,
@@ -232,7 +243,7 @@ local function Set_DungeonScore(self, link)
     ))
 
 	GameTooltip_AddNormalLine(self, format(
-        WoWTools_DataMixin.onlyChinese and '本赛季尝试次数：|cffffffff%d|r' or DUNGEON_SCORE_LINK_RUNS_SEASON,
+        WoWTools_DataMixin.onlyChinese and '本赛季尝试次数：|A:TaskPOI-IconSelect:0:0|a|cffffffff%d|r' or DUNGEON_SCORE_LINK_RUNS_SEASON,
         runsThisSeason
     ))
 

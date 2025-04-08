@@ -40,7 +40,7 @@ end
 
 
 local function Chat_Affix()
-    if not Save().slotKeystoneSay then
+    if not Save().affixSay then
         return
     end
 

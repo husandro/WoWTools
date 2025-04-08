@@ -5537,7 +5537,9 @@
         "RARE_BLUE_COLOR_CODE",
         "UNCOMMON_GREEN_COLOR_CODE",
         "LIGHTBLUE_FONT_COLOR_CODE",
-        "NPE_CONTROLS"
+        "NPE_CONTROLS",
+        "DUNGEON_SCORE_DESC",
+        "DUNGEON_SCORE_BREAKDOWN"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

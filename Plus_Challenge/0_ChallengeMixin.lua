@@ -349,4 +349,12 @@ function WoWTools_ChallengeMixin:KeystoneScorsoColor(score, texture, overall)--å
 end
 
 
-
+--[[
+ItemRef.lua
+DungeonScoreInfoMixin:OnClick()
+Blizzard_ChallengesUI.lua
+]]
+function WoWTools_ChallengeMixin:GetDungeonScoreLink()
+    local dungeonScore = C_ChallengeMode.GetOverallDungeonScore() or 0
+    return GetDungeonScoreLink(dungeonScore, UnitName("player"))
+end

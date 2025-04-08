@@ -18,7 +18,7 @@ local function Set_Text()--所有记录
         ..'|r/'..#C_MythicPlus.GetRunHistory(true, true)
     )
     w= Frame.history:GetStringWidth()
-    
+
 
 --本周记录
     local completed, all= 0,0
@@ -92,11 +92,11 @@ local function Set_Text()--所有记录
     Frame.loot:SetText(WoWTools_DataMixin.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
     w= math.max(Frame.loot:GetStringWidth(), w)
     w= math.max(Frame.week:GetStringWidth(), w)
-    
+
 --限制，显示等级
     local curLevel=0
     local curKey= C_MythicPlus.GetOwnedKeystoneLevel() or 0
-    
+
     for _, info in pairs(C_MythicPlus.GetRunHistory(false, true) or {}) do--本周记录
         if info.completed and info.level and info.level>curLevel then
             curLevel= info.level
@@ -104,7 +104,7 @@ local function Set_Text()--所有记录
     end
 
     curLevel= math.max(curLevel, curKey)
-    
+
     Frame.loot.curLevel= curLevel
     Frame.loot.curKey= curKey
 
@@ -123,8 +123,12 @@ local function Set_Text()--所有记录
     Frame.loot2:SetText(lootText or '')
     w= math.max(Frame.loot2:GetStringWidth(), w)
 
-    --物品，货币提示
-    local last= WoWTools_LabelMixin:ItemCurrencyTips({frame=Frame, point={'TOPLEFT', Frame.loot2, 'BOTTOMLEFT',0, -12}})
+--物品，货币提示
+    local last= WoWTools_LabelMixin:ItemCurrencyTips({
+        frame=Frame,
+        point={'TOPLEFT', Frame.loot2, 'BOTTOMLEFT',0, -12},
+        showAll=true,
+    })
     if last then
         w= math.max(last:GetStringWidth(), w)
     end
@@ -224,8 +228,22 @@ end
 
 
 local function Create_Label()
+    --[[Frame.dungeonScore= WoWTools_LabelMixin:Create(Frame, {mouse=true, size=14})
+    Frame.dungeonScore:SetPoint('TOPLEFT')
+    Frame.dungeonScore:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+        GameTooltip:Hide()
+    end)
+    Frame.dungeonScore:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        WoWTools_SetTooltipMixin:Frame(self, nil, {dungeonScore= WoWTools_ChallengeMixin:GetDungeonScoreLink()})  
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)]]
+
 --历史
     Frame.history= WoWTools_LabelMixin:Create(Frame, {mouse=true, size=14})
+    --Frame.history:SetPoint('TOPLEFT', Frame.dungeonScore, 'BOTTOMLEFT',0,-12)
     Frame.history:SetPoint('TOPLEFT')
     Frame.history:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
     Frame.history:SetScript('OnEnter', function(self)
@@ -238,7 +256,7 @@ local function Create_Label()
     Frame.week:SetPoint('TOPLEFT', Frame.history, 'BOTTOMLEFT')
 
 --难度 每周 掉落
-    Frame.loot= WoWTools_LabelMixin:Create(Frame, {mouse=true})--最右边, 数据
+    Frame.loot= WoWTools_LabelMixin:Create(Frame, {mouse=true, size=14})--最右边, 数据
     Frame.loot:SetPoint('TOPLEFT', Frame.week, 'BOTTOMLEFT',0,-12)
     function Frame.loot:get_Loot_itemLevel(level)
         --local col= self.curLevel==level and '|cff00ff00' or (select(2, math.modf(level/2))==0 and '|cffff8200') or '|cffffffff'
