@@ -32,7 +32,8 @@ local function Init_Menu(self, root)
     function()
         self:Hide()
     end)
-    WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(self, sub)
+
+    --WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(self, sub)
 end
 
 
@@ -180,6 +181,6 @@ end
 
 function WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(_, root)
     if SayButton then
-        Init_Menu(SayButton, root)
+       -- Init_Menu(SayButton, root)
     end
 end

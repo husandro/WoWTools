@@ -279,7 +279,7 @@ local function Set_DungeonScore(self, link)
 
 	-- Sort Alphabetically. 
 	table.sort(sortTable, function(a, b)
----@diagnostic disable-next-line: missing-return
+---@diagnostic disable-next-line: missing-return, discard-returns
         strcmputf8i(a.mapName, b.mapName)
     end)
 
