@@ -143,11 +143,14 @@ end
 
 local IsInCombat
 local function Is_Check()
+    if not ChallengesFrame or not ChallengesFrame:IsVisible() then
+        return
+    end
     if InCombatLockdown() then
         if not IsInCombat then
             IsInCombat= true
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
-                if ChallengesFrame and ChallengesFrame:IsVisible() and IsInCombat then
+                if IsInCombat then
                     Set_Update()
                 end
                 IsInCombat= nil

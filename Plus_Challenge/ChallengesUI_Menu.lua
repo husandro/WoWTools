@@ -334,9 +334,9 @@ local function Init_Menu(self, root)
 
 
 --公会挑战，内侧，右上角
-
+    local isInGuild= IsInGuild()
     name= '|A:communities-guildbanner-background:0:0|a'
-        ..(IsInGuild() and '' or '|cff828282')
+        ..(isInGuild and '' or '|cff828282')
         ..(WoWTools_DataMixin.onlyChinese and '公会挑战' or GUILD_CHALLENGE_LABEL)
     sub= root:CreateCheckbox(
         name,
@@ -346,7 +346,11 @@ local function Init_Menu(self, root)
         Save().hideGuild= not Save().hideGuild and true or nil
         WoWTools_ChallengeMixin:ChallengesUI_Guild()
     end)
-
+    sub2:SetTooltip(function(tooltip)
+        if not isInGuild then
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '无公会' or ERR_GUILD_PLAYER_NOT_IN_GUILD)
+        end
+    end)
 --X
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {

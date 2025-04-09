@@ -14,21 +14,24 @@ local SayButton
 
 local function Settings(isSay, sayType)
     local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
-    if bagID and slotID then
-        SayButton:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
-        SayButton:SetItemButtonCount(C_MythicPlus.GetOwnedKeystoneLevel())
-    else
-        SayButton:Reset()
-        local icon = GetItemButtonIconTexture(SayButton)
-        if icon then
-            icon:SetAtlas(WoWTools_DataMixin.Icon.icon)
+
+    if SayButton then
+        if bagID and slotID then
+            SayButton:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
+            SayButton:SetItemButtonCount(C_MythicPlus.GetOwnedKeystoneLevel())
+        else
+            SayButton:Reset()
+            local icon = GetItemButtonIconTexture(SayButton)
+            if icon then
+                icon:SetAtlas(WoWTools_DataMixin.Icon.icon)
+            end
         end
+
+        SayButton.Text:SetText(info and info.hyperlink
+            or ('|cff828282'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or PLAYER_DIFFICULTY_MYTHIC_PLUS))
+        )
     end
-
-    SayButton.Text:SetText(info and info.hyperlink
-        or ('|cff828282'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or PLAYER_DIFFICULTY_MYTHIC_PLUS))
-    )
-
+    
     if not isSay or not info or not info.hyperlink then
         return
     end
@@ -176,9 +179,33 @@ local function Init_Menu(self, root)
         self:set_scale()
     end)
 
+--FrameStrata
+    sub2=WoWTools_MenuMixin:FrameStrata(sub, function(data)
+        return self:GetFrameStrata()==data
+    end, function(data)
+        Save().endeystoneSayStrata= data
+        self:set_scale()
+    end)
+
+--插入史诗钥石，打开界面
+    sub:CreateDivider()
+    sub2=sub:CreateButton(
+        '|A:ChallengeMode-KeystoneSlotFrame:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '插入史诗钥石' or CHALLENGE_MODE_INSERT_KEYSTONE),
+    function()
+        if not ChallengesKeystoneFrame then
+            ChallengeMode_LoadUI()
+        end
+        ChallengesKeystoneFrame:SetShown(not ChallengesKeystoneFrame:IsShown())
+        return MenuResponse.Open
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示UI' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, 'UI'))
+    end)
+
 --显示/隐藏
     sub:CreateDivider()
-    sub=sub:CreateButton(
+    sub:CreateButton(
         self:IsShown()
         and (WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
         or (WoWTools_DataMixin.onlyChinese and '显示' or SHOW),
@@ -290,7 +317,6 @@ local function Init()
     SayButton:SetMovable(true)
     SayButton:RegisterForDrag("RightButton")
     SayButton:SetClampedToScreen(true)
-    SayButton:SetFrameStrata('HIGH')
 
     SayButton:SetScript("OnDragStart", function(self,d )
         if d=='RightButton' and IsAltKeyDown() then
@@ -339,6 +365,7 @@ local function Init()
     end
     function SayButton:set_scale()
         self:SetScale(Save().endKeystoneSayScale or 1)
+        self:SetFrameStrata(Save().endeystoneSayStrata or 'MEDIUM')
     end
 
 
@@ -348,16 +375,16 @@ local function Init()
     end)
     SayButton:SetScript('OnShow', function(self)
         self:RegisterEvent('BAG_UPDATE_DELAYED')
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        if not Save().allShowEndKeystoneSay then
+            self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        end
         Settings(false)
     end)
 
     SayButton:SetScript('OnEvent', function(self, event)
         if event=='LOADING_SCREEN_DISABLED' then
-            if not Save().allShowEndKeystoneSay then
-                if not IsInInstance() then
-                    self:Hide()
-                end
+            if not IsInInstance() then
+                self:Hide()
             end
         elseif event=='BAG_UPDATE_DELAYED' then
             Settings(false)
