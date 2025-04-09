@@ -266,7 +266,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
     KeyFrame.ScoreButton:SetScript('OnEnter', function(self)
         self:SetAlpha(0.7)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        WoWTools_SetTooltipMixin:Frame(self, nil, {dungeonScore= WoWTools_ChallengeMixin:GetDungeonScoreLink()})
+        WoWTools_SetTooltipMixin:Frame(self, nil, {dungeonScore=true})
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>'..WoWTools_DataMixin.Icon.left..'|A:transmog-icon-chat:0:0|a')
         GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>'..WoWTools_DataMixin.Icon.right)
@@ -293,7 +293,10 @@ local function Init_Buttons()--挑战,钥石,插入界面
         if d=='LeftButton' then
             WoWTools_ChatMixin:Chat(self.item, nil, nil)
         else
-            WoWTools_ChatMixin:Chat(self.item, nil, true)
+            --WoWTools_ChatMixin:Chat(self.item, nil, true)
+            MenuUtil.CreateContextMenu(self, function(...)
+                WoWTools_ChallengeMixin:Say_Menu(...)
+            end)
         end
     end)
 
@@ -303,8 +306,9 @@ local function Init_Buttons()--挑战,钥石,插入界面
             GameTooltip:ClearLines()
             WoWTools_SetTooltipMixin:Frame(self)
             GameTooltip:AddLine(' ')
-            GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>'..WoWTools_DataMixin.Icon.left)
-            GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>'..WoWTools_DataMixin.Icon.right)
+            GameTooltip:AddDoubleLine(' ', '|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE)..'>'..WoWTools_DataMixin.Icon.left)
+            GameTooltip:AddDoubleLine(' ', (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right)
+          --  GameTooltip:AddLine('|cnGREEN_FONT_COLOR:<'..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT)..'>'..WoWTools_DataMixin.Icon.right)
             GameTooltip:Show()
     end)
     KeyFrame.KeyButton.Text=WoWTools_LabelMixin:Create(KeyFrame.KeyButton, {size=14})

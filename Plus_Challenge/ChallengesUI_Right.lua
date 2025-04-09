@@ -133,6 +133,7 @@ local function Set_Text()--所有记录
         point={'TOPLEFT', Frame.loot2, 'BOTTOMLEFT',0, -12},
         showAll=true,
         showName=true,
+        size=14,
     })
     if last then
         w= math.max(last:GetStringWidth(), w)

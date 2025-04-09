@@ -202,6 +202,43 @@ local function Say_Menu(_, root)
         return MenuResponse.Open
     end)
     Set_Say_Menu_Tooltip(sub)
+
+--发送信息
+    root:CreateButton(
+        (isFind and '' or '|cff828282')
+        ..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE),
+    function()
+        local info= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
+        if info and info.hyperlink then
+            WoWTools_ChatMixin:Chat(info.hyperlink, nil, nil)
+        end
+        return MenuResponse.Open
+    end)
+
+--发送信息
+    root:CreateButton(
+        (isFind and '' or '|cff828282')
+        ..(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT),
+    function()
+        local info= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
+        if info and info.hyperlink then
+            WoWTools_ChatMixin:Chat(info.hyperlink, nil, true)
+        end
+        return MenuResponse.Open
+    end)
+
+--史诗钥石评分
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE,
+    function()
+        local link= WoWTools_ChallengeMixin:GetDungeonScoreLink()
+        WoWTools_ChatMixin:Chat(link, nil, nil)
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        WoWTools_SetTooltipMixin:Setup(tooltip, {dungeonScore=true})
+    end)
+    
 end
 
 
@@ -231,7 +268,7 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {
         name=WoWTools_ChallengeMixin.addName,
-        name2='|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'}
+        name2='|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)}
     )
 
 --总是显示
@@ -424,5 +461,5 @@ function WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(_, root)
 end
 
 function WoWTools_ChallengeMixin:Say_Menu(...)
-    Init_Menu(...)
+    Say_Menu(...)
 end

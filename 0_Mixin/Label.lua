@@ -91,8 +91,8 @@ end
 
 
 
-local function Create_Tooltip_Label(frame, index, point, line)
-    local label=WoWTools_LabelMixin:Create(frame, {mouse=true})
+local function Create_Tooltip_Label(frame, index, point, line, size)
+    local label=WoWTools_LabelMixin:Create(frame, {mouse=true, size=size})
     if index==1 then
         if point then
             label:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
@@ -148,7 +148,7 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
     local showAll= settings.showAll
     local showTooltip= settings.showTooltip
     local line= settings.line
-
+    local size= settings.size
 
 
     local R={}
@@ -209,7 +209,7 @@ local function ItemCurrencyTips(settings)--物品升级界面，挑战界面，�
 
         for _, tab in pairs(R) do
             index= index +1
-            local label= frame.framGameTooltipLabels[index] or Create_Tooltip_Label(frame, index, point, line)
+            local label= frame.framGameTooltipLabels[index] or Create_Tooltip_Label(frame, index, point, line, size)
 
             last= label
             label.id= tab.id

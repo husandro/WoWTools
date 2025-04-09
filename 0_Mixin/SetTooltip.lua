@@ -194,8 +194,10 @@ end
 
 
 --地下城挑战，分数，超链接
-local function Set_DungeonScore(self, link)
-    local splits  = StringSplitIntoTable(":", link)
+local function Set_DungeonScore(self, dungeonScoreLink)
+    dungeonScoreLink= dungeonScoreLink==true and WoWTools_ChallengeMixin:GetDungeonScoreLink() or dungeonScoreLink
+
+    local splits= StringSplitIntoTable(":", dungeonScoreLink)
 
 	--Bad Link, Return. 
 	if(not splits) then
