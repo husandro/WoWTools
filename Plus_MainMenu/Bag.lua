@@ -65,18 +65,21 @@ local function Init()
         if numPlayer>0 then
             table.sort(tab, function(a,b) return a.num>b.num end)
 
+            local notIsShiftkeyDown= not IsShiftKeyDown()
             for index, info in pairs(tab) do
                 GameTooltip:AddDoubleLine(
                     WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true}),
                     C_CurrencyInfo.GetCoinTextureString(info.num)
                 )
-                if index>4 then
+                if index>=3 and notIsShiftkeyDown then
                     break
                 end
             end
 
+            local left= numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
             GameTooltip:AddDoubleLine(
-                '|cnGREEN_FONT_COLOR:'..numPlayer..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER),
+                numPlayer>3 and notIsShiftkeyDown and '|cnGREEN_FONT_COLOR:<|A:NPE_Icon:0:0|aShift+'..left..'>' or
+                '|cnGREEN_FONT_COLOR:'..left,
                 --(WoWTools_DataMixin.onlyChinese and '总计' or TOTAL)
                 WoWTools_DataMixin.Icon.wow2..'|cnGREEN_FONT_COLOR:'..(allMoney >=10000 and WoWTools_Mixin:MK(allMoney/10000, 3)..'|A:Coin-Gold:0:0|a' or C_CurrencyInfo.GetCoinTextureString(allMoney))
             )
@@ -116,7 +119,7 @@ local function Init()
                     index='|cffff00ff'..(i+1)..'|r',
                     icon=icon,
                     num=numSlots,
-                    freeSlots= freeSlots,
+                    freeSlots= (freeSlots==0 and '|cff828282' or '|cnGREEN_FONT_COLOR:')..freeSlots..'|r',
                     percent= format('%i%%', freeSlots/numSlots*100)
                 })
                     --num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})

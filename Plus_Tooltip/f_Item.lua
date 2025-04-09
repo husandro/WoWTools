@@ -164,7 +164,7 @@ local function Set_keystonee(tooltip)
         )
         if index>2 and not IsShiftKeyDown() then
             if num>index then
-                tooltip:AddLine('|cnGREEN_FONT_COLOR:<Shift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..num..'>')
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:<|A:NPE_Icon:0:0|aShift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..num..'>')
             end
             break
         end
@@ -251,7 +251,7 @@ local function Set_Item_Num(tooltip, itemID)
 
             if index>2 and not IsShiftKeyDown() then
                 if numPlayer>index then
-                    tooltip:AddLine('|cnGREEN_FONT_COLOR:<Shift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..'>')
+                    tooltip:AddLine('|cnGREEN_FONT_COLOR:<|A:NPE_Icon:0:0|aShift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..'>')
                 end
                 break
             end

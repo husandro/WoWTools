@@ -119,17 +119,11 @@ local function Init()
     button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().point={self:GetPoint(1)}
-            Save().point[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
+        Save().point={self:GetPoint(1)}
+        Save().point[2]=nil
+        if not InCombatLockdown() then
+            self:Raise()
         end
-        self:Raise()
     end)
 
 
