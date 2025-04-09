@@ -163,7 +163,9 @@ local function Init()
 
     btn:SetScript('OnMouseDown', function(self)
         if not IsModifierKeyDown() then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
+            end)
         end
         self:set_tooltip()
     end)

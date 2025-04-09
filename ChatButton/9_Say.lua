@@ -511,7 +511,9 @@ local function Init()
             WoWTools_ChatMixin:Say(Save().type, name, wow)
 
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
             GameTooltip:Hide()
         end
     end)]]

@@ -311,7 +311,9 @@ local function Init()
         GameTooltip:Show()
     end)
     Button:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
     end)
 
 

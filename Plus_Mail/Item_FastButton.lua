@@ -501,7 +501,9 @@ local function Init()
         end
     end)
     fastButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
     end)
 
     fastButton:set_scale()

@@ -387,7 +387,9 @@ local function Init(isShow)
             if IsAltKeyDown() then
                 SetCursor('UI_MOVE_CURSOR')
             else
-                MenuUtil.CreateContextMenu(self, Init_Menu)
+                MenuUtil.CreateContextMenu(self, function(...)
+                    Init_Menu(...)
+                end)
             end
         elseif d=='LeftButton' then--显示，隐藏
             Save().TypeButton.hideFrame= not Save().TypeButton.hideFrame and true or nil

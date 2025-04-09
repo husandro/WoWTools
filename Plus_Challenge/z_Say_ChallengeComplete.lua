@@ -31,7 +31,7 @@ local function Settings(isSay, sayType)
             or ('|cff828282'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or PLAYER_DIFFICULTY_MYTHIC_PLUS))
         )
     end
-    
+
     if not isSay or not info or not info.hyperlink then
         return
     end
@@ -122,6 +122,95 @@ end
 
 
 
+
+
+local function Say_Menu(_, root)
+    local sub, sub2
+
+    local isFind= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
+
+    local function Set_Say_Menu_Tooltip(f)
+        f:SetTooltip(function(tooltip)
+            tooltip:AddLine(Save().EndKeystoneSayText or ('|cff828282'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)))
+        end)
+    end
+
+    sub=root:CreateButton(
+        (isFind and '' or '|cff828282')
+        ..('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY)),
+    function()
+        Settings(true, nil)
+        return MenuResponse.Open
+    end)
+    Set_Say_Menu_Tooltip(sub)
+
+--修改
+    sub2=sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
+    function()
+        Edit_Say_Text()
+        return MenuResponse.Open
+    end)
+    Set_Say_Menu_Tooltip(sub2)
+
+
+    local isRaid= IsInRaid()
+    local isParty= not isRaid and IsInGroup()
+    local isGuild= IsInGuild()
+--目标
+    root:CreateDivider()
+    local target
+    if UnitExists('target') and UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
+        target= WoWTools_UnitMixin:GetPlayerInfo('target', nil, nil, {reName=true, reRealm=false})
+        target= target~='' and target or nil
+    end
+    sub=root:CreateButton(
+        (isFind and target and '' or '|cff828282')
+        .. (target or (WoWTools_DataMixin.onlyChinese and '目标' or TARGET)),
+    function()
+        Settings(true, 'WHISPER')
+        return MenuResponse.Open
+    end)
+    Set_Say_Menu_Tooltip(sub)
+
+    --小队
+    sub=root:CreateButton(
+        (isFind and isParty and '' or '|cff828282')
+        ..(WoWTools_DataMixin.onlyChinese and '小队' or CHAT_MSG_PARTY),
+    function()
+        Settings(true, 'PARTY')
+        return MenuResponse.Open
+    end)
+    Set_Say_Menu_Tooltip(sub)
+
+    --团队
+    sub=root:CreateButton(
+        (isFind and isRaid and '' or '|cff828282')
+        ..(WoWTools_DataMixin.onlyChinese and '团队' or RAID),
+    function()
+        Settings(true, 'RAID')
+        return MenuResponse.Open
+    end)
+    Set_Say_Menu_Tooltip(sub)
+
+    --公会
+    sub=root:CreateButton(
+        (isFind and isGuild and '' or '|cff828282')
+        ..(WoWTools_DataMixin.onlyChinese and '公会' or GUILD),
+    function()
+        Settings(true, 'GUILD')
+        return MenuResponse.Open
+    end)
+    Set_Say_Menu_Tooltip(sub)
+end
+
+
+
+
+
+
+
+
 local function Init_Menu(self, root)
     if not self then
         root:CreateButton(
@@ -135,34 +224,17 @@ local function Init_Menu(self, root)
     end
 
     local sub, sub2
-    local isFind= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
-    local isRaid= IsInRaid()
-    local isParty= not isRaid and IsInGroup()
-    local isGuild= IsInGuild()
 
-    sub=root:CreateButton(
-        (isFind and '' or '|cff828282')
-        ..('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.onlyChinese and '说' or SAY)),
-    function()
-        Settings(true, nil)
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().EndKeystoneSayText, nil, nil, nil, true)
-    end)
+    Say_Menu(self, root)
 
---修改
-    sub2=sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
-    function()
-        Edit_Say_Text()
-    end)
-    sub2:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().EndKeystoneSayText or ('|cff828282'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)))
-    end)
+--打开选项界面
+    root:CreateDivider()
+    sub= WoWTools_MenuMixin:OpenOptions(root, {
+        name=WoWTools_ChallengeMixin.addName,
+        name2='|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'}
+    )
 
 --总是显示
-    sub:CreateDivider()
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '总是显示' or BATTLEFIELD_MINIMAP_SHOW_ALWAYS,
     function()
@@ -212,74 +284,6 @@ local function Init_Menu(self, root)
     function()
         self:SetShown(not self:IsShown())
     end)
-
-
-
-
-
-
-
---目标
-    root:CreateDivider()
-    local target
-    if UnitExists('target') and UnitIsPlayer('target') and UnitIsFriend('target', 'player') then
-        target= WoWTools_UnitMixin:GetPlayerInfo('target', nil, nil, {reName=true, reRealm=false})
-        target= target~='' and target or nil
-    end
-    sub=root:CreateButton(
-        (isFind and target and '' or '|cff828282')
-        .. (target or (WoWTools_DataMixin.onlyChinese and '目标' or TARGET)),
-    function()
-        Settings(true, 'WHISPER')
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().EndKeystoneSayText, nil, nil, nil, true)
-    end)
-
---小队
-    sub=root:CreateButton(
-        (isFind and isParty and '' or '|cff828282')
-        ..(WoWTools_DataMixin.onlyChinese and '小队' or CHAT_MSG_PARTY),
-    function()
-        Settings(true, 'PARTY')
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().EndKeystoneSayText, nil, nil, nil, true)
-    end)
-
---团队
-    sub=root:CreateButton(
-        (isFind and isRaid and '' or '|cff828282')
-        ..(WoWTools_DataMixin.onlyChinese and '团队' or RAID),
-    function()
-        Settings(true, 'RAID')
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().EndKeystoneSayText, nil, nil, nil, true)
-    end)
-
---公会
-    sub=root:CreateButton(
-        (isFind and isGuild and '' or '|cff828282')
-        ..(WoWTools_DataMixin.onlyChinese and '公会' or GUILD),
-    function()
-        Settings(true, 'GUILD')
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function (tooltip)
-        tooltip:AddLine(Save().EndKeystoneSayText, nil, nil, nil, true)
-    end)
-
-
---打开选项界面
-    root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {
-        name=WoWTools_ChallengeMixin.addName,
-        name2='|A:UI-HUD-MicroMenu-Groupfinder-Mouseover:0:0|a'}
-    )
 end
 
 
@@ -310,7 +314,6 @@ local function Init()
 
     SayButton.Text= WoWTools_LabelMixin:Create(SayButton)
     SayButton.Text:SetPoint('BOTTOM', SayButton, 'TOP',0, 4)
-
 
     SayButton:Hide()
 
@@ -418,4 +421,8 @@ end
 
 function WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(_, root)
     Init_Menu(SayButton, root)
+end
+
+function WoWTools_ChallengeMixin:Say_Menu(...)
+    Init_Menu(...)
 end

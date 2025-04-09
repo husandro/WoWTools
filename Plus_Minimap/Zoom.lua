@@ -126,12 +126,16 @@ end
 local function Init()
     Minimap.ZoomIn:HookScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end
     end)
     Minimap.ZoomOut:HookScript('OnMouseDown', function(self, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end
     end)
 

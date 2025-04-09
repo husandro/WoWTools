@@ -240,7 +240,9 @@ local function Init_All_Flyout()
         btn:SetPoint('TOPLEFT', 22, y)
 
         btn:SetScript('OnClick', function(self)
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end)
 
         btn:SetScript('OnLeave', GameTooltip_Hide)-- function(self) self:SetAlpha(isKnown and 0.1 or 0.5) GameTooltip:Hide() end)

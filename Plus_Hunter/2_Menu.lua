@@ -144,7 +144,9 @@ local function Init()
     btn:SetScript('OnEnter', btn.set_tooltips)
 
     btn:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
     end)
 
     btn:EnableMouseWheel(true)

@@ -154,7 +154,9 @@ local function SetupButton(frame, tab)
 --菜单
     btn:SetScript('OnMouseDown', function(self, d)
         if d=='RightButton' and not IsModifierKeyDown() then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end
     end)
 

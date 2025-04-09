@@ -134,7 +134,9 @@ local function Init()
         GameTooltip:Show()
     end)
     MapXYButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         --[[if d=='RightButton' then--返回当前地图                
             WorldMapFrame:SetMapID(MapUtil.GetDisplayableMapForPlayer())
 

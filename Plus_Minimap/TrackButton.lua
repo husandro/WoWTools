@@ -1081,7 +1081,9 @@ local function Init_Button()
                 self:set_texture()
 
             elseif d=='RightButton' and not key then
-                MenuUtil.CreateContextMenu(self, Init_Menu)
+                MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
             end
         end
     end)

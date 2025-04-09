@@ -201,7 +201,9 @@ local function Init()
             Add_Remove_ToSave(itemID)
             ClearCursor()
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end
         self:set_tooltip()
     end)

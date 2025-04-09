@@ -625,7 +625,9 @@ local function Init()
         if d=='LeftButton' and self.type then
             WoWTools_ChatMixin:Say(self.type)
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
             GameTooltip:Hide()
         end
     end)]]

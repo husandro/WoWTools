@@ -1097,7 +1097,9 @@ local function Init()
             --WoWTools_ChatMixin:Say('/'..self.channelNumber)
             self:set_tooltip()
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
             GameTooltip:Hide()
         end
     end)]]

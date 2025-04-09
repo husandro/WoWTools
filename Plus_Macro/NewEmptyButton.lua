@@ -215,7 +215,9 @@ local function Init()
         if d=='LeftButton' then
             WoWTools_MacroMixin:CreateMacroNew()--新建，宏
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
+            end)
         end
     end)
     Button:SetScript('OnMouseUp', Button.set_Tooltips)

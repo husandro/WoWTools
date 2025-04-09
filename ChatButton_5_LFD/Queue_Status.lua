@@ -609,7 +609,9 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
+            end)
         end
         self:set_tooltip()
     end)

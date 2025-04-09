@@ -372,7 +372,9 @@ local function Init()
             self:set_click()
             self:set_tooltips()
         else
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
+            end)
         end
     end)
 

@@ -184,7 +184,9 @@ local function Init()
     button:SetScript('OnLeave', GameTooltip_Hide)
     button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end
     end)
 

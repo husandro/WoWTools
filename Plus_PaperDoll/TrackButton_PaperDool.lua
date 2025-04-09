@@ -448,7 +448,9 @@ local function Init_TrackButton()--添加装备管理框
             WoWTools_LoadUIMixin:PaperDoll_Sidebar(3)--打开/关闭角色界面
 
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
         end
     end)
 
@@ -556,7 +558,9 @@ function Init_EquipButton()
     end
 
     EquipButton:SetScript("OnClick", function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
     end)
 
     EquipButton:SetScript("OnEnter", function (self)

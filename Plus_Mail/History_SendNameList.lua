@@ -324,7 +324,9 @@ local function Init()
     Button:SetScript('OnEnter', Button.set_tooltip)
 
     Button:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
     end)
 
     Button:SetScript('OnHide', Button.UnregisterAllEvents)

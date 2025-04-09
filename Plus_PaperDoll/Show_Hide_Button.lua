@@ -117,7 +117,9 @@ local function Init(frame)
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
     btn:SetScript('OnClick', function(self, d)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
+        MenuUtil.CreateContextMenu(self, function(...)
+            Init_Menu(...)
+        end)
 
         --[[if d=='RightButton' then
             WoWTools_PanelMixin:Open(nil, WoWTools_PaperDollMixin.addName)

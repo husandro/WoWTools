@@ -284,7 +284,9 @@ local function Init()
 
 
 		elseif d=='RightButton' and not IsModifierKeyDown() then
-			MenuUtil.CreateContextMenu(self, Init_Menu)
+			MenuUtil.CreateContextMenu(self, function(...)
+                Init_Menu(...)
+            end)
 		end
 		self:set_Tooltips()
 	end)
