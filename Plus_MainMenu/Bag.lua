@@ -112,7 +112,14 @@ local function Init()
                         icon= '|T'..texture..':0|t'
                     end
                 end
-                table.insert(tab, {index='|cffff00ff'..(i+1)..'|r', icon=icon, all=numSlots, num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})
+                table.insert(tab, {
+                    index='|cffff00ff'..(i+1)..'|r',
+                    icon=icon,
+                    num=numSlots,
+                    freeSlots= freeSlots,
+                    percent= format('%i%%', freeSlots/numSlots*100)
+                })
+                    --num= freeSlots>0 and '|cnGREEN_FONT_COLOR:'..num..'|r' or '|cnRED_FONT_COLOR:'..num..'|r'})
             end
         end
 
@@ -120,7 +127,10 @@ local function Init()
         for i=1, #tab, 2 do
             local a= tab[i]
             local b= tab[i+1]
-            GameTooltip:AddDoubleLine(a.index..') '..a.all..a.icon..a.num, b and (b.num..b.icon..b.all..' ('..b.index))
+            GameTooltip:AddDoubleLine(
+                a.index..') '..a.num..a.icon..a.freeSlots..' '..a.percent,
+                b and (a.percent..' '..b.freeSlots..b.icon..b.num..' ('..b.index)
+            )
         end
 
         if GameTooltip.textRight then
@@ -128,6 +138,7 @@ local function Init()
                 '|A:bags-button-autosort-up:18:18|a'
                 ..(use>0 and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')
                 ..use..'|r/'..num
+                ..' '..format('%i%%', use/num*100)
             )
         end
         GameTooltip:Show()

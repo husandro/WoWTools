@@ -564,8 +564,12 @@ end
 
 
 --队伍数据
-EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", GetGroupGuidDate)
-EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", GetGroupGuidDate)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", function()
+    GetGroupGuidDate()
+end)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
+    GetGroupGuidDate()
+end)
 
 --总游戏时间：%s
 EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
@@ -578,26 +582,30 @@ EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1,
 end)
 
 --取得玩家信息
-EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", Get_Player_Info)
+EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function()
+    Get_Player_Info()
+end)
 
 --地下城挑战
-EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_MAPS_UPDATE", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_MAPS_UPDATE", function()
     C_MythicPlus.RequestRewards()
     C_Timer.After(4, Update_Challenge_Mode)
 end)
-EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function()
     C_MythicPlus.RequestRewards()
     C_Timer.After(4, Update_Challenge_Mode)
 end)
 
 --挑战
-EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", Get_Info_Challenge)
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
+    Get_Info_Challenge()
+end)
 
 --位面, 清除
-EventRegistry:RegisterFrameEventAndCallback("ZONE_CHANGED_NEW_AREA", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("ZONE_CHANGED_NEW_AREA", function()
     WoWTools_DataMixin.Player.Layer=nil
 end)
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
     WoWTools_DataMixin.Player.Layer=nil
 end)
 
@@ -608,16 +616,20 @@ EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, arg1)
     end
     Set_Rare_Elite_Killed(arg1)
 end)
-EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function(_, arg1)
+EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
     if not IsInInstance() then
         return
     end
     Set_Rare_Elite_Killed('loot')
 end)
-EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", RequestRaidInfo)
+EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", function()
+    RequestRaidInfo()
+end)
 
 --货币
-EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", Update_Currency)
+EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function()
+    Update_Currency()
+end)
 
 --更新物品
 EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", function()
@@ -625,7 +637,9 @@ EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", function()
 end)
 
 --副本
-EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", Update_Instance)
+EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()
+    Update_Instance()
+end)
 
 --钱
 EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
@@ -775,8 +789,10 @@ EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(
     C_FriendList.ShowFriends()
 
     --C_PerksProgram.RequestPendingChestRewards()
+    if not C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
+        C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+    end
 
-    C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
     RequestRaidInfo()
 
     --C_Calendar.OpenCalendar()

@@ -82,11 +82,8 @@ function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
 
         local weekly, endOfRun= C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
         endOfRun= (endOfRun and endOfRun>0) and endOfRun or endOfRunRewardLevel[level] or 0
-        weekly= weekly or 0
 
-        if weekly==0 and WoWTools_DataMixin.Player.husandro then
-            print('GetChallengesWeekItemLevel 数据出错，需要更新')
-        end
+        weekly= weekly or 0
         return format(WeekItemLevel[level], endOfRun, weekly)
     end
 end

@@ -259,7 +259,7 @@ local function Init_Menu(self, root)
 
 	for _, currencyID in pairs(new) do
 		sub2=sub:CreateCheckbox(
-			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil),
+			WoWTools_CurrencyMixin:GetName(currencyID, nil, nil) or currencyID,
 		function(data)
 			return Save().tokens[data.currencyID]
 		end, function(data)

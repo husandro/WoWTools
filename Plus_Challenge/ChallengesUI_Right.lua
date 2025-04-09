@@ -89,7 +89,10 @@ local function Set_Text()--所有记录
     w= math.max(Frame.week:GetStringWidth(), w)
 
 --难度 每周 掉落
-    Frame.loot:SetText(WoWTools_DataMixin.onlyChinese and '难度 每周 掉落' or (PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER..' '..CALENDAR_REPEAT_WEEKLY..' '..LOOT))
+    Frame.loot:SetText(
+        WoWTools_DataMixin.onlyChinese and '难度 掉落 每周'
+        or format('%s %s %s', PROFESSIONS_CRAFTING_STAT_TT_DIFFICULTY_HEADER, LOOT, CALENDAR_REPEAT_WEEKLY)
+    )
     w= math.max(Frame.loot:GetStringWidth(), w)
     w= math.max(Frame.week:GetStringWidth(), w)
 
@@ -124,10 +127,12 @@ local function Set_Text()--所有记录
     w= math.max(Frame.loot2:GetStringWidth(), w)
 
 --物品，货币提示
+
     local last= WoWTools_LabelMixin:ItemCurrencyTips({
         frame=Frame,
         point={'TOPLEFT', Frame.loot2, 'BOTTOMLEFT',0, -12},
         showAll=true,
+        showName=true,
     })
     if last then
         w= math.max(last:GetStringWidth(), w)
@@ -259,17 +264,22 @@ local function Create_Label()
     Frame.loot= WoWTools_LabelMixin:Create(Frame, {mouse=true, size=14})--最右边, 数据
     Frame.loot:SetPoint('TOPLEFT', Frame.week, 'BOTTOMLEFT',0,-12)
     function Frame.loot:get_Loot_itemLevel(level)
-        --local col= self.curLevel==level and '|cff00ff00' or (select(2, math.modf(level/2))==0 and '|cffff8200') or '|cffffffff'
         local weeklyRewardLevel2 = C_MythicPlus.GetRewardLevelForDifficultyLevel(level)
 
         local min, max= WoWTools_DataMixin:GetChallengesWeekItemLevel(nil, true)
         weeklyRewardLevel2= math.max(weeklyRewardLevel2, min)
         weeklyRewardLevel2= math.min(weeklyRewardLevel2, max)
 
-        local week= level..') '..(WoWTools_DataMixin:GetChallengesWeekItemLevel(level) or '')
-        local curkey= self.curKey==level and '|T4352494:0|t' or ''
-        local curLevel= self.curLevel==level and '|A:common-icon-checkmark:0:0|a' or ''
-        return week..curkey..curLevel
+        local week= level..') '..(level<10 and ' ' or '')..(WoWTools_DataMixin:GetChallengesWeekItemLevel(level) or '')
+
+        local isCurKey= self.curKey==level
+        local isCurLevel= self.curLevel==level
+
+        local text= week
+            ..(isCurKey and '|T4352494:0|t' or '')--当前Key
+            ..(isCurLevel and '|A:common-icon-checkmark:0:0|a' or '')--最高等级
+
+        return isCurKey and '|cffffffff'..text..'|r' or (isCurLevel and '|cnGREEN_FONT_COLOR:'..text..'|r') or text
     end
     Frame.loot:SetScript('OnLeave', function(self)
         self:SetAlpha(1)
@@ -322,10 +332,11 @@ local function Init()
 
     Frame:SetScript('OnShow', function(self)
         Set_Text()
-        self:RegisterEvent('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE')
+        self:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
+        self:RegisterEvent('BAG_UPDATE_DELAYED')
     end)
     Frame:SetScript('OnHide', function(self)
-        self:UnregisterEvent('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE')
+        self:UnregisterAllEvents()
         self.week:SetText('')
         self.loot:SetText('')
         self.loot.curLevel= nil

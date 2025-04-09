@@ -17,7 +17,9 @@ local function Init()
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
                 '|cnGREEN_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE)),
+                ..(WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE))
+                ..'|r',
+                WoWTools_DataMixin.onlyChinese and '当前：' or ITEM_UPGRADE_CURRENT,
                 WoWTools_TextMixin:GetEnabeleDisable(C_AddOnProfiler.IsEnabled())
             )
         end
@@ -27,8 +29,9 @@ local function Init()
             print(
                 WoWTools_DataMixin.Icon.icon2..WoWTools_AddOnsMixin.addName,
                 '|cnRED_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE)),
-                'CVar addonProfilerEnabled',
+                ..(WoWTools_DataMixin.onlyChinese and '禁用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, DISABLE))
+                ..'|r',
+                WoWTools_DataMixin.onlyChinese and '当前：' or ITEM_UPGRADE_CURRENT,
                 WoWTools_TextMixin:GetEnabeleDisable(C_AddOnProfiler.IsEnabled())
             )
         end
