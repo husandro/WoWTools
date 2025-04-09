@@ -249,6 +249,18 @@ local function Create_Label(frame)
         self.label:SetAlpha(1)
     end)
 
+    frame.currentKey:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self:GetParent(), function(...)
+            WoWTools_ChallengeMixin:Say_Menu(...)
+        end)
+        self:SetAlpha(0.3)
+        self.label:SetAlpha(0.3)
+    end)
+    frame.currentKey:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.5)
+        self.label:SetAlpha(0.5)
+    end)
+
     frame.currentKey:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -256,9 +268,11 @@ local function Create_Label(frame)
         if bagID and slotID then
             GameTooltip:SetBagItem(bagID, slotID)
         end
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(' ', (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
-        self:SetAlpha(0.3)
-        self.label:SetAlpha(0.3)
+        self:SetAlpha(0.5)
+        self.label:SetAlpha(0.5)
     end)
 
 --当前KEY，等级
@@ -593,7 +607,7 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')--隐藏, 赛季最佳
+    --ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')--隐藏, 赛季最佳
 
     C_Timer.After(0.3, function()
         if ChallengesFrame.WeeklyInfo.Child.Description:IsShown() then
