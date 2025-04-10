@@ -106,9 +106,9 @@ end
 function WoWTools_CurrencyMixin:GetLink(currencyID, index, link, isCN)
     local info
     info, _, link = get_info(currencyID, index, link)
-    if link and isCN and WoWTools_Chinese_Mixin and info and info.name then
+    if link and isCN and info and info.name then
         local cnName= WoWTools_TextMixin:CN(info.name)
-        if cnName and info.name~=info.name then
+        if cnName and info.name~=cnName then
             link=link:gsub(info.name, cnName)
         end
     end

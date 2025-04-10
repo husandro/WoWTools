@@ -4897,7 +4897,7 @@
         "GetColorForCurrencyReward",
         "ContainerFrameUtil_GetShownFrameForID",
         "BankPanelItemButtonMixin",
-        "WoWTools_Chinese_Mixin",
+        "WoWTools_ChineseMixin",
         "HIGH",
         "BATTLEFIELD_MINIMAP_SHOW_ALWAYS",
         "DELVES_LABEL",

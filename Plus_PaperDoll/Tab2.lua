@@ -24,9 +24,8 @@ local function Init_Menu(_, root)
             local name, playerTitle = GetTitleName(i)
             if name and playerTitle then
                 local cnName
-                if WoWTools_Chinese_Mixin then
-                    cnName= WoWTools_TextMixin:CN(name, {titleID=i})
-                end
+                cnName= WoWTools_TextMixin:CN(name, {titleID=i})
+
 
                 sub=root:CreateButton(
                     num..') '
