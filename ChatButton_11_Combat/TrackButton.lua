@@ -233,8 +233,14 @@ local function TrackButton_Frame_Init_Date()--初始, 数据
             save.ins.num= save.ins.num +1
             save.ins.time= save.ins.time +sec
         end
-        LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'..text..' |A:BuildanAbomination-32x32:0:0|a'..InstanceDate.kill..' |A:poi-soulspiritghost:0:0|a'..InstanceDate.dead..'|r'
-        print(WoWTools_DataMixin.addName, InstanceDate.map or WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, text)
+        LastText='|cnGREEN_FONT_COLOR:|A:CrossedFlagsWithTimer:0:0|a'
+            ..text
+            ..' |A:BuildanAbomination-32x32:0:0|a'
+            ..InstanceDate.kill
+            ..' |A:poi-soulspiritghost:0:0|a'
+            ..InstanceDate.dead..'|r'
+
+        print(WoWTools_DataMixin.addName, WoWTools_TextMixin:CN(InstanceDate.map) or WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE, text)
 
         InstanceDate={time= 0, kill=0, dead=0}--副本数据{dead死亡,kill杀怪, map地图}
         OnInstanceTime=nil
