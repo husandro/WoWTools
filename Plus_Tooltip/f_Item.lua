@@ -160,7 +160,7 @@ local function Set_keystonee(tooltip)
             ..WoWTools_UnitMixin:GetPlayerInfo({guid=info.guid, faction=info.faction, reName=true, reRealm=true})
             ..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score, false, nil)..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score,true)),
 
-            info.link
+            WoWTools_HyperLink:CN_Link(info.link, {isName=true})
         )
         if index>2 and not IsShiftKeyDown() then
             if num>index then

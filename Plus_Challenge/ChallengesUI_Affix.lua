@@ -13,7 +13,18 @@ local function Find_Cursor_Affix()
         return
     end
 
-    local currentAffixes={}
+    local currentAffixes=C_MythicPlus.GetCurrentAffixes()
+    if not currentAffixes then
+        return
+    end
+    for index, affixes in pairs(WoWTools_DataMixin.affixSchedule) do
+        if affixes[1]== currentAffixes[1].id and affixes[2]==currentAffixes[2].id and affixes[3]==currentAffixes[3].id and affixes[4]==currentAffixes[4].id then
+            CurrentWeek= index
+            return
+        end
+    end
+end
+--[[
     for _, affix in pairs(C_MythicPlus.GetCurrentAffixes() or {}) do
         currentAffixes[affix.id]= true
     end
@@ -34,7 +45,7 @@ local function Find_Cursor_Affix()
             return
         end
     end
-end
+]]
 
 
 

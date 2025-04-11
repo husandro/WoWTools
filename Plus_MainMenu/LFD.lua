@@ -5,12 +5,15 @@
 
 
 
-
+local frame
 
 local function Init()
-    local frame= CreateFrame('Frame')
+    frame= CreateFrame('Frame')
 
-    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {size=WoWToolsSave['Plus_MainMenu'].size, color=true})
+    frame.Text= WoWTools_LabelMixin:Create(LFDMicroButton,  {
+        size=WoWToolsSave['Plus_MainMenu'].size,
+        color=true,
+    })
     frame.Text:SetPoint('TOP', LFDMicroButton, 0,  -3)
 
     table.insert(WoWTools_MainMenuMixin.Labels, frame.Text)
@@ -23,13 +26,12 @@ local function Init()
     frame:RegisterEvent('BAG_UPDATE_DELAYED')
     frame:SetScript('OnEvent', frame.settings)
 
-    LFDMicroButton.setTextFrame= frame
-    LFDMicroButton:HookScript('OnEnter', function(self)
+    LFDMicroButton:HookScript('OnEnter', function()
         if KeybindFrames_InQuickKeybindMode() then
             return
         end
 
-        self.setTextFrame:settings()
+        frame:settings()
         GameTooltip:AddLine(' ')
 
         local find= WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
@@ -83,10 +85,11 @@ local function Init()
                 PVEFrame_ToggleFrame("GroupFinderFrame", LFGListPVEStub)--, RaidFinderFrame)
             end
         elseif d==-1 then
-            if not ChallengesFrame or not ChallengesFrame:IsVisible() then
+            PVEFrame_TabOnClick(PVEFrameTab3)
+            --[[if not ChallengesFrame or not ChallengesFrame:IsVisible() then
                 PVEFrame_ToggleFrame("ChallengesFrame", nil)
             end
-            --[[if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
+            if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
                 PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
             end]]
         end

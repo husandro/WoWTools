@@ -573,15 +573,9 @@ local function Init()
         self:SetScale(Save().insScale or 1)
         self:SetShown(show)
         if show then
-            Set_Update(_G['ChallengesFrame'])
+            Set_Update(self:GetParent())
         end
     end
-
-    --[[hooksecurefunc(ChallengesDungeonIconMixin, 'SetUp', function(self, mapInfo)
-        if not Save().hideIns then
-            SetUp(self)
-        end
-    end)]]
 
     hooksecurefunc(ChallengesFrame, 'Update', function(self)
         if not Save().hideIns then
@@ -607,7 +601,8 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    --ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')--隐藏, 赛季最佳
+
+    ChallengesFrame.WeeklyInfo.Child.SeasonBest:SetText('')--隐藏, 赛季最佳
 
     C_Timer.After(0.3, function()
         if ChallengesFrame.WeeklyInfo.Child.Description:IsShown() then

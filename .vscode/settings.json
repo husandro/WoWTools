@@ -5540,7 +5540,8 @@
         "NPE_CONTROLS",
         "DUNGEON_SCORE_DESC",
         "DUNGEON_SCORE_BREAKDOWN",
-        "GetItemButtonIconTexture"
+        "GetItemButtonIconTexture",
+        "PVEFrame_TabOnClick"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
