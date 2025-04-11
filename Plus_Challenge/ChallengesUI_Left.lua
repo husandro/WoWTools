@@ -65,12 +65,12 @@ local function Initializer(btn, data)
         btn.ItemLevelText:SetText('')
     end
 
---钥石，名称  
+--钥石，名称
+    local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
     btn.Name2:SetText(
-        WoWTools_TextMixin:CN(
-        data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME)
-        or data.itemLink
-    ))
+        itemName~=data.itemLink and itemName
+        or WoWTools_TextMixin:CN(data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME) or data.itemLink)
+    )
 
 --背景
     btn.Background:SetAtlas(
