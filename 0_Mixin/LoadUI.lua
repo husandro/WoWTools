@@ -390,7 +390,7 @@ Blizzard_SharedMapDataProviders/DungeonEntranceDataProvider.lua
 
 |Hjournal:1:2568:23|h[虚空石畸体]|h
 
-
+EncounterJournal_DisplayInstance
 ]]
 function WoWTools_LoadUIMixin:JournalInstance(journalType, journalID, difficultyID)
     if not AdventureGuideUtil.IsAvailable()
