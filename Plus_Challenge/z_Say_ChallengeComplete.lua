@@ -27,7 +27,7 @@ local function Settings(isSay, sayType)
             end
         end
 
-        SayButton.Text:SetText(info and info.hyperlink
+        SayButton.Text:SetText(info and (WoWTools_HyperLink:CN_Link(info.hyperlink, {itemID=info.itemID}))
             or ('|cff828282'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or PLAYER_DIFFICULTY_MYTHIC_PLUS))
         )
     end

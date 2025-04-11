@@ -318,7 +318,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
         local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
         if info then
             self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
-            self.Text:SetText(info.hyperlink)
+            self.Text:SetText(WoWTools_HyperLink:CN_Link(info.hyperlink, {itemID=info.itemID}) or '')
             self:SetItemButtonCount(C_MythicPlus.GetOwnedKeystoneLevel())
         end
         self:SetShown(info and true or false)
