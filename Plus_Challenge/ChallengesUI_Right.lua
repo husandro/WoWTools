@@ -378,5 +378,5 @@ end
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Right()
-    Init()
+    C_Timer.After(0.3, function() Init() end)
 end

@@ -62,13 +62,13 @@ local function Initializer(btn, data)
             end
         end
     end
-    
+
     --btn.Text:SetText(isCurrent and '|A:common-icon-rotateright:0:0|a' or data.index)
     btn.Text:SetText(
         (isCurrent and '|cnGREEN_FONT_COLOR:' or '')
         .. data.index
     )
-   
+
     --local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
 end
 
@@ -122,13 +122,14 @@ local function Init()
         return
     end
 
-    
+
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
     Frame:SetFrameStrata('HIGH')
     Frame:SetFrameLevel(3)
+    Frame:Hide()
 
-   
+
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollBox:SetAllPoints()
 
@@ -155,13 +156,13 @@ local function Init()
         Set_List()
         self:RegisterEvent('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE')
     end)
-    
+
     Frame:SetScript('OnHide', function(self)
-        self.view:SetDataProvider(CreateDataProvider())        
+        self.view:SetDataProvider(CreateDataProvider())
         self:UnregisterEvent('MYTHIC_PLUS_CURRENT_AFFIX_UPDATE')
     end)
 
-  
+
     Frame:SetScript('OnEvent', function()
         Set_List()
     end)
@@ -260,27 +261,5 @@ end
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Affix()
-    Init()
+    C_Timer.After(0.3, function() Init() end)
 end
-
---[[
-label:SetScript('OnEnter', function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:AddLine(WoWTools_ChallengeMixin.addName)
-                GameTooltip:AddLine(' ')
-                for idx=1, self.max do
-                    local tab= self.WoWTools_DataMixin.affixSchedule[idx]
-                    local text=''
-                    for i2=1, MaxAffix do
-                        local affixID= tab[i2]
-                        local name, _, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
-                        text= text..'|T'..filedataid..':0|t'..WoWTools_TextMixin:CN(name)..'  '
-                    end
-                    local col= idx==self.CurrentWeek and '|cnGREEN_FONT_COLOR:' or (select(2, math.modf(idx/2))==0 and '|cffff8200') or '|cffffffff'
-                    GameTooltip:AddLine(col..(idx<10 and '  ' or '')..idx..') '..text)
-                end
-                GameTooltip:Show()
-                self:SetAlpha(0.3)
-            end)
-]]

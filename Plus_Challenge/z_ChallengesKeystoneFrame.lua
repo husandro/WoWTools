@@ -219,7 +219,10 @@ local function Init_Buttons()--挑战,钥石,插入界面
                 end
             end
         end
-        print(WoWTools_DataMixin.addName, CHALLENGE_MODE_KEYSTONE_NAME:format('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r'))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
+            '|cnRED_FONT_COLOR:',
+            WoWTools_DataMixin.onlyChinese and '钥石：尚未发现' or format(CHALLENGE_MODE_KEYSTONE_NAME, TAXI_PATH_UNREACHABLE)
+        )
     end)
 
 --插入史诗钥石, 说，提示
@@ -260,11 +263,9 @@ local function Init_Buttons()--挑战,钥石,插入界面
         else
             WoWTools_ChatMixin:Chat(link, nil, true)
         end
-        self:SetAlpha(0.3)
     end)
 
     KeyFrame.ScoreButton:SetScript('OnEnter', function(self)
-        self:SetAlpha(0.7)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         WoWTools_SetTooltipMixin:Frame(self, nil, {dungeonScore=true})
         GameTooltip:AddLine(' ')
@@ -412,10 +413,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
     stop:SetScript('OnLeave', GameTooltip_Hide)
     stop:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ChallengeMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(' ', '|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
+        GameTooltip:SetText('|A:transmog-icon-chat:0:0|a'..(WoWTools_DataMixin.Player.cn and '停止! 停止! 停止!' or 'Stop! Stop! Stop!'))
         GameTooltip:Show()
     end)
 
@@ -526,7 +524,7 @@ local function Init_Menu(self, root)
         tootip:AddLine(' ')
         tootip:AddLine( WoWTools_DataMixin.onlyChinese and '按钮' or SHOW_QUICK_BUTTON )
     end)
-    
+
     WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(self, sub)
 
     root:CreateDivider()

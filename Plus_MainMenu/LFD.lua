@@ -42,19 +42,23 @@ local function Init()
             GameTooltip:AddLine(' ')
         end
 
-        local bat= UnitAffectingCombat('player')
+        local bat= InCombatLockdown()
 
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '地下城和团队副本' or GROUP_FINDER)..'|r'
+            (bat and '|cff828282' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '地下城和团队副本' or GROUP_FINDER)
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_UP)
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r'
+            (bat and '|cff828282' or '|cffffffffPvP')
             ..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:AddLine(
-            (bat and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '地下堡' or DELVES_LABEL)..'|r'
+            (
+                (bat or PlayerGetTimerunningSeasonID() or not WoWTools_DataMixin.Player.IsMaxLevel)
+                and '|cff828282' or '|cffffffff'
+            )
+            ..(WoWTools_DataMixin.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS)
             ..WoWTools_DataMixin.Icon.mid
             ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_DOWN)
         )
@@ -65,7 +69,7 @@ local function Init()
 
     LFDMicroButton:HookScript('OnClick', function(_, d)
         if d=='RightButton' and not KeybindFrames_InQuickKeybindMode() then
-            PVEFrame_ToggleFrame("PVPUIFrame", nil)
+            PVEFrame_ToggleFrame("PVPUIFrame", LFGListPVPStub)
         end
     end)
 
@@ -75,13 +79,16 @@ local function Init()
             return
         end
         if d==1 then
-            if not GroupFinderFrame:IsShown() then
-                PVEFrame_ToggleFrame("GroupFinderFrame", nil)--, RaidFinderFrame)
+            if not LFGListPVEStub:IsVisible() then
+                PVEFrame_ToggleFrame("GroupFinderFrame", LFGListPVEStub)--, RaidFinderFrame)
             end
         elseif d==-1 then
-            if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
-                PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
+            if not ChallengesFrame or not ChallengesFrame:IsVisible() then
+                PVEFrame_ToggleFrame("ChallengesFrame", nil)
             end
+            --[[if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
+                PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
+            end]]
         end
     end)
 
