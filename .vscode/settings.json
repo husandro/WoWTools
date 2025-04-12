@@ -5542,7 +5542,8 @@
         "DUNGEON_SCORE_BREAKDOWN",
         "GetItemButtonIconTexture",
         "PVEFrame_TabOnClick",
-        "CooldownViewerBuffBarItemMixin"
+        "CooldownViewerBuffBarItemMixin",
+        "AuraFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

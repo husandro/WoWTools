@@ -887,7 +887,26 @@ end)
             mixin:SetAlphaColor(self.DragonridingPanel.Background, nil,nil, 0.75)
         end)
     end
-    return true
+
+
+--光环
+    --AuraButtonArtTemplate
+    hooksecurefunc(AuraFrameMixin, 'UpdateAuraButtons', function(self)--AuraButtonArtTemplate
+        if self:TryEditModeUpdateAuraButtons() then
+            return
+        end
+        for _, auraFrame in ipairs(self.auraFrames) do
+            if auraFrame:IsShown() and not auraFrame.IconMask and auraFrame.Icon.AddMaskTexture then
+                auraFrame.IconMask= auraFrame:CreateMaskTexture()
+                auraFrame.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+                auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
+                auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
+                auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
+            end
+        end
+    end)
+
+    Init=function()end
 end
 
 
@@ -907,7 +926,5 @@ end
 
 
 function WoWTools_TextureMixin:Init_All_Frame()
-    if Init(self) then
-        Init=function()end
-    end
+    Init(self)
 end
