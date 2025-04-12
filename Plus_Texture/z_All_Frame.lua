@@ -898,7 +898,7 @@ end)
         for _, auraFrame in ipairs(self.auraFrames) do
             if auraFrame:IsShown() and not auraFrame.IconMask and auraFrame.Icon.AddMaskTexture then
                 auraFrame.IconMask= auraFrame:CreateMaskTexture()
-                auraFrame.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+                auraFrame.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'UI-HUD-ActionBar-IconFrame-Background')
                 auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
                 auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
                 auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)

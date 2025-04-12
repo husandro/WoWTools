@@ -5543,7 +5543,8 @@
         "GetItemButtonIconTexture",
         "PVEFrame_TabOnClick",
         "CooldownViewerBuffBarItemMixin",
-        "AuraFrameMixin"
+        "AuraFrameMixin",
+        "CooldownViewerEssentialItemMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

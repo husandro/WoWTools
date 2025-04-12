@@ -3,12 +3,10 @@ local function Set_Texture(btn)
     WoWTools_TextureMixin:HideTexture(btn.SlotArt)
     WoWTools_TextureMixin:HideTexture(btn.NormalTexture)--外框，方块
     WoWTools_TextureMixin:HideTexture(btn.SlotBackground, true)--背景
-    btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+    btn.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'UI-HUD-ActionBar-IconFrame-Background')
     btn.IconMask:ClearAllPoints()
     btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
     btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
-    
-    
 end
 
 

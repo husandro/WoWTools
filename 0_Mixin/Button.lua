@@ -49,7 +49,7 @@ ItemButtonTemplate.xml
 function WoWTools_ButtonMixin:Mask(btn)
 
     btn.mask= btn.mask or btn:CreateMaskTexture()
-    btn.mask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+    btn.mask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'UI-HUD-ActionBar-IconFrame-Background')
     btn.mask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
     btn.mask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
     local icon= btn:GetNormalTexture()
