@@ -1,4 +1,4 @@
---[[
+
 local BuffTabs={
     447959,--一起骑乘 - 开启
     404183,--掠地滑翔
@@ -7,7 +7,7 @@ local BuffTabs={
 
 local function Create_Buff(frame)--AuraButtonArtTemplate
 
-end]]
+end
 
 
 
@@ -101,7 +101,7 @@ local function Set_Dragonriding_Speed(frame)
     frame.speedBar.Text2= WoWTools_LabelMixin:Create(frame.speedBar, {color= true})
     frame.speedBar.Text2:SetPoint('BOTTOMRIGHT', frame.speedBar, 'TOPRIGHT')
 
-   -- Create_Buff(frame)
+    Create_Buff(frame)
 
     frame.speedBar:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3)+ elapsed
