@@ -1028,3 +1028,33 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings(mixin)
     mixin:SetSearchBox(SettingsPanel.SearchBox)
     mixin:SetFrame(SettingsPanel, {index=1})
 end
+
+function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer(mixin)
+     hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
+        mixin:SetFrame(frame.Bar, {isMinAlpha=true, index=1})
+    end)
+end
+--[[
+function CooldownViewerBuffBarItemMixin:SetBarContent(barContent)
+	local iconFrame = self:GetIconFrame();
+	local nameFontString = self:GetNameFontString();
+	local point, relativeTo, relativePoint, offsetX, offsetY = "LEFT", iconFrame, "RIGHT", 0, 0;
+
+	if barContent == Enum.CooldownViewerBarContent.IconAndName then
+		iconFrame:Show();
+		nameFontString:Show();
+	elseif barContent == Enum.CooldownViewerBarContent.IconOnly then
+		iconFrame:Show();
+		nameFontString:Hide();
+	elseif barContent == Enum.CooldownViewerBarContent.NameOnly then
+		iconFrame:Hide();
+		nameFontString:Show();
+		relativeTo = self;
+		relativePoint = "LEFT";
+	else
+		assertsafe(false, "Unknown value for bar content: %d", barContent);
+	end
+
+	self:GetBarFrame():SetPoint(point, relativeTo, relativePoint, offsetX, offsetY);
+end
+]]

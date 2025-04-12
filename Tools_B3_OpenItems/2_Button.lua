@@ -167,7 +167,9 @@ local function Init(OpenButton)
     OpenButton:SetScript('OnEvent', function(self, event)
 
         if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then--出进副本
-            self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
+            if not InCombatLockdown() then
+                self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
+            end
             self:settings()
 
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
@@ -227,7 +229,7 @@ local function Init(OpenButton)
             self:UnregisterEvent('PLAYER_MOUNT_DISPLAY_CHANGED')
         end
 
-        if self:CanChangeAttribute() then
+        if self:CanChangeAttribute() and not InCombatLockdown() then
             self:set_key()
             self:SetShown(not self.isDisabled)
         else

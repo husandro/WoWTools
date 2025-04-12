@@ -301,7 +301,9 @@ local function Init_Buttons()--挑战,钥石,插入界面
         end
     end)
 
-    KeyFrame.KeyButton:SetScript("OnLeave", GameTooltip_Hide)
+    KeyFrame.KeyButton:SetScript("OnLeave", function()
+        GameTooltip:Hide()
+    end)
     KeyFrame.KeyButton:SetScript("OnEnter",function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
@@ -318,7 +320,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
         local info, bagID, slotID= WoWTools_BagMixin:Ceca(nil, {isKeystone=true})
         if info then
             self:SetItemLocation(ItemLocation:CreateFromBagAndSlot(bagID, slotID))
-            self.Text:SetText(WoWTools_HyperLink:CN_Link(info.hyperlink, {itemID=info.itemID}) or '')
+            self.Text:SetText(WoWTools_HyperLink:CN_Link(info.hyperlink, {itemID=info.itemID, isName=true}) or '')
             self:SetItemButtonCount(C_MythicPlus.GetOwnedKeystoneLevel())
         end
         self:SetShown(info and true or false)

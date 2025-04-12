@@ -348,9 +348,9 @@ end
 
 --钥石
 local function Keystone(link)
-    local itemID, _, _, affix1, affix2, affix3, affix4= link:match('Hkeystone:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)')   
+    local itemID, _, _, affix1, affix2, affix3, affix4= link:match('Hkeystone:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)')
     local texture='|T'..(select(5, C_Item.GetItemInfoInstant(link)) or 525134)..':0|t'
-    return 
+    return
         texture
         ..(itemID and WoWTools_HyperLink:CN_Link(link, {itemID=tonumber(itemID), isName=true}) or link)
         ..(WoWTools_HyperLink:GetKeyAffix(link, {affix1, affix2, affix3, affix4}) or '')
