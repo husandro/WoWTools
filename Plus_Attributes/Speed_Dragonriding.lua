@@ -1,19 +1,13 @@
 
 
+local function Create_Buff(frame)
+
+end
 
 
-
-
-
-
-
-local function Set_Dragonriding_Speed(frame)
-    if not frame or frame.speedBar then
-        return
-    end
-    frame.speedBar= CreateFrame('StatusBar', nil, frame)
+local function Create_Bar(frame)
     frame.speedBar:SetStatusBarTexture('UI-HUD-CoolDownManager-Bar')--UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Status')
-    frame.speedBar:SetStatusBarColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+
     frame.speedBar:SetPoint('BOTTOM', frame, 'TOP')
     frame.speedBar:SetMinMaxValues(0, 100)
     frame.speedBar:SetSize(240,10)
@@ -22,29 +16,77 @@ local function Set_Dragonriding_Speed(frame)
     texture:SetAllPoints(frame.speedBar)
     texture:SetAtlas('UI-HUD-CoolDownManager-Bar-BG')--UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Mask')
     texture:SetVertexColor(1, 0.5, 0.25, 0.5)
---    texture:SetAlpha(0.3)
 
-    texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+    texture= frame.speedBar:CreateTexture(nil,'OVERLAY')--90
     texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
-    texture:SetSize(3, 6)
-    texture:SetPoint('LEFT', 180, 0)
-    texture:SetVertexColor(1, 0, 1)
+    texture:SetSize(3, 5)
+    texture:SetPoint('LEFT', 180, 1)
+    texture:SetVertexColor(1, 0.5, 0.25)
 
-    texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+    texture= frame.speedBar:CreateTexture(nil,'OVERLAY')--60
     texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
-    texture:SetSize(3, 6)
-    texture:SetPoint('LEFT', 120, 0)
+    texture:SetSize(3, 5)
+    texture:SetPoint('LEFT', 120, 1)
     texture:SetVertexColor(0, 1, 0)
 
-    texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
-    texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
-    texture:SetSize(3, 6)
-    texture:SetPoint('LEFT', 60, 0)
-    texture:SetVertexColor(0.93, 0.82, 0.00)
 
+    texture= frame.speedBar:CreateTexture(nil,'OVERLAY')--30
+    texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+    texture:SetSize(3, 5)
+    texture:SetPoint('LEFT', 60, 01)
+    texture:SetVertexColor(1, 1, 1)
+end
+
+
+
+
+local function Set_Dragonriding_Speed(frame)
+    if not frame or frame.speedBar then
+        return
+    end
+
+    frame.speedBar= CreateFrame('StatusBar', 'WoWToolsAttributesSpeedDragonriding', frame)
+    if CooldownViewerBuffBarItemMixin then--11.1.5才有
+        Create_Bar(frame)
+    else
+        frame.speedBar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Status')
+        frame.speedBar:SetStatusBarColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+        frame.speedBar:SetPoint('BOTTOM', frame, 'TOP')
+        frame.speedBar:SetMinMaxValues(0, 100)
+        frame.speedBar:SetSize(240,10)
+
+        local texture= frame.speedBar:CreateTexture(nil,'BACKGROUND')
+        texture:SetAllPoints(frame.speedBar)
+        texture:SetAtlas('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Mana-Mask')
+        texture:SetAlpha(0.3)
+
+        texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+        texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+        texture:SetSize(3, 6)
+        texture:SetPoint('LEFT', 180, 0)
+        texture:SetVertexColor(1, 0, 1)
+
+        texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+        texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+        texture:SetSize(3, 6)
+        texture:SetPoint('LEFT', 120, 0)
+        texture:SetVertexColor(0, 1, 0)
+
+
+        texture= frame.speedBar:CreateTexture(nil,'OVERLAY')
+        texture:SetAtlas('worldstate-capturebar-divider-safedangerous-embercourt')
+        texture:SetSize(3, 6)
+        texture:SetPoint('LEFT', 60, 0)
+        texture:SetVertexColor(0.93, 0.82, 0.00)
+    end
 
     frame.speedBar.Text= WoWTools_LabelMixin:Create(frame.speedBar, {size=16, color= true})
     frame.speedBar.Text:SetPoint('BOTTOM', frame.speedBar, 'TOP', 0,1)
+
+    frame.speedBar.Text2= WoWTools_LabelMixin:Create(frame.speedBar, {color= true})
+    frame.speedBar.Text2:SetPoint('BOTTOMRIGHT', frame.speedBar, 'TOPRIGHT')
+
+    Create_Buff(frame)
 
     frame.speedBar:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3)+ elapsed
@@ -55,32 +97,29 @@ local function Set_Dragonriding_Speed(frame)
             if base>0 then
                 self.Text:SetText(math.modf(base / BASE_MOVEMENT_SPEED * 100))
                 local r,g,b=1,1,1-- WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b
-                if isGliding then
-                    if forwardSpeed==100 then
-                        r,g,b= 0.64, 0.21, 0.93
-                    elseif forwardSpeed>90 then
-                        r,g,b= 1, 0, 1
-                    elseif forwardSpeed>60 then
-                        r,g,b= 0, 1, 0
-                    elseif forwardSpeed >30 then
-                        r,g,b= 0.93, 0.82, 0.00
+                if isGliding and forwardSpeed>=30 then
+                    if forwardSpeed>95 then
+                        r,g,b=1,0,0
+                    elseif forwardSpeed>=60 then
+                        r,g,b= 1, 0.5, 0.25
                     else
-                        r,g,b= 1, 0, 0
+                        r,g,b=0,1,0
                     end
                 end
                 self:SetStatusBarColor(r,g,b)
             else
                 self.Text:SetText('')
             end
+            self.Text2:SetFormattedText('%i', forwardSpeed)
             self:SetValue(base)
-            --[[if not canGlide then
-                self:Hide()
-            end]]
         end
     end)
 
     frame:HookScript('OnShow', function(self)
         self.speedBar:SetShown(self:IsShown())
+    end)
+    frame:HookScript('OnShow', function(self)
+        self.elapsed=nil
     end)
     frame.speedBar:SetShown(frame:IsShown())
 end

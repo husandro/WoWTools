@@ -223,7 +223,7 @@ local function Get_Items(self)--取得背包物品信息
                             if spell and not C_Item.IsAnimaItemByID(info.hyperlink) then
                                 --and C_Spell.IsSpellUsable(spell)
                                 if info.itemID==207002 then--封装命运
-                                    if not WoWTools_AuraMixin:Get('player', 415603, 'HELPFUL') then
+                                    if not WoWTools_AuraMixin:Get('player', {[415603]=true}) then
                                         Set_Att(self, bag, slot, info.iconFileID, info.itemID)
                                         return
                                     end

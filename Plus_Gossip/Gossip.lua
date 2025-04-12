@@ -25,7 +25,13 @@ local AutoRepairTab={--修理
     [107572]=true,--挑战，模式, 修理
     [122661]=true,--地下堡
 }
-
+local SXBuff={
+    [57723]= true,--筋疲力尽
+    [57724]= true,--心满意足
+    [264689]= true,--疲倦
+    [80354]= true,--时空错位
+    [390435]= true,--筋疲力尽
+}
 
 
 
@@ -37,13 +43,7 @@ local AutoRepairTab={--修理
 --自动对话
 local function Get_Auto_Instance_Gossip(gossipID, numGossip)
     if gossipID==107571 then--挑战，模式，去 SX buff
-        if WoWTools_AuraMixin:Debuff('player', nil, 'HARMFUL', {
-            [57723]= true,
-            [57724]= true,
-            [264689]= true,
-            [80354]= true,
-            [390435]= true,
-         }) then
+        if WoWTools_AuraMixin:Get('player', SXBuff, AuraUtil.AuraFilters.Harmful) then
             return true
         end
     elseif AutoRepairTab[gossipID] then

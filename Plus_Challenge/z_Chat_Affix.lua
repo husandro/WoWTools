@@ -6,23 +6,23 @@ end
 
 --赏金
 local function Affix_136177()
-    local chat={}
-
+    local chat, data, link= {}, nil, nil
     local n=GetNumGroupMembers()
     for i=1, n do
         local unit= i==n and 'player' or 'party'..i
-        local link= WoWTools_UnitMixin:GetLink(unit, nil, nil, true)
         if UnitExists(unit) then
-            local buff
-            for _, spellID in pairs({373113, 373108, 373116, 373121}) do
-                local name=WoWTools_AuraMixin:Get(unit, spellID)
-                if name then
-                    buff=i..')'..link..': '..(C_Spell.GetSpellLink(spellID) or name)
-                    break
-                end
+            link= WoWTools_UnitMixin:GetLink(unit, nil, nil, true) or unit
+            data= WoWTools_AuraMixin:Get(unit, {
+                [373113]=true,
+                [373108]=true,
+                [373116]=true,
+                [373121]=true,
+            })
+            if data then
+                table.insert(chat, i..')'..link..': '..(C_Spell.GetSpellLink(data.spellId) or data.name))
+            else
+                table.insert(chat, link..': '..NONE)
             end
-            buff=buff or (WoWTools_UnitMixin:GetLink(unit, nil, nil, true)..': '..NONE)
-            table.insert(chat, buff)
         end
     end
 

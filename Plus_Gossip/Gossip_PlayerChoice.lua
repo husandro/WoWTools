@@ -69,28 +69,6 @@ local function Init()
                         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
                         GameTooltip:Show()
                     end)
-                    --[[optionFrame.check.Text2=WoWTools_LabelMixin:Create(optionFrame.check)
-                    optionFrame.check.Text2:SetPoint('RIGHT', optionFrame.check, 'LEFT')
-                    optionFrame.check.Text2:SetTextColor(0,1,0)
-                    optionFrame.check:SetScript('OnUpdate', function(self3, elapsed)
-                        self3.elapsed = (self3.elapsed or 1) + elapsed
-                        if self3.elapsed>=1 then
-                            local text, count
-                            local aura= self3.spellID and C_UnitAuras.GetPlayerAuraBySpellID(self3.spellID)
-                            if aura then
-                                local value= aura.expirationTime-aura.duration
-                                local time= GetTime()
-                                time= time < value and time + 86400 or time
-                                time= time - value
-                                text= WoWTools_TimeMixin:SecondsToClock(aura.duration- time)
-                                count= select(3, WoWTools_AuraMixin:Get('player', self3.spellID, 'HELPFUL'))
-                                count= count and count>1 and count or nil
-                            end
-                            self3.Text:SetText(text or '')
-                            self3.Text2:SetText(count or '')
-                            self3.elapsed=0
-                        end
-                    end)]]
                 end
 
                 if optionFrame.check then
