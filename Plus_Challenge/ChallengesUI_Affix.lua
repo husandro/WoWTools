@@ -252,7 +252,7 @@ local function Init()
 
 
 
-
+    C_Timer.After(1, function() Set_List() end)
     Frame:Settings()
 
     Init=function()
@@ -274,5 +274,5 @@ end
 
 
 function WoWTools_ChallengeMixin:ChallengesUI_Affix()
-    C_Timer.After(0.3, function() Init() end)
+    Init()
 end
