@@ -45,5 +45,7 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
             self.targetFrame:SetSize(800, 496)
         end
     })
+
+    WoWTools_MoveMixin:Setup(EncounterJournal.NineSlice, {frame= EncounterJournal})
 end
 
