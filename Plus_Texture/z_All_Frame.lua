@@ -890,7 +890,7 @@ end)
 
 
 --光环
-    --[[AuraButtonArtTemplate
+    --AuraButtonArtTemplate
     hooksecurefunc(AuraFrameMixin, 'UpdateAuraButtons', function(self)--AuraButtonArtTemplate
         if self:TryEditModeUpdateAuraButtons() then
             return
@@ -898,18 +898,13 @@ end)
         for _, auraFrame in ipairs(self.auraFrames) do
             if auraFrame:IsShown() and not auraFrame.IconMask and auraFrame.Icon.AddMaskTexture then
                 auraFrame.IconMask= auraFrame:CreateMaskTexture()
-                if CooldownViewerEssentialItemMixin then
-                auraFrame.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+                auraFrame.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
                 auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
                 auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
-                else
-                    auraFrame.IconMask:SetAtlas('UI-HUD-ActionBar-IconFrame-Background')
-                    auraFrame.IconMask:SetAllPoints()
-                end
                 auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
             end
         end
-    end)]]
+    end)
 
     Init=function()end
 end
