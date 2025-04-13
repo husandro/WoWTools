@@ -194,7 +194,7 @@ function WoWTools_ButtonMixin:Menu(frame, tab)
     tab= tab or {}
     tab.isMenu=true
 
-    if tab.icon~='hide' then
+    if tab.icon~='hide' and not tab.texture then
         tab.atlas= tab.atlas or 'ui-questtrackerbutton-filter'
     end
 
