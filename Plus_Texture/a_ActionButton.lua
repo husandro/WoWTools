@@ -67,7 +67,7 @@ local function Init()
             Init_HooKey(_G[name..i])
         end
     end
-print(ExtraActionButton1)
+
     Init_HooKey(_G['ExtraActionButton1'])
 
 
