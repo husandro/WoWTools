@@ -33,45 +33,64 @@ end
 
 
 
+
+
+local function Create(tooltip)
+    if tooltip.textLeft then
+        return
+    end
+
+
+    tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16})
+    tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
+
+    tooltip.text2Left=WoWTools_LabelMixin:Create(tooltip, {size=16})--左上角字符2
+    tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
+
+    tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
+    if tooltip.CloseButton then
+        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', 0, 3)
+    else
+        tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
+    end
+
+    tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
+    tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
+
+    tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
+    tooltip.backgroundColor:SetPoint('TOPLEFT')
+    tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
+    --tooltip.backgroundColor:SetAllPoints(tooltip)
+
+    if not tooltip.Portrait then
+        tooltip.Portrait= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+        if tooltip.CloseButton then
+            tooltip.Portrait:SetPoint('TOPRIGHT', tooltip.CloseButton, 'BOTTOMRIGHT', -6, 0)
+        else
+            tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
+        end
+        tooltip.Portrait:SetSize(40,40)
+    end
+    tooltip:HookScript("OnHide", function(frame)--隐藏
+        WoWTools_TooltipMixin:Set_Rest_Item(frame)--清除，数据
+    end)
+
+    WoWTools_TextureMixin:SetNineSlice(tooltip, true, nil, nil, true)
+end
+
+
+
+
+
+
+
 function WoWTools_TooltipMixin:Set_Init_Item(tooltip)--创建，设置，内容
     if not tooltip then
         return
     end
-    if not tooltip.textLeft then--左上角字符
-        tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16})
-        tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
 
-        tooltip.text2Left=WoWTools_LabelMixin:Create(tooltip, {size=16})--左上角字符2
-        tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
+    Create(tooltip)
 
-        tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
-        if tooltip.CloseButton then
-            tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', 0, 3)
-        else
-            tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
-        end
-
-        tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
-        tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
-
-        tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
-        tooltip.backgroundColor:SetPoint('TOPLEFT')
-        tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
-        --tooltip.backgroundColor:SetAllPoints(tooltip)
-
-        if not tooltip.Portrait then
-            tooltip.Portrait= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-            if tooltip.CloseButton then
-                tooltip.Portrait:SetPoint('TOPRIGHT', tooltip.CloseButton, 'BOTTOMRIGHT', -6, 0)
-            else
-                tooltip.Portrait:SetPoint('TOPRIGHT',-2, -3)
-            end
-            tooltip.Portrait:SetSize(40,40)
-        end
-        tooltip:HookScript("OnHide", function(frame)--隐藏
-            self:Set_Rest_Item(frame)--清除，数据
-        end)
-    end
     if not tooltip.playerModel and not Save().hideModel then
         WoWTools_TooltipMixin:Set_PlayerModel(tooltip)
         tooltip.playerModel:SetShown(false)
@@ -89,6 +108,7 @@ function WoWTools_TooltipMixin:Set_Rest_Item(tooltip)
     if not tooltip.textLeft then
         return
     end
+
     tooltip.textLeft:SetText('')
     tooltip.text2Left:SetText('')
     tooltip.textRight:SetText('')

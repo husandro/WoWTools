@@ -3,17 +3,18 @@ local function Init()
 
 
     --装备，对比，提示
-    ShoppingTooltip1.Portrait= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-    ShoppingTooltip1.Portrait:SetPoint('TOPRIGHT',-2, -3)
-    ShoppingTooltip1.Portrait:SetSize(40,40)
-    ShoppingTooltip1.Portrait:SetAtlas('Adventures-Target-Indicator')
-    ShoppingTooltip1.Portrait:SetAlpha(0.5)
+    ShoppingTooltip1.Portrait2= ShoppingTooltip1:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+    ShoppingTooltip1.Portrait2:SetPoint('TOPRIGHT',-2, -3)
+    ShoppingTooltip1.Portrait2:SetSize(40,40)
+    ShoppingTooltip1.Portrait2:SetAtlas('Adventures-Target-Indicator')
+    ShoppingTooltip1.Portrait2:SetAlpha(0.5)
+    ShoppingTooltip1.Portrait2:SetTexCoord(0,1,1,0)
 
-    ShoppingTooltip2.Portrait= ShoppingTooltip2:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
-    ShoppingTooltip2.Portrait:SetPoint('TOPRIGHT',-2, -3)
-    ShoppingTooltip2.Portrait:SetSize(40,40)
-    ShoppingTooltip2.Portrait:SetAtlas('Adventures-Target-Indicator')
-    ShoppingTooltip2.Portrait:SetAlpha(0.5)
+    ShoppingTooltip2.Portrait2= ShoppingTooltip2:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+    ShoppingTooltip2.Portrait2:SetPoint('TOPRIGHT',-2, -3)
+    ShoppingTooltip2.Portrait2:SetSize(40,40)
+    ShoppingTooltip2.Portrait2:SetAtlas('Adventures-Target-Indicator')
+    ShoppingTooltip2.Portrait2:SetAlpha(0.5)
 
 
     TooltipDataProcessor.AddTooltipPostCall(TooltipDataProcessor.AllTypes, function(tooltip)

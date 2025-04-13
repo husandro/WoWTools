@@ -150,6 +150,7 @@ local NineSliceTabs={
     'TopRightCorner',
     'BottomRightCorner',
     'BottomLeftCorner',--8
+
     'Center',
     'Background',
     'Bg',
