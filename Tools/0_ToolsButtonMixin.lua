@@ -43,8 +43,8 @@ function WoWTools_ToolsMixin:CreateButton(tab)
         --isMenu=tab.isMenu
     })
 
-    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
+    btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+    btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
 
     function btn:set_border_alpha()
         self.border:SetAlpha(WoWToolsSave['WoWTools_ToolsButton'].borderAlpha or 0.3)

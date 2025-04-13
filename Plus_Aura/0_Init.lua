@@ -20,18 +20,6 @@ local function Init()
 end
 
 
-    --AuraButtonArtTemplate
-    local function Aura_Add(self)
-        for _, auraFrame in ipairs(self.auraFrames) do
-            auraFrame.IconMask= auraFrame:CreateMaskTexture()
-            auraFrame.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
-            auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
-            auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
-            auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
-        end
-    end
-    Aura_Add(BuffFrame)
-    --Aura_Add(DebuffFrame)
 
 
 
@@ -42,6 +30,10 @@ panel:RegisterEvent("PLAYER_LOGIN")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
+
+            if not WoWTools_DataMixin.Player.husandro then--测试中
+                return
+            end
 
             WoWToolsSave['Plus_Aura']= WoWToolsSave['Plus_Aura'] or P_Save
 

@@ -48,13 +48,13 @@ ItemButtonTemplate.xml
 --遮罩
 function WoWTools_ButtonMixin:Mask(btn)
 
-    btn.mask= btn.mask or btn:CreateMaskTexture()
-    btn.mask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
-    btn.mask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
-    btn.mask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
+    btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
+    btn.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
+    btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
+    btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
     local icon= btn:GetNormalTexture()
     if icon then
-        icon:AddMaskTexture(btn.mask)
+        icon:AddMaskTexture(btn.IconMask)
     end
 end
 
@@ -96,17 +96,17 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 --圆形按钮
     
     if isType2 then
-        btn.mask= btn:CreateMaskTexture()
-        btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+        btn.IconMask= btn:CreateMaskTexture()
+        btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
 
-        btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-        btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
+        btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+        btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
  
 
         btn.texture=btn:CreateTexture(nil, 'BORDER')
         btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
         btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
-        btn.texture:AddMaskTexture(btn.mask)
+        btn.texture:AddMaskTexture(btn.IconMask)
 
         btn.border=btn:CreateTexture(nil, 'ARTWORK')
         btn.border:SetAllPoints(btn)

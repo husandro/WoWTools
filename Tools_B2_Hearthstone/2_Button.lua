@@ -79,7 +79,7 @@ local function Init(ToyButton)
 
     ToyButton.textureModifier= ToyButton:CreateTexture(nil, 'OVERLAY', nil, 2)
     ToyButton.textureModifier:SetAllPoints()
-    ToyButton.textureModifier:AddMaskTexture(ToyButton.mask)
+    ToyButton.textureModifier:AddMaskTexture(ToyButton.IconMask)
 
     ToyButton.typeItems={}
 
@@ -96,9 +96,9 @@ local function Init(ToyButton)
             icon:SetPoint('TOPLEFT',2,-2)
         end
 
-        ToyButton.mask:SetSize(10,10)
-        ToyButton.mask:SetPoint('CENTER', icon)
-        icon:AddMaskTexture(ToyButton.mask)
+        ToyButton.IconMask:SetSize(10,10)
+        ToyButton.IconMask:SetPoint('CENTER', icon)
+        icon:AddMaskTexture(ToyButton.IconMask)
 
         ToyButton.typeItems[data.itemID]= true
     end

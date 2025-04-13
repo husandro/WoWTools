@@ -26,8 +26,8 @@ local LFDButton
 
 
 local function Init()
-    LFDButton.mask:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 5, -5)
-    LFDButton.mask:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -7, 7)
+    LFDButton.IconMask:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 5, -5)
+    LFDButton.IconMask:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -7, 7)
 
     --LFDButton.texture:SetPoint("TOPLEFT", LFDButton, "TOPLEFT", 4, -4)
     --LFDButton.texture:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -6, 6)

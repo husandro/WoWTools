@@ -414,7 +414,7 @@ local function Init()
 
     MountButton.textureModifier=MountButton:CreateTexture(nil,'OVERLAY')--提示 Shift, Ctrl, Alt
     MountButton.textureModifier:SetAllPoints(MountButton.texture)
-    MountButton.textureModifier:AddMaskTexture(MountButton.mask)
+    MountButton.textureModifier:AddMaskTexture(MountButton.IconMask)
 
     MountButton.textureModifier:SetShown(false)
 

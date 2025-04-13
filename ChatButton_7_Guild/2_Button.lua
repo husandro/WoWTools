@@ -75,9 +75,9 @@ local function Init(GuildButton)
     GuildButton.texture2:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", -14, 14)
     GuildButton.texture2:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", 14, -14)
 
-    GuildButton.mask:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 5.5, -5.5)
-    GuildButton.mask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
-    GuildButton.texture2:AddMaskTexture(GuildButton.mask)
+    GuildButton.IconMask:SetPoint("TOPLEFT", GuildButton, "TOPLEFT", 5.5, -5.5)
+    GuildButton.IconMask:SetPoint("BOTTOMRIGHT", GuildButton, "BOTTOMRIGHT", -8, 8)
+    GuildButton.texture2:AddMaskTexture(GuildButton.IconMask)
 
     GuildButton.inviteTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
     GuildButton.inviteTexture:SetPoint('TOPLEFT',1,-1)

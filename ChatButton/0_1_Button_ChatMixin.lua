@@ -157,27 +157,27 @@ local function Set_Button(btn)
     btn:SetPushedAtlas('bag-border-highlight')
     btn:SetHighlightAtlas('bag-border')
 
-    btn.mask= btn:CreateMaskTexture()
-    btn.mask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
-    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
+    btn.IconMask= btn:CreateMaskTexture()
+    btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+    btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+    btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -4, 4)
 
     --[[btn.background= btn:CreateTexture(nil, 'BACKGROUND')
     btn.background:SetAllPoints(btn)
     btn.background:SetAtlas('bag-reagent-border-empty')
     btn.background:SetAlpha(0.5)
     WoWTools_ColorMixin:Setup(btn.background, {type='Texture', alpha= 0.3})
-    btn.background:AddMaskTexture(btn.mask)]]
+    btn.background:AddMaskTexture(btn.IconMask)]]
 
     btn.texture=btn:CreateTexture(nil, 'BORDER')
     btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 4, -4)
     btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -6, 6)
-    btn.texture:AddMaskTexture(btn.mask)
+    btn.texture:AddMaskTexture(btn.IconMask)
 
     btn.border=btn:CreateTexture(nil, 'ARTWORK')
     btn.border:SetAllPoints(btn)
     btn.border:SetAtlas('bag-reagent-border')
-    --btn.border:AddMaskTexture(btn.mask)
+    --btn.border:AddMaskTexture(btn.IconMask)
     WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha= 0.3})
 
     btn:SetSize(30, 30)

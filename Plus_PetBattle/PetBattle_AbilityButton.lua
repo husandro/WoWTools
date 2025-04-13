@@ -951,8 +951,8 @@ local function Init_Button(tab)
     btn.parent2=tab.parent2
     btn.Auras={}
 
-    btn.mask:SetPoint("TOPLEFT", btn, "TOPLEFT")
-    btn.mask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT")
+    btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT")
+    btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT")
 
     btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT",-5,2)
     btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT",0,-2)
