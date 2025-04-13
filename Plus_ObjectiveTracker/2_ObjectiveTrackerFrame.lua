@@ -31,10 +31,10 @@ local function Set_Collapse(collapse, isAllCollapse)
         return
     end
 
-    for frame, isAll in pairs(TrackerTabs) do
+    for frame, isCheck in pairs(TrackerTabs) do
         frame= _G[frame]
         if frame:IsVisible()
-            and frame:IsCollapsed()~=collapse and (isAllCollapse and isAll or not isAllCollapse) then
+            and frame:IsCollapsed()~=collapse and (isAllCollapse and isCheck or not isAllCollapse) then
             frame:SetCollapsed(collapse)
         end
     end
