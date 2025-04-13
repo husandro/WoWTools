@@ -6,6 +6,9 @@
 --专业技能 ProfessionsRecipeTracker
 local function Init()
     WoWTools_ObjectiveMixin:Add_ClearAll_Button(ProfessionsRecipeTracker, WoWTools_DataMixin.onlyChinese and '专业技能' or PROFESSIONS_TRACKER_HEADER_PROFESSION, function(self)
+        if not IsShiftKeyDown() then
+            return
+        end
         local num= 0
         local function clear_Recipe(isRecrafting)
             for index, recipeID in pairs(C_TradeSkillUI.GetRecipesTracked(isRecrafting) or {}) do

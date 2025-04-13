@@ -46,13 +46,12 @@ SmallItemButtonTemplate <Size x="134" y="30"/>
 ItemButtonTemplate.xml
 ]]
 --遮罩
-function WoWTools_ButtonMixin:Mask(btn)
-
+function WoWTools_ButtonMixin:AddMask(btn)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
     btn.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
     btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
     btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
-    local icon= btn:GetNormalTexture()
+    local icon= btn.Icon or btn.icon or btn:GetNormalTexture()
     if icon then
         icon:AddMaskTexture(btn.IconMask)
     end
@@ -131,7 +130,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
             pushedAtlas='ui-questtrackerbutton-filter-pressed'
             highlightAtlas= 'ui-questtrackerbutton-red-highlight'
         else
-            self:Mask(btn)
+            self:AddMask(btn)
         end
     end
     btn:SetPushedAtlas(pushedAtlas)
@@ -179,7 +178,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 
 --遮罩
     if isMask or ((atlas or texture) and not pushedAtlas and not isType2) then
-        self:Mask(btn)
+        self:AddMask(btn)
     end
     return btn
 end

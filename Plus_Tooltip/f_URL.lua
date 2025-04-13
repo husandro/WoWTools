@@ -175,6 +175,7 @@ end
 
 function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
     if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
+        print(tab.type, tab.id)
         if tab.type and tab.id then
             Create_URL_Button(tooltip, tab)
         end

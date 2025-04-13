@@ -296,9 +296,10 @@ Plus_Currency\z_ScrollBox.lua
 
 ##任务框，增强
 ##Plus\ObjectiveTracker.lua
-Plus_ObjectiveTracker\0_ObjectiveTracker.lua
-Plus_ObjectiveTracker\1_ObjectiveTrackerFrame.lua
-Plus_ObjectiveTracker\2_ObjectiveTrackerShared.lua
+Plus_ObjectiveTracker\0_ObjectiveMixin.lua
+Plus_ObjectiveTracker\1_Init.lua
+Plus_ObjectiveTracker\2_ObjectiveTrackerFrame.lua
+Plus_ObjectiveTracker\3_ObjectiveTrackerShared.lua
 Plus_ObjectiveTracker\Achievement.lua
 Plus_ObjectiveTracker\Campaign_Quest.lua
 Plus_ObjectiveTracker\MonthlyActivities.lua
