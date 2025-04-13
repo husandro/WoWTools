@@ -61,6 +61,7 @@ local function Init()
             "MultiBar5Button",
             "MultiBar6Button",
             "MultiBar7Button",
+            "PetActionButton"
         }) do
             Init_HooKey(_G[name..i])
         end
@@ -76,11 +77,11 @@ local function Init()
 
         local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool
         if dividersPool then
-            for i, actionButton in pairs(self.actionButtons) do
+            --for i, actionButton in pairs(self.actionButtons) do
                 for pool in dividersPool:EnumerateActive() do
                     WoWTools_TextureMixin:SetFrame(pool)
                 end
-            end
+            --end
         end
     end)
 

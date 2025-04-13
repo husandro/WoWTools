@@ -46,6 +46,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         end
     })
 
-    WoWTools_MoveMixin:Setup(EncounterJournal.NineSlice, {frame= EncounterJournal})
+   --WoWTools_MoveMixin:Setup(EncounterJournal.NineSlice, {frame= EncounterJournal})
 end
 

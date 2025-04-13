@@ -1,35 +1,39 @@
 
 --ObjectiveTrackerFrame
+local MenuButton
+
 
 local function Save()
     return WoWToolsSave['ObjectiveTracker']
 end
 
-local function set_scale(isInit)
-    if (isInit and Save().scale==1) or not Save().scale or not ObjectiveTrackerFrame:CanChangeAttribute() then
-        return
-    end
-    ObjectiveTrackerFrame:SetScale(Save().scale)
+local TrackerTabs={
+    ['ScenarioObjectiveTracker']=false,
+
+    ['AchievementObjectiveTracker']=true,
+    ['QuestObjectiveTracker']=true,
+    ['CampaignQuestObjectiveTracker']=true,
+    ['WorldQuestObjectiveTracker']=true,
+    ['ProfessionsRecipeTracker']=true,
+    ['MonthlyActivitiesObjectiveTracker']=true,
+    ['UIWidgetObjectiveTracker']=true,
+    ['BonusObjectiveTracker']=true,
+    ['AdventureObjectiveTracker']=true,
+}
+
+local function Is_Locked()
+    return WoWTools_FrameMixin:IsLocked(ObjectiveTrackerFrame)
 end
 
-local function set_frames_show(collapse)
-    if issecure() then
+local function Set_Collapse(collapse, isAllCollapse)
+    if Is_Locked() or ObjectiveTrackerFrame:IsCollapsed() then
         return
     end
 
-    for _, frame in pairs({
-        'QuestObjectiveTracker',
-        'CampaignQuestObjectiveTracker',
-        'WorldQuestObjectiveTracker',
-        'AchievementObjectiveTracker',
-        'ProfessionsRecipeTracker',
-        'MonthlyActivitiesObjectiveTracker',
-    }) do
+    for frame, isAll in pairs(TrackerTabs) do
         frame= _G[frame]
-        if frame then
-            if frame:IsCollapsed()~=collapse and not frame:IsProtected() then
-                frame:SetCollapsed(collapse)
-            end
+        if frame:IsCollapsed()~=collapse and (isAllCollapse and isAll or not isAllCollapse) then
+            frame:SetCollapsed(collapse)
         end
     end
 end
@@ -38,68 +42,189 @@ end
 
 
 
-local function menu_tooltip(root)
-    root:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
-    end)
-end
 
 local function Init_Menu(self, root)
     local sub
-    sub=root:CreateButton((WoWTools_DataMixin.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
-        set_frames_show(true)
+    local col= Is_Locked() and '|cff828282' or ''
+    root:CreateButton(
+        col
+        ..(WoWTools_DataMixin.onlyChinese and '收起选项 |A:editmode-up-arrow:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS),
+    function()
+        Set_Collapse(true, true)
     end)
-    menu_tooltip(sub)
 
-    sub=root:CreateButton((WoWTools_DataMixin.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
-        set_frames_show(false)
+    root:CreateButton(
+        col
+        ..(WoWTools_DataMixin.onlyChinese and '展开选项 |A:editmode-down-arrow:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS),
+    function()
+        Set_Collapse(false, true)
     end)
-    menu_tooltip(sub)
 
+--自动
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO,
+    function()
+        return Save().autoHide
+    end, function()
+        Save().autoHide = not Save().autoHide and true or nil
+        self:set_event()
+    end)
+
+--战斗中
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
+    function()
+        return Save().autoHideInCombat
+    end, function()
+        Save().autoHideInCombat = not Save().autoHideInCombat and true or nil
+        self:set_event()
+    end)
+
+--缩放
     root:CreateDivider()
-    WoWTools_MenuMixin:Scale(self, root, function()
+    WoWTools_MenuMixin:Scale(ObjectiveTrackerFrame, root, function()
         return Save().scale
     end, function(value)
         Save().scale= value
-        set_scale()
+        self:set_scale()
     end)
 
-    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName})
-    sub:SetTooltip(function(tooltip)
+--选项
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName, tooltip=function(tooltip)
+        tooltip:AddLine(' ')
         tooltip:AddLine('|cnRED_FONT_COLOR:BUG')
-    end)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
+    end})
+
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 
 local function Init()
-    set_scale(true)
+    MenuButton= WoWTools_ButtonMixin:Menu(ObjectiveTrackerFrame.Header, {
+        size=20
+    })
 
-    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnLeave', GameTooltip_Hide)
-    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    function MenuButton:set_scale()
+        if not WoWTools_FrameMixin:IsLocked(ObjectiveTrackerFrame) then
+            ObjectiveTrackerFrame:SetScale(Save().scale or 1)
+        end
+    end
+
+    function MenuButton:set_collapse()
+        Set_Collapse(
+            IsInInstance() or (Save().autoHideInCombat and UnitAffectingCombat('player')
+        ) and true or false, false)
+    end
+
+    function MenuButton:set_event()
+        self:UnregisterAllEvents()
+
+        if Save().autoHide then
+            self:RegisterEvent('LOADING_SCREEN_DISABLED')
+            self:RegisterEvent("CHALLENGE_MODE_START")
+
+            if Save().autoHideInCombat then
+                self:RegisterEvent('PLAYER_REGEN_DISABLED')
+                self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            end
+
+            self:set_collapse()
+        end
+    end
+
+    function MenuButton:set_shown()
+        self:SetShown(not ObjectiveTrackerFrame:IsCollapsed())
+    end
+
+    MenuButton:SetScript('OnMouseWheel', function(_, d)
+        Set_Collapse(d==1, true)
+    end)
+
+    MenuButton:SetPoint('RIGHT', ObjectiveTrackerFrame.Header.MinimizeButton, 'LEFT')
+    MenuButton:SetScript('OnLeave', GameTooltip_Hide)
+    MenuButton:HookScript('OnEnter', function(self)
+        GameTooltip:SetOwner(ObjectiveTrackerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddLine('|A:Objective-Nub:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine(' ')
+
+        local col= Is_Locked() and '|cff828282' or ''
+        GameTooltip:AddLine(
+            col
+            ..(WoWTools_DataMixin.onlyChinese and '收起选项 |A:editmode-up-arrow:16:11:0:3|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
+            ..(WoWTools_DataMixin.onlyChinese and '上' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_UP)
+            ..WoWTools_DataMixin.Icon.mid
+        )
+        GameTooltip:AddLine(
+            col
+            ..(WoWTools_DataMixin.onlyChinese and '展开选项 |A:editmode-down-arrow:16:11:0:-7|a' or HUD_EDIT_MODE_EXPAND_OPTIONS)
+            ..(WoWTools_DataMixin.onlyChinese and '下' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_WRAP_DOWN)
+            ..WoWTools_DataMixin.Icon.mid
+        )
         GameTooltip:Show()
     end)
+    MenuButton:SetupMenu(Init_Menu)
 
-    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseDown', function(self, d)
-        if d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+    MenuButton:SetScript('OnEvent', function(self, event)
+        if event=='LOADING_SCREEN_DISABLED' then
+            TrackerTabs['QuestObjectiveTracker']= IsInInstance()
         end
+        self:set_collapse()
     end)
 
+
+
+    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseUp', function()
+        Save().initIsCollapsed= ObjectiveTrackerFrame:IsCollapsed()
+    end)
+
+    hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', function(_, collapsed)
+        Save().initIsCollapsed= collapsed--保存，上次
+        MenuButton:set_shown()
+    end)
+
+
+
+
+
+--初始
     hooksecurefunc(ObjectiveTrackerManager, 'ReleaseFrame', function(_, line)
         if line.Icon2 then
             line.Icon2:SetTexture(0)
         end
     end)
+
+
+    MenuButton:set_scale()
+    MenuButton:set_event()
+    MenuButton:set_shown()
+
+    if Save().autoHide and Save().initIsCollapsed and not Is_Locked()  then--保存，上次
+        ObjectiveTrackerFrame:SetCollapsed(true)--:ToggleCollapsed()
+    end
+
+
+
+
+    Init=function()end
 end
+
+
+
 
 
 
@@ -108,108 +233,3 @@ end
 function WoWTools_ObjectiveMixin:Init_ObjectiveTrackerFrame()
     Init()
 end
-
-
-
- --[[local sub, col
-
-    col= set_frames_show(true, true) and '' or '|cff9e9e9e'
-    root:CreateButton(col..(WoWTools_DataMixin.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS), function()
-        set_frames_show(true, false)
-    end)
-
-    col= set_frames_show(false, true) and '' or '|cff9e9e9e'
-    root:CreateButton(col..(WoWTools_DataMixin.onlyChinese and '展开选项 |A:NPE_ArrowDown:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS), function()
-        set_frames_show(false, false)
-    end)
-
-    sub= root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO, function()
-        return Save().autoHide
-    end, function()
-        Save().autoHide = not Save().autoHide and true or nil
-        self.eventFrame:set_event()
-    end)
-    sub:SetTooltip(function(tooltip, elementDescription)
-        GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
-        GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and WoWTools_DataMixin.onlyChinese and '收起选项 |A:NPE_ArrowUp:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS)
-        GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.onlyChinese and '仅限在副本中' or format(LFG_LIST_CROSS_FACTION, AGGRO_WARNING_IN_INSTANCE))
-    end)
-
-缩放
-    btn:HookScript('OnMouseWheel', function(self, d)
-        Save().scale= WoWTools_FrameMixin:ScaleFrame(ObjectiveTrackerFrame, d, Save().scale, function()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            print('|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or 'note: errors may occur')
-        end)
-        self:set_tooltip()
-    end)
-
-
-  sub=root:CreateButton('BUG', function()
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当有可点击物品按钮时会错误' or 'Wrong when there is an item button')
-    end)
-    
-    btn.eventFrame= CreateFrame('Frame', nil, btn)
-    function btn.eventFrame:set_event()
-        if Save().autoHide then
-            self:RegisterEvent('PLAYER_ENTERING_WORLD')
-            self:RegisterEvent("CHALLENGE_MODE_START")
-            self:set_collapse()
-        else
-            self:UnregisterAllEvents()
-        end
-    end
-    function btn.eventFrame:set_collapse()
-        if IsInInstance() then
-            set_frames_show(true, false)
-        end
-    end
-    btn.eventFrame:SetScript('OnEvent', btn.eventFrame.set_collapse)
-    btn.eventFrame:set_event()
-
-    
-
-
-    
-local HUD_EDIT_MODE_COLLAPSE_OPTIONS= HUD_EDIT_MODE_COLLAPSE_OPTIONS:gsub('|A:.-|a', '|A:NPE_ArrowUp:0:0|a')
-local HUD_EDIT_MODE_EXPAND_OPTIONS= HUD_EDIT_MODE_EXPAND_OPTIONS:gsub('|A:.-|a', '|A:NPE_ArrowDown:0:0|a')
-local tabs={
-    'QuestObjectiveTracker',
-    'CampaignQuestObjectiveTracker',
-    'WorldQuestObjectiveTracker',
-    'AchievementObjectiveTracker',
-    'ProfessionsRecipeTracker',
-    'MonthlyActivitiesObjectiveTracker',
-}
---右击
-local function set_frames_show(collapse, isFind)
-    for _, frame in pairs(tabs) do
-        frame= _G[frame]
-        if frame then
-            local isCollapsed = frame:IsCollapsed()
-            if (collapse and not isCollapsed) or (not collapse and isCollapsed) then
-                if isFind then
-                    return true
-                else
-                    local find= false
-                    for _, block in pairs(frame.usedBlocks and frame.usedBlocks[frame.blockTemplate] or {}) do
-                        if block.ItemButton then
-                            --find=true
-                            --break
-                        end
-                    end
-                    if not find then
-                        --WoWTools_Mixin:Call(frame.ToggleCollapsed, frame)
-                    end
-                end
-            end
-        end
-    end
-end
-
---for _, block in pairs(frame.usedBlocks and frame.usedBlocks[frame.blockTemplate] or {}) do
---if block.ItemButton then
-]]

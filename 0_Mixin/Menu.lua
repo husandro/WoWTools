@@ -609,13 +609,20 @@ function WoWTools_MenuMixin:OpenOptions(root, tab)
         end
         WoWTools_PanelMixin:Open(data.category, data.name)
         return MenuResponse.Open
-    end, {name=name, category=category})
+    end, {name=name, category=category, tooltip=tab.tooltip})
 
-    sub:SetTooltip(function(tooltip, description)
-        tooltip:AddDoubleLine(description.data.name or WoWTools_DataMixin.addName, description.data.name2)
+    sub:SetTooltip(function(tooltip, desc)
+        tooltip:AddDoubleLine(desc.data.name or WoWTools_DataMixin.addName, desc.data.name2)
         tooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')
         )
+        local isType= type(desc.data.tooltip)
+        if isType=='string' then
+            tooltip:AddLine(' ')
+            tooltip:AddLine(desc.data.tooltip)
+        elseif isType=='function' then
+            desc.data.tooltip(tooltip)
+        end
     end)
     return sub
 end
