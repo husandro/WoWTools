@@ -10,14 +10,15 @@ end
 local TrackerTabs={
     ['ScenarioObjectiveTracker']=false,
 
-    ['AchievementObjectiveTracker']=true,
     ['QuestObjectiveTracker']=true,
+    ['BonusObjectiveTracker']=true,
     ['CampaignQuestObjectiveTracker']=true,
     ['WorldQuestObjectiveTracker']=true,
+
+    ['AchievementObjectiveTracker']=true,
     ['ProfessionsRecipeTracker']=true,
     ['MonthlyActivitiesObjectiveTracker']=true,
     ['UIWidgetObjectiveTracker']=true,
-    ['BonusObjectiveTracker']=true,
     ['AdventureObjectiveTracker']=true,
 }
 
@@ -32,7 +33,8 @@ local function Set_Collapse(collapse, isAllCollapse)
 
     for frame, isAll in pairs(TrackerTabs) do
         frame= _G[frame]
-        if frame:IsCollapsed()~=collapse and (isAllCollapse and isAll or not isAllCollapse) then
+        if frame:IsVisible()
+            and frame:IsCollapsed()~=collapse and (isAllCollapse and isAll or not isAllCollapse) then
             frame:SetCollapsed(collapse)
         end
     end
@@ -44,7 +46,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub
+    --local sub
     local col= Is_Locked() and '|cff828282' or ''
     root:CreateButton(
         col
@@ -61,7 +63,7 @@ local function Init_Menu(self, root)
     end)
 
 --自动
-    sub=root:CreateCheckbox(
+    root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO,
     function()
         return Save().autoHide
@@ -70,7 +72,7 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
---战斗中
+--[[战斗中
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
     function()
@@ -78,7 +80,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().autoHideInCombat = not Save().autoHideInCombat and true or nil
         self:set_event()
-    end)
+    end)]]
 
 --缩放
     root:CreateDivider()
@@ -124,10 +126,10 @@ local function Init()
         end
     end
 
-    function MenuButton:set_collapse()
+    function MenuButton:auto_collapse()
         Set_Collapse(
-            IsInInstance() or (Save().autoHideInCombat and UnitAffectingCombat('player')
-        ) and true or false, false)
+            IsInInstance() or WoWTools_MapMixin:IsInDelve()
+        )
     end
 
     function MenuButton:set_event()
@@ -136,13 +138,14 @@ local function Init()
         if Save().autoHide then
             self:RegisterEvent('LOADING_SCREEN_DISABLED')
             self:RegisterEvent("CHALLENGE_MODE_START")
+            self:RegisterEvent('PLAYER_MAP_CHANGED')
 
-            if Save().autoHideInCombat then
+            --[[if Save().autoHideInCombat then
                 self:RegisterEvent('PLAYER_REGEN_DISABLED')
                 self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            end
+            end]]
 
-            self:set_collapse()
+            self:auto_collapse()
         end
     end
 
@@ -156,7 +159,7 @@ local function Init()
 
     MenuButton:SetPoint('RIGHT', ObjectiveTrackerFrame.Header.MinimizeButton, 'LEFT')
     MenuButton:SetScript('OnLeave', GameTooltip_Hide)
-    MenuButton:HookScript('OnEnter', function(self)
+    MenuButton:HookScript('OnEnter', function()
         GameTooltip:SetOwner(ObjectiveTrackerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine('|A:Objective-Nub:0:0|a'..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.left)
@@ -180,10 +183,16 @@ local function Init()
     MenuButton:SetupMenu(Init_Menu)
 
     MenuButton:SetScript('OnEvent', function(self, event)
-        if event=='LOADING_SCREEN_DISABLED' then
-            TrackerTabs['QuestObjectiveTracker']= IsInInstance()
-        end
-        self:set_collapse()
+        --[[if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then
+            local notIns= not (IsInInstance() or WoWTools_MapMixin:IsInDelve())
+            
+            TrackerTabs['QuestObjectiveTracker']= notIns
+            TrackerTabs['QuestObjectiveTracker']=notIns
+            TrackerTabs['BonusObjectiveTracker']=notIns
+            TrackerTabs['CampaignQuestObjectiveTracker']=notIns
+            TrackerTabs['WorldQuestObjectiveTracker']=notIns
+        end]]
+        self:auto_collapse()
     end)
 
 
