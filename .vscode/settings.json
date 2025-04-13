@@ -5549,7 +5549,8 @@
         "BuffFrame",
         "DebuffTypeColor",
         "AuraButtonMixin",
-        "BUFF_MAX_DISPLAY"
+        "BUFF_MAX_DISPLAY",
+        "ExtraActionButton1Icon"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

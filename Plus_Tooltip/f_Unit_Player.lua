@@ -102,11 +102,13 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local lineRight1= _G[tooltipName..'TextRight1']
         if lineRight1 then
             local text= ' '
-            if isSelf then--魔兽世界时光徽章
+--魔兽世界时光徽章
+            if isSelf then
                 C_WowTokenPublic.UpdateMarketPrice()
                 local price= C_WowTokenPublic.GetCurrentMarketPrice()
                 if price and price>0 then
-                    local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)--取得WOW物品数量
+--取得WOW物品数量
+                    local all, numPlayer= WoWTools_ItemMixin:GetWoWCount(122284)
                     text= all..(numPlayer>1 and '('..numPlayer..')' or '')..'|A:token-choice-wow:0:0|a'..WoWTools_Mixin:MK(price/10000,3)..'|A:Front-Gold-Icon:0:0|a'
                 end
             end
@@ -144,7 +146,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         end
 
         local effectiveLevel= UnitEffectiveLevel(unit)
-        if effectiveLevel~=level then
+        if effectiveLevel and effectiveLevel>0 and effectiveLevel~=level then
             text= text..'(|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r) '
         end
 
@@ -153,7 +155,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
                     ..' '..WoWTools_UnitMixin:GetClassIcon(classFilename)
                     ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
-                    ..'  '..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore,true)
+                    ..' |A:recipetoast-icon-star:0:0|a|cffffffff'..info.currentSeasonScore..'|r'
 
             if info.runs and info.runs then
                 local bestRunLevel=0
@@ -163,7 +165,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                     end
                 end
                 if bestRunLevel>0 then
-                    text= text..' ('..bestRunLevel..')'
+                    text= text..' (|cffffffff'..bestRunLevel..'|r)'
                 end
             end
         else

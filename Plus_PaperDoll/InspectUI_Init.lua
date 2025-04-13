@@ -175,6 +175,12 @@ local function Init_UI()
     StatusLabel= WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=14})
     StatusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-4)
 
+    StatusLabel.Background= InspectFrame:CreateTexture(nil, 'BACKGROUND')
+    StatusLabel.Background:SetPoint('TOPLEFT', StatusLabel, -2, 2)
+    StatusLabel.Background:SetPoint('BOTTOMRIGHT', StatusLabel, 2, -2)
+    StatusLabel.Background:SetAtlas('ChallengeMode-guild-background')
+    StatusLabel.Background:SetAlpha(0.5)
+
     function InspectFrame:set_status_label()
         local unit=self.unit
         local text

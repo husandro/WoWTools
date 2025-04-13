@@ -61,11 +61,15 @@ local function Init()
             "MultiBar5Button",
             "MultiBar6Button",
             "MultiBar7Button",
-            "PetActionButton"
+            "PetActionButton",
+            "OverrideActionBarButton",
         }) do
             Init_HooKey(_G[name..i])
         end
     end
+print(ExtraActionButton1)
+    Init_HooKey(_G['ExtraActionButton1'])
+
 
     hooksecurefunc(MainMenuBar, 'UpdateDividers', function(self)--主动作条
         for i=1, MAIN_MENU_BAR_NUM_BUTTONS do
