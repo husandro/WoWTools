@@ -48,6 +48,20 @@ end
 
 
 --[[
+
+ocal function foo(name, icon, _, _, _, _, _, _, _, spellId, ...)
+	if spellId == 21562 then -- Power Word: Fortitude
+		-- do stuff
+		return true
+	end
+end
+AuraUtil.ForEachAura("player", "HELPFUL", nil, function(...) print(...)end)
+
+https://warcraft.wiki.gg/wiki/API_UnitAura
+AuraUtil.ForEachAura("player", "CANCELABLE", nil, function(name, icon, ...)
+    print(name, icon, ...)
+end)
+
 "HELPFUL"	Buffs
 "HARMFUL"	Debuffs
 "PLAYER"	Buffs/debuffs 由玩家应用, 如果使用以下过滤器，则需要“HELPFUL”或“HARMFUL” UnitAura / .GetAuraDataByIndex

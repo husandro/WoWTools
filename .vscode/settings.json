@@ -5544,7 +5544,12 @@
         "PVEFrame_TabOnClick",
         "CooldownViewerBuffBarItemMixin",
         "AuraFrameMixin",
-        "CooldownViewerEssentialItemMixin"
+        "CooldownViewerEssentialItemMixin",
+        "DebuffFrame",
+        "BuffFrame",
+        "DebuffTypeColor",
+        "AuraButtonMixin",
+        "BUFF_MAX_DISPLAY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

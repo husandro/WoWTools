@@ -873,7 +873,6 @@ end)
     mixin:SetAlphaColor(DressUpFrame.OutfitDetailsPanel.BlackBackground)
 
 
-
     if ExpansionLandingPage then
         hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(self)
             if self.overlayFrame then
@@ -891,24 +890,20 @@ end)
 
 --光环
     --AuraButtonArtTemplate
-    hooksecurefunc(AuraFrameMixin, 'UpdateAuraButtons', function(self)--AuraButtonArtTemplate
-        if self:TryEditModeUpdateAuraButtons() then
-            return
-        end
+    local function Aura_Add(self)
         for _, auraFrame in ipairs(self.auraFrames) do
-            if auraFrame:IsShown() and not auraFrame.IconMask and auraFrame.Icon.AddMaskTexture then
-                auraFrame.IconMask= auraFrame:CreateMaskTexture()
-                auraFrame.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
-                auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
-                auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
-                auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
-            end
+            auraFrame.IconMask= auraFrame:CreateMaskTexture()
+            auraFrame.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
+            auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
+            auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
+            auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
         end
-    end)
+    end
+    Aura_Add(BuffFrame)
+    --Aura_Add(DebuffFrame)
 
     Init=function()end
 end
-
 
 
 
