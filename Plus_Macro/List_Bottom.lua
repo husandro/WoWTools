@@ -823,7 +823,7 @@ local function Init()
     WoWTools_MacroMixin.BottomListFrame= Frame
 
     Frame:SetSize(1,1)
-    Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -20)
+    Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -12)
 
     local last= Frame
     local btn
