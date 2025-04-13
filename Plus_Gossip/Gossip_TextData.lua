@@ -8,8 +8,8 @@ end
 
 
 
-
-local PlayerGossipTab = {--https://wago.io/hR_KBVGdK
+--https://wago.io/hR_KBVGdK
+local PlayerGossipTab = {
         [38054] = {icon=236722, cn='北风苔原', en='Borean Tundra', tw='北風凍原', de='Boreanische Tundra', es='Tundra Boreal', fr='Toundra Boréenne', it='Tundra Boreale', pt='Tundra Boreana', ru='Борейская тундра', ko='북풍의 땅'},--npc 35646
         [38055] = {icon=236781, cn='嚎风峡湾', en='Howling Fjord', tw='凜風峽灣', de='Der Heulende Fjord', es='Fiordo Aquilonal', fr='Fjord Hurlant', it='Fiordo Echeggiante', pt='Fiorde Uivante', ru='Ревущий фьорд', ko='울부짖는 협만'},
         [38056] = {icon=236817, cn='索拉查盆地', en='Sholazar Basin', tw='休拉薩盆地', de='Sholazarbecken', es='Cuenca de Sholazar', fr='Bassin de Sholazar', it='Bacino di Sholazar', pt='Bacia Sholazar', ru='Низина Шолазар', ko='숄라자르 분지'},
@@ -114,6 +114,9 @@ local function Init_Data()
             end
         end
     end
+
+    PlayerGossipTab=nil
+    Init_Data=function()end
 end
 
 
