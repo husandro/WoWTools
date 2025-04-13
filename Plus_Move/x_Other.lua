@@ -168,13 +168,15 @@ WoWTools_MoveMixin.Events['Blizzard_ArtifactUI']= function()
     WoWTools_MoveMixin:Setup(ArtifactFrame)
 end
 
-
-WoWTools_MoveMixin.Events['Blizzard_DelvesDashboardUI']= function()
-    WoWTools_MoveMixin:Setup(DelvesCompanionConfigurationFrame)
-    WoWTools_MoveMixin:Setup(DelvesCompanionAbilityListFrame)
+--地下堡
+function WoWTools_MoveMixin.Events:Blizzard_DelvesDashboardUI()
     WoWTools_MoveMixin:Setup(DelvesDashboardFrame, {frame=PVEFrame})
     WoWTools_MoveMixin:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame, {frame=PVEFrame})
     WoWTools_MoveMixin:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame.CompanionConfigButtonPanel, {frame=PVEFrame})
+end
+function WoWTools_MoveMixin.Events:Blizzard_DelvesCompanionConfiguration()
+    WoWTools_MoveMixin:Setup(DelvesCompanionConfigurationFrame)
+    WoWTools_MoveMixin:Setup(DelvesCompanionAbilityListFrame)
 end
 
 

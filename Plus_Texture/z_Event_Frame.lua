@@ -985,18 +985,20 @@ end
 
 
 --地下堡
-function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
+function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()    
     self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
-    self:SetAlphaColor(DelvesCompanionConfigurationFrame.Background, nil, nil, 0.3)
-    self:HideTexture(DelvesCompanionConfigurationFrame.Bg)
-    self:SetFrame(DelvesCompanionConfigurationFrame.Border)
-
-    self:SetNineSlice(DelvesCompanionAbilityListFrame, true)
-    self:SetAlphaColor(DelvesCompanionAbilityListFrameBg)
-    self:HideTexture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
 end
 
 
+function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
+    self:SetNineSlice(DelvesCompanionAbilityListFrame, true)
+    self:SetAlphaColor(DelvesCompanionAbilityListFrameBg)
+    self:HideTexture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
+
+    self:SetAlphaColor(DelvesCompanionConfigurationFrame.Background, nil, nil, 0.3)
+    self:HideTexture(DelvesCompanionConfigurationFrame.Bg)
+    self:SetFrame(DelvesCompanionConfigurationFrame.Border)
+end
 
 
 
