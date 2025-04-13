@@ -127,6 +127,7 @@ local function Init()
     end
 
     function MenuButton:auto_collapse()
+        print('a', IsInInstance() , WoWTools_MapMixin:IsInDelve())
         Set_Collapse(
             IsInInstance() or WoWTools_MapMixin:IsInDelve()
         )
