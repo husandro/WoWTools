@@ -888,19 +888,8 @@ end)
     end
 
 
---光环
-    --AuraButtonArtTemplate
-    local function Aura_Add(self)
-        for _, auraFrame in ipairs(self.auraFrames) do
-            auraFrame.IconMask= auraFrame:CreateMaskTexture()
-            auraFrame.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
-            auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
-            auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
-            auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
-        end
-    end
-    Aura_Add(BuffFrame)
-    --Aura_Add(DebuffFrame)
+
+
 
     Init=function()end
 end

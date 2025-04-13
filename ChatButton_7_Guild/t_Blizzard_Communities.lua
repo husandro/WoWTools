@@ -1,31 +1,31 @@
 
  --公会和社区 Blizzard_Communities
- function WoWTools_TextureMixin.Events:Blizzard_Communities(mixin)--成就
-    mixin:SetNineSlice(CommunitiesFrame, true)
-    mixin:SetScrollBar(CommunitiesFrameCommunitiesList)
-    mixin:SetScrollBar(CommunitiesFrame.Chat)
-    mixin:SetScrollBar(CommunitiesFrame.MemberList)
-    mixin:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
-    mixin:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
+ function WoWTools_TextureMixin.Events:Blizzard_Communities()--成就
+    self:SetNineSlice(CommunitiesFrame, true)
+    self:SetScrollBar(CommunitiesFrameCommunitiesList)
+    self:SetScrollBar(CommunitiesFrame.Chat)
+    self:SetScrollBar(CommunitiesFrame.MemberList)
+    self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
 
 
-    mixin:SetAlphaColor(CommunitiesFrameBg)
-    mixin:SetAlphaColor(CommunitiesFrame.MemberList.ColumnDisplay.Background)
-    mixin:SetAlphaColor(CommunitiesFrameCommunitiesList.Bg)
-    mixin:SetAlphaColor(CommunitiesFrameInset.Bg, nil, nil, 0.3)
-    mixin:SetNineSlice(CommunitiesFrameInset, nil, true)
-    mixin:SetNineSlice(CommunitiesFrameCommunitiesList.InsetFrame, true)
+    self:SetAlphaColor(CommunitiesFrameBg)
+    self:SetAlphaColor(CommunitiesFrame.MemberList.ColumnDisplay.Background)
+    self:SetAlphaColor(CommunitiesFrameCommunitiesList.Bg)
+    self:SetAlphaColor(CommunitiesFrameInset.Bg, nil, nil, 0.3)
+    self:SetNineSlice(CommunitiesFrameInset, nil, true)
+    self:SetNineSlice(CommunitiesFrameCommunitiesList.InsetFrame, true)
     CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
 
     CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
-    mixin:SetSearchBox(CommunitiesFrame.ChatEditBox)
-    mixin:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, true)
-    mixin:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
-    mixin:SetAlphaColor(CommunitiesFrameMiddle)
+    self:SetSearchBox(CommunitiesFrame.ChatEditBox)
+    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, true)
+    self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
+    self:SetAlphaColor(CommunitiesFrameMiddle)
 
 
-    mixin:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
+    self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
     hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
         C_Timer.After(0.3, function()
@@ -34,34 +34,34 @@
                 return
             end
             for _, button in pairs(frame:GetFrames() or {}) do
-                mixin:SetAlphaColor(button.Background)
+                self:SetAlphaColor(button.Background)
             end
         end)
     end)
 
 
 
-    mixin:HideFrame(CommunitiesFrame.ChatTab, {index=1})
-    mixin:HideFrame(CommunitiesFrame.RosterTab, {index=1})
-    mixin:HideFrame(CommunitiesFrame.GuildBenefitsTab, {index=1})
-    mixin:HideFrame(CommunitiesFrame.GuildInfoTab, {index=1})
+    self:HideFrame(CommunitiesFrame.ChatTab, {index=1})
+    self:HideFrame(CommunitiesFrame.RosterTab, {index=1})
+    self:HideFrame(CommunitiesFrame.GuildBenefitsTab, {index=1})
+    self:HideFrame(CommunitiesFrame.GuildInfoTab, {index=1})
 
-    mixin:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
+    self:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
 
 
-    mixin:SetFrame(CommunitiesFrame.NotificationSettingsDialog.Selector)
-    mixin:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
-    mixin:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
+    self:SetFrame(CommunitiesFrame.NotificationSettingsDialog.Selector)
+    self:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
+    self:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
 
 --公会设置
-    mixin:SetFrame(GuildControlUI)
-    mixin:SetFrame(GuildControlUIHbar)
-    mixin:SetMenu(GuildControlUINavigationDropdown)
-    mixin:SetMenu(GuildControlUIRankBankFrameRankDropdown)
-    mixin:SetInset(GuildControlUIRankBankFrameInset)
-    mixin:SetScrollBar(GuildControlUIRankBankFrameInsetScrollFrame)
-    mixin:SetMenu(GuildControlUIRankSettingsFrameRankDropdown)
+    self:SetFrame(GuildControlUI)
+    self:SetFrame(GuildControlUIHbar)
+    self:SetMenu(GuildControlUINavigationDropdown)
+    self:SetMenu(GuildControlUIRankBankFrameRankDropdown)
+    self:SetInset(GuildControlUIRankBankFrameInset)
+    self:SetScrollBar(GuildControlUIRankBankFrameInsetScrollFrame)
+    self:SetMenu(GuildControlUIRankSettingsFrameRankDropdown)
 
 
 
@@ -70,46 +70,46 @@
 
 --霸业风暴商店
     if AccountStoreFrame then
-        mixin:HideTexture(AccountStoreFrame.LeftInset.Bg)
-        mixin:HideTexture(AccountStoreFrame.RightInset.Bg)
-        mixin:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
-        mixin:HideTexture(AccountStoreFrameBg)
+        self:HideTexture(AccountStoreFrame.LeftInset.Bg)
+        self:HideTexture(AccountStoreFrame.RightInset.Bg)
+        self:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
+        self:HideTexture(AccountStoreFrameBg)
 
-        mixin:SetNineSlice(AccountStoreFrame)
-        mixin:SetScrollBar(AccountStoreFrame.CategoryList)
-        mixin:SetInset(AccountStoreFrame.RightInset)
-        mixin:SetInset(AccountStoreFrame.LeftInset)
+        self:SetNineSlice(AccountStoreFrame)
+        self:SetScrollBar(AccountStoreFrame.CategoryList)
+        self:SetInset(AccountStoreFrame.RightInset)
+        self:SetInset(AccountStoreFrame.LeftInset)
     end
 
 --新建，公会, 签名
-    mixin:SetAlphaColor(PetitionFrame.Bg, nil, true, true)
-    mixin:SetNineSlice(PetitionFrame)
-    mixin:SetAlphaColor(PetitionFrameBg, nil, nil,true)
-    mixin:HideTexture(PetitionFrameInset.Bg)
-    mixin:SetInset(PetitionFrameInset)
-    mixin:SetNineSlice(PetitionFrameInset)
-    mixin:SetScrollBar(PetitionFrame)
+    self:SetAlphaColor(PetitionFrame.Bg, nil, true, true)
+    self:SetNineSlice(PetitionFrame)
+    self:SetAlphaColor(PetitionFrameBg, nil, nil,true)
+    self:HideTexture(PetitionFrameInset.Bg)
+    self:SetInset(PetitionFrameInset)
+    self:SetNineSlice(PetitionFrameInset)
+    self:SetScrollBar(PetitionFrame)
 
 --公会，可以使用的服务
-    mixin:SetNineSlice(GuildRegistrarFrame)
-    mixin:SetAlphaColor(GuildRegistrarFrameBg, nil, nil,true)
-    mixin:HideTexture(GuildRegistrarFrameInset.Bg)
-    mixin:SetInset(GuildRegistrarFrameInset)
-    mixin:SetNineSlice(GuildRegistrarFrameInset)
-    mixin:SetScrollBar(GuildRegistrarFrame)
+    self:SetNineSlice(GuildRegistrarFrame)
+    self:SetAlphaColor(GuildRegistrarFrameBg, nil, nil,true)
+    self:HideTexture(GuildRegistrarFrameInset.Bg)
+    self:SetInset(GuildRegistrarFrameInset)
+    self:SetNineSlice(GuildRegistrarFrameInset)
+    self:SetScrollBar(GuildRegistrarFrame)
 
 --设计，公会战袍
-    --mixin:SetNineSlice(TabardFrameInset)
+    --self:SetNineSlice(TabardFrameInset)
     TabardFrameInset:Hide()
-    mixin:SetNineSlice(TabardFrame)
+    self:SetNineSlice(TabardFrame)
     TabardFrameBg:SetAtlas('ChallengeMode-guild-background')
 
-    mixin:SetAlphaColor(TabardFrameBg, nil, nil, true)
+    self:SetAlphaColor(TabardFrameBg, nil, nil, true)
 
-    mixin:HideTexture(TabardFrameMoneyBgMiddle)
-    mixin:HideTexture(TabardFrameMoneyBgLeft)
-    mixin:HideTexture(TabardFrameMoneyBgRight)
-    mixin:HideTexture(TabardFrameMoneyInset.Bg)
+    self:HideTexture(TabardFrameMoneyBgMiddle)
+    self:HideTexture(TabardFrameMoneyBgLeft)
+    self:HideTexture(TabardFrameMoneyBgRight)
+    self:HideTexture(TabardFrameMoneyInset.Bg)
 
     TabardFrameMoneyInset.NineSlice:Hide()
     TabardFrameCostFrame.NineSlice:Hide()
@@ -145,43 +145,43 @@
     TabardFrameCustomization5Right:Hide()
 
 
-    mixin:SetButton(TabardCharacterModelRotateLeftButton, {alpha=0.5})
-    mixin:SetButton(TabardCharacterModelRotateRightButton, {alpha=0.5})
+    self:SetButton(TabardCharacterModelRotateLeftButton, {alpha=0.5})
+    self:SetButton(TabardCharacterModelRotateRightButton, {alpha=0.5})
 
 --信息
-    mixin:SetFrame(CommunitiesFrameGuildDetailsFrameInfo, {isMinAlpha=true})
+    self:SetFrame(CommunitiesFrameGuildDetailsFrameInfo, {isMinAlpha=true})
     CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
-    mixin:SetFrame(CommunitiesFrameGuildDetailsFrame, {isMinAlpha=true})
-    mixin:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame)
-    mixin:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
+    self:SetFrame(CommunitiesFrameGuildDetailsFrame, {isMinAlpha=true})
+    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame)
+    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
 
 --公会信息， 点击以编辑
     --CommunitiesGuildTextEditFrame
-    mixin:SetFrame(CommunitiesGuildTextEditFrame, {isMinAlpha=true})
-    mixin:SetNineSlice(CommunitiesGuildTextEditFrame.Container, nil, nil, nil, true)
-    mixin:SetScrollBar(CommunitiesGuildTextEditFrame.Container.ScrollFrame)
+    self:SetFrame(CommunitiesGuildTextEditFrame, {isMinAlpha=true})
+    self:SetNineSlice(CommunitiesGuildTextEditFrame.Container, nil, nil, nil, true)
+    self:SetScrollBar(CommunitiesGuildTextEditFrame.Container.ScrollFrame)
 
 --查看日志，记录
-    mixin:SetFrame(CommunitiesGuildLogFrame)
-    mixin:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, nil, nil, true)
-    mixin:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
+    self:SetFrame(CommunitiesGuildLogFrame)
+    self:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, nil, nil, true)
+    self:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
 
 
 --新闻过滤
-    mixin:SetFrame(CommunitiesGuildNewsFiltersFrame, {isMinAlpha=true})
+    self:SetFrame(CommunitiesGuildNewsFiltersFrame, {isMinAlpha=true})
 
 --寻找社区
-    mixin:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
-    mixin:SetSearchBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
-    mixin:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
-    mixin:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
-    mixin:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
-    mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
-    mixin:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
+    self:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
+    self:SetSearchBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
+    self:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
+    self:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
+    self:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
+    self:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
+    self:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
 --公会查找器
-    mixin:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
-    mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
-    mixin:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
-    mixin:SetSearchBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+    self:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
+    self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
+    self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
+    self:SetSearchBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
 end

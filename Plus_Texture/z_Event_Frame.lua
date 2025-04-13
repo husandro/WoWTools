@@ -6,16 +6,16 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_TrainerUI(mixin)
-    mixin:SetFrame(ClassTrainerFrame, {alpha=0.3})
-    mixin:SetScrollBar(ClassTrainerFrame)
-    mixin:SetNineSlice(ClassTrainerFrame, true)
+function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
+    self:SetFrame(ClassTrainerFrame, {alpha=0.3})
+    self:SetScrollBar(ClassTrainerFrame)
+    self:SetNineSlice(ClassTrainerFrame, true)
 
-    mixin:HideTexture(ClassTrainerFrameInset.Bg)
-    mixin:SetNineSlice(ClassTrainerFrameInset, true)
+    self:HideTexture(ClassTrainerFrameInset.Bg)
+    self:SetNineSlice(ClassTrainerFrameInset, true)
 
-    mixin:HideTexture(ClassTrainerFrameBottomInset.Bg)
-    mixin:SetNineSlice(ClassTrainerFrameBottomInset, true)
+    self:HideTexture(ClassTrainerFrameBottomInset.Bg)
+    self:SetNineSlice(ClassTrainerFrameBottomInset, true)
 end
 
 
@@ -23,20 +23,20 @@ end
 
 
 --小时图，时间
-function WoWTools_TextureMixin.Events:Blizzard_TimeManager(mixin)
-    mixin:SetNineSlice(TimeManagerFrame, true)
-    mixin:SetAlphaColor(TimeManagerFrameBg)
-    mixin:HideTexture(TimeManagerFrameInset.Bg)
-    mixin:SetSearchBox(TimeManagerAlarmMessageEditBox)
+function WoWTools_TextureMixin.Events:Blizzard_TimeManager()
+    self:SetNineSlice(TimeManagerFrame, true)
+    self:SetAlphaColor(TimeManagerFrameBg)
+    self:HideTexture(TimeManagerFrameInset.Bg)
+    self:SetSearchBox(TimeManagerAlarmMessageEditBox)
     WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
     --秒表 Blizzard_TimeManager.lua
-    mixin:HideTexture(StopwatchFrameBackgroundLeft)
+    self:HideTexture(StopwatchFrameBackgroundLeft)
     if StopwatchFrame then
-        mixin:HideTexture(select(2, StopwatchFrame:GetRegions()))
-        mixin:HideTexture(StopwatchTabFrameMiddle)
-        mixin:HideTexture(StopwatchTabFrameRight)
-        mixin:HideTexture(StopwatchTabFrameLeft)
+        self:HideTexture(select(2, StopwatchFrame:GetRegions()))
+        self:HideTexture(StopwatchTabFrameMiddle)
+        self:HideTexture(StopwatchTabFrameRight)
+        self:HideTexture(StopwatchTabFrameLeft)
     end
 end
 
@@ -56,17 +56,17 @@ local function Set_TalentsFrameBg()
 end
 
 --天赋和法术书
-function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells(mixin)
-    mixin:SetAlphaColor(PlayerSpellsFrameBg)
-    mixin:SetNineSlice(PlayerSpellsFrame, 0.3)
-    mixin:SetTabSystem(PlayerSpellsFrame)
+function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
+    self:SetAlphaColor(PlayerSpellsFrameBg)
+    self:SetNineSlice(PlayerSpellsFrame, 0.3)
+    self:SetTabSystem(PlayerSpellsFrame)
 
-    mixin:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
-    mixin:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
+    self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
+    self:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
 
-    mixin:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
-    mixin:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
-    mixin:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
+    self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
+    self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
+    self:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
     Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)--隐藏，天赋，背景
         root:CreateDivider()
         local sub=WoWTools_MenuMixin:ShowBackground(root, function()
@@ -82,10 +82,9 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells(mixin)
     Set_TalentsFrameBg()
 
 
-    mixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
-    mixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
-    mixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
-
+    self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+    self:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+    self:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
 end
 
 
@@ -94,31 +93,31 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_AchievementUI(mixin)--成就
-    mixin:HideFrame(AchievementFrame)
-    mixin:HideFrame(AchievementFrame.Header)
-    mixin:HideFrame(AchievementFrameSummary)
-    mixin:SetNineSlice(AchievementFrameCategories, true)
-    mixin:SetScrollBar(AchievementFrameCategories)
+function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
+    self:HideFrame(AchievementFrame)
+    self:HideFrame(AchievementFrame.Header)
+    self:HideFrame(AchievementFrameSummary)
+    self:SetNineSlice(AchievementFrameCategories, true)
+    self:SetScrollBar(AchievementFrameCategories)
 
-    mixin:SetScrollBar(AchievementFrameAchievements)
-    mixin:HideFrame(AchievementFrameAchievements)
+    self:SetScrollBar(AchievementFrameAchievements)
+    self:HideFrame(AchievementFrameAchievements)
 
-    mixin:SetScrollBar(AchievementFrameStats)
-    mixin:SetSearchBox(AchievementFrame.SearchBox)
-    mixin:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
-    mixin:SetFrame(AchievementFrameTab1, {alpha=0.3})
-    mixin:SetFrame(AchievementFrameTab2, {alpha=0.3})
-    mixin:SetFrame(AchievementFrameTab3, {alpha=0.3})
-    mixin:HideTexture(AchievementFrameSummaryCategoriesStatusBarFillBar)
+    self:SetScrollBar(AchievementFrameStats)
+    self:SetSearchBox(AchievementFrame.SearchBox)
+    self:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
+    self:SetFrame(AchievementFrameTab1, {alpha=0.3})
+    self:SetFrame(AchievementFrameTab2, {alpha=0.3})
+    self:SetFrame(AchievementFrameTab3, {alpha=0.3})
+    self:HideTexture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
-    mixin:HideTexture(AchievementFrameComparisonHeaderBG)
+    self:HideTexture(AchievementFrameComparisonHeaderBG)
 
     for i=1, 10 do
-        mixin:HideTexture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
-        mixin:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
-        mixin:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
-        mixin:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
+        self:HideTexture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
+        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
+        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
+        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
     end
     --比较
     AchievementFrameComparisonHeader:ClearAllPoints()
@@ -135,33 +134,33 @@ end
 
 
 --地下城和团队副本, PVP
-function WoWTools_TextureMixin.Events:Blizzard_PVPUI(mixin)
-    mixin:HideTexture(HonorFrame.Inset.Bg)
-    mixin:HideTexture(HonorFrame.BonusFrame.ShadowOverlay)
-    mixin:HideTexture(HonorFrame.BonusFrame.WorldBattlesTexture)
-    mixin:SetNineSlice(HonorFrame.Inset, nil, true)
-    mixin:SetAlphaColor(HonorFrame.BonusFrame.WorldBattlesTexture)
-    mixin:HideTexture(HonorFrame.ConquestBar.Background)
+function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
+    self:HideTexture(HonorFrame.Inset.Bg)
+    self:HideTexture(HonorFrame.BonusFrame.ShadowOverlay)
+    self:HideTexture(HonorFrame.BonusFrame.WorldBattlesTexture)
+    self:SetNineSlice(HonorFrame.Inset, nil, true)
+    self:SetAlphaColor(HonorFrame.BonusFrame.WorldBattlesTexture)
+    self:HideTexture(HonorFrame.ConquestBar.Background)
 
-    mixin:SetNineSlice(PVPQueueFrame.HonorInset, nil, true)--最右边
+    self:SetNineSlice(PVPQueueFrame.HonorInset, nil, true)--最右边
 
-    mixin:SetNineSlice(ConquestFrame.Inset, nil, true)--中间
-    mixin:HideTexture(ConquestFrame.Inset.Bg)
-    mixin:HideTexture(ConquestFrameLeft)
-    mixin:HideTexture(ConquestFrameRight)
-    mixin:HideTexture(ConquestFrameTopRight)
-    mixin:HideTexture(ConquestFrameTop)
-    mixin:HideTexture(ConquestFrameTopLeft)
-    mixin:HideTexture(ConquestFrameBottomLeft)
-    mixin:HideTexture(ConquestFrameBottom)
-    mixin:HideTexture(ConquestFrameBottomRight)
+    self:SetNineSlice(ConquestFrame.Inset, nil, true)--中间
+    self:HideTexture(ConquestFrame.Inset.Bg)
+    self:HideTexture(ConquestFrameLeft)
+    self:HideTexture(ConquestFrameRight)
+    self:HideTexture(ConquestFrameTopRight)
+    self:HideTexture(ConquestFrameTop)
+    self:HideTexture(ConquestFrameTopLeft)
+    self:HideTexture(ConquestFrameBottomLeft)
+    self:HideTexture(ConquestFrameBottom)
+    self:HideTexture(ConquestFrameBottomRight)
 
-    mixin:SetAlphaColor(ConquestFrame.RatedBGTexture)
+    self:SetAlphaColor(ConquestFrame.RatedBGTexture)
     PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
-    mixin:SetAlphaColor(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
+    self:SetAlphaColor(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
 
-    mixin:HideTexture(ConquestFrame.RatedBGTexture)
-    mixin:SetScrollBar(LFDQueueFrameSpecific)
+    self:HideTexture(ConquestFrame.RatedBGTexture)
+    self:SetScrollBar(LFDQueueFrameSpecific)
 end
 
 
@@ -172,41 +171,41 @@ end
 
 
 --冒险指南
-function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal(mixin)
-    mixin:SetNineSlice(EncounterJournal, true)
+function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
+    self:SetNineSlice(EncounterJournal, true)
 
-    mixin:HideTexture(EncounterJournalBg)
-    mixin:SetAlphaColor(EncounterJournalInset.Bg, nil, nil, 0.3)
-    mixin:SetNineSlice(EncounterJournalInset, nil, true)
-    mixin:SetScrollBar(EncounterJournalInstanceSelect)
-    mixin:SetSearchBox(EncounterJournalSearchBox)
-    mixin:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
-    mixin:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
-    mixin:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
-    mixin:HideTexture(EncounterJournalNavBar.overlay)
-    mixin:HideTexture(EncounterJournalNavBarInsetBottomBorder)
-    mixin:HideTexture(EncounterJournalNavBarInsetRightBorder)
-    mixin:HideTexture(EncounterJournalNavBarInsetLeftBorder)
-    mixin:HideTexture(EncounterJournalNavBarInsetBotRightCorner)
-    mixin:HideTexture(EncounterJournalNavBarInsetBotLeftCorner)
+    self:HideTexture(EncounterJournalBg)
+    self:SetAlphaColor(EncounterJournalInset.Bg, nil, nil, 0.3)
+    self:SetNineSlice(EncounterJournalInset, nil, true)
+    self:SetScrollBar(EncounterJournalInstanceSelect)
+    self:SetSearchBox(EncounterJournalSearchBox)
+    self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
+    self:HideTexture(EncounterJournalNavBar.overlay)
+    self:HideTexture(EncounterJournalNavBarInsetBottomBorder)
+    self:HideTexture(EncounterJournalNavBarInsetRightBorder)
+    self:HideTexture(EncounterJournalNavBarInsetLeftBorder)
+    self:HideTexture(EncounterJournalNavBarInsetBotRightCorner)
+    self:HideTexture(EncounterJournalNavBarInsetBotLeftCorner)
 
-    mixin:SetAlphaColor(EncounterJournalInstanceSelectBG)
-    mixin:SetAlphaColor(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
+    self:SetAlphaColor(EncounterJournalInstanceSelectBG)
+    self:SetAlphaColor(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
     EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
 
-    mixin:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
 
-    mixin:SetFrame(EncounterJournalSuggestTab, {notAlpha=true})
-    mixin:SetFrame(EncounterJournalMonthlyActivitiesTab, {notAlpha=true})
-    mixin:SetFrame(EncounterJournalDungeonTab, {notAlpha=true})
-    mixin:SetFrame(EncounterJournalRaidTab, {notAlpha=true})
-    mixin:SetFrame(EncounterJournalLootJournalTab, {notAlpha=true})
+    self:SetFrame(EncounterJournalSuggestTab, {notAlpha=true})
+    self:SetFrame(EncounterJournalMonthlyActivitiesTab, {notAlpha=true})
+    self:SetFrame(EncounterJournalDungeonTab, {notAlpha=true})
+    self:SetFrame(EncounterJournalRaidTab, {notAlpha=true})
+    self:SetFrame(EncounterJournalLootJournalTab, {notAlpha=true})
 
 
 
-    mixin:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
-    mixin:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
-    mixin:SetScrollBar(EncounterJournal.LootJournal)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
+    self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
+    self:SetScrollBar(EncounterJournal.LootJournal)
 
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:ClearAllPoints()
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:SetPoint('BOTTOM', EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:GetParent(), 'TOP', 0, 25)
@@ -214,10 +213,10 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal(mixin)
 
     C_Timer.After(0.3, function()
         if EncounterJournalMonthlyActivitiesFrame then
-            mixin:HideTexture(EncounterJournalMonthlyActivitiesFrame.Bg)
-            mixin:HideTexture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
-            mixin:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
-            mixin:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
+            self:HideTexture(EncounterJournalMonthlyActivitiesFrame.Bg)
+            self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
+            self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
+            self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
         end
     end)
 end
@@ -232,96 +231,96 @@ end
 
 
 --[[公会银行
-function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(mixin)
+function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     if WoWToolsSave['Plus_GuildBank'].disabled then
-        WoWTools_GuildBankMixin:Init_Guild_Texture(mixin)
+        WoWTools_GuildBankMixin:Init_Guild_Texture()
     end
 end]]
 
-function WoWTools_TextureMixin.Events:Blizzard_GuildRename(mixin)--11.1.5
-    mixin:SetNineSlice(GuildRenameFrame)
-    mixin:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
-    mixin:HideTexture(GuildRenameFrameInset.Bg)
-    --mixin:SetInset(GuildRenameFrameInset)
-    mixin:SetNineSlice(GuildRenameFrameInset)
+function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
+    self:SetNineSlice(GuildRenameFrame)
+    self:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
+    self:HideTexture(GuildRenameFrameInset.Bg)
+    --self:SetInset(GuildRenameFrameInset)
+    self:SetNineSlice(GuildRenameFrameInset)
 end
 
 
 
 --拍卖行
-function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI(mixin)
-    mixin:SetAlphaColor(AuctionHouseFrameBg)
-    mixin:SetNineSlice(AuctionHouseFrame, true)
-    mixin:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(AuctionHouseFrameLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(AuctionHouseFrameRight, nil, nil, 0.3)
+function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
+    self:SetAlphaColor(AuctionHouseFrameBg)
+    self:SetNineSlice(AuctionHouseFrame, true)
+    self:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(AuctionHouseFrameLeft, nil, nil, 0.3)
+    self:SetAlphaColor(AuctionHouseFrameRight, nil, nil, 0.3)
 
-    mixin:SetFrame(AuctionHouseFrameBuyTab, {notAlpha=true})--{alpha= 0.3})
-    mixin:SetFrame(AuctionHouseFrameSellTab, {notAlpha=true})--{alpha= 0.3})
-    mixin:SetFrame(AuctionHouseFrameAuctionsTab, {notAlpha=true})--{alpha= 0.3})
-    mixin:SetFrame(AuctionHouseFrame.SearchBar.FilterButton, {alpha= 0.3})
+    self:SetFrame(AuctionHouseFrameBuyTab, {notAlpha=true})--{alpha= 0.3})
+    self:SetFrame(AuctionHouseFrameSellTab, {notAlpha=true})--{alpha= 0.3})
+    self:SetFrame(AuctionHouseFrameAuctionsTab, {notAlpha=true})--{alpha= 0.3})
+    self:SetFrame(AuctionHouseFrame.SearchBar.FilterButton, {alpha= 0.3})
 
-    mixin:SetNineSlice(AuctionHouseFrame.CategoriesList, nil, true)
-    mixin:SetScrollBar(AuctionHouseFrame.CategoriesList)
-    mixin:HideTexture(AuctionHouseFrame.CategoriesList.Background)
+    self:SetNineSlice(AuctionHouseFrame.CategoriesList, nil, true)
+    self:SetScrollBar(AuctionHouseFrame.CategoriesList)
+    self:HideTexture(AuctionHouseFrame.CategoriesList.Background)
 
-    mixin:SetScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
-    mixin:SetNineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
-    mixin:SetNineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
-    mixin:SetScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
-    mixin:SetScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
-    mixin:SetNineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
-
-
-    mixin:SetNineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
-    mixin:SetScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
-
-    mixin:SetNineSlice(AuctionHouseFrame.MoneyFrameInset, nil, true)
-    mixin:HideTexture(AuctionHouseFrame.MoneyFrameInset.Bg)
-    mixin:HideFrame(AuctionHouseFrame.MoneyFrameBorder)
-
-    mixin:SetSearchBox(AuctionHouseFrame.SearchBar.SearchBox)
+    self:SetScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
+    self:SetScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
+    self:SetScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
 
 
-    mixin:SetNineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
-    mixin:SetScrollBar(AuctionHouseFrame.CommoditiesSellList)
-    mixin:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
-    mixin:SetFrame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
-    mixin:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
-    mixin:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
-    mixin:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+    self:SetNineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
+    self:SetScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
 
-    mixin:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
+    self:SetNineSlice(AuctionHouseFrame.MoneyFrameInset, nil, true)
+    self:HideTexture(AuctionHouseFrame.MoneyFrameInset.Bg)
+    self:HideFrame(AuctionHouseFrame.MoneyFrameBorder)
 
-    mixin:SetNineSlice(AuctionHouseFrame.ItemSellList, nil, true)
-    mixin:SetScrollBar(AuctionHouseFrame.ItemSellList)
-    mixin:SetNineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
-    mixin:SetFrame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
-    mixin:SetSearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
-    mixin:SetSearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
-    mixin:SetSearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+    self:SetSearchBox(AuctionHouseFrame.SearchBar.SearchBox)
 
-    mixin:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
+
+    self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
+    self:SetScrollBar(AuctionHouseFrame.CommoditiesSellList)
+    self:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
+    self:SetFrame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
+    self:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
+    self:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+    self:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+
+    self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
+    self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
+
+    self:SetNineSlice(AuctionHouseFrame.ItemSellList, nil, true)
+    self:SetScrollBar(AuctionHouseFrame.ItemSellList)
+    self:SetNineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
+    self:SetFrame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
+    self:SetSearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
+    self:SetSearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+    self:SetSearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+
+    self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
+    self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
 
     --拍卖，所在物品，页面
-    mixin:SetSearchBox(AuctionHouseFrameAuctionsFrameBidsTab)
-    mixin:SetSearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
-    mixin:SetFrame(AuctionHouseFrameAuctionsFrameGold, {alpha=0.3})
-    mixin:SetFrame(AuctionHouseFrameAuctionsFrameSilver, {alpha=0.3})
-    mixin:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
-    mixin:SetNineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
+    self:SetSearchBox(AuctionHouseFrameAuctionsFrameBidsTab)
+    self:SetSearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
+    self:SetFrame(AuctionHouseFrameAuctionsFrameGold, {alpha=0.3})
+    self:SetFrame(AuctionHouseFrameAuctionsFrameSilver, {alpha=0.3})
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
 
     --时光
-    mixin:SetScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
-    mixin:SetNineSlice(AuctionHouseFrame.WoWTokenResults, nil, true)
+    self:SetScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
+    self:SetNineSlice(AuctionHouseFrame.WoWTokenResults, nil, true)
     --购买
-    mixin:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
-    mixin:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
-    mixin:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
+    self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
+    self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
 end
 
 
@@ -333,11 +332,11 @@ end
 
 
 --专业书
-function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook(mixin)
-    mixin:SetNineSlice(ProfessionsBookFrame, nil, nil, 0.3)
-    mixin:SetNineSlice(ProfessionsBookFrameInset, nil, nil, 0.3)
-    mixin:HideTexture(ProfessionsBookFrameBg)
-    mixin:HideTexture(ProfessionsBookFrameInset.Bg)
+function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
+    self:SetNineSlice(ProfessionsBookFrame, nil, nil, 0.3)
+    self:SetNineSlice(ProfessionsBookFrameInset, nil, nil, 0.3)
+    self:HideTexture(ProfessionsBookFrameBg)
+    self:HideTexture(ProfessionsBookFrameInset.Bg)
 end
 
 
@@ -346,46 +345,46 @@ end
 
 
 --专业定制
-function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders(mixin)
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
+function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders()
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
 
-    mixin:SetSearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
+    self:SetSearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleMiddle)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleLeft)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleRight)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleMiddle)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleLeft)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleRight)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
 
-    --mixin:SetAlphaColor(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
-    --mixin:SetAlphaColor(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
+    --self:SetAlphaColor(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
+    --self:SetAlphaColor(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
 
-    mixin:HideTexture(ProfessionsCustomerOrdersFrame.MoneyFrameInset.Bg)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddle)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameRight)
+    self:HideTexture(ProfessionsCustomerOrdersFrame.MoneyFrameInset.Bg)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddle)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameRight)
 
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
-    mixin:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
-    mixin:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
-    mixin:SetFrame(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=1})
-    mixin:SetFrame(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=1})
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
+    self:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
+    self:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
+    self:SetFrame(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=1})
+    self:SetFrame(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=1})
 
-    mixin:SetFrame(ProfessionsCustomerOrdersFrame.MoneyFrameBorder)
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameRight)
-    mixin:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddle)
+    self:SetFrame(ProfessionsCustomerOrdersFrame.MoneyFrameBorder)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameRight)
+    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddle)
 
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
-    mixin:SetScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
+    self:SetScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
 
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
-    mixin:SetScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
-    mixin:HideTexture(ProfessionsCustomerOrdersFrameBg)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
+    self:SetScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
+    self:HideTexture(ProfessionsCustomerOrdersFrameBg)
 
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
-    mixin:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
 end
 
 
@@ -396,13 +395,13 @@ end
 
 
 --黑市
-function WoWTools_TextureMixin.Events:Blizzard_BlackMarketUI(mixin)
-    mixin:SetAlphaColor(BlackMarketFrameTitleBg)
-    mixin:SetAlphaColor(BlackMarketFrameBg)
-    mixin:SetAlphaColor(BlackMarketFrame.LeftBorder)
-    mixin:SetAlphaColor(BlackMarketFrame.RightBorder)
-    mixin:SetAlphaColor(BlackMarketFrame.BottomBorder)
-    mixin:SetScrollBar(BlackMarketFrame)
+function WoWTools_TextureMixin.Events:Blizzard_BlackMarketUI()
+    self:SetAlphaColor(BlackMarketFrameTitleBg)
+    self:SetAlphaColor(BlackMarketFrameBg)
+    self:SetAlphaColor(BlackMarketFrame.LeftBorder)
+    self:SetAlphaColor(BlackMarketFrame.RightBorder)
+    self:SetAlphaColor(BlackMarketFrame.BottomBorder)
+    self:SetScrollBar(BlackMarketFrame)
 end
 
 
@@ -410,147 +409,147 @@ end
 
 
 --收藏
-function WoWTools_TextureMixin.Events:Blizzard_Collections(mixin)
-    mixin:SetNineSlice(CollectionsJournal, true)
-    mixin:SetAlphaColor(CollectionsJournalBg)
+function WoWTools_TextureMixin.Events:Blizzard_Collections()
+    self:SetNineSlice(CollectionsJournal, true)
+    self:SetAlphaColor(CollectionsJournalBg)
 
-    mixin:SetFrame(MountJournal.MountCount, {alpha=0.3})
-    mixin:HideTexture(MountJournal.LeftInset.Bg)
-    mixin:SetAlphaColor(MountJournal.MountDisplay.YesMountsTex)
-    mixin:HideTexture(MountJournal.RightInset.Bg)
-    mixin:SetAlphaColor(MountJournal.BottomLeftInset.Background)
-    mixin:HideTexture(MountJournal.BottomLeftInset.Bg)
-    mixin:SetScrollBar(MountJournal)
-    mixin:SetSearchBox(MountJournalSearchBox)
-    mixin:SetNineSlice(MountJournal.BottomLeftInset, nil, true)
-    mixin:SetNineSlice(MountJournal.RightInset, nil, true)
-    mixin:SetNineSlice(MountJournal.LeftInset, nil, true)
+    self:SetFrame(MountJournal.MountCount, {alpha=0.3})
+    self:HideTexture(MountJournal.LeftInset.Bg)
+    self:SetAlphaColor(MountJournal.MountDisplay.YesMountsTex)
+    self:HideTexture(MountJournal.RightInset.Bg)
+    self:SetAlphaColor(MountJournal.BottomLeftInset.Background)
+    self:HideTexture(MountJournal.BottomLeftInset.Bg)
+    self:SetScrollBar(MountJournal)
+    self:SetSearchBox(MountJournalSearchBox)
+    self:SetNineSlice(MountJournal.BottomLeftInset, nil, true)
+    self:SetNineSlice(MountJournal.RightInset, nil, true)
+    self:SetNineSlice(MountJournal.LeftInset, nil, true)
 
-    mixin:SetAlphaColor(PetJournalPetCardBG, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournalPetCardInset.Bg)
-    mixin:SetAlphaColor(PetJournalRightInset.Bg)
-    mixin:SetAlphaColor(PetJournalLoadoutPet1BG, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournalLoadoutPet2BG, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournalLoadoutPet3BG, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournalLoadoutBorderSlotHeaderBG)
-    mixin:HideTexture(PetJournalLeftInset.Bg)
-    mixin:HideTexture(PetJournalLoadoutBorder)
+    self:SetAlphaColor(PetJournalPetCardBG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalPetCardInset.Bg)
+    self:SetAlphaColor(PetJournalRightInset.Bg)
+    self:SetAlphaColor(PetJournalLoadoutPet1BG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalLoadoutPet2BG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalLoadoutPet3BG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalLoadoutBorderSlotHeaderBG)
+    self:HideTexture(PetJournalLeftInset.Bg)
+    self:HideTexture(PetJournalLoadoutBorder)
 
-    mixin:SetScrollBar(PetJournal)
-    mixin:SetSearchBox(PetJournalSearchBox)
+    self:SetScrollBar(PetJournal)
+    self:SetSearchBox(PetJournalSearchBox)
 
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderTopMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.Bg, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderBottomMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderTopRightMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderTopLeftMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderBottomLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderTopLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderBottomRight, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderTopRight, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderLeftMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(PetJournal.PetCount.BorderRightMiddle, nil, nil, 0.3)
-    mixin:SetFrame(PetJournalFilterButton, {alpha=0.3})
-    mixin:SetNineSlice(PetJournalLeftInset, nil, true)
-    mixin:SetNineSlice(PetJournalPetCardInset, nil, true)
-    mixin:SetNineSlice(PetJournalRightInset, nil, true)
-    local frame=_G['RematchFrame']
-    if frame then
-        mixin:HideTexture(frame.Bg)
-        mixin:HideTexture(frame.OptionsPanel.List.Back)
-        mixin:HideTexture(frame.QueuePanel.List.Back)
-        mixin:HideTexture(frame.TargetsPanel.List.Back)
-        mixin:HideTexture(frame.TeamsPanel.List.Back)
-        mixin:HideTexture(frame.ToolBar.Bg)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.Bg, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderBottomMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopRightMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopLeftMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderBottomLeft, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopLeft, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderBottomRight, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopRight, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderLeftMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderRightMiddle, nil, nil, 0.3)
+    self:SetFrame(PetJournalFilterButton, {alpha=0.3})
+    self:SetNineSlice(PetJournalLeftInset, nil, true)
+    self:SetNineSlice(PetJournalPetCardInset, nil, true)
+    self:SetNineSlice(PetJournalRightInset, nil, true)
+
+    if _G['RematchFrame'] then
+        self:HideTexture(_G['RematchFrame'].Bg)
+        self:HideTexture(_G['RematchFrame'].OptionsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].QueuePanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].TargetsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].TeamsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].ToolBar.Bg)
     end
 
 
-    mixin:HideTexture(ToyBox.iconsFrame.BackgroundTile)
-    mixin:HideTexture(ToyBox.iconsFrame.Bg)
-    mixin:SetSearchBox(ToyBox.searchBo)
-    mixin:SetSearchBox(ToyBox.searchBox)
-    mixin:SetFrame(ToyBoxFilterButton, {alpha=0.3})
-    mixin:HideTexture(ToyBox.iconsFrame.ShadowLineTop)
-    mixin:HideTexture(ToyBox.iconsFrame.ShadowLineBottom)
+    self:HideTexture(ToyBox.iconsFrame.BackgroundTile)
+    self:HideTexture(ToyBox.iconsFrame.Bg)
+    self:SetSearchBox(ToyBox.searchBo)
+    self:SetSearchBox(ToyBox.searchBox)
+    self:SetFrame(ToyBoxFilterButton, {alpha=0.3})
+    self:HideTexture(ToyBox.iconsFrame.ShadowLineTop)
+    self:HideTexture(ToyBox.iconsFrame.ShadowLineBottom)
 
-    mixin:SetNineSlice(ToyBox.iconsFrame, nil, true)
+    self:SetNineSlice(ToyBox.iconsFrame, nil, true)
     ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
 
-    mixin:HideTexture(HeirloomsJournal.iconsFrame.BackgroundTile)
-    mixin:HideTexture(HeirloomsJournal.iconsFrame.Bg)
-    mixin:SetSearchBox(HeirloomsJournalSearchBox)
-    mixin:SetAlphaColor(HeirloomsJournalMiddleMiddle)
-    mixin:SetAlphaColor(HeirloomsJournalMiddleLeft)
-    mixin:SetAlphaColor(HeirloomsJournalMiddleRight)
-    mixin:SetAlphaColor(HeirloomsJournalBottomMiddle)
-    mixin:SetAlphaColor(HeirloomsJournalTopMiddle)
-    mixin:SetAlphaColor(HeirloomsJournalBottomLeft)
-    mixin:SetAlphaColor(HeirloomsJournalBottomRight)
-    mixin:SetAlphaColor(HeirloomsJournalTopLeft)
-    mixin:SetAlphaColor(HeirloomsJournalTopRight)
-    mixin:HideTexture(HeirloomsJournal.iconsFrame.ShadowLineBottom)
-    mixin:HideTexture(HeirloomsJournal.iconsFrame.ShadowLineTop)
-    mixin:SetNineSlice(HeirloomsJournal.iconsFrame, nil, true)
+    self:HideTexture(HeirloomsJournal.iconsFrame.BackgroundTile)
+    self:HideTexture(HeirloomsJournal.iconsFrame.Bg)
+    self:SetSearchBox(HeirloomsJournalSearchBox)
+    self:SetAlphaColor(HeirloomsJournalMiddleMiddle)
+    self:SetAlphaColor(HeirloomsJournalMiddleLeft)
+    self:SetAlphaColor(HeirloomsJournalMiddleRight)
+    self:SetAlphaColor(HeirloomsJournalBottomMiddle)
+    self:SetAlphaColor(HeirloomsJournalTopMiddle)
+    self:SetAlphaColor(HeirloomsJournalBottomLeft)
+    self:SetAlphaColor(HeirloomsJournalBottomRight)
+    self:SetAlphaColor(HeirloomsJournalTopLeft)
+    self:SetAlphaColor(HeirloomsJournalTopRight)
+    self:HideTexture(HeirloomsJournal.iconsFrame.ShadowLineBottom)
+    self:HideTexture(HeirloomsJournal.iconsFrame.ShadowLineTop)
+    self:SetNineSlice(HeirloomsJournal.iconsFrame, nil, true)
     HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
-    mixin:SetFrame(HeirloomsJournal.FilterButton, {alpha=0.3})
+    self:SetFrame(HeirloomsJournal.FilterButton, {alpha=0.3})
 
-    mixin:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
-    mixin:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
-    mixin:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
-    mixin:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
-    mixin:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
-    mixin:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
+    self:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
 
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
-    mixin:SetScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomRight)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
-    mixin:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineBottom)
-    mixin:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
+    self:SetScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomRight)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineBottom)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
 
-    mixin:SetSearchBox(WardrobeCollectionFrameSearchBox)
-    mixin:SetAlphaColor(WardrobeCollectionFrameMiddleMiddle)
-    mixin:SetAlphaColor(WardrobeCollectionFrameTopMiddle)
-    mixin:SetAlphaColor(WardrobeCollectionFrameBottomMiddle)
-    mixin:SetAlphaColor(WardrobeCollectionFrameTopMiddle)
-    mixin:SetAlphaColor(WardrobeCollectionFrameMiddleLeft)
-    mixin:SetAlphaColor(WardrobeCollectionFrameMiddleRight)
-    mixin:SetAlphaColor(WardrobeCollectionFrameTopLeft)
-    mixin:SetAlphaColor(WardrobeCollectionFrameBottomLeft)
-    mixin:SetAlphaColor(WardrobeCollectionFrameBottomRight)
-    mixin:SetAlphaColor(WardrobeCollectionFrameTopLeft)
+    self:SetSearchBox(WardrobeCollectionFrameSearchBox)
+    self:SetAlphaColor(WardrobeCollectionFrameMiddleMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameTopMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameBottomMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameTopMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameMiddleLeft)
+    self:SetAlphaColor(WardrobeCollectionFrameMiddleRight)
+    self:SetAlphaColor(WardrobeCollectionFrameTopLeft)
+    self:SetAlphaColor(WardrobeCollectionFrameBottomLeft)
+    self:SetAlphaColor(WardrobeCollectionFrameBottomRight)
+    self:SetAlphaColor(WardrobeCollectionFrameTopLeft)
 
-    mixin:SetFrame(WardrobeCollectionFrame.FilterButton, {alpha=0.3})
-    mixin:SetFrame(WardrobeSetsCollectionVariantSetsButton, {alpha=0.3})
+    self:SetFrame(WardrobeCollectionFrame.FilterButton, {alpha=0.3})
+    self:SetFrame(WardrobeSetsCollectionVariantSetsButton, {alpha=0.3})
 
-    mixin:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
-    mixin:SetFrame(WardrobeCollectionFrameTab1, {notAlpha=true})
-    mixin:SetFrame(WardrobeCollectionFrameTab2, {notAlpha=true})
+    self:SetFrame(WardrobeCollectionFrameTab1, {notAlpha=true})
+    self:SetFrame(WardrobeCollectionFrameTab2, {notAlpha=true})
 
     --试衣间
-    mixin:SetNineSlice(WardrobeFrame, true)
-    mixin:HideTexture(WardrobeFrameBg)
-    mixin:HideTexture(WardrobeTransmogFrame.Inset.Bg)
-    mixin:SetAlphaColor(WardrobeTransmogFrame.Inset.BG)
-    mixin:HideTexture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
-    mixin:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
-    mixin:SetAlphaColor(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
+    self:SetNineSlice(WardrobeFrame, true)
+    self:HideTexture(WardrobeFrameBg)
+    self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
+    self:SetAlphaColor(WardrobeTransmogFrame.Inset.BG)
+    self:HideTexture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
+    self:SetAlphaColor(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
 
 
-    mixin:SetAlphaColor(WardrobeTransmogFrame.MoneyMiddle)
-    mixin:SetAlphaColor(WardrobeTransmogFrame.MoneyLeft)
-    mixin:SetAlphaColor(WardrobeTransmogFrame.MoneyRight)
+    self:SetAlphaColor(WardrobeTransmogFrame.MoneyMiddle)
+    self:SetAlphaColor(WardrobeTransmogFrame.MoneyLeft)
+    self:SetAlphaColor(WardrobeTransmogFrame.MoneyRight)
 
-    hooksecurefunc(WardrobeCollectionFrame, 'SetTab', function(self2)
-        local frame2= self2.activeFrame
-        if frame2 and frame2==self2.SetsTransmogFrame then
-            for i=1, frame2.PAGE_SIZE or 8 do
-                local btn= frame2.Models[i]
+    hooksecurefunc(WardrobeCollectionFrame, 'SetTab', function(frame)
+        local f= frame.activeFrame
+        if f and f==frame.SetsTransmogFrame then
+            for i=1, f.PAGE_SIZE or 8 do
+                local btn= f.Models[i]
                 if btn then
                     btn:DisableDrawLayer('BACKGROUND')
                 end
@@ -569,26 +568,26 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections(mixin)
 
 
     for i=1, 7 do
-        mixin:SetFrame(_G['CollectionsJournalTab'..i], {notAlpha=true})
+        self:SetFrame(_G['CollectionsJournalTab'..i], {notAlpha=true})
     end
 
     if _G['RematchJournal'] then
-        mixin:SetNineSlice(_G['RematchJournal'], true)
-        mixin:SetAlphaColor(_G['RematchJournalBg'])
-        mixin:SetAlphaColor(RematchLoadoutPanel.Target.InsetBack)
-        mixin:HideTexture(RematchPetPanel.Top.InsetBack)
-        mixin:SetAlphaColor(RematchQueuePanel.List.Background.InsetBack)
-        mixin:SetAlphaColor(RematchQueuePanel.Top.InsetBack)
-        mixin:HideTexture(RematchPetPanel.Top.TypeBar.NineSlice)
-        mixin:SetAlphaColor(RematchTeamPanel.List.Background.InsetBack)
-        mixin:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
-        mixin:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
+        self:SetNineSlice(_G['RematchJournal'], true)
+        self:SetAlphaColor(_G['RematchJournalBg'])
+        self:SetAlphaColor(RematchLoadoutPanel.Target.InsetBack)
+        self:HideTexture(RematchPetPanel.Top.InsetBack)
+        self:SetAlphaColor(RematchQueuePanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchQueuePanel.Top.InsetBack)
+        self:HideTexture(RematchPetPanel.Top.TypeBar.NineSlice)
+        self:SetAlphaColor(RematchTeamPanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
     end
 
 
     if WarbandSceneJournal then--11.1
-        mixin:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
-        mixin:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
+        self:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
+        self:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
     end
 end
 
@@ -604,38 +603,38 @@ end
 
 
 --日历
-function WoWTools_TextureMixin.Events:Blizzard_Calendar(mixin)
-    mixin:SetAlphaColor(CalendarFrameTopMiddleTexture)
-    mixin:SetAlphaColor(CalendarFrameTopLeftTexture)
-    mixin:SetAlphaColor(CalendarFrameTopRightTexture)
+function WoWTools_TextureMixin.Events:Blizzard_Calendar()
+    self:SetAlphaColor(CalendarFrameTopMiddleTexture)
+    self:SetAlphaColor(CalendarFrameTopLeftTexture)
+    self:SetAlphaColor(CalendarFrameTopRightTexture)
 
-    mixin:SetAlphaColor(CalendarFrameLeftTopTexture)
-    mixin:SetAlphaColor(CalendarFrameLeftMiddleTexture)
-    mixin:SetAlphaColor(CalendarFrameLeftBottomTexture)
-    mixin:SetAlphaColor(CalendarFrameRightTopTexture)
-    mixin:SetAlphaColor(CalendarFrameRightMiddleTexture)
-    mixin:SetAlphaColor(CalendarFrameRightBottomTexture)
+    self:SetAlphaColor(CalendarFrameLeftTopTexture)
+    self:SetAlphaColor(CalendarFrameLeftMiddleTexture)
+    self:SetAlphaColor(CalendarFrameLeftBottomTexture)
+    self:SetAlphaColor(CalendarFrameRightTopTexture)
+    self:SetAlphaColor(CalendarFrameRightMiddleTexture)
+    self:SetAlphaColor(CalendarFrameRightBottomTexture)
 
-    mixin:SetAlphaColor(CalendarFrameBottomRightTexture)
-    mixin:SetAlphaColor(CalendarFrameBottomMiddleTexture)
-    mixin:SetAlphaColor(CalendarFrameBottomLeftTexture)
+    self:SetAlphaColor(CalendarFrameBottomRightTexture)
+    self:SetAlphaColor(CalendarFrameBottomMiddleTexture)
+    self:SetAlphaColor(CalendarFrameBottomLeftTexture)
 
-    mixin:SetAlphaColor(CalendarCreateEventFrame.Border.Bg)
-    mixin:SetFrame(CalendarCreateEventFrame.Border, {notAlpha=true})
-    mixin:SetSearchBox(CalendarCreateEventTitleEdit)
-    mixin:SetNineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
-    mixin:SetNineSlice(CalendarCreateEventInviteList, nil, nil, true)
-    mixin:SetAlphaColor(CalendarCreateEventDivider, true)
-    mixin:SetSearchBox(CalendarCreateEventInviteEdit)
-    mixin:SetAlphaColor(CalendarCreateEventFrameButtonBackground, true)
-    mixin:SetAlphaColor(CalendarCreateEventCreateButtonBorder, true)
-    mixin:SetFrame(CalendarCreateEventFrame.Header, {notAlpha=true})
+    self:SetAlphaColor(CalendarCreateEventFrame.Border.Bg)
+    self:SetFrame(CalendarCreateEventFrame.Border, {notAlpha=true})
+    self:SetSearchBox(CalendarCreateEventTitleEdit)
+    self:SetNineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
+    self:SetNineSlice(CalendarCreateEventInviteList, nil, nil, true)
+    self:SetAlphaColor(CalendarCreateEventDivider, true)
+    self:SetSearchBox(CalendarCreateEventInviteEdit)
+    self:SetAlphaColor(CalendarCreateEventFrameButtonBackground, true)
+    self:SetAlphaColor(CalendarCreateEventCreateButtonBorder, true)
+    self:SetFrame(CalendarCreateEventFrame.Header, {notAlpha=true})
 
-    mixin:SetFrame(CalendarViewHolidayFrame.Header, {notAlpha=true})
-    mixin:SetFrame(CalendarViewHolidayFrame.Border, {notAlpha=true})
+    self:SetFrame(CalendarViewHolidayFrame.Header, {notAlpha=true})
+    self:SetFrame(CalendarViewHolidayFrame.Border, {notAlpha=true})
 
-    mixin:SetAlphaColor(CalendarMonthBackground)
-    mixin:SetAlphaColor(CalendarYearBackground)
+    self:SetAlphaColor(CalendarMonthBackground)
+    self:SetAlphaColor(CalendarYearBackground)
 end
 
 
@@ -645,10 +644,10 @@ end
 
 
 --飞行地图
-function WoWTools_TextureMixin.Events:Blizzard_FlightMap(mixin)
-    mixin:SetNineSlice(FlightMapFrame.BorderFrame, true)
-    mixin:HideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
-    mixin:HideTexture(FlightMapFrameBg)
+function WoWTools_TextureMixin.Events:Blizzard_FlightMap()
+    self:SetNineSlice(FlightMapFrame.BorderFrame, true)
+    self:HideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
+    self:HideTexture(FlightMapFrameBg)
 end
 
 
@@ -658,38 +657,38 @@ end
 
 
 --镶嵌宝石，界面
-function WoWTools_TextureMixin.Events:Blizzard_ItemSocketingUI(mixin)
-    mixin:SetNineSlice(ItemSocketingFrame, true)
-    mixin:SetNineSlice(ItemSocketingFrameInset, nil, true)
-    mixin:SetAlphaColor(ItemSocketingFrameBg)
+function WoWTools_TextureMixin.Events:Blizzard_ItemSocketingUI()
+    self:SetNineSlice(ItemSocketingFrame, true)
+    self:SetNineSlice(ItemSocketingFrameInset, nil, true)
+    self:SetAlphaColor(ItemSocketingFrameBg)
 
     ItemSocketingFrameInset.Bg:ClearAllPoints()
     ItemSocketingFrameInset.Bg:SetAllPoints(ItemSocketingScrollFrame)
-    mixin:HideTexture(ItemSocketingFrame['SocketFrame-Right'])
-    mixin:HideTexture(ItemSocketingFrame['SocketFrame-Left'])
-    mixin:HideTexture(ItemSocketingFrame['ParchmentFrame-Top'])
-    mixin:HideTexture(ItemSocketingFrame['ParchmentFrame-Bottom'])
-    mixin:HideTexture(ItemSocketingFrame['ParchmentFrame-Right'])
-    mixin:HideTexture(ItemSocketingFrame['ParchmentFrame-Left'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-Top'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-Bottom'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-Right'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-Left'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-BottomLeft'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-TopLeft'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-BottomRight'])
-    mixin:SetAlphaColor(ItemSocketingFrame['GoldBorder-TopRight'])
-    mixin:SetAlphaColor(_G['ItemSocketingScrollFrameMiddle'])
-    mixin:SetAlphaColor(_G['ItemSocketingScrollFrameTop'])
-    mixin:SetAlphaColor(_G['ItemSocketingScrollFrameBottom'])
-    mixin:SetScrollBar(ItemSocketingScrollFrame)
+    self:HideTexture(ItemSocketingFrame['SocketFrame-Right'])
+    self:HideTexture(ItemSocketingFrame['SocketFrame-Left'])
+    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Top'])
+    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Bottom'])
+    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Right'])
+    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Left'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Top'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Bottom'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Right'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Left'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-BottomLeft'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-TopLeft'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-BottomRight'])
+    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-TopRight'])
+    self:SetAlphaColor(_G['ItemSocketingScrollFrameMiddle'])
+    self:SetAlphaColor(_G['ItemSocketingScrollFrameTop'])
+    self:SetAlphaColor(_G['ItemSocketingScrollFrameBottom'])
+    self:SetScrollBar(ItemSocketingScrollFrame)
 
-    mixin:HideTexture(ItemSocketingFrame.TopLeftNub)
-    mixin:HideTexture(ItemSocketingFrame.TopRightNub)
-    mixin:HideTexture(ItemSocketingFrame.MiddleLeftNub)
-    mixin:HideTexture(ItemSocketingFrame.MiddleRightNub)
-    mixin:HideTexture(ItemSocketingFrame.BottomLeftNub)
-    mixin:HideTexture(ItemSocketingFrame.BottomRightNub)
+    self:HideTexture(ItemSocketingFrame.TopLeftNub)
+    self:HideTexture(ItemSocketingFrame.TopRightNub)
+    self:HideTexture(ItemSocketingFrame.MiddleLeftNub)
+    self:HideTexture(ItemSocketingFrame.MiddleRightNub)
+    self:HideTexture(ItemSocketingFrame.BottomLeftNub)
+    self:HideTexture(ItemSocketingFrame.BottomRightNub)
 end
 
 
@@ -705,15 +704,15 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards(mixin)--周奖励提示
-    mixin:SetAlphaColor(WeeklyRewardsFrame.BackgroundTile)
-    mixin:SetSearchBox(WeeklyRewardsFrame.HeaderFrame)
-    mixin:SetAlphaColor(WeeklyRewardsFrame.RaidFrame.Background)
-    mixin:SetAlphaColor(WeeklyRewardsFrame.MythicFrame.Background)
-    mixin:SetAlphaColor(WeeklyRewardsFrame.PVPFrame.Background)
-    hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(self2)
-        for _, frame in ipairs(self2.Activities) do
-            mixin:SetAlphaColor(frame.Background)
+function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
+    self:SetAlphaColor(WeeklyRewardsFrame.BackgroundTile)
+    self:SetSearchBox(WeeklyRewardsFrame.HeaderFrame)
+    self:SetAlphaColor(WeeklyRewardsFrame.RaidFrame.Background)
+    self:SetAlphaColor(WeeklyRewardsFrame.MythicFrame.Background)
+    self:SetAlphaColor(WeeklyRewardsFrame.PVPFrame.Background)
+    hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(frame)
+        for _, frame in ipairs(frame.Activities) do
+            self:SetAlphaColor(frame.Background)
         end
     end)
 end
@@ -723,16 +722,16 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_ItemInteractionUI(mixin)--套装, 转换
-    mixin:SetNineSlice(ItemInteractionFrame, true)
-    mixin:SetAlphaColor(ItemInteractionFrameBg)
-    mixin:SetAlphaColor(ItemInteractionFrame.Inset.Bg)
-    mixin:SetAlphaColor(ItemInteractionFrameMiddle)
+function WoWTools_TextureMixin.Events:Blizzard_ItemInteractionUI()--套装, 转换
+    self:SetNineSlice(ItemInteractionFrame, true)
+    self:SetAlphaColor(ItemInteractionFrameBg)
+    self:SetAlphaColor(ItemInteractionFrame.Inset.Bg)
+    self:SetAlphaColor(ItemInteractionFrameMiddle)
 
-    mixin:SetAlphaColor(ItemInteractionFrameRight)
-    mixin:SetAlphaColor(ItemInteractionFrameLeft)
+    self:SetAlphaColor(ItemInteractionFrameRight)
+    self:SetAlphaColor(ItemInteractionFrameLeft)
 
-    mixin:HideTexture(ItemInteractionFrame.ButtonFrame.BlackBorder)
+    self:HideTexture(ItemInteractionFrame.ButtonFrame.BlackBorder)
 end
 
 
@@ -740,17 +739,17 @@ end
 
 
 --玩家, 观察角色, 界面
-function WoWTools_TextureMixin.Events:Blizzard_InspectUI(mixin)
-    mixin:SetNineSlice(InspectFrame, true)
-    mixin:SetAlphaColor(InspectFrameBg)
-    mixin:HideTexture(InspectFrameInset.Bg)
-    mixin:HideTexture(InspectPVPFrame.BG)
-    mixin:HideTexture(InspectGuildFrameBG)
-    mixin:SetFrame(InspectFrameTab1, {notAlpha=true})
-    mixin:SetFrame(InspectFrameTab2, {notAlpha=true})
-    mixin:SetFrame(InspectFrameTab3, {notAlpha=true})
-    mixin:SetNineSlice(InspectFrame, true)
-    mixin:SetNineSlice(InspectFrameInset, nil, true)
+function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
+    self:SetNineSlice(InspectFrame, true)
+    self:SetAlphaColor(InspectFrameBg)
+    self:HideTexture(InspectFrameInset.Bg)
+    self:HideTexture(InspectPVPFrame.BG)
+    self:HideTexture(InspectGuildFrameBG)
+    self:SetFrame(InspectFrameTab1, {notAlpha=true})
+    self:SetFrame(InspectFrameTab2, {notAlpha=true})
+    self:SetFrame(InspectFrameTab3, {notAlpha=true})
+    self:SetNineSlice(InspectFrame, true)
+    self:SetNineSlice(InspectFrameInset, nil, true)
 end
 
 
@@ -758,18 +757,18 @@ end
 
 
 --装备升级,界面 
-function WoWTools_TextureMixin.Events:Blizzard_ItemUpgradeUI(mixin)
-    mixin:SetNineSlice(ItemUpgradeFrame, true)
-    mixin:SetAlphaColor(ItemUpgradeFrameBg)
-    mixin:HideTexture(ItemUpgradeFrame.TopBG)
-    mixin:HideTexture(ItemUpgradeFrame.BottomBG)
-    mixin:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderMiddle)
-    mixin:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderLeft)
-    mixin:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderRight)
+function WoWTools_TextureMixin.Events:Blizzard_ItemUpgradeUI()
+    self:SetNineSlice(ItemUpgradeFrame, true)
+    self:SetAlphaColor(ItemUpgradeFrameBg)
+    self:HideTexture(ItemUpgradeFrame.TopBG)
+    self:HideTexture(ItemUpgradeFrame.BottomBG)
+    self:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderMiddle)
+    self:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderLeft)
+    self:SetAlphaColor(ItemUpgradeFramePlayerCurrenciesBorderRight)
 
-    mixin:SetAlphaColor(ItemUpgradeFrameMiddle)
-    mixin:SetAlphaColor(ItemUpgradeFrameRight)
-    mixin:SetAlphaColor(ItemUpgradeFrameLeft)
+    self:SetAlphaColor(ItemUpgradeFrameMiddle)
+    self:SetAlphaColor(ItemUpgradeFrameRight)
+    self:SetAlphaColor(ItemUpgradeFrameLeft)
 end
 
 
@@ -778,18 +777,18 @@ end
 
 
 --宏
-function WoWTools_TextureMixin.Events:Blizzard_MacroUI(mixin)
-    mixin:SetFrame(MacroFrame, {notAlpha=true})
-    mixin:SetNineSlice(MacroFrameInset, true)
-    mixin:SetNineSlice(MacroFrame, true)
-    mixin:SetNineSlice(MacroFrameTextBackground, true, nil, nil, true)
-    mixin:HideTexture(MacroFrameBg)
-    mixin:SetAlphaColor(MacroFrameInset.Bg)
-    mixin:SetAlphaColor(MacroHorizontalBarLeft, true)
-    mixin:HideTexture(MacroFrameSelectedMacroBackground)
-    mixin:SetScrollBar(MacroFrame.MacroSelector)
-    mixin:SetScrollBar(MacroFrame.NoteEditBox)
-    mixin:SetScrollBar(MacroFrameScrollFrame)
+function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
+    self:SetFrame(MacroFrame, {notAlpha=true})
+    self:SetNineSlice(MacroFrameInset, true)
+    self:SetNineSlice(MacroFrame, true)
+    self:SetNineSlice(MacroFrameTextBackground, true, nil, nil, true)
+    self:HideTexture(MacroFrameBg)
+    self:SetAlphaColor(MacroFrameInset.Bg)
+    self:SetAlphaColor(MacroHorizontalBarLeft, true)
+    self:HideTexture(MacroFrameSelectedMacroBackground)
+    self:SetScrollBar(MacroFrame.MacroSelector)
+    self:SetScrollBar(MacroFrame.NoteEditBox)
+    self:SetScrollBar(MacroFrameScrollFrame)
 end
 
 
@@ -800,19 +799,19 @@ end
 
 
 --要塞
-function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI(mixin)
-    mixin:SetNineSlice(GarrisonCapacitiveDisplayFrame, true)
+function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
+    self:SetNineSlice(GarrisonCapacitiveDisplayFrame, true)
     if GarrisonCapacitiveDisplayFrame then--要塞订单
-        mixin:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
-        mixin:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
-        mixin:HideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
+        self:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
+        self:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
+        self:HideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
     end
 
-    mixin:SetFrame(GarrisonLandingPage, {alpha= 0.3})
-    mixin:SetFrame(GarrisonLandingPage.Report, {alpha= 0.3})
+    self:SetFrame(GarrisonLandingPage, {alpha= 0.3})
+    self:SetFrame(GarrisonLandingPage.Report, {alpha= 0.3})
     if GarrisonLandingPageFollowerList then
-        mixin:HideTexture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
-        mixin:SetScrollBar(GarrisonLandingPageReportList)
+        self:HideTexture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
+        self:SetScrollBar(GarrisonLandingPageReportList)
     end
 end
 
@@ -822,9 +821,9 @@ end
 
 
 --欲龙术
-function WoWTools_TextureMixin.Events:Blizzard_GenericTraitUI(mixin)
-    mixin:SetAlphaColor(GenericTraitFrame.Background)
-    mixin:SetNineSlice(GenericTraitFrame, true)
+function WoWTools_TextureMixin.Events:Blizzard_GenericTraitUI()
+    self:SetAlphaColor(GenericTraitFrame.Background)
+    self:SetNineSlice(GenericTraitFrame, true)
 end
 
 
@@ -834,16 +833,16 @@ end
 
 
 --任务选择
-function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice(mixin)
-    hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(self2)
-        if self2.Background then
-            mixin:SetAlphaColor(self2.Background.BackgroundTile, nil, nil, 0)
-            mixin:SetAlphaColor(self2.Background, nil, nil, 0)
+function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
+    hooksecurefunc(PlayerChoiceFrame, 'SetupFrame', function(frame)
+        if frame.Background then
+            self:SetAlphaColor(frame.Background.BackgroundTile, nil, nil, 0)
+            self:SetAlphaColor(frame.Background, nil, nil, 0)
         end
 
-        mixin:SetNineSlice(self2)
-        mixin:SetAlphaColor(self2.Header)
-        mixin:SetSearchBox(self2.Title)
+        self:SetNineSlice(frame)
+        self:SetAlphaColor(frame.Header)
+        self:SetSearchBox(frame.Title)
     end)
 end
 
@@ -854,9 +853,9 @@ end
 
 
 --派系声望
-function WoWTools_TextureMixin.Events:Blizzard_MajorFactions(mixin)
-    mixin:SetAlphaColor(MajorFactionRenownFrame.Background)
-    mixin:SetAlphaColor(MajorFactionRenownFrame.NineSlice, nil, nil, true)
+function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
+    self:SetAlphaColor(MajorFactionRenownFrame.Background)
+    self:SetAlphaColor(MajorFactionRenownFrame.NineSlice, nil, nil, true)
 end
 
 
@@ -867,61 +866,61 @@ end
 
 
 --专业, 初始化, 透明
-function WoWTools_TextureMixin.Events:Blizzard_Professions(mixin)
-    mixin:SetNineSlice(ProfessionsFrame, true)
-    mixin:SetAlphaColor(ProfessionsFrameBg)
-    mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.3)
+function WoWTools_TextureMixin.Events:Blizzard_Professions()
+    self:SetNineSlice(ProfessionsFrame, true)
+    self:SetAlphaColor(ProfessionsFrameBg)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.3)
 
-    mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
-    mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
-    mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
 
-    mixin:HideTexture(ProfessionsFrame.SpecPage.TreeView.Background)
-    mixin:HideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
-    mixin:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
-    mixin:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
+    self:HideTexture(ProfessionsFrame.SpecPage.TreeView.Background)
+    self:HideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
+    self:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
+    self:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
 
-    mixin:SetNineSlice(InspectRecipeFrame, true)
-    mixin:SetAlphaColor(InspectRecipeFrameBg)
-    mixin:SetAlphaColor(InspectRecipeFrame.SchematicForm.MinimalBackground)
-    mixin:SetTabSystem(ProfessionsFrame)
+    self:SetNineSlice(InspectRecipeFrame, true)
+    self:SetAlphaColor(InspectRecipeFrameBg)
+    self:SetAlphaColor(InspectRecipeFrame.SchematicForm.MinimalBackground)
+    self:SetTabSystem(ProfessionsFrame)
 
     if ProfessionsFrame.SpecPage then
-        hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(self2)
-            for tab, bool in self2.tabsPool:EnumerateActive() do
+        hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(frame)
+            for tab, bool in frame.tabsPool:EnumerateActive() do
                 if bool then
-                    mixin:SetFrame(tab, {alpha=0.3})
+                    self:SetFrame(tab, {alpha=0.3})
                 end
             end
         end)
-        mixin:SetAlphaColor(ProfessionsFrame.SpecPage.PanelFooter)
+        self:SetAlphaColor(ProfessionsFrame.SpecPage.PanelFooter)
 
-        mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.Background, nil, nil, 0.3)
-        mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList.Background, nil,nil, 0.3)
+        self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.Background, nil, nil, 0.3)
+        self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList.Background, nil,nil, 0.3)
     end
 
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.Background, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, 0.3)
-    mixin:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
-    mixin:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.Background, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, 0.3)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.NineSlice, true)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.NineSlice, true)
 
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Left, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Middle, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, 0.3)
-    mixin:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Left, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Middle, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, 0.3)
 
-    mixin:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
-    mixin:SetScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
-    mixin:SetScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
+    self:SetScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
+    self:SetScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
 
-    mixin:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
-    mixin:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0)
 
-    mixin:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
-    mixin:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
+    self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
+    self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
 end
 
 
@@ -932,14 +931,14 @@ end
 
 
 --点击，施法
-function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI(mixin)
-    mixin:SetNineSlice(ClickBindingFrame, true)
-    mixin:SetScrollBar(ClickBindingFrame)
-    mixin:SetAlphaColor(ClickBindingFrameBg)
+function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI()
+    self:SetNineSlice(ClickBindingFrame, true)
+    self:SetScrollBar(ClickBindingFrame)
+    self:SetAlphaColor(ClickBindingFrameBg)
     ClickBindingFrame.ScrollBoxBackground:Hide()
-    --mixin:SetNineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
+    --self:SetNineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
 
-    mixin:SetNineSlice(ClickBindingFrame.TutorialFrame, true)
+    self:SetNineSlice(ClickBindingFrame.TutorialFrame, true)
 end
 
 
@@ -950,15 +949,15 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI(mixin)
-    mixin:SetNineSlice(ArchaeologyFrame, true)
-    mixin:SetNineSlice(ArchaeologyFrameInset, nil, true)
-    mixin:HideTexture(ArchaeologyFrameBg)
-    mixin:HideTexture(ArchaeologyFrameInset.Bg)
-    mixin:HideTexture(ArchaeologyFrameRankBarBackground)
-    mixin:SetAlphaColor(ArchaeologyFrameRaceFilterMiddle, nil, nil, 0.3)
-    mixin:SetAlphaColor(ArchaeologyFrameRaceFilterLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(ArchaeologyFrameRaceFilterRight, nil, nil, 0.3)
+function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
+    self:SetNineSlice(ArchaeologyFrame, true)
+    self:SetNineSlice(ArchaeologyFrameInset, nil, true)
+    self:HideTexture(ArchaeologyFrameBg)
+    self:HideTexture(ArchaeologyFrameInset.Bg)
+    self:HideTexture(ArchaeologyFrameRankBarBackground)
+    self:SetAlphaColor(ArchaeologyFrameRaceFilterMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(ArchaeologyFrameRaceFilterLeft, nil, nil, 0.3)
+    self:SetAlphaColor(ArchaeologyFrameRaceFilterRight, nil, nil, 0.3)
 end
 
 
@@ -969,12 +968,12 @@ end
 
 
 --分解 ScrappingMachineFrame
-function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI(mixin)
-    mixin:SetNineSlice(ScrappingMachineFrame, true)
-    mixin:SetAlphaColor(ScrappingMachineFrameBg, nil, nil, 0.3)
-    mixin:HideTexture(ScrappingMachineFrame.Background)
-    mixin:HideTexture(ScrappingMachineFrameInset.Bg)
-    mixin:SetNineSlice(ScrappingMachineFrameInset, true)
+function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI()
+    self:SetNineSlice(ScrappingMachineFrame, true)
+    self:SetAlphaColor(ScrappingMachineFrameBg, nil, nil, 0.3)
+    self:HideTexture(ScrappingMachineFrame.Background)
+    self:HideTexture(ScrappingMachineFrameInset.Bg)
+    self:SetNineSlice(ScrappingMachineFrameInset, true)
 end
 
 
@@ -986,15 +985,15 @@ end
 
 
 --地下堡
-function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI(mixin)
-    mixin:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
-    mixin:SetAlphaColor(DelvesCompanionConfigurationFrame.Background, nil, nil, 0.3)
-    mixin:HideTexture(DelvesCompanionConfigurationFrame.Bg)
-    mixin:SetFrame(DelvesCompanionConfigurationFrame.Border)
+function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
+    self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
+    self:SetAlphaColor(DelvesCompanionConfigurationFrame.Background, nil, nil, 0.3)
+    self:HideTexture(DelvesCompanionConfigurationFrame.Bg)
+    self:SetFrame(DelvesCompanionConfigurationFrame.Border)
 
-    mixin:SetNineSlice(DelvesCompanionAbilityListFrame, true)
-    mixin:SetAlphaColor(DelvesCompanionAbilityListFrameBg)
-    mixin:HideTexture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
+    self:SetNineSlice(DelvesCompanionAbilityListFrame, true)
+    self:SetAlphaColor(DelvesCompanionAbilityListFrameBg)
+    self:HideTexture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
 end
 
 
@@ -1004,57 +1003,37 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_CovenantRenown(mixin)
-    mixin:HideTexture(CovenantRenownFrame.Background)
+function WoWTools_TextureMixin.Events:Blizzard_CovenantRenown()
+    self:HideTexture(CovenantRenownFrame.Background)
 end
 
 
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_Settings(mixin)
-    mixin:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
-    mixin:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
-    mixin:SetScrollBar(SettingsPanel.Container.SettingsList)
-    mixin:SetScrollBar(SettingsPanel.CategoryList)
+function WoWTools_TextureMixin.Events:Blizzard_Settings()
+    self:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
+    self:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
+    self:SetScrollBar(SettingsPanel.Container.SettingsList)
+    self:SetScrollBar(SettingsPanel.CategoryList)
 
-    mixin:SetNineSlice(PingSystemTutorial, true)
-    mixin:SetNineSlice(PingSystemTutorialInset, nil, true)
+    self:SetNineSlice(PingSystemTutorial, true)
+    self:SetNineSlice(PingSystemTutorialInset, nil, true)
 
-    mixin:HideTexture(PingSystemTutorialBg)
+    self:HideTexture(PingSystemTutorialBg)
 
-    mixin:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
-    mixin:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
-    mixin:SetSearchBox(SettingsPanel.SearchBox)
-    mixin:SetFrame(SettingsPanel, {index=1})
+    self:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
+    self:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
+    self:SetSearchBox(SettingsPanel.SearchBox)
+    self:SetFrame(SettingsPanel, {index=1})
 end
 
-function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer(mixin)
+
+
+
+
+function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
      hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
-        mixin:SetFrame(frame.Bar, {isMinAlpha=true, index=1})
+        self:SetFrame(frame.Bar, {isMinAlpha=true, index=1})
     end)
 end
---[[
-function CooldownViewerBuffBarItemMixin:SetBarContent(barContent)
-	local iconFrame = self:GetIconFrame();
-	local nameFontString = self:GetNameFontString();
-	local point, relativeTo, relativePoint, offsetX, offsetY = "LEFT", iconFrame, "RIGHT", 0, 0;
-
-	if barContent == Enum.CooldownViewerBarContent.IconAndName then
-		iconFrame:Show();
-		nameFontString:Show();
-	elseif barContent == Enum.CooldownViewerBarContent.IconOnly then
-		iconFrame:Show();
-		nameFontString:Hide();
-	elseif barContent == Enum.CooldownViewerBarContent.NameOnly then
-		iconFrame:Hide();
-		nameFontString:Show();
-		relativeTo = self;
-		relativePoint = "LEFT";
-	else
-		assertsafe(false, "Unknown value for bar content: %d", barContent);
-	end
-
-	self:GetBarFrame():SetPoint(point, relativeTo, relativePoint, offsetX, offsetY);
-end
-]]

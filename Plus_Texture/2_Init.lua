@@ -46,7 +46,7 @@ local function Init()
         for name in pairs(WoWTools_TextureMixin.Events) do
             if C_AddOns.IsAddOnLoaded(name) then
                 do
-                    WoWTools_TextureMixin.Events[name](nil, WoWTools_TextureMixin)
+                    WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
                 end
                 WoWTools_TextureMixin.Events[name]= nil
             end
@@ -92,7 +92,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif WoWTools_TextureMixin.Events[arg1] and WoWToolsSave then
             do
-                WoWTools_TextureMixin.Events[arg1](nil, WoWTools_TextureMixin)
+                WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
             end
             WoWTools_TextureMixin.Events[arg1]= nil
         end

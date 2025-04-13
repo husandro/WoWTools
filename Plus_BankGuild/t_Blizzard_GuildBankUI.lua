@@ -1,69 +1,69 @@
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(mixin)--成就
+function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()--成就
     GuildBankFrame.Emblem.Left:Hide()
     GuildBankFrame.Emblem.Right:Hide()
 
-    mixin:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, true)
-    mixin:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, true)
-    mixin:SetAlphaColor(GuildBankFrame.BotLeftCorner, nil, nil, true)
-    mixin:SetAlphaColor(GuildBankFrame.BotRightCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.BotLeftCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.BotRightCorner, nil, nil, true)
 
-    mixin:SetAlphaColor(GuildBankFrame.LeftBorder, nil, nil, true)
-    mixin:SetAlphaColor(GuildBankFrame.RightBorder, nil, nil, true)
-    mixin:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, true)
-    mixin:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.LeftBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.RightBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, true)
 
     GuildBankFrame.BlackBG:ClearAllPoints()
     GuildBankFrame.BlackBG:SetAllPoints()
 
-    mixin:HideTexture(GuildBankFrame.TitleBg)
-    mixin:HideTexture(GuildBankFrame.RedMarbleBG)
+    self:HideTexture(GuildBankFrame.TitleBg)
+    self:HideTexture(GuildBankFrame.RedMarbleBG)
     GuildBankFrame.MoneyFrameBG:DisableDrawLayer('BACKGROUND')
 
 
 
-    mixin:HideTexture(GuildBankFrameBottomOuter)
-    mixin:HideTexture(GuildBankFrameTopOuter)
-    mixin:HideTexture(GuildBankFrameLeftOuter)
-    mixin:HideTexture(GuildBankFrameRightOuter)
+    self:HideTexture(GuildBankFrameBottomOuter)
+    self:HideTexture(GuildBankFrameTopOuter)
+    self:HideTexture(GuildBankFrameLeftOuter)
+    self:HideTexture(GuildBankFrameRightOuter)
 
-    mixin:HideTexture(GuildBankFrameBottomLeftOuter)
-    mixin:HideTexture(GuildBankFrameBottomRightOuter)
-    mixin:HideTexture(GuildBankFrameTopLeftOuter)
-    mixin:HideTexture(GuildBankFrameTopRightOuter)
+    self:HideTexture(GuildBankFrameBottomLeftOuter)
+    self:HideTexture(GuildBankFrameBottomRightOuter)
+    self:HideTexture(GuildBankFrameTopLeftOuter)
+    self:HideTexture(GuildBankFrameTopRightOuter)
 
-    mixin:HideTexture(GuildBankFrameLeftInner)
-    mixin:HideTexture(GuildBankFrameRightInner)
-    mixin:HideTexture(GuildBankFrameTopInner)
-    mixin:HideTexture(GuildBankFrameBottomInner)
+    self:HideTexture(GuildBankFrameLeftInner)
+    self:HideTexture(GuildBankFrameRightInner)
+    self:HideTexture(GuildBankFrameTopInner)
+    self:HideTexture(GuildBankFrameBottomInner)
 
-    mixin:HideTexture(GuildBankFrameBottomLeftInner)
-    mixin:HideTexture(GuildBankFrameBottomRightInner)
-    mixin:HideTexture(GuildBankFrameTopLeftInner)
-    mixin:HideTexture(GuildBankFrameTopRightInner)
+    self:HideTexture(GuildBankFrameBottomLeftInner)
+    self:HideTexture(GuildBankFrameBottomRightInner)
+    self:HideTexture(GuildBankFrameTopLeftInner)
+    self:HideTexture(GuildBankFrameTopRightInner)
 
-    mixin:HideTexture(GuildBankFrame.TabLimitBG)
-    mixin:HideTexture(GuildBankFrame.TabLimitBGLeft)
-    mixin:HideTexture(GuildBankFrame.TabLimitBGRight)
-    mixin:SetSearchBox(GuildItemSearchBox)
+    self:HideTexture(GuildBankFrame.TabLimitBG)
+    self:HideTexture(GuildBankFrame.TabLimitBGLeft)
+    self:HideTexture(GuildBankFrame.TabLimitBGRight)
+    self:SetSearchBox(GuildItemSearchBox)
 
-    mixin:HideTexture(GuildBankFrame.TabTitleBG)
-    mixin:HideTexture(GuildBankFrame.TabTitleBGLeft)
-    mixin:HideTexture(GuildBankFrame.TabTitleBGRight)
+    self:HideTexture(GuildBankFrame.TabTitleBG)
+    self:HideTexture(GuildBankFrame.TabTitleBGLeft)
+    self:HideTexture(GuildBankFrame.TabTitleBGRight)
 
     for i=1, 7 do
         local frame= GuildBankFrame['Column'..i]
         if frame then
-            mixin:HideTexture(frame.Background)
+            self:HideTexture(frame.Background)
         end
-        mixin:SetFrame(_G['GuildBankFrameTab'..i], {notAlpha=true})
+        self:SetFrame(_G['GuildBankFrameTab'..i], {notAlpha=true})
     end
 
 
-    mixin:SetScrollBar(GuildBankFrame.Log)
-    mixin:SetScrollBar(GuildBankInfoScrollFrame)
+    self:SetScrollBar(GuildBankFrame.Log)
+    self:SetScrollBar(GuildBankInfoScrollFrame)
 
 
     for i=1, MAX_GUILDBANK_TABS do
@@ -72,7 +72,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(mixin)--成就
 
         btn= _G['GuildBankTab'..i]
         if btn then
-            WoWTools_TextureMixin:SetFrame(btn, {alpha=0})
+            self:SetFrame(btn, {alpha=0})
         end
     end
 end

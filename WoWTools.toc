@@ -30,7 +30,6 @@ Sesource\Libs\LibRangeCheck-3.0.lua
 0_Mixin\0_2_Date_WoW.lua
 0_Mixin\0_3_Data_NeedUpdate.lua
 0_Mixin\StaticPopupDialogs.lua
-0_Mixin\Aura.lua
 0_Mixin\Button.lua
 0_Mixin\Collected.lua
 0_Mixin\Cooldown.lua
@@ -177,6 +176,11 @@ Plus_Color\Edit.lua
 Plus_Color\Select_Color.lua
 Plus_Color\Other.lua
 Plus_Color\CODE.lua
+
+##光环
+Plus_Aura\0_AuraMixin.lua
+Plus_Aura\0_Init.lua
+Plus_Aura\t_Blizzard_BuffFrame.lua
 
 
 ##鼠标，提示

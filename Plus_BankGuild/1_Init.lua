@@ -19,13 +19,6 @@ end
 
 
 local function Init()
-    if WoWTools_TextureMixin.Events.Blizzard_GuildBankUI then
-        do
-            WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
-        end
-        WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
-    end
-
     WoWTools_GuildBankMixin:Init_Plus()
     WoWTools_GuildBankMixin:Init_GuildMenu()
     WoWTools_GuildBankMixin:Init_Plus_Sort()
