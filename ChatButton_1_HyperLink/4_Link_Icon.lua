@@ -1,17 +1,23 @@
---超链接，图标 ItemRef.lua
+--[[
+    超链接，图标
+    ItemRef.lua
+    {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
+]]
 local function Save()
     return WoWToolsSave['ChatButton_HyperLink'] or {}
 end
 
 local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
---local CHAT_SAY_SEND= CHAT_SAY_SEND
+local CHAT_SAY_SEND= CHAT_SAY_SEND
 local IsShowTimestamps--聊天中时间戳
 
 DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
-
+local function Get_CompletedIcon(isCompleted)
+    return isCompleted and '|A:common-icon-checkmark:0:0|a' or '|A:questlegendary:0:0|a'
+end
 
 
 
@@ -86,11 +92,7 @@ local function Mount(id2, item)
         local mountID= item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
         if  mountID then
             local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
-            if isCollected then
-                return format('|A:%s:0:0|a', 'common-icon-checkmark'), icon
-            else
-                return '|A:questlegendary:0:0|a', icon
-            end
+            return Get_CompletedIcon(isCollected), icon
         end
     end
 end
@@ -139,7 +141,7 @@ local function Item(link)--物品超链接
             end
         end
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
-        t= PlayerHasToy(itemID) and (t..format('|A:%s:0:0|a', 'common-icon-checkmark')) or (t..'|A:questlegendary:0:0|a')
+        t= t..Get_CompletedIcon(PlayerHasToy(itemID))
     end
     --local bag= C_Item.GetItemCount(link, true, false, true, true)--数量
     --count = C_Item.GetItemCount(itemInfo [, includeBank [, includeUses [, includeReagentBank [, includeAccountBank]]]])
@@ -242,106 +244,103 @@ local function Achievement(link)--成就
     if id2 then
         local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
         local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..WoWTools_HyperLink:CN_Link(link)..(completed and format('|A:%s:0:0|a', 'common-icon-checkmark') or '|A:questlegendary:0:0|a')
+        return texture..WoWTools_HyperLink:CN_Link(link)..Get_CompletedIcon(completed)
     end
 end
 
 local function Quest(link)--任务
     local id2=link:match('Hquest:(%d+)')
     if id2 then
-        local wow= C_QuestLog.IsAccountQuest(id2) and WoWTools_DataMixin.Icon.wow2 or ''--帐号通用        
-        if C_QuestLog.IsQuestFlaggedCompleted(id2) then
-            return wow..WoWTools_HyperLink:CN_Link(link)..format('|A:%s:0:0|a', 'common-icon-checkmark')
-        else
-            return wow..WoWTools_HyperLink:CN_Link(link)..'|A:questlegendary:0:0|a'
-        end
+        return (C_QuestLog.IsAccountQuest(id2) and WoWTools_DataMixin.Icon.wow2 or '')--帐号通用
+            ..WoWTools_HyperLink:CN_Link(link)
+            ..Get_CompletedIcon(C_QuestLog.IsQuestFlaggedCompleted(id2))
     end
 end
 
---[[local function Talent(link)--天赋
+local function Talent(link)--天赋
     local id2=link:match('Htalent:(%d+)')
     if id2 then
-        local _, _, icon, _, _, _, _, _ ,_, known=GetTalentInfoByID(id2)
-        if icon then
-            return '|T'..icon..':0|t'..link..(known and format('|A:%s:0:0|a', 'common-icon-checkmark') or '|A:questlegendary:0:0|a')
-        end
+        local _, _, icon, _, _, _, _, _ ,_, known= GetTalentInfoByID(id2)
+        return (icon and '|T'..icon..':0|t' or '')
+            ..WoWTools_HyperLink:CN_Link(link)
+            ..Get_CompletedIcon(known)
     end
-end]]
+end
 
 local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
     if id2 then
         local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return '|T'..icon..':0|t'..WoWTools_HyperLink:CN_Link(link)..(known and format('|A:%s:0:0|a', 'common-icon-checkmark') or '|A:questlegendary:0:0|a')
+        return (icon and '|T'..icon..':0|t' or '')
+            ..WoWTools_HyperLink:CN_Link(link)
+            ..Get_CompletedIcon(known)
     end
 end
 
 
-local function Outfit(link)--外观方案链接
+--外观方案链接
+local function Outfit(link)
     local list = C_TransmogCollection.GetItemTransmogInfoListFromOutfitHyperlink(link)
-    if list then
-        local co,to=0,0
-        for _,v in pairs(list) do
-            local appearanceID=v.appearanceID--v.illusionID
-            local illusionID=v.illusionID
-            if appearanceID and appearanceID>0 then
-                local hide=C_TransmogCollection.IsAppearanceHiddenVisual(appearanceID)
-                if not hide then
-                    local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
-                    if has then
-                        co=co+1
-                    end
-                    to=to+1
+    if not list then
+        return
+    end
+    local co,to=0,0
+    for _,v in pairs(list) do
+        local appearanceID=v.appearanceID--v.illusionID
+        local illusionID=v.illusionID
+        if appearanceID and appearanceID>0 then
+            local hide=C_TransmogCollection.IsAppearanceHiddenVisual(appearanceID)
+            if not hide then
+                local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
+                if has then
+                    co=co+1
                 end
-            end
-
-            if illusionID and illusionID>0 then
-                local info = C_TransmogCollection.GetIllusionInfo(illusionID)
-                if info then
-                    if info.isCollected then
-                        co=co+1
-                    end
-                    to=to+1
-                end
+                to=to+1
             end
         end
-        if to>0 then
-            if to==co then
-                return WoWTools_HyperLink:CN_Link(link)..format('|A:%s:0:0|a', 'common-icon-checkmark')
-            elseif co>0 then
-                return WoWTools_HyperLink:CN_Link(link)..YELLOW_FONT_COLOR_CODE..co..'/'..to..'|r'
-            else
-                return WoWTools_HyperLink:CN_Link(link)..RED_FONT_COLOR_CODE..co..'/'..to..'|r'
+        if illusionID and illusionID>0 then
+            local info = C_TransmogCollection.GetIllusionInfo(illusionID)
+            if info then
+                if info.isCollected then
+                    co=co+1
+                end
+                to=to+1
             end
+        end
+    end
+    if to>0 then
+        if to==co then
+            return WoWTools_HyperLink:CN_Link(link)
+                ..Get_CompletedIcon(true)
+        else
+            return WoWTools_HyperLink:CN_Link(link)
+                ..(co>0 and YELLOW_FONT_COLOR_CODE or RED_FONT_COLOR_CODE)
+                ..co..'/'..to..'|r'
         end
     end
 end
 
-local function Transmogillusion(link)--幻化
+--幻化
+local function Transmogillusion(link)
     local illusionID=link:match('Htransmogillusion:(%d+)')
     if illusionID then
         local info=C_TransmogCollection.GetIllusionInfo(illusionID)
         if info then
-            local icon='|A:transmog-icon-hidden:0:0|a'
-            if info.isCollected and info.isUsable then
-                icon='|T132288:0|t'
-            elseif info.isCollected then
-                icon=format('|A:%s:0:0|a', 'common-icon-checkmark')
-            end
-            return WoWTools_HyperLink:CN_Link(link)..icon
+            return WoWTools_HyperLink:CN_Link(link)
+                ..(
+                    info.isCollected and info.isUsable and '|T132288:0|t'
+                    or Get_CompletedIcon(info.isCollected)
+                )
         end
     end
 end
 
-local function TransmogAppearance(link)--幻化
+--幻化
+local function TransmogAppearance(link)
     local appearanceID=link:match('Htransmogillusion:(%d+)')
     if appearanceID then
-        local has=C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID)
-        if has then
-            return WoWTools_HyperLink:CN_Link(link).format('|A:%s:0:0|a', 'common-icon-checkmark')
-        else
-            return WoWTools_HyperLink:CN_Link(link)..'|A:questlegendary:0:0|a'
-        end
+        return WoWTools_HyperLink:CN_Link(link)
+            ..Get_CompletedIcon(C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID))
     end
 end
 
@@ -349,16 +348,18 @@ end
 --钥石
 local function Keystone(link)
     local itemID, _, _, affix1, affix2, affix3, affix4= link:match('Hkeystone:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)')
-    local texture='|T'..(select(5, C_Item.GetItemInfoInstant(link)) or 525134)..':0|t'
     return
-        texture
-        ..(itemID and WoWTools_HyperLink:CN_Link(link, {itemID=tonumber(itemID), isName=true}) or link)
+        '|T'..(select(5, C_Item.GetItemInfoInstant(link)) or 525134)..':0|t'
+        ..WoWTools_HyperLink:CN_Link(link, {itemID=tonumber(itemID), isName=true})
         ..(WoWTools_HyperLink:GetKeyAffix(link, {affix1, affix2, affix3, affix4}) or '')
 end
 
-local function DungeonScore(link)--史诗钥石评分
+
+--史诗钥石评分
+local function DungeonScore(link)
     local score, guid, itemLv=link:match('|HdungeonScore:(%d+):(.-):.-:%d+:(%d+):')
-    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)..WoWTools_ChallengeMixin:KeystoneScorsoColor(score)
+    local t=WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil)
+        ..(score=='0' and '0' or WoWTools_ChallengeMixin:KeystoneScorsoColor(score))
     t=t..WoWTools_HyperLink:CN_Link(link)
     if itemLv and itemLv~='0' then
         t=t..'|A:charactercreate-icon-customize-body-selected:0:0|a'..itemLv
@@ -412,15 +413,31 @@ end
 
 --没有，测试成功
 --"|cffffff00|Hperksactivity:6|h[Completa 5 spedizioni Mitiche+]|h|r"
---{'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
+
+-- s=s:gsub('|Hperksactivity:.-]|h', Perksactivity)
 local function Perksactivity(link)
     local perksActivityID, name
-    perksActivityID, name= link:match(':(%d+):|h%[(.-)]|h|r')
-    if WoWTools_ChineseMixin then
-        local info= WoWTools_ChineseMixin:GetPerksActivityInfo(tonumber(perksActivityID))
-        if info and info[1] then
-            return link:gusb(WoWTools_TextMixin:Magic(name), info[2])
-        end
+    perksActivityID, name= link:match('|Hperksactivity:(%d+)|h%[(.+)]|h')
+    perksActivityID= perksActivityID and tonumber(perksActivityID)
+    if not perksActivityID or not name then
+        return
+    end
+
+    local t=link
+--汉化
+    local info= WoWTools_ChineseMixin and WoWTools_ChineseMixin:GetPerksActivityInfo(tonumber(perksActivityID))
+    if info and info[1] then
+        t= t:gsub(name, info[1])
+    end
+    
+--是否完成
+    info= C_PerksActivities.GetPerksActivityInfo(perksActivityID)
+    if info then
+        t= t..Get_CompletedIcon(info.completed)
+    end
+
+    if t and t~=link then
+        return t
     end
 end
 
@@ -439,7 +456,7 @@ local function TransmogSet(link)--幻化套装
             end
             if to>0 then
                 if n==to then
-                    t= t..format('|A:%s:0:0|a', 'common-icon-checkmark')
+                    t= t..Get_CompletedIcon(true)
                 elseif n==0 then
                     t= t..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
                 else
@@ -521,7 +538,7 @@ local function New_AddMessage(self, s, ...)
     s=s:gsub('|Hcurrency:.-]|h', Currency)
     s=s:gsub('|Hachievement:.-]|h', Achievement)
     s=s:gsub('|Hquest:.-]|h', Quest)
-    --s=s:gsub('|Htalent:.-]|h', Talent)
+    s=s:gsub('|Htalent:.-]|h', Talent)
     s=s:gsub('|Hpvptal:.-]|h', Pvptal)
 
     s=s:gsub('|Houtfit:.-]|h', Outfit)----外观方案链接    
