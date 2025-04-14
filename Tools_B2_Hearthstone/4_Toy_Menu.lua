@@ -1,7 +1,7 @@
 --玩具界面, 按钮
 
 local function Save()
-    return WoWTools_HearthstoneMixin.Save
+    return WoWToolsSave['Tools_Hearthstone']
 end
 
 --设置，物品，提示

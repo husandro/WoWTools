@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_HearthstoneMixin.Save
+    return WoWToolsSave['Tools_Hearthstone']
 end
 
 local P_Items={
@@ -27,7 +27,7 @@ local P_Items={
     [208704]=true,--幽邃住民的土灵炉石
 }
 
-WoWTools_HearthstoneMixin.Save.items= P_Items
+
 
 local ModifiedMenuTab={
     {type='Alt', itemID=140192, icon=1444943},
@@ -72,6 +72,10 @@ end
 
 
 local function Init(ToyButton)
+    if not ToyButton then
+        Init=function()end
+        return
+    end
     ToyButton:SetAttribute("type1", "macro")
 
     ToyButton.text=WoWTools_LabelMixin:Create(ToyButton, {size=10, color=true, justifyH='CENTER'})
@@ -466,6 +470,8 @@ local function Init(ToyButton)
     ToyButton:set_location()
     ToyButton:Get_Random_Value()
     ToyButton:set_event()
+
+    Init=function()end
 end
 
 

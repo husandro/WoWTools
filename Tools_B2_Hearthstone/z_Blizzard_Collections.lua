@@ -1,7 +1,7 @@
 --玩具界面, 按钮
 
 local function Save()
-    return WoWTools_HearthstoneMixin.Save
+    return WoWToolsSave['Tools_Hearthstone']
 end
 
 
@@ -12,6 +12,9 @@ end
 
 local function Remove_Toy(itemID)--移除
     local ToyButton= WoWTools_HearthstoneMixin.ToyButton
+    if not ToyButton then
+        return
+    end
 
     Save().items[itemID]=nil
     local isSelect, isLock= ToyButton:Check_Random_Value(itemID)
@@ -100,13 +103,18 @@ end
 
 
 
-
-
-
-function WoWTools_HearthstoneMixin:Init_Blizzard_Collections()
+local function Init()
     hooksecurefunc('ToySpellButton_UpdateButton', ToySpellButton_UpdateButton)
+    Init=function()end
 end
 
+
+
+
+
+function WoWTools_HearthstoneMixin:Blizzard_Collections()
+    Init()
+end
 
 function WoWTools_HearthstoneMixin:Remove_Toy(itemID)
     Remove_Toy(itemID)
