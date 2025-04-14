@@ -79,13 +79,12 @@ local function Pet(speciesID)
     if speciesID then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected and limit then
-            if numCollected == limit then
-                return GREEN_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
-            elseif numCollected==0 then
-                return RED_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
-            else
-                return YELLOW_FONT_COLOR_CODE..'['..numCollected ..'/'.. limit..']|r'
-            end
+            return (
+                    numCollected == limit and GREEN_FONT_COLOR_CODE
+                    or (numCollected==0 and RED_FONT_COLOR_CODE)
+                    or YELLOW_FONT_COLOR_CODE
+                )
+                ..'['..numCollected ..'/'.. limit..']|r'
         end
     end
 end
@@ -93,7 +92,7 @@ end
 local function Mount(id2, item)
     if id2 then
         local mountID= item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
-        if  mountID then
+        if mountID then
             local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
             return Get_CompletedIcon(isCollected), icon
         end
@@ -122,36 +121,29 @@ local function Item(link)--物品超链接
             if sourceInfo then
                 if not sourceInfo.isCollected then
                     local hasItemData, canCollect = C_TransmogCollection.PlayerCanCollectSource(sourceID)--玩家是否可收集
-                    if hasItemData and canCollect then
-                        t=t..'|T132288:0|t'
-                    else
-                        t=t..'|A:transmog-icon-hidden:0:0|a'
-                    end
+                    t=t..(
+                        hasItemData and canCollect and
+                        '|T132288:0|t'
+                        or '|A:transmog-icon-hidden:0:0|a'
+                    )
                 end
             end
         end
     elseif classID==15 and (subclassID==2 or subclassID==5) then
         if  subclassID==2 then--宠物数量
             local _, _, petType, _, _, _, _, _, _, _, _, _, speciesID=C_PetJournal.GetPetInfoByItemID(itemID)
-            local nu=Pet(speciesID)
-            if nu then
-                t=(PetType(petType) or '')..t..nu
-            end
+            t=(PetType(petType) or '')
+                ..t
+                ..(Pet(speciesID) or '')
+
         elseif subclassID==5 then--坐骑是不收集            
-            local nu= Mount(itemID, true)
-            if nu then
-                t=t..nu
-            end
+            t= t..(Mount(itemID, true) or '')
         end
+
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         t= t..Get_CompletedIcon(PlayerHasToy(itemID))
     end
-    --local bag= C_Item.GetItemCount(link, true, false, true, true)--数量
-    --count = C_Item.GetItemCount(itemInfo [, includeBank [, includeUses [, includeReagentBank [, includeAccountBank]]]])
     t=t..WoWTools_ItemMixin:GetCount(itemID, {isWoW=true})
-    --[[if bag and bag>0 then
-        t=t..'|A:bag-main:0:0|a'..WoWTools_Mixin:MK(bag, 3)
-    end]]
 
     if t~=link then
         return t
@@ -170,15 +162,14 @@ local function Spell(link)--法术图标
     if not spellID then
         return
     end
+
     local t=WoWTools_HyperLink:CN_Link(link, {spellID=spellID, isName=true})
+
     local icon= C_Spell.GetSpellTexture(link)
-    if icon then
-        t= '|T'..icon..':0|t'..t
-    end
-    local nu=Mount(spellID)
-    if nu then
-        t=t..nu
-    end
+    t= (icon and '|T'..icon..':0|t' or '')..t
+
+    t=t..(Mount(spellID) or '')
+
     if t~=link then
         return t
     end
@@ -186,98 +177,108 @@ end
 
 local function PetLink(link)--宠物超链接
     local speciesID =link:match('Hbattlepet:(%d+)')
-    if speciesID  then
-        local nu=Pet(speciesID )
-        if nu then
-            local _, icon, petType= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-            return (PetType(petType) or '') .. (icon and '|T'..icon..':0|t' or '')..WoWTools_HyperLink:CN_Link(link)..nu
-        end
+    if not speciesID  then
+        return
     end
+    local _, icon, petType= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    return (PetType(petType) or '')
+        ..(icon and '|T'..icon..':0|t' or '')
+        ..WoWTools_HyperLink:CN_Link(link)
+        ..(Pet(speciesID) or '')
 end
 
 local function PetAblil(link, petChannel)--宠物技能
     local id2=link:match('HbattlePetAbil:(%d+)')
-    if id2 then
-        local _, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(id2)
-        if petType then
-            if petChannel then
-                return PetType(petType)..link
-            elseif icon then
-                return (PetType(petType) or '')..'|T'..icon..':0|t'..link
-            end
+    if not id2 then
+        return
+    end
+    local _, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(id2)
+    if petType then
+        if petChannel then
+            return PetType(petType)..link
+        else
+            return (PetType(petType) or '')..'|T'..(icon or 0)..':0|t'..link
         end
     end
 end
 
 local function Trade(link)--贸易技能
     local id2=link:match('Htrade:.-:(%d+):')
-    if id2 then
-        local icon = C_Spell.GetSpellTexture(id2)
-        if icon then
-            return '|T'..icon..':0|t'..WoWTools_HyperLink:CN_Link(link)
-        end
+    if not id2 then
+        return
     end
+
+    local icon = C_Spell.GetSpellTexture(id2)
+
+    return (icon and '|T'..icon..':0|t' or '')
+        ..WoWTools_HyperLink:CN_Link(link)
 end
 
 local function Enchant(link)--附魔
     local id2=link:match('Henchant:(%d+)')
-    if id2 then
-        local icon = C_Spell.GetSpellTexture(id2)
-        if icon then
-            return '|T'..icon..':0|t'..WoWTools_HyperLink:CN_Link(link)
-        end
+    if not id2 then
+        return
     end
+    local icon = C_Spell.GetSpellTexture(id2)
+    return (icon and '|T'..icon..':0|t' or '')
+        ..WoWTools_HyperLink:CN_Link(link)
 end
 
 local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Memento]|h|r"
     local info, num, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(nil, nil, link)
-    if info and info.iconFileID  then
-        local numText
-        if num then
-            numText=(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
-                ..WoWTools_Mixin:MK(num,3)..'|r'
-                ..(WoWTools_CurrencyMixin:GetAccountIcon(info.currencyID) or '')
-        end
-        return  '|T'..info.iconFileID..':0|t'..WoWTools_HyperLink:CN_Link(link)..(numText or '')
+    if not info then
+        return
     end
+    return
+        (info.iconFileID and '|T'..info.iconFileID..':0|t')
+        ..WoWTools_HyperLink:CN_Link(link)
+        ..(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
+        ..(num and WoWTools_Mixin:MK(num,3))
+        ..'|r'
+        ..(WoWTools_CurrencyMixin:GetAccountIcon(info.currencyID) or '')
 end
 
 local function Achievement(link)--成就
     local id2=link:match('Hachievement:(%d+)')
-    if id2 then
-        local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
-        local texture=icon and '|T'..icon..':0|t' or ''
-        return texture..WoWTools_HyperLink:CN_Link(link)..Get_CompletedIcon(completed)
+    if not id2 then
+        return
     end
+    local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
+    return (icon and '|T'..icon..':0|t' or '')
+        ..WoWTools_HyperLink:CN_Link(link)
+        ..Get_CompletedIcon(completed)
 end
 
 local function Quest(link)--任务
     local id2=link:match('Hquest:(%d+)')
-    if id2 then
-        return (C_QuestLog.IsAccountQuest(id2) and WoWTools_DataMixin.Icon.wow2 or '')--帐号通用
-            ..WoWTools_HyperLink:CN_Link(link)
-            ..Get_CompletedIcon(C_QuestLog.IsQuestFlaggedCompleted(id2))
+    if not id2 then
+        return
     end
+    return (C_QuestLog.IsAccountQuest(id2) and WoWTools_DataMixin.Icon.wow2 or '')--帐号通用
+        ..WoWTools_HyperLink:CN_Link(link)
+        ..Get_CompletedIcon(C_QuestLog.IsQuestFlaggedCompleted(id2))
 end
 
 local function Talent(link)--天赋
     local id2=link:match('Htalent:(%d+)')
-    if id2 then
-        local _, _, icon, _, _, _, _, _ ,_, known= GetTalentInfoByID(id2)
-        return (icon and '|T'..icon..':0|t' or '')
-            ..WoWTools_HyperLink:CN_Link(link)
-            ..Get_CompletedIcon(known)
+    if not id2 then
+        return
     end
+    local _, _, icon, _, _, _, _, _ ,_, known= GetTalentInfoByID(id2)
+    return (icon and '|T'..icon..':0|t' or '')
+        ..WoWTools_HyperLink:CN_Link(link)
+        ..Get_CompletedIcon(known)
 end
 
 local function Pvptal(link)--pvp天赋
     local id2=link:match('Hpvptal:(%d+)')
-    if id2 then
-        local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-        return (icon and '|T'..icon..':0|t' or '')
-            ..WoWTools_HyperLink:CN_Link(link)
-            ..Get_CompletedIcon(known)
+    if not id2 then
+        return
     end
+    local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
+    return (icon and '|T'..icon..':0|t' or '')
+        ..WoWTools_HyperLink:CN_Link(link)
+        ..Get_CompletedIcon(known)
 end
 
 
@@ -326,16 +327,15 @@ end
 --幻化
 local function Transmogillusion(link)
     local illusionID=link:match('Htransmogillusion:(%d+)')
-    if illusionID then
-        local info=C_TransmogCollection.GetIllusionInfo(illusionID)
-        if info then
-            return WoWTools_HyperLink:CN_Link(link)
-                ..(
-                    info.isCollected and info.isUsable and '|T132288:0|t'
-                    or Get_CompletedIcon(info.isCollected)
-                )
-        end
+    local info= illusionID and C_TransmogCollection.GetIllusionInfo(illusionID)
+    if not info then
+        return
     end
+    return WoWTools_HyperLink:CN_Link(link)
+        ..(
+            info.isCollected and info.isUsable and '|T132288:0|t'
+            or Get_CompletedIcon(info.isCollected)
+        )
 end
 
 --幻化
@@ -414,10 +414,8 @@ local function Instancelock(link)
     end
 end
 
---没有，测试成功
+--旅行者日志
 --"|cffffff00|Hperksactivity:6|h[Completa 5 spedizioni Mitiche+]|h|r"
-
--- s=s:gsub('|Hperksactivity:.-]|h', Perksactivity)
 local function Perksactivity(link)
     local perksActivityID, name
     perksActivityID, name= link:match('|Hperksactivity:(%d+)|h%[(.+)]|h')
@@ -432,7 +430,7 @@ local function Perksactivity(link)
     if info and info[1] then
         t= t:gsub(name, info[1])
     end
-    
+
 --是否完成
     info= C_PerksActivities.GetPerksActivityInfo(perksActivityID)
     if info then
@@ -446,26 +444,23 @@ end
 
 local function TransmogSet(link)--幻化套装
     local t= WoWTools_HyperLink:CN_Link(link)
-    local setID=link:match('transmogset:(%d+)')
-    if setID then
-        local info=C_TransmogSets.GetSetPrimaryAppearances(setID)
-        if info then
-            local n,to=0,0
-            for _,v in pairs(info) do
-                to=to+1
-                if v.collected then
-                    n=n+1
-                end
-            end
-            if to>0 then
-                if n==to then
-                    t= t..Get_CompletedIcon(true)
-                elseif n==0 then
-                    t= t..RED_FONT_COLOR_CODE..n..'/'..to..'|r'
-                else
-                    t= t..YELLOW_FONT_COLOR_CODE..n..'/'..to..'|r'
-                end
-            end
+    local setID=link:match('transmogset:(%d+)')    
+    local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
+    if not info then
+        return
+    end
+    local n,to=0,0
+    for _,v in pairs(info) do
+        to=to+1
+        if v.collected then
+            n=n+1
+        end
+    end
+    if to>0 then
+        if n==to then
+            t= t..Get_CompletedIcon(true)
+        else
+            t= t..(n==0 and RED_FONT_COLOR_CODE or YELLOW_FONT_COLOR_CODE)..n..'/'..to..'|r'
         end
     end
     if t~=link then
@@ -475,11 +470,9 @@ end
 
 local function setMount(link)--设置,坐骑
     local spellID= link:match('mount:(%d+)')
-    if spellID then
-        local mount,icon= Mount(spellID)
-        if mount then
-            return (icon and '|T'..icon..':0|t' or '')..WoWTools_HyperLink:CN_Link(link)..mount
-        end
+    local mount, icon= Mount(spellID)
+    if mount then
+        return (icon and '|T'..icon..':0|t' or '')..WoWTools_HyperLink:CN_Link(link)..mount
     end
 end
 

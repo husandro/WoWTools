@@ -5552,7 +5552,8 @@
         "BUFF_MAX_DISPLAY",
         "ExtraActionButton1Icon",
         "STA",
-        "MonthlyActivitiesButtonMixin"
+        "MonthlyActivitiesButtonMixin",
+        "AREA_DESCRIPTION_FONT_COLOR_CODE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
