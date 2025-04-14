@@ -8,9 +8,6 @@
 --世界，任务 WorldQuestObjectiveTracker
 local function Init()
     WoWTools_ObjectiveMixin:Add_ClearAll_Button(WorldQuestObjectiveTracker, WoWTools_DataMixin.onlyChinese and '世界任务' or TRACKER_HEADER_WORLD_QUESTS, function(self)
-        if not IsShiftKeyDown() then
-            return
-        end
         local questIDS={}
         for i= 1, C_QuestLog.GetNumWorldQuestWatches() or 0, 1 do
             local questID= C_QuestLog.GetQuestIDForWorldQuestWatchIndex(i)

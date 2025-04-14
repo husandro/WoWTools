@@ -1,6 +1,4 @@
 --收藏
-
-
 local function Save()
     return WoWToolsSave['Plus_Move']
 end
@@ -292,6 +290,8 @@ local function Init_CollectionsJournal()
         WoWTools_MoveMixin:Setup(_G['RematchFrame'].TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
         WoWTools_MoveMixin:Setup(_G['RematchFrame'].QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
     end
+
+    Init_CollectionsJournal=function()end
 end
 
 
@@ -314,7 +314,7 @@ end
 
 
 local function Init_WardrobeFrame()
-    WoWTools_MoveMixin:Setup(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function(btn)
+    WoWTools_MoveMixin:Setup(WardrobeFrame, {setSize=true, minW=965, minH=606, initFunc=function()
         WardrobeTransmogFrame:ClearAllPoints()
         WardrobeTransmogFrame:SetPoint('LEFT', 2, -28)
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox:ClearAllPoints()--两侧肩膀使用不同的幻化外观
@@ -351,6 +351,10 @@ local function Init_WardrobeFrame()
         end
         init_items_colllection(btn)
     end)
+
+
+
+    Init_WardrobeFrame=function()end
 end
 
 

@@ -405,10 +405,17 @@ local function Instancelock(link)
     if DifficultyID and InstanceID then
         local name= WoWTools_MapMixin:GetDifficultyColor(nil, tonumber(DifficultyID)) or GetDifficultyInfo(DifficultyID)
         if name then--[[|Hjournal:0:320:5|h[Terrazza dell'Eterna Primavera]|h]]
-            t=t..'|Hjournal:0:'..InstanceID..':'..DifficultyID..'|h['..name..']|h'
+            return t..'|Hjournal:0:'..InstanceID..':'..DifficultyID..'|h['..name..']|h'
         end
     end
-   return t
+end
+
+--没有，测试成功
+local function Perksactivity(link)
+    local t= WoWTools_HyperLink:CN_Link(link, {perksActivityID=tonumber(select(2, strsplit(":", link))), isName=true})
+    if t and t~= link then
+        return t
+    end
 end
 
 local function TransmogSet(link)--幻化套装
@@ -520,6 +527,9 @@ local function New_AddMessage(self, s, ...)
     s=s:gsub('|HdungeonScore:.-]|h', DungeonScore)
     s=s:gsub('|Hjournal:.-]|h', Journal)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
+
+    s=s:gsub('|Hperksactivity:.-]|h', Perksactivity)
+    
 
 --社区 Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
    -- s=s:gsub('|HclubFinder:-]|h', ClubFinder)

@@ -376,6 +376,16 @@ end
 
 
 
+
+
+
+
+function WoWTools_TooltipMixin:Blizzard_EncounterJournal()
+    
+end
+        
+
+
 function WoWTools_TooltipMixin:Init_Hook()
     Init()
 end

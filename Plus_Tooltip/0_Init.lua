@@ -1,6 +1,6 @@
 WoWTools_TooltipMixin={
     WoWHead= 'https://www.wowhead.com/',
-    AddOn={},
+    Events={},
     addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips'
 }
 
@@ -39,17 +39,11 @@ local function Save()
     return WoWToolsSave['Plus_Tootips']
 end
 
-local function Load_Addon(name, isLoaddedName)
-    if isLoaddedName then
-        if C_AddOns.IsAddOnLoaded(isLoaddedName) then
-            name= isLoaddedName
-        end
-    end
-    if name and WoWTools_TooltipMixin.AddOn[name] and not Save().disabled then
-        WoWTools_TooltipMixin.AddOn[name]()
-    end
 
-end
+
+
+
+
 
 
 
@@ -104,23 +98,16 @@ end
 
 
 
+
 --初始
 local function Init()
-    for _, name in pairs(
-        {
-         'Blizzard_AchievementUI',
-         'Blizzard_Collections',
-         'Blizzard_ChallengesUI',
-         'Blizzard_OrderHallUI',
-         'Blizzard_FlightMap',
-         'Blizzard_Professions',
-         'Blizzard_ClassTalentUI',
-         'Blizzard_PlayerChoice',
-         'Blizzard_GenericTraitUI',
-         'Blizzard_Settings',
-        }
-    )do
-        Load_Addon(nil, name)
+    for name in pairs(WoWTools_TooltipMixin.Events)do
+        if C_AddOns.IsAddOnLoaded(name) then
+            do
+                WoWTools_TooltipMixin.Events[name](WoWTools_TooltipMixin)
+            end
+            WoWTools_TooltipMixin.Events[name]= nil
+        end
     end
 
     WoWTools_TooltipMixin:Init_StatusBar()--生命条提示
@@ -187,15 +174,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_TooltipMixin:Init_WoWHeadText()
 
             if Save().disabled then
-                Load_Addon= function()end
+                WoWTools_TooltipMixin.Events= {}
                 self:UnregisterAllEvents()
-                return
+            else
+                Init()--初始
             end
 
-            Init()--初始
-
-        else
-            Load_Addon(arg1)
+        elseif WoWTools_TooltipMixin.Events[arg1] and WoWToolsSave then
+            do
+                WoWTools_TooltipMixin.Events[arg1](WoWTools_TooltipMixin)
+            end
+            WoWTools_TooltipMixin.Events[arg1]=nil
         end
 
 

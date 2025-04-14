@@ -1,3 +1,8 @@
+
+WoWTools_MoveMixin={
+    Events={}
+}
+
 local function Save()
     return WoWToolsSave['Plus_Move']
 end

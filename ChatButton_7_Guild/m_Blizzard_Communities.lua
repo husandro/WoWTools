@@ -268,6 +268,7 @@ local function Init()
     sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(510, 480)
     end})]]
+    Init=function()end
 end
 
 

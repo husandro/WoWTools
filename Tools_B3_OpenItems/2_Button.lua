@@ -167,11 +167,12 @@ local function Init(OpenButton)
     OpenButton:SetScript('OnEvent', function(self, event)
 
         if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then--出进副本
-            if not InCombatLockdown() then
-                self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
-            end
-            self:settings()
-
+            C_Timer.After(1, function()
+                if not InCombatLockdown() then
+                    self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
+                end
+                self:settings()
+            end)
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='UNIT_ENTERED_VEHICLE'--车辆
             or event=='UNIT_EXITED_VEHICLE'

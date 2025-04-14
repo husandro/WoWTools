@@ -7,7 +7,7 @@ local function Save()
     return WoWToolsSave['ObjectiveTracker']
 end
 
-local TrackerTabs={
+local ObjectiveTabs={
     ['ScenarioObjectiveTracker']=false,
 
     ['QuestObjectiveTracker']=true,
@@ -31,7 +31,7 @@ local function Set_Collapse(collapse, isAllCollapse)
         return
     end
 
-    for frame, isCheck in pairs(TrackerTabs) do
+    for frame, isCheck in pairs(ObjectiveTabs) do
         frame= _G[frame]
         if frame:IsVisible()
             and (isCheck or isAllCollapse)
@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
-
+--展开选项
     root:CreateButton(
         col
         ..(WoWTools_DataMixin.onlyChinese and '展开选项 |A:editmode-down-arrow:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS),
@@ -87,9 +87,26 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
+    root:CreateDivider()
 
+    sub=root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL),
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        (WoWTools_DataMixin.onlyChinese and '取消追踪' or OBJECTIVES_STOP_TRACKING)..'\n'
+        ..'|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL),
+        nil,
+        {SetValue=function()
+
+        end}
+)
+    end)
+    sub:SetTooltip(function (tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '取消追踪' or OBJECTIVES_STOP_TRACKING)
+    end)
 
 --缩放
+    
     root:CreateDivider()
     WoWTools_MenuMixin:Scale(ObjectiveTrackerFrame, root, function()
         return Save().scale
@@ -97,6 +114,8 @@ local function Init_Menu(self, root)
         Save().scale= value
         self:set_scale()
     end)
+
+
 
 --选项
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ObjectiveMixin.addName, tooltip=function(tooltip)
@@ -134,7 +153,6 @@ local function Init()
     end
 
     function MenuButton:auto_collapse()
-        --local collapse= IsInInstance() or WoWTools_MapMixin:IsInDelve()
         Set_Collapse(IsInInstance(), false)
     end
 
@@ -249,3 +267,7 @@ end
 function WoWTools_ObjectiveMixin:Init_ObjectiveTrackerFrame()
     Init()
 end
+
+--[[function WoWTools_ObjectiveMixin:Get_ObjectiveTab()
+    return ObjectiveTabs
+end]]

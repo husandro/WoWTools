@@ -285,7 +285,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
 
     initFunc()
 
-    WoWTools_MoveMixin:Setup(ProfessionsFrame, {
+    self:Setup(ProfessionsFrame, {
         setSize=true,
         scaleStoppedFunc=scaleStoppedFunc,
         scaleRestFunc=scaleRestFunc,

@@ -1165,14 +1165,17 @@ local function Init_Button()
 
     TrackButton:SetScript('OnEvent', function(self, event)
         if event=='LOADING_SCREEN_DISABLED' or event=='ZONE_CHANGED_NEW_AREA' then
-            self.SpeakTextTab=nil
-            self:set_event()
-            self:set_shown()
+            C_Timer.After(1, function()
+                self.SpeakTextTab=nil
+                self:set_event()
+                self:set_shown()
+            end)
         elseif event=='VIGNETTES_UPDATED' then
             self:set_VIGNETTES_UPDATED()
         else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
             self:set_shown()
         end
+        
     end)
 
 

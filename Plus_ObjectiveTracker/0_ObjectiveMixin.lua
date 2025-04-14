@@ -6,24 +6,26 @@ function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
     if WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.3})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas='bags-button-autosort-up', alpha=0.2})
     btn:SetPoint('RIGHT', frame.Header.MinimizeButton, 'LEFT', -2, 0)
-    btn:SetScript('OnLeave', function(f) f:SetAlpha(0.3) GameTooltip:Hide() end)
+    btn:SetScript('OnLeave', function(f) f:SetAlpha(0.2) GameTooltip:Hide() end)
     btn:SetScript('OnEnter', function(f)
-        GameTooltip:SetOwner(ObjectiveTrackerFrame, "ANCHOR_LEFT")
+        GameTooltip:SetOwner(f:GetParent(), "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_ObjectiveMixin.addName..WoWTools_DataMixin.Icon.icon2)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or ''),
-            '|cnGREEN_FONT_COLOR:|A:NPE_Icon:0:0|aShift+'..WoWTools_DataMixin.Icon.left
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            ..'|A:bags-button-autosort-up:0:0|a|cffff00ff'..(f.tooltip or '')
+            ..WoWTools_DataMixin.Icon.left
         )
         GameTooltip:Show()
         f:SetAlpha(1)
     end)
 
     btn:SetScript('OnClick', func)
-
+    --btn:SetScript('OnDoubleClick', function()
+      
     function btn:print_text(num)
         print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end

@@ -9,12 +9,12 @@ end
 
 
 --移动 ETRACE
-WoWTools_MoveMixin.Events['Blizzard_EventTrace']= function()
+function WoWTools_MoveMixin.Events:Blizzard_EventTrace()
     EventTrace.Log.Bar.SearchBox:SetPoint('LEFT', EventTrace.Log.Bar.Label, 'RIGHT')
-    EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(self)
-        self:HighlightText()
+    EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(frame)
+        frame:HighlightText()
     end)
-    WoWTools_MoveMixin:Setup(EventTrace)
+    self:Setup(EventTrace)
 end
 
 
@@ -47,12 +47,12 @@ local function Init()
         EventTraceTooltip:Show()
     end)
 
-    --[[hooksecurefunc(EventTraceLogEventButtonMixin, 'Init', function(self, elementData, showArguments, showTimestamp)
+    --[[hooksecurefunc(EventTraceLogEventButtonMixin, 'Init', function(f, elementData, showArguments, showTimestamp)
        -- info= elementData
        -- for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
     end)
 
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(self)
+    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(f)
         self:HookScript('OnMouseDown', Set_OnMouseDown)
     end)]]
     Init=function()end

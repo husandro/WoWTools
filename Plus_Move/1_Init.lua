@@ -1,7 +1,4 @@
 
-WoWTools_MoveMixin={
-    Events={}
-}
 
 local P_Save={
     --disabledMove=true,--禁用移动
@@ -37,19 +34,19 @@ end
 
 
 local function Init()
-    --WoWTools_MoveMixin:Init_Communities()--公会和社区
     WoWTools_MoveMixin:Init_WorldMapFrame()--世界地图
     WoWTools_MoveMixin:Init_CharacterFrame()--角色
     WoWTools_MoveMixin:Init_FriendsFrame()--好友列表
     WoWTools_MoveMixin:Init_PVEFrame()--地下城和团队副本
-    WoWTools_MoveMixin:Init_QuestFrame()--任务
     WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
     WoWTools_MoveMixin:Init_Other()
     WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
 
     for name in pairs(WoWTools_MoveMixin.Events) do
         if C_AddOns.IsAddOnLoaded(name) then
-            WoWTools_MoveMixin.Events[name]()
+            do
+                WoWTools_MoveMixin.Events[name](WoWTools_MoveMixin)
+            end
             WoWTools_MoveMixin.Events[name]=nil
         end
     end
@@ -88,9 +85,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()--初始, 移动
             end
 
-        elseif WoWToolsSave and WoWTools_MoveMixin.Events[arg1] then
+        elseif  WoWTools_MoveMixin.Events[arg1] and WoWToolsSave then
             do
-                WoWTools_MoveMixin.Events[arg1]()
+                WoWTools_MoveMixin.Events[arg1](WoWTools_MoveMixin)
             end
             WoWTools_MoveMixin.Events[arg1]= nil
         end

@@ -70,6 +70,8 @@ local function Init()
     LFGListFrame.EntryCreation.ActivityFinder.Dialog:ClearAllPoints()
     LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('TOPLEFT',0, -30)
     LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('BOTTOMRIGHT')
+
+    Init=function()end
 end
 
 

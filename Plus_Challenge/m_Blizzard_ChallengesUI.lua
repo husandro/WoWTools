@@ -1,7 +1,7 @@
 --挑战, 钥匙插件, 界面
 
 function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
-    WoWTools_MoveMixin:Setup(ChallengesKeystoneFrame)
+    self:Setup(ChallengesKeystoneFrame)
 
     --if not Save().disabledZoom then
         ChallengesFrame.WeeklyInfo:SetPoint('BOTTOMRIGHT')

@@ -10,43 +10,43 @@ end
 
 
 
-local function Init()
+local function Init(mxin)
 --对话
-    WoWTools_MoveMixin:Setup(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(self)
-        self.target.GreetingPanel:SetPoint('BOTTOMRIGHT')
-        self.target.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
-        self.target.Background:SetPoint('BOTTOMRIGHT', -28,28)
+    mxin:Setup(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(btn)
+        btn.targetFrame.GreetingPanel:SetPoint('BOTTOMRIGHT')
+        btn.targetFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
+        btn.targetFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
         --GreetingText:SetWidth(GreetingText:GetParent():GetWidth()-56)
-        hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(self)
-            self.GreetingText:SetWidth(self:GetWidth()-22)
+        hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(btn)
+            btn.GreetingText:SetWidth(btn:GetWidth()-22)
         end)
-        --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, optionInfo)
-    end, sizeRestFunc=function(self)
-        self.targetFrame:SetSize(384, 512)
+        --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(btn, optionInfo)
+    end, sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(384, 512)
     end})
 
 --聊天设置
-    WoWTools_MoveMixin:Setup(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(self)
-        self.targetFrame:SetSize(402, 423)
+    mxin:Setup(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(402, 423)
     end})
 
 --选项
-    WoWTools_MoveMixin:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, initFunc=function(btn)
+    mxin:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, initFunc=function(btn)
         for _, region in pairs({btn.targetFrame:GetRegions()}) do
             if region:GetObjectType()=='Texture' then
                 region:SetPoint('BOTTOMRIGHT', -12, 38)
             end
         end
-    end, sizeRestFunc=function(self)
-        self.targetFrame:SetSize(920, 724)
+    end, sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(920, 724)
     end})
 
 --试衣间
-    WoWTools_MoveMixin:Setup(DressUpFrame, {setSize=true, minH=330, minW=330, initFunc=function(btn)
-        btn.targetFrame:HookScript('OnShow', function(self)--DressUpFrame_Show
-            local size= Save().size[self:GetName()]
+    mxin:Setup(DressUpFrame, {setSize=true, minH=330, minW=330, initFunc=function(btn)
+        btn.targetFrame:HookScript('OnShow', function(b)--DressUpFrame_Show
+            local size= Save().size[b:GetName()]
             if size then
-                self:SetSize(size[1], size[2])
+                b:SetSize(size[1], size[2])
             end
         end)
     end, sizeRestFunc=function(btn)
@@ -58,9 +58,9 @@ local function Init()
         local frame= _G['ContainerFrame'..i]
         if frame then
             if i==1 then
-                WoWTools_MoveMixin:Setup(frame, {save=true})
+                mxin:Setup(frame, {save=true})
             else
-                WoWTools_MoveMixin:Setup(frame)
+                mxin:Setup(frame)
             end
         end
     end
@@ -74,78 +74,127 @@ local function Init()
                         frame:SetScale(Save().scale[name])
                     end
                     if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
-                        WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动, 位置
+                        mxin:SetPoint(frame, name)--设置, 移动, 位置
                     end
                 end
             end
         end)
     --end
 
-    WoWTools_MoveMixin:Setup(LootFrame, {save=false})--物品拾取
-    WoWTools_MoveMixin:Setup(ChatConfigFrame)
-    WoWTools_MoveMixin:Setup(ChatConfigFrame.Header, {frame=ChatConfigFrame})
-    WoWTools_MoveMixin:Setup(ChatConfigFrame.Border, {frame=ChatConfigFrame})
+    mxin:Setup(LootFrame, {save=false})--物品拾取
+    mxin:Setup(ChatConfigFrame)
+    mxin:Setup(ChatConfigFrame.Header, {frame=ChatConfigFrame})
+    mxin:Setup(ChatConfigFrame.Border, {frame=ChatConfigFrame})
     ObjectiveTrackerFrame:SetClampedToScreen(false)
 
-    WoWTools_MoveMixin:Setup(GameMenuFrame)--菜单
-    WoWTools_MoveMixin:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
-    WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags)
-    --WoWTools_MoveMixin:Setup(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
+    mxin:Setup(GameMenuFrame)--菜单
+    mxin:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
+    mxin:Setup(ContainerFrameCombinedBags)
+    --mxin:Setup(ContainerFrameCombinedBags.TitleContainer, {frame=ContainerFrameCombinedBags})
 
-    WoWTools_MoveMixin:Setup(ColorPickerFrame, {click='RightButton'})--颜色选择器
-    WoWTools_MoveMixin:Setup(ColorPickerFrame.Header, {frame=ColorPickerFrame})
-    WoWTools_MoveMixin:Setup(ColorPickerFrame.Content, {frame=ColorPickerFrame})
+    mxin:Setup(ColorPickerFrame, {click='RightButton'})--颜色选择器
+    mxin:Setup(ColorPickerFrame.Header, {frame=ColorPickerFrame})
+    mxin:Setup(ColorPickerFrame.Content, {frame=ColorPickerFrame})
 
-    WoWTools_MoveMixin:Setup(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
-    WoWTools_MoveMixin:Setup(OpacityFrame)
-    WoWTools_MoveMixin:Setup(ArcheologyDigsiteProgressBar, {notZoom=true})
-    WoWTools_MoveMixin:Setup(VehicleSeatIndicator, {notZoom=true, notSave=true})
-    WoWTools_MoveMixin:Setup(ExpansionLandingPage)
-    WoWTools_MoveMixin:Setup(PlayerPowerBarAlt, {notMoveAlpha=true})
-    WoWTools_MoveMixin:Setup(CreateChannelPopup)
-    WoWTools_MoveMixin:Setup(BattleTagInviteFrame)
-    WoWTools_MoveMixin:Setup(OverrideActionBarExpBar, {notZoom=true})
-    WoWTools_MoveMixin:Setup(ReportFrame)
+    mxin:Setup(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
+    mxin:Setup(OpacityFrame)
+    mxin:Setup(ArcheologyDigsiteProgressBar, {notZoom=true})
+    mxin:Setup(VehicleSeatIndicator, {notZoom=true, notSave=true})
+    mxin:Setup(ExpansionLandingPage)
+    mxin:Setup(PlayerPowerBarAlt, {notMoveAlpha=true})
+    mxin:Setup(CreateChannelPopup)
+    mxin:Setup(BattleTagInviteFrame)
+    mxin:Setup(OverrideActionBarExpBar, {notZoom=true})
+    mxin:Setup(ReportFrame)
 
 --背包
-    WoWTools_MoveMixin:MoveAlpha(BagsBar)
+    mxin:MoveAlpha(BagsBar)
 
 --商店
-    WoWTools_MoveMixin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800,
+    mxin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800,
     sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(800, 537)
     end})
 
 --就绪
-    WoWTools_MoveMixin:Setup(ReadyCheckFrame, {notFuori=true})
+    mxin:Setup(ReadyCheckFrame, {notFuori=true})
 
-    WoWTools_MoveMixin:Setup(GuildRenameFrame)
+    mxin:Setup(GuildRenameFrame)
 
 
     C_Timer.After(0.3, function()
 
 
         if WoWTools_DataMixin.Player.Class=='HUNTER' and WoWToolsSave['Plus_StableFrame'] and WoWToolsSave['Plus_StableFrame'].disabled then--StableFrame
-            WoWTools_MoveMixin:Setup(StableFrame)
+            mxin:Setup(StableFrame)
         end
 
         if WoWToolsSave['Plus_SellBuy'] and WoWToolsSave['Plus_SellBuy'].disabled then
-            WoWTools_MoveMixin:Setup(MerchantFrame)
+            mxin:Setup(MerchantFrame)
         end
     --插件
         if WoWToolsSave['Plus_AddOns'] and WoWToolsSave['Plus_AddOns'].disabled then
-            WoWTools_MoveMixin:Setup(AddonList)
+            mxin:Setup(AddonList)
         end
     --银行
         if WoWToolsSave['Plus_Bank'] and WoWToolsSave['Plus_Bank'].disabled then
-            WoWTools_MoveMixin:Setup(BankFrame)
-            WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
+            mxin:Setup(BankFrame)
+            mxin:Setup(AccountBankPanel, {frame=BankFrame})
         end
     end)
+
+
+
+
+
+
+
+
+
+
+
+--任务
+    local tab={
+        'Detail',
+        'Greeting',
+        'Progress',
+        'Reward',
+    }
+    for _, name in pairs(tab) do
+        local frame= _G['QuestFrame'..name..'Panel']
+        if frame then
+            frame:SetPoint('BOTTOMRIGHT')
+            if frame.Bg then
+                frame.Bg:SetPoint('BOTTOMRIGHT', -28,28)
+            end
+            if frame.SealMaterialBG then
+                frame.SealMaterialBG:SetPoint('BOTTOMRIGHT', -28,28)
+            end
+        end
+        frame= _G['Quest'..name..'ScrollFrame']
+        if frame then
+            frame:SetPoint('BOTTOMRIGHT', -28,28)
+        end
+    end
+
+    mxin:Setup(QuestFrame, {
+        minW=164,
+        minH=128,
+        setSize=true,
+        sizeRestFunc=function(btn)
+            btn.targetFrame:SetSize(338, 496)
+        end
+    })
+
+
+
+
+
+    Init=function()end
 end
 
 
 
 function WoWTools_MoveMixin:Init_Other()
-    Init()
+    Init(self)
 end

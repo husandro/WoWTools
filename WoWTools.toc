@@ -123,30 +123,20 @@ Tools\LL_MagePortal.lua
 
 ##WoWPlus
 ##移动框架, 缩放
+Plus_Move\0a_Setup_Mixin.lua
+Plus_Move\0b_ScaleSizeButton_Mixin.lua
 Plus_Move\1_Init.lua
-Plus_Move\0_Add_Button.lua
-Plus_Move\0_Move.lua
-Plus_Move\0_ScaleSize.lua
-Plus_Move\Options.lua
-
-Plus_Move\x_AchievementUI.lua
-Plus_Move\x_AuctionHouseUI.lua
-Plus_Move\x_Collections.lua
-Plus_Move\x_DebugTools.lua
-Plus_Move\x_EncounterJournal.lua
-Plus_Move\x_Other.lua
-Plus_Move\x_PlayerSpells.lua
-Plus_Move\x_Professions.lua
-Plus_Move\x_ProfessionsCustomerOrders.lua
-Plus_Move\x_PVPUI.lua
-
+Plus_Move\2_Add_Button.lua
+Plus_Move\3_Options.lua
+Plus_Move\e_Collections.lua
+Plus_Move\e_Other.lua
+Plus_Move\e_Professions.lua
+Plus_Move\e_ProfessionsCustomerOrders.lua
 Plus_Move\z_CharacterFrame.lua
 Plus_Move\z_Class_Power.lua
-
 Plus_Move\z_FriendsFrame.lua
 Plus_Move\z_Other.lua
 Plus_Move\z_PVEFrame.lua
-Plus_Move\z_QuestFrame.lua
 Plus_Move\z_WorldMapFrame.lua
 
 
@@ -207,18 +197,8 @@ Plus_Tooltip\f_Unit_NPC.lua
 Plus_Tooltip\f_Unit_Player.lua
 Plus_Tooltip\f_URL.lua
 Plus_Tooltip\f.StatusBar.lua
-Plus_Tooltip\z_AchievementUI.lua
-Plus_Tooltip\z_ChallengesUI.lua
-Plus_Tooltip\z_ClassTalentUI.lua
-Plus_Tooltip\z_Collections.lua
 Plus_Tooltip\z_CVar_Set.lua
-##Plus_Tooltip\z_CVar_Value.lua
-Plus_Tooltip\z_FlightMap.lua
-Plus_Tooltip\z_GenericTraitUI.lua
-Plus_Tooltip\z_OrderHallUI.lua
-Plus_Tooltip\z_PlayerChoice.lua
-Plus_Tooltip\z_Professions.lua
-
+Plus_Tooltip\z_Events.lua
 
 
 
