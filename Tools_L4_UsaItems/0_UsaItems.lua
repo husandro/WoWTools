@@ -77,6 +77,8 @@ local function Init()
     WoWTools_UseItemsMixin:Init_All_Buttons()
     WoWTools_UseItemsMixin:Init_Button()
     WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
+
+    Init=function()end
 end
 
 
@@ -114,10 +116,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_Mixin:Load({id=ID, type='item'})
             end
 
-        elseif arg1=='Blizzard_Collections' then
+        elseif arg1=='Blizzard_Collections' and WoWToolsSave then
             WoWTools_UseItemsMixin:Init_UI_Toy()
 
-        elseif arg1=='Blizzard_PlayerSpells' then--法术书
+        elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--法术书
             WoWTools_UseItemsMixin:Init_PlayerSpells()
         end
 

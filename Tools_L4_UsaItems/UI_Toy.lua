@@ -83,10 +83,13 @@ end
 
 
 
-
+local function Init()
+    hooksecurefunc('ToySpellButton_UpdateButton', Init_Opetions_ToyBox)--玩具界面, 菜单
+    Init=function()end
+end
 
 
 
 function WoWTools_UseItemsMixin:Init_UI_Toy()
-    hooksecurefunc('ToySpellButton_UpdateButton', Init_Opetions_ToyBox)--玩具界面, 菜单
+    Init()
 end

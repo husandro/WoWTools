@@ -84,6 +84,8 @@ local function Init()
     end)
 
     Init_Dia()
+
+    Init=function()end
 end
 
 

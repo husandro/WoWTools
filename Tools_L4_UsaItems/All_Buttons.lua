@@ -303,6 +303,8 @@ local function Init()
             end
         end
     end
+
+    Init=function()end
 end
 
 

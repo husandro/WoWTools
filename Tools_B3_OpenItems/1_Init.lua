@@ -203,13 +203,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if OpenButton then
                 WoWTools_OpenItemMixin.OpenButton= OpenButton
                 WoWTools_OpenItemMixin.addName= addName
+                self:UnregisterEvent(event)
             else
-                self:UnregisterEvent('PLAYER_LOGIN')
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent("ADDON_LOADED")
         end
 
     elseif event=='PLAYER_LOGIN' then
-          WoWTools_OpenItemMixin:Init_Button()
+        WoWTools_OpenItemMixin:Init_Button()
+        self:UnregisterEvent(event)
     end
 end)

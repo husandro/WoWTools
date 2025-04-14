@@ -98,23 +98,32 @@ end
 
 
 
+local function Init_SpellFlyoutButton()
+    if not SpellFlyoutButton_UpdateGlyphState then
+        return
+    end
+    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', Init_SpellFlyoutButton_UpdateGlyphState)--法术书，界面, Flyout, 菜单
+    Init_SpellFlyoutButton=function()end
+end
+
+
+local function Init_PlayerSpells()
+    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
+        set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
+    end)
+    Init_PlayerSpells=function()end
+end
+
 
 
 
 
 
 function WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
-    if not SpellFlyoutButton_UpdateGlyphState then
-        return
-    end
-    hooksecurefunc('SpellFlyoutButton_UpdateGlyphState', Init_SpellFlyoutButton_UpdateGlyphState)--法术书，界面, Flyout, 菜单
+    Init_SpellFlyoutButton()
 end
 
-
-
-
 function WoWTools_UseItemsMixin:Init_PlayerSpells()
-    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-        set_Use_Spell_Button(frame.Button, frame.spellBookItemInfo.spellID)
-    end)
+    Init_PlayerSpells()
+
 end
