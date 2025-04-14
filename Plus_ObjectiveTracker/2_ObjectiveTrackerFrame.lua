@@ -59,7 +59,7 @@ local function Init_Menu(self, root)
         Set_Collapse(true, true)
     end)
 
-    --战斗中
+--战斗中
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
     function()
