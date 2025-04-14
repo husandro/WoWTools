@@ -18,6 +18,7 @@ local function Clear_MonthlyActivities()
             C_PerksActivities.RemoveTrackedPerksActivity(perksActivityID)
             num= num+1
             table.insert(tab, perksActivityID)
+            
         end
     end
     return tab, num
@@ -34,6 +35,7 @@ local function Init()
                 print(index..') ',
                     C_PerksActivities.GetPerksActivityChatLink(perksActivityID) or perksActivityID
                 )
+                --WoWToolsSave['ObjectiveTracker'].link= C_PerksActivities.GetPerksActivityChatLink(perksActivityID)
             end
             self:print_text(num)
         end

@@ -411,10 +411,16 @@ local function Instancelock(link)
 end
 
 --没有，测试成功
+--"|cffffff00|Hperksactivity:6|h[Completa 5 spedizioni Mitiche+]|h|r"
+--{'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
 local function Perksactivity(link)
-    local t= WoWTools_HyperLink:CN_Link(link, {perksActivityID=tonumber(select(2, strsplit(":", link))), isName=true})
-    if t and t~= link then
-        return t
+    local perksActivityID, name
+    perksActivityID, name= link:match(':(%d+):|h%[(.-)]|h|r')
+    if WoWTools_ChineseMixin then
+        local info= WoWTools_ChineseMixin:GetPerksActivityInfo(tonumber(perksActivityID))
+        if info and info[1] then
+            return link:gusb(WoWTools_TextMixin:Magic(name), info[2])
+        end
     end
 end
 
@@ -529,7 +535,7 @@ local function New_AddMessage(self, s, ...)
     s=s:gsub('|Hinstancelock:.-]|h', Instancelock)
 
     s=s:gsub('|Hperksactivity:.-]|h', Perksactivity)
-    
+
 
 --社区 Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
    -- s=s:gsub('|HclubFinder:-]|h', ClubFinder)

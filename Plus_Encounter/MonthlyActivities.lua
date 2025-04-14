@@ -67,10 +67,24 @@ end
 
 
 
+local function Init()
+    hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', Update)
 
+--任务，提示
+     hooksecurefunc( MonthlyActivitiesButtonMixin, 'ShowTooltip', function(frame)
+        local data = frame:GetData()
+        if data and data.ID then
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine('perksActivityID', data.ID)
+            GameTooltip:Show()
+        end
+    end)
+
+    Init=function()end
+end
 
 
 
 function WoWTools_EncounterMixin:Init_MonthlyActivities()--贸易站
-    hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', Update)
+    Init()
 end
