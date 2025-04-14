@@ -5550,7 +5550,8 @@
         "DebuffTypeColor",
         "AuraButtonMixin",
         "BUFF_MAX_DISPLAY",
-        "ExtraActionButton1Icon"
+        "ExtraActionButton1Icon",
+        "STA"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
