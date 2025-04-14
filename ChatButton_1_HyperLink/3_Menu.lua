@@ -306,7 +306,7 @@ local function Init_Menu(self, root)
 
 
 --文本转语音   
-    root:CreateDivider() 
+    root:CreateDivider()
     sub=root:CreateButton(
         (isInBat and '|cff828282' or '')
         ..'|A:chatframe-button-icon-TTS:0:0|a'
@@ -330,8 +330,7 @@ local function Init_Menu(self, root)
 
 
 --etrace
-
-    root:CreateButton('|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE', function()
+    sub=root:CreateButton('|A:minimap-genericevent-hornicon:0:0|a|cffff00ffETR|rACE', function()
         if EventTrace and EventTrace:IsVisible() then
             EventTrace:Hide()
         else
@@ -343,18 +342,48 @@ local function Init_Menu(self, root)
 
         return MenuResponse.Open
     end)
-    
-        --[[if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
-            C_AddOns.LoadAddOn("Blizzard_EventTrace")
-        endif not EventTrace then
-            UIParentLoadAddOn("Blizzard_EventTrace")
+
+    sub:CreateCheckbox(
+        'Print',
+    function()
+        return Save().eventTracePrint
+    end, function()
+        Save().eventTracePrint= not Save().eventTracePrint and true or nil
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName,
+            Save().eventTracePrint and
+                '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开始' or START)
+                or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清队' or CLEAR_ALL))
+            )
+        WoWTools_HyperLink:Init_EventTrace_Print()
+    end)
+
+    local tab= WoWTools_HyperLink:Get_EventTrace_Print_Tab()
+    local newTab={}
+    for event, data in pairs(tab) do
+        table.insert(newTab, {event= event, index= data.index, num=data.num, arg= data.arg})
+    end
+
+    if #newTab>0 then
+        table.sort(newTab, function(a, b) return a.index> b.index end)
+
+        sub:CreateDivider()
+        for _, info in pairs(newTab) do
+            sub2=sub:CreateButton(
+                (select(2, math.modf((info.index-1)/2))==0 and '|cff10d3c8' or '|cffd3a21b')..info.index..') '
+                ..info.event..' '..info.num,
+            function(data)
+                WoWTools_ChatMixin:Chat(data.event, nil, true)
+                return MenuResponse.Open
+            end, info)
+            sub2:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT)..WoWTools_DataMixin.Icon.left)
+                for arg1, num in pairs(desc.data.arg) do
+                    tooltip:AddDoubleLine(arg1, num)
+                end
+            end)
         end
-        --EventTrace:SetShown(not EventTrace:IsShown())
- ]]
-
-
-
-
+        WoWTools_MenuMixin:SetScrollMode(sub)
+    end
 
 
 

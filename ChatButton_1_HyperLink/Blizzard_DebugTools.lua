@@ -16,7 +16,7 @@ local btn
 
 
 local function Init()
-    if  Save().disabedFrameStackPlus then
+    if Save().disabedFrameStackPlus or not C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
         return
     end
 
@@ -105,7 +105,5 @@ end
 
 --fstack 增强 TableAttributeDisplay
 function WoWTools_HyperLink:Blizzard_DebugTools()
-    if C_AddOns.IsAddOnLoaded('Blizzard_DebugTools') then
-        Init()
-    end
+    Init()
 end

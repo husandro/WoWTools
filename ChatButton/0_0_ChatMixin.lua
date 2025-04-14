@@ -18,7 +18,7 @@ function WoWTools_ChatMixin:Chat(text, name, printText)
         if not ChatEdit_InsertLink(text) then
             WoWTools_Mixin:Call(ChatFrame_OpenChat, text)
         end
-        --securecallfunction(ChatFrame_OpenChat, 'a')
+        
         --[[if ChatEdit_GetActiveWindow() then
             WoWTools_Mixin:Call(ChatEdit_InsertLink, text)
         else

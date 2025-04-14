@@ -34,7 +34,9 @@ local function Set_Collapse(collapse, isAllCollapse)
     for frame, isCheck in pairs(TrackerTabs) do
         frame= _G[frame]
         if frame:IsVisible()
-            and frame:IsCollapsed()~=collapse and (isAllCollapse and isCheck or not isAllCollapse) then
+            and (isCheck or isAllCollapse)
+            and frame:IsCollapsed()~=collapse
+        then
             frame:SetCollapsed(collapse)
         end
     end
@@ -46,14 +48,27 @@ end
 
 
 local function Init_Menu(self, root)
-    --local sub
+    local sub
     local col= Is_Locked() and '|cff828282' or ''
-    root:CreateButton(
+
+--收起选项
+    sub=root:CreateButton(
         col
         ..(WoWTools_DataMixin.onlyChinese and '收起选项 |A:editmode-up-arrow:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS),
     function()
         Set_Collapse(true, true)
     end)
+
+    --战斗中
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
+    function()
+        return Save().autoHideInCombat
+    end, function()
+        Save().autoHideInCombat = not Save().autoHideInCombat and true or nil
+        self:set_event()
+    end)
+
 
     root:CreateButton(
         col
@@ -72,15 +87,7 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
---[[战斗中
-    sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
-    function()
-        return Save().autoHideInCombat
-    end, function()
-        Save().autoHideInCombat = not Save().autoHideInCombat and true or nil
-        self:set_event()
-    end)]]
+
 
 --缩放
     root:CreateDivider()
@@ -127,10 +134,8 @@ local function Init()
     end
 
     function MenuButton:auto_collapse()
-        print('a', IsInInstance() , WoWTools_MapMixin:IsInDelve())
-        Set_Collapse(
-            IsInInstance() or WoWTools_MapMixin:IsInDelve()
-        )
+        --local collapse= IsInInstance() or WoWTools_MapMixin:IsInDelve()
+        Set_Collapse(IsInInstance(), false)
     end
 
     function MenuButton:set_event()
@@ -139,12 +144,12 @@ local function Init()
         if Save().autoHide then
             self:RegisterEvent('LOADING_SCREEN_DISABLED')
             self:RegisterEvent("CHALLENGE_MODE_START")
-            self:RegisterEvent('PLAYER_MAP_CHANGED')
-
-            --[[if Save().autoHideInCombat then
+            self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
+            
+            if Save().autoHideInCombat then
                 self:RegisterEvent('PLAYER_REGEN_DISABLED')
                 self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            end]]
+            end
 
             self:auto_collapse()
         end
@@ -184,16 +189,17 @@ local function Init()
     MenuButton:SetupMenu(Init_Menu)
 
     MenuButton:SetScript('OnEvent', function(self, event)
-        --[[if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then
-            local notIns= not (IsInInstance() or WoWTools_MapMixin:IsInDelve())
-            
-            TrackerTabs['QuestObjectiveTracker']= notIns
-            TrackerTabs['QuestObjectiveTracker']=notIns
-            TrackerTabs['BonusObjectiveTracker']=notIns
-            TrackerTabs['CampaignQuestObjectiveTracker']=notIns
-            TrackerTabs['WorldQuestObjectiveTracker']=notIns
-        end]]
-        self:auto_collapse()
+        if event=='PLAYER_REGEN_DISABLED' then
+            if not ObjectiveTrackerFrame:IsCollapsed() then
+                ObjectiveTrackerFrame:SetCollapsed(true)
+            end
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            if not ObjectiveTrackerFrame:IsCollapsed() then
+                ObjectiveTrackerFrame:SetCollapsed(false)
+            end
+        else
+            self:auto_collapse()
+        end
     end)
 
 

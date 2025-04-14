@@ -1,3 +1,12 @@
+local function Save()
+    return WoWToolsSave['ChatButton_HyperLink']
+end
+
+
+
+
+
+
 
 --移动 ETRACE
 WoWTools_MoveMixin.Events['Blizzard_EventTrace']= function()
@@ -18,8 +27,12 @@ end
 
 
 
-
+--Plus
 local function Init()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') then
+        return
+    end
+
     EventTraceCloseButton:SetFrameLevel(EventTrace.TitleContainer:GetFrameLevel()+1)
 
     hooksecurefunc(EventTraceLogEventButtonMixin, 'OnEnter', function()
@@ -43,12 +56,88 @@ local function Init()
         self:HookScript('OnMouseDown', Set_OnMouseDown)
     end)]]
     Init=function()end
-    return true
 end
 
 
-function WoWTools_HyperLink:Blizzard_EventTrace()
-    if C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') and Init() then
-        return true
+
+
+
+
+
+
+
+
+local Frame
+local EventTabs={}
+local index=1
+
+local function Init_EventTrace_Print()
+    if not Save().eventTracePrint then
+        return
     end
+
+
+    Frame= CreateFrame('Frame')
+    function Frame:set_event()
+        if Save().eventTracePrint then
+            self:RegisterAllEvents()
+        else
+            self:UnregisterAllEvents()
+        end
+        EventTabs={}
+        index=1
+    end
+
+    Frame:SetScript('OnEvent', function(_, event, arg1, ...)
+        if not EventTabs[event] then
+            arg= arg1 and {[arg1]=1} or {}
+            index= index+1
+
+            EventTabs[event]={
+                index=index,
+                num=1,
+                arg= arg1 and {[arg1]=1} or {},
+            }
+
+            print(
+                (select(2, math.modf((index-1)/2))==0 and '|cff10d3c8' or '|cffd3a21b')..index..')',
+                event..'|r',
+                arg1 or '',
+                ...
+            )
+        else
+            if arg1 then
+                EventTabs[event].arg[arg1]= (EventTabs[event].arg[arg1] or 0)+1
+                EventTabs[event].num= EventTabs[event].num+1
+            end
+        end
+    end)
+
+    Frame:set_event()
+
+    Init_EventTrace_Print= function()
+        Frame:set_event()
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_HyperLink:Blizzard_EventTrace()
+    Init()
+end
+
+function WoWTools_HyperLink:Init_EventTrace_Print()
+    Init_EventTrace_Print()
+end
+
+function WoWTools_HyperLink:Get_EventTrace_Print_Tab()
+    return EventTabs
 end

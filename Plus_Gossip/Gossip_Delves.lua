@@ -33,7 +33,7 @@ local function Init_OnShow(self)
                     DelvesDifficultyPickerFrame.DelveRewardsContainerFrame:SetRewards();
                     DelvesDifficultyPickerFrame:UpdatePortalButtonState();
 
-                    if not UnitAffectingCombat('player') then
+                    if not InCombatLockdown() then
                         SetCVar('lastSelectedDelvesTier', option.orderIndex + 1)
                     end
 
@@ -45,39 +45,43 @@ local function Init_OnShow(self)
     end
 
 
-    local btn= self.EnterDelveButton
-    if btn and btn:IsEnabled() then
-        local name,itemLink
+
+    if self.EnterDelveButton and self.EnterDelveButton:IsEnabled() then
         local option= Option or self:GetSelectedOption()
         if option and option.name then
-            local spellLink
-            if option.spellID then
-                local link= C_Spell.GetSpellLink(option.spellID)
-                spellLink= WoWTools_TextMixin:CN(link, {spellID=option.spellID, spellLink=link, isName=true})
-            end
-            name=spellLink or WoWTools_TextMixin:CN(option.name)
 
+            print(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                '|T'..(option.icon or 0)..':0|t',
+
+                option.spellID and WoWTools_HyperLink:CN_Link(
+                    C_Spell.GetSpellLink(option.spellID),
+                    {spellID=option.spellID, isName=true}
+                )
+                or WoWTools_TextMixin:CN(option.name)
+            )
 
             for _, reward in ipairs(option.rewards or {}) do
                 if reward.rewardType == Enum.GossipOptionRewardType.Item and reward.id then
                     WoWTools_Mixin:Load({type='item', id=reward.id})
-                    local item= C_Item.GetItemNameByID(reward.id)
-                    local link= WoWTools_ItemMixin:GetLink(reward.id)
-                    itemLink= (itemLink or '    ')
-                        ..(
-                            WoWTools_TextMixin:CN(link or item, {itemID=reward.id, itemLink=link, isName=true})
-                            or ('|T'..(C_Item.GetItemIconByID(reward.id) or 0)..':0|t')
+                    print(
+                        WoWTools_HyperLink:CN_Link(
+                            WoWTools_ItemMixin:GetLink(reward.id) or C_Item.GetItemNameByID(reward.id),
+                            {isName=true}
                         )
-                        ..'x'..(reward.quantity or 1)..' '
+                        or ('|T'..(C_Item.GetItemIconByID(reward.id) or 0)..':0|t'),
+                        ' x'..(reward.quantity or 1)
+                    )
                 end
             end
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|T'..(option.icon or 0)..':0|t', name)
-            if itemLink then
-                print(itemLink)
-            end
         end
-        btn:Click()
-        print('    |cff9e9e9e|A:NPE_Icon:0:0|aAlt', WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)
+        self.EnterDelveButton:Click()
+
+        print(
+            '    |cff828282|A:NPE_Icon:0:0|aAlt',
+            WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
+            WoWTools_DataMixin.Icon.icon2
+        )
     end
 end
 

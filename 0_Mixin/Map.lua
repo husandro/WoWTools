@@ -15,7 +15,7 @@ end
 --InstanceDifficulty.lua
 function WoWTools_MapMixin:IsInDelve()
     local mapID= select(4, self:GetPosition())
-    return C_DelvesUI.HasActiveDelve(mapID)
+    return mapID and C_DelvesUI.HasActiveDelve(mapID)
 end
 
 
