@@ -1,6 +1,7 @@
 --[[
     超链接，图标
     ItemRef.lua
+    LinkUtil.lua
     {'%.', '%(','%)','%+', '%-', '%*', '%?', '%[', '%^'}
 ]]
 local function Save()
@@ -11,7 +12,7 @@ local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin
 local CHAT_SAY_SEND= CHAT_SAY_SEND
 local IsShowTimestamps--聊天中时间戳
 
-DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
+--DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
 
 
 
@@ -88,17 +89,25 @@ local function Pet(speciesID)
         end
     end
 end
-
-local function Mount(id2, item)
-    if id2 then
-        local mountID= item and C_MountJournal.GetMountFromItem(id2) or C_MountJournal.GetMountFromSpell(id2)
-        if mountID then
-            local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
-            return Get_CompletedIcon(isCollected), icon
-        end
+--坐骑
+local function Mount(itemID, spellID)
+    local mountID= (
+        itemID and C_MountJournal.GetMountFromItem(itemID)
+        or spellID and C_MountJournal.GetMountFromSpell(spellID)
+    )
+    if mountID then
+        local _, _, icon, _, _, _, _, _, _, _, isCollected =C_MountJournal.GetMountInfoByID(mountID)
+        return Get_CompletedIcon(isCollected), icon
     end
 end
 
+
+
+
+
+
+
+--宠物类型
 local function PetType(petType)
     local type=PET_TYPE_SUFFIX[petType]
     if type then
@@ -106,7 +115,14 @@ local function PetType(petType)
     end
 end
 
-local function Item(link)--物品超链接
+
+
+
+
+
+
+--物品，超链接
+local function Item(link)
     local itemID, _, _, _, icon, classID, subclassID= C_Item.GetItemInfoInstant(link)
     local t= WoWTools_HyperLink:CN_Link(link, {itemID=itemID, isName=true})
     t= icon and '|T'..icon..':0|t'..t or t--加图标
@@ -137,20 +153,33 @@ local function Item(link)--物品超链接
                 ..(Pet(speciesID) or '')
 
         elseif subclassID==5 then--坐骑是不收集            
-            t= t..(Mount(itemID, true) or '')
+            t= t..(Mount(itemID, nil) or '')
         end
 
     elseif C_ToyBox.GetToyInfo(itemID) then--玩具
         t= t..Get_CompletedIcon(PlayerHasToy(itemID))
     end
-    t=t..WoWTools_ItemMixin:GetCount(itemID, {isWoW=true})
+
+--物品数量
+    if not Save().notShowItemCount then
+        t=t..WoWTools_ItemMixin:GetCount(itemID, {isWoW=true})
+    end
 
     if t~=link then
         return t
     end
 end
 
-local function Spell(link)--法术图标
+
+
+
+
+
+
+
+
+--法术图标
+local function Spell(link)
     local spellID
     spellID= (C_Spell.GetSpellInfo(link) or {}).spellID
     if not spellID then
@@ -168,7 +197,7 @@ local function Spell(link)--法术图标
     local icon= C_Spell.GetSpellTexture(link)
     t= (icon and '|T'..icon..':0|t' or '')..t
 
-    t=t..(Mount(spellID) or '')
+    t=t..(Mount(nil, spellID) or '')
 
     if t~=link then
         return t
@@ -470,22 +499,23 @@ end
 
 local function setMount(link)--设置,坐骑
     local spellID= link:match('mount:(%d+)')
-    local mount, icon= Mount(spellID)
+    local mount, icon= Mount(nil, spellID)
     if mount then
         return (icon and '|T'..icon..':0|t' or '')..WoWTools_HyperLink:CN_Link(link)..mount
     end
 end
 
-local function Waypoint(text)--地图标记xy, 格式 60.0 70.5
-    local uiMapID= WorldMapFrame:IsShown() and WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
+--地图标记xy, 格式 60.10 70.50
+local function Waypoint(text)
+    local uiMapID= WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
     if uiMapID and C_Map.CanSetUserWaypointOnMap(uiMapID) then
-        local x, y= text:match('(%d+%.%d). (%d+%.%d)')
+        local x, y= text:match('(%d+%.%d%d) (%d+%.%d%d)')
         if x and y then
-            return '|cffffff00|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a'..text..']|h|r'
+            return '|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h['..text..']|h'
         end
     end
 end
-
+--return '|cffffff00|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a'..text..']|h|r'
 
 --[[
 Guild Finder (8.2.5) invite link.
@@ -493,7 +523,7 @@ clubFinder : clubFinderId
 Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
 See also: GetClubFinderLink()
 |HclubFinder:ClubFinder-1-6991-3299-447003|h[公会: Test Guild]|h'
-
+]]
 local function ClubFinder(text)--社区
     local clubFinderGUID= text:match('|HclubFinder:(.-)|h[')
     
@@ -504,7 +534,6 @@ local function ClubFinder(text)--社区
         for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
     end
 end
-]]
 
 
 
@@ -551,9 +580,11 @@ local function New_AddMessage(self, s, ...)
 
 
 --社区 Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
-   -- s=s:gsub('|HclubFinder:-]|h', ClubFinder)
+    s=s:gsub('|HclubFinder:-]|h', ClubFinder)
+
 
     s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
+
 
     if not Save().notShowPlayerInfo then--不处理，玩家信息
         s=s:gsub('|Hplayer:.-]|h', Set_Realm)
@@ -588,7 +619,22 @@ end
 
 
 
+local function Set_AddMessage(frame, enable)
+    if not frame then
+        return
+    end
 
+    if enable then
+        if not frame.P_AddMessage then
+            frame.P_AddMessage= frame.AddMessage
+        end
+        frame.AddMessage= New_AddMessage
+    else
+        if frame.P_AddMessage then
+            frame.AddMessage= frame.P_AddMessage
+        end
+    end
+end
 
 
 
@@ -596,27 +642,10 @@ local function Set_HyperLlinkIcon()
     local enable= Save().linkIcon and not C_SocialRestrictions.IsChatDisabled()
 
     for i = 3, NUM_CHAT_WINDOWS do
-        local frame = _G["ChatFrame"..i]
-        if frame then
-            if enable then
-                if not frame.P_AddMessage then
-                    frame.P_AddMessage= frame.AddMessage
-                end
-                frame.AddMessage= New_AddMessage
-            else
-                if frame.P_AddMessage then
-                    frame.AddMessage= frame.P_AddMessage
-                end
-            end
-        end
+        Set_AddMessage(_G["ChatFrame"..i], enable)
     end
 
-    if enable then
-        DEFAULT_CHAT_FRAME.AddMessage= New_AddMessage
-        DEFAULT_CHAT_FRAME.editBox:SetAltArrowKeyMode(false)--alt +方向= 移动
-    else
-        DEFAULT_CHAT_FRAME.AddMessage= DEFAULT_CHAT_FRAME.P_AddMessage
-    end
+    Set_AddMessage(DEFAULT_CHAT_FRAME, enable)
 
     WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and WoWTools_DataMixin.Icon.icon or 'voicechat-icon-STT-on')
     WoWTools_HyperLink.LinkButton.texture:SetDesaturated(not enable)
@@ -652,9 +681,9 @@ end
 
 --超链接，图标
 function WoWTools_HyperLink:Init_Link_Icon()
-    C_Timer.After(0.3, function()
+    --C_Timer.After(0.3, function()
         Init()
-    end)
+    --end)
 
     Set_HyperLlinkIcon()
 end

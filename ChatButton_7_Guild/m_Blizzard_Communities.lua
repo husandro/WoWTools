@@ -6,7 +6,7 @@ end
 
 local function set_size(frame)
     local self= frame:GetParent()
-    if not self.ResizeButton or (frame:IsProtected() and InCombatLockdown()) or issecure() then
+    if not self.ResizeButton or WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
     local size, scale
@@ -35,7 +35,7 @@ end
 
 
 local function Init_Update(frame)
-    if not frame:GetView() or (frame:IsProtected() and InCombatLockdown()) or issecure() then
+    if not frame:GetView() or WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
     for _, btn in pairs(frame:GetFrames() or {}) do
@@ -144,9 +144,8 @@ local function Init()
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog)
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
     WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
-
-
-
+    WoWTools_MoveMixin:Setup(CommunitiesTicketManagerDialog)
+    
 
 --信息, 左边信息
     CommunitiesFrameGuildDetailsFrameInfo:SetPoint('TOPRIGHT', CommunitiesFrameGuildDetailsFrame, 'TOP', -48, 0)

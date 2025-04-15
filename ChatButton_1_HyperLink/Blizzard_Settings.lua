@@ -14,6 +14,10 @@ end
 
 --local Category, Layout
 local function Init()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+        return
+    end
+
     local frame= CreateFrame('Frame')
 
     local Category= WoWTools_PanelMixin:AddSubCategory({
@@ -113,7 +117,6 @@ local function Init()
     end)
 
     Init=function()end
-    return true
 end
 
 
@@ -129,7 +132,5 @@ end
 
 
 function WoWTools_HyperLink:Blizzard_Settings()
-    if C_AddOns.IsAddOnLoaded('Blizzard_Settings') and Init() then
-        return true
-    end
+    Init()
 end

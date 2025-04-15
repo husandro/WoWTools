@@ -78,6 +78,7 @@ local function Init()
     WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
 
     WoWTools_HyperLink:Blizzard_DebugTools()
+    
     WoWTools_HyperLink:Blizzard_Settings()
     WoWTools_HyperLink:Blizzard_EventTrace()
     WoWTools_HyperLink:Init_EventTrace_Print()
@@ -115,8 +116,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
                
             else
-                DEFAULT_CHAT_FRAME.P_AddMessage= nil
-                self:UnregisterEvent(event)
+                --DEFAULT_CHAT_FRAME.P_AddMessage= nil
+                self:UnregisterAllEvents()
             end
 
         elseif arg1=='Blizzard_Settings' and WoWToolsSave then

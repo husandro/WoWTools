@@ -54,7 +54,9 @@ local function Init_Menu(self, root)
     end)
 
 --玩家信息
-    sub2= sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '玩家信息' or PLAYER_MESSAGES, function()
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '玩家信息' or PLAYER_MESSAGES,
+    function()
         return not Save().notShowPlayerInfo
     end, function()
         Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil
@@ -64,6 +66,33 @@ local function Init_Menu(self, root)
         tooltip:AddLine(' ')
         tooltip:AddDoubleLine(WoWTools_DataMixin.Player.col..UnitName('player'), WoWTools_TextMixin:GetEnabeleDisable(false))
     end)
+
+
+--物品数量
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '物品数量' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, AUCTION_HOUSE_QUANTITY_LABEL),
+    function()
+        return not Save().notShowItemCount
+    end, function()
+        Save().notShowItemCount= not Save().notShowItemCount and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_ItemMixin:GetCount(6948, {isWoW=true}), nil)
+    end)
+
+
+--[[地图标记
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '地图标记' or  MAP_PIN,
+    function()
+            return not Save().notShowMapPin
+    end, function()
+        Save().notShowMapPin= not Save().notShowMapPin and true or nil
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddDoubleLine('60.0 70.5')
+    end)]]
+
 
 --CVar 名称
     sub2=sub:CreateCheckbox(
@@ -93,8 +122,9 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(
         (C_SocialRestrictions.IsChatDisabled() and '|cnRED_FONT_COLOR:' or '')
         ..(WoWTools_DataMixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE),
-    C_SocialRestrictions.IsChatDisabled,
     function()
+       return C_SocialRestrictions.IsChatDisabled()
+    end, function()
         if not WoWTools_FrameMixin:IsLocked(SettingsPanel) then
             Settings.OpenToCategory(Settings.SOCIAL_CATEGORY_ID)--ItemRef.lua
         end

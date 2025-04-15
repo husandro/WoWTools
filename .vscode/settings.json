@@ -5553,7 +5553,8 @@
         "ExtraActionButton1Icon",
         "STA",
         "MonthlyActivitiesButtonMixin",
-        "AREA_DESCRIPTION_FONT_COLOR_CODE"
+        "AREA_DESCRIPTION_FONT_COLOR_CODE",
+        "CommunitiesTicketManagerDialog"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
