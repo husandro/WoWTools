@@ -7,7 +7,7 @@ end
 
 --专业
 --lizzard_Professions.lua
-function WoWTools_TooltipMixin.Events.Blizzard_Professions()
+function WoWTools_TooltipMixin.Events:Blizzard_Professions()
     hooksecurefunc(Professions, 'SetupProfessionsCurrencyTooltip', function(currencyInfo)
         if currencyInfo then
             local nodeID = ProfessionsFrame.SpecPage:GetDetailedPanelNodeID()
@@ -41,7 +41,7 @@ end
 
 
 --飞行点，加名称
-function WoWTools_TooltipMixin.Events.Blizzard_FlightMap()
+function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
     hooksecurefunc(FlightMap_FlightPointPinMixin, 'OnMouseEnter', function(f)
         local info= f.taxiNodeData
         if info then
@@ -51,7 +51,7 @@ function WoWTools_TooltipMixin.Events.Blizzard_FlightMap()
     end)
 end
 
-function WoWTools_TooltipMixin.Events.Blizzard_PlayerChoice()
+function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
     hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'OnEnter', function(f)
         if f.optionInfo and f.optionInfo.spellID then
             GameTooltip:ClearLines()
@@ -69,7 +69,7 @@ end
 
 
 --要塞，技能树
-function WoWTools_TooltipMixin.Events.Blizzard_OrderHallUI()
+function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
 
     hooksecurefunc(GarrisonTalentButtonMixin, 'OnEnter', function(f)--Blizzard_OrderHallTalents.lua
         local info=f.talent--C_Garrison.GetTalentInfo(f.talent.id)
@@ -128,7 +128,7 @@ end
 
 
 
-function WoWTools_TooltipMixin.Events.Blizzard_GenericTraitUI()
+function WoWTools_TooltipMixin.Events:Blizzard_GenericTraitUI()
     GenericTraitFrame.Currency:HookScript('OnEnter', function(f)
         local currencyInfo = f:GetParent().treeCurrencyInfo and f:GetParent().treeCurrencyInfo[1] or {}
         if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<=0 then
@@ -153,7 +153,7 @@ end
 
 
 --宠物手册， 召唤随机，偏好宠物，技能ID 
-function WoWTools_TooltipMixin.Events.Blizzard_Collections()
+function WoWTools_TooltipMixin.Events:Blizzard_Collections()
     hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
         WoWTools_TooltipMixin:Set_Spell(GameTooltip, 243819)
         GameTooltip:Show()
@@ -178,7 +178,7 @@ end
 
 
 --天赋 ClassTalentSpecTabMixin
-function WoWTools_TooltipMixin.Events.Blizzard_ClassTalentUI()
+function WoWTools_TooltipMixin.Events:Blizzard_ClassTalentUI()
     hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(btn)
         if not C_SpecializationInfo.IsInitialized() then
             return
@@ -253,7 +253,7 @@ end
 
 
 --挑战, AffixID
-function WoWTools_TooltipMixin.Events.Blizzard_ChallengesUI()
+function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
     hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(f)
         if f.affixID then
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(f.affixID)
@@ -278,8 +278,11 @@ end
 
 
 
-
-
+function WoWTools_TooltipMixin.Events:Blizzard_DelvesCompanionConfiguration()
+    hooksecurefunc(CompanionConfigSlotTemplateMixin, 'OnEnter', function()
+        print('CompanionConfigSlotTemplateMixin')
+    end)
+end
 
 
 

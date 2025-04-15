@@ -327,8 +327,6 @@ local function Init_Panel()
             end
         end
     })]]
-
-    WoWTools_TooltipMixin.Events.Blizzard_Settings=nil
 end
 
 
@@ -343,7 +341,7 @@ end
 
 
 
-function WoWTools_TooltipMixin.Events.Blizzard_Settings()
+function WoWTools_TooltipMixin.Events:Blizzard_Settings()
     Init_Panel()
 end
 

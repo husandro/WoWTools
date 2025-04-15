@@ -5554,7 +5554,8 @@
         "STA",
         "MonthlyActivitiesButtonMixin",
         "AREA_DESCRIPTION_FONT_COLOR_CODE",
-        "CommunitiesTicketManagerDialog"
+        "CommunitiesTicketManagerDialog",
+        "CompanionConfigSlotTemplateMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
