@@ -998,6 +998,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
     self:SetAlphaColor(DelvesCompanionConfigurationFrame.Background, nil, nil, 0.3)
     self:HideTexture(DelvesCompanionConfigurationFrame.Bg)
     self:SetFrame(DelvesCompanionConfigurationFrame.Border)
+    self:SetMenu(DelvesCompanionAbilityListFrame.DelvesCompanionRoleDropdown)
 end
 
 

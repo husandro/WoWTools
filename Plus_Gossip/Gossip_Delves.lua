@@ -1,4 +1,4 @@
---地下堡
+--地下堡 C_DelvesUI.GetTraitTreeForCompanion()
 
 local function Save()
     return WoWToolsSave['Plus_Gossip']
