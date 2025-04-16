@@ -5555,7 +5555,8 @@
         "MonthlyActivitiesButtonMixin",
         "AREA_DESCRIPTION_FONT_COLOR_CODE",
         "CommunitiesTicketManagerDialog",
-        "CompanionConfigSlotTemplateMixin"
+        "CompanionConfigSlotTemplateMixin",
+        "HeroTalentsSelectionDialog"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5570,10 +5571,8 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\Core",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\Libraries",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\Lua",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.1\\Annotations\\FrameXML\\Manual"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.3\\Annotations\\Core",
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.3\\Annotations\\FrameXML\\Manual"
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.diagnostics.disable": [

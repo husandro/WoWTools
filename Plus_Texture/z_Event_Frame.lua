@@ -85,6 +85,11 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
     self:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
     self:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
+
+
+
+    --英雄专精
+    self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
 end
 
 
