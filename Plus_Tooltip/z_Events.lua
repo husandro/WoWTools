@@ -278,12 +278,11 @@ end
 
 
 
-function WoWTools_TooltipMixin.Events:Blizzard_DelvesCompanionConfiguration()
+--[[function WoWTools_TooltipMixin.Events:Blizzard_DelvesCompanionConfiguration()
     hooksecurefunc(CompanionConfigSlotTemplateMixin, 'OnEnter', function()
         print('CompanionConfigSlotTemplateMixin')
     end)
-end
-
+end]]
 
 
 
