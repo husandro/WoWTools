@@ -196,7 +196,7 @@ local function Init_Menu(self, root)
     end)
 
 --测试服，出错误
-if WoWTools_DataMixin.isRetail then
+
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE),
     function()
@@ -214,7 +214,6 @@ if WoWTools_DataMixin.isRetail then
             ..'CVar addonProfilerEnabled'
         )
     end)
-end
 
     root:CreateDivider()
 --重新加载UI

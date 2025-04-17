@@ -2,7 +2,8 @@ WoWTools_DataMixin= {
     addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false,
 
-    isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and not IsTestBuild(),
+    --isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and not C_AddOns.IsAddOnLoaded('Blizzard_PTRFeedback'),--Blizzard_PTRFeedback
+
     --isEra = WOW_PROJECT_ID == WOW_PROJECT_CLASSIC,
     --isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC,
     --IsPublicBuild()
