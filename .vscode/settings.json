@@ -5571,7 +5571,16 @@
         "NUM_BANKGENERIC_SLOTS",
         "PET_BATTLE_PET_TYPE_PASSIVES",
         "MapUtil",
-        "RAID_CLASS_COLORS"
+        "RAID_CLASS_COLORS",
+        "BACKPACK_CONTAINER",
+        "FIRST_TRANSMOG_COLLECTION_WEAPON_TYPE",
+        "LAST_TRANSMOG_COLLECTION_WEAPON_TYPE",
+        "NegateIf",
+        "MAX_NUM_SOCKETS",
+        "ExpansionLandingPageMixin",
+        "WarWithinLandingOverlayMixin",
+        "MajorFactionButtonLockedStateMixin",
+        "PercentageBetween"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5586,7 +5595,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.4\\Annotations\\Core"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.5\\Annotations\\Core"
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.diagnostics.disable": [

@@ -873,7 +873,7 @@ end)
     mixin:SetAlphaColor(DressUpFrame.OutfitDetailsPanel.BlackBackground)
 
 
-    if ExpansionLandingPage then
+    --[[if ExpansionLandingPage then
         hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(self)
             if self.overlayFrame then
                 mixin:SetAlphaColor(self.overlayFrame.Background, nil, nil, 0.3)
@@ -885,7 +885,7 @@ end)
             mixin:SetNineSlice(self)
             mixin:SetAlphaColor(self.DragonridingPanel.Background, nil,nil, 0.75)
         end)
-    end
+    end]]
 
 
 

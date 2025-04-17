@@ -10,28 +10,28 @@ local function Init_Menu(self, root)
         if WoWTools_MenuMixin:CheckInCombat(root) then
             return
         end
-    
+
         local sub, sub2
-    
+
         --要塞，菜单
         WoWTools_MinimapMixin:Garrison_Menu(self, root)
-    
+
         --派系，菜单
         WoWTools_MinimapMixin:Faction_Menu(self, root)
-    
+
         root:CreateDivider()
-    
+
     --选项
         sub=WoWTools_MenuMixin:OpenOptions(root, {
             name= WoWTools_MinimapMixin.addName,
             --GetCategory=function()
         })
-    
+
     --要塞，图标，移动/隐藏，选项
         WoWTools_MinimapMixin:ExpansionLanding_Menu(self, sub)
-    
+
         sub:CreateDivider()
-    
+
     --追踪 AreaPoiID
         sub2= sub:CreateCheckbox(
             '|A:VignetteKillElite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)..' AreaPoi',
@@ -48,11 +48,11 @@ local function Init_Menu(self, root)
             --tooltip:AddLine(' ')
             --tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '内存会不断增加' or 'Memory will continue to increase')..' (Bug)')
         end)
-    
+
     --追踪 AreaPoiID 菜单
         --WoWTools_MinimapMixin:Init_TrackButton_Menu(self, sub2)
         sub2:SetEnabled(not IsInInstance() and not WoWTools_MapMixin:IsInDelve())
-    
+
     --镜头视野范围
         sub2=sub:CreateCheckbox(
             '|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '镜头视野范围' or CAMERA_FOV),
@@ -68,8 +68,8 @@ local function Init_Menu(self, root)
                 format(WoWTools_DataMixin.onlyChinese and '%s码' or IN_GAME_NAVIGATION_RANGE, format('%i', C_Minimap.GetViewRadius() or 100))
             )
         end)
-    
-    
+
+
     --缩小地图
         sub2=sub:CreateCheckbox(
             '|A:UI-HUD-Minimap-Zoom-Out:0:0|a'..(WoWTools_DataMixin.onlyChinese and '缩小地图' or BINDING_NAME_MINIMAPZOOMOUT),
@@ -83,7 +83,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '更新地区时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UPDATE, ZONE))
         end)
         WoWTools_MinimapMixin:Zoom_Menu(self, sub2)
-    
+
     --地下城难度
         sub2=sub:CreateCheckbox(
             '|A:DungeonSkull:0:0|a'..(WoWTools_DataMixin.onlyChinese and '地下城难度' or DUNGEON_DIFFICULTY),
@@ -97,7 +97,7 @@ local function Init_Menu(self, root)
         sub2:SetTooltip(function(tooltip)
             WoWTools_MinimapMixin:InstanceDifficulty_Tooltip(nil, tooltip)
         end)
-    
+
     --CVar 镇民
         sub:CreateDivider()
         sub2=sub:CreateCheckbox(

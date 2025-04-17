@@ -857,11 +857,6 @@ end
 
 
 
---派系声望
-function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
-    self:SetAlphaColor(MajorFactionRenownFrame.Background)
-    self:SetAlphaColor(MajorFactionRenownFrame.NineSlice, nil, nil, true)
-end
 
 
 
@@ -1054,5 +1049,48 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
             end]]
             frame.Bar.isSetTexture=true
         end
+    end)
+end
+
+
+function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
+    local function SetOverlayFrame(frame)
+        self:SetScrollBar(frame.MajorFactionList)
+        self:SetAlphaColor(frame.Background, nil, nil,true)
+        self:HideTexture(frame.ScrollFadeOverlay)
+    end
+
+    hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
+        frame= frame.overlayFrame
+        if not frame or not frame:IsShown() then
+            return
+        end
+        SetOverlayFrame(frame)
+    end)
+
+    hooksecurefunc(DragonflightLandingOverlayMixin, 'RefreshOverlay', function(frame)
+        SetOverlayFrame(frame)
+    end)
+
+    hooksecurefunc(WarWithinLandingOverlayMixin, 'RefreshOverlay', function(frame)
+        SetOverlayFrame(frame)
+    end)
+
+end
+
+
+
+--派系声望
+function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
+    self:SetAlphaColor(MajorFactionRenownFrame.Background)
+    self:SetAlphaColor(MajorFactionRenownFrame.NineSlice, nil, nil, true)
+
+--解锁
+    hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
+        self:SetAlphaColor(frame.Background, nil, nil, 0.75)
+    end)
+--没解锁
+    hooksecurefunc(MajorFactionButtonLockedStateMixin, 'Refresh', function(frame)
+        self:SetAlphaColor(frame.Background, nil, nil, 0.75)
     end)
 end
