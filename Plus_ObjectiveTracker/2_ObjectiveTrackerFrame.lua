@@ -6,7 +6,18 @@ local MenuButton
 local function Save()
     return WoWToolsSave['ObjectiveTracker']
 end
-
+--[[
+ScenarioObjectiveTracker,
+UIWidgetObjectiveTracker,
+CampaignQuestObjectiveTracker,	
+QuestObjectiveTracker,
+AdventureObjectiveTracker,
+AchievementObjectiveTracker,
+MonthlyActivitiesObjectiveTracker,
+ProfessionsRecipeTracker,
+BonusObjectiveTracker,
+WorldQuestObjectiveTracker,
+]]
 local ObjectiveTabs={
     ['ScenarioObjectiveTracker']=false,
 
@@ -212,7 +223,7 @@ local function Init()
                 ObjectiveTrackerFrame:SetCollapsed(true)
             end
         elseif event=='PLAYER_REGEN_ENABLED' then
-            if not ObjectiveTrackerFrame:IsCollapsed() then
+            if ObjectiveTrackerFrame:IsCollapsed() then
                 ObjectiveTrackerFrame:SetCollapsed(false)
             end
         else

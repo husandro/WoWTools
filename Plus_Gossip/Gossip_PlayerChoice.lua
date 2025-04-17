@@ -24,9 +24,11 @@ local function Init()
     local function Send_Player_Choice_Response(optionInfo)
         if optionInfo then
             C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+            
             print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
                 '|n',
-                '|T'..(optionInfo.choiceArtID or 0)..':0|t'..optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
+                '|T'..(optionInfo.choiceArtID or 0)..':0|t'
+                ..(optionInfo.rarityColor and optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '') or optionInfo.description or '')
             )
             PlayerChoiceFrame:OnSelectionMade()
             C_PlayerChoice.OnUIClosed()

@@ -5556,7 +5556,22 @@
         "AREA_DESCRIPTION_FONT_COLOR_CODE",
         "CommunitiesTicketManagerDialog",
         "CompanionConfigSlotTemplateMixin",
-        "HeroTalentsSelectionDialog"
+        "HeroTalentsSelectionDialog",
+        "MAX_QUESTS",
+        "GetUnitName",
+        "MAX_WORLD_PVP_QUEUES",
+        "INLINE_TANK_ICON",
+        "INLINE_HEALER_ICON",
+        "INLINE_DAMAGER_ICON",
+        "PET_TYPE_SUFFIX",
+        "NUM_BAG_SLOTS",
+        "MAX_GUILDBANK_TABS",
+        "NUM_TOTAL_EQUIPPED_BAG_SLOTS",
+        "NUM_BANKBAGSLOTS",
+        "NUM_BANKGENERIC_SLOTS",
+        "PET_BATTLE_PET_TYPE_PASSIVES",
+        "MapUtil",
+        "RAID_CLASS_COLORS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
@@ -5571,8 +5586,7 @@
         "utf8": "disable"
     },
     "Lua.workspace.library": [
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.3\\Annotations\\Core",
-        "~\\.vscode\\extensions\\ketho.wow-api-0.20.3\\Annotations\\FrameXML\\Manual"
+        "~\\.vscode\\extensions\\ketho.wow-api-0.20.4\\Annotations\\Core"
     ],
     "Lua.runtime.unicodeName": true,
     "Lua.diagnostics.disable": [
