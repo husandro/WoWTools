@@ -160,6 +160,18 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 local function Set_List()
     if IsInSearch then
         return
@@ -220,8 +232,8 @@ local function Set_List()
 
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
 
-    Frame.SearchBox:SetShown(WoWTools_DataMixin.Player.husandro or num>3)
-
+    Frame.SearchBox:SetShown(num>5)
+    Frame.Menu:SetShown(num>0)
     Frame.NumLabel:SetText(num>0 and num or '')
 
 
@@ -294,7 +306,7 @@ local function Init_Menu(self, root)
 
 
 
-    
+
     if Frame and self==Frame.Menu then
         sub=root
         sub:CreateDivider()
@@ -304,7 +316,7 @@ local function Init_Menu(self, root)
     sub2=sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER),
     function()
-        return not Save().leftAllPlayer
+        return Save().leftAllPlayer
     end, function()
         Save().leftAllPlayer= not Save().leftAllPlayer and true or nil
         WoWTools_ChallengeMixin:ChallengesUI_Left()
@@ -326,6 +338,7 @@ local function Init_Menu(self, root)
                 for guid in pairs(WoWTools_WoWDate) do
                     WoWTools_WoWDate[guid].Keystone= {week=WoWTools_DataMixin.Player.Week}
                 end
+                C_MythicPlus.RequestMapInfo()
                 WoWTools_ChallengeMixin:ChallengesUI_Left()
             end}
         )
@@ -441,6 +454,33 @@ local function Init()
     Frame:SetFrameLevel(3)
     Frame:Hide()
 
+    function Frame:Settings()
+        local show= not Save().hideLeft
+        self:SetWidth(Save().leftWidth or 230)
+        self:SetScale(Save().leftScale or 1)
+        self:SetShown(show)
+        self.Menu:SetShown(show)
+        self.SearchBox:SetShown(show)
+    end
+
+    Frame:SetScript('OnHide', function(self)
+        self:UnregisterAllEvents()
+        self.view:SetDataProvider(CreateDataProvider())
+    end)
+
+    Frame:SetScript('OnShow', function(self)
+        self:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
+        self:RegisterEvent('BAG_UPDATE_DELAYED')
+        C_Timer.After(1, function()
+            Set_List()
+        end)
+    end)
+
+    Frame:SetScript('OnEvent', function()
+        Set_List()
+    end)
+
+
     --Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Frame:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT')
     Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMLEFT')
@@ -489,6 +529,7 @@ local function Init()
 
 
 
+
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollBox:SetAllPoints()
 
@@ -502,21 +543,6 @@ local function Init()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
-    function Frame:Settings()
-        local show= not Save().hideLeft
-        self:SetWidth(Save().leftWidth or 230)
-        self:SetScale(Save().leftScale or 1)
-        self:SetShown(show)
-        self.Menu:SetShown(show)
-        self.SearchBox:SetShown(show)
-    end
-
-    Frame:SetScript('OnHide', function(self)
-        self.view:SetDataProvider(CreateDataProvider())
-    end)
-    Frame:SetScript('OnShow', function()
-        Set_List()
-    end)
 
 
 

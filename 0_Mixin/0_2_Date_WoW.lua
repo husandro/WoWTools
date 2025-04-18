@@ -300,6 +300,30 @@ end)
 
 
 
+--挑战
+local function Get_Info_Challenge()--挑战
+    C_MythicPlus.RequestCurrentAffixes()
+    C_MythicPlus.RequestMapInfo()
+    C_MythicPlus.RequestRewards()
+    for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
+        WoWTools_Mixin:Load({type='mapChallengeModeID',mapChallengeModeID })
+    end
+end
+
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
+    Get_Info_Challenge()
+end)
+
+--[[
+    C_MythicPlus.GetRunHistory(false, true)--本周记录      
+    RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
+    RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息
+    RequestBattlefieldScoreData()--请求战地得分数据
+]]
+
+
+
+
 
 
 
@@ -525,30 +549,6 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
 
 
 
-
-
-
-
---挑战
-local function Get_Info_Challenge()--挑战
-    C_MythicPlus.RequestCurrentAffixes()
-    C_MythicPlus.RequestMapInfo()
-    C_MythicPlus.RequestRewards()
-    for _, mapChallengeModeID in pairs(C_ChallengeMode.GetMapTable() or {}) do
-        WoWTools_Mixin:Load({type='mapChallengeModeID',mapChallengeModeID })
-    end
-end
-
-EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
-    Get_Info_Challenge()
-end)
-
---[[
-    C_MythicPlus.GetRunHistory(false, true)--本周记录      
-    RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
-    RequestRandomBattlegroundInstanceInfo()--请求随机战场实例信息
-    RequestBattlefieldScoreData()--请求战地得分数据
-]]
 
 
 
