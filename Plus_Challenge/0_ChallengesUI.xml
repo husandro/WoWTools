@@ -10,9 +10,11 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
     <Scripts>
         <OnLeave>
             self.Select:Hide()
+            self:SetAlpha(self.itemLink and 1 or 0.5)
         </OnLeave>
         <OnEnter>
             self.Select:Show()
+            self:SetAlpha(1)
         </OnEnter>
     </Scripts>
 

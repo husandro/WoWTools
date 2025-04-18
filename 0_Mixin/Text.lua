@@ -86,7 +86,7 @@ end
 
 --取得中文
 function WoWTools_TextMixin:CN(text, tab)--{gossipOptionID=, questID=}
-    return WoWTools_ChineseMixin and WoWTools_ChineseMixin:GetData(text, tab) or text
+    return text and WoWTools_ChineseMixin and WoWTools_ChineseMixin:GetData(text, tab) or text
 end
 
 

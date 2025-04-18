@@ -468,7 +468,9 @@ end
 
 
 function WoWTools_SetTooltipMixin:Set_Menu(root)
-    root:SetTooltip(function(tooltip, description)
-        self:Setup(tooltip, description.data)
+    root:SetTooltip(function(tooltip, desc)
+        if type(desc.data)=='table' then
+            self:Setup(tooltip, desc.data)
+        end
     end)
 end

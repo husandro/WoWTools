@@ -200,14 +200,18 @@ end
 
 
 
-function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得物品，名称
+function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得物品，名称 itemLocation,ItemButton
     tab= tab or {}
 
     local disableCount= tab.notCount
 
-    itemID= itemID or self:GetItemID(itemLink) or (itemLocation and itemLocation:GetItemID())
+    itemID= itemID or self:GetItemID(itemLink)
+    if itemLocation then
+        itemID= itemID or itemLocation:GetItemID()
+        itemLink= itemLink or itemLocation:GetItemLink()
+    end
     if not itemID then
-        return
+        return itemID or itemLink or itemLocation
     end
 
     local col, name, desc, cool
@@ -233,7 +237,7 @@ function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得
         end
     end
 
-    name= WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID, isName=true}) or ('itemID '..itemID)
+    name= WoWTools_TextMixin:CN(C_Item.GetItemNameByID(itemID), {itemID=itemID,itemLink=itemLink, isName=true}) or ('itemID '..itemID)
 
     if name then
         if not name:find('|c') then

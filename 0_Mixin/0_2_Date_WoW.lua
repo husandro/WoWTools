@@ -474,7 +474,7 @@ EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, unit)
         if threat and threat>0 then
             local name=UnitName(unit)
             if name then
-                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
+                WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target')--以前用true,注意旧数据
                 RequestRaidInfo()
             end
         end
@@ -490,13 +490,11 @@ EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
     if classification == "rare" or classification == "rareelite" then
         local name=UnitName('target')
         if name then
-            WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target') or true
+            WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target')
             RequestRaidInfo()
         end
     end
 end)
-
-
 
 
 

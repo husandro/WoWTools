@@ -129,87 +129,12 @@ local function Init_Menu(self, root)
 
 
 
---小号. 史诗钥石
-    local num=0
-    for guid, info in pairs(WoWTools_WoWDate) do
-        if info.Keystone.link
-            and guid~=WoWTools_DataMixin.Player.GUID
-            and info.region==WoWTools_DataMixin.Player.Region
-        then
-            num= num+1
-        end
-    end
+
+
+
+
     root:CreateDivider()
-    name= '|T525134:0|t'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
-    sub= root:CreateCheckbox(
-        name..' #'..num,
-    function()
-        return not Save().hideLeft
-    end, function()
-        Save().hideLeft= not Save().hideLeft and true or nil
-        WoWTools_ChallengeMixin:ChallengesUI_Left()
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '小号钥石列表' or ACCOUNT_QUEST_LABEL)
-    end)
-
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().leftWidth or 230
-        end, setValue=function(value)
-            Save().leftWidth=value
-            WoWTools_ChallengeMixin:ChallengesUI_Left()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
-        minValue=100,
-        maxValue=640,
-        step=1,
-    })
-    sub:CreateSpacer()
-
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().leftBgAlpha or 0.75
-        end, setValue=function(value)
-            Save().leftBgAlpha=value
-            WoWTools_ChallengeMixin:ChallengesUI_Left()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
-        minValue=0,
-        maxValue=1,
-        step='0.05',
-        bit='%.2f',
-    })
-    sub:CreateSpacer()
-
---缩放
-    WoWTools_MenuMixin:ScaleRoot(self, sub,
-    function()
-        return Save().leftScale or 1
-    end, function(value)
-        Save().leftScale=value
-        WoWTools_ChallengeMixin:ChallengesUI_Left()
-    end, function()
-        Save().leftScale=nil
-        Save().leftWidth=nil
-        Save().leftBgAlpha=nil
-        WoWTools_ChallengeMixin:ChallengesUI_Left()
-    end)
-
---sub 提示
-    sub:CreateSpacer()
-    sub:CreateTitle(name)
-
-
-
-
-
-
-
-
-
+    WoWTools_ChallengeMixin:ChallengesUI_Left_Menu(self, root)
 
 
 

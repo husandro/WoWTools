@@ -33,14 +33,18 @@ local function Initializer(btn, data)
     } or ''))
 
 --玩家，名称
-    local name= data.name or ''
-    btn.Name:SetText(
-        name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
-        ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
-            and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
+    if data.guid== WoWTools_DataMixin.Player.GUID then
+        btn.Name:SetText((WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|A:CampCollection-icon-star:0:0|a')
+    else
+        local name= data.name or ''
+        btn.Name:SetText(
+            name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
+            ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
+                and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
+            )
+            ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
         )
-        ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
-    )
+    end
     btn.Name:SetTextColor(col.r, col.g, col.b)
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
@@ -68,8 +72,12 @@ local function Initializer(btn, data)
 --钥石，名称
     local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
     btn.Name2:SetText(
-        itemName~=data.itemLink and itemName
-        or WoWTools_TextMixin:CN(data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME) or data.itemLink)
+        data.itemLink and
+        (
+            itemName~=data.itemLink and itemName
+            or WoWTools_TextMixin:CN(data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME) or data.itemLink)
+        )
+        or ''
     )
 
 --背景
@@ -79,26 +87,24 @@ local function Initializer(btn, data)
         or 'StoryHeader-BG'
     )
 
-    btn.RaidText:SetText(data.pve or '|cff8282822/4/8')
-    btn.DungeonText:SetText(data.mythic or '|cff8282822/4/8')
-    btn.WorldText:SetText(data.world or '|cff8282822/4/8')
-    btn.PvPText:SetText(data.pvp or '')
+    btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.DungeonText:SetText(data.mythic or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
 
 --分数
     btn.ScoreText:SetText(
-        data.score==0 and '|cff8282820' or
         WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
+        or ''
     )
 --本周次数
     btn.WeekNumText:SetText(
-        (data.weekNum==0 and '|cff828282' or '')
-        ..data.weekNum
+        data.weekNum==0 and '' or data.weekNum
     )
 
 --本周最高
     btn.WeekLevelText:SetText(
-        (data.weekLevel==0 and '|cff828282' or '')
-        ..data.weekLevel
+        data.weekLevel==0 and '' or data.weekLevel
     )
 
 --背景
@@ -109,6 +115,8 @@ local function Initializer(btn, data)
     btn.battleTag= data.battleTag
     btn.specID= data.specID
     btn.itemLevel= data.itemLevel
+
+    btn:SetAlpha(btn.itemLink and 1 or 0.5)
 end
 
 
@@ -120,23 +128,27 @@ end
 
 
 local function Sort_Order(a,b)
-    if a.faction==b.faction then
-        if a.itemLevel==b.itemLevel then
-            if a.score==b.score then
-                if a.weekNum== b.weekNum then
-                    return b.weekLevel> a.weekLevel
+        if a.faction==b.faction then
+            if a.itemLevel==b.itemLevel then
+                if a.score==b.score then
+                    if a.weekNum== b.weekNum then
+                        if not b.itemLink or not a.itemLink then
+                            return a.itemLink and true or false
+                        else
+                            return a.weekLevel> b.weekLevel
+                        end
+                    else
+                        return a.weekNum> b.weekNum
+                    end
                 else
-                    return b.weekNum> a.weekNum
+                    return a.score>b.score
                 end
             else
-                return b.score>a.score
+                return a.itemLevel>b.itemLevel
             end
         else
-            return b.itemLevel>a.itemLevel
+            return a.faction==WoWTools_DataMixin.Player.Faction
         end
-    else
-        return a.faction==WoWTools_DataMixin.Player.Faction
-    end
 end
 
 
@@ -165,14 +177,17 @@ local function Set_List()
     local data = CreateDataProvider()
     for guid, info in pairs(WoWTools_WoWDate) do
 
-        if info.Keystone.link
-            and guid~=WoWTools_DataMixin.Player.GUID
-            and info.region==WoWTools_DataMixin.Player.Region
+        if Save().leftAllPlayer
+            or (
+                info.Keystone.link
+                and guid~=WoWTools_DataMixin.Player.GUID
+                and info.region==WoWTools_DataMixin.Player.Region
+            )
         then
             num= num+1
 
             local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
-            local link= isFind and info.Keystone.link:match('|h%[(.-)]|h'):upper()
+            local link= isFind and info.Keystone.link and info.Keystone.link:match('|h%[(.-)]|h'):upper()
 
             if (isFind and (link:find(findText) or name:find(findText))) or not isFind then
 
@@ -205,7 +220,7 @@ local function Set_List()
 
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
 
-    Frame.SearchBox:SetShown(num>6)
+    Frame.SearchBox:SetShown(WoWTools_DataMixin.Player.husandro or num>3)
 
     Frame.NumLabel:SetText(num>0 and num or '')
 
@@ -233,30 +248,221 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)
+    local sub, sub2, sub3, name
+--小号. 史诗钥石
+    local num, playerNum=0, 0
+    local keys={}
+    for guid, info in pairs(WoWTools_WoWDate) do
+        if info.Keystone.link
+            --and info.region==WoWTools_DataMixin.Player.Region
+        then
+            if guid==WoWTools_DataMixin.Player.GUID then
+                playerNum= playerNum+1
+            else
+                num= num+1
+            end
+            keys[guid]= info.Keystone
+        end
+
+    end
+
+    name= '|T525134:0|t'..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE)
+        ..' #'..num..'+'..playerNum
+    sub= root:CreateCheckbox(
+        name,
+    function()
+        return not Save().hideLeft
+    end, function()
+        Save().hideLeft= not Save().hideLeft and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '小号钥石列表' or ACCOUNT_QUEST_LABEL)
+    end)
+
+
+
+
+    
+    if Frame and self==Frame.Menu then
+        sub=root
+        sub:CreateDivider()
+    end
+
+--所有角色   
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER),
+    function()
+        return not Save().leftAllPlayer
+    end, function()
+        Save().leftAllPlayer= not Save().leftAllPlayer and true or nil
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end)
+
+
+--所有角色，全部清除
+    sub3=sub2:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        (WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER))
+            ..'\n|T525134:0|t'..(WoWTools_DataMixin.onlyChinese and '挑战数据' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, SAVE))
+            ..'\n\n'
+            ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            ..'\n',
+            nil,
+            {SetValue=function()
+                for guid in pairs(WoWTools_WoWDate) do
+                    WoWTools_WoWDate[guid].Keystone= {week=WoWTools_DataMixin.Player.Week}
+                end
+                WoWTools_ChallengeMixin:ChallengesUI_Left()
+            end}
+        )
+    end)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '挑战数据' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, SAVE))
+    end)
+
+
+--所有角色，列表 
+    sub2:CreateDivider()
+    for guid, Keystone in pairs(keys) do
+        sub3=sub2:CreateCheckbox(
+            WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true})
+            ..' '
+            ..(WoWTools_TextMixin:CN(Keystone.link:match(CHALLENGE_MODE_KEYSTONE_NAME) or Keystone.link)),
+        function(data)
+            return WoWTools_WoWDate[data.guid].Keystone.link
+        end, function(data)
+            if WoWTools_WoWDate[data.guid].Keystone.link then
+                WoWTools_WoWDate[data.guid].Keystone= {week=WoWTools_DataMixin.Player.Week}
+            else
+                WoWTools_WoWDate[data.guid].Keystone= data.Keystone
+            end
+            WoWTools_ChallengeMixin:ChallengesUI_Left()
+        end, {guid=guid, Keystone=Keystone, itemLink= Keystone.link})
+
+        WoWTools_SetTooltipMixin:Set_Menu(sub3)
+
+    end
+--SetScrollMod
+    WoWTools_MenuMixin:SetScrollMode(sub2, nil)
+
+
+--宽度
+    sub:CreateDivider()
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().leftWidth or 230
+        end, setValue=function(value)
+            Save().leftWidth=value
+            WoWTools_ChallengeMixin:ChallengesUI_Left()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH,
+        minValue=100,
+        maxValue=640,
+        step=1,
+    })
+    sub:CreateSpacer()
+
+--透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().leftBgAlpha or 0.75
+        end, setValue=function(value)
+            Save().leftBgAlpha=value
+            WoWTools_ChallengeMixin:ChallengesUI_Left()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step='0.05',
+        bit='%.2f',
+    })
+    sub:CreateSpacer()
+
+--缩放
+    WoWTools_MenuMixin:ScaleRoot(self, sub,
+    function()
+        return Save().leftScale or 1
+    end, function(value)
+        Save().leftScale=value
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end, function()
+        Save().leftScale=nil
+        Save().leftWidth=nil
+        Save().leftBgAlpha=nil
+        WoWTools_ChallengeMixin:ChallengesUI_Left()
+    end)
+
+--sub 提示
+    sub:CreateSpacer()
+    sub:CreateTitle(name)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init()
     if Save().hideLeft then
         return
     end
-    local MenuButton= WoWTools_ButtonMixin:Menu(ChallengesFrame, {texture=525134})
-    --MenuButton:SetPoint('')
+
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
     Frame:SetFrameStrata('HIGH')
     Frame:SetFrameLevel(3)
     Frame:Hide()
 
-    Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
+    --Frame:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Frame:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT')
     Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMLEFT')
 
+    Frame.Menu= WoWTools_ButtonMixin:Menu(ChallengesFrame, {texture=525134, size=23})
+    Frame.Menu:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
+    Frame.Menu:SetFrameStrata('HIGH')
+    Frame.Menu:SetFrameLevel(3)
+    Frame.Menu:SetupMenu(Init_Menu)
+
+
+--数量
+    Frame.NumLabel= WoWTools_LabelMixin:Create(Frame.Menu, {color=true})
+    Frame.NumLabel:SetPoint('BOTTOMRIGHT', Frame.Menu)
 
 
 --SearchBox
-    Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
+    Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame.Menu, {
         isSearch=true,
     })
     Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame, 'TOPLEFT', 4, 2)
-    Frame.SearchBox:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
+    Frame.SearchBox:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', -24,2)
     Frame.SearchBox:SetAlpha(0.3)
     Frame.SearchBox.Instructions:SetText(
         WoWTools_DataMixin.onlyChinese and '角色名称，副本'
@@ -279,23 +485,6 @@ local function Init()
     end)
 
 
---数量
-    Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel:SetPoint('TOPRIGHT', Frame, 'TOPLEFT', -2, 2)
-    Frame.NumLabel:EnableMouse(true)
-    Frame.NumLabel:SetScript('OnLeave', function(self)
-        self:SetAlpha(1)
-        GameTooltip:Hide()
-    end)
-    Frame.NumLabel:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '小号钥石列表' or ACCOUNT_QUEST_LABEL)
-        GameTooltip:Show()
-        self:SetAlpha(0.3)
-    end)
-
-
 
 
 
@@ -314,9 +503,12 @@ local function Init()
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
     function Frame:Settings()
+        local show= not Save().hideLeft
         self:SetWidth(Save().leftWidth or 230)
         self:SetScale(Save().leftScale or 1)
-        self:SetShown(not Save().hideLeft)
+        self:SetShown(show)
+        self.Menu:SetShown(show)
+        self.SearchBox:SetShown(show)
     end
 
     Frame:SetScript('OnHide', function(self)
@@ -325,6 +517,28 @@ local function Init()
     Frame:SetScript('OnShow', function()
         Set_List()
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     Frame:Settings()
 
@@ -347,4 +561,8 @@ end
 
 function WoWTools_ChallengeMixin:ChallengesUI_Left()
     Init()
+end
+
+function WoWTools_ChallengeMixin:ChallengesUI_Left_Menu(...)
+    Init_Menu(...)
 end

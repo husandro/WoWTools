@@ -2,13 +2,15 @@ WoWTools_HyperLink={}
 
 
 function WoWTools_HyperLink:CN_Link(link, tabInfo)
-    local name= link:match('|h%[|c........(.-)|r]|h') or link:match('|h%[(.-)]|h')
-    if name then
-        local new= WoWTools_TextMixin:CN(name, tabInfo)--汉化
-        if new and name~=new then
-            name= name:match('|c........(.-)|r') or name
-            name= WoWTools_TextMixin:Magic(name)
-            link= link:gsub(name, new)
+    if link then
+        local name= link:match('|h%[|c........(.-)|r]|h') or link:match('|h%[(.-)]|h')
+        if name then
+            local new= WoWTools_TextMixin:CN(name, tabInfo)--汉化
+            if new and name~=new then
+                name= name:match('|c........(.-)|r') or name
+                name= WoWTools_TextMixin:Magic(name)
+                link= link:gsub(name, new)
+            end
         end
     end
     return link
