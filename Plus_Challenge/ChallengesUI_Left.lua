@@ -237,6 +237,8 @@ local function Init()
     if Save().hideLeft then
         return
     end
+    local MenuButton= WoWTools_ButtonMixin:Menu(ChallengesFrame, {texture=525134})
+    --MenuButton:SetPoint('')
 
     Frame= CreateFrame('Frame', nil, ChallengesFrame)
     Frame:SetFrameStrata('HIGH')

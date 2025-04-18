@@ -69,10 +69,7 @@ GetGroupGuidDate()--队伍数据收集
 
 
 
---##############
 --战网，好友GUID
---##############
-
 local function setwowguidTab(info)
     if info and info.characterName then
         local name= WoWTools_UnitMixin:GetFullName(info.characterName)
@@ -98,7 +95,9 @@ local function Get_WoW_GUID_Info(_, friendIndex)
     end
 end
 
-
+EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", function(_, friendIndex)
+    Get_WoW_GUID_Info(_, friendIndex)
+end)
 
 
 
@@ -117,7 +116,7 @@ end
 --玩家装等
 --########
 WoWTools_DataMixin.UnitItemLevel={}
-local function Get_Player_Info(_, guid)--取得玩家信息
+EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--取得玩家信息
     local unit= guid and UnitTokenFromGUID(guid)
     if not unit then
         return
@@ -136,9 +135,9 @@ local function Get_Player_Info(_, guid)--取得玩家信息
         b=b,
         level=UnitLevel(unit),
     }
-    if UnitInParty(unit) and not IsInRaid() and PartyFrame.MemberFrame1.classFrame then
+    if UnitInParty(unit) and not IsInRaid() then
         for memberFrame in PartyFrame.PartyMemberFramePool:EnumerateActive() do--先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
-            if UnitIsUnit(memberFrame.unit, unit) then
+            if memberFrame.classFrame and UnitIsUnit(memberFrame.unit, unit) then
                 memberFrame.classFrame:set_settings(guid)
                 break
             end
@@ -147,6 +146,7 @@ local function Get_Player_Info(_, guid)--取得玩家信息
     if UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
         TargetFrame.classFrame:set_settings(guid)
     end
+    
 
 --保存，自已，装等
     if guid==WoWTools_DataMixin.Player.GUID then
@@ -154,7 +154,7 @@ local function Get_Player_Info(_, guid)--取得玩家信息
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].specID= specID
     end
     --if UnitIsUnit(unit, 'mouseover') and GameTooltip.textLeft and GameTooltip:IsShown() then
-end
+end)
 
 
 
@@ -170,10 +170,7 @@ end
 
 
 
---###########
 --队伍数据收集
---###########
-
 local function GetGroupGuidDate()--队伍数据收集
     WoWTools_DataMixin.GroupGuid={}
     local UnitTab={}
@@ -225,6 +222,12 @@ local function GetGroupGuidDate()--队伍数据收集
 end
 
 
+EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", function()
+    GetGroupGuidDate()
+end)
+EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
+    GetGroupGuidDate()
+end)
 
 
 
@@ -232,9 +235,15 @@ end
 
 
 
---#########
+
+
+
+
+
+
+
+
 --地下城挑战
---#########
 local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数}
     local all, weekNum, weekLevel
     local score=C_ChallengeMode.GetOverallDungeonScore()
@@ -275,6 +284,21 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
     }
 end
 
+--地下城挑战
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_MAPS_UPDATE", function()
+    C_MythicPlus.RequestRewards()
+    C_Timer.After(4, Update_Challenge_Mode)
+end)
+EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function()
+    C_MythicPlus.RequestRewards()
+    C_Timer.After(4, Update_Challenge_Mode)
+end)
+
+
+
+
+
+
 
 
 
@@ -286,7 +310,7 @@ end
 
 
 --更新物品
-local function Update_Bag_Items()
+EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", function()
     local guid= WoWTools_DataMixin.Player.GUID
     WoWTools_WoWDate[guid].Keystone.link=nil
     WoWTools_WoWDate[guid].Item={}--{itemID={bag=包, bank=银行}}
@@ -307,7 +331,7 @@ local function Update_Bag_Items()
             end
         end
     end
-end
+end)
 
 
 
@@ -341,15 +365,12 @@ end
 
 
 
-
---#######
---更新货币
---#######
-local function Update_Currency(_, arg1)--{currencyID = 数量}
+--更新货币 {currencyID = 数量}
+EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function(_, arg1)
     if arg1 and arg1~=2032 then
-        local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
-        if info and info.quantity then
-            if not C_CurrencyInfo.IsAccountWideCurrency(arg1) then
+        if not C_CurrencyInfo.IsAccountWideCurrency(arg1) then
+            local info = C_CurrencyInfo.GetCurrencyInfo(arg1)
+            if info and info.quantity then
                 WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Currency[arg1]= info.quantity~=0 and info.quantity or nil
             end
         end
@@ -364,7 +385,7 @@ local function Update_Currency(_, arg1)--{currencyID = 数量}
             end
         end
     end
-end
+end)
 
 
 
@@ -385,11 +406,8 @@ end
 
 
 
-
---#############
 --副本, 世界BOSS
---#############
-local function Update_Instance()--encounterID, encounterName)
+EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--encounterID, encounterName)
     local tab={}--已杀世界BOSS
     for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={name=true}}}
         local bossName, worldBossID, reset=GetSavedWorldBossInfo(i)
@@ -423,7 +441,7 @@ local function Update_Instance()--encounterID, encounterName)
         day=date('%x'),
         ins=tab
     }
-end
+end)
 
 
 
@@ -445,37 +463,38 @@ end
 
 
 
-
---#########
---稀有怪数据
---#########
-local function Set_Rare_Elite_Killed(unit)--稀有怪数据
-    if unit=='loot' then
-        unit='target'
-        local classification = UnitExists(unit) and UnitClassification(unit)
-        if classification == "rare" or classification == "rareelite" then
+--稀有怪数 BOSS_KILL
+EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, unit)
+    if not IsInInstance() or not unit or not UnitIsDead(unit) or UnitIsPlayer(unit) then
+        return
+    end
+    local classification = UnitClassification(unit)
+    if classification == "rare" or classification == "rareelite" then
+        local threat = UnitThreatSituation('player',unit)
+        if threat and threat>0 then
             local name=UnitName(unit)
             if name then
                 WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
                 RequestRaidInfo()
             end
         end
-    elseif UnitIsDead(unit) then
-        local classification = UnitClassification(unit)
-        if classification == "rare" or classification == "rareelite" then
-            local threat = UnitThreatSituation('player',unit)
-            if threat and threat>0 then
-                local name=UnitName(unit)
-                if name then
-                    WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]=true
-                    RequestRaidInfo()
-                end
-            end
+    end
+end)
+
+
+EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
+    if not IsInInstance() then
+        return
+    end
+    local classification = UnitExists('target') and UnitClassification('target')
+    if classification == "rare" or classification == "rareelite" then
+        local name=UnitName('target')
+        if name then
+            WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target') or true
+            RequestRaidInfo()
         end
     end
-end
-
-
+end)
 
 
 
@@ -501,7 +520,7 @@ local function Set_Money()--钱
     WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Money= GetMoney() or 0
 end
 
-
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
 
 
 
@@ -514,9 +533,6 @@ end
 
 --挑战
 local function Get_Info_Challenge()--挑战
-    if not WoWTools_DataMixin.Player.IsMaxLevel then
-        return
-    end
     C_MythicPlus.RequestCurrentAffixes()
     C_MythicPlus.RequestMapInfo()
     C_MythicPlus.RequestRewards()
@@ -524,6 +540,11 @@ local function Get_Info_Challenge()--挑战
         WoWTools_Mixin:Load({type='mapChallengeModeID',mapChallengeModeID })
     end
 end
+
+EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
+    Get_Info_Challenge()
+end)
+
 --[[
     C_MythicPlus.GetRunHistory(false, true)--本周记录      
     RequestRatedInfo()--从服务器请求有关玩家 PvP 评分的信息。
@@ -563,13 +584,6 @@ end
 
 
 
---队伍数据
-EventRegistry:RegisterFrameEventAndCallback("GROUP_ROSTER_UPDATE", function()
-    GetGroupGuidDate()
-end)
-EventRegistry:RegisterFrameEventAndCallback("GROUP_LEFT", function()
-    GetGroupGuidDate()
-end)
 
 --总游戏时间：%s
 EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1, arg2)
@@ -581,25 +595,10 @@ EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1,
     end
 end)
 
---取得玩家信息
-EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function()
-    Get_Player_Info()
-end)
 
---地下城挑战
-EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_MAPS_UPDATE", function()
-    C_MythicPlus.RequestRewards()
-    C_Timer.After(4, Update_Challenge_Mode)
-end)
-EventRegistry:RegisterFrameEventAndCallback("WEEKLY_REWARDS_UPDATE", function()
-    C_MythicPlus.RequestRewards()
-    C_Timer.After(4, Update_Challenge_Mode)
-end)
 
---挑战
-EventRegistry:RegisterFrameEventAndCallback("CHALLENGE_MODE_COMPLETED", function()
-    Get_Info_Challenge()
-end)
+
+
 
 --位面, 清除
 EventRegistry:RegisterFrameEventAndCallback("ZONE_CHANGED_NEW_AREA", function()
@@ -609,52 +608,26 @@ EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
     WoWTools_DataMixin.Player.Layer=nil
 end)
 
---记录稀有怪
-EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, arg1)
-    if not IsInInstance() and arg1 then
-        return
-    end
-    Set_Rare_Elite_Killed(arg1)
-end)
-EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
-    if not IsInInstance() then
-        return
-    end
-    Set_Rare_Elite_Killed('loot')
-end)
 EventRegistry:RegisterFrameEventAndCallback("BOSS_KILL", function()
     RequestRaidInfo()
 end)
 
---货币
-EventRegistry:RegisterFrameEventAndCallback("CURRENCY_DISPLAY_UPDATE", function()
-    Update_Currency()
-end)
 
---更新物品
-EventRegistry:RegisterFrameEventAndCallback("BAG_UPDATE_DELAYED", function()
-    Update_Bag_Items()
-end)
 
---副本
-EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()
-    Update_Instance()
-end)
 
---钱
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_MONEY", Set_Money)
+
 
 --玩家是否最高等级
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEVEL_UP", function(_, arg1)
-    local level= arg1 or UnitLevel('player')
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_LEVEL_UP", function(_, level)
+    level= level or UnitLevel('player')
     WoWTools_DataMixin.Player.IsMaxLevel= level==GetMaxLevelForLatestExpansion()--玩家是否最高等级
     WoWTools_DataMixin.Player.Level= level
     WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].level= level
 end)
 
 --玩家, 派系
-EventRegistry:RegisterFrameEventAndCallback("NEUTRAL_FACTION_SELECT_RESULT", function(_, arg1)
-    if arg1 then
+EventRegistry:RegisterFrameEventAndCallback("NEUTRAL_FACTION_SELECT_RESULT", function(_, success)
+    if success then
         WoWTools_DataMixin.Player.Faction= UnitFactionGroup('player')--玩家, 派系  "Alliance", "Horde", "Neutral"
     end
 end)
@@ -678,15 +651,10 @@ EventRegistry:RegisterFrameEventAndCallback("ENCOUNTER_END", function(_, arg1)
     e.IsEncouter_Start= nil
 end)]]
 
---战网，好友GUID
-EventRegistry:RegisterFrameEventAndCallback("BN_FRIEND_INFO_CHANGED", function()
-    Get_WoW_GUID_Info()
-end)
 
-EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, arg1)
-    if arg1 then
+EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, success)
+    if success then
         WoWTools_DataMixin.Player.Sex= UnitSex("player")
-
         WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false})
     end
 end)
@@ -770,7 +738,6 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     end
 
 
-    --C_Timer.After(4, function() end)
 
     EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
 end)
@@ -782,8 +749,21 @@ end)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(owner)
-    Get_Info_Challenge()--挑战
+    if  WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
+        Get_Info_Challenge()--挑战
+    end
 
     --C_MajorFactions.RequestCatchUpState()
     C_FriendList.ShowFriends()
@@ -803,13 +783,13 @@ EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(
     --Update_Bag_Items()
     Set_Money()--钱
     Update_Challenge_Mode()
+
     --################
     --开启, 新手編輯模式
     --################ LFDFrame.lua
     if C_PlayerInfo.IsPlayerNPERestricted() then
-        --C_PlayerInfo.IsPlayerNPERestricted= function() return false end
-        EditModeManagerFrame.CanEnterEditMode = function(self2)--EditModeManager.lua
-            return TableIsEmpty(self2.FramesBlockingEditMode)
+        EditModeManagerFrame.CanEnterEditMode = function(frame)--EditModeManager.lua
+            return TableIsEmpty(frame.FramesBlockingEditMode)
         end
         if Minimap then
             Minimap:SetShown(true)

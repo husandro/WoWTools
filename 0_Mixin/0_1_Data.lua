@@ -13,9 +13,21 @@ WoWTools_DataMixin= {
     ExpansionLevel= GetExpansionLevel(),--版本数据
     Is_Timerunning= PlayerGetTimerunningSeasonID(),--1=幻境新生：潘达利亚
     StausText={},--属性，截取表 API_Panel.lua
+    UnitItemLevel={},
 }
 
-
+--[[
+UnitItemLevel[guid]={--玩家装等
+    itemLevel= itemLevel,
+    specID=specID,
+    faction= UnitFactionGroup(unit),
+    col= hex,
+    r=r,
+    g=g,
+    b=b,
+    level=UnitLevel(unit),
+}
+]]
 
 --WoWTools_DataMixin.IsSetPlayerSound= enabled--播放, 事件声音
 --WoWTools_DataMixin.ClearAllSave= true 全部重置，插件设置
