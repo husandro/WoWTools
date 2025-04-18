@@ -115,7 +115,7 @@ weekNum= weekNum,
 weekLevel= weekLevel,
 ]]
 
-local function Set_keystonee(tooltip)
+local function Set_keystonee(tooltip, itemLink)
     local textLeft, text2Left, text2Right
 
     local new={}
@@ -123,7 +123,7 @@ local function Set_keystonee(tooltip)
     for guid, info in pairs(WoWTools_WoWDate or {}) do
         if info.Keystone.link then
             if guid==WoWTools_DataMixin.Player.GUID then
-                text2Right= info.Keystone.link
+                text2Right= WoWTools_TextMixin:CN(info.Keystone.link, {itemLink=info.Keystone.link, isName=true})
             else
                 table.insert(new, {
                     guid=guid,
@@ -195,6 +195,11 @@ local function Set_keystonee(tooltip)
         text2Left=num..'|cnGREEN_FONT_COLOR:('..completedNum..')|r'
     end
 
+--Affix
+    local affix= WoWTools_HyperLink:GetKeyAffix(itemLink)
+    if affix then
+        tooltip:AddLine(affix)
+    end
     return textLeft, text2Left, text2Right
 end
 
@@ -364,7 +369,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 
     if C_Item.IsItemKeystoneByID(itemID) then--挑战
-        textLeft, text2Left, text2Right= Set_keystonee(tooltip)
+        textLeft, text2Left, text2Right= Set_keystonee(tooltip, itemLink)
     else
         Set_Item_Num(tooltip, itemID)
     end
