@@ -1,107 +1,9 @@
-
-local addName
-local P_Save={
-    specButton={
-    --isUIParent=true
-    --scale=1
-    --isToTOP=true
-    --point={}
-    --strata='MEDIUM'
-    --hideInCombat=true
-    }
-}
-
 local function Save()
-    return WoWToolsSave['Other_SpellFrame']
+    return WoWToolsSave['Plus_Spell']
 end
+
 
 local SpecFrame
-
-
-
-
-
-
-
---天赋, 点数 Blizzard_SharedTalentButtonTemplates.lua Blizzard_ClassTalentButtonTemplates.lua
-local function set_UpdateSpendText(btn)
-    local info= btn.nodeInfo-- C_Traits.GetNodeInfo btn:GetSpellID()
-    local text
-    if info then
-        if info.currentRank and info.maxRanks and info.currentRank>0 and info.maxRanks~= info.currentRank then
-            text= '/'..info.maxRanks
-        end
-        if text and not btn.maxText then
-            btn.maxText= WoWTools_LabelMixin:Create(btn, {fontType=btn.SpendText})--nil, btn.SpendText)
-            btn.maxText:SetPoint('LEFT', btn.SpendText, 'RIGHT')
-            btn.maxText:SetTextColor(1, 0, 1)
-            btn.maxText:EnableMouse(true)
-            btn.maxText:SetScript('OnLeave', GameTooltip_Hide)
-            btn.maxText:SetScript('OnEnter', function(self)
-                if self.maxRanks then
-                    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                    GameTooltip:ClearLines()
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, addName)
-                    GameTooltip:Show()
-                end
-            end)
-        end
-    end
-    if btn.maxText then
-        btn.maxText.maxRanks= info and info.maxRanks
-        btn.maxText:SetText(text or '')
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---法术按键, 颜色 ActionButton.lua
-local function set_ActionButton_UpdateRangeIndicator(frame, checksRange, inRange)
-    if not frame.setHooksecurefunc and frame.UpdateUsable then
-        hooksecurefunc(frame, 'UpdateUsable', function(self, _, isUsable)
-            if IsUsableAction(self.action) and ActionHasRange(self.action) and IsActionInRange(self.action)==false then
-                self.icon:SetVertexColor(1,0,0)
-            end
-        end)
-        frame.setHooksecurefunc= true
-    end
-
-    if ( frame.HotKey:GetText() == RANGE_INDICATOR ) then
-        if ( checksRange ) then
-            if ( inRange ) then
-                if frame.UpdateUsable then
-                    frame:UpdateUsable()
-                end
-            else
-                frame.icon:SetVertexColor(1,0,0)
-            end
-        end
-    else
-        if ( checksRange and not inRange ) then
-            frame.icon:SetVertexColor(1,0,0)
-        elseif frame.UpdateUsable then
-            frame:UpdateUsable()
-        end
-    end
-
-end
-
-
-
 
 
 
@@ -163,15 +65,13 @@ if isInCombat then
     return
 end
 
-
-
-
-
-
     root:CreateDivider()
 
 --打开选项界面
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=addName, category=WoWTools_OtherMixin.Category})
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
+        name=WoWTools_SpellMixin.addName,
+        category=WoWTools_SpellMixin.Category
+    })
 
 
 --SetParent
@@ -251,6 +151,12 @@ end
 
 
 
+
+
+
+
+
+
 local function Create_Spec_Button(index)
     local specID, name, _, texture= GetSpecializationInfo(index, false, false, nil, UnitSex("player"))
     local btn= WoWTools_ButtonMixin:Cbtn(SpecFrame, {
@@ -312,7 +218,7 @@ local function Create_Spec_Button(index)
             Save().specButton.point[2]= nil
         else
             print(
-                WoWTools_DataMixin.addName,
+                WoWTools_SpellMixin.addName,
                 '|cnRED_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
@@ -405,6 +311,8 @@ end
 
 
 
+
+
 --天赋，添加专精按钮
 local function Init_Spec_Button()
     local numSpec= GetNumSpecializations(false, false) or 0
@@ -476,7 +384,12 @@ local function Init_Spec_Button()
             self:SetPoint('TOP', PlayerSpellsFrame, 'BOTTOM', -numSpec*10-18, 0)
             self:SetFrameStrata('HIGH')
         else
-            print(addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+            print(
+                WoWTools_SpellMixin.addName,
+                '|cnGREEN_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
+            )
         end
     end
 
@@ -512,89 +425,6 @@ end
 
 
 
-
-
-
-
-local function Blizzard_PlayerSpells()
-    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-
+function WoWTools_SpellMixin:Init_Spec_Button()
     Init_Spec_Button()
-
-    hooksecurefunc(SpellBookItemMixin, 'UpdateVisuals', function(frame)
-        frame.Button.ActionBarHighlight:SetVertexColor(0,1,0)
-        if (frame.spellBookItemInfo.itemType == Enum.SpellBookItemType.Flyout) then
-            frame.Button.Arrow:SetVertexColor(1,0,1)
-            frame.Button.Border:SetVertexColor(1,0,1)
-        else
-            frame.Button.Arrow:SetVertexColor(1,1,1)
-            frame.Button.Border:SetVertexColor(1,1,1)
-        end
-    end)
-
-    Blizzard_PlayerSpells=function()end
 end
-
-
-
-
-
-
-
-
-
-
-
-
-local panel= CreateFrame("Frame")
-panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('LOADING_SCREEN_DISABLED')
-
-panel:SetScript("OnEvent", function(self, event, arg1)
-    if event=='ADDON_LOADED' then
-        if arg1== 'WoWTools' then
-
-            WoWToolsSave['Other_SpellFrame'] = WoWToolsSave['Other_SpellFrame'] or P_Save
-
-            Save().specButton= Save().specButton or {}
-
-            addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术Frame' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, 'Frame'))
-
-            --添加控制面板
-            WoWTools_PanelMixin:OnlyCheck({
-                name= addName,
-                tooltip= WoWTools_DataMixin.onlyChinese and '法术距离, 颜色'
-                        or (
-                            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPELLS, TRACKER_SORT_PROXIMITY)..': '.. COLOR
-
-                    ),
-                Value= not Save().disabled,
-                GetValue=function() return not Save().disabled end,
-                SetValue= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-                end,
-                layout= WoWTools_OtherMixin.Layout,
-                category= WoWTools_OtherMixin.Category,
-            })
-
-            if Save().disabled then
-                self:UnregisterAllEvents()
-                
-            elseif C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-                Blizzard_PlayerSpells()
-                self:UnregisterEvent(event)
-            end
-
-        elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--天赋
-            Blizzard_PlayerSpells()
-            self:UnregisterEvent(event)
-        end
-    
-    elseif event=='LOADING_SCREEN_DISABLED' then
-        Init_Spec_Button()
-    --法术按键, 颜色
-        hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
-        self:UnregisterEvent(event)
-    end
-end)

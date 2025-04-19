@@ -49,7 +49,6 @@ Sesource\Libs\LibRangeCheck-3.0.lua
 0_Mixin\Random.lua
 ##美服，欧服，服器语言，提示
 0_Mixin\Realm.lua
-0_Mixin\Spell.lua
 0_Mixin\Text.lua
 0_Mixin\Time.lua
 0_Mixin\SetTooltip.lua
@@ -511,7 +510,13 @@ Plus_Cursor\2_Blizzard_Settings.lua
 Plus_Cursor\Cursor.lua
 Plus_Cursor\GCD.lua
 
-
+##天赋和法术 法术弹出框，加名称, 和颜色
+Plus_Spell\0_SpellMixin.lua
+Plus_Spell\1_Init.lua
+Plus_Spell\2_Options.lua
+Plus_Spell\ActionButton_UpdateRange.lua
+Plus_Spell\Spec_Button.lua
+Plus_Spell\TalentsFrame.lua
 
 ##宏增强
 Plus_Macro\0_MacroMixin.lua
@@ -550,8 +555,7 @@ Plus_Other\0_Init.lua
 Plus_Other\Brewfest.lua
 ##法术弹出框，加名称
 Plus_Other\SpellFlyout.lua
-##法术弹出框，加名称, 和颜色
-Plus_Other\SpellFrame.lua
+##分解
 Plus_Other\ScrappingMachine.lua
 ##断， 驱，散
 Plus_Other\InterruptStolenDispel.lua

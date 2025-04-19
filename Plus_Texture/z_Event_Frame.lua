@@ -48,12 +48,7 @@ end
 
 
 
-local function Set_TalentsFrameBg()
-    local show= not Save().HideTalentsBG
-    PlayerSpellsFrame.TalentsFrame.Background:SetShown(show)
-    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background:SetShown(show)
-    PlayerSpellsFrame.TalentsFrame.BottomBar:SetShown(show)
-end
+
 
 --天赋和法术书
 function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
@@ -67,19 +62,6 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
     self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
     self:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
-    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)--隐藏，天赋，背景
-        root:CreateDivider()
-        local sub=WoWTools_MenuMixin:ShowBackground(root, function()
-            return not Save().HideTalentsBG
-        end, function()
-            Save().HideTalentsBG= not Save().HideTalentsBG and true or nil
-            Set_TalentsFrameBg()
-        end)
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_TextureMixin.addName)
-        end)
-    end)
-    Set_TalentsFrameBg()
 
 
     self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书

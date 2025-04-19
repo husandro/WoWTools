@@ -393,7 +393,7 @@ end
 
 
 --收件人，列表
-function Init()
+local function Init()
     if Save().hideSendNameList then
         return
     end

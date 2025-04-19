@@ -485,7 +485,7 @@ local function Init()
     Frame:SetPoint('TOPRIGHT', ChallengesFrame, 'TOPLEFT')
     Frame:SetPoint('BOTTOMRIGHT', ChallengesFrame, 'BOTTOMLEFT')
 
-    Frame.Menu= WoWTools_ButtonMixin:Menu(ChallengesFrame, {texture=525134, size=23})
+    Frame.Menu= WoWTools_ButtonMixin:Menu(ChallengesFrame, {icon='hide', size=23})
     Frame.Menu:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
     Frame.Menu:SetFrameStrata('HIGH')
     Frame.Menu:SetFrameLevel(3)
@@ -494,7 +494,7 @@ local function Init()
 
 --数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame.Menu, {color=true})
-    Frame.NumLabel:SetPoint('BOTTOMRIGHT', Frame.Menu)
+    Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
 
 
 --SearchBox
