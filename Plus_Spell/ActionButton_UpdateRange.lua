@@ -34,6 +34,17 @@ end
 
 
 
-function WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
+local function Init()
     hooksecurefunc('ActionButton_UpdateRangeIndicator', set_ActionButton_UpdateRangeIndicator)
+    Init=function()end
+end
+
+
+
+
+
+function WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
+    if self.actionButtonRangeColor then
+        Init()
+    end
 end

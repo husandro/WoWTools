@@ -314,7 +314,7 @@ end
 
 
 --天赋，添加专精按钮
-local function Init_Spec_Button()
+local function Init()
     local numSpec= GetNumSpecializations(false, false) or 0
     if numSpec==0 or (not Save().specButton.isUIParent and not PlayerSpellsFrame) then--not C_SpecializationInfo.IsInitialized() or
         return
@@ -410,7 +410,7 @@ local function Init_Spec_Button()
     SpecFrame:set_point()
 
 
-    Init_Spec_Button=function()end
+    Init=function()end
 end
 
 
@@ -426,5 +426,5 @@ end
 
 
 function WoWTools_SpellMixin:Init_Spec_Button()
-    Init_Spec_Button()
+    Init()
 end

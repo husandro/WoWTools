@@ -51,8 +51,41 @@ local function Blizzard_Settings()
         return
     end
 
+    WoWTools_PanelMixin:OnlyCheck({
+        name= '|A:common-icon-backarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术弹出框' or 'SpellFlyout'),
+        tooltip= WoWTools_PanelMixin.addName,
+        GetValue= function() return Save().flyoutText end,
+        category= Category,
+        SetValue= function()
+            Save().flyoutText= not Save().flyoutText and true or nil
+            WoWTools_SpellMixin:Init_Spell_Flyout()
+            if not Save().flyoutText then
+                print(
+                    WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(Save().flyoutText),
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end
+        end
+    })
 
-
+    WoWTools_PanelMixin:OnlyCheck({
+        name= '|A:UI-HUD-ActionBar-Interrupt:0:0|a'..(WoWTools_DataMixin.onlyChinese and '动作条颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACTIONBARS_LABEL, COLOR)),
+        tooltip= WoWTools_PanelMixin.addName,
+        GetValue= function() return Save().actionButtonRangeColor end,
+        category= Category,
+        SetValue= function()
+            Save().actionButtonRangeColor= not Save().actionButtonRangeColor and true or nil
+            WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
+            if not Save().actionButtonRangeColor then
+                print(
+                    WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(Save().actionButtonRangeColor),
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end
+        end
+    })
 
 
 
