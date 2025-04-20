@@ -426,5 +426,7 @@ end
 
 
 function WoWTools_SpellMixin:Init_Spec_Button()
-    Init()
+    if Save().specButton.enabled then
+        Init()
+    end
 end

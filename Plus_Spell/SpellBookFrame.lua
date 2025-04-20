@@ -176,5 +176,7 @@ end
 
 
 function WoWTools_SpellMixin:Init_SpellBookFrame()
-    Init()
+    if WoWToolsSave['Plus_Spell'].spellBookPlus then
+        Init()
+    end
 end

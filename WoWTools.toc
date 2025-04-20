@@ -519,7 +519,7 @@ Plus_Spell\TalentsFrame.lua
 Plus_Spell\SpellBookFrame.lua
 Plus_Spell\Spec_Button.lua
 ##法术弹出框，加名称
-Plus_Spell\SpellFlyout.lua
+Plus_Spell\Spell_Flyout.lua
 
 ##宏增强
 Plus_Macro\0_MacroMixin.lua

@@ -86,6 +86,8 @@ end
 
 
 function WoWTools_SpellMixin:Init_TalentsFrame()
-    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-    Init_Background()
+    if WoWToolsSave['Plus_Spell'].talentsFramePlus then
+        hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
+        Init_Background()
+    end
 end

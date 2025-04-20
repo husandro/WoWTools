@@ -221,7 +221,7 @@ end
 
 
 function WoWTools_SpellMixin:Init_Spell_Flyout()
-    if self.flyoutText then
+    if WoWToolsSave['Plus_Spell'].flyoutText then
         Init()
     end
 end

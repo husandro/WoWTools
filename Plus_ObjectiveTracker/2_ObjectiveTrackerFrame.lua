@@ -263,6 +263,29 @@ local function Init()
     end
 
 
+--移动
+    ObjectiveTrackerFrame:SetMovable(true)
+    ObjectiveTrackerFrame.Header.MinimizeButton:RegisterForDrag("RightButton")
+
+    ObjectiveTrackerFrame.Header.MinimizeButton:SetScript("OnDragStart", function(self)
+        self:GetParent():GetParent():StartMoving()
+        SetCursor('UI_MOVE_CURSOR')
+    end)
+    ObjectiveTrackerFrame.Header.MinimizeButton:SetScript("OnDragStop", function(self, d)
+        self:GetParent():GetParent():StopMovingOrSizing()
+        ResetCursor()
+    end)
+    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseDown', function(_, d)
+        if d=='RightButton' then
+            SetCursor('UI_MOVE_CURSOR')
+        end
+    end)
+    ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseUp', function()
+        ResetCursor()
+    end)
+
+
+
 
 
     Init=function()end
