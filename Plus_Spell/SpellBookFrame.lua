@@ -176,7 +176,7 @@ end
 
 
 function WoWTools_SpellMixin:Init_SpellBookFrame()
-    if WoWToolsSave['Plus_Spell'].spellBookPlus then
+    if WoWToolsSave['Plus_Spell'].spellBookPlus and C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
         Init()
     end
 end

@@ -86,7 +86,7 @@ end
 
 
 function WoWTools_SpellMixin:Init_TalentsFrame()
-    if WoWToolsSave['Plus_Spell'].talentsFramePlus then
+    if WoWToolsSave['Plus_Spell'].talentsFramePlus and C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
         hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
         Init_Background()
     end
