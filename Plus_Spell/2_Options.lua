@@ -50,6 +50,7 @@ local function Blizzard_Settings()
     if not C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
         return
     end
+    WoWTools_PanelMixin:Header(Layout, 'Plus')
 
 --法术弹出框
     WoWTools_PanelMixin:OnlyCheck({
