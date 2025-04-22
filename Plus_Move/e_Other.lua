@@ -208,18 +208,6 @@ end
 
 
 
---法术书
-function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
-    self:Setup(PlayerSpellsFrame, {onShowFunc=true})
-    for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do
-        self:Setup(specContentFrame, {frame=PlayerSpellsFrame})
-    end
-
-    self:Setup(PlayerSpellsFrame.TalentsFrame, {frame=PlayerSpellsFrame})
-    self:Setup(PlayerSpellsFrame.TalentsFrame.ButtonsParent, {frame=PlayerSpellsFrame})
-    self:Setup(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
-end
-
 
 
 

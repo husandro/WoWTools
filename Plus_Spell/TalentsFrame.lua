@@ -55,29 +55,130 @@ end
 
 
 local function Set_TalentsFrameBg()
-    local show= Save().bg.showBG
-    PlayerSpellsFrame.TalentsFrame.Background:SetShown(show)
-    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background:SetShown(show)
-    PlayerSpellsFrame.TalentsFrame.BottomBar:SetShown(show)
+    local show= Save().bg.show
+    local alpha= Save().bg.alpha or 1
+    local tab={
+        PlayerSpellsFrame.TalentsFrame.Background,
+        PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background,
+        PlayerSpellsFrame.TalentsFrame.BottomBar
+    }
+    for _, frame in pairs(tab) do
+        frame:SetShown(show)
+        frame:SetAlpha(alpha)
+    end
 end
 
-local function Init_Background()
-    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)--隐藏，天赋，背景
-        root:CreateDivider()
-        local sub=WoWTools_MenuMixin:ShowBackground(root, function()
-            return Save().bg.showBG
-        end, function()
-            Save().bg.showBG= not Save().bg.showBG and true or nil
-            Set_TalentsFrameBg()
-        end)
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_SpellMixin.addName)
-        end)
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Menu(self, root)--隐藏，天赋，背景
+    local sub, sub2
+    root:CreateDivider()
+
+    sub=WoWTools_MenuMixin:ShowBackground(root, function()
+        return Save().bg.show
+    end, function()
+        Save().bg.show= not Save().bg.show and true or nil
+        Set_TalentsFrameBg()
     end)
-    Set_TalentsFrameBg()
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_SpellMixin.addName)
+    end)
+    
+
+    sub2=sub:CreateButton(
+        'Web',
+    function(data)
+        WoWTools_TooltipMixin:Show_URL(nil, nil, nil, data.name)
+        return MenuResponse.Open
+    end, {name=[[https://www.aconvert.com/]]})
+    sub2:SetTooltip(function(tooltip, desc)
+        tooltip:AddLine(desc.data.name)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+    end)
+
+
+--透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().bg.alpha or 1
+        end, setValue=function(value)
+            Save().bg.alpha=value
+            Set_TalentsFrameBg()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+        minValue=0,
+        maxValue=1,
+        step=0.01,
+        bit='%.2f',
+    })
+    sub:CreateSpacer()
 end
 
 
+
+
+
+
+        
+local function Set_UI()
+    if not Save().setUITexture then
+    end
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrameBg)
+    WoWTools_TextureMixin:SetNineSlice(PlayerSpellsFrame, 0.3)
+    WoWTools_TextureMixin:SetTabSystem(PlayerSpellsFrame)
+
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
+    WoWTools_TextureMixin:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
+
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
+    WoWTools_TextureMixin:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
+    WoWTools_TextureMixin:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
+
+
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+    WoWTools_TextureMixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+    WoWTools_TextureMixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
+
+
+
+    --英雄专精
+    WoWTools_TextureMixin:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
+
+    Set_UI= function()end
+end
+
+
+
+
+
+local function Init()
+    if not Save().talentsFramePlus or not C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
+        return
+    end
+
+    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
+    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", Init_Menu)
+    Set_TalentsFrameBg()
+
+
+    hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)
+        print('UpdateSpecBackground')
+        --resetTextScript(self)
+    end)
+
+    Init=function()end
+end
 
 
 
@@ -86,8 +187,6 @@ end
 
 
 function WoWTools_SpellMixin:Init_TalentsFrame()
-    if WoWToolsSave['Plus_Spell'].talentsFramePlus and C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-        hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', set_UpdateSpendText)--天赋, 点数 
-        Init_Background()
-    end
+    Init()
+    Set_UI()
 end

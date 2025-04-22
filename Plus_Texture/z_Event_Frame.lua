@@ -50,30 +50,6 @@ end
 
 
 
---天赋和法术书
-function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
-    self:SetAlphaColor(PlayerSpellsFrameBg)
-    self:SetNineSlice(PlayerSpellsFrame, 0.3)
-    self:SetTabSystem(PlayerSpellsFrame)
-
-    self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
-    self:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
-
-    self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
-    self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
-    self:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
-
-
-    self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
-    self:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
-    self:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
-
-
-
-    --英雄专精
-    self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
-end
-
 
 
 
@@ -1075,4 +1051,10 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
     hooksecurefunc(MajorFactionButtonLockedStateMixin, 'Refresh', function(frame)
         self:SetAlphaColor(frame.Background, nil, nil, 0.75)
     end)
+end
+
+
+
+function WoWTools_TextMixin:Blizzard_PerksProgram()
+    self:SetScrollBar(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer)
 end

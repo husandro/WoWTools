@@ -1162,11 +1162,12 @@ local function Blizzard_PerksProgram()
             end
         end
     end
-    hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'SetScrollTargetOffset', function(self2)
-        if not self2:GetView() then
+
+    local function set_uptate(self)
+        if not self:GetView() then
             return
         end
-        for _, btn in pairs(self2:GetFrames()) do
+        for _, btn in pairs(self:GetFrames()) do
             if btn.itemID then
                 local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
                 WoWTools_ItemMixin:Setup(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
@@ -1179,7 +1180,19 @@ local function Blizzard_PerksProgram()
             end
         end
         set_FrozenButton_Tips()
+    end
+
+
+    hooksecurefunc(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox, 'Update', function(self)
+        set_uptate(self)
     end)
+
+    C_Timer.After(0.3, function()
+        set_uptate(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox)
+    end)
+
+
+    Blizzard_PerksProgram=function()end
 end
 
 

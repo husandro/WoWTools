@@ -11,7 +11,7 @@ local P_Save={
 
     bg={
         texture={},
-        showBG=true,
+        show=true,
     },
 
     flyoutText=true,--法术弹出框

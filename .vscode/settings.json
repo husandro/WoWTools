@@ -5583,7 +5583,8 @@
         "PercentageBetween",
         "GameTooltip",
         "SPELLBOOK",
-        "TALENTS"
+        "TALENTS",
+        "PerksProgramProductsFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
