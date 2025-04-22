@@ -8,6 +8,12 @@ local P_Save={
     --hideInCombat=true
     enabled=true,
     },
+
+    bg={
+        texture={},
+        showBG=true,
+    },
+
     flyoutText=true,--法术弹出框
     actionButtonRangeColor=true,
 
@@ -50,6 +56,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Other_SpellFlyout']=nil
 
             WoWToolsSave['Plus_Spell'] = WoWToolsSave['Plus_Spell'] or P_Save
+
+            if not WoWToolsSave['Plus_Spell'].bg then
+                WoWToolsSave['Plus_Spell'].bg= P_Save.bg
+            end
 
             WoWTools_SpellMixin.addName= '|A:UI-HUD-MicroMenu-SpellbookAbilities-Mouseover:0:0|a'
                 ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)

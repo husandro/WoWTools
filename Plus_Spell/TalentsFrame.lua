@@ -55,7 +55,7 @@ end
 
 
 local function Set_TalentsFrameBg()
-    local show= not Save().HideTalentsBG
+    local show= Save().bg.showBG
     PlayerSpellsFrame.TalentsFrame.Background:SetShown(show)
     PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background:SetShown(show)
     PlayerSpellsFrame.TalentsFrame.BottomBar:SetShown(show)
@@ -65,9 +65,9 @@ local function Init_Background()
     Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)--隐藏，天赋，背景
         root:CreateDivider()
         local sub=WoWTools_MenuMixin:ShowBackground(root, function()
-            return not Save().HideTalentsBG
+            return Save().bg.showBG
         end, function()
-            Save().HideTalentsBG= not Save().HideTalentsBG and true or nil
+            Save().bg.showBG= not Save().bg.showBG and true or nil
             Set_TalentsFrameBg()
         end)
         sub:SetTooltip(function(tooltip)
