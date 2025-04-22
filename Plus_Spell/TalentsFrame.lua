@@ -55,8 +55,13 @@ end
 
 
 local function Set_TalentsFrameBg()
-    local show= Save().bg.show
-    local alpha= Save().bg.alpha or 1
+    if not Save().setUITexture then
+        return
+    end
+
+    local show= Save().setUITexture or Save().bg.show
+    local alpha= Save().setUITexture and 1 or 
+    Save().bg.alpha or 1
     local tab={
         PlayerSpellsFrame.TalentsFrame.Background,
         PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background,
@@ -73,6 +78,35 @@ end
 
 
 
+        
+local function Set_UI()
+    if not Save().setUITexture then
+        return
+    end
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrameBg)
+    WoWTools_TextureMixin:SetNineSlice(PlayerSpellsFrame, 0.3)
+    WoWTools_TextureMixin:SetTabSystem(PlayerSpellsFrame)
+
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
+    WoWTools_TextureMixin:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
+
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
+    WoWTools_TextureMixin:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
+    WoWTools_TextureMixin:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
+
+
+    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+    WoWTools_TextureMixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+    WoWTools_TextureMixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
+
+
+
+    --英雄专精
+    WoWTools_TextureMixin:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
+
+    Set_UI= function()end
+end
+
 
 
 
@@ -83,6 +117,14 @@ end
 local function Init_Menu(self, root)--隐藏，天赋，背景
     local sub, sub2
     root:CreateDivider()
+
+    sub= root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER,
+    function()
+        return Save().setUITexture
+    end, function()
+        Save().setUITexture= not Save().setUITexture and true or nil
+    end)
 
     sub=WoWTools_MenuMixin:ShowBackground(root, function()
         return Save().bg.show
@@ -129,34 +171,6 @@ end
 
 
 
-
-        
-local function Set_UI()
-    if not Save().setUITexture then
-    end
-    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrameBg)
-    WoWTools_TextureMixin:SetNineSlice(PlayerSpellsFrame, 0.3)
-    WoWTools_TextureMixin:SetTabSystem(PlayerSpellsFrame)
-
-    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
-    WoWTools_TextureMixin:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
-
-    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
-    WoWTools_TextureMixin:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
-    WoWTools_TextureMixin:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
-
-
-    WoWTools_TextureMixin:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
-    WoWTools_TextureMixin:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
-    WoWTools_TextureMixin:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
-
-
-
-    --英雄专精
-    WoWTools_TextureMixin:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
-
-    Set_UI= function()end
-end
 
 
 

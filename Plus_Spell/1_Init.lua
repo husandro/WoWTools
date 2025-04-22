@@ -13,7 +13,8 @@ local P_Save={
         texture={},
         show=true,
     },
-
+    setUITexture=true,
+    
     flyoutText=true,--法术弹出框
     actionButtonRangeColor=true,
 
