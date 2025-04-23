@@ -146,7 +146,14 @@ EventRegistry:RegisterFrameEventAndCallback("INSPECT_READY", function(_, guid)--
     if UnitIsUnit(unit, 'target') and TargetFrame.classFrame then
         TargetFrame.classFrame:set_settings(guid)
     end
-    
+
+--设置 GameTooltip
+    if  GameTooltip.textLeft and GameTooltip:IsShown() then
+        local name2, unit2, guid2= TooltipUtil.GetDisplayedUnit(GameTooltip)
+        if guid2==guid then
+            WoWTools_TooltipMixin:Set_Unit_Player(GameTooltip, name2, unit2, guid2)
+        end
+    end
 
 --保存，自已，装等
     if guid==WoWTools_DataMixin.Player.GUID then
