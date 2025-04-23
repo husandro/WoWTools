@@ -150,8 +150,8 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
-panel:RegisterEvent("PLAYER_LOGIN")
+
+--panel:RegisterEvent("PLAYER_LOGIN")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -189,10 +189,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='PLAYER_LOGIN' then
+    --[[elseif event=='PLAYER_LOGIN' then
         if not Save().addonProfilerEnabled and C_AddOnProfiler.IsEnabled() then
             WoWTools_AddOnsMixin:Set_AddonProfiler()
         end
-        self:UnregisterEvent(event)
+        self:UnregisterEvent(event)]]
     end
 end)

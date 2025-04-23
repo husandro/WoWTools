@@ -195,8 +195,8 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
---测试服，出错误
-
+--[[11.1.5无效
+if WoWTools_DataMixin.Player.husandro then
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用CPU分析功能' or format(ADDON_LIST_PERFORMANCE_PEAK_CPU, ENABLE),
     function()
@@ -214,6 +214,7 @@ local function Init_Menu(self, root)
             ..'CVar addonProfilerEnabled'
         )
     end)
+end]]
 
     root:CreateDivider()
 --重新加载UI

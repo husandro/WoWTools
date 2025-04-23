@@ -2,7 +2,7 @@ local P_Save={
 
     linkIcon=true, --超链接，图标
     --notShowPlayerInfo=true,--不处理，玩家信息
-    showCVarName=WoWTools_DataMixin.Player.husandro,
+    showCVarName=nil,--WoWTools_DataMixin.Player.husandro,
 
     channels={--频道名称替换 
         --['世界'] = '[世]',

@@ -1,7 +1,7 @@
 --启用/禁用 CPU分析功能
 
 local function Init()
-    if InCombatLockdown() then-- or not WoWTools_DataMixin.isRetail then
+    if InCombatLockdown() or not WoWTools_DataMixin.Player.husandro then-- or not WoWTools_DataMixin.isRetail then
         return
     end
 

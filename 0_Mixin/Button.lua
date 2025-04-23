@@ -48,7 +48,7 @@ ItemButtonTemplate.xml
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
-    btn.IconMask:SetAtlas(CooldownViewerEssentialItemMixin and 'UI-HUD-CoolDownManager-Mask' or 'spellbook-item-spellicon-mask')
+    btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
     btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
     btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
     local icon= btn.Icon or btn.icon or btn:GetNormalTexture()

@@ -462,7 +462,8 @@ Plus_AddOns\4_BottomList.lua
 Plus_AddOns\5_RightList.lua
 Plus_AddOns\NewButton.lua
 Plus_AddOns\Info_Plus.lua
-Plus_AddOns\AddonProfiler.lua
+##11.1.5无效
+##Plus_AddOns\AddonProfiler.lua
 
 ##日历, 显示
 Plus_Holiday\0_Holiday.lua
