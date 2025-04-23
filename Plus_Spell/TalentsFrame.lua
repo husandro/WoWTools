@@ -105,6 +105,13 @@ local function Set_TalentsFrameBg()
         frame:SetShown(show)
         frame:SetAlpha(alpha)
     end
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOP')
+    if show then
+        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOM', PlayerSpellsFrame.TalentsFrame, 'BOTTOM')
+        
+    else
+        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOM', PlayerSpellsFrame.TalentsFrame.BottomBar, 'TOP')
+    end
 
     local isAtlas, textureID= WoWTools_TextureMixin:IsAtlas(Save().bg.icon)
     if textureID then
@@ -130,7 +137,7 @@ end
 
 
 
-local function Init_Texture_Sub_Menu(self, root, name)
+local function Init_Texture_Sub_Menu(_, root, name)
     local sub
     local isAtlas, textureID, icon= WoWTools_TextureMixin:IsAtlas(name, {480, 240})
     if not textureID then
@@ -179,7 +186,7 @@ local function Init_Texture_Menu(self, root)
                 return Save().bg.texture[data.name]
             end, function(data)
                 Save().bg.texture[data.name]= not Save().bg.texture[data.name] and true or nil
-                --return MenuResponse.Refresh
+                return MenuResponse.Refresh
             end, {name=name})
             num=num+1
         end
@@ -211,7 +218,7 @@ end
 
 
 local function Init_Menu(self, root)--隐藏，天赋，背景
-    local sub, sub2
+    local sub, sub2, sub3
     root:CreateDivider()
 --显示背景
     sub=WoWTools_MenuMixin:ShowBackground(root, function()
@@ -296,21 +303,21 @@ local function Init_Menu(self, root)--隐藏，天赋，背景
    -- sub:CreateDivider()
 
 
+
+
+--打开选项界面
+    sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_SpellMixin.addName, category=WoWTools_SpellMixin.Category})
 --Web
-    sub2=sub:CreateButton(
+    sub3=sub2:CreateButton(
         'Web',
     function(data)
         WoWTools_TooltipMixin:Show_URL(nil, nil, nil, data.name)
         return MenuResponse.Open
     end, {name=[[https://www.aconvert.com/]]})
-    sub2:SetTooltip(function(tooltip, desc)
+    sub3:SetTooltip(function(tooltip, desc)
         tooltip:AddLine(desc.data.name)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
     end)
-
---打开选项界面
-    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_SpellMixin.addName, category=WoWTools_SpellMixin.Category})
-
 end
 
 
