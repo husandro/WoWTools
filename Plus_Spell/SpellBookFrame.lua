@@ -33,6 +33,13 @@ local function Init_Menu(self, root)
             end, {spellID=spellID})]]
         end
     end
+
+    root:CreateDivider()
+--打开选项界面
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_SpellMixin.addName, category=WoWTools_SpellMixin.Category})
+    
+--SetScrollMod
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

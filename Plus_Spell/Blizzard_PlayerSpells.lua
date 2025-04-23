@@ -13,8 +13,9 @@ function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
 end
 
 
---[[天赋和法术书
-function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
+
+
+local function Set_UI(self)
     self:SetAlphaColor(PlayerSpellsFrameBg)
     self:SetNineSlice(PlayerSpellsFrame, 0.3)
     self:SetTabSystem(PlayerSpellsFrame)
@@ -25,6 +26,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
     self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
     self:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
+    self:SetMenu(PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
 
 
     self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
@@ -35,4 +37,14 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
     --英雄专精
     self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
-end]]
+end
+
+--天赋和法术书
+function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
+    Set_UI(self)
+end
+
+
+function WoWTools_SpellMixin:Set_UI()
+    Set_UI(WoWTools_TextureMixin)
+end

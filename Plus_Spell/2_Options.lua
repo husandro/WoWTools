@@ -11,8 +11,8 @@ local function Init_Category()
         name=WoWTools_SpellMixin.addName,
         disabled=Save().disabled
     })
-    WoWTools_PanelMixin.Category= Category
-
+    WoWTools_SpellMixin.Category= Category
+    
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
         tooltip= WoWTools_SpellMixin.addName,
