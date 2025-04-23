@@ -20,7 +20,7 @@ local function Set_UI(self)
     self:SetNineSlice(PlayerSpellsFrame, 0.3)
     self:SetTabSystem(PlayerSpellsFrame)
 
-    self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background)--专精
+    self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background, 0.3)--专精
     self:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
 
     self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
