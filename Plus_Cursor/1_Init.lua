@@ -93,6 +93,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Save().disabled= nil
             end
 
+            for index, name in pairs(Save().Atlas) do
+                if name:find('Sesource\\') then
+                    Save().Atlas[index]= name:gsub('Sesource\\', 'Source\\')
+                end
+            end
+            for index, name in pairs(Save().GCDTexture) do
+                if name:find('Sesource\\') then
+                    Save().GCDTexture[index]= name:gsub('Sesource\\', 'Source\\')
+                end
+            end
+
             WoWTools_CursorMixin.addName= '|A:newplayertutorial-icon-mouse-turn:0:0|a'..(WoWTools_DataMixin.onlyChinese and '鼠标' or MOUSE_LABEL)
 
             WoWTools_CursorMixin:Init_Panel()
