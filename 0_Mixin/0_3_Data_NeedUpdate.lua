@@ -224,7 +224,7 @@ end
 
 --if not WoWTools_DataMixin.Player.IsMaxLevel or WoWTools_DataMixin.Is_Timerunning then return end
 --https://wago.tools/db2/SpellFlyout?build=11.0.0.55288&locale=zhCN
---Interface\\AddOns\\WoWTools\\Sesource\\Texture\\WoW\\0.tga
+--Interface\\AddOns\\WoWTools\\Source\\Texture\\WoW\\0.tga
 WoWTools_DataMixin.FlyoutID={
 
     {flyoutID= 232, ver=10},--'英雄之路：地心之战--11

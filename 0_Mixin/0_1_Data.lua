@@ -1,5 +1,5 @@
 WoWTools_DataMixin= {
-    addName= '|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
+    addName= '|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false,
 
     --isRetail = WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and not C_AddOns.IsAddOnLoaded('Blizzard_PTRFeedback'),--Blizzard_PTRFeedback
@@ -99,7 +99,7 @@ end
 WoWTools_DataMixin.Icon={
     --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=WoWTools_DataMixin.Player.GUID , race=nil , sex=WoWTools_DataMixin.Player.Sex , reAtlas=false}),
     icon= 'orderhalltalents-done-glow',
-    icon2='|TInterface\\AddOns\\WoWTools\\Sesource\\Texture\\WoWtools:0|t',
+    icon2='|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools:0|t',
 
 
     right='|A:NPE_RightClick:0:0|a',

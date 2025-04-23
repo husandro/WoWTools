@@ -2,7 +2,7 @@
 WoWTools_CursorMixin={
     Color={r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b= WoWTools_DataMixin.Player.b, a=1},
     DefaultTexture= 'bonusobjectives-bar-starburst',
-    DefaultGCDTexture= 'Interface\\Addons\\WoWTools\\Sesource\\Mouse\\Aura73',
+    DefaultGCDTexture= 'Interface\\Addons\\WoWTools\\Source\\Mouse\\Aura73',
 }
 
 local P_Save={
@@ -48,18 +48,18 @@ local P_Save={
         'ChallengeMode-Runes-Shockwave',
         'CovenantSanctum-Reservoir-Idle-Kyrian-Speck',
         'CovenantSanctum-Reservoir-Idle-Kyrian-Glass',
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura121]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura121]],
 
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura94.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura73.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura94.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura103.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura142.tga]],
     },
     GCDTexture={
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura73.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura94.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura103.tga]],
-        [[Interface\Addons\WoWTools\Sesource\Mouse\Aura142.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura73.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura94.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura103.tga]],
+        [[Interface\Addons\WoWTools\Source\Mouse\Aura142.tga]],
     },
     gcdSize=15,
     gcdTextureIndex=1,

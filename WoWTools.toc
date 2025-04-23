@@ -8,7 +8,7 @@
 ## X-Wago-ID: baND1J6o
 ## X-Curse-Project-ID: 715192
 ## X-Category: Plugins
-## IconTexture: Interface\AddOns\WoWTools\Sesource\Texture\WoWtools.tga
+## IconTexture: Interface\AddOns\WoWTools\Source\Texture\WoWtools.tga
 ## IconAtlas: orderhalltalents-done-glow
 ## X-Website https://www.curseforge.com/wow/addons/wowtools
 ## OptionalDeps: LibStub-1.0, CallbackHandler-1.0, LibDataBroker-1.1, LibDBIcon-1.0, !LibUIDropDownMenu, LibRangeCheck-3.0
@@ -18,11 +18,11 @@
 ##以Mixin.lua为结尾，请不要关，其它功能可能会调用
 
 ##调用库，不能删除
-Sesource\Libs\LibStub.lua
-Sesource\Libs\CallbackHandler-1.0.lua
-Sesource\Libs\LibDataBroker-1.1.lua
-Sesource\Libs\LibDBIcon-1.0.lua
-Sesource\Libs\LibRangeCheck-3.0.lua
+Source\Libs\LibStub.lua
+Source\Libs\CallbackHandler-1.0.lua
+Source\Libs\LibDataBroker-1.1.lua
+Source\Libs\LibDBIcon-1.0.lua
+Source\Libs\LibRangeCheck-3.0.lua
 
 ##主要function，不能删除
 0_Mixin\3_Mixin.lua
