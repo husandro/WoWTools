@@ -105,13 +105,15 @@ local function Set_TalentsFrameBg()
         frame:SetShown(show)
         frame:SetAlpha(alpha)
     end
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOP')
+
+    PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
     if show then
-        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOM', PlayerSpellsFrame.TalentsFrame, 'BOTTOM')
-        
+        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')
     else
-        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOM', PlayerSpellsFrame.TalentsFrame.BottomBar, 'TOP')
+        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame.BottomBar, 'TOPRIGHT')
     end
+
 
     local isAtlas, textureID= WoWTools_TextureMixin:IsAtlas(Save().bg.icon)
     if textureID then
@@ -282,7 +284,7 @@ local function Init_Menu(self, root)--隐藏，天赋，背景
 
 
 
-
+    sub:CreateSpacer()
 --透明度
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
