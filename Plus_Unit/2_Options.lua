@@ -183,7 +183,7 @@ local function Init()
                     WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                 )
             else
-                WoWTools_UnitMixin:Init_BossFrame()
+                WoWTools_UnitMixin:Init_CastingBar()
             end
         end,
         category= Category,
