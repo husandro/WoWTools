@@ -220,6 +220,7 @@ local function Init_Menu(self, root)
         ShowHideTitle()
     end)
     sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '标题' or NAME)
         tooltip:AddLine(WoWTools_TextMixin:GetShowHide(nil, true))
     end)
     root:CreateDivider()
@@ -329,7 +330,7 @@ local function Init_Menu(self, root)
     end)
 
     if _G['WoWTools_PlayerXY_Button'] then--实时玩家当前坐标，选项
-        Init_PlayerXY_Option_Menu(_, sub)
+        Init_PlayerXY_Option_Menu(self, sub)
     end
     root:CreateDivider()
 
@@ -427,12 +428,13 @@ local function Init()--显示地图ID
     end)
     MenuButton:SetScript('OnEnter', Init_OnEnter)
 
-
-    MenuButton:SetScript('OnClick', function(self)
+    MenuButton:SetupMenu(Init_Menu)
+    --[[MenuButton:SetScript('OnClick', function(self)
         MenuUtil.CreateContextMenu(self, function(...)
             Init_Menu(...)
         end)
-    end)
+    end)]]
+    Init=function()end
 end
 
 

@@ -116,6 +116,7 @@ local function Init()
     MapXYButton=WoWTools_ButtonMixin:Cbtn(WorldMapFrame.BorderFrame.TitleContainer, {
         atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
         size=22,
+        isMask=true,
     })
 
     MapXYButton:SetScript('OnLeave', GameTooltip_Hide)

@@ -14,7 +14,8 @@ local function Init()
     PlayerButton= WoWTools_ButtonMixin:Cbtn(nil, {
         atlas=WoWTools_DataMixin.Icon.Player:match('|A:(.-):'),
         --size=14,
-        name='WoWTools_PlayerXY_Button'
+        name='WoWTools_PlayerXY_Button',
+        isMask=true,
     })
 
 

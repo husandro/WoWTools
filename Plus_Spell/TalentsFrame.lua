@@ -76,6 +76,7 @@ local TextureTab={--TalentArt
 ['legionmission-complete-background-Warlock']=true,
 ['legionmission-complete-background-Monk']=true,
 ['legionmission-complete-background-demonhunter']=true,
+
 }
 
 
