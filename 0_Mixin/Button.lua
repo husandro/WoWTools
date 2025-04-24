@@ -108,8 +108,12 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
         btn.texture:AddMaskTexture(btn.IconMask)
 
-    
-        
+        if isBorder then
+            btn.border=btn:CreateTexture(nil, 'ARTWORK')
+            btn.border:SetAllPoints(btn)
+            btn.border:SetAtlas('bag-reagent-border')
+            WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
+        end
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
