@@ -24,7 +24,7 @@ OpenOptions(root, tab)
 
 SetNumButton(sub, num)
 SetScrollButton(root, maxCharacters)
-
+Set_Specialization
 
 
 GetDragonriding()
@@ -670,22 +670,22 @@ end
 
 
 function WoWTools_MenuMixin:Set_Specialization(root)
+    local sub, specID, name, icon, roleIcon, _
     local numSpec= GetNumSpecializations(false, false) or 0
-    if not C_SpecializationInfo.IsInitialized() or numSpec==0 then
-        return
-    end
-
-    local sex= UnitSex("player")
+    -- not C_SpecializationInfo.IsInitialized()
+       
+ --[[
+    --local sex= UnitSex("player")
 
     local curSpecIndex= GetSpecialization() or 0--当前，专精
-    local specID, name, description, icon, role, primaryStat= GetSpecializationInfo(curSpecIndex, false, false, nil, sex)
+    local specID, name, _, icon= GetSpecializationInfo(curSpecIndex, false, false, nil, WoWTools_DataMixin.Player.Sex)
     if not specID or not name then
         return
     end
 
-    local curSpecID= specID
+   --local curSpecID= specID
 
-    local roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(curSpecIndex, false, false))
+   local roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(curSpecIndex, false, false))
     local sub= root:CreateButton(
         '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..WoWTools_TextMixin:CN(name),
     function(data)
@@ -694,36 +694,47 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"))
-    end)
+    end)]]
 
-    for specIndex=1, numSpec do
-        specID, name, _, icon= GetSpecializationInfo(specIndex, false, false, nil, sex)
-        if specID and name and specID~=curSpecID then
-            roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false))
+    for specIndex=1, numSpec, 1 do
+        specID, name, _, icon= GetSpecializationInfo(specIndex, false, false, nil, WoWTools_DataMixin.Player.Sex)
 
-            local sub2= sub:CreateButton(
-                '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..WoWTools_TextMixin:CN(name),
-            function(data)
-                if GetSpecialization(nil, false, 1)~=data.specIndex
-                    and not InCombatLockdown()
-                    --and not(PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsCommitInProgress())
-                then
-                    C_SpecializationInfo.SetSpecialization(data.specIndex)
-                end
-                return MenuResponse.Open
-            end, {
-                specIndex=specIndex,
-                tooltip= function(tooltip, data2)
-                    tooltip:AddLine(' ')
-                    tooltip:AddLine(
-                        ((UnitAffectingCombat('player') or GetSpecialization(nil, false, 1)==data2.specIndex) and '|cff828282' or '')
-                        ..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)
-                        ..WoWTools_DataMixin.Icon.left)
-                end}
-            )
+        sub=root:CreateRadio(
+            '|T'..(icon or 0)..':0|t'
+            ..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false)) or '')..':0:0|a'
+            ..WoWTools_TextMixin:CN(name),
+        function(data)
+            return data.specID== PlayerUtil.GetCurrentSpecID()
+        end, function(data)
+            --[[if GetSpecialization(nil, false, 1)~=data.specIndex
+                and not InCombatLockdown()
+                --and not(PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsCommitInProgress())
+            then]]
+                C_SpecializationInfo.SetSpecialization(data.specIndex)
+            --end
+            return MenuResponse.Open
+        end, {
+            specIndex=specIndex,
+            specID= specID,
+            tooltip= function(tooltip, data2)
+                tooltip:AddLine(' ')
+                tooltip:AddLine(
+                    ((UnitAffectingCombat('player') or GetSpecialization(nil, false, 1)==data2.specIndex) and '|cff828282' or '')
+                    ..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)
+                    ..WoWTools_DataMixin.Icon.left)
+            end}
+        )
 
-            WoWTools_SetTooltipMixin:Set_Menu(sub2)
-        end
+        --[[sub:AddInitializer(function(btn, desc)
+            info= btn
+            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+            btn:RegisterEvent('"ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
+            btn:SetScript('OnEvent', function(frame)
+
+            end)
+        end)]]
+        WoWTools_SetTooltipMixin:Set_Menu(sub)
+        
     end
 end
 

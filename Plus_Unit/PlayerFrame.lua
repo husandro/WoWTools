@@ -16,7 +16,7 @@ local function Craete_assisterButton()
     frame.assisterButton:Hide()
 
 
-    function frame.assisterButton:set_tooltips()
+    function frame.assisterButton:set_tooltip()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -28,16 +28,26 @@ local function Craete_assisterButton()
     end
 
 
-    frame.assisterButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
-    frame.assisterButton:SetScript('OnEnter', frame.assisterButton.set_tooltips)
+    frame.assisterButton:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    frame.assisterButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+    end)
 
 
     frame.assisterButton:SetScript('OnClick', function(self)
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
-        C_Timer.After(0.7, function()
-            self:set_tooltips()
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant()))
+        C_Timer.After(1, function()
+            if GameTooltip:IsOwned(self) then
+                self:set_tooltip()
+            end
         end)
+        print(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName,
+            WoWTools_DataMixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION,
+            WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant())
+        )
     end)
     frame.assisterIcon= frame:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
     frame.assisterIcon:SetAllPoints(frame.assisterButton)
@@ -83,20 +93,25 @@ end
 
 --拾取专精
 local function Create_lootButton(frame)
-    frame.lootButton= WoWTools_ButtonMixin:Cbtn(frame, {size=14, isType2=true, notBorder=true})
-    frame.lootButton:SetPoint('TOPLEFT', frame.portrait, 'TOPRIGHT',-32,16)
+    frame.lootButton= WoWTools_ButtonMixin:Cbtn(frame, {
+        name='WoWToolsPlayerFrameLootButton',
+        size=20,
+        isType2=true,
+        notBorder=true
+    })
+    frame.lootButton:SetPoint('TOP', frame.portrait, 6,10)
     frame.lootButton:SetFrameLevel(frame:GetFrameLevel() +1)
 
 
-    local portrait= frame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
+    --[[local portrait= frame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER',1,-1)
     portrait:SetSize(21,21)
-    WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色
+    WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色]]
 
     local lootTipsTexture= frame.lootButton:CreateTexture(nil, "OVERLAY")
-    lootTipsTexture:SetSize(10,10)
-    lootTipsTexture:SetPoint('TOP',0,8)
+    lootTipsTexture:SetSize(8,8)
+    lootTipsTexture:SetPoint('TOP', 0, 4)
     lootTipsTexture:SetAtlas('Banker')
 
     frame.lootButton:SetScript('OnLeave', GameTooltip_Hide)
@@ -129,7 +144,7 @@ local function Create_lootButton(frame)
                 if lootSpecID and lootSpecID>0 and lootSpecID~=specID then
                     local name, _, texture= select(2, GetSpecializationInfoByID(lootSpecID))
                     if texture and name then
-                        self:SetNormalTexture(texture)
+                        self.texture:SetTexture(texture)--SetNormalTexture(texture)
                         find=true
                     end
                 end
@@ -244,7 +259,7 @@ local function Create_instanceFrame(frame)
 --提示
     frame.instanceFrame.dungeon:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
 
-    function frame.instanceFrame.dungeon:set_tooltips()
+    function frame.instanceFrame.dungeon:set_tooltip()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -274,7 +289,7 @@ local function Create_instanceFrame(frame)
     end
 
     frame.instanceFrame.dungeon:SetScript('OnEnter', function(self)
-        self:set_tooltips()
+        self:set_tooltip()
     end)
 
     frame.instanceFrame.dungeon:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
@@ -283,7 +298,7 @@ local function Create_instanceFrame(frame)
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
             C_Timer.After(0.5, function()
                 if GameTooltip:IsShown() then
-                    self:set_tooltips()
+                    self:set_tooltip()
                 end
             end)
         end
@@ -460,12 +475,12 @@ local function Create_warModeButton(frame)
     frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
     frame.warModeButton:SetScript('OnClick',  function(self)
         C_PvP.ToggleWarMode()
-        C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltips() end end)
+        C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
     end)
     function frame.warModeButton:GetWarModeDesired()
         return UnitPopupSharedUtil.IsInWarModeState()
     end
-    function frame.warModeButton:set_tooltips()
+    function frame.warModeButton:set_tooltip()
         if WarmodeButtonMixin then
             WarmodeButtonMixin.OnEnter(self)
             return
@@ -495,7 +510,7 @@ local function Create_warModeButton(frame)
 
     frame.warModeButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
     frame.warModeButton:SetScript('OnEnter', function(self)
-        self:set_tooltips()
+        self:set_tooltip()
     end)
 
     frame.warModeButton:RegisterEvent('LOADING_SCREEN_DISABLED')
@@ -524,12 +539,21 @@ local function Init()
     if WoWToolsSave['Plus_UnitFrame'].hidePlayerFrame then
         return
     end
-
+do
     Craete_assisterButton()--全部有权限，助手，提示
+end
+do
     Create_lootButton(PlayerFrame)--拾取专精
+end
+do
     Create_instanceFrame(PlayerFrame)--Riad 副本, 地下城，指示
+end
+do
     Create_keystoneFrame(PlayerFrame)--挑战，数据
+end
+do
     Create_warModeButton(PlayerFrame)--设置, 战争模式
+end
 
 --移动，小队，号
     PlayerFrameGroupIndicatorText:ClearAllPoints()

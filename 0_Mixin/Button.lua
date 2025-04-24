@@ -70,6 +70,11 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isSecure= tab.isSecure
     local isType2= tab.isType2
     local isMask= tab.isMask
+    local isBorder= not tab.notBorder
+
+    if tab.name=='WoWToolsPlayerFrameLootButton' then
+        print(isBorder, tab.name)
+    end
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
@@ -82,8 +87,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
                     --or (isType2 and isItem and 'CircularItemButtonTemplate')
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
+
     
-    local isBorder= not tab.notBorder
 
 --提示，已存在
     if _G[name] and WoWTools_DataMixin.Player.husandro then
@@ -94,14 +99,14 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local btn= CreateFrame(frameType, name, frame or UIParent, template, setID)
 
 --圆形按钮
-    
+
     if isType2 then
         btn.IconMask= btn:CreateMaskTexture()
         btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
 
         btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
         btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
- 
+
 
         btn.texture=btn:CreateTexture(nil, 'BORDER')
         btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
@@ -124,7 +129,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         pushedAtlas, highlightAtlas= 'bag-border-highlight', 'bag-border'
 
     elseif atlas then
-        
+
         if atlas:find('Cursor_OpenHand_(%d+)') then--提取(手)按钮
             highlightAtlas= 'Cursor_OpenHandGlow_'..atlas:match('Cursor_OpenHand_(%d+)')
 
@@ -150,7 +155,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     elseif atlas then
         btn:SetNormalAtlas(atlas)
     elseif texture then
-        btn:SetNormalTexture(texture)       
+        btn:SetNormalTexture(texture)
     end
 
 --设置大小

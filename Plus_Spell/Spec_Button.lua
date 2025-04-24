@@ -39,6 +39,9 @@ local function Init_Spec_Menu(self, root)
     WoWTools_SetTooltipMixin:Set_Menu(sub)
     sub:SetEnabled(not isInCombat)
 
+--专精
+    WoWTools_MenuMixin:Set_Specialization(sub)
+
 --拾取
     sub= root:CreateCheckbox(
         '|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
