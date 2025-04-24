@@ -6,6 +6,10 @@
 
 
 local function Init()
+    if WoWToolsSave['Plus_UnitFrame'].hidePlayerFrame then
+        return
+    end
+
     local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
     local frameLevel= PlayerFrame:GetFrameLevel() +1
 

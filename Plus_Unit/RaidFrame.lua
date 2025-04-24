@@ -29,6 +29,10 @@ end
 
 
 local function Init()--设置,团队
+    if Save().hideRaidFrame then
+        return
+    end
+
     hooksecurefunc('CompactUnitFrame_SetUnit', function(frame, unit)--队伍标记
         if UnitExists(unit) and not unit:find('nameplate') and not frame.RaidTargetIcon and frame.name then
             frame.RaidTargetIcon= frame:CreateTexture(nil,'OVERLAY', nil, 7)

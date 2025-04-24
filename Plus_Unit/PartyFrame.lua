@@ -609,6 +609,10 @@ end
 
 --先使用一次，用以Shift+点击，设置焦点功能, Invite.lua
 local function Init()--PartyFrame.lua
+    if WoWToolsSave['Plus_UnitFrame'].hidePartyFrame then
+        return
+    end
+
     PartyFrame.Background:SetWidth(122)--144
 
     local showPartyFrames = PartyFrame:ShouldShow();

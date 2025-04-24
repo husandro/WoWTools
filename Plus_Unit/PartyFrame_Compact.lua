@@ -92,9 +92,12 @@ end
 
 
 local function Init()
+    if Save().hidePartyFrame then
+        return
+    end
     set_CompactPartyFrame()--小队, 使用团框架
-
     hooksecurefunc(CompactPartyFrame,'UpdateVisibility', set_CompactPartyFrame)
+
     Init=function()end
 end
 
@@ -106,6 +109,6 @@ end
 
 
 
-function WoWTools_UnitMixin:Init_CompactPartyFrame()--小队, 使用团框架
+function WoWTools_UnitMixin:Init_PartyFrame_Compact()--小队, 使用团框架
     Init()
 end
