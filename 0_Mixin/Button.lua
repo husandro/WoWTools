@@ -51,7 +51,7 @@ function WoWTools_ButtonMixin:AddMask(btn)
     btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
     btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
     btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
-    local icon= btn.Icon or btn.icon or btn:GetNormalTexture()
+    local icon= btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())
     if icon then
         icon:AddMaskTexture(btn.IconMask)
     end

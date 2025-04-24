@@ -381,11 +381,14 @@ end
 --挑战，数据
 local function Create_keystoneFrame(frame)
     frame.keystoneFrame= CreateFrame("Frame", nil, frame)
-    frame.keystoneFrame:SetSize(12, 12)
+    frame.keystoneFrame:SetSize(14, 14)
+
     frame.keystoneFrame:SetPoint('LEFT', PlayerFrame_GetPlayerFrameContentContextual().LeaderIcon, 'RIGHT',0,-2)
     frame.keystoneFrame.texture=frame.keystoneFrame:CreateTexture()
     frame.keystoneFrame.texture:SetAllPoints(frame.keystoneFrame)
     frame.keystoneFrame.texture:SetTexture(4352494)
+    WoWTools_ButtonMixin:AddMask(frame.keystoneFrame)
+    
     frame.keystoneFrame.Text= WoWTools_LabelMixin:Create(frame.keystoneFrame, {color=true})
     frame.keystoneFrame.Text:SetPoint('LEFT', frame.keystoneFrame, 'RIGHT')
     frame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
@@ -394,8 +397,8 @@ local function Create_keystoneFrame(frame)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
         GameTooltip:AddLine(' ')
-        if WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link then
-            GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.guid].Keystone.link)
+        if WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link then
+            GameTooltip:AddLine('|T4352494:0|t'..WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link)
             GameTooltip:AddLine(' ')
         end
         WoWTools_ChallengeMixin:ActivitiesTooltip()
@@ -418,7 +421,7 @@ local function Create_keystoneFrame(frame)
             end
         end
         self.Text:SetText(text or '')
-        self:SetShown(not IsInInstance() and text~=nil)
+        self:SetShown(true)--not IsInInstance() and text~=nil)
     end
 
     frame.keystoneFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
@@ -428,7 +431,7 @@ local function Create_keystoneFrame(frame)
     frame.keystoneFrame:SetScript('OnEvent', function(self)
         C_Timer.After(2, function() self:set_settings() end)
     end)
-    
+
     frame.keystoneFrame:set_settings()
 end
 
