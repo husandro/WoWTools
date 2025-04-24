@@ -1,41 +1,132 @@
 local function Save()
     return WoWToolsSave['Plus_UnitFrame'] or {}
 end
+local Category, Layout
+    --添加控制面板
+
+
+
+local function Init_Category()
+    Category, Layout= WoWTools_PanelMixin:AddSubCategory({
+        name=WoWTools_UnitMixin.addName,
+        disabled=Save().disabled
+    })
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
+        tooltip= WoWTools_UnitMixin.addName,
+        GetValue= function() return not Save().disabled end,
+        func= function()
+            Save().disabled= not Save().disabled and true or nil
+            print(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName,
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
+            if not Save().disabled then
+                WoWTools_UnitMixin:Init_Options()
+            end
+        end,
+        category= Category,
+    })
+
+    Init_Category= function()end
+end
 
 
 
 
 
 
-local function Init_Options()
+
+
+
+
+
+
+
+
+
+
+local function Init()
     if not C_AddOns.IsAddOnLoaded('Blizzard_Settings') or Save().disabled then
         return
     end
 
+    WoWTools_PanelMixin:Header(Layout, 'Plus')
 
+--首领框体
     WoWTools_PanelMixin:OnlyCheck({
-        name= '|A:common-icon-backarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术弹出框' or 'SpellFlyout'),
-        tooltip= WoWTools_PanelMixin.addName,
-        GetValue= function() return Save().flyoutText end,
-        category= Category,
+        name= (WoWTools_DataMixin.onlyChinese and '首领框体' or HUD_EDIT_MODE_BOSS_FRAMES_LABEL),
+        GetValue= function() return not Save().hideBossFrame end,
         SetValue= function()
-            Save().flyoutText= not Save().flyoutText and true or nil
-            WoWTools_SpellMixin:Init_Spell_Flyout()
-            if not Save().flyoutText then
+            Save().hideBossFrame= not Save().hideBossFrame and true or nil
+            if Save().hideBossFrame then
                 print(
                     WoWTools_DataMixin.Icon.icon2,
-                    WoWTools_TextMixin:GetEnabeleDisable(Save().flyoutText),
+                    WoWTools_TextMixin:GetEnabeleDisable(false),
                     WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                 )
+            else
+                WoWTools_UnitMixin:Init_BossFrame()
             end
-        end
+        end,
+        category= Category,
     })
 
---    WoWTools_PanelMixin:Header(Layout, 'Plus')
+--施法条
+    WoWTools_PanelMixin:OnlyCheck({
+        name= (WoWTools_DataMixin.onlyChinese and '施法条' or HUD_EDIT_MODE_CAST_BAR_LABEL),
+        GetValue= function() return not Save().hideCastingFrame end,
+        SetValue= function()
+            Save().hideCastingFrame= not Save().hideCastingFrame and true or nil
+            if Save().hideCastingFrame then
+                print(
+                    WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(false),
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            else
+                WoWTools_UnitMixin:Init_BossFrame()
+            end
+        end,
+        category= Category,
+    })
 
-    Init_Options=function()end
+
+
+--职业图标
+    WoWTools_PanelMixin:OnlyCheck({
+        name= WoWTools_DataMixin.onlyChinese and '职业图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, EMBLEM_SYMBOL),
+        tooltip=WoWTools_DataMixin.onlyChinese and '颜色, 图标' or (COLOR..', '..EMBLEM_SYMBOL) ,
+        GetValue= function() return not Save().disabled end,
+        func= function()
+            Save().hideClassColor= not Save().hideClassColor and true or nil
+            if Save().hideClassColor then
+                print(
+                    WoWTools_DataMixin.Icon.icon2,
+                    WoWTools_TextMixin:GetEnabeleDisable(false),
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            else
+                WoWTools_UnitMixin:Init_ClassTexture()
+            end
+        end,
+        category= Category,
+    })
+
+
+
+
+
+
+
+
+
+   Init=function()end
 end
 
 function WoWTools_UnitMixin:Init_Options()
-    Init_Options()
+    Init_Category()
+    Init()
 end

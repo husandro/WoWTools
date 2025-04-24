@@ -153,6 +153,10 @@ end
 
 
 local function Init()
+    if WoWToolsSave['Plus_UnitFrame'].hideClassColor then
+        return
+    end
+
     hooksecurefunc('UnitFrame_Update', Init_UnitFrame_Update)--职业, 图标， 颜色
     Init=function()end
 end

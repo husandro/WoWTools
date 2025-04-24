@@ -5,6 +5,11 @@
 --BossFrame
 --#########
 local function Init()
+    if WoWToolsSave['Plus_UnitFrame'].hideBossFrame then
+        return
+    end
+
+
     for i=1, MAX_BOSS_FRAMES do
         local frame= _G['Boss'..i..'TargetFrame']
         frame.healthbar:SetStatusBarTexture('UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status')--生命条，颜色，材质

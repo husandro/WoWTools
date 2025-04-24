@@ -499,9 +499,7 @@ end
 
 
 local function set_memberFrame(frame)
-    if not PartyFrame:ShouldShow() then
-        return
-    end
+   -- if not PartyFrame:ShouldShow() then
 
     local unit= frame.unit or frame:GetUnit()
     local isPlayer= unit=='player'
@@ -613,6 +611,7 @@ end
 local function Init()--PartyFrame.lua
     PartyFrame.Background:SetWidth(122)--144
 
+    local showPartyFrames = PartyFrame:ShouldShow();
     for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
         frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
 
@@ -627,7 +626,9 @@ local function Init()--PartyFrame.lua
             self.PartyMemberOverlay.RoleIcon:SetShown(UnitGroupRolesAssigned(self.unit)~= 'DAMAGER')
         end)
 
-        set_memberFrame(frame)
+        if showPartyFrames then
+            set_memberFrame(frame)
+        end
 
         hooksecurefunc(frame, 'UpdateMember', set_memberFrame)
     end
@@ -635,7 +636,13 @@ local function Init()--PartyFrame.lua
 
     Init=function()end
 end
-
+--[[
+ hooksecurefunc(PartyFrame, 'UpdatePartyFrames', function(unitFrame)
+    for memberFrame in unitFrame.PartyMemberFramePool:EnumerateActive() do
+        set_memberFrame(memberFrame)
+    end
+end)
+]]
 
 
 function WoWTools_UnitMixin:Init_PartyFrame()--小队

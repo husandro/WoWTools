@@ -3,6 +3,10 @@ local P_Save={
     raidFrameScale= WoWTools_DataMixin.Player.husandro and 0.8 or 1,
     --raidFrameAlpha=1,
     --healthbar='UI-HUD-UnitFrame-Player-PortraitOn-Bar-Health-Status'
+
+    --hideBossFrame=true
+    --hideCastingFrame
+    --hideClassColor
 }
 
 local function Save()
@@ -38,38 +42,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWTools_UnitMixin.addName= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Gold-Winged:0:0|a'..(WoWTools_DataMixin.onlyChinese and '单位框体' or UNITFRAME_LABEL)
 
-            --添加控制面板
-            WoWTools_UnitMixin.Category= WoWTools_PanelMixin:AddSubCategory({
-                name=WoWTools_UnitMixin.addName,
-                disabled=Save().disabled
-            })
-
-            WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-                tooltip= WoWTools_UnitMixin.addName,
-                GetValue= function() return not Save().disabled end,
-                category= WoWTools_UnitMixin.Category,
-                func= function()
-                    Save().disabled= not Save().disabled and true or nil
-                    if Save().disabled then
-                        print(
-                            WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName,
-                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                        )
-                    else
-                        WoWTools_UnitMixin:Init_Options()
-                        Init()
-                    end
-                end
-            })
+            WoWTools_UnitMixin:Init_Options()
 
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
                 Init()
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
-                    WoWTools_UnitMixin:Init_Options()
                     self:UnregisterEvent(event)
                 end
             end

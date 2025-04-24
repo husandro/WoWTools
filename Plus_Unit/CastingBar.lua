@@ -133,6 +133,10 @@ end
 
 
 local function Init()
+    if WoWToolsSave['Plus_UnitFrame'].hideCastingFrame then
+        return
+    end
+
     Settings(PlayerCastingBarFrame)
     Settings(PetCastingBarFrame)
     Settings(OverlayPlayerCastingBarFrame)
