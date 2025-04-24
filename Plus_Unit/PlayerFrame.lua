@@ -1,25 +1,22 @@
-
 --玩家 PlayerFrame.lua
 
 
 
 
 
-local function Init()
-    if WoWToolsSave['Plus_UnitFrame'].hidePlayerFrame then
-        return
-    end
 
-    local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
-    local frameLevel= PlayerFrame:GetFrameLevel() +1
 
-    --全部有权限，助手，提示
-    playerFrameTargetContextual.assisterButton= WoWTools_ButtonMixin:Cbtn(playerFrameTargetContextual,{size=16})--点击，设置全员，权限
-    playerFrameTargetContextual.assisterButton:SetFrameLevel(5)
-    playerFrameTargetContextual.assisterButton:SetPoint(playerFrameTargetContextual.LeaderIcon:GetPoint())
-    playerFrameTargetContextual.assisterButton:Hide()
-    playerFrameTargetContextual.assisterButton:SetScript('OnLeave', GameTooltip_Hide)
-    function playerFrameTargetContextual.assisterButton:set_tooltips()
+
+--全部有权限，助手，提示
+local function Craete_assisterButton()
+    local frame= PlayerFrame_GetPlayerFrameContentContextual()
+    frame.assisterButton= WoWTools_ButtonMixin:Cbtn(frame,{size=16})--点击，设置全员，权限
+    frame.assisterButton:SetFrameLevel(5)
+    frame.assisterButton:SetPoint(frame.LeaderIcon:GetPoint())
+    frame.assisterButton:Hide()
+    
+
+    function frame.assisterButton:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -29,23 +26,28 @@ local function Init()
         GameTooltip:AddDoubleLine(' ', WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant()))
         GameTooltip:Show()
     end
-    playerFrameTargetContextual.assisterButton:SetScript('OnEnter', playerFrameTargetContextual.assisterButton.set_tooltips)
-    playerFrameTargetContextual.assisterButton:SetScript('OnClick', function(self)
+
+
+    frame.assisterButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    frame.assisterButton:SetScript('OnEnter', frame.assisterButton.set_tooltips)
+
+
+    frame.assisterButton:SetScript('OnClick', function(self)
         SetEveryoneIsAssistant(not IsEveryoneAssistant())
         C_Timer.After(0.7, function()
             self:set_tooltips()
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName, WoWTools_DataMixin.onlyChinese and '所有团队成员都获得团队助理权限' or ALL_ASSIST_DESCRIPTION, WoWTools_TextMixin:GetEnabeleDisable(IsEveryoneAssistant()))
         end)
     end)
-    playerFrameTargetContextual.assisterIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
-    playerFrameTargetContextual.assisterIcon:SetAllPoints(playerFrameTargetContextual.assisterButton)
-    playerFrameTargetContextual.assisterIcon:SetTexture('Interface\\GroupFrame\\UI-Group-AssistantIcon')
-    playerFrameTargetContextual.assisterIcon:Hide()
-    playerFrameTargetContextual.isEveryoneAssistantIcon= playerFrameTargetContextual:CreateTexture(nil, 'OVERLAY', nil, 6)--所有限员，有权限，提示
-    playerFrameTargetContextual.isEveryoneAssistantIcon:SetPoint('CENTER', playerFrameTargetContextual.assisterButton)
-    playerFrameTargetContextual.isEveryoneAssistantIcon:SetAtlas('runecarving-menu-reagent-selected')
-    playerFrameTargetContextual.isEveryoneAssistantIcon:SetSize(16,16)
-    playerFrameTargetContextual.isEveryoneAssistantIcon:Hide()
+    frame.assisterIcon= frame:CreateTexture(nil, 'OVERLAY', nil, 1)--助手，提示 PlayerFrame.xml
+    frame.assisterIcon:SetAllPoints(frame.assisterButton)
+    frame.assisterIcon:SetTexture('Interface\\GroupFrame\\UI-Group-AssistantIcon')
+    frame.assisterIcon:Hide()
+    frame.isEveryoneAssistantIcon= frame:CreateTexture(nil, 'OVERLAY', nil, 6)--所有限员，有权限，提示
+    frame.isEveryoneAssistantIcon:SetPoint('CENTER', frame.assisterButton)
+    frame.isEveryoneAssistantIcon:SetAtlas('runecarving-menu-reagent-selected')
+    frame.isEveryoneAssistantIcon:SetSize(16,16)
+    frame.isEveryoneAssistantIcon:Hide()
 
     hooksecurefunc('PlayerFrame_UpdatePartyLeader', function()
         local contextual = PlayerFrame_GetPlayerFrameContentContextual()
@@ -56,74 +58,10 @@ local function Init()
         contextual.isEveryoneAssistantIcon:SetShown(IsEveryoneAssistant())
     end)
 
-    --移动，小队，号
-    --############
-    PlayerFrameGroupIndicatorText:ClearAllPoints()
-    PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
 
-    --处理,小队, 号码
-    hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
-        if IsInRaid() then
-            local text= PlayerFrameGroupIndicatorText:GetText()
-            local num= text and text:match('(%d)')
-            if num then
-                PlayerFrameGroupIndicatorText:SetFormattedText('|A:services-number-%s:22:22|a', num)
-            end
-        end
-    end)
-    if IsInRaid() then
-        WoWTools_Mixin:Call(PlayerFrame_UpdateGroupIndicator)
-    end
-
-    if PlayerFrameGroupIndicatorLeft then
-        PlayerFrameGroupIndicatorLeft:SetTexture(0)
-        PlayerFrameGroupIndicatorLeft:SetShown(false)
-        PlayerFrameGroupIndicatorMiddle:SetTexture(0)
-        PlayerFrameGroupIndicatorMiddle:SetShown(false)
-        PlayerFrameGroupIndicatorRight:SetTexture(0)
-        PlayerFrameGroupIndicatorRight:SetShown(false)
-    end
-
-    --等级，颜色
-    hooksecurefunc('PlayerFrame_UpdateLevel', function()
-        if UnitExists("player") then
-            local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
-            if effectiveLevel== GetMaxLevelForLatestExpansion() then
-                PlayerLevelText:SetText('')
-            --[[else
-                --PlayerLevelText:SetText(effectiveLevel)
-                local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-                PlayerLevelText:SetTextColor(r,g,b)--设置颜色]]
-            end
-        end
-    end)
-
-    --玩家, 治疗，爆击，数字
-    if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
-        local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
-        if label then
-            WoWTools_ColorMixin:Setup(label, {type='FontString'})--设置颜色
-            label:ClearAllPoints()
-            label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
-        end
-    end
-    --宠物
-    if PetHitIndicator then
-        PetHitIndicator:ClearAllPoints()
-        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
-    end
-
-    --外框
-    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)--设置颜色
-
-    --移动zzZZ, 睡着
-    playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
-
-    --[[C_Timer.After(4, function()
-        local t= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator
-        t:Show()
-        t.HitText:SetText('aaaaa')
-    end)]]
+--移动zzZZ, 睡着
+     frame.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
+end
 
 
 
@@ -131,27 +69,39 @@ local function Init()
 
 
 
-    --拾取专精
-    --#######
-    PlayerFrame.lootButton= WoWTools_ButtonMixin:Cbtn(PlayerFrame, {size=14, isType2=true})
-    PlayerFrame.lootButton:SetPoint('TOPLEFT', PlayerFrame.portrait, 'TOPRIGHT',-32,16)
-    PlayerFrame.lootButton:SetFrameLevel(frameLevel)
 
 
-    local portrait= PlayerFrame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
+
+
+
+
+
+
+
+
+
+
+--拾取专精
+local function Create_lootButton(frame)
+    frame.lootButton= WoWTools_ButtonMixin:Cbtn(frame, {size=14, isType2=true})
+    frame.lootButton:SetPoint('TOPLEFT', frame.portrait, 'TOPRIGHT',-32,16)
+    frame.lootButton:SetFrameLevel(frame:GetFrameLevel() +1)
+
+
+    local portrait= frame.lootButton:CreateTexture(nil, 'ARTWORK', nil, 7)--外框
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
     portrait:SetPoint('CENTER',1,-1)
     portrait:SetSize(21,21)
     WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色
 
-    local lootTipsTexture= PlayerFrame.lootButton:CreateTexture(nil, "OVERLAY")
+    local lootTipsTexture= frame.lootButton:CreateTexture(nil, "OVERLAY")
     lootTipsTexture:SetSize(10,10)
     lootTipsTexture:SetPoint('TOP',0,8)
     lootTipsTexture:SetAtlas('Banker')
 
-    PlayerFrame.lootButton:SetScript('OnLeave', GameTooltip_Hide)
-    PlayerFrame.lootButton:SetScript('OnEnter', function()
-        GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
+    frame.lootButton:SetScript('OnLeave', GameTooltip_Hide)
+    frame.lootButton:SetScript('OnEnter', function()
+        GameTooltip:SetOwner(frame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
         GameTooltip:AddLine(' ')
@@ -169,7 +119,7 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    function PlayerFrame.lootButton:set_shown()
+    function frame.lootButton:set_shown()
         local find=false
         if UnitIsUnit(PlayerFrame.unit, 'player') then
             local currentSpec = GetSpecialization()
@@ -188,37 +138,65 @@ local function Init()
         self:SetShown(find)
     end
 
-    PlayerFrame.lootButton:RegisterEvent('LOADING_SCREEN_DISABLED')
-    PlayerFrame.lootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
-    PlayerFrame.lootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
-    PlayerFrame.lootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
-    PlayerFrame.lootButton:SetScript('OnEvent', PlayerFrame.lootButton.set_shown)
+    frame.lootButton:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.lootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+    frame.lootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
+    frame.lootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
 
-    PlayerFrame.lootButton:SetScript('OnClick', function()
+    frame.lootButton:SetScript('OnEvent', function (self)
+        self:set_shown()
+    end)
+
+    frame.lootButton:SetScript('OnClick', function()
         SetLootSpecialization(0)
         local currentSpec = GetSpecialization()
         local specID= currentSpec and GetSpecializationInfo(currentSpec)
         local name, _, texture= select(2, GetSpecializationInfoByID(specID or 0))
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName,  WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION, texture and '|T'..texture..':0|t' or '', name)
+
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_UnitMixin.addName,
+            WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION,
+            texture and '|T'..texture..':0|t' or '',
+            WoWTools_TextMixin:CN(name)
+        )
     end)
 
+    frame.lootButton:set_shown()
+end
 
 
 
-    --Riad 副本, 地下城，指示,  
-    --######################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Riad 副本, 地下城，指示, 
+local function Create_instanceFrame(frame)
+
     PlayerFrame.instanceFrame= CreateFrame("Frame", nil, PlayerFrame)
-    PlayerFrame.instanceFrame:SetFrameLevel(frameLevel)
+    PlayerFrame.instanceFrame:SetFrameLevel(PlayerFrame:GetFrameLevel() +1)
     PlayerFrame.instanceFrame:SetPoint('RIGHT', PlayerFrame.lootButton, 'LEFT',-2,-2)
     PlayerFrame.instanceFrame:SetSize(16,16)
-    --图标
+
+--图标
     PlayerFrame.instanceFrame.raid= PlayerFrame.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
     PlayerFrame.instanceFrame.raid:SetAllPoints(PlayerFrame.instanceFrame)
     PlayerFrame.instanceFrame.raid:SetAtlas('poi-torghast')
-    --10人，25人
+
+--10人，25人
     PlayerFrame.instanceFrame.raid.text= WoWTools_LabelMixin:Create(PlayerFrame.instanceFrame, {color=true})
     PlayerFrame.instanceFrame.raid.text:SetPoint('TOP',0,8)
-    --提示
+
+--提示
     PlayerFrame.instanceFrame.raid:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) self.text:SetAlpha(1) end)
     PlayerFrame.instanceFrame.raid:SetScript('OnEnter', function(self)
         if self.tips then
@@ -246,20 +224,27 @@ local function Init()
             self.text:SetAlpha(0.3)
         end
     end)
-    --5人 副本, 地下城，指示
+
+
+--5人 副本, 地下城，指示
     PlayerFrame.instanceFrame.dungeon= PlayerFrame.instanceFrame:CreateTexture(nil,'BORDER', nil, 1)
     PlayerFrame.instanceFrame.dungeon:SetPoint('RIGHT', PlayerFrame.instanceFrame, 'LEFT', 2, -8)
     PlayerFrame.instanceFrame.dungeon:SetSize(16,16)
     PlayerFrame.instanceFrame.dungeon:SetAtlas('DungeonSkull')
-     --外框
-    portrait= PlayerFrame.instanceFrame:CreateTexture(nil, 'OVERLAY')
+
+
+--外框
+    local portrait= frame.instanceFrame:CreateTexture(nil, 'OVERLAY')
     portrait:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-    portrait:SetPoint('CENTER', PlayerFrame.instanceFrame.dungeon,1,0)
+    portrait:SetPoint('CENTER', frame.instanceFrame.dungeon,1,0)
     portrait:SetSize(20,20)
     WoWTools_ColorMixin:Setup(portrait, {type='Texture'})--设置颜色
-    --提示
-    PlayerFrame.instanceFrame.dungeon:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    function PlayerFrame.instanceFrame.dungeon:set_tooltips()
+
+
+--提示
+    frame.instanceFrame.dungeon:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+
+    function frame.instanceFrame.dungeon:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -287,9 +272,13 @@ local function Init()
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end
-    PlayerFrame.instanceFrame.dungeon:SetScript('OnEnter', PlayerFrame.instanceFrame.dungeon.set_tooltips)
-    PlayerFrame.instanceFrame.dungeon:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
-    PlayerFrame.instanceFrame.dungeon:SetScript('OnMouseDown', function(self)
+
+    frame.instanceFrame.dungeon:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+    end)
+
+    frame.instanceFrame.dungeon:SetScript('OnMouseUp', function(self) self:SetAlpha(0.5) end)
+    frame.instanceFrame.dungeon:SetScript('OnMouseDown', function(self)
         if (UnitIsGroupLeader("player") or not IsInGroup()) and GetDungeonDifficultyID()~=DifficultyUtil.ID.DungeonMythic then
             SetDungeonDifficultyID(DifficultyUtil.ID.DungeonMythic)
             C_Timer.After(0.5, function()
@@ -300,7 +289,9 @@ local function Init()
         end
         self:SetAlpha(0.1)
     end)
-    function PlayerFrame.instanceFrame:set_settings()
+
+
+    function frame.instanceFrame:set_settings()
         local ins, findRiad, findDungeon=  IsInInstance(), false, false
         if not ins and UnitIsUnit(PlayerFrame.unit, 'player') then
             local difficultyID2 = GetDungeonDifficultyID() or 0
@@ -350,11 +341,13 @@ local function Init()
         self:SetShown(not ins)
     end
 
-    PlayerFrame.instanceFrame.dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
-    PlayerFrame.instanceFrame.raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
-    PlayerFrame.instanceFrame.legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
-    PlayerFrame.instanceFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
-    PlayerFrame.instanceFrame:SetScript('OnEvent', function(self, event, arg1)
+    frame.instanceFrame.dungeonDifficultyStr= ERR_DUNGEON_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"地下城难度已设置为%s。"
+    frame.instanceFrame.raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
+    frame.instanceFrame.legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
+
+    frame.instanceFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
+
+    frame.instanceFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='LOADING_SCREEN_DISABLED' then
             if IsInInstance() then
                 self:UnregisterEvent('CHAT_MSG_SYSTEM')--会出错误，冒险指南，打开世界BOSS
@@ -367,6 +360,8 @@ local function Init()
         end
     end)
 
+    frame.instanceFrame:set_settings()
+end
 
 
 
@@ -379,18 +374,22 @@ local function Init()
 
 
 
-    --挑战，数据
-    --#########
-    PlayerFrame.keystoneFrame= CreateFrame("Frame", nil, PlayerFrame)
-    PlayerFrame.keystoneFrame:SetSize(12, 12)
-    PlayerFrame.keystoneFrame:SetPoint('LEFT', playerFrameTargetContextual.LeaderIcon, 'RIGHT',0,-2)
-    PlayerFrame.keystoneFrame.texture=PlayerFrame.keystoneFrame:CreateTexture()
-    PlayerFrame.keystoneFrame.texture:SetAllPoints(PlayerFrame.keystoneFrame)
-    PlayerFrame.keystoneFrame.texture:SetTexture(4352494)
-    PlayerFrame.keystoneFrame.Text= WoWTools_LabelMixin:Create(PlayerFrame.keystoneFrame, {color=true})
-    PlayerFrame.keystoneFrame.Text:SetPoint('LEFT', PlayerFrame.keystoneFrame, 'RIGHT')
-    PlayerFrame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
-    PlayerFrame.keystoneFrame:SetScript('OnEnter', function(self)
+
+
+
+
+--挑战，数据
+local function Create_keystoneFrame(frame)
+    frame.keystoneFrame= CreateFrame("Frame", nil, frame)
+    frame.keystoneFrame:SetSize(12, 12)
+    frame.keystoneFrame:SetPoint('LEFT', PlayerFrame_GetPlayerFrameContentContextual().LeaderIcon, 'RIGHT',0,-2)
+    frame.keystoneFrame.texture=frame.keystoneFrame:CreateTexture()
+    frame.keystoneFrame.texture:SetAllPoints(frame.keystoneFrame)
+    frame.keystoneFrame.texture:SetTexture(4352494)
+    frame.keystoneFrame.Text= WoWTools_LabelMixin:Create(frame.keystoneFrame, {color=true})
+    frame.keystoneFrame.Text:SetPoint('LEFT', frame.keystoneFrame, 'RIGHT')
+    frame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
+    frame.keystoneFrame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -405,7 +404,7 @@ local function Init()
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
-    function PlayerFrame.keystoneFrame:set_settings()
+    function frame.keystoneFrame:set_settings()
         local text
         local score= C_ChallengeMode.GetOverallDungeonScore()
         if score and score>0 then
@@ -422,37 +421,41 @@ local function Init()
         self:SetShown(not IsInInstance() and text~=nil)
     end
 
-    PlayerFrame.keystoneFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
-    PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
-    PlayerFrame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
-    PlayerFrame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-    PlayerFrame.keystoneFrame:SetScript('OnEvent', function(self)
+    frame.keystoneFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
+    frame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
+    frame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+    frame.keystoneFrame:SetScript('OnEvent', function(self)
         C_Timer.After(2, function() self:set_settings() end)
     end)
+    
+    frame.keystoneFrame:set_settings()
+end
 
 
 
 
-    --移动，缩小，开启战争模式时，PVP图标
-    hooksecurefunc('PlayerFrame_UpdatePvPStatus', function()--开启战争模式时，PVP图标
-        local contextual = PlayerFrame_GetPlayerFrameContentContextual();
-        local icon= contextual and contextual.PVPIcon
-        if icon then
-            icon:SetSize(25,25)
-            icon:ClearAllPoints()
-            icon:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 13, -24)
-        end
-    end)
 
-    --设置, 战争模式
-    PlayerFrame.warModeButton= WoWTools_ButtonMixin:Cbtn(PlayerFrame, {size=20, isType2=true})
-    PlayerFrame.warModeButton:SetPoint('LEFT', PlayerFrame, 5, 12)
-    PlayerFrame.warModeButton:SetScript('OnClick',  function(self)
+
+
+
+
+
+
+
+
+
+
+--设置, 战争模式
+local function Create_warModeButton(frame)
+    frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true})
+    frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
+    frame.warModeButton:SetScript('OnClick',  function(self)
         C_PvP.ToggleWarMode()
         C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltips() end end)
     end)
-    PlayerFrame.warModeButton:SetScript('OnLeave', GameTooltip_Hide)
-    function PlayerFrame.warModeButton:set_tooltips()
+
+    function frame.warModeButton:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
@@ -463,24 +466,124 @@ local function Init()
         end
         GameTooltip:Show()
     end
-    PlayerFrame.warModeButton:SetScript('OnEnter', PlayerFrame.warModeButton.set_tooltips)
-    PlayerFrame.warModeButton:RegisterEvent('LOADING_SCREEN_DISABLED')
-    PlayerFrame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
-    PlayerFrame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
-    function PlayerFrame.warModeButton:set_settings()
+
+    frame.warModeButton:SetScript('OnLeave', function() GameTooltip:Hide() end)
+    frame.warModeButton:SetScript('OnEnter', function(self)
+        self:set_tooltips()
+    end)
+
+    frame.warModeButton:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
+    frame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
+    function frame.warModeButton:set_settings()
         local isCan= C_PvP.CanToggleWarModeInArea()
         if isCan then
             self:SetNormalAtlas(C_PvP.IsWarModeDesired() and 'pvptalents-warmode-swords' or 'pvptalents-warmode-swords-disabled')
         end
         self:SetShown(isCan)
     end
-    PlayerFrame.warModeButton:SetScript('OnEvent', function(self, event)
+    frame.warModeButton:SetScript('OnEvent', function(self, event)
         C_Timer.After(1, function() self:set_settings() end)
     end)
 
+    frame.warModeButton:set_settings()
+end
 
 
-    --修改, 宠物, 名称)
+
+
+
+
+local function Init()
+    if WoWToolsSave['Plus_UnitFrame'].hidePlayerFrame then
+        return
+    end
+
+    Craete_assisterButton()--全部有权限，助手，提示
+    Create_lootButton(PlayerFrame)--拾取专精
+    Create_instanceFrame(PlayerFrame)--Riad 副本, 地下城，指示
+    Create_keystoneFrame(PlayerFrame)--挑战，数据
+    Create_warModeButton(PlayerFrame)--设置, 战争模式
+
+--移动，小队，号
+    PlayerFrameGroupIndicatorText:ClearAllPoints()
+    PlayerFrameGroupIndicatorText:SetPoint('TOPRIGHT', PlayerFrame, -35, -24)
+
+--处理,小队, 号码
+    hooksecurefunc('PlayerFrame_UpdateGroupIndicator', function()
+        if IsInRaid() then
+            local text= PlayerFrameGroupIndicatorText:GetText()
+            local num= text and text:match('(%d)')
+            if num then
+                PlayerFrameGroupIndicatorText:SetFormattedText('|A:services-number-%s:22:22|a', num)
+            end
+        end
+    end)
+    if IsInRaid() then
+        WoWTools_Mixin:Call(PlayerFrame_UpdateGroupIndicator)
+    end
+
+
+    if PlayerFrameGroupIndicatorLeft then
+        PlayerFrameGroupIndicatorLeft:SetTexture(0)
+        PlayerFrameGroupIndicatorLeft:SetShown(false)
+        PlayerFrameGroupIndicatorMiddle:SetTexture(0)
+        PlayerFrameGroupIndicatorMiddle:SetShown(false)
+        PlayerFrameGroupIndicatorRight:SetTexture(0)
+        PlayerFrameGroupIndicatorRight:SetShown(false)
+    end
+
+
+--等级，颜色
+    hooksecurefunc('PlayerFrame_UpdateLevel', function()
+        if UnitExists("player") then
+            local effectiveLevel = UnitEffectiveLevel(PlayerFrame.unit)
+            if effectiveLevel== GetMaxLevelForLatestExpansion() then
+                PlayerLevelText:SetText('')
+            --[[else
+                --PlayerLevelText:SetText(effectiveLevel)
+                local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+                PlayerLevelText:SetTextColor(r,g,b)--设置颜色]]
+            end
+        end
+    end)
+
+
+--玩家, 治疗，爆击，数字
+    if PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator then
+        local label= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator.HitText
+        if label then
+            WoWTools_ColorMixin:Setup(label, {type='FontString'})--设置颜色
+            label:ClearAllPoints()
+            label:SetPoint('TOPLEFT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'BOTTOMLEFT')
+        end
+    end
+
+
+--宠物
+    if PetHitIndicator then
+        PetHitIndicator:ClearAllPoints()
+        PetHitIndicator:SetPoint('TOPLEFT', PetPortrait or PetHitIndicator:GetParent(), 'BOTTOMLEFT')
+    end
+
+
+--外框
+    PlayerFrame.PlayerFrameContainer.FrameTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)--设置颜色
+
+
+--移动，缩小，开启战争模式时，PVP图标
+    hooksecurefunc('PlayerFrame_UpdatePvPStatus', function()--开启战争模式时，PVP图标
+        local contextual = PlayerFrame_GetPlayerFrameContentContextual();
+        local icon= contextual and contextual.PVPIcon
+        if icon then
+            icon:SetSize(25,25)
+            icon:ClearAllPoints()
+            icon:SetPoint('RIGHT', PlayerFrame.PlayerFrameContainer.PlayerPortrait, 'LEFT', 13, -24)
+        end
+    end)
+
+
+--修改, 宠物, 名称)
     hooksecurefunc('UnitFrame_OnEvent', function(self, event)
         if self.unit=='pet' and event == "UNIT_NAME_UPDATE" then
             self.name:SetText('|A:auctionhouse-icon-favorite:0:0|a')
