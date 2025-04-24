@@ -100,6 +100,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         WoWTools_TargetMixin:Set_All_Init()
 
         if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+            WoWTools_TargetMixin:Blizzard_Settings()
             self:UnregisterEvent(event)
         end
 

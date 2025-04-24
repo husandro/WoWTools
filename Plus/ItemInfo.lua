@@ -33,12 +33,9 @@ local heirloomWeapontemEquipLocTab={--传家宝 ，武器，itemEquipLoc
 
 
 local ClassNameIconTab={}--职业图标 ClassNameIconTab['法师']=图标
-for classID= 1, GetNumClasses() do
-    local classInfo = C_CreatureInfo.GetClassInfo(classID)
-    if classInfo and classInfo.className and classInfo.classFile then
-        ClassNameIconTab[classInfo.className]= WoWTools_UnitMixin:GetClassIcon(classInfo.classFile)--职业图标
-    end
-end
+
+
+
 
 
 local function Get_Class_Icon_da_Text(text)
@@ -1320,9 +1317,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:UnregisterEvent(event)
+                self:UnregisterAllEvents()
             else
                 Init()
+                
                 if C_AddOns.IsAddOnLoaded('Blizzard_PerksProgram') then
                     Blizzard_PerksProgram()
                 end
@@ -1337,6 +1335,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
                 if C_AddOns.IsAddOnLoaded('Blizzard_ItemUpgradeUI') then
                     add_Button_OpenOption(ItemUpgradeFrameCloseButton)
+                end
+
+                for classID= 1, GetNumClasses() do
+                    local classInfo = C_CreatureInfo.GetClassInfo(classID)
+                    if classInfo and classInfo.className and classInfo.classFile then
+                        ClassNameIconTab[classInfo.className]= WoWTools_UnitMixin:GetClassIcon(classInfo.classFile)--职业图标
+                    end
                 end
             end
 

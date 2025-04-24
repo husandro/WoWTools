@@ -451,6 +451,11 @@ local function Init_Set_Title()
             ShowHideTitle()
         end
     end)
+    hooksecurefunc(WorldMapFrame, 'SetupTitle', function()
+        if Save().HideTitle then
+            ShowHideTitle()
+        end
+    end)
 
     if Save().HideTitle then--隐藏，标题
         ShowHideTitle()

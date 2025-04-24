@@ -53,7 +53,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\Time.lua
 0_Mixin\SetTooltip.lua
 0_Mixin\SetTooltip_Faction.lua
-0_Mixin\Unit.lua
 0_Mixin\3_Panel.lua
 
 0_Panel.lua
@@ -316,7 +315,18 @@ Plus_WorldMap\z_Plus_SearchBox.lua
 
 
 ##单位框, 最好放在ChatButton_4_Invite前，Shift+点击=焦点
-Plus\UnitFrame.lua
+Plus_Unit\0_UnitMixin.lua
+Plus_Unit\1_Init.lua
+Plus_Unit\2_Options.lua
+Plus_Unit\BossFrame.lua
+Plus_Unit\CastingBar.lua
+Plus_Unit\ClassTexture.lua
+Plus_Unit\CompactPartyFrame.lua
+Plus_Unit\PartyFrame.lua
+Plus_Unit\PlayerFrame.lua
+Plus_Unit\RaidFrame.lua
+Plus_Unit\TargetFrame.lua
+
 ##好友，面板
 Plus\FriendsList.lua
 
