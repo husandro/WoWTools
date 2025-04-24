@@ -1,16 +1,15 @@
 
-
-
-
---####
 --玩家 PlayerFrame.lua
---####
-local function Init()--
+
+
+
+
+
+local function Init()
     local playerFrameTargetContextual = PlayerFrame_GetPlayerFrameContentContextual()
     local frameLevel= PlayerFrame:GetFrameLevel() +1
 
     --全部有权限，助手，提示
-    --####################
     playerFrameTargetContextual.assisterButton= WoWTools_ButtonMixin:Cbtn(playerFrameTargetContextual,{size=16})--点击，设置全员，权限
     playerFrameTargetContextual.assisterButton:SetFrameLevel(5)
     playerFrameTargetContextual.assisterButton:SetPoint(playerFrameTargetContextual.LeaderIcon:GetPoint())
@@ -116,11 +115,11 @@ local function Init()--
     --移动zzZZ, 睡着
     playerFrameTargetContextual.PlayerRestLoop.RestTexture:SetPoint('TOPRIGHT', PlayerFrame.portrait, 14, 38)
 
-    C_Timer.After(4, function()
-    local t= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator
-    t:Show()
-    t.HitText:SetText('aaaaa')
-end)
+    --[[C_Timer.After(4, function()
+        local t= PlayerFrame.PlayerFrameContent.PlayerFrameContentMain.HitIndicator
+        t:Show()
+        t.HitText:SetText('aaaaa')
+    end)]]
 
 
 

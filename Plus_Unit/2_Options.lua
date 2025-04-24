@@ -12,7 +12,7 @@ local function Init_Options()
         return
     end
 
---[[
+
     WoWTools_PanelMixin:OnlyCheck({
         name= '|A:common-icon-backarrow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '法术弹出框' or 'SpellFlyout'),
         tooltip= WoWTools_PanelMixin.addName,
@@ -30,7 +30,7 @@ local function Init_Options()
             end
         end
     })
-]]
+
 --    WoWTools_PanelMixin:Header(Layout, 'Plus')
 
     Init_Options=function()end
