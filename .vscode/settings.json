@@ -5584,7 +5584,10 @@
         "GameTooltip",
         "SPELLBOOK",
         "TALENTS",
-        "PerksProgramProductsFrameMixin"
+        "PerksProgramProductsFrameMixin",
+        "PVP_TALENT_SLOT_LOCKED",
+        "WarmodeButtonMixin",
+        "UnitPopupSharedUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

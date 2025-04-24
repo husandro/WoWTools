@@ -14,7 +14,7 @@ local function Craete_assisterButton()
     frame.assisterButton:SetFrameLevel(5)
     frame.assisterButton:SetPoint(frame.LeaderIcon:GetPoint())
     frame.assisterButton:Hide()
-    
+
 
     function frame.assisterButton:set_tooltips()
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
@@ -381,14 +381,14 @@ end
 --挑战，数据
 local function Create_keystoneFrame(frame)
     frame.keystoneFrame= CreateFrame("Frame", nil, frame)
-    frame.keystoneFrame:SetSize(14, 14)
+    frame.keystoneFrame:SetSize(18, 18)
 
     frame.keystoneFrame:SetPoint('LEFT', PlayerFrame_GetPlayerFrameContentContextual().LeaderIcon, 'RIGHT',0,-2)
     frame.keystoneFrame.texture=frame.keystoneFrame:CreateTexture()
     frame.keystoneFrame.texture:SetAllPoints(frame.keystoneFrame)
     frame.keystoneFrame.texture:SetTexture(4352494)
     WoWTools_ButtonMixin:AddMask(frame.keystoneFrame)
-    
+
     frame.keystoneFrame.Text= WoWTools_LabelMixin:Create(frame.keystoneFrame, {color=true})
     frame.keystoneFrame.Text:SetPoint('LEFT', frame.keystoneFrame, 'RIGHT')
     frame.keystoneFrame:SetScript('OnLeave', function(self) self:SetAlpha(1) GameTooltip:Hide() end)
@@ -407,6 +407,7 @@ local function Create_keystoneFrame(frame)
         GameTooltip:Show()
         self:SetAlpha(0.5)
     end)
+
     function frame.keystoneFrame:set_settings()
         local text
         local score= C_ChallengeMode.GetOverallDungeonScore()
@@ -421,13 +422,17 @@ local function Create_keystoneFrame(frame)
             end
         end
         self.Text:SetText(text or '')
-        self:SetShown(true)--not IsInInstance() and text~=nil)
+        self:SetShown(
+            (WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID())
+            or WoWTools_DataMixin.Player.husandro
+        )
     end
 
     frame.keystoneFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
     frame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
     frame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
     frame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
+
     frame.keystoneFrame:SetScript('OnEvent', function(self)
         C_Timer.After(2, function() self:set_settings() end)
     end)
@@ -449,7 +454,7 @@ end
 
 
 
---设置, 战争模式
+--设置, 战争模式 Blizzard_WarmodeButtonTemplate.lua
 local function Create_warModeButton(frame)
     frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true})
     frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
@@ -457,16 +462,34 @@ local function Create_warModeButton(frame)
         C_PvP.ToggleWarMode()
         C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltips() end end)
     end)
-
+    function frame.warModeButton:GetWarModeDesired()
+        return UnitPopupSharedUtil.IsInWarModeState()
+    end
     function frame.warModeButton:set_tooltips()
+        if WarmodeButtonMixin then
+            WarmodeButtonMixin.OnEnter(self)
+            return
+        end
+
         GameTooltip:SetOwner(PlayerFrame, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE, WoWTools_TextMixin:GetEnabeleDisable(C_PvP.IsWarModeDesired())..WoWTools_DataMixin.Icon.left)
-        if not C_PvP.CanToggleWarMode(false)  then
+
+        if not C_PvP.ArePvpTalentsUnlocked() then
+			GameTooltip_AddErrorLine(
+                GameTooltip,
+                format(
+                    WoWTools_DataMixin.onlyChinese and '在%d级解锁' or PVP_TALENT_SLOT_LOCKED,
+                    C_PvP.GetPvpTalentsUnlockedLevel()
+                ),
+            true)
+
+        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false)  then
             GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
-        end
+		end
+
         GameTooltip:Show()
     end
 
