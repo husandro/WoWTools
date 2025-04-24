@@ -144,6 +144,9 @@ local function Init()
 
     hooksecurefunc(MirrorTimerContainer, 'SetupTimer', SetupTimer)
 
+
+
+
     Init=function()end
 end
 

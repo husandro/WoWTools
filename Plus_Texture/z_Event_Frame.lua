@@ -997,14 +997,6 @@ function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
      hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
         if not frame.Bar.isSetTexture then
             self:SetFrame(frame.Bar, {alpha=0.2, index=1})
-            --[[for index, icon in pairs({frame.Bar:GetRegions()}) do
-                if index==1 and icon:GetObjectType()=="Texture" then
-                    icon:SetAtlas('UI-HUD-CoolDownManager-Bar')
-                    icon:SetVertexColor(0.2, 0.2, 0.2, 0.5)
-                    frame.Bar.isSetTexture =true
-                    return
-                end
-            end]]
             frame.Bar.isSetTexture=true
         end
     end)
