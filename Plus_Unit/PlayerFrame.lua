@@ -10,7 +10,7 @@
 --全部有权限，助手，提示
 local function Craete_assisterButton()
     local frame= PlayerFrame_GetPlayerFrameContentContextual()
-    frame.assisterButton= WoWTools_ButtonMixin:Cbtn(frame,{size=16})--点击，设置全员，权限
+    frame.assisterButton= WoWTools_ButtonMixin:Cbtn(frame,{size=18})--点击，设置全员，权限
     frame.assisterButton:SetFrameLevel(5)
     frame.assisterButton:SetPoint(frame.LeaderIcon:GetPoint())
     frame.assisterButton:Hide()
@@ -53,9 +53,9 @@ local function Craete_assisterButton()
         local contextual = PlayerFrame_GetPlayerFrameContentContextual()
         local isLeader= UnitIsGroupLeader("player")
         local isAssist= UnitIsGroupAssistant('player')
-        contextual.assisterButton:SetShown(isLeader)
-        contextual.assisterIcon:SetShown(not isLeader and isAssist)
-        contextual.isEveryoneAssistantIcon:SetShown(IsEveryoneAssistant())
+        contextual.assisterButton:SetShown(isLeader or WoWTools_DataMixin.Player.husandro)
+        contextual.assisterIcon:SetShown(not isLeader and isAssist or WoWTools_DataMixin.Player.husandro)
+        contextual.isEveryoneAssistantIcon:SetShown(IsEveryoneAssistant() )
     end)
 
 
@@ -83,7 +83,7 @@ end
 
 --拾取专精
 local function Create_lootButton(frame)
-    frame.lootButton= WoWTools_ButtonMixin:Cbtn(frame, {size=14, isType2=true})
+    frame.lootButton= WoWTools_ButtonMixin:Cbtn(frame, {size=14, isType2=true, notBorder=true})
     frame.lootButton:SetPoint('TOPLEFT', frame.portrait, 'TOPRIGHT',-32,16)
     frame.lootButton:SetFrameLevel(frame:GetFrameLevel() +1)
 

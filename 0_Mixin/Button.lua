@@ -83,6 +83,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
     
+    local isBorder= not tab.notBorder
 
 --提示，已存在
     if _G[name] and WoWTools_DataMixin.Player.husandro then
@@ -107,11 +108,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
         btn.texture:AddMaskTexture(btn.IconMask)
 
-        btn.border=btn:CreateTexture(nil, 'ARTWORK')
-        btn.border:SetAllPoints(btn)
-        btn.border:SetAtlas('bag-reagent-border')
-        WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
-   
+    
+        
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
