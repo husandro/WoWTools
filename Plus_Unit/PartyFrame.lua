@@ -23,11 +23,19 @@ local function Create_potFrame(frame)
     local unit= frame.unit or frame:GetUnit()
 
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {isSecure=true, size=35, isType2=true})
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {
+        isSecure=true,
+        size=35,
+        isType2=true,
+        notBorder=true,
+    })
+    btn.unit= unit..'target'
+
     btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
     btn:SetAttribute('type', 'target')
     btn:SetAttribute('unit', unit..'target')
     btn:SetScript('OnLeave', GameTooltip_Hide)
+
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
@@ -40,23 +48,24 @@ local function Create_potFrame(frame)
         end
         GameTooltip:Show()
     end)
-    btn.unit= unit..'target'
+
 
     btn.frame=CreateFrame('Frame', nil, btn)
     btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
     btn.frame:SetAllPoints()
+    btn.frame.unit= btn.unit
     btn.frame:Hide()
 
-    --[[btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
+    btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
     btn.frame.isPlayerTargetTexture:SetSize(42,42)
     btn.frame.isPlayerTargetTexture:SetPoint('CENTER',2,-2)
-    btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')]]
-    btn.frame.isPlayerTargetTexture= btn.border
+    btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
+    --btn.frame.isPlayerTargetTexture= btn.border
     btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
 
-    --[[btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
-    btn.frame.Portrait:SetAllPoints()]]
-    btn.frame.Portrait= btn.texture
+    btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
+    btn.frame.Portrait:SetAllPoints()
+    --btn.frame.Portrait= btn.texture
 
 
     btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
@@ -67,9 +76,10 @@ local function Create_potFrame(frame)
     btn.frame.class:SetSize(14,14)
     btn.frame.class:SetPoint('TOPRIGHT')
 
+
     function btn.frame:set_settings()
         local exists2= UnitExists(self.unit)
-        --if self.unit then
+        if exists2 then
             if self.isPlayer then
                 SetPortraitTexture(self.Portrait, self.unit, true)--图像
             elseif UnitIsUnit(self.isSelfUnit, self.unit) then--队员，选中他自已
@@ -97,26 +107,15 @@ local function Create_potFrame(frame)
 
             local r2,g2,b2= select(2, WoWTools_UnitMixin:GetColor(self.unit))
             self.healthLable:SetTextColor(r2, g2, b2)
-        --end
+        end
         self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
         self:SetShown(exists2)
     end
 
-    function btn.frame:set_event()
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-        self:RegisterUnitEvent('UNIT_FLAGS', self.unit..'target')
-        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit..'target')
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-    end
-    btn.frame:SetScript('OnEvent', function (self)
-        self:set_event()
-    end)
 
-
-    --队友， 目标， 生命条
+ --队友， 目标， 生命条
     btn.frame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 0.3) +elapsed
+        self.elapsed= (self.elapsed or 0.5) +elapsed
         if self.elapsed>0.5 then
             self.elapsed=0
             local cur= UnitHealth(self.unit) or 0
@@ -129,12 +128,38 @@ local function Create_potFrame(frame)
         end
     end)
 
-    btn.frame:SetScript('OnHide', function(self)
-        self.elapsed=nil
-        self.healthLable:SetText('')
-        self.class:SetTexture(0)
-        self.Portrait:SetTexture(0)
+
+
+    function btn:set_event()
+        if self:IsVisible() then
+            self:RegisterEvent('RAID_TARGET_UPDATE')
+            self:RegisterUnitEvent('UNIT_TARGET', self.unit)
+            self:RegisterUnitEvent('UNIT_FLAGS', self.unit..'target')
+            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit..'target')
+            self:RegisterEvent('PLAYER_TARGET_CHANGED')
+        else
+            self:UnregisterAllEvents()
+        end
+        self.frame:set_settings()
+    end
+
+    btn:SetScript('OnEvent', function(self)
+        self.frame:set_settings()
     end)
+
+    btn:SetScript('OnShow', function(self)
+        self:set_event()
+    end)
+
+    btn:SetScript('OnHide', function(self)
+        self.frame.elapsed=nil
+        self.frame.healthLable:SetText('')
+        self.frame.class:SetTexture(0)
+        self.frame.Portrait:SetTexture(0)
+        self:set_event()
+    end)
+
+    btn:set_event()
 
     frame.potFrame= btn
 end
@@ -162,6 +187,8 @@ local function Create_castFrame(frame)
 
     castFrame.texture= castFrame:CreateTexture(nil,'BACKGROUND')
     castFrame.texture:SetAllPoints()
+
+    WoWTools_ButtonMixin:AddMask(castFrame)
 
     castFrame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     castFrame:SetScript('OnEnter', function(self)
@@ -352,7 +379,7 @@ local function Create_positionFrame(frame)
 
 
     function positionFrame:set_event()
-        if not IsInInstance() and UnitExists(self.unit) or self.isPlayer then
+        if self:IsShown() and (not IsInInstance() and UnitExists(self.unit) or self.isPlayer) then
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         else
@@ -368,7 +395,11 @@ local function Create_positionFrame(frame)
         self.elapsed=nil
         self.Text:SetText('')
     end)
-    positionFrame:SetScript('OnShow', positionFrame.set_event)
+    positionFrame:SetScript('OnShow', function(self)
+        self:set_event()
+    end)
+
+    positionFrame:set_event()
 
     frame.positionFrame= positionFrame
 end
@@ -389,12 +420,14 @@ end
 --队友，死亡
 local function Create_deadFrame(frame)
     --local unit= frame.unit or frame:GetUnit()
-
+    
     local deadFrame= CreateFrame('Frame', nil, frame)
     deadFrame:SetPoint("CENTER", frame.Portrait)
     deadFrame:SetFrameLevel(frame:GetFrameLevel()+1)
     deadFrame:SetSize(37,37)
     deadFrame:SetFrameStrata('HIGH')
+
+    deadFrame.unit= frame.unit or frame:GetUnit()
 
     deadFrame.texture= deadFrame:CreateTexture()
     deadFrame.texture:SetAllPoints(deadFrame)
@@ -456,10 +489,14 @@ local function Create_deadFrame(frame)
         end
     end
     function deadFrame:set_event()
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
-        self:RegisterEvent('CHALLENGE_MODE_START')
-        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
-        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        if self:IsShown() then
+            self:RegisterEvent('LOADING_SCREEN_DISABLED')
+            self:RegisterEvent('CHALLENGE_MODE_START')
+            self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
+            self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        else
+            self:UnregisterAllEvents()
+        end
     end
     deadFrame:SetScript('OnEvent', function(self, event)
         if event=='LOADING_SCREEN_DISABLED' or event=='CHALLENGE_MODE_START' then
@@ -476,7 +513,7 @@ local function Create_deadFrame(frame)
         self:set_event()
     end)
 
-
+    deadFrame:set_event()
 
     frame.deadFrame= deadFrame
 end
@@ -516,13 +553,12 @@ local function set_memberFrame(frame)
     frame.potFrame.frame.isPlayer= isPlayer
     frame.potFrame.frame:UnregisterAllEvents()
     if exists then
-        frame.potFrame.frame:set_event()
+        frame.potFrame:set_event()
     end
     frame.potFrame.frame:set_settings()
 
 
 --队友，施法
-    frame.castFrame:UnregisterAllEvents()
     if exists then
         local events= {--ActionButton.lua
             'UNIT_SPELLCAST_CHANNEL_START',
@@ -542,6 +578,8 @@ local function set_memberFrame(frame)
         }
         FrameUtil.RegisterFrameForUnitEvents(frame.castFrame, events, unit)
         frame.castFrame:RegisterEvent('UNIT_SPELLCAST_SENT')
+    else
+        frame.castFrame:UnregisterAllEvents()
     end
     frame.castFrame.unit= unit
     if isPlayer then
@@ -634,7 +672,9 @@ local function Init()--PartyFrame.lua
             set_memberFrame(frame)
         end
 
-        hooksecurefunc(frame, 'UpdateMember', set_memberFrame)
+        hooksecurefunc(frame, 'UpdateMember', function(self)
+            set_memberFrame(self)
+        end)
     end
 
 

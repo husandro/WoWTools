@@ -26,17 +26,6 @@ local function Init_Spec_Menu(self, root)
     local sub, sub2
     root:CreateTitle(self.name)
 
---激活
-    --[[sub= root:CreateCheckbox(
-        self.icon..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE),
-    function()
-        return self.isActive
-    end, function()
-        self:Set_Active()
-        return MenuResponse.Close
-    end, {specIndex= self.specIndex})
-    WoWTools_SetTooltipMixin:Set_Menu(sub)
-    sub:SetEnabled(not isInCombat)]]
 
 --专精
     root:CreateDivider()
@@ -44,31 +33,6 @@ local function Init_Spec_Menu(self, root)
         root:CreateDivider()
     end
 
---[[拾取
-    sub= root:CreateCheckbox(
-        '|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
-    function()
-        return self.isLoot
-
-    end, function()
-        SetLootSpecialization(self.lootID~=self.specID and self.specID or 0)
-        return MenuResponse.Close
-    end, {specIndex= self.specIndex})
-    WoWTools_SetTooltipMixin:Set_Menu(sub)
-
-    sub= root:CreateCheckbox(
-        '|A:pvptalents-warmode-swords:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE),
-    function()
-        return C_PvP.IsWarModeDesired()
-    end,function()
-        C_PvP.ToggleWarMode()
-        return MenuResponse.Close
-    end)
-    sub:SetEnabled(C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()))
-
-
-    root:CreateDivider()
-]]
 --打开选项界面
     sub=WoWTools_MenuMixin:OpenOptions(root, {
         name=WoWTools_SpellMixin.addName,
@@ -165,6 +129,7 @@ local function Create_Spec_Button(index)
         texture= texture,
         name='WoWToolsPlayerSpellsFrameSpecButton'..index,
         size=32,
+        isMask=true,
     })
 
     btn.specIndex= index
