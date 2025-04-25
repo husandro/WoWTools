@@ -249,7 +249,7 @@ end
 local function Init_Menu(self, root)
     root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
 
-    local sub, sub2    
+    local sub, sub2
     if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
@@ -633,19 +633,11 @@ local function Set_OnMouseUp(self, d)
     self:SetScript("OnUpdate", nil)
     self.isActive= nil
 
-    if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+    --[[if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         return
-    end
+    end]]
 
-   
-    if d=='LeftButton' then--保存，缩放
-        if self.scaleStoppedFunc then
-            self.scaleStoppedFunc(self)
-        else
-            Save().scale[self.name]= self.targetFrame:GetScale()
-        end
-
-    elseif d=='RightButton' and self.setSize then--保存，大小
+    if self.setSize then--保存，大小 d=='RightButton' and
         local continueResizeStop = true
         if self.targetFrame.onResizeStopCallback then
             continueResizeStop = self.targetFrame.onResizeStopCallback(self)
@@ -654,6 +646,13 @@ local function Set_OnMouseUp(self, d)
             self.targetFrame:StopMovingOrSizing()
         end
         Save_Frame_Size(self)--保存，大小
+
+    elseif d=='LeftButton' then--保存，缩放
+        if self.scaleStoppedFunc then
+            self.scaleStoppedFunc(self)
+        else
+            Save().scale[self.name]= self.targetFrame:GetScale()
+        end
     end
     --self:SetScript("OnUpdate", nil)
 end
@@ -722,7 +721,7 @@ local function Set_OnMouseDown(self, d)
 
             elseif f.sizeUpdateFunc then
                 f.sizeUpdateFunc(f)
-                
+
             end
             Set_Tooltip(f)
         end)
@@ -927,6 +926,10 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
             frame:HookScript('OnShow', onShowFunc)
         end
     end
+
+    --[[btn.targetFrame:HookScript('OnHide', function(s)
+        
+    end)]]
 
     if not btn.notMoveAlpha then--移动时，设置透明度
         Set_Move_Alpha(frame)
