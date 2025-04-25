@@ -23,12 +23,11 @@ local SpecFrame
 
 
 local function Init_Spec_Menu(self, root)
-    local isInCombat= InCombatLockdown()
     local sub, sub2
     root:CreateTitle(self.name)
 
 --激活
-    sub= root:CreateCheckbox(
+    --[[sub= root:CreateCheckbox(
         self.icon..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE),
     function()
         return self.isActive
@@ -37,12 +36,15 @@ local function Init_Spec_Menu(self, root)
         return MenuResponse.Close
     end, {specIndex= self.specIndex})
     WoWTools_SetTooltipMixin:Set_Menu(sub)
-    sub:SetEnabled(not isInCombat)
+    sub:SetEnabled(not isInCombat)]]
 
 --专精
-    WoWTools_MenuMixin:Set_Specialization(sub)
+    root:CreateDivider()
+    if WoWTools_MenuMixin:Set_Specialization(root) then
+        root:CreateDivider()
+    end
 
---拾取
+--[[拾取
     sub= root:CreateCheckbox(
         '|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
     function()
@@ -64,12 +66,9 @@ local function Init_Spec_Menu(self, root)
     end)
     sub:SetEnabled(C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()))
 
-if isInCombat then
-    return
-end
 
     root:CreateDivider()
-
+]]
 --打开选项界面
     sub=WoWTools_MenuMixin:OpenOptions(root, {
         name=WoWTools_SpellMixin.addName,
@@ -189,9 +188,7 @@ local function Create_Spec_Button(index)
     btn.SelectIcon:SetVertexColor(0,1,0)
 
     function btn:Set_Active()
-        if InCombatLockdown() then
-            return
-        end
+  
         if self.isActive then
             WoWTools_LoadUIMixin:SpellBook(2)
             --if PlayerSpellsFrame then

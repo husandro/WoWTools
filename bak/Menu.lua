@@ -1,6 +1,26 @@
 ---@diagnostic disable: undefined-global, redefined-local, assign-type-mismatch, undefined-field, inject-field, missing-parameter, redundant-parameter, unused-local, trailing-space, param-type-mismatch, duplicate-set-field
 
 --[[
+.fontString
+.leftTexture1
+.leftTexture2
+WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+
+function MenuTemplates.CreateRadio(text, isSelected, onSelect, data)
+	local function Initializer(button, description, menu)
+		MenuVariants.CreateRadio(text, button, isSelected, data);
+	end
+	
+	local elementDescription = CreateButtonDescription(data);
+	elementDescription:SetSoundKit(GetButtonSoundKit);
+	elementDescription:AddInitializer(Initializer);
+	elementDescription:SetRadio(true);
+	elementDescription:SetIsSelected(isSelected);
+	elementDescription:SetResponder(onSelect);
+	return elementDescription;
+end
+SetResponse(MenuResponse.Refresh)
+
 Blizzard_Menu implementation guide
 
 Blizzard_Menu 是一个用于创建上下文菜单和下拉菜单的新框架，是 UIDropDownMenu 的完全替代品。

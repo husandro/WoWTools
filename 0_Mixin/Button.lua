@@ -72,10 +72,6 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isMask= tab.isMask
     local isBorder= not tab.notBorder
 
-    if tab.name=='WoWToolsPlayerFrameLootButton' then
-        print(isBorder, tab.name)
-    end
-
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
                     or (isMenu and 'DropdownButton')

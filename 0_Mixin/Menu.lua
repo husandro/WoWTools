@@ -670,75 +670,142 @@ end
 
 
 function WoWTools_MenuMixin:Set_Specialization(root)
-    local sub, specID, name, icon, roleIcon, _
     local numSpec= GetNumSpecializations(false, false) or 0
-    -- not C_SpecializationInfo.IsInitialized()
-       
- --[[
-    --local sex= UnitSex("player")
+    if not C_SpecializationInfo.IsInitialized() or numSpec==0 then
+		return
+	end
 
+    local sub, specID, name, icon, _
+    local isInCombat= InCombatLockdown()
     local curSpecIndex= GetSpecialization() or 0--当前，专精
-    local specID, name, _, icon= GetSpecializationInfo(curSpecIndex, false, false, nil, WoWTools_DataMixin.Player.Sex)
-    if not specID or not name then
-        return
-    end
-
-   --local curSpecID= specID
-
-   local roleIcon= GetMicroIconForRoleEnum(GetSpecializationRoleEnum(curSpecIndex, false, false))
-    local sub= root:CreateButton(
-        '|T'..(icon or 0)..':0|t'..'|A:'..(roleIcon or '')..':0:0|a'..WoWTools_TextMixin:CN(name),
-    function(data)
-        WoWTools_LoadUIMixin:SpellBook(2, nil)
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText('天赋和法术书', "TOGGLETALENTS"))
-    end)]]
+    local sex= WoWTools_DataMixin.Player.Sex
 
     for specIndex=1, numSpec, 1 do
-        specID, name, _, icon= GetSpecializationInfo(specIndex, false, false, nil, WoWTools_DataMixin.Player.Sex)
+        specID, name, _, icon= GetSpecializationInfo(specIndex, false, false, nil, sex)
 
         sub=root:CreateRadio(
             '|T'..(icon or 0)..':0|t'
             ..'|A:'..(GetMicroIconForRoleEnum(GetSpecializationRoleEnum(specIndex, false, false)) or '')..':0:0|a'
+            ..(isInCombat and '|cff828282' or (curSpecIndex==specIndex and '|cnGREEN_FONT_COLOR:') or '')
             ..WoWTools_TextMixin:CN(name),
         function(data)
             return data.specID== PlayerUtil.GetCurrentSpecID()
         end, function(data)
-            --[[if GetSpecialization(nil, false, 1)~=data.specIndex
-                and not InCombatLockdown()
-                --and not(PlayerSpellsFrame and PlayerSpellsFrame.TalentsFrame:IsCommitInProgress())
-            then]]
+            if C_SpecializationInfo.CanPlayerUseTalentSpecUI() then
                 C_SpecializationInfo.SetSpecialization(data.specIndex)
-            --end
-            return MenuResponse.Open
+            end
+            return MenuResponse.Refresh
         end, {
             specIndex=specIndex,
             specID= specID,
             tooltip= function(tooltip, data2)
+                local canSpecsBeActivated, failureReason = C_SpecializationInfo.CanPlayerUseTalentSpecUI()
                 tooltip:AddLine(' ')
-                tooltip:AddLine(
-                    ((UnitAffectingCombat('player') or GetSpecialization(nil, false, 1)==data2.specIndex) and '|cff828282' or '')
-                    ..(WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)
-                    ..WoWTools_DataMixin.Icon.left)
+                if GetSpecialization(nil, false, 1)==data2.specIndex then
+                    GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '已激活' or COVENANT_SANCTUM_UPGRADE_ACTIVE)
+
+                elseif canSpecsBeActivated then
+                    tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '激活' or SPEC_ACTIVE)..WoWTools_DataMixin.Icon.left)
+
+                elseif failureReason and failureReason~='' then
+                    GameTooltip_AddErrorLine(tooltip, WoWTools_TextMixin:CN(failureReason), true)
+                end
             end}
         )
 
-        --[[sub:AddInitializer(function(btn, desc)
-            info= btn
-            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-            btn:RegisterEvent('"ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
-            btn:SetScript('OnEvent', function(frame)
+        sub:AddInitializer(function(btn, desc, menu)
+            local rightTexture= btn:AttachTexture()
+            rightTexture:SetPoint('RIGHT', -12, 0)
+            rightTexture:SetSize(20,20)
+            rightTexture:SetAtlas('VignetteLoot')
 
+            function btn:set_loot()
+                local lootID= GetLootSpecialization()
+                local show
+                if lootID==0 then
+                    show= GetSpecialization(nil, false, 1)==desc.data.specIndex
+                else
+                    show= lootID==desc.data.specID
+                end
+                rightTexture:SetShown(show)
+            end
+            btn:set_loot()
+
+            btn:RegisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
+            btn:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+
+            btn:SetScript('OnEvent', function(s, event)
+                if event=='ACTIVE_PLAYER_SPECIALIZATION_CHANGED' then
+                    WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+                end
+                s:set_loot()
             end)
-        end)]]
+            btn:SetScript('OnHide', function(s)
+                s:UnregisterEvent('ACTIVE_PLAYER_SPECIALIZATION_CHANGED')
+                s:UnregisterEvent('PLAYER_LOOT_SPEC_UPDATED')
+                s:SetScript('OnHide', nil)
+                s.set_loot=nil
+            end)
+        end)
         WoWTools_SetTooltipMixin:Set_Menu(sub)
-        
+
+        sub:CreateButton(
+            '|T'..(icon or 0)..':0|t'
+            ..'|A:VignetteLoot:0:0|a'..(WoWTools_DataMixin.onlyChinese and '专精拾取' or SELECT_LOOT_SPECIALIZATION),
+        function(data)
+            SetLootSpecialization(data.specID)
+            return MenuResponse.Open
+        end, {specID= specID})
+
+
+        sub:CreateDivider()
+        sub:CreateButton(
+            --'|T'..(PlayerUtil.GetSpecIconBySpecID(GetSpecializationInfo(curSpecIndex), sex) or 0)..':0|t'
+            WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
+        function()
+            SetLootSpecialization(0)
+            return MenuResponse.Open
+        end)
     end
+
+    sub= root:CreateCheckbox(
+        ((C_PvP.ArePvpTalentsUnlocked() or not C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired())) and '|cff828282' or '')
+        ..'|A:pvptalents-warmode-swords:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE),
+    function()
+        return C_PvP.IsWarModeDesired()
+    end,function()
+        C_PvP.ToggleWarMode()
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE)
+        if not C_PvP.ArePvpTalentsUnlocked() then
+			GameTooltip_AddErrorLine(
+                GameTooltip,
+                format(
+                    WoWTools_DataMixin.onlyChinese and '在%d级解锁' or PVP_TALENT_SLOT_LOCKED,
+                    C_PvP.GetPvpTalentsUnlockedLevel()
+                ),
+            true)
+
+        elseif C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()) then
+            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
+		end
+    end)
+
+    sub:AddInitializer(function(btn, _, menu)
+        btn:RegisterEvent('PLAYER_FLAGS_CHANGED')
+        btn:SetScript('OnEvent', function()
+            WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+        end)
+        btn:SetScript('OnHide', function(s)
+            s:UnregisterEvent('PLAYER_FLAGS_CHANGED')
+            s:SetScript('OnHide', nil)
+        end)
+    end)
+
+    return true
 end
-
-
 
 
 
