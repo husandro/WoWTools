@@ -425,7 +425,6 @@ local function Create_positionFrame(frame)
     positionFrame.Text:SetPoint('LEFT')
 
     function positionFrame:set_shown()
-        print(self.unit)
         self:SetShown(
             UnitExists(self.unit)
             and (not IsInInstance() or self.unit=='player')
