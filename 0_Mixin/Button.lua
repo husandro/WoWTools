@@ -71,6 +71,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isType2= tab.isType2
     local isMask= tab.isMask
     local isBorder= not tab.notBorder
+    local isTexture= not tab.notTexture
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
@@ -103,11 +104,12 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
         btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
 
-
-        btn.texture=btn:CreateTexture(nil, 'BORDER')
-        btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
-        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
-        btn.texture:AddMaskTexture(btn.IconMask)
+        if isTexture then
+            btn.texture=btn:CreateTexture(nil, 'BORDER')
+            btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+            btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
+            btn.texture:AddMaskTexture(btn.IconMask)
+        end
 
         if isBorder then
             btn.border=btn:CreateTexture(nil, 'ARTWORK')
@@ -139,14 +141,14 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     btn:SetPushedAtlas(pushedAtlas)
     btn:SetHighlightAtlas(highlightAtlas)
 
-
-
 --设置 Atlas or Texture    
     if isType2 then
-        if atlas then
-            btn.texture:SetAtlas(atlas)
-        elseif texture then
-            btn.texture:SetTexture(texture)
+        if btn.texture then
+            if atlas then
+                btn.texture:SetAtlas(atlas)
+            elseif texture then
+                btn.texture:SetTexture(texture)
+            end
         end
     elseif atlas then
         btn:SetNormalAtlas(atlas)
@@ -183,6 +185,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if isMask or ((atlas or texture) and not pushedAtlas and not isType2) then
         self:AddMask(btn)
     end
+
     return btn
 end
 

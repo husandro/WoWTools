@@ -1,3 +1,8 @@
+--[[
+在编辑模式下 :GetUnit() 是 'player'
+]]
+
+
 --小队
 local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture then
@@ -20,52 +25,62 @@ end
 
 --目标的目标
 local function Create_potFrame(frame)
-    local unit= frame.unit or frame:GetUnit()
-
 
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         isSecure=true,
         size=35,
         isType2=true,
         notBorder=true,
+        notTexture=true,
+        name= 'WoWToolsParty'..frame.unit..'ToTButton',
     })
-    btn.unit= unit..'target'
+
+    function btn:set_unit()
+        local unit=self:GetParent():GetUnit()
+        self.unit= unit
+        self.tt= btn.unit..'target'
+
+        self.frame.unit= self.unit
+        self.frame.tt= self.tt
+    end
+    
 
     btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
     btn:SetAttribute('type', 'target')
-    btn:SetAttribute('unit', unit..'target')
-    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetAttribute('unit', btn.tt)
+    btn:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
 
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        if UnitExists(self.unit) then
-            GameTooltip:SetUnit(self.unit)
+        if UnitExists(self.tt) then
+            GameTooltip:SetUnit(self.tt)
         else
-            GameTooltip:AddDoubleLine(self.unit, WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
-            GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
+            GameTooltip:AddDoubleLine(self.tt, WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '选中目标' or BINDING_HEADER_TARGETING))
         end
         GameTooltip:Show()
     end)
 
 
-    btn.frame=CreateFrame('Frame', nil, btn)
+    btn.frame= CreateFrame('Frame', nil, btn)
     btn.frame:SetFrameLevel(btn.frame:GetFrameLevel()-1)
     btn.frame:SetAllPoints()
-    btn.frame.unit= btn.unit
     btn.frame:Hide()
 
+--目标，也是我的目标
     btn.frame.isPlayerTargetTexture= btn.frame:CreateTexture(nil, 'BORDER')
     btn.frame.isPlayerTargetTexture:SetSize(42,42)
     btn.frame.isPlayerTargetTexture:SetPoint('CENTER',2,-2)
     btn.frame.isPlayerTargetTexture:SetAtlas('UI-HUD-UnitFrame-TotemFrame')
-    --btn.frame.isPlayerTargetTexture= btn.border
     btn.frame.isPlayerTargetTexture:SetVertexColor(1,0,0)
+    btn.frame.isPlayerTargetTexture:Hide()
 
-    btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')--队友，目标，图像
+--目标，图像
+    btn.frame.Portrait= btn.frame:CreateTexture(nil, 'BACKGROUND')
     btn.frame.Portrait:SetAllPoints()
-    --btn.frame.Portrait= btn.texture
 
 
     btn.frame.healthLable= WoWTools_LabelMixin:Create(btn.frame, {size=14})
@@ -77,53 +92,63 @@ local function Create_potFrame(frame)
     btn.frame.class:SetPoint('TOPRIGHT')
 
 
-    function btn.frame:set_settings()
-        local exists2= UnitExists(self.unit)
+
+    btn:set_unit()
+
+
+    function btn.frame:settings()
+        local exists2= UnitExists(self.tt)
         if exists2 then
-            if self.isPlayer then
-                SetPortraitTexture(self.Portrait, self.unit, true)--图像
-            elseif UnitIsUnit(self.isSelfUnit, self.unit) then--队员，选中他自已
+--目标，图像
+            if UnitIsUnit(self.tt, self.unit) then--队员，选中他自已
                 self.Portrait:SetAtlas(WoWTools_DataMixin.Icon.toLeft)
-            elseif UnitIsUnit(self.unit, 'player') then--我
+
+            elseif UnitIsUnit(self.tt, 'player') then--我
                 self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-            elseif UnitIsDeadOrGhost(self.unit) then--死亡
-                self.Portrait:SetAtlas('xmarksthespot')
+
+            elseif UnitIsGhost(self.tt) then--幽灵
+                self.Portrait:SetAtlas('poi-soulspiritghost')
+
+            elseif UnitIsDead(self.tt) then--死亡
+                self.Portrait:SetAtlas('BattleBar-SwapPetFrame-DeadIcon')
+
             else
-                local index = GetRaidTargetIndex(self.unit)
-                if index and index>0 and index< 9 then--标记
+                local index = GetRaidTargetIndex(self.tt)--标记
+                if index and index>0 and index< 9 then
                     self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
                 else
-                    SetPortraitTexture(self.Portrait, self.unit, true)--图像
+                    SetPortraitTexture(self.Portrait, self.tt, true)--图像
                 end
             end
-
-            if UnitIsPlayer(self.unit) then
-                self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(nil, self.unit, nil, true))
-            elseif UnitIsBossMob(self.unit) then
+--目标，职业
+            if UnitIsPlayer(self.tt) then
+                self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(nil, self.tt, nil, true))
+            elseif UnitIsBossMob(self.tt) then
                 self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             else
                 self.class:SetTexture(0)
             end
-
-            local r2,g2,b2= select(2, WoWTools_UnitMixin:GetColor(self.unit))
+--目标，生命条
+            local r2,g2,b2= select(2, WoWTools_UnitMixin:GetColor(self.tt))
             self.healthLable:SetTextColor(r2, g2, b2)
+--目标，也是我的目标
+            self.isPlayerTargetTexture:SetShown(UnitIsUnit(self.tt, 'target'))
         end
-        self.isPlayerTargetTexture:SetShown(exists2 and UnitIsUnit(self.unit, 'target'))
+--目标是否存在
         self:SetShown(exists2)
     end
 
-
- --队友， 目标， 生命条
+ --目标， 生命条
     btn.frame:SetScript('OnUpdate', function(self, elapsed)
-        self.elapsed= (self.elapsed or 0.5) +elapsed
-        if self.elapsed>0.5 then
+        self.elapsed= (self.elapsed or 0.3) +elapsed
+        if self.elapsed>0.3 then
             self.elapsed=0
-            local cur= UnitHealth(self.unit) or 0
-            local max= UnitHealthMax(self.unit)
-            cur= cur<0 and 0 or cur
-            if max and max>0 then
-                local value= cur/max*100
-                self.healthLable:SetFormattedText('%i', value)
+            local cur= UnitHealth(self.tt)
+            local max= UnitHealthMax(self.tt) or 0
+            if cur and max>0 then
+                self.healthLable:SetFormattedText('%i', math.max(cur, 0)/max*100)
+            else
+                self.healthLable:SetText('')
             end
         end
     end)
@@ -131,23 +156,20 @@ local function Create_potFrame(frame)
 
 
     function btn:set_event()
-        if self:IsVisible() then
-            self:RegisterEvent('RAID_TARGET_UPDATE')
-            self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-            self:RegisterUnitEvent('UNIT_FLAGS', self.unit..'target')
-            self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.unit..'target')
-            self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        else
-            self:UnregisterAllEvents()
-        end
-        self.frame:set_settings()
+        self:RegisterEvent('RAID_TARGET_UPDATE')
+        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
+        self:RegisterUnitEvent('UNIT_FLAGS', self.tt)
+        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.tt)
+        self:RegisterEvent('PLAYER_TARGET_CHANGED')
+        self.frame:settings()
     end
 
     btn:SetScript('OnEvent', function(self)
-        self.frame:set_settings()
+        self.frame:settings()
     end)
 
     btn:SetScript('OnShow', function(self)
+        self:set_unit()
         self:set_event()
     end)
 
@@ -156,13 +178,16 @@ local function Create_potFrame(frame)
         self.frame.healthLable:SetText('')
         self.frame.class:SetTexture(0)
         self.frame.Portrait:SetTexture(0)
-        self:set_event()
+        self:UnregisterAllEvents()
     end)
 
-    btn:set_event()
+    if UnitExists(btn.unit) then
+        btn:set_event()
+    end
 
-    frame.potFrame= btn
+    frame.ToTButton= btn
 end
+
 
 
 
@@ -181,13 +206,16 @@ end
 
 --队友，施法
 local function Create_castFrame(frame)
-    local castFrame= CreateFrame("Frame", nil, frame)
-    castFrame:SetPoint('BOTTOMLEFT', frame.potFrame, 'BOTTOMRIGHT')
+    local unit= frame.unit or frame:GetUnit()
+
+    local castFrame= CreateFrame("Frame", 'WoWTools'..unit..'ToTCastingFrame', frame)
+    castFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'BOTTOMRIGHT')
     castFrame:SetSize(20,20)
+
+    castFrame.unit= unit
 
     castFrame.texture= castFrame:CreateTexture(nil,'BACKGROUND')
     castFrame.texture:SetAllPoints()
-
     WoWTools_ButtonMixin:AddMask(castFrame)
 
     castFrame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
@@ -206,20 +234,55 @@ local function Create_castFrame(frame)
         self:SetAlpha(0.5)
     end)
 
-    function castFrame:set_settings()
+    function castFrame:settings()
         local texture= WoWTools_CooldownMixin:SetFrame(self, {unit=self.unit})
-        self.texture:SetTexture(texture or 0)
+        self.texture:SetTexture(texture or (self.unit=='player' and '4622499') or 0)
     end
+
+    function castFrame:set_event()
+            local events= {--ActionButton.lua
+            'UNIT_SPELLCAST_CHANNEL_START',
+            'UNIT_SPELLCAST_CHANNEL_STOP',
+            'UNIT_SPELLCAST_CHANNEL_UPDATE',
+            'UNIT_SPELLCAST_START',
+            'UNIT_SPELLCAST_DELAYED',
+            'UNIT_SPELLCAST_FAILED',
+            'UNIT_SPELLCAST_FAILED_QUIET',
+            'UNIT_SPELLCAST_INTERRUPTED',
+            'UNIT_SPELLCAST_SUCCEEDED',
+            'UNIT_SPELLCAST_STOP',
+            'UNIT_SPELLCAST_RETICLE_TARGET',
+            'UNIT_SPELLCAST_RETICLE_CLEAR',
+            'UNIT_SPELLCAST_EMPOWER_START',
+            'UNIT_SPELLCAST_EMPOWER_STOP',
+        }
+        FrameUtil.RegisterFrameForUnitEvents(self, events, self.unit)
+        self:RegisterEvent('UNIT_SPELLCAST_SENT')
+        self:settings()
+    end
+
     castFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='UNIT_SPELLCAST_SENT' and not UnitIsUnit(self.unit, arg1) then
             return
         end
-        self:set_settings()
+        self:settings()
     end)
+
     castFrame:SetScript('OnHide', function(self)
         self.texture:SetTexture(0)
+        self:UnregisterAllEvents()
         WoWTools_CooldownMixin:SetFrame(self)
     end)
+
+    castFrame:SetScript('OnShow', function(self)
+        self.unit= self:GetParent():GetUnit()
+        self:set_event()
+    end)
+
+
+    if UnitExists(unit) then
+        castFrame:set_event()
+    end
 
     frame.castFrame= castFrame
 end
@@ -299,14 +362,16 @@ end
 --战斗指示
 local function Create_combatFrame(frame)
     local combatFrame= CreateFrame('Frame', nil, frame)
-    combatFrame:SetPoint('BOTTOMLEFT', frame.potFrame, 'RIGHT', 2, 2)
+    combatFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'RIGHT', 2, 2)
     combatFrame:SetSize(16,16)
+
+    combatFrame.unit= frame:GetUnit()
+
     combatFrame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     combatFrame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
-        GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(self.unit, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         GameTooltip:Show()
         self:SetAlpha(0.5)
@@ -316,17 +381,22 @@ local function Create_combatFrame(frame)
     combatFrame.texture:SetAllPoints(combatFrame)
     combatFrame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon')
     combatFrame.texture:SetVertexColor(1, 0, 0)
-    combatFrame.texture:SetShown(false)
+    combatFrame.texture:Hide()
+
     combatFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
-            self.texture:SetShown(UnitAffectingCombat(self.unit) or self.isPlayer)
+            self.texture:SetShown(UnitAffectingCombat(self.unit) or self.unit=='player')
         end
     end)
 
     combatFrame:SetScript('OnHide', function(self)
         self.elapsed=nil
+    end)
+
+    combatFrame:SetScript('OnShow', function(self)
+        self.unit= self:GetParent():GetUnit()
     end)
 
     frame.combatFrame= combatFrame
@@ -343,63 +413,81 @@ end
 
 --队友位置
 local function Create_positionFrame(frame)
+
     local positionFrame= CreateFrame("Frame", nil, frame)
-    positionFrame:Hide()
     positionFrame:SetPoint('LEFT', frame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
     positionFrame:SetSize(1,1)
+    positionFrame:Hide()
+
+    positionFrame.unit= frame:GetUnit()
+
     positionFrame.Text= WoWTools_LabelMixin:Create(positionFrame)
     positionFrame.Text:SetPoint('LEFT')
 
     function positionFrame:set_shown()
-        self:SetShown(not IsInInstance() and not UnitAffectingCombat('player') or self.isPlayer)
+        print(self.unit)
+        self:SetShown(
+            UnitExists(self.unit)
+            and (not IsInInstance() or self.unit=='player')
+        )
     end
 
     positionFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
+
+            local text
+            text= ''
+
+--挑战, 分数
+            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(self.unit)
+            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+                text= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
+            end
+
             local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID
             local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-            local text
+            if mapInfo and mapInfo.name then
+                local mapID2= C_Map.GetBestMapForUnit('player')
+--在同一地图上
+                text= text.. '|A:'..(mapID2== mapID and 'common-icon-checkmark' or 'poi-islands-table')..':0:0|a'
+--地图名称
+                text= text..WoWTools_TextMixin:CN(mapInfo.name)
+            end
+
+--距离
             local distanceSquared, checkedDistance = UnitDistanceSquared(self.unit)
             if distanceSquared and checkedDistance then
-                text= WoWTools_Mixin:MK(distanceSquared, 0)
+                text= text..' '..WoWTools_Mixin:MK(distanceSquared, 0)
             end
-            if mapInfo and mapInfo.name then
-                text= (text and text..' ' or '')..WoWTools_TextMixin:CN(mapInfo.name)
-                local mapID2= C_Map.GetBestMapForUnit('player')
-                if mapID2== mapID then
-                    text= format('|A:%s:0:0|a', 'common-icon-checkmark')..text
-                end
-            end
-            self.Text:SetText(text or '')
+
+            self.Text:SetText(text)
         end
     end)
 
 
-
-    function positionFrame:set_event()
-        if self:IsShown() and (not IsInInstance() and UnitExists(self.unit) or self.isPlayer) then
-            self:RegisterEvent('PLAYER_REGEN_DISABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-        else
-            self:UnregisterEvent('PLAYER_REGEN_DISABLED')
-            self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-        end
-    end
-
     positionFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
-    positionFrame:SetScript('OnEvent',  positionFrame.set_shown)
+    positionFrame:SetScript('OnEvent',  function(self)
+        self:set_shown()
+    end)
+
     positionFrame:SetScript('OnHide', function(self)
-        self:set_event()
         self.elapsed=nil
         self.Text:SetText('')
     end)
-    positionFrame:SetScript('OnShow', function(self)
-        self:set_event()
+
+    positionFrame:SetScript('OnShow', function(self)        
+        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(self.unit))
+        self.Text:SetTextColor(r,g,b)
     end)
 
-    positionFrame:set_event()
+    positionFrame:set_shown()
+
+    frame:HookScript('OnShow', function(self)
+        self.positionFrame.unit= self:GetUnit()
+        self.positionFrame:set_shown()
+    end)
 
     frame.positionFrame= positionFrame
 end
@@ -547,46 +635,7 @@ local function set_memberFrame(frame)
     frame.Texture:SetVertexColor(r, g, b)
     frame.PortraitMask:SetVertexColor(r, g, b)
 
---目标的目标
-    frame.potFrame.frame.unit= unit..'target'
-    frame.potFrame.frame.isSelfUnit= unit
-    frame.potFrame.frame.isPlayer= isPlayer
-    frame.potFrame.frame:UnregisterAllEvents()
-    if exists then
-        frame.potFrame:set_event()
-    end
-    frame.potFrame.frame:set_settings()
 
-
---队友，施法
-    if exists then
-        local events= {--ActionButton.lua
-            'UNIT_SPELLCAST_CHANNEL_START',
-            'UNIT_SPELLCAST_CHANNEL_STOP',
-            'UNIT_SPELLCAST_CHANNEL_UPDATE',
-            'UNIT_SPELLCAST_START',
-            'UNIT_SPELLCAST_DELAYED',
-            'UNIT_SPELLCAST_FAILED',
-            'UNIT_SPELLCAST_FAILED_QUIET',
-            'UNIT_SPELLCAST_INTERRUPTED',
-            'UNIT_SPELLCAST_SUCCEEDED',
-            'UNIT_SPELLCAST_STOP',
-            'UNIT_SPELLCAST_RETICLE_TARGET',
-            'UNIT_SPELLCAST_RETICLE_CLEAR',
-            'UNIT_SPELLCAST_EMPOWER_START',
-            'UNIT_SPELLCAST_EMPOWER_STOP',
-        }
-        FrameUtil.RegisterFrameForUnitEvents(frame.castFrame, events, unit)
-        frame.castFrame:RegisterEvent('UNIT_SPELLCAST_SENT')
-    else
-        frame.castFrame:UnregisterAllEvents()
-    end
-    frame.castFrame.unit= unit
-    if isPlayer then
-        frame.castFrame.texture:SetAtlas('Relic-Life-TraitGlow')
-    else
-        frame.castFrame.texture:SetTexture(0)
-    end
 
 
 --队伍, 标记, 成员派系
@@ -605,17 +654,9 @@ local function set_memberFrame(frame)
     frame.raidTargetFrame:set_faction()--成员派系
 
 
---战斗指示
-    frame.combatFrame.unit= unit
-    frame.combatFrame.isPlayer= isPlayer
-    frame.combatFrame:SetShown(exists)
 
---队友位置
-    frame.positionFrame.isPlayer= isPlayer
-    frame.positionFrame.Text:SetTextColor(r, g, b)
-    frame.positionFrame.unit= unit
-    frame.positionFrame:set_event()
-    frame.positionFrame:set_shown()
+
+
 
 
 --队友，死亡
@@ -656,8 +697,9 @@ local function Init()--PartyFrame.lua
     local showPartyFrames = PartyFrame:ShouldShow();
     for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
         frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
-
-        Create_potFrame(frame)--目标的目标
+        do
+            Create_potFrame(frame)--目标的目标
+        end
         Create_castFrame(frame)--队友，施法
         Create_raidTargetFrame(frame)--队伍, 标记, 成员派系
         Create_combatFrame(frame)--战斗指示

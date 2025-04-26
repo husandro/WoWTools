@@ -221,12 +221,21 @@ end
 
 
 
-
+local KeyTabs={
+    KEY_BUTTON1='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
+    KEY_BUTTON2='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
+    KEY_BUTTON3='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
+}
+local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
 
 function WoWTools_KeyMixin:GetHotKeyText(text, action)
-    local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
-    if text and text:find(KEY_BUTTON) then
-       return text:gsub(KEY_BUTTON, 'm')
+    if text then
+        local t= KeyTabs[text]
+        if t then
+            return t
+        elseif text:find(KEY_BUTTON) then
+            return text:gsub(KEY_BUTTON, 'm')
+        end
     elseif action then
         text= GetBindingKeyForAction(action, false, false)
         if text and text:find(KEY_BUTTON) then

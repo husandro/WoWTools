@@ -17,10 +17,9 @@ local function Init_HooKey(btn)
     if btn.UpdateHotkeys then
         hooksecurefunc(btn, 'UpdateHotkeys', function(self)
             if self.HotKey then--快捷键
-                local text=self.HotKey:GetText()
-                local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
-                if text and text:find(KEY_BUTTON) then
-                    self.HotKey:SetText(WoWTools_KeyMixin:GetHotKeyText(text, nil))
+                local text= WoWTools_KeyMixin:GetHotKeyText(self.HotKey:GetText(), nil)
+                if text then
+                    self.HotKey:SetText(text)
                 end
                 self.HotKey:SetTextColor(1,1,1,1)
             end

@@ -5587,7 +5587,8 @@
         "PerksProgramProductsFrameMixin",
         "PVP_TALENT_SLOT_LOCKED",
         "WarmodeButtonMixin",
-        "UnitPopupSharedUtil"
+        "UnitPopupSharedUtil",
+        "ExtraActionButton1HotKey"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
