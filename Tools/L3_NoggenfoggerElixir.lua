@@ -280,6 +280,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Set_Aura()--光环取消
 
     elseif event=='BAG_UPDATE_COOLDOWN' then
-        WoWTools_CooldownMixin:SetFrame(button, {item=ItemID})
+        WoWTools_CooldownMixin:SetFrame(button, {itemID=ItemID})
     end
 end)

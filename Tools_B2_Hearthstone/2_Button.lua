@@ -198,7 +198,7 @@ local function Init(ToyButton)
 
     --CD
     function ToyButton:set_cool(itemID)
-        WoWTools_CooldownMixin:SetFrame(self, {item=itemID or self.itemID})--主图标冷却
+        WoWTools_CooldownMixin:SetFrame(self, {itemID=itemID or self.itemID})--主图标冷却
     end
 
 

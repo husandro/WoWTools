@@ -51,12 +51,12 @@ local function Create_Button(frame)
 
     frame.spellPort:SetScript('OnShow', function(self)
         self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-        WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
+        WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID})
     end)
 
     frame.spellPort:SetScript('OnEvent', function(self, event)
         if event=='SPELL_UPDATE_COOLDOWN' then
-            WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID})
+            WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID})
 
         elseif event=='PLAYER_REGEN_DISABLED' then
             self:SetShown(false)
@@ -123,7 +123,7 @@ local function Set_Update()--Blizzard_ChallengesUI.lua
 
             frame.spellPort:GetNormalTexture():SetDesaturated(not IsSpellKnownOrOverridesKnown(spellID))
 
-            WoWTools_CooldownMixin:SetFrame(frame.spellPort, {spell=spellID})
+            WoWTools_CooldownMixin:SetFrame(frame.spellPort, {spellID=spellID})
 
             frame.spellPort:set_alpha()
 

@@ -134,7 +134,7 @@ local function init_Item_Button(self, equip)--设置按钮
         if event=='BAG_UPDATE_DELAYED' then
             set_Item_Count(self2)
         elseif event=='BAG_UPDATE_COOLDOWN' then
-            WoWTools_CooldownMixin:SetFrame(self2, {item=self2.itemID})
+            WoWTools_CooldownMixin:SetFrame(self2, {itemID=self2.itemID})
         elseif event=='QUEST_COMPLETE' then
             set_Bling_Quest(self2)
         elseif event=='PLAYER_EQUIPMENT_CHANGED' or 'PLAYER_REGEN_ENABLED' then
@@ -143,7 +143,7 @@ local function init_Item_Button(self, equip)--设置按钮
     end)
     self:SetScript('OnShow', function(self2)
         set_button_Event(self2, true)--事件
-        WoWTools_CooldownMixin:SetFrame(self, {item=self.itemID})
+        WoWTools_CooldownMixin:SetFrame(self, {itemID=self.itemID})
         set_Item_Count(self)
     end)
     self:SetScript('OnHide', function(self2)
@@ -204,12 +204,12 @@ local function init_Spell_Button(self)--设置按钮
         if event=='SPELL_UPDATE_USABLE' then
             set_Spell_Count(self2)
         elseif event=='SPELL_UPDATE_COOLDOWN' then
-            WoWTools_CooldownMixin:SetFrame(self2, {spell=self2.spellID})
+            WoWTools_CooldownMixin:SetFrame(self2, {spellID=self2.spellID})
         end
     end)
     self:SetScript('OnShow', function(self2)
         set_button_Event(self2, true)
-        WoWTools_CooldownMixin:SetFrame(self2, {spell=self2.spellID})
+        WoWTools_CooldownMixin:SetFrame(self2, {spellID=self2.spellID})
         set_Spell_Count(self2)
     end)
     self:SetScript('OnHide', function(self2)

@@ -118,7 +118,11 @@ local function Init_Frame()
                 if PVPMatchResults and PVPMatchResults.buttonContainer and PVPMatchResults.buttonContainer.leaveButton then
                     WoWTools_CooldownMixin:Setup(PVPMatchResults.buttonContainer.leaveButton, nil, WoWToolsSave['ChatButton_LFD'].sec, nil, true, true)
                 end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND), SecondsToTime(Save().sec))
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                    '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '离开战场' or LEAVE_BATTLEGROUND),
+                    SecondsToTime(Save().sec)
+                )
                 C_Timer.After(Save().sec, function()
                     if not IsModifierKeyDown() then
                         if IsInLFDBattlefield() then
@@ -151,7 +155,11 @@ local function Init()
         OnCancel=function(_, _, d)
             if d=='clicked' then
                 ExitIns=nil
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,'|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r', WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                    '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r',
+                    WoWTools_DataMixin.onlyChinese and '离开' or LEAVE
+                )
             end
         end,
         OnUpdate= function(self)
@@ -164,7 +172,11 @@ local function Init()
             s:SetAutoFocus(false)
             s:ClearFocus()
             ExitIns=nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,'|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r', WoWTools_DataMixin.onlyChinese and '离开' or LEAVE)
+            print(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                '|cff00ff00'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL)..'|r',
+                WoWTools_DataMixin.onlyChinese and '离开' or LEAVE
+            )
             s:GetParent():Hide()
         end,
         whileDead=true, hideOnEscape=true, exclusive=true,

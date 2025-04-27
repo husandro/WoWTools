@@ -108,7 +108,13 @@ local function Init_LFD()
         self.acceptTime= C_Timer.NewTimer(Save().sec, function()
             if LFDRoleCheckPopupAcceptButton:IsEnabled() and not IsModifierKeyDown() then
                 local t=LFDRoleCheckPopupDescriptionText:GetText()
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName, '|cffff00ff', t)
+                if t~='' then
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_LFDMixin.addName,
+                        '|cffff00ff',
+                        WoWTools_TextMixin:CN(t)
+                    )
+                end
                 LFDRoleCheckPopupAcceptButton:Click()--LFDRoleCheckPopupAccept_OnClick
             end
         end)

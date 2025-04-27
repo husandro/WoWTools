@@ -71,15 +71,15 @@ local function Init_Fuoco_Button(button)
     btn:SetPoint('LEFT', button, 'RIGHT',2,0)
 
     btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-    WoWTools_CooldownMixin:SetFrame(btn, {spell=818})
+    WoWTools_CooldownMixin:SetFrame(btn, {spellID=818})
 
     btn:SetScript('OnEvent', function (self)
-        WoWTools_CooldownMixin:SetFrame(self, {spell=818})
+        WoWTools_CooldownMixin:SetFrame(self, {spellID=818})
     end)
 
     btn:SetScript('OnShow', function (self)
         self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-        WoWTools_CooldownMixin:SetFrame(self, {spell=818})
+        WoWTools_CooldownMixin:SetFrame(self, {spellID=818})
     end)
 
     btn:SetScript('OnHide', function (self)

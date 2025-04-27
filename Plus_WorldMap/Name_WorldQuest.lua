@@ -3,7 +3,7 @@ local isHooked
 
 
 local function Init(self)--WorldQuestDataProvider.lua self.tagInfo
-    if UnitAffectingCombat('player') then
+    if WoWTools_FrameMixin:IsLocked(self) then
         return
     elseif not  WoWToolsSave['Plus_WorldMap'].ShowWorldQues_Name or not self.questID then-- or self.questID<=0 or self.questID>=2147483647 then
         if self.Text then self.Text:SetText('') end

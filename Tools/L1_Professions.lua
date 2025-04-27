@@ -96,7 +96,7 @@ local function Init_Cooking(index)
         button.tooltip=macro
 
         function button:set_event()
-            WoWTools_CooldownMixin:SetFrame(self, {spell=818})
+            WoWTools_CooldownMixin:SetFrame(self, {spellID=818})
         end
         function button:settings()
             if self:IsVisible() then

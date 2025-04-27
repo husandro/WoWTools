@@ -77,7 +77,7 @@ local function Init()
     Frame:SetPoint('LEFT')
     Frame:SetSize(1,1)
 
-    Frame.Text=WoWTools_LabelMixin:Create(Frame, {copyFont=WorldMapFrameTitleText})
+    Frame.Text=WoWTools_LabelMixin:Create(Frame, {copyFont= WorldMapFrameTitleText})
     Frame.Text:SetPoint('RIGHT', Frame, 'LEFT', -2, 0)
 
     Frame.storyText=WoWTools_LabelMixin:Create(Frame)--, {copyFont=WorldMapFrameTitleText})

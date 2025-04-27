@@ -58,12 +58,22 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
         return
     end
 
-    local item= tab.item
-    local spell= tab.spell
+    local item= tab.itemID
+    local spellID= tab.spellID
     local type= tab.type
     local unit= tab.unit
 
-    if unit then
+    
+
+    if spellID then
+        local data= C_Spell.GetSpellCooldown(spellID)
+        if data and data.duration>0 then
+            self:Setup(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
+        else
+            self:Setup(frame)
+        end
+
+    elseif unit then
         local texture, startTime, endTime, duration, channel
 
         if UnitExists(unit) then
@@ -78,21 +88,19 @@ function WoWTools_CooldownMixin:SetFrame(frame, tab)
                 duration= (endTime - startTime) / 1000
                 self:Setup(frame, nil, duration, nil, true, channel, nil,nil)
                 return texture
+            else
+                self:Setup(frame)
             end
-            self:Setup(frame)
         end
 
     elseif item then
         local startTime, duration = C_Item.GetItemCooldown(item)
-
-        self:Setup(frame, startTime, duration, nil, true, nil, not type)
-    elseif spell then
-        local data= C_Spell.GetSpellCooldown(spell) or {}
-        self:Setup(frame, data.startTime, data.duration, data.modRate, true, nil, not type)--冷却条
+        self:Setup(frame, startTime, duration, nil, true, nil, not type)   
 
     elseif frame.cooldown then
         self:Setup(frame)
     end
+
 end
 
 

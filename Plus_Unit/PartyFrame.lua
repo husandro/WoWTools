@@ -59,7 +59,7 @@ local function Create_potFrame(frame)
 
     btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
     btn:SetAttribute('type', 'target')
-    btn:SetAttribute('unit', btn.tt)
+    btn:SetAttribute('unit', frame.unit..'target')
     btn:SetScript('OnLeave', function()
         GameTooltip:Hide()
     end)
@@ -166,23 +166,18 @@ local function Create_potFrame(frame)
     end)
 
 
-
-    function btn:set_event()
-        self:RegisterEvent('RAID_TARGET_UPDATE')
-        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
-        self:RegisterUnitEvent('UNIT_FLAGS', self.tt)
-        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.tt)
-        self:RegisterEvent('PLAYER_TARGET_CHANGED')
-        self.frame:settings()
-    end
-
     btn:SetScript('OnEvent', function(self)
         self.frame:settings()
     end)
 
     btn:SetScript('OnShow', function(self)
         self:set_unit()
-        self:set_event()
+        self:RegisterEvent('RAID_TARGET_UPDATE')
+        self:RegisterUnitEvent('UNIT_TARGET', self.unit)
+        self:RegisterUnitEvent('UNIT_FLAGS', self.tt)
+        self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.tt)
+        self:RegisterEvent('PLAYER_TARGET_CHANGED')
+        self.frame:settings()
     end)
 
     btn:SetScript('OnHide', function(self)
@@ -193,9 +188,9 @@ local function Create_potFrame(frame)
         self:UnregisterAllEvents()
     end)
 
-    if UnitExists(btn.unit) then
+    --[[if UnitExists(btn.unit) then
         btn:set_event()
-    end
+    end]]
 
     frame.ToTButton= btn
 end
@@ -224,17 +219,21 @@ local function Create_castFrame(frame)
     castFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'BOTTOMRIGHT')
     castFrame:SetSize(20,20)
 
-    castFrame.unit= unit
-
-    castFrame.texture= castFrame:CreateTexture(nil,'BACKGROUND')
+    castFrame.texture= castFrame:CreateTexture(nil, 'BACKGROUND')
     castFrame.texture:SetAllPoints()
+    castFrame.texture:EnableMouse(true)
     WoWTools_ButtonMixin:AddMask(castFrame)
+    castFrame.texture:Hide()
 
-    castFrame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    castFrame:SetScript('OnEnter', function(self)
+    castFrame.texture:SetScript('OnLeave', function(self)
+        --GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    castFrame.texture:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
-        local spellID= select(8, UnitChannelInfo(self.unit)) or select(9, UnitCastingInfo(self.unit))
+        local u= self:GetParent().unit
+        local spellID= select(8, UnitChannelInfo(u)) or select(9, UnitCastingInfo(u))
         if spellID then
             GameTooltip:SetSpellByID(spellID)
         else
@@ -248,40 +247,17 @@ local function Create_castFrame(frame)
 
     function castFrame:settings()
         local texture= WoWTools_CooldownMixin:SetFrame(self, {unit=self.unit})
-        self.texture:SetTexture(
-            texture
-            or (Is_InEditMode(self) and '4622499')
-            or 0
-        )
+        texture= texture or (Is_InEditMode(self) and 4622499) or 0
+        self.texture:SetTexture(texture)
+        self.texture:SetShown(texture>0)
     end
 
-    function castFrame:set_event()
-            local events= {--ActionButton.lua
-            'UNIT_SPELLCAST_CHANNEL_START',
-            'UNIT_SPELLCAST_CHANNEL_STOP',
-            'UNIT_SPELLCAST_CHANNEL_UPDATE',
-            'UNIT_SPELLCAST_START',
-            'UNIT_SPELLCAST_DELAYED',
-            'UNIT_SPELLCAST_FAILED',
-            'UNIT_SPELLCAST_FAILED_QUIET',
-            'UNIT_SPELLCAST_INTERRUPTED',
-            'UNIT_SPELLCAST_SUCCEEDED',
-            'UNIT_SPELLCAST_STOP',
-            'UNIT_SPELLCAST_RETICLE_TARGET',
-            'UNIT_SPELLCAST_RETICLE_CLEAR',
-            'UNIT_SPELLCAST_EMPOWER_START',
-            'UNIT_SPELLCAST_EMPOWER_STOP',
-        }
-        FrameUtil.RegisterFrameForUnitEvents(self, events, self.unit)
-        self:RegisterEvent('UNIT_SPELLCAST_SENT')
-        self:settings()
-    end
 
     castFrame:SetScript('OnEvent', function(self, event, arg1)
         if event=='UNIT_SPELLCAST_SENT' and not UnitIsUnit(self.unit, arg1) then
             return
         end
-        self:settings()
+            self:settings()
     end)
 
     castFrame:SetScript('OnHide', function(self)
@@ -292,13 +268,27 @@ local function Create_castFrame(frame)
 
     castFrame:SetScript('OnShow', function(self)
         self.unit= self:GetParent():GetUnit()
-        self:set_event()
+        local events= {--ActionButton.lua
+            'UNIT_SPELLCAST_CHANNEL_START',
+            'UNIT_SPELLCAST_CHANNEL_UPDATE',
+            'UNIT_SPELLCAST_START',
+            'UNIT_SPELLCAST_DELAYED',
+            'UNIT_SPELLCAST_RETICLE_TARGET',
+            'UNIT_SPELLCAST_EMPOWER_START',
+
+            'UNIT_SPELLCAST_INTERRUPTED',
+            'UNIT_SPELLCAST_SUCCEEDED',
+            'UNIT_SPELLCAST_RETICLE_CLEAR',
+            'UNIT_SPELLCAST_FAILED',
+            'UNIT_SPELLCAST_FAILED_QUIET',
+            'UNIT_SPELLCAST_STOP',
+            'UNIT_SPELLCAST_EMPOWER_STOP',
+            'UNIT_SPELLCAST_CHANNEL_STOP',
+        }
+        FrameUtil.RegisterFrameForUnitEvents(self, events, self.unit)
+        self:RegisterEvent('UNIT_SPELLCAST_SENT')
+        self:settings()
     end)
-
-
-    if UnitExists(unit) then
-        castFrame:set_event()
-    end
 
     frame.castFrame= castFrame
 end
@@ -454,7 +444,7 @@ local function Create_positionFrame(frame)
     Frame.xy:SetPoint('RIGHT', frame.Portrait, 'LEFT')
     Frame.xy:Hide()
     WoWTools_UnitMixin:SetRangeFrame(Frame.xy)
-    
+
 
 
 
@@ -517,7 +507,7 @@ local function Create_positionFrame(frame)
         self.xy.Text:SetText('')
         self.xy.Text2:SetText('')
         self.xy.Text3:SetText('')
-        
+
         self.unit=nil
         self:UnregisterAllEvents()
     end)

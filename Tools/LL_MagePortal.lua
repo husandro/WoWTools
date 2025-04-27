@@ -175,7 +175,7 @@ local function Init()
 
             function btn:set_cool()
                 if self:IsVisible() then
-                    WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID2})--设置冷却
+                    WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
                 else
                     WoWTools_CooldownMixin:SetFrame(self)
                 end
@@ -261,7 +261,7 @@ local function Init()
 
             btn:SetScript("OnEvent", function(self, event, arg1)
                 if event=='SPELL_UPDATE_COOLDOWN' then
-                    WoWTools_CooldownMixin:SetFrame(self, {spell=self.spellID2})--设置冷却
+                    WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
 
                 elseif event=='SPELL_DATA_LOAD_RESULT' then
                     if (arg1==self.spellID or arg1==self.spellID2) then
