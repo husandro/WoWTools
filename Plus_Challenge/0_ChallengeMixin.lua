@@ -333,19 +333,24 @@ end
 
 
 function WoWTools_ChallengeMixin:KeystoneScorsoColor(score, texture, overall)--地下城史诗, 分数, 颜色 C_ChallengeMode.GetOverallDungeonScore()
-    if not score or score==0 or score=='0' then
+    score= score or 0
+    score= type(score)~='number' and tonumber(score) or score or 0
+    if score<=0 then
         return ''
-    else
-        score= type(score)~='number' and tonumber(score) or score
-        local color= not overall and C_ChallengeMode.GetDungeonScoreRarityColor(score) or C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(score)
-        if color  then
-            score= color:WrapTextInColorCode(score)
-        end
-        if texture then
-            score= '|T4352494:0|t'..score
-        end
-        return score, color
     end
+
+    local color= not overall and C_ChallengeMode.GetDungeonScoreRarityColor(score) or C_ChallengeMode.GetSpecificDungeonOverallScoreRarityColor(score)
+
+    local scoreText= format('%d', score)
+
+    if color then
+        scoreText= color:WrapTextInColorCode(score)
+    end
+    if texture then
+        scoreText= '|T4352494:0|t'..scoreText
+    end
+
+    return score, color
 end
 
 

@@ -1,8 +1,3 @@
---[[
-在编辑模式下 :GetUnit() 是 'player'
-]]
-
-
 --小队
 local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
     if texture then
@@ -15,6 +10,23 @@ local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
         end
     end
 end
+
+local function Is_InEditMode(self)
+    return self.unit=='player' or EditModeManagerFrame:ArePartyFramesForcedShown()
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -43,7 +55,7 @@ local function Create_potFrame(frame)
         self.frame.unit= self.unit
         self.frame.tt= self.tt
     end
-    
+
 
     btn:SetPoint('LEFT', frame, 'RIGHT', -3, 4)
     btn:SetAttribute('type', 'target')
@@ -236,7 +248,11 @@ local function Create_castFrame(frame)
 
     function castFrame:settings()
         local texture= WoWTools_CooldownMixin:SetFrame(self, {unit=self.unit})
-        self.texture:SetTexture(texture or (self.unit=='player' and '4622499') or 0)
+        self.texture:SetTexture(
+            texture
+            or (Is_InEditMode(self) and '4622499')
+            or 0
+        )
     end
 
     function castFrame:set_event()
@@ -367,27 +383,36 @@ local function Create_combatFrame(frame)
 
     combatFrame.unit= frame:GetUnit()
 
-    combatFrame:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-    combatFrame:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
-        GameTooltip:AddDoubleLine(self.unit, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
-        GameTooltip:Show()
-        self:SetAlpha(0.5)
-    end)
-
     combatFrame.texture= combatFrame:CreateTexture()
     combatFrame.texture:SetAllPoints(combatFrame)
     combatFrame.texture:SetAtlas('UI-HUD-UnitFrame-Player-CombatIcon')
     combatFrame.texture:SetVertexColor(1, 0, 0)
+    combatFrame.texture:EnableMouse(true)
     combatFrame.texture:Hide()
+
+    combatFrame.texture:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
+    combatFrame.texture:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
+        GameTooltip:AddDoubleLine(
+            self:GetParent().unit,
+            WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
 
     combatFrame:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
         if self.elapsed>0.3 then
             self.elapsed=0
-            self.texture:SetShown(UnitAffectingCombat(self.unit) or self.unit=='player')
+            self.texture:SetShown(
+                UnitAffectingCombat(self.unit) or Is_InEditMode(self)
+            )
         end
     end)
 
@@ -414,81 +439,101 @@ end
 --队友位置
 local function Create_positionFrame(frame)
 
-    local positionFrame= CreateFrame("Frame", nil, frame)
-    positionFrame:SetPoint('LEFT', frame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
-    positionFrame:SetSize(1,1)
-    positionFrame:Hide()
+    local Frame= CreateFrame("Frame", nil, frame)
+    Frame:SetPoint('LEFT', frame.PartyMemberOverlay.LeaderIcon, 'RIGHT')
+    Frame:SetSize(1,1)
 
-    positionFrame.unit= frame:GetUnit()
+--地图，位置
+    Frame.map= CreateFrame('Frame', nil, Frame)
+    Frame.map.Text= WoWTools_LabelMixin:Create(Frame.map)
+    Frame.map.Text:SetPoint('LEFT', Frame)
+    Frame.map:Hide()
+--距离
+    Frame.xy= CreateFrame('Frame', nil, Frame)
+    Frame.xy:SetSize(1,1)
+    Frame.xy:SetPoint('RIGHT', frame.Portrait, 'LEFT')
+    Frame.xy:Hide()
+    WoWTools_UnitMixin:SetRangeFrame(Frame.xy)
+    
 
-    positionFrame.Text= WoWTools_LabelMixin:Create(positionFrame)
-    positionFrame.Text:SetPoint('LEFT')
 
-    function positionFrame:set_shown()
-        self:SetShown(
-            UnitExists(self.unit)
-            and (not IsInInstance() or self.unit=='player')
-        )
-    end
 
-    positionFrame:SetScript('OnUpdate', function(self, elapsed)
+    Frame.map:SetScript('OnUpdate', function(self, elapsed)
         self.elapsed= (self.elapsed or 0.3) + elapsed
-        if self.elapsed>0.3 then
-            self.elapsed=0
+        if self.elapsed<=0.3 then
+            return
+        end
+        self.elapsed=0
 
-            local text
-            text= ''
+        local text
+        text= ''
 
 --挑战, 分数
-            local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(self.unit)
-            if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-                text= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
-            end
+        local info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(self.unit)
+        if info and info.currentSeasonScore and info.currentSeasonScore>0 then
+            text= WoWTools_ChallengeMixin:KeystoneScorsoColor(info.currentSeasonScore, true)
+        end
 
-            local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID
-            local mapInfo= mapID and C_Map.GetMapInfo(mapID)
-            if mapInfo and mapInfo.name then
-                local mapID2= C_Map.GetBestMapForUnit('player')
+        local mapID= C_Map.GetBestMapForUnit(self.unit)--地图ID
+        local mapInfo= mapID and C_Map.GetMapInfo(mapID)
+        if mapInfo and mapInfo.name then
+            local mapID2= C_Map.GetBestMapForUnit('player')
 --在同一地图上
-                text= text.. '|A:'..(mapID2== mapID and 'common-icon-checkmark' or 'poi-islands-table')..':0:0|a'
+            text= text.. '|A:'..(mapID2== mapID and 'common-icon-checkmark' or 'poi-islands-table')..':0:0|a'
 --地图名称
-                text= text..WoWTools_TextMixin:CN(mapInfo.name)
-            end
+            text= text..WoWTools_TextMixin:CN(mapInfo.name)
+        end
 
 --距离
-            local distanceSquared, checkedDistance = UnitDistanceSquared(self.unit)
-            if distanceSquared and checkedDistance then
-                text= text..' '..WoWTools_Mixin:MK(distanceSquared, 0)
-            end
-
-            self.Text:SetText(text)
+        local distanceSquared, checkedDistance = UnitDistanceSquared(self.unit)
+        if distanceSquared and checkedDistance then
+            text= text..' '..WoWTools_Mixin:MK(distanceSquared, 0)
         end
+
+        self.Text:SetText(text)
     end)
 
 
-    positionFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
-    positionFrame:SetScript('OnEvent',  function(self)
+
+    function Frame:set_shown()
+        local isInInstance= IsInInstance()
+        local isInEditMode= Is_InEditMode(self)
+
+        self.map:SetShown(isInEditMode or not isInInstance)
+        self.xy:SetShown(isInEditMode or isInInstance)
+    end
+
+    Frame:SetScript('OnEvent',  function(self)
         self:set_shown()
     end)
 
-    positionFrame:SetScript('OnHide', function(self)
-        self.elapsed=nil
-        self.Text:SetText('')
+    Frame:SetScript('OnHide', function(self)
+        self.map.elapsed=nil
+        self.map.unit=nil
+        self.map.Text:SetText('')
+
+        self.xy.elapsed= nil
+        self.xy.unit=nil
+        self.xy.Text:SetText('')
+        self.xy.Text2:SetText('')
+        self.xy.Text3:SetText('')
+        
+        self.unit=nil
+        self:UnregisterAllEvents()
     end)
 
-    positionFrame:SetScript('OnShow', function(self)        
-        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(self.unit))
-        self.Text:SetTextColor(r,g,b)
+    Frame:SetScript('OnShow', function(self)
+        local unit= self:GetParent():GetUnit()
+        self.unit= unit
+        self.map.unit= unit
+        self.xy.unit= unit
+
+        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+        self.map.Text:SetTextColor(r,g,b)
+
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:set_shown()
     end)
-
-    positionFrame:set_shown()
-
-    frame:HookScript('OnShow', function(self)
-        self.positionFrame.unit= self:GetUnit()
-        self.positionFrame:set_shown()
-    end)
-
-    frame.positionFrame= positionFrame
 end
 
 
@@ -507,42 +552,108 @@ end
 --队友，死亡
 local function Create_deadFrame(frame)
     --local unit= frame.unit or frame:GetUnit()
-    
+
     local deadFrame= CreateFrame('Frame', nil, frame)
     deadFrame:SetPoint("CENTER", frame.Portrait)
     deadFrame:SetFrameLevel(frame:GetFrameLevel()+1)
     deadFrame:SetSize(37,37)
     deadFrame:SetFrameStrata('HIGH')
 
-    deadFrame.unit= frame.unit or frame:GetUnit()
-
     deadFrame.texture= deadFrame:CreateTexture()
     deadFrame.texture:SetAllPoints(deadFrame)
 
-    --死亡，次数
-    deadFrame.dead=0
+
     deadFrame.Text= WoWTools_LabelMixin:Create(deadFrame, {mouse=true, color={r=1,g=1,b=1}})
     deadFrame.Text:SetPoint('BOTTOMRIGHT', deadFrame, -2,0)
-    deadFrame.Text:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+
+    deadFrame.Text:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
+    end)
     deadFrame.Text:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_UnitMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..' '..(self.unit or ''),
-                format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, self:GetParent().dead or 0 , WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
+        local p= self:GetParent()
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '死亡' or DEAD)..' '..p.unit,
+            p.dead..' '..(WoWTools_DataMixin.onlyChinese and '次' or VOICEMACRO_LABEL_CHARGE1)
         )
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET, WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    deadFrame.Text:SetScript('OnMouseDown', function(self)
+        self.dead=0
         self:SetAlpha(0.3)
+        self:GetParent():settings()
+    end)
+    deadFrame.Text:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.5)
     end)
 
 
-    function deadFrame:set_settings()
+    function deadFrame:settings()
+--死亡，次数
+        self.Text:SetText(self.dead)
+--编辑模式
+        if Is_InEditMode(self) then
+            self.texture:SetAtlas('QuestLegendaryTurnin')
+            return
+--没用，连线
+        elseif not UnitIsConnected(self.unit) then
+            self.texture:SetTexture(0)
+            return
+        end
+
         local atlas,texture
-        if UnitIsConnected(self.unit) then
-            local isDead= UnitIsDead(self.unit)
-            local isGhost= UnitIsGhost(self.unit)
-            if isDead or isGhost then--死亡，次数
+        if UnitHasIncomingResurrection(self.unit) then--正在复活
+            atlas='poi-traveldirections-arrow2'
+        elseif UnitIsUnconscious(self.unit) then--失控
+            atlas='cursor_legendaryquest_128'
+        elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
+            atlas= 'CovenantSanctum-Reservoir-Idle-NightFae-Spiral3'
+        elseif UnitIsFeignDeath(self.unit) then--假死
+            texture= 132293
+        elseif UnitIsDead(self.unit) then
+            atlas= 'xmarksthespot'
+        elseif UnitIsGhost(self.unit) then
+            atlas='poi-soulspiritghost'
+        end
+
+        if atlas then
+            self.texture:SetAtlas(atlas)
+        else
+            self.texture:SetTexture(texture or 0)
+        end
+    end
+
+    function deadFrame:Init()
+        self.dead=0
+        self.unit= self:GetParent():GetUnit()
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('CHALLENGE_MODE_START')
+        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
+        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        self:settings()
+    end
+
+    function deadFrame:clear()
+        self:UnregisterAllEvents()
+        self.Text:SetText('')
+        self.dead=nil
+        self.unit=nil
+        self.deadBool=nil
+        self.texture:SetTexture(0)
+    end
+
+    deadFrame:SetScript('OnEvent', function(self, event)
+        if event=='LOADING_SCREEN_DISABLED' or event=='CHALLENGE_MODE_START' then
+            self.dead= 0
+        else
+            if UnitIsDeadOrGhost(self.unit) then--死亡，次数
                 if not self.deadBool then
                     self.deadBool=true
                     self.dead= self.dead +1
@@ -550,57 +661,17 @@ local function Create_deadFrame(frame)
             else
                 self.deadBool= nil
             end
-            if UnitHasIncomingResurrection(self.unit) then--正在复活
-                atlas='poi-traveldirections-arrow2'
-            elseif UnitIsUnconscious(self.unit) then--失控
-                atlas='cursor_legendaryquest_128'
-            elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
-                atlas= 'CovenantSanctum-Reservoir-Idle-NightFae-Spiral3'
-            elseif UnitIsFeignDeath(self.unit) then--假死
-                texture= 132293
-            elseif isDead then
-                atlas= 'xmarksthespot'
-            elseif isGhost then
-                atlas='poi-soulspiritghost'
-            end
         end
-        if atlas then
-            self.texture:SetAtlas(atlas)
-        else
-            self.texture:SetTexture(texture or 0)
-        end
-        if self.isPlayer then
-            self.Text:SetText(10)
-        else
-            self.Text:SetText(self.dead>0 and self.dead or '')
-        end
-    end
-    function deadFrame:set_event()
-        if self:IsShown() then
-            self:RegisterEvent('LOADING_SCREEN_DISABLED')
-            self:RegisterEvent('CHALLENGE_MODE_START')
-            self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
-            self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
-        else
-            self:UnregisterAllEvents()
-        end
-    end
-    deadFrame:SetScript('OnEvent', function(self, event)
-        if event=='LOADING_SCREEN_DISABLED' or event=='CHALLENGE_MODE_START' then
-            self.dead= 0
-        end
-        self:set_settings()
-    end)
-    deadFrame:SetScript('OnHide', function(self)
-        self:UnregisterAllEvents()
-        self.dead= 0
-        self.Text:SetText('')
-    end)
-    deadFrame:SetScript('OnShow', function(self)
-        self:set_event()
+        self:settings()
     end)
 
-    deadFrame:set_event()
+    deadFrame:SetScript('OnShow', function(self)
+        self:Init()
+    end)
+    deadFrame:SetScript('OnHide', function(self)
+        self:clear()
+    end)
+
 
     frame.deadFrame= deadFrame
 end
@@ -626,7 +697,7 @@ local function set_memberFrame(frame)
    -- if not PartyFrame:ShouldShow() then
 
     local unit= frame.unit or frame:GetUnit()
-    local isPlayer= unit=='player'
+    local isPlayer= Is_InEditMode(frame)
     local exists= UnitExists(unit)
     local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
 
@@ -658,14 +729,7 @@ local function set_memberFrame(frame)
 
 
 
---队友，死亡
-    frame.deadFrame.isPlayer= isPlayer
-    frame.deadFrame.unit= unit
-    if exists then
-        frame.deadFrame:set_event()
-    end
-    frame.deadFrame:set_settings()
-    
+
 end
 
 

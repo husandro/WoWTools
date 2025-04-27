@@ -535,6 +535,67 @@ end
 
 
 
+local function Set_Range_OnUpdata(self, elapsed)
+    self.elapsed= (self.elapsed or 0.3) + elapsed
+    if self.elapsed<0.3 then
+        return
+    end
+
+    self.elapsed=0
+    local speed, mi, ma
+    if not UnitIsUnit(self.unit, 'player') then
+        mi, ma= WoWTools_UnitMixin:GetRange(self.unit)
+        if mi and ma then
+            local r,g,b
+            if ma<=5 then
+                r,g,b= 0,1,0--绿色
+
+            elseif ma<=8 then
+                r,g,b= 0.78, 0.61, 0.43--战士
+
+            elseif ma<=30 then
+                r,g,b= 1, 0.49, 0.04--XD
+
+            elseif ma<=35 then
+                r,g,b= 0.25, 0.78, 0.92--法师
+
+            elseif ma<=40 then
+                r,g,b= 0.67, 0.83, 0.45--猎人
+            else
+                r,g,b= 1, 0, 0--红
+            end
+
+            self.Text:SetTextColor(r,g,b)
+            self.Text2:SetTextColor(r,g,b)
+        end
+
+        local value= GetUnitSpeed('target') or 0
+        if value==0 then
+            speed= '|cff8282820'
+        else
+            speed= format('%.0f', (value)*100/BASE_MOVEMENT_SPEED)
+        end
+    end
+    self.Text:SetText(mi or '')
+    self.Text2:SetText(ma or '')
+    self.Text3:SetText(speed or '')
+end
+
+function WoWTools_UnitMixin:SetRangeFrame(frame)
+--位置，最大值
+    frame.Text2= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
+    frame.Text2:SetPoint('RIGHT', frame, 'LEFT')
+
+--位置，最小值
+    frame.Text= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
+    frame.Text:SetPoint('BOTTOMRIGHT', frame.Text2, 'TOPRIGHT')
+
+--移动, 速度
+    frame.Text3= WoWTools_LabelMixin:Create(frame, {justifyH='RIGHT'})
+    frame.Text3:SetPoint('TOPRIGHT', frame.Text2, 'BOTTOMRIGHT')
+
+    frame:SetScript('OnUpdate', Set_Range_OnUpdata)
+end
 
 
 
@@ -564,3 +625,11 @@ function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
         end
     end
 end
+
+
+
+
+
+
+
+

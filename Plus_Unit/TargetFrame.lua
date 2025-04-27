@@ -24,7 +24,22 @@ local function Init()
         end
     end)
 
-    TargetFrame.rangeText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
+    local rangeFrame= CreateFrame('Frame', nil, TargetFrame)
+    rangeFrame:SetSize(1,1)
+    rangeFrame:SetPoint('RIGHT', TargetFrame, 'LEFT', 22, 6)
+    rangeFrame.unit= 'target'
+    WoWTools_UnitMixin:SetRangeFrame(rangeFrame)
+    rangeFrame:SetScript('OnHide', function(self)
+        self.elapsed=nil
+        self.Text:SetText('')
+        self.Text2:SetText('')
+        self.Text3:SetText('')
+    end)
+
+    Init=function()end
+end
+
+    --[[TargetFrame.rangeText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT'})
     TargetFrame.rangeText:SetPoint('RIGHT', TargetFrame, 'LEFT', 22, 6)
     TargetFrame.speedText= WoWTools_LabelMixin:Create(TargetFrame, {justifyH='RIGHT', color={r=1,g=1,b=1}})
     TargetFrame.speedText:SetPoint('TOPRIGHT', TargetFrame.rangeText, 'BOTTOMRIGHT', 0, -2)
@@ -73,15 +88,11 @@ local function Init()
         end
         self.rangeText:SetText(text or '')
         self.speedText:SetText(speed or '')
-    end)
+    end)]]
 
 
 
 
-
-    
-    Init=function()end
-end
 
 
 
