@@ -215,11 +215,12 @@ local function Init_Menu(_, root)
 
 
         if isInGroup then
+            local unit
             if index==1 then
 --队伍，子目录
                 for i=1, GetNumGroupMembers()-1, 1 do
-                    local unit='party'..i
-                    if UnitExists(unit) then
+                    unit='party'..i
+                    if UnitExists(unit) and UnitIsPlayer(unit) then
                         playerName=GetUnitName(unit, true)
                         sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
                             if data and data~=WoWTools_DataMixin.Player.Name then
@@ -235,23 +236,22 @@ local function Init_Menu(_, root)
 
             elseif index==2 and isInRaid then
                 for i=1, MAX_RAID_MEMBERS,  1 do
-                    local unit='raid'..i
-                   if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
-                    --playerName=GetUnitName(unit, true)
-                    --playerName= GetRaidRosterInfo(i)
-                    --WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true})
-                    sub2=sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
-                        if data and data~=WoWTools_DataMixin.Player.Name then
-                            WoWTools_ChatMixin:Say(nil, data, nil)
-                        end
-                        return MenuResponse.Open
-                    end, playerName)
-                    sub2:SetTooltip(function(tooltip, description)
-                        if description.data and description.data~=WoWTools_DataMixin.Player.Name then
-                            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)
-                        end
-                    end)
-                end
+                    unit='raid'..i
+                   if UnitExists(unit) and not UnitIsUnit(unit, 'player') and UnitIsPlayer(unit) then
+                        sub2=sub:CreateButton(
+                            WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}),
+                        function(data)
+                            if data and data~=WoWTools_DataMixin.Player.Name then
+                                WoWTools_ChatMixin:Say(nil, data, nil)
+                            end
+                            return MenuResponse.Open
+                        end, playerName)
+                        sub2:SetTooltip(function(tooltip, description)
+                            if description.data and description.data~=WoWTools_DataMixin.Player.Name then
+                                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER)
+                            end
+                        end)
+                    end
                 end
                 sub:SetGridMode(MenuConstants.VerticalGridDirection, 4)
             end
@@ -429,9 +429,12 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
     local tabT, tabN, tabDPS, totaleHP = {}, {}, {}, 0
     local uiMapID= select(2, WoWTools_MapMixin:GetUnit('player'))
 
+    local unit, info
     for i=1, co do
-        local unit=u..i
-        local info={}
+        unit=u..i
+
+        info={}
+
         if not raid and i==co then
             unit='player'
         end
@@ -455,8 +458,21 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             end
 
             if maxHP and role then
-                info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
+                if UnitIsPlayer(unit) then
+                    info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
+                        ..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})
+                        ..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
+                else
+                    info.name= UnitName(unit)
+                    local classFilename= UnitClassBase(unit)
+                    local hex= classFilename and select(4, GetClassColor(classFilename))
+                    if hex then
+                        info.name= '|c'..hex..info.name..'|r'
+                    end
+                end
+
                 info.maxHP= maxHP
+
                 info.col= select(5, WoWTools_UnitMixin:GetColor(unit, nil))
                 if uiMapID then--不在同地图
                     local text, mapID=WoWTools_MapMixin:GetUnit(unit)

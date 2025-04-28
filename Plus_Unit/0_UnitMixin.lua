@@ -475,33 +475,35 @@ function WoWTools_UnitMixin:GetGroupMembers(inclusoMe)
         return tab
     end
 
+    local unit
     if inclusoMe then--所有队员
         if IsInRaid() then
             for i= 1, MAX_RAID_MEMBERS, 1 do
-                local unit='raid'..i
+                unit='raid'..i
                 if UnitExists(unit) then
                     table.insert(tab, unit)
                 end
             end
         else
             for i=1, GetNumGroupMembers() do
-                local unit='party'..i
+                unit='party'..i
                 if UnitExists(unit) then
                     table.insert(tab, unit)
                 end
             end
         end
+
     else--除我外，所有队员
         if IsInRaid() then
             for i= 1, MAX_RAID_MEMBERS, 1 do
-                local unit='raid'..i
+                unit='raid'..i
                 if UnitExists(unit) and not UnitIsUnit(unit, 'player') then
                     table.insert(tab, unit)
                 end
             end
         else
             for i=1, GetNumGroupMembers()-1, 1 do
-                local unit='party'..i
+                unit='party'..i
                 if UnitExists(unit)  then
                     table.insert(tab, unit)
                 end
@@ -510,6 +512,54 @@ function WoWTools_UnitMixin:GetGroupMembers(inclusoMe)
     end
     return tab
 end
+
+
+
+
+
+
+
+
+--#######
+--取得装等
+--#######
+local NotifyInspectTicker
+function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
+    if unit then
+        if UnitExists(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
+            NotifyInspect(unit)
+        end
+    else
+        tab=tab or {}
+        local num, index= #tab, 1
+        if num>0 then
+            if NotifyInspectTicker and not NotifyInspectTicker:IsCancelled() then
+                NotifyInspectTicker:Cancel()
+            end
+            NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
+                local unit2=tab[index]
+                if UnitExists(unit2) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit2, 1)
+                    NotifyInspect(tab[index])
+                    index= index+ 1
+                end
+            end, num)
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -618,40 +668,3 @@ function WoWTools_UnitMixin:SetRangeFrame(frame)
 
     frame:SetScript('OnUpdate', Set_Range_OnUpdata)
 end
-
-
-
---#######
---取得装等
---#######
-local NotifyInspectTicker
-function WoWTools_UnitMixin:GetNotifyInspect(tab, unit)
-    if unit then
-        if UnitExists(unit) and CanInspect(unit) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit, 1)
-            NotifyInspect(unit)
-        end
-    else
-        tab=tab or {}
-        local num, index= #tab, 1
-        if num>0 then
-            if NotifyInspectTicker and not NotifyInspectTicker:IsCancelled() then
-                NotifyInspectTicker:Cancel()
-            end
-            NotifyInspectTicker=C_Timer.NewTimer(4, function()--InspectFrame,如果显示，查看玩家，天赋，出错
-                local unit2=tab[index]
-                if UnitExists(unit2) and CanInspect(unit2) and (not InspectFrame or not InspectFrame:IsShown()) then--and CheckInteractDistance(unit2, 1)
-                    NotifyInspect(tab[index])
-                    index= index+ 1
-                end
-            end, num)
-        end
-    end
-end
-
-
-
-
-
-
-
-

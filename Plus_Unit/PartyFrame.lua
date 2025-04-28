@@ -5,7 +5,6 @@ local function Is_InEditMode(self)
 end
 
 local function Get_Unit_Status(unit)
-
     local atlas,texture
     if UnitHasIncomingResurrection(unit) then--正在复活
         atlas='poi-traveldirections-arrow2'
@@ -200,10 +199,6 @@ local function Create_potFrame(frame)
         self.frame.Portrait:SetTexture(0)
         self:UnregisterAllEvents()
     end)
-
-    --[[if UnitExists(btn.unit) then
-        btn:set_event()
-    end]]
 
     frame.ToTButton= btn
 end
@@ -455,8 +450,6 @@ local function Create_combatFrame(frame)
     combatFrame:SetScript('OnShow', function(self)
         self.unit= self:GetParent():GetUnit()
     end)
-
-    frame.combatFrame= combatFrame
 end
 
 
@@ -583,7 +576,6 @@ end
 
 --队友，死亡
 local function Create_deadFrame(frame)
-    --local unit= frame.unit or frame:GetUnit()
 
     local deadFrame= CreateFrame('Frame', nil, frame)
     deadFrame:SetPoint("CENTER", frame.Portrait)
@@ -649,26 +641,6 @@ local function Create_deadFrame(frame)
         end
     end
 
-    function deadFrame:Init()
-        self.dead=0
-        self.unit= self:GetParent():GetUnit()
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
-        self:RegisterEvent('CHALLENGE_MODE_START')
-        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
-        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
-        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.unit)
-        self:settings()
-    end
-
-    function deadFrame:clear()
-        self:UnregisterAllEvents()
-        self.Text:SetText('')
-        self.dead=nil
-        self.unit=nil
-        self.deadBool=nil
-        self.texture:SetTexture(0)
-    end
-
     deadFrame:SetScript('OnEvent', function(self, event)
         if event=='LOADING_SCREEN_DISABLED' or event=='CHALLENGE_MODE_START' then
             self.dead= 0
@@ -686,14 +658,23 @@ local function Create_deadFrame(frame)
     end)
 
     deadFrame:SetScript('OnShow', function(self)
-        self:Init()
+        self.dead=0
+        self.unit= self:GetParent():GetUnit()
+        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('CHALLENGE_MODE_START')
+        self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
+        self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.unit)
+        self:settings()
     end)
     deadFrame:SetScript('OnHide', function(self)
-        self:clear()
+        self:UnregisterAllEvents()
+        self.Text:SetText('')
+        self.dead=nil
+        self.unit=nil
+        self.deadBool=nil
+        self.texture:SetTexture(0)
     end)
-
-
-    frame.deadFrame= deadFrame
 end
 
 
@@ -707,34 +688,6 @@ end
 
 
 
-
-
-
-
-
-
-local function set_memberFrame(frame)
-   -- if not PartyFrame:ShouldShow() then
-
-    local unit= frame.unit or frame:GetUnit()
-    local isPlayer= Is_InEditMode(frame)
-    local exists= UnitExists(unit)
-    local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
-
---外框
-    frame.Texture:SetVertexColor(r, g, b)
-    frame.PortraitMask:SetVertexColor(r, g, b)
-
-
-
-
-
-
-
-
-
-
-end
 
 
 
@@ -759,9 +712,9 @@ local function Init()--PartyFrame.lua
         return
     end
 
-    PartyFrame.Background:SetWidth(122)--144
+    PartyFrame.Background:SetWidth(124)--144
 
-    local showPartyFrames = PartyFrame:ShouldShow();
+    --local showPartyFrames = PartyFrame:ShouldShow();
     for frame in PartyFrame.PartyMemberFramePool:EnumerateActive() do
         frame.Texture:SetAtlas('UI-HUD-UnitFrame-Party-PortraitOn-Status')--PartyFrameTemplates.xml
         do
@@ -774,15 +727,18 @@ local function Init()--PartyFrame.lua
         Create_deadFrame(frame)--队友，死亡
 
         hooksecurefunc(frame, 'UpdateAssignedRoles', function(self)--隐藏, DPS 图标
-            self.PartyMemberOverlay.RoleIcon:SetShown(UnitGroupRolesAssigned(self.unit)~= 'DAMAGER')
+            if UnitGroupRolesAssigned(self:GetUnit())== 'DAMAGER' then
+                self.PartyMemberOverlay.RoleIcon:SetShown(false)
+            end
         end)
 
-        if showPartyFrames then
-            set_memberFrame(frame)
-        end
-
         hooksecurefunc(frame, 'UpdateMember', function(self)
-            set_memberFrame(self)
+            local unit= frame:GetUnit() or frame.unit
+            local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
+
+        --外框
+            self.Texture:SetVertexColor(r, g, b)
+            self.PortraitMask:SetVertexColor(r, g, b)
         end)
     end
 
