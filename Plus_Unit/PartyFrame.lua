@@ -15,7 +15,26 @@ local function Is_InEditMode(self)
     return self.unit=='player' or EditModeManagerFrame:ArePartyFramesForcedShown()
 end
 
+local function Get_Unit_Status(unit)
 
+    local atlas,texture
+    if UnitHasIncomingResurrection(unit) then--正在复活
+        atlas='poi-traveldirections-arrow2'
+    elseif UnitIsUnconscious(unit) then--失控
+        atlas='cursor_legendaryquest_128'
+    elseif UnitIsCharmed(unit) or UnitIsPossessed(unit)  then--被魅惑
+        atlas= 'CovenantSanctum-Reservoir-Idle-NightFae-Spiral3'
+    elseif UnitIsFeignDeath(unit) then--假死
+        texture= 132293
+
+    elseif UnitIsGhost(unit) then
+        atlas='poi-soulspiritghost'
+
+    elseif UnitIsDead(unit) then
+        atlas= 'BattleBar-SwapPetFrame-DeadIcon'
+    end
+    return atlas, texture
+end
 
 
 
@@ -111,27 +130,31 @@ local function Create_potFrame(frame)
     function btn.frame:settings()
         local exists2= UnitExists(self.tt)
         if exists2 then
+
 --目标，图像
             if UnitIsUnit(self.tt, self.unit) then--队员，选中他自已
                 self.Portrait:SetAtlas(WoWTools_DataMixin.Icon.toLeft)
 
             elseif UnitIsUnit(self.tt, 'player') then--我
                 self.Portrait:SetAtlas('auctionhouse-icon-favorite')
-
-            elseif UnitIsGhost(self.tt) then--幽灵
-                self.Portrait:SetAtlas('poi-soulspiritghost')
-
-            elseif UnitIsDead(self.tt) then--死亡
-                self.Portrait:SetAtlas('BattleBar-SwapPetFrame-DeadIcon')
-
             else
-                local index = GetRaidTargetIndex(self.tt)--标记
-                if index and index>0 and index< 9 then
-                    self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                local atlas, texture=  Get_Unit_Status(self.unit)
+                if atlas then
+                    self.Portrait:SetAtlas(atlas)
+
+                elseif texture then
+                    self.Portrait:SetTexture(texture)
+
                 else
-                    SetPortraitTexture(self.Portrait, self.tt, true)--图像
+                    local index = GetRaidTargetIndex(self.tt)--标记
+                    if index and index>0 and index< 9 then
+                        self.Portrait:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index)
+                    else
+                        SetPortraitTexture(self.Portrait, self.tt, true)--图像
+                    end
                 end
             end
+
 --目标，职业
             if UnitIsPlayer(self.tt) then
                 self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(nil, self.tt, nil, true))
@@ -177,6 +200,7 @@ local function Create_potFrame(frame)
         self:RegisterUnitEvent('UNIT_FLAGS', self.tt)
         self:RegisterUnitEvent('UNIT_PORTRAIT_UPDATE', self.tt)
         self:RegisterEvent('PLAYER_TARGET_CHANGED')
+        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.tt)
         self.frame:settings()
     end)
 
@@ -598,20 +622,7 @@ local function Create_deadFrame(frame)
             return
         end
 
-        local atlas,texture
-        if UnitHasIncomingResurrection(self.unit) then--正在复活
-            atlas='poi-traveldirections-arrow2'
-        elseif UnitIsUnconscious(self.unit) then--失控
-            atlas='cursor_legendaryquest_128'
-        elseif UnitIsCharmed(self.unit) or UnitIsPossessed(self.unit)  then--被魅惑
-            atlas= 'CovenantSanctum-Reservoir-Idle-NightFae-Spiral3'
-        elseif UnitIsFeignDeath(self.unit) then--假死
-            texture= 132293
-        elseif UnitIsDead(self.unit) then
-            atlas= 'xmarksthespot'
-        elseif UnitIsGhost(self.unit) then
-            atlas='poi-soulspiritghost'
-        end
+        local atlas, texture= Get_Unit_Status(self.unit)
 
         if atlas then
             self.texture:SetAtlas(atlas)
@@ -627,6 +638,7 @@ local function Create_deadFrame(frame)
         self:RegisterEvent('CHALLENGE_MODE_START')
         self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
         self:RegisterUnitEvent('UNIT_HEALTH', self.unit)
+        self:RegisterUnitEvent('INCOMING_RESURRECT_CHANGED', self.unit)
         self:settings()
     end
 

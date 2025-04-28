@@ -117,9 +117,9 @@ local function Init_BattlePet()
         WoWTools_TooltipMixin:Set_Pet(self, speciesID)--宠物
     end)
 
-    hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(self)--世界任务ID GameTooltip_AddQuest
-        WoWTools_TooltipMixin:Set_Quest(self)
-    end)
+    --[[hooksecurefunc('GameTooltip_AddQuestRewardsToTooltip', function(self, questID)--世界任务ID GameTooltip_AddQuest
+        WoWTools_TooltipMixin:Set_Quest(self, questID)
+    end)]]
 end
 
 

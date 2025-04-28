@@ -245,11 +245,12 @@ local function Init()
 --任务日志 显示ID
     hooksecurefunc("QuestMapLogTitleButton_OnEnter", function(self)
         local info= self.questLogIndex and C_QuestLog.GetInfo(self.questLogIndex)
-        if not info or not info.questID or not HaveQuestData(info.questID) then
+        local questID= info and info.questID or self.questID
+        if not questID  or not HaveQuestData(questID) then
             return
         end
 
-        WoWTools_TooltipMixin:Set_Quest(GameTooltip, info.questID, info)--任务
+        WoWTools_TooltipMixin:Set_Quest(GameTooltip, questID, info)--任务
 
         if IsInGroup() then
             local n=GetNumGroupMembers()
@@ -263,7 +264,7 @@ local function Init()
                     else
                         u2=u..i
                     end
-                    if C_QuestLog.IsUnitOnQuest(u2, info.questID) then
+                    if C_QuestLog.IsUnitOnQuest(u2, questID) then
                         acceto=acceto+1
                     end
                 end

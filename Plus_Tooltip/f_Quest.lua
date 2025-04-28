@@ -4,6 +4,7 @@
 --任务
 function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     questID= questID or (info and info.questID or nil)
+
     if not questID then
         return
     end
@@ -13,13 +14,13 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     local levelText
     if lv then
         if lv<WoWTools_DataMixin.Player.Level then
-            levelText= '|cnGREEN_FONT_COLOR:['..lv..']|r'
+            levelText= '|cnGREEN_FONT_COLOR:'..lv..'|r '
         elseif lv>WoWTools_DataMixin.Player.Level then
-            levelText= '|cnRED_FONT_COLOR:['..lv..']|r'
+            levelText= '|cnRED_FONT_COLOR:'..lv..']|r '
         else
-            levelText='|cffffffff['..lv..']|r'
+            levelText='|cffffffff'..lv..'|r '
         end
-        levelText= (WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)
+        levelText= levelText..(WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)
     end
     tooltip:AddDoubleLine('questID '..questID, levelText)
 

@@ -4,34 +4,34 @@ local function Set_QuestInfo_Display()
     if not WoWToolsSave['Plus_Gossip'].quest then
         return
     end
-
+    local desc, obType, finished
     for index, label in pairs(QuestInfoObjectivesFrame.Objectives) do
         if label:IsShown() then
-            local text, type, finished = GetQuestLogLeaderBoard(index)
+            desc, obType, finished = GetQuestLogLeaderBoard(index)
             if not finished then
                 label:SetTextColor(0.180, 0.121, 0.588)
             end
 
             local atlas, icon
             if not finished then
-                if type=='monster' then
+                if obType=='monster' then
                     atlas='UpgradeItem-32x32'
 
-                elseif type=='item' then
-                    if text then
-                        local itemName= text:match('%d+/%d+ (.-) |A') or text:match('%d+/%d+ (.+)')
+                elseif obType=='item' then
+                    if desc then
+                        local itemName= desc:match('%d+/%d+ (.-) |A') or desc:match('%d+/%d+ (.+)')
                         if itemName then
                             icon = C_Item.GetItemIconByID(itemName)
                         end
                     end
                     icon= icon or 134400
 
-                elseif type=='object' then
+                elseif obType=='object' then
                     atlas= 'QuestObjective'
 
-                elseif type=='spell' then
+                elseif obType=='spell' then
                     atlas= 'plunderstorm-icon-utility'
-                elseif type=='log' then
+                elseif obType=='log' then
                     atlas='QuestionMarkContinent-Icon'
                 end
             end

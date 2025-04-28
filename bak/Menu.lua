@@ -343,9 +343,10 @@ end);
 local button = rootDescription:CreateButton("Button", OnClick);
 button:SetTooltip(function(tooltip, elementDescription)
 	GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
-	GameTooltip_AddInstructionLine(tooltip, "Test Tooltip Instruction");
-	GameTooltip_AddNormalLine(tooltip, "Test Tooltip Normal Line");
-	GameTooltip_AddErrorLine(tooltip, "Test Tooltip Colored Line");
+	GameTooltip_AddInstructionLine(tooltip, "Test Tooltip Instruction");--绿色
+	GameTooltip_AddNormalLine(tooltip, "Test Tooltip Normal Line");--黄色
+	GameTooltip_AddErrorLine(tooltip, "Test Tooltip Colored Line");--红色
+	GameTooltip_AddColoredLine(tooltip, text, HIGHLIGHT_FONT_COLOR)--白色
 end);
 
 GameTooltip_SetTitle(tooltip, text, overrideColor, wrap)
