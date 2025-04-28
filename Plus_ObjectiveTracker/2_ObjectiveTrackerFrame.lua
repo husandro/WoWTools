@@ -268,8 +268,10 @@ local function Init()
     ObjectiveTrackerFrame.Header.MinimizeButton:RegisterForDrag("RightButton")
 
     ObjectiveTrackerFrame.Header.MinimizeButton:SetScript("OnDragStart", function(self)
-        self:GetParent():GetParent():StartMoving()
-        SetCursor('UI_MOVE_CURSOR')
+        if not WoWTools_FrameMixin:IsLocked(self) then
+            self:GetParent():GetParent():StartMoving()
+            SetCursor('UI_MOVE_CURSOR')
+        end
     end)
     ObjectiveTrackerFrame.Header.MinimizeButton:SetScript("OnDragStop", function(self, d)
         self:GetParent():GetParent():StopMovingOrSizing()
