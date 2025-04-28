@@ -5588,7 +5588,19 @@
         "PVP_TALENT_SLOT_LOCKED",
         "WarmodeButtonMixin",
         "UnitPopupSharedUtil",
-        "ExtraActionButton1HotKey"
+        "ExtraActionButton1HotKey",
+        "QuestInfoDescriptionText",
+        "QuestInfoDescriptionHeader",
+        "QuestProgressRequiredItemsText",
+        "QuestInfoSpellObjectiveLearnLabel",
+        "QuestInfoTitleHeader",
+        "QuestProgressTitleText",
+        "QuestInfoObjectivesHeader",
+        "QuestInfoObjectivesText",
+        "QuestProgressText",
+        "QuestInfoRewardText",
+        "QuestInfoXPFrame",
+        "QuestProgressRequiredMoneyText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

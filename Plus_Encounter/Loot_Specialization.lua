@@ -182,10 +182,17 @@ local function Button_OnEnter(self)
     if not Save().hideEncounterJournal and self.encounterID then
         local name2, _, journalEncounterID, rootSectionID, _, journalInstanceID, dungeonEncounterID, instanceID2= EJ_GetEncounterInfo(self.encounterID)--button.index= button.GetOrderIndex()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        --GameTooltip:ClearLines()
         local cnName= WoWTools_TextMixin:CN(name2, true)
-        GameTooltip:AddDoubleLine(cnName and cnName..' '..name2 or name2,  'journalEncounterID: '..'|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
-        GameTooltip:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID or ' ')
+        GameTooltip:SetText(cnName and cnName..' '..name2 or name2)
+        GameTooltip:AddLine(' ')
+
+        journalEncounterID= journalEncounterID or self.encounterID
+        if journalEncounterID then
+            GameTooltip:AddLine('journalEncounterID:|cnGREEN_FONT_COLOR:'..(journalEncounterID or self.encounterID)..'|r')
+        end
+
+        GameTooltip:AddDoubleLine(instanceID2 and 'instanceID: '..instanceID2 or ' ', (rootSectionID and rootSectionID>0) and 'JournalEncounterSectionID: '..rootSectionID)
         if dungeonEncounterID then
             GameTooltip:AddDoubleLine('dungeonEncounterID: |cffff00ff'..dungeonEncounterID, (journalInstanceID and journalInstanceID>0) and 'journalInstanceID: '..journalInstanceID or ' ' )
             local numKill=Save().wowBossKill[dungeonEncounterID]

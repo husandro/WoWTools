@@ -1,15 +1,4 @@
---小队
-local function set_RaidTarget(texture, unit)--设置, 标记 TargetFrame.lua
-    if texture then
-        local index = UnitExists(unit) and GetRaidTargetIndex(unit)
-        if index and index>0 and index< 9 then
-            SetRaidTargetIconTexture(texture, index)
-            texture:SetShown(true)
-        else
-            texture:SetShown(false)
-        end
-    end
-end
+
 
 local function Is_InEditMode(self)
     return self.unit=='player' or EditModeManagerFrame:ArePartyFramesForcedShown()
@@ -237,9 +226,7 @@ end
 
 --队友，施法
 local function Create_castFrame(frame)
-    local unit= frame.unit or frame:GetUnit()
-
-    local castFrame= CreateFrame("Frame", 'WoWTools'..unit..'ToTCastingFrame', frame)
+    local castFrame= CreateFrame("Frame", 'WoWTools'..frame.unit..'ToTCastingFrame', frame)
     castFrame:SetPoint('BOTTOMLEFT', frame.ToTButton, 'BOTTOMRIGHT')
     castFrame:SetSize(20,20)
 
@@ -313,8 +300,6 @@ local function Create_castFrame(frame)
         self:RegisterEvent('UNIT_SPELLCAST_SENT')
         self:settings()
     end)
-
-    frame.castFrame= castFrame
 end
 
 
@@ -333,22 +318,43 @@ end
 --队伍, 标记, 成员派系
 local function Create_raidTargetFrame(frame)
     local raidTargetFrame= CreateFrame("Frame", nil, frame)
-    raidTargetFrame:SetSize(14,14)
-    raidTargetFrame:SetPoint('RIGHT', frame.PartyMemberOverlay.RoleIcon, 'LEFT')
-    raidTargetFrame.texture= raidTargetFrame:CreateTexture()
-    raidTargetFrame.texture:SetAllPoints(raidTargetFrame)
-    raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
 
-    --成员派系
+    raidTargetFrame.texture= raidTargetFrame:CreateTexture()
+    raidTargetFrame.texture:SetSize(12,12)
+    raidTargetFrame.texture:SetTexture('Interface\\TargetingFrame\\UI-RaidTargetingIcons')
+    raidTargetFrame.texture:SetPoint('RIGHT', frame.PartyMemberOverlay.RoleIcon, 'LEFT')
+
+--标记 TargetFrame.lua
+    function raidTargetFrame:set_mark()
+        local index
+        if Is_InEditMode(self) then
+            index=1
+        else
+            index = GetRaidTargetIndex(self.unit)
+            if index and (index<=0 or index>=9) then
+                index= nil
+            end
+        end
+        if index then
+            SetRaidTargetIconTexture(self.texture, index)
+        end
+        self.texture:SetShown(index)
+    end
+
+--成员派系
     raidTargetFrame.faction=raidTargetFrame:CreateTexture(nil, 'ARTWORK')
     raidTargetFrame.faction:SetSize(14,14)
     raidTargetFrame.faction:SetPoint('TOPLEFT', frame.Portrait)
-
+--成员派系
     function raidTargetFrame:set_faction()
-        local faction= UnitFactionGroup(self.unit)
         local atlas
-        if faction~= WoWTools_DataMixin.Player.Faction or self.isPlayer then
-            atlas= WoWTools_DataMixin.Icon[faction]
+        if Is_InEditMode(self) then
+            atlas= WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction]
+        else
+            local faction= UnitFactionGroup(self.unit)
+            if faction and faction~= WoWTools_DataMixin.Player.Faction then
+                atlas= WoWTools_DataMixin.Icon[faction]
+            end
         end
         if atlas then
             self.faction:SetAtlas(atlas)
@@ -357,16 +363,28 @@ local function Create_raidTargetFrame(frame)
         end
     end
 
+
+
     raidTargetFrame:SetScript('OnEvent', function(self, event)
         if event=='RAID_TARGET_UPDATE' then
-            set_RaidTarget(self.texture, self.unit)--队伍, 标记
+            self:set_mark()
         elseif event=='UNIT_FACTION' then
             self:set_faction()--成员派系
         end
     end)
 
-
-    frame.raidTargetFrame= raidTargetFrame
+    raidTargetFrame:SetScript('OnHide', function(self)
+        self:UnregisterAllEvents()
+        self.faction:SetTexture(0)
+        self.unit=nil
+    end)
+    raidTargetFrame:SetScript('OnShow', function(self)
+        self.unit= self:GetParent():GetUnit()
+        self:RegisterUnitEvent('UNIT_FACTION', self.unit)
+        self:RegisterEvent('RAID_TARGET_UPDATE')
+        self:set_faction()
+        self:set_mark()
+    end)
 end
 
 
@@ -708,22 +726,6 @@ local function set_memberFrame(frame)
     frame.PortraitMask:SetVertexColor(r, g, b)
 
 
-
-
---队伍, 标记, 成员派系
-    frame.raidTargetFrame.unit= unit
-    frame.raidTargetFrame.isPlayer= isPlayer
-    frame.raidTargetFrame:UnregisterAllEvents()
-    if exists then
-        frame.raidTargetFrame:RegisterUnitEvent('UNIT_FACTION', unit)
-        frame.raidTargetFrame:RegisterEvent('RAID_TARGET_UPDATE')
-    end
-    if isPlayer then
-        SetRaidTargetIconTexture(frame.raidTargetFrame.texture, 1)
-    else
-        set_RaidTarget(frame.raidTargetFrame.texture, frame.raidTargetFrame.unit)--队伍, 标记
-    end
-    frame.raidTargetFrame:set_faction()--成员派系
 
 
 

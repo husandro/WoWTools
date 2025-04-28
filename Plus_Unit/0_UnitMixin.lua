@@ -524,7 +524,7 @@ end
 
 --距离
 function WoWTools_UnitMixin:CheckRange(unit, range, operator)
-    local min, max= LibRangeCheck:GetRange(unit, true)
+    local min, max= LibRangeCheck:GetRange(unit, operator)
     if (operator) then-- == "<=") then
         return (max or 999) <= range
     else
@@ -544,7 +544,7 @@ local function Set_Range_OnUpdata(self, elapsed)
     self.elapsed=0
     local speed, mi, ma
     if not UnitIsUnit(self.unit, 'player') then
-        mi, ma= WoWTools_UnitMixin:GetRange(self.unit)
+        mi, ma= LibRangeCheck:GetRange(self.unit)
         if mi and ma then
             local r,g,b
             if ma<=5 then
