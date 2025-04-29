@@ -1160,11 +1160,11 @@ local function Blizzard_PerksProgram()
         end
     end
 
-    local function set_uptate(self)
-        if not self:GetView() then
+    local function set_uptate(frame)
+        if not frame:GetView() then
             return
         end
-        for _, btn in pairs(self:GetFrames()) do
+        for _, btn in pairs(frame:GetFrames()) do
             if btn.itemID then
                 local itemLink= WoWTools_ItemMixin:GetLink(btn.itemID)
                 WoWTools_ItemMixin:Setup(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
@@ -1174,6 +1174,12 @@ local function Blizzard_PerksProgram()
                     local itemLink= WoWTools_ItemMixin:GetLink(itemInfo.itemID)
                     WoWTools_ItemMixin:Setup(btn.ContentsContainer, {itemLink=itemLink, point=btn.ContentsContainer.Icon, size=12})
                 end
+            end
+--双击， 移队/加入购物车
+            if btn:GetObjectType()=='Button' and not btn:GetScript('OnDoubleClick') then
+                btn:SetScript('OnDoubleClick', function(self)
+                    self.ContentsContainer.CartToggleButton:Click()
+                end)
             end
         end
         set_FrozenButton_Tips()
@@ -1187,6 +1193,8 @@ local function Blizzard_PerksProgram()
     C_Timer.After(0.3, function()
         set_uptate(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.ScrollBox)
     end)
+
+
 
 
     Blizzard_PerksProgram=function()end
@@ -1320,7 +1328,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
                 Init()
-                
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_PerksProgram') then
                     Blizzard_PerksProgram()
                 end

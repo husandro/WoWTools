@@ -943,7 +943,7 @@ end
 
 
 --地下堡
-function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()    
+function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
     self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
 end
 
@@ -1047,6 +1047,7 @@ end
 
 
 
-function WoWTools_TextMixin:Blizzard_PerksProgram()
+function WoWTools_TextureMixin.Events:Blizzard_PerksProgram()
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer)
+    self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.ItemList)
 end
