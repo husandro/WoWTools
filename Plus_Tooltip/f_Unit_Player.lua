@@ -12,23 +12,24 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
     local tooltipName=tooltip:GetName() or 'GameTooltip'
 
-
+--图像
     tooltip.Portrait:SetAtlas(WoWTools_DataMixin.Icon[englishFaction] or 'Neutral')
     tooltip.Portrait:SetShown(true)
 
-    --取得玩家信息
+--取得玩家信息
     local info= WoWTools_DataMixin.UnitItemLevel[guid]
     if info then
         if not isInCombat then
             WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
         end
+
         if info.itemLevel then--设置装等
             if info.itemLevel>1 then
                 textLeft= info.itemLevel
             end
         end
-        if info.specID then
-            local icon, role= select(4, GetSpecializationInfoByID(info.specID))--设置天赋
+        if info.specID then--设置天赋
+            local icon, role= select(4, GetSpecializationInfoByID(info.specID))
             if icon then
                 text2Left= "|T"..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
@@ -37,9 +38,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         WoWTools_UnitMixin:GetNotifyInspect(nil, unit)--取得装等
     end
 
-    tooltip.backgroundColor:SetColorTexture(r, g, b, 0.2)--背景颜色
-    tooltip.backgroundColor:SetShown(true)
+--设置，背景
+    tooltip:Set_BG_Color(r,g,b, 0.2)
 
+
+--设置 textLeft
     local isWarModeDesired= C_PvP.IsWarModeDesired()--争模式
     local statusIcon, statusText= WoWTools_UnitMixin:GetOnlineInfo(unit)--单位，状态信息
     if statusIcon and statusText then
@@ -63,9 +66,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         text2Left= text2Left..'|T236347:0|t'
     end
 
+--设置 textRight
     local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
     textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', 'common-icon-checkmark') or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
 
+--设置 text2Right
     if isSelf then
         local titleID= GetCurrentTitle()
         if titleID and titleID>1 then
@@ -74,10 +79,16 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             text2Right= text2Right and text2Right:gsub('%%s', '')
         end
     else
+
         local lineLeft1=_G[tooltipName..'TextLeft1']--名称
         if lineLeft1 then
-            text2Right= lineLeft1:GetText():gsub(name, '')
-            text2Right= text2Right:gsub('-'..realm, '')
+            local t= lineLeft1:GetText()
+            if t:find('|A:') then
+                text2Right= tooltip.text2Right:GetText() or ''
+            else
+                text2Right= lineLeft1:GetText():gsub(name, '')
+                text2Right= text2Right:gsub('-'..realm, '')
+            end
         end
     end
 
@@ -122,8 +133,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local lineLeft2= isInGuild and _G[tooltipName..'TextLeft2']
     if lineLeft2 then
         local text=lineLeft2:GetText()
-        if text then
-            lineLeft2:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..text:gsub('(%-.+)',''))
+        if text and text~='' and not text:find('|A:') then
+            lineLeft2:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..(text:match('(.-)%-') or text))
             local lineRight2= _G[tooltipName..'TextRight2']
             if lineRight2 then
                 lineRight2:SetText(' ')

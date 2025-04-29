@@ -27,8 +27,9 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
         if source then
             local r, g ,b , col= select(2, WoWTools_UnitMixin:GetColor(source, nil))
             if r and g and b and tooltip.backgroundColor then
-                tooltip.backgroundColor:SetColorTexture(r, g, b, 0.3)
-                tooltip.backgroundColor:SetShown(true)
+                --tooltip.backgroundColor:SetColorTexture(r, g, b, 0.3)
+                tooltip:Set_BG_Color(r,g,b, 0.3)
+                --tooltip.backgroundColor:SetShown(true)
             end
             if source~='player' and tooltip.Portrait then
                 SetPortraitTexture(tooltip.Portrait, source)

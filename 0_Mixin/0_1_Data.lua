@@ -207,18 +207,3 @@ end
 
 
 
-
-
---[[
-if WoWTools_DataMixin.Player.husandro then
-    local a={}
-    local panel= CreateFrame("Frame")
-    panel:RegisterAllEvents()
-    panel:SetScript("OnEvent", function(_, event)
-        if not a[event] then
-            print(event)
-            a[event]=true
-        end
-    end)
-end
-]]

@@ -26,6 +26,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
 
     local tab = C_PetJournal.GetPetAbilityListTable(speciesID)--技能图标
     table.sort(tab, function(a,b) return a.level< b.level end)
+
     local abilityIcon=''
     for k, info in pairs(tab) do
         local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
@@ -45,15 +46,19 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
         BattlePetTooltipTemplate_AddTextLine(tooltip, npcName)
     end
 
+--Description
     local sourceInfo= WoWTools_TextMixin:CN(nil, {speciesID=speciesID}) or {}
     tooltipDescription= sourceInfo[1] or tooltipDescription
     if tooltipDescription then
         BattlePetTooltipTemplate_AddTextLine(tooltip, tooltipDescription, nil, nil, nil, true)--来源提示
     end
+
+--来源
     tooltipSource= sourceInfo[2] or tooltipSource
     if tooltipSource then
         BattlePetTooltipTemplate_AddTextLine(tooltip, tooltipSource, nil, nil, nil, true)--来源提示--来源
     end
+
 
     --[[if PetJournalSearchBox and PetJournalSearchBox:IsVisible() and IsAltKeyDown() then--设置搜索
         PetJournalSearchBox:SetText(speciesName)
@@ -77,10 +82,14 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
         tooltip.backgroundColor:SetAllPoints(tooltip)
         tooltip.backgroundColor:SetAlpha(0.15)
     end
+    local r,g,b,a
     if (breedQuality ~= -1) then--设置背影颜色
-        tooltip.backgroundColor:SetColorTexture(ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b, 0.15)
+        r,g,b,a= ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b, 0.15
+
+        --tooltip.backgroundColor:SetColorTexture(ITEM_QUALITY_COLORS[breedQuality].r, ITEM_QUALITY_COLORS[breedQuality].g, ITEM_QUALITY_COLORS[breedQuality].b, 0.15)
     end
-    tooltip.backgroundColor:SetShown(breedQuality~=-1)
+    tooltip:Set_BG_Color(r,g,b,a)
+    --tooltip.backgroundColor:SetShown(breedQuality~=-1)
 
     local AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)--收集数量
     tooltip.textLeft:SetText(CollectedNum or '')

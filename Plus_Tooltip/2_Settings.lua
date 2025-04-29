@@ -40,7 +40,7 @@ local function Init()
 
 
 
---物品
+--物品 0
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip, data)
         if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
             return
@@ -50,58 +50,63 @@ local function Init()
         WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end)
 
---法术
+--法术 1
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Spell, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Spell(tooltip, data.id)
     end)
 
---单位 Unit
+--单位 Unit 2
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip)
         WoWTools_TooltipMixin:Set_Unit(tooltip)
     end)
 
---Corpse
---Object
+--Corpse 3
+--Object 4
 
---货币
+--货币 5
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Currency, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Currency(tooltip, data.id)
     end)
 
---BattlePet
+--BattlePet 6
 
---Aura
+--UnitAura 7
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.UnitAura, function(tooltip, data)
         WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
     end)
-
---艾泽拉斯之心
+--艾泽拉斯之心 8
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.AzeriteEssence, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Azerite(tooltip, data.id)
     end)
 
---CompanionPet
+--CompanionPet 9
 
---坐骑
+--坐骑 10
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Mount, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Mount(tooltip, data.id)
     end)
 
---PetAction
-
---成就
+--PetAction 11
+    TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.PetAction, function(tooltip, data)
+        local action= tooltip:GetOwner()
+        local spellID = select(7, GetPetActionInfo(action and action:GetID() or 0))
+        WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)
+    end)
+--成就 12
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Achievement, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Achievement(tooltip, data.id)
     end)
 
---EnhancedConduit
---EquipmentSet
---InstanceLock
---PvPBrawl
---RecipeRankInfo
---Totem
 
---玩具
+
+--EnhancedConduit 13
+--EquipmentSet 14
+--InstanceLock 15
+--PvPBrawl 16
+--RecipeRankInfo 17
+--Totem 18
+
+--玩具 19
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Toy, function(tooltip, data)
         if tooltip==ShoppingTooltip1 or ShoppingTooltip2==tooltip then
             return
@@ -111,22 +116,22 @@ local function Init()
         WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end)
 
---CorruptionCleanser
---MinimapMouseover
+--CorruptionCleanser 20
+--MinimapMouseover 21
 
---法术弹出框
+--法术弹出框 22
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Flyout, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Flyout(tooltip, data.id)
     end)
 
---任务
+--任务 25
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Quest, function(tooltip, data)
         WoWTools_TooltipMixin:Set_Quest(tooltip, data.id, data)
     end)
 
---QuestPartyProgress
+--QuestPartyProgress 24
 
---宏 Macro
+--宏 Macro 25
     TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Macro, function(tooltip)
         local frame= tooltip:GetOwner()--宏 11版本
         if frame and frame.action then
@@ -144,7 +149,7 @@ local function Init()
         end
     end)
 
---Debug
+--Debug 26
 
 
 

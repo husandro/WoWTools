@@ -60,6 +60,17 @@ local function Create(tooltip)
     tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
     tooltip.backgroundColor:SetPoint('TOPLEFT')
     tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
+    tooltip.backgroundColor:Hide()
+    function tooltip:Set_BG_Color(r, g, b, a)
+        local show= r and g and b
+        r,g,b,a= r or 1, g or 1, b or 1, a or 0.5
+        self.backgroundColor:SetColorTexture(r,g,b,a)
+        if self.NineSlice then
+            self.NineSlice:SetBorderColor(r,g,b,a)
+        end
+        --self:SetBackdropBorderColor(r,g,b,a)--SharedTooltipTemplates.lua
+        self.backgroundColor:SetShown(show)
+    end
     --tooltip.backgroundColor:SetAllPoints(tooltip)
 
     if not tooltip.Portrait then
@@ -71,11 +82,19 @@ local function Create(tooltip)
         end
         tooltip.Portrait:SetSize(40,40)
     end
-    tooltip:HookScript("OnHide", function(frame)--隐藏
-        WoWTools_TooltipMixin:Set_Rest_Item(frame)--清除，数据
+
+    tooltip:HookScript("OnHide", function(self)--隐藏
+        WoWTools_TooltipMixin:Set_Rest_Item(self)--清除，数据
     end)
 
-    WoWTools_TextureMixin:SetNineSlice(tooltip, true, nil, nil, true)
+--function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg)
+    --WoWTools_TextureMixin:SetNineSlice(tooltip, nil, true, true, true)
+
+    --[[tooltip.IconMask= tooltip.IconMask or tooltip:CreateMaskTexture()
+    tooltip.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
+    tooltip.IconMask:SetPoint('TOPLEFT', tooltip, 0.5, -0.5)
+    tooltip.IconMask:SetPoint('BOTTOMRIGHT', tooltip, -0.5, 0.5)
+    tooltip.backgroundColor:AddMaskTexture(tooltip.IconMask)]]
 end
 
 
@@ -120,7 +139,8 @@ function WoWTools_TooltipMixin:Set_Rest_Item(tooltip)
     tooltip.text2Right:SetTextColor(1, 0.82, 0)
 
     tooltip.Portrait:SetShown(false)
-    tooltip.backgroundColor:SetShown(false)
+    --tooltip.backgroundColor:SetShown(false)
+    tooltip:Set_BG_Color()
     if tooltip.playerModel then
         tooltip.playerModel:ClearModel()
         tooltip.playerModel:SetShown(false)

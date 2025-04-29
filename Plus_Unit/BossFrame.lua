@@ -1,5 +1,5 @@
 --BossFrame
-
+--EditModeManagerFrame:IsEditModeActive()
 
 
 

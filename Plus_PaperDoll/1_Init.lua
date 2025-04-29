@@ -19,7 +19,9 @@ local P_Save={
 }
 
 
-
+local function Save()
+    return WoWToolsSave['Plus_PaperDoll']
+end
 
 
 
@@ -77,18 +79,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_PaperDollMixin.addName,
-                GetValue= function() return not WoWToolsSave['Plus_PaperDoll'].disabled end,
+                GetValue= function() return not Save().disabled end,
                 SetValue= function()
-                    WoWToolsSave['Plus_PaperDoll'].disabled= not WoWToolsSave['Plus_PaperDoll'].disabled and true or nil
+                    Save().disabled= not Save().disabled and true or nil
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_PaperDollMixin.addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not WoWToolsSave['Plus_PaperDoll'].disabled),
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                         WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
                     )
                 end,
             })
 
-            if WoWToolsSave['Plus_PaperDoll'].disabled then
+            if Save().disabled then
                 self:UnregisterAllEvents()
             else
                 Init()

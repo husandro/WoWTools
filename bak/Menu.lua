@@ -5,6 +5,8 @@
 .leftTexture1
 .leftTexture2
 WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
+SharedTooltipTemplates.lua
+
 
 function MenuTemplates.CreateRadio(text, isSelected, onSelect, data)
 	local function Initializer(button, description, menu)

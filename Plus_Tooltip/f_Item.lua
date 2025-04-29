@@ -350,7 +350,6 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
             WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, 'item')--坐骑
         elseif speciesID then
             WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
-        else
         end
     end
 
@@ -385,8 +384,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     tooltip.text2Left:SetText(text2Left or '')
 
 
-    tooltip.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
-    tooltip.backgroundColor:SetShown(true)
+    --tooltip.backgroundColor:SetColorTexture(r, g, b, 0.15)--颜色
+    tooltip:Set_BG_Color(r,g,b, 0.15)
+    --tooltip.backgroundColor:SetShown(true)
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 

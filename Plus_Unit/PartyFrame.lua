@@ -1,7 +1,7 @@
 
 
-local function Is_InEditMode(self)
-    return self.unit=='player' or EditModeManagerFrame:ArePartyFramesForcedShown()
+local function Is_InEditMode()
+    return EditModeManagerFrame:IsEditModeActive()-- EditModeManagerFrame:ArePartyFramesForcedShown()
 end
 
 local function Get_Unit_Status(unit)

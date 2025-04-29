@@ -52,25 +52,35 @@ end
 
 
 
-local function Blizzard_ItemInteractionUI()
-	if not C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
-		return
-	end
-
+local function Init_ItemInteractionUI()
 	hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function(frame)
 		WoWTools_CurrencyMixin:Set_ItemInteractionFrame(frame)
 	end)
-	Blizzard_ItemInteractionUI=function()end
-	return true
+	Init_ItemInteractionUI=function()end
 end
 
 
 
 
+
+--记录，套装，转换，货币
+local function Init_Disabled()
+	hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function()--C_ItemInteraction.GetChargeInfo()
+		local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
+		Save().ItemInteractionID= itemInfo.currencyTypeId
+		WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId
+	end)
+	Init_Disabled=function()end
+end
+
+
+
+
+
 local panel= CreateFrame("Frame")
---panel:RegisterEvent("ADDON_LOADED")
---panel:RegisterEvent('PLAYER_LOGIN')
-panel:RegisterAllEvents()
+panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -78,12 +88,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 			WoWTools_CurrencyMixin.addName= '|A:bags-junkcoin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '货币' or TOKENS)
 
-			--添加控制面板
+--添加控制面板
 			WoWTools_PanelMixin:OnlyCheck({
 				name= WoWTools_CurrencyMixin.addName,
 				GetValue= function() return not Save().disabled end,
 				SetValue= function()
 					Save().disabled= not Save().disabled and true or nil
+
 					print(
 						WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName,
 						WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
@@ -95,32 +106,34 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			WoWTools_DataMixin.CurrencyUpdateItemLevelID= Save().ItemInteractionID--套装，转换，货币
 
 			if Save().disabled then
---记录，套装，转换，货币
-				hooksecurefunc(ItemInteractionFrame, 'SetupChargeCurrency', function()--C_ItemInteraction.GetChargeInfo()
-					local itemInfo= C_ItemInteraction.GetItemInteractionInfo() or {}
-					Save().ItemInteractionID= itemInfo.currencyTypeId
-					WoWTools_DataMixin.CurrencyUpdateItemLevelID= itemInfo.currencyTypeId
-				end)
-				self:UnregisterEvent(event)
+				if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+					Init_Disabled()
+					self:UnregisterAllEvents()
+				else
+					self:UnregisterEvent('LOADING_SCREEN_DISABLED')
+				end
 
 			else
-
 				for itemID, _ in pairs(Save().item) do
 					WoWTools_Mixin:Load({id=itemID, type='item'})--加载 item quest spell
 				end
 
-				if Blizzard_ItemInteractionUI() then
+				if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+					Init_ItemInteractionUI()
 					self:UnregisterEvent(event)
 				end
 			end
 
 		elseif arg1=='Blizzard_ItemInteractionUI' and WoWToolsSave then
-			if Blizzard_ItemInteractionUI() then
-				self:UnregisterEvent(event)
+			if Save().disabled then
+				Init_Disabled()
+			else
+				Init_ItemInteractionUI()
 			end
+			self:UnregisterEvent(event)
 		end
 
-	elseif event=='PLAYER_LOGIN' then
+	elseif event=='LOADING_SCREEN_DISABLED' then
 		Init()
 		self:UnregisterEvent(event)
     end
