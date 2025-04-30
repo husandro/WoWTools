@@ -374,6 +374,21 @@ local function Init_Menu(self, root)
     end)
 
     sub:CreateCheckbox(
+        'Plus',
+    function()
+        return not Save().hideEventTracePlus
+    end, function()
+        Save().hideEventTracePlus= not Save().hideEventTracePlus and true or nil
+        WoWTools_HyperLink:Blizzard_EventTrace()
+        if Save().hideEventTracePlus then
+            print(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName,
+                WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+            )
+        end
+    end)
+
+    sub:CreateCheckbox(
         'Print',
     function()
         return Save().eventTracePrint
@@ -384,7 +399,7 @@ local function Init_Menu(self, root)
                 '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '开始' or START)
                 or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清队' or CLEAR_ALL))
             )
-        WoWTools_HyperLink:Init_EventTrace_Print()
+        WoWTools_HyperLink:Blizzard_EventTrace()
     end)
 
     local tab= WoWTools_HyperLink:Get_EventTrace_Print_Tab()

@@ -9,13 +9,7 @@ local Button, TargetButton, AttackButton, NoteEditBox
 
 
 
-local PointTab={
-    {value=1, text=WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT},
-    {value=2, text=WoWTools_DataMixin.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT},
-    {value=3, text=WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT},
-    '-',
-    {value=4, text=WoWTools_DataMixin.onlyChinese and '左|右' or (HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT..'|'..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT)}
-}
+
 
 
 
@@ -33,13 +27,16 @@ local function Init_Menu(self, root)
     root:CreateButton(
         '|A:dressingroom-button-appearancelist-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE),
     function()
+        if NoteEditBox:IsVisible() then
+            Save().noteText= NoteEditBox:GetText()
+        end
         WoWTools_TextMixin:ShowText(
             Save().noteText,
             WoWTools_DataMixin.onlyChinese and '宏' or MACRO,
-            {onHide=function(text)
-                Save().noteText= text
+            {onHide=function(t)
+                Save().noteText= t
                 if NoteEditBox:IsVisible() then
-                    NoteEditBox:SetText(text)
+                    NoteEditBox:SetText(t)
                 end
             end}
         )
@@ -53,6 +50,14 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
+
+local PointTab={
+    {value=1, text=WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT},
+    {value=2, text=WoWTools_DataMixin.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT},
+    {value=3, text=WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT},
+    '-',
+    {value=4, text=WoWTools_DataMixin.onlyChinese and '左|右' or (HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT..'|'..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT)}
+}
 
     for _, info in pairs (PointTab) do
         if info=='-' then
@@ -228,8 +233,7 @@ end
 local function Init_Created()
 --备注 EditBox
     NoteEditBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(MacroFrame, {
-        font='GameFontHighlightSmall',
-        isInstructions= WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE
+        text= WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE
     })
     WoWTools_MacroMixin.NoteEditBox= NoteEditBox
 

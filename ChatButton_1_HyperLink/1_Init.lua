@@ -27,6 +27,9 @@ local P_Save={
 
     --not_Add_Reload_Button=true,--添加 RELOAD 按钮
     autoHideTableAttributeDisplay=true,--自动关闭，Fstack
+
+    --hideEventTracePlus=true 隐藏 EventTrace Plus
+    --eventTracePrint 事件输出
 }
 
 local function Save()
@@ -81,7 +84,6 @@ local function Init()
     
     WoWTools_HyperLink:Blizzard_Settings()
     WoWTools_HyperLink:Blizzard_EventTrace()
-    WoWTools_HyperLink:Init_EventTrace_Print()
 end
 
 

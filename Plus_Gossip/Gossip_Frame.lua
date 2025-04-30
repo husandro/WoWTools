@@ -791,7 +791,7 @@ local function Init()
 
     --导入数据
     Menu.DataFrame=WoWTools_EditBoxMixin:CreateMultiLineFrame(Frame,{
-        isInstructions= 'text'
+        --isInstructions= 'text'
     })
     Menu.DataFrame:Hide()
     Menu.DataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)

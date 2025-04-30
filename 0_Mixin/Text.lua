@@ -17,7 +17,9 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     local frame= _G['WoWTools_ShowTextEditBoxFrame']
     if not frame then
         frame= WoWTools_FrameMixin:Create(nil, {name='WoWTools_ShowTextEditBoxFrame'})
-        frame.ScrollBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, {font='GameFontNormal', isShowLinkTooltip=true})
+        frame.ScrollBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, {
+            isLink=true
+        })
         frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
         frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
 

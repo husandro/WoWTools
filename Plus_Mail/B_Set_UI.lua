@@ -56,7 +56,7 @@ local function Set_Inbox_Button()--显示，隐藏，建立，收件，物品
             btn:SetPoint('TOPLEFT', _G['MailItem'..(i-1)], 'BOTTOMLEFT')
             Set_Inbox_btn_Point(btn, i)--设置，模板，内容，位置
         end
-        
+
         btn:SetShown(true)
     end
 
@@ -220,9 +220,12 @@ local function Init()
             break
         end
     end
-    WoWTools_EditBoxMixin:SetInstructions(SendMailNameEditBox, WoWTools_DataMixin.onlyChinese and '收件人' or MAIL_TO_LABEL:gsub(HEADER_COLON,''))
-    WoWTools_EditBoxMixin:HookInstructions(SendMailNameEditBox)
-
+    SendMailNameEditBox.Instructions= WoWTools_LabelMixin:Create(SendMailNameEditBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+    SendMailNameEditBox.Instructions:SetPoint('LEFT')
+    SendMailNameEditBox.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '收件人:' or MAIL_TO_LABEL)
+    SendMailNameEditBox:HookScript('OnTextChanged', function(s)
+        s.Instructions:SetShown(s:GetText() == "")
+    end)
 --主题
     for _, region in pairs({SendMailSubjectEditBox:GetRegions()}) do
         if region:GetObjectType()=='FontString'  then
@@ -233,8 +236,13 @@ local function Init()
             end
         end
     end
-    WoWTools_EditBoxMixin:SetInstructions(SendMailSubjectEditBox, WoWTools_DataMixin.onlyChinese and '主题' or MAIL_SUBJECT_LABEL:gsub(HEADER_COLON,''))
-    WoWTools_EditBoxMixin:HookInstructions(SendMailSubjectEditBox)
+
+    SendMailSubjectEditBox.Instructions= WoWTools_LabelMixin:Create(SendMailSubjectEditBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+    SendMailSubjectEditBox.Instructions:SetPoint('LEFT')
+    SendMailSubjectEditBox.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '主题：' or MAIL_SUBJECT_LABEL)
+    SendMailSubjectEditBox:HookScript('OnTextChanged', function(s)
+        s.Instructions:SetShown(s:GetText() == "")
+    end)
 
     hooksecurefunc('SendMailRadioButton_OnClick', function(index)
         if ( index == 1 ) then

@@ -1,28 +1,11 @@
 --SecureScrollTemplates.xml
 --SecureUIPanelTemplates.lua
-
-WoWTools_EditBoxMixin={
-    index=1
-}
+local index=1
+WoWTools_EditBoxMixin={}
 
 
 
 
-
-local function Settings(frame)
-    function frame:SetText(...)
-        self.editBox:SetText(...)
-    end
-    function frame:GetText()
-        return self.editBox:GetText()
-    end
-    function frame:ClearFocus()
-        self.editBox:ClearFocus()
-    end
-    function frame:SetFocus()
-        self.editBox:SetFocus()
-    end
-end
 
 
 
@@ -53,8 +36,10 @@ end
 
 
 function WoWTools_EditBoxMixin:Create(frame, tab)
-    self.index= self.index+1
-    local name= tab.name or format('%s%d', 'WoWTools_EditBox', self.index)
+    index= index+1
+    tab= tab or {}
+
+    local name= tab.name or format('%s%d', 'WoWTools_EditBox', index)
     local font= tab.font or 'ChatFontNormal'
     local template= tab.isSearch and 'SearchBoxTemplate' or tab.Template--SearchBoxTemplate
     local setID= tab.setID
@@ -69,6 +54,7 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
     editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
     editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
     WoWTools_TextureMixin:SetSearchBox(editBox)
+
     return editBox
 end
 
@@ -83,15 +69,14 @@ end
 
 
 
-
+--local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
 function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
-    self.index= self.index+1
+    index= index+1
     tab= tab or {}
 
-    local name= tab.name or format('%s%d', 'WoWTools_EditScrollFrame', self.index)--名称
-    --local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
-    local isShowLinkTooltip= tab.isShowLinkTooltip--超链接
-    local isInstructions= tab.isInstructions--使用说明
+    local name= tab.name or format('%s%d', 'WoWTools_EditScrollFrame', index)--名称
+    local isLink= tab.isLink--超链接
+    local text= tab.text--使用说明
 
     local scrollFrame= CreateFrame('ScrollFrame', name, frame, 'ScrollFrameTemplate')--InputScrollFrameTemplate
 
@@ -100,6 +85,7 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
         scrollFrame.ScrollBar:ClearAllPoints()
         scrollFrame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
         scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
+        scrollFrame.ScrollBar:SetHideIfUnscrollable(true)
     end
 
     WoWTools_TextureMixin:SetScrollBar(scrollFrame)
@@ -108,21 +94,56 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     scrollFrame.bg:SetPoint('TOPLEFT', -5, 5)
     scrollFrame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
     scrollFrame.bg:SetFrameLevel(level+1)
+    scrollFrame.bg:EnableMouse(true)
+    scrollFrame.bg:SetScript('OnMouseDown', function(s)
+        s:GetParent().editBox:SetFocus()
+    end)
     WoWTools_TextureMixin:SetNineSlice(scrollFrame.bg, true, nil, nil, true)
 
-    scrollFrame.editBox= self:Create(scrollFrame, tab)
+
+    scrollFrame.editBox= CreateFrame('EditBox', nil, scrollFrame)--, 'SearchBoxTemplate')
+    --scrollFrame.editBox:SetMaxLetters(100000)
+    scrollFrame.editBox:SetAutoFocus(false)
+    scrollFrame.editBox:ClearFocus()
+    scrollFrame.editBox:SetFontObject('ChatFontNormal')
+   -- scrollFrame.editBox:SetTextColor(1,1,1)
+    scrollFrame.editBox:SetPoint('TOPLEFT')
+    scrollFrame.editBox:SetPoint('BOTTOMRIGHT')
+
+    scrollFrame.editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
+    scrollFrame.editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
+    WoWTools_TextureMixin:SetSearchBox(scrollFrame.editBox)
+
     scrollFrame.editBox:SetMultiLine(true)
     scrollFrame.editBox:SetFrameLevel(level+2)
     scrollFrame.editBox:SetScript('OnUpdate', function(s, elapsed) ScrollingEdit_OnUpdate(s, elapsed, s:GetParent()) end)
     scrollFrame.editBox:SetScript('OnCursorChanged', ScrollingEdit_OnCursorChanged)
 
-    scrollFrame:SetScrollChild(scrollFrame.editBox)
+
+    scrollFrame.editBox.Instructions= WoWTools_LabelMixin:Create(scrollFrame.editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+    scrollFrame.editBox.Instructions:SetPoint('TOPLEFT')
+    scrollFrame.editBox.Instructions:SetText(text or '')
+
+    scrollFrame.editBox.Instructions2= WoWTools_LabelMixin:Create(scrollFrame.editBox, {layer='BORDER', color={r=0.52, g=0.52, b=0.52}})
+    scrollFrame.editBox.Instructions2:SetPoint('BOTTOMRIGHT', scrollFrame)
+
+    scrollFrame.editBox:SetScript('OnEditFocusGained', function(s)
+        s.Instructions2:SetShown(true)
+    end)
+    scrollFrame.editBox:SetScript('OnEditFocusLost', function(s)
+        s.Instructions2:SetShown(false)
+    end)
+    scrollFrame.editBox:SetScript('OnTextChanged', function(s)
+        s.Instructions:SetShown(s:GetText() == "")
+        s.Instructions2:SetText(WoWTools_Mixin:MK(s:GetNumLetters(), 1) or '')
+    end)
+
     scrollFrame:HookScript('OnSizeChanged', function(f)
        f.editBox:SetWidth(f:GetWidth()-25)
     end)
 
 --超链接
-    if isShowLinkTooltip then
+    if isLink then
         scrollFrame.editBox:SetHyperlinksEnabled(true)
         scrollFrame.editBox:SetScript('OnHyperlinkLeave', GameTooltip_Hide)
         scrollFrame.editBox:SetScript('OnHyperlinkEnter', function(s, link)
@@ -138,48 +159,29 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
         end)
     end
 
---使用说明
-    self:SetInstructions(scrollFrame.editBox, isInstructions, scrollFrame)
+    scrollFrame:SetScrollChild(scrollFrame.editBox)
 
-    Settings(scrollFrame)
+    scrollFrame.SetInstructions= function(s, t)
+        if t then
+            s.editBox.Instructions:SetText(t)
+        end
+    end
+    scrollFrame.SetText= function(s, ...)
+        s.editBox:SetText(...)
+    end
+    scrollFrame.GetText= function(s)
+        return s.editBox:GetText()
+    end
+    scrollFrame.ClearFocus= function(s)
+        s.editBox:ClearFocus()
+    end
+    frame.SetFocus= function(s)
+        s.editBox:SetFocus()
+    end
 
     return scrollFrame
 end
 
-
-
-function WoWTools_EditBoxMixin:HookInstructions(editBox)
-    editBox:HookScript('OnTextChanged', function(s)
-        s.Instructions:SetShown(s:GetText() == "")
-    end)
-end
-
-function WoWTools_EditBoxMixin:SetInstructions(editBox, isInstructions, frame)
-    if not isInstructions then
-        return
-    end
-
-    editBox= frame and frame.editBox or editBox
-
-    if not editBox  then
-        return
-    end
-
-    Create_Label(editBox, true, false)
-
-    editBox.Instructions:SetText(isInstructions)
-
-    if frame then
-        function frame:SetInstructions(text)
-            if text then
-                self.editBox.Instructions:SetText(text or '')
-            end
-        end
-        self:HookInstructions(frame.editBox)
-    else
-        self:HookInstructions(editBox)
-    end
-end
 
 
 
@@ -221,30 +223,3 @@ function WoWTools_EditBoxMixin:Setup(edit,  tab)
 
     return edit
 end
-
-
---[[scrollFrame.bg:SetScript('OnMouseDown', function(s, d)
-        if d=='LeftButton' then
-            local edit= s:GetParent().edit
-            if not edit:HasFocus() then
-                edit:SetFocus()
-            end
-        end
-    end)]]
-
-
---[[
-function e.Cedit(self)
-   
-end
-    local anchorsWithScrollBar = {
-        CreateAnchor("TOPLEFT", 4, -4);
-        CreateAnchor("BOTTOMRIGHT", frame.ScrollBar, -13, 4),
-    };
-    
-    local anchorsWithoutScrollBar = {
-        CreateAnchor("TOPLEFT", 4, -4),
-        CreateAnchor("BOTTOMRIGHT", -4, 4);
-    };
-   -- ScrollUtil.AddManagedScrollBarVisibilityBehavior(frame.editBox, frame.ScrollBar, anchorsWithScrollBar, anchorsWithoutScrollBar);
-   ]]

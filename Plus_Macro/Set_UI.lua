@@ -15,12 +15,19 @@ local ScrollFrame
 
 
 local function Init()
+    MacroFrameScrollFrame.ScrollBar:SetHideIfUnscrollable(true)
+    MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
+    MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
+    
 --输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
     MacroFrameEnterMacroText:Hide()
-    WoWTools_EditBoxMixin:SetInstructions(MacroFrameText, WoWTools_DataMixin.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
-    WoWTools_EditBoxMixin:HookInstructions(MacroFrameText)
-
+    MacroFrameText.Instructions= WoWTools_LabelMixin:Create(MacroFrameText, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+    MacroFrameText.Instructions:SetPoint('TOPLEFT')
+    MacroFrameText.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '输入宏命令' or ENTER_MACRO_LABEL)
+    MacroFrameText:HookScript('OnTextChanged', function(s)
+        s.Instructions:SetShown(s:GetText() == "")
+    end)
 -- "已使用%d个字符，最多255个";
     MacroFrameCharLimitText:SetParent(MacroFrameScrollFrame.ScrollBar)
     MacroFrameCharLimitText:ClearAllPoints()

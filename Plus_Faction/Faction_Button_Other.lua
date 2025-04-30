@@ -143,7 +143,7 @@ local function Init()
 		GameTooltip:Show()
 	end)
 
-	local edit= WoWTools_EditBoxMixin:Create(up, {name='WoWTools_PlusFactionSearchBox', instructions= WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH, Template='SearchBoxTemplate'})
+	local edit= WoWTools_EditBoxMixin:Create(up, {name='WoWTools_PlusFactionSearchBox', Template='SearchBoxTemplate'})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
 	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
@@ -153,10 +153,10 @@ local function Init()
 	edit:HookScript('OnEditFocusGained', function(self) self:SetAlpha(1) end)
 	edit:SetSize(180, 23)
 
-	--edit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
-    WoWTools_EditBoxMixin:HookInstructions(edit)
-
-    WoWTools_FactionMixin.Button:settings()
+	edit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
+	edit:HookScript('OnTextChanged', function(s)
+        s.Instructions:SetShown(s:GetText() == "")
+    end)
 end
 
 
