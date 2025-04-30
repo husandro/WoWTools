@@ -211,7 +211,7 @@ local function Init_Filter_Menu(self, root)
     end)
 
 
-    
+
 
 
 
@@ -361,7 +361,7 @@ local function Init_User_Filter_Menu(_, root)
             nil,
             {SetValue=function()
                 Save().userChatFilterTab={}
-            end})            
+            end})
         end)
         sub:CreateDivider()
 
