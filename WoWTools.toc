@@ -464,7 +464,7 @@ Plus_PetBattle\PetBattle_AbilityButton.lua
 
 ##插件，方案
 Plus_AddOns\0_AddOnsMixin.lua
-Plus_AddOns\1_AddOns.lua
+Plus_AddOns\1_Init.lua
 Plus_AddOns\2_MenuButton.lua
 Plus_AddOns\3_LeftList.lua
 Plus_AddOns\4_BottomList.lua
@@ -535,7 +535,7 @@ Plus_Spell\Blizzard_PlayerSpells.lua
 ##宏增强
 Plus_Macro\0_MacroMixin.lua
 Plus_Macro\1_Init.lua
-Plus_Macro\Button_Init.lua
+Plus_Macro\2_Menu.lua
 Plus_Macro\ChangeTab.lua
 Plus_Macro\List_Bottom.lua
 Plus_Macro\MacroButton_Plus.lua

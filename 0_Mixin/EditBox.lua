@@ -123,9 +123,11 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     scrollFrame.editBox.Instructions= WoWTools_LabelMixin:Create(scrollFrame.editBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     scrollFrame.editBox.Instructions:SetPoint('TOPLEFT')
     scrollFrame.editBox.Instructions:SetText(text or '')
+    scrollFrame.editBox.Instructions:Hide()
 
     scrollFrame.editBox.Instructions2= WoWTools_LabelMixin:Create(scrollFrame.editBox, {layer='BORDER', color={r=0.52, g=0.52, b=0.52}})
     scrollFrame.editBox.Instructions2:SetPoint('BOTTOMRIGHT', scrollFrame)
+    scrollFrame.editBox.Instructions2:Hide()
 
     scrollFrame.editBox:SetScript('OnEditFocusGained', function(s)
         s.Instructions2:SetShown(true)

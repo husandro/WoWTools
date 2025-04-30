@@ -98,8 +98,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
     elseif event == "PLAYER_LOGOUT" then
         if not WoWTools_DataMixin.ClearAllSave then
-            if WoWTools_MacroMixin.NoteEditBox and WoWTools_MacroMixin.NoteEditBox:IsVisible() then
-                WoWTools_MacroMixin.NoteEditBox:Hide()
+            local edit= _G['WoWToolsMacroPlusNoteEditBox']
+            if edit and edit:IsVisible() then
+                edit:Hide()
             end
         end
     end

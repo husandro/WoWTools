@@ -233,9 +233,9 @@ end
 local function Init_Created()
 --备注 EditBox
     NoteEditBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(MacroFrame, {
-        text= WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE
+        text= WoWTools_DataMixin.onlyChinese and '备注' or LABEL_NOTE,
+        name= 'WoWToolsMacroPlusNoteEditBox'
     })
-    WoWTools_MacroMixin.NoteEditBox= NoteEditBox
 
     NoteEditBox:SetPoint('TOPLEFT', 8, -65)
     NoteEditBox:SetPoint('BOTTOMRIGHT', MacroFrame, 'RIGHT', -6, 0)

@@ -58,7 +58,9 @@ local function Init_ChangeTab(self, tabID)
 
 
     local show=(point==1 or point==2) and true or false
-    WoWTools_MacroMixin.NoteEditBox:SetShown(show)
+    if _G['WoWToolsMacroPlusNoteEditBox'] then
+        _G['WoWToolsMacroPlusNoteEditBox']:SetShown(show)
+    end
     ScrollBoxBackground:SetShown(show)
 
 --图像
