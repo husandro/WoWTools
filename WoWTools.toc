@@ -643,7 +643,11 @@ ChatButton_5_LFD\z_LFGListInviteDialog.lua
 
 
 ##世界频道
-ChatButton\6_World.lua
+ChatButton_6_World\1_Init.lua
+ChatButton_6_World\2_SetButton.lua
+ChatButton_6_World\3_MENU_UNIT_FRIEND.lua
+ChatButton_6_World\3_Menu.lua
+ChatButton_6_World\Filter.lua
 
 
 ##公会

@@ -45,7 +45,7 @@ local function Init()
                         text= format(WoWTools_DataMixin.onlyChinese and '本周后就不能获得新的奖励了。|n%s上线后，所有未领取的奖励都会丢失。' or GREAT_VAULT_RETIRE_WARNING, title);
                     end
                     if text then
-                        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName,'|n|cffff00ff',text)
+                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,'|n|cffff00ff',text)
                     end
                 end
             end

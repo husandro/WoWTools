@@ -5603,7 +5603,8 @@
         "QuestProgressRequiredMoneyText",
         "NineSlicePanelMixin",
         "AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL",
-        "CALENDAR_FILTERS"
+        "CALENDAR_FILTERS",
+        "STR"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

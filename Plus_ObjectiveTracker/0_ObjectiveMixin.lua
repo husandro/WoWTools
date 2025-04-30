@@ -27,7 +27,7 @@ function WoWTools_ObjectiveMixin:Add_ClearAll_Button(frame, tooltip, func)
     --btn:SetScript('OnDoubleClick', function()
       
     function btn:print_text(num)
-        print(WoWTools_DataMixin.Icon.icon2.. WoWTools_ObjectiveMixin.addName, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, '|A:bags-button-autosort-up:0:0|a', '|cffff00ff'..(num or 0)..'|r', btn.tooltip)
     end
     btn.tooltip= tooltip
 end

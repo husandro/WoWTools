@@ -35,7 +35,7 @@ local function SetChannels(link)
 
 --关键词, 内容颜色，和频道名称替换
         if not Save().disabledKeyColor then
-            for k, v in pairs(Save().channels) do--自定义
+            for k, v in pairs(Save().channels or {}) do--自定义
                 if name:find(k) then
                     return link:gsub('%[.-]', v)
                 end
@@ -602,7 +602,7 @@ local function New_AddMessage(self, s, ...)
 
 --关键词, 内容颜色，和频道名称替换
     if not Save().disabledKeyColor then
-        for k in pairs(Save().text) do--内容加颜色
+        for k in pairs(Save().text or {}) do--内容加颜色
             s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
         end
     end

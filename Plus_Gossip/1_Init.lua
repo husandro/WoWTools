@@ -120,7 +120,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         btn:ClearAllPoints()
                         btn:set_Point()
                      end
-                     print(WoWTools_DataMixin.Icon.icon2.. WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
                  end,
                  tooltip= WoWTools_GossipMixin.addName,
                  layout= nil,

@@ -199,7 +199,7 @@ local function Init_Buttons()--挑战,钥石,插入界面
     KeyFrame.InsetKeyButton:SetScript("OnMouseDown",function()
         if InCombatLockdown() then
             print(
-                WoWTools_DataMixin.Icon.icon2.. WoWTools_ChallengeMixin.addName,
+                WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
                 '|cnRED_FONT_COLOR:',
                 WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT
             )

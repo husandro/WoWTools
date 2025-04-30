@@ -1,9 +1,33 @@
 WoWTools_TextMixin={}
 
+local ShowTextFrame
+local function Create_ShowTextFrame()
+    if ShowTextFrame then
+        return
+    end
+    ShowTextFrame= WoWTools_FrameMixin:Create(nil, {name='WoWTools_ShowTextEditBoxFrame'})
+    ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(ShowTextFrame, {
+        isLink=true
+    })
+    ShowTextFrame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
+    ShowTextFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
+
+    ShowTextFrame:SetScript('OnHide', function(f)
+        if f.onHide then
+            do
+                f.onHide(f.ScrollBox:GetText())
+            end
+            f.onHide=nil
+        end
+        f.ScrollBox:SetText('')
+    end)
+    ShowTextFrame:SetFrameStrata('HIGH')
+end
+
 
 function WoWTools_TextMixin:ShowText(data, headerText, tab)
-    tab= tab or {}
-    local onHide= tab.onHide
+    Create_ShowTextFrame()
+    local onHide= tab and tab.onHide or nil
 
     local text
     if type(data)=='table' then
@@ -14,32 +38,12 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
     else
         text= data
     end
-    local frame= _G['WoWTools_ShowTextEditBoxFrame']
-    if not frame then
-        frame= WoWTools_FrameMixin:Create(nil, {name='WoWTools_ShowTextEditBoxFrame'})
-        frame.ScrollBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, {
-            isLink=true
-        })
-        frame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
-        frame.ScrollBox:SetPoint('BOTTOMRIGHT', -6, 12)
-
-        frame:SetScript('OnHide', function(f)
-            if f.onHide then
-                do
-                    f.onHide(f.ScrollBox:GetText())
-                end
-                f.onHide=nil
-            end
-            f.ScrollBox:SetText('')
-        end)
-        frame:SetFrameStrata('HIGH')
-    end
-
-    frame.ScrollBox:SetText(text or '')
-    frame.Header:Setup(headerText or '' )
-    frame:SetShown(true)
-    frame.onHide= onHide
+    ShowTextFrame.ScrollBox:SetText(text or '')
+    ShowTextFrame.Header:Setup(headerText or '' )
+    ShowTextFrame:SetShown(true)
+    ShowTextFrame.onHide= onHide
 end
+
 
 
 

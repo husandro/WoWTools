@@ -71,7 +71,7 @@ local function Init()
     end)
     edit:SetScript("OnKeyUp", function(s, key)
         if IsControlKeyDown() and key == "C" then
-            print(WoWTools_DataMixin.Icon.icon2.. WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r', s:GetText())
         end
     end)
 

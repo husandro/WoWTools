@@ -111,7 +111,9 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     scrollFrame.editBox:SetPoint('BOTTOMRIGHT')
 
     scrollFrame.editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
-    scrollFrame.editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
+    scrollFrame.editBox:SetScript('OnHide', function(s)
+        s:ClearFocus()
+    end)
     WoWTools_TextureMixin:SetSearchBox(scrollFrame.editBox)
 
     scrollFrame.editBox:SetMultiLine(true)

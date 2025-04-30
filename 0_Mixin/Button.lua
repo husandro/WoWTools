@@ -138,8 +138,10 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
             self:AddMask(btn)
         end
     end
-    btn:SetPushedAtlas(pushedAtlas)
-    btn:SetHighlightAtlas(highlightAtlas)
+    if template~='UIPanelButtonTemplate' then
+        btn:SetPushedAtlas(pushedAtlas)
+        btn:SetHighlightAtlas(highlightAtlas)
+    end
 
 --设置 Atlas or Texture    
     if isType2 then
