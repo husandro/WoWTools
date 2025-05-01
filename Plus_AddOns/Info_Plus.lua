@@ -250,7 +250,7 @@ end
 
 
 local function Init()
-    AddonList.ScrollBar:SetHideIfUnscrollable(true)
+    
 
     hooksecurefunc('AddonList_InitAddon', function(entry, treeNode)
         local addonIndex = treeNode:GetData().addonIndex

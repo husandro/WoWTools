@@ -207,6 +207,9 @@ function WoWTools_TextureMixin:SetScrollBar(frame)
         end
         self:HideTexture(bar.Backplate, nil)
         self:SetAlphaColor(bar.Background, nil, true)
+        if bar.SetHideIfUnscrollable then
+            bar:SetHideIfUnscrollable(true)
+        end
     end
 end
 

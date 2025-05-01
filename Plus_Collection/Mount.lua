@@ -2,7 +2,7 @@
 
 
 local function Save()
-    return WoWToolsSave['Plus_Collection'] or {}
+    return WoWToolsSave['Plus_Collection']
 end
 
 

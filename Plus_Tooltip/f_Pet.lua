@@ -17,28 +17,24 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
         tooltip:AddDoubleLine('speciesID'..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and 'displayID'..creatureDisplayID..' ' or '')..(companionID and 'companionID'..companionID or ''))--ID
 
-        local tab = C_PetJournal.GetPetAbilityListTable(speciesID) or {}--技能图标
-        table.sort(tab, function(a,b) return a.level< b.level end)
-        local abilityIconA, abilityIconB = '', ''
-        for k, info in pairs(tab) do
-            local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
-            icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..(icon or 0)..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
-            if k>3 then
-                abilityIconA=abilityIconA..icon
-            else
-                abilityIconB=abilityIconB..icon
-            end
+--技能图标
+        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false)
+        if abilityIconA or abilityIconB then
+            tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
         end
-        tooltip:AddDoubleLine(abilityIconA, abilityIconB)
+--该宠物不可交易
         if not isTradeable then
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE, 1,0,0)
+            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE)
+
         end
+--该生物无法对战。
         if not canBattle then
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE, 1,0,0)
+            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE)
         end
     end
 
     tooltip:AddLine(' ')
+--中文， 来源 名称
     local sourceInfo= WoWTools_TextMixin:CN(nil, {speciesID=speciesID}) or {}
     local cnName= WoWTools_TextMixin:CN(nil, {npcID=companionID, isName=true})
 

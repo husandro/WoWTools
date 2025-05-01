@@ -13,7 +13,22 @@ end
 
 local function Init_Menu(_, root)
     local sub
+--宠物
 
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '宠物' or PETS,
+    function()
+        return not Save().hidePets
+    end, function()
+        Save().hidePets= not Save().hidePets and true or nil
+        WoWTools_CollectionMixin:Init_Pet()
+        if PetJournal and PetJournal:IsVisible() then
+            do
+                WoWTools_Mixin:Call(PetJournal_OnHide, PetJournal)
+            end
+            WoWTools_Mixin:Call(PetJournal_OnShow, PetJournal)
+        end
+    end)
 
 
 --传家宝

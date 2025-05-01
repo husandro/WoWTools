@@ -85,7 +85,7 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
         scrollFrame.ScrollBar:ClearAllPoints()
         scrollFrame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
         scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
-        scrollFrame.ScrollBar:SetHideIfUnscrollable(true)
+        --scrollFrame.ScrollBar:SetHideIfUnscrollable(true)
     end
 
     WoWTools_TextureMixin:SetScrollBar(scrollFrame)

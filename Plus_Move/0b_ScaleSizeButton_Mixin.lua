@@ -122,7 +122,7 @@ local function Init_Point_Menu(self, root)
     if not UIPanelWindows then
         return
     end
-    local sub, sub2
+    local sub
 
 
 --当显示时，锁定框体位置
@@ -182,22 +182,20 @@ local function Init_Point_Menu(self, root)
     root:CreateDivider()
     local index=0
     for name in pairs(Save().UIPanelWindows) do
-        if name~=self.name then
-            index= index+1
-            sub=root:CreateCheckbox(
-                (index<10 and ' ' or '')..index..') '..name,
-            function(data)
-                return Save().UIPanelWindows[data.name]
-            end, function(data)
-                Save().UIPanelWindows[data.name]= not Save().UIPanelWindows[data.name] and true or nil
-                FrameOnShow_SetPoint(self, Save().UIPanelWindows[data.name])
-            end, {name=name})
-            sub:SetTooltip(function(tooltip, desc)
-                tooltip:AddLine(desc.data.name)
-                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )
-                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end)
-        end
+        index= index+1
+        sub=root:CreateCheckbox(
+            (index<10 and ' ' or '')..index..') '..name,
+        function(data)
+            return Save().UIPanelWindows[data.name]
+        end, function(data)
+            Save().UIPanelWindows[data.name]= not Save().UIPanelWindows[data.name] and true or nil
+            FrameOnShow_SetPoint(self, Save().UIPanelWindows[data.name])
+        end, {name=name})
+        sub:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.name)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end)
     end
 
 --全部清除

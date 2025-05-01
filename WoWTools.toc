@@ -31,7 +31,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\0_3_Data_NeedUpdate.lua
 0_Mixin\StaticPopupDialogs.lua
 0_Mixin\Button.lua
-0_Mixin\Collected.lua
 0_Mixin\Cooldown.lua
 0_Mixin\Durabiliy.lua
 0_Mixin\EditBox.lua
@@ -287,7 +286,8 @@ Plus_ObjectiveTracker\World_Quest.lua
 
 
 ##战团藏品
-Plus_Collection\1_ADDON_LOADED.lua
+Plus_Collection\0_CollectedMixin.lua
+Plus_Collection\1_Init.lua
 Plus_Collection\Mount.lua
 Plus_Collection\Pet.lua
 Plus_Collection\ToyBox.lua
@@ -295,7 +295,7 @@ Plus_Collection\Heirloom.lua
 Plus_Collection\Wardrober_Items.lua
 Plus_Collection\Wardrober_Sets.lua
 Plus_Collection\DressUpFrames.lua
-Plus_Collection\Options.lua
+Plus_Collection\2_Menu.lua
 
 
 ##世界地图，增强

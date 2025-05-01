@@ -15,9 +15,9 @@ local ScrollFrame
 
 
 local function Init()
-    MacroFrameScrollFrame.ScrollBar:SetHideIfUnscrollable(true)
-    MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
-    MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
+    --MacroFrameScrollFrame.ScrollBar:SetHideIfUnscrollable(true)
+    --MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
+    --MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
     
 --输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
@@ -29,7 +29,7 @@ local function Init()
         s.Instructions:SetShown(s:GetText() == "")
     end)
 -- "已使用%d个字符，最多255个";
-    MacroFrameCharLimitText:SetParent(MacroFrameScrollFrame.ScrollBar)
+    MacroFrameCharLimitText:SetParent(MacroFrameScrollFrame)
     MacroFrameCharLimitText:ClearAllPoints()
     MacroFrameCharLimitText:SetPoint('BOTTOMRIGHT', MacroFrameScrollFrame)
     MacroFrameCharLimitText:SetTextColor(0.93, 0.82, 0)

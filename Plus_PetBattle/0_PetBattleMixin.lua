@@ -6,23 +6,23 @@ WoWTools_PetBattleMixin={}
 
 
 function WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱 SharedPetBattleTemplates.lua
-    local strongTexture,weakHintsTexture, stringIndex, weakHintsIndex
+    local strongTexture,weakHintsTexture, strongType, weakHintsType
     for i=1, C_PetJournal.GetNumPetTypes() do
         local modifier = C_PetBattles.GetAttackModifier(petType, i)
         if modifier then
             if ( modifier > 1 ) then
                 strongTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
-                stringIndex=i
+                strongType=i
             elseif ( modifier < 1 ) then
                 weakHintsTexture='Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[i]
-                weakHintsIndex=i
+                weakHintsType=i
             end
         end
         if strongTexture and weakHintsTexture then
             break
         end
     end
-    return strongTexture, weakHintsTexture, stringIndex, weakHintsIndex
+    return strongTexture, weakHintsTexture, strongType, weakHintsType
 end
 
 
@@ -89,4 +89,44 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
         end
         return AllCollected, CollectedNum, CollectedText, isCollectedAll
     end
+end
+
+
+--技能列表图标
+function WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, petIndex, petID, onlyIcon)
+    if not speciesID then
+        if petIndex then
+            speciesID= select(2, C_PetJournal.GetPetInfoByIndex(petIndex))
+        elseif petID then
+            speciesID= C_PetJournal.GetPetInfoByPetID(petID)
+        end
+    end
+
+    local tab = speciesID and select(8, C_PetJournal.GetPetInfoBySpeciesID(speciesID)) and C_PetJournal.GetPetAbilityListTable(speciesID)
+    if not tab then
+        return
+    end
+
+    table.sort(tab, function(a,b) return a.level< b.level end)
+
+    local abilityIconA, abilityIconB, icon, typePet, text
+    for index, info in pairs(tab) do
+        icon, typePet = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
+
+        text= '|T'..(icon or 0)..':0|t'
+        if onlyIcon then
+            abilityIconA= (abilityIconA or '')..text
+        else
+            text='|TInterface\\TargetingFrame\\PetBadge-'..(PET_TYPE_SUFFIX[typePet] or '')..':0|t'
+                ..text
+                ..(info.level or '')
+                .. ((index~=3 or index~=6) and '  ' or '')
+            if index>3 then
+                abilityIconA= (abilityIconA or '')..text
+            else
+                abilityIconB= (abilityIconB or '')..text
+            end
+        end
+    end
+    return abilityIconA, abilityIconB
 end

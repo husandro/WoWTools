@@ -5604,7 +5604,11 @@
         "NineSlicePanelMixin",
         "AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL",
         "CALENDAR_FILTERS",
-        "STR"
+        "STR",
+        "PetJournal_HideAbilityTooltip",
+        "PetJournalLoadoutPet1XPBarRank",
+        "PetJournal_OnShow",
+        "PetJournal_OnHide"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
