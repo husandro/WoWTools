@@ -7,19 +7,6 @@ end
 
 
 
---[[local tab = C_PetJournal.GetPetAbilityListTable(speciesID) or {}--技能图标
-table.sort(tab, function(a,b) return a.level< b.level end)
-local abilityIconA, abilityIconB = '', ''
-for k, info in pairs(tab) do
-    local icon, type = select(2, C_PetJournal.GetPetAbilityInfo(info.abilityID))
-    icon='|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[type]..':0|t|T'..(icon or 0)..':0|t'..info.level.. ((k~=3 or k~=6) and '  ' or '')
-    if k>3 then
-        abilityIconA=abilityIconA..icon
-    else
-        abilityIconB=abilityIconB..icon
-    end
-end]]
-
 
 
 

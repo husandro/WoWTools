@@ -5608,7 +5608,13 @@
         "PetJournal_HideAbilityTooltip",
         "PetJournalLoadoutPet1XPBarRank",
         "PetJournal_OnShow",
-        "PetJournal_OnHide"
+        "PetJournal_OnHide",
+        "PetJournalLoadoutPet1",
+        "PetJournalLoadoutPet2",
+        "PetJournalLoadoutPet3",
+        "PetJournalSummonRandomFavoritePetButton",
+        "PetJournalSummonRandomFavoritePetButtonBorder",
+        "PetJournalHealPetButtonBorder"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

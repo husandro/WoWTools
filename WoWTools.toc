@@ -125,7 +125,6 @@ Plus_Move\0b_ScaleSizeButton_Mixin.lua
 Plus_Move\1_Init.lua
 Plus_Move\2_Add_Button.lua
 Plus_Move\3_Options.lua
-Plus_Move\e_Collections.lua
 Plus_Move\e_Other.lua
 Plus_Move\e_Professions.lua
 Plus_Move\e_ProfessionsCustomerOrders.lua
@@ -296,6 +295,8 @@ Plus_Collection\Wardrober_Items.lua
 Plus_Collection\Wardrober_Sets.lua
 Plus_Collection\DressUpFrames.lua
 Plus_Collection\2_Menu.lua
+Plus_Collection\zm_Blizzard_Collections.lua
+Plus_Collection\zt_Blizzard_Collections.lua
 
 
 ##世界地图，增强

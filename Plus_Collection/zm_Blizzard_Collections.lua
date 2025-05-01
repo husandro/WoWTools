@@ -248,7 +248,7 @@ local function Init_CollectionsJournal()
     WardrobeCollectionFrame.SetsCollectionFrame.ListContainer:SetPoint('BOTTOM')
     WardrobeCollectionFrame.SetsCollectionFrame.LeftInset:SetPoint('RIGHT', WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
 
-    
+
 
     WoWTools_MoveMixin:Setup(CollectionsJournal, {
         setSize=true,
@@ -276,6 +276,15 @@ local function Init_CollectionsJournal()
             update_frame()
         end
     })
+
+    WoWTools_MoveMixin:Setup(PetJournalPetCard, {frame=CollectionsJournal})
+    WoWTools_MoveMixin:Setup(PetJournalLoadoutPet1, {frame=CollectionsJournal})
+    WoWTools_MoveMixin:Setup(PetJournalLoadoutPet2, {frame=CollectionsJournal})
+    WoWTools_MoveMixin:Setup(PetJournalLoadoutPet3, {frame=CollectionsJournal})
+    WoWTools_MoveMixin:Setup(PetJournalLoadoutPet1.modelScene.cardButton, {frame=CollectionsJournal})
+    WoWTools_MoveMixin:Setup(PetJournalLoadoutPet2.modelScene.cardButton, {frame=CollectionsJournal})
+    WoWTools_MoveMixin:Setup(PetJournalLoadoutPet3.modelScene.cardButton, {frame=CollectionsJournal})
+
 
     C_Timer.After(2, function()
         local frame= _G['ManuscriptsJournal']
