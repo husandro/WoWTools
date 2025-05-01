@@ -45,15 +45,21 @@ function WoWTools_PetBattleMixin:Collected(speciesID, itemID, onlyNum, petOwner,
     local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
     if numCollected and limit then
         local AllCollected, CollectedNum, CollectedText
-        if not onlyNum then--返回所有，数据
-            local numPets, numOwned = C_PetJournal.GetNumPets()
 
-            if numPets and numOwned and numPets>0 then
+--返回所有，数据
+        if not onlyNum then
+            local numPets = C_PetJournal.GetNumPets()
+            local ownedPetIDs = C_PetJournal.GetOwnedPetIDs()
+            local numOwned= #ownedPetIDs
+            if numPets and numPets>0 then
                 if numPets<numOwned or numPets<3 then
                     AllCollected= WoWTools_Mixin:MK(numOwned, 3)
                 else
                     AllCollected= WoWTools_Mixin:MK(numOwned,3)..'/'..WoWTools_Mixin:MK(numPets,3).. (' %i%%'):format(numOwned/numPets*100)
                 end
+            else
+                
+                AllCollected= WoWTools_Mixin:MK(numOwned, 3)
             end
             if numCollected and numCollected>0 and limit and limit>0 then
                 local text2
