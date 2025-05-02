@@ -154,10 +154,12 @@ end
 
 --宠物手册， 召唤随机，偏好宠物，技能ID 
 function WoWTools_TooltipMixin.Events:Blizzard_Collections()
-    hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-        WoWTools_TooltipMixin:Set_Spell(GameTooltip, 243819)
-        GameTooltip:Show()
-    end)
+    if PetJournalSummonRandomFavoritePetButton_OnEnter then--11.1.7没了
+        hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
+            WoWTools_TooltipMixin:Set_Spell(GameTooltip, 243819)
+            GameTooltip:Show()
+        end)
+    end
 end
 
 

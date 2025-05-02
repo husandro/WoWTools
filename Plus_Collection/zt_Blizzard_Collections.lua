@@ -41,8 +41,13 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetAlphaColor(PetJournal.PetCount.BorderLeftMiddle, nil, nil, 0.3)
     self:SetAlphaColor(PetJournal.PetCount.BorderRightMiddle, nil, nil, 0.3)
 
-    self:SetAlphaColor(PetJournalSummonRandomFavoritePetButtonBorder, true, nil, nil)
-    self:SetAlphaColor(PetJournalHealPetButtonBorder, true, nil, nil)
+    if PetJournal.SummonRandomPetSpellFrame then --11.1.7才有
+        self:SetAlphaColor(PetJournal.SummonRandomPetSpellFrame.Button.Border, true, nil, nil)
+        self:SetAlphaColor(PetJournal.HealPetSpellFrame.Button.Border, true, nil, nil)
+    else
+        self:SetAlphaColor(PetJournalSummonRandomFavoritePetButtonBorder, true, nil, nil)
+        self:SetAlphaColor(PetJournalHealPetButtonBorder, true, nil, nil)
+    end
 
     self:SetFrame(PetJournalFilterButton, {alpha=0.3})
     self:SetNineSlice(PetJournalLeftInset, nil, true)
