@@ -180,10 +180,13 @@ function WoWTools_TooltipMixin:Set_Item_Model(tooltip, tab)--WoWTools_TooltipMix
     elseif tab.creatureDisplayID  then
         if tooltip.playerModel.id~= tab.creatureDisplayID then
             tooltip.playerModel:SetDisplayInfo(tab.creatureDisplayID)
-            if tab.animID then
-                tooltip.playerModel:SetAnimation(tab.animID, true)
+            if tab.spellVisualKitID then
+                tooltip.playerModel:ApplySpellVisualKit(tab.spellVisualKitID)
             end
-            print(tab.animID)
+            if tab.animID then
+                tooltip.playerModel:SetAnimation(tab.animID)
+                tooltip.playerModel:PlayAnimKit(tab.animID, true)
+            end
             tooltip.playerModel.id=tab.creatureDisplayID
             tooltip.playerModel:SetShown(true)
 

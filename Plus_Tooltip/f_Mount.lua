@@ -38,7 +38,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     end
     tooltip.textRight:SetText(textRight or '')
 
-    local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID = C_MountJournal.GetMountInfoExtraByID(mountID)
+    local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID, spellVisualKitID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
         tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
     end
@@ -51,8 +51,9 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
 --设置, 3D模型
     self:Set_Item_Model(tooltip, {
         creatureDisplayID=creatureDisplayInfoID,
-        animID=animID}
-    )
+        animID=animID,
+        spellVisualKitID=spellVisualKitID,
+    })
     tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
     
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
