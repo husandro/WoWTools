@@ -53,8 +53,16 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
         tooltip.Portrait:SetShown(true)
     end
-    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
+    --local cardModelSceneID, loadoutModelSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID);
+
+	--loadoutPlate.modelScene:TransitionToModelSceneID(loadoutModelSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD)
+
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {--设置, 3D模型
+       -- modelSceneID= loadoutModelSceneID,
+        creatureDisplayID=creatureDisplayID
+    })
+        
     if obtainable
         and not UnitAffectingCombat('player')
         and (not tooltip.JournalClick or not tooltip.JournalClick:IsShown())

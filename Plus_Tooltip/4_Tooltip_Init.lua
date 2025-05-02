@@ -13,7 +13,7 @@ end
 
 function WoWTools_TooltipMixin:Set_PlayerModel(tooltip)
     if not tooltip.playerModel then
-        tooltip.playerModel= CreateFrame("PlayerModel", nil, tooltip)--DressUpModel PlayerModel        
+        tooltip.playerModel= CreateFrame("PlayerModel", nil, tooltip)--PlayerModel ModelScene DressUpModel PlayerModel        
     else
         tooltip.playerModel:ClearAllPoints()
     end
@@ -181,10 +181,12 @@ function WoWTools_TooltipMixin:Set_Item_Model(tooltip, tab)--WoWTools_TooltipMix
         if tooltip.playerModel.id~= tab.creatureDisplayID then
             tooltip.playerModel:SetDisplayInfo(tab.creatureDisplayID)
             if tab.animID then
-                tooltip.playerModel:SetAnimation(tab.animID)
+                tooltip.playerModel:SetAnimation(tab.animID, true)
             end
+            print(tab.animID)
             tooltip.playerModel.id=tab.creatureDisplayID
             tooltip.playerModel:SetShown(true)
+
         end
 
     elseif tab.itemID then

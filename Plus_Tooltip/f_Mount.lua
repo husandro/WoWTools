@@ -48,8 +48,11 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         tooltip:AddLine(WoWTools_TextMixin:CN(source), nil,nil,nil,true)
     end
 
-    self:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayInfoID, animID=animID})--设置, 3D模型
-
+--设置, 3D模型
+    self:Set_Item_Model(tooltip, {
+        creatureDisplayID=creatureDisplayInfoID,
+        animID=animID}
+    )
     tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
     
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')

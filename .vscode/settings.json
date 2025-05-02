@@ -5619,7 +5619,9 @@
         "ICON_LIST",
         "UnitFrameHealthBar_Initialize",
         "UnitFrameManaBar_Initialize",
-        "AbbreviateLargeNumbers"
+        "AbbreviateLargeNumbers",
+        "CAMERA_TRANSITION_TYPE_IMMEDIATE",
+        "CAMERA_MODIFICATION_TYPE_DISCARD"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -6,6 +6,10 @@ WoWTools_PetBattleMixin={}
 
 
 function WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)--取得对战宠物, 强弱 SharedPetBattleTemplates.lua
+    if not petType then
+        return
+    end
+    
     local strongTexture,weakHintsTexture, strongType, weakHintsType
     for i=1, C_PetJournal.GetNumPetTypes() do
         local modifier = C_PetBattles.GetAttackModifier(petType, i)

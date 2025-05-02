@@ -37,6 +37,11 @@ local function Set_UI(self)
 
     --英雄专精
     self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
+
+    if PlayerSpellsFrame.SpellBookFrame.SettingsDropdown then--11.1.7
+        self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)
+        self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.AssistedCombatRotationSpellFrame.Button.Border, nil, nil,  true)
+    end
 end
 
 --天赋和法术书
