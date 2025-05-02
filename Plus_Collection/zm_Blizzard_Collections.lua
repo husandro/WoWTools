@@ -220,6 +220,8 @@ end
 
 --藏品
 local function Init_CollectionsJournal()
+--坐骑
+    MountJournalSearchBox:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
     MountJournal.RightInset:ClearAllPoints()
     MountJournal.RightInset:SetWidth(400)
     MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)

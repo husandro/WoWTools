@@ -5621,7 +5621,10 @@
         "UnitFrameManaBar_Initialize",
         "AbbreviateLargeNumbers",
         "CAMERA_TRANSITION_TYPE_IMMEDIATE",
-        "CAMERA_MODIFICATION_TYPE_DISCARD"
+        "CAMERA_MODIFICATION_TYPE_DISCARD",
+        "MouseIsOver",
+        "UIDropDownMenu_SetWidth",
+        "UIDropDownMenu_SetText"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

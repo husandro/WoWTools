@@ -4,6 +4,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(CollectionsJournal, true)
     self:SetAlphaColor(CollectionsJournalBg, nil, nil, true)
 
+--坐骑
     self:SetFrame(MountJournal.MountCount, {alpha=0.3})
     self:HideTexture(MountJournal.LeftInset.Bg)
     self:SetAlphaColor(MountJournal.MountDisplay.YesMountsTex)
@@ -15,6 +16,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(MountJournal.BottomLeftInset, nil, true)
     self:SetNineSlice(MountJournal.RightInset, nil, true)
     self:SetNineSlice(MountJournal.LeftInset, nil, true)
+    if MountJournal.ToggleDynamicFlightFlyoutButton then--11.1.7
+        self:SetAlphaColor(MountJournal.ToggleDynamicFlightFlyoutButton.Border, true)
+        self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
+    end
 
     self:SetAlphaColor(PetJournalPetCardBG, nil, nil, 0.3)
     self:SetAlphaColor(PetJournalPetCardInset.Bg)

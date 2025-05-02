@@ -1,5 +1,23 @@
 WoWTools_TextMixin={}
+--[[MoveAny\libs\D4Lib
+local function IsUkrainianLetters(str)
+    return str:match("[\192-\199]") ~= nil
+end
 
+local function IsRussianLetters(str)
+    return str:match("[\192-\255]") ~= nil
+end
+
+local function IsChineseLetters(str)
+    return str:match("[\228-\233]") ~= nil
+end
+
+local function IsKoreanLetters(str)
+    return str:match("[\234-\237]") ~= nil
+end
+text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
+
+]]
 local ShowTextFrame
 local function Create_ShowTextFrame()
     if ShowTextFrame then
@@ -111,7 +129,7 @@ function WoWTools_TextMixin:sub(text, size, letterSize, lower)
     --local le2= strlen(text)
 
     text= self:CN(text)
---cn:find("[\228-\233][\128-\191][\128-\191]")
+
     --if le==le2 and text:find('%w') then
     if not text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符
         text= text:sub(1, letterSize or size)
