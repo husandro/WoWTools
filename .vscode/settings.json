@@ -5615,7 +5615,11 @@
         "PetJournalSummonRandomFavoritePetButton",
         "PetJournalSummonRandomFavoritePetButtonBorder",
         "PetJournalHealPetButtonBorder",
-        "PetJournalSummonRandomFavoritePetButton_OnEnter"
+        "PetJournalSummonRandomFavoritePetButton_OnEnter",
+        "ICON_LIST",
+        "UnitFrameHealthBar_Initialize",
+        "UnitFrameManaBar_Initialize",
+        "AbbreviateLargeNumbers"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
