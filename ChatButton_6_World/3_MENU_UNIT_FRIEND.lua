@@ -12,9 +12,7 @@ end
 
 ]]
 --玩家，添加，列表
-local function Init_Menu(_, root, data)
-    info= data
-    for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+local function Init_Menu(_, root, data)    
     if
         --not Save().myChatFilter
             not data.chatTarget
