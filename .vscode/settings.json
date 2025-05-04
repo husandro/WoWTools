@@ -5632,7 +5632,11 @@
         "PetJournalTutorialButton",
         "EncounterJournalCloseButton",
         "AccountStoreFrameCloseButton",
-        "FriendsFrameCloseButton"
+        "FriendsFrameCloseButton",
+        "DataProviderMixin",
+        "EventTraceBg",
+        "EventTraceInset",
+        "EventTraceFilterButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -751,6 +751,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
+    self:SetButton(DelvesCompanionConfigurationFrame.CloseButton, {all=true})
     self:SetNineSlice(DelvesCompanionAbilityListFrame, true)
     self:SetAlphaColor(DelvesCompanionAbilityListFrameBg)
     self:HideTexture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
@@ -775,6 +776,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
+    self:SetButton(SettingsPanel.ClosePanelButton, {all=true})
     self:SetFrame(SettingsPanel.NineSlice, {alpha=0.5})
     self:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
     self:SetScrollBar(SettingsPanel.Container.SettingsList)

@@ -709,7 +709,7 @@ end)
     mixin:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
     mixin:SetMenu(AddonList.Dropdown)
     mixin:SetSearchBox(AddonList.SearchBox)
-
+    mixin:SetButton(AddonListCloseButton, {all=true})
 
      if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
          mixin:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
@@ -828,6 +828,7 @@ end)
     --mixin:SetFrame(ColorPickerFrame.Border, {alpha= 0.3})
 
     --编辑模式
+    mixin:SetButton(EditModeManagerFrame.CloseButton, {all=true})
     mixin:SetScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
     mixin:SetFrame(EditModeManagerFrame.Border, {alpha=0.3})
     mixin:SetFrame(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=0.3})
@@ -878,25 +879,6 @@ end)
     mixin:SetAlphaColor(DressUpFrame.ModelBackground, nil, nil, 0.3)
     mixin:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
     mixin:SetAlphaColor(DressUpFrame.OutfitDetailsPanel.BlackBackground)
-
-
-    --[[if ExpansionLandingPage then
-        hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(self)
-            if self.overlayFrame then
-                mixin:SetAlphaColor(self.overlayFrame.Background, nil, nil, 0.3)
-                mixin:HideTexture(self.overlayFrame.ScrollFadeOverlay)
-            end
-        end)
-        hooksecurefunc(DragonflightLandingOverlayMixin, 'SetUpMajorFactionList', function(self)
-            mixin:SetScrollBar(self.MajorFactionList)
-            mixin:SetNineSlice(self)
-            mixin:SetAlphaColor(self.DragonridingPanel.Background, nil,nil, 0.75)
-        end)
-    end]]
-
-
-
-
 
     Init=function()end
 end

@@ -44,6 +44,10 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
     local template= tab.isSearch and 'SearchBoxTemplate' or tab.Template--SearchBoxTemplate
     local setID= tab.setID
 
+    local text= tab.text
+    local atlas= tab.atlas
+    local texture= tab.texture
+
     local editBox= CreateFrame('EditBox', name, frame, template, setID)
     editBox:SetAutoFocus(false)
     editBox:ClearFocus()
@@ -54,6 +58,17 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
     editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
     editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
     WoWTools_TextureMixin:SetSearchBox(editBox)
+
+    if text and editBox.Instructions then
+        editBox.Instructions:SetText(tab.text)
+    end
+    if editBox.searchIcon then
+        if atlas then
+            editBox.searchIcon:SetAtlas(atlas)
+        elseif texture then
+            editBox.searchIcon:SetTexture(texture)
+        end
+    end
 
     return editBox
 end
