@@ -665,7 +665,7 @@ local function Init_Equip_Menu(_, root)
                 sub= root:CreateButton(
                     slot..' '
                     ..'|T'..(icon or 0)..':0|t'
-                    ..itemLink
+                    ..WoWTools_TextMixin:CN(itemLink, {itemID= GetInventoryItemID('player', slot), isName=true})
                     ..(spellID and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
 
                 function(data)
@@ -796,7 +796,7 @@ local function Set_Button_OnEnter(btn)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_TextMixin:CN(self.name), self.index)
+        GameTooltip:AddLine(self.name)
         GameTooltip:Show()
     end)
 end

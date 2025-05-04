@@ -161,6 +161,7 @@ local function Init(mixin)
 
 
     --角色，界面
+    mixin:SetButton(CharacterFrameCloseButton, {all=true})
     mixin:SetNineSlice(CharacterFrameInset, true)
     mixin:SetNineSlice(CharacterFrame, true)
     mixin:SetNineSlice(CharacterFrameInsetRight, true)
@@ -180,9 +181,9 @@ local function Init(mixin)
     mixin:SetAlphaColor(PaperDollInnerBorderBottomLeft, nil, nil, 0.3)
     mixin:SetAlphaColor(PaperDollInnerBorderBottomRight, nil, nil, 0.3)
 
-
     mixin:HideTexture(PaperDollInnerBorderBottom2)
     mixin:HideTexture(CharacterFrameInsetRight.Bg)
+
 
 
 
@@ -246,6 +247,10 @@ local function Init(mixin)
 
 
     --世界地图
+    mixin:SetButton(WorldMapFrameCloseButton, {all=true})
+    mixin:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
+    mixin:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton, {all=true})
+
     mixin:SetNineSlice(WorldMapFrame.BorderFrame, true)
     mixin:SetAlphaColor(WorldMapFrameBg)
     mixin:SetAlphaColor(QuestMapFrame.Background)
@@ -281,6 +286,7 @@ local function Init(mixin)
     end
 
     --地下城和团队副本
+    mixin:SetButton(PVEFrameCloseButton, {all=true})
     mixin:HideTexture(PVEFrame.TopTileStreaks)--最上面
     mixin:SetNineSlice(PVEFrame, true)
     mixin:SetSearchBox(LFGListFrame.SearchPanel.SearchBox)
@@ -474,6 +480,7 @@ end)
      mixin:SetScrollBar(IgnoreListFrame)
 
      mixin:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
+     mixin:SetButton(FriendsFrameCloseButton, {all=true})
 
      --好友列表，召募
      if RecruitAFriendFrame and RecruitAFriendFrame.RecruitList then

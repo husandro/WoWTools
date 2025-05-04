@@ -58,6 +58,7 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:HideFrame(AchievementFrame)
+    self:SetButton(AchievementFrameCloseButton, {all=true})
     self:HideFrame(AchievementFrame.Header)
     self:HideFrame(AchievementFrameSummary)
     self:SetNineSlice(AchievementFrameCategories, true)
@@ -135,6 +136,7 @@ end
 
 --冒险指南
 function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
+    self:SetButton(EncounterJournalCloseButton, {all=true})
     self:SetNineSlice(EncounterJournal, true)
 
     self:HideTexture(EncounterJournalBg)
@@ -300,6 +302,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     self:SetNineSlice(ProfessionsBookFrameInset, nil, nil, 0.3)
     self:HideTexture(ProfessionsBookFrameBg)
     self:HideTexture(ProfessionsBookFrameInset.Bg)
+    self:SetButton(ProfessionsBookFrameCloseButton, {all=true})
 end
 
 
@@ -552,22 +555,6 @@ end
 
 
 
-
-
---宏
-function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
-    self:SetFrame(MacroFrame, {notAlpha=true})
-    self:SetNineSlice(MacroFrameInset, true)
-    self:SetNineSlice(MacroFrame, true)
-    self:SetNineSlice(MacroFrameTextBackground, true, nil, nil, true)
-    self:HideTexture(MacroFrameBg)
-    self:SetAlphaColor(MacroFrameInset.Bg)
-    self:SetAlphaColor(MacroHorizontalBarLeft, true)
-    self:HideTexture(MacroFrameSelectedMacroBackground)
-    self:SetScrollBar(MacroFrame.MacroSelector)
-    self:SetScrollBar(_G['WoWToolsMacroPlusNoteEditBox'])
-    self:SetScrollBar(MacroFrameScrollFrame)
-end
 
 
 

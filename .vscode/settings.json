@@ -5624,7 +5624,15 @@
         "CAMERA_MODIFICATION_TYPE_DISCARD",
         "MouseIsOver",
         "UIDropDownMenu_SetWidth",
-        "UIDropDownMenu_SetText"
+        "UIDropDownMenu_SetText",
+        "PlayerSpellsFrameCloseButton",
+        "AchievementFrameCloseButton",
+        "CommunitiesFrameCloseButton",
+        "WorldMapFrameCloseButton",
+        "PetJournalTutorialButton",
+        "EncounterJournalCloseButton",
+        "AccountStoreFrameCloseButton",
+        "FriendsFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

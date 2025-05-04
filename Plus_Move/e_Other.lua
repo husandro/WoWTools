@@ -136,12 +136,6 @@ function WoWTools_MoveMixin.Events:Blizzard_BFAMissionUI()
     self:Setup(BFAMissionFrame)
 end
 
---宏
-function WoWTools_MoveMixin.Events:Blizzard_MacroUI()
-    C_Timer.After(2, function()--给 Macro.lua 用
-        self:Setup(MacroFrame)
-    end)
-end
 
 --派系声望
 function WoWTools_MoveMixin.Events:Blizzard_MajorFactions()

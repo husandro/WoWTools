@@ -426,8 +426,7 @@ Plus_Challenge\z_AvailableRewards.lua
 Plus_Challenge\z_Say_ChallengeComplete.lua
 Plus_Challenge\z_Is_HuSandro.lua
 Plus_Challenge\z_Chat_Affix.lua
-Plus_Challenge\m_Blizzard_ChallengesUI.lua
-Plus_Challenge\t_Blizzard_ChallengesUI.lua
+Plus_Challenge\z_Blizzard_ChallengesUI.lua
 
 ##邮件，增加
 Plus_Mail\1_mail.lua
@@ -543,6 +542,7 @@ Plus_Macro\MacroButton_Plus.lua
 Plus_Macro\NewEmptyButton.lua
 Plus_Macro\Select_Button.lua
 Plus_Macro\Set_UI.lua
+Plus_Macro\z_Blizzard_MacroUI.lua
 
 
 ##专业按钮

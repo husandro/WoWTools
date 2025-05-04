@@ -1,6 +1,9 @@
 
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
+    self:SetButton(CollectionsJournalCloseButton, {all=true})
+    self:SetButton(PetJournalTutorialButton, {all=true})
+
     self:SetNineSlice(CollectionsJournal, true)
     self:SetAlphaColor(CollectionsJournalBg, nil, nil, true)
 

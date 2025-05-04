@@ -1,6 +1,10 @@
 
  --公会和社区 Blizzard_Communities
- function WoWTools_TextureMixin.Events:Blizzard_Communities()--成就
+ function WoWTools_TextureMixin.Events:Blizzard_Communities()
+    self:SetButton(CommunitiesFrameCloseButton, {all=true})
+    self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MinimizeButton, {all=true})
+    self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
+
     self:SetNineSlice(CommunitiesFrame, true)
     self:SetScrollBar(CommunitiesFrameCommunitiesList)
     self:SetScrollBar(CommunitiesFrame.Chat)
@@ -67,19 +71,6 @@
 
 
 
-
---霸业风暴商店
-    if AccountStoreFrame then
-        self:HideTexture(AccountStoreFrame.LeftInset.Bg)
-        self:HideTexture(AccountStoreFrame.RightInset.Bg)
-        self:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
-        self:HideTexture(AccountStoreFrameBg)
-
-        self:SetNineSlice(AccountStoreFrame)
-        self:SetScrollBar(AccountStoreFrame.CategoryList)
-        self:SetInset(AccountStoreFrame.RightInset)
-        self:SetInset(AccountStoreFrame.LeftInset)
-    end
 
 --新建，公会, 签名
     self:SetAlphaColor(PetitionFrame.Bg, nil, true, true)

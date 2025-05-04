@@ -299,7 +299,8 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size=23, atlas='ui-questtrackerbutton-filter'})
+    --Button= WoWTools_ButtonMixin:Cbtn(MacroFrameCloseButton, {size=23, atlas='ui-questtrackerbutton-filter'})
+    Button= WoWTools_ButtonMixin:Menu(MacroFrameCloseButton)
     Button:SetPoint('RIGHT', MacroFrameCloseButton, 'LEFT', -2, 0)
 
 

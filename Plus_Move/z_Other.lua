@@ -110,11 +110,7 @@ local function Init(mxin)
 --背包
     mxin:MoveAlpha(BagsBar)
 
---商店
-    mxin:Setup(AccountStoreFrame, {setSize=true, minH=537, minW=800,
-    sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(800, 537)
-    end})
+
 
 --就绪
     mxin:Setup(ReadyCheckFrame, {notFuori=true})

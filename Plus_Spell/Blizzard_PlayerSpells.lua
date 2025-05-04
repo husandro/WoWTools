@@ -16,6 +16,11 @@ end
 
 
 local function Set_UI(self)
+    self:SetButton(PlayerSpellsFrameCloseButton, {all=true})
+    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MaximizeButton, {all=true})
+    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MinimizeButton, {all=true})
+    self:SetButton(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton)
+
     self:SetAlphaColor(PlayerSpellsFrameBg)
     self:SetNineSlice(PlayerSpellsFrame, 0.3)
     self:SetTabSystem(PlayerSpellsFrame)
