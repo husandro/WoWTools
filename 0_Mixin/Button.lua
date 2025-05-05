@@ -71,6 +71,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isType2= tab.isType2
     local isMask= tab.isMask
     local isBorder= not tab.notBorder
+    local isLocked= not tab.notLocked
     local isTexture= not tab.notTexture
     local useAtlasSize= tab.useAtlasSize and TextureKitConstants.UseAtlasSize or TextureKitConstants.IgnoreAtlasSize
 
@@ -141,7 +142,10 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     end
     if template~='UIPanelButtonTemplate' then
         btn:SetPushedAtlas(pushedAtlas)
-        btn:SetHighlightAtlas(highlightAtlas)
+        if isLocked then
+            btn:SetHighlightAtlas(highlightAtlas)    
+        end
+        
     end
 
 --设置 Atlas or Texture    

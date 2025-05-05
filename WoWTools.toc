@@ -200,16 +200,16 @@ Plus_Tooltip\z_Events.lua
 
 ##小地图，增强
 
-Plus_Minimap\1_Minimap.lua
-Plus_Minimap\Icon.lua
-Plus_Minimap\InstanceDifficulty.lua
-Plus_Minimap\TrackButton.lua
-Plus_Minimap\TimeManager.lua
-Plus_Minimap\2_Menu.lua
-Plus_Minimap\2_Menu_Garrison.lua
-Plus_Minimap\2_Menu_Faction.lua
-Plus_Minimap\ExpansionLanding.lua
-Plus_Minimap\Zoom.lua
+Plus_MiniMap\1_Minimap.lua
+Plus_MiniMap\Icon.lua
+Plus_MiniMap\InstanceDifficulty.lua
+Plus_MiniMap\TrackButton.lua
+Plus_MiniMap\TimeManager.lua
+Plus_MiniMap\2_Menu.lua
+Plus_MiniMap\2_Menu_Garrison.lua
+Plus_MiniMap\2_Menu_Faction.lua
+Plus_MiniMap\ExpansionLanding.lua
+Plus_MiniMap\Zoom.lua
 
 
 ##角色面板
