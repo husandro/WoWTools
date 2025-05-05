@@ -101,7 +101,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_MinimapMixin:Init_Icon()--添加，图标
                 WoWTools_MinimapMixin:Init_ExpansionLanding()
                 WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
-
+                WoWTools_MinimapMixin:Init_Collection_Icon()
+                
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then
                     WoWTools_MinimapMixin:Init_TimeManager()--秒表
                     self:UnregisterEvent(event)

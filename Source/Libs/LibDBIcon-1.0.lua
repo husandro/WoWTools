@@ -275,7 +275,7 @@ local function createButton(name, object, db, customCompartmentIcon)
 		icon:SetSize(18, 18)
 		icon:SetTexture(object.icon)
 		icon:SetPoint("CENTER", button, "CENTER")
-		
+
 		button.icon = icon
 	else
 		local overlay = button:CreateTexture(nil, "OVERLAY")

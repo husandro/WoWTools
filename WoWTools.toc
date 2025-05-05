@@ -210,6 +210,7 @@ Plus_MiniMap\TrackButton.lua
 Plus_MiniMap\TimeManager.lua
 Plus_MiniMap\ExpansionLanding.lua
 Plus_MiniMap\Zoom.lua
+Plus_MiniMap\Collection_Icon.lua
 Plus_MiniMap\z_Blizzard_Minimap.lua
 
 ##角色面板
