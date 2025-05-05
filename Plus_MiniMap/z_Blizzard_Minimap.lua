@@ -20,13 +20,12 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
             for _, region in pairs ({btn:GetRegions()}) do
                 if region:GetObjectType()=='Texture' and region~=icon then
                     local text= region:GetTexture()
-                    if text==136430 then
+                    if text==136430 then--OVERLAY
                         region:SetTexture(0)
-                    elseif text==136467 then
+                    elseif text==136467 then--BACKGROUND
                         region:SetAlpha(0.75)
                     end
                 end
-                --self:SetFrame(libDBIcon:GetMinimapButton(name), {index=2})
             end
         end
 
