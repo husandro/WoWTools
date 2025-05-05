@@ -85,24 +85,22 @@ end
 
 
 --local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
-function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
+function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     index= index+1
     tab= tab or {}
 
     local name= tab.name or format('%s%d', 'WoWTools_EditScrollFrame', index)--名称
     local isLink= tab.isLink--超链接
     local text= tab.text--使用说明
+    local clearButton= tab.clear
 
-    local scrollFrame= CreateFrame('ScrollFrame', name, frame, 'ScrollFrameTemplate')--InputScrollFrameTemplate
+    local scrollFrame= CreateFrame('ScrollFrame', name, frame, 'ScrollFrameTemplate')--InputScrollFrameTemplate SecureUIPanelTemplates.xml
 
     local level= scrollFrame:GetFrameLevel()
-    if scrollFrame.ScrollBar then
-        scrollFrame.ScrollBar:ClearAllPoints()
-        scrollFrame.ScrollBar:SetPoint('TOPRIGHT', -10, -10)
-        scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -10, 10)
-        --scrollFrame.ScrollBar:SetHideIfUnscrollable(true)
-    end
 
+    scrollFrame.ScrollBar:ClearAllPoints()--MinimalScrollBar
+    scrollFrame.ScrollBar:SetPoint('TOPRIGHT', -8, -17)
+    scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -8, 12)
     WoWTools_TextureMixin:SetScrollBar(scrollFrame)
 
     scrollFrame.bg= CreateFrame('Frame', name..'BG', scrollFrame, 'TooltipBackdropTemplate')
@@ -122,12 +120,14 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     scrollFrame.editBox:ClearFocus()
     scrollFrame.editBox:SetFontObject('ChatFontNormal')
    -- scrollFrame.editBox:SetTextColor(1,1,1)
-    scrollFrame.editBox:SetPoint('TOPLEFT')
-    scrollFrame.editBox:SetPoint('BOTTOMRIGHT')
+    scrollFrame.editBox:SetPoint('TOPLEFT', scrollFrame, 'TOPLEFT')
+    scrollFrame.editBox:SetPoint('BOTTOMRIGHT', scrollFrame, 'BOTTOMRIGHT')
 
     scrollFrame.editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
     scrollFrame.editBox:SetScript('OnHide', function(s)
-        s:ClearFocus()
+        if s:HasFocus() then
+            s:ClearFocus()
+        end
     end)
     WoWTools_TextureMixin:SetSearchBox(scrollFrame.editBox)
 
@@ -154,11 +154,12 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     end)
     scrollFrame.editBox:SetScript('OnTextChanged', function(s)
         s.Instructions:SetShown(s:GetText() == "")
-        s.Instructions2:SetText(WoWTools_Mixin:MK(s:GetNumLetters(), 1) or '')
+        local line= s:GetNumLines() or 0
+        local num= WoWTools_Mixin:MK(s:GetNumLetters() or 0, 1)
+        s.Instructions2:SetText(num..' - '..line)
     end)
-
-    scrollFrame:HookScript('OnSizeChanged', function(f)
-       f.editBox:SetWidth(f:GetWidth()-25)
+    scrollFrame:HookScript('OnSizeChanged', function(s)
+        s.editBox:SetWidth(s:GetWidth()-23)
     end)
 
 --超链接
@@ -178,6 +179,8 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
         end)
     end
 
+
+
     scrollFrame:SetScrollChild(scrollFrame.editBox)
 
     scrollFrame.SetInstructions= function(s, t)
@@ -194,9 +197,11 @@ function WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, tab)
     scrollFrame.ClearFocus= function(s)
         s.editBox:ClearFocus()
     end
-    frame.SetFocus= function(s)
+    scrollFrame.SetFocus= function(s)
         s.editBox:SetFocus()
     end
+
+    
 
     return scrollFrame
 end

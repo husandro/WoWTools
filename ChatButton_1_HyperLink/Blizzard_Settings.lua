@@ -29,7 +29,7 @@ local function Init()
 
     WoWTools_HyperLink.Category= Category
 
-    local editBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, {
+    local editBox=WoWTools_EditBoxMixin:CreateFrame(frame, {
         text= WoWTools_DataMixin.onlyChinese and '来人 成就' or ('Inv '..ACHIEVEMENTS)
     })
     editBox:SetPoint('TOPLEFT', 8, -22)
@@ -91,7 +91,7 @@ local function Init()
 
 
 
-    local editBox2=WoWTools_EditBoxMixin:CreateMultiLineFrame(frame, {
+    local editBox2=WoWTools_EditBoxMixin:CreateFrame(frame, {
         text= WoWTools_DataMixin.onlyChinese and '大脚世界频道=世' or (GENERAL..'=G')
     })
     editBox2:SetPoint('TOPLEFT', frame, 'LEFT',8,-10)

@@ -790,7 +790,7 @@ local function Init()
 
 
     --导入数据
-    Menu.DataFrame=WoWTools_EditBoxMixin:CreateMultiLineFrame(Frame,{
+    Menu.DataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         --isInstructions= 'text'
     })
     Menu.DataFrame:Hide()

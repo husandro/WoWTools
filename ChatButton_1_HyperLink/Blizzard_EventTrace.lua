@@ -2,6 +2,7 @@ local function Save()
     return WoWToolsSave['ChatButton_HyperLink']
 end
 
+local EventTabs={}
 
 
 
@@ -15,7 +16,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
             end
         end
     end
-
+    self:SetButton(EventTraceCloseButton, {all=true})
     self:SetNineSlice(EventTrace, true)
     self:SetAlphaColor(EventTraceBg, nil, nil, true)
     self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
@@ -82,9 +83,8 @@ end
 
 
 
-local Frame
-local EventTabs={}
-local EditBox, ReLeftList
+
+
 
 
 
@@ -111,38 +111,38 @@ end
 local function FormatArgument(arg)
     local color = GetArgumentColor(arg)
     local t = type(arg)
-    if t == "string" then
-        return color:WrapTextInColorCode(string.format('"%s"', arg))
-        
-    elseif t == "nil" then
+    if t == "nil" then
         return color:WrapTextInColorCode(t)
 
+    elseif t == "string" then
+        return color:WrapTextInColorCode(string.format('"%s"', arg))
+
     elseif t== 'table' then
-        local a
+        local a='{'
         for k, v in pairs(arg) do
             if type(v)=='table' then
-                a= (a and a..' ' or '').. tostring(k)..'={'
+                a= (a and a..'|n' or '')..'    '..tostring(k)..'=|cffff00ff{'
                 for k2,v2 in pairs(v) do
-                    a= (a and a..' ' or '').. tostring(k2)..'='..tostring(v2)
+                    a= a..'|n        '.. tostring(k2)..'='..tostring(v2)
                 end
-                a=a..'}'
+                a=a..'|n    }|r'
             else
-                a= (a and a..' ' or '').. tostring(k)..'='..tostring(v)
+                a= (a and a..'\n' or '')..'    '..tostring(k)..'='..tostring(v)
             end
         end
-
-        return color:WrapTextInColorCode(a or '')
+        a=a..'|n}'
+        return color:WrapTextInColorCode(a)
     end
 
     return color:WrapTextInColorCode(tostring(arg))
 end
 
-local function AddTooltipArguments(...)
+local function AddTooltipArguments(args)
     local text
-    local count = select("#", ...)
-    for index = 1, count do
-        local arg = select(index, ...)
-        text= (text and text..' ' or '')..FormatArgument(arg)
+    if args then
+        for index, arg in pairs({SafeUnpack(args)}) do
+            text= (text and text..'\n\n' or '')..'|cff00ccffarg'..index..'='..FormatArgument(arg)..'|r'
+        end
     end
     return text
 end
@@ -173,26 +173,51 @@ end
 
 --左边列表
 local function Init_LeftList()
-    ReLeftList= WoWTools_ButtonMixin:Cbtn(EditBox, {size=23, atlas='128-RedButton-Delete-Disabled'})
-    ReLeftList:SetPoint('RIGHT', EditBox, 'LEFT', -2, 0)
-    ReLeftList:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:SetNormalAtlas('128-RedButton-Delete-Disabled')
-    end)
-    ReLeftList:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName)
-        GameTooltip:AddDoubleLine(' ', WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-        GameTooltip:Show()
-        self:SetNormalAtlas('128-RedButton-Delete')
-    end)
-    ReLeftList.events={}
-    ReLeftList.width=100--宽度
+--ScrollBox
+    local ScrollBox= CreateFrame('Frame', nil, EventTrace.Log, 'WowScrollBoxList')
+    ScrollBox:SetPoint('TOPRIGHT', EventTrace, 'TOPLEFT', 5, 0)
+    ScrollBox:SetPoint('BOTTOMLEFT', EventTrace, 'BOTTOMLEFT', 5, 0)
+    ScrollBox.events={}
+    ScrollBox.width=100--宽度
 
-    ReLeftList:SetScript('OnClick', function(self)
-        self:settings(true)
+--ScrollBar
+    local ScrollBar= CreateFrame("EventFrame", nil, ScrollBox, "MinimalScrollBar")
+    ScrollBar:SetPoint("TOPRIGHT", ScrollBox, "TOPLEFT", 0,-6)
+    ScrollBar:SetPoint("BOTTOMRIGHT", ScrollBox, "BOTTOMLEFT", 0,6)
+    WoWTools_TextureMixin:SetScrollBar(ScrollBar)
+
+    ScrollBox.view = CreateScrollBoxListLinearView()
+    ScrollUtil.InitScrollBoxListWithScrollBar(ScrollBox, ScrollBar, ScrollBox.view)
+
+--初始
+    ScrollBox.view:SetElementInitializer('EventSchedulerHeaderTemplate', function(frame, data)
+        if frame.Init then
+            frame.Background:SetVertexColor(0.1, 0.1, 0.1, 0.7)
+            frame.Label:SetPoint('LEFT', frame,2,0)
+            frame:SetScript("OnMouseDown", function(s)
+                --[[if not EventTrace:IsLoggingPaused() then--移过时，暂停
+                    EventTrace:TogglePause()
+                end]]
+                EventTrace.Log.Bar.SearchBox:SetText(s.event)
+            end)
+            frame:SetScript('OnLeave', function(s)
+                s.Label:SetTextColor(0.5, 0.5, 0.5)
+            end)
+            frame:SetScript('OnEnter', function(s)
+                s.Label:SetTextColor(1, 1, 1)
+            end)
+            frame.Init=nil
+        end
+
+        frame.event= data.event
+--内容
+        frame.Label:SetText(data.num..' '..data.event)
+--宽度
+        ScrollBox.width= math.max(frame.Label:GetStringWidth(), ScrollBox.width)
     end)
-    function ReLeftList:settings(isClear)
+
+--设置，列表
+    function ScrollBox:settings(isClear)
         local data = CreateDataProvider()--DataProviderMixin
         if not isClear then
             for event, num in pairs(self.events) do
@@ -201,76 +226,153 @@ local function Init_LeftList()
             data:SetSortComparator(function(a,b) return a.num> b.num end)
         else
             self.events={}
-            self.width=100--宽度
+            self.width=50--宽度
         end
         self.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
-        self.ScrollBox:SetPoint('LEFT', EventTrace, 'LEFT', -(self.width)-15, 0)
+--设置，宽度
+        self:SetPoint('LEFT', EventTrace, 'LEFT', -(self.width)-2, 0)
     end
 
-    ReLeftList.ScrollBox= CreateFrame('Frame', nil, EventTrace, 'WowScrollBoxList')
-    ReLeftList.ScrollBox:SetPoint('TOPRIGHT', EventTrace, 'TOPLEFT', -6, 0)
-    ReLeftList.ScrollBox:SetPoint('BOTTOMLEFT', EventTrace, 'BOTTOMLEFT', -6, 0)
-
-    ReLeftList.ScrollBar= CreateFrame("EventFrame", nil, EventTrace, "MinimalScrollBar")
-    ReLeftList.ScrollBar:SetPoint("TOPLEFT", ReLeftList.ScrollBox, "TOPRIGHT", 0,-6)
-    ReLeftList.ScrollBar:SetPoint("BOTTOMLEFT", ReLeftList.ScrollBox, "BOTTOMRIGHT", 0,6)
-    WoWTools_TextureMixin:SetScrollBar(ReLeftList.ScrollBar)
-
-    ReLeftList.view = CreateScrollBoxListLinearView()
-
-    ScrollUtil.InitScrollBoxListWithScrollBar(ReLeftList.ScrollBox, ReLeftList.ScrollBar, ReLeftList.view)
-
-    ReLeftList.view:SetElementInitializer('EventSchedulerHeaderTemplate', function(frame, data)
-        if not frame.event then
-            frame.Background:SetAllPoints()
-
-            frame:SetScript("OnMouseDown", function(s)
-                if not EventTrace:IsLoggingPaused() then--移过时，暂停
-                    EventTrace:TogglePause()
-                end
-                EventTrace.Log.Bar.SearchBox:SetText(s.event)
-            end)
-            frame:SetScript('OnLeave', function(s)
-                s.Label:SetTextColor(0.5,0.5,0.5)
-            end)
-            frame:SetScript('OnEnter', function(s)
-                s.Label:SetTextColor(1,1,1)
-            end)
-        end
-        frame.event= data.event
---内容
-        frame.Label:SetText(data.num..' '..data.event)
---宽度
-        ReLeftList.width= math.max(frame.Label:GetStringWidth(), ReLeftList.width)
-    end)
-
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'Init', function(_, data)
+--添加，事件
+    local IsLogging= not Save().eventTraceIsPased
+    hooksecurefunc(EventTrace, 'LogLine', function(_, data)
         if not data.displayEvent and data.event then
-            local find= ReLeftList.events[data.event] or 0
+            local find= ScrollBox.events[data.event] or 0
 
-            ReLeftList.events[data.event]= find+1
+            ScrollBox.events[data.event]= find+1
 
-            if find==0 then
-                ReLeftList:settings()
+            if find==0 and IsLogging then
+                ScrollBox:settings()
             end
         end
     end)
 
+--全部清除
     EventTrace.Log.Bar.DiscardAllButton:HookScript('OnClick', function()
-        ReLeftList:settings(true)
+        ScrollBox:settings(true)
     end)
 
+--刷新，事件
     hooksecurefunc(EventTrace, 'TogglePause', function(self)
         if not self.isLoggingPaused then
-            ReLeftList:settings()
+            ScrollBox:settings()
         end
     end)
 
+--过滤，事件
     hooksecurefunc(EventTrace, 'RemoveEventFromDataProvider', function(_, _, event)
-        if ReLeftList.events[event] then
-            ReLeftList.events[event]= nil
-            ReLeftList:settings()
+        if ScrollBox.events[event] then
+            ScrollBox.events[event]= nil
+            ScrollBox:settings()
         end
+    end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    local Pause, Clear, Refresh
+    local size=28
+--重置
+    Refresh= WoWTools_ButtonMixin:Cbtn(EventTrace.Log, {size=size, atlas='128-RedButton-Refresh-Disabled'})
+    Refresh:SetPoint('BOTTOMRIGHT', EventTrace, 'TOPLEFT', 6, 0)
+    Refresh:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetNormalAtlas('128-RedButton-Refresh-Disabled')
+    end)
+    Refresh:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '重置' or RESET))
+        GameTooltip:Show()
+        self:SetNormalAtlas('128-RedButton-Refresh')
+    end)
+    Refresh:SetScript('OnClick', function()
+        ScrollBox.events={}
+        for _, data in pairs(EventTrace.logDataProvider:GetCollection() or {}) do
+            if data.event then
+                ScrollBox.events[data.event]= (ScrollBox.events[data.event] or 0)+1
+            end
+        end
+        ScrollBox:settings()
+    end)
+
+--暂停
+    Pause= WoWTools_ButtonMixin:Cbtn(Refresh, {size=size, icon='hide'})
+    Pause:SetPoint('RIGHT', Refresh, 'LEFT')
+    Pause:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:set_texture()
+    end)
+    Pause:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+        self:set_texture()
+    end)
+
+    Pause:SetScript('OnClick', function(self)
+        self:settings()
+        self:set_tooltip()
+    end)
+    function Pause:settings()
+        Save().eventTraceIsPased= not Save().eventTraceIsPased and true or nil
+        IsLogging= not Save().eventTraceIsPased
+        self:set_texture()
+    end
+    function Pause:set_tooltip()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.icon2
+            ..(Save().eventTraceIsPased and (WoWTools_DataMixin.onlyChinese and '暂停' or EVENTTRACE_BUTTON_PAUSE)
+            or (WoWTools_DataMixin.onlyChinese and '记录' or EVENTTRACE_LOG_HEADER))
+        )
+        GameTooltip:Show()
+    end
+    function Pause:set_texture()
+        local atlas
+        local isOwner= GameTooltip:IsOwned(self)
+        if Save().eventTraceIsPased then
+            atlas= isOwner and '128-RedButton-VisibilityOff' or '128-RedButton-VisibilityOff-Disabled'
+        else
+            atlas= isOwner and '128-RedButton-VisibilityOn' or '128-RedButton-VisibilityOn-Disabled'
+        end
+        self:SetNormalAtlas(atlas)
+    end
+    Pause:set_texture()
+
+
+--清除
+    Clear= WoWTools_ButtonMixin:Cbtn(Refresh, {size=size, atlas='128-RedButton-Delete-Disabled'})
+    Clear:SetPoint('RIGHT', Pause, 'LEFT')
+    Clear:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetNormalAtlas('128-RedButton-Delete-Disabled')
+    end)
+    Clear:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
+        GameTooltip:Show()
+        self:SetNormalAtlas('128-RedButton-Delete')
+    end)
+    Clear:SetScript('OnClick', function()
+        ScrollBox:settings(true)
+    end)
+
+--菜单
+    local Menu= WoWTools_ButtonMixin:Cbtn(Refresh, {atlas='GM-icon-settings-pressed', size=size, isType2=true, notBorder=true})
+    --Menu:SetPoint('RIGHT', Clear, 'LEFT')
+    Menu:SetPoint('BOTTOMLEFT', ScrollBox, 'TOPLEFT')
+    Menu:SetScript('OnClick', function()
+        WoWTools_HyperLink.LinkButton:OpenMenu()
     end)
 end
 
@@ -294,38 +396,64 @@ end
 
 
 
---Plus
-local function Init_Plus()
-    if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') or Save().hideEventTracePlus then
-        return
-    end
 
-    EditBox= WoWTools_EditBoxMixin:Create(EventTrace, {
-        name='WoWToolsChatButtonEventTraceEditBox',
-        isSearch=true,
-        text=WoWTools_DataMixin.onlyChinese and '事件' or EVENTS_LABEL,
+
+--上面 EditBox
+local function Init_EditBox()
+    local Frame= WoWTools_EditBoxMixin:CreateFrame(EventTrace, {
+        text= WoWTools_DataMixin.onlyChinese and '查看' or VIEW,
     })
-    EditBox:SetPoint('BOTTOMLEFT', EventTrace, 'TOPLEFT', 12, 0)
-    EditBox:SetPoint('BOTTOMRIGHT', EventTrace, 'TOPRIGHT',-23 ,0)
+    --Frame:Hide()
+    Frame.ScrollBar:ClearAllPoints()
+    Frame:SetPoint('BOTTOMLEFT', EventTrace, 'TOPLEFT', 12, 0)
+    Frame:SetPoint('BOTTOMRIGHT', EventTrace, 'TOPRIGHT',-23 ,0)
+    Frame:SetHeight(23)
 
---关闭按钮
-    EventTraceCloseButton:SetFrameLevel(EventTrace.TitleContainer:GetFrameLevel()+1)
-
---OnEnter 提示
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnEnter', function()
-        EventTraceTooltip:AddLine(' ')
-        EventTraceTooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)
-            ..WoWTools_DataMixin.Icon.left
-            ..'|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH),
-
-            WoWTools_DataMixin.Icon.right
-            ..'|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
-        )
-        EventTraceTooltip:Show()
+--查看，按钮
+    Frame.View= WoWTools_ButtonMixin:Cbtn(Frame, {atlas='Perks-PreviewOn'})
+    Frame.View:SetPoint('LEFT', Frame, 'RIGHT')
+    Frame.View:SetScript('OnLeave', function()
+        GameTooltip:Hide()
     end)
+    Frame.View:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '查看' or VIEW))
+        GameTooltip:Show()
+    end)
+    Frame.View:SetScript('OnMouseDown', function(self)
+        WoWTools_TextMixin:ShowText(
+            self:GetParent():GetText(),
+            WoWTools_DataMixin.onlyChinese and '事件' or EVENTS_LABEL,
+            nil
+        )
+    end)
+    Frame.View:Hide()
+
+--清除，按钮
+    Frame.clearButton= CreateFrame('Button', nil, Frame)
+    Frame.clearButton:SetSize(14,14)
+    Frame.clearButton:SetPoint('TOPRIGHT', -2, 4)
+    Frame.clearButton:SetFrameLevel(Frame.editBox:GetFrameLevel()+1)
+    Frame.clearButton:SetNormalAtlas('common-search-clearbutton')
+    Frame.clearButton:SetAlpha(0.5)
+    Frame.clearButton:Hide()
+    Frame.clearButton:SetScript('OnLeave', function(s) s:SetAlpha(0.5) end)
+    Frame.clearButton:SetScript('OnEnter', function(s) s:SetAlpha(1) end)
+    Frame.clearButton:SetScript('OnMouseDown', function(s) s:GetParent().editBox:SetText('') s:SetAlpha(0.5) end)
+
+--设置 OnTextChanged
+    Frame.editBox:SetScript('OnTextChanged', function(self)
+        local isText= self:GetText()~= ""
+        local numLine= self:GetNumLines() or 0
+        local p= self:GetParent()
+        self.Instructions2:SetText(isText and numLine or '')
+        self.Instructions2:SetShown(isText)
+        self.Instructions:SetShown(not isText)
+        p.clearButton:SetShown(isText)
+        p.View:SetShown(numLine>1)
+    end)
+
+
 
     hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(self)
 --隐藏事件按钮，提示 OnEnter
@@ -338,7 +466,7 @@ local function Init_Plus()
             local p= s:GetParent()
             local elementData = p:GetElementData()
             GameTooltip:SetOwner(s, 'ANCHOR_LEFT')
-            GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
+            GameTooltip:SetText(WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS))
             GameTooltip_AddColoredLine(GameTooltip, GetDisplayEvent(elementData), HIGHLIGHT_FONT_COLOR)
             GameTooltip:Show()
             p.MouseoverOverlay:SetShown(true)
@@ -351,20 +479,75 @@ local function Init_Plus()
                     local data = s:GetElementData()
                     local t=''
                     if data then
-                        if not EventTrace:IsLoggingPaused() then--移过时，暂停
+                        --[[if not EventTrace:IsLoggingPaused() then--移过时，暂停
                             EventTrace:TogglePause()
-                        end
+                        end]]
                         t=(GetDisplayEvent(data) or '')
                             ..' '
-                            ..(AddTooltipArguments(SafeUnpack(data.args) or ''))
+                            ..(AddTooltipArguments(data.args) or '')
                             ..' '
                             ..(data.formattedTimestamp and GRAY_FONT_COLOR:WrapTextInColorCode(data.formattedTimestamp) or '')
                     end
-                    EditBox:SetText(t)
+                    Frame:SetText(t)
+                    Frame.editBox:SetCursorPosition(1)
                 end)
             end
         end)
     end)
+
+
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--Plus
+local function Init_Plus()
+    if not C_AddOns.IsAddOnLoaded('Blizzard_EventTrace') or Save().hideEventTracePlus then
+        return
+    end
+--上面 EditBox
+    Init_EditBox()
+--左边列表
+    Init_LeftList()
+
+
+--关闭按钮
+    EventTraceCloseButton:SetFrameLevel(EventTrace.TitleContainer:GetFrameLevel()+1)
+
+--OnEnter 提示
+    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnEnter', function()
+        EventTraceTooltip:AddLine(' ')
+        EventTraceTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '查看' or VIEW)
+            ..WoWTools_DataMixin.Icon.left
+            ..' '..(WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)
+            ..WoWTools_DataMixin.Icon.left
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH),
+
+            WoWTools_DataMixin.Icon.right
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+        )
+        EventTraceTooltip:Show()
+    end)
+
 
 --暂停/开始按钮，颜色
     EventTrace.Log.Bar.PlaybackButton.Label:SetTextColor(0,1,0)
@@ -378,8 +561,6 @@ local function Init_Plus()
 
 
 
---左边列表
-    Init_LeftList()
 
     Init_Plus=function()end
 end
@@ -409,8 +590,7 @@ local function Init_Print()
         return
     end
 
-
-    Frame= CreateFrame('Frame')
+    local Frame= CreateFrame('Frame')
     Frame.index= 1
 
     function Frame:set_event()

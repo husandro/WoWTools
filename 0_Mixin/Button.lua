@@ -72,6 +72,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isMask= tab.isMask
     local isBorder= not tab.notBorder
     local isTexture= not tab.notTexture
+    local useAtlasSize= tab.useAtlasSize and TextureKitConstants.UseAtlasSize or TextureKitConstants.IgnoreAtlasSize
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
     local frameType= tab.frameType
@@ -147,13 +148,13 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if isType2 then
         if btn.texture then
             if atlas then
-                btn.texture:SetAtlas(atlas)
+                btn.texture:SetAtlas(atlas, useAtlasSize)
             elseif texture then
                 btn.texture:SetTexture(texture)
             end
         end
     elseif atlas then
-        btn:SetNormalAtlas(atlas)
+        btn:SetNormalAtlas(atlas, useAtlasSize)
     elseif texture then
         btn:SetNormalTexture(texture)
     end
@@ -196,13 +197,24 @@ end
 
 
 
-
+--[[
+UIPanelIconDropdownButtonMixin
+function UIPanelIconDropdownButtonMixin:OnMouseDown()
+	self.Icon:AdjustPointsOffset(1, -1);
+end
+function UIPanelIconDropdownButtonMixin:OnMouseUp(button, upInside)
+	self.Icon:AdjustPointsOffset(-1, 1);
+end
+]]
 --菜单按钮 DropdownButtonMixin
 function WoWTools_ButtonMixin:Menu(frame, tab)
     tab= tab or {}
     tab.isMenu=true
 
-    if tab.icon~='hide' and not tab.texture then
+    if tab.isSetup then
+        tab.template= 'UIPanelIconDropdownButtonTemplate'
+
+    elseif tab.icon~='hide' and not tab.texture then
         tab.atlas= tab.atlas or 'ui-questtrackerbutton-filter'
     end
 

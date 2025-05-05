@@ -24,7 +24,7 @@ local function Create_ShowTextFrame()
         return
     end
     ShowTextFrame= WoWTools_FrameMixin:Create(nil, {name='WoWTools_ShowTextEditBoxFrame'})
-    ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateMultiLineFrame(ShowTextFrame, {
+    ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {
         isLink=true
     })
     ShowTextFrame.ScrollBox:SetPoint('TOPLEFT', 11, -32)
@@ -39,7 +39,7 @@ local function Create_ShowTextFrame()
         end
         f.ScrollBox:SetText('')
     end)
-    ShowTextFrame:SetFrameStrata('HIGH')
+    ShowTextFrame:SetFrameStrata('FULLSCREEN')
 end
 
 
@@ -57,11 +57,11 @@ function WoWTools_TextMixin:ShowText(data, headerText, tab)
         text= data
     end
     ShowTextFrame.ScrollBox:SetText(text or '')
+    ShowTextFrame.ScrollBox.editBox:SetCursorPosition(1)
     ShowTextFrame.Header:Setup(headerText or '' )
     ShowTextFrame:SetShown(true)
     ShowTextFrame.onHide= onHide
 end
-
 
 
 

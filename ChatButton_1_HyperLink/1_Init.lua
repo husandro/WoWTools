@@ -73,6 +73,7 @@ local function Init()
         end
     end
 
+    
     WoWTools_HyperLink:Init_Button_Menu()
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
