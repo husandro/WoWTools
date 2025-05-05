@@ -1,10 +1,8 @@
-
-local Frame=CreateFrame('Frame')
 local Save= function()
     return  WoWToolsSave['Minimap_Plus']
 end
 
-
+local Frame=CreateFrame('Frame')
 
 
 

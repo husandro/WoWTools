@@ -166,11 +166,11 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 --设置大小
     btn:SetSize(width, height)
 
---RegisterForMouse , RegisterForClicks
+--RegisterForMouse , RegisterForClicks RegisterForClicks("anyUp")
     if isMenu then
         btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     else
-        btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+        btn:RegisterForClicks('anyUp')--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     end
 
 --EnableMouseWheel

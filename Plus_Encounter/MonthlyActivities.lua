@@ -19,7 +19,7 @@ local function Settings(btn)
         end
     end)
 
-    btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    btn:RegisterForClicks('anyUp')--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     btn:HookScript('OnClick', function(self3, d)
         if IsModifierKeyDown() or not self3.id or Save().hideEncounterJournal then
             return

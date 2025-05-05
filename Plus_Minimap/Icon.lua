@@ -1,6 +1,3 @@
-
-
-
 local Save= function()
     return  WoWToolsSave['Minimap_Plus']
 end

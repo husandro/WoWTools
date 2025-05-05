@@ -724,13 +724,7 @@ end)
      mixin:HideTexture(PlayerFrameAlternateManaBarLeftBorder)
      mixin:HideTexture(PlayerFrameAlternateManaBarRightBorder)
 
-     --小地图
-     mixin:SetAlphaColor(MinimapCompassTexture)
-     mixin:SetButton(GameTimeFrame)
-     if MinimapCluster and MinimapCluster.TrackingFrame then
-        mixin:SetButton(MinimapCluster.TrackingFrame.Button, {alpha= 0.3, all=false})
-        mixin:SetFrame(MinimapCluster.BorderTop)
-     end
+ 
 
      --小队，背景
     mixin:SetFrame(PartyFrame.Background, {alpha= 0.3})
@@ -785,15 +779,8 @@ end)
         WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.HorizontalMiddle)
         WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.VerticalMiddle)
 
-
-         local libDBIcon = LibStub("LibDBIcon-1.0", true)
-         if libDBIcon and libDBIcon.objects then
-            for name in pairs(libDBIcon.objects) do
-                mixin:SetFrame(_G['LibDBIcon10_'..name], {index=2})
-            end
-         end
-
-         --商人, SellBuy.lua
+        
+--商人, SellBuy.lua
          for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10 BUYBACK_ITEMS_PER_PAGE = 12
              mixin:SetAlphaColor(_G['MerchantItem'..i..'SlotTexture'])
          end
