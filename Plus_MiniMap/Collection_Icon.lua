@@ -32,7 +32,7 @@ local function Unlock_Button(btn, name)
     
     btn:SetFixedFrameStrata(true)
     btn:SetParent(Minimap)
-    
+
     libDBIcon.objects[name]= btn
     libDBIcon:Unlock(name)
     libDBIcon:Show(name)
@@ -102,21 +102,20 @@ local function Init_Buttons()
         Lock_Button(btn, strata, level)
 
         btn:ClearAllPoints()
-        if index==1 then
-            btn:SetPoint('BOTTOMRIGHT', Button.frame)
-        else
-            btn:SetPoint('BOTTOM', tab[index-1].btn, 'TOP')
-        end
+        
+        btn:SetPoint('BOTTOM', index==1 and Button or tab[index-1].btn, 'TOP')
+        
 
         Button.Background:SetPoint('LEFT', btn)
         Button.Background:SetPoint('TOP', btn)
     end
 
     local numLine= Save().Icons.numLine or 1
-
+    
     for i= numLine+1, #tab, numLine do
+        
         tab[i].btn:ClearAllPoints()
-        tab[i].btn:SetPoint('RIGHT', tab[i-numLine].btn, 'LEFT')
+        tab[i].btn:SetPoint('RIGHT', tab[i-numLine] and tab[i-numLine].btn or Button, 'LEFT')
 
         Button.Background:SetPoint('LEFT', btn)
         Button.Background:SetPoint('TOP', tab[i-1].btn)
@@ -394,5 +393,5 @@ end
 
 
 function WoWTools_MinimapMixin:Init_Collection_Icon()
-    Init()
+    --Init()
 end
