@@ -23,5 +23,5 @@ end
 
 
 function WoWTools_MinimapMixin:Init_Collection_Icon()
-    Init()
+    --Init()
 end

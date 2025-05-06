@@ -170,7 +170,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if isMenu then
         btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     else
-        btn:RegisterForClicks('anyUp')--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+        btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     end
 
 --EnableMouseWheel

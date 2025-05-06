@@ -568,7 +568,7 @@ local function Init()
     --颜色
     Menu.Color= CreateFrame('Button', nil, Frame, 'ColorSwatchTemplate')--ColorSwatchMixin
     Menu.Color:SetPoint('LEFT', Menu.ID, 'RIGHT', 2,0)
-    Menu.Color:RegisterForClicks('anyUp')--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    Menu.Color:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     Menu.Color:SetScript('OnLeave', GameTooltip_Hide)
     function Menu.Color:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")

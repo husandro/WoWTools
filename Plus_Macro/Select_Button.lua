@@ -234,7 +234,7 @@ local function Init()
     end)
 
     --选定宏，点击，弹出菜单，自定图标
-    MacroFrameSelectedMacroButton:RegisterForClicks('anyUp')--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    MacroFrameSelectedMacroButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     MacroFrameSelectedMacroButton:HookScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, function(...)
             Init_Menu(...)

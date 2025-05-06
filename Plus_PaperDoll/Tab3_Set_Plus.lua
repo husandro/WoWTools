@@ -63,7 +63,7 @@ local function Setttings(btn)
     end
 
     if not btn.setScripOK then
-        btn:RegisterForClicks('anyUp')--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+        btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
         btn:HookScript('OnClick', function(self, d)
             if self.setID and not Save().hide and d=='RightButton' then
                 local notCan= WoWTools_ItemMixin:IsCan_EquipmentSet(self.setID)
