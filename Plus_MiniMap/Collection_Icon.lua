@@ -13,9 +13,6 @@ local Button
 
 
 local function Init_Menu(self, root)
-    if not Button then
-        return
-    end
 
     local sub
 
@@ -38,9 +35,7 @@ local function Init_Menu(self, root)
     end)
 
 --打开，选项
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MinimapMixin.addName})
-
-    WoWTools_MinimapMixin:Init_Plus_Menu(self, sub)
+    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MinimapMixin.addName})
 end
 
 
@@ -138,7 +133,7 @@ local function Init()
     end
 
     function Button:settings()
-        self.Background:SetShown(not Save().Icons.hideBackground)
+        self.frame.Background:SetShown(not Save().Icons.hideBackground)
     end
 
     function Button:set_point()
@@ -174,8 +169,4 @@ end
 
 function WoWTools_MinimapMixin:Init_Collection_Icon()
     Init()
-end
-
-function WoWTools_MinimapMixin:Collection_Icon_Menu(_, root)
-    Init_Menu(Button, root)
 end

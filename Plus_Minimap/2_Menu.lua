@@ -110,8 +110,6 @@ local function Init_Plus_Menu(self, root)
         Save().Icons.disabled= not Save().Icons.disabled and true or nil
         WoWTools_MinimapMixin:Init_Collection_Icon()
     end)
-
-    WoWTools_MinimapMixin:Collection_Icon_Menu(self, sub)
 end
 
 
