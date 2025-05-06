@@ -41,7 +41,12 @@ end
 
 
 
-function WoWTools_MinimapMixin:Init_Icon()
+
+
+
+
+
+local function Init()
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
     if not libDataBroker or not libDBIcon then
@@ -71,16 +76,28 @@ function WoWTools_MinimapMixin:Init_Icon()
 
 
     local btn= libDBIcon:GetMinimapButton(name)
-    if btn then
-        btn:EnableMouseWheel(true)
-        btn:SetScript('OnMouseWheel', function(_, d)
-            if d==1 then
-                WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
-            else
-                WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
-            end
-        end)
+    if not btn then
+        return
     end
+
+    btn:EnableMouseWheel(true)
+    btn:SetScript('OnMouseWheel', function(_, d)
+        if d==1 then
+            WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
+        else
+            WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
+        end
+    end)
+    WoWTools_MinimapMixin.MiniButton= btn
+
+    Init=function()end
+end
+
+
+
+
+function WoWTools_MinimapMixin:Init_Icon()
+   Init() 
 end
 
 

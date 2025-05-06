@@ -23,7 +23,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
                     if text==136430 then--OVERLAY
                         region:SetTexture(0)
                     elseif text==136467 then--BACKGROUND
-                        region:SetAlpha(0.75)
+                        region:SetAlpha(0.3)
                     end
                 end
             end

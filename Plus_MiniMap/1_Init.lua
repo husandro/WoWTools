@@ -20,7 +20,7 @@ local P_Save={
     textToDown= WoWTools_DataMixin.Player.husandro,--文本，向下
 
     miniMapPoint={},--保存小图地, 按钮位置
-
+    
     --disabledInstanceDifficulty=true,--副本，难图，指示
     --hideMPortalRoomLabels=true,--'10.2 副本，挑战专送门'
 
@@ -36,6 +36,7 @@ local P_Save={
 
     moving_over_Icon_show_menu=WoWTools_DataMixin.Player.husandro,--移过图标时，显示菜单
 
+    Icons={},--收集图标
 }
 
 
@@ -48,8 +49,41 @@ end
 
 
 
+
+
+
+
+
+
+
+
+local function Init()
+    for questID in pairs(Save().questIDs or {}) do
+        WoWTools_Mixin:Load({id= questID, type=='quest'})
+    end
+    do
+        WoWTools_MinimapMixin:Init_Icon()--添加，图标
+    end
+
+    WoWTools_MinimapMixin:Init_InstanceDifficulty()--副本，难度，指示
+    WoWTools_MinimapMixin:Init_TrackButton()--小地图, 标记, 文本
+    WoWTools_MinimapMixin:Init_ExpansionLanding()
+    WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
+
+    Init=function()end
+end
+
+
+
+
+
+
+
+
+
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("LOADING_SCREEN_DISABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -59,7 +93,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().MajorFactionRenownFrame_Button_Scale=nil
 			Save().hide_MajorFactionRenownFrame_Button=nil
-
+            Save().Icons= Save().Icons or {}
 
             WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
             WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)
@@ -69,10 +103,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
-                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                    )
+                    if Save().disabled then
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
+                            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        )
+                    else
+                        Init()
+                        WoWTools_MinimapMixin:Init_TimeManager()--秒表
+                        WoWTools_MinimapMixin:Init_Collection_Icon()--收集插件图标
+                    end
+
                 end,
                 buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                 buttonFunc= function()
@@ -89,19 +130,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
-                self:UnregisterEvent(event)
+                self:UnregisterAllEvents()
 
             else
-                for questID in pairs(Save().questIDs or {}) do
-                    WoWTools_Mixin:Load({id= questID, type=='quest'})
-                end
-
-                WoWTools_MinimapMixin:Init_InstanceDifficulty()--副本，难度，指示
-                WoWTools_MinimapMixin:Init_TrackButton()--小地图, 标记, 文本
-                WoWTools_MinimapMixin:Init_Icon()--添加，图标
-                WoWTools_MinimapMixin:Init_ExpansionLanding()
-                WoWTools_MinimapMixin:Init_Minimap_Zoom()--缩放数值, 缩小化地图
-                WoWTools_MinimapMixin:Init_Collection_Icon()
+                Init()
                 
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then
                     WoWTools_MinimapMixin:Init_TimeManager()--秒表
@@ -113,5 +145,9 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MinimapMixin:Init_TimeManager()--秒表
             self:UnregisterEvent(event)
         end
+
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        WoWTools_MinimapMixin:Init_Collection_Icon()--收集插件图标
+        self:UnregisterEvent(event)
     end
 end)

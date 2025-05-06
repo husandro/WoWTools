@@ -46,11 +46,20 @@ SmallItemButtonTemplate <Size x="134" y="30"/>
 ItemButtonTemplate.xml
 ]]
 --遮罩
-function WoWTools_ButtonMixin:AddMask(btn)
+function WoWTools_ButtonMixin:AddMask(btn, isType2)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
-    btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
-    btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
-    btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
+
+    if isType2 then
+        btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
+        btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
+        btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
+    else
+        btn.IconMask= btn:CreateMaskTexture()
+        btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+        btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
+        btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
+    end
+
     local icon= btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())
     if icon then
         icon:AddMaskTexture(btn.IconMask)
@@ -72,7 +81,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isMask= tab.isMask
     local isBorder= not tab.notBorder
     local isLocked= not tab.notLocked
-    local isTexture= not tab.notTexture
+    local isTexture= tab.addTexture or (isType2 and not tab.notTexture)
     local useAtlasSize= tab.useAtlasSize and TextureKitConstants.UseAtlasSize or TextureKitConstants.IgnoreAtlasSize
 
     local name= tab.name or ('WoWToolsMenuButton'..get_index())
@@ -87,7 +96,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
 
-    
+
 
 --提示，已存在
     if _G[name] and WoWTools_DataMixin.Player.husandro then
@@ -97,39 +106,31 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 --建立
     local btn= CreateFrame(frameType, name, frame or UIParent, template, setID)
 
---圆形按钮
-
-    if isType2 then
-        btn.IconMask= btn:CreateMaskTexture()
-        btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
-
-        btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-        btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
-
-        if isTexture then
-            btn.texture=btn:CreateTexture(nil, 'BORDER')
-            btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
-            btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
-            btn.texture:AddMaskTexture(btn.IconMask)
-        end
-
-        if isBorder then
-            btn.border=btn:CreateTexture(nil, 'ARTWORK')
-            btn.border:SetAllPoints(btn)
-            btn.border:SetAtlas('bag-reagent-border')
-            WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
-        end
+    if isTexture then
+--添加，遮罩
+        self:AddMask(btn, isType2)
+        btn.texture=btn:CreateTexture(nil, 'BORDER')
+        btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
+        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
+        btn.texture:AddMaskTexture(btn.IconMask)
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
     local pushedAtlas= 'auctionhouse-nav-button-select'
     local highlightAtlas= 'auctionhouse-nav-button-select'
 
+--圆形，按钮
     if isType2 then
         pushedAtlas, highlightAtlas= 'bag-border-highlight', 'bag-border'
-
+--添加 Border
+        if isBorder then
+            btn.border=btn:CreateTexture(nil, 'ARTWORK')
+            btn.border:SetAllPoints(btn)
+            btn.border:SetAtlas('bag-reagent-border')
+            WoWTools_ColorMixin:Setup(btn.border, {type='Texture', alpha=0.3})
+        end
+--方形，按钮
     elseif atlas then
-
         if atlas:find('Cursor_OpenHand_(%d+)') then--提取(手)按钮
             highlightAtlas= 'Cursor_OpenHandGlow_'..atlas:match('Cursor_OpenHand_(%d+)')
 
@@ -143,9 +144,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     if template~='UIPanelButtonTemplate' then
         btn:SetPushedAtlas(pushedAtlas)
         if isLocked then
-            btn:SetHighlightAtlas(highlightAtlas)    
+            btn:SetHighlightAtlas(highlightAtlas)
         end
-        
     end
 
 --设置 Atlas or Texture    
