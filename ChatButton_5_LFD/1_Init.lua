@@ -33,7 +33,7 @@ local function Init()
     --LFDButton.texture:SetPoint("BOTTOMRIGHT", LFDButton, "BOTTOMRIGHT", -6, 6)
 
     --自动离开,指示图标
-    LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK')
+    LFDButton.leaveInstance=LFDButton:CreateTexture(nil, 'ARTWORK', nil, 1)
     LFDButton.leaveInstance:SetPoint('BOTTOMLEFT',4, 0)
     LFDButton.leaveInstance:SetSize(12,12)
     LFDButton.leaveInstance:SetAtlas(WoWTools_DataMixin.Icon.toLeft)

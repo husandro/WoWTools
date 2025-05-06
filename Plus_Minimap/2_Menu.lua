@@ -103,7 +103,7 @@ local function Init_Plus_Menu(self, root)
 --收集图标
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.Icon.icon2
-        ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,  WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL)),
+        ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL)),
     function ()
         return not Save().Icons.disabled
     end, function()
@@ -175,7 +175,3 @@ function WoWTools_MinimapMixin:Open_Menu(frame)
     MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 
-
-function WoWTools_MinimapMixin:Init_Plus_Menu(frame, root)
-    Init_Plus_Menu(frame, root)
-end

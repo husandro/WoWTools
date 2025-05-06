@@ -10,34 +10,37 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
 
 
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
-    if libDBIcon then
-        local function set_icon(name)
-            local btn= libDBIcon:GetMinimapButton(name)
-            if not btn then
-                return
-            end
-            local icon= btn.icon
-            for _, region in pairs ({btn:GetRegions()}) do
-                if region:GetObjectType()=='Texture' and region~=icon then
-                    local text= region:GetTexture()
-                    if text==136430 then--OVERLAY
-                        region:SetTexture(0)
-                    elseif text==136467 then--BACKGROUND
-                        region:SetAlpha(0.3)
-                    end
+    if not libDBIcon then
+        return
+    end
+
+    local function set_icon(name)
+        local btn= libDBIcon:GetMinimapButton(name)
+        if not btn then
+            return
+        end
+        local icon= btn.icon
+        for _, region in pairs ({btn:GetRegions()}) do
+            if region:GetObjectType()=='Texture' and region~=icon then
+                local text= region:GetTexture()
+                if text==136430 then--OVERLAY
+                    --region:SetTexture(0)
+                    region:SetAlpha(0)
+                elseif text==136467 then--BACKGROUND
+                    region:SetAlpha(0.5)
                 end
             end
         end
-
-        do
-            for _, name in pairs(libDBIcon:GetButtonList() or {}) do
-                set_icon(name)
-            end
-        end
-
-        hooksecurefunc(libDBIcon, 'Register', function(_, name)
-            set_icon(name)
-        end)
     end
+
+    do
+        for _, name in pairs(libDBIcon:GetButtonList() or {}) do
+            set_icon(name)
+        end
+    end
+
+    hooksecurefunc(libDBIcon, 'Register', function(_, name)
+        set_icon(name)
+    end)
 end
 

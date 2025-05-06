@@ -5636,7 +5636,8 @@
         "DataProviderMixin",
         "EventTraceBg",
         "EventTraceInset",
-        "EventTraceFilterButtonMixin"
+        "EventTraceFilterButtonMixin",
+        "ADDON_DEP_USER_ADDONS_DISABLED"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

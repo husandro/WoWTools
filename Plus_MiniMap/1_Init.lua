@@ -36,7 +36,13 @@ local P_Save={
 
     moving_over_Icon_show_menu=WoWTools_DataMixin.Player.husandro,--移过图标时，显示菜单
 
-    Icons={},--收集图标
+    Icons={--收集图标
+        noAdd={
+            ['WoWTools']=true,
+            ['BugSack']=true,
+        },
+        hideAdd={},
+    },
 }
 
 
@@ -93,7 +99,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().MajorFactionRenownFrame_Button_Scale=nil
 			Save().hide_MajorFactionRenownFrame_Button=nil
-            Save().Icons= Save().Icons or {}
+            Save().Icons= Save().Icons or P_Save.Icons
 
             WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
             WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)

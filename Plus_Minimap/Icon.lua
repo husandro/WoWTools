@@ -6,13 +6,18 @@ end
 
 
 
-local function OnEnter_Tooltip(self)
+local function On_Enter(self)
     local expButton=ExpansionLandingPageMinimapButton
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
         expButton:OnEnter()
-        if UnitAffectingCombat('player') then return end
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        if InCombatLockdown() then
+            return
+        end
     else
-        if UnitAffectingCombat('player') then return end
+        if InCombatLockdown() then
+            return
+        end
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
     end
@@ -47,6 +52,10 @@ end
 
 
 local function Init()
+    --[[if not Save().Icons.disabled then
+        return
+    end]]
+
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
     if not libDataBroker or not libDBIcon then
@@ -57,8 +66,8 @@ local function Init()
     --if not libDBIcon:GetMinimapButton(name) then
     libDBIcon:Register(name, libDataBroker:NewDataObject('WoWTools', {
         OnClick=On_Click,--fun(displayFrame: Frame, buttonName: string)
-        OnEnter=OnEnter_Tooltip,--fun(displayFrame: Frame)
-        OnLeave=nil,--fun(displayFrame: Frame)
+        OnEnter=On_Enter,--fun(displayFrame: Frame)
+        OnLeave=GameTooltip_Hide,--fun(displayFrame: Frame)
         OnTooltipShow=nil,--fun(tooltip: Frame)
         icon='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga',--string
         iconB=nil,--number,
@@ -83,12 +92,12 @@ local function Init()
     btn:EnableMouseWheel(true)
     btn:SetScript('OnMouseWheel', function(_, d)
         if d==1 then
-            WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT))
+            WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
         else
             WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
         end
     end)
-    WoWTools_MinimapMixin.MiniButton= btn
+    --WoWTools_MinimapMixin.MiniButton= btn
 
     Init=function()end
 end
@@ -97,7 +106,7 @@ end
 
 
 function WoWTools_MinimapMixin:Init_Icon()
-   Init() 
+   Init()
 end
 
 
