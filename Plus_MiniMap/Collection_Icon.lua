@@ -956,7 +956,7 @@ local function Init()
 
     hooksecurefunc(libDBIcon, 'IconCallback', function(_, _, name, key, value)
         local btn= Objects[name]
-        if not btn or libDBIcon.objects[name] then
+        if not btn or libDBIcon:GetMinimapButton(name) then
             return
         end
 
@@ -984,6 +984,10 @@ local function Init()
 			btn.icon:SetVertexColor(r, g, value)
 		end
     end)
+
+
+
+
 
     Button:set_point()
     Button:settings()
