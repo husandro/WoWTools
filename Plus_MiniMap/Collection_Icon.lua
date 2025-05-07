@@ -169,16 +169,16 @@ local function Init_Menu(self, root)
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)
     sub:CreateDivider()
     num=0
-    for name in pairs(Objects) do
+    for name, btn in pairs(Objects) do
         num= num+1
         sub:CreateCheckbox(
-            num..') '..name,
+            num..') |T'..(btn.dataObject.icon or 0)..':0|t'..name,
         function(data)
             return Save().Icons.noAdd[data.name]
         end, function(data)
             Save().Icons.noAdd[data.name]= not Save().Icons.noAdd[data.name] and true or nil
             Save().Icons.hideAdd[data.name]=nil
-            Unlock_Button(nil, name)
+            Unlock_Button(nil, data.name)
             self:settings()
         end, {name=name})
     end
@@ -199,16 +199,16 @@ local function Init_Menu(self, root)
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
     sub:CreateDivider()
     num=0
-    for name in pairs(Objects) do
+    for name, btn in pairs(Objects) do
         num= num+1
         sub:CreateCheckbox(
-            num..')'..name,
+            num..') |T'..(btn.dataObject.icon or 0)..':0|t'..name,
         function(data)
             return Save().Icons.hideAdd[data.name]
         end, function(data)
             Save().Icons.hideAdd[data.name]= not Save().Icons.hideAdd[data.name] and true or nil
             Save().Icons.noAdd[data.name]=nil
-            Unlock_Button(nil, name)
+            Unlock_Button(nil, data.name)
             self:settings()
         end, {name=name})
     end
