@@ -367,7 +367,10 @@ local function Init()
     SayButton:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().sayButtonPoint={self:GetPoint(1)}
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().sayButtonPoint={self:GetPoint(1)}
+            Save().sayButtonPoint[2]= nil
+        end
         self:Raise()
     end)
 

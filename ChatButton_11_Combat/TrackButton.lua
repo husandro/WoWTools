@@ -321,7 +321,7 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
     function TrackButton:set_Point()
         self:ClearAllPoints()
         local p= Save().textFramePoint
-        if p then
+        if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
             self:SetPoint('BOTTOMLEFT', WoWTools_CombatMixin.CombatButton, 'BOTTOMRIGHT')

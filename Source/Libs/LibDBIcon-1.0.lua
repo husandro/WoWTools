@@ -170,6 +170,7 @@ do
 			x = max(-w, min(x*diagRadiusW, w))
 			y = max(-h, min(y*diagRadiusH, h))
 		end
+		print(x, y)
 		button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 	end
 end
@@ -247,6 +248,15 @@ local function updateCoord(self)
 	end
 	self:SetTexCoord(coords[1] + deltaX, coords[2] - deltaX, coords[3] + deltaY, coords[4] - deltaY)
 end
+
+
+
+
+
+
+
+
+
 
 local function createButton(name, object, db, customCompartmentIcon)
 	local button = CreateFrame("Button", "LibDBIcon10_"..name, Minimap)
@@ -335,6 +345,19 @@ local function createButton(name, object, db, customCompartmentIcon)
 	end
 	lib.callbacks:Fire("LibDBIcon_IconCreated", button, name) -- Fire 'Icon Created' callback
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 -- Wait a bit with the initial positioning to let any GetMinimapShape addons
 -- load up.

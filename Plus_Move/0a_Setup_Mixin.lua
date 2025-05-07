@@ -28,7 +28,7 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
 
 
     local p= Save().point[name]
-    if p and p[1] and p[3] and p[4] and p[5] then
+    if p and p[1] then
         local target= frame.targetFrame or frame
 
         if target:IsProtected() or InCombatLockdown() or issecure() then

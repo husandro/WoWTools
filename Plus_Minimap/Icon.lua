@@ -10,7 +10,7 @@ local function On_Enter(self)
     local expButton=ExpansionLandingPageMinimapButton
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
         expButton:OnEnter()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        --GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         if InCombatLockdown() then
             return
         end
@@ -52,9 +52,9 @@ end
 
 
 local function Init()
-    --[[if not Save().Icons.disabled then
+    if not Save().Icons.disabled and Save().Icons.hideAdd['WoWTools'] then
         return
-    end]]
+    end
 
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)

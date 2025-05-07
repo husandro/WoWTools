@@ -95,7 +95,7 @@ local function Init()
 
         self:ClearAllPoints()
         local p= Save().targetMovePoint
-        if p then
+        if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         elseif WoWTools_AttributesMixin.Button then
             self:SetPoint('BOTTOM', WoWTools_AttributesMixin.Button, 'TOP', 0, 2)

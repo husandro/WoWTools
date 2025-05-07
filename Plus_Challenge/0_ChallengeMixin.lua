@@ -203,7 +203,7 @@ local function Create_Activities_HeaderLable(frame, head, point, last)
     local label= WoWTools_LabelMixin:Create(frame)
     if last then
         label:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0,-4)
-    elseif point then
+    elseif point and point[1] then
         label:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
     else
         label:SetPoint('TOPLEFT')

@@ -767,7 +767,7 @@ local function Set_Move_Button(btn)
     function btn:Settings()
         self:ClearAllPoints()
         local p= Save().AbilityButton['point'..self.name]
-        if p then
+        if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
             self:SetPoint(self.point[1], self.point[2], self.point[3], self.point[4], self.point[5])

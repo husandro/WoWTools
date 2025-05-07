@@ -330,7 +330,7 @@ local function Init(isShow)
     function TypeButton:set_point()
         self:ClearAllPoints()
         local p= Save().TypeButton.point
-        if p then
+        if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
             self:SetPoint('RIGHT',-400, 200)

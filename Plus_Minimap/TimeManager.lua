@@ -356,7 +356,7 @@ local function Init_TimeManager()
     btn.width= btn:GetWidth()
     function btn:set_point()
         local point= Save().TimeManagerClockButtonPoint
-        if point then
+        if point and point[1] then
             TimeManagerClockTicker:SetPoint('CENTER')
             self:SetWidth(self.width+5)
             self:SetParent(UIParent)

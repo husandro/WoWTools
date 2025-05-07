@@ -346,7 +346,7 @@ local function Init()
         else
             self:ClearAllPoints()
             local p=Save().point
-            if Save().point then
+            if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
             elseif WoWTools_DataMixin.Player.husandro then
                 self:SetPoint('BOTTOMRIGHT', -420, 10)

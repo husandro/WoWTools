@@ -119,8 +119,10 @@ local function Init()
     button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().point={self:GetPoint(1)}
-        Save().point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().point={self:GetPoint(1)}
+            Save().point[2]=nil
+        end
         if not InCombatLockdown() then
             self:Raise()
         end

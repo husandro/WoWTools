@@ -3,10 +3,17 @@ local function Save()
 end
 local Button
 local libDBIcon
+local Objects={}
 
 
+local function Get_Button(name)
+    return Objects[name] or libDBIcon:GetMinimapButton(name)
+end
+
+--锁定按钮
 local function Lock_Button(btn, name)--lib:Lock(name)
-    if btn.WoWToolsIsLocked then
+    btn= btn or Get_Button(name)
+    if not btn or btn.WoWToolsIsLocked then
         return
     end
 
@@ -25,22 +32,36 @@ local function Lock_Button(btn, name)--lib:Lock(name)
     btn:SetScript("OnDragStop", nil)
 end
 
+
+
+--还原按钮
 local function Unlock_Button(btn, name)
-    if not btn.WoWToolsIsLocked then
+    btn= btn or Get_Button(name)
+    if not btn or not btn.WoWToolsIsLocked then
         return
     end
-    
+    btn:ClearAllPoints()
+    btn:SetFrameStrata('MEDIUM')
     btn:SetFixedFrameStrata(true)
     btn:SetParent(Minimap)
 
     libDBIcon.objects[name]= btn
     libDBIcon:Unlock(name)
-    libDBIcon:Show(name)
+
+    local db= btn.db
+
+    libDBIcon:SetButtonToPosition(btn, db and db.minimapPos or nil)
+
+    if not db or not db.hide then
+        libDBIcon:Show(name)
+    else
+        libDBIcon:Hide(name)
+    end
 
     --btn:SetMovable(false)
 
-    
-    
+
+
     btn.WoWToolsIsLocked=nil
 end
 
@@ -51,11 +72,7 @@ end
 
 
 
-local Objects={}
-
 local function Init_Buttons()
-    
-
     local level= Button.frame:GetFrameLevel()+1
     local strata= Save().Icons.strata or 'HIGH'
     local isSortUp= Save().Icons.isSortUp
@@ -102,18 +119,18 @@ local function Init_Buttons()
         Lock_Button(btn, strata, level)
 
         btn:ClearAllPoints()
-        
+
         btn:SetPoint('BOTTOM', index==1 and Button or tab[index-1].btn, 'TOP')
-        
+
 
         Button.Background:SetPoint('LEFT', btn)
         Button.Background:SetPoint('TOP', btn)
     end
 
     local numLine= Save().Icons.numLine or 1
-    
+
     for i= numLine+1, #tab, numLine do
-        
+
         tab[i].btn:ClearAllPoints()
         tab[i].btn:SetPoint('RIGHT', tab[i-numLine] and tab[i-numLine].btn or Button, 'LEFT')
 
@@ -148,18 +165,24 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
+--过滤，列表
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)
+    sub:CreateDivider()
+    num=0
     for name in pairs(Objects) do
+        num= num+1
         sub:CreateCheckbox(
-            name,
+            num..') '..name,
         function(data)
             return Save().Icons.noAdd[data.name]
         end, function(data)
             Save().Icons.noAdd[data.name]= not Save().Icons.noAdd[data.name] and true or nil
-            Init_Buttons()
+            Save().Icons.hideAdd[data.name]=nil
+            Unlock_Button(nil, name)
+            self:settings()
         end, {name=name})
     end
---SetScrollMod
-    WoWTools_MenuMixin:SetScrollMode(sub, nil)
+    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
 
 --隐藏
     num=0
@@ -172,18 +195,34 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
+--隐藏，列表
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+    sub:CreateDivider()
+    num=0
     for name in pairs(Objects) do
+        num= num+1
         sub:CreateCheckbox(
-            name,
+            num..')'..name,
         function(data)
             return Save().Icons.hideAdd[data.name]
         end, function(data)
             Save().Icons.hideAdd[data.name]= not Save().Icons.hideAdd[data.name] and true or nil
-            Init_Buttons()
+            Save().Icons.noAdd[data.name]=nil
+            Unlock_Button(nil, name)
+            self:settings()
         end, {name=name})
     end
---SetScrollMod
-    WoWTools_MenuMixin:SetScrollMode(sub, nil)
+    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
+
+--升序
+    root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '升序' or PERKS_PROGRAM_ASCENDING,
+    function()
+        return Save().Icons.isSortUp
+    end, function()
+        Save().Icons.isSortUp= not Save().Icons.isSortUp and true or nil
+        self:settings()
+    end)
 
 --显示背景
     WoWTools_MenuMixin:ShowBackground(root,
@@ -192,7 +231,7 @@ local function Init_Menu(self, root)
     end, function()
         local hide= Save().Icons.hideBackground
         Save().Icons.hideBackground= not hide and true or nil
-        self.Background:SetShown(not Save().Icons.hideBackground)
+        self:settings()
     end)
 
 --FrameStrata
@@ -200,7 +239,7 @@ local function Init_Menu(self, root)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().Icons.strata= data
-        self:SetFrameStrata(data)
+        self:settings()
     end)
 
     root:CreateDivider()
@@ -258,8 +297,7 @@ local function Init()
 --显示背景 Background
     WoWTools_TextureMixin:CreateBackground(Button)
     Button.Background:SetPoint('BOTTOMRIGHT', Button)
-    Button.Background:SetPoint('LEFT', Button)
-    Button.Background:SetPoint('TOP', Button)
+   
 
     Button:SetMovable(true)
     Button:SetClampedToScreen(true)
@@ -269,15 +307,17 @@ local function Init()
             self:StartMoving()
         end
     end)
-    Button:HookScript("OnDragStop", function(self)
+    Button:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
-        Save().Icons.point= {self:GetPoint(1)}
-        Save().Icons.point[2]=nil
+        if WoWTools_FrameMixin:IsInSchermo(self) then
+            Save().Icons.point= {self:GetPoint(1)}
+            Save().Icons.point[2]=nil
+        end
     end)
 
     Button:SetScript("OnMouseUp", ResetCursor)--停止移动
-    Button:HookScript("OnMouseDown", function(self, d)--设置, 光标
+    Button:SetScript("OnMouseDown", function(self, d)--设置, 光标
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=='RightButton' then
@@ -345,23 +385,34 @@ local function Init()
         GameTooltip:Show()
     end
 
+    function Button:rest_bg_postion()
+        self.Background:SetPoint('LEFT', self)
+        self.Background:SetPoint('TOP', self)
+    end
+
     function Button:settings()
         self:SetFrameStrata(Save().Icons.strata or 'HIGH')
+        self:rest_bg_postion()
         Init_Buttons()
         self.Background:SetShown(not Save().Icons.hideBackground)
+        self:SetShown(true)
     end
 
     function Button:set_point()
         self:ClearAllPoints()
         local p= Save().Icons.point
-        if p then
+        if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
             self:SetPoint('CENTER', 100, 100)
         end
     end
-    function Button:rest()
 
+    function Button:rest()
+        for name, btn in pairs(Objects) do
+            Unlock_Button(btn, name)
+        end
+        self:SetShown(false)
     end
 
 
@@ -380,6 +431,7 @@ local function Init()
             Button:rest()
             WoWTools_MinimapMixin:Init_Icon()
         else
+            Button:set_point()
             Button:settings()
         end
     end
@@ -393,5 +445,5 @@ end
 
 
 function WoWTools_MinimapMixin:Init_Collection_Icon()
-    --Init()
+    Init()
 end

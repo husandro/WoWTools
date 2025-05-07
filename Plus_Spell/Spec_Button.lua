@@ -332,7 +332,7 @@ local function Init()
       self:ClearAllPoints()
         if Save().specButton.isUIParent then
             local p= Save().specButton.point
-            if p then
+            if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
 
             elseif PlayerSpellsFrame and PlayerSpellsFrame:IsVisible() then

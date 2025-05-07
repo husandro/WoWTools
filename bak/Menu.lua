@@ -7,6 +7,7 @@
 WoWTools_Mixin:Call(menu.ReinitializeAll, menu)
 SharedTooltipTemplates.lua
 
+MenuUtil.GetElementText(elementDescription)
 
 function MenuTemplates.CreateRadio(text, isSelected, onSelect, data)
 	local function Initializer(button, description, menu)

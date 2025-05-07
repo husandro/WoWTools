@@ -20,7 +20,7 @@ local P_Save={
     textToDown= WoWTools_DataMixin.Player.husandro,--文本，向下
 
     miniMapPoint={},--保存小图地, 按钮位置
-    
+
     --disabledInstanceDifficulty=true,--副本，难图，指示
     --hideMPortalRoomLabels=true,--'10.2 副本，挑战专送门'
 
@@ -140,7 +140,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             else
                 Init()
-                
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_TimeManager') then
                     WoWTools_MinimapMixin:Init_TimeManager()--秒表
                     self:UnregisterEvent(event)

@@ -360,7 +360,7 @@ local function Init_Button()
         else
             self:SetParent(UIParent)
             local p= Save().ClickMoveButton.Point
-            if p then
+            if p and p[1] then
                 self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
             else
                 self:SetPoint('CENTER', UIParent, 100, 100)

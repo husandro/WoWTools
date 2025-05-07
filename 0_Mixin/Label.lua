@@ -97,7 +97,7 @@ end
 local function Create_Tooltip_Label(frame, index, point, line, size)
     local label=WoWTools_LabelMixin:Create(frame, {mouse=true, size=size})
     if index==1 then
-        if point then
+        if point and point[1] then
             label:SetPoint(point[1], point[2] or frame, point[3], point[4], point[5])
         else
             label:SetPoint('TOPLEFT', frame)

@@ -71,8 +71,10 @@ local function Init_Menu(self, root)
     function()
         Save().point[self.name]= nil
         local p=self.pointSave
-        self.targetFrame:ClearAllPoints()
-        self.targetFrame:SetPoint(p[1], p[2], p[3], p[4], p[5])
+        if p and p[1] then
+            self.targetFrame:ClearAllPoints()
+            self.targetFrame:SetPoint(p[1], p[2], p[3], p[4], p[5])
+        end
         return MenuResponse.Open
     end)
 
