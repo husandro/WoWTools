@@ -54,7 +54,8 @@ local function Lock_Button(btn, name)--lib:Lock(name)
     btn.WoWToolsIsLocked=true
 
 --清除，lib 按钮
-    libDBIcon.objects[name]= nil
+    Objects[name]= btn
+    libDBIcon.objects[name]=nil
 
 --启用 FrameStrata
     btn:SetFixedFrameStrata(false)
@@ -122,8 +123,6 @@ local function Init_Buttons()
 
     for name, btn in pairs(libDBIcon.objects) do
         if not noAdd[name] then
-            Objects[name]= btn
-            libDBIcon.objects[name]=nil
             Lock_Button(btn, name)
         end
     end
