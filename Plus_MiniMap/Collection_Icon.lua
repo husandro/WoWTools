@@ -761,6 +761,16 @@ local function Init_Menu(self, root)
     end)
     sub:SetEnabled(not WoWTools_FrameMixin:IsLocked(self))
 
+--刷新
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
+    function()
+        Init_Buttons()
+        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
+        return MenuResponse.Open
+    end)
+
+    sub:CreateDivider()
 --显示
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
     sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
@@ -786,15 +796,6 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
-    sub:CreateDivider()
---刷新
-    sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
-    function()
-        Init_Buttons()
-        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
-        return MenuResponse.Open
-    end)
 
 
 
