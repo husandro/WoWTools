@@ -124,10 +124,10 @@ StaticPopupDialogs['WoWTools_EditText']={
 }
 --[[
 StaticPopup_Show('WoWTools_EditText',
-    (),
+    (name or ''),
     nil,
     {
-        text=,
+        text=editBox内容,
         OnShow=function(s, data)
         end,
         SetValue= function(s)

@@ -288,6 +288,102 @@ end
 
 
 
+--自定义，添加，列表
+local function Init_UserAdd_Menu(_, root)
+    local sub, sub2
+    local num= 0
+
+    sub= root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '添加' or ADD,
+    function()
+        StaticPopup_Show('WoWTools_EditText',
+        (WoWTools_DataMixin.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
+        nil,
+        {
+            OnShow=function(s)
+                s.button1:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+            end,
+            SetValue= function(s)
+                local t= s.editBox:GetText()
+                Save().Icons.userAdd[t]=true
+                Init_Buttons()
+            end,
+            OnAlt=function(s)
+                local p=s:GetParent()
+                --local t= p.editBox:GetText()
+                print(p.editBox, s.editbox)
+                --Save().Icons.userAdd[t]= nil
+                Init_Buttons()
+            end,
+            EditBoxOnTextChanged=function(s)
+                local t=s:GetText()
+                local p= s:GetParent()
+                p.button1:SetEnabled(_G[t])
+               -- p.button3:SetEnabled(Save().Icons.userAdd[t])
+            end,
+        })
+        return MenuResponse.Open
+    end)
+
+--fstack
+    sub2=sub:CreateButton('|A:QuestLegendaryTurnin:0:0|a|cff00ff00FST|rACK', function ()
+        if not C_AddOns.IsAddOnLoaded("Blizzard_DebugTools") then
+            C_AddOns.LoadAddOn("Blizzard_DebugTools")
+        end
+        FrameStackTooltip_ToggleDefaults()
+        return MenuResponse.Open
+    end)
+    sub2:SetTooltip(function (tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Alt|r '..(WoWTools_DataMixin.onlyChinese and '切换' or HUD_EDIT_MODE_SWITCH))
+        tooltip:AddLine(' ')
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r '..(WoWTools_DataMixin.onlyChinese and '显示' or SHOW))
+        tooltip:AddLine(' ')
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Shift|r '..(WoWTools_DataMixin.onlyChinese and '材质信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, TEXTURES_SUBHEADER, INFO)))
+        tooltip:AddLine(' ')
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(WoWTools_DataMixin.onlyChinese and '类型' or TYPE))
+    end)
+
+--列表
+    root:CreateDivider()
+    num=1
+    for name in pairs(Save().Icons.userAdd) do
+        sub=root:CreateCheckbox(
+            num..')'
+            ..(_G[name] and '' or '|cff626262')
+            ..name,
+        function(data)
+            return Save().Icons.userAdd[data.name]
+        end, function(data)
+            Save().Icons.userAdd[data.name]= not Save().Icons.userAdd[data.name] and true or nil
+            Init_Buttons()
+        end, {name=name})
+        sub:SetTooltip(function(tooltip, desc)
+            if not _G[desc.data.name] then
+                tooltip:AddLine(desc.data.name)
+                GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '无效按钮' or CHAR_NAME_FAILURE)
+            end
+        end)
+        num= num+1
+    end
+    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -379,7 +475,7 @@ local function Init_Menu(self, root)
             Save().Icons.bgAlpha2=value
             self:settings()
         end,
-        WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
+        name=WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -443,14 +539,23 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
     allAddNum= num
 
+
+
+--[[自定义，添加，列表
+    num= 0
+    for _ in pairs(Save().Icons.userAdd) do
+        num= num+1
+    end
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..' |cffff00ff#|r'..num,
+    function()
+        return MenuResponse.Open
+    end)
+    Init_UserAdd_Menu(self, sub)]]
+
+
+
     root:CreateDivider()
-
-
-
-
-
-
-
 --设置，按钮
     sub=root:CreateButton(
         WoWTools_DataMixin.onlyChinese and '按钮' or 'Button',
@@ -554,7 +659,7 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(sub,
+    sub2= WoWTools_MenuMixin:ShowBackground(sub,
     function()
         return not Save().Icons.hideBackground
     end, function()
@@ -562,6 +667,24 @@ local function Init_Menu(self, root)
         Save().Icons.hideBackground= not hide and true or nil
         self:set_frame()
     end)
+--透明度
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save().Icons.alphaBG or 0.5
+        end, setValue=function(value)
+            Save().Icons.alphaBG=value
+            self:settings()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+    sub2:CreateSpacer()
+
+
 
 --缩放
     WoWTools_MenuMixin:Scale(self, sub, function()
@@ -798,6 +921,7 @@ local function Init()
 
 
     function Button:settings()
+        self.Background:SetAlpha(Save().Icons.alphaBG or 0.5)
         self:SetFrameStrata(Save().Icons.strata or 'HIGH')
         self:SetScale(Save().Icons.scale or 1)
         self:set_event()

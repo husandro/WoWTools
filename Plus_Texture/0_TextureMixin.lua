@@ -9,7 +9,9 @@ WoWTools_TextureMixin={
 }
 
 function WoWTools_TextureMixin:CreateBackground(frame, tab)
-    if frame.Background then
+    if not frame then
+        return
+    elseif frame.Background then
         return frame.Background
     end
 
@@ -18,11 +20,9 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
     local point= tab.point
     local isAllPoint= tab.isAllPoint
     local alpha= tab.alpha or 0.5
-    if tab.frame then
-        frame.Background= tab.frame:CreateTexture(nil, 'BACKGROUND')
-    else
-        frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
-    end
+
+    frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
+    
     if isAllPoint==true then
         frame.Background:SetAllPoints()
     elseif type(point)=='function' then

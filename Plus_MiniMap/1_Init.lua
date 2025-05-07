@@ -37,12 +37,12 @@ local P_Save={
     moving_over_Icon_show_menu=WoWTools_DataMixin.Player.husandro,--移过图标时，显示菜单
 
     Icons={--收集图标
-        noAdd={
+        noAdd={--过滤
             ['WoWTools']=true,
             ['BugSack']=true,
         },
-        hideAdd={},
-        user={},
+        hideAdd={},--隐藏
+        userAdd={},--自定义
     },
 }
 
