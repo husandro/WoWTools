@@ -107,7 +107,11 @@ end
 
 
 local function Set_User_Button(btn)
-    if not btn or btn.WoWToolsIsLocked or not btn.GetFrameStrata then
+    if not btn
+        or btn.WoWToolsIsLocked
+        or not btn.GetFrameStrata
+        or WoWTools_FrameMixin:IsLocked(btn)
+    then
         return
     end
     btn.WoWToolsIsLocked={
@@ -690,9 +694,12 @@ local function Init_UserAdd_Menu(_, root)
             Init_Buttons()
         end, name)
         sub:SetTooltip(function(tooltip, desc)
-            if not _G[desc.data] then
+            if not _G[desc.data] or not _G[desc.data].GetFrameStrata then
                 tooltip:AddLine(desc.data)
-                GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '无效按钮' or CHAR_NAME_FAILURE)
+                tooltip:AddLine(
+                    '|cff626262'
+                    ..(WoWTools_DataMixin.onlyChinese and '无效按钮' or CHAR_NAME_FAILURE)
+                )
             end
         end)
 
