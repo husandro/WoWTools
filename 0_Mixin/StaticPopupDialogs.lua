@@ -98,10 +98,10 @@ StaticPopupDialogs['WoWTools_EditText']={
             return
         end
         local text= self:GetText() or ''
+        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='' and text~=data.text)
         if data.EditBoxOnTextChanged then
             data.EditBoxOnTextChanged(self, data, text)
         end
-        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='' and text~=data.text)
     end,
     EditBoxOnEscapePressed = function(self, data)
         local text=self:GetText()

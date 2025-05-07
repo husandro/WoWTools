@@ -497,7 +497,8 @@ local function Init_hideAdd_Menu(self, root)
     local sub
     local index= 0
 
-    sub= root:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+    sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE, function() return MenuResponse.Open end)
+
 --勾选所有    
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
@@ -510,6 +511,7 @@ local function Init_hideAdd_Menu(self, root)
         Init_Buttons()
         return MenuResponse.Refresh
     end)
+
 --撤选所有
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
@@ -559,6 +561,9 @@ end
 
 
 
+
+
+
 --自定义，添加，列表
 local function Init_UserAdd_Menu(_, root)
     local sub, sub2
@@ -568,27 +573,39 @@ local function Init_UserAdd_Menu(_, root)
         WoWTools_DataMixin.onlyChinese and '添加' or ADD,
     function()
         StaticPopup_Show('WoWTools_EditText',
-        (WoWTools_DataMixin.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button')),
+        (WoWTools_DataMixin.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'))
+        ..'\n_G['..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)..']'
+        ..'\n\n'..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)..': ',
         nil,
         {
-            OnShow=function(s)
-                s.button1:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
-            end,
+          
             SetValue= function(s)
                 local t= s.editBox:GetText()
-                Save().Icons.userAdd[t]=true
-                Init_Buttons()
+                if t:gsub(' ', '')~='' then
+                    Save().Icons.userAdd[t]=true
+                    Init_Buttons()
+                end
             end,
             OnAlt=function(s)
                 local t= s.editBox:GetText()
                 Save().Icons.userAdd[t]= nil
+                Rest_Ueser_Button(_G[t])
                 Init_Buttons()
             end,
-            EditBoxOnTextChanged=function(s)
-                local t=s:GetText()
+            EditBoxOnTextChanged=function(s, text)
                 local p= s:GetParent()
-                p.button1:SetEnabled(_G[t])
-                p.button3:SetEnabled(Save().Icons.userAdd[t])
+                if _G[text] then
+                    p.button1:SetText(
+                        '|cnGREEN_FONT_COLOR:'
+                        ..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+                    )
+                else
+                    p.button1:SetText(
+                        '|cff626262'
+                        ..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
+                    )
+                end
+                p.button3:SetEnabled(t~='' and Save().Icons.userAdd[t] and true or false)
             end,
         })
         return MenuResponse.Open
