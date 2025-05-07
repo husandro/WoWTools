@@ -93,7 +93,7 @@ local function Init_Menu(self, root)
                 btn:set_point()
             end
         end,
-        name=WoWTools_DataMixin.onlyChinese and 'X' or CHANGE_OPACITY,
+        name='X',
         minValue=-15,
         maxValue=15,
         step=1,

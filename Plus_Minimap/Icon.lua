@@ -51,17 +51,14 @@ end
 
 
 
-local function Init()
+local function Init_Icon()
     if not Save().Icons.disabled and Save().Icons.hideAdd['WoWTools'] then
         return
     end
 
     local libDataBroker = LibStub:GetLibrary("LibDataBroker-1.1", true)
     local libDBIcon = LibStub("LibDBIcon-1.0", true)
-    if not libDataBroker or not libDBIcon then
-        return
-    end
-
+    
     local name='WoWTools'
     --if not libDBIcon:GetMinimapButton(name) then
     libDBIcon:Register(name, libDataBroker:NewDataObject('WoWTools', {
@@ -99,14 +96,14 @@ local function Init()
     end)
     --WoWTools_MinimapMixin.MiniButton= btn
 
-    Init=function()end
+    Init_Icon=function()end
 end
 
 
 
 
 function WoWTools_MinimapMixin:Init_Icon()
-   Init()
+    Init_Icon()
 end
 
 

@@ -33,32 +33,39 @@ end
 
 
 
-local function Init()
-    WoWTools_TextureMixin:Init_Class_Power()--职业
-    WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
-    WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
-    WoWTools_TextureMixin:Init_Action_Button()
-
-    if not Save().disabledTexture then
-
-        WoWTools_TextureMixin:Init_All_Frame()
-
-        for name in pairs(WoWTools_TextureMixin.Events) do
-            if C_AddOns.IsAddOnLoaded(name) then
-                do
-                    WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
-                end
-                WoWTools_TextureMixin.Events[name]= nil
-            end
+local function Set_Event_Texture(name)
+    if WoWTools_TextureMixin.Events[name] and C_AddOns.IsAddOnLoaded(name) then
+        do
+            WoWTools_TextureMixin.Events[name](WoWTools_TextureMixin)
         end
-
-        hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
-            WoWTools_TextureMixin:SetMenu(self)
-        end)
-        hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
-            WoWTools_TextureMixin:SetMenu(self)
-        end)
+        WoWTools_TextureMixin.Events[name]= nil
     end
+end
+
+
+
+
+
+
+local function Init_Texture()
+    if Save().disabledTexture then
+        return
+    end
+
+    WoWTools_TextureMixin:Init_All_Frame()
+
+    for name in pairs(WoWTools_TextureMixin.Events) do
+        Set_Event_Texture(name)
+    end
+
+    hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
+        WoWTools_TextureMixin:SetMenu(self)
+    end)
+    hooksecurefunc(DropdownButtonMixin, 'SetupMenu', function(self)
+        WoWTools_TextureMixin:SetMenu(self)
+    end)
+
+    Init_Texture=function()end
 end
 
 
@@ -66,6 +73,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent("LOADING_SCREEN_DISABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -83,19 +91,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
 
-                Init()
+                WoWTools_TextureMixin:Init_Class_Power()--职业
+                WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
+                WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
+                WoWTools_TextureMixin:Init_Action_Button()
 
                 if Save().disabledTexture then
-                    self:UnregisterEvent(event)
+                    self:UnregisterAllEvents()
                 end
             end
 
-        elseif WoWTools_TextureMixin.Events[arg1] and WoWToolsSave then
-            do
-                WoWTools_TextureMixin.Events[arg1](WoWTools_TextureMixin)
-            end
-            WoWTools_TextureMixin.Events[arg1]= nil
+        elseif WoWToolsSave then
+            Set_Event_Texture(arg1)
         end
 
+    elseif event=='LOADING_SCREEN_DISABLED' then--需要这个事件
+        Init_Texture()
+        self:UnregisterEvent(event)
     end
 end)

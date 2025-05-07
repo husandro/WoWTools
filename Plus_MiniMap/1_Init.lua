@@ -42,6 +42,7 @@ local P_Save={
             ['BugSack']=true,
         },
         hideAdd={},
+        user={},
     },
 }
 

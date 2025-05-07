@@ -1,3 +1,4 @@
+
 --小地图
 function WoWTools_TextureMixin.Events:Blizzard_Minimap()
     self:SetAlphaColor(MinimapCompassTexture)
@@ -8,39 +9,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
        self:SetFrame(MinimapCluster.BorderTop)
     end
 
-
-    local libDBIcon = LibStub("LibDBIcon-1.0", true)
-    if not libDBIcon then
-        return
+    if WoWToolsSave['Minimap_Plus'].Icons.disabled then
+        WoWTools_MinimapMixin:Init_SetMinamp_Texture()
     end
-
-    local function set_icon(name)
-        local btn= libDBIcon:GetMinimapButton(name)
-        if not btn then
-            return
-        end
-        local icon= btn.icon
-        for _, region in pairs ({btn:GetRegions()}) do
-            if region:GetObjectType()=='Texture' and region~=icon then
-                local text= region:GetTexture()
-                if text==136430 then--OVERLAY
-                    --region:SetTexture(0)
-                    region:SetAlpha(0)
-                elseif text==136467 then--BACKGROUND
-                    region:SetAlpha(0.5)
-                end
-            end
-        end
-    end
-
-    do
-        for _, name in pairs(libDBIcon:GetButtonList() or {}) do
-            set_icon(name)
-        end
-    end
-
-    hooksecurefunc(libDBIcon, 'Register', function(_, name)
-        set_icon(name)
-    end)
 end
 
