@@ -198,9 +198,8 @@ local function Init_Buttons()
             Unlock_Button(btn, name)
 
         elseif hideAdd[name] then
-            if not WoWTools_FrameMixin:IsLocked(btn) then
-                btn:SetShown(false)
-            end
+            Lock_Button(btn, name)
+            btn:SetShown(false)
 
         elseif btn:IsShown() then
             table.insert(tab, {
@@ -368,6 +367,197 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+--过滤，列表
+local function Init_noAdd_Menu(self, root)
+    local sub
+
+--勾选所有    
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
+    function()
+        for name, btn in pairs(Get_All_Objects()) do
+            Save().Icons.noAdd[name]=true
+            Save().Icons.hideAdd[name]=nil
+            Unlock_Button(btn, name)
+        end
+        Init_Buttons()
+        return MenuResponse.Refresh
+    end)
+--撤选所有
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
+    function()
+        for name, btn in pairs(Get_All_Objects()) do
+            Save().Icons.noAdd[name]=nil
+            Unlock_Button(btn, name)
+        end
+        Init_Buttons()
+        return MenuResponse.Refresh
+    end)
+
+    sub:CreateDivider()
+--过滤
+    sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL, function() return MenuResponse.Open end)
+
+--过滤 Border 透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().Icons.borderAlpha2 or 0
+        end, setValue=function(value)
+            Save().Icons.borderAlpha2=value
+            self:settings()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '外框透明度' or 'Border alpha',
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+    sub:CreateSpacer()
+
+    --过滤 Bg Alpha
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().Icons.bgAlpha2 or 0.5
+        end, setValue=function(value)
+            Save().Icons.bgAlpha2=value
+            self:settings()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+    sub:CreateSpacer()
+
+
+--过滤列表
+    root:CreateDivider()
+    local index=0
+    for name, btn in pairs(Get_All_Objects()) do
+        index= index+1
+        root:CreateCheckbox(
+            index..') '
+            ..'|T'..(btn.dataObject.icon or 0)..':0|t'
+            ..(Save().Icons.hideAdd[name] and '|cff626262' or '')
+            ..name,
+        function(data)
+            return Save().Icons.noAdd[data.name]
+        end, function(data)
+            Save().Icons.noAdd[data.name]= not Save().Icons.noAdd[data.name] and true or nil
+            Save().Icons.hideAdd[data.name]=nil
+            Unlock_Button(nil, data.name)
+            self:settings()
+        end, {name=name})
+    end
+    WoWTools_MenuMixin:SetScrollMode(root, nil)--SetScrollMod
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--隐藏，列表
+local function Init_hideAdd_Menu(self, root)
+    local sub
+    local index= 0
+
+    sub= root:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+--勾选所有    
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
+    function()
+        for name, btn in pairs(Get_All_Objects()) do
+            Save().Icons.noAdd[name]=nil
+            Save().Icons.hideAdd[name]=true
+            Unlock_Button(btn, name)
+        end
+        Init_Buttons()
+        return MenuResponse.Refresh
+    end)
+--撤选所有
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
+    function()
+        for name, btn in pairs(Get_All_Objects()) do
+            Save().Icons.hideAdd[name]=nil
+            Unlock_Button(btn, name)
+        end
+        Init_Buttons()
+        return MenuResponse.Refresh
+    end)
+
+--隐藏列表
+    root:CreateDivider()
+    for name, btn in pairs(Get_All_Objects()) do
+        index= index+1
+        root:CreateCheckbox(
+            index..') '
+            ..'|T'..(btn.dataObject.icon or 0)..':0|t'
+            ..(Save().Icons.noAdd[name] and '|cnRED_FONT_COLOR:' or '')
+            ..name,
+        function(data)
+            return Save().Icons.hideAdd[data.name]
+        end, function(data)
+            Save().Icons.hideAdd[data.name]= not Save().Icons.hideAdd[data.name] and true or nil
+            Save().Icons.noAdd[data.name]=nil
+            Unlock_Button(nil, data.name)
+            self:settings()
+        end, {name=name})
+    end
+    WoWTools_MenuMixin:SetScrollMode(root, nil)--SetScrollMod
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --自定义，添加，列表
 local function Init_UserAdd_Menu(_, root)
     local sub, sub2
@@ -421,18 +611,19 @@ local function Init_UserAdd_Menu(_, root)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(WoWTools_DataMixin.onlyChinese and '类型' or TYPE))
     end)
 
-
-    root:CreateDivider()
-    root:CreateButton(
+    sub:CreateDivider()
+--勾选所有    
+    sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
     function()
         for name in pairs(Save().Icons.userAdd) do
             Save().Icons.userAdd[name]=true
         end
+        Init_Buttons()
         return MenuResponse.Refresh
     end)
-
-    root:CreateButton(
+--撤选所有
+    sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
     function()
         for name in pairs(Save().Icons.userAdd) do
@@ -443,7 +634,9 @@ local function Init_UserAdd_Menu(_, root)
         return MenuResponse.Refresh
     end)
 
-    root:CreateButton(
+--全部清除
+    sub:CreateDivider()
+    sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
     function()
         StaticPopup_Show('WoWTools_OK',
@@ -470,7 +663,7 @@ local function Init_UserAdd_Menu(_, root)
             ..(_G[name] and _G[name].GetFrameStrata and '' or '|cff626262')
             ..name,
         function(data)
-            return Save().Icons.userAdd[data.name]
+            return Save().Icons.userAdd[data]
         end, function(data)
             Save().Icons.userAdd[data]= not Save().Icons.userAdd[data] and true or false
             if Save().Icons.userAdd[data]==false then
@@ -531,7 +724,7 @@ end
 
 local function Init_Menu(self, root)
     local sub, sub2, num
-    local allAddNum= 0
+
 --显示/隐藏
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
@@ -570,7 +763,7 @@ local function Init_Menu(self, root)
 
     sub:CreateDivider()
 --刷新
-    root:CreateButton(
+    sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
     function()
         Init_Buttons()
@@ -578,8 +771,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
---/reload
-    sub=WoWTools_MenuMixin:Reload(root, false)
+
 
 
 
@@ -596,65 +788,8 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
+    Init_noAdd_Menu(self, sub)
 
---过滤
-    sub2= sub:CreateButton(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL, function() return MenuResponse.Open end)
-
---过滤 Border 透明度
-    sub2:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub2, {
-        getValue=function()
-            return Save().Icons.borderAlpha2 or 0
-        end, setValue=function(value)
-            Save().Icons.borderAlpha2=value
-            self:settings()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '外框透明度' or 'Border alpha',
-        minValue=0,
-        maxValue=1,
-        step=0.05,
-        bit='%0.2f',
-    })
-    sub2:CreateSpacer()
-
---过滤 Bg Alpha
-    sub2:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub2, {
-        getValue=function()
-            return Save().Icons.bgAlpha2 or 0.5
-        end, setValue=function(value)
-            Save().Icons.bgAlpha2=value
-            self:settings()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
-        minValue=0,
-        maxValue=1,
-        step=0.05,
-        bit='%0.2f',
-    })
-    sub2:CreateSpacer()
-
-
---过滤，列表
-    sub:CreateDivider()
-    num=0
-    for name, btn in pairs(Get_All_Objects()) do
-        num= num+1
-        sub:CreateCheckbox(
-            num..') '
-            ..'|T'..(btn.dataObject.icon or 0)..':0|t'
-            ..(btn:IsShown() and (Save().Icons.noAdd[name] and '|cnRED_FONT_COLOR:' or '') or '|cff626262')
-            ..name,
-        function(data)
-            return Save().Icons.noAdd[data.name]
-        end, function(data)
-            Save().Icons.noAdd[data.name]= not Save().Icons.noAdd[data.name] and true or nil
-            Save().Icons.hideAdd[data.name]=nil
-            Unlock_Button(nil, data.name)
-            self:settings()
-        end, {name=name})
-    end
-    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
 
 --隐藏
     num=0
@@ -666,30 +801,7 @@ local function Init_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
-
---隐藏，列表
-    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
-    sub:CreateDivider()
-    num=0
-    for name, btn in pairs(Get_All_Objects()) do
-        num= num+1
-        sub:CreateCheckbox(
-            num..') '
-            ..'|T'..(btn.dataObject.icon or 0)..':0|t'
-            ..(btn:IsShown() and (Save().Icons.noAdd[name] and '|cnRED_FONT_COLOR:' or '') or '|cff626262')
-            ..name,
-        function(data)
-            return Save().Icons.hideAdd[data.name]
-        end, function(data)
-            Save().Icons.hideAdd[data.name]= not Save().Icons.hideAdd[data.name] and true or nil
-            Save().Icons.noAdd[data.name]=nil
-            Unlock_Button(nil, data.name)
-            self:settings()
-        end, {name=name})
-    end
-    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
-    allAddNum= num
-
+    Init_hideAdd_Menu(self, sub)
 
 
 --自定义，添加，列表
@@ -766,6 +878,10 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
+    num=0
+    for _ in pairs(Get_All_Objects()) do
+        num=num+1
+    end
 --数量
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
@@ -777,7 +893,7 @@ local function Init_Menu(self, root)
         end,
         name=WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL,
         minValue=1,
-        maxValue=allAddNum+1,
+        maxValue=num+1,
         step=1,
     })
     sub:CreateSpacer()
@@ -867,10 +983,12 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
 --打开，选项
-    WoWTools_MenuMixin:OpenOptions(root, {
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
         name=WoWTools_MinimapMixin.addName,
         name2=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
     })
+--/reload
+    WoWTools_MenuMixin:Reload(sub, false)
 end
 
 
