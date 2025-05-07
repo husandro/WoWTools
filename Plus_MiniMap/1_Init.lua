@@ -127,8 +127,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     if StopwatchFrame.rest_point then
                         StopwatchFrame:rest_point()
                     end
+
                     WoWTools_MinimapMixin:Rest_TimeManager_Point()--重置，TimeManager位置
                     WoWTools_MinimapMixin:Rest_TrackButton_Point()--重置，TrackButton位置
+
+                    Save().Icons.point=nil
+                    WoWTools_MinimapMixin:Init_Collection_Icon()--重置，收集图标，按钮位置
+                    
                     print(
                         WoWTools_DataMixin.Icon.icon2..WoWTools_MinimapMixin.addName,
                         WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION

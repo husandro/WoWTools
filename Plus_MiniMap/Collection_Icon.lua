@@ -53,34 +53,18 @@ local function Lock_Button(btn, name)--lib:Lock(name)
     end
     btn.WoWToolsIsLocked=true
 
+--清除，lib 按钮
     libDBIcon.objects[name]= nil
 
+--启用 FrameStrata
     btn:SetFixedFrameStrata(false)
     btn:SetParent(Button.frame)
 
-
-
---设置，材质
-    --[[btn.icon:SetSize(26, 26)
-    for _, region in pairs ({btn:GetRegions()}) do
-        if region:GetObjectType()=='Texture' and region~=btn.icon then
-            local text= region:GetTexture()
-            if text==136430 then--OVERLAY 
-                region:SetSize(62, 62)
-                region:SetPoint("TOPLEFT", btn, "TOPLEFT", -4, 3)
-
-            elseif text==136467 then--BACKGROUND
-                region:SetSize(31, 31)
-            end
-        end
-    end]]
-
-    if not btn:GetScript('OnDragStart') then
-        return
+--清除，事件
+    if btn:GetScript('OnDragStart') then
+        btn:SetScript("OnDragStart", nil)
+        btn:SetScript("OnDragStop", nil)
     end
-
-    btn:SetScript("OnDragStart", nil)
-    btn:SetScript("OnDragStop", nil)
 end
 
 
@@ -94,43 +78,29 @@ local function Unlock_Button(btn, name)
     btn.WoWToolsIsLocked=nil
     local db= btn.db
 
+--还原，数据
     btn:ClearAllPoints()
     btn:SetFrameStrata('MEDIUM')
     btn:SetFixedFrameStrata(true)
     btn:SetParent(Minimap)
 
+--还原按钮
     libDBIcon.objects[name]= btn
 
+--设置 OnDragStart
     if not db or not db.lock then
         libDBIcon:Unlock(name)
     end
 
+--更新位置
     libDBIcon:SetButtonToPosition(btn, db and db.minimapPos or nil)
 
---显示/隐藏
+--还原，显示/隐藏
     if not db or not db.hide then
         libDBIcon:Show(name)
     else
         libDBIcon:Hide(name)
     end
-
---[[材质
-    btn.icon:SetSize(18, 18)
-    for _, region in pairs ({btn:GetRegions()}) do
-        if region:GetObjectType()=='Texture' and region~=btn.icon then
-            local text= region:GetTexture()
-            if text==136430 then--OVERLAY 
-                region:SetSize(50, 50)
-                region:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
-
-
-            elseif text==136467 then--BACKGROUND
-                region:SetSize(24, 24)
-            end
-        end
-    end]]
-
-
 end
 
 
@@ -141,8 +111,6 @@ end
 
 
 local function Init_Buttons()
-    local level= Button.frame:GetFrameLevel()+1
-    local strata= Save().Icons.strata or 'HIGH'
     local isSortUp= Save().Icons.isSortUp
     local noAdd= Save().Icons.noAdd
     local hideAdd= Save().Icons.hideAdd
@@ -185,27 +153,29 @@ local function Init_Buttons()
 
 --设置，位置
     local btn
+    local num= #tab
 
     for index, data in pairs(tab) do
         btn= data.btn
 
-        Lock_Button(btn, strata, level)
-
         btn:ClearAllPoints()
-
         btn:SetPoint('BOTTOMLEFT', index==1 and Button or tab[index-1].btn, 'TOPLEFT', 0, x)
-
-        Button.Background:SetPoint('LEFT', btn)
-        Button.Background:SetPoint('TOP', btn)
     end
 
-    for i= numLine, #tab, numLine do
+    for i= numLine, num, numLine do
         tab[i].btn:ClearAllPoints()
         tab[i].btn:SetPoint('BOTTOMRIGHT', tab[i-numLine] and tab[i-numLine].btn or Button, 'BOTTOMLEFT', -x, 0)
-
-        Button.Background:SetPoint('LEFT', btn)
-        Button.Background:SetPoint('TOP', tab[i-1] and tab[i-1].btn or Button)
     end
+
+    Button.Background:SetPoint('TOP',
+        tab[numLine-1] and tab[numLine-1].btn
+        or (tab[num] and tab[num].btn)
+        or Button
+    )
+    Button.Background:SetPoint('LEFT',
+        (tab[num] and tab[num].btn)
+        or Button
+    )
 end
 
 
@@ -325,6 +295,49 @@ end
 local function Init_Menu(self, root)
     local sub, sub2, num
     local allAddNum= 0
+--显示/隐藏
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
+    function()
+        return self.frame:IsShown()
+    end, function()
+        Save().Icons.hideFrame= not Save().Icons.hideFrame and true or nil
+        self:set_frame()
+    end)
+    root:CreateSpacer()
+
+--显示
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
+    sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
+        return Save().isEnterShow
+    end, function()
+        Save().isEnterShow = not Save().isEnterShow and true or nil
+    end)
+
+--隐藏
+    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+    sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
+        return Save().Icons.hideInCombat
+    end, function()
+        Save().Icons.hideInCombat = not Save().Icons.hideInCombat and true or nil
+        self:set_event()
+    end)
+
+    sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
+        return Save().Icons.hideInMove
+    end, function()
+        Save().Icons.hideInMove = not Save().Icons.hideInMove and true or nil
+        self:set_event()
+    end)
+
+
+
+
+
+
+
+
+
 
 --过滤
     num=0
@@ -339,7 +352,7 @@ local function Init_Menu(self, root)
 
 --过滤
     sub2= sub:CreateButton(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL, function() return MenuResponse.Open end)
-    
+
 --过滤 Border 透明度
     sub2:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub2, {
@@ -349,7 +362,7 @@ local function Init_Menu(self, root)
             Save().Icons.borderAlpha2=value
             self:settings()
         end,
-        name='Border Alpha',
+        name=WoWTools_DataMixin.onlyChinese and '外框透明度' or 'Border alpha',
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -366,7 +379,7 @@ local function Init_Menu(self, root)
             Save().Icons.bgAlpha2=value
             self:settings()
         end,
-        name='Background Alpha',
+        WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -524,6 +537,15 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '按字母排序' or OPTION_RAID_SORT_BY_ALPHABETICAL)
     end)
 
+--刷新
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
+    function()
+        Init_Buttons()
+        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
+        return MenuResponse.Open
+    end)
+
 
 
 
@@ -538,7 +560,7 @@ local function Init_Menu(self, root)
     end, function()
         local hide= Save().Icons.hideBackground
         Save().Icons.hideBackground= not hide and true or nil
-        self:settings()
+        self:set_frame()
     end)
 
 --缩放
@@ -645,7 +667,7 @@ local function Init()
     Button.bg:SetTexture(136467) --"Interface\\Minimap\\UI-Minimap-Background"
     Button.bg:SetPoint("CENTER", Button, "CENTER")
 
-    Button.icon=Button:CreateTexture(nil, 'BORDER')
+    Button.icon=Button:CreateTexture(nil, 'ARTWORK')
     Button.icon:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
     Button.icon:SetPoint('CENTER')
     Button.icon:SetSize(18, 18)
@@ -653,10 +675,8 @@ local function Init()
     Button.frame= CreateFrame('Frame', nil, Button)
     Button.frame:SetAllPoints()
 
-
-
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(Button)
+    WoWTools_TextureMixin:CreateBackground(Button)--, {frame=Button.frame})
     Button.Background:SetPoint('BOTTOMRIGHT', Button)
 
 
@@ -682,83 +702,109 @@ local function Init()
         if d=='RightButton' and IsAltKeyDown() then
             SetCursor('UI_MOVE_CURSOR')
         elseif d=='RightButton' then
-             MenuUtil.CreateContextMenu(self, Init_Menu)
+            WoWTools_MinimapMixin:Open_Menu(self)
+            self:set_tooltip()
 
         elseif d=='LeftButton' then
-            WoWTools_MinimapMixin:Open_Menu(self)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
+            self:set_tooltip()
         end
     end)
 
     Button:EnableMouseWheel(true)
-    Button:SetScript('OnMouseWheel', function(_, d)
-        if d==1 then
-            WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
+    Button:SetScript('OnMouseWheel', function(self, d)
+        if IsAltKeyDown() then
+            if d==1 then
+                WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
+            else
+                WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
+            end
         else
-            WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
+            Save().Icons.hideFrame= d==-1
+            self:set_frame()
         end
     end)
 
-    Button:SetScript("OnLeave", function(self)
-        --self.texture:SetAlpha(0.5)
+    Button:SetScript("OnLeave", function()
         ResetCursor()
         GameTooltip:Hide()
     end)
     Button:SetScript('OnEnter', function(self)
-        --self.texture:SetAlpha(1)
+        if Save().isEnterShow then
+            Save().Icons.hideFrame=false
+            self:set_frame()
+        end
         self:set_tooltip()
     end)
+
+    Button:SetScript('OnEvent', function(self, event)
+        Save().Icons.hideFrame= true-- event=='PLAYER_STARTED_MOVING' or event=='PLAYER_REGEN_DISABLED'
+        self:set_frame()
+    end)
+
+    function Button:set_frame()
+        local show= not Save().Icons.hideFrame
+        self.frame:SetShown(show)
+        self.Background:SetShown(show and not Save().Icons.hideBackground)
+    end
 
     function Button:set_event()
         self:UnregisterAllEvents()
 --战斗
         if Save().Icons.hideInCombat then
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-            self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            --self:RegisterEvent('PLAYER_REGEN_ENABLED')
+            self:RegisterEvent('PLAYER_REGEN_DISABLED')
         end
 --移动
         if Save().Icons.hideInMove then
             self:RegisterEvent("PLAYER_STARTED_MOVING")
-            self:RegisterEvent("PLAYER_STOPPED_MOVING")
+            --self:RegisterEvent("PLAYER_STOPPED_MOVING")
         end
     end
 
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        GameTooltip:ClearLines()
-        GameTooltip:AddLine(
-            WoWTools_DataMixin.Icon.icon2
+        --GameTooltip:ClearLines()
+        GameTooltip:SetText(
+            '|cffffd100'..WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
-            WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right
+            WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right,
+            1,1,1,1,1,1
         )
-        GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE,
-            'Alt+'..WoWTools_DataMixin.Icon.right
+        GameTooltip:AddDoubleLine(--显示/隐藏
+            WoWTools_TextMixin:GetShowHide(nil, true),
+            WoWTools_DataMixin.Icon.mid,
+            1,1,1,1,1,1
         )
 
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE,
+            'Alt+'..WoWTools_DataMixin.Icon.right,
+            1,1,1,1,1,1
+        )
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'),
-            WoWTools_DataMixin.Icon.mid
+            'Alt+'..WoWTools_DataMixin.Icon.mid,
+            1,1,1,1,1,1
         )
         GameTooltip:Show()
     end
 
-    function Button:rest_bg_postion()
-        self.Background:SetPoint('LEFT', self)
-        self.Background:SetPoint('TOP', self)
-    end
+
 
     function Button:settings()
         self:SetFrameStrata(Save().Icons.strata or 'HIGH')
         self:SetScale(Save().Icons.scale or 1)
-        self:rest_bg_postion()
+        self:set_event()
+        self:set_frame()
+        self:SetShown(true)
         Init_Buttons()
         Init_AllButton_Texture()
-        self.Background:SetShown(not Save().Icons.hideBackground)
-        self:SetShown(true)
     end
 
     function Button:set_point()
@@ -772,12 +818,48 @@ local function Init()
     end
 
     function Button:rest()
+        self:UnregisterAllEvents()
         for name, btn in pairs(Objects) do
             Unlock_Button(btn, name)
         end
         self:SetShown(false)
     end
 
+
+
+
+
+
+    hooksecurefunc(libDBIcon, 'IconCallback', function(_, _, name, key, value)
+        local btn= Objects[name]
+        if not btn then
+            return
+        end
+
+        if key == "icon" then
+			btn.icon:SetTexture(value)
+            if AddonCompartmentFrame and btn.db and btn.db.showInCompartment then
+				local addonList = AddonCompartmentFrame.registeredAddons
+				for i =1, #addonList do
+					if addonList[i].text == name then
+						addonList[i].icon = value
+						return
+					end
+				end
+			end
+		elseif key == "iconCoords" then
+			btn.icon:UpdateCoord()
+		elseif key == "iconR" then
+			local _, g, b = btn.icon:GetVertexColor()
+			btn.icon:SetVertexColor(value, g, b)
+		elseif key == "iconG" then
+			local r, _, b = btn.icon:GetVertexColor()
+			btn.icon:SetVertexColor(r, value, b)
+		elseif key == "iconB" then
+			local r, g = btn.icon:GetVertexColor()
+			btn.icon:SetVertexColor(r, g, value)
+		end
+    end)
 
     Button:set_point()
     Button:settings()
@@ -793,6 +875,17 @@ local function Init()
         end
     end
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 

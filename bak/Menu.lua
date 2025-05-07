@@ -26,6 +26,14 @@ SetResponse(MenuResponse.Refresh)
 
 Blizzard_Menu implementation guide
 
+
+GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription));
+GameTooltip_AddInstructionLine(tooltip, "Test Tooltip Instruction");--绿色
+GameTooltip_AddNormalLine(tooltip, "Test Tooltip Normal Line");--黄色
+GameTooltip_AddErrorLine(tooltip, "Test Tooltip Colored Line");--红色
+GameTooltip_AddColoredLine(tooltip, text, HIGHLIGHT_FONT_COLOR)--白色
+
+
 Blizzard_Menu 是一个用于创建上下文菜单和下拉菜单的新框架，是 UIDropDownMenu 的完全替代品。
 
 所有 UIDropDownMenu 的使用都已转换为使用 Blizzard_Menu，并且 UIDropDownMenu 现已弃用。由于

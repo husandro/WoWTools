@@ -79,7 +79,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isSecure= tab.isSecure
     local isType2= tab.isType2
     local isMask= tab.isMask
-    local isBorder= not tab.notBorder
+    local isBorder= not tab.notBorder and not isMenu
     local isLocked= not tab.notLocked
     local isTexture= tab.addTexture or (isType2 and not tab.notTexture)
     local useAtlasSize= tab.useAtlasSize and TextureKitConstants.UseAtlasSize or TextureKitConstants.IgnoreAtlasSize

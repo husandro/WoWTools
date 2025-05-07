@@ -110,6 +110,43 @@ local function Init_Plus_Menu(self, root)
         Save().Icons.disabled= not Save().Icons.disabled and true or nil
         WoWTools_MinimapMixin:Init_Collection_Icon()
     end)
+
+if Save().Icons.disabled then
+--过滤 Border 透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().Icons.borderAlpha2 or 0
+        end, setValue=function(value)
+            Save().Icons.borderAlpha2=value
+            WoWTools_MinimapMixin:Init_SetMinamp_Texture()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '外框透明度' or 'Border alpha',
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+    sub:CreateSpacer()
+
+--过滤 Bg Alpha
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().Icons.bgAlpha2 or 0.5
+        end, setValue=function(value)
+            Save().Icons.bgAlpha2=value
+            WoWTools_MinimapMixin:Init_SetMinamp_Texture()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+    sub:CreateSpacer()
+end
+
 end
 
 
