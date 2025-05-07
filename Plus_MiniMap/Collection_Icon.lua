@@ -383,6 +383,9 @@ end
 local function Init_noAdd_Menu(self, root)
     local sub
 
+--过滤
+    sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL, function() return MenuResponse.Open end)
+
 --勾选所有    
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
@@ -406,10 +409,8 @@ local function Init_noAdd_Menu(self, root)
         Init_Buttons()
         return MenuResponse.Refresh
     end)
+    sub:CreateSpacer()
 
-    sub:CreateDivider()
---过滤
-    sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL, function() return MenuResponse.Open end)
 
 --过滤 Border 透明度
     sub:CreateSpacer()
@@ -428,7 +429,7 @@ local function Init_noAdd_Menu(self, root)
     })
     sub:CreateSpacer()
 
-    --过滤 Bg Alpha
+--过滤 Bg Alpha
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
