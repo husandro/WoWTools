@@ -855,7 +855,7 @@ local function Init_Menu(self, root)
             Save().Icons.borderAlpha=value
             self:settings()
         end,
-        name='Border Alpha',
+        name=WoWTools_DataMixin.onlyChinese and '外框透明度' or 'Border alpha',
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -872,7 +872,7 @@ local function Init_Menu(self, root)
             Save().Icons.bgAlpha=value
             self:settings()
         end,
-        name='Background Alpha',
+        name=WoWTools_DataMixin.onlyChinese and '背景透明度' or 'Background alpha',
         minValue=0,
         maxValue=1,
         step=0.05,
