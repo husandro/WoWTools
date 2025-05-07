@@ -86,6 +86,7 @@ local function Unlock_Button(btn, name)
 
 --还原按钮
     libDBIcon.objects[name]= btn
+    Objects[name]=nil
 
 --设置 OnDragStart
     if not db or not db.lock then
@@ -956,7 +957,7 @@ local function Init()
 
     hooksecurefunc(libDBIcon, 'IconCallback', function(_, _, name, key, value)
         local btn= Objects[name]
-        if not btn then
+        if not btn or libDBIcon.objects[name] then
             return
         end
 
