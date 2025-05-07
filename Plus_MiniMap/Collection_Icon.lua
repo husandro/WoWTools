@@ -107,7 +107,7 @@ end
 
 
 local function Set_User_Button(btn)
-    if not btn or btn.WoWToolsIsLocked then
+    if not btn or btn.WoWToolsIsLocked or not btn.GetFrameStrata then
         return
     end
     btn.WoWToolsIsLocked={
@@ -594,7 +594,7 @@ local function Init_UserAdd_Menu(_, root)
             end,
             EditBoxOnTextChanged=function(s, text)
                 local p= s:GetParent()
-                if _G[text] then
+                if _G[text] and _G[text].GetFrameStrata then
                     p.button1:SetText(
                         '|cnGREEN_FONT_COLOR:'
                         ..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
@@ -605,7 +605,7 @@ local function Init_UserAdd_Menu(_, root)
                         ..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
                     )
                 end
-                p.button3:SetEnabled(t~='' and Save().Icons.userAdd[t] and true or false)
+                p.button3:SetEnabled(text~='' and Save().Icons.userAdd[text] and true or false)
             end,
         })
         return MenuResponse.Open
@@ -798,8 +798,10 @@ local function Init_Menu(self, root)
     root:CreateDivider()
 --过滤
     num=0
-    for _ in pairs(Save().Icons.noAdd) do
-        num=num+1
+    for name in pairs(Save().Icons.noAdd) do
+        if Get_Button(name) then
+            num=num+1
+        end
     end
     sub= root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)..' |cnRED_FONT_COLOR:#|r'..num,
@@ -811,8 +813,10 @@ local function Init_Menu(self, root)
 
 --隐藏
     num=0
-    for _ in pairs(Save().Icons.hideAdd) do
-        num=num+1
+    for name in pairs(Save().Icons.hideAdd) do
+        if Get_Button(name) then
+           num=num+1
+        end
     end
     sub= root:CreateButton(
         (WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..' |cff626262#|r'..num,
@@ -824,8 +828,8 @@ local function Init_Menu(self, root)
 
 --自定义，添加，列表
     num= 0
-    for name in pairs(Save().Icons.userAdd) do
-        if _G[name] then
+    for name, value in pairs(Save().Icons.userAdd) do
+        if value and _G[name] and _G[name].GetFrameStrata then
             num= num+1
         end
     end
@@ -1237,6 +1241,9 @@ local function Init()
         self:UnregisterAllEvents()
         for name, btn in pairs(Objects) do
             Unlock_Button(btn, name)
+        end
+        for name in pairs(Save().Icons.userAdd) do
+            Rest_Ueser_Button(_G[name])
         end
         self:SetShown(false)
     end
