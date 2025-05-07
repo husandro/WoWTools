@@ -5639,7 +5639,8 @@
         "EventTraceFilterButtonMixin",
         "ADDON_DEP_USER_ADDONS_DISABLED",
         "OPTION_RAID_SORT_BY_ALPHABETICAL",
-        "CHAR_NAME_FAILURE"
+        "CHAR_NAME_FAILURE",
+        "Object"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -106,6 +106,70 @@ local function Unlock_Button(btn, name)
 end
 
 
+local function Set_User_Button(btn)
+    if not btn or btn.WoWToolsIsLocked then
+        return
+    end
+    btn.WoWToolsIsLocked={
+        parent= btn:GetParent(),
+        strata= btn:GetFrameStrata(),
+        hasFixed= btn:HasFixedFrameStrata(),
+        point= {btn:GetPoint(1)},
+        onDragStart= btn:GetScript('OnDragStart'),
+        onDragStop= btn:GetScript('OnDragStop'),
+        size={btn:GetSize()},
+    }
+    btn:SetParent(Button)
+    btn:SetFixedFrameStrata(false)
+    btn:SetScript('OnDragStart', nil)
+    btn:SetScript('OnDragStop', nil)
+    btn:SetSize(31, 31)
+end
+
+local function Rest_Ueser_Button(btn)
+    local data= (btn and not  WoWTools_FrameMixin:IsLocked(btn)) and btn.WoWToolsIsLocked
+
+    if not data then
+        return
+    end
+    
+    btn:ClearAllPoints()
+    btn:SetParent(data.parent)
+
+    local s= data.strata
+    if s then
+        btn:SetFrameStrata(s)
+    end
+    if data.hasFixed then
+        btn:SetFixedFrameStrata(true)
+    end
+
+    s= data.size
+
+    if s and s[1] and s[2] then
+        btn:SetSize(s[1], s[2])
+    end
+
+    local p= data.point
+    if p and p[1] then
+        btn:SetPoint(p[1], p[2], p[3], p[4], p[5])
+    end
+
+    btn:SetScript('OnDragStart', data.onDragStart)
+    btn:SetScript('OnDragStop', data.onDragStop)
+    btn.WoWToolsIsLocked=nil
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -127,17 +191,33 @@ local function Init_Buttons()
         end
     end
 
+
+
     for name, btn in pairs(Objects) do
         if noAdd[name] then
             Unlock_Button(btn, name)
 
         elseif hideAdd[name] then
-            btn:SetShown(false)
+            if not WoWTools_FrameMixin:IsLocked(btn) then
+                btn:SetShown(false)
+            end
 
         elseif btn:IsShown() then
             table.insert(tab, {
                 btn=btn,
                 name=name
+            })
+        end
+    end
+
+    for name, value in pairs(Save().Icons.userAdd) do
+        local btn= value and _G[name]
+        if btn and btn.GetFrameStrata and not WoWTools_FrameMixin:IsLocked(btn) then
+            Set_User_Button(btn)
+
+            table.insert(tab, {
+                btn= btn,
+                name= btn.GetName and btn:GetName() or name
             })
         end
     end
@@ -309,17 +389,15 @@ local function Init_UserAdd_Menu(_, root)
                 Init_Buttons()
             end,
             OnAlt=function(s)
-                local p=s:GetParent()
-                --local t= p.editBox:GetText()
-                print(p.editBox, s.editbox)
-                --Save().Icons.userAdd[t]= nil
+                local t= s.editBox:GetText()
+                Save().Icons.userAdd[t]= nil
                 Init_Buttons()
             end,
             EditBoxOnTextChanged=function(s)
                 local t=s:GetText()
                 local p= s:GetParent()
                 p.button1:SetEnabled(_G[t])
-               -- p.button3:SetEnabled(Save().Icons.userAdd[t])
+                p.button3:SetEnabled(Save().Icons.userAdd[t])
             end,
         })
         return MenuResponse.Open
@@ -343,29 +421,92 @@ local function Init_UserAdd_Menu(_, root)
         tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+C|r '.. (WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)..' \"File\" '..(WoWTools_DataMixin.onlyChinese and '类型' or TYPE))
     end)
 
+
+    root:CreateDivider()
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
+    function()
+        for name in pairs(Save().Icons.userAdd) do
+            Save().Icons.userAdd[name]=true
+        end
+        return MenuResponse.Refresh
+    end)
+
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
+    function()
+        for name in pairs(Save().Icons.userAdd) do
+            Rest_Ueser_Button(_G[name])
+            Save().Icons.userAdd[name]=false
+        end
+        Init_Buttons()
+        return MenuResponse.Refresh
+    end)
+
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                for name in pairs(Save().Icons.userAdd) do
+                    Rest_Ueser_Button(_G[name])
+                    Save().Icons.userAdd[name]=nil
+                end
+                Init_Buttons()
+            end}
+        )
+        return MenuResponse.Open
+    end)
+
+
 --列表
     root:CreateDivider()
     num=1
-    for name in pairs(Save().Icons.userAdd) do
+    for name, value in pairs(Save().Icons.userAdd) do
         sub=root:CreateCheckbox(
             num..')'
-            ..(_G[name] and '' or '|cff626262')
+            ..(_G[name] and _G[name].GetFrameStrata and '' or '|cff626262')
             ..name,
         function(data)
             return Save().Icons.userAdd[data.name]
         end, function(data)
-            Save().Icons.userAdd[data.name]= not Save().Icons.userAdd[data.name] and true or nil
+            Save().Icons.userAdd[data]= not Save().Icons.userAdd[data] and true or false
+            if Save().Icons.userAdd[data]==false then
+                Rest_Ueser_Button(_G[data])
+            end
             Init_Buttons()
-        end, {name=name})
+        end, name)
         sub:SetTooltip(function(tooltip, desc)
-            if not _G[desc.data.name] then
-                tooltip:AddLine(desc.data.name)
+            if not _G[desc.data] then
+                tooltip:AddLine(desc.data)
                 GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '无效按钮' or CHAR_NAME_FAILURE)
             end
         end)
+
+        sub:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+        function(data)
+            return Save().Icons.userAdd[data.name]~=nil
+        end, function(data)
+            if Save().Icons.userAdd[data.name]==nil then
+                Save().Icons.userAdd[data.name]= data.value
+            else
+                Save().Icons.userAdd[data.name]=nil
+                Rest_Ueser_Button(_G[data.name])
+            end
+            Init_Buttons()
+            return MenuResponse.Refresh
+        end, {name=name, value=value})
         num= num+1
     end
-    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod
+
+
+
+    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod    
+
+
 end
 
 
@@ -400,7 +541,7 @@ local function Init_Menu(self, root)
         Save().Icons.hideFrame= not Save().Icons.hideFrame and true or nil
         self:set_frame()
     end)
-    root:CreateSpacer()
+    sub:SetEnabled(not WoWTools_FrameMixin:IsLocked(self))
 
 --显示
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
@@ -412,13 +553,14 @@ local function Init_Menu(self, root)
 
 --隐藏
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
+--进入战斗，隐藏
     sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
         return Save().Icons.hideInCombat
     end, function()
         Save().Icons.hideInCombat = not Save().Icons.hideInCombat and true or nil
         self:set_event()
     end)
-
+--移动时，隐藏
     sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
         return Save().Icons.hideInMove
     end, function()
@@ -426,15 +568,24 @@ local function Init_Menu(self, root)
         self:set_event()
     end)
 
+    sub:CreateDivider()
+--刷新
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
+    function()
+        Init_Buttons()
+        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
+        return MenuResponse.Open
+    end)
+
+--/reload
+    sub=WoWTools_MenuMixin:Reload(root, false)
 
 
 
 
 
-
-
-
-
+    root:CreateDivider()
 --过滤
     num=0
     for _ in pairs(Save().Icons.noAdd) do
@@ -541,17 +692,19 @@ local function Init_Menu(self, root)
 
 
 
---[[自定义，添加，列表
+--自定义，添加，列表
     num= 0
-    for _ in pairs(Save().Icons.userAdd) do
-        num= num+1
+    for name in pairs(Save().Icons.userAdd) do
+        if _G[name] then
+            num= num+1
+        end
     end
     sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..' |cffff00ff#|r'..num,
+        (WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..' |cff00ccff#|r'..num,
     function()
         return MenuResponse.Open
     end)
-    Init_UserAdd_Menu(self, sub)]]
+    Init_UserAdd_Menu(self, sub)
 
 
 
@@ -642,14 +795,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '按字母排序' or OPTION_RAID_SORT_BY_ALPHABETICAL)
     end)
 
---刷新
-    sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
-    function()
-        Init_Buttons()
-        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
-        return MenuResponse.Open
-    end)
+
 
 
 
@@ -837,14 +983,18 @@ local function Init()
     Button:EnableMouseWheel(true)
     Button:SetScript('OnMouseWheel', function(self, d)
         if IsAltKeyDown() then
-            if d==1 then
-                WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
-            else
-                WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
+            if not InCombatLockdown() then
+                if d==1 then
+                    WoWTools_PanelMixin:Open(nil, '|A:talents-button-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '设置数据' or RESET_ALL_BUTTON_TEXT))
+                else
+                    WoWTools_PanelMixin:Open(nil, WoWTools_MinimapMixin.addName)
+                end
             end
         else
-            Save().Icons.hideFrame= d==-1
-            self:set_frame()
+            if not WoWTools_FrameMixin:IsLocked(self) then
+                Save().Icons.hideFrame= d==-1
+                self:set_frame()
+            end
         end
     end)
 
@@ -853,7 +1003,7 @@ local function Init()
         GameTooltip:Hide()
     end)
     Button:SetScript('OnEnter', function(self)
-        if Save().isEnterShow then
+        if Save().isEnterShow and not WoWTools_FrameMixin:IsLocked(self) then
             Save().Icons.hideFrame=false
             self:set_frame()
         end
@@ -861,14 +1011,18 @@ local function Init()
     end)
 
     Button:SetScript('OnEvent', function(self, event)
-        Save().Icons.hideFrame= true-- event=='PLAYER_STARTED_MOVING' or event=='PLAYER_REGEN_DISABLED'
-        self:set_frame()
+        if not WoWTools_FrameMixin:IsLocked(self) then
+            Save().Icons.hideFrame=true
+            self:set_frame()
+        end
     end)
 
     function Button:set_frame()
-        local show= not Save().Icons.hideFrame
-        self.frame:SetShown(show)
-        self.Background:SetShown(show and not Save().Icons.hideBackground)
+        if not WoWTools_FrameMixin:IsLocked(self) then
+            local show= not Save().Icons.hideFrame
+            self.frame:SetShown(show)
+            self.Background:SetShown(show and not Save().Icons.hideBackground)
+        end
     end
 
     function Button:set_event()
@@ -887,19 +1041,20 @@ local function Init()
 
     function Button:set_tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        --GameTooltip:ClearLines()
-        GameTooltip:SetText(
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(
             '|cffffd100'..WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL,
-            WoWTools_DataMixin.Icon.left..WoWTools_DataMixin.Icon.right,
+            WoWTools_DataMixin.Icon.left..(InCombatLockdown() and '' or WoWTools_DataMixin.Icon.right),
             1,1,1,1,1,1
         )
         GameTooltip:AddDoubleLine(--显示/隐藏
-            WoWTools_TextMixin:GetShowHide(nil, true),
+            (WoWTools_FrameMixin:IsLocked(self) and '|cff626262' or '')
+            ..WoWTools_TextMixin:GetShowHide(nil, true),
             WoWTools_DataMixin.Icon.mid,
             1,1,1,1,1,1
         )
@@ -911,7 +1066,8 @@ local function Init()
             1,1,1,1,1,1
         )
         GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'),
+            (InCombatLockdown() and '|cff626262' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI')),
             'Alt+'..WoWTools_DataMixin.Icon.mid,
             1,1,1,1,1,1
         )
