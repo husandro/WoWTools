@@ -596,7 +596,7 @@ local function Init_UserAdd_Menu(_, root)
                 Rest_Ueser_Button(_G[t])
                 Init_Buttons()
             end,
-            EditBoxOnTextChanged=function(s, text)
+            EditBoxOnTextChanged=function(s, _, text)
                 local p= s:GetParent()
                 if _G[text] and _G[text].GetFrameStrata then
                     p.button1:SetText(
