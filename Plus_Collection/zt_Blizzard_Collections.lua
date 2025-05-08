@@ -21,6 +21,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(MountJournal.LeftInset, nil, true)
     if MountJournal.ToggleDynamicFlightFlyoutButton then--11.1.7
         self:SetAlphaColor(MountJournal.ToggleDynamicFlightFlyoutButton.Border, true)
+    end
+    if MountJournal.SummonRandomFavoriteSpellFrame then
         self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
     end
 
