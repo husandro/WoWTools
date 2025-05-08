@@ -123,7 +123,7 @@ local function Set_User_Button(btn)
         onDragStop= btn:GetScript('OnDragStop'),
         size={btn:GetSize()},
     }
-    btn:SetParent(Button)
+    btn:SetParent(Button.frame)
     btn:SetFixedFrameStrata(false)
     btn:SetScript('OnDragStart', nil)
     btn:SetScript('OnDragStop', nil)
@@ -296,10 +296,10 @@ local function Set_Button_Texture(btn, name)
 
     if not Save().Icons.disabled then
         if libDBIcon.objects[name] then
-            borderAlpha= Save().Icons.borderAlpha2
+            borderAlpha= Save().Icons.borderAlpha2--Minimap上
             bgAlpha= Save().Icons.bgAlpha2
         else
-            borderAlpha= Save().Icons.borderAlpha
+            borderAlpha= Save().Icons.borderAlpha--收集图标
             bgAlpha= Save().Icons.bgAlpha
         end
     elseif not Save().disabled then

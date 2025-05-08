@@ -48,8 +48,11 @@ local P_Save={
         hideInMove=true,
         hideInCombat=true,
         isEnterShow=true,
-        alphaBG=0,
-        bgAlpha=0.75,
+        alphaBG=0,--bg
+        bgAlpha=0.75,--收集图标
+        borderAlpha=0.5,
+        bgAlpha2=0.75,--Minimap上
+        borderAlpha2=0.5,
     },
 }
 
