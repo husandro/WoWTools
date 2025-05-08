@@ -2,27 +2,34 @@
 --周奖励界面界面
 --#############
 local function Init()
-    --添加一个按钮，打开挑战界面
-    WeeklyRewardsFrame.showChallenges =WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {texture='Interface\\Icons\\achievement_bg_wineos_underxminutes', size=42})--所有角色,挑战
-    WeeklyRewardsFrame.showChallenges:SetPoint('RIGHT',-4,-42)
-    WeeklyRewardsFrame.showChallenges:SetFrameStrata('HIGH')
-
-    WeeklyRewardsFrame.showChallenges:SetScript('OnEnter', function(self2)
-        GameTooltip:SetOwner(self2, "ANCHOR_LEFT");
-        GameTooltip:ClearLines();
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES, WoWTools_DataMixin.Icon.left)
+--添加一个按钮，打开挑战界面
+    local btn= WoWTools_ButtonMixin:Cbtn(WeeklyRewardsFrame, {
+        texture='Interface\\Icons\\achievement_bg_wineos_underxminutes',
+        size=32,
+        isType2=true,
+        notBorder=true,
+        name='WoWToolsChallengePlusOpenChallengesFrameButton',
+    })
+    btn:SetFrameStrata('HIGH')
+    btn:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '史诗钥石地下城' or CHALLENGES)
         GameTooltip:Show()
-        self2:SetButtonState('NORMAL')
+        self:SetButtonState('NORMAL')
     end)
-    WeeklyRewardsFrame.showChallenges:SetScript("OnLeave",GameTooltip_Hide)
-    WeeklyRewardsFrame.showChallenges:SetScript('OnMouseDown', function()
+    btn:SetScript("OnLeave", function(self)
+        self:SetButtonState('NORMAL')
+        GameTooltip:Hide()
+    end)
+    btn:SetScript('OnClick', function()
         PVEFrame_ToggleFrame('ChallengesFrame', 3)
     end)
-    WeeklyRewardsFrame:HookScript('OnShow', function(self)
-        self.showChallenges:SetButtonState('NORMAL')
+    btn:SetScript('OnHide', function(self)
+        self:SetButtonState('NORMAL')
     end)
+    btn:SetPoint('RIGHT',-4,-42)
 
-    --移动，图片
+--移动，图片
     hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(self)--Blizzard_WeeklyRewards.lua
         if self.Overlay and self.Overlay:IsShown() then--未提取,提示
             --self.Overlay:SetScale(0.61)

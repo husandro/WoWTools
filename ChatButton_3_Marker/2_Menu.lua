@@ -45,7 +45,7 @@ local function Init_RaidTarget_Menu(_, root)
             check=checkGroup
         },
         {
-            text= WoWTools_DataMixin.Icon.TANK..(WoWTools_DataMixin.onlyChinese and '治疗' or HEALER),
+            text= WoWTools_DataMixin.Icon.HEALER..(WoWTools_DataMixin.onlyChinese and '治疗' or HEALER),
             type='healer',
             tip=WoWTools_DataMixin.onlyChinese and '仅限小队' or format(LFG_LIST_CROSS_FACTION, GROUP),
             rest=restGroup,

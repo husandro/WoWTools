@@ -133,7 +133,7 @@ local function Init_Cursor_Options()
     sliderGravity:SetPoint("TOPLEFT", sliderDuration, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = WoWTools_PanelMixin:Slider(PanelFrame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
-    text=WoWTools_DataMixin.onlyChinese and '透明度' or 'Alpha',
+    text=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)
@@ -292,7 +292,7 @@ local function Init_GCD_Options()
     PanelFrame.sliderSize:SetPoint("TOPLEFT", PanelFrame.gcdCheck, 'BOTTOMLEFT', 0, -20)
 
     local alphaSlider = WoWTools_PanelMixin:Slider(PanelFrame, {min=0.1, max=1, value=Save().alpha, setp=0.1, color=true,
-    text=WoWTools_DataMixin.onlyChinese and '透明度' or 'Alpha',
+    text=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
     func=function(self, value)
         value= tonumber(format('%.1f', value))
         self:SetValue(value)

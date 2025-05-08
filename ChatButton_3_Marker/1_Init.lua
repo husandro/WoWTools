@@ -120,7 +120,7 @@ local function Init()
         )
         GameTooltip:AddDoubleLine(
             (healer and WoWTools_MarkerMixin:GetColor(healer).col or '|cff828282')
-            ..WoWTools_DataMixin.Icon.TANK..(WoWTools_DataMixin.onlyChinese and '治疗' or HEALER),
+            ..WoWTools_DataMixin.Icon.HEALER..(WoWTools_DataMixin.onlyChinese and '治疗' or HEALER),
            healer and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', healer) or ''
         )
         GameTooltip:AddLine(' ')
@@ -134,7 +134,6 @@ local function Init()
             ..'|A:Target:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET),
             target and format('|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_%d:0|t', target) or ''
         )
-        GameTooltip:AddDoubleLine()
     end
 
 

@@ -57,7 +57,7 @@ local function Init_Options()
     })
 
     local initializer= WoWTools_Mixin:OnlySlider({
-        name= WoWTools_DataMixin.onlyChinese and '透明度' or 'Alpha',
+        name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
         maxValue= 1,
@@ -91,7 +91,7 @@ local function Init_Options()
         end
     })
     initializer= WoWTools_Mixin:OnlySlider({
-        name= WoWTools_DataMixin.onlyChinese and '透明度' or 'Alpha',
+        name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().chatBubbleAlpha or 0.5 end,
         minValue= 0,
         maxValue= 1,

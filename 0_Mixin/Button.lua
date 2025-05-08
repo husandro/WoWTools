@@ -49,7 +49,7 @@ ItemButtonTemplate.xml
 function WoWTools_ButtonMixin:AddMask(btn, isType2)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
 
-    if isType2 then
+    if not isType2 then
         btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
         btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
         btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)

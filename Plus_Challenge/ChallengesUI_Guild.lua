@@ -131,7 +131,6 @@ local function Init()
     Frame.Text:SetPoint('TOPRIGHT')
 
     WoWTools_TextureMixin:CreateBackground(Frame, {
-        alpha=0.7,
         point=function(texture)
             texture:SetPoint('TOPLEFT', Frame.Text, 0, 4)
             texture:SetPoint('BOTTOMRIGHT', Frame.Text, 4, -6)
@@ -141,6 +140,7 @@ local function Init()
     function Frame:Settings()
         self:SetPoint('TOPRIGHT', ChallengesFrame, Save().guildX or -15, Save().guildY or -32)        
         self:SetScale(Save().guildScale or 1)
+        self.Background:SetAlpha(Save().guildBgAlpha or 0.5)
         self:SetShown(not Save().hideGuild and IsInGuild())
      end
 

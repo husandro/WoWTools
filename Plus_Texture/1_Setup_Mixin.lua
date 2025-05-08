@@ -191,27 +191,31 @@ function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg)
 end
 
 --设置，滚动条，颜色
-function WoWTools_TextureMixin:SetScrollBar(frame)
-    local bar= frame and frame.ScrollBar or frame
-    if bar then
-        if bar.Track then
-            self:SetAlphaColor(bar.Track.Thumb.Middle, true)
-            self:SetAlphaColor(bar.Track.Thumb.Begin, true)
-            self:SetAlphaColor(bar.Track.Thumb.End, true)
-        end
-        if bar.Back then
-            self:SetAlphaColor(bar.Back.Texture, true)
-        end
-        if bar.Forward then
-            self:SetAlphaColor(bar.Forward.Texture, true)
-        end
-        self:HideTexture(bar.Backplate, nil)
-        self:SetAlphaColor(bar.Background, nil, true)
-        if bar.SetHideIfUnscrollable then
-            bar:SetHideIfUnscrollable(true)
-        end
+function WoWTools_TextureMixin:SetScrollBar(bar)
+    bar= bar and bar.ScrollBar or bar
+    if not bar or not bar.Track or bar.WoWToolsSetAlpha then
+        return
+    end
+    bar.WoWToolsSetAlpha=true
+
+    if bar.Track then
+        self:SetAlphaColor(bar.Track.Thumb.Middle, true)
+        self:SetAlphaColor(bar.Track.Thumb.Begin, true)
+        self:SetAlphaColor(bar.Track.Thumb.End, true)
+    end
+    if bar.Back then
+        self:SetAlphaColor(bar.Back.Texture, true)
+    end
+    if bar.Forward then
+        self:SetAlphaColor(bar.Forward.Texture, true)
+    end
+    self:HideTexture(bar.Backplate, nil)
+    self:SetAlphaColor(bar.Background, nil, true)
+    if bar.SetHideIfUnscrollable then
+        bar:SetHideIfUnscrollable(true)
     end
 end
+
 
 --Slider
 function WoWTools_TextureMixin:SetSlider(frame)

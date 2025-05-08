@@ -113,7 +113,7 @@ end
 --#####
 local function Init_Menu(self, level, type)
     local info= {
-        text= WoWTools_DataMixin.onlyChinese and '透明度' or 'Alpha',
+        text= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         checked= Save.hide,
         func= function()
             Save.hide= not Save.hide and true or nil

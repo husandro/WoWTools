@@ -308,7 +308,27 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
+
+--透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().guildBgAlpha or 0.5
+        end, setValue=function(value)
+            Save().guildBgAlpha=value
+            WoWTools_ChallengeMixin:ChallengesUI_Guild()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%0.2f',
+    })
+    sub:CreateSpacer()
+
+    
 --缩放
+    sub:CreateSpacer()
     WoWTools_MenuMixin:ScaleRoot(self, sub,
     function()
         return Save().guildScale or 1
@@ -319,6 +339,7 @@ local function Init_Menu(self, root)
         Save().guildScale=nil
         Save().guildX=nil
         Save().guildY=nil
+        Save().guildBgAlpha=nil
         WoWTools_ChallengeMixin:ChallengesUI_Guild()
     end)
 

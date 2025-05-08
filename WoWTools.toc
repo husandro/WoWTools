@@ -147,6 +147,7 @@ Plus_Texture\a_ClassPower.lua
 Plus_Texture\a_HelpTip.lua
 Plus_Texture\z_All_Frame.lua
 Plus_Texture\z_Event_Frame.lua
+Plus_Texture\Blizzard_SharedXML.lua
 
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
