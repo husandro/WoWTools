@@ -368,6 +368,7 @@ local function Init()
         self:UnregisterEvent(event)
     end)
 
+    ToyButton:Cerca_Toy()
     ToyButton:set_texture()
 end
 
@@ -427,7 +428,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         GetAchievementCategory(achievementID)
                     end
                 end
-                
+
                 self:UnregisterEvent(event)
             else
 
