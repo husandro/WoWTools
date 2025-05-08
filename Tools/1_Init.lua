@@ -527,12 +527,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 Init()
             end
 
-        elseif arg1=='Blizzard_Settings' then
-            Init_Panel()
-
-            if Category then
+            if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
+                Init_Panel()
                 self:UnregisterEvent(event)
             end
+
+        elseif arg1=='Blizzard_Settings' and WoWToolsSave then
+            Init_Panel()
+            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

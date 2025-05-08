@@ -130,8 +130,11 @@ local function Init(ToyButton)
             itemName= C_Item.GetItemNameByID(data.itemID)
             toyName= select(2, C_ToyBox.GetToyInfo(data.itemID))
             if toyName then
-                self:SetAttribute(data.type.."-type1", "macro")
-                self:SetAttribute(data.type.."-macrotext1",  '/usetoy '..toyName)
+                --[[self:SetAttribute(data.type.."-type1", "macro")
+                self:SetAttribute(data.type.."-macrotext1",  '/usetoy '..toyName)]]
+                self:SetAttribute(data.type.."-type1", "toy")
+                self:SetAttribute(data.type.."-toy1",  data.itemID)
+
             elseif itemName then
                 self:SetAttribute(data.type.."-type1", "item")
                 self:SetAttribute(data.type.."-item1",  itemName)

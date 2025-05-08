@@ -10,7 +10,7 @@ local function Has_ItemSpell(ID, spell)
             return true
         end
     else
-        if C_Item.GetItemCount(ID)>0 or (PlayerHasToy(ID) or C_ToyBox.IsToyUsable(ID)) then
+        if C_Item.GetItemCount(ID)>0 or (PlayerHasToy(ID) and C_ToyBox.IsToyUsable(ID)) then
             return true
         end
     end
@@ -179,6 +179,7 @@ local function Set_Item_Button(btn, equip)
         btn:RegisterEvent('QUEST_COMPLETE')
         Set_Bling_Quest(btn)
     end
+    WoWTools_CooldownMixin:SetFrame(btn, {itemID=btn.itemID})
 end
 
 
@@ -224,6 +225,7 @@ local function Set_Spell_Button(btn)
     btn:SetScript('OnHide', function(self)
         Set_Button_Event(self, false)
     end)
+    WoWTools_CooldownMixin:SetFrame(btn, {spellID=btn.spellID})
 end
 
 
@@ -257,9 +259,6 @@ local function Init()
                 })
                 if btn then
                     btn.itemID=itemID
-
-                    Set_Item_Button(btn, false)
-
                     if PlayerHasToy(itemID) then
                         btn:SetAttribute('type', 'toy')
                         btn:SetAttribute('toy', itemID)
@@ -268,6 +267,7 @@ local function Init()
                         btn:SetAttribute('item', name)
                     end
                     btn.texture:SetTexture(icon)
+                    Set_Item_Button(btn, false)
                 end
             end
         end
@@ -310,10 +310,11 @@ local function Init()
                 })
                 if btn then
                     btn.spellID=spellID
-                    Set_Spell_Button(btn)
                     btn:SetAttribute('type', 'spell')
                     btn:SetAttribute('spell', name)
                     btn.texture:SetTexture(icon)
+                    Set_Spell_Button(btn)
+                    
                 end
             end
         end

@@ -1,7 +1,7 @@
 
 
 local Tab={
-    --{itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
+    {itemID=228412, achievements={16334, 19309, 17766, 16761, 17739, 16363, 16336, 15394}},--巨龙群岛探路者 侦察地图：巨龙群岛的天空
 
     {itemID=187869, achievements={14663, 14303, 14304, 14305, 14306}},--暗影界
 
@@ -275,12 +275,7 @@ end
 
 
 local function Init()
-    for _, info in pairs(Tab) do
-        WoWTools_Mixin:Load({id=info.itemID, type='item'})
-        for _, achievementID in pairs(info.achievements) do
-            GetAchievementCategory(achievementID)
-        end
-    end
+    ToyButton:SetAttribute("type1", "toy")
 
     function ToyButton:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -310,7 +305,8 @@ local function Init()
 
     function ToyButton:Set_Random_Value(itemID, achievements, isLocked)--设置，随机值
         --local name=C_Item.GetItemNameByID(itemID) or select(2, C_ToyBox.GetToyInfo(itemID))
-        if  not self:CanChangeAttribute() then
+        if not self:CanChangeAttribute() then
+            self:RegisterEvent('PLAYER_REGEN_ENABLED')
             return
         end
 
@@ -337,7 +333,7 @@ local function Init()
 
     end
 
-    ToyButton:SetAttribute("type1", "toy")
+
 
     ToyButton:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
@@ -365,6 +361,11 @@ local function Init()
         elseif d=='LeftButton' then
             self.isLocked=nil
         end
+    end)
+
+    ToyButton:SetScript("OnEvent", function(self, event)
+        self:Cerca_Toy()
+        self:UnregisterEvent(event)
     end)
 
     ToyButton:set_texture()
@@ -420,6 +421,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     disabledOptions=true
                 })
 
+                for _, info in pairs(Tab) do
+                    WoWTools_Mixin:Load({id=info.itemID, type='item'})
+                    for _, achievementID in pairs(info.achievements) do
+                        GetAchievementCategory(achievementID)
+                    end
+                end
+                
                 self:UnregisterEvent(event)
             else
 
