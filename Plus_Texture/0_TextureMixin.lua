@@ -5,6 +5,7 @@ CreateBackground(frame, tab)
 item_upgrade_tooltip_fullmask
 ChallengeMode-guild-background
 UI-Frame-DialogBox-BackgroundTile
+UI-HUD-CoolDownManager-Mask
 ]]
 
 
@@ -23,19 +24,21 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
 
     local point= tab.point
     local isAllPoint= tab.isAllPoint
-    local alpha= tab.alpha or 0.5
+    local alpha= tab.alpha or 0.3
 
     frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
-    
+
     if isAllPoint==true then
         frame.Background:SetAllPoints()
     elseif type(point)=='function' then
         point(frame.Background)
     end
 
-    frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
+    --frame.Background:SetAtlas('ChallengeMode-guild-background')
+    --frame.Background:SetAlpha(alpha)
+    frame.Background:SetColorTexture(0,0,0)
     frame.Background:SetAlpha(alpha)
-    --frame.Background:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
+
     return frame.Background
 end
 --[[
@@ -67,7 +70,7 @@ function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
             isAtlas, textureID, icon= false, texture, format('|T%d:%d:%d|t', texture, s, s2)
         end
     elseif t=='string' then
-        
+
         local atlasInfo= C_Texture.GetAtlasInfo(texture)
         isAtlas= atlasInfo and true or false
         textureID= texture

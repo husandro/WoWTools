@@ -1,4 +1,4 @@
-
+---@diagnostic disable: undefined-global, redundant-value
 ## SavedVariablesPerCharacter: BlizzardStopwatchOptions
 
 CLASS_SORT_ORDER = {

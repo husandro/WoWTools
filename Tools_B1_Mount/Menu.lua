@@ -1,7 +1,5 @@
-
-
 local function Save()
-    return WoWTools_MountMixin.Save
+    return WoWToolsSave['Tools_Mounts']
 end
 
 local function Set_Mount_Summon(data)

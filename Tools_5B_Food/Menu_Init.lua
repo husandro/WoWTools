@@ -1,8 +1,9 @@
 --主菜单
 
 local function Save()
-    return WoWTools_FoodMixin.Save
+    return WoWToolsSave['Tools_Foods']
 end
+
 
 
 

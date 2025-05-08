@@ -1,4 +1,4 @@
-
+WoWTools_MountMixin={}
 
 
 local P_Mouts_Tab={
@@ -76,22 +76,31 @@ local P_Mouts_Tab={
 }
 
 
-WoWTools_MountMixin={
-    Save={
-        Mounts=P_Mouts_Tab,
-        KEY= WoWTools_DataMixin.Player.husandro and 'BUTTON5', --为我自定义, 按键
-        AFKRandom=WoWTools_DataMixin.Player.husandro,--离开时, 随机坐骑
-        mountShowTime=3,--坐骑秀，时间
-        showFlightModeButton=true, --切换飞行模式
-        --toFrame=nil,
-    },
-    --MountButton=nil,
-    --faction= nil,0 1
+
+local P_Save={
+    Mounts=P_Mouts_Tab,
+    KEY= WoWTools_DataMixin.Player.husandro and 'BUTTON5', --为我自定义, 按键
+    AFKRandom=WoWTools_DataMixin.Player.husandro,--离开时, 随机坐骑
+    mountShowTime=3,--坐骑秀，时间
+    showFlightModeButton=true, --切换飞行模式
+    --toFrame=nil,
 }
+
+local function Save()
+    return WoWToolsSave['Tools_Mounts']
+end
+
+
+
+
+
+
+
+
 
 function WoWTools_MountMixin:Get_Table_Num(type)--检测,表里的数量
     local num= 0
-    for _ in pairs(self.Save.Mounts[type]) do
+    for _ in pairs(Save().Mounts[type]) do
         num=num+1
     end
     return num
@@ -109,7 +118,7 @@ end
 
 
 local function Init()
-    for type, tab in pairs(WoWTools_MountMixin.Save.Mounts) do
+    for type, tab in pairs(Save().Mounts) do
         for ID in pairs(tab) do
             WoWTools_Mixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
         end
@@ -126,20 +135,19 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("LOADING_SCREEN_DISABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWTools_MountMixin.addName= '|A:hud-microbutton-Mounts-Down:0:0|a'..(WoWTools_DataMixin.onlyChinese and '坐骑' or MOUNT)
 
-            if WoWToolsSave['Tools_Mounts'] then
-                WoWTools_MountMixin.Save= WoWToolsSave['Tools_Mounts']
+            WoWToolsSave['Tools_Mounts']= WoWToolsSave['Tools_Mounts'] or P_Save
+
+            if Save().Mounts[SPELLS] then--为不同语言
+                Save().Mounts= P_Mouts_Tab
             end
 
-            if not WoWTools_MountMixin.Save.Mounts[SPELLS] then--为不同语言，
-                WoWTools_MountMixin.Save.Mounts= P_Mouts_Tab
-            end
 
             WoWTools_MountMixin.MountButton= WoWTools_ToolsMixin:CreateButton({
                 name='Mount',
@@ -147,8 +155,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if WoWTools_MountMixin.MountButton then
-                Init()--初始
-
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                     WoWTools_MountMixin:Init_MountJournal()
                 end
@@ -158,21 +164,27 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
 
                 WoWTools_MountMixin.faction= WoWTools_DataMixin.Player.Faction=='Horde' and 0 or (WoWTools_DataMixin.Player.Faction=='Alliance' and 1)
+
             else
-                self:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterAllEvents()
             end
 
         elseif arg1=='Blizzard_Collections' then--收藏
             WoWTools_MountMixin:Init_MountJournal()
+            if C_AddOns:IsAddOnLoaded('Blizzard_PlayerSpells') then
+                self:UnregisterEvent(event)
+            end
 
         elseif arg1=='Blizzard_PlayerSpells' then--法术书
             WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
+            if C_AddOns:IsAddOnLoaded('Blizzard_Collections') then
+                self:UnregisterEvent(event)
+            end
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Tools_Mounts']= WoWTools_MountMixin.Save
-        end
+    elseif event == "LOADING_SCREEN_DISABLED" then
+        Init()
+        self:UnregisterEvent(event)
     end
 end)
 --436854 C_MountJournal.GetDynamicFlightModeSpellID() 切换飞行模式

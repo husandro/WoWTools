@@ -1,4 +1,5 @@
 
+WoWTools_FoodMixin={}
 
 
 
@@ -21,8 +22,7 @@ local ClassSpells={--{item=5512, alt=nil, shift=nil, ctrl=nil}
 }
 
 
-WoWTools_FoodMixin={
-Save={
+local P_Save={
     noUseItems={},--禁用物品
     autoLogin= WoWTools_DataMixin.Player.husandro,--启动,查询
     --isShowBackground=WoWTools_DataMixin.Player.husandro,--背景--旧数据
@@ -70,16 +70,16 @@ Save={
         [19]=true,
     },
     spells=ClassSpells,
-},
 }
 
 
+
 local function Save()
-    return WoWTools_FoodMixin.Save
+    return WoWToolsSave['Tools_Foods']
 end
 
 
-local UseButton
+
 local PaneIDs={
     [113509]=true,--魔法汉堡
     [80610]=true,--魔法布丁
@@ -99,18 +99,18 @@ local PaneIDs={
 function WoWTools_FoodMixin:Get_Item_Valid(itemID)
 
     if itemID
-        and itemID~=UseButton.itemID
-        and not self.Save.noUseItems[itemID]
-        and not self.Save.addItems[itemID]
-        and (self.Save.olnyUsaItem and C_Item.GetItemSpell(itemID) or not self.Save.olnyUsaItem)
+        and itemID~=self.Button.itemID
+        and not Save().noUseItems[itemID]
+        and not Save().addItems[itemID]
+        and (Save().olnyUsaItem and C_Item.GetItemSpell(itemID) or not Save().olnyUsaItem)
     then
         local classID, subClassID, _, expacID = select(12, C_Item.GetItemInfo(itemID))
-        if self.Save.class[classID]
-            and self.Save.class[classID][subClassID]
+        if Save().class[classID]
+            and Save().class[classID][subClassID]
             and (WoWTools_DataMixin.Is_Timerunning
-                    or (self.Save.onlyMaxExpansion
+                    or (Save().onlyMaxExpansion
                         and (PaneIDs[itemID] or WoWTools_DataMixin.ExpansionLevel==expacID)
-                        or not self.Save.onlyMaxExpansion
+                        or not Save().onlyMaxExpansion
                     )
                 )
         then
@@ -130,26 +130,6 @@ end
 
 
 
-local function Init()
-    WoWTools_FoodMixin.UseButton= UseButton
-
-    WoWTools_FoodMixin:Set_AltSpell()
-    WoWTools_FoodMixin:Init_Button()
-    WoWTools_FoodMixin:Init_Check()
-    if Save().autoWho then
-        WoWTools_FoodMixin:Check_Items()
-    end
-
-    if Save().autoLogin then
-        C_Timer.After(2, function()
-            WoWTools_FoodMixin:Check_Items()
-        end)
-    end
-end
-
-
-
-
 
 
 
@@ -158,16 +138,18 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("LOADING_SCREEN_DISABLED")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWTools_FoodMixin.Save= WoWToolsSave['Tools_Foods'] or Save()
+            WoWToolsSave['Tools_Foods']= WoWToolsSave['Tools_Foods'] or P_Save
 
             Save().spells= Save().spells or ClassSpells
 
             local class= Save().spells[WoWTools_DataMixin.Player.Class]
+
             if not class then
                 Save().spells[WoWTools_DataMixin.Player.Class]= {}
             else
@@ -177,40 +159,49 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_Mixin:Load({id=class.ctrl, type='spell'})
             end
 
-            local addName= '|A:Food:0:0|a'..(WoWTools_DataMixin.onlyChinese and '食物' or POWER_TYPE_FOOD)
-            WoWTools_FoodMixin.addName= addName
+            WoWTools_FoodMixin.addName= '|A:Food:0:0|a'..(WoWTools_DataMixin.onlyChinese and '食物' or POWER_TYPE_FOOD)
 
-            UseButton= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_FoodMixin.Button= WoWTools_ToolsMixin:CreateButton({
                 name='Food',
-                tooltip=addName,
+                tooltip=WoWTools_FoodMixin.addName,
                 isMoveButton=true,
                 option=function(category, layout, initializer)
                     WoWTools_PanelMixin:OnlyButton({
                         category=category,
                         layout=layout,
-                        tooltip=addName,
+                        tooltip=WoWTools_FoodMixin.addName,
                         buttonText= WoWTools_DataMixin.onlyChinese and '还原位置' or RESET_POSITION,
                         SetValue= function()
                             Save().point=nil
-                            if UseButton and UseButton:CanChangeAttribute() then
+                            if WoWTools_FoodMixin.Button and not WoWTools_FrameMixin:IsLocked(WoWTools_FoodMixin.Button) then
                                 Save().point=nil
-                                UseButton:set_point()
+                                WoWTools_FoodMixin.Button:set_point()
                             end
                         end
                     }, initializer)
                 end
             })
 
-            if UseButton then
-                WoWTools_FoodMixin.Button= UseButton
-               Init()
+            if WoWTools_FoodMixin.Button then
+                self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent('ADDON_LOADED')
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Tools_Foods']=Save()
+    elseif event == "LOADING_SCREEN_DISABLED" then
+        WoWTools_FoodMixin:Set_AltSpell()
+        WoWTools_FoodMixin:Init_Button()
+        WoWTools_FoodMixin:Init_Check()
+        if Save().autoWho then
+            WoWTools_FoodMixin:Check_Items()
         end
+    
+        if Save().autoLogin then
+            C_Timer.After(2, function()
+                WoWTools_FoodMixin:Check_Items()
+            end)
+        end
+        self:UnregisterEvent(event)
     end
 end)

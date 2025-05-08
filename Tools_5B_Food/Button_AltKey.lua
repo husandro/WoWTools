@@ -1,4 +1,7 @@
 
+local function Save()
+    return WoWToolsSave['Tools_Foods']
+end
 
 
 
@@ -7,34 +10,35 @@
 
 
 
-local function Init(UseButton)
-    if not UseButton:CanChangeAttribute() then
+
+
+local function Init(btn)
+    if not btn or not btn:CanChangeAttribute() then
         return
     end
 
     local item, alt, ctrl, shift
-    local tab= WoWTools_FoodMixin.Save.spells[WoWTools_DataMixin.Player.Class]
+    local tab= Save().spells[WoWTools_DataMixin.Player.Class]
     if tab then
         item, alt, ctrl, shift= tab.item, tab.alt, tab.ctrl, tab.shift
     end
 
-    UseButton.itemID= item or 5512--治疗石
+    btn.itemID= item or 5512--治疗石
 
-    UseButton:SetAttribute('alt-spell1', (alt and C_Spell.GetSpellName(alt) or alt or nil))
-    UseButton.alt= alt
+    btn:SetAttribute('alt-spell1', (alt and C_Spell.GetSpellName(alt) or alt or nil))
+    btn.alt= alt
 
 
-    UseButton:SetAttribute('ctrl-spell1', (ctrl and C_Spell.GetSpellName(ctrl) or ctrl) or nil)
-    UseButton.ctrl= ctrl
+    btn:SetAttribute('ctrl-spell1', (ctrl and C_Spell.GetSpellName(ctrl) or ctrl) or nil)
+    btn.ctrl= ctrl
 
-    UseButton:SetAttribute('shift-type1', 'spell')
-    UseButton:SetAttribute('shift-spell1', (shift and C_Spell.GetSpellName(shift) or shift) or nil)
-    UseButton.shift= shift
-
+    btn:SetAttribute('shift-type1', 'spell')
+    btn:SetAttribute('shift-spell1', (shift and C_Spell.GetSpellName(shift) or shift) or nil)
+    btn.shift= shift
 end
 
 
 
 function WoWTools_FoodMixin:Set_AltSpell()
-    Init(self.UseButton)
+    Init(self.Button)
 end

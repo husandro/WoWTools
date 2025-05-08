@@ -1,9 +1,8 @@
 --法术书，选项
 
 local function Save()
-    return WoWTools_MountMixin.Save
+    return WoWToolsSave['Tools_Mounts']
 end
-
 
 
 

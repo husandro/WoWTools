@@ -1,6 +1,6 @@
 
 local function Save()
-    return WoWTools_FoodMixin.Save
+    return WoWToolsSave['Tools_Foods']
 end
 
 
@@ -46,35 +46,30 @@ end
 
 
 
-local function Init()
-    local UseButton= WoWTools_FoodMixin.UseButton
-    if not UseButton then
-        return
-    end
-
-    UseButton.RePoint={UseButton:GetPoint(1)}
-    UseButton.texture:SetTexture(538745)
+local function Init(btn)
+    btn.RePoint={btn:GetPoint(1)}
+    btn.texture:SetTexture(538745)
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(UseButton, {
+    WoWTools_TextureMixin:CreateBackground(btn, {
         point=function(texture)
             texture:SetPoint('BOTTOMRIGHT', 1 , 1)
-            texture:SetPoint('TOP', UseButton, 1 , 1)
-            texture:SetPoint('LEFT', UseButton, -1 , -1)
+            texture:SetPoint('TOP', btn, 1 , 1)
+            texture:SetPoint('LEFT', btn, -1 , -1)
         end}
     )
-    function UseButton:set_background()
+    function btn:set_background()
         --self.Background:SetShown(Save().isShowBackground)
         self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 
 
 
-    function UseButton:set_strata()
+    function btn:set_strata()
         self:SetFrameStrata(Save().strata or 'MEDIUM')
     end
 
-    function UseButton:set_point()
+    function btn:set_point()
         if not self:CanChangeAttribute() then
             return
         end
@@ -86,14 +81,14 @@ local function Init()
         end
     end
 
-    function UseButton:set_scale()
+    function btn:set_scale()
         if self:CanChangeAttribute() then
             self:SetScale(Save().scale or 1)
         end
     end
 
 
-    function UseButton:get_tooltip_item()
+    function btn:get_tooltip_item()
         local infoType, itemID, itemLink = GetCursorInfo()
         if infoType == "item" and itemID and itemLink and self.itemID~=itemID then
             return itemID, itemLink
@@ -101,15 +96,15 @@ local function Init()
     end
 
 
-    UseButton:RegisterForDrag("RightButton")
-    UseButton:SetMovable(true)
-    UseButton:SetClampedToScreen(true)
-    UseButton:SetScript("OnDragStart", function(self)
+    btn:RegisterForDrag("RightButton")
+    btn:SetMovable(true)
+    btn:SetClampedToScreen(true)
+    btn:SetScript("OnDragStart", function(self)
         if IsAltKeyDown() then
             self:StartMoving()
         end
     end)
-    UseButton:SetScript("OnDragStop", function(self)
+    btn:SetScript("OnDragStop", function(self)
         ResetCursor()
         self:StopMovingOrSizing()
         if WoWTools_FrameMixin:IsInSchermo(self) then
@@ -124,7 +119,7 @@ local function Init()
         end
         self:Raise()
     end)
-    UseButton:SetScript("OnMouseDown", function(self, d)
+    btn:SetScript("OnMouseDown", function(self, d)
         local itemID, itemLink = self:get_tooltip_item()
         if itemID and itemLink then
             Add_Item({itemID=itemID, itemLink=itemLink})
@@ -143,8 +138,8 @@ local function Init()
     end)
 
 
-    UseButton:SetScript("OnMouseUp", ResetCursor)
-    UseButton:SetScript('OnMouseWheel',function(self, d)
+    btn:SetScript("OnMouseUp", ResetCursor)
+    btn:SetScript('OnMouseWheel',function(self, d)
         if not IsModifierKeyDown() then
             if not self:CanChangeAttribute() then
                 print(WoWTools_FoodMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT))
@@ -158,7 +153,7 @@ local function Init()
 
 
 
-    function UseButton:set_tooltip()
+    function btn:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT");
         GameTooltip:ClearLines()
         local itemID, itemLink = self:get_tooltip_item()
@@ -195,7 +190,7 @@ local function Init()
         GameTooltip:Show()
     end
 
-    UseButton:SetScript('OnLeave', function(self)
+    btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         WoWTools_BagMixin:Find()--查询，背包里物品
         self:set_alpha()
@@ -206,14 +201,14 @@ local function Init()
         self.elapsed=nil
     end)
 
-    function UseButton:set_update(elapsed)
+    function btn:set_update(elapsed)
         self.elapsed= (self.elapsed or 1) +elapsed
         if self.elapsed>=1 then
             self.elapsed=0
             self:set_tooltip()
         end
     end
-    UseButton:SetScript("OnEnter",function(self)
+    btn:SetScript("OnEnter",function(self)
         if self.alt or self.ctrl or self.shift then
             self:SetScript('OnUpdate', self.set_update)
         else
@@ -227,26 +222,26 @@ local function Init()
     end)
 
 
-    UseButton:SetAttribute('type1', 'item')
-    UseButton:SetAttribute('alt-type1', 'spell')
-    UseButton:SetAttribute('ctrl-type1', 'spell')
-    UseButton:SetAttribute('shift-type1', 'spell')
+    btn:SetAttribute('type1', 'item')
+    btn:SetAttribute('alt-type1', 'spell')
+    btn:SetAttribute('ctrl-type1', 'spell')
+    btn:SetAttribute('shift-type1', 'spell')
 
 
     if Save().point then
-        UseButton:set_point()
+        btn:set_point()
     end
-    UseButton:set_strata()
-    UseButton:set_scale()
-    UseButton:set_background()
+    btn:set_strata()
+    btn:set_scale()
+    btn:set_background()
 
-    WoWTools_FoodMixin:Set_Button_Function(UseButton)
-    UseButton:settings()
-    UseButton:set_attribute()
+    WoWTools_FoodMixin:Set_Button_Function(btn)
+    btn:settings()
+    btn:set_attribute()
 end
 
 
 
 function WoWTools_FoodMixin:Init_Button()
-    Init()
+    Init(self.Button)
 end

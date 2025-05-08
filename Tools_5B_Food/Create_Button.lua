@@ -1,8 +1,9 @@
 
-
 local function Save()
-    return WoWTools_FoodMixin.Save
+    return WoWToolsSave['Tools_Foods']
 end
+
+
 local CheckFrame
 local Buttons={}
 
@@ -118,7 +119,7 @@ end
 
 
 local function Create_Button(index)
-    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_FoodMixin.UseButton, {
+    local btn= WoWTools_ButtonMixin:Cbtn(WoWTools_FoodMixin.Button, {
         setID=index,
         name= 'WoWToolsFoodListButton'..index,
         isType2=true,
@@ -165,7 +166,7 @@ local function Create_Button(index)
 
     function btn:set_point()
         self:ClearAllPoints()
-        self:SetPoint('RIGHT', Buttons[self:GetID()-1] or WoWTools_FoodMixin.UseButton, 'LEFT')
+        self:SetPoint('RIGHT', Buttons[self:GetID()-1] or WoWTools_FoodMixin.Button, 'LEFT')
     end
     table.insert(Buttons, btn)--添加
 
@@ -219,7 +220,7 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
 
     items={}
     for itemID in pairs(Save().addItems) do
-        if WoWTools_FoodMixin.UseButton.itemID~=itemID and (Save().addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
+        if WoWTools_FoodMixin.Button.itemID~=itemID and (Save().addItemsShowAll or C_Item.GetItemCount(itemID, false, true, true, false)>0) then
             table.insert(items, itemID)
         end
     end
@@ -248,11 +249,11 @@ function WoWTools_FoodMixin:Check_Items(isPrint)
         local btn= Buttons[i]
         if btn then
             btn:ClearAllPoints()
-            btn:SetPoint('BOTTOM', Buttons[i-Save().numLine] or WoWTools_FoodMixin.UseButton, 'TOP')
-            self.UseButton.Background:SetPoint('TOP', btn, 1, 1)
+            btn:SetPoint('BOTTOM', Buttons[i-Save().numLine] or WoWTools_FoodMixin.Button, 'TOP')
+            self.Button.Background:SetPoint('TOP', btn, 1, 1)
         end
     end
-    self.UseButton.Background:SetPoint('LEFT', Buttons[Save().numLine-1] or Buttons[index-1] or self.UseButton, -1, -1)
+    self.Button.Background:SetPoint('LEFT', Buttons[Save().numLine-1] or Buttons[index-1] or self.Button, -1, -1)
 
 
     for i= index , #Buttons do
@@ -311,13 +312,14 @@ local function Init()
     end)
 
     WoWTools_FoodMixin.CheckFrame= CheckFrame
+    Init=function()end
 end
 
 
 
 
 function WoWTools_FoodMixin:Set_Button_Function(btn)
-    Set_Button_Function(self.UseButton)
+    Set_Button_Function(btn)
 end
 
 function WoWTools_FoodMixin:Init_Check()

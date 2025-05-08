@@ -3,7 +3,7 @@ if WoWTools_DataMixin.Player.Class~='MAGE' then
     return
 end
 
-local Tab
+local Tab={}
 if WoWTools_DataMixin.Player.Faction=='Horde' then--部落
     Tab={
         {spell=446540, spell2=446534, name='多恩诺嘉尔', luce=true},
@@ -48,20 +48,30 @@ else
     return
 end
 
-local addName
-local Save={
+for _, tab in pairs(Tab) do
+    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
+    WoWTools_Mixin:Load({id=tab.spell2, type='spell'})
+end
+
+local P_Save={
     isLeft=true,
     showText=true,
     --disabled
 }
 
-local Buttons
-
-
-for _, tab in pairs(Tab) do
-    WoWTools_Mixin:Load({id=tab.spell, type='spell'})
-    WoWTools_Mixin:Load({id=tab.spell2, type='spell'})
+local function Save()
+    return WoWToolsSave['Tools_MagePortal']
 end
+
+local Buttons
+local addName
+
+
+
+
+
+
+
 
 
 local function Get_Spell_Label(spellID, text)
@@ -79,12 +89,12 @@ end
 
 
 local function Set_Button_Label(btn)
-    if Save.showText then
+    if Save().showText then
         if not btn.text then
             btn.text=WoWTools_LabelMixin:Create(btn, {color= not btn.luce})
         end
         btn.text:ClearAllPoints(0)
-        if Save.isLeft then
+        if Save().isLeft then
             btn.text:SetPoint('RIGHT', btn, 'LEFT')
         else
             btn.text:SetPoint('LEFT', btn, 'RIGHT')
@@ -112,9 +122,9 @@ local function Init_Options(category, layout)
         category= category,
         name= '|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '启用' or ENABLE)..'|r',
         tooltip= addName,
-        GetValue= function() return not Save.disabled end,
+        GetValue= function() return not Save().disabled end,
         SetValue= function()
-            Save.disabled= not Save.disabled and true or nil
+            Save().disabled= not Save().disabled and true or nil
         end
     })
 
@@ -122,9 +132,9 @@ local function Init_Options(category, layout)
         category= category,
         name= '|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '位置: 放左边' or (CHOOSE_LOCATION..': '..HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT ))..'|r',
         tooltip= addName,
-        GetValue= function() return Save.isLeft end,
+        GetValue= function() return Save().isLeft end,
         SetValue= function()
-            Save.isLeft= not Save.isLeft and true or nil
+            Save().isLeft= not Save().isLeft and true or nil
             WoWTools_ToolsMixin:RestAllPoint()--重置所有按钮位置
             Set_Button_All_Label()
         end
@@ -134,9 +144,9 @@ local function Init_Options(category, layout)
         category= category,
         name= '|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '显示名称' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, NAME))..'|r',
         tooltip= addName,
-        GetValue= function() return Save.showText end,
+        GetValue= function() return Save().showText end,
         SetValue= function()
-            Save.showText= not Save.showText and true or nil
+            Save().showText= not Save().showText and true or nil
             Set_Button_All_Label()
         end
     }, initializer)
@@ -162,7 +172,7 @@ local function Init()
             name='MagePortal_Spell_'..tab.spell,
             tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(WoWTools_TextMixin:CN(name, {spellID=tab.spell, isName=true}) or tab.spell),
             isLeftOnlyLine=function()
-                return Save.isLeft
+                return Save().isLeft
             end,
             disabledOptions=true,
         })
@@ -216,9 +226,9 @@ local function Init()
                 return done
             end
 
-            --[[if Save.showText then
+            --[[if Save().showText then
                 btn.text=WoWTools_LabelMixin:Create(btn, {color= not tab.luce})
-                if Save.isLeft then
+                if Save().isLeft then
                     btn.text:SetPoint('RIGHT', btn, 'LEFT')
                 else
                     btn.text:SetPoint('LEFT', btn, 'RIGHT')
@@ -324,7 +334,7 @@ local function Init()
         end
     end
 
-    Tab=nil
+    Tab={}
 end
 
 
@@ -341,18 +351,17 @@ end
 --###########
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGOUT")
+panel:RegisterEvent("LOADING_SCREEN_DISABLED")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            Save= WoWToolsSave['Tools_MagePortal'] or Save
+            WoWToolsSave['Tools_MagePortal']= WoWToolsSave['Tools_MagePortal'] or P_Save
 
-            if not Save.disabled and  WoWTools_ToolsMixin.Button then
+            if not Save().disabled and  WoWTools_ToolsMixin.Button then
                 addName= '|T626001:0|t|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
-                Init()
             else
-                Tab=nil
+                Tab={}
             end
             self:UnregisterEvent('ADDON_LOADED')
 
@@ -360,16 +369,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Tools_MagePortal']=Save
-        end
-
-    elseif event=='PLAYER_REGEN_ENABLED' then
-        if self.combat then
-            self.combat=nil
-            Init()
-        end
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        Init()
     end
 end)

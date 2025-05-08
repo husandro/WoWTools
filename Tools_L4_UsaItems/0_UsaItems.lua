@@ -1,3 +1,5 @@
+WoWTools_UseItemsMixin={}
+
 local P_Tabs={
     item={
         --156833,--[凯蒂的印哨]
@@ -53,7 +55,7 @@ local P_Tabs={
     },
 }
 
-WoWTools_UseItemsMixin={}
+
 
 
 function WoWTools_UseItemsMixin:Get_P_Tabs()
@@ -73,14 +75,6 @@ end
 
 
 
-local function Init()
-    WoWTools_UseItemsMixin:Init_All_Buttons()
-    WoWTools_UseItemsMixin:Init_Button()
-    WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
-
-    Init=function()end
-end
-
 
 
 
@@ -88,7 +82,8 @@ end
 --加载保存数据
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGIN')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -118,13 +113,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
             WoWTools_UseItemsMixin:Init_UI_Toy()
+            if C_AddOns:IsAddOnLoaded('Blizzard_PlayerSpells') then
+                self:UnregisterEvent(event)
+            end
 
         elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--法术书
             WoWTools_UseItemsMixin:Init_PlayerSpells()
+            if C_AddOns:IsAddOnLoaded('Blizzard_Collections') then
+                self:UnregisterEvent(event)
+            end
+
         end
 
-    elseif event=='PLAYER_LOGIN' then
-        Init()--初始
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        WoWTools_UseItemsMixin:Init_All_Buttons()
+        WoWTools_UseItemsMixin:Init_Button()
+        WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单
         self:UnregisterEvent(event)
     end
 end)

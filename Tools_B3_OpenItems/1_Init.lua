@@ -2,7 +2,7 @@
 
 WoWTools_OpenItemMixin={}
 
-local Save={
+local P_Save={
     use={--定义,使用物品, [ID]=数量(或组合数量)
         [190198]=5,
         [201791]=1,--龙类驯服手册》
@@ -159,13 +159,6 @@ local Save={
 
 
 
-local addName
-
---local useText, noText
-
-
-
-
 if WoWTools_DataMixin.Player.Class=='ROGUE' then
     WoWTools_Mixin:Load({id=1804, type='spell'})--开锁 Pick Lock
 end
@@ -188,10 +181,11 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or Save
+            WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or P_Save
 
             WoWTools_OpenItemMixin.addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_DataMixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
 

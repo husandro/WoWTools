@@ -19,11 +19,6 @@ local P_Save={
     lockedToy=nil,
 }
 
-local ToyButton
-local addName
-
-
-
 
 
 
@@ -37,7 +32,7 @@ local addName
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGIN')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -48,20 +43,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWToolsSave['Tools_Hearthstone'].items= WoWTools_HearthstoneMixin:Get_P_Items()
             end
 
-            addName='|A:delves-bountiful:0:0|a'..(WoWTools_DataMixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)
+            WoWTools_HearthstoneMixin.addName='|A:delves-bountiful:0:0|a'..(WoWTools_DataMixin.onlyChinese and '炉石' or TUTORIAL_TITLE31)
 
-            ToyButton= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_HearthstoneMixin.ToyButton= WoWTools_ToolsMixin:CreateButton({
                 name='Hearthstone',
-                tooltip=addName,
+                tooltip= WoWTools_HearthstoneMixin.addName,
                 --isMenu=true,
             })
 
-            WoWTools_HearthstoneMixin.ToyButton= ToyButton
 
-            if not ToyButton then
+            if not  WoWTools_HearthstoneMixin.ToyButton then
                 self:UnregisterAllEvents()
             else
-                WoWTools_HearthstoneMixin.addName= addName
 
                 for itemID, _ in pairs(WoWToolsSave['Tools_Hearthstone'].items) do
                     WoWTools_Mixin:Load({id=itemID, type='item'})
@@ -78,7 +71,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_LOGIN' then
+    elseif event=='LOADING_SCREEN_DISABLED' then
         WoWTools_HearthstoneMixin:Init_Button()
         self:UnregisterEvent(event)
     end
