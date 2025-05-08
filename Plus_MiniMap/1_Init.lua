@@ -38,11 +38,18 @@ local P_Save={
 
     Icons={--收集图标
         noAdd={--过滤
-            ['WoWTools']=true,
             ['BugSack']=true,
         },
-        hideAdd={},--隐藏
+        hideAdd={--隐藏
+            ['WoWTools']=true,
+        },
         userAdd={},--自定义
+        numLine=1,
+        hideInMove=true,
+        hideInCombat=true,
+        isEnterShow=true,
+        alphaBG=0,
+        bgAlpha=0.75,
     },
 }
 

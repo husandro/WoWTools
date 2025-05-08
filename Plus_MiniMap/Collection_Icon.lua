@@ -136,7 +136,7 @@ local function Rest_Ueser_Button(btn)
     if not data then
         return
     end
-    
+
     btn:ClearAllPoints()
     btn:SetParent(data.parent)
 
@@ -185,7 +185,7 @@ local function Init_Buttons()
     local noAdd= Save().Icons.noAdd
     local hideAdd= Save().Icons.hideAdd
     local x= Save().Icons.pointX or 0
-    local numLine= Save().Icons.numLine or 4
+    local numLine= Save().Icons.numLine or 1
 
     local tab={}
 
@@ -582,7 +582,7 @@ local function Init_UserAdd_Menu(_, root)
         ..'\n\n'..(WoWTools_DataMixin.onlyChinese and '名称' or NAME)..': ',
         nil,
         {
-          
+
             SetValue= function(s)
                 local t= s.editBox:GetText()
                 if t:gsub(' ', '')~='' then
@@ -761,16 +761,9 @@ local function Init_Menu(self, root)
     end)
     sub:SetEnabled(not WoWTools_FrameMixin:IsLocked(self))
 
---刷新
-    sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
-    function()
-        Init_Buttons()
-        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
-        return MenuResponse.Open
-    end)
 
-    sub:CreateDivider()
+
+    --sub:CreateDivider()
 --显示
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '显示' or SHOW)
     sub:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
@@ -782,14 +775,21 @@ local function Init_Menu(self, root)
 --隐藏
     sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)
 --进入战斗，隐藏
-    sub:CreateCheckbox('|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '进入战斗' or ENTERING_COMBAT), function()
+    sub:CreateCheckbox(
+        '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '进入战斗' or ENTERING_COMBAT),
+    function()
         return Save().Icons.hideInCombat
     end, function()
         Save().Icons.hideInCombat = not Save().Icons.hideInCombat and true or nil
         self:set_event()
     end)
+
 --移动时，隐藏
-    sub:CreateCheckbox('|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE), function()
+    sub:CreateCheckbox(
+        '|A:transmog-nav-slot-feet:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE),
+    function()
         return Save().Icons.hideInMove
     end, function()
         Save().Icons.hideInMove = not Save().Icons.hideInMove and true or nil
@@ -799,66 +799,9 @@ local function Init_Menu(self, root)
 
 
 
-
-
-
-
-    root:CreateDivider()
---过滤
-    num=0
-    for name in pairs(Save().Icons.noAdd) do
-        if Get_Button(name) then
-            num=num+1
-        end
-    end
-    sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)..' |cnRED_FONT_COLOR:#|r'..num,
-    function()
-        return MenuResponse.Open
-    end)
-    Init_noAdd_Menu(self, sub)
-
-
---隐藏
-    num=0
-    for name in pairs(Save().Icons.hideAdd) do
-        if Get_Button(name) then
-           num=num+1
-        end
-    end
-    sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..' |cff626262#|r'..num,
-    function()
-        return MenuResponse.Open
-    end)
-    Init_hideAdd_Menu(self, sub)
-
-
---自定义，添加，列表
-    num= 0
-    for name, value in pairs(Save().Icons.userAdd) do
-        if value and _G[name] and _G[name].GetFrameStrata then
-            num= num+1
-        end
-    end
-    sub= root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..' |cff00ccff#|r'..num,
-    function()
-        return MenuResponse.Open
-    end)
-    Init_UserAdd_Menu(self, sub)
-
-
-
-    root:CreateDivider()
---设置，按钮
-    sub=root:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '按钮' or 'Button',
-    function()
-        return MenuResponse.Open
-    end)
-
 --Border 透明度
+
+    sub:CreateSpacer()
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -908,15 +851,15 @@ local function Init_Menu(self, root)
     })
     sub:CreateSpacer()
 
+--数量
+    sub:CreateSpacer()
     num=0
     for _ in pairs(Get_All_Objects()) do
         num=num+1
     end
---数量
-    sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return Save().Icons.numLine or 4
+            return Save().Icons.numLine or 1
         end, setValue=function(value)
             Save().Icons.numLine=value
             self:settings()
@@ -943,12 +886,88 @@ local function Init_Menu(self, root)
 
 
 
+--刷新
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH,
+    function()
+        Init_Buttons()
+        print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '刷新' or REFRESH, WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)
+        return MenuResponse.Open
+    end)
+
+
+    root:CreateDivider()
+--过滤
+    num=0
+    for name in pairs(Save().Icons.noAdd) do
+        if Get_Button(name) then
+            num=num+1
+        end
+    end
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '过滤' or AUCTION_HOUSE_SEARCH_BAR_FILTERS_LABEL)..' |cnRED_FONT_COLOR:#|r'..num,
+    function()
+        return MenuResponse.Open
+    end)
+    Init_noAdd_Menu(self, sub)
+
+
+--隐藏
+    num=0
+    for name in pairs(Save().Icons.hideAdd) do
+        if Get_Button(name) then
+           num=num+1
+        end
+    end
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..' |cff626262#|r'..num,
+    function()
+        return MenuResponse.Open
+    end)
+    Init_hideAdd_Menu(self, sub)
+
+
+--自定义，添加，列表
+    num= 0
+    for name, value in pairs(Save().Icons.userAdd) do
+        if value and _G[name] and _G[name].GetFrameStrata then
+            num= num+1
+        end
+    end
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..' |cff00ccff#|r'..num,
+    function()
+        return MenuResponse.Open
+    end)
+    Init_UserAdd_Menu(self, sub)
 
 
 
 
+--[[设置，按钮
+root:CreateDivider()
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '按钮' or 'Button',
+    function()
+        return MenuResponse.Open
+    end)
 
     sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
+]]
+
+
+
+
+
+
+
+    root:CreateDivider()
+--打开，选项
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
+        name=WoWTools_MinimapMixin.addName,
+        name2=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
+    })
+
 
 --显示背景
     sub2= WoWTools_MenuMixin:BgAplha(sub,
@@ -985,21 +1004,6 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
 
-
-
-
-
-
-
-
-
-
-    root:CreateDivider()
---打开，选项
-    sub=WoWTools_MenuMixin:OpenOptions(root, {
-        name=WoWTools_MinimapMixin.addName,
-        name2=WoWTools_DataMixin.Icon.icon2..(WoWTools_DataMixin.onlyChinese and '收集图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WEEKLY_REWARDS_GET_CONCESSION, EMBLEM_SYMBOL))
-    })
 --/reload
     WoWTools_MenuMixin:Reload(sub, false)
 end
@@ -1134,18 +1138,16 @@ local function Init()
         GameTooltip:Hide()
     end)
     Button:SetScript('OnEnter', function(self)
-        if Save().isEnterShow and not WoWTools_FrameMixin:IsLocked(self) then
+        if Save().Icons.isEnterShow then
             Save().Icons.hideFrame=false
             self:set_frame()
         end
         self:set_tooltip()
     end)
 
-    Button:SetScript('OnEvent', function(self, event)
-        if not WoWTools_FrameMixin:IsLocked(self) then
-            Save().Icons.hideFrame=true
-            self:set_frame()
-        end
+    Button:SetScript('OnEvent', function(self)
+        Save().Icons.hideFrame=true
+        self:set_frame()
     end)
 
     function Button:set_frame()
@@ -1161,13 +1163,11 @@ local function Init()
         self:UnregisterAllEvents()
 --战斗
         if Save().Icons.hideInCombat then
-            --self:RegisterEvent('PLAYER_REGEN_ENABLED')
             self:RegisterEvent('PLAYER_REGEN_DISABLED')
         end
 --移动
         if Save().Icons.hideInMove then
             self:RegisterEvent("PLAYER_STARTED_MOVING")
-            --self:RegisterEvent("PLAYER_STOPPED_MOVING")
         end
     end
 
@@ -1225,7 +1225,8 @@ local function Init()
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         else
-            self:SetPoint('CENTER', 100, 100)
+            self:SetPoint('BOTTOMLEFT', Minimap, 8, 15)
+            --self:SetPoint('CENTER', 100, 100)
         end
     end
 
