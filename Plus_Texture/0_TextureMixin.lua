@@ -34,7 +34,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
         point(frame.Background)
     end
 
-    --frame.Background:SetAtlas('ChallengeMode-guild-background')
+    --*frame.Background:SetAtlas('ChallengeMode-guild-background')
     --frame.Background:SetAlpha(alpha)
     frame.Background:SetColorTexture(0,0,0)
     frame.Background:SetAlpha(alpha)

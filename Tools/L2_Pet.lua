@@ -1,6 +1,6 @@
 
 local addName
-local Save={
+local P_Save={
     speciesID=2780,
 
     Pets={
@@ -10,6 +10,10 @@ local Save={
 
 
 local button
+local function Save()
+    return WoWToolsSave['Tools_Daisy']
+end
+
 local PetsList={
     [2780]= {
         cn='黛西',
@@ -32,14 +36,14 @@ end
 local function Init_PetJournal_InitPetButton(frame, elementData)
 	local index = elementData.index;
 	local _, speciesID, _, _, _, _, _, name = C_PetJournal.GetPetInfoByIndex(index)
-	
+
 
     if not frame.sumButton then
         frame.sumButton=  CreateFrame("CheckButton", nil, frame, "ChatConfigCheckButtonTemplate")
         frame.sumButton:SetPoint('RIGHT')
 
         function frame.sumButton:set_alpha()
-            self:SetAlpha(Save.Pets[self.speciesID] and 1 or 0)
+            self:SetAlpha(Save().Pets[self.speciesID] and 1 or 0)
         end
 
         frame.sumButton:SetScript('OnLeave', function(self) self:set_alpha() GameTooltip:Hide() end)
@@ -52,7 +56,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
         end)
 
         frame.sumButton:SetScript('OnClick', function(self)
-            Save.Pets[self.speciesID]=not Save.Pets[self.speciesID] and true or nil
+            Save().Pets[self.speciesID]=not Save().Pets[self.speciesID] and true or nil
         end)
 
         frame:HookScript('OnLeave', function(self) self.sumButton:set_alpha() end)
@@ -62,7 +66,7 @@ local function Init_PetJournal_InitPetButton(frame, elementData)
     frame.sumButton:set_alpha()
     frame.sumButton.speciesID= speciesID
     frame.sumButton.name= name
-    frame.sumButton:SetChecked(Save.Pets[speciesID])
+    frame.sumButton:SetChecked(Save().Pets[speciesID])
     frame.sumButton:SetShown(speciesID and speciesID>0)
 end
 
@@ -90,24 +94,24 @@ local function Init_Menu(self, root)
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '自动召唤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SUMMONS),
     function()
-        return Save.autoSummon
+        return Save().autoSummon
     end, function()
-        Save.autoSummon= not Save.autoSummon and true or nil
+        Save().autoSummon= not Save().autoSummon and true or nil
         self:init_pets_data()
         self:set_auto_summon_tips()
     end)
     root:CreateDivider()
 
 --列表
-    for speciesID in pairs(Save.Pets) do
+    for speciesID in pairs(Save().Pets) do
         local speciesName, speciesIcon= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
         sub=root:CreateRadio(
             (C_PetJournal.GetNumCollectedInfo(speciesID)==0 and '|cff9e9e9e' or '')
             ..('|T'..(speciesIcon or 0)..':0|t'..(speciesName or speciesID)),
         function(data)
-            return data.speciesID==Save.speciesID
+            return data.speciesID==Save().speciesID
         end, function(data)
-            Save.speciesID=data.speciesID
+            Save().speciesID=data.speciesID
             self:init_pets_data()
             return MenuResponse.Refresh
         end, {speciesID=speciesID})
@@ -121,7 +125,7 @@ local function Init_Menu(self, root)
         root:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save.Pets={[2780]=true}
+            Save().Pets={[2780]=true}
             if PetJournal_UpdatePetList then
                 WoWTools_Mixin:Call(PetJournal_UpdatePetList)
             end
@@ -172,7 +176,7 @@ local function Init()
                         auraID= info.auraID,
                         auraName= info.auraID and C_Spell.GetSpellName(info.auraID) or nil,
                     }
-                    if Save.speciesID== speciesID then
+                    if Save().speciesID== speciesID then
                         self.texture:SetTexture(speciesIcon or 0)
                     end
                     self.NumPet= self.NumPet+1
@@ -185,8 +189,8 @@ local function Init()
         self.Pets={}
         self.NumPet=0
 
-        if not PetsList[Save.speciesID] then
-            self:set_pets_date({[Save.speciesID]={}})
+        if not PetsList[Save().speciesID] then
+            self:set_pets_date({[Save().speciesID]={}})
         end
         self:set_pets_date(PetsList)
 
@@ -196,11 +200,11 @@ local function Init()
     end
 
     function button:get_speciesID_data()
-        return self.Pets[Save.speciesID] or {}
+        return self.Pets[Save().speciesID] or {}
     end
 
     function button:set_auto_summon_tips()
-        if Save.autoSummon then
+        if Save().autoSummon then
             self:LockHighlight()
             --self.border:SetAtlas('bag-border')
         else
@@ -234,7 +238,7 @@ local function Init()
         if not find and info.auraName and AuraUtil.FindAuraByName(info.auraName, 'player', 'HELPFUL') then
             find=true
         end
-        if Save.autoSummon and not find and self:can_summon() then
+        if Save().autoSummon and not find and self:can_summon() then
             C_PetJournal.SummonPetByGUID(info.petID)
         end
     end
@@ -263,7 +267,7 @@ local function Init()
         if info.emote then
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
         end
-        if Save.autoSummon then
+        if Save().autoSummon then
             if info.auraID then
                 self:RegisterUnitEvent('UNIT_AURA', 'player')
             end
@@ -287,9 +291,7 @@ local function Init()
             end
 
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+            MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
 
@@ -368,22 +370,14 @@ end
 --###########
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            if WoWToolsSave['DaisyToolsTools'] then
-                Save= WoWToolsSave['DaisyToolsTools']
-                Save.Pets= Save.Pets or {[2780]=true}
-                Save.speciesID= Save.speciesID or 2780
-                WoWToolsSave['DaisyToolsTools']=nil
+            WoWToolsSave['Tools_Daisy']= WoWToolsSave['Tools_Daisy'] or P_Save
 
-            elseif WoWToolsSave['Tools_Daisy'] then
-                Save= WoWToolsSave['Tools_Daisy']
-            end
-
-            Save.speciesID= Save.speciesID or 2780
+            Save().speciesID= Save().speciesID or 2780
 
             addName= '|T3150958:0|t'..(WoWTools_DataMixin.onlyChinese and '黛西' or 'Daisy')
 
@@ -393,23 +387,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if button then
-                Init()
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
-                    hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)        
-                    self:UnregisterEvent('ADDON_LOADED')
+                    hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
+                    self:UnregisterEvent(event)
                 end
             else
-                self:UnregisterEvent('ADDON_LOADED')
+                self:UnregisterAllEvents()
             end
 
-        elseif arg1=='Blizzard_Collections' then
+        elseif arg1=='Blizzard_Collections' and WoWToolsSave then
             hooksecurefunc('PetJournal_InitPetButton', Init_PetJournal_InitPetButton)
+            self:UnregisterEvent(event)
         end
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Tools_Daisy']=Save
-        end
-
+    elseif event == "LOADING_SCREEN_DISABLED" then
+        Init()
+        self:UnregisterEvent(event)
     end
 end)

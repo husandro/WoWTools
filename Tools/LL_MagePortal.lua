@@ -106,10 +106,25 @@ local function Set_Button_Label(btn)
 end
 
 local function Set_Button_All_Label()
-    for _, btn in pairs( Buttons) do
+    for _, btn in pairs(Buttons) do
         Set_Button_Label(btn)
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -157,139 +172,6 @@ end
 
 
 
---####
---初始
---####
-local function Init()
-    Buttons={}
-
-    local name, icon, btn
-    for _, tab in pairs(Tab) do
-        name= C_Spell.GetSpellName(tab.spell)
-        icon= C_Spell.GetSpellTexture(tab.spell)
-
-        btn=WoWTools_ToolsMixin:CreateButton({
-            name='MagePortal_Spell_'..tab.spell,
-            tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(WoWTools_TextMixin:CN(name, {spellID=tab.spell, isName=true}) or tab.spell),
-            isLeftOnlyLine=function()
-                return Save().isLeft
-            end,
-            disabledOptions=true,
-        })
-
-        if btn then
-            btn.spellID= tab.spell
-            btn.spellID2= tab.spell2
-            btn.luce= tab.luce
-            btn.name1= WoWTools_DataMixin.onlyChinese and tab.name
-
-            function btn:set_cool()
-                if self:IsVisible() then
-                    WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
-                else
-                    WoWTools_CooldownMixin:SetFrame(self)
-                end
-            end
-
-            function btn:set_alpha()
-                self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.3)
-            end
-
-            function btn:settings()
-                local name1= C_Spell.GetSpellName(self.spellID)
-                local icon1= C_Spell.GetSpellTexture(self.spellID)
-                local done=false
-                if name1 and icon1 then
-                    self:SetAttribute('type', 'spell')--设置属性
-                    self:SetAttribute('spell', name1)
-                    if icon1 then
-                        self.texture:SetTexture(icon1)
-                    end
-                    self.name1= self.name1 or Get_Spell_Label(self.spellID, name1)
-                    done=true
-                end
-
-                if self.spellID2 then
-                    local name2= C_Spell.GetSpellName(self.spellID2)
-                    local icon2= C_Spell.GetSpellTexture(self.spellID2)
-                    if name2 and icon2 then
-                        self:SetAttribute('type2', 'spell')
-                        self:SetAttribute('spell2', name2)
-                        self.texture2:SetTexture(icon2)
-                        self.name2= self.name2 or name2
-                        done=true
-                    else
-                        done=false
-                    end
-                end
-                Set_Button_Label(self)
-                return done
-            end
-
-            --[[if Save().showText then
-                btn.text=WoWTools_LabelMixin:Create(btn, {color= not tab.luce})
-                if Save().isLeft then
-                    btn.text:SetPoint('RIGHT', btn, 'LEFT')
-                else
-                    btn.text:SetPoint('LEFT', btn, 'RIGHT')
-                end
-                if WoWTools_DataMixin.onlyChinese then
-                    btn.text:SetText(tab.name)
-                end
-            end]]
-
-            if tab.luce then
-                btn.border:SetAtlas('bag-border')--设置高亮
-            end
-            btn.luce= tab.luce
-
-
-            if btn.spellID2 then
-                btn.texture2= btn:CreateTexture(nil,'OVERLAY')
-                btn.texture2:SetPoint('TOPRIGHT',-6,-6)
-                btn.texture2:SetSize(10, 10)
-                btn.texture2:AddMaskTexture(btn.IconMask)
-                btn:SetScript('OnShow', function(self)
-                    self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                    self:set_cool()
-                    self:set_alpha()
-                end)
-                btn:SetScript('OnHide', function(self)
-                    self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
-                    self:set_cool()
-                end)
-                btn:set_cool()
-                if btn:IsVisible() then
-                    btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
-                end
-
-            else
-                btn:SetScript('OnShow', function(self)
-                    self:set_alpha()
-                end)
-            end
-
-            btn:SetScript("OnEvent", function(self, event, arg1)
-                if event=='SPELL_UPDATE_COOLDOWN' then
-                    WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
-
-                elseif event=='SPELL_DATA_LOAD_RESULT' then
-                    if (arg1==self.spellID or arg1==self.spellID2) then
-                        if self:CanChangeAttribute() then
-                            if self:settings() then
-                                self:UnregisterEvent('SPELL_DATA_LOAD_RESULT')
-                            end
-                        else
-                            self:RegisterEvent('PLAYER_REGEN_ENABLED')
-                        end
-                    end
-
-                elseif event=='PLAYER_REGEN_ENABLED' then
-                    if self:settings() then
-                        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
-                    end
-                end
-            end)
 
 
 
@@ -297,45 +179,186 @@ local function Init()
 
 
 
-            btn:SetScript('OnLeave', function(self)
-                GameTooltip:Hide()
-                self:set_alpha()
-            end)
-            btn:SetScript('OnEnter', function(self)
-                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                GameTooltip:ClearLines()
-                GameTooltip:SetSpellByID(self.spellID)
-                if not IsSpellKnownOrOverridesKnown(self.spellID) then
-                    GameTooltip:AddLine(format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
-                end
-                if self.spellID2 then
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(
-                        '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
-                        ..(WoWTools_TextMixin:CN(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
-                        ..(WoWTools_CooldownMixin:GetText(self.spellID2, nil) or ''),
-                        format('%s%s',
-                            IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
-                            WoWTools_DataMixin.Icon.right)
-                        )
-                end
-                GameTooltip:Show()
-                self:set_alpha()
-                self:set_cool()
-            end)
 
-            if not btn:settings() then
-                btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
-            end
-            C_Timer.After(2, function()
-                btn:set_alpha()
-            end)
-            table.insert(Buttons, btn)
+
+local function Init_Button(tab)
+    local name= C_Spell.GetSpellName(tab.spell)
+    local icon= C_Spell.GetSpellTexture(tab.spell)
+
+    local btn=WoWTools_ToolsMixin:CreateButton({
+        name='MagePortal_Spell_'..tab.spell,
+        tooltip='|T626001:0|t'..('|T'..(icon or 0)..':0|t')..(WoWTools_TextMixin:CN(name, {spellID=tab.spell, isName=true}) or tab.spell),
+        isLeftOnlyLine=function()
+            return Save().isLeft
+        end,
+        disabledOptions=true,
+    })
+
+    if not btn then
+        return
+    end
+
+    btn.spellID= tab.spell
+    btn.spellID2= tab.spell2
+    btn.luce= tab.luce
+    btn.name1= WoWTools_DataMixin.onlyChinese and tab.name
+
+    function btn:set_cool()
+        if self:IsVisible() then
+            WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
+        else
+            WoWTools_CooldownMixin:SetFrame(self)
         end
     end
 
-    Tab={}
+    function btn:set_alpha()
+        self:SetAlpha((GameTooltip:IsOwned(self) or IsSpellKnownOrOverridesKnown(self.spellID)) and 1 or 0.3)
+    end
+
+    function btn:settings()
+        local name1= C_Spell.GetSpellName(self.spellID)
+        local icon1= C_Spell.GetSpellTexture(self.spellID)
+        local done=false
+        if name1 and icon1 then
+            self:SetAttribute('type', 'spell')--设置属性
+            self:SetAttribute('spell', name1)
+            if icon1 then
+                self.texture:SetTexture(icon1)
+            end
+            self.name1= self.name1 or Get_Spell_Label(self.spellID, name1)
+            done=true
+        end
+
+        if self.spellID2 then
+            local name2= C_Spell.GetSpellName(self.spellID2)
+            local icon2= C_Spell.GetSpellTexture(self.spellID2)
+            if name2 and icon2 then
+                self:SetAttribute('type2', 'spell')
+                self:SetAttribute('spell2', name2)
+                self.texture2:SetTexture(icon2)
+                self.name2= self.name2 or name2
+                done=true
+            else
+                done=false
+            end
+        end
+        Set_Button_Label(self)
+        return done
+    end
+
+    --[[if Save().showText then
+        btn.text=WoWTools_LabelMixin:Create(btn, {color= not tab.luce})
+        if Save().isLeft then
+            btn.text:SetPoint('RIGHT', btn, 'LEFT')
+        else
+            btn.text:SetPoint('LEFT', btn, 'RIGHT')
+        end
+        if WoWTools_DataMixin.onlyChinese then
+            btn.text:SetText(tab.name)
+        end
+    end]]
+
+    if tab.luce then
+        btn.border:SetAtlas('bag-border')--设置高亮
+    end
+    btn.luce= tab.luce
+
+
+    if btn.spellID2 then
+        btn.texture2= btn:CreateTexture(nil,'OVERLAY')
+        btn.texture2:SetPoint('TOPRIGHT',-6,-6)
+        btn.texture2:SetSize(10, 10)
+        btn.texture2:AddMaskTexture(btn.IconMask)
+        btn:SetScript('OnShow', function(self)
+            self:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+            self:set_cool()
+            self:set_alpha()
+        end)
+        btn:SetScript('OnHide', function(self)
+            self:UnregisterEvent('SPELL_UPDATE_COOLDOWN')
+            self:set_cool()
+        end)
+        btn:set_cool()
+        if btn:IsVisible() then
+            btn:RegisterEvent('SPELL_UPDATE_COOLDOWN')
+        end
+
+    else
+        btn:SetScript('OnShow', function(self)
+            self:set_alpha()
+        end)
+    end
+
+    btn:SetScript("OnEvent", function(self, event, arg1)
+        if event=='SPELL_UPDATE_COOLDOWN' then
+            WoWTools_CooldownMixin:SetFrame(self, {spellID=self.spellID2})--设置冷却
+
+        elseif event=='SPELL_DATA_LOAD_RESULT' then
+            if (arg1==self.spellID or arg1==self.spellID2) then
+                if self:CanChangeAttribute() then
+                    if self:settings() then
+                        self:UnregisterEvent('SPELL_DATA_LOAD_RESULT')
+                    end
+                else
+                    self:RegisterEvent('PLAYER_REGEN_ENABLED')
+                end
+            end
+
+        elseif event=='PLAYER_REGEN_ENABLED' then
+            if self:settings() then
+                self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+            end
+        end
+    end)
+
+
+
+
+
+
+
+    btn:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:set_alpha()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:SetSpellByID(self.spellID)
+        if not IsSpellKnownOrOverridesKnown(self.spellID) then
+            GameTooltip:AddLine(format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB))
+        end
+        if self.spellID2 then
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(
+                '|T'..(C_Spell.GetSpellTexture(self.spellID2) or 0)..':0|t'
+                ..(WoWTools_TextMixin:CN(C_Spell.GetSpellLink(self.spellID2), {spellID=self.spellID2, isName=true}) or ('spellID'..self.spellID2))
+                ..(WoWTools_CooldownMixin:GetText(self.spellID2, nil) or ''),
+                format('%s%s',
+                    IsSpellKnownOrOverridesKnown(self.spellID2) and '' or format('|cnRED_FONT_COLOR:%s|r',WoWTools_DataMixin.onlyChinese and '未学习' or TRADE_SKILLS_UNLEARNED_TAB),
+                    WoWTools_DataMixin.Icon.right)
+                )
+        end
+        GameTooltip:Show()
+        self:set_alpha()
+        self:set_cool()
+    end)
+
+    if not btn:settings() then
+        btn:RegisterEvent('SPELL_DATA_LOAD_RESULT')
+    end
+    C_Timer.After(2, function()
+        btn:set_alpha()
+    end)
+    table.insert(Buttons, btn)
 end
+
+
+
+
+
+
+
 
 
 
@@ -352,13 +375,14 @@ end
 local panel=CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("LOADING_SCREEN_DISABLED")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Tools_MagePortal']= WoWToolsSave['Tools_MagePortal'] or P_Save
 
-            if not Save().disabled and  WoWTools_ToolsMixin.Button then
+            if not Save().disabled and WoWTools_ToolsMixin.Button then
                 addName= '|T626001:0|t|cff3fc6ea'..(WoWTools_DataMixin.onlyChinese and '法师传送门' or format(UNITNAME_SUMMON_TITLE14, UnitClass('player'))..'|r')
             else
                 Tab={}
@@ -370,6 +394,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='LOADING_SCREEN_DISABLED' then
-        Init()
+        Buttons={}
+        for _, tab in pairs(Tab) do
+            Init_Button(tab)
+        end
+        Tab={}
+        self:UnregisterEvent(event)
     end
 end)

@@ -5670,7 +5670,9 @@
         "SettingsListElementInitializer",
         "SettingsPanelMixin",
         "LocaleUtil",
-        "Round"
+        "Round",
+        "RaidNotice_AddMessage",
+        "RaidWarningFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

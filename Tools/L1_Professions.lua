@@ -1,11 +1,13 @@
 
-local Save={
+local P_Save={
     fishing='BUTTON1',
     archaeology='F',
     --save_fishing=true,--启动时，设置KEY
     --save_archaeology=true--启动时，设置KEY
 }
-
+local function Save()
+    return WoWToolsSave['Tools_Professions']
+end
 
 local function Create_Button(index)
     local name, icon, _, _, _, _, skillLine = GetProfessionInfo(index)
@@ -166,7 +168,7 @@ local function Init_KeyButton_Menu(self, root)
     root:CreateDivider()
     sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '设置快捷键' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, SETTINGS_KEYBINDINGS_LABEL))
-        ..'|cnGREEN_FONT_COLOR:'..(Save[self.type] or ''),
+        ..'|cnGREEN_FONT_COLOR:'..(Save()[self.type] or ''),
     function()
         return WoWTools_KeyMixin:IsKeyValid(self)
     end, function()
@@ -180,9 +182,9 @@ local function Init_KeyButton_Menu(self, root)
     WoWTools_KeyMixin:SetMenu(self, sub,  {
         icon='|A:NPE_ArrowDown:0:0|a',
         name=WoWTools_TextMixin:CN(self.name),
-        key=Save[self.type],
+        key=Save()[self.type],
         GetKey=function(key)
-            Save[self.type]=key
+            Save()[self.type]=key
         end,
     })
 
@@ -190,9 +192,9 @@ local function Init_KeyButton_Menu(self, root)
     sub2=sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '保存' or SAVE,
     function()
-        return Save['save_'..self.type]
+        return Save()['save_'..self.type]
     end, function()
-        Save['save_'..self.type]= not Save['save_'..self.type] and true or nil
+        Save()['save_'..self.type]= not Save()['save_'..self.type] and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '登入：设置' or (LOG_IN..': '..SETTINGS))
@@ -307,11 +309,11 @@ local function Init_KeyButton(index, type)
 
     --设置KEY
     function button:GetKEY()
-        return Save[self.type] or (self.type=='fishing' and 'BUTTON1') or 'F'
+        return Save()[self.type] or (self.type=='fishing' and 'BUTTON1') or 'F'
     end
 
 --启动时，设置KEY
-    if Save['save_'..type] then
+    if Save()['save_'..type] then
        button:set_key(true)
     end
 end
@@ -329,6 +331,7 @@ end
 
 local function Init()
     local prof1, prof2, archaeology, fishing, cooking = GetProfessions()
+
     if prof1 and prof1>0 then
         Init_Professions(prof1)
     end
@@ -366,32 +369,34 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGOUT')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            Save= WoWToolsSave['Tools_Professions'] or Save
+            WoWToolsSave['Tools_Professions']= WoWToolsSave['Tools_Professions'] or P_Save
+
             if WoWTools_ToolsMixin.Button then
                 --Init()
-                C_Timer.After(2, function()
+                --[[C_Timer.After(2, function()
                     if UnitAffectingCombat('player') then
                         self:RegisterEvent('PLAYER_REGEN_ENABLED')
                     else
                        Init()
                     end
-                end)
+                end)]]
+                self:UnregisterEvent(event)
+            else
+                self:UnregisterAllEvents()
             end
-            self:UnregisterEvent('ADDON_LOADED')
         end
 
-    elseif event=='PLAYER_REGEN_ENABLED' then
+    --[[elseif event=='PLAYER_REGEN_ENABLED' then
         Init()
-        self:UnregisterEvent('PLAYER_REGEN_ENABLED')
+        self:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
 
-    elseif event == "PLAYER_LOGOUT" then
-        if not WoWTools_DataMixin.ClearAllSave then
-            WoWToolsSave['Tools_Professions']=Save
-        end
-
+    elseif event == "LOADING_SCREEN_DISABLED" then
+       Init()
+       self:UnregisterEvent(event)
     end
 end)

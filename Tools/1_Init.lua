@@ -499,6 +499,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -537,7 +538,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event == "PLAYER_LOGOUT" then
         if not WoWTools_DataMixin.ClearAllSave then
             Save().show= Button and Button.Frame:IsShown()
-            WoWToolsSave['WoWTools_ToolsButton']= Save()
         end
     end
 end)

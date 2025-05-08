@@ -6,7 +6,7 @@ end
 
 
 
-local function On_Enter(self)
+local function On_Enter(tootip)
     local expButton=ExpansionLandingPageMinimapButton
     if expButton and expButton.OnEnter and expButton.title then--Minimap.lua
         expButton:OnEnter()
@@ -18,13 +18,13 @@ local function On_Enter(self)
         if InCombatLockdown() then
             return
         end
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
+        --GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        --GameTooltip:ClearLines()
     end
-    GameTooltip:AddLine(' ')
-    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
-    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'), WoWTools_DataMixin.Icon.mid)
-    GameTooltip:Show()
+    --tootip:AddLine(' ')
+    tootip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.right)
+    tootip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '打开选项界面' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, OPTIONS), 'UI'), WoWTools_DataMixin.Icon.mid)
+   -- tootip:Show()
 end
 
 
@@ -63,9 +63,9 @@ local function Init_Icon()
     --if not libDBIcon:GetMinimapButton(name) then
     libDBIcon:Register(name, libDataBroker:NewDataObject('WoWTools', {
         OnClick=On_Click,--fun(displayFrame: Frame, buttonName: string)
-        OnEnter=On_Enter,--fun(displayFrame: Frame)
+        --OnEnter=On_Enter,--fun(displayFrame: Frame)
         OnLeave=GameTooltip_Hide,--fun(displayFrame: Frame)
-        OnTooltipShow=nil,--fun(tooltip: Frame)
+        OnTooltipShow=On_Enter,--fun(tooltip: Frame)
         icon='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga',--string
         iconB=nil,--number,
         iconCoords=nil,--table,
