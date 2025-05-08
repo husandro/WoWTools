@@ -107,9 +107,13 @@ end
 
 
 local function Set_User_Button(btn)
-    if not btn
-        or btn.WoWToolsIsLocked
-        or not btn.GetFrameStrata
+    if not btn then
+        return
+    elseif btn and btn.WoWToolsIsLocked then
+        return true
+    end
+    if
+        not btn.GetFrameStrata
         or WoWTools_FrameMixin:IsLocked(btn)
     then
         return
@@ -128,6 +132,7 @@ local function Set_User_Button(btn)
     btn:SetScript('OnDragStart', nil)
     btn:SetScript('OnDragStop', nil)
     btn:SetSize(31, 31)
+    return true
 end
 
 local function Rest_Ueser_Button(btn)
@@ -215,9 +220,7 @@ local function Init_Buttons()
 
     for name, value in pairs(Save().Icons.userAdd) do
         local btn= value and _G[name]
-        if btn and btn.GetFrameStrata and not WoWTools_FrameMixin:IsLocked(btn) then
-            Set_User_Button(btn)
-
+        if Set_User_Button(btn) then
             table.insert(tab, {
                 btn= btn,
                 name= btn.GetName and btn:GetName() or name
