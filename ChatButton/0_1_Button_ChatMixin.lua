@@ -117,16 +117,20 @@ function WoWTools_ChatMixin:Init()
         })
 
         ChatButton.IsMainButton=true
-
-        ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
+        Save().isShowBackground= nil
+        
+        WoWTools_TextureMixin:CreateBackground(ChatButton)
+        --[[ChatButton.Background= ChatButton:CreateTexture(nil, 'BACKGROUND')
         ChatButton.Background:SetPoint('BOTTOMLEFT', Buttons[1])
         ChatButton.Background:SetAtlas('ChallengeMode-guild-background')
-        --ChatButton.Background:SetAlpha(0.7)
-
+        --ChatButton.Background:SetAlpha(0.7)]]
+        
+        
         function ChatButton:set_backgroud()
             self.Background:SetPoint('BOTTOMLEFT', Buttons[1])
             self.Background:SetPoint('TOPRIGHT', Buttons[#Buttons])
-            self.Background:SetShown(Save().isShowBackground)
+            --self.Background:SetShown(Save().isShowBackground)
+            self.Background:SetAlpha(Save().bgAlpha or 0.5)
         end
 
 

@@ -2,6 +2,11 @@ local function Save()
     return WoWToolsSave['Plus_Spell']
 end
 
+local function Call_Bg()
+    WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame)
+    --PlayerSpellsFrame.TalentsFrame:UpdateSpecBackground()
+end
+
 
 local TextureTab={--TalentArt
 ['talents-background-warrior-arms']=true,
@@ -100,12 +105,16 @@ local function Set_TalentsFrameBg()
     local tab={
         PlayerSpellsFrame.TalentsFrame.Background,
         PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background,
-        PlayerSpellsFrame.TalentsFrame.BottomBar
+        --PlayerSpellsFrame.TalentsFrame.BottomBar
     }
-    for _, frame in pairs(tab) do
-        frame:SetShown(show)
-        frame:SetAlpha(alpha)
+    for _, texture in pairs(tab) do
+        if show then
+            texture:SetAlpha(alpha)
+        else
+            texture:SetAlpha(0)
+        end
     end
+    PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
 
     PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
     PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
@@ -132,10 +141,21 @@ local function Set_TalentsFrameBg()
 end
 
 
-local function Call_Bg()
-    WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame)
-    --PlayerSpellsFrame.TalentsFrame:UpdateSpecBackground()
-end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -218,6 +238,22 @@ local function Init_Texture_Menu(self, root)
 --SetScrollMod
     WoWTools_MenuMixin:SetScrollMode(root, nil)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init_Menu(self, root)--隐藏，天赋，背景

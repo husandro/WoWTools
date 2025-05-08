@@ -47,7 +47,7 @@ function WoWTools_ToolsMixin:CreateButton(tab)
     btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -5, 5)
 
     function btn:set_border_alpha()
-        self.border:SetAlpha(WoWToolsSave['WoWTools_ToolsButton'].borderAlpha or 0.3)
+        self.border:SetAlpha(Save().borderAlpha or 0.3)
     end
 
     function btn:GetData()
@@ -75,7 +75,8 @@ end
 
 function WoWTools_ToolsMixin:Set_Shown_Background(frame)
     if frame and frame.Background then
-        frame.Background:SetShown(WoWToolsSave['WoWTools_ToolsButton'].isShowBackground)
+        --frame.Background:SetShown(Save().isShowBackground)
+        frame.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 end
 

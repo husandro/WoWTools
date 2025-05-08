@@ -12,13 +12,10 @@ end
 
 --显示背景
 local function Set_ShowBackground()
-    WoWTools_ColorMixin:Setup(MerchantFrameBg, {type='Texture', alpha=0.5})
-    if Save().ShowBackground then
-        MerchantFrameBg:SetAlpha(1)
-        WoWTools_ColorMixin:Setup(MerchantFrameInset.Bg, {type='Texture', alpha=1})
-    else
-        MerchantFrameInset.Bg:SetAlpha(0)
-    end
+    local alpha= Save().bgAlpha or 0.5
+    WoWTools_ColorMixin:Setup(MerchantFrameBg, {type='Texture', alpha=alpha})
+    MerchantFrameBg:SetAlpha(alpha)
+    WoWTools_ColorMixin:Setup(MerchantFrameInset.Bg, {type='Texture', alpha=alpha})
 end
 
 
@@ -423,11 +420,11 @@ local function Init_Menu(self, root)
 
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(root,
+    WoWTools_MenuMixin:BgAplha(root,
     function()
-        return Save().ShowBackground
-    end, function()
-        Save().ShowBackground= not Save().ShowBackground and true or nil
+        return Save().bgAlpha or 0.5
+    end, function(value)
+        Save().bgAlpha= value
         Set_ShowBackground()
     end)
 

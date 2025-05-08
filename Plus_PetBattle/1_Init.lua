@@ -82,6 +82,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_PetBattle2']= WoWToolsSave['Plus_PetBattle2'] or P_Save
 
+            WoWToolsSave['Plus_PetBattle2'].TypeButton.showBackground= nil
 
             WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
             WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))

@@ -951,30 +951,13 @@ local function Init_Menu(self, root)
     sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 
 --显示背景
-    sub2= WoWTools_MenuMixin:ShowBackground(sub,
+    sub2= WoWTools_MenuMixin:BgAplha(sub,
     function()
-        return not Save().Icons.hideBackground
-    end, function()
-        local hide= Save().Icons.hideBackground
-        Save().Icons.hideBackground= not hide and true or nil
-        self:set_frame()
+        return Save().Icons.alphaBG or 0.5
+    end, function(value)
+        Save().Icons.alphaBG=value
+        self:settings()
     end)
---透明度
-    sub2:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub2, {
-        getValue=function()
-            return Save().Icons.alphaBG or 0.5
-        end, setValue=function(value)
-            Save().Icons.alphaBG=value
-            self:settings()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
-        minValue=0,
-        maxValue=1,
-        step=0.05,
-        bit='%0.2f',
-    })
-    sub2:CreateSpacer()
 
 
 
@@ -1169,7 +1152,8 @@ local function Init()
         if not WoWTools_FrameMixin:IsLocked(self) then
             local show= not Save().Icons.hideFrame
             self.frame:SetShown(show)
-            self.Background:SetShown(show and not Save().Icons.hideBackground)
+            self.Background:SetShown(show)
+            self.Background:SetAlpha(Save().Icons.alphaBG or 0.5)
         end
     end
 

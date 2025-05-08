@@ -335,14 +335,58 @@ function WoWTools_MenuMixin:ShowTexture(root, GetValue, SetValue)
 end
 
 
+--背景, 透明度
+function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, onlyRoot)
+    local sub, sub2
+    if onlyRoot then
+        sub=root
+    else
+        sub= root:CreateButton(
+            '|A:MonkUI-LightOrb:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
+        function()
+            return MenuResponse.Open
+        end)
+    end
+
+    sub:CreateSpacer()
+    sub2=WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=GetValue,
+        setValue=SetValue,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+        minValue=0,
+        maxValue=1,
+        step=0.01,
+        bit='%.2f',
+    })
+    sub:CreateSpacer()
+    return sub, sub2
+end
 
 --显示背景
-function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue)
-    return root:CreateCheckbox(
+function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaValue, SetAplhaValue)
+    local sub2
+    local sub= root:CreateCheckbox(
         '|A:MonkUI-LightOrb:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
         GetValue,
-        SetValue)
+        SetValue
+    )
+    if GetAlphaValue and SetAplhaValue then
+--透明度
+        sub:CreateSpacer()
+        sub2=WoWTools_MenuMixin:CreateSlider(sub, {
+            getValue=GetAlphaValue,
+            setValue=SetAplhaValue,
+            name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
+            minValue=0,
+            maxValue=1,
+            step=0.01,
+            bit='%.2f',
+        })
+        sub:CreateSpacer()
+    end
+    return sub, sub2
 end
 --[[
 --显示背景

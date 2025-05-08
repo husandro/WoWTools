@@ -88,6 +88,13 @@ local function Init_Stopwatch_Menu(self, root)
         if StopwatchFrame.set_background then
             StopwatchFrame:set_background()
         end
+    end, function()
+        return Save().timeManagerBgAlpha or 0.5
+    end, function(value)
+        Save().timeManagerBgAlpha=value
+        if StopwatchFrame.set_background then
+            StopwatchFrame:set_background()
+        end
     end)
 
 
@@ -431,6 +438,7 @@ local function Init_TimeManager()
     })
     function btn:set_background()
         self.Background:SetShown(Save().isShowTimeManagerBackground)
+        self.Background:SetAlpha(Save().timeManagerBgAlpha or 0.5)
     end
     btn:set_background()
 end

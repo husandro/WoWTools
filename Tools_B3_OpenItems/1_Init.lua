@@ -160,7 +160,7 @@ local Save={
 
 
 local addName
-local OpenButton
+
 --local useText, noText
 
 
@@ -187,29 +187,27 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGIN')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Tools_OpenItems']= WoWToolsSave['Tools_OpenItems'] or Save
 
-            addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_DataMixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
+            WoWTools_OpenItemMixin.addName= '|A:BonusLoot-Chest:0:0|a'..(WoWTools_DataMixin.onlyChinese and '打开物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, UNWRAP, ITEMS))
 
-            OpenButton= WoWTools_ToolsMixin:CreateButton({
+            WoWTools_OpenItemMixin.OpenButton= WoWTools_ToolsMixin:CreateButton({
                 name='OpenItems',
-                tooltip=addName,
+                tooltip=WoWTools_OpenItemMixin.addName,
             })
 
-            if OpenButton then
-                WoWTools_OpenItemMixin.OpenButton= OpenButton
-                WoWTools_OpenItemMixin.addName= addName
+            if WoWTools_OpenItemMixin.OpenButton then
                 self:UnregisterEvent(event)
             else
                 self:UnregisterAllEvents()
             end
         end
 
-    elseif event=='PLAYER_LOGIN' then
+    elseif event=='LOADING_SCREEN_DISABLED' then
         WoWTools_OpenItemMixin:Init_Button()
         self:UnregisterEvent(event)
     end

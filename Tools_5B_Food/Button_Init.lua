@@ -64,7 +64,8 @@ local function Init()
         end}
     )
     function UseButton:set_background()
-        self.Background:SetShown(Save().isShowBackground)
+        --self.Background:SetShown(Save().isShowBackground)
+        self.Background:SetAlpha(Save().bgAlpha or 0.5)
     end
 
 

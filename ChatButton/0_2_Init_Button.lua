@@ -143,12 +143,12 @@ local function Init_Menu(self, root)
 
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(root, function()
-        return Save().isShowBackground
-    end, function()
-        Save().isShowBackground= not Save().isShowBackground and true or nil
+    WoWTools_MenuMixin:BgAplha(root, function()
+        return Save().bgAlpha or 0.5
+    end, function(value)
+        Save().bgAlpha=value
         self:set_backgroud()
-    end)
+    end, false)
 
     sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save().isEnterShowMenu

@@ -191,6 +191,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWToolsSave['ChatButton_Markers']= WoWToolsSave['ChatButton_Markers'] or P_Save
 
+            Save().showMakerFrameBackground= nil--显示背景 改为ALPHA
+
             if Save().autoReady==0 then
                 Save().autoReady= nil
             end

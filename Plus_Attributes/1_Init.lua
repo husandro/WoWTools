@@ -671,6 +671,7 @@ local function set_Frame(frame, rest)--设置, frame
                 frame.bg:SetPoint('RIGHT', frame.text, 1, 0)
             end
             frame.bg:SetShown(true)
+            frame.bg:SetAlpha(Save().bgAlpha or 0.5)
         else
             frame.bg:SetShown(false)
         end
@@ -883,8 +884,9 @@ local function Frame_Init(rest)
 
 
                 frame.bg= frame:CreateTexture(nil, 'BACKGROUND')
-                frame.bg:SetAlpha(0.5)
-                frame.bg:SetAtlas('ChallengeMode-guild-background')
+                frame.bg:SetColorTexture(0,0,0)
+                --frame.bg:SetAlpha(0.5)
+                --frame.bg:SetAtlas('ChallengeMode-guild-background')
 
                 frame.bar= CreateFrame('StatusBar', nil, frame)
                 frame.bar:SetFrameLevel(frame:GetFrameLevel()-1)

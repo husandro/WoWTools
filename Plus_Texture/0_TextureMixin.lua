@@ -1,6 +1,10 @@
 --[[
 TextureUtil.lua
 CreateBackground(frame, tab)
+
+item_upgrade_tooltip_fullmask
+ChallengeMode-guild-background
+UI-Frame-DialogBox-BackgroundTile
 ]]
 
 
@@ -29,7 +33,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
         point(frame.Background)
     end
 
-    frame.Background:SetAtlas('ChallengeMode-guild-background')--' UI-Frame-DialogBox-BackgroundTile ')
+    frame.Background:SetAtlas('UI-Frame-DialogBox-BackgroundTile')
     frame.Background:SetAlpha(alpha)
     --frame.Background:SetVertexColor(WoWTools_DataMixin.Player.useColor.r, WoWTools_DataMixin.Player.useColor.g, WoWTools_DataMixin.Player.useColor.b)
     return frame.Background

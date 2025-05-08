@@ -100,6 +100,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             Save().MajorFactionRenownFrame_Button_Scale=nil
 			Save().hide_MajorFactionRenownFrame_Button=nil
+            Save().Icons.hideBackground= nil
+
             Save().Icons= Save().Icons or P_Save.Icons
 
             WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)

@@ -690,12 +690,12 @@ local function Init_Button_Menu(self, root)
     end)
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(sub, function()
-        return not Save().AbilityButton['hideBackground'..self.name]
-    end, function()
-        Save().AbilityButton['hideBackground'..self.name]= not Save().AbilityButton['hideBackground'..self.name] and true or nil
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().AbilityButton['bgAlpha'..self.name] or 0.5
+    end, function(value)
+        Save().AbilityButton['bgAlpha'..self.name]=value
         self:Settings()
-        self.PetModel:Settings()
     end)
 
 --缩放
@@ -765,6 +765,8 @@ local function Set_Move_Button(btn)
     end
 
     function btn:Settings()
+        Save().AbilityButton['hideBackground'..self.name]= nil--清除，旧数据
+
         self:ClearAllPoints()
         local p= Save().AbilityButton['point'..self.name]
         if p and p[1] then
@@ -775,7 +777,8 @@ local function Set_Move_Button(btn)
         self:SetFrameStrata(Save().AbilityButton['strata'..self.name] or 'MEDIUM')
         self:SetScale(Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.75))
         self.frame:SetShown(not Save().AbilityButton['hide'..self.name])
-        self.frame.Background:SetShown(not Save().AbilityButton['hideBackground'..self.name])
+        self.frame.Background:SetAlpha(Save().AbilityButton['bgAlpha'..self.name] or 0.5)
+
         self:set_alpha()
         self:set_name_shown()
         Set_PetUnit(self)
@@ -1225,7 +1228,7 @@ local function Init_BottomFrame()
         return
     end
 
-    
+
 --宠物，属性
     hooksecurefunc('PetBattleFrame_UpdateAllActionButtons', function(self)
         local btn= self.BottomFrame.abilityButtons[1]

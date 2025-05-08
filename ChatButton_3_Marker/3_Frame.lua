@@ -888,27 +888,29 @@ local function Init()--设置标记, 框架
 
 
 --背景
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.ping, {alpha=0.5})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.ping)
     MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', MakerFrame.ping.Button[1])
     MakerFrame.ping.Background:SetPoint('TOPLEFT', MakerFrame.ping.Button[#MakerFrame.ping.Button])
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.target, {alpha=0.5})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.target)
     MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', MakerFrame.target.Button[2])
     MakerFrame.target.Background:SetPoint('TOPLEFT', MakerFrame.target.Button[#MakerFrame.target.Button])
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.marker, {alpha=0.5})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.marker)
     MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', MakerFrame.marker.Button[2])
     MakerFrame.marker.Background:SetPoint('TOPLEFT', MakerFrame.marker.Button[#MakerFrame.marker.Button])
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.countdown, {alpha=0.5, isAllPoint=true})
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.check, {alpha=0.5, isAllPoint=true})
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.RolePoll, {alpha=0.5, isAllPoint=true})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.countdown, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.check, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBackground(MakerFrame.RolePoll, {isAllPoint=true})
 
     function MakerFrame:set_background()
-        local show= Save().showMakerFrameBackground
+        --local show= Save().showMakerFrameBackground
+        local alpha= Save().MakerFrameBgAlpha or 0.5
         for _, frame in pairs(self.Buttons) do
             if frame.Background then
-                frame.Background:SetShown(show)
+                --frame.Background:SetShown(show)
+                frame.Background:SetAlpha(alpha)
             end
         end
     end

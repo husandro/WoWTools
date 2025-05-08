@@ -222,10 +222,11 @@ local function Init_Menu(self, root)
     end)
 
 --显示背景
-    WoWTools_MenuMixin:ShowBackground(sub, function()
-        return Save().TypeButton.showBackground
-    end, function()
-        Save().TypeButton.showBackground= not Save().TypeButton.showBackground and true or nil
+    WoWTools_MenuMixin:BgAplha(sub,
+    function()
+        return Save().TypeButton.bgAlpha or 0.5
+    end, function(value)
+        Save().TypeButton.bgAlpha= value
         self:set_Background()
     end)
 
@@ -338,7 +339,8 @@ local function Init(isShow)
     end
 
     function TypeButton:set_Background()
-        self.frame.Background:SetShown(Save().TypeButton.showBackground)
+        --self.frame.Background:SetShown(Save().TypeButton.showBackground)
+        self.frame.Background:SetAlpha(Save().TypeButton.bgAlpha or 0.5)
     end
 
     function TypeButton:set_tooltip()

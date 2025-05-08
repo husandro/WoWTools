@@ -67,14 +67,15 @@ local function Init(self, root)
         end
     end)
 
---显示背景
-    WoWTools_MenuMixin:ShowBackground(root,
+--显示背景 
+    WoWTools_MenuMixin:BgAplha(root,
     function()
-        return Save().showMakerFrameBackground
-    end, function()
-        Save().showMakerFrameBackground= not Save().showMakerFrameBackground and true or nil
+        return Save().MakerFrameBgAlpha or 0.5
+    end, function(value)
+        Save().MakerFrameBgAlpha=value
         frame:set_background()
     end)
+
 
 
 

@@ -81,6 +81,11 @@ local function Init_Menu(self, root)
     end, function()
         Save().showBG= not Save().showBG and true or nil
         WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
+    end, function()
+        return Save().bgAlpha or 0.5
+    end, function(value)
+        Save().bgAlpha=value
+        WoWTools_AttributesMixin:Frame_Init(true)--初始， 或设置
     end)
 
 --FrameStrata

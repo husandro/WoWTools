@@ -312,12 +312,12 @@ local function Init_Menu(self, root)
 --缩放
     sub:CreateDivider()
 
-    --显示背景
-    WoWTools_MenuMixin:ShowBackground(sub,
+--显示背景
+    WoWTools_MenuMixin:BgAplha(sub,
     function()
-        return Save().isShowBackground
-    end, function()
-        Save().isShowBackground= not Save().isShowBackground and true or nil
+        return Save().bgAlpha or 0.5
+    end, function(value)
+        Save().bgAlpha= value
         self:set_background()
     end)
 
