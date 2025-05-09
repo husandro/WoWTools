@@ -63,7 +63,8 @@ local P_Mouts_Tab={
         [98718]=true,
         [64731]=true,--[海龟]
     },
-    ['Alt']={[264058]=true,--雄壮商队雷龙
+    ['Alt']={
+        [264058]=true,--雄壮商队雷龙
         [122708]=true,--雄壮远足牦牛
         [61425]=true,--旅行者的苔原猛犸象
     },
@@ -144,7 +145,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Tools_Mounts']= WoWToolsSave['Tools_Mounts'] or P_Save
 
-            if Save().Mounts[SPELLS] then--为不同语言
+            if not Save().Mounts[SPELLS] then--为不同语言
                 Save().Mounts= P_Mouts_Tab
             end
 

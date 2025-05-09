@@ -57,9 +57,6 @@ local function Init_UI_Menu(self, root)
             or (isFactionSpecific and faction~=WoWTools_MountMixin.faction)
         ) and '|cff9e9e9e' or ''
 
-        function GetValue(data)
-            return Save().Mounts[data.type][data.spellID]
-        end
 
         local setData= {type=type, spellID=spellID, mountID=mountID, name=name, icon='|T'..(icon or 0)..':0|t'}
         sub=root:CreateCheckbox(col..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)..' '..WoWTools_TextMixin:CN(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type),
