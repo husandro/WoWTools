@@ -171,13 +171,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Collections' then--收藏
             WoWTools_MountMixin:Init_MountJournal()
-            if C_AddOns:IsAddOnLoaded('Blizzard_PlayerSpells') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_PlayerSpells' then--法术书
             WoWTools_MountMixin:Init_UI_SpellBook_Menu()--法术书，选项
-            if C_AddOns:IsAddOnLoaded('Blizzard_Collections') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                 self:UnregisterEvent(event)
             end
         end

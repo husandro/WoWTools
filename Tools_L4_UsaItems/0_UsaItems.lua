@@ -113,13 +113,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         elseif arg1=='Blizzard_Collections' and WoWToolsSave then
             WoWTools_UseItemsMixin:Init_UI_Toy()
-            if C_AddOns:IsAddOnLoaded('Blizzard_PlayerSpells') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
                 self:UnregisterEvent(event)
             end
 
         elseif arg1=='Blizzard_PlayerSpells' and WoWToolsSave then--法术书
             WoWTools_UseItemsMixin:Init_PlayerSpells()
-            if C_AddOns:IsAddOnLoaded('Blizzard_Collections') then
+            if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                 self:UnregisterEvent(event)
             end
 
