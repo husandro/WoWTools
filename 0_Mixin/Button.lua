@@ -44,6 +44,11 @@ SmallItemButtonTemplate <Size x="134" y="30"/>
 
 
 ItemButtonTemplate.xml
+
+local background = self:AttachTexture();
+background:SetAtlas("common-dropdown-bg");
+
+
 ]]
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn, isType2)

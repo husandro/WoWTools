@@ -5674,7 +5674,9 @@
         "RaidNotice_AddMessage",
         "RaidWarningFrame",
         "WarbandSceneEntryMixin",
-        "GameTooltip_CalculatePadding"
+        "GameTooltip_CalculatePadding",
+        "WowStyle2DropdownMixin",
+        "MenuStyle1Mixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
