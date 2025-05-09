@@ -159,7 +159,8 @@ local function Init()
                 GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
             end
         end
-        GameTooltip:Show()
+        GameTooltip_CalculatePadding(GameTooltip)
+        --GameTooltip:Show()
     end)
 
 
@@ -179,6 +180,7 @@ local function Init()
             local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
             GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
             GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
+            GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
             WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
@@ -190,6 +192,7 @@ local function Init()
                 local name, description, filedataid = C_ChallengeMode.GetAffixInfo(self.affixID)
                 GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
                 GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
+                GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine('affixID '..self.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
                 WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
                 GameTooltip:Show()
@@ -268,11 +271,15 @@ local function Init()
                         acceto=acceto+1
                     end
                 end
-                GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)), WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(info.questID)))
+                GameTooltip:AddDoubleLine(
+                    (WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)),
+                    WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(info.questID))
+                )
+                GameTooltip_CalculatePadding(GameTooltip)
             end
         end
 
-        GameTooltip:Show()
+        --GameTooltip:Show()
     end)
 
 
@@ -285,10 +292,12 @@ local function Init()
 
 
 --添加 WidgetSetID
-    hooksecurefunc('GameTooltip_AddWidgetSet', function(self, uiWidgetSetID)
+    hooksecurefunc('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
         if uiWidgetSetID then
-            self:AddDoubleLine('WidgetSetID', uiWidgetSetID)
-            self:Show()
+            tooltip:AddLine(' ')
+            tooltip:AddDoubleLine('WidgetSetID', uiWidgetSetID)
+            GameTooltip_CalculatePadding(tooltip)
+            --tooltip:Show()
         end
     end)
 
@@ -314,7 +323,7 @@ local function Init()
                             GameTooltip:AddDoubleLine('action '..self.action, 'ID '..ID)
                             GameTooltip:AddDoubleLine(actionType and 'actionType '..actionType, subType and 'subType '..subType)
                         end
-                        GameTooltip:Show()
+                        GameTooltip_CalculatePadding(GameTooltip)
                     end
                 end
             end)
@@ -353,8 +362,26 @@ local function Init()
 
 
 
-
-
+--SharedCollectionTemplates.lua
+    hooksecurefunc(WarbandSceneEntryMixin, 'OnEnter', function(self)
+        if not self.warbandSceneInfo then
+            return
+        end
+        local tooltip = GetAppropriateTooltip()
+        tooltip:AddDoubleLine(
+            'warbandSceneID |cffffffff'..(self.warbandSceneInfo.warbandSceneID or ''),
+            'sourceType '..(self.warbandSceneInfo.sourceType or '')
+        )
+        local quality= self.warbandSceneInfo.quality or 1
+        local atlas= self.warbandSceneInfo.textureKit or ''
+        tooltip:AddDoubleLine(
+            '|A:'..atlas..':32:32|a'..atlas,
+            '|c'..select(4,  C_Item.GetItemQualityColor(quality)) ..
+            WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
+        )
+        GameTooltip_CalculatePadding(tooltip)
+        --tooltip:Show()
+    end)
 
     --FloatingPetBattleAbilityTooltip
     Init=function()end

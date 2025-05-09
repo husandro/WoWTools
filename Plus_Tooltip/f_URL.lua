@@ -86,6 +86,7 @@ end
 
 
 local function Create_Button(tooltip)
+    
     tooltip.WoWHeadButton=WoWTools_ButtonMixin:Cbtn(tooltip, {--取得网页，数据链接
         size=24,
         isUI=true,
@@ -152,7 +153,7 @@ end
 
 
 
-local function Create_URL_Button(tooltip, tab)
+local function ItemRefTooltip_URL_Button(tooltip, tab)
     if not tooltip.WoWHeadButton then
         Create_Button(tooltip)
     end
@@ -170,21 +171,7 @@ end
 
 
 
-
-
-
-function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
-    if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
-        if tab.type and tab.id then
-            Create_URL_Button(tooltip, tab)
-        end
-        return
-    end
-
-    if not Save().ctrl or UnitAffectingCombat('player')  then
-        return
-    end
-
+local function GameTooltip_URL(tooltip, tab)
     if tab.id then
         if tab.type=='quest' then
             if not tab.name then
@@ -226,6 +213,31 @@ function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
             tooltip:Show()
         end
     end
+end
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TooltipMixin:Set_Web_Link(tooltip, tab)
+    if tooltip==ItemRefTooltip or tooltip==FloatingBattlePetTooltip then
+        if tab.type and tab.id then
+            ItemRefTooltip_URL_Button(tooltip, tab)
+        end
+        return
+    end
+
+    if not Save().ctrl or InCombatLockdown() then
+        return
+    end
+
+    GameTooltip_URL(tooltip, tab)
 end
 
 
