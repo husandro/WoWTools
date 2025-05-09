@@ -99,11 +99,8 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
     BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
     --tooltip:Show()
+    GameTooltip_CalculatePadding(tooltip)
 end
-
-
-
-
 
 
 

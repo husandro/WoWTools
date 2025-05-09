@@ -40,7 +40,8 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
                     or UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo({unit=source, reName=true})
                     or UnitName(source) or _G[source] or source
             tooltip:AddLine((col or '|cffffffff') ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
-            tooltip:Show()
+            --tooltip:Show()
+            GameTooltip_CalculatePadding(tooltip)
         end
     end
 end

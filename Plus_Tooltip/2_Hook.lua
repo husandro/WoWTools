@@ -62,7 +62,7 @@ local function Init()
         end
 
         local _, name, icon, _, unparsedDescription, _, petType = C_PetBattles.GetAbilityInfoByID(abilityID)
-        local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)    
+        local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
         self.Description:SetText(
             WoWTools_TextMixin:CN(description)
             ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '技能' or ABILITIES)
@@ -70,7 +70,7 @@ local function Init()
             ..(icon and '  |T'..icon..':0|t'..icon or '')
             ..(Save().ctrl and not UnitAffectingCombat('player') and ' |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Source\\Texture\\Wowhead.tga:0|t' or '')
         )
-        
+
         WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
     end)
 
@@ -364,23 +364,29 @@ local function Init()
 
 --SharedCollectionTemplates.lua
     hooksecurefunc(WarbandSceneEntryMixin, 'OnEnter', function(self)
-        if not self.warbandSceneInfo then
+        local warbandSceneID= self.warbandSceneInfo and self.warbandSceneInfo.warbandSceneID
+        if not warbandSceneID then
             return
         end
         local tooltip = GetAppropriateTooltip()
+
+        tooltip:AddLine(' ')
+
         tooltip:AddDoubleLine(
-            'warbandSceneID |cffffffff'..(self.warbandSceneInfo.warbandSceneID or ''),
-            'sourceType '..(self.warbandSceneInfo.sourceType or '')
+            'warbandSceneID |cffffffff'..warbandSceneID,
+            'sourceType |cffffffff'..(self.warbandSceneInfo.sourceType or '')
         )
+
         local quality= self.warbandSceneInfo.quality or 1
         local atlas= self.warbandSceneInfo.textureKit or ''
+
         tooltip:AddDoubleLine(
             '|A:'..atlas..':32:32|a'..atlas,
             '|c'..select(4,  C_Item.GetItemQualityColor(quality)) ..
             WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
         )
+
         GameTooltip_CalculatePadding(tooltip)
-        --tooltip:Show()
     end)
 
     --FloatingPetBattleAbilityTooltip

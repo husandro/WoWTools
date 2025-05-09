@@ -41,10 +41,8 @@ end
 
 
 
-local function Channel_Opetion_Menu(self, sub, name)
+--local function Channel_Opetion_Menu(self, sub, name)
 
-   
-end
 
 
 

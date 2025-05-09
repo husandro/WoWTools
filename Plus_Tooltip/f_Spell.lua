@@ -83,6 +83,8 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
     else
         WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
+
+    GameTooltip_CalculatePadding(tooltip)
 end
 
 --[[local overrideSpellID = FindSpellOverrideByID(spellID)

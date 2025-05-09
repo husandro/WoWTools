@@ -14,7 +14,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_Professions()
             local currencyTypesID = nodeID and Professions.GetCurrencyTypesID(nodeID)
             if currencyTypesID then
                 GameTooltip_AddBlankLineToTooltip(GameTooltip)
-                WoWTools_TooltipMixin:Set_Currency(GameTooltip, currencyTypesID)--货币
+                self:Set_Currency(GameTooltip, currencyTypesID)--货币
                 GameTooltip:AddDoubleLine('nodeID', '|cffffffff'..nodeID..'|r')
             end
         end
@@ -26,9 +26,10 @@ function WoWTools_TooltipMixin.Events:Blizzard_Professions()
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine('nodeID '..f.nodeID, f.entryID and 'entryID '..f.entryID)
 
-            local name= WoWTools_TooltipMixin.WoWHead..'profession-trait/'..(f.nodeID or '')
-            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {name=name})
-            GameTooltip:Show()
+            local name= self.WoWHead..'profession-trait/'..(f.nodeID or '')
+            self:Set_Web_Link(GameTooltip, {name=name})
+            --GameTooltip:Show()
+            GameTooltip_CalculatePadding(GameTooltip)
         end
     end)
 end
@@ -46,7 +47,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
         local info= f.taxiNodeData
         if info then
             GameTooltip:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
-            GameTooltip:Show()
+            GameTooltip_CalculatePadding(GameTooltip)
         end
     end)
 end
@@ -56,7 +57,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
         if f.optionInfo and f.optionInfo.spellID then
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(f.optionInfo.spellID)
-            GameTooltip:Show()
+            GameTooltip_CalculatePadding(GameTooltip)
         end
     end)
 end
@@ -81,7 +82,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
         if info.ability and info.ability.id and info.ability.id>0 then
             GameTooltip:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
         end
-        GameTooltip:Show()
+        GameTooltip_CalculatePadding(GameTooltip)
     end)
     hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(f)--是否已激活, 和等级
         local info= f.talent
@@ -136,7 +137,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_GenericTraitUI()
         end
         local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
         GameTooltip:AddDoubleLine(format('traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
-        GameTooltip:Show()
+        GameTooltip_CalculatePadding(GameTooltip)
     end)
 end
 
@@ -156,8 +157,8 @@ end
 function WoWTools_TooltipMixin.Events:Blizzard_Collections()
     if PetJournalSummonRandomFavoritePetButton_OnEnter then--11.1.7没了
         hooksecurefunc('PetJournalSummonRandomFavoritePetButton_OnEnter', function()--PetJournalSummonRandomFavoritePetButton
-            WoWTools_TooltipMixin:Set_Spell(GameTooltip, 243819)
-            GameTooltip:Show()
+            self:Set_Spell(GameTooltip, 243819)
+            --GameTooltip:Show()
         end)
     end
 end
@@ -257,24 +258,26 @@ end
 --挑战, AffixID
 function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
     hooksecurefunc(ChallengesKeystoneFrameAffixMixin, 'OnEnter',function(f)
-        if f.affixID then
-            local name, description, filedataid = C_ChallengeMode.GetAffixInfo(f.affixID)
-            if (f.affixID or f.info) then
-                if (f.info) then
-                    local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[f.info.key]
-                    name = tbl.name
-                    description = string.format(tbl.desc, f.info.pct)
-                else
-                    name= WoWTools_TextMixin:CN(name)
-                    description= WoWTools_TextMixin:CN(description)
-                end
-                GameTooltip:SetText(name, 1, 1, 1, 1, true)
-                GameTooltip:AddLine(description, nil, nil, nil, true)
-            end
-            GameTooltip:AddDoubleLine('affixID '..f.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
-            WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=f.affixID, name=name, isPetUI=false})--取得网页，数据链接
-            GameTooltip:Show()
+        if not f.affixID then
+            return
         end
+        local name, description, filedataid = C_ChallengeMode.GetAffixInfo(f.affixID)
+        if (f.affixID or f.info) then
+            if (f.info) then
+                local tbl = CHALLENGE_MODE_EXTRA_AFFIX_INFO[f.info.key]
+                name = tbl.name
+                description = string.format(tbl.desc, f.info.pct)
+            else
+                name= WoWTools_TextMixin:CN(name)
+                description= WoWTools_TextMixin:CN(description)
+            end
+            GameTooltip:SetText(name, 1, 1, 1, 1, true)
+            GameTooltip:AddLine(description, nil, nil, nil, true)
+        end
+        GameTooltip:AddDoubleLine('affixID '..f.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
+        self:Set_Web_Link(GameTooltip, {type='affix', id=f.affixID, name=name, isPetUI=false})--取得网页，数据链接
+        GameTooltip_CalculatePadding(GameTooltip)
+        --GameTooltip:Show()
     end)
 end
 

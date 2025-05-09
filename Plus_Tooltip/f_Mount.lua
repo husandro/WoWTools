@@ -68,5 +68,7 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         MountJournalSearchBox:SetText(creatureName)
     end
     self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
+
+    GameTooltip_CalculatePadding(tooltip)
 end
 

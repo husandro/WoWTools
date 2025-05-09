@@ -49,6 +49,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     if tooltip==EmbeddedItemTooltip then
         GameTooltip_AddBlankLineToTooltip(tooltip)
     end
-    tooltip:Show()
+    --tooltip:Show()
+    GameTooltip_CalculatePadding(tooltip)
 end
 

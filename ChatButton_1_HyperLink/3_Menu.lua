@@ -33,6 +33,31 @@ local function Init_Menu(self, root)
         end
     end)
 
+--图标尺寸
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().iconSize or 0
+        end, setValue=function(value)
+            Save().iconSize=value
+            WoWTools_HyperLink:Link_Icon_Settings()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
+        minValue=0,
+        maxValue=32,
+        step=1,
+        --bit='%.2f',
+        tooltip=function(tooltip)
+            local s= Save().iconSize or 0
+            s= s<8 and 0 or s
+            tooltip:AddLine('|T134414..:'..s..':'..s..'|t')
+            if not Save().notShowItemCount then
+                print(select(2, C_Item.GetItemInfo(6948)), '')
+            end
+        end
+    })
+    sub:CreateSpacer()
+
 --关键词, 内容颜色，和频道名称替换
     sub2=sub:CreateCheckbox(
         WoWTools_DataMixin.Player.Language.key,
@@ -40,6 +65,10 @@ local function Init_Menu(self, root)
         return not Save().disabledKeyColor
     end, function()
         Save().disabledKeyColor= not Save().disabledKeyColor and true or nil
+        for t in pairs(Save().text or {}) do
+            print(t)
+            break
+        end
     end)
 
 --设置关键词
@@ -59,7 +88,7 @@ local function Init_Menu(self, root)
     function()
         return not Save().notShowPlayerInfo
     end, function()
-        Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil
+        Save().notShowPlayerInfo= not Save().notShowPlayerInfo and true or nil       
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo('player', nil, nil, {reLink=true}), WoWTools_TextMixin:GetEnabeleDisable(true))
@@ -75,25 +104,31 @@ local function Init_Menu(self, root)
         return not Save().notShowItemCount
     end, function()
         Save().notShowItemCount= not Save().notShowItemCount and true or nil
+        print(select(2, C_Item.GetItemInfo(6948)), '')
     end)
     sub2:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_ItemMixin:GetCount(6948, {isWoW=true}), nil)
     end)
 
 
---[[地图标记
+--地图标记
     sub2= sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '地图标记' or  MAP_PIN,
     function()
             return not Save().notShowMapPin
     end, function()
         Save().notShowMapPin= not Save().notShowMapPin and true or nil
+        print(WoWTools_DataMixin.Icon.icon2, '30.00 45.50')
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddDoubleLine('60.0 70.5')
-    end)]]
+        tooltip:AddDoubleLine('[30.00 45.50]')
+    end)
 
 
+
+
+
+    sub:CreateDivider()
 --CVar 名称
     sub2=sub:CreateCheckbox(
         'CVar '..(WoWTools_DataMixin.onlyChinese and '名称' or LFG_LIST_TITLE ),
@@ -118,7 +153,6 @@ local function Init_Menu(self, root)
     end)
 
 --关闭聊天
-    sub:CreateDivider()
     sub2=sub:CreateCheckbox(
         (C_SocialRestrictions.IsChatDisabled() and '|cnRED_FONT_COLOR:' or '')
         ..(WoWTools_DataMixin.onlyChinese and '关闭聊天' or RESTRICT_CHAT_CONFIG_DISABLE),

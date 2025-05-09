@@ -11,7 +11,7 @@ end
 local LOOT_ITEM = LOCALE_zhCN and '(.-)获得了战利品' or WoWTools_TextMixin:Magic(LOOT_ITEM)
 local CHAT_SAY_SEND= CHAT_SAY_SEND
 local IsShowTimestamps--聊天中时间戳
-
+local Size=':0:0'--图标大小
 --DEFAULT_CHAT_FRAME.P_AddMessage= DEFAULT_CHAT_FRAME.AddMessage
 
 
@@ -111,7 +111,7 @@ end
 local function PetType(petType)
     local type=PET_TYPE_SUFFIX[petType]
     if type then
-        return '|TInterface\\Icons\\Icon_PetFamily_'..type..':0|t'
+        return '|TInterface\\Icons\\Icon_PetFamily_'..type..Size..'|t'
     end
 end
 
@@ -125,7 +125,7 @@ end
 local function Item(link)
     local itemID, _, _, _, icon, classID, subclassID= C_Item.GetItemInfoInstant(link)
     local t= WoWTools_HyperLink:CN_Link(link, {itemID=itemID, isName=true})
-    t= icon and '|T'..icon..':0|t'..t or t--加图标
+    t= icon and '|T'..icon..Size..'|t'..t or t--加图标
     if classID==2 or classID==4 then
         local lv=C_Item.GetDetailedItemLevelInfo(link)--装等
         if lv and lv>10 then
@@ -195,7 +195,7 @@ local function Spell(link)
     local t=WoWTools_HyperLink:CN_Link(link, {spellID=spellID, isName=true})
 
     local icon= C_Spell.GetSpellTexture(link)
-    t= (icon and '|T'..icon..':0|t' or '')..t
+    t= (icon and '|T'..icon..Size..'|t' or '')..t
 
     t=t..(Mount(nil, spellID) or '')
 
@@ -211,7 +211,7 @@ local function PetLink(link)--宠物超链接
     end
     local _, icon, petType= C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     return (PetType(petType) or '')
-        ..(icon and '|T'..icon..':0|t' or '')
+        ..(icon and '|T'..icon..Size..'|t' or '')
         ..WoWTools_HyperLink:CN_Link(link)
         ..(Pet(speciesID) or '')
 end
@@ -226,7 +226,7 @@ local function PetAblil(link, petChannel)--宠物技能
         if petChannel then
             return PetType(petType)..link
         else
-            return (PetType(petType) or '')..'|T'..(icon or 0)..':0|t'..link
+            return (PetType(petType) or '')..'|T'..(icon or 0)..Size..'|t'..link
         end
     end
 end
@@ -239,7 +239,7 @@ local function Trade(link)--贸易技能
 
     local icon = C_Spell.GetSpellTexture(id2)
 
-    return (icon and '|T'..icon..':0|t' or '')
+    return (icon and '|T'..icon..Size..'|t' or '')
         ..WoWTools_HyperLink:CN_Link(link)
 end
 
@@ -249,7 +249,7 @@ local function Enchant(link)--附魔
         return
     end
     local icon = C_Spell.GetSpellTexture(id2)
-    return (icon and '|T'..icon..':0|t' or '')
+    return (icon and '|T'..icon..Size..'|t' or '')
         ..WoWTools_HyperLink:CN_Link(link)
 end
 
@@ -259,7 +259,7 @@ local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Mem
         return
     end
     return
-        (info.iconFileID and '|T'..info.iconFileID..':0|t')
+        (info.iconFileID and '|T'..info.iconFileID..Size..'|t')
         ..WoWTools_HyperLink:CN_Link(link)
         ..(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
         ..(num and WoWTools_Mixin:MK(num,3))
@@ -273,7 +273,7 @@ local function Achievement(link)--成就
         return
     end
     local _, _, _, completed, _, _, _, _, _, icon = GetAchievementInfo(id2)
-    return (icon and '|T'..icon..':0|t' or '')
+    return (icon and '|T'..icon..Size..'|t' or '')
         ..WoWTools_HyperLink:CN_Link(link)
         ..Get_CompletedIcon(completed)
 end
@@ -294,7 +294,7 @@ local function Talent(link)--天赋
         return
     end
     local _, _, icon, _, _, _, _, _ ,_, known= GetTalentInfoByID(id2)
-    return (icon and '|T'..icon..':0|t' or '')
+    return (icon and '|T'..icon..Size..'|t' or '')
         ..WoWTools_HyperLink:CN_Link(link)
         ..Get_CompletedIcon(known)
 end
@@ -305,7 +305,7 @@ local function Pvptal(link)--pvp天赋
         return
     end
     local _, _, icon, _, _, _, _, _ ,_, known=GetPvpTalentInfoByID(id2)
-    return (icon and '|T'..icon..':0|t' or '')
+    return (icon and '|T'..icon..Size..'|t' or '')
         ..WoWTools_HyperLink:CN_Link(link)
         ..Get_CompletedIcon(known)
 end
@@ -381,7 +381,7 @@ end
 local function Keystone(link)
     local itemID, _, _, affix1, affix2, affix3, affix4= link:match('Hkeystone:(%d+):(%d+):(%d+):(%d+):(%d+):(%d+):(%d+)')
     return
-        '|T'..(select(5, C_Item.GetItemInfoInstant(link)) or 525134)..':0|t'
+        '|T'..(select(5, C_Item.GetItemInfoInstant(link)) or 525134)..Size..'|t'
         ..WoWTools_HyperLink:CN_Link(link, {itemID=tonumber(itemID), isName=true})
         ..(WoWTools_HyperLink:GetKeyAffix(link, {affix1, affix2, affix3, affix4}) or '')
 end
@@ -408,7 +408,7 @@ local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Inst
            if sectionID then
                 local info = C_EncounterJournal.GetSectionInfo(sectionID)
                 if info and info.abilityIcon then
-                    return '|T'..info.abilityIcon..':0|t'..WoWTools_HyperLink:CN_Link(link)
+                    return '|T'..info.abilityIcon..Size..'|t'..WoWTools_HyperLink:CN_Link(link)
                 end
            end
         elseif type==1 and journalName then
@@ -417,7 +417,7 @@ local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Inst
                 local _, name, _, _, iconImage = EJ_GetCreatureInfo(index, encounterID)
                 if name and iconImage then
                     if name==journalName then
-                        return '|T'..iconImage..':0|t'..WoWTools_HyperLink:CN_Link(link)
+                        return '|T'..iconImage..Size..'|t'..WoWTools_HyperLink:CN_Link(link)
                     end
                 else
                     break
@@ -426,7 +426,7 @@ local function Journal(link)--冒险指南 |Hjournal:0:1031:14|h[Uldir]|h 0=Inst
         elseif type==0 then--Instance
             local buttonImage2 = select(6, EJ_GetInstanceInfo(journalID))
             if buttonImage2 then
-                return '|T'..buttonImage2..':0|t'..WoWTools_HyperLink:CN_Link(link)
+                return '|T'..buttonImage2..Size..'|t'..WoWTools_HyperLink:CN_Link(link)
             end
         end
     end
@@ -473,7 +473,7 @@ end
 
 local function TransmogSet(link)--幻化套装
     local t= WoWTools_HyperLink:CN_Link(link)
-    local setID=link:match('transmogset:(%d+)')    
+    local setID=link:match('transmogset:(%d+)')
     local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
     if not info then
         return
@@ -501,45 +501,50 @@ local function setMount(link)--设置,坐骑
     local spellID= link:match('mount:(%d+)')
     local mount, icon= Mount(nil, spellID)
     if mount then
-        return (icon and '|T'..icon..':0|t' or '')..WoWTools_HyperLink:CN_Link(link)..mount
+        return (icon and '|T'..icon..Size..'|t' or '')..WoWTools_HyperLink:CN_Link(link)..mount
     end
 end
 
 --地图标记xy, 格式 60.10 70.50
+--|cffffff00|Hworldmap:84:7222:2550|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a Map Pin Location]|h|r
 local function Waypoint(text)
     local uiMapID= WorldMapFrame.mapID or C_Map.GetBestMapForUnit("player")
     if uiMapID and C_Map.CanSetUserWaypointOnMap(uiMapID) then
         local x, y= text:match('(%d+%.%d%d) (%d+%.%d%d)')
         if x and y then
-            return '|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h['..text..']|h'
+            return '|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..':'..y:gsub('%.','')..'|h['..text..']|h'
         end
     end
 end
 --return '|cffffff00|Hworldmap:'..uiMapID..':'..x:gsub('%.','')..'0:'..y:gsub('%.','')..'0|h[|A:Waypoint-MapPin-ChatIcon:13:13:0:0|a'..text..']|h|r'
 
---[[
-Guild Finder (8.2.5) invite link.
-clubFinder : clubFinderId
-Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
-See also: GetClubFinderLink()
-|HclubFinder:ClubFinder-1-6991-3299-447003|h[公会: Test Guild]|h'
 
-local function ClubFinder(text)--社区
-    local clubFinderGUID= text:match('|HclubFinder:(.-)|h[')
-    
+
+
+--社区查找器 |HclubFinder:ClubFinder-1-6991-3299-447003|h[Gilda: Test Guild]|h
+local function ClubFinder(link)
+    local clubFinderGUID= link:match('|HclubFinder:(.-)|h%[')
     local clubInfo = clubFinderGUID and C_ClubFinder.GetRecruitingClubInfoFromFinderGUID(clubFinderGUID)
-    print(text, clubInfo, clubFinderGUID)
     if clubInfo then
-        info= clubFinderGUID
-        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        return
+            (clubInfo.isGuild and '|A:hud-microbutton-Guild-Banner:0:0|a' or '')
+            ..(clubInfo.isCrossFaction and '|A:CrossedFlags:0:0|a' or '')
+            ..link
     end
 end
+
+
+--[[
+社区 |HclubTicket:WMo42zSmYP|h[Unisciti a: asdfasd]|h
+CommunitiesHyperlink.lua CommunitiesHyperlink_OnEvent
+
+local function ClubTicket(link)
+    local ticketId= link:match('|HclubTicket:(.-)|h%[')
+    --C_Club.RequestTicket(ticketId)
+   -- local error, clubInfo, showError = C_Club.GetLastTicketResponse(ticketId)
+    --print(error, clubInfo, showError)
+end
 ]]
-
-
-
-
-
 
 
 
@@ -579,11 +584,13 @@ local function New_AddMessage(self, s, ...)
     s=s:gsub('|Hperksactivity:.-]|h', Perksactivity)
 
 
---社区 Example: "|cffffd100|HclubFinder:ClubFinder-1-19160-1598-53720920|h[Guild: Happy Leveling]|h|r"
-    --s=s:gsub('|HclubFinder:-]|h', ClubFinder)
 
+    s=s:gsub('|HclubFinder:.-]|h', ClubFinder)
+    --s=s:gsub('|HclubTicket:.-]|h', ClubTicket)
 
-    s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
+    if not Save().notShowMapPin then
+        s=s:gsub('(%d+%.%d%d %d+%.%d%d)', Waypoint)--地图标记xy, 格式 60.00 70.50
+    end
 
 
     if not Save().notShowPlayerInfo then--不处理，玩家信息
@@ -681,14 +688,16 @@ end
 
 --超链接，图标
 function WoWTools_HyperLink:Init_Link_Icon()
-    --C_Timer.After(0.3, function()
-        Init()
-    --end)
+    Init()
 
     Set_HyperLlinkIcon()
 end
 
-
+function WoWTools_HyperLink:Link_Icon_Settings()
+    local s= Save().iconSize or 0
+    if s<8 then s=0 end
+    Size= ':'..s..':'..s
+end
 
 --[[ChatFrame.lua
 聊天选项

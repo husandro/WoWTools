@@ -14,6 +14,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
         icon and '|T'..icon..':0|t'..icon
     )
 
+
 --点数
     tooltip.textLeft:SetText(
         points..(WoWTools_DataMixin.onlyChinese and '点' or RESAMPLE_QUALITY_POINT)
@@ -34,15 +35,17 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     end
 
     if flags==0x20000 then
-        tooltip.textRight:SetText(
+        tooltip.textRight2:SetText(
             WoWTools_DataMixin.Icon.net2
             ..'|cffff00ff'
             ..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
         )
     else
-        tooltip.textRight:SetText('')
+        tooltip.textRight2:SetText('')
     end
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+
+    GameTooltip_CalculatePadding(tooltip)
 end
 

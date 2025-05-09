@@ -79,7 +79,7 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             f.Text:SetTextColor(1,0,1)
         end]]
 
-        f:SetScript('OnValueChanged', function(s, value,...)
+        f:SetScript('OnValueChanged', function(s, value, ...)
             if s.bit then
                 value= tonumber(format(s.bit, value))
             else
@@ -87,6 +87,9 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             end
             s.setValue(value, s)
             s.Text:SetText(value)
+            if type(desc.data.tooltip)=='function' then
+                MenuUtil.ShowTooltip(f, desc.data.tooltip, desc)
+            end
         end)
 
         f:EnableMouseWheel(true)
@@ -114,13 +117,19 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
         end)
     end)
 
-    if tab.tooltip then
-        sub:SetTooltip(tab.tooltip)
-    --[[elseif tab.name and tab.name~='' then
-        sub:SetTooltip(function(tooltip, desc)
-            tooltip:AddLine(desc.data.name)
-        end)]]
-    end
+
+    sub:SetTooltip(function(tooltip, desc)
+        local t= type(desc.data.tooltip)
+        if t=='string' then
+            tooltip:AddLine(desc.data.tooltip)
+        elseif t=='function' then
+            desc.data.tooltip(tooltip)
+        elseif t=='table' then
+            for text in pairs(desc.data.tooltip) do
+                tooltip:AddLine(text)
+            end
+        end
+    end)
 
     return sub
 end

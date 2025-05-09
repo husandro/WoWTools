@@ -198,10 +198,10 @@ local function GameTooltip_URL(tooltip, tab)
         else
             if tooltip then
                 tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
-                tooltip:Show(true)
+                --tooltip:Show(true)
             else
                 GameTooltip:AddLine('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
-                GameTooltip:Show(true)
+                --GameTooltip:Show(true)
             end
         end
 
@@ -210,7 +210,7 @@ local function GameTooltip_URL(tooltip, tab)
             WoWTools_TooltipMixin:Show_URL(nil, nil, nil, tab.name)
         else
             tooltip:AddLine((tab.col or '')..'|A:NPE_Icon:0:0|aCtrl+Shift '..wowheadIcon)
-            tooltip:Show()
+            --tooltip:Show()
         end
     end
 end

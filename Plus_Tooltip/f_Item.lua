@@ -390,7 +390,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
-
+    GameTooltip_CalculatePadding(tooltip)
     --tooltip:Show()
 end
 

@@ -65,4 +65,6 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     end
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
+
+    GameTooltip_CalculatePadding(tooltip)
 end
