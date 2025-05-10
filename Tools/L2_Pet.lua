@@ -156,7 +156,9 @@ end
 
 --初始
 local function Init()
-
+    if not button then
+        return
+    end
     button.Text=WoWTools_LabelMixin:Create(button, {size=10, color=true})-- size,nil,nil, true)
     button.Text:SetPoint('BOTTOM',0 , -2)
 
@@ -349,6 +351,8 @@ local function Init()
         button:init_pets_data()
         button:set_auto_summon_tips()
     end)
+    
+    Init=function()end
 end
 
 
