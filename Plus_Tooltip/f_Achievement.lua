@@ -35,13 +35,13 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     end
 
     if flags==0x20000 then
-        tooltip.textRight2:SetText(
+        tooltip.text2Right:SetText(
             WoWTools_DataMixin.Icon.net2
             ..'|cffff00ff'
             ..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
         )
     else
-        tooltip.textRight2:SetText('')
+        tooltip.text2Right:SetText('')
     end
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
