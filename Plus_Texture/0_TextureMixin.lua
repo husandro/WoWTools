@@ -44,16 +44,16 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
     end
 
    --local x, y = 10, 3
-   --[[local x, y = 0, 0
-    frame.Background:SetPoint("TOPLEFT", -x, y)
-    frame.Background:SetPoint("BOTTOMRIGHT", x, -y)
-    frame.Background:SetAtlas('common-dropdown-bg')
-    frame.Background:SetAlpha(alpha)]]
-
-    --*frame.Background:SetAtlas('ChallengeMode-guild-background')
-    --frame.Background:SetAlpha(alpha)
-    frame.Background:SetColorTexture(0,0,0)
+    --frame.Background:SetPoint("TOPLEFT", -x, y)
+    --frame.Background:SetPoint("BOTTOMRIGHT", x, -y)
+    frame.Background:SetAtlas('ChallengeMode-guild-background')
+    
     frame.Background:SetAlpha(alpha)
+
+    --frame.Background:SetAtlas('ChallengeMode-guild-background')
+    --frame.Background:SetAlpha(alpha)
+    --frame.Background:SetColorTexture(0,0,0)
+    --frame.Background:SetAlpha(alpha)
 
     return frame.Background
 end
