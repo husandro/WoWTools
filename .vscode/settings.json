@@ -5676,7 +5676,22 @@
         "WarbandSceneEntryMixin",
         "GameTooltip_CalculatePadding",
         "WowStyle2DropdownMixin",
-        "MenuStyle1Mixin"
+        "MenuStyle1Mixin",
+        "APIDocumentation_LoadUI",
+        "SelectionBehaviorMixin",
+        "APIDocumentation",
+        "SelectionBehaviorFlags",
+        "HybridScrollFrame_CreateButtons",
+        "HybridScrollFrame_SetDoNotHideScrollBar",
+        "HybridScrollFrame_Update",
+        "HybridScrollFrame_ScrollToIndex",
+        "ButtonFrameTemplate_HidePortrait",
+        "HybridScrollFrame_GetButtons",
+        "HybridScrollFrame_GetOffset",
+        "Clamp",
+        "CreateFramePool",
+        "PERCENTAGE_STRING",
+        "Saturate"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

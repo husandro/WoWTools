@@ -798,9 +798,9 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_CooldownViewer()
-     hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
+    hooksecurefunc(CooldownViewerBuffBarItemMixin, 'SetBarContent', function(frame)
         if not frame.Bar.isSetTexture then
-            self:SetFrame(frame.Bar, {alpha=0.2, index=1})
+            self:SetFrame(frame.Bar, {alpha=0.2, index=1})--frame:GetBarFrame()
             frame.Bar.isSetTexture=true
         end
     end)
