@@ -334,7 +334,7 @@ Plus\FriendsList.lua
 
 
 ##卖买
-Plus_Merchant\0_SellBuyMixin.lua
+Plus_Merchant\0_MerchantMixin.lua
 Plus_Merchant\1_Init.lua
 Plus_Merchant\2_Menu.lua
 Plus_Merchant\DELETE.lua

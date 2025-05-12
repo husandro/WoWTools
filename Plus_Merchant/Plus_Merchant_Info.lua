@@ -15,6 +15,7 @@ local function Init()
     local isMerce= selectedTab == 1
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     local numItem= isMerce and GetMerchantNumItems() or GetNumBuybackItems()
+
     for i=1, page do
         local index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
         local btn= _G["MerchantItem"..i]
@@ -54,7 +55,7 @@ local function Init()
 					GameTooltip:Show()
                 end)
             end
-            --物品，属性
+--物品，属性
             local classID= itemLink and select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
                 local stat= WoWTools_ItemStatsMixin:GetItem(itemLink)--物品，属性，表
