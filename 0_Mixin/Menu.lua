@@ -343,9 +343,8 @@ function WoWTools_MenuMixin:ShowTexture(root, GetValue, SetValue)
         SetValue)
 end
 
-
 --背景, 透明度
-function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, onlyRoot)
+function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, RestFunc, onlyRoot)
     local sub, sub2
     if onlyRoot then
         sub=root
@@ -369,8 +368,32 @@ function WoWTools_MenuMixin:BgAplha(root, GetValue, SetValue, onlyRoot)
         bit='%.2f',
     })
     sub:CreateSpacer()
+
+    if not onlyRoot then
+        sub:CreateButton(
+            '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置' or RESET),
+        function(data)
+            data.SetValue(0.5)
+            if data.RestFunc then
+                data.RestFunc()
+            end
+            return MenuResponse.Refresh
+        end, {SetValue=SetValue, RestFunc=RestFunc})
+    end
     return sub, sub2
 end
+--背景, 透明度
+--[[
+WoWTools_MenuMixin:BgAplha(sub,
+function()--GetValue
+end, function()--SetValue
+end, function()--RestFunc
+end, false)--onlyRoot
+]]
+
+
+
+
 
 --显示背景
 function WoWTools_MenuMixin:ShowBackground(root, GetValue, SetValue, GetAlphaValue, SetAplhaValue)

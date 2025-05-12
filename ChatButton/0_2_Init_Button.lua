@@ -148,7 +148,7 @@ local function Init_Menu(self, root)
     end, function(value)
         Save().bgAlpha=value
         self:set_backgroud()
-    end, false)
+    end)
 
     sub=root:CreateCheckbox('|A:newplayertutorial-drag-cursor:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移过图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ENTER_LFG,EMBLEM_SYMBOL)), function()
         return Save().isEnterShowMenu

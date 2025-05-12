@@ -249,7 +249,7 @@ local function Init_Menu(self, root)
     end, function()
         Save().bgAlpha= not Save().bgAlpha and true or nil
         WoWTools_ToolsMixin:ShowBackground()--显示背景
-    end, false)
+    end)
 
 --缩放
    WoWTools_MenuMixin:Scale(self, sub, function()
