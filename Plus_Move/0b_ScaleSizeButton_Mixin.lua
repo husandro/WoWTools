@@ -629,7 +629,7 @@ end
 
 local function Set_OnMouseUp(self, d)
     self:SetScript("OnUpdate", nil)
-    self.isActive= nil
+    self.isActiveButton= nil
 
     --[[if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         return
@@ -661,12 +661,12 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActive or WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+    if self.isActiveButton or WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         return
     end
 
     if d=='LeftButton' then
-        self.isActive= true
+        self.isActiveButton= d
         local target= self.targetFrame
         self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
         self.SOS.scale = target:GetScale()
@@ -703,7 +703,7 @@ local function Set_OnMouseDown(self, d)
 
     elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] and not IsModifierKeyDown() then
 --开始，设置，大小
-        self.isActive = true
+        self.isActiveButton = d
         local continueResizeStart = true
         if self.targetFrame.onResizeStartCallback then
             continueResizeStart = self.targetFrame.onResizeStartCallback(self)
@@ -908,11 +908,17 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         Set_OnMouseUp(s, d)
     end)
     btn:SetScript("OnMouseDown",function(s, d)
+        s.isOnMouseDown=true
         Set_OnMouseDown(s, d)
     end)
-    btn:SetScript('OnMouseWheel', function(f)
-        MenuUtil.CreateContextMenu(f, Init_Menu)
-        Set_Tooltip(f)
+    btn:SetScript('OnMouseWheel', function(s)
+        MenuUtil.CreateContextMenu(s, Init_Menu)
+        Set_Tooltip(s)
+    end)
+    btn.targetFrame:HookScript('OnHide', function(s)
+        if s.ResizeButton.isActiveButton then
+            Set_OnMouseUp(s.ResizeButton, s.ResizeButton.isActiveButton)
+        end
     end)
 
     if onShowFunc then
@@ -924,10 +930,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
             frame:HookScript('OnShow', onShowFunc)
         end
     end
-
-    --[[btn.targetFrame:HookScript('OnHide', function(s)
-        
-    end)]]
 
     if not btn.notMoveAlpha then--移动时，设置透明度
         Set_Move_Alpha(frame)

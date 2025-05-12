@@ -127,6 +127,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent("PLAYER_LOGOUT")
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -151,11 +152,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 end
             })
 
-            if not Save().disabled then
+            if Save().disabled then
+                self:UnregisterAllEvents()
+            else
                 Init()
+                self:UnregisterEvent(event)
             end
-
-            self:UnregisterEvent(event)
         end
 
     elseif event == "PLAYER_LOGOUT" then

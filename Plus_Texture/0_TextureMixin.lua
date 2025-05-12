@@ -19,7 +19,8 @@ background:SetAlpha(.925);
 
 
 WoWTools_TextureMixin={
-    Events={}
+    Events={},
+    Frames={},
 }
 
 function WoWTools_TextureMixin:CreateBackground(frame, tab)

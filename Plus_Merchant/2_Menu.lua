@@ -370,7 +370,10 @@ local function Init_Menu(self, root)
         return not Save().notPlus
     end, function()
         Save().notPlus = not Save().notPlus and true or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        if Save().notPlus then
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+        WoWTools_MerchantMixin:Init_Plus()
     end)
 
 

@@ -154,14 +154,13 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     end
 
 --设置 Atlas or Texture    
-    if isType2 then
-        if btn.texture then
-            if atlas then
-                btn.texture:SetAtlas(atlas, useAtlasSize)
-            elseif texture then
-                btn.texture:SetTexture(texture)
-            end
+    if btn.texture then
+        if atlas then
+            btn.texture:SetAtlas(atlas, useAtlasSize)
+        elseif texture then
+            btn.texture:SetTexture(texture)
         end
+
     elseif atlas then
         btn:SetNormalAtlas(atlas, useAtlasSize)
     elseif texture then

@@ -771,6 +771,7 @@ end)
      mixin:SetAlphaColor(MerchantExtraCurrencyBg)
      mixin:SetAlphaColor(MerchantExtraCurrencyInset)
      mixin:HideTexture(MerchantFrameBottomLeftBorder)
+     mixin:SetButton(MerchantFrameCloseButton, {all=true})
 
      C_Timer.After(2, function()
 
