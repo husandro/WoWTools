@@ -91,7 +91,7 @@ end
 
 local function Init_WidthX2()
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), WoWTools_DataMixin.onlyChinese and '插件' or ADDONS)
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'), WoWTools_DataMixin.onlyChinese and '插件' or ADDONS)
     end
 
     MERCHANT_ITEMS_PER_PAGE= Save().MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
@@ -160,7 +160,7 @@ local function Init_WidthX2()
             w= w+161
         end
         MerchantFrame:SetSize(max(w, 336), max(h, 440))
-        WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+        WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
         MerchantFrameTab2:set_buyback_num()--回购，数量，提示
         if MerchantFrame.ResizeButton then
             MerchantFrame.ResizeButton.setSize=true
@@ -196,7 +196,7 @@ local function Init_WidthX2()
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
 
         MerchantFrame:SetSize(336, 440)
-        WoWTools_SellBuyMixin:Set_Merchant_Info()--设置, 提示, 信息
+        WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
         MerchantFrameTab2:set_buyback_num()--回购，数量，提示
         if MerchantFrame.ResizeButton then
             MerchantFrame.ResizeButton.setSize=nil
@@ -314,6 +314,6 @@ end
 
 
 
-function WoWTools_SellBuyMixin:Init_WidthX2()
+function WoWTools_MerchantMixin:Init_WidthX2()
     Init_WidthX2()
 end

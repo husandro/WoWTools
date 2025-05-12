@@ -1,11 +1,11 @@
-WoWTools_SellBuyMixin={}
+WoWTools_MerchantMixin={}
 
 local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
 
 
-function WoWTools_SellBuyMixin:CheckSellItem(itemID, itemLink, quality, isBound)
+function WoWTools_MerchantMixin:CheckSellItem(itemID, itemLink, quality, isBound)
     if not itemID or Save().disabled or Save().noSell[itemID] then
         return
     end

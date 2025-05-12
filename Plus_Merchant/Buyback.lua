@@ -56,10 +56,10 @@ local function set_buyback_item()
 
     C_Timer.After(0.3, function()
         for index, itemLink in pairs(tab) do
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK), itemLink)
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK), itemLink)
         end
         for index, info in pairs(no) do
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, index..')|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, index..')|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '购回失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BUYBACK, INCOMPLETE)), info[1], C_CurrencyInfo.GetCoinTextureString(info[2]))
         end
     end)
 end
@@ -89,7 +89,7 @@ local function Add_Remove_ToSave(itemID)
     end
     print(
         WoWTools_DataMixin.addName,
-        WoWTools_SellBuyMixin.addName,
+        WoWTools_MerchantMixin.addName,
         WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK,
         text
     )
@@ -128,7 +128,7 @@ local function Init_Menu(self, root)
     end
 
     root:CreateDivider()
-    WoWTools_SellBuyMixin:Buyback_Menu(self, root)
+    WoWTools_MerchantMixin:Buyback_Menu(self, root)
 end
 
 
@@ -255,6 +255,6 @@ end
 
 
 
-function WoWTools_SellBuyMixin:Init_Buyback_Button()--回购物品
+function WoWTools_MerchantMixin:Init_Buyback_Button()--回购物品
     Init()
 end

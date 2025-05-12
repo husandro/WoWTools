@@ -17,7 +17,7 @@ local function Init()
     frame.restButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET)
         GameTooltip:Show()
     end)
@@ -95,6 +95,6 @@ end
 
 
 
-function WoWTools_SellBuyMixin:Init_StackSplitFrame()
+function WoWTools_MerchantMixin:Init_StackSplitFrame()
     Init()
 end

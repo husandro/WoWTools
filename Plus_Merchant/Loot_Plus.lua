@@ -10,7 +10,7 @@ local function Init()
         end
         C_CVar.SetCVar("autoLootDefault", not C_CVar.GetCVarBool("autoLootDefault") and '1' or '0')
         local value= C_CVar.GetCVarBool("autoLootDefault")
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName, '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r|n', not WoWTools_DataMixin.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", WoWTools_TextMixin:GetEnabeleDisable(value))
+        print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r|n', not WoWTools_DataMixin.onlyChinese and AUTO_LOOT_DEFAULT_TEXT or "自动拾取", WoWTools_TextMixin:GetEnabeleDisable(value))
 
         if value and not IsModifierKeyDown() then
             for i = GetNumLootItems(), 1, -1 do
@@ -23,7 +23,7 @@ local function Init()
     check:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
         GameTooltip:AddLine('|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r')
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动拾取' or AUTO_LOOT_DEFAULT_TEXT, (WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT)..': '..WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
@@ -42,7 +42,7 @@ local function Init()
     check:SetScript('OnEvent', function()
         if IsShiftKeyDown() and not UnitAffectingCombat('player') then
             C_CVar.SetCVar("autoLootDefault", '0')
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName,'|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,'|cffff00ff|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus|r','|cnGREEN_FONT_COLOR:Shift|r', WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT, WoWTools_TextMixin:GetEnabeleDisable(C_CVar.GetCVarBool("autoLootDefault")))
 
         else
             if C_CVar.GetCVarBool("autoLootDefault") then
@@ -68,7 +68,7 @@ end
 
 
 
-function WoWTools_SellBuyMixin:Init_AutoLoot()
+function WoWTools_MerchantMixin:Init_AutoLoot()
     if not WoWToolsSave['Plus_SellBuy'].notAutoLootPlus then
         Init()
     end

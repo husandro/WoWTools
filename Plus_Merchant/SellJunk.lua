@@ -21,7 +21,7 @@ local function Init()
     function AutoSellJunkCheck:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
         --GameTooltip:AddLine('|A:Cursor_lootall_128:0:0|a'..(WoWTools_DataMixin.onlyChinese and "自动拾取" or AUTO_LOOT_DEFAULT_TEXT)..' Plus')
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动出售垃圾' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SELL_ALL_JUNK_ITEMS_EXCLUDE_HEADER), WoWTools_TextMixin:GetEnabeleDisable(not Save().notSellJunk))
@@ -63,7 +63,7 @@ local function Init()
                     and info.quality
                     and (info.quality<5 or Sell[info.itemID] and not notSellCustom)
                 then
-                    local checkText= WoWTools_SellBuyMixin:CheckSellItem(info.itemID, info.hyperlink, info.quality, info.isBound)--检察 ,boss掉落, 指定 或 出售灰色,宠物
+                    local checkText= WoWTools_MerchantMixin:CheckSellItem(info.itemID, info.hyperlink, info.quality, info.isBound)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                     if not info.isLocked and checkText then
                         C_Container.UseContainerItem(bag, slot)--买出
 
@@ -89,7 +89,7 @@ local function Init()
         end
         if num > 0 then
             print(
-                WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName,
+                WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName,
                 (WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(WoWTools_DataMixin.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
                 '|cnGREEN_FONT_COLOR:'..num..'|r'..(WoWTools_DataMixin.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
                 C_CurrencyInfo.GetCoinTextureString(preceTotale)
@@ -164,7 +164,7 @@ Frame:SetScript("OnEvent", function(_, event, _, itemID, itemLink, _, playerName
                 Save().bossItems[itemID]= itemLevel
 
                 if not Save().notSellBoss then
-                    print(WoWTools_SellBuyMixin.addName, WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB), itemLink)
+                    print(WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB), itemLink)
                 end
 
             end
@@ -185,7 +185,7 @@ end)
 
 
 --自动出售
-function WoWTools_SellBuyMixin:Init_Auto_Sell_Junk()
+function WoWTools_MerchantMixin:Init_Auto_Sell_Junk()
     if not PlayerGetTimerunningSeasonID() then
         C_Timer.After(2.2, function()
             Frame:RegisterEvent('ENCOUNTER_LOOT_RECEIVED')

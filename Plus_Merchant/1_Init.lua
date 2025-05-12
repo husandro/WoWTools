@@ -58,7 +58,7 @@ end
 
 
 --商人 Plus
-function WoWTools_SellBuyMixin:Init_Plus()
+function WoWTools_MerchantMixin:Init_Plus()
     if Save().notPlus then
         return
     end
@@ -73,7 +73,7 @@ function WoWTools_SellBuyMixin:Init_Plus()
         MerchantMoneyInset:SetShown(false)
     end)
 
-    WoWTools_SellBuyMixin.Init_Plus=function()end
+    WoWTools_MerchantMixin.Init_Plus=function()end
 end
 
 
@@ -98,16 +98,16 @@ end
 --####
 
 local function Init()
-    WoWTools_SellBuyMixin:Init_AutoLoot()
-    WoWTools_SellBuyMixin:Init_Delete()
-    WoWTools_SellBuyMixin:Init_Auto_Repair()--自动修理
-    WoWTools_SellBuyMixin:Init_Plus()--商人 Plus
+    WoWTools_MerchantMixin:Init_AutoLoot()
+    WoWTools_MerchantMixin:Init_Delete()
+    WoWTools_MerchantMixin:Init_Auto_Repair()--自动修理
+    WoWTools_MerchantMixin:Init_Plus()--商人 Plus
 
-    WoWTools_SellBuyMixin:Init_Auto_Sell_Junk()--自动出售
+    WoWTools_MerchantMixin:Init_Auto_Sell_Junk()--自动出售
 
-    WoWTools_SellBuyMixin:Init_Buy_Items_Button()--购买物品
-    WoWTools_SellBuyMixin:Init_Buyback_Button()--回购物品
-    WoWTools_SellBuyMixin:Init_Menu()
+    WoWTools_MerchantMixin:Init_Buy_Items_Button()--购买物品
+    WoWTools_MerchantMixin:Init_Buyback_Button()--回购物品
+    WoWTools_MerchantMixin:Init_Menu()
 
 --商人 Plus
 
@@ -135,16 +135,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID]= WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID] or {}
             WoWToolsSave['Plus_SellBuy'].WoWBuyItems= WoWToolsSave['Plus_SellBuy'].WoWBuyItems or {}
 
-            WoWTools_SellBuyMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
+            WoWTools_MerchantMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
-                name= WoWTools_SellBuyMixin.addName,
+                name= WoWTools_MerchantMixin.addName,
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
                     print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_SellBuyMixin.addName,
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
                         WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
                         WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
                     )

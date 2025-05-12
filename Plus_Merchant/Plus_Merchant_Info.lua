@@ -45,7 +45,7 @@ local function Init()
                     if not self.itemID then return end
                     GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 					GameTooltip:ClearLines()
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
+                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
                     GameTooltip:AddLine(' ')
                     GameTooltip:AddDoubleLine('|T236994:0|t'..(WoWTools_DataMixin.onlyChinese and '自动购买物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), not Save().notAutoBuy and Save().buyItems[self.itemID] or (WoWTools_DataMixin.onlyChinese and '无' or NONE))
                     local all= C_Item.GetItemCount(self.itemID, true, false, true)
@@ -76,7 +76,7 @@ local function Init()
                             GameTooltip:ClearLines()
                             GameTooltip:SetSpellByID(self.spellID)
                             GameTooltip:AddLine(' ')
-                            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SellBuyMixin.addName)
+                            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
                             GameTooltip:Show()
                         end
                         self:SetAlpha(0.5)
@@ -108,7 +108,7 @@ end
 
 
 --商人Plus. 设置, 提示, 信息
-function WoWTools_SellBuyMixin:Set_Merchant_Info()
+function WoWTools_MerchantMixin:Set_Merchant_Info()
     if MerchantFrame:IsVisible() and not Save().notPlus then
         Init()
     end

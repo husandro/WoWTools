@@ -38,6 +38,6 @@ end
 
 
 
-function WoWTools_SellBuyMixin:Init_Delete()
+function WoWTools_MerchantMixin:Init_Delete()
     Init()
 end
