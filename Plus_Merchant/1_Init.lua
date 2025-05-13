@@ -45,63 +45,11 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
---商人 Plus
-function WoWTools_MerchantMixin:Init_Plus()
-    if Save().notPlus then
-        return
-    end
-
-    self:Init_StackSplitFrame()-- 堆叠,数量,框架
-
-    C_Timer.After(2, self.Init_WidthX2)--加宽，框架x2
-
-    hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
-        MerchantExtraCurrencyInset:SetShown(false)
-        MerchantExtraCurrencyBg:SetShown(false)
-        MerchantMoneyInset:SetShown(false)
-    end)
-
-    WoWTools_MerchantMixin.Init_Plus=function()end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
---####
---初始
---####
-
 local function Init()
     WoWTools_MerchantMixin:Init_AutoLoot()
     WoWTools_MerchantMixin:Init_Delete()
     WoWTools_MerchantMixin:Init_Auto_Repair()--自动修理
-    WoWTools_MerchantMixin:Init_Plus()--商人 Plus
+
 
     WoWTools_MerchantMixin:Init_Auto_Sell_Junk()--自动出售
 
@@ -110,7 +58,8 @@ local function Init()
     WoWTools_MerchantMixin:Init_Menu()
 
 --商人 Plus
-
+    WoWTools_MerchantMixin:Init_WidthX2()
+    WoWTools_MerchantMixin:Init_Plus_Other()
 
     Init=function()end
 end
@@ -121,11 +70,9 @@ end
 
 
 
-
-
-
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -144,11 +91,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    print(
-                        WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
-                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
-                        WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
-                    )
+                    if Save().disabled then
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                            WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI
+                        )
+                        self:UnregisterEvent('PLAYER_LOGOUT')
+                    else
+                        self:RegisterEvent("PLAYER_LOGOUT")
+                    end
+                    Inti()
                 end
             })
 
@@ -159,6 +112,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             end
         end
+
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        Init()
+        self:UnregisterEvent(event)
 
     elseif event == "PLAYER_LOGOUT" then
         if not WoWTools_DataMixin.ClearAllSave then

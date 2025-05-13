@@ -338,14 +338,13 @@ Plus_Merchant\0_MerchantMixin.lua
 Plus_Merchant\1_Init.lua
 Plus_Merchant\2_Menu.lua
 Plus_Merchant\DELETE.lua
-Plus_Merchant\Loot_Plus.lua
+Plus_Merchant\LootFrame.lua
 Plus_Merchant\Repair.lua
 Plus_Merchant\SellJunk.lua
 Plus_Merchant\BuyItem.lua
 Plus_Merchant\Buyback.lua
-Plus_Merchant\Plus_Merchant_Info.lua
 Plus_Merchant\Plus_WidthX2.lua
-Plus_Merchant\Plus_StackSplitFrame.lua
+Plus_Merchant\Plus_Other.lua
 
 
 ##银行

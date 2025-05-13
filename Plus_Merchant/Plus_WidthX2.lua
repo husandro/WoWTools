@@ -9,6 +9,14 @@ MAX_MERCHANT_CURRENCIES = 6;
 <Size x="336" y="444"/>
 <Size x="153" y="44"/>
 ]]
+--更新物品
+local function Update_MerchantFrame()
+    if MerchantFrame.selectedTab == 2 then
+        WoWTools_Mixin:Call(MerchantFrame_UpdateBuybackInfo)
+    else
+        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+    end
+end
 
 
 
@@ -30,19 +38,27 @@ local function Create_Lable(btn)
     btn.IndexLable:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT')
     btn.IndexLable:SetAlpha(0.3)
 
+    local name= btn:GetName()
+
+--_G[name..'AltCurrencyFrame']
+--_G[name..'MoneyFrame']
+
 --隐藏，背景框
-    local nameFrame= _G[btn:GetName()..'NameFrame']
-    nameFrame:Hide()
+    local nameFrame= _G[name..'NameFrame']
+    --nameFrame:Hide()
     nameFrame:SetTexture(0)
 
+
 --物品，名称
-    btn.Name:SetPoint('RIGHT', -2, 0)
+    btn.Name:SetPoint('RIGHT')
+    btn.Name:SetPoint('BOTTOM', _G[name..'AltCurrencyFrame'], 'TOP', 0, 2)
+    print(btn.Name:GetStringHeight())
 
 --建立，物品，背景
     btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
     btn.itemBG:SetColorTexture(0, 0, 0, 0.95)
     btn.itemBG:SetPoint('TOPLEFT', -1, -2)
-    btn.itemBG:SetPoint('BOTTOMRIGHT', -2, 0)
+    btn.itemBG:SetPoint('BOTTOMRIGHT')
     btn.itemBG:Hide()
 
 --查询，背包，物品
@@ -68,7 +84,8 @@ local function Create_Lable(btn)
         end
     end)
 
-    btn:HookScript('OnHide', function(self)
+    --btn:HookScript('OnHide', function(self)
+    function btn:init_reset()
         self.ItemButton:Reset()
         self.ItemButton.price = nil
         self.ItemButton.hasItem = nil
@@ -78,7 +95,7 @@ local function Create_Lable(btn)
         self.ItemButton.texture = nil
         self.Name:SetText('')
         self.IndexLable:SetText('')
-    end)
+    end
 end
 
 
@@ -184,8 +201,8 @@ end
 
 
 
-
-local function Init()
+--WidthX2
+local function Init_WidthX2()
 --按钮，数量
     MERCHANT_ITEMS_PER_PAGE= Save().MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
 
@@ -201,10 +218,10 @@ local function Init()
         MERCHANT_ITEMS_PER_PAGE= 10--按钮，数量
         Save().numLine= 5
         Create_ItemButton()
-        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+        Update_MerchantFrame()--更新物品
     end, sizeStopFunc= function()
         Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE --按钮，数量
-        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+        Update_MerchantFrame()--更新物品
     end})
 
 
@@ -228,6 +245,9 @@ local function Init()
 
                 btn.itemBG:SetShown(info)--Texture.lua
                 btn.IndexLable:SetText(info and  btn.ItemButton:GetID() or '')
+            else
+                btn:init_reset()
+                btn:SetShown(false)
             end
 
             if i>1 then
@@ -236,8 +256,8 @@ local function Init()
             end
         end
 --换行
-        local numWidth= Save().numWidth or 153
-        local w= numWidth+ 20--172
+        local numWidth= (Save().numWidth or 153)+8
+        local w= numWidth+ 15
         local line= Save().numLine or 6
         local h= 146+(line*52)
 
@@ -245,20 +265,21 @@ local function Init()
             btn= _G['MerchantItem'..i]
             btn:ClearAllPoints()
             btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
-            w= w+ numWidth+ 8
+            w= w+ numWidth
         end
 --设置，框加大小
-        MerchantFrame:SetSize(max(w, 336), max(h, 440))
+        MerchantFrame:SetSize(max(w, 336), max(h, 444))
 
 --隐藏，多余
         index= MERCHANT_ITEMS_PER_PAGE+1
-        while _G['MerchantItem'..index] do
-            _G['MerchantItem'..index]:SetShown(false)
+        btn= _G['MerchantItem'..index]
+        while btn do
+            btn:SetShown(false)
+            btn:init_reset()
             index= index+1
+            btn= _G['MerchantItem'..index]
         end
 
---设置, 提示, 信息
-        WoWTools_MerchantMixin:Set_Merchant_Info()
 --回购，数量，提示
         MerchantFrameTab2:set_buyback_num()
 
@@ -289,16 +310,17 @@ local function Init()
 
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
 
-        local width= (Save().numWidth or 153)*2+ 30
-        width= math.max(width, 418)--336
+        local width= ((Save().numWidth or 153)+8)*2+ 15
+        width= math.max(width, 336)--336
 
-        MerchantFrame:SetSize(width, 440)
+        MerchantFrame:SetSize(width, 444)
 
 --隐藏，多余
         local index= BUYBACK_ITEMS_PER_PAGE+1
         btn= _G['MerchantItem'..index]
         while btn do
             btn:SetShown(false)
+            btn:init_reset()
             index= index+1
             btn= _G['MerchantItem'..index]
         end
@@ -364,7 +386,8 @@ local function Init()
                 end, function(data)
                     Save().numWidth= not Save().numWidth and data.width or nil
                     Create_ItemButton()
-                    WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+                    Update_MerchantFrame()--更新物品
+
                 end, {width=Save().numWidth})
             end)
         end
@@ -378,7 +401,7 @@ local function Init()
     MerchantFrame.ResizeButton2:SetScript('OnMouseUp', function(self)
         self:GetParent():StopMovingOrSizing()
         self.isMovingToRight=nil
-        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+        Update_MerchantFrame()--更新物品
         ResetCursor()
     end)
 
@@ -390,7 +413,9 @@ local function Init()
         local w= self:GetWidth()
         local line= Save().numLine or 6
 
-        local left= math.floor(MERCHANT_ITEMS_PER_PAGE/line)
+        local left= MerchantFrame.selectedTab==2
+                    and 2
+                    or math.floor(MERCHANT_ITEMS_PER_PAGE/line)
         w= w-(left*8)-12
 
         Save().numWidth= math.max(153, w/left)
@@ -398,8 +423,12 @@ local function Init()
         Create_ItemButton()
     end)
 
+    if MerchantFrame:IsShown() then
+       Update_MerchantFrame() 
+    end
 
-    Init=function()end
+
+    Init_WidthX2=function()end
 end
 
 
@@ -423,86 +452,15 @@ end
 
 
 
-local function Init_UI()
---重新设置，按钮
-    hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
-        MerchantRepairItemButton:ClearAllPoints()--单个，修理
-        MerchantRepairItemButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -289, 33)
-        MerchantRepairAllButton:ClearAllPoints()--全部，修理
-        MerchantRepairAllButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -241, 33)
-        MerchantGuildBankRepairButton:ClearAllPoints()--公会，修理
-        MerchantGuildBankRepairButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -193, 33)
-        MerchantSellAllJunkButton:ClearAllPoints()--出售垃圾，修理
-        MerchantSellAllJunkButton:SetPoint('BOTTOMRIGHT', MerchantFrame, -145, 33)--36
-    end)
---回购
-    MerchantBuyBackItem:ClearAllPoints()
-    MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -16, 33)--115
-
---下一页
-    MerchantNextPageButton:ClearAllPoints()
-    MerchantNextPageButton:SetPoint('RIGHT', MerchantFrame.FilterDropdown, 'LEFT', 4, 0)
-    MerchantNextPageButton:SetFrameStrata('HIGH')
-    local label, texture= MerchantNextPageButton:GetRegions()
-    if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
-    if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
-
---上一页
-    MerchantPrevPageButton:ClearAllPoints()
-    MerchantPrevPageButton:SetPoint('RIGHT', MerchantNextPageButton, 'LEFT',8,0)
-    label, texture= MerchantPrevPageButton:GetRegions()
-    if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
-    if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
-
---上页数
-    MerchantPageText:ClearAllPoints()
-    MerchantPageText:SetPoint('RIGHT', MerchantPrevPageButton, 'LEFT', 0, 0)
-    MerchantPageText:SetJustifyH('RIGHT')
-
---外框
-    MerchantFrameBottomLeftBorder:ClearAllPoints()
-    MerchantFrameBottomLeftBorder:SetPoint('BOTTOMRIGHT', 0, 26)
 
 
 
-    --物品数量
-    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
-    MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
-    MerchantFrame:HookScript('OnShow', function()
-        local num= GetMerchantNumItems()
-        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
-    end)
 
-    --回购，数量，提示
-    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
-    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
-    function MerchantFrameTab2:set_buyback_num()
-        local num
-        num= GetNumBuybackItems() or 0
-        if num>0 then
-            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
-        else
-            num= ''
-        end
-        self.numLable:SetText(num)
-    end
-
-
-
-    if C_AddOns.IsAddOnLoaded("CompactVendor") then
-        print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
-            format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'Compact Vendor'),
-            WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
-        )
-    end
-
-    Init_UI=function()end
-end
 
 
 
 function WoWTools_MerchantMixin:Init_WidthX2()
-    Init()
-    Init_UI()
+    if not Save().notPlus then
+        Init_WidthX2()
+    end
 end
