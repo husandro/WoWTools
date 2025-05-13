@@ -190,6 +190,9 @@ end
 
 
 
+
+
+
 --增加，按钮宽度，按钮，菜单
 local function ResizeButton2_Menu(self, root)
     root:CreateCheckbox(
@@ -199,7 +202,7 @@ local function ResizeButton2_Menu(self, root)
     end, function(data)
         Save().numWidth= not Save().numWidth and data.width or nil
         Create_ItemButton()
-
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
     end, {width=Save().numWidth})
 
 --背景, 透明度
@@ -218,6 +221,14 @@ local function ResizeButton2_Menu(self, root)
         Create_ItemButton()
     end)
 end
+
+
+
+
+
+
+
+
 
 
 

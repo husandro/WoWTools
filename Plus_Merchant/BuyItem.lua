@@ -3,8 +3,10 @@ local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
 
-local function GetBuyNum(itemID)
-    return WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+local function Get_Buy_Num(itemID)
+    if itemID then
+        return WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+    end
 end
 
 local function SaveBuyItem(itemID, num)--当num=nil时，会清除
@@ -26,74 +28,74 @@ local BuyItemButton
 
 local function set_buy_item()
     local numAllItems= GetMerchantNumItems() or 0
+
     if IsModifierKeyDown() or Save().notAutoBuy or numAllItems==0 then
         return
     end
+    
     local Tab={}
     for index=1, numAllItems do
-        local itemID=GetMerchantItemID(index)
-        local num= itemID and GetBuyNum(itemID)
-        if num then
-            local buyNum=num-C_Item.GetItemCount(itemID, true, false, true)
-            if buyNum>0 then
-                local info = C_MerchantFrame.GetItemInfo(index)
-                if info then
-                    local maxStack = GetMerchantItemMaxStack(index)
-                    local price= info.price
-                    local stackCount= info.stackCount
+        local itemID= GetMerchantItemID(index)
+        local info= itemID and C_MerchantFrame.GetItemInfo(index)
+        local num= info and Get_Buy_Num(itemID) or 0
+        local buyNum= num>0 and num- C_Item.GetItemCount(itemID, true, false, true) or 0
 
-                    local canAfford
-                    if (price and price > 0) then
-                        canAfford = floor(GetMoney() / (price / stackCount))
-                    end
-                    if info.hasExtendedCost then
-                        for i = 1, MAX_ITEM_COST do
-                            local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
-                            if itemLink and itemValue and itemValue>0 then
-                                if not currencyName then
-                                    local myCount = C_Item.GetItemCount(itemLink, false, false, true)
-                                    local value= floor(myCount / (itemValue / stackCount))
-                                    canAfford=not canAfford and value or min(canAfford, value)
-                                elseif currencyName then
-                                local info= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink)
-                                if info and info.quantity then
-                                        local value=floor(info.quantity / (itemValue / stackCount))
-                                        canAfford= not canAfford and value or min(canAfford, value)
-                                    else
-                                        canAfford=0
-                                end
-                                end
-                            end
-                        end
-                    end
-                    if canAfford and canAfford>=buyNum and floor(buyNum/stackCount)>0 then
-                        while buyNum>0 do
-                            local stack=floor(buyNum/stackCount)
-                            if IsModifierKeyDown() or stack<1 then
-                                break
-                            end
-                            local buy=buyNum
-                            if stackCount>1 then
-                                if buy>=maxStack then
-                                    buy=maxStack
-                                else
-                                    buy=stack*stackCount
-                                end
+        if buyNum>0 then
+            local maxStack = GetMerchantItemMaxStack(index)
+            local price= info.price
+            local stackCount= info.stackCount
+
+            local canAfford
+            if (price and price > 0) then
+                canAfford = floor(GetMoney() / (price / stackCount))
+            end
+            if info.hasExtendedCost then
+                for i = 1, MAX_ITEM_COST do
+                    local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
+                    if itemLink and itemValue and itemValue>0 then
+                        if not currencyName then
+                            local myCount = C_Item.GetItemCount(itemLink, false, false, true)
+                            local value= floor(myCount / (itemValue / stackCount))
+                            canAfford=not canAfford and value or min(canAfford, value)
+                        elseif currencyName then
+                            local currencyinfo= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink)
+                            if currencyinfo and currencyinfo.quantity then
+                                local value=floor(currencyinfo.quantity / (itemValue / stackCount))
+                                canAfford= not canAfford and value or min(canAfford, value)
                             else
-                                buy=buy>maxStack and maxStack or buy
+                                canAfford=0
                             end
-                            BuyMerchantItem(index, buy)
-                            buyNum=buyNum-buy
-                        end
-                        local itemLink=GetMerchantItemLink(index)
-                        if itemLink then
-                            Tab[itemLink]=num
                         end
                     end
                 end
             end
+            if canAfford and canAfford>=buyNum and floor(buyNum/stackCount)>0 then
+                while buyNum>0 do
+                    local stack=floor(buyNum/stackCount)
+                    if IsModifierKeyDown() or stack<1 then
+                        break
+                    end
+                    local buy=buyNum
+                    if stackCount>1 then
+                        if buy>=maxStack then
+                            buy=maxStack
+                        else
+                            buy=stack*stackCount
+                        end
+                    else
+                        buy=buy>maxStack and maxStack or buy
+                    end
+                    BuyMerchantItem(index, buy)
+                    buyNum=buyNum-buy
+                end
+                local itemLink=GetMerchantItemLink(index)
+                if itemLink then
+                    Tab[itemLink]=num
+                end
+            end
         end
     end
+
     C_Timer.After(1.5, function()
         for itemLink2, num2 in pairs(Tab) do
             print(WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '正在购买' or TUTORIAL_TITLE20, '|cnGREEN_FONT_COLOR:'..num2..'|r', itemLink2)
@@ -155,7 +157,7 @@ local function Add_BuyItem(itemID, itemLink)
             end,
             OnShow=function(s)
                 s.editBox:SetNumeric(true)
-                local num= GetBuyNum(itemID) or 1
+                local num= Get_Buy_Num(itemID) or 1
                 if num then
                     s.editBox:SetText(num)
                 end
@@ -194,11 +196,14 @@ end
 
 
 local function Init()
-    BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {size=22, name='WoWTools_BuyItemButton'})
+    BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
+        name='WoWTools_BuyItemButton',
+        addTexture=true,
+    })
     BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
 
-    BuyItemButton.texture= BuyItemButton:CreateTexture(nil, 'BORDER')
-    BuyItemButton.texture:SetAllPoints()
+    --BuyItemButton.texture= BuyItemButton:CreateTexture(nil, 'BORDER')
+    --BuyItemButton.texture:SetAllPoints()
     function BuyItemButton:set_texture()
         self.texture:SetTexture(236994)
     end
@@ -228,7 +233,7 @@ local function Init()
 
             if itemID and itemLink then
                 local name = '|T'..(icon or 0)..':0|t'..itemLink
-                local num= GetBuyNum(itemID)
+                local num= Get_Buy_Num(itemID)
                 if num then
                     GameTooltip:AddDoubleLine(name..' x|cnGREEN_FONT_COLOR:'..num, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..WoWTools_DataMixin.Icon.left)
                 else
@@ -250,9 +255,16 @@ local function Init()
         GameTooltip:Show()
     end
 
-    BuyItemButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_texture() end)
-    BuyItemButton:SetScript('OnEnter', BuyItemButton.set_tooltip)
-    BuyItemButton:SetScript('OnMouseUp', BuyItemButton.set_texture)
+    BuyItemButton:SetScript('OnLeave', function(self)
+        self:set_texture()
+        GameTooltip_Hide()
+    end)
+    BuyItemButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+    end)
+    BuyItemButton:SetScript('OnMouseUp', function(self)
+        self:set_texture()
+    end)
 
 
 
@@ -312,7 +324,9 @@ local function Init()
 --购买物品
 
     BuyItemButton:RegisterEvent('MERCHANT_SHOW')
-    BuyItemButton:SetScript('OnEvent', set_buy_item)--购买物品
+    BuyItemButton:SetScript('OnEvent', function()
+        set_buy_item()--购买物品
+    end)
 
     BuyItemButton.Text= WoWTools_LabelMixin:Create(BuyItemButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
     BuyItemButton.Text:SetPoint('BOTTOMRIGHT')

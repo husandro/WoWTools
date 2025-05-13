@@ -394,8 +394,10 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
     --local isWoW= tab.isWoW
 
     if not itemID then
-        return
+        return nil, 0, 0, 0, 0, 0
     end
+
+    local zoro= not tab.notZero
 
     local wow= self:GetWoWCount(itemID)
 
@@ -405,13 +407,29 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
     bank= bank- bag
     net= net-bag
 
-    return (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(wow, 3)..'|r'..WoWTools_DataMixin.Icon.wow2
-        ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a '
-        ..(bank==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a '
-        ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a',
+    local text
+    if zoro or wow>0 then
+        text= (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(wow, 3)..'|r'..WoWTools_DataMixin.Icon.wow2
+    end
+    if zoro or net>0 then
+        text= (text and text..' ' or '')
+            ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a'
+    end
+    if zoro or bank>0 then
+        text= (text and text..' ' or '')
+            ..(bank==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bank, 3)..'|r|A:Banker:0:0|a'
+    end
+    if zoro or bag>0 then
+        text= (text and text..' ' or '')
+            ..(bag==0 and '|cff9e9e9e' or '|cffffffff')..WoWTools_Mixin:MK(bag, 3)..'|r|A:bag-main:0:0|a'
+    end
 
-        bag, bank, net, wow
-
+    return
+        text,--1
+        bag,--2
+        bank,--3
+        net,--4
+        wow--5
 end
 
 

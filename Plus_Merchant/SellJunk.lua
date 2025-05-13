@@ -100,7 +100,9 @@ local function Init()
 
 
     AutoSellJunkCheck:RegisterEvent('MERCHANT_SHOW')
-    AutoSellJunkCheck:SetScript('OnEvent', AutoSellJunkCheck.set_sell_junk)
+    AutoSellJunkCheck:SetScript('OnEvent', function(self)
+        self:set_sell_junk()
+    end)
 
     AutoSellJunkCheck:SetChecked(not Save().notSellJunk)
 
