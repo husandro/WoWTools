@@ -58,6 +58,19 @@ local function Init_Texture()
         Set_Event_Texture(name)
     end
 
+    for name in pairs(WoWTools_TextureMixin.Frames) do
+        do
+            if _G[name] then
+                WoWTools_TextureMixin.Frames[name](WoWTools_TextureMixin)
+            elseif WoWTools_DataMixin.Player.husandro then
+                print(WoWTools_TextureMixin.addName, 'Frames[|cnRED_FONT_COLOR:'..name..'|r]', '没有发现')
+            end
+        end
+        WoWTools_TextureMixin.Frames[name]= nil
+    end
+
+    WoWTools_TextureMixin:Init_All_Frame()
+
     hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
         WoWTools_TextureMixin:SetMenu(self)
     end)
@@ -88,6 +101,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
+                WoWTools_TextureMixin.Frames={}
                 self:UnregisterAllEvents()
             else
 

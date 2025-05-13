@@ -753,25 +753,7 @@ end)
 
 
 
-     --商人
-     mixin:SetAlphaColor(MerchantFrameLootFilterMiddle)
-     mixin:SetAlphaColor(MerchantFrameLootFilterLeft)
-     mixin:SetAlphaColor(MerchantFrameLootFilterRight)
-     mixin:SetFrame(MerchantFrameTab1, {notAlpha=true})
-     mixin:SetFrame(MerchantFrameTab2, {notAlpha=true})
-     mixin:SetScrollBar(MerchantFrame)
-     mixin:SetNineSlice(MerchantFrameInset, true)
-     mixin:SetNineSlice(MerchantFrame, true)
-     mixin:SetMenu(MerchantFrame.FilterDropdown)
-
-     mixin:SetAlphaColor(MerchantMoneyInset.Bg)
-     mixin:HideTexture(MerchantMoneyBgMiddle)
-     mixin:HideTexture(MerchantMoneyBgLeft)
-     mixin:HideTexture(MerchantMoneyBgRight)
-     mixin:SetAlphaColor(MerchantExtraCurrencyBg)
-     mixin:SetAlphaColor(MerchantExtraCurrencyInset)
-     mixin:HideTexture(MerchantFrameBottomLeftBorder)
-     mixin:SetButton(MerchantFrameCloseButton, {all=true})
+    
 
      C_Timer.After(2, function()
 

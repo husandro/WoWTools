@@ -29,30 +29,30 @@ local function Create_Lable(btn)
     end
 
     btn.IndexLable= WoWTools_LabelMixin:Create(btn)
-    btn.IndexLable:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT')
+    btn.IndexLable:SetPoint('TOPRIGHT', 0, 2)
     btn.IndexLable:SetAlpha(0.3)
 
     local name= btn:GetName()
-
 --_G[name..'AltCurrencyFrame']
 --_G[name..'MoneyFrame']
 
---隐藏，背景框
-    local nameFrame= _G[name..'NameFrame']
-    --nameFrame:Hide()
-    nameFrame:SetTexture(0)
 
+    _G[name..'NameFrame']:SetTexture(0)
+    btn.ItemButton.NormalTexture:SetTexture(0)
+    btn.SlotTexture:SetTexture(0)
 
 --物品，名称
     btn.Name:SetPoint('RIGHT')
-    btn.Name:SetPoint('BOTTOM', _G[name..'AltCurrencyFrame'], 'TOP', 0, 2)
-    print(btn.Name:GetStringHeight())
+    btn.Name:SetPoint('TOPLEFT', _G[name..'ItemButtonIconTexture'], 'TOPRIGHT', 2, 0)
+    btn.Name:SetPoint('BOTTOM', _G[name..'AltCurrencyFrame'], 'TOP')
+
 
 --建立，物品，背景
     btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
-    btn.itemBG:SetColorTexture(0, 0, 0, 0.95)
-    btn.itemBG:SetPoint('TOPLEFT', -1, -2)
+    btn.itemBG:SetColorTexture(0, 0, 0)
+    btn.itemBG:SetPoint('TOPLEFT', 1, -1)
     btn.itemBG:SetPoint('BOTTOMRIGHT')
+    btn.itemBG:SetAlpha(Save().btnBgAlpha or 0.5)
     btn.itemBG:Hide()
 
 --查询，背包，物品
@@ -97,10 +97,15 @@ end
 --创建，设置，按钮
 local function Create_ItemButton()
     local width= Save().numWidth or 153
+    local bgAlpha= Save().btnBgAlpha or 1
+    local btnNameScale= Save().btnNameScale or 1
     for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
         local btn= _G['MerchantItem'..i] or CreateFrame('Frame', 'MerchantItem'..i, MerchantFrame, 'MerchantItemTemplate', i)
         Create_Lable(btn)
+
         btn:SetWidth(width)
+        btn.itemBG:SetAlpha(bgAlpha)
+        btn.Name:SetScale(btnNameScale)
     end
 
     local index= MERCHANT_ITEMS_PER_PAGE+1
@@ -185,8 +190,34 @@ end
 
 
 
+--增加，按钮宽度，按钮，菜单
+local function ResizeButton2_Menu(self, root)
+    root:CreateCheckbox(
+        (WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..' 153',
+    function()
+        return not Save().numWidth
+    end, function(data)
+        Save().numWidth= not Save().numWidth and data.width or nil
+        Create_ItemButton()
 
+    end, {width=Save().numWidth})
 
+--背景, 透明度
+    WoWTools_MenuMixin:BgAplha(root, function()
+        return Save().btnBgAlpha or 1
+    end, function(value)
+        Save().btnBgAlpha= value
+        Create_ItemButton()
+    end, nil, false)
+
+--缩放
+    WoWTools_MenuMixin:Scale(self, root, function()
+        return Save().btnNameScale or 1
+    end, function(value)
+        Save().btnNameScale= value
+        Create_ItemButton()
+    end)
+end
 
 
 
@@ -297,6 +328,7 @@ local function Init_WidthX2()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
             btn.itemBG:SetShown(numBuybackItems>=i)
+            btn.IndexLable:SetText(numBuybackItems>=i and i or '')
         end
 
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
@@ -339,9 +371,9 @@ local function Init_WidthX2()
         size={12, 32}
     })
     MerchantFrame.ResizeButton2:SetPoint('RIGHT', 7, 0)
-    MerchantFrame.ResizeButton2.texture:SetVertexColor(0.7,0.7,0.7,0.3)
+    MerchantFrame.ResizeButton2.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
     MerchantFrame.ResizeButton2:SetScript('OnLeave', function(self)
-        self.texture:SetVertexColor(0.7,0.7,0.7,0.3)
+        self.texture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b,0.3)
         GameTooltip:Hide()
     end)
     MerchantFrame.ResizeButton2:SetScript('OnEnter', function(self)
@@ -350,7 +382,7 @@ local function Init_WidthX2()
         GameTooltip:SetText(WoWTools_MerchantMixin.addName)
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '默认' or HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT)..WoWTools_DataMixin.Icon.right)
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL )..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end)
 
@@ -366,18 +398,7 @@ local function Init_WidthX2()
             SetCursor("UI_RESIZE_CURSOR")
         else
 --还原
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                root:CreateCheckbox(
-                    (WoWTools_DataMixin.onlyChinese and '默认' or HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT)..' 153',
-                function()
-                    return not Save().numWidth
-                end, function(data)
-                    Save().numWidth= not Save().numWidth and data.width or nil
-                    Create_ItemButton()
-                    WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
-
-                end, {width=Save().numWidth})
-            end)
+            MenuUtil.CreateContextMenu(self, ResizeButton2_Menu)
         end
     end)
     MerchantFrame.ResizeButton2:SetScript('OnHide', function(self)
@@ -404,7 +425,7 @@ local function Init_WidthX2()
         local left= MerchantFrame.selectedTab==2
                     and 2
                     or math.floor(MERCHANT_ITEMS_PER_PAGE/line)
-        w= w-(left*8)-12
+        w= w-(left*8)-15
 
         Save().numWidth= math.max(153, w/left)
 

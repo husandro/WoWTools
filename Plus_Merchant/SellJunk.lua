@@ -104,13 +104,13 @@ local function Init()
 
     AutoSellJunkCheck:SetChecked(not Save().notSellJunk)
 
-    --提示，垃圾，数量
+--提示，垃圾，数量
     MerchantSellAllJunkButton:HookScript('OnEnter', function()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK , '|cnGREEN_FONT_COLOR:'..(C_MerchantFrame.GetNumJunkItems() or 0))
         GameTooltip:Show()
     end)
     MerchantSellAllJunkButton.Text= WoWTools_LabelMixin:Create(MerchantSellAllJunkButton, {justifyH='RIGHT'})
-    MerchantSellAllJunkButton.Text:SetPoint('TOPRIGHT',-2, -2)
+    MerchantSellAllJunkButton.Text:SetPoint('BOTTOM',MerchantSellAllJunkButton, 'TOP', 0, -6)
     hooksecurefunc('MerchantFrame_Update', function()
         if not MerchantSellAllJunkButton:IsVisible() then
             return

@@ -5692,7 +5692,9 @@
         "CreateFramePool",
         "PERCENTAGE_STRING",
         "Saturate",
-        "MerchantFrame_UpdateBuybackInfo"
+        "MerchantFrame_UpdateBuybackInfo",
+        "MerchantBuyBackItemName",
+        "MerchantBuyBackItemItemButtonIconTexture"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

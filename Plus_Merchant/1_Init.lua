@@ -108,7 +108,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
-                Init()
                 self:UnregisterEvent(event)
             end
         end

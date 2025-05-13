@@ -330,6 +330,8 @@ local function Init()
 
     BuyItemButton:set_text()--回购，数量，提示
     BuyItemButton:set_texture()
+
+    Init=function()end
 end
 
 

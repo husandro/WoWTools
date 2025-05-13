@@ -15,9 +15,52 @@ end
 
 
 
+local function UI_Texture_Color(self)
+    self:SetButton(MerchantPrevPageButton, {all=true})
+    self:SetButton(MerchantNextPageButton, {all=true})
+    self:SetAlphaColor(MerchantFrameLootFilterMiddle)
+    self:SetAlphaColor(MerchantFrameLootFilterLeft)
+    self:SetAlphaColor(MerchantFrameLootFilterRight)
+    self:SetFrame(MerchantFrameTab1, {notAlpha=true})
+    self:SetFrame(MerchantFrameTab2, {notAlpha=true})
+    self:SetScrollBar(MerchantFrame)
+    self:SetNineSlice(MerchantFrameInset, nil, true)
+    self:SetNineSlice(MerchantFrame, true)
+    self:SetMenu(MerchantFrame.FilterDropdown)
+
+    self:SetAlphaColor(MerchantMoneyInset.Bg)
+    self:HideTexture(MerchantMoneyBgMiddle)
+    self:HideTexture(MerchantMoneyBgLeft)
+    self:HideTexture(MerchantMoneyBgRight)
+    self:SetAlphaColor(MerchantExtraCurrencyBg)
+    self:SetAlphaColor(MerchantExtraCurrencyInset)
+    self:HideTexture(MerchantFrameBottomLeftBorder)
+    self:SetButton(MerchantFrameCloseButton, {all=true})
+
+    UI_Texture_Color= function()end
+end
+
+
+
+
+--材质
+function WoWTools_TextureMixin.Frames:MerchantFrame()
+   UI_Texture_Color(self)
+end
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init_UI()
+
 --重新设置，按钮
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         MerchantRepairItemButton:ClearAllPoints()--单个，修理
@@ -33,20 +76,37 @@ local function Init_UI()
     MerchantBuyBackItem:ClearAllPoints()
     MerchantBuyBackItem:SetPoint('BOTTOMRIGHT', MerchantFrame, -16, 33)--115
 
+--回购, 物品名称
+    MerchantBuyBackItemName:ClearAllPoints()
+    MerchantBuyBackItemName:SetPoint('BOTTOMLEFT', MerchantBuyBackItemItemButtonIconTexture, 'TOPLEFT', 0, 5)
+    MerchantBuyBackItemName:SetPoint('RIGHT', MerchantFrame)
+    MerchantBuyBackItemName:SetHeight(6)
+    MerchantBuyBackItemItemButtonNormalTexture:SetTexture(0)
+
+--修理一件物品
+    WoWTools_ButtonMixin:AddMask(MerchantRepairItemButton, false)
+    WoWTools_ButtonMixin:AddMask(MerchantRepairAllButton, false)
+
+--公会，修理
+    WoWTools_ButtonMixin:AddMask(MerchantGuildBankRepairButton, false)
+
+--出售垃圾
+    WoWTools_ButtonMixin:AddMask(MerchantSellAllJunkButton, false)
+
 --下一页
     MerchantNextPageButton:ClearAllPoints()
     MerchantNextPageButton:SetPoint('RIGHT', MerchantFrame.FilterDropdown, 'LEFT', 4, 0)
     MerchantNextPageButton:SetFrameStrata('HIGH')
     local label, texture= MerchantNextPageButton:GetRegions()
-    if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
-    if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+    if texture and texture:GetObjectType()=='Texture' then texture:SetTexture(0) end
+    if label and label:GetObjectType()=='FontString' then label:SetText('') end
 
 --上一页
     MerchantPrevPageButton:ClearAllPoints()
     MerchantPrevPageButton:SetPoint('RIGHT', MerchantNextPageButton, 'LEFT',8,0)
     label, texture= MerchantPrevPageButton:GetRegions()
-    if texture and texture:GetObjectType()=='Texture' then texture:Hide() texture:SetTexture(0) end
-    if label and label:GetObjectType()=='FontString' then label:Hide() label:SetText('') end
+    if texture and texture:GetObjectType()=='Texture' then texture:SetTexture(0) end
+    if label and label:GetObjectType()=='FontString' then label:SetText('') end
 
 --上页数
     MerchantPageText:ClearAllPoints()
@@ -77,6 +137,8 @@ local function Init_UI()
             WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
         )
     end
+
+    UI_Texture_Color(WoWTools_TextureMixin)
 
     Init_UI=function()end
 end
