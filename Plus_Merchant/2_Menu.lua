@@ -67,8 +67,8 @@ local function Player_Sell_Menu(_, root)
         function()
             Save().Sell={}
         end)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -123,8 +123,8 @@ local function Buyback_Menu(_, root)
         function()
             Save().noSell={}
         end)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -159,7 +159,7 @@ local function BuyItem_Menu(_, root)
         return not Save().notAutoBuy
     end, function()
         Save().notAutoBuy= not Save().notAutoBuy and true or nil
-        WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
+        WoWTools_MerchantMixin:Update_MerchantFrame()
         if _G['WoWTools_BuyItemButton'] then
             _G['WoWTools_BuyItemButton']:set_text()--回购，数量，提示
         end
@@ -177,7 +177,7 @@ local function BuyItem_Menu(_, root)
             return Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]
         end, function(data)
             Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]=not Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID] and true or nil
-            WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
+           WoWTools_MerchantMixin:Update_MerchantFrame()
             local btn= _G['WoWTools_BuybackButton']
             if btn then
                 btn:set_text()--回购，数量，提示
@@ -192,14 +192,14 @@ local function BuyItem_Menu(_, root)
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         function()
             Save().buyItems[WoWTools_DataMixin.Player.GUID]={}
-            WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
+            WoWTools_MerchantMixin:Update_MerchantFrame()
             local btn= _G['WoWTools_BuybackButton']
             if btn then
                 btn:set_text()--回购，数量，提示
             end
         end)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
 end
 
 
@@ -303,8 +303,8 @@ local function Init_Menu(self, root)
         function()
             Save().bossItems={}
         end)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
 
 --保存 BOSS列表    
     sub:CreateCheckbox(
@@ -458,8 +458,10 @@ local function Init()
     btn:SetPoint('RIGHT', MerchantFrameCloseButton, 'LEFT', -2, 0)
     btn:SetupMenu(Init_Menu)
 
-    --显示背景
+--显示背景
     Set_ShowBackground()
+
+    Init=function()end
 end
 
 

@@ -10,13 +10,7 @@ MAX_MERCHANT_CURRENCIES = 6;
 <Size x="153" y="44"/>
 ]]
 --更新物品
-local function Update_MerchantFrame()
-    if MerchantFrame.selectedTab == 2 then
-        WoWTools_Mixin:Call(MerchantFrame_UpdateBuybackInfo)
-    else
-        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
-    end
-end
+
 
 
 
@@ -218,10 +212,10 @@ local function Init_WidthX2()
         MERCHANT_ITEMS_PER_PAGE= 10--按钮，数量
         Save().numLine= 5
         Create_ItemButton()
-        Update_MerchantFrame()--更新物品
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
     end, sizeStopFunc= function()
         Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE --按钮，数量
-        Update_MerchantFrame()--更新物品
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
     end})
 
 
@@ -280,9 +274,6 @@ local function Init_WidthX2()
             btn= _G['MerchantItem'..index]
         end
 
---回购，数量，提示
-        MerchantFrameTab2:set_buyback_num()
-
         MerchantFrame.ResizeButton.setSize=true
     end)
 
@@ -324,9 +315,6 @@ local function Init_WidthX2()
             index= index+1
             btn= _G['MerchantItem'..index]
         end
-
-        WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
-        MerchantFrameTab2:set_buyback_num()--回购，数量，提示
 
         MerchantFrame.ResizeButton.setSize=nil
     end)
@@ -386,7 +374,7 @@ local function Init_WidthX2()
                 end, function(data)
                     Save().numWidth= not Save().numWidth and data.width or nil
                     Create_ItemButton()
-                    Update_MerchantFrame()--更新物品
+                    WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
 
                 end, {width=Save().numWidth})
             end)
@@ -401,7 +389,7 @@ local function Init_WidthX2()
     MerchantFrame.ResizeButton2:SetScript('OnMouseUp', function(self)
         self:GetParent():StopMovingOrSizing()
         self.isMovingToRight=nil
-        Update_MerchantFrame()--更新物品
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
         ResetCursor()
     end)
 
@@ -424,7 +412,7 @@ local function Init_WidthX2()
     end)
 
     if MerchantFrame:IsShown() then
-       Update_MerchantFrame() 
+       WoWTools_MerchantMixin:Update_MerchantFrame()
     end
 
 

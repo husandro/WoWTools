@@ -4,6 +4,13 @@ local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
 
+function WoWTools_MerchantMixin:Update_MerchantFrame()
+    if MerchantFrame.selectedTab == 2 then
+        WoWTools_Mixin:Call(MerchantFrame_UpdateBuybackInfo)
+    else
+        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+    end
+end
 
 function WoWTools_MerchantMixin:CheckSellItem(itemID, itemLink, quality, isBound)
     if not itemID or Save().disabled or Save().noSell[itemID] then

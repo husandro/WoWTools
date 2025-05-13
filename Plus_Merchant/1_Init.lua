@@ -100,8 +100,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         self:UnregisterEvent('PLAYER_LOGOUT')
                     else
                         self:RegisterEvent("PLAYER_LOGOUT")
+                        Inti()
                     end
-                    Inti()
                 end
             })
 

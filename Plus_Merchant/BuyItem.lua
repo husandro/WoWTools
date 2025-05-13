@@ -151,7 +151,7 @@ local function Add_BuyItem(itemID, itemLink)
                     set_buy_item()--购买物品
                 end
                 BuyItemButton:set_text()--回购，数量，提示
-                WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
+                WoWTools_MerchantMixin:Update_MerchantFrame()
             end,
             OnShow=function(s)
                 s.editBox:SetNumeric(true)

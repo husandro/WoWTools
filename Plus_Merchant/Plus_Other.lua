@@ -59,27 +59,9 @@ local function Init_UI()
 
 
 
-    --物品数量
-    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
-    MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
-    MerchantFrame:HookScript('OnShow', function()
-        local num= GetMerchantNumItems()
-        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
-    end)
 
-    --回购，数量，提示
-    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
-    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
-    function MerchantFrameTab2:set_buyback_num()
-        local num
-        num= GetNumBuybackItems() or 0
-        if num>0 then
-            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
-        else
-            num= ''
-        end
-        self.numLable:SetText(num)
-    end
+
+
 
 
    hooksecurefunc('MerchantFrame_UpdateCurrencies', function()
@@ -87,7 +69,6 @@ local function Init_UI()
         MerchantExtraCurrencyBg:SetShown(false)
         MerchantMoneyInset:SetShown(false)
     end)
-
 
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
         print(
@@ -131,127 +112,17 @@ end
 --物品，信息 WoWTools_ItemMixin
 local function setMerchantInfo()
 
-    local isBuy= MerchantFrame.selectedTab==1
-    local page= isBuy and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
-
-    for i=1, page do
-        local slot = isBuy and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
-        local itemButton= _G["MerchantItem"..i..'ItemButton']
-        if itemButton then
-            WoWTools_ItemMixin:Setup(itemButton, {
-                merchant={slot=slot, buyBack= not isBuy}
-            })
-        end
-    end
-
-    WoWTools_ItemMixin:Setup(
-        MerchantBuyBackItemItemButton,
-        {merchant={slot=GetNumBuybackItems(), buyBack=true}}
-    )
-end
-
-
---货币，拥有，数量
-local function Create_Quantity_Label(btn)
-    if btn.quantityAll then
-        return
-    end
-
-    btn.quantityAll= WoWTools_LabelMixin:Create(btn, {size=10})
-    btn.quantityAll:SetPoint('TOPLEFT', btn.Text, 'BOTTOMRIGHT', 0, 2)
-    btn.quantityAll:SetAlpha(0.7)
-
-    btn:EnableMouse(true)
-    btn:HookScript('OnMouseDown', function(self)
-        if self.itemLink then
-            local link= self.itemLink..(
-                self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
-            )
-            WoWTools_ChatMixin:Chat(link, nil, true)
-        end
-        self:SetAlpha(0.3)
-    end)
-    btn:HookScript('OnEnter', function(self)
-        self:SetAlpha(0.5)
-    end)
-    btn:HookScript('OnMouseUp', function(self)
-        self:SetAlpha(0.5)
-    end)
-    btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
-    btn:HookScript('OnEnter', function(self)
-        if self.itemLink and GameTooltip:IsShown() then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.left)
-            GameTooltip:Show()
-        end
-    end)
-end
-
-
-
-
-
-
-
---物品信息
-local function Init_SetItem_Info()
---物品信息
-    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', setMerchantInfo)--MerchantFrame.lua
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', setMerchantInfo)
-
---购买物品，所需货币数量
-    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage)
-        local itemCount = GetMerchantItemCostInfo(index)
-        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame"
-        local usedCurrencies = 0
-        if ( itemCount > 0 ) then
-            for i=1, MAX_ITEM_COST do
-                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
-                if itemLink then
-                    usedCurrencies = usedCurrencies + 1
-                    local btn = _G[frameName.."Item"..usedCurrencies]
-                    if btn and btn:IsShown() then
-                        local num
-                        if currencyName then
-                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
-                        else
-                            num= C_Item.GetItemCount(itemLink, true, false, true)
-                        end
-                        if itemValue and num then
-                            if num>=itemValue then
-                                num= '|cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(num,0)..'|r'
-                            else
-                                num= '|cnRED_FONT_COLOR:'..WoWTools_Mixin:MK(num,0)..'|r'
-                            end
-                        end
-
-                        Create_Quantity_Label(btn)
-
-                        btn.quantityAll.itemValue= itemValue
-                        btn.quantityAll:SetText(num or '')
-                    end
-                end
-            end
-        end
-    end)
-
-
-
-
-
-
---物品，属性，急 爆 全
-    local selectedTab= MerchantFrame.selectedTab
-    local isMerce= selectedTab == 1
+    local isMerce= MerchantFrame.selectedTab==1
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
     local numItem= isMerce and GetMerchantNumItems() or GetNumBuybackItems()
 
     for i=1, page do
-        local index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
+        local index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
+
         local btn= _G["MerchantItem"..i]
         local text, spellID, num, itemID, itemLink
 
-        if btn and index<= numItem then
+        if index<= numItem then
             if isMerce then
                 itemID= GetMerchantItemID(index)
                 itemLink=  GetMerchantItemLink(index)
@@ -259,10 +130,11 @@ local function Init_SetItem_Info()
                 itemID= C_MerchantFrame.GetBuybackItemID(index)
                 itemLink= GetBuybackItemLink(index)
             end
-
-            num=(not Save().notAutoBuy and itemID) and Save().buyItems[itemID]--自动购买， 数量
+--自动购买， 数量
+            num=(not Save().notAutoBuy and itemID) and Save().buyItems[itemID]
             num= num and num..'|T236994:0|t'
-            --包里，银行，总数
+
+--包里，银行，总数
             local bag=itemID and C_Item.GetItemCount(itemID, true, false, true)
             if bag and bag>0 then
                 num=(num and num..'|n' or '')..bag..'|A:Banker:0:0|a'
@@ -315,17 +187,168 @@ local function Init_SetItem_Info()
                 end
             end
         end
-        if btn then
-            if btn.buyItemNum then
-                btn.buyItemNum:SetText(num or '')
-                btn.buyItemNum.itemID= itemID
-            end
-            if btn.stats then
-                btn.stats:SetText(text or '')
-                btn.stats.spellID= spellID
+
+        if btn.buyItemNum then
+            btn.buyItemNum:SetText(num or '')
+            btn.buyItemNum.itemID= itemID
+        end
+        if btn.stats then
+            btn.stats:SetText(text or '')
+            btn.stats.spellID= spellID
+        end
+
+        WoWTools_ItemMixin:Setup(
+            _G["MerchantItem"..i..'ItemButton'],
+            {merchant={slot=index, buyBack= not isMerce}}
+        )
+    end
+
+--物品，信息
+    WoWTools_ItemMixin:Setup(
+        MerchantBuyBackItemItemButton,
+        {merchant={slot=GetNumBuybackItems(), buyBack=true}}
+    )
+
+
+--回购，数量，提示
+    MerchantFrameTab2:set_buyback_num()
+end
+
+
+
+
+
+
+
+
+
+
+--货币，拥有，数量
+local function Create_Quantity_Label(btn)
+    if btn.quantityAll then
+        return
+    end
+
+    btn.quantityAll= WoWTools_LabelMixin:Create(btn, {size=10})
+    btn.quantityAll:SetPoint('TOPLEFT', btn.Text, 'BOTTOMRIGHT', 0, 2)
+    btn.quantityAll:SetAlpha(0.7)
+
+    btn:EnableMouse(true)
+    btn:HookScript('OnMouseDown', function(self)
+        if self.itemLink then
+            local link= self.itemLink..(
+                self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
+            )
+            WoWTools_ChatMixin:Chat(link, nil, true)
+        end
+        self:SetAlpha(0.3)
+    end)
+    btn:HookScript('OnEnter', function(self)
+        self:SetAlpha(0.5)
+    end)
+    btn:HookScript('OnMouseUp', function(self)
+        self:SetAlpha(0.5)
+    end)
+    btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+    btn:HookScript('OnEnter', function(self)
+        if self.itemLink and GameTooltip:IsShown() then
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.left)
+            GameTooltip:Show()
+        end
+    end)
+end
+
+
+
+
+
+
+
+--物品信息
+local function Init_SetItem_Info()
+    --物品，数量
+    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
+    MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
+    MerchantFrame:HookScript('OnShow', function()
+        local num= GetMerchantNumItems()
+        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
+    end)
+
+  --回购，数量，提示
+    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
+    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
+    function MerchantFrameTab2:set_buyback_num()
+        local num
+        num= GetNumBuybackItems() or 0
+        if num>0 then
+            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
+        else
+            num= ''
+        end
+        self.numLable:SetText(num)
+    end
+
+
+
+--物品信息
+    hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
+        setMerchantInfo()
+
+--回购，数量，提示
+        MerchantFrameTab2:set_buyback_num()
+    end)
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
+        setMerchantInfo()
+
+    end)
+
+
+
+
+
+
+
+--购买物品，所需货币数量
+    hooksecurefunc('MerchantFrame_UpdateAltCurrency', function(index, indexOnPage)
+        local itemCount = GetMerchantItemCostInfo(index)
+        local frameName = "MerchantItem"..indexOnPage.."AltCurrencyFrame"
+        local usedCurrencies = 0
+        if ( itemCount > 0 ) then
+            for i=1, MAX_ITEM_COST do
+                local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
+                if itemLink then
+                    usedCurrencies = usedCurrencies + 1
+                    local btn = _G[frameName.."Item"..usedCurrencies]
+                    if btn and btn:IsShown() then
+                        local num
+                        if currencyName then
+                            num= C_CurrencyInfo.GetCurrencyInfoFromLink(itemLink).quantity
+                        else
+                            num= C_Item.GetItemCount(itemLink, true, false, true)
+                        end
+                        if itemValue and num then
+                            if num>=itemValue then
+                                num= '|cnGREEN_FONT_COLOR:'..WoWTools_Mixin:MK(num,0)..'|r'
+                            else
+                                num= '|cnRED_FONT_COLOR:'..WoWTools_Mixin:MK(num,0)..'|r'
+                            end
+                        end
+
+                        Create_Quantity_Label(btn)
+
+                        btn.quantityAll.itemValue= itemValue
+                        btn.quantityAll:SetText(num or '')
+                    end
+                end
             end
         end
-    end
+    end)
+
+
+
+
+
 
 
 
@@ -458,7 +481,7 @@ end
 
 
 function WoWTools_MerchantMixin:Init_Plus_Other()
-    if Save().plus then
+    if not Save().notPlus then
         Init_UI()--移去 UI
         Init_SetItem_Info()--物品，信息
         Init_StackSplitFrame()--堆叠,数量,框架
