@@ -1,6 +1,14 @@
 local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
+--[[
+MERCHANT_ITEMS_PER_PAGE = 10;
+BUYBACK_ITEMS_PER_PAGE = 12;
+MAX_ITEM_COST = 3;
+MAX_MERCHANT_CURRENCIES = 6;
+<Size x="336" y="444"/>
+<Size x="153" y="44"/>
+]]
 
 
 
@@ -14,36 +22,30 @@ end
 
 
 local function Create_Lable(btn)
-    if btn.itemBG then
+    if btn.IndexLable then
         return
     end
 
     btn.IndexLable= WoWTools_LabelMixin:Create(btn)
-    btn.IndexLable:SetPoint('TOPRIGHT', btn, -1, 4)
+    btn.IndexLable:SetPoint('BOTTOMRIGHT', btn, 'TOPRIGHT')
     btn.IndexLable:SetAlpha(0.3)
 
-
-
-    local name= btn:GetName()
-    local nameFrame= _G[name..'NameFrame']
+--隐藏，背景框
+    local nameFrame= _G[btn:GetName()..'NameFrame']
     nameFrame:Hide()
     nameFrame:SetTexture(0)
-    --nameFrame:SetPoint('RIGHT', btn, 40, 0)
 
+--物品，名称
     btn.Name:SetPoint('RIGHT', -2, 0)
 
 --建立，物品，背景
     btn.itemBG= btn:CreateTexture(nil, 'BACKGROUND')
-    --btn.itemBG:SetAtlas('UI-HUD-CoolDownManager-Mask')
     btn.itemBG:SetColorTexture(0, 0, 0, 0.95)
-    --btn.itemBG:SetSize(100,43)
-    --btn.itemBG:SetPoint('TOPLEFT', btn.SlotTexture, 'TOPRIGHT', -9, -13)
     btn.itemBG:SetPoint('TOPLEFT', -1, -2)
     btn.itemBG:SetPoint('BOTTOMRIGHT', -2, 0)
     btn.itemBG:Hide()
 
-
-
+--查询，背包，物品
     btn.ItemButton:HookScript('OnEnter', function(self)
         if MerchantFrame.selectedTab == 1 then
             if self.hasItem then
@@ -66,20 +68,22 @@ local function Create_Lable(btn)
         end
     end)
 
-    btn.ItemButton:HookScript('OnHide', function(self)
-        self.price = nil
-        self.hasItem = nil
-        self.name = nil
-        self.extendedCost = nil
-        self.link = nil
-        self.texture = nil
+    btn:HookScript('OnHide', function(self)
+        self.ItemButton:Reset()
+        self.ItemButton.price = nil
+        self.ItemButton.hasItem = nil
+        self.ItemButton.name = nil
+        self.ItemButton.extendedCost = nil
+        self.ItemButton.link = nil
+        self.ItemButton.texture = nil
+        self.Name:SetText('')
+        self.IndexLable:SetText('')
     end)
 end
 
 
 
---商人 Plus, 加宽，物品，信息
---<Size x="153" y="44"/>
+--创建，设置，按钮
 local function Create_ItemButton()
     local width= Save().numWidth or 153
     for i= 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do--建立，索引，文本
@@ -89,17 +93,8 @@ local function Create_ItemButton()
     end
 
     local index= MERCHANT_ITEMS_PER_PAGE+1
-
     while _G['MerchantItem'..index] do--隐藏，多余
         _G['MerchantItem'..index]:SetShown(false)
-        --[[local itemButton = _G["MerchantItem"..index.."ItemButton"]
-        itemButton.price = nil
-        itemButton.hasItem = nil
-        itemButton.name = nil
-        itemButton.extendedCost = nil
-        itemButton.link = nil
-        itemButton.texture = nil
-        _G["MerchantItem"..index.."Name"]:SetText("")]]
         index= index+1
     end
 end
@@ -177,11 +172,25 @@ end
 
 
 
-local function Init_WidthX2()
-    MerchantItem11:SetID(11)
-    MerchantItem12:SetID(12)
 
 
+
+
+
+
+
+
+
+
+
+
+
+local function Init()
+--按钮，数量
+    MERCHANT_ITEMS_PER_PAGE= Save().MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
+
+--创建，设置，按钮
+    Create_ItemButton()
 
 --移动 WoWTools_MoveMixin
     WoWTools_MoveMixin:Setup(MerchantFrame, {
@@ -189,53 +198,14 @@ local function Init_WidthX2()
     sizeUpdateFunc= function()
         Size_Update()
     end, sizeRestFunc= function()
-        MERCHANT_ITEMS_PER_PAGE= 10
+        MERCHANT_ITEMS_PER_PAGE= 10--按钮，数量
         Save().numLine= 5
         Create_ItemButton()
         WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
     end, sizeStopFunc= function()
-        Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE
+        Save().MERCHANT_ITEMS_PER_PAGE= MERCHANT_ITEMS_PER_PAGE --按钮，数量
         WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
-        if WoWTools_DataMixin.Player.husandro then
-            print(
-                WoWTools_DataMixin.Icon.icon2..'MERCHANT_ITEMS_PER_PAGE',
-                MERCHANT_ITEMS_PER_PAGE,
-                '/',
-                Save().numLine
-            )
-        end
     end})
-
-
-    MERCHANT_ITEMS_PER_PAGE= Save().MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
-
-    Create_ItemButton()
-
-    --物品数量
-    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
-    MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
-    MerchantFrame:HookScript('OnShow', function()
-        local num= GetMerchantNumItems()
-        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
-    end)
-
-    --回购，数量，提示
-    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
-    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
-    function MerchantFrameTab2:set_buyback_num()
-        local num
-        num= GetNumBuybackItems() or 0
-        if num>0 then
-            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
-        else
-            num= ''
-        end
-        self.numLable:SetText(num)
-    end
-
-
-
-
 
 
 
@@ -246,23 +216,18 @@ local function Init_WidthX2()
 
 --出售，卖
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
-        --[[if not MerchantFrame:IsShown() then
-            return
-        end]]
         local numMerchantItems= GetMerchantNumItems()
-        local index, info
-        for i = 1, MERCHANT_ITEMS_PER_PAGE do--math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
-            local btn= _G['MerchantItem'..i]
-            index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i);
+        local index, info, btn
+        for i = 1, MERCHANT_ITEMS_PER_PAGE do--按钮，数量
+            btn= _G['MerchantItem'..i]
+            index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
+
             if index <= numMerchantItems then
                 info = C_MerchantFrame.GetItemInfo(index);
                 btn:SetShown(true)
+
                 btn.itemBG:SetShown(info)--Texture.lua
                 btn.IndexLable:SetText(info and  btn.ItemButton:GetID() or '')
-            else
-                btn:SetShown(false)
-                btn.itemBG:SetShown(false)
-                btn.IndexLable:SetText('')
             end
 
             if i>1 then
@@ -270,26 +235,34 @@ local function Init_WidthX2()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
         end
-
+--换行
         local numWidth= Save().numWidth or 153
         local w= numWidth+ 20--172
-        local h= 146+(Save().numLine*52)--<Size x="336" y="444"/> <Size x="153" y="44"/>
         local line= Save().numLine or 6
+        local h= 146+(line*52)
 
-        for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do
-            local btn= _G['MerchantItem'..i]
+        for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do--按钮，数量
+            btn= _G['MerchantItem'..i]
             btn:ClearAllPoints()
             btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
             w= w+ numWidth+ 8
         end
-
+--设置，框加大小
         MerchantFrame:SetSize(max(w, 336), max(h, 440))
 
-        WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
-        MerchantFrameTab2:set_buyback_num()--回购，数量，提示
+--隐藏，多余
+        index= MERCHANT_ITEMS_PER_PAGE+1
+        while _G['MerchantItem'..index] do
+            _G['MerchantItem'..index]:SetShown(false)
+            index= index+1
+        end
+
+--设置, 提示, 信息
+        WoWTools_MerchantMixin:Set_Merchant_Info()
+--回购，数量，提示
+        MerchantFrameTab2:set_buyback_num()
 
         MerchantFrame.ResizeButton.setSize=true
-        --MerchantFrame.ResizeButton2:SetShown(true)
     end)
 
 
@@ -303,32 +276,154 @@ local function Init_WidthX2()
 --回购
     hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
         local numBuybackItems = GetNumBuybackItems() or 0
-        for i = 1, max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
-            local btn= _G['MerchantItem'..i]
-            if i<= BUYBACK_ITEMS_PER_PAGE then
-                btn:SetShown(true)
-                if i>1 then
-                    btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
-                end
-                btn.itemBG:SetShown(numBuybackItems>=i)
-            else
-                btn:SetShown(false)
+        local btn
+
+        for i = 1, BUYBACK_ITEMS_PER_PAGE do
+            btn= _G['MerchantItem'..i]
+            btn:SetShown(true)
+            if i>1 then
+                btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
+            btn.itemBG:SetShown(numBuybackItems>=i)
         end
 
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
+
         local width= (Save().numWidth or 153)*2+ 30
         width= math.max(width, 418)--336
 
         MerchantFrame:SetSize(width, 440)
 
+--隐藏，多余
+        local index= BUYBACK_ITEMS_PER_PAGE+1
+        btn= _G['MerchantItem'..index]
+        while btn do
+            btn:SetShown(false)
+            index= index+1
+            btn= _G['MerchantItem'..index]
+        end
+
         WoWTools_MerchantMixin:Set_Merchant_Info()--设置, 提示, 信息
         MerchantFrameTab2:set_buyback_num()--回购，数量，提示
 
         MerchantFrame.ResizeButton.setSize=nil
-        --MerchantFrame.ResizeButton2:SetShown(false)
     end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+--增加，按钮宽度，按钮
+    MerchantFrame.ResizeButton2= WoWTools_ButtonMixin:Cbtn(MerchantFrame, {
+        name='WoWToolsMerchantPlusToWidthButton',
+        atlas='uitools-icon-chevron-right',
+        addTexture=true,
+        size={12, 32}
+    })
+    MerchantFrame.ResizeButton2:SetPoint('RIGHT', 7, 0)
+    MerchantFrame.ResizeButton2.texture:SetVertexColor(0.7,0.7,0.7,0.3)
+    MerchantFrame.ResizeButton2:SetScript('OnLeave', function(self)
+        self.texture:SetVertexColor(0.7,0.7,0.7,0.3)
+        GameTooltip:Hide()
+    end)
+    MerchantFrame.ResizeButton2:SetScript('OnEnter', function(self)
+        self.texture:SetVertexColor(1,1,1,1)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:SetText(WoWTools_MerchantMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '默认' or HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT)..WoWTools_DataMixin.Icon.right)
+        GameTooltip:Show()
+    end)
+
+    MerchantFrame.ResizeButton2:SetClampedToScreen(true)
+
+    MerchantFrame.ResizeButton2:SetScript('OnMouseDown', function(self, d)
+--移动
+        if d=='LeftButton' then
+            local p= self:GetParent()
+            self.isMovingToRight= true
+            p:SetResizable(true)
+            p:StartSizing('RIGHT', true)
+            SetCursor("UI_RESIZE_CURSOR")
+        else
+--还原
+            MenuUtil.CreateContextMenu(self, function(_, root)
+                root:CreateCheckbox(
+                    (WoWTools_DataMixin.onlyChinese and '默认' or HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT)..' 153',
+                function()
+                    return not Save().numWidth
+                end, function(data)
+                    Save().numWidth= not Save().numWidth and data.width or nil
+                    Create_ItemButton()
+                    WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+                end, {width=Save().numWidth})
+            end)
+        end
+    end)
+    MerchantFrame.ResizeButton2:SetScript('OnHide', function(self)
+        if self.isMovingToRight then
+            self:GetParent():StopMovingOrSizing()
+            ResetCursor()
+        end
+    end)
+    MerchantFrame.ResizeButton2:SetScript('OnMouseUp', function(self)
+        self:GetParent():StopMovingOrSizing()
+        self.isMovingToRight=nil
+        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+        ResetCursor()
+    end)
+
+
+    MerchantFrame:HookScript('OnSizeChanged', function(self)
+        if not self:IsVisible() or not self.ResizeButton2.isMovingToRight then
+            return
+        end
+        local w= self:GetWidth()
+        local line= Save().numLine or 6
+
+        local left= math.floor(MERCHANT_ITEMS_PER_PAGE/line)
+        w= w-(left*8)-12
+
+        Save().numWidth= math.max(153, w/left)
+
+        Create_ItemButton()
+    end)
+
+
+    Init=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_UI()
 --重新设置，按钮
     hooksecurefunc('MerchantFrame_UpdateRepairButtons', function()
         MerchantRepairItemButton:ClearAllPoints()--单个，修理
@@ -370,81 +465,29 @@ local function Init_WidthX2()
 
 
 
-    MerchantFrame.ResizeButton2= WoWTools_ButtonMixin:Cbtn(MerchantFrame, {
-        name='WoWToolsMerchantPlusToWidthButton',
-        atlas='uitools-icon-chevron-right',
-        addTexture=true,
-        size={12, 32}
-    })
-    MerchantFrame.ResizeButton2:SetPoint('RIGHT', 7, 0)
-    MerchantFrame.ResizeButton2.texture:SetVertexColor(0.7,0.7,0.7,0.5)
-    MerchantFrame.ResizeButton2:SetScript('OnLeave', function(self)
-        self.texture:SetVertexColor(0.7,0.7,0.7,0.5)
-        GameTooltip:Hide()
-    end)
-    MerchantFrame.ResizeButton2:SetScript('OnEnter', function(self)
-        self.texture:SetVertexColor(1,1,1,1)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:SetText(WoWTools_MerchantMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '默认' or HUD_EDIT_MODE_SETTING_MICRO_MENU_ORDER_DEFAULT)..WoWTools_DataMixin.Icon.right)
-        GameTooltip:Show()
+    --物品数量
+    MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
+    MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
+    MerchantFrame:HookScript('OnShow', function()
+        local num= GetMerchantNumItems()
+        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
     end)
 
-    MerchantFrame.ResizeButton2:SetClampedToScreen(true)
-
-    MerchantFrame.ResizeButton2:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            local p= self:GetParent()
-            self.isMovingToRight= true
-            p:SetResizable(true)
-            p:StartSizing('RIGHT', true)
+    --回购，数量，提示
+    MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
+    MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
+    function MerchantFrameTab2:set_buyback_num()
+        local num
+        num= GetNumBuybackItems() or 0
+        if num>0 then
+            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
         else
-            Save().numWidth= nil
-            self:settings()
-            WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
+            num= ''
         end
-    end)
-    MerchantFrame.ResizeButton2:SetScript('OnHide', function(self)
-        if self.isMovingToRight then
-            self:GetParent():StopMovingOrSizing()
-        end
-    end)
-    MerchantFrame.ResizeButton2:SetScript('OnMouseUp', function(self)
-        self:GetParent():StopMovingOrSizing()
-        self.isMovingToRight=nil
-        WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
-    end)
-
-    function MerchantFrame.ResizeButton2:settings()
-        local width= Save().numWidth or 153
-        local btn
-        for i = 1, math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
-            btn= _G['MerchantItem'..i]
-            if btn then
-                btn:SetWidth(width)
-            end
-        end
+        self.numLable:SetText(num)
     end
-    MerchantFrame:HookScript('OnSizeChanged', function(self)
-        if not self:IsVisible() or not self.ResizeButton2.isMovingToRight then
-            return
-        end
-        local w= self:GetWidth()
-        local line= Save().numLine or 6
-        --local num= math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE)
 
-        local left= MERCHANT_ITEMS_PER_PAGE/line
 
-        w= w-12
-        print(left, math.max(153, w/left))
-
-        Save().numWidth= math.max(153, w/left)
-
-        self.ResizeButton2:settings()
-       -- WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
-    end)
 
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
         print(
@@ -454,29 +497,12 @@ local function Init_WidthX2()
         )
     end
 
-
-    Init_WidthX2=function()end
+    Init_UI=function()end
 end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function WoWTools_MerchantMixin:Init_WidthX2()
-    Init_WidthX2()
+    Init()
+    Init_UI()
 end
