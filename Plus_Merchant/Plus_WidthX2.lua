@@ -117,7 +117,7 @@ local function Size_Update()
     local line= max(5, math.floor((h-144)/52))
     Save().numLine= line
 
-    local left= math.floor((w-8)/ ((Save().numWidth or 195)+8))
+    local left= math.floor((w-8)/ ((Save().numWidth or 153)+8))
 
     MERCHANT_ITEMS_PER_PAGE= max(10, max(2, left*line))
 
@@ -317,7 +317,7 @@ local function Init_WidthX2()
         end
 
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
-        local width= (Save().numWidth or 195)*2+ 30
+        local width= (Save().numWidth or 153)*2+ 30
         width= math.max(width, 418)--336
 
         MerchantFrame:SetSize(width, 440)
@@ -393,7 +393,7 @@ local function Init_WidthX2()
     end)
 
     MerchantFrame.ResizeButton2:SetClampedToScreen(true)
-    
+
     MerchantFrame.ResizeButton2:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             local p= self:GetParent()
@@ -402,6 +402,8 @@ local function Init_WidthX2()
             p:StartSizing('RIGHT', true)
         else
             Save().numWidth= nil
+            self:settings()
+            WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
         end
     end)
     MerchantFrame.ResizeButton2:SetScript('OnHide', function(self)
@@ -415,6 +417,16 @@ local function Init_WidthX2()
         WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
     end)
 
+    function MerchantFrame.ResizeButton2:settings()
+        local width= Save().numWidth or 153
+        local btn
+        for i = 1, math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
+            btn= _G['MerchantItem'..i]
+            if btn then
+                btn:SetWidth(width)
+            end
+        end
+    end
     MerchantFrame:HookScript('OnSizeChanged', function(self)
         if not self:IsVisible() or not self.ResizeButton2.isMovingToRight then
             return
@@ -424,26 +436,20 @@ local function Init_WidthX2()
         --local num= math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE)
 
         local left= MERCHANT_ITEMS_PER_PAGE/line
-        w= w-(left*8+12)
-        local width= math.max(195, w/left)
 
-        Save().numWidth= width
+        w= w-12
+        print(left, math.max(153, w/left))
 
-        local btn
-        for i = 1, math.max(BUYBACK_ITEMS_PER_PAGE, MERCHANT_ITEMS_PER_PAGE) do
-            btn= _G['MerchantItem'..i]
-            if btn then
-                btn:SetWidth(width)
-            end
-        end
+        Save().numWidth= math.max(153, w/left)
+
+        self.ResizeButton2:settings()
        -- WoWTools_Mixin:Call(MerchantFrame_UpdateMerchantInfo)
     end)
-
 
     if C_AddOns.IsAddOnLoaded("CompactVendor") then
         print(
             WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
-            format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'CompactVendor'),
+            format(WoWTools_DataMixin.onlyChinese and "|cffff0000与%s发生冲突！|r" or ALREADY_BOUND, 'Compact Vendor'),
             WoWTools_DataMixin.onlyChinese and '插件' or ADDONS
         )
     end
