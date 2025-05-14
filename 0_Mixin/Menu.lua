@@ -454,11 +454,13 @@ end)
 
 --重置数据
 function WoWTools_MenuMixin:RestData(root, name, SetValue)
-    return root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT), function(data)
-
-        StaticPopup_Show('WoWTools_RestData',data.name, nil, data.SetValue)
-        return MenuResponse.Refresh
-    end, {name=name, SetValue=SetValue})
+    return root:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '全部重置' or RESET_ALL_BUTTON_TEXT),
+    function()
+        StaticPopup_Show('WoWTools_RestData', name, nil, SetValue)
+        return MenuResponse.Open
+    end)
 end
 
 --重新加载UI

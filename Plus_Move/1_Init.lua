@@ -77,6 +77,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -92,16 +93,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
                 WoWTools_MoveMixin.Frames={}
-                self:UnregisterEvent(event)
-            else
-                Init()--初始, 移动
+                self:UnregisterAllEvents()
             end
 
-        elseif  WoWTools_MoveMixin.Events[arg1] and WoWToolsSave then
+        elseif WoWTools_MoveMixin.Events[arg1] and WoWToolsSave then
             do
                 WoWTools_MoveMixin.Events[arg1](WoWTools_MoveMixin)
             end
             WoWTools_MoveMixin.Events[arg1]= nil
         end
+
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        Init()
+        self:UnregisterEvent(event)
     end
 end)

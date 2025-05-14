@@ -462,6 +462,13 @@ local function Init_Menu(self, root)
     root:CreateDivider()
     sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MerchantMixin.addName})
 
+--重置数据
+    WoWTools_MenuMixin:RestData(sub, WoWTools_MerchantMixin.addName, function()
+        WoWToolsSave['Plus_SellBuy']=nil
+        WoWTools_Mixin:Reload()
+    end)
+
+    sub:CreateDivider()
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 end
