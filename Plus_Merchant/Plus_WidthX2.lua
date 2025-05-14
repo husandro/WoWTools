@@ -482,7 +482,7 @@ local function Init_WidthX2()
 
         local left= MerchantFrame.selectedTab==2
                     and 2
-                    or math.ceil((curNum/line)+0.5)
+                    or math.ceil(curNum/line)
         left= math.max(2, left)
 
         w= w-(left*8)-15
