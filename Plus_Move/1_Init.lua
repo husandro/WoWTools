@@ -51,6 +51,18 @@ local function Init()
         end
     end
 
+     for name in pairs(WoWTools_MoveMixin.Frames) do
+        print(name)
+        do
+            if _G[name] then
+                WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)
+            elseif WoWTools_DataMixin.Player.husandro then
+                print(WoWTools_MoveMixin.addName, 'Frames[|cnRED_FONT_COLOR:'..name..'|r]', '没有发现')
+            end
+        end
+        WoWTools_TextureMixin.Frames[name]= nil
+    end
+
     hooksecurefunc('UpdateUIPanelPositions', function(currentFrame)
         if Save().SavePoint then
             WoWTools_MoveMixin:SetPoint(currentFrame)
@@ -80,6 +92,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if Save().disabled then
                 WoWTools_MoveMixin.Events={}
+                WoWTools_MoveMixin.Frames={}
                 self:UnregisterEvent(event)
             else
                 Init()--初始, 移动

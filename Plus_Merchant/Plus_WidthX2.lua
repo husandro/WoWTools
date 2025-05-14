@@ -1,6 +1,15 @@
 local function Save()
     return WoWToolsSave['Plus_SellBuy']
 end
+
+
+function WoWTools_MoveMixin.Frames:MerchantFrame()
+    if Save().notPlus or Save().disabled then
+        self:Setup(MerchantFrame)
+    end
+end
+
+
 --[[
 MERCHANT_ITEMS_PER_PAGE = 10;
 BUYBACK_ITEMS_PER_PAGE = 12;
@@ -191,17 +200,11 @@ end
 
 --增加，按钮宽度，按钮，菜单
 local function ResizeButton2_Menu(self, root)
+    if not MerchantFrame.ResizeButton2 then
+        return
+    end
+    
     local sub
-    --[[sub=root:CreateCheckbox(
-        (WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..' 153',
-    function()
-        return not Save().numWidth or Save().numWidth==153
-    end, function(data)
-        Save().numWidth= not Save().numWidth and data.width or nil
-        Create_ItemButton()
-        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
-    end, {width=Save().numWidth})]]
-
     sub=root:CreateButton(
         '|A:common-icon-rotateright:0:0|a'
         ..((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)),
@@ -521,12 +524,15 @@ end
 
 
 
-
-
-
-
 function WoWTools_MerchantMixin:Init_WidthX2()
     if not Save().notPlus then
         Init_WidthX2()
+    else
+
+        WoWTools_MoveMixin:Setup(MerchantFrame)
     end
+end
+
+function WoWTools_MerchantMixin:ResizeButton2_Menu(...)
+    ResizeButton2_Menu(...)
 end

@@ -388,7 +388,7 @@ local function Init_Menu(self, root)
 
 
 --商人 Plus
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         '|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人 Plus' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, MERCHANT, 'Plus')),
     function()
         return not Save().notPlus
@@ -401,6 +401,9 @@ local function Init_Menu(self, root)
         WoWTools_MerchantMixin:Init_WidthX2()
         WoWTools_MerchantMixin:Init_Plus_Other()
     end)
+
+--增加，按钮宽度，按钮，菜单
+    WoWTools_MerchantMixin:ResizeButton2_Menu(self, sub)
 
 
 

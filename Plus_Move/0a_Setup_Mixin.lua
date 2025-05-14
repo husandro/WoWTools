@@ -1,6 +1,7 @@
 
 WoWTools_MoveMixin={
-    Events={}
+    Events={},
+    Frames={},
 }
 
 local function Save()
