@@ -157,11 +157,12 @@ local function Size_Update()
     end
 
     local numMerchantItems = GetMerchantNumItems()
-    MerchantPageText:SetFormattedText(
+    MerchantPageText:SetText(MerchantFrame.page..'/'..math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
+    --[[MerchantPageText:SetFormattedText(
         WoWTools_DataMixin.onlyChinese and '页数 %s/%s' or MERCHANT_PAGE_NUMBER,
         MerchantFrame.page,
         math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE)
-    )
+    )]]
 
     -- Handle paging buttons
     if ( numMerchantItems > MERCHANT_ITEMS_PER_PAGE ) then
@@ -344,6 +345,8 @@ local function Init_WidthX2()
             index= index+1
             btn= _G['MerchantItem'..index]
         end
+        
+        MerchantPageText:SetText(MerchantFrame.page..'/'..math.ceil(numMerchantItems / MERCHANT_ITEMS_PER_PAGE))
 
         MerchantFrame.ResizeButton.setSize=true
     end)

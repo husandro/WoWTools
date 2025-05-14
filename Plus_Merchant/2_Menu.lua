@@ -459,7 +459,10 @@ local function Init_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MerchantMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MerchantMixin.addName})
+
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 
