@@ -279,8 +279,6 @@ nil,
 
 end})
 return MenuResponse.Open
-
-SetGridMode
 ]]
 
 

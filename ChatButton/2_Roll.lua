@@ -186,7 +186,8 @@ local function Init_Menu(_, root)
                 GameTooltip_AddNormalLine(tooltip, '|A:voicechat-icon-textchat-silenced:0:0|a'..(WoWTools_DataMixin.onlyChinese and '发送信息' or SEND_MESSAGE))
             end)
         end
-        WoWTools_MenuMixin:SetGridMode(sub, saveNum)
+--SetScrollMod
+        WoWTools_MenuMixin:SetScrollMode(sub, nil)
     end
 
 
@@ -213,7 +214,7 @@ local function Init_Menu(_, root)
                 tabNew[tab.name]=true
             end
         end
-        WoWTools_MenuMixin:SetGridMode(root, rollNum)
+        WoWTools_MenuMixin:SetScrollMode(root)
     end
 
 

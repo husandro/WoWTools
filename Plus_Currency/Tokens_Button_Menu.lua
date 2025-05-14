@@ -45,10 +45,14 @@ function WoWTools_CurrencyMixin:MenuList_Item(_, root)
 
 	if num>1 then
 --全部清除
-		WoWTools_MenuMixin:ClearAll(sub, function() Save().item={} WoWTools_CurrencyMixin:Set_TrackButton_Text() end)
---GridMode
-		WoWTools_MenuMixin:SetGridMode(sub, num)
+		WoWTools_MenuMixin:ClearAll(sub, function()
+			Save().item={}
+			WoWTools_CurrencyMixin:Set_TrackButton_Text()
+		end)
+
+		WoWTools_MenuMixin:SetScrollMode(sub, num)
 	end
+
 --使用物品
 	sub2=sub:CreateCheckbox(
 		WoWTools_DataMixin.onlyChinese and '使用物品' or USE_ITEM,
@@ -62,6 +66,7 @@ function WoWTools_CurrencyMixin:MenuList_Item(_, root)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
 		tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH))
 	end)
+
 --重新加载UI
 	WoWTools_MenuMixin:Reload(sub2)
 end
@@ -304,8 +309,8 @@ local function Init_Menu(self, root)
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 			TokenFrame:Update()
 		end)
---SetGridMode
-		WoWTools_MenuMixin:SetGridMode(sub, num)
+
+		WoWTools_MenuMixin:SetScrollMode(sub)
 	end
 
 

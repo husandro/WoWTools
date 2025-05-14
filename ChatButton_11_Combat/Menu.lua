@@ -174,7 +174,7 @@ local function Init_Menu(self, root)
             end)
         end
     end
-    WoWTools_MenuMixin:SetGridMode(sub, numPlayer)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
     if timeAll>0 then
         sub:CreateDivider()

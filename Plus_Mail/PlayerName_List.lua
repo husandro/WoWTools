@@ -65,7 +65,7 @@ local function Init_IsSelf(root)
         end
     end
 
-    WoWTools_MenuMixin:SetGridMode(root, num)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
@@ -123,7 +123,7 @@ local function Init_WoW(root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
-    WoWTools_MenuMixin:SetGridMode(root, num)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
@@ -168,7 +168,7 @@ local function Init_Friend(root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
-    WoWTools_MenuMixin:SetGridMode(root, num)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
@@ -225,7 +225,7 @@ local function Init_Guild(root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
-    WoWTools_MenuMixin:SetGridMode(root, num)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
@@ -286,7 +286,7 @@ local function Init_Club(root, clubID)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE)
     end)
 
-    WoWTools_MenuMixin:SetGridMode(root, num)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

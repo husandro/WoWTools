@@ -312,7 +312,8 @@ local function Init_Menu(self, root)
                 return MenuResponse.Open
             end, tab)
         end
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+--SetScrollMod
+        WoWTools_MenuMixin:SetScrollMode(sub, nil)
     end
 
 
@@ -374,7 +375,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(WoWTools_TextMixin:CN(description.data.zone))
         end)
     end
-    WoWTools_MenuMixin:SetGridMode(sub, numOline)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 
 

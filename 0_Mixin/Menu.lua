@@ -738,7 +738,9 @@ function WoWTools_MenuMixin:ClearAll(root, SetValue)
 end
 --[[
 --全部清除
-    WoWTools_MenuMixin:ClearAll(sub, function() end)
+    WoWTools_MenuMixin:ClearAll(sub, function() 
+
+    end)
 ]]
 
 
@@ -902,4 +904,9 @@ end
 --[[
 --SetScrollMod
 WoWTools_MenuMixin:SetScrollMode(root, nil)
+
+--全部清除
+    WoWTools_MenuMixin:ClearAll(sub, function() 
+
+    end)
 ]]

@@ -79,7 +79,7 @@ local function Init_Menu(self, root)
             num= num+1
         end
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 
     sub=root:CreateCheckbox((IsInInstance() and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '邀请目标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, INVITE, TARGET))..'|A:poi-traveldirections-arrow2:0:0|a', function()
@@ -345,7 +345,8 @@ local function Init_Menu(self, root)
 
     num=0
     for guid, nu in pairs(Save().InvNoFriend) do
-        sub2=sub:CreateButton(nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
+        sub2=sub:CreateButton(
+            nu..' '..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
         function(data)
             Save().InvNoFriend[data]=nil
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_UnitMixin:GetPlayerInfo(nil, data, nil,{reLink=true}))
@@ -354,7 +355,7 @@ local function Init_Menu(self, root)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
         end)
     end
-    WoWTools_MenuMixin:SetGridMode(sub2, num)
+    WoWTools_MenuMixin:SetScrollMode(sub2)
 end
 
 

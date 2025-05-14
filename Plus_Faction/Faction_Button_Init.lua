@@ -102,7 +102,7 @@ local function Init_Menu(self, root)
 	end
 
 	if num>1 then
-		WoWTools_MenuMixin:SetGridMode(sub, num)
+		WoWTools_MenuMixin:SetScrollMode(sub)
 --全部清除
 		WoWTools_MenuMixin:ClearAll(sub, function()
 			Save().factions={}

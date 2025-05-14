@@ -127,9 +127,11 @@ local function Save_Macro_Menu(frame, root)
     if num>1 then
 --全部清除
         sub:CreateDivider()
-        WoWTools_MenuMixin:ClearAll(sub, function() Save().macro={} end)
---SetGridMode
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:ClearAll(sub, function()
+            Save().macro={}
+        end)
+
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 end
 

@@ -784,7 +784,7 @@ local function Init_Menu(self, root)--菜单
         self:set_state()
     end)
 
-    
+
     sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '向下滚动' or COMBAT_TEXT_SCROLL_DOWN,
     function()
@@ -901,18 +901,11 @@ local function Init_Menu(self, root)--菜单
 
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-        function()
-            StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                Save().questIDs={}
-            end})
-            return MenuResponse.Open
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
+            Save().questIDs={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 --areaPoiIDs
@@ -942,18 +935,11 @@ local function Init_Menu(self, root)--菜单
 
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-        function()
-            StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                Save().areaPoiIDs={}
-            end})
-            return MenuResponse.Open
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function() 
+            Save().areaPoiIDs={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 --地图
@@ -983,18 +969,11 @@ local function Init_Menu(self, root)--菜单
 
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-        function()
-            StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                Save().uiMapIDs={}
-            end})
-            return MenuResponse.Open
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function() 
+            Save().uiMapIDs={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 
@@ -1193,7 +1172,7 @@ local function Init_Button()
         else--PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED
             self:set_shown()
         end
-        
+
     end)
 
 

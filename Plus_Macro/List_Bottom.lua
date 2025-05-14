@@ -762,8 +762,7 @@ local function Init_MacroList_Menu(_, root)
             end
         end)
 
-        local num= 0
-        for index, macro in pairs(info.tab or {}) do
+        for _, macro in pairs(info.tab or {}) do
             sub:CreateButton(
                 macro.text:gsub('\n', ' '),
             function(data)
@@ -773,12 +772,12 @@ local function Init_MacroList_Menu(_, root)
                 end
                 return MenuResponse.Open
             end, {text=macro.text, icon=macro.icon, tips=macro.tips})
+            
             sub:SetTooltip(function(tooltip, description)
                 tooltip:AddLine(description.data.tips,  nil, nil, nil, true)
             end)
-            num= index
         end
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 end
 

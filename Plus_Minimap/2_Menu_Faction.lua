@@ -96,7 +96,7 @@ function WoWTools_MinimapMixin:Faction_Menu(_, root)
     end
 
     find=nil
-    WoWTools_MenuMixin:SetGridMode(sub, index)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 

@@ -278,8 +278,8 @@ local function Init_Fast_Button_Menu(self, root)
         num=num+1
     end
 
---SetGridMode
-    WoWTools_MenuMixin:SetGridMode(sub, num)
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 

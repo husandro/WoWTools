@@ -103,7 +103,7 @@ local function Init_All_Class(_, root, num)
                     end})
                     return MenuResponse.Open
                 end, {class=classInfo.classFile, name=name})
-                WoWTools_MenuMixin:SetGridMode(sub, n)
+                WoWTools_MenuMixin:SetScrollMode(sub)
             end
         end
     end

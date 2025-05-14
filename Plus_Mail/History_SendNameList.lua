@@ -217,8 +217,8 @@ local function Init_Menu(self, root)
     })
     sub2:CreateSpacer()
 
---SetGridMode
-    WoWTools_MenuMixin:SetGridMode(sub, num)
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 --缩放
     WoWTools_MenuMixin:Scale(self, root, function()

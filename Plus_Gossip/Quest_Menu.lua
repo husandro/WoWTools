@@ -76,15 +76,14 @@ local function Init_Menu(self, root)
     end
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().questRewardCheck={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
-    
+
 --自定义任务
     num=0
     for _ in pairs(Save().questOption) do
@@ -114,12 +113,11 @@ local function Init_Menu(self, root)
 
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().questOption={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 

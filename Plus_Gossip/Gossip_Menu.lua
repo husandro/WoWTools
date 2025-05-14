@@ -126,12 +126,12 @@ local function Init_Menu(self, root)
     end
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().gossipOption={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 
@@ -216,12 +216,11 @@ local function Init_Menu(self, root)
     end
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().NPC={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 
@@ -256,12 +255,11 @@ local function Init_Menu(self, root)
     end
     if num>1 then
         sub:CreateDivider()
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().choice={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 
@@ -293,12 +291,11 @@ local function Init_Menu(self, root)
         sub:CreateDivider()
     end
     if num>1 then
-        sub:CreateButton(
-            WoWTools_DataMixin.onlyChinese and '清除全部' or CLEAR_ALL,
-        function()
+--全部清除
+        WoWTools_MenuMixin:ClearAll(sub, function()
             Save().movie={}
         end)
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 --跳过，视频，
@@ -310,7 +307,9 @@ local function Init_Menu(self, root)
         Save().stopMovie= not Save().stopMovie and true or nil
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY))
+        tooltip:AddLine(
+            WoWTools_DataMixin.onlyChinese and '已经播放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ANIMA_DIVERSION_NODE_SELECTED, EVENTTRACE_BUTTON_PLAY)
+        )
     end)
 
 --动画字幕
@@ -326,7 +325,9 @@ local function Init_Menu(self, root)
     sub2:SetEnabled(not InCombatLockdown())
 
 --WoW
-    sub2=sub:CreateButton('WoW', function() return MenuResponse.Open end)
+    sub2=sub:CreateButton('WoW', function()
+        return MenuResponse.Open
+    end)
     for _, movieEntry in pairs(MOVIE_LIST or WoWTools_GossipMixin:Get_MoveData()) do
         for _, movieID in pairs(movieEntry.movieIDs) do
             sub3=sub2:CreateButton(
