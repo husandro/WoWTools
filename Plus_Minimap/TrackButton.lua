@@ -904,7 +904,13 @@ local function Init_Menu(self, root)--菜单
         sub:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save().questIDs={}
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().questIDs={}
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetGridMode(sub, num)
     end
@@ -939,7 +945,13 @@ local function Init_Menu(self, root)--菜单
         sub:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save().areaPoiIDs={}
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().areaPoiIDs={}
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetGridMode(sub, num)
     end
@@ -974,7 +986,13 @@ local function Init_Menu(self, root)--菜单
         sub:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save().uiMapIDs={}
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().uiMapIDs={}
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetGridMode(sub, num)
     end

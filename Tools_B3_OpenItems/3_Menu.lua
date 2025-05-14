@@ -133,26 +133,35 @@ end
 
 
 local function Remove_All_Menu(self, root, type, num)
+    local name= (type=='use' and '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a' or '|A:talents-button-reset:0:0|a')
+                ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num
+
     root:CreateButton(
-        (type=='use' and '|A:jailerstower-wayfinder-rewardcheckmark:0:0|a' or '|A:talents-button-reset:0:0|a')
-        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num,
+        name,
     function(data)
-        local index=0
-        local type2= data.type=='no' and self.noText or self.useText
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_OpenItemMixin.addName)
-        for itemID in pairs(Save()[data.type]) do
-            index= index+1
-            print(
-                index..')',
-                WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
-                WoWTools_ItemMixin:GetLink(itemID),
-                '|A:common-icon-redx:0:0|a'..type2
-            )
-        end
-        print(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, '|A:common-icon-redx:0:0|a|cnGREEN_FONT_COLOR:#',  index)
-        Save()[data.type]={}
-        WoWTools_OpenItemMixin:Get_Item()
-    end, {type=type})
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            local index=0
+                local type2= data.type=='no' and self.noText or self.useText
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_OpenItemMixin.addName)
+                for itemID in pairs(Save()[data.type]) do
+                    index= index+1
+                    print(
+                        index..')',
+                        WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
+                        WoWTools_ItemMixin:GetLink(itemID),
+                        '|A:common-icon-redx:0:0|a'..type2
+                    )
+                end
+                print(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, '|A:common-icon-redx:0:0|a|cnGREEN_FONT_COLOR:#',  index)
+                Save()[data.type]={}
+                WoWTools_OpenItemMixin:Get_Item()
+        end})
+        return MenuResponse.Open
+        
+    end, {type=type, name=name})
     root:CreateDivider()
 end
 

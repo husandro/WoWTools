@@ -333,15 +333,14 @@ local function Init_Menu(self, root)
             ..'\n\n'
             ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
             ..'\n',
-            nil,
-            {SetValue=function()
-                for guid in pairs(WoWTools_WoWDate) do
-                    WoWTools_WoWDate[guid].Keystone= {week=WoWTools_DataMixin.Player.Week}
-                end
-                C_MythicPlus.RequestMapInfo()
-                WoWTools_ChallengeMixin:ChallengesUI_Left()
-            end}
-        )
+        nil,
+        {SetValue=function()
+            for guid in pairs(WoWTools_WoWDate) do
+                WoWTools_WoWDate[guid].Keystone= {week=WoWTools_DataMixin.Player.Week}
+            end
+            C_MythicPlus.RequestMapInfo()
+            WoWTools_ChallengeMixin:ChallengesUI_Left()
+        end})
     end)
     sub3:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '挑战数据' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYER_DIFFICULTY5, SAVE))

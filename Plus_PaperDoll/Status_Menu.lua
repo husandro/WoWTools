@@ -396,7 +396,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2
+    local sub, sub2, name
 --启用    
     sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
@@ -410,25 +410,37 @@ local function Init_Menu(self, root)
     end)
 
 --全部清除
+    name= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
     sub2=sub:CreateButton(
-        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
-    function()
-        PAPERDOLL_STATCATEGORIES= {}
-        Data_Save()
-        return MenuResponse.CloseAll
-    end)
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            PAPERDOLL_STATCATEGORIES= {}
+            Data_Save()
+        end})
+        return MenuResponse.Open
+    end, {name=name})
 
 --还原
-    sub:CreateButton(
-        (Save().PAPERDOLL_STATCATEGORIES and '' or '|cff9e9e9e')
+    name= (Save().PAPERDOLL_STATCATEGORIES and '' or '|cff9e9e9e')
         ..'|A:uitools-icon-refresh:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT),
-    function()
-        PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
-        Save().PAPERDOLL_STATCATEGORIES=nil
-        WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
-        return MenuResponse.CloseAll
-    end)
+        ..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+    sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            PAPERDOLL_STATCATEGORIES= P_PAPERDOLL_STATCATEGORIES
+            Save().PAPERDOLL_STATCATEGORIES=nil
+            WoWTools_Mixin:Call(PaperDollFrame_UpdateStats)
+        end})
+        return MenuResponse.Open
+    end, {name=name})
 
 --Plus
     sub:CreateDivider()

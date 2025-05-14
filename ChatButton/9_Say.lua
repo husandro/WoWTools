@@ -137,7 +137,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2, sub3, col, icon
+    local sub, sub2, sub3, col, icon, name, num
     --local isInCombat= UnitAffectingCombat('player')
 
     local chatType={
@@ -205,13 +205,21 @@ local function Init_Menu(self, root)
     end)]]
 
 --全部清除
-    local num= #Save().WhisperTab
+    num= #Save().WhisperTab
     if num>0 then
-        sub2=sub:CreateButton((WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num, function()
-            Save().WhisperTab={}
-            rest_numWhisper_Tips()--重置密语，数量
-            return MenuResponse.CloseAll
-        end)
+        name= (WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' #'..num
+        sub2=sub:CreateButton(
+            name,
+        function(data)
+            StaticPopup_Show('WoWTools_OK',
+            data.name,
+            nil,
+            {SetValue=function()
+                Save().WhisperTab={}
+                rest_numWhisper_Tips()--重置密语，数量
+            end})
+            return MenuResponse.Open
+        end, {name=name})
         sub2:SetTooltip(function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '最多保存120条' or 'Save up to 120 recordsf')
         end)

@@ -53,20 +53,24 @@ end
 local function ClearAll_Menu(root, type, index)
     if index>1 then
         root:CreateDivider()
-        local sub=root:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function(data)
-            if IsControlKeyDown() then
-                Save().Mounts[data]={}
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, WoWTools_TextMixin:CN(type))
+        local name= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL
+        root:CreateButton(
+            name,
+        function(data)
+            StaticPopup_Show('WoWTools_OK',
+            data.name..'\n\n'..WoWTools_TextMixin:CN(data.type),
+            nil,
+            {SetValue=function()
+                Save().Mounts[data.type]={}
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName,
+                    data.name,
+                    WoWTools_TextMixin:CN(data.type)
+                )
                 WoWTools_MountMixin.MountButton:settings()
-
-            else
-                return MenuResponse.Open
-            end
-        end, type)
-        sub:SetTooltip(function(tooltip, desc)
-            tooltip:AddLine(WoWTools_TextMixin:CN(desc.data))
-            tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
-        end)
+            end})
+            return MenuResponse.Open
+        end, {type=type, name=name})
     end
     WoWTools_MenuMixin:SetGridMode(root, index)
 end

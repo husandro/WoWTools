@@ -219,6 +219,7 @@ end
 
 
 local function Init_Friends_Menu(self, root)
+    local sub, name
     if not BNConnected() then
         root:CreateTitle('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
         root:CreateDivider()
@@ -259,11 +260,24 @@ local function Init_Friends_Menu(self, root)
     end)
 
     root:CreateDivider()
-    local sub= root:CreateButton(WoWTools_DataMixin.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER))
-    sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
-        Save().Friends= {}
-        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+    sub= root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '其他玩家' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HUD_EDIT_MODE_SETTINGS_CATEGORY_TITLE_MISC, PLAYER),
+    function()
+        return MenuResponse.Open
     end)
+
+    sub:CreateButton(
+        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            Save().Friends= {}
+            print(WoWTools_DataMixin.Icon.icon2.. addName, data.name)
+        end})
+        return MenuResponse.Open
+    end, {name=name})
     sub:CreateDivider()
 
     for guid, stat in pairs(Save().Friends) do

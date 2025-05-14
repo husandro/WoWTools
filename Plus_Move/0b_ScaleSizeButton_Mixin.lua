@@ -617,6 +617,7 @@ local function Set_Enter(btn)
         Set_Tooltip(self)
         --SetCursor("UI_RESIZE_CURSOR")
         SetCursor('Interface\\CURSOR\\Crosshair\\UI-Cursor-SizeRight')
+        --SetCursor('UI_RESIZE_CURSOR')
         self:SetAlpha(1)--and 1 or 0.5)
     end)
 end

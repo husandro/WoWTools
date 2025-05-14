@@ -1001,20 +1001,18 @@ local function Init_Menu(_, root)
     end)
 
     if num>0 then
-        if num>3 then
-            sub3= sub2:CreateButton(
-                WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            function()
-                if IsControlKeyDown() then
-                    Save().wow={}
-                    return MenuResponse.CloseAll
-                end
-            end)
-            sub3:SetTooltip(function (tooltip)
-                tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl|r+'..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL))
-            end)
-            sub3:CreateDivider()
-        end
+        sub2:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().wow={}
+            end})
+            return MenuResponse.Open
+        end)
+        sub2:CreateDivider()
         for name, complete in pairs(Save().wow) do
             sub3=sub2:CreateCheckbox(
                 name=='island' and (WoWTools_DataMixin.onlyChinese and '海岛探险' or ISLANDS_HEADER) or WoWTools_TextMixin:CN(name)..' #|cnGREEN_FONT_COLOR:'..complete,

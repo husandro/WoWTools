@@ -186,9 +186,14 @@ local function Init_Menu(self, root)
         sub:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save().lastSendPlayerList={}
-            set_list()
-            return MenuResponse.Refresh
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().lastSendPlayerList={}
+                set_list()
+            end})
+            return MenuResponse.Open
         end)
     end
 

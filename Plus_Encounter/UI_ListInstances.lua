@@ -19,11 +19,21 @@ local function Init_Fvorite_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.addName)
         tooltip:AddLine(WoWTools_EncounterMixin.addName)
     end)
+
     root:CreateDivider()
-    root:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
-        Save().favorites={}
-        WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+        WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        nil,
+        {SetValue=function()
+            Save().favorites={}
+            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+        end})
+        return MenuResponse.Open
     end)
+
     root:CreateDivider()
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName})
 end

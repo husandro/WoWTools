@@ -65,7 +65,13 @@ local function Player_Sell_Menu(_, root)
         sub:CreateButton(
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         function()
-            Save().Sell={}
+            StaticPopup_Show('WoWTools_OK',
+            '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+            nil,
+            {SetValue=function()
+                Save().Sell={}
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetScrollMode(sub)
     end
@@ -121,7 +127,13 @@ local function Buyback_Menu(_, root)
         sub:CreateButton(
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         function()
-            Save().noSell={}
+            StaticPopup_Show('WoWTools_OK',
+            '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+            nil,
+            {SetValue=function()
+               Save().noSell={}
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetScrollMode(sub)
     end
@@ -191,12 +203,18 @@ local function BuyItem_Menu(_, root)
         sub:CreateButton(
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         function()
-            Save().buyItems[WoWTools_DataMixin.Player.GUID]={}
-            WoWTools_MerchantMixin:Update_MerchantFrame()
-            local btn= _G['WoWTools_BuybackButton']
-            if btn then
-                btn:set_text()--回购，数量，提示
-            end
+            StaticPopup_Show('WoWTools_OK',
+            '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+            nil,
+            {SetValue=function()
+                Save().buyItems[WoWTools_DataMixin.Player.GUID]={}
+                WoWTools_MerchantMixin:Update_MerchantFrame()
+                local btn= _G['WoWTools_BuybackButton']
+                if btn then
+                    btn:set_text()--回购，数量，提示
+                end
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetScrollMode(sub)
     end
@@ -301,7 +319,13 @@ local function Init_Menu(self, root)
         sub:CreateButton(
             '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         function()
-            Save().bossItems={}
+            StaticPopup_Show('WoWTools_OK',
+            '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+            nil,
+            {SetValue=function()
+                Save().bossItems={}
+            end})
+            return MenuResponse.Open
         end)
         WoWTools_MenuMixin:SetScrollMode(sub)
     end

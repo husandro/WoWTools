@@ -273,11 +273,14 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
     }
 --[[
 StaticPopup_Show('WoWTools_OK',
-    ,
-    nil,
-    {SetValue=function()
-    end}
-)
+data.name,
+nil,
+{SetValue=function()
+
+end})
+return MenuResponse.Open
+
+SetGridMode
 ]]
 
 

@@ -323,15 +323,21 @@ end
 --主菜单
 --#####
 local function Init_Menu(self, root)
-    local sub, sub2
+    local sub, sub2, name
 --选项
 
     sub=WoWTools_ToolsMixin:OpenMenu(root, addName)
 
 
 --移除未收集
-    sub2=sub:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED)), function()
-        if IsControlKeyDown() then
+    name= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移除未收集' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, NOT_COLLECTED))
+    sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
             local n=0
             for itemID in pairs(Save().items) do
                 if not PlayerHasToy(itemID) then
@@ -342,30 +348,26 @@ local function Init_Menu(self, root)
             end
             if n>0 then
                 ToyButton:Init_Random(Save().lockedToy)
-            else
-                return MenuResponse.Open
             end
-        else
-            return MenuResponse.Open
-        end
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
-    end)
+        end})
+        return MenuResponse.Open
+    end, {name=name})
+
 
 --全部清除
-    sub2=sub:CreateButton('|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL), function()
-        if IsControlKeyDown() then
+    name='|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+    sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
             Save().items={}
             print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:Rest_Random()
-        else
-            return MenuResponse.Open
-        end
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
-    end)
+        end})
+    end, {name=name})
 
 
 --还原
@@ -373,18 +375,20 @@ local function Init_Menu(self, root)
     for _ in pairs(P_Items) do
         all=all+1
     end
-    sub2=sub:CreateButton('|A:common-icon-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all, function()
-        if IsControlKeyDown() then
+    name= '|A:common-icon-undo:0:0|a'..(WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)..' '..all
+    sub2=sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
             Save().items= P_Items
             ToyButton:Rest_Random()
             print(WoWTools_DataMixin.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
-        else
-            return MenuResponse.Open
-        end
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:Ctrl+'..WoWTools_DataMixin.Icon.left)
-    end)
+        end})
+        return MenuResponse.Open
+    end, {name=name})
 
 --设置
     sub:CreateDivider()

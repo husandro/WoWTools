@@ -13,7 +13,7 @@ end
 
 
 
-local function AltSpell_Menu(self, root)
+local function AltSpell_Menu(_, root)
     root:CreateDivider()
 
     --法术书
@@ -78,7 +78,7 @@ local function AltSpell_Menu(self, root)
                         end
                     end
 --SetGridMode
-                    WoWTools_MenuMixin:SetGridMode(sub, num)
+                    WoWTools_MenuMixin:SetScrollMode(sub)
                 end
             end
         end
@@ -197,7 +197,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, sub2, sub3, class, subClass, find
+    local sub, sub2, sub3, class, subClass, find, name
     local items={
         --[classID]={num=0,[subClassID]=0}
     }
@@ -254,11 +254,19 @@ local function Init_Menu(self, root)
     end
     if find>1 then
         sub2:CreateDivider()
-        sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
-            Save().noUseItems={}
-            WoWTools_FoodMixin:Check_Items()
+        sub2:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().noUseItems={}
+                WoWTools_FoodMixin:Check_Items()
+            end})
+            return MenuResponse.Open
         end)
-        WoWTools_MenuMixin:SetGridMode(sub2, find)
+        WoWTools_MenuMixin:SetScrollMode(sub2)
     end
 
 
@@ -386,13 +394,23 @@ local function Init_Menu(self, root)
     end
 
 --全部清除
-    if find>0 then
+    if find>1 then
         sub:CreateDivider()
-        sub:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
-            Save().addItems={}
-            WoWTools_FoodMixin:Check_Items()
-        end)
-        WoWTools_MenuMixin:SetGridMode(sub, find)
+        name= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL
+        sub:CreateButton(
+            name,
+        function(data)
+            StaticPopup_Show('WoWTools_OK',
+            data.name,
+            nil,
+            {SetValue=function()
+                Save().addItems={}
+                WoWTools_FoodMixin:Check_Items()
+            end})
+            return MenuResponse.Open
+        end, {name=name})
+
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 --总是显示
@@ -421,8 +439,8 @@ local function Init_Menu(self, root)
                     else
                         Save().class[data.classID]= Save().class[data.classID] or {}
                         for i=0, 20 do
-                            local name= C_Item.GetItemSubClassInfo(data.classID, i)
-                            if name and name~='' then
+                            local name2= C_Item.GetItemSubClassInfo(data.classID, i)
+                            if name2 and name2~='' then
                                 Save().class[data.classID][i]=true
                             end
                         end
@@ -470,9 +488,8 @@ local function Init_Menu(self, root)
 
     Check_All_Menu(self, root, nil)
 
-    if WoWTools_DataMixin.Player.husandro then
-        AltSpell_Menu(self, root)
-    end
+    
+    AltSpell_Menu(self, root)
 end
 
 

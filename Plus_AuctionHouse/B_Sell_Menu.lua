@@ -15,7 +15,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2
+    local sub, sub2, name
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示' or SHOW,
     function()
@@ -45,15 +45,21 @@ local function Init_Menu(self, root)
     end)
 
 --全部清除
+    name= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
     sub:CreateButton(
-        '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
-    function()
-        Save().hideSellItem={}
-        Save().hideSellPet={}
-        self:Init_Sell_Item_Button()
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_AuctionHouseMixin.addName, WoWTools_DataMixin.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
-        return MenuResponse.Refresh
-    end)
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            Save().hideSellItem={}
+            Save().hideSellPet={}
+            self:Init_Sell_Item_Button()
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_AuctionHouseMixin.addName, WoWTools_DataMixin.onlyChinese and '清除隐藏物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, ITEMS)))
+        end})
+        return MenuResponse.Open
+    end, {name=name})
 
     sub:CreateDivider()
     local find=false

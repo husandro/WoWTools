@@ -29,7 +29,7 @@ local function Create_Lable(btn)
     end
 
     btn.IndexLable= WoWTools_LabelMixin:Create(btn)
-    btn.IndexLable:SetPoint('TOPRIGHT', 0, 2)
+    btn.IndexLable:SetPoint('TOPRIGHT', 4, 4)
     btn.IndexLable:SetAlpha(0.3)
 
     local name= btn:GetName()
@@ -303,6 +303,7 @@ local function Init_WidthX2()
             btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
             w= w+ numWidth
         end
+
 --设置，框加大小
         MerchantFrame:SetSize(max(w, 336), max(h, 444))
 
@@ -406,7 +407,8 @@ local function Init_WidthX2()
             self.isMovingToRight= true
             p:SetResizable(true)
             p:StartSizing('RIGHT', true)
-            SetCursor("UI_RESIZE_CURSOR")
+            --SetCursor("UI_RESIZE_CURSOR")
+            SetCursor('Interface\\CURSOR\\Crosshair\\UI-Cursor-SizeRight')
         else
 --还原
             MenuUtil.CreateContextMenu(self, ResizeButton2_Menu)

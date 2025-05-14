@@ -244,8 +244,16 @@ local function Init_Menu(self, root)
     end
 
     if num>2 then
-        sub:CreateButton(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, function()
-            Save().no={}
+        sub:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        function()
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().no={}
+            end})
+            return MenuResponse.Open
         end)
     end
     WoWTools_MenuMixin:SetGridMode(sub, num)

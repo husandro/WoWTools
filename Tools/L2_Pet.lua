@@ -125,10 +125,16 @@ local function Init_Menu(self, root)
         root:CreateButton(
             WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         function()
-            Save().Pets={[2780]=true}
-            if PetJournal_UpdatePetList then
-                WoWTools_Mixin:Call(PetJournal_UpdatePetList)
-            end
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+            nil,
+            {SetValue=function()
+                Save().Pets={[2780]=true}
+                if PetJournal_UpdatePetList then
+                    WoWTools_Mixin:Call(PetJournal_UpdatePetList)
+                end
+            end})
+            return MenuResponse.Open            
         end)
     end
 

@@ -666,15 +666,14 @@ local function Init_UserAdd_Menu(_, root)
     function()
         StaticPopup_Show('WoWTools_OK',
         WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-            nil,
-            {SetValue=function()
-                for name in pairs(Save().Icons.userAdd) do
-                    Rest_Ueser_Button(_G[name])
-                    Save().Icons.userAdd[name]=nil
-                end
-                Init_Buttons()
-            end}
-        )
+        nil,
+        {SetValue=function()
+            for name in pairs(Save().Icons.userAdd) do
+                Rest_Ueser_Button(_G[name])
+                Save().Icons.userAdd[name]=nil
+            end
+            Init_Buttons()
+        end})
         return MenuResponse.Open
     end)
 

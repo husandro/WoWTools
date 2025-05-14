@@ -46,8 +46,8 @@ end
 
 
 
-local function Init_All_Class(self, root, num)
-    local sub, sub2, n, col
+local function Init_All_Class(_, root, num)
+    local sub, sub2, n, col, name
     for class= 1, GetNumClasses() do
         local classInfo = C_CreatureInfo.GetClassInfo(class)
         if classInfo and classInfo.classFile then
@@ -58,7 +58,7 @@ local function Init_All_Class(self, root, num)
             for _ in pairs(Save().loot[classInfo.classFile]) do
                 n= n+1
             end
-            
+
             sub=root:CreateButton(
                 (WoWTools_UnitMixin:GetClassIcon(classInfo.classFile) or '')
                 ..col
@@ -89,26 +89,40 @@ local function Init_All_Class(self, root, num)
             end
             if n>0 then
                 sub:CreateDivider()
-                sub:CreateButton(
-                    '|A:bags-button-autosort-up:0:0|a'
+                name= '|A:bags-button-autosort-up:0:0|a'
                     ..(n==0 and '|cff9e9e9e' or '')
-                    ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..n,
+                    ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..n
+                sub:CreateButton(
+                    name,
                 function(data)
-                    Save().loot[data.class]={}
-                end, {class=classInfo.classFile})
+                    StaticPopup_Show('WoWTools_OK',
+                    data.name,
+                    nil,
+                    {SetValue=function()
+                        Save().loot[data.class]={}
+                    end})
+                    return MenuResponse.Open
+                end, {class=classInfo.classFile, name=name})
                 WoWTools_MenuMixin:SetGridMode(sub, n)
             end
         end
     end
 
     root:CreateDivider()
-    root:CreateButton(
-        '|A:bags-button-autosort-up:0:0|a'
+    name= '|A:bags-button-autosort-up:0:0|a'
         ..(num==0 and '|cff9e9e9e' or '')
-        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..num,
-    function()
-        Save().loot={[WoWTools_DataMixin.Player.Class]={}}
-    end)
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)..' '..num
+    root:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+        data.name,
+        nil,
+        {SetValue=function()
+            Save().loot={[WoWTools_DataMixin.Player.Class]={}}
+        end})
+        return MenuResponse.Open
+    end, {name=name})
 end
 
 
@@ -150,7 +164,7 @@ local function Init_Menu(self, root)
             end)
         end
     end
-    
+
     root:CreateDivider()
     sub=root:CreateTitle(WoWTools_TextMixin:CN(self.name, {journalEncounterID=self.journalEncounterID})..' '..self.dungeonEncounterID)
 
@@ -167,7 +181,7 @@ local function Init_Menu(self, root)
         return MenuResponse.Open
     end)
     Init_All_Class(self, sub, num)
-    
+
 end
 
 
@@ -226,12 +240,12 @@ local function set_Loot_Spec(button)
             button:HookScript('OnEnter', Button_OnEnter)
         end
     end
-    
+
     local name, _, journalEncounterID, _, _, _, dungeonEncounterID
     if button.encounterID then
         name, _, journalEncounterID, _, _, _, dungeonEncounterID= EJ_GetEncounterInfo(button.encounterID)
     end
-    
+
     button.LootButton.dungeonEncounterID= dungeonEncounterID
     button.LootButton.journalEncounterID= journalEncounterID
     button.LootButton.name= name
@@ -287,7 +301,7 @@ local function Init()
             Frame:RegisterEvent('ENCOUNTER_END')
         end
     end
-    
+
     Frame:SetScript('OnEvent', function(self, event, arg1)
         if event=='ENCOUNTER_START' and arg1 then--BOSS战时, 指定拾取, 专精
             local indicatoSpec=Save().loot[WoWTools_DataMixin.Player.Class][arg1]
