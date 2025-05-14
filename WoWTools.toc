@@ -344,7 +344,7 @@ Plus_Merchant\SellJunk.lua
 Plus_Merchant\BuyItem.lua
 Plus_Merchant\Buyback.lua
 Plus_Merchant\Plus_WidthX2.lua
-Plus_Merchant\Plus_Other.lua
+Plus_Merchant\Plus_ItemInfo.lua
 
 
 ##银行

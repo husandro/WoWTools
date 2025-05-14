@@ -164,7 +164,40 @@ end
 
 
 
+local function Create_Label(btn)
+    if btn.buyItemNum then
+        return
+    end
 
+--索引
+    btn.IndexLable= WoWTools_LabelMixin:Create(btn, {size=10})
+    --btn.IndexLable:SetPoint('TOPRIGHT', 4, 4)
+    --btn.IndexLable:SetPoint('LEFT', btn.buyItemNum, 'RIGHT', 2,0)
+    btn.IndexLable:SetPoint('BOTTOMRIGHT', 2, -2)
+    btn.IndexLable:SetAlpha(0.3)
+
+--数量
+    btn.buyItemNum=WoWTools_LabelMixin:Create(btn, {size=10})
+    --btn.buyItemNum:SetPoint('BOTTOMRIGHT', -5, -2)
+    btn.buyItemNum:SetPoint('RIGHT', btn.IndexLable, 'LEFT', -2, 0)
+
+--属性
+    btn.stats=WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
+    btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
+    btn.stats:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+    btn.stats:SetScript('OnEnter', function(self)
+        if self.spellID then
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:SetSpellByID(self.spellID)
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
+            GameTooltip:Show()
+        end
+        self:SetAlpha(0.5)
+    end)
+
+end
 
 
 
@@ -172,18 +205,26 @@ end
 
 
 --物品，信息 WoWTools_ItemMixin
-local function setMerchantInfo()
+local function Set_Item_Info()
+    local numMerchantNumItems= GetMerchantNumItems()
+    local numBuybackItems= GetNumBuybackItems()
 
     local isMerce= MerchantFrame.selectedTab==1
     local page= isMerce and MERCHANT_ITEMS_PER_PAGE or BUYBACK_ITEMS_PER_PAGE
-    local numItem= isMerce and GetMerchantNumItems() or GetNumBuybackItems()
-    local btn, index, itemID, itemLink
+    local numItem= isMerce and numMerchantNumItems or numBuybackItems
+
+    local btn, index
+
     for i=1, page do
         index = isMerce and (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i) or i
 
         btn= _G["MerchantItem"..i]
+        if not btn then
+            break
+        end
 
-        local text, spellID, num
+        local stats, spellID, num, itemID, itemLink
+        Create_Label(btn)
 
         if index<= numItem then
             if isMerce then
@@ -200,7 +241,6 @@ local function setMerchantInfo()
             num= num and num..'|T236994:0|t' or ''
 
 --包里，银行
-
             num= num ..(WoWTools_ItemMixin:GetCount(itemID, {notZero=true}) or '')
 
 
@@ -209,58 +249,55 @@ local function setMerchantInfo()
             if classID==2 or classID==4 then--装备
                 local stat= WoWTools_ItemStatsMixin:GetItem(itemLink)--物品，属性，表
                 for _, tab in pairs(stat) do
-                    text= text and text..' ' or ''
-                    text= (text and text..' ' or '')..tab.text
+                    stats= stats and stats..' ' or ''
+                    stats= (stats and stats..' ' or '')..tab.text
                 end
                 spellID= itemLink and select(2, C_Item.GetItemSpell(itemLink))
                 if spellID then
-                    text= (text or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
+                    stats= (stats or '').. '|A:soulbinds_tree_conduit_icon_utility:10:10|a'
                 end
             end
         end
-
-        if not btn.buyItemNum then
-            btn.buyItemNum=WoWTools_LabelMixin:Create(btn, {size=10})
-            btn.buyItemNum:SetPoint('BOTTOMRIGHT', 0, -2)
-        end
+--索引
+        btn.IndexLable:SetText(itemID and index or '')
+--数量
         btn.buyItemNum:SetText(num or '')
-
-
-        if not btn.stats then
-            btn.stats=WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
-            btn.stats:SetPoint('TOPLEFT', btn, 'BOTTOMLEFT',0,6)
-            btn.stats:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-            btn.stats:SetScript('OnEnter', function(self)
-                if self.spellID then
-                    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                    GameTooltip:ClearLines()
-                    GameTooltip:SetSpellByID(self.spellID)
-                    GameTooltip:AddLine(' ')
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
-                    GameTooltip:Show()
-                end
-                self:SetAlpha(0.5)
-            end)
-        end
-        btn.stats:SetText(text or '')
+--属性
+        btn.stats:SetText(stats or '')
         btn.stats.spellID= spellID
-
-
+--提示
         WoWTools_ItemMixin:Setup(
             _G["MerchantItem"..i..'ItemButton'],
             {merchant={slot=index, buyBack= not isMerce}}
         )
     end
 
---物品，信息
-    WoWTools_ItemMixin:Setup(
-        MerchantBuyBackItemItemButton,
-        {merchant={slot=GetNumBuybackItems(), buyBack=true}}
+--回购，物品，信息
+    if isMerce then
+        WoWTools_ItemMixin:Setup(
+            MerchantBuyBackItemItemButton,
+            {merchant={slot=numBuybackItems, buyBack=true}}
+        )
+    end
+
+
+
+--可卖，物品数量
+    MerchantFrameTab1.numLable:SetText(
+        (numMerchantNumItems==0 and '|cff626262' or '')
+        ..numMerchantNumItems
     )
 
 
 --回购，数量，提示
-    MerchantFrameTab2:set_buyback_num()
+    MerchantFrameTab2.numLable:SetText(
+        (
+        numBuybackItems==0 and '|cff626262'
+        or (numBuybackItems==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:')
+        or ''
+        )
+        ..numBuybackItems
+    )
 end
 
 
@@ -270,43 +307,6 @@ end
 
 
 
-
-
---货币，拥有，数量
-local function Create_Quantity_Label(btn)
-    if btn.quantityAll then
-        return
-    end
-
-    btn.quantityAll= WoWTools_LabelMixin:Create(btn, {size=10})
-    btn.quantityAll:SetPoint('TOPLEFT', btn.Text, 'BOTTOMRIGHT', 0, 2)
-    btn.quantityAll:SetAlpha(0.7)
-
-    btn:EnableMouse(true)
-    btn:HookScript('OnMouseDown', function(self)
-        if self.itemLink then
-            local link= self.itemLink..(
-                self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
-            )
-            WoWTools_ChatMixin:Chat(link, nil, true)
-        end
-        self:SetAlpha(0.3)
-    end)
-    btn:HookScript('OnEnter', function(self)
-        self:SetAlpha(0.5)
-    end)
-    btn:HookScript('OnMouseUp', function(self)
-        self:SetAlpha(0.5)
-    end)
-    btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
-    btn:HookScript('OnEnter', function(self)
-        if self.itemLink and GameTooltip:IsShown() then
-            GameTooltip:AddLine(' ')
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.left)
-            GameTooltip:Show()
-        end
-    end)
-end
 
 
 
@@ -316,40 +316,23 @@ end
 
 --物品信息
 local function Init_SetItem_Info()
-    --物品，数量
+--物品，数量
     MerchantFrameTab1.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab1)
     MerchantFrameTab1.numLable:SetPoint('TOPRIGHT')
-    MerchantFrame:HookScript('OnShow', function()
-        local num= GetMerchantNumItems()
-        MerchantFrameTab1.numLable:SetText(num and num>0 and num or '')
-    end)
+
 
   --回购，数量，提示
     MerchantFrameTab2.numLable= WoWTools_LabelMixin:Create(MerchantFrameTab2)
     MerchantFrameTab2.numLable:SetPoint('TOPRIGHT')
-    function MerchantFrameTab2:set_buyback_num()
-        local num
-        num= GetNumBuybackItems() or 0
-        if num>0 then
-            num= num==BUYBACK_ITEMS_PER_PAGE and '|cnRED_FONT_COLOR:'..num or num
-        else
-            num= ''
-        end
-        self.numLable:SetText(num)
-    end
-
 
 
 --物品信息
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
-        setMerchantInfo()
-
---回购，数量，提示
-        MerchantFrameTab2:set_buyback_num()
+        Set_Item_Info()
     end)
-    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
-        setMerchantInfo()
 
+    hooksecurefunc('MerchantFrame_UpdateBuybackInfo', function()
+        Set_Item_Info()
     end)
 
 
@@ -384,7 +367,36 @@ local function Init_SetItem_Info()
                             end
                         end
 
-                        Create_Quantity_Label(btn)
+if not btn.quantityAll then
+                        btn.quantityAll= WoWTools_LabelMixin:Create(btn, {size=10})
+                        btn.quantityAll:SetPoint('TOPLEFT', btn.Text, 'BOTTOMRIGHT', 0, 2)
+                        btn.quantityAll:SetAlpha(0.7)
+
+                        btn:EnableMouse(true)
+                        btn:HookScript('OnMouseDown', function(self)
+                            if self.itemLink then
+                                local link= self.itemLink..(
+                                    self.quantityAll.itemValue and ' x'..self.quantityAll.itemValue or ''
+                                )
+                                WoWTools_ChatMixin:Chat(link, nil, true)
+                            end
+                            self:SetAlpha(0.3)
+                        end)
+                        btn:HookScript('OnEnter', function(self)
+                            self:SetAlpha(0.5)
+                        end)
+                        btn:HookScript('OnMouseUp', function(self)
+                            self:SetAlpha(0.5)
+                        end)
+                        btn:HookScript('OnLeave', function(self) self:SetAlpha(1) end)
+                        btn:HookScript('OnEnter', function(self)
+                            if self.itemLink and GameTooltip:IsShown() then
+                                GameTooltip:AddLine(' ')
+                                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '链接至聊天栏' or COMMUNITIES_INVITE_MANAGER_LINK_TO_CHAT, WoWTools_DataMixin.Icon.left)
+                                GameTooltip:Show()
+                            end
+                        end)
+end
 
                         btn.quantityAll.itemValue= itemValue
                         btn.quantityAll:SetText(num or '')

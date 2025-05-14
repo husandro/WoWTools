@@ -24,13 +24,9 @@ MAX_MERCHANT_CURRENCIES = 6;
 
 
 local function Create_Lable(btn)
-    if btn.IndexLable then
+    if btn.itemBG then
         return
     end
-
-    btn.IndexLable= WoWTools_LabelMixin:Create(btn)
-    btn.IndexLable:SetPoint('TOPRIGHT', 4, 4)
-    btn.IndexLable:SetAlpha(0.3)
 
     local name= btn:GetName()
 --_G[name..'AltCurrencyFrame']
@@ -88,7 +84,6 @@ local function Create_Lable(btn)
         self.ItemButton.link = nil
         self.ItemButton.texture = nil
         self.Name:SetText('')
-        self.IndexLable:SetText('')
     end
 end
 
@@ -195,15 +190,48 @@ end
 
 --增加，按钮宽度，按钮，菜单
 local function ResizeButton2_Menu(self, root)
-    root:CreateCheckbox(
+    local sub
+    --[[sub=root:CreateCheckbox(
         (WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)..' 153',
     function()
-        return not Save().numWidth
+        return not Save().numWidth or Save().numWidth==153
     end, function(data)
         Save().numWidth= not Save().numWidth and data.width or nil
         Create_ItemButton()
         WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
-    end, {width=Save().numWidth})
+    end, {width=Save().numWidth})]]
+
+    sub=root:CreateButton(
+        '|A:common-icon-rotateright:0:0|a'
+        ..((WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH)),
+    function()
+        return MenuResponse.Open
+    end)
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().numWidth or 153
+        end, setValue=function(value)
+            Save().numWidth=value
+            Create_ItemButton()
+            WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '宽度' or HUD_EDIT_MODE_SETTING_CHAT_FRAME_WIDTH ,
+        minValue=153,
+        maxValue=500,
+        step=1,
+        --bit='%.2f',    
+    })
+    sub:CreateSpacer()
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
+    function()
+        Save().numWidth= nil
+        Create_ItemButton()
+        WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
+        return MenuResponse.Refresh
+    end)
 
 --背景, 透明度
     WoWTools_MenuMixin:BgAplha(root, function()
@@ -265,12 +293,11 @@ local function Init_WidthX2()
 
 
 
-
-
 --出售，卖
     hooksecurefunc('MerchantFrame_UpdateMerchantInfo', function()
         local numMerchantItems= GetMerchantNumItems()
         local index, info, btn
+        local curNum= 0
         for i = 1, MERCHANT_ITEMS_PER_PAGE do--按钮，数量
             btn= _G['MerchantItem'..i]
             index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
@@ -280,7 +307,7 @@ local function Init_WidthX2()
                 btn:SetShown(true)
 
                 btn.itemBG:SetShown(info)--Texture.lua
-                btn.IndexLable:SetText(info and  btn.ItemButton:GetID() or '')
+                curNum= curNum+1
             else
                 btn:init_reset()
                 btn:SetShown(false)
@@ -291,13 +318,14 @@ local function Init_WidthX2()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
         end
+
 --换行
         local numWidth= (Save().numWidth or 153)+8
         local w= numWidth+ 15
-        local line= Save().numLine or 6
+        local line= Save().numLine or 5
         local h= 146+(line*52)
 
-        for i= line+1, MERCHANT_ITEMS_PER_PAGE, line do--按钮，数量
+        for i= line+1, math.min(curNum, MERCHANT_ITEMS_PER_PAGE), line do--按钮，数量
             btn= _G['MerchantItem'..i]
             btn:ClearAllPoints()
             btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-line)], 'TOPRIGHT', 8, 0)
@@ -340,7 +368,6 @@ local function Init_WidthX2()
                 btn:SetPoint('TOPLEFT', _G['MerchantItem'..(i-1)], 'BOTTOMLEFT', 0, -8)
             end
             btn.itemBG:SetShown(numBuybackItems>=i)
-            btn.IndexLable:SetText(numBuybackItems>=i and i or '')
         end
 
         _G['MerchantItem7']:SetPoint('TOPLEFT', _G['MerchantItem1'], 'TOPRIGHT', 8, 0)
@@ -433,11 +460,25 @@ local function Init_WidthX2()
             return
         end
         local w= self:GetWidth()
-        local line= Save().numLine or 6
+        local line= Save().numLine or 5
+
+        local numMerchantItems= GetMerchantNumItems()
+        local curNum= 0
+        local index
+        for i = 1, MERCHANT_ITEMS_PER_PAGE do--按钮，数量
+            index = (((MerchantFrame.page - 1) * MERCHANT_ITEMS_PER_PAGE) + i)
+            if index <= numMerchantItems then
+                curNum= curNum+1
+            end
+        end
+        curNum= math.max(10, curNum)
+        curNum= math.min(curNum, MERCHANT_ITEMS_PER_PAGE)
 
         local left= MerchantFrame.selectedTab==2
                     and 2
-                    or math.floor(MERCHANT_ITEMS_PER_PAGE/line)
+                    or math.ceil((curNum/line)+0.5)
+        left= math.max(2, left)
+
         w= w-(left*8)-15
 
         Save().numWidth= math.max(153, w/left)

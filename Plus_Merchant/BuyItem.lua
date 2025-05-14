@@ -32,7 +32,7 @@ local function set_buy_item()
     if IsModifierKeyDown() or Save().notAutoBuy or numAllItems==0 then
         return
     end
-    
+
     local Tab={}
     for index=1, numAllItems do
         local itemID= GetMerchantItemID(index)
@@ -41,14 +41,18 @@ local function set_buy_item()
         local buyNum= num>0 and num- C_Item.GetItemCount(itemID, true, false, true) or 0
 
         if buyNum>0 then
+
             local maxStack = GetMerchantItemMaxStack(index)
             local price= info.price
             local stackCount= info.stackCount
-
             local canAfford
+
             if (price and price > 0) then
                 canAfford = floor(GetMoney() / (price / stackCount))
+            else
+                canAfford= info.stackCount--测试服中
             end
+
             if info.hasExtendedCost then
                 for i = 1, MAX_ITEM_COST do
                     local _, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i)
@@ -199,6 +203,7 @@ local function Init()
     BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
         name='WoWTools_BuyItemButton',
         addTexture=true,
+        size=22,
     })
     BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
 
