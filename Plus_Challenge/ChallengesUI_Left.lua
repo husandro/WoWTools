@@ -369,7 +369,7 @@ local function Init_Menu(self, root)
 
     end
 --SetScrollMod
-    WoWTools_MenuMixin:SetScrollMode(sub2, nil)
+    WoWTools_MenuMixin:SetScrollMode(sub2)
 
 
 --宽度

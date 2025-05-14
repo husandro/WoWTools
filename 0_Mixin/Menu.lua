@@ -29,10 +29,9 @@ Set_Specialization
 
 GetDragonriding()
 ]]
+local maxMenuButton= 35
 
-WoWTools_MenuMixin={
-    maxMenuButton=35,
-}
+WoWTools_MenuMixin={}
 
 function WoWTools_MenuMixin:CloseSettingsPanel()
     if SettingsPanel and SettingsPanel:IsShown() then
@@ -888,8 +887,8 @@ end
 
 
 function WoWTools_MenuMixin:SetGridMode(sub, num)
-    if num and num>self.maxMenuButton then
-        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/self.maxMenuButton))
+    if num and num>maxMenuButton then
+        sub:SetGridMode(MenuConstants.VerticalGridDirection, math.ceil(num/maxMenuButton))
     end
 end
 --[[
@@ -898,12 +897,12 @@ WoWTools_MenuMixin:SetGridMode(sub, num)
 ]]
 
 --SetScrollMode
-function WoWTools_MenuMixin:SetScrollMode(root, maxCharacters)
-   root:SetScrollMode(20 * (maxCharacters or self.maxMenuButton))
+function WoWTools_MenuMixin:SetScrollMode(root)
+    root:SetScrollMode(math.max(20*35, UIParent:GetHeight()-100))
 end
 --[[
 --SetScrollMod
-WoWTools_MenuMixin:SetScrollMode(root, nil)
+WoWTools_MenuMixin:SetScrollMode(root)
 
 --全部清除
     WoWTools_MenuMixin:ClearAll(sub, function() 

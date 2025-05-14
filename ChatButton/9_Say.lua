@@ -313,7 +313,7 @@ local function Init_Menu(self, root)
             end, tab)
         end
 --SetScrollMod
-        WoWTools_MenuMixin:SetScrollMode(sub, nil)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 

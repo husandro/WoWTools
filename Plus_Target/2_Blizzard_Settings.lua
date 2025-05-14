@@ -332,7 +332,7 @@ local function Init_Options()
             end
         end
 --SetScrollMod
-        WoWTools_MenuMixin:SetScrollMode(root, nil)
+        WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
     menu.edit= CreateFrame("EditBox", nil, menu, 'InputBoxTemplate')--EditBox
@@ -583,7 +583,7 @@ local function Init_Options()
         end
 
 --SetScrollMod
-        WoWTools_MenuMixin:SetScrollMode(root, nil)
+        WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
     function menuUnitIsMe:set_icon()

@@ -145,7 +145,7 @@ local function Init_Menu(self, root)
     WoWTools_ToolsMixin:OpenMenu(root, addName)--打开, 选项界面，菜单
 
 --SetScrollMod
-    WoWTools_MenuMixin:SetScrollMode(root, nil)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

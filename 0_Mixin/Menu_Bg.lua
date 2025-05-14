@@ -1,12 +1,3 @@
-local function Save()
-    return WoWToolsSave['Plus_Spell']
-end
-
-local function Call_Bg()
-    WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame)
-    --PlayerSpellsFrame.TalentsFrame:UpdateSpecBackground()
-end
-
 
 local TextureTab={--TalentArt
 ['talents-background-warrior-arms']=true,
@@ -83,76 +74,6 @@ local TextureTab={--TalentArt
 ['legionmission-complete-background-demonhunter']=true,
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local function Set_TalentsFrameBg()
-    local show= Save().bg.show
-    local alpha= Save().bg.alpha or 1
-    local tab={
-        PlayerSpellsFrame.TalentsFrame.Background,
-        PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background,
-        --PlayerSpellsFrame.TalentsFrame.BottomBar
-    }
-    for _, texture in pairs(tab) do
-        if show then
-            texture:SetAlpha(alpha)
-        else
-            texture:SetAlpha(0)
-        end
-    end
-    PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
-
-    PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
-    if show then
-        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')
-    else
-        PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame.BottomBar, 'TOPRIGHT')
-    end
-
-
-    local isAtlas, textureID= WoWTools_TextureMixin:IsAtlas(Save().bg.icon)
-    if textureID then
-        if isAtlas then
-            PlayerSpellsFrame.SpecFrame.Background:SetAtlas(textureID)
-        else
-            PlayerSpellsFrame.SpecFrame.Background:SetTexture(textureID)
-        end
-    else
-        PlayerSpellsFrame.SpecFrame.Background:SetAtlas('spec-background')
-        alpha= 0.3
-    end
-    PlayerSpellsFrame.SpecFrame.Background:SetShown(show)
-    PlayerSpellsFrame.SpecFrame.Background:SetAlpha(alpha)
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -244,18 +165,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 local function Init_Menu(self, root)--隐藏，天赋，背景
     local sub, sub2, sub3
     root:CreateDivider()
@@ -321,31 +230,9 @@ local function Init_Menu(self, root)--隐藏，天赋，背景
 
 
 
-    sub:CreateSpacer()
---透明度
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().bg.alpha or 1
-        end, setValue=function(value)
-            Save().bg.alpha=value
-            WoWTools_SpellMixin:Init_TalentsFrame()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY ,
-        minValue=0,
-        maxValue=1,
-        step=0.01,
-        bit='%.2f',
-    })
-    sub:CreateSpacer()
-
-   -- sub:CreateDivider()
 
 
 
-
---打开选项界面
-    sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_SpellMixin.addName, category=WoWTools_SpellMixin.Category})
 --Web
     sub3=sub2:CreateButton(
         'Web',
@@ -363,80 +250,33 @@ end
 
 
 
+function WoWTools_MenuMixin:BgTexture(root, GetAlphaValue, SetAlphaValue, GetIconValue, SetIconValue, Rest)
+    local sub, sub2
 
+    sub= WoWTools_MenuMixin:BgAplha(root, GetAlphaValue, SetAlphaValue, Rest, false)
 
-
-local function Init()
---天赋, 点数 Blizzard_SharedTalentButtonTemplates.lua Blizzard_ClassTalentButtonTemplates.lua
-    hooksecurefunc(ClassTalentButtonSpendMixin, 'UpdateSpendText', function(btn)
-        local info= btn.nodeInfo-- C_Traits.GetNodeInfo btn:GetSpellID()
-        local text
-        if info then
-            if info.currentRank and info.maxRanks and info.currentRank>0 and info.maxRanks~= info.currentRank then
-                text= '/'..info.maxRanks
-            end
-            if text and not btn.maxText then
-                btn.maxText= WoWTools_LabelMixin:Create(btn, {fontType=btn.SpendText})--nil, btn.SpendText)
-                btn.maxText:SetPoint('LEFT', btn.SpendText, 'RIGHT')
-                btn.maxText:SetTextColor(1, 0, 1)
-                btn.maxText:EnableMouse(true)
-                btn.maxText:SetScript('OnLeave', GameTooltip_Hide)
-                btn.maxText:SetScript('OnEnter', function(self)
-                    if self.maxRanks then
-                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-                        GameTooltip:ClearLines()
-                        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '最高等级' or TRADESKILL_RECIPE_LEVEL_TOOLTIP_HIGHEST_RANK, self.maxRanks)
-                        GameTooltip:AddLine(' ')
-                        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_SpellMixin.addName)
-                        GameTooltip:Show()
-                    end
-                end)
-            end
-        end
-        if btn.maxText then
-            btn.maxText.maxRanks= info and info.maxRanks
-            btn.maxText:SetText(text or '')
-        end
-    end)
-
-
---菜单
-    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", Init_Menu)
-
-
---ClassTalentsFrameMixin
-    hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)
-        local icon= Save().bg.show and Save().bg.icon
-        if not icon then
-            return
-        end
-    
-        if WoWTools_TextureMixin:IsAtlas(icon) then
-            self.Background:SetAtlas(icon)
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM,
+    GetIconValue,
+    function(data)
+        if data.GetIconValue() then
+            data.SetIconValue(nil)
         else
-            self.Background:SetTexture(icon)
+            data.SetIconValue(data.icon)
+        end
+    end,
+    {
+        GetIconValue=GetIconValue,
+        SetIconValue=SetIconValue,
+        icon=GetIconValue(),
+    })
+
+    sub2:SetTooltip(function (tooltip, desc)
+        local _, textureID, icon= WoWTools_TextureMixin:IsAtlas(desc.data.GetIconValue(), {480, 240})
+        if textureID then
+            tooltip:AddLine(icon)
+            tooltip:AddLine(textureID)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2 )
         end
     end)
-
-    if WoWToolsSave['Plus_Texture'].disabled then
-        WoWTools_SpellMixin:Set_UI()
-    end
-
-    Set_TalentsFrameBg()
-
-    Init=function()
-        Set_TalentsFrameBg()
-    end
-end
-
-
-
-
-
-
-
-function WoWTools_SpellMixin:Init_TalentsFrame()
-    if Save().talentsFramePlus and C_AddOns.IsAddOnLoaded('Blizzard_PlayerSpells') then
-        Init()
-    end
 end

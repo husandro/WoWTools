@@ -215,7 +215,7 @@ local function Init_Point_Menu(self, root)
     end
 
 --SetScrollMod
-    WoWTools_MenuMixin:SetScrollMode(root, nil)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
