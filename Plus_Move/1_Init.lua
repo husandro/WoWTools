@@ -52,7 +52,6 @@ local function Init()
     end
 
      for name in pairs(WoWTools_MoveMixin.Frames) do
-        print(name)
         do
             if _G[name] then
                 WoWTools_MoveMixin.Frames[name](WoWTools_MoveMixin)

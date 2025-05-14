@@ -297,7 +297,7 @@ local function Init_Menu(self, root)--隐藏，天赋，背景
         {
             OnShow=function(s)
                 s.button1:SetText(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
-                s.editBox:SetText('Interface\\AddOns\\WoWTools\\Source\\Bg\\')
+                s.editBox:SetText('Interface\\AddOns\\WoWTools\\Source\\Background\\')
             end,
             SetValue= function(s)
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
