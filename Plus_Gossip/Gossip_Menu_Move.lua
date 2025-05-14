@@ -362,6 +362,7 @@ end
 
 local function Init_Menu(_, root)
     local sub, sub2
+    local tab={}
 --WoW
     sub=root:CreateButton('WoW', function()
         return MenuResponse.Open
@@ -369,6 +370,7 @@ local function Init_Menu(_, root)
 
     for _, movieEntry in pairs(MovieList) do--MOVIE_LIST or 
         for _, movieID in pairs(movieEntry.movieIDs) do
+            tab[movieID]= true
             sub2=sub:CreateButton(
                 movieID
                 ..('|A:'..(movieEntry.upAtlas or '')..':0:0|a')
@@ -393,17 +395,19 @@ local function Init_Menu(_, root)
     sub=root:CreateButton('WoW2', function()
         return MenuResponse.Open
     end)
-    
+
     table.sort(list, function(a,b) return a>b end)
 
     for _, movieID in pairs(list) do
-        sub2=sub:CreateButton(
-            movieID,
-        function(data)
-            MovieFrame_PlayMovie(MovieFrame, data.movieID)
-        end, {movieID=movieID})
---下载
-        Movie_SubMenu(sub2, movieID)
+        if not tab[movieID] then
+            sub2=sub:CreateButton(
+                movieID,
+            function(data)
+                MovieFrame_PlayMovie(MovieFrame, data.movieID)
+            end, {movieID=movieID})
+    --下载
+            Movie_SubMenu(sub2, movieID)
+        end
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
 end
