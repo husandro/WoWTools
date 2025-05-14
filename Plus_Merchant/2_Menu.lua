@@ -397,7 +397,7 @@ local function Init_Menu(self, root)
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnRED_FONT_COLOR:',WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         --商人 Plus
         WoWTools_MerchantMixin:Init_WidthX2()
-        WoWTools_MerchantMixin:Init_Plus_Other()
+        WoWTools_MerchantMixin:Plus_ItemInfo()
     end)
 
 --增加，按钮宽度，按钮，菜单
