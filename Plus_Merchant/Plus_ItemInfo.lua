@@ -541,7 +541,7 @@ end
 
 
 
-function WoWTools_MerchantMixin:Init_Plus_Other()
+function WoWTools_MerchantMixin:Plus_ItemInfo()
     if not Save().notPlus then
         Init_UI()--移去 UI
         Init_SetItem_Info()--物品，信息

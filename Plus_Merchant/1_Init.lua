@@ -59,7 +59,7 @@ local function Init()
 
 --商人 Plus
     WoWTools_MerchantMixin:Init_WidthX2()
-    WoWTools_MerchantMixin:Init_Plus_Other()
+    WoWTools_MerchantMixin:Plus_ItemInfo()
 
     Init=function()end
 end
