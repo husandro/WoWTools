@@ -72,7 +72,7 @@ local function ClearAll_Menu(root, type, index)
             return MenuResponse.Open
         end, {type=type, name=name})
     end
-    WoWTools_MenuMixin:SetGridMode(root, index)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

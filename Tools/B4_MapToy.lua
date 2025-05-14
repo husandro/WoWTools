@@ -256,7 +256,7 @@ local function Init_Menu(self, root)
             return MenuResponse.Open
         end)
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 
 
     WoWTools_ToolsMixin:OpenMenu(root, addName)

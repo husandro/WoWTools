@@ -50,7 +50,7 @@ function WoWTools_CurrencyMixin:MenuList_Item(_, root)
 			WoWTools_CurrencyMixin:Set_TrackButton_Text()
 		end)
 
-		WoWTools_MenuMixin:SetScrollMode(sub, num)
+		WoWTools_MenuMixin:SetScrollMode(sub)
 	end
 
 --使用物品

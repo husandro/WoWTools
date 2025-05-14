@@ -100,8 +100,7 @@ local function Init_Menu(_, root)
             )
         end, {type=type, text=text})
 
---SetGridMode
-        WoWTools_MenuMixin:SetGridMode(sub, num)
+        WoWTools_MenuMixin:SetScrollMode(sub)
     end
 
 --打开，选项

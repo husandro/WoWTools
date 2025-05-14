@@ -113,7 +113,6 @@ end
 
 local function Init_SubItem_Menu(self, sub, items)
     local sub2
-    local num=0
     for itemID in pairs(items) do
         sub2=sub:CreateCheckbox(
             WoWTools_ItemMixin:GetName(itemID),
@@ -124,9 +123,8 @@ local function Init_SubItem_Menu(self, sub, items)
             self:settings()
         end, {itemID=itemID})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
-        num=num+1
     end
-    WoWTools_MenuMixin:SetGridMode(sub, num)
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 

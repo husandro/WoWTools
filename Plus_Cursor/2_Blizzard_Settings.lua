@@ -198,7 +198,7 @@ local function Init_Cursor_Options()
             end)
             num= index
         end
-        WoWTools_MenuMixin:SetScrollMode(root, num)
+        WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
 
@@ -393,7 +393,7 @@ local function Init_GCD_Options()
             end)
             num= index
         end
-        WoWTools_MenuMixin:SetScrollMode(root, num)
+        WoWTools_MenuMixin:SetScrollMode(root)
     end)
 
     --删除，图片

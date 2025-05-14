@@ -372,7 +372,7 @@ local function Init_Menu(_, root)
 
 --打开选项
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
---SetScrollMode
+
     WoWTools_MenuMixin:SetScrollMode(root)
 end
 

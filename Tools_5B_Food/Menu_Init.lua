@@ -77,7 +77,7 @@ local function AltSpell_Menu(_, root)
                             num= num+1
                         end
                     end
---SetGridMode
+
                     WoWTools_MenuMixin:SetScrollMode(sub)
                 end
             end

@@ -473,7 +473,7 @@ local function Init_noAdd_Menu(self, root)
             self:settings()
         end, {name=name})
     end
-    WoWTools_MenuMixin:SetScrollMode(root, nil)--SetScrollMod
+    WoWTools_MenuMixin:SetScrollMode(root, nil)
 
 end
 
@@ -549,7 +549,8 @@ local function Init_hideAdd_Menu(self, root)
             self:settings()
         end, {name=name})
     end
-    WoWTools_MenuMixin:SetScrollMode(root, nil)--SetScrollMod
+
+    WoWTools_MenuMixin:SetScrollMode(root, nil)
 end
 
 
@@ -722,11 +723,7 @@ local function Init_UserAdd_Menu(_, root)
         num= num+1
     end
 
-
-
-    WoWTools_MenuMixin:SetScrollMode(sub, nil)--SetScrollMod    
-
-
+    WoWTools_MenuMixin:SetScrollMode(sub, nil)
 end
 
 

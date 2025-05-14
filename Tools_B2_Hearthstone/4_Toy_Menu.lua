@@ -125,7 +125,7 @@ local function Init_Menu_Toy(self, root)
         )
         sub2:SetTooltip(Set_Menu_Tooltip)
     end
-    WoWTools_MenuMixin:SetGridMode(root, index)
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
