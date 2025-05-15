@@ -208,6 +208,11 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
     self:HideTexture(GuildRenameFrameInset.Bg)
     --self:SetInset(GuildRenameFrameInset)
     self:SetNineSlice(GuildRenameFrameInset)
+
+    GuildRegistrarFrameNpcNameText:SetParent(GuildRegistrarFrame.TitleContainer)
+
+    self:SetSearchBox(GuildRegistrarFrameEditBox)
+
 end
 
 

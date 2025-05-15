@@ -389,6 +389,25 @@ local function Init()
         GameTooltip_CalculatePadding(tooltip)
     end)
 
+--商店
+    if _G['AccountStoreFrame'] then
+        hooksecurefunc(AccountStoreBaseCardMixin, 'OnEnter', function(self)
+            local info= self.itemInfo
+            if not info or not info.id then
+                return
+            end
+            local tooltip = GetAppropriateTooltip()
+            tooltip:AddLine(' ')
+            tooltip:AddDoubleLine(
+                'ID '..info.id,
+                info.creatureDisplayID and 'creatureDisplayID '..info.creatureDisplayID
+                or (info.displayIcon and '|T'..info.displayIcon..':0|t'..info.displayIcon)
+                or (info.transmogSetID and 'transmogSetID '..info.transmogSetID)
+            )
+            tooltip:Show()
+        end)
+    end
+
     --FloatingPetBattleAbilityTooltip
     Init=function()end
 end

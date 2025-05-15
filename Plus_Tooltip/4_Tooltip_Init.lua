@@ -63,7 +63,7 @@ local function Create(tooltip)
     tooltip.backgroundColor:Hide()
     function tooltip:Set_BG_Color(r, g, b, a)
         local show= r and g and b
-        r,g,b,a= r or 1, g or 1, b or 1, a or 0.5
+        r,g,b,a= r or 0, g or 0, b or 0, a or 0.4
         self.backgroundColor:SetColorTexture(r,g,b,a)
         if self.NineSlice then
             self.NineSlice:SetBorderColor(r,g,b,a)

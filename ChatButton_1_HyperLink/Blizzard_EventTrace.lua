@@ -619,6 +619,15 @@ local function Init_Print()
         self.index=1
     end
 
+
+
+    Frame.events={
+        LOADING_SCREEN_DISABLED=true,
+        PLAYER_ENTERING_WORLD=true,
+        PLAYER_LOGIN=true,
+        ADDON_LOADED=true,
+    }
+
     Frame:SetScript('OnEvent', function(self, event, arg1, ...)
         if not EventTabs[event] then
             arg= arg1 and {[arg1]=1} or {}
@@ -631,7 +640,12 @@ local function Init_Print()
             }
 
             print(
-                (select(2, math.modf((self.index-1)/2))==0 and '|cff10d3c8' or '|cffd3a21b')..self.index..')',
+                (
+                    self.events[event] and '|cnGREEN_FONT_COLOR:'
+                    or (select(2, math.modf((self.index-1)/2))==0 and '|cff10d3c8' or '|cffd3a21b')
+                )
+                ..self.index
+                ..')',
                 event..'|r',
                 arg1 or '',
                 ...

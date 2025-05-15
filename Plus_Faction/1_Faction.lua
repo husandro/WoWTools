@@ -26,7 +26,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGIN")
+panel:RegisterEvent("LOADING_SCREEN_DISABLED")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -76,11 +76,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end
 		end
 
-    elseif event == "PLAYER_LOGIN" then
+    elseif event == "LOADING_SCREEN_DISABLED" then
 		WoWTools_FactionMixin:Init_Button()
 		WoWTools_FactionMixin:Init_ScrollBox_Plus()
 		WoWTools_FactionMixin:Init_Chat_MSG()
 		WoWTools_FactionMixin:Init_TrackButton()
 		WoWTools_FactionMixin:Init_Other_Button()
+		self:UnregisterEvent(event)
     end
 end)

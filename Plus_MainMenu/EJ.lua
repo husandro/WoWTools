@@ -82,7 +82,11 @@ local function Init()
             info= info or {}
 
             if info.quantity then
-                GameTooltip:AddDoubleLine((info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')..info.quantity, info.name)
+                GameTooltip:AddDoubleLine(
+                    (info.iconFileID  and '|T'..info.iconFileID..':0|t' or '|A:activities-complete-diamond:0:0|a')
+                    ..info.quantity,
+                    WoWTools_TextMixin:CN(info.name)
+                )
             end
             GameTooltip:AddDoubleLine((cur==max and '|cnGREEN_FONT_COLOR:' or '|cffff00ff')..cur..'|r/'..max..format(' %i%%', cur/max*100), WoWTools_DataMixin.onlyChinese and '旅行者日志进度' or MONTHLY_ACTIVITIES_PROGRESSED)
             GameTooltip:AddLine(' ')

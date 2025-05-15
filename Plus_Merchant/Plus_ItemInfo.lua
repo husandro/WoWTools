@@ -81,7 +81,8 @@ local function Init_UI()
     MerchantBuyBackItemName:SetPoint('BOTTOMLEFT', MerchantBuyBackItemItemButtonIconTexture, 'TOPLEFT', 0, 5)
     MerchantBuyBackItemName:SetPoint('RIGHT', MerchantFrame)
     MerchantBuyBackItemName:SetHeight(6)
-    MerchantBuyBackItemItemButtonNormalTexture:SetTexture(0)
+    WoWTools_TextureMixin:SetColorTexture(MerchantBuyBackItemItemButtonNormalTexture, {alpha=true})
+
 
 --修理一件物品
     WoWTools_ButtonMixin:AddMask(MerchantRepairItemButton, false)
@@ -128,6 +129,24 @@ local function Init_UI()
         MerchantExtraCurrencyInset:SetShown(false)
         MerchantExtraCurrencyBg:SetShown(false)
         MerchantMoneyInset:SetShown(false)
+        local btn
+        for i=1, MAX_MERCHANT_CURRENCIES do
+            btn = _G["MerchantToken"..i]--BackpackTokenTemplate
+            if not btn or btn.IconMask then
+                break
+            end
+--添加，遮罩
+            WoWTools_ButtonMixin:AddMask(btn, false, btn.Icon)
+--大小
+            btn.Icon:SetSize(18,18)
+--Alpah
+            btn:HookScript('OnLeave', function(self)
+                self:SetAlpha(1)
+            end)
+            btn:HookScript('OnEnter', function(self)
+                self:SetAlpha(0.3)
+            end)
+        end
     end)
 
     if C_AddOns.IsAddOnLoaded("CompactVendor") then

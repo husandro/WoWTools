@@ -5694,7 +5694,12 @@
         "Saturate",
         "MerchantFrame_UpdateBuybackInfo",
         "MerchantBuyBackItemName",
-        "MerchantBuyBackItemItemButtonIconTexture"
+        "MerchantBuyBackItemItemButtonIconTexture",
+        "MAX_MERCHANT_CURRENCIES",
+        "AccountStoreBaseCardMixin",
+        "ItemSocketingFrameCloseButton",
+        "GuildRegistrarFrameNpcNameText",
+        "GuildRegistrarFrameEditBox"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

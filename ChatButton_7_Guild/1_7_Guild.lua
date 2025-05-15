@@ -49,7 +49,7 @@ end
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('PLAYER_GUILD_UPDATE')
-panel:RegisterEvent('PLAYER_LOGIN')
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -62,14 +62,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             if WoWTools_GuildMixin.GuildButton then
                 self:UnregisterEvent(event)
+                C_ClubFinder.RequestSubscribedClubPostingIDs()
             else
                 self:UnregisterAllEvents()
             end
         end
 
-    elseif event=='PLAYER_LOGIN' then
-        C_ClubFinder.RequestSubscribedClubPostingIDs()
-
+    elseif event=='LOADING_SCREEN_DISABLED' then
         WoWTools_GuildMixin:Init_Button()
         WoWTools_GuildMixin:Init_ClubFinder()
         WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus

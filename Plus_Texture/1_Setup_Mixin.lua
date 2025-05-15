@@ -129,15 +129,20 @@ function WoWTools_TextureMixin:SetSearchBox(frame, tab)
     tab= tab or {}
     local alpha= tab.alpha or true
 
-    self:SetAlphaColor(frame.Middle, nil, nil, alpha)
-    self:SetAlphaColor(frame.Left, nil, nil, alpha)
-    self:SetAlphaColor(frame.Right, nil, nil, alpha)
-    self:SetAlphaColor(frame.Mid, nil, nil, alpha)
-    local alpha2= type(alpha)=='number' and alpha<0 and alpha or true
-    if frame.clearButton then
-        self:SetAlphaColor(frame.clearButton.texture, nil, nil, alpha2)
+    if self.Left then
+        self:SetAlphaColor(frame.Middle, nil, nil, alpha)
+        self:SetAlphaColor(frame.Left, nil, nil, alpha)
+        self:SetAlphaColor(frame.Right, nil, nil, alpha)
+        self:SetAlphaColor(frame.Mid, nil, nil, alpha)
+        local alpha2= type(alpha)=='number' and alpha<0 and alpha or true
+        if frame.clearButton then
+            self:SetAlphaColor(frame.clearButton.texture, nil, nil, alpha2)
+        end
+        self:SetAlphaColor(frame.searchIcon, nil, nil, alpha2)
+
+    else
+        self:SetFrame(frame, tab)
     end
-    self:SetAlphaColor(frame.searchIcon, nil, nil, alpha2)
 end
 
 

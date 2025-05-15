@@ -48,24 +48,24 @@ ItemButtonTemplate.xml
 local background = self:AttachTexture();
 background:SetAtlas("common-dropdown-bg");
 
-
+SharedButtonSmallTemplate
+AvatarButtonTemplate
 ]]
 --遮罩
-function WoWTools_ButtonMixin:AddMask(btn, isType2)
+function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
-
-    if not isType2 then
+    
+    if not isType2 then--方形，按钮
         btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
-        btn.IconMask:SetPoint('TOPLEFT', btn, 0.5, -0.5)
-        btn.IconMask:SetPoint('BOTTOMRIGHT', btn, -0.5, 0.5)
-    else
-        btn.IconMask= btn:CreateMaskTexture()
+        btn.IconMask:SetPoint('TOPLEFT', region or btn, 0.5, -0.5)
+        btn.IconMask:SetPoint('BOTTOMRIGHT', region or btn, -0.5, 0.5)
+    else--圆形，按钮
         btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
-        btn.IconMask:SetPoint("TOPLEFT", btn, "TOPLEFT", 2, -2)
-        btn.IconMask:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", -2, 2)
+        btn.IconMask:SetPoint("TOPLEFT", region or btn, "TOPLEFT", 2, -2)
+        btn.IconMask:SetPoint("BOTTOMRIGHT", region or btn, "BOTTOMRIGHT", -2, 2)
     end
 
-    local icon= btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())
+    local icon= region or  btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())
     if icon then
         icon:AddMaskTexture(btn.IconMask)
     end
