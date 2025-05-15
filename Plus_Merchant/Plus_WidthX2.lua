@@ -237,6 +237,49 @@ local function ResizeButton2_Menu(self, root)
         return MenuResponse.Refresh
     end)
 
+--数量
+    sub= root:CreateButton(
+        '|A:GreenCross:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL),
+    function()
+        return MenuResponse.Open
+    end)
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().numLine or 5
+        end, setValue=function(value)
+            Save().numLine=value
+            WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS ,
+        minValue=5,
+        maxValue=15,
+        step=1,
+        --bit='%.2f',    
+    })
+    sub:CreateSpacer()
+
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return MERCHANT_ITEMS_PER_PAGE
+        end, setValue=function(value)
+            local num= value*(Save().numLine or 5)
+            MERCHANT_ITEMS_PER_PAGE= num
+            Save().MERCHANT_ITEMS_PER_PAGE= num
+            Save().numLine=value
+            Create_ItemButton()
+            WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '列数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_COLUMNS,
+        minValue=2,
+        maxValue=10,
+        step=1,
+        --bit='%.2f',    
+    })
+    sub:CreateSpacer()
+
 --背景, 透明度
     WoWTools_MenuMixin:BgAplha(root, function()
         return Save().btnBgAlpha or 1
