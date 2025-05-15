@@ -244,6 +244,8 @@ local function ResizeButton2_Menu(self, root)
     function()
         return MenuResponse.Open
     end)
+    sub:SetEnabled(MerchantFrame.selectedTab==1)
+
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
@@ -263,18 +265,17 @@ local function ResizeButton2_Menu(self, root)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return MERCHANT_ITEMS_PER_PAGE
+            return MERCHANT_ITEMS_PER_PAGE/(Save().numLine or 5)
         end, setValue=function(value)
             local num= value*(Save().numLine or 5)
             MERCHANT_ITEMS_PER_PAGE= num
             Save().MERCHANT_ITEMS_PER_PAGE= num
-            Save().numLine=value
             Create_ItemButton()
             WoWTools_MerchantMixin:Update_MerchantFrame()--更新物品
         end,
         name=WoWTools_DataMixin.onlyChinese and '列数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_COLUMNS,
         minValue=2,
-        maxValue=10,
+        maxValue=15,
         step=1,
         --bit='%.2f',    
     })
