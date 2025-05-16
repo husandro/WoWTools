@@ -112,7 +112,7 @@ local function Init_Menu(self, root)
     if itemID then
         name= WoWTools_ItemMixin:GetName(itemID)--取得物品，名称
     end
-    
+
     if name then
         sub=root:CreateCheckbox(name, function(data)
             return Save().noSell[data.itemID]
@@ -124,7 +124,7 @@ local function Init_Menu(self, root)
         end)
     else
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
-        
+
     end
 
     root:CreateDivider()
@@ -143,10 +143,20 @@ end
 
 
 
-
+--购回
 local function Init()
-    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {name='WoWTools_BuybackButton', size=22})--购回
-    BuybackButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,18)
+
+    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
+        name='WoWTools_BuybackButton',
+        size=35
+    })
+
+    if Save().notPlus then
+        BuybackButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,18)
+        BuybackButton:SetSize(22, 22)
+    else
+        BuybackButton:SetPoint('LEFT', MerchantBuyBackItemItemButtonIconTexture, 'RIGHT', 10, 0)
+    end
 
     BuybackButton.texture= BuybackButton:CreateTexture(nil, 'BORDER')
     BuybackButton.texture:SetAllPoints()
@@ -157,7 +167,7 @@ local function Init()
     function BuybackButton:set_tooltip()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
-        
+
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '回购' or BUYBACK, '|cnGREEN_FONT_COLOR: #'..(self:set_text() or ''))
         GameTooltip:AddLine(' ')
 
@@ -213,9 +223,16 @@ local function Init()
 
 
 
-    BuybackButton:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_texture() end)
-    BuybackButton:SetScript('OnEnter', BuybackButton.set_tooltip)
-    BuybackButton:SetScript('OnMouseUp', BuybackButton.set_texture)
+    BuybackButton:SetScript('OnLeave', function(self)
+        GameTooltip_Hide()
+        self:set_texture()
+    end)
+    BuybackButton:SetScript('OnEnter', function(self)
+        self:set_tooltip()
+    end)
+    BuybackButton:SetScript('OnMouseUp', function(self)
+        self:set_texture()
+    end)
 
 
     BuybackButton.Text= WoWTools_LabelMixin:Create(BuybackButton, {justifyH='RIGHT', color={r=1,g=1,b=1}})
@@ -240,7 +257,7 @@ local function Init()
     BuybackButton:set_text()--回购，数量，提示
     BuybackButton:set_texture()
 
-    --清除，回购买，图标
+--清除，回购买，图标
     MerchantBuyBackItemItemButton.UndoFrame.Arrow:ClearAllPoints()
     MerchantBuyBackItemItemButton.UndoFrame.Arrow:SetTexture(0)
 end

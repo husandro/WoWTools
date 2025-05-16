@@ -203,12 +203,16 @@ local function Init()
     BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
         name='WoWTools_BuyItemButton',
         addTexture=true,
-        size=22,
+        size=35,
     })
-    BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
 
-    --BuyItemButton.texture= BuyItemButton:CreateTexture(nil, 'BORDER')
-    --BuyItemButton.texture:SetAllPoints()
+     if Save().notPlus then
+        BuyItemButton:SetPoint('BOTTOMRIGHT', MerchantBuyBackItem, 6,-4)
+        BuyItemButton:SetSize(22, 22)
+    else
+        BuyItemButton:SetPoint('LEFT', MerchantBuyBackItemItemButtonIconTexture, 'RIGHT', 50, 0)
+    end
+
     function BuyItemButton:set_texture()
         self.texture:SetTexture(236994)
     end

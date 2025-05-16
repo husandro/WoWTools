@@ -390,23 +390,18 @@ local function Init(mixin)
 
 
 
-C_Timer.After(1, function()
---背包
+
+--背包 Bg FlatPanelBackgroundTemplate
+    mixin:SetButton(ContainerFrameCombinedBags.CloseButton, {all=true})
     mixin:SetNineSlice(ContainerFrameCombinedBags, true)
 
-    mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Middle)
-    mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Right)
-    mixin:SetAlphaColor(ContainerFrameCombinedBags.MoneyFrame.Border.Left)
-
-
-    ContainerFrameCombinedBags.Bg.BottomLeft:SetAtlas('ChallengeMode-guild-background')
-    ContainerFrameCombinedBags.Bg.BottomRight:SetAtlas('ChallengeMode-guild-background')
-    mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.BottomLeft)
-    mixin:SetAlphaColor(ContainerFrameCombinedBags.Bg.BottomRight)
+    ContainerFrameCombinedBags.Bg.BottomLeft:SetTexture(0)
+    ContainerFrameCombinedBags.Bg.BottomRight:SetTexture(0)
     mixin:SetFrame(ContainerFrameCombinedBags.Bg)
-    mixin:SetAlphaColor(BagItemSearchBox.Middle)
-    mixin:SetAlphaColor(BagItemSearchBox.Left)
-    mixin:SetAlphaColor(BagItemSearchBox.Right)
+
+    mixin:SetFrame(ContainerFrameCombinedBags.MoneyFrame.Border, {alpha=0.3})
+    mixin:SetFrame(BackpackTokenFrame.Border, {alpha=0.3})
+    mixin:SetSearchBox(BagItemSearchBox)
 
      for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
          local frame= _G['ContainerFrame'..i]
@@ -418,7 +413,6 @@ C_Timer.After(1, function()
             mixin:SetFrame(frame.Bg)
          end
     end
-end)
 
 
 
@@ -433,7 +427,7 @@ end)
             end
         end
     end)
-    --hooksecurefunc(AccountBankPanel, 'GenerateItemSlotsForSelectedTab'
+
 
     for _, text in pairs({
         'CharacterBag0Slot',

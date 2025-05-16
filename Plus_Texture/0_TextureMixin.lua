@@ -6,7 +6,7 @@ item_upgrade_tooltip_fullmask
 ChallengeMode-guild-background
 UI-Frame-DialogBox-BackgroundTile
 UI-HUD-CoolDownManager-Mask
-
+GarrMission_RewardsShadow
 
 local background = self:AttachTexture();
 background:SetAtlas("common-dropdown-bg");
@@ -15,6 +15,8 @@ local x, y = 10, 3;
 background:SetPoint("TOPLEFT", -x, y);
 background:SetPoint("BOTTOMRIGHT", x, -y);
 background:SetAlpha(.925);
+
+
 ]]
 
 

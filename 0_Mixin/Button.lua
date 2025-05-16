@@ -50,6 +50,9 @@ background:SetAtlas("common-dropdown-bg");
 
 SharedButtonSmallTemplate
 AvatarButtonTemplate
+
+GarrMission_RewardsShadow
+UI-HUD-CoolDownManager-Mask
 ]]
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
