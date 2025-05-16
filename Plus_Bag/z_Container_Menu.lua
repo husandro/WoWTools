@@ -107,6 +107,46 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
         tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
 
+    --CONTAINER_OFFSET_Y 
+    root:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(root, {
+        getValue=function()
+            return CONTAINER_OFFSET_Y or 85
+        end, setValue=function(value)
+            CONTAINER_OFFSET_Y= value
+            WoWTools_Mixin:Call(UpdateContainerFrameAnchors)
+        end,
+        name= 'y',
+        minValue=20,
+        maxValue=200,
+        step=1,
+        
+        tooltip=function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval')
+        end
+    
+    })
+    sub:CreateSpacer()
+
+    root:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(root, {
+        getValue=function()
+            return CONTAINER_OFFSET_X  or -4
+        end, setValue=function(value)
+            CONTAINER_OFFSET_X = value
+            WoWTools_Mixin:Call(UpdateContainerFrameAnchors)
+        end,
+        name= 'x',
+        minValue=-20,
+        maxValue=200,
+        step=1,
+        
+        tooltip=function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval')
+        end
+    
+    })
+    sub:CreateSpacer()
 end
 
 

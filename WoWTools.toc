@@ -147,7 +147,7 @@ Plus_Texture\a_ClassPower.lua
 Plus_Texture\a_HelpTip.lua
 Plus_Texture\z_All_Frame.lua
 Plus_Texture\z_Event_Frame.lua
-Plus_Texture\Blizzard_SharedXML.lua
+
 
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
@@ -461,6 +461,7 @@ Plus_PetBattle\2_Blizzard_Settings.lua
 Plus_PetBattle\Click_To_Move.lua
 Plus_PetBattle\TypeButton.lua
 Plus_PetBattle\PetBattle_AbilityButton.lua
+Plus_PetBattle\z_Blizzard_PetBattleUI.lua
 
 
 ##插件，方案

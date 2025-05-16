@@ -16,8 +16,8 @@ end
 
 
 local function UI_Texture_Color(self)
-    self:SetButton(MerchantPrevPageButton, {all=true})
-    self:SetButton(MerchantNextPageButton, {all=true})
+    --self:SetButton(MerchantPrevPageButton, {all=true})
+    --self:SetButton(MerchantNextPageButton, {all=true})
     self:SetAlphaColor(MerchantFrameLootFilterMiddle)
     self:SetAlphaColor(MerchantFrameLootFilterLeft)
     self:SetAlphaColor(MerchantFrameLootFilterRight)

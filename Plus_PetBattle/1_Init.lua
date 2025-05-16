@@ -56,7 +56,7 @@ end
 local function Init()
     WoWTools_PetBattleMixin:Set_TypeButton()--宠物，类型
     WoWTools_PetBattleMixin:Init_AbilityButton()--宠物对战，技能按钮
-
+    WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
     Init=function()end
 end
 
@@ -75,14 +75,10 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PET_BATTLE_OPENING_DONE')
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
             WoWToolsSave['Plus_PetBattle2']= WoWToolsSave['Plus_PetBattle2'] or P_Save
-
-            WoWToolsSave['Plus_PetBattle2'].TypeButton.showBackground= nil
 
             WoWTools_PetBattleMixin.addName= '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '宠物对战' or PET_BATTLE_PVP_QUEUE)
             WoWTools_PetBattleMixin.addName3= '|A:transmog-nav-slot-feet:0:0|a'..(WoWTools_DataMixin.onlyChinese and '点击移动按钮'or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLICK_TO_MOVE, 'Button'))
@@ -92,21 +88,16 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_PetBattleMixin:Init_Options()
 
             if WoWToolsSave['Plus_PetBattle2'].disabled then
-                self:UnregisterEvent(event)
                 WoWTools_PetBattleMixin:Set_Options()
+                self:UnregisterAllEvents()
 
             else
-                WoWTools_PetBattleMixin:ClickToMove_Button()--点击移动，按钮
-
-                if C_PetBattles.IsInBattle() then
-                    Init()
-                else
-                    self:UnregisterEvent('PET_BATTLE_OPENING_DONE')
-                end
-
+                Init()
+                
                 if C_AddOns.IsAddOnLoaded('Blizzard_Settings') then
                     WoWTools_PetBattleMixin:Set_Options()
                 end
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                     Blizzard_Collections()
                 end
@@ -126,9 +117,5 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             end
         end
-
-    elseif event=='PET_BATTLE_OPENING_DONE' then
-        Init()
-        self:UnregisterEvent(event)
     end
 end)

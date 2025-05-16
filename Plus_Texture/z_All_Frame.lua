@@ -77,53 +77,7 @@ local function Init(mixin)
 
 
 
-    if PetBattleFrame then--宠物
-        mixin:HideTexture(PetBattleFrame.TopArtLeft)
-        mixin:HideTexture(PetBattleFrame.TopArtRight)
-        mixin:HideTexture(PetBattleFrame.TopVersus)
-        PetBattleFrame.TopVersusText:SetText('')
-        PetBattleFrame.TopVersusText:SetShown(false)
-        mixin:HideTexture(PetBattleFrame.WeatherFrame.BackgroundArt)
-
-        mixin:HideTexture(PetBattleFrameXPBarLeft)
-        mixin:HideTexture(PetBattleFrameXPBarRight)
-        mixin:HideTexture(PetBattleFrameXPBarMiddle)
-
-        if PetBattleFrame.BottomFrame then
-            mixin:HideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
-            mixin:HideTexture(PetBattleFrame.BottomFrame.RightEndCap)
-            mixin:HideTexture(PetBattleFrame.BottomFrame.Background)
-            mixin:HideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
-            PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
-            PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
-        end
-        for i=1,NUM_BATTLE_PETS_IN_BATTLE do
-            if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
-                WoWTools_ColorMixin:Setup(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
-            end
-        end
-
-        --宠物， 主面板,主技能, 提示
-        --for _, btn in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
-        hooksecurefunc('PetBattleAbilityButton_UpdateHotKey', function(self)
-            if not self.HotKey:IsShown() then
-                return
-            end
-            local key= WoWTools_KeyMixin:GetHotKeyText(GetBindingKey("ACTIONBUTTON"..self:GetID()), nil)
-            if key then
-                self.HotKey:SetText(key);
-            end
-            self.HotKey:SetTextColor(1,1,1)
-        end)
-    end
-
-    mixin:HideFrame(PetBattleFrame.BottomFrame.MicroButtonFrame)
-
-    hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(self)--Blizzard_PetBattleUI.lua
-        mixin:HideTexture(self.BottomFrame.TurnTimer.TimerBG)
-        mixin:HideTexture(self.BottomFrame.TurnTimer.ArtFrame)
-        mixin:HideTexture(self.BottomFrame.TurnTimer.ArtFrame2)
-    end)
+    
 
 
 

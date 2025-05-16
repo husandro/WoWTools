@@ -20,7 +20,7 @@ Enum.BattlePetOwner.Ally
 
 
 local function Get_Pet_Quality(petOwner, petIndex)
-    local rarity,color,r,g,b,hex
+    local rarity,color,r,g,b
     if petOwner and petIndex then
         rarity= C_PetBattles.GetBreedQuality(petOwner, petIndex)
         color= ITEM_QUALITY_COLORS[rarity]
@@ -43,7 +43,7 @@ local function AbilityButton_UpdateTypeTips(self)
     end
     local typeTexture, strongTexture, weakHintsTexture, maxCooldown, petType, noStrongWeakHints, abilityID, texture, _
     if petIndex and not Save().AbilityButton.disabled then
-        abilityID, _, texture, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex)
+        abilityID, _, _, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex)
     end
 
     if petType then
@@ -1123,7 +1123,7 @@ end
 
 
 local function Init()
-    if WoWToolsSave['Plus_PetBattle2'].AbilityButton.disabled then
+    if Save().AbilityButton.disabled then
         return
     end
 
@@ -1198,6 +1198,8 @@ local function Init()
         AbilityButton_UpdateTypeTips(self)
     end)
 
+
+
     Init=function()
         for _, btn in pairs(Buttons) do
             btn:Settings()
@@ -1224,7 +1226,7 @@ end
 
 --激活，宠物
 local function Init_BottomFrame()
-    if WoWToolsSave['Plus_PetBattle2'].AbilityButton.disabled then
+    if Save().AbilityButton.disabled then
         return
     end
 
@@ -1268,27 +1270,67 @@ local function Init_BottomFrame()
         end
     end
 
---PetBattlePrimaryUnitTooltip 技能, 提示
+
+--技能提示 PetBattleUnitTooltipTemplate
+    PetBattlePrimaryUnitTooltip:SetWidth(290)
+    PetBattlePrimaryUnitTooltip.HealthBG:SetPoint('RIGHT', -15, 0)
+    PetBattlePrimaryUnitTooltip.HealthBorder:SetPoint('RIGHT', -15, 0)
+    PetBattlePrimaryUnitTooltip.ActualHealthBar:SetPoint('RIGHT', -15, 0)
+
+    PetBattlePrimaryUnitTooltip.XPBG:SetPoint('RIGHT', -15, 0)
+    PetBattlePrimaryUnitTooltip.XPBorder:SetPoint('RIGHT', -15, 0)
+    PetBattlePrimaryUnitTooltip.XPBar:SetPoint('RIGHT', -15, 0)
+    
+
+    PetBattlePrimaryUnitTooltip.Delimiter:SetPoint('RIGHT', -20, 0)
+    
+
     hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
-        if Save().AbilityButton.disabled then
-            return
-        end
-        local find
+        
         for i=1, NUM_BATTLE_PET_ABILITIES do
-            local abilityID, name, icon, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
-            if abilityID and name and self["AbilityName"..i]  then
+            local abilityID, name, texture, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
+            
+            if not self['AbilityTexture'..i] then
+                self['AbilityTexture'..i]= self:CreateTexture(nil, 'BORDER')
+                self['AbilityTexture'..i]:SetSize(20,20)
+                self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -3,0)
+
+                self['AbilityTypeTexture'..i]= self:CreateTexture(nil, 'BORDER')
+                self['AbilityTypeTexture'..i]:SetSize(30,30)
+                self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityTexture'..i], 'RIGHT', -5, 0)
+
+                self['AbilityName'..i]:SetPoint('LEFT', self['AbilityTypeTexture'..i], 'RIGHT', 0, 0)
+            end
+            self['AbilityTexture'..i]:SetTexture(texture or 0)
+            self['AbilityTypeTexture'..i]:SetTexture(PET_TYPE_SUFFIX[petType] and 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType] or 0)
+        end
+    end)
+
+
+            --[[if abilityID and name and self["AbilityName"..i]  then
                 self["AbilityName"..i]:SetText(
                     (PET_TYPE_SUFFIX[petType] and '|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t' or '')
-                    ..'|T'..(icon or 0)..':0|t'
+                  
                     ..WoWTools_TextMixin:CN(name, {spellID=abilityID})
                     ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
                     ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
                 )
-                find=true
+            end]]
+        
+            --self:Show()
+        
+        --GameTooltip_CalculatePadding(self)
+
+
+--更新，技能提示，位置
+    hooksecurefunc('PetBattleAbilityButton_OnEnter', function(self)
+        local petIndex = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally);
+        if ( self:GetEffectiveAlpha() > 0 ) then
+            if C_PetBattles.GetAbilityInfo(Enum.BattlePetOwner.Ally, petIndex, self:GetID()) then
+                PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT', 0, 0, self.additionalText)
+            elseif self.abilityID then
+                PetBattleAbilityTooltip_Show("BOTTOMRIGHT", self, 'TOPLEFT', 0, 0)
             end
-        end
-        if find then
-            self:Show()
         end
     end)
 
@@ -1310,11 +1352,7 @@ end
 
 
 function WoWTools_PetBattleMixin:Init_AbilityButton()
-    if C_PetBattles.IsInBattle() then
-        C_Timer.After(2, Init)
-    else
-        Init()
-    end
+    Init()
     Init_BottomFrame()
 end
 
