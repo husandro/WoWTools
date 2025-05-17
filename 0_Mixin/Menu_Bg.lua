@@ -1,3 +1,6 @@
+local function Save()
+    return WoWToolsSave['Menu']
+end
 
 local TextureTab={--TalentArt
 ['talents-background-warrior-arms']=true,

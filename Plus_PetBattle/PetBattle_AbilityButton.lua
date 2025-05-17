@@ -541,9 +541,11 @@ local function Set_PetUnit(self)
     local petOwner= self.petOwner
 
     local name, speciesName
+    
     if C_PetBattles.IsInBattle() and petIndex and not Save().AbilityButton.disabled then
         name, speciesName= C_PetBattles.GetName(petOwner, petIndex)
     end
+    
     if not name then
         Clear_PetUnit_All(self)
         self:SetShown(false)
@@ -552,9 +554,9 @@ local function Set_PetUnit(self)
     self:SetShown(true)
 
 
-    local isEnemy= self.isEnemy
+    --local isEnemy= self.isEnemy
 
-    local petType= petIndex and C_PetBattles.GetPetType(petOwner, petIndex)
+    local petType= C_PetBattles.GetPetType(petOwner, petIndex)
     if petType then
         self.texture:SetTexture('Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType])
     else
@@ -907,7 +909,12 @@ local function Set_Move_Button(btn)
     btn:SetScript('OnEvent', function(self)
         Set_PetUnit(self)
     end)
-    btn:Settings()
+
+    if C_PetBattles.IsInBattle() then
+        C_Timer.After(2, function() btn:Settings() end)
+    else
+        btn:Settings()
+    end
 end
 
 
@@ -1132,7 +1139,7 @@ local function Init()
         name='Enemy',
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=1,
-        getPetIndex=function() return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy) end,
+        getPetIndex=function() return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Enemy) or 1 end,
         --point={'BOTTOMLEFT', PetBattleFrame.BottomFrame, 'TOPLEFT', 15, 250},
         point={'BOTTOM', -320, 350},
         parent=PetBattleFrame.ActiveEnemy,
@@ -1140,21 +1147,21 @@ local function Init()
         name='Enemy2',
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=2,
-        getPetIndex= function() return PetBattleFrame.Enemy2.petIndex end,
+        getPetIndex= function() return PetBattleFrame.Enemy2.petIndex or 2 end,
         point={'LEFT', PetBattleFrame.Enemy2, 'RIGHT', 12, -12},
         parent= PetBattleFrame.Enemy2,
     }, {
         name='Enemy3',
         petOwner=Enum.BattlePetOwner.Enemy,
         petIndex=3,
-        getPetIndex= function() return PetBattleFrame.Enemy3.petIndex end,
+        getPetIndex= function() return PetBattleFrame.Enemy3.petIndex or 3 end,
         point={'LEFT', PetBattleFrame.Enemy3, 'RIGHT', 12, -34},
         parent= PetBattleFrame.Enemy3,
     }, {
         name='Ally2',
         petOwner=Enum.BattlePetOwner.Ally,
         petIndex=2,
-        getPetIndex= function() return PetBattleFrame.Ally2.petIndex end,
+        getPetIndex= function() return PetBattleFrame.Ally2.petIndex or 2 end,
         point={'RIGHT', PetBattleFrame.Ally2, 'LEFT', -12, -12},
         parent= PetBattleFrame.Ally2,
         --parent2= PetBattleFrame.BottomFrame.PetSelectionFrame.Pet2,
@@ -1162,7 +1169,7 @@ local function Init()
         name='Ally3',
         petIndex=3,
         petOwner=Enum.BattlePetOwner.Ally,
-        getPetIndex= function() return PetBattleFrame.Ally3.petIndex end,
+        getPetIndex= function() return PetBattleFrame.Ally3.petIndex or 3 end,
         point={'RIGHT', PetBattleFrame.Ally3, 'LEFT', -12, -34},
         parent= PetBattleFrame.Ally3,
         --parent2= PetBattleFrame.BottomFrame.PetSelectionFrame.Pet3,
@@ -1191,7 +1198,9 @@ local function Init()
         end
         if not self.getPetIndex then
             self.petOwner= Enum.BattlePetOwner.Ally
-            self.getPetIndex= function() return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally) end
+            self.getPetIndex= function()
+                return C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
+            end
             self.abilityIndex= self:GetID()
             AbilityButton_CreateTypeTips(self)
         end
@@ -1291,13 +1300,17 @@ local function Init_BottomFrame()
             local abilityID, name, texture, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
             
             if not self['AbilityTexture'..i] then
-                self['AbilityTexture'..i]= self:CreateTexture(nil, 'BORDER')
-                self['AbilityTexture'..i]:SetSize(20,20)
-                self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -3,0)
-
                 self['AbilityTypeTexture'..i]= self:CreateTexture(nil, 'BORDER')
                 self['AbilityTypeTexture'..i]:SetSize(30,30)
-                self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityTexture'..i], 'RIGHT', -5, 0)
+                self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -10,0)
+
+                
+
+                self['AbilityTexture'..i]= self:CreateTexture(nil, 'BORDER')
+                self['AbilityTexture'..i]:SetSize(20,20)
+                self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityTypeTexture'..i], 'RIGHT', -5, 0)
+
+              
 
                 self['AbilityName'..i]:SetPoint('LEFT', self['AbilityTypeTexture'..i], 'RIGHT', 0, 0)
             end
