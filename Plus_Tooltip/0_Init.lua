@@ -2,7 +2,7 @@ WoWTools_TooltipMixin={
     WoWHead= 'https://www.wowhead.com/',
     Events={},
     addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips',
-    iconSize=20,
+    iconSize=18,
 }
 
 local P_Save={

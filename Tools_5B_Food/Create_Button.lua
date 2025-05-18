@@ -42,7 +42,7 @@ local function Set_Button_Function(btn)
     end
 
     function btn:set_cool()
-        local start, duration, enable = C_Container.GetItemCooldown(self.itemID)
+        local start, duration, enable = C_Item.GetItemCooldown(self.itemID)--C_Container.GetItemCooldown(self.itemID)
         WoWTools_CooldownMixin:Setup(self, start, duration, nil, true, nil, true)--冷却条
         btn.enableCooldown= enable
     end

@@ -102,6 +102,9 @@ local function Init_UI()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '收藏' or FAVORITES)
         GameTooltip:Show()
     end)
+
+
+    Init_UI= function()end
 end
 
 
@@ -136,6 +139,23 @@ local function Init_Texture()
     WoWTools_TextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
 
     WoWTools_TextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
+
+    hooksecurefunc(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
+        if not self:GetView() then
+            return
+        end
+        for _, btn in pairs(self:GetFrames() or {}) do
+            if btn.CenterPiece then
+                WoWTools_TextureMixin:SetAlphaColor(btn.LeftPiece, nil, nil, 0.5)
+                WoWTools_TextureMixin:SetAlphaColor(btn.CenterPiece, nil, nil, 0.5)
+                WoWTools_TextureMixin:SetAlphaColor(btn.RightPiece, nil, nil, 0.5)
+            else
+                btn.Selected:SetVertexColor(0,1,0)
+            end
+        end
+    end)
+
+    Init_Texture=function()end
 end
 
 

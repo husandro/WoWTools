@@ -33,11 +33,11 @@ local function GetAbilitiesIcons(pet, line)--取得，宠物，技能，图标
         return ''
     end
 
-    local text= WoWTools_HunterMixin:GetAbilitieIconForTab(pet.specAbilities, line)
+    local text= WoWTools_HunterMixin:GetAbilitieIconForTab(pet.specAbilities, line, 16)
     if text~='' then
         text= text..(not line and '  ' or '   |n')
     end
-    return text..WoWTools_HunterMixin:GetAbilitieIconForTab(pet.petAbilities or pet.abilities, line)
+    return text..WoWTools_HunterMixin:GetAbilitieIconForTab(pet.petAbilities or pet.abilities, line, 16)
 end
 
 
@@ -219,10 +219,16 @@ end
 --猎人，兽栏 Plus Blizzard_StableUI.lua
 local function Init()
 --宠物，列表，提示
-    hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', Set_SetPet)
-    for _, btn in pairs(StableFrame.StabledPetList.ScrollBox:GetFrames() or {}) do
-        Set_SetPet(btn)
-    end
+    --hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', Set_SetPet)
+
+    hooksecurefunc(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
+        if not self:GetView() then
+            return
+        end
+        for _, btn in pairs(self:GetFrames() or {}) do
+            Set_SetPet(btn)
+        end
+    end)
 
 
     for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示
@@ -264,14 +270,16 @@ local function Init()
     end)
 
 
-    --食物
+--食物
     StableFrame.PetModelScene.PetInfo.Food=WoWTools_LabelMixin:Create(StableFrame.PetModelScene.PetInfo, {copyFont=not WoWTools_DataMixin.onlyChinese and StableFrame.PetModelScene.PetInfo.Specialization, color={r=1,g=1,b=1}, size=16})--copyFont=StableFrame.PetModelScene.PetInfo.Specialization, 
     StableFrame.PetModelScene.PetInfo.Food:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'BOTTOMRIGHT')
-    --特殊，加图标
+
+--特殊，加图标
     StableFrame.PetModelScene.PetInfo.ExoticTexture= StableFrame.PetModelScene.PetInfo:CreateTexture()
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetSize(18,18)
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetPoint('RIGHT', StableFrame.PetModelScene.PetInfo.Exotic, 'LEFT')
     StableFrame.PetModelScene.PetInfo.ExoticTexture:SetTexture(461112)
+    StableFrame.PetModelScene.PetInfo.ExoticTexture:Hide()
 
     hooksecurefunc(StableFrame.PetModelScene.PetInfo, 'SetPet', function(self, petData)
         petData= petData or {}
