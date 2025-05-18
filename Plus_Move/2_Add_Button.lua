@@ -266,7 +266,7 @@ local function Init()
     Init_UIWidgetPowerBarContainerFrame()--移动, 能量条
 
 --宠物对战
-    local btn=SetupButton(PetBattleFrame.BottomFrame, {
+    SetupButton(PetBattleFrame.BottomFrame, {
         name='PetBattleFrame_BottomFrame',
         size= {20, 26},
         setPoint=function(button)

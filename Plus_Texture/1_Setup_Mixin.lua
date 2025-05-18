@@ -28,7 +28,8 @@ function WoWTools_TextureMixin:HideTexture(texture, notClear)
     if not notClear and texture:GetObjectType()=='Texture' then
         texture:SetTexture(0)
     end
-    texture:SetShown(false)
+    texture:SetAlpha(0)
+    --texture:SetShown(false)
 end
 
 --设置，颜色，透明度
@@ -74,12 +75,13 @@ function WoWTools_TextureMixin:HideFrame(frame, tab)
         if icon:GetObjectType()=="Texture" then
             if hideIndex then
                 if hideIndex==index then
-                    icon:ClearAllPoints()
-                    icon:SetShown(false)
+                    icon:SetTexture(0)
+                    icon:SetAlpha(0)
                     break
                 end
             else
-                icon:SetShown(false)
+                icon:SetTexture(0)
+                icon:SetAlpha(0)
             end
         end
     end

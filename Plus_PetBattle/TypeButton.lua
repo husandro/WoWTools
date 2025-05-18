@@ -62,13 +62,16 @@ local function Set_Button_Script(btn, petTypeID)
     end)
     btn:SetScript('OnEnter', function(self)
         if self.abilityID then
-            FloatingPetBattleAbilityTooltip:ClearAllPoints()
-            FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", TypeButton, "TOPRIGHT");
-            FloatingPetBattleAbility_Show(self.abilityID)
+            --FloatingPetBattleAbilityTooltip:ClearAllPoints()
+            --FloatingPetBattleAbilityTooltip:SetPoint("BOTTOMRIGHT", TypeButton, "TOPRIGHT");
+            --FloatingPetBattleAbility_Show(self.abilityID)
+            PetBattleAbilityTooltip_SetAbilityByID(nil, nil, self.abilityID)
+            PetBattleAbilityTooltip_Show("BOTTOMRIGHT", TypeButton, "TOPRIGHT")
         end
     end)
     btn:SetScript('OnLeave', function(self)
-        FloatingPetBattleAbilityTooltip:Hide()
+        --FloatingPetBattleAbilityTooltip:Hide()
+        PetBattlePrimaryAbilityTooltip:Hide()
         self:UnlockHighlight()
     end)
 

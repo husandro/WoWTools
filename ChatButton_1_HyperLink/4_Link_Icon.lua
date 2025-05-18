@@ -216,18 +216,27 @@ local function PetLink(link)--宠物超链接
         ..(Pet(speciesID) or '')
 end
 
+
+--battlePetAbil : abilityID : maxHealth : power : speed
+--|HbattlePetAbil:493:1465:264:301|h[Zoccolata]|h
 local function PetAblil(link, petChannel)--宠物技能
-    local id2=link:match('HbattlePetAbil:(%d+)')
-    if not id2 then
+    local abilityID=link:match('HbattlePetAbil:(%d+)')
+    if not abilityID then
         return
     end
-    local _, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(id2)
+    local abilityID2, _, icon, _, _, _, petType=C_PetBattles.GetAbilityInfoByID(abilityID)
+    local cnName= WoWTools_TextMixin:CN(nil, {petAbilityID=abilityID2, isName=true})
+    if cnName then
+        link= link:gsub('%[.-]', '['..cnName..']')
+    end
     if petType then
         if petChannel then
             return PetType(petType)..link
         else
             return (PetType(petType) or '')..'|T'..(icon or 0)..Size..'|t'..link
         end
+    elseif cnName then
+        return link
     end
 end
 

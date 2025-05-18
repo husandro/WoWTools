@@ -54,21 +54,26 @@ end
 local function Init()
 
 
---战斗宠物，技能 SharedPetBattleTemplates.lua
+--战斗宠物，技能 SharedPetBattleTemplates.lua  SharedPetBattleAbilityTooltipTemplate
     hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
         local abilityID = abilityInfo:GetAbilityID()
         if not abilityID then
+            if self.WoWToolsLabel then
+                self.WoWToolsLabel:SetText('')
+            end
             return
         end
 
-        local _, name, icon, _, unparsedDescription, _, petType = C_PetBattles.GetAbilityInfoByID(abilityID)
-        local description = SharedPetAbilityTooltip_ParseText(abilityInfo, unparsedDescription)
-        self.Description:SetText(
-            WoWTools_TextMixin:CN(description)
-            ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '技能' or ABILITIES)
-            ..abilityID
-            ..(icon and '  |T'..icon..':0|t'..icon or '')
-            ..(Save().ctrl and not UnitAffectingCombat('player') and ' |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Source\\Texture\\Wowhead.tga:0|t' or '')
+        local _, name, icon = C_PetBattles.GetAbilityInfoByID(abilityID)
+        if not self.WoWToolsLabel then
+            self.WoWToolsLabel= WoWTools_LabelMixin:Create(self)
+            self.WoWToolsLabel:SetPoint('TOP', self, 'BOTTOM')
+        end
+
+        self.WoWToolsLabel:SetText(
+            'abilityID '..abilityID
+            ..(icon and '  |T'..icon..':'..WoWTools_TooltipMixin.iconSize..'|t'..icon or '')
+            ..(Save().ctrl and not UnitAffectingCombat('player') and '  |A:NPE_Icon:0:0|aCtrl+Shift|TInterface\\AddOns\\WoWTools\\Source\\Texture\\Wowhead.tga:0|t' or '')
         )
 
         WoWTools_TooltipMixin:Set_Web_Link(self, {type='pet-ability', id=abilityID, name=name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
@@ -84,6 +89,7 @@ local function Init()
                 self:AddDoubleLine(data.spellID and (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
                 if data.actionID or data.itemType then
                     self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
+                    GameTooltip_CalculatePadding(self)
                 end
             end
         end

@@ -13,6 +13,12 @@ local size= 52
 Enum.BattlePetOwner.Weather
 Enum.BattlePetOwner.Enemy
 Enum.BattlePetOwner.Ally
+
+<OnEnter>
+    PetBattleUnitTooltip_Attach(PetBattlePrimaryUnitTooltip, "TOPLEFT", self, "TOPRIGHT", 0, 0);
+    PetBattleUnitTooltip_UpdateForUnit(PetBattlePrimaryUnitTooltip, self.petOwner, self.petIndex);
+    PetBattlePrimaryUnitTooltip:Show();
+</OnEnter>
 ]]
 
 
@@ -204,7 +210,7 @@ local function Set_Ability_Button(button, index, isEnemy)
     btn.CooldownText:SetPoint('CENTER')
 
 --位置
-    local x=(index-NUM_BATTLE_PET_ABILITIES)*(size+6)+2
+    --local x=(index-NUM_BATTLE_PET_ABILITIES)*(size+6)+2
     if isEnemy then
         btn:SetPoint('LEFT', button, 'RIGHT', (index-1)*(size+10)+6, 0)
     else
@@ -228,7 +234,7 @@ local function Set_Ability_Button(button, index, isEnemy)
     btn:RegisterEvent("PET_BATTLE_ACTION_SELECTED")
     btn:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE')
     btn:RegisterEvent('PET_BATTLE_OVERRIDE_ABILITY')
-    btn:SetScript('OnEvent', function(self, event)
+    btn:SetScript('OnEvent', function(self)
         AbilityButton_UpdateTypeTips(self)
         AbilityButton_Update(self)
     end)
@@ -1058,7 +1064,7 @@ local function Init_Button(tab)
 
 --select,提示
     btn.selectTexture= btn.frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
-    btn.selectTexture:SetAtlas('glues-characterSelect-card-selected-hover')
+    btn.selectTexture:SetAtlas('ReportList-ButtonSelect')
     btn.selectTexture:SetAllPoints()
     btn.selectTexture:Hide()
 
