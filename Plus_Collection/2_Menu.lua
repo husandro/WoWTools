@@ -6,7 +6,16 @@ end
 
 
 
-
+local function Refresh_Pet()
+    WoWTools_CollectionMixin:Init_Pet()
+    if PetJournal and PetJournal:IsVisible() then
+        do
+            WoWTools_Mixin:Call(PetJournal_OnHide, PetJournal)
+        end
+        WoWTools_Mixin:Call(PetJournal_OnShow, PetJournal)
+        --WoWTools_Mixin:Call(PetJournal_UpdateAll)
+    end
+end
 
 
 
@@ -15,21 +24,43 @@ local function Init_Menu(_, root)
     local sub
 --宠物
 
-    root:CreateCheckbox(
+    sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '宠物' or PETS,
     function()
         return not Save().hidePets
     end, function()
         Save().hidePets= not Save().hidePets and true or nil
-        WoWTools_CollectionMixin:Init_Pet()
-        if PetJournal and PetJournal:IsVisible() then
-            do
-                WoWTools_Mixin:Call(PetJournal_OnHide, PetJournal)
-            end
-            WoWTools_Mixin:Call(PetJournal_OnShow, PetJournal)
-        end
+        Refresh_Pet()
     end)
 
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().petListIconSize or 18
+        end, setValue=function(value)
+            Save().petListIconSize=value
+            if not Save().hidePets then
+                Refresh_Pet()
+            end
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '图标' or EMBLEM_SYMBOL,
+        minValue=0,
+        maxValue=47,
+        step=1,
+        tooltip=function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '宠物列表' or PROFESSIONS_CURRENT_LISTINGS )
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '技能图标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ABILITIES, EMBLEM_SYMBOL))
+        end
+
+    })
+    sub:CreateSpacer()
+
+    sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '重置' or RESET,
+    function()
+        Save().petListIconSize=nil
+        Refresh_Pet()
+    end)
 
 --传家宝
     sub=root:CreateCheckbox(

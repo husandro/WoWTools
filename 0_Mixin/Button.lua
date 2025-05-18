@@ -124,8 +124,8 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     end
 
 --SetPushedAtlas, SetHighlightAtlas  
-    local pushedAtlas= 'auctionhouse-nav-button-select'
-    local highlightAtlas= 'auctionhouse-nav-button-select'
+    local pushedAtlas= 'PetList-ButtonSelect'--'auctionhouse-nav-button-select'
+    local highlightAtlas= 'PetList-ButtonHighlight'--auctionhouse-nav-button-select'
 
 --圆形，按钮
     if isType2 then

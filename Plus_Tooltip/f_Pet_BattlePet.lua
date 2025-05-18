@@ -8,7 +8,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     end
     WoWTools_TooltipMixin:Set_Init_Item(tooltip)
 
-    BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
+    --BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
 
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     local size= self.iconSize--20

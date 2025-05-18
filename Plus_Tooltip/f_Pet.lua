@@ -22,6 +22,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size)
         if abilityIconA or abilityIconB then
             --tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
+            tooltip:AddLine(' ')
             tooltip:AddLine(abilityIconA)
             tooltip:AddLine(abilityIconB)
         end
@@ -59,8 +60,8 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     --local cardModelSceneID, loadoutModelSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID);
 
 	--loadoutPlate.modelScene:TransitionToModelSceneID(loadoutModelSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD)
-
-    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {--设置, 3D模型
+--设置, 3D模型
+    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {
        -- modelSceneID= loadoutModelSceneID,
         creatureDisplayID=creatureDisplayID
     })

@@ -123,18 +123,34 @@ local function Init()
 
     hooksecurefunc('PetJournal_InitPetButton', function(pet, data)
         local abilityIconA, abilityIconB
-        if not Save().hidePets then
-            abilityIconA, abilityIconB= WoWTools_PetBattleMixin:GetAbilityIcon(data.speciesID, data.index, data.petID, true)
+        if not Save().hidePets and Save().petListIconSize~=0 then
+            abilityIconA, abilityIconB= WoWTools_PetBattleMixin:GetAbilityIcon(data.speciesID, data.index, data.petID, true, Save().petListIconSize or 18)
         end
         if not pet.abilityLabel then
-            pet.abilityLabel= WoWTools_LabelMixin:Create(pet, {layer='ARTWORK'})
-            pet.abilityLabel:SetPoint('BOTTOMRIGHT', 0, 3)
+            pet.abilityLabel= WoWTools_LabelMixin:Create(pet, {layer='OVERLAY'})
+            pet.abilityLabel:SetPoint('BOTTOMRIGHT', 2, -1)
             pet.subName:SetPoint('RIGHT')
             pet.name:SetPoint('RIGHT')
-        end
 
+            function pet.abilityLabel:set_shown()
+                self:SetShown(PetJournalPetCard.petIndex ~= self.index and not GameTooltip:IsOwned(self))
+            end
+            pet:HookScript('OnEnter', function(self)
+                self.abilityLabel:SetShown(false)
+            end)
+            pet:HookScript('OnLeave', function(self)
+                self.abilityLabel:set_shown()
+            end)
+            pet.dragButton:HookScript('OnEnter', function(self)
+                self:GetParent().abilityLabel:SetShown(false)
+            end)
+            pet.dragButton:HookScript('OnLeave', function(self)
+                self:GetParent().abilityLabel:set_shown()
+            end)
+        end
+        pet.abilityLabel.index= data.index
         pet.abilityLabel:SetText((abilityIconA or '')..(abilityIconB or ''))
-        pet.abilityLabel:SetShown(PetJournalPetCard.petIndex ~= data.index)
+        pet.abilityLabel:set_shown()
     end)
 
 

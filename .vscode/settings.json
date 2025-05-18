@@ -5703,7 +5703,9 @@
         "CONTAINER_OFFSET_Y",
         "UpdateContainerFrameAnchors",
         "CONTAINER_OFFSET_X",
-        "PetBattleAbilityButton_OnEnter"
+        "PetBattleAbilityButton_OnEnter",
+        "PetBattleUnitFrame_UpdatePetType",
+        "PetJournal_UpdateAll"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

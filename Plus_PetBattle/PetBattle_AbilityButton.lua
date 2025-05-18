@@ -366,12 +366,12 @@ end
 --光环
 local function Set_PetUnit_Aura(self, petOwner, petIndex)
     local num= C_PetBattles.GetNumAuras(petOwner, petIndex) or 0
+    local auraID, _, turnsRemaining, isBuff, abilityID, icon, aura
     for index=1, num do
-		local auraID, instanceID, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
+		auraID, _, turnsRemaining, isBuff = C_PetBattles.GetAuraInfo(petOwner, petIndex, index)
 
-        local abilityID, name, icon= C_PetBattles.GetAbilityInfoByID(auraID)
-        local aura= Create_PetUnit_Aura(self, index)
-
+        abilityID, _, icon= C_PetBattles.GetAbilityInfoByID(auraID)
+        aura= Create_PetUnit_Aura(self, index)
 
         aura:SetTexture(icon or 0)
         aura.turnsText:SetText(turnsRemaining and turnsRemaining>0 and turnsRemaining or '')
@@ -467,7 +467,7 @@ end
 local function Set_PetUnit_Attributes(self, petOwner, petIndex)
     local enemyOwner= PetBattleUtil_GetOtherPlayer(petOwner)-- petOwner==Enum.BattlePetOwner.Enemy and Enum.BattlePetOwner.Ally or Enum.BattlePetOwner.Enemy
     local enemyIndex= C_PetBattles.GetActivePet(enemyOwner)
-    local isWildBattle=  C_PetBattles.IsWildBattle()
+    --local isWildBattle=  C_PetBattles.IsWildBattle()
 
 --收集
     local num, collected= select(2, WoWTools_PetBattleMixin:Collected(nil, nil, nil, petOwner, petIndex))--总收集数量， 25 25 25， 已收集3/3
@@ -540,10 +540,12 @@ local function Set_PetUnit(self)
     local petIndex= self:getPetIndex()
     local petOwner= self.petOwner
 
-    local name, speciesName
+    local name, speciesName, cnName
 
     if C_PetBattles.IsInBattle() and petIndex and not Save().AbilityButton.disabled then
         name, speciesName= C_PetBattles.GetName(petOwner, petIndex)
+        local speciesID= C_PetBattles.GetPetSpeciesID(petOwner, petIndex)
+        cnName= WoWTools_TextMixin:CN(nil, {petSpeciesID=speciesID, isName=true})
     end
 
     if not name then
@@ -590,10 +592,7 @@ local function Set_PetUnit(self)
     self.border:SetVertexColor(r,g,b)
 
 --名称
-    self.nameText:SetText(
-        (WoWTools_TextMixin:CN(name) or '')
-        ..(speciesName and name~=speciesName and ' ['..speciesName..']' or '')
-    )
+    self.nameText:SetText(cnName or speciesName or name or '')
     self.nameText:SetTextColor(r,g,b)
 
 --3D
@@ -623,7 +622,8 @@ end
 
 
 
-
+ --[[local companionID= select(11, C_PetJournal.GetPetInfoByIndex(pet.index))
+local npcName= WoWTools_ChineseMixin:GetUnitName(nil, companionID)]]
 
 
 --移动按钮, 菜单
@@ -636,19 +636,26 @@ local function Init_Button_Menu(self, root)
     local icon= name and C_PetBattles.GetIcon(self.petOwner, petIndex)
     local color= name and select(2, Get_Pet_Quality(self.petOwner, petIndex))
 
+    local speciesID= C_PetBattles.GetPetSpeciesID(self.petOwner, petIndex)
+    --local companionID= speciesID and select(4, C_PetJournal.GetPetInfoBySpeciesID(speciesID))
+
+--中文，名称
+    local cnName= WoWTools_TextMixin:CN(nil, {petSpeciesID=speciesID, isName=true})
+
+--在手册中显示该宠物
     sub=root:CreateButton(
-        name and color.hex..'|T'..icon..':0|t'..WoWTools_TextMixin:CN(name)
-            or '|TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_DataMixin.onlyChinese and '宠物手册' or PET_JOURNAL),
-    function(data)
+        (color.hex or '')
+        ..'|T'..(icon or 'Interface\\Icons\\PetJournalPortrait')..':0|t'
+        ..(cnName or name or (WoWTools_DataMixin.onlyChinese and '宠物手册' or PET_JOURNAL)),
+    function()
         WoWTools_LoadUIMixin:Journal(2, {petOwner=self.petOwner, petIndex=self:getPetIndex()})
         return MenuResponse.Open
-    end, name and true or false)
-    sub:SetTooltip(function(tooltip, desc)
-        tooltip:AddLine(MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
-        if desc.data then
-            tooltip:AddLine(' ')
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '在手册中显示该宠物' or PET_SHOW_IN_JOURNAL)
-        end
+    end)
+
+    sub:SetTooltip(function(tooltip)
+        tooltip:SetText(MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '战团藏品' or COLLECTIONS, "TOGGLECOLLECTIONS"))
+        tooltip:AddLine(' ')
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '在手册中显示该宠物' or PET_SHOW_IN_JOURNAL)
     end)
 
 
@@ -664,15 +671,10 @@ local function Init_Button_Menu(self, root)
         self:Settings()
     end)
 
---打开选项界面
-    root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {
-        category= WoWTools_PetBattleMixin.Category,
-        name= WoWTools_PetBattleMixin.addName6
-    })
+
 
 --显示名称
-    sub:CreateCheckbox(
+    root:CreateCheckbox(
         '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示名称' or PROFESSIONS_FLYOUT_SHOW_NAME),
     function(data)
         return Save().AbilityButton['showName_'..self.name]
@@ -682,7 +684,7 @@ local function Init_Button_Menu(self, root)
     end)
 
 --3D
-    sub:CreateCheckbox(
+    root:CreateCheckbox(
         '|A:WildBattlePetCapturable:0:0|a'..(WoWTools_DataMixin.onlyChinese and '显示3D' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, '3D')),
     function(data)
         return Save().AbilityButton['petmodelShow_'..self.name]
@@ -692,7 +694,7 @@ local function Init_Button_Menu(self, root)
     end)
 
 --显示背景
-    WoWTools_MenuMixin:BgAplha(sub,
+    WoWTools_MenuMixin:BgAplha(root,
     function()
         return Save().AbilityButton['bgAlpha'..self.name] or 0.5
     end, function(value)
@@ -701,7 +703,7 @@ local function Init_Button_Menu(self, root)
     end)
 
 --缩放
-    WoWTools_MenuMixin:Scale(self, sub, function()
+    WoWTools_MenuMixin:Scale(self, root, function()
         return self:GetScale() --Save().AbilityButton['scale'..self.name] or (self.name=='Enemy' and 1 or 0.85)
     end, function(value)
         Save().AbilityButton['scale'..self.name]= value
@@ -710,7 +712,7 @@ local function Init_Button_Menu(self, root)
 
 
 --FrameStrata      
-    WoWTools_MenuMixin:FrameStrata(sub, function(data)
+    WoWTools_MenuMixin:FrameStrata(root, function(data)
         return self:GetFrameStrata()==data
     end, function(data)
         Save().AbilityButton['strata'..self.name]= data
@@ -718,7 +720,14 @@ local function Init_Button_Menu(self, root)
 
     end)
 
-    sub:CreateDivider()
+
+--打开选项界面
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {
+        category= WoWTools_PetBattleMixin.Category,
+        name= WoWTools_PetBattleMixin.addName6
+    })
+
 --重置
     sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '重置' or RESET,
@@ -1280,39 +1289,133 @@ local function Init_BottomFrame()
     end
 
 
+
+    Init_BottomFrame=function()end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[local function StrongWeakHints_Texture(self)
+    self.PetType.Strong= self.PetType:CreateTexture()
+    self.PetType.Strong:SetPoint('BOTTOM', self.PetType.Icon, 'TOP')
+    self.PetType.Strong:SetSize(25,25)
+
+    self.PetType.WeakHints= self.PetType:CreateTexture()
+    self.PetType.WeakHints:SetPoint('TOP', self.PetType.Icon, 'BOTTOM')
+    self.PetType.WeakHints:SetSize(25,25)
+end]]
+
+
+
+
+
+--PetBattleUnitTooltipTemplate
+local function Create_Labe(self)
+    local w= 290
+    self:SetWidth(w)--260
+--BACKGROUND 
+    self.HealthBorder:SetWidth(w-30+2)
+    self.XPBorder:SetWidth(w-30+2)
+--BORDER
+    self.HealthBG:SetWidth(w-30)
+    self.XPBG:SetWidth(w-30)
+--ARTWORK    
+    self.ActualHealthBar:SetWidth(w-30)
+    self.XPBar:SetWidth(w-30)
+----PetBattleUnitTooltip_OnLoad(self)
+	self.healthBarWidth = w-30;
+	self.xpBarWidth = w-30;
+
+--技能，名称
+    self.AbilityName1:SetPoint('RIGHT', -2, 0)
+    self.AbilityName2:SetPoint('RIGHT', -2, 0)
+    self.AbilityName3:SetPoint('RIGHT', -2, 0)
+
+    self.Delimiter:SetPoint('RIGHT', -20, 0)
+--属性，文本
+    self.StatsLabel:SetPoint('TOPLEFT', self.Delimiter, 'BOTTOMLEFT', -2, -8)
+--攻击，图标
+    self.AttackIcon:SetPoint('TOPLEFT', self.StatsLabel, 'BOTTOMLEFT', 0, -7)
+--攻击，文本
+    self.AttackAmount:SetPoint('LEFT', self.AttackIcon, 'RIGHT', 0, 0)
+--速度，文本
+    self.SpeedAmount:SetPoint('LEFT', self.SpeedIcon, 'RIGHT', 0, 0)
+
+--[[宠物，类型
+    if self.PetType then
+        self.PetType:SetPoint('TOPRIGHT', -5, -22)
+        StrongWeakHints_Texture(self)
+    end]]
+
+    for i=1, NUM_BATTLE_PET_ABILITIES do
+--宠物，类型
+        self['AbilityTypeTexture'..i]= self:CreateTexture(nil, 'BORDER')
+        self['AbilityTypeTexture'..i]:SetSize(30,30)
+        self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -8, 0)
+--技能，图标
+        self['AbilityTexture'..i]= self:CreateTexture(nil, 'BORDER')
+        self['AbilityTexture'..i]:SetSize(20,20)
+        self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityTypeTexture'..i], 'RIGHT', -2, 0)
+--名称
+        self['AbilityName'..i]:SetPoint('LEFT', self['AbilityTexture'..i], 'RIGHT', 0, 0)
+
+--maxCooldown
+        self['AbilityCooldown'..i]= WoWTools_LabelMixin:Create(self, {justifyH='RIGHT'})
+        self['AbilityCooldown'..i]:SetPoint('RIGHT', self['AbilityIcon'..i], 'LEFT', 2, 2)
+
+        self['AbilityIDLabel'..i]= WoWTools_LabelMixin:Create(self, {justifyH='RIGHT'})
+        self['AbilityIDLabel'..i]:SetPoint('RIGHT', self['AbilityName'..i])
+    end
+end
+
+
+
+
+
+
 --技能提示 PetBattleUnitTooltipTemplate
-    PetBattlePrimaryUnitTooltip:SetWidth(290)
-    PetBattlePrimaryUnitTooltip.HealthBG:SetPoint('RIGHT', -15, 0)
-    PetBattlePrimaryUnitTooltip.HealthBorder:SetPoint('RIGHT', -15, 0)
-    PetBattlePrimaryUnitTooltip.ActualHealthBar:SetPoint('RIGHT', -15, 0)
+local function Init_PetBattlePrimaryUnitTooltip()
 
-    PetBattlePrimaryUnitTooltip.XPBG:SetPoint('RIGHT', -15, 0)
-    PetBattlePrimaryUnitTooltip.XPBorder:SetPoint('RIGHT', -15, 0)
-    PetBattlePrimaryUnitTooltip.XPBar:SetPoint('RIGHT', -15, 0)
-
-
-    PetBattlePrimaryUnitTooltip.Delimiter:SetPoint('RIGHT', -20, 0)
-
+    Create_Labe(PetBattlePrimaryUnitTooltip)
 
     hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
+        if not self['AbilityIDLabel1'] then
+            Create_Labe(self)
+        end
 
         for i=1, NUM_BATTLE_PET_ABILITIES do
-            local abilityID, name, texture, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
+            local abilityID, _, texture, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
 
-            if not self['AbilityTexture'..i] then
---宠物，类型
-                self['AbilityTypeTexture'..i]= self:CreateTexture(nil, 'BORDER')
-                self['AbilityTypeTexture'..i]:SetSize(30,30)
-                self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -8, 0)
---技能，图标
-                self['AbilityTexture'..i]= self:CreateTexture(nil, 'BORDER')
-                self['AbilityTexture'..i]:SetSize(20,20)
-                self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityTypeTexture'..i], 'RIGHT', -1, 0)
---名称
-                self['AbilityName'..i]:SetPoint('LEFT', self['AbilityTexture'..i], 'RIGHT', 0, 0)
-            end
             self['AbilityTexture'..i]:SetTexture(texture or 0)
             self['AbilityTypeTexture'..i]:SetTexture(PET_TYPE_SUFFIX[petType] and 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType] or 0)
+            self['AbilityCooldown'..i]:SetText(
+                maxCooldown and numTurns and
+                '|cnGREEN_FONT_COLOR:'..numTurns..'|r/'..(maxCooldown==0 and '|cff626262' or '|cnRED_FONT_COLOR:')..maxCooldown
+                or ''
+            )
+            self['AbilityIDLabel'..i]:SetText(abilityID or '')
         end
     end)
 
@@ -1331,12 +1434,33 @@ local function Init_BottomFrame()
         end
     end)
 
+--[[宠物，类型
+    hooksecurefunc('PetBattleUnitFrame_UpdatePetType', function(self)
+        if not self.PetType then
+            return
+        end
+        if not self.PetType.Strong then
+            StrongWeakHints_Texture(self)
+        end
 
-    Init_BottomFrame=function()end
+        local petType, strongTexture, weakHintsTexture
+        if self.petOwner and self.petIndex then
+            petType= C_PetBattles.GetPetType(self.petOwner, self.petIndex)
+            strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
+        end
+        self.PetType.Strong:SetTexture(strongTexture or 0)
+        self.PetType.WeakHints:SetTexture(weakHintsTexture or 0)
+    end)]]
+
+
+
+
+
+
+
+
+    Init_PetBattlePrimaryUnitTooltip=function()end
 end
-
-
-
 
 
 
@@ -1351,5 +1475,6 @@ end
 function WoWTools_PetBattleMixin:Init_AbilityButton()
     Init()
     Init_BottomFrame()
+    Init_PetBattlePrimaryUnitTooltip()
 end
 
