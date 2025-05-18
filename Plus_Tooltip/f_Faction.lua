@@ -9,9 +9,11 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     if not info.factionID then
         return
     end
-    local icon= info.texture and ('|T'..info.texture..':0|t')
-                or (info.atlas and '|A:'..info.atlas..':0:0|a')--..info.atlas)
-                or info.textureKit and ('|A:MajorFactions_Icons_'..info.textureKit..'512:0:0|a')--..info.textureKit)
+    local size= self.iconSize
+
+    local icon= info.texture and ('|T'..info.texture..':'..size..'|t')
+                or (info.atlas and '|A:'..info.atlas..':'..size..':'..size..'|a')
+                or info.textureKit and ('|A:MajorFactions_Icons_'..info.textureKit..'512:'..size..':'..size..'|a')--..info.textureKit)
                 or ''
     if info.friendshipID then
         tooltip:AddDoubleLine(

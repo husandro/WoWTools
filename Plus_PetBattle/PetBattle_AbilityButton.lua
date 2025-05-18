@@ -541,11 +541,11 @@ local function Set_PetUnit(self)
     local petOwner= self.petOwner
 
     local name, speciesName
-    
+
     if C_PetBattles.IsInBattle() and petIndex and not Save().AbilityButton.disabled then
         name, speciesName= C_PetBattles.GetName(petOwner, petIndex)
     end
-    
+
     if not name then
         Clear_PetUnit_All(self)
         self:SetShown(false)
@@ -1289,30 +1289,27 @@ local function Init_BottomFrame()
     PetBattlePrimaryUnitTooltip.XPBG:SetPoint('RIGHT', -15, 0)
     PetBattlePrimaryUnitTooltip.XPBorder:SetPoint('RIGHT', -15, 0)
     PetBattlePrimaryUnitTooltip.XPBar:SetPoint('RIGHT', -15, 0)
-    
+
 
     PetBattlePrimaryUnitTooltip.Delimiter:SetPoint('RIGHT', -20, 0)
-    
+
 
     hooksecurefunc('PetBattleUnitTooltip_UpdateForUnit', function(self, petOwner, petIndex)
-        
+
         for i=1, NUM_BATTLE_PET_ABILITIES do
             local abilityID, name, texture, maxCooldown, _, numTurns, petType= C_PetBattles.GetAbilityInfo(petOwner, petIndex, i)
-            
+
             if not self['AbilityTexture'..i] then
+--宠物，类型
                 self['AbilityTypeTexture'..i]= self:CreateTexture(nil, 'BORDER')
                 self['AbilityTypeTexture'..i]:SetSize(30,30)
-                self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -10,0)
-
-                
-
+                self['AbilityTypeTexture'..i]:SetPoint('LEFT',  self['AbilityIcon'..i], 'RIGHT', -8, 0)
+--技能，图标
                 self['AbilityTexture'..i]= self:CreateTexture(nil, 'BORDER')
                 self['AbilityTexture'..i]:SetSize(20,20)
-                self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityTypeTexture'..i], 'RIGHT', -5, 0)
-
-              
-
-                self['AbilityName'..i]:SetPoint('LEFT', self['AbilityTypeTexture'..i], 'RIGHT', 0, 0)
+                self['AbilityTexture'..i]:SetPoint('LEFT',  self['AbilityTypeTexture'..i], 'RIGHT', -1, 0)
+--名称
+                self['AbilityName'..i]:SetPoint('LEFT', self['AbilityTexture'..i], 'RIGHT', 0, 0)
             end
             self['AbilityTexture'..i]:SetTexture(texture or 0)
             self['AbilityTypeTexture'..i]:SetTexture(PET_TYPE_SUFFIX[petType] and 'Interface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType] or 0)
@@ -1320,19 +1317,6 @@ local function Init_BottomFrame()
     end)
 
 
-            --[[if abilityID and name and self["AbilityName"..i]  then
-                self["AbilityName"..i]:SetText(
-                    (PET_TYPE_SUFFIX[petType] and '|TInterface\\TargetingFrame\\PetBadge-'..PET_TYPE_SUFFIX[petType]..':0|t' or '')
-                  
-                    ..WoWTools_TextMixin:CN(name, {spellID=abilityID})
-                    ..(numTurns and numTurns>0 and ' |cnGREEN_FONT_COLOR:'..numTurns..'|r' or '')
-                    ..(maxCooldown and maxCooldown>1 and '/|cnRED_FONT_COLOR:'..maxCooldown..'|r' or '')
-                )
-            end]]
-        
-            --self:Show()
-        
-        --GameTooltip_CalculatePadding(self)
 
 
 --更新，技能提示，位置

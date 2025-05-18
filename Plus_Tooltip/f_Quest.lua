@@ -53,7 +53,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
             local wowNum= isWide and WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
             tooltip:AddLine(' ')
             tooltip:AddDoubleLine(
-                '|T'..(info2.iconFileID or 0)..':0|t'
+                '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'
                 ..(isMax and '|cnRED_FONT_COLOR:' or (canWeek or canEarned or canQuantity and '|cnGREEN_FONT_COLOR:') or col or '')
                 ..WoWTools_Mixin:MK(num,3)
                 ..(percent and ' |cnGREEN_FONT_COLOR:'..percent..'%' or ''),

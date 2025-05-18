@@ -77,7 +77,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
 
 
                 if WoWTools_DataMixin.Player.Class==classFile then
-                    player=player..'|T'..icon2..':0|t'
+                    player=player..'|T'..icon2..':'..WoWTools_TooltipMixin.iconSize..'|t'
 
                 elseif not otherTab[classFile] then
                     other= other..(WoWTools_UnitMixin:GetClassIcon(classFile) or '')
@@ -319,7 +319,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 --itemID,  图标
     tooltip:AddDoubleLine(
         'itemID '..itemID,
-        itemTexture and '|T'..itemTexture..':0|t'..itemTexture
+        itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t'..itemTexture
     )
 
 --物品，类型
@@ -330,10 +330,16 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         )
     end
 
+--装备
     if classID==2 or classID==4 then
         textLeft, text2Left= Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
 
-    elseif C_ToyBox.GetToyInfo(itemID) then--玩具
+--炉石
+    elseif itemID==6948 then
+        textLeft= WoWTools_TextMixin:CN(GetBindLocation())
+
+--玩具
+    elseif C_ToyBox.GetToyInfo(itemID) then
         text2Left= PlayerHasToy(itemID) and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
 
     elseif itemID==122284 then
@@ -342,6 +348,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         if price and price>0 then
             textLeft='|A:token-choice-wow:0:0|a'..C_CurrencyInfo.GetCoinTextureString(price)
         end
+
 
     else
         local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
@@ -363,7 +370,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     local spellName, spellID = C_Item.GetItemSpell(itemID)--物品法术
     if spellName and spellID then
         local spellTexture= C_Spell.GetSpellTexture(spellID)
-        tooltip:AddDoubleLine((itemName~=spellName and '|cff71d5ff['..spellName..']|r' or '')..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':0|t'..spellTexture or ' ')
+        tooltip:AddDoubleLine((itemName~=spellName and '|cff71d5ff['..spellName..']|r' or '')..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID, spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture or ' ')
     end
 
 

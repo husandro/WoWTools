@@ -7,11 +7,8 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
         return
     end
 
-
-
-
     local icon, isWide, isTrans, col= WoWTools_CurrencyMixin:GetAccountIcon(currencyID)
-    local currIcon= '|T'..(info2.iconFileID or 0)..':0|t'
+    local currIcon= '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'
 
     tooltip:AddDoubleLine(
         (icon or '')..(col or '')..'currencyID '..currencyID,

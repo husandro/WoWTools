@@ -11,7 +11,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
 
     tooltip:AddDoubleLine(
         'achievementID '..(flags==0x20000 and '|cffff00ff'..WoWTools_DataMixin.Icon.wow2..achievementID or achievementID),
-        icon and '|T'..icon..':0|t'..icon
+        icon and '|T'..icon..':'..self.iconSize..'|t'..icon
     )
 
 

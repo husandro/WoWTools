@@ -5,7 +5,6 @@
 技能, 提示
 	PetBattlePrimaryUnitTooltip
     PetBattleUnitTooltipTemplate
-    SharedPetBattleAbilityTooltipTemplate
     TooltipBackdropTemplate
 
 	PetBattlePrimaryAbilityTooltip

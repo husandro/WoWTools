@@ -5,22 +5,25 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     if not speciesID or speciesID< 1 then
         return
     end
+
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
+    local AllCollected, CollectedNum, CollectedText, text2Right, typeTexture
+    local size= self.iconSize--20
 
     if obtainable then--可得到的
         tooltip:AddLine(' ')
 
-        local AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)--收集数量
-        tooltip.textLeft:SetText(CollectedNum or '')
-        tooltip.text2Left:SetText(CollectedText or '')
-        tooltip.textRight:SetText(AllCollected or '')
+        AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)--收集数量
 
-        tooltip:AddDoubleLine('speciesID'..speciesID..(speciesIcon and '  |T'..speciesIcon..':0|t'..speciesIcon or ''), (creatureDisplayID and 'displayID'..creatureDisplayID..' ' or '')..(companionID and 'companionID'..companionID or ''))--ID
+        tooltip:AddDoubleLine('speciesID '..speciesID, speciesIcon and '|T'..speciesIcon..':'..size..'|t'..speciesIcon)
+        tooltip:AddDoubleLine(creatureDisplayID and 'displayID '..creatureDisplayID, companionID and 'companionID '..companionID)--ID
 
 --技能图标
-        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false)
+        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size)
         if abilityIconA or abilityIconB then
-            tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
+            --tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
+            tooltip:AddLine(abilityIconA)
+            tooltip:AddLine(abilityIconB)
         end
 --该宠物不可交易
         if not isTradeable then
@@ -32,6 +35,9 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
             GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE)
         end
     end
+
+
+
 
     tooltip:AddLine(' ')
 --中文， 来源 名称
@@ -49,10 +55,6 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip:AddLine(sourceInfo[2] or tooltipSource,nil,nil,nil, true)--来源
     end
 
-    if petType then
-        tooltip.Portrait:SetTexture("Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType])
-        tooltip.Portrait:SetShown(true)
-    end
 
     --local cardModelSceneID, loadoutModelSceneID = C_PetJournal.GetPetModelSceneInfoBySpeciesID(speciesID);
 
@@ -62,7 +64,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
        -- modelSceneID= loadoutModelSceneID,
         creatureDisplayID=creatureDisplayID
     })
-        
+
     if obtainable
         and not UnitAffectingCombat('player')
         and (not tooltip.JournalClick or not tooltip.JournalClick:IsShown())
@@ -75,6 +77,23 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip:AddLine('|A:NPE_Icon:0:0|aAlt |TInterface\\Icons\\PetJournalPortrait:0|t'..(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH))
     end
 
+    if petType and PET_TYPE_SUFFIX[petType] then
+        typeTexture= "Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType]
+
+        local strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
+        text2Right= '|T'..strongTexture..':'..size..'|t|cnGREEN_FONT_COLOR:<|r|T'..typeTexture..':'..size..':|t|cnRED_FONT_COLOR:>|r|T'..weakHintsTexture..':'..size..'|t'
+    end
+
+--图像
+    tooltip.Portrait:SetTexture(typeTexture or 0)
+    tooltip.Portrait:SetShown(typeTexture)
+
+--收集数量
+    tooltip.textLeft:SetText(CollectedNum or '')
+    tooltip.text2Left:SetText(CollectedText or '')
+    tooltip.textRight:SetText(AllCollected or '')
+--强弱
+    tooltip.text2Right:SetText(text2Right or '')
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
 
