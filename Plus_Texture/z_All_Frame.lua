@@ -229,21 +229,35 @@ local function Init(mixin)
     end)
     mixin:HideTexture(QuestScrollFrame.Background, true)
     mixin:SetScrollBar(QuestScrollFrame)
-    if QuestScrollFrame.SettingsDropdown then--11.1
-        mixin:SetScrollBar(MapLegendScrollFrame)
-        mixin:HideTexture(MapLegendScrollFrame.Background, true)
-        mixin:SetAlphaColor(QuestMapFrame.MapLegend.BorderFrame.Border, nil, nil, true)
-        mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
-        mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
-    end
+
+    mixin:SetScrollBar(MapLegendScrollFrame)
+    mixin:HideTexture(MapLegendScrollFrame.Background, true)
+    mixin:SetAlphaColor(QuestMapFrame.MapLegend.BorderFrame.Border, nil, nil, true)
+    mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
+    mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
+
     mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
     mixin:SetSearchBox(QuestScrollFrame.SearchBox)
 
-    if QuestMapFrame.MapLegendTab then--11.1
+--任务，列表 QuestLogHeaderCodeTemplate
+    hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
+        mixin:SetFrame(btn, {index=2, isMinAlpha=true})
+    end)
+
+
+
+
        mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
        mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
-    end
+    
 
+    
+--PVEFrame
+    mixin:SetFrame(PVEFrameTab1, {notAlpha=true})
+    mixin:SetFrame(PVEFrameTab2, {notAlpha=true})
+    mixin:SetFrame(PVEFrameTab3, {notAlpha=true})
+    mixin:SetFrame(PVEFrameTab4, {notAlpha=true})
+    
     --地下城和团队副本
     mixin:SetButton(PVEFrameCloseButton, {all=true})
     mixin:HideTexture(PVEFrame.TopTileStreaks)--最上面
@@ -316,35 +330,13 @@ local function Init(mixin)
 
 
     --GossipFrame
+    mixin:SetButton(GossipFrameCloseButton, {all=true})
     mixin:SetNineSlice(GossipFrame, true)
-     mixin:SetAlphaColor(GossipFrameBg)
-     mixin:HideTexture(GossipFrameInset.Bg)
-     mixin:SetScrollBar(GossipFrame.GreetingPanel)
+    mixin:SetAlphaColor(GossipFrameBg)
+    mixin:HideTexture(GossipFrameInset.Bg)
+    mixin:SetScrollBar(GossipFrame.GreetingPanel)
 
-     mixin:SetFrame(PVEFrameTab1, {notAlpha=true})
-     mixin:SetFrame(PVEFrameTab2, {notAlpha=true})
-     mixin:SetFrame(PVEFrameTab3, {notAlpha=true})
-     mixin:SetFrame(PVEFrameTab4, {notAlpha=true})
 
-     --[[if PetStableFrame then--猎人，宠物
-        mixin:SetNineSlice(PetStableFrame, true)
-        mixin:SetNineSlice(PetStableLeftInset, nil, true)
-        mixin:SetAlphaColor(PetStableActiveBg, nil, nil, 0.3)
-        mixin:SetAlphaColor(PetStableFrameBg)
-        mixin:SetNineSlice(PetStableFrameInset, nil, true)
-        mixin:HideTexture(PetStableFrameInset.Bg)
-        mixin:SetAlphaColor(PetStableFrameModelBg, nil, nil, 0.3)
-
-        mixin:SetAlphaColor(PetStableFrameStableBg, nil, nil, 0.3)
-
-        for i=1, NUM_PET_STABLE_SLOTS do--NUM_PET_STABLE_PAGES * NUM_PET_STABLE_SLOTS do
-            if i<=5 then
-                mixin:HideTexture(_G['PetStableActivePet'..i..'Background'])
-                mixin:SetAlphaColor(_G['PetStableActivePet'..i..'Border'], nil, nil, 0.3)
-            end
-            mixin:SetAlphaColor(_G['PetStableStabledPet'..i..'Background'])
-        end
-    end]]
 
 
 
@@ -498,6 +490,7 @@ local function Init(mixin)
 
 
      --任务
+     mixin:SetButton(QuestFrameCloseButton, {all=true})
      mixin:SetNineSlice(QuestFrame, true)
      mixin:SetAlphaColor(QuestFrameBg)
      mixin:HideTexture(QuestFrameInset.Bg)

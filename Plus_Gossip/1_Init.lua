@@ -30,7 +30,7 @@ local P_Save={
     Gossip_Text_Icon_Player={--玩家，自定义，对话，文本
         [55193]={
             icon='communities-icon-invitemail',
-            name=(WoWTools_DataMixin.Player.husandro and '打开邮件' or OPENMAIL),
+            name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),
             hex='ffff00ff'}
     },
     Gossip_Text_Icon_Size=14,

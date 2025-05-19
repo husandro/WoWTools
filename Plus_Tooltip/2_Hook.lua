@@ -15,24 +15,16 @@ end
 local function create_Quest_Label(frame)
     frame.questIDLabel= WoWTools_LabelMixin:Create(frame, {mouse=true, justifyH='RIGHT'})
     frame.questIDLabel:SetAlpha(0.3)
-    frame.questIDLabel:SetScript('OnLeave', function(self) GameTooltip_Hide() self:SetAlpha(0.3) end)
+    frame.questIDLabel:SetScript('OnLeave', function(self)
+        GameTooltip_Hide() self:SetAlpha(0.3)
+    end)
     frame.questIDLabel:SetScript('OnEnter', function(self)
-        if self.questID then
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_TooltipMixin.addName..WoWTools_DataMixin.Icon.left)
-            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)..' ID', self.questID)
-            GameTooltip:Show()
-            self:SetAlpha(1)
-        end
+        WoWTools_SetTooltipMixin:Frame(self)
+        self:SetAlpha(1)
     end)
-    frame.questIDLabel:SetScript('OnMouseDown', function(self)
-        if self.questID then
-            local name=C_TaskQuest.GetQuestInfoByQuestID(self.questID) or C_QuestLog.GetTitleForQuestID(self.questID)
-            WoWTools_TooltipMixin:Show_URL(true, 'quest', self.questID, name)
-        end
-    end)
+
     function frame.questIDLabel:settings(questID)
+        questID= questID or WoWTools_QuestMixin:GetID()
         local num= (questID and questID>0) and questID
         self:SetText(num or '')
         self.questID= num
@@ -239,15 +231,11 @@ local function Init()
         QuestMapDetailsScrollFrame.questIDLabel:settings(questID)
     end)
 
-    label= create_Quest_Label(QuestFrame)
-    if _G['WoWeuCN_Tooltips_BlizzardOptions'] then
-        label:SetPoint('BOTTOMRIGHT',QuestMapFrame.DetailsFrame.BackFrame, 'TOPRIGHT', 25, 28)
-    else
-        label:SetPoint('TOPRIGHT', -30, -35)
-    end
-    QuestFrame:HookScript('OnShow', function(self)
-        local questID= WoWTools_QuestMixin:GetID()
-        self.questIDLabel:settings(questID)
+    label= create_Quest_Label(QuestFrameCloseButton)
+    label:SetPoint('TOPRIGHT', QuestFrameCloseButton, 'BOTTOMRIGHT')
+
+    QuestFrame:HookScript('OnShow', function()
+        QuestFrameCloseButton.questIDLabel:settings()
     end)
 
 

@@ -111,24 +111,34 @@ local function Init_Data()
 
 --数据在，汉化插件 WoWTools_Chinese
     if WoWTools_ChineseMixin_GossipTextData_Tabs then
-    do
-        for gossipID, tab in pairs(WoWTools_ChineseMixin_GossipTextData_Tabs) do
-            if not GossipTextIcon[gossipID] then
-                local hex= tab.hex and tab.hex~='' and tab.hex or nil
-                local icon= tab.icon and tab.icon~='' and tab.icon or nil
-                local name= tab.name and tab.name~='' and tab.name or nil
+        do
+            for gossipID, tab in pairs(WoWTools_ChineseMixin_GossipTextData_Tabs) do
+                if not GossipTextIcon[gossipID] then
+                    local hex= tab.hex and tab.hex~='' and tab.hex or nil
+                    local icon= tab.icon and tab.icon~='' and tab.icon or nil
+                    local name= tab.name and tab.name~='' and tab.name or nil
 
-                if hex or icon or name then
-                    if WoWTools_DataMixin.Player.husandro then
-                        print(name)
-                        name=name..WoWTools_DataMixin.Icon.icon2
+                    if hex or icon or name then
+                        GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
                     end
-                    GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
                 end
             end
         end
-    end
-    WoWTools_ChineseMixin_GossipTextData_Tabs={}
+        WoWTools_ChineseMixin_GossipTextData_Tabs={}
+
+        if WoWTools_DataMixin.Player.husandro then
+            GossipFrameCloseButton.numText= WoWTools_LabelMixin:Create(GossipFrameCloseButton)
+            GossipFrameCloseButton.numText:SetPoint('RIGHT', GossipFrameCloseButton, 'LEFT')
+            hooksecurefunc(GossipOptionButtonMixin, 'Setup', function()
+                local num=0
+                for _, data in pairs(C_GossipInfo.GetOptions() or {}) do
+                    if not GossipTextIcon[data.gossipOptionID] and not Save().Gossip_Text_Icon_Player[data.gossipOptionID] then
+                        num=num+1
+                    end
+                end
+                GossipFrameCloseButton.numText:SetText(num)
+            end)
+        end
     end
 
 
