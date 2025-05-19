@@ -56,10 +56,14 @@ local function Init()
     end)
 
     C_Timer.After(2, function()
-        if SplashFrame and SplashFrame:IsShown() then
-            SplashFrame:Close();
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00', SplashFrame.Label and SplashFrame.Label:GetText() or '')
-        end
+        --[[if SplashFrame and SplashFrame:IsShown() then新内容 bug
+            --SplashFrame:Close();
+            C_SplashScreen.SendSplashScreenCloseTelem()
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+            '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE)..'|r|n|cff00ff00',
+            SplashFrame.Label and SplashFrame.Label:GetText() or ''
+        )
+        end]]
 
         if not Save().disabledHelpTip then--错误，提示
             if ScriptErrorsFrame then

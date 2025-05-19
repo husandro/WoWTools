@@ -113,7 +113,7 @@ local function Init_Data()
     if WoWTools_ChineseMixin_GossipTextData_Tabs then
         do
             for gossipID, tab in pairs(WoWTools_ChineseMixin_GossipTextData_Tabs) do
-                if not GossipTextIcon[gossipID] then
+                if not GossipTextIcon[gossipID] and not Save().Gossip_Text_Icon_Player[gossipID] then
                     local hex= tab.hex and tab.hex~='' and tab.hex or nil
                     local icon= tab.icon and tab.icon~='' and tab.icon or nil
                     local name= tab.name and tab.name~='' and tab.name or nil

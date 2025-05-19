@@ -33,7 +33,8 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
     local type=UnitCreatureType(unit)--生物类型
     if type and not type:find(COMBAT_ALLY_START_MISSION) then
-        textRight=WoWTools_TextMixin:CN(type)
+
+        textRight=type--WoWTools_TextMixin:CN(type)翻译出错
     end
 
     local uiWidgetSet= UnitWidgetSet(unit)

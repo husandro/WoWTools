@@ -244,11 +244,8 @@ local function Init(mixin)
         mixin:SetFrame(btn, {index=2, isMinAlpha=true})
     end)
 
-
-
-
-       mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
-       mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
+    mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
+    mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
     
 
     
