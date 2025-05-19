@@ -8,8 +8,8 @@ WoWTools_DataMixin= {
     --isCata = WOW_PROJECT_ID == WOW_PROJECT_CATACLYSM_CLASSIC,
     --IsPublicBuild()
 
-    --LeftButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
-    --RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
+    LeftButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'LeftButtonDown' or 'LeftButtonUp',
+    RightButtonDown= C_CVar.GetCVarBool("ActionButtonUseKeyDown") and 'RightButtonDown' or 'RightButtonUp',
     ExpansionLevel= GetExpansionLevel(),--版本数据
     Is_Timerunning= PlayerGetTimerunningSeasonID(),--1=幻境新生：潘达利亚
     StausText={},--属性，截取表 API_Panel.lua

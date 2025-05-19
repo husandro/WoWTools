@@ -378,7 +378,7 @@ local function Init_AccountBankPanel()
     despButton:SetHighlightAtlas('auctionhouse-nav-button-select')
     despButton:SetPushedAtlas('auctionhouse-nav-button-select')
 
-    despButton:RegisterForClicks("AnyDown", "AnyUp")--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    despButton:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     despButton.index=3
     despButton.isOutItem=false
     despButton.name= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '存放所有战团绑定物品' or ACCOUNT_BANK_DEPOSIT_BUTTON_LABEL)..WoWTools_DataMixin.Icon.left

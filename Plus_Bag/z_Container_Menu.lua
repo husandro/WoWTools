@@ -107,7 +107,7 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
         tooltip:AddDoubleLine(WoWTools_BagMixin.addName, WoWTools_DataMixin.addName)
     end)
 
-    --CONTAINER_OFFSET_Y 
+    --[[CONTAINER_OFFSET_Y 
     root:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
@@ -146,7 +146,7 @@ local function MENU_CONTAINER_FRAME_COMBINED(_, root)
         end
     
     })
-    sub:CreateSpacer()
+    sub:CreateSpacer()]]
 end
 
 

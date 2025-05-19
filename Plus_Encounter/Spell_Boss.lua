@@ -96,7 +96,7 @@ local function UpdateButtonState(frame)--技能提示
             GameTooltip:Show()
         end
     end)
-    frame:RegisterForClicks("AnyDown", "AnyUp")--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    frame:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
     frame:HookScript('OnClick', function(self, d)
         local spellID= self:GetParent().spellID--self3.link
         if not Save().hideEncounterJournal and spellID and spellID>0 and d=='RightButton' then

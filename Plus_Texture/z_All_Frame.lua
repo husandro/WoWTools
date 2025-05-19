@@ -8,13 +8,18 @@ local function set_BagTexture(frame)
     end
     for _, btn in frame:EnumerateValidItems() do
         if not btn.hasItem then
-            WoWTools_TextureMixin:HideTexture(btn.icon)
+            --WoWTools_TextureMixin:HideTexture(btn.icon)
+            
             WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
-            WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, true)
-
             WoWTools_TextureMixin:HideTexture(btn.Background)
+            
+            btn.icon:SetAlpha(0)
+            btn.NormalTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+            btn.NormalTexture:SetAlpha(0.2)
+        else
+            btn.icon:SetAlpha(1)
+            btn.NormalTexture:SetAlpha(0)
         end
-        btn.NormalTexture:SetAlpha(btn.hasItem and 1 or 0.2)
     end
 end
 

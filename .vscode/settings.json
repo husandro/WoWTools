@@ -5705,7 +5705,8 @@
         "CONTAINER_OFFSET_X",
         "PetBattleAbilityButton_OnEnter",
         "PetBattleUnitFrame_UpdatePetType",
-        "PetJournal_UpdateAll"
+        "PetJournal_UpdateAll",
+        "WoWTools_ChineseMixin_GossipTextData_Tabs"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

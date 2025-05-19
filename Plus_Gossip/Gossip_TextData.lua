@@ -73,22 +73,6 @@ local GossipTextIcon={}--默认，自定义，对话，文本
 
 
 
-local function Add_Use_Data(data)
-    for gossipID, tab in pairs(data or {}) do
-        local hex= tab.hex and tab.hex~='' and tab.hex or nil
-        local icon= tab.icon and tab.icon~='' and tab.icon or nil
-        local name= tab.name and tab.name~='' and tab.name or nil
-        if hex or icon or name then
-            if WoWTools_DataMixin.onlyChinese then
-                GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
-            else
-                GossipTextIcon[gossipID]= {icon=icon, hex=hex}
-            end
-        end
-    end
-end
-
-
 
 
 local function Init_Data()
@@ -125,10 +109,28 @@ local function Init_Data()
         end
     end
 
+--数据在，汉化插件 WoWTools_Chinese
+    if WoWTools_ChineseMixin_GossipTextData_Tabs then
+    do
+        for gossipID, tab in pairs(WoWTools_ChineseMixin_GossipTextData_Tabs) do
+            if not GossipTextIcon[gossipID] then
+                local hex= tab.hex and tab.hex~='' and tab.hex or nil
+                local icon= tab.icon and tab.icon~='' and tab.icon or nil
+                local name= tab.name and tab.name~='' and tab.name or nil
 
+                if hex or icon or name then
+                    if WoWTools_DataMixin.Player.husandro then
+                        print(name)
+                        name=name..WoWTools_DataMixin.Icon.icon2
+                    end
+                    GossipTextIcon[gossipID]= {name=name, icon=icon, hex=hex}
+                end
+            end
+        end
+    end
+    WoWTools_ChineseMixin_GossipTextData_Tabs={}
+    end
 
-    Add_Use_Data(WoWTools_GossipMixin:Get_PlayerData())
-    
 
     PlayerGossipTab=nil
     Init_Data=function()end

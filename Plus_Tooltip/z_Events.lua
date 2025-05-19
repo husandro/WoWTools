@@ -324,7 +324,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
                         WoWTools_ChatMixin:Chat(achievementLink)
                     end
                 end)
-                frame.Shield:RegisterForClicks("AnyDown", "AnyUp")--WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+                frame.Shield:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
             end
         end
         if frame.AchievementIDLabel then
