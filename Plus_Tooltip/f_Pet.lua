@@ -19,7 +19,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         tooltip:AddDoubleLine(creatureDisplayID and 'displayID '..creatureDisplayID, companionID and 'companionID '..companionID)--ID
 
 --技能图标
-        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size)
+        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size+10)
         if abilityIconA or abilityIconB then
             --tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
             tooltip:AddLine(' ')

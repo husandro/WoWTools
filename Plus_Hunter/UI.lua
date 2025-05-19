@@ -112,33 +112,13 @@ end
 
 
 
-
-
-
-
-local function Init_Texture()
-    local show= WoWToolsSave['Plus_StableFrame'].showTexture
-
-    WoWTools_TextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
-    WoWTools_TextureMixin:SetNineSlice(StableFrame, true, nil, nil)
-
-    WoWTools_TextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, show and 1 or 0)
-
-    for _, object in pairs({StableFrame:GetRegions()}) do
-        if object~=StableFrameBg and object:GetObjectType()=='Texture' then
-            object:SetAlpha(show and 1 or 0)
-        end
-    end
-
-    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, show and 1 or 0)
-    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, show and 1 or 0)
-
+local function Init_Texture_Script()
     WoWTools_TextureMixin:SetSearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
     WoWTools_TextureMixin:SetScrollBar(StableFrame.StabledPetList)
     WoWTools_TextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
     WoWTools_TextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
 
-    WoWTools_TextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
+    WoWTools_TextureMixin:SetNineSlice(StableFrame, true, nil, nil)
 
     hooksecurefunc(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
         if not self:GetView() then
@@ -155,7 +135,31 @@ local function Init_Texture()
         end
     end)
 
-    Init_Texture=function()end
+    WoWTools_TextureMixin:SetButton(StableFrameCloseButton, {all=true})
+
+    Init_Texture_Script=function()end
+end
+
+
+
+local function Init_Texture()
+    local show= WoWToolsSave['Plus_StableFrame'].showTexture
+
+    WoWTools_TextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
+
+    WoWTools_TextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, show and 1 or 0)
+
+    for _, object in pairs({StableFrame:GetRegions()}) do
+        if object~=StableFrameBg and object:GetObjectType()=='Texture' then
+            object:SetAlpha(show and 1 or 0)
+        end
+    end
+
+    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, show and 1 or 0)
+    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, show and 1 or 0)
+    WoWTools_TextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
+
+    Init_Texture_Script()
 end
 
 
