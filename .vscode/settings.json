@@ -5706,7 +5706,8 @@
         "PetBattleAbilityButton_OnEnter",
         "PetBattleUnitFrame_UpdatePetType",
         "PetJournal_UpdateAll",
-        "WoWTools_ChineseMixin_GossipTextData_Tabs"
+        "WoWTools_ChineseMixin_GossipTextData_Tabs",
+        "MerchantFrame_CloseStackSplitFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

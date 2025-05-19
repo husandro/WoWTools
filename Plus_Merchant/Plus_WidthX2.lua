@@ -127,6 +127,14 @@ end
 
 --移动，设置大小，缩放
 local function Size_Update()
+    do
+        if MerchantFrame.page ~=1 then
+            MerchantFrame.page=1
+            MerchantFrame_CloseStackSplitFrame()
+            MerchantFrame_Update();
+        end
+    end
+
     local w, h= MerchantFrame:GetSize()
 
     local line= max(5, math.floor((h-144)/52))
