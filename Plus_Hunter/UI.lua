@@ -113,7 +113,7 @@ end
 
 
 local function Init_Texture_Script()
-    WoWTools_TextureMixin:SetSearchBox(StableFrame.StabledPetList.FilterBar.SearchBox)
+    WoWTools_TextureMixin:SetEditBox(StableFrame.StabledPetList.FilterBar.SearchBox)
     WoWTools_TextureMixin:SetScrollBar(StableFrame.StabledPetList)
     WoWTools_TextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
     WoWTools_TextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)

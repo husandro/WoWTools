@@ -195,7 +195,7 @@ end
 --####
 local function Init()
     SELECTED_DOCK_FRAME.editBox:SetAltArrowKeyMode(false)
-    WoWTools_TextureMixin:SetSearchBox(SELECTED_DOCK_FRAME.editBox, {alpha=1})
+    WoWTools_TextureMixin:SetEditBox(SELECTED_DOCK_FRAME.editBox, {alpha=1})
 
     function ChatButton:set_size()
         if Save().isVertical then--方向, 竖

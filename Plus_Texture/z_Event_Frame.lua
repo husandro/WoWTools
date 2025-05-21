@@ -27,7 +27,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TimeManager()
     self:SetNineSlice(TimeManagerFrame, true)
     self:SetAlphaColor(TimeManagerFrameBg)
     self:HideTexture(TimeManagerFrameInset.Bg)
-    self:SetSearchBox(TimeManagerAlarmMessageEditBox)
+    self:SetEditBox(TimeManagerAlarmMessageEditBox)
     WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
 
     --秒表 Blizzard_TimeManager.lua
@@ -68,7 +68,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:HideFrame(AchievementFrameAchievements)
 
     self:SetScrollBar(AchievementFrameStats)
-    self:SetSearchBox(AchievementFrame.SearchBox)
+    self:SetEditBox(AchievementFrame.SearchBox)
     self:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
     self:SetFrame(AchievementFrameTab1, {alpha=0.3})
     self:SetFrame(AchievementFrameTab2, {alpha=0.3})
@@ -143,7 +143,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetAlphaColor(EncounterJournalInset.Bg, nil, nil, 0.3)
     self:SetNineSlice(EncounterJournalInset, nil, true)
     self:SetScrollBar(EncounterJournalInstanceSelect)
-    self:SetSearchBox(EncounterJournalSearchBox)
+    self:SetEditBox(EncounterJournalSearchBox)
     self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
     self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
@@ -211,7 +211,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
 
     GuildRegistrarFrameNpcNameText:SetParent(GuildRegistrarFrame.TitleContainer)
 
-    self:SetSearchBox(GuildRegistrarFrameEditBox)
+    self:SetEditBox(GuildRegistrarFrameEditBox)
 
 end
 
@@ -249,16 +249,16 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:HideTexture(AuctionHouseFrame.MoneyFrameInset.Bg)
     self:HideFrame(AuctionHouseFrame.MoneyFrameBorder)
 
-    self:SetSearchBox(AuctionHouseFrame.SearchBar.SearchBox)
+    self:SetEditBox(AuctionHouseFrame.SearchBar.SearchBox)
 
 
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
     self:SetScrollBar(AuctionHouseFrame.CommoditiesSellList)
     self:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
     self:SetFrame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
-    self:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
-    self:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
-    self:SetSearchBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+    self:SetEditBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
+    self:SetEditBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+    self:SetEditBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.SilverBox)
 
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
@@ -268,17 +268,17 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetScrollBar(AuctionHouseFrame.ItemSellList)
     self:SetNineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
     self:SetFrame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
-    self:SetSearchBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
-    self:SetSearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
-    self:SetSearchBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
+    self:SetEditBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
+    self:SetEditBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
+    self:SetEditBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.SilverBox)
 
     self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
 
     --拍卖，所在物品，页面
-    self:SetSearchBox(AuctionHouseFrameAuctionsFrameBidsTab)
-    self:SetSearchBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
+    self:SetEditBox(AuctionHouseFrameAuctionsFrameBidsTab)
+    self:SetEditBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
     self:SetFrame(AuctionHouseFrameAuctionsFrameGold, {alpha=0.3})
     self:SetFrame(AuctionHouseFrameAuctionsFrameSilver, {alpha=0.3})
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
@@ -319,7 +319,7 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders()
     self:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
 
-    self:SetSearchBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
+    self:SetEditBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
     self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleMiddle)
     self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleLeft)
@@ -407,11 +407,11 @@ function WoWTools_TextureMixin.Events:Blizzard_Calendar()
 
     self:SetAlphaColor(CalendarCreateEventFrame.Border.Bg)
     self:SetFrame(CalendarCreateEventFrame.Border, {notAlpha=true})
-    self:SetSearchBox(CalendarCreateEventTitleEdit)
+    self:SetEditBox(CalendarCreateEventTitleEdit)
     self:SetNineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
     self:SetNineSlice(CalendarCreateEventInviteList, nil, nil, true)
     self:SetAlphaColor(CalendarCreateEventDivider, true)
-    self:SetSearchBox(CalendarCreateEventInviteEdit)
+    self:SetEditBox(CalendarCreateEventInviteEdit)
     self:SetAlphaColor(CalendarCreateEventFrameButtonBackground, true)
     self:SetAlphaColor(CalendarCreateEventCreateButtonBorder, true)
     self:SetFrame(CalendarCreateEventFrame.Header, {notAlpha=true})
@@ -492,7 +492,7 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
     self:SetAlphaColor(WeeklyRewardsFrame.BackgroundTile)
-    self:SetSearchBox(WeeklyRewardsFrame.HeaderFrame)
+    self:SetEditBox(WeeklyRewardsFrame.HeaderFrame)
     self:SetAlphaColor(WeeklyRewardsFrame.RaidFrame.Background)
     self:SetAlphaColor(WeeklyRewardsFrame.MythicFrame.Background)
     self:SetAlphaColor(WeeklyRewardsFrame.PVPFrame.Background)
@@ -612,7 +612,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
 
         self:SetNineSlice(frame)
         self:SetAlphaColor(frame.Header)
-        self:SetSearchBox(frame.Title)
+        self:SetEditBox(frame.Title)
     end)
 end
 
@@ -794,7 +794,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings()
 
     self:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
     self:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
-    self:SetSearchBox(SettingsPanel.SearchBox)
+    self:SetEditBox(SettingsPanel.SearchBox)
     self:SetFrame(SettingsPanel, {index=1})
 end
 

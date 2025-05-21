@@ -21,16 +21,15 @@ end
 
 
 --隐藏，材质
-function WoWTools_TextureMixin:HideTexture(texture, notClear)
-    if not texture then
+function WoWTools_TextureMixin:HideTexture(texture)--, notClear)
+    if not texture or texture:GetObjectType()~='Texture' then
         return
     end
-    if not notClear and texture:GetObjectType()=='Texture' then
-        texture:SetTexture(0)
-    end
-    texture:SetAlpha(0)
-    --texture:SetShown(false)
+    texture:SetTexture(0)
 end
+    --texture:SetAlpha(0)
+    --texture:SetShown(false)
+
 
 --设置，颜色，透明度
 function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaORmin)
@@ -70,18 +69,16 @@ function WoWTools_TextureMixin:HideFrame(frame, tab)
     if not frame then
         return
     end
-    local hideIndex= tab and tab.index
-    for index, icon in pairs({frame:GetRegions()}) do
-        if icon:GetObjectType()=="Texture" then
-            if hideIndex then
-                if hideIndex==index then
-                    icon:SetTexture(0)
-                    icon:SetAlpha(0)
-                    break
-                end
-            else
+    if tab and tab.index then
+        local icon= select(tab.index, frame:GetRegions())
+        if icon and icon:GetObjectType()=="Texture" then
+            icon:SetTexture(0)
+        end
+    else
+        for _, icon in pairs({frame:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
                 icon:SetTexture(0)
-                icon:SetAlpha(0)
+                --icon:SetAlpha(0)
             end
         end
     end
@@ -93,25 +90,27 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         return
     end
     tab=tab or {}
-    local indexTexture= tab.index
+
     local notColor= tab.notColor
     local alpha
     if not tab.notAlpha then
         alpha= tab.isMinAlpha and self.min or tab.alpha or Save().alpha
     end
-    for index, icon in pairs({frame:GetRegions()}) do
-        if icon:GetObjectType()=="Texture" then
-            if indexTexture then
-                if indexTexture== index then
-                    if not notColor then
-                        WoWTools_ColorMixin:Setup(icon, {type='Texture'})
-                    end
-                    if alpha then
-                        icon:SetAlpha(alpha)
-                    end
-                    break
-                end
-            else
+
+    if tab and tab.index then
+        local icon= select(tab.index, frame:GetRegions())
+        if icon and icon:GetObjectType()=="Texture" then
+             if not notColor then
+                WoWTools_ColorMixin:Setup(icon, {type='Texture'})
+            end
+            if alpha then
+                icon:SetAlpha(alpha)
+            end
+        end
+
+    else
+        for _, icon in pairs({frame:GetRegions()}) do
+            if icon:GetObjectType()=="Texture" then
                 if not notColor then
                     WoWTools_ColorMixin:Setup(icon, {type='Texture'})
                 end
@@ -124,7 +123,7 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
 end
 
 --搜索框 set_SearchBox
-function WoWTools_TextureMixin:SetSearchBox(frame, tab)
+function WoWTools_TextureMixin:SetEditBox(frame, tab)
     if not frame then-- or not frame.SearchBox then
         return
     end

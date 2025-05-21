@@ -100,7 +100,9 @@ local function Init_All_Flyout()
                             ..' '
                             ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)
                             ..'('..slot
-                            ..(spells[spellID] and '' or '|A:UI-LFG-PendingMark:0:0|a')
+                            ..(spells[spellID] and ''
+                                or (WoWTools_DataMixin.Player.husandro and '|A:UI-LFG-PendingMark:0:0|a' or '')--为挑战数据，标记是否有数据，需要更新
+                            )
                         )
                     else
                         GameTooltip:AddDoubleLine((not isKnown2 and ' |cnRED_FONT_COLOR:' or '')..spellName..'|r',(not isKnown2 and '|cnRED_FONT_COLOR:' or '')..spellID..' '..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'('..slot)

@@ -57,7 +57,7 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
 
     editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
     editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
-    WoWTools_TextureMixin:SetSearchBox(editBox)
+    WoWTools_TextureMixin:SetEditBox(editBox)
 
     if text and editBox.Instructions then
         editBox.Instructions:SetText(tab.text)
@@ -129,7 +129,7 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
             s:ClearFocus()
         end
     end)
-    WoWTools_TextureMixin:SetSearchBox(scrollFrame.editBox)
+    WoWTools_TextureMixin:SetEditBox(scrollFrame.editBox)
 
     scrollFrame.editBox:SetMultiLine(true)
     scrollFrame.editBox:SetFrameLevel(level+2)

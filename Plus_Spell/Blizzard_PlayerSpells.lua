@@ -30,12 +30,12 @@ local function Set_UI(self)
 
     self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
     self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
-    self:SetSearchBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
+    self:SetEditBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
     self:SetMenu(PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
 
 
     self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
-    self:SetSearchBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+    self:SetEditBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
     self:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
 
 

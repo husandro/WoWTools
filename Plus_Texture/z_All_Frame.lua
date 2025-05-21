@@ -2,27 +2,6 @@
 
 
 
-local function set_BagTexture(frame)
-    if not frame:IsVisible() then
-        return
-    end
-    for _, btn in frame:EnumerateValidItems() do
-        if not btn.hasItem then
-            --WoWTools_TextureMixin:HideTexture(btn.icon)
-            
-            WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
-            WoWTools_TextureMixin:HideTexture(btn.Background)
-            
-            btn.icon:SetAlpha(0)
-            btn.NormalTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
-            btn.NormalTexture:SetAlpha(0.2)
-        else
-            btn.icon:SetAlpha(1)
-            btn.NormalTexture:SetAlpha(0)
-        end
-    end
-end
-
 
 
 
@@ -82,7 +61,7 @@ local function Init(mixin)
 
 
 
-    
+
 
 
 
@@ -180,7 +159,7 @@ local function Init(mixin)
     mixin:HideFrame(GearManagerPopupFrame.BorderBox)
     mixin:SetAlphaColor(GearManagerPopupFrame.BG, nil, nil, 0.3)
     mixin:SetScrollBar(GearManagerPopupFrame.IconSelector)
-    mixin:SetSearchBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
+    mixin:SetEditBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
 
 
     --声望
@@ -201,7 +180,7 @@ local function Init(mixin)
     mixin:SetFrame(TokenFramePopup.Border, {alpha=0.3})
     mixin:SetMenu(TokenFrame.filterDropdown)
 --货币转移
-    mixin:SetSearchBox(CurrencyTransferMenu.AmountSelector.InputBox)
+    mixin:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
     mixin:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
 
 
@@ -237,7 +216,7 @@ local function Init(mixin)
     mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
 
     mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
-    mixin:SetSearchBox(QuestScrollFrame.SearchBox)
+    mixin:SetEditBox(QuestScrollFrame.SearchBox)
 
 --任务，列表 QuestLogHeaderCodeTemplate
     hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
@@ -246,20 +225,20 @@ local function Init(mixin)
 
     mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
     mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
-    
 
-    
+
+
 --PVEFrame
     mixin:SetFrame(PVEFrameTab1, {notAlpha=true})
     mixin:SetFrame(PVEFrameTab2, {notAlpha=true})
     mixin:SetFrame(PVEFrameTab3, {notAlpha=true})
     mixin:SetFrame(PVEFrameTab4, {notAlpha=true})
-    
+
     --地下城和团队副本
     mixin:SetButton(PVEFrameCloseButton, {all=true})
     mixin:HideTexture(PVEFrame.TopTileStreaks)--最上面
     mixin:SetNineSlice(PVEFrame, true)
-    mixin:SetSearchBox(LFGListFrame.SearchPanel.SearchBox)
+    mixin:SetEditBox(LFGListFrame.SearchPanel.SearchBox)
     mixin:SetScrollBar(LFGListFrame.SearchPanel)
     mixin:SetFrame(LFGListFrame.CategorySelection.Inset, {alpha= 0.3})
     mixin:SetFrame(LFGDungeonReadyDialog.Border, {alpha= 0.3})
@@ -349,7 +328,7 @@ local function Init(mixin)
 
     mixin:SetFrame(ContainerFrameCombinedBags.MoneyFrame.Border, {alpha=0.3})
     mixin:SetFrame(BackpackTokenFrame.Border, {alpha=0.3})
-    mixin:SetSearchBox(BagItemSearchBox)
+    mixin:SetEditBox(BagItemSearchBox)
 
      for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
          local frame= _G['ContainerFrame'..i]
@@ -363,6 +342,27 @@ local function Init(mixin)
     end
 
 
+
+    local function set_BagTexture(frame)
+        if not frame:IsVisible() then
+            return
+        end
+        for _, btn in frame:EnumerateValidItems() do
+            if not btn.hasItem then
+                --WoWTools_TextureMixin:HideTexture(btn.icon)
+
+                WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
+                WoWTools_TextureMixin:HideTexture(btn.Background)
+
+                btn.icon:SetAlpha(0)
+                btn.NormalTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
+                btn.NormalTexture:SetAlpha(0.2)
+            else
+                btn.icon:SetAlpha(1)
+                btn.NormalTexture:SetAlpha(0)
+            end
+        end
+    end
 
     hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
@@ -390,24 +390,11 @@ local function Init(mixin)
     end
 
 
-     mixin:HideFrame(CharacterHeadSlot)--1
-     mixin:HideFrame(CharacterNeckSlot)--2
-     mixin:HideFrame(CharacterShoulderSlot)--3
-     mixin:HideFrame(CharacterShirtSlot)--4
-     mixin:HideFrame(CharacterChestSlot)--5
-     mixin:HideFrame(CharacterWaistSlot)--6
-     mixin:HideFrame(CharacterLegsSlot)--7
-     mixin:HideFrame(CharacterFeetSlot)--8
-     mixin:HideFrame(CharacterWristSlot)--9
-     mixin:HideFrame(CharacterHandsSlot)--10
-     mixin:HideFrame(CharacterBackSlot)--15
-     mixin:HideFrame(CharacterTabardSlot)--19
-     mixin:HideFrame(CharacterFinger0Slot)--11
-     mixin:HideFrame(CharacterFinger1Slot)--12
-     mixin:HideFrame(CharacterTrinket0Slot)--13
-     mixin:HideFrame(CharacterTrinket1Slot)--14
-     mixin:HideFrame(CharacterMainHandSlot)--16
-     mixin:HideFrame(CharacterSecondaryHandSlot)--17
+
+    --角色，物品栏
+    for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
+        mixin:HideFrame(_G[name])
+    end
 
      mixin:SetFrame(CharacterFrameTab1, {notAlpha=true})
      mixin:SetFrame(CharacterFrameTab2, {notAlpha=true})
@@ -651,7 +638,7 @@ local function Init(mixin)
     mixin:SetNineSlice(AddonListInset, true)
     mixin:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
     mixin:SetMenu(AddonList.Dropdown)
-    mixin:SetSearchBox(AddonList.SearchBox)
+    mixin:SetEditBox(AddonList.SearchBox)
     mixin:SetButton(AddonListCloseButton, {all=true})
 
      if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
@@ -667,7 +654,7 @@ local function Init(mixin)
      mixin:HideTexture(PlayerFrameAlternateManaBarLeftBorder)
      mixin:HideTexture(PlayerFrameAlternateManaBarRightBorder)
 
- 
+
 
      --小队，背景
     mixin:SetFrame(PartyFrame.Background, {alpha= 0.3})
@@ -692,11 +679,11 @@ local function Init(mixin)
         mixin:SetFrame(frame.ScrollToBottomButton, {notAlpha=true})
     end
     end
-    mixin:SetSearchBox(ChatFrame1EditBox)
+    mixin:SetEditBox(ChatFrame1EditBox)
 
 
 
-    
+
 
      C_Timer.After(2, function()
 
@@ -705,7 +692,7 @@ local function Init(mixin)
         WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.HorizontalMiddle)
         WoWTools_TextureMixin:HideTexture(SpellFlyout.Background.VerticalMiddle)
 
-        
+
 --商人, SellBuy.lua
          for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10 BUYBACK_ITEMS_PER_PAGE = 12
              mixin:SetAlphaColor(_G['MerchantItem'..i..'SlotTexture'])

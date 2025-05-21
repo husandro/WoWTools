@@ -23,7 +23,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     self:SetNineSlice(EventTraceInset, true)
     self:SetButton(EventTrace.ResizeButton, {all=true, alpha=0.5})
     self:SetScrollBar(EventTrace.Log.Events)
-    self:SetSearchBox(EventTrace.Log.Bar.SearchBox)
+    self:SetEditBox(EventTrace.Log.Bar.SearchBox)
 
     set_button(EventTrace.SubtitleBar.ViewLog)
     set_button(EventTrace.SubtitleBar.ViewFilter)

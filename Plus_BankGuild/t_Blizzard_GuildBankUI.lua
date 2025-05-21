@@ -47,7 +47,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()--成就
     self:HideTexture(GuildBankFrame.TabLimitBG)
     self:HideTexture(GuildBankFrame.TabLimitBGLeft)
     self:HideTexture(GuildBankFrame.TabLimitBGRight)
-    self:SetSearchBox(GuildItemSearchBox)
+    self:SetEditBox(GuildItemSearchBox)
 
     self:HideTexture(GuildBankFrame.TabTitleBG)
     self:HideTexture(GuildBankFrame.TabTitleBGLeft)

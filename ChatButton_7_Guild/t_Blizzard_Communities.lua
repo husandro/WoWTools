@@ -23,7 +23,7 @@
 
     CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
-    self:SetSearchBox(CommunitiesFrame.ChatEditBox)
+    self:SetEditBox(CommunitiesFrame.ChatEditBox)
     self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, true)
     self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
     self:SetAlphaColor(CommunitiesFrameMiddle)
@@ -163,7 +163,7 @@
 
 --寻找社区
     self:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
-    self:SetSearchBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
+    self:SetEditBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
     self:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
     self:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
     self:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
@@ -174,5 +174,5 @@
     self:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
-    self:SetSearchBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+    self:SetEditBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
 end

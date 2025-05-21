@@ -612,7 +612,7 @@ local function Init()
     Init_OpenAllBag_Button()
 
 --搜索框
-    WoWTools_TextureMixin:SetSearchBox(BankItemSearchBox)
+    WoWTools_TextureMixin:SetEditBox(BankItemSearchBox)
 
 --移动，搜索框
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()

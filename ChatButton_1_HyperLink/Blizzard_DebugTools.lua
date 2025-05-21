@@ -52,7 +52,7 @@ local function Init()
 
 
     local edit= CreateFrame("EditBox", 'WoWToolsHyperLinkTableAttributeDisplayEdit', btn, 'InputBoxTemplate')
-    WoWTools_TextureMixin:SetSearchBox(edit)
+    WoWTools_TextureMixin:SetEditBox(edit)
     edit:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
     edit:SetPoint('TOPLEFT', TableAttributeDisplay, 'TOPLEFT', 36, 24 )
     edit:SetAutoFocus(false)

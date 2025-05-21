@@ -246,7 +246,7 @@ local function Create_EditBox(index, tab)
     frame.Instructions:SetText(tab.name or '')
     frame.Instructions:ClearAllPoints()
     frame.Instructions:SetPoint('RIGHT', frame.clearButton, 'LEFT')
-    WoWTools_TextureMixin:SetSearchBox(frame, {alpha=0.6})
+    WoWTools_TextureMixin:SetEditBox(frame, {alpha=0.6})
     frame.Instructions:SetAlpha(0.6)
 
     --[[frame.clearButton:SetAlpha(0.6)
