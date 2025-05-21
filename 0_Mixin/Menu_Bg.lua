@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsSave['Menu']
+    return WoWToolsSave['Menu_BG']
 end
 
 local TextureTab={--TalentArt
@@ -100,7 +100,6 @@ local function Init_Texture_Sub_Menu(_, root, name)
         else
             Save().bg.icon= data.name
         end
-        Call_Bg()
     end, {isAtlas=isAtlas, name=textureID, icon=icon})
 
     sub:AddInitializer(function(button, desc)
@@ -189,7 +188,6 @@ local function Init_Menu(self, root)--隐藏，天赋，背景
         return Save().bg.icon
     end, function()
         Save().bg.icon= nil
-        Call_Bg()
     end)
     sub2:SetTooltip(function (tooltip)
         local _, textureID, icon= WoWTools_TextureMixin:IsAtlas(Save().bg.icon, {480, 240})
@@ -215,7 +213,7 @@ local function Init_Menu(self, root)--隐藏，天赋，背景
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
                 if textureID then
                     Save().bg.icon= textureID
-                    Call_Bg()
+
                     if not TextureTab[textureID] then
                         Save().bg.texture[textureID]=true
                     end
