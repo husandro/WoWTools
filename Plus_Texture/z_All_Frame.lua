@@ -350,9 +350,9 @@ local function Init(mixin)
         for _, btn in frame:EnumerateValidItems() do
             if not btn.hasItem then
                 --WoWTools_TextureMixin:HideTexture(btn.icon)
-
                 WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
-                WoWTools_TextureMixin:HideTexture(btn.Background)
+                WoWTools_TextureMixin:SetAlphaColor(btn.Background,nil, nil, 0.2)
+                --WoWTools_TextureMixin:HideTexture(btn.Background)
 
                 btn.icon:SetAlpha(0)
                 btn.NormalTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)

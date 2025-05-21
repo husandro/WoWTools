@@ -253,7 +253,7 @@ local function Create_Button(index, tabID, slotID)
     function btn:set_item()
         local tab, slot= self.tabID, self:GetID()
         local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(tab, slot)
-        
+
         SetItemButtonTexture(self, texture)
         SetItemButtonCount(self, itemCount)
         SetItemButtonDesaturated(self, locked)
