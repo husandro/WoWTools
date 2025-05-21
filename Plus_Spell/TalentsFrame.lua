@@ -104,8 +104,8 @@ local function Set_TalentsFrameBg()
     local alpha= Save().bg.alpha or 1
     local tab={
         PlayerSpellsFrame.TalentsFrame.Background,
-        PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background,
-        --PlayerSpellsFrame.TalentsFrame.BottomBar
+        --PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background,
+        PlayerSpellsFrame.TalentsFrame.BottomBar
     }
     for _, texture in pairs(tab) do
         if show then
@@ -117,12 +117,12 @@ local function Set_TalentsFrameBg()
     PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
 
     PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
+    --[[PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
     if show then
         PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')
     else
         PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame.BottomBar, 'TOPRIGHT')
-    end
+    end]]
 
 
     local isAtlas, textureID= WoWTools_TextureMixin:IsAtlas(Save().bg.icon)
@@ -400,12 +400,39 @@ local function Init()
     end)
 
 
---菜单
-    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", Init_Menu)
+--背景
+    PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
 
+    PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')
+    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.ExpandedContainer.Background:SetAlpha(0.2)
+
+
+    WoWTools_TextureMixin:SetBG_Settings('TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, {
+        isHook=true,
+        icons={PlayerSpellsFrame.SpecFrame.Background}}
+    )
+    hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)
+        if self.Background.Set_BGTexture then
+
+            local currentSpecID = self:GetSpecID()
+            local specVisuals = ClassTalentUtil.GetVisualsForSpecID(currentSpecID);
+            if specVisuals and specVisuals.background and C_Texture.GetAtlasInfo(specVisuals.background) then
+                self.Background.set_BGData.p_texture= specVisuals.background
+            end
+
+            self.Background:Set_BGTexture()
+        end
+    end)
+    --Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", Init_Menu)
+    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)
+        root:CreateDivider()
+        WoWTools_TextureMixin:BGMenu(root, 'TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, {isHook=true})
+    end)
 
 --ClassTalentsFrameMixin
-    hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)
+    --[[hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)
         local icon= Save().bg.show and Save().bg.icon
         if not icon then
             return
@@ -416,16 +443,16 @@ local function Init()
         else
             self.Background:SetTexture(icon)
         end
-    end)
+    end)]]
 
-    if WoWToolsSave['Plus_Texture'].disabled then
-        WoWTools_SpellMixin:Set_UI()
-    end
 
-    Set_TalentsFrameBg()
+    WoWTools_SpellMixin:Set_UI()
+
+
+
 
     Init=function()
-        Set_TalentsFrameBg()
+        --Set_TalentsFrameBg()
     end
 end
 

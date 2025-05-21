@@ -16,6 +16,10 @@ local P_Save={
     --disabledHelpTip=true,--隐藏所有教程
 
     HideTalentsBG=true,--隐藏，天赋，背景
+    BG={
+        ADD={},
+        --[name]={alpha=0.3, texture=icon},
+    },
 }
 
 
@@ -94,6 +98,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
             Save().classPowerNumSize= Save().classPowerNumSize or 12
+            Save().BG= Save().BG or P_Save.BG
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 
@@ -102,6 +107,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 WoWTools_TextureMixin.Events={}
                 WoWTools_TextureMixin.Frames={}
+
                 self:UnregisterAllEvents()
             else
 

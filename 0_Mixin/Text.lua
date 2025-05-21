@@ -1,5 +1,10 @@
 WoWTools_TextMixin={}
---[[MoveAny\libs\D4Lib
+
+
+--[[
+. ( ) + - * ? [ ^
+
+MoveAny\libs\D4Lib
 local function IsUkrainianLetters(str)
     return str:match("[\192-\199]") ~= nil
 end

@@ -2,7 +2,7 @@
 
 --法术书
 function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
-    self:Setup(PlayerSpellsFrame, {onShowFunc=true})
+    --self:Setup(PlayerSpellsFrame)--, {onShowFunc=true})
     for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do
         self:Setup(specContentFrame, {frame=PlayerSpellsFrame})
     end
@@ -47,6 +47,8 @@ local function Set_UI(self)
         self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)
         self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.AssistedCombatRotationSpellFrame.Button.Border, nil, nil,  true)
     end
+
+    Set_UI=function()end
 end
 
 --天赋和法术书

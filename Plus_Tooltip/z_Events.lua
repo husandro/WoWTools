@@ -181,8 +181,9 @@ end
 
 
 --天赋 ClassTalentSpecTabMixin
-function WoWTools_TooltipMixin.Events:Blizzard_ClassTalentUI()
-    hooksecurefunc(ClassTalentFrame.SpecTab, 'UpdateSpecFrame', function(btn)
+function WoWTools_TooltipMixin.Events:Blizzard_PlayerSpells()
+
+    hooksecurefunc(PlayerSpellsFrame.SpecFrame, 'UpdateSpecFrame', function(btn)
         if not C_SpecializationInfo.IsInitialized() then
             return
         end
@@ -205,18 +206,14 @@ function WoWTools_TooltipMixin.Events:Blizzard_ClassTalentUI()
                 frame.specIDLabel:SetScript('OnEnter', function(s)
                     GameTooltip:SetOwner(s, "ANCHOR_LEFT")
                     GameTooltip:ClearLines()
-                    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_TooltipMixin.addName)
                     local specIndex= s:GetParent().specIndex
                     if specIndex then
                         local specID, name, _, icon= GetSpecializationInfo(specIndex)
                         if specID then
+                            GameTooltip:AddDoubleLine(WoWTools_TextMixin:CN(name), icon and '|T'..icon..':0|t'..icon)
+                            GameTooltip:AddDoubleLine('ID '..(specID or ''), 'Index '..(specIndex or ''))
                             GameTooltip:AddLine(' ')
-                            GameTooltip:AddLine(name)
-                            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '专精' or SPECIALIZATION)..' ID', specID)
-                            GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '专精' or SPECIALIZATION)..' Index', specIndex)
-                            if icon then
-                                GameTooltip:AddDoubleLine(icon and '|T'..icon..':0|t'..icon)
-                            end
+                            GameTooltip:AddLine(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName)
                         end
                     end
                     GameTooltip:Show()

@@ -5709,7 +5709,8 @@
         "WoWTools_ChineseMixin_GossipTextData_Tabs",
         "MerchantFrame_CloseStackSplitFrame",
         "QuestFrameCloseButton",
-        "QuestLogHeaderCodeMixin"
+        "QuestLogHeaderCodeMixin",
+        "ClassTalentUtil"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
