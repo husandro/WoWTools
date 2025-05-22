@@ -74,11 +74,11 @@ local function Init_Menu(btn, root)
         Settings()
     end)
 
---BG, 菜单
+--[[BG, 菜单
     root:CreateDivider()
     if WoWTools_TextureMixin:BGMenu(root, btn.bgName, btn.bgIcon) then
         root:CreateDivider()
-    end
+    end]]
 
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
 end
@@ -130,14 +130,14 @@ local function Init(frame)
     end)
 
 
---BG, 设置
+--[[BG, 设置
     btn.bgName= frame==PaperDollItemsFrame and 'CharacterFrame' or 'InspectFrame'
     btn.bgIcon= btn.bgName=='CharacterFrame' and CharacterFrame.Background or InspectFrameBg
     if btn.bgName=='CharacterFrame' then
         CharacterFrame.Background:SetPoint('TOPLEFT')
     end
     
-    WoWTools_TextureMixin:SetBG_Settings(btn.bgName, btn.bgIcon)
+    WoWTools_TextureMixin:SetBG_Settings(btn.bgName, btn.bgIcon)]]
 
     frame.ShowHideButton= btn
 end
