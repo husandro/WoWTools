@@ -397,5 +397,9 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
         tooltip:AddLine(desc.data.name)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
     end)
+
+--重新加载UI
+    sub2:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub2)
 end
 
