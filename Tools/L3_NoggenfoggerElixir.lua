@@ -330,7 +330,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == "LOADING_SCREEN_DISABLED" then
+    elseif event == "LOADING_SCREEN_DISABLED" and button then
         Init()--初始
         self:UnregisterEvent(event)
     end

@@ -73,7 +73,7 @@ local function Init()
 
     frame:set_event()
 
-    return true
+    Init=function()end
 end
 
 
@@ -85,8 +85,6 @@ end
 
 
 function WoWTools_InviteMixin:Init_Chanell()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end
 

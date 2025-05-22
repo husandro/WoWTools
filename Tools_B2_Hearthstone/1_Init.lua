@@ -52,7 +52,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
 
-            if not  WoWTools_HearthstoneMixin.ToyButton then
+            if not WoWTools_HearthstoneMixin.ToyButton then
                 self:UnregisterAllEvents()
             else
 
@@ -71,7 +71,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWTools_HearthstoneMixin.ToyButton then
         WoWTools_HearthstoneMixin:Init_Button()
         self:UnregisterEvent(event)
     end

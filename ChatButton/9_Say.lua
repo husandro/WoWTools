@@ -599,12 +599,10 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
 
-    elseif event== 'LOADING_SCREEN_DISABLED' then
+    elseif event== 'LOADING_SCREEN_DISABLED' and WoWToolsSave then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
 
-    elseif event=='CVAR_UPDATE' then
-        if arg1=='chatBubbles' then
-            set_chatBubbles_Tips() --提示，聊天泡泡，开启/禁用
-        end
+    elseif event=='CVAR_UPDATE' and arg1=='chatBubbles' and WoWToolsSave then
+        set_chatBubbles_Tips() --提示，聊天泡泡，开启/禁用
     end
 end)

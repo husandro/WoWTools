@@ -102,7 +102,7 @@ local function Init()
         WoWTools_CooldownMixin:Setup(self2, nil, BATTLEFIELD_TIMER_THRESHOLDS[3] or 60, nil, true)--冷却条
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -132,7 +132,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if LFDButton then--禁用Chat Button                
                 WoWTools_LFDMixin.LFDButton= LFDButton
                 
-                if Init() then Init=function()end end
+                Init()
             end
             self:UnregisterEvent(event)
         end

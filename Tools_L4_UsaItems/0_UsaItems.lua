@@ -125,7 +125,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWTools_ToolsMixin.Button then
         WoWTools_UseItemsMixin:Init_All_Buttons()
         WoWTools_UseItemsMixin:Init_Button()
         WoWTools_UseItemsMixin:Init_SpellFlyoutButton()--法术书，界面, Flyout, 菜单

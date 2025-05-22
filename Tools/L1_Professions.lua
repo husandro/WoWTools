@@ -395,8 +395,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Init()
         self:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
 
-    elseif event == "LOADING_SCREEN_DISABLED" then
-       Init()
-       self:UnregisterEvent(event)
+    elseif event == "LOADING_SCREEN_DISABLED" and WoWTools_ToolsMixin.Button then
+        Init()
+        self:UnregisterEvent(event)
     end
 end)

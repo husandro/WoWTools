@@ -125,7 +125,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Set_Event_Texture(arg1)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then--需要这个事件
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then--需要这个事件
         Init_Texture()
         self:UnregisterEvent(event)
     end

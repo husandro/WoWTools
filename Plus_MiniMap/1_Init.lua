@@ -170,7 +170,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
         WoWTools_MinimapMixin:Init_Collection_Icon()--收集插件图标
         self:UnregisterEvent(event)
     end

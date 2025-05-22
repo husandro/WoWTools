@@ -103,7 +103,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWTools_MoveMixin.Events[arg1]= nil
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
         Init()
         self:UnregisterEvent(event)
     end

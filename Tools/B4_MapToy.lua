@@ -444,7 +444,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == "LOADING_SCREEN_DISABLED" then
+    elseif event == "LOADING_SCREEN_DISABLED" and ToyButton then
         Init()
         self:UnregisterEvent(event)
     end

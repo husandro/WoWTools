@@ -195,7 +195,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == "LOADING_SCREEN_DISABLED" then
+    elseif event == "LOADING_SCREEN_DISABLED" and WoWTools_FoodMixin.Button then
         WoWTools_FoodMixin:Set_AltSpell()
         WoWTools_FoodMixin:Init_Button()
         WoWTools_FoodMixin:Init_Check()

@@ -68,7 +68,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
         WoWTools_GuildMixin:Init_Button()
         WoWTools_GuildMixin:Init_ClubFinder()
         WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus

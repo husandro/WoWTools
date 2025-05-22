@@ -176,7 +176,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
         WoWTools_ChallengeMixin:Chat_Affix()
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
         WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
         WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
 

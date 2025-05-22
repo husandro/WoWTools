@@ -387,13 +387,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             else
                 Tab={}
             end
-            self:UnregisterEvent('ADDON_LOADED')
 
             WoWTools_ToolsMixin:AddOptions(Init_Options)
 
+            self:UnregisterEvent(event)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
         Buttons={}
         for _, tab in pairs(Tab) do
             Init_Button(tab)

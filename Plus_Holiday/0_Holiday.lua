@@ -110,7 +110,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Init_Open()
         self:UnregisterEvent(event)
 
-    elseif event == "LOADING_SCREEN_DISABLED" then
+    elseif event == "LOADING_SCREEN_DISABLED" and WoWToolsSave then
         Init_Open()
         self:UnregisterEvent(event)
     end

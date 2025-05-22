@@ -76,7 +76,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			end
 		end
 
-    elseif event == "LOADING_SCREEN_DISABLED" then
+    elseif event == "LOADING_SCREEN_DISABLED" and WoWToolsSave then
 		WoWTools_FactionMixin:Init_Button()
 		WoWTools_FactionMixin:Init_ScrollBox_Plus()
 		WoWTools_FactionMixin:Init_Chat_MSG()

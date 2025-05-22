@@ -91,7 +91,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' then
+    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
         WoWTools_SpellMixin:Init_Spec_Button()
         WoWTools_SpellMixin:Init_Spell_Flyout()
         WoWTools_SpellMixin:Init_ActionButton_UpdateRange()--法术按键, 颜色
