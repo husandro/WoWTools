@@ -32,7 +32,7 @@ local function Set_Frame_Point(frame, name)--设置, 移动, 位置
     if p and p[1] then
         local target= frame.targetFrame or frame
 
-        if target:IsProtected() or InCombatLockdown() or issecure() then
+        if (target:IsProtected() and InCombatLockdown()) or issecure() then
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)
                 target:ClearAllPoints()
                 target:SetPoint(tab.p[1], UIParent, tab.p[3], tab.p[4], tab.p[5])
@@ -60,6 +60,13 @@ end
 
 --移动 Frame
 local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
+    if frame.setMoveFrame then
+        if WoWTools_DataMixin.Player.husandro then
+            print('移动Frame', (target or frame):GetName(), '已设置')
+        end
+        return
+    end
+
     frame.targetFrame= target--要移动的Frame
     frame.setMoveFrame=true
     frame.click= click
@@ -102,6 +109,7 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         local name= f.name or self:GetName()
 
         ResetCursor()
+
         self:StopMovingOrSizing()
 
         if not name or self.notSave then
@@ -111,15 +119,6 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().point[name]= {self:GetPoint(1)}
             Save().point[name][2]= nil
-        --[[else
-            print(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )]]
-        end
-        if not WoWTools_FrameMixin:IsLocked(f) then
-            f:Raise()
         end
     end)
 
@@ -197,7 +196,9 @@ function WoWTools_MoveMixin:Setup(frame, tab)
         Set_Move_Frame(frame.TitleContainer, frame, click, notSave, notFuori, isAltKeyDown)
     end
 
-    Set_Frame_Point(frame, name)--设置, 移动, 位置
+    if not target or not target.setMoveFrame then
+        Set_Frame_Point(frame, name)--设置, 移动, 位置
+    end
 end
 
 
@@ -209,6 +210,7 @@ function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
     if frame then
         name= name or frame:GetName()
         if name then
+            
             Set_Frame_Point(frame, name)
         end
     end

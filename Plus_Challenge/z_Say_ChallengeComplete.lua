@@ -371,7 +371,6 @@ local function Init()
             Save().sayButtonPoint={self:GetPoint(1)}
             Save().sayButtonPoint[2]= nil
         end
-        self:Raise()
     end)
 
     SayButton:SetScript("OnMouseUp", ResetCursor)

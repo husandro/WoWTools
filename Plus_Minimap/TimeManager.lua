@@ -344,7 +344,6 @@ local function Init_TimeManager()
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
     btn:SetScript('OnMouseUp', ResetCursor)
     btn:HookScript('OnMouseDown', function(_, d)

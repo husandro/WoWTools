@@ -123,9 +123,6 @@ local function Init()
             Save().point={self:GetPoint(1)}
             Save().point[2]=nil
         end
-        if not InCombatLockdown() then
-            self:Raise()
-        end
     end)
 
 

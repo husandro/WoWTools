@@ -384,7 +384,6 @@ local function Init(isShow)
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
     TypeButton:SetScript("OnMouseUp", ResetCursor)
     TypeButton:SetScript("OnMouseDown", function(self, d)

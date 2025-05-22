@@ -51,7 +51,6 @@ local function Init()--设置标记, 框架
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
     function btn:set_Alpha(enter)
         self:SetAlpha(enter and 1 or 0.1)

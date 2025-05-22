@@ -431,7 +431,6 @@ local function Init_TrackButton()--添加装备管理框
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
     TrackButton:SetScript('OnMouseDown', function(_, d)
         if d=='RightButton' and IsAltKeyDown() then--移动图标

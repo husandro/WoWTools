@@ -349,7 +349,6 @@ local function Init()--设置显示内容, 父框架TrackButton, 内容btn.text
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
 
     TrackButton:SetScript("OnMouseUp", ResetCursor)

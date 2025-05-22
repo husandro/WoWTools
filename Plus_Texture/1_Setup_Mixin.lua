@@ -21,11 +21,10 @@ end
 
 
 --隐藏，材质
-function WoWTools_TextureMixin:HideTexture(texture)--, notClear)
-    if not texture or texture:GetObjectType()~='Texture' then
-        return
+function WoWTools_TextureMixin:HideTexture(object)--, notClear)
+    if object and object:GetObjectType()=='Texture' then
+        object:SetTexture(0)
     end
-    texture:SetTexture(0)
 end
     --texture:SetAlpha(0)
     --texture:SetShown(false)

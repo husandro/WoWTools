@@ -115,7 +115,6 @@ local function Init(self)
 --就绪
     self:Setup(ReadyCheckFrame, {notFuori=true})
 
-    self:Setup(GuildRenameFrame)
 
 
     C_Timer.After(0.3, function()

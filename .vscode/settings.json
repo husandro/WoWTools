@@ -5710,7 +5710,11 @@
         "MerchantFrame_CloseStackSplitFrame",
         "QuestFrameCloseButton",
         "QuestLogHeaderCodeMixin",
-        "ClassTalentUtil"
+        "ClassTalentUtil",
+        "ArenaEnemyFramesContainer",
+        "TimerTracker",
+        "TimerTracker_StartTimerOfType",
+        "GameTooltipDefaultContainer"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

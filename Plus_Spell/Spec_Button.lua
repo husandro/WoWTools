@@ -181,14 +181,7 @@ local function Create_Spec_Button(index)
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().specButton.point= {self:GetPoint(1)}
             Save().specButton.point[2]= nil
-        else
-            print(
-                WoWTools_SpellMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
-        self:Raise()
     end)
 
 

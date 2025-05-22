@@ -149,7 +149,6 @@ local function get_Role_Info(env, Name, isT, isH, isD)
                         WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
                     )
                 end
-                self:Raise()
             end)
             Button:SetScript('OnEnter', function(self)
                 GameTooltip:SetOwner(self, "ANCHOR_LEFT")

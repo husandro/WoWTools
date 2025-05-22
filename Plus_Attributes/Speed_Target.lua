@@ -158,7 +158,6 @@ local function Init()
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
 
     btn:SetScript('OnMouseDown', function(self)

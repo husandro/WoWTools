@@ -866,7 +866,6 @@ local function Init()
                 WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
             )
         end
-        self:Raise()
     end)
 
     function TrackButton:set_Events()--设置事件

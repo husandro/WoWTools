@@ -2,7 +2,18 @@
 
 --法术书
 function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
-    --self:Setup(PlayerSpellsFrame)--, {onShowFunc=true})
+    HeroTalentsSelectionDialog.p_point={PlayerSpellsFrame:GetPoint(1)}
+    HeroTalentsSelectionDialog.p_point[2]= nil
+    HeroTalentsSelectionDialog:HookScript('OnShow', function(frame)
+        PlayerSpellsFrame:ClearAllPoints()
+        PlayerSpellsFrame:SetPoint(frame.p_point[1], UIParent, frame.p_point[3], frame.p_point[4], frame.p_point[5])
+    end)
+    HeroTalentsSelectionDialog:HookScript('OnHide', function()
+        self:SetPoint(PlayerSpellsFrame)
+    end)
+
+    self:Setup(PlayerSpellsFrame)
+    --self:Setup(HeroTalentsSelectionDialog)
     for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do
         self:Setup(specContentFrame, {frame=PlayerSpellsFrame})
     end
@@ -11,6 +22,11 @@ function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
     self:Setup(PlayerSpellsFrame.TalentsFrame.ButtonsParent, {frame=PlayerSpellsFrame})
     self:Setup(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
 end
+
+    --[[hooksecurefunc(PlayerSpellsFrame.TalentsFrame, 'AcquireTalentButton', function(frame, nodeInfo, talentType, offsetX, offsetY, initFunction)
+        print(nodeInfo, talentType, offsetX, offsetY, initFunction)
+    end)]]
+
 
 
 
