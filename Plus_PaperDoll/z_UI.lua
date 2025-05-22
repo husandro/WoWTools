@@ -90,13 +90,14 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
 
 
 --BG, 菜单
-    CharacterFrame.Background:SetPoint('TOPLEFT')
+    --[[CharacterFrame.Background:SetPoint('TOPLEFT')
     WoWTools_TextureMixin:BGMenu('CharacterFrame', CharacterFrame.Background)
+    --CharacterFrame.PortraitContainer:SetFrameStrata('HIGH')
     CharacterFrame.PortraitContainer:HookScript('OnMouseDown', function(f)
         MenuUtil.CreateContextMenu(f, function(_, root)
             WoWTools_TextureMixin:BGMenu(root, 'CharacterFrame', CharacterFrame.Background)
         end)
-    end)
+    end)]]
 end
 
 
