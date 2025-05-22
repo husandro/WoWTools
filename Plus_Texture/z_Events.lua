@@ -524,19 +524,6 @@ end
 
 
 
---玩家, 观察角色, 界面
-function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
-    self:SetNineSlice(InspectFrame, true)
-    self:SetAlphaColor(InspectFrameBg)
-    self:HideTexture(InspectFrameInset.Bg)
-    self:HideTexture(InspectPVPFrame.BG)
-    self:HideTexture(InspectGuildFrameBG)
-    self:SetFrame(InspectFrameTab1, {notAlpha=true})
-    self:SetFrame(InspectFrameTab2, {notAlpha=true})
-    self:SetFrame(InspectFrameTab3, {notAlpha=true})
-    self:SetNineSlice(InspectFrame, true)
-    self:SetNineSlice(InspectFrameInset, nil, true)
-end
 
 
 
@@ -872,4 +859,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Menu()
         end
     end)
 end
+
+
+
+
+
+
 

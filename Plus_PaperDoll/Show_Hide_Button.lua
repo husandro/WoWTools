@@ -64,7 +64,7 @@ end
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(btn, root)
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
     function()
@@ -74,7 +74,12 @@ local function Init_Menu(_, root)
         Settings()
     end)
 
+--BG, 菜单
     root:CreateDivider()
+    if WoWTools_TextureMixin:BGMenu(root, btn.bgName, btn.bgIcon) then
+        root:CreateDivider()
+    end
+
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
 end
 
@@ -97,17 +102,8 @@ local function Init(frame)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
-    btn:SetScript('OnClick', function(self, d)
-        MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
-
-        --[[if d=='RightButton' then
-            WoWTools_PanelMixin:Open(nil, WoWTools_PaperDollMixin.addName)
-        else
-            Save().hide= not Save().hide and true or nil
-            Settings()
-        end]]
+    btn:SetScript('OnClick', function(self)
+        MenuUtil.CreateContextMenu(self, Init_Menu)
     end)
     function btn:set_alpha(isEnter)
         if isEnter then
@@ -123,7 +119,7 @@ local function Init(frame)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
-        
+
         --GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide), WoWTools_DataMixin.Icon.left)
 
         GameTooltip:AddLine(' ')
@@ -132,6 +128,16 @@ local function Init(frame)
         GameTooltip:Show()
         self:set_alpha(true)
     end)
+
+
+--BG, 设置
+    btn.bgName= frame==PaperDollItemsFrame and 'CharacterFrame' or 'InspectFrame'
+    btn.bgIcon= btn.bgName=='CharacterFrame' and CharacterFrame.Background or InspectFrameBg
+    if btn.bgName=='CharacterFrame' then
+        CharacterFrame.Background:SetPoint('TOPLEFT')
+    end
+    
+    WoWTools_TextureMixin:SetBG_Settings(btn.bgName, btn.bgIcon)
 
     frame.ShowHideButton= btn
 end

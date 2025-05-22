@@ -98,91 +98,6 @@ local function Init(mixin)
     end
 
 
-    --角色，界面
-    mixin:SetButton(CharacterFrameCloseButton, {all=true})
-    mixin:SetNineSlice(CharacterFrameInset, true)
-    mixin:SetNineSlice(CharacterFrame, true)
-    mixin:SetNineSlice(CharacterFrameInsetRight, true)
-
-    mixin:SetAlphaColor(CharacterFrameBg)
-    mixin:HideTexture(CharacterFrameInset.Bg)
-
-    mixin:SetAlphaColor(CharacterFrame.Background)
-
-    mixin:SetAlphaColor(PaperDollInnerBorderBottom, nil, nil, 0.3)
-    mixin:SetAlphaColor(PaperDollInnerBorderRight, nil, nil, 0.3)
-    mixin:SetAlphaColor(PaperDollInnerBorderLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(PaperDollInnerBorderTop, nil, nil, 0.3)
-
-    mixin:SetAlphaColor(PaperDollInnerBorderTopLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(PaperDollInnerBorderTopRight, nil, nil, 0.3)
-    mixin:SetAlphaColor(PaperDollInnerBorderBottomLeft, nil, nil, 0.3)
-    mixin:SetAlphaColor(PaperDollInnerBorderBottomRight, nil, nil, 0.3)
-
-    mixin:HideTexture(PaperDollInnerBorderBottom2)
-    mixin:HideTexture(CharacterFrameInsetRight.Bg)
-
-
-
-
-
-    mixin:SetAlphaColor(CharacterStatsPane.ClassBackground, nil, nil, 0.3)
-    mixin:SetAlphaColor(CharacterStatsPane.EnhancementsCategory.Background)
-    mixin:SetAlphaColor(CharacterStatsPane.AttributesCategory.Background)
-    mixin:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background)
-    hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
-        local frame= PaperDollFrame.TitleManagerPane.ScrollBox
-        if not frame or not frame:GetView() then
-            return
-        end
-        for _, button in pairs(frame:GetFrames() or {}) do
-            mixin:HideTexture(button.BgMiddle)
-        end
-    end)
-    mixin:SetScrollBar(PaperDollFrame.TitleManagerPane)
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()--PaperDollFrame.lua
-
-    for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames() or {}) do
-            mixin:HideTexture(button.BgMiddle)
-        end
-    end)
-    mixin:SetScrollBar(PaperDollFrame.EquipmentManagerPane)
-
-
-
-    mixin:HideTexture(CharacterModelFrameBackgroundTopLeft)--角色3D背景
-    mixin:HideTexture(CharacterModelFrameBackgroundTopRight)
-    mixin:HideTexture(CharacterModelFrameBackgroundBotLeft)
-    mixin:HideTexture(CharacterModelFrameBackgroundBotRight)
-    mixin:HideTexture(CharacterModelFrameBackgroundOverlay)
-
-    mixin:HideFrame(GearManagerPopupFrame.BorderBox)
-    mixin:SetAlphaColor(GearManagerPopupFrame.BG, nil, nil, 0.3)
-    mixin:SetScrollBar(GearManagerPopupFrame.IconSelector)
-    mixin:SetEditBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
-
-
-    --声望
-    mixin:SetScrollBar(ReputationFrame)
-    mixin:SetMenu(ReputationFrame.filterDropdown)
-    mixin:SetFrame(ReputationFrame.ReputationDetailFrame.Border, {isMinAlpha=true})
-
-
-    --货币
-    mixin:SetScrollBar(TokenFrame)
-    mixin:SetNineSlice(CurrencyTransferLog, true)
-    mixin:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
-    mixin:SetNineSlice(CurrencyTransferLogInset, true)
-    mixin:SetScrollBar(CurrencyTransferLog)
-    mixin:SetNineSlice(CurrencyTransferMenu, true)
-    mixin:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
-    mixin:SetNineSlice(CurrencyTransferMenuInset)
-    mixin:SetFrame(TokenFramePopup.Border, {alpha=0.3})
-    mixin:SetMenu(TokenFrame.filterDropdown)
---货币转移
-    mixin:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
-    mixin:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
-
 
     --世界地图
     mixin:SetButton(WorldMapFrameCloseButton, {all=true})
@@ -782,6 +697,9 @@ local function Init(mixin)
 
     Init=function()end
 end
+
+
+
 
 
 

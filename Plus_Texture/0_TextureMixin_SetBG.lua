@@ -76,7 +76,7 @@ local TextureTab={--TalentArt
 ['legionmission-complete-background-Warlock']=true,
 ['legionmission-complete-background-Monk']=true,
 ['legionmission-complete-background-demonhunter']=true,
-
+--['Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga']=true,
 
 }
 
@@ -90,7 +90,7 @@ local TextureTab={--TalentArt
 local function texture_list(root, name, icon, tab, texture, isAdd)
 
         local sub
-        local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {572, 480})
+        local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {480, 240})
         if not textureID then
             return
         end
@@ -172,15 +172,19 @@ local function set_texture(self, texture, alpha)
     if not self then
         return
     end
-
+    alpha= alpha or 0.3
     if texture then
         if C_Texture.GetAtlasInfo(texture) then
             self:SetAtlas(texture)
         else
             self:SetTexture(texture)
         end
+        self:SetVertexColor(1,1,1,1)
+        self:SetAlpha(alpha)
+    else
+        WoWTools_TextureMixin:SetAlphaColor(self, nil, nil, alpha)
     end
-    self:SetAlpha(alpha or 1)
+    self:SetShown(true)
 end
 
 local function Set_BGTexture(self)
@@ -207,38 +211,43 @@ end
 
 
 
-
+--BG, 设置
 function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
     if not icon or WoWToolsSave['Plus_Texture'].disabled then
         return
     end
 
     Save()[name]= Save()[name] or {}
+    tab= tab or {}
+    local texture= Save()[name].texture
+
+    local isInitial= not icon.set_BGData
+
+    icon.set_BGData= {
+        p_texture= icon.set_BGData and icon.set_BGData.p_texture or icon:GetAtlas() or icon:GetTextureFileID(),
+        icons= tab.icons,
+        texture= texture,
+        alpha= Save()[name].alpha or self.min or 0.3,
+    }
 
 --初始
-    if not icon.set_BGData then
-
+    if isInitial then
 --初始，禁用时，退出
-        if not Save()[name].texture then
+        if not texture then
+--仅设置 alpha
+            Set_BGTexture(icon)
             return
         end
-
---初始，数据
-        icon.set_BGData= {
-            p_texture= icon:GetAtlas() or icon:GetTextureFileID(),
-            icons= tab.icons,
-            --textire,
-            --alpha,
-        }
 --Hook
         if tab.isHook then
             icon.Set_BGTexture= Set_BGTexture
         end
     end
+
 --数据
-    local texture= Save()[name].texture
-    icon.set_BGData.texture= texture or icon.set_BGData.p_texture
-    icon.set_BGData.alpha= Save()[name].alpha or 0.3
+    if not texture then
+        icon.set_BGData.texture= icon.set_BGData.p_texture
+    end
 
 --设置
     do
@@ -262,11 +271,13 @@ end
 
 
 
-
+--BG, 菜单
 function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
-    if WoWToolsSave['Plus_Texture'].disabled or Save().disabled or not icon then
+    if WoWToolsSave['Plus_Texture'].disabled or Save().disabled or not icon or not name then
         return
     end
+    Save()[name]= Save()[name] or {}
+    tab= tab or {}
 
     local sub, sub2, sub3
 --背景
@@ -315,14 +326,17 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
             end,
             SetValue= function(s)
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
-                Save().ADD.textureID= textureID
+                if textureID then
+                    Save().ADD[textureID]= true
+                end
+                print(WoWTools_DataMixin.Icon.icon2..self.addName, textureID)
             end,
             OnAlt=function(s)
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
                 Save().ADD[textureID]= nil
             end,
             EditBoxOnTextChanged=function(s)
-                local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
+                local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s:GetText(), 0))
                 local enabled= textureID
                     and textureID:gsub(' ', '')~='' and textureID~='Interface\\AddOns\\WoWTools\\Source\\Background\\'
 
@@ -336,14 +350,18 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
     )
     end)
 
+    local num=0
     for texture in pairs(Save().ADD) do
         texture_list(sub2, name, icon, tab, texture, true)
+        num=num+1
     end
 
 --全部清除
-    WoWTools_MenuMixin:ClearAll(sub2, function()
-        Save().ADD={}
-    end)
+    if num>0 then
+        WoWTools_MenuMixin:ClearAll(sub2, function()
+            Save().ADD={}
+        end)
+    end
     sub2:CreateDivider()
 
     for texture in pairs(TextureTab) do
@@ -385,7 +403,7 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
 
 
 --打开选项界面
-    sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_SpellMixin.addName, category=WoWTools_SpellMixin.Category})
+    sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=self.addName, category=self.Category})
 --Web
     sub3=sub2:CreateButton(
         'Web',
@@ -401,5 +419,7 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
 --重新加载UI
     sub2:CreateDivider()
     WoWTools_MenuMixin:Reload(sub2)
+
+    return true
 end
 

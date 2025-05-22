@@ -17,7 +17,7 @@ local P_Save={
 
     HideTalentsBG=true,--隐藏，天赋，背景
     BG={
-        ADD={['Interface\\AddOns\\WoWTools\\Source\\Texture\\Black8x8.tga']=true},
+        ADD={},
         --[name]={alpha=0.3, texture=icon},
     },
 }

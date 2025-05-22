@@ -27,6 +27,7 @@ local function Init_Options()
         name= WoWTools_TextureMixin.addName,
         disabled= Save().disabled,
     })
+    WoWTools_TextureMixin.Category= Category
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
