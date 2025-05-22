@@ -408,11 +408,19 @@ local function Init()
     PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')
     PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.ExpandedContainer.Background:SetAlpha(0.2)
 
-
-    WoWTools_TextureMixin:SetBG_Settings('TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, {
+    local SetValueTab={
         isHook=true,
-        icons={PlayerSpellsFrame.SpecFrame.Background}}
-    )
+        icons={PlayerSpellsFrame.SpecFrame.Background},
+        setFunc= Call_Bg,
+    }
+
+    WoWTools_TextureMixin:SetBG_Settings('TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, SetValueTab)
+
+    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)
+        root:CreateDivider()
+        WoWTools_TextureMixin:BGMenu(root, 'TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, SetValueTab)
+    end)
+
     hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)
         if self.Background.Set_BGTexture then
 
@@ -426,10 +434,7 @@ local function Init()
         end
     end)
     --Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", Init_Menu)
-    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)
-        root:CreateDivider()
-        WoWTools_TextureMixin:BGMenu(root, 'TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, {isHook=true})
-    end)
+
 
 --ClassTalentsFrameMixin
     --[[hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(self)

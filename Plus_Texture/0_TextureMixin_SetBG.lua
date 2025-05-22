@@ -77,7 +77,7 @@ local TextureTab={--TalentArt
 ['legionmission-complete-background-Monk']=true,
 ['legionmission-complete-background-demonhunter']=true,
 
-['Interface\\AddOns\\WoWTools\\Source\\Texture\\Black8x8.tga']=false,
+
 }
 
 
@@ -117,7 +117,9 @@ local function texture_list(root, name, icon, tab, texture, isAdd)
             end
 
             WoWTools_TextureMixin:SetBG_Settings(data.name, data.icon, tab)
-
+            if tab.setFunc then
+                tab.setFunc(Save()[name].texture, Save()[name].alpha)
+            end
         end, descData)
 
         sub:AddInitializer(function(button, desc)
@@ -145,10 +147,6 @@ local function texture_list(root, name, icon, tab, texture, isAdd)
                 WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
                 nil,
                 {SetValue=function()
-                    if Save()[data.name].texture==data.texture then
-                        Save()[data.name].texture=nil
-                        WoWTools_TextureMixin:SetBG_Settings(data.name, data.icon, tab)
-                    end
                     Save().ADD[data.texture]= nil
                 end})
                 return MenuResponse.Open
@@ -189,6 +187,7 @@ local function Set_BGTexture(self)
     if not self then
         return
     end
+
     local alpha= self.set_BGData.alpha
     local texture= self.set_BGData.texture
 
@@ -201,6 +200,14 @@ local function Set_BGTexture(self)
     end
 end
 
+
+
+
+
+
+
+
+
 function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
     if not icon or WoWToolsSave['Plus_Texture'].disabled then
         return
@@ -210,12 +217,13 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
 
 --初始
     if not icon.set_BGData then
+
 --初始，禁用时，退出
-        if Save()[name].texture then
+        if not Save()[name].texture then
             return
         end
+
 --初始，数据
-        
         icon.set_BGData= {
             p_texture= icon:GetAtlas() or icon:GetTextureFileID(),
             icons= tab.icons,
@@ -228,14 +236,19 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
         end
     end
 --数据
-    icon.set_BGData.texture= (tab.isRest ) and icon.set_BGData.p_texture or Save()[name].texture or nil
+    local texture= Save()[name].texture
+    icon.set_BGData.texture= texture or icon.set_BGData.p_texture
     icon.set_BGData.alpha= Save()[name].alpha or 0.3
+
 --设置
-    icon:Set_BGTexture()
+    do
+        Set_BGTexture(icon)
+    end
+
+    if not texture then
+        icon.set_BGData.texture= nil
+    end
 end
-
-
-
 
 
 
@@ -255,9 +268,7 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
         return
     end
 
-    tab.isSet=true
-
-    local sub, sub2
+    local sub, sub2, sub3
 --背景
     sub= root:CreateButton(
         '|A:MonkUI-LightOrb:0:0|a'
@@ -275,6 +286,7 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
         Save()[name].texture= not Save()[name].texture and data.texture or nil
 
         self:SetBG_Settings(name, icon, tab)
+
     end, {texture=Save()[name].texture})
 
     sub2:SetTooltip(function(tooltip, desc)
@@ -316,7 +328,7 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
 
                 local isAdd= Save().ADD[textureID]
                 local isTextureTab= TextureTab[textureID]
-                
+
                 s:GetParent().button1:SetEnabled(enabled and not isAdd and not isTextureTab)
                 s:GetParent().button3:SetEnabled(enabled and isAdd and not isTextureTab)
             end,
@@ -330,10 +342,6 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
 
 --全部清除
     WoWTools_MenuMixin:ClearAll(sub2, function()
-        if Save().ADD[Save()[name]] then
-            Save()[name]=nil
-            self:SetBG_Settings(name, icon, tab)
-        end
         Save().ADD={}
     end)
     sub2:CreateDivider()
@@ -358,6 +366,9 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
         setValue=function(value)
             Save()[name].alpha=value
             self:SetBG_Settings(name, icon, tab)
+            if tab.setFunc then
+                tab.setFunc(Save()[name].texture, Save()[name].alpha)
+            end
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         minValue=0,
@@ -367,5 +378,24 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
         tooltip=name
     })
     sub:CreateSpacer()
+
+
+
+
+
+
+--打开选项界面
+    sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_SpellMixin.addName, category=WoWTools_SpellMixin.Category})
+--Web
+    sub3=sub2:CreateButton(
+        'Web',
+    function(data)
+        WoWTools_TooltipMixin:Show_URL(nil, nil, nil, data.name)
+        return MenuResponse.Open
+    end, {name=[[https://www.aconvert.com/]]})
+    sub3:SetTooltip(function(tooltip, desc)
+        tooltip:AddLine(desc.data.name)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
+    end)
 end
 

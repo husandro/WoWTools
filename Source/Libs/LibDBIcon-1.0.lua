@@ -170,6 +170,7 @@ do
 			x = max(-w, min(x*diagRadiusW, w))
 			y = max(-h, min(y*diagRadiusH, h))
 		end
+		print(x,y)
 		button:SetPoint("CENTER", Minimap, "CENTER", x, y)
 	end
 end

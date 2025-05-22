@@ -30,7 +30,7 @@ local P_Save={
 
 
 
-local function  Blizzard_PlayerSpells()
+local function Blizzard_PlayerSpells()
     WoWTools_SpellMixin:Init_TalentsFrame()
     WoWTools_SpellMixin:Init_SpellBookFrame()
     WoWTools_SpellMixin:Init_Spec_Button()
