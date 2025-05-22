@@ -16,6 +16,10 @@ local MakerFrame
 
 --设置标记, 框架
 local function Init()--设置标记, 框架
+    if not Save().markersFrame then
+        return
+    end
+
     MakerFrame= CreateFrame('Frame', 'WoWToolsChatButtonMarkersFrame', UIParent)
     WoWTools_MarkerMixin.MakerFrame= MakerFrame
     MakerFrame.Buttons={}
@@ -951,7 +955,10 @@ local function Init()--设置标记, 框架
         end
     end
 
-    return true
+    Init=function()
+        MakerFrame:set_Shown()
+        MakerFrame:set_Event()
+    end
 end
 
 
@@ -979,13 +986,5 @@ end
 
 
 function WoWTools_MarkerMixin:Init_Markers_Frame()--设置标记, 框架
-    if MakerFrame then
-        MakerFrame:set_Shown()
-        MakerFrame:set_Event()
-
-    elseif Save().markersFrame then
-        if Init() then
-            Init=function()end
-        end
-    end
+    Init()
 end

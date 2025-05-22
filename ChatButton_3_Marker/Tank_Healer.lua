@@ -37,6 +37,7 @@ local function Set_TankHealer(set)--设置队伍标记
     end
 
     local tank, healer, isSelf
+
     if IsInRaid() then
         local tab={}--设置团队标记
         for index=1, MAX_RAID_MEMBERS do
@@ -98,6 +99,7 @@ local function Set_TankHealer(set)--设置队伍标记
             isSelf= true
         end
     end
+
     return tank or healer or isSelf
 end
 

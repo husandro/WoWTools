@@ -779,12 +779,12 @@ local function Init()
 
 
 
-
     ToyButton:set_alt()
 
     C_Timer.After(4, function()
         ToyButton:Get_Random_Value()
     end)
+    Init=function()end
 end
 
 

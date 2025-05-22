@@ -269,7 +269,7 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
 --自定义
     sub2= sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM,
-    function(data)
+    function()
         return Save()[name].texture
     end, function(data)
         Save()[name].texture= not Save()[name].texture and data.texture or nil

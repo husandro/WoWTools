@@ -157,7 +157,7 @@ local function Init_Menu(self, root)
         (Save().tank==0 and Save().healer==0 and '|cff9e9e9e' or '')
         ..'|A:mechagon-projects:0:0|a'
         ..((WoWTools_DataMixin.onlyChinese and '自动标记' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, EVENTTRACE_MARKER))
-        ..WoWTools_DataMixin.Icon.TANK..WoWTools_DataMixin.Icon.TANK
+        ..WoWTools_DataMixin.Icon.TANK..WoWTools_DataMixin.Icon.HEALER
     ), function ()
         return Save().autoSet
     end, function ()
