@@ -32,6 +32,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             if not WoWTools_DataMixin.Player.husandro then--测试中
+                self:UnregisterAllEvents()
                 return
             end
 
