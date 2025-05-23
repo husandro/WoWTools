@@ -64,7 +64,7 @@ end
 
 
 
-local function Init_Menu(btn, root)
+local function Init_Menu(_, root)
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
     function()
@@ -73,12 +73,7 @@ local function Init_Menu(btn, root)
         Save().hide= not Save().hide and true or nil
         Settings()
     end)
-
---[[BG, 菜单
     root:CreateDivider()
-    if WoWTools_TextureMixin:BGMenu(root, btn.bgName, btn.bgIcon) then
-        root:CreateDivider()
-    end]]
 
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
 end

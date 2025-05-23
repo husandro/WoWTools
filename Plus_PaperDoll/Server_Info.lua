@@ -73,7 +73,8 @@ local function Settings()
     local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)
     local num= #ser
     local text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
-            ..WoWTools_DataMixin.Player.realm..(server and ' '..server.col or '')
+            ..WoWTools_DataMixin.Player.realm
+            ..(server and ' '..server.col or '')
     Label:SetText(text or '')
 end
 

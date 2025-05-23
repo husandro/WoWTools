@@ -5721,7 +5721,8 @@
         "InspectModelFrameBackgroundTopRight",
         "InspectModelFrameBackgroundTopLeft",
         "PaperDollFrameBgBottom",
-        "PaperDollFrameBgTop"
+        "PaperDollFrameBgTop",
+        "PaperDollSidebarTabs"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

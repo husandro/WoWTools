@@ -1,4 +1,23 @@
-
+local ItemButtons={
+        [1]	 = "CharacterHeadSlot",
+        [2]	 = "CharacterNeckSlot",
+        [3]	 = "CharacterShoulderSlot",
+        [4]	 = "CharacterShirtSlot",
+        [5]	 = "CharacterChestSlot",
+        [6]	 = "CharacterWaistSlot",
+        [7]	 = "CharacterLegsSlot",
+        [8]	 = "CharacterFeetSlot",
+        [9]	 = "CharacterWristSlot",
+        [10] = "CharacterHandsSlot",
+        [11] = "CharacterFinger0Slot",
+        [12] = "CharacterFinger1Slot",
+        [13] = "CharacterTrinket0Slot",
+        [14] = "CharacterTrinket1Slot",
+        [15] = "CharacterBackSlot",
+        [16] = "CharacterMainHandSlot",
+        [17] = "CharacterSecondaryHandSlot",
+        [19] = "CharacterTabardSlot",
+}
 
 --角色，界面
 function WoWTools_TextureMixin.Frames:PaperDollFrame()
@@ -26,15 +45,28 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:HideTexture(PaperDollInnerBorderBottom2)
     self:HideTexture(CharacterFrameInsetRight.Bg)
 
+    self:SetAlphaColor(PaperDollSidebarTabs.DecorRight, nil, nil, 0.3)
+    self:SetAlphaColor(PaperDollSidebarTabs.DecorLeft, nil, nil, 0.3)
 
+    self:SetNineSlice(CharacterFrameInsetRight, nil, true)
 
+--角色，物品栏
+    for _, name in pairs(ItemButtons) do
+        self:
+        (_G[name])
+    end
 
+    self:SetTabButton(CharacterFrameTab1)
+    self:SetTabButton(CharacterFrameTab2)
+    self:SetTabButton(CharacterFrameTab3)
 
+--属性
     self:SetAlphaColor(CharacterStatsPane.ClassBackground)
     self:SetAlphaColor(CharacterStatsPane.EnhancementsCategory.Background)
     self:SetAlphaColor(CharacterStatsPane.AttributesCategory.Background)
     self:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background)
-    
+
+--头衔
     hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
         local frame= PaperDollFrame.TitleManagerPane.ScrollBox
         if not frame or not frame:GetView() then
@@ -86,12 +118,19 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
             end
         end
     end)
+--添加Bg
+    self:CreateBackground(ReputationFrame.ScrollBox, {
+        atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
+        alpha=0.3,
+        isAllPoint=true,
+    })
 
 
 
 --BG, 菜单
-    CharacterFrame.Background:SetPoint('TOPLEFT',2, -2)
-    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-4, 2)
+    CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
+    CharacterFrame.Background:SetPoint('TOPLEFT',0, -2)
+    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-6, 2)
     WoWTools_TextureMixin:Init_BGMenu_Frame(CharacterFrame, nil, CharacterFrame.Background, nil)
 end
 
@@ -100,19 +139,9 @@ end
 --货币
 function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetScrollBar(TokenFrame)
-    self:SetNineSlice(CurrencyTransferLog, true)
-    self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
-    self:SetNineSlice(CurrencyTransferLogInset, true)
-    self:SetScrollBar(CurrencyTransferLog)
-    self:SetNineSlice(CurrencyTransferMenu, true)
-    self:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
-    self:SetNineSlice(CurrencyTransferMenuInset)
     self:SetFrame(TokenFramePopup.Border, {alpha=0.3})
     self:SetMenu(TokenFrame.filterDropdown)
 
---货币转移
-    self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
-    self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
 
     hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
@@ -126,6 +155,25 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
             end
         end
     end)
+
+--添加Bg
+    self:CreateBackground(TokenFrame.ScrollBox, {
+        atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
+        alpha=0.3,
+        isAllPoint=true,
+    })
+
+
+    --货币转移
+    self:SetNineSlice(CurrencyTransferLog, true)
+    self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
+    self:SetNineSlice(CurrencyTransferLogInset, true)
+    self:SetScrollBar(CurrencyTransferLog)
+    self:SetNineSlice(CurrencyTransferMenu, true)
+    self:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
+    self:SetNineSlice(CurrencyTransferMenuInset)
+    self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
+    self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
 end
 
 
@@ -139,9 +187,9 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:HideTexture(InspectPVPFrame.BG)
     
     self:HideTexture(InspectGuildFrameBG)
-    self:SetFrame(InspectFrameTab1, {notAlpha=true})
-    self:SetFrame(InspectFrameTab2, {notAlpha=true})
-    self:SetFrame(InspectFrameTab3, {notAlpha=true})
+    self:SetTabButton(InspectFrameTab1)
+    self:SetTabButton(InspectFrameTab2)
+    self:SetTabButton(InspectFrameTab3)
     self:SetNineSlice(InspectFrame, true)
     self:SetNineSlice(InspectFrameInset, nil, true)
 

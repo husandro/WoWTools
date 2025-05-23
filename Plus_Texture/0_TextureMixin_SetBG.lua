@@ -76,7 +76,7 @@ local TextureTab={--TalentArt
 ['legionmission-complete-background-Warlock']=true,
 ['legionmission-complete-background-Monk']=true,
 ['legionmission-complete-background-demonhunter']=true,
---['Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga']=true,
+['Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga']=true,
 
 }
 
@@ -500,6 +500,6 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
     end
 
 
-    
+
 
 end

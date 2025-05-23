@@ -144,10 +144,10 @@ local function Init(mixin)
 
 
 --PVEFrame
-    mixin:SetFrame(PVEFrameTab1, {notAlpha=true})
-    mixin:SetFrame(PVEFrameTab2, {notAlpha=true})
-    mixin:SetFrame(PVEFrameTab3, {notAlpha=true})
-    mixin:SetFrame(PVEFrameTab4, {notAlpha=true})
+    mixin:SetTabButton(PVEFrameTab1)
+    mixin:SetTabButton(PVEFrameTab2)
+    mixin:SetTabButton(PVEFrameTab3)
+    mixin:SetTabButton(PVEFrameTab4)
 
     --地下城和团队副本
     mixin:SetButton(PVEFrameCloseButton, {all=true})
@@ -306,14 +306,7 @@ local function Init(mixin)
 
 
 
-    --角色，物品栏
-    for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
-        mixin:HideFrame(_G[name])
-    end
 
-     mixin:SetFrame(CharacterFrameTab1, {notAlpha=true})
-     mixin:SetFrame(CharacterFrameTab2, {notAlpha=true})
-     mixin:SetFrame(CharacterFrameTab3, {notAlpha=true})
 
      --好友列表
      mixin:SetNineSlice(FriendsFrame, true)
@@ -418,8 +411,8 @@ local function Init(mixin)
      mixin:SetNineSlice(OpenMailFrame, true)
      mixin:SetAlphaColor(OpenMailFrameBg)
      mixin:SetAlphaColor(OpenMailFrameInset.Bg)
-     mixin:SetFrame(MailFrameTab1, {notAlpha=true})
-     mixin:SetFrame(MailFrameTab2, {notAlpha=true})
+     mixin:SetTabButton(MailFrameTab1)
+     mixin:SetTabButton(MailFrameTab2)
      mixin:HideTexture(SendMailMoneyInset.Bg)
      mixin:SetNineSlice(MailFrameInset, true)
      mixin:SetScrollBar(SendMailScrollFrame)

@@ -628,9 +628,9 @@ local function Init()
 
     end)
 
-    WoWTools_TextureMixin:SetFrame(BankFrameTab1, {notAlpha=true})
-    WoWTools_TextureMixin:SetFrame(BankFrameTab2, {notAlpha=true})
-    WoWTools_TextureMixin:SetFrame(BankFrameTab3, {notAlpha=true})
+    WoWTools_TextureMixin:SetTabButton(BankFrameTab1)
+    WoWTools_TextureMixin:SetTabButton(BankFrameTab2)
+    WoWTools_TextureMixin:SetTabButton(BankFrameTab3)
     WoWTools_TextureMixin:SetNineSlice(BankFrame, true, false, false, false)
 
 

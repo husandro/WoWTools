@@ -70,9 +70,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameStats)
     self:SetEditBox(AchievementFrame.SearchBox)
     self:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
-    self:SetFrame(AchievementFrameTab1, {alpha=0.3})
-    self:SetFrame(AchievementFrameTab2, {alpha=0.3})
-    self:SetFrame(AchievementFrameTab3, {alpha=0.3})
+    self:SetTabButton(AchievementFrameTab1, 0.3)
+    self:SetTabButton(AchievementFrameTab2, 0.3)
+    self:SetTabButton(AchievementFrameTab3, 0.3)
     self:HideTexture(AchievementFrameSummaryCategoriesStatusBarFillBar)
 
     self:HideTexture(AchievementFrameComparisonHeaderBG)

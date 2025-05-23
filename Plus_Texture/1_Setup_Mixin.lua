@@ -290,10 +290,15 @@ function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
     end
     for _, tabID in pairs(frame:GetTabSet() or {}) do
         local btn= frame:GetTabButton(tabID)
-        self:SetFrame(btn, {notAlpha=true})
+        self:SetFrame(btn, {alpha=0.75})
     end
 end
 
+function WoWTools_TextureMixin:SetTabButton(btn, alpha)--TabSystemOwner.lua
+    if btn then
+        self:SetFrame(btn, {alpha=alpha or 0.75})
+    end
+end
 
 
 function WoWTools_TextureMixin:SetInset(frame, alphaORmin)

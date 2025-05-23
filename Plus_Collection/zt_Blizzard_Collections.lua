@@ -138,8 +138,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
     self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
-    self:SetFrame(WardrobeCollectionFrameTab1, {notAlpha=true})
-    self:SetFrame(WardrobeCollectionFrameTab2, {notAlpha=true})
+    self:SetTabButton(WardrobeCollectionFrameTab1)
+    self:SetTabButton(WardrobeCollectionFrameTab2)
 
     --试衣间
     self:SetNineSlice(WardrobeFrame, true)
