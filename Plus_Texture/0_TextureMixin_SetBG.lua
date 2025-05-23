@@ -197,8 +197,8 @@ local function Set_BGTexture(self)
 
     set_texture(self, texture, alpha)
 
-    if self.set_BGData.icons then
-        for _, bg in pairs(self.set_BGData.icons) do
+    if self.set_BGData.tab.icons then
+        for _, bg in pairs(self.set_BGData.tab.icons) do
             set_texture(bg, texture, alpha)
         end
     end
@@ -224,10 +224,13 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
     local isInitial= not icon.set_BGData
 
     icon.set_BGData= {
-        p_texture= icon.set_BGData and icon.set_BGData.p_texture or icon:GetAtlas() or icon:GetTextureFileID(),
-        icons= tab.icons,
         texture= texture,
         alpha= Save()[name].alpha or self.min or 0.3,
+
+        p_texture= icon.set_BGData and icon.set_BGData.p_texture or icon:GetAtlas() or icon:GetTextureFileID(),
+        tab=tab,--icons= tab.icons,
+        name= name,
+        icon= icon,
     }
 
 --初始
@@ -423,3 +426,80 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
     return true
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
+    if WoWToolsSave['Plus_Texture'].disabled or not frame then
+        return
+    end
+
+    name= name or frame:GetName()
+
+    if not name or not icon then
+        return
+    end
+
+    self:SetBG_Settings(name, icon, tab)
+
+
+    if frame.PortraitContainer then
+        frame.PortraitContainer:SetSize(48,48)
+        frame.PortraitContainer:HookScript('OnLeave', function(s)
+            GameTooltip:Hide()
+            s.portrait:SetAlpha(1)
+        end)
+        frame.PortraitContainer:HookScript('OnEnter', function(s)
+            GameTooltip:SetOwner(s)
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(
+                WoWTools_DataMixin.Icon.icon2..self.addName,
+                (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
+            )
+            GameTooltip:Show()
+            s.portrait:SetAlpha(0.7)
+        end)
+        frame.PortraitContainer:HookScript('OnMouseDown', function(s, d)
+            if d~='RightButton' then
+                return
+            end
+            MenuUtil.CreateContextMenu(s, function(_, root)
+                self:BGMenu(root, s.bg_Texture.set_BGData.name, s.bg_Texture, s.bg_Texture.set_BGData.tab)
+            end)
+            s.portrait:SetAlpha(0.3)
+        end)
+        frame.PortraitContainer:HookScript('OnMouseUp', function(s)
+            s.portrait:SetAlpha(0.7)
+        end)
+        frame.PortraitContainer.bg_Texture= icon
+    end
+
+
+    
+
+end

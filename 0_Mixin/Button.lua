@@ -68,7 +68,7 @@ function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
         btn.IconMask:SetPoint("BOTTOMRIGHT", region or btn, "BOTTOMRIGHT", -2, 2)
     end
 
-    local icon= region or  btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())
+    local icon= region or btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())
     if icon then
         icon:AddMaskTexture(btn.IconMask)
     end
