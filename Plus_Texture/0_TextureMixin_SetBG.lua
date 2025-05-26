@@ -335,7 +335,7 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
     tab= tab or {}
 
     local texture= Save()[name].texture
-    local alpha= Save()[name].alpha or self.min or 0.3
+    local alpha= Save()[name].alpha or tab.alpha or self.min or 0.3
     local isInitial= not icon.set_BGData
 
     icon.set_BGData= {

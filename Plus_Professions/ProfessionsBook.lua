@@ -117,6 +117,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
         end,
         --isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
         isAddBg=true,--是否添加背景
+        alpha=1,
     })
 end
 
