@@ -5722,7 +5722,12 @@
         "InspectModelFrameBackgroundTopLeft",
         "PaperDollFrameBgBottom",
         "PaperDollFrameBgTop",
-        "PaperDollSidebarTabs"
+        "PaperDollSidebarTabs",
+        "SELF_HIGHLIGHT_MODE_ICON",
+        "SELF_HIGHLIGHT_MODE_CIRCLE_AND_ICON",
+        "SELF_HIGHLIGHT_MODE_OUTLINE_AND_ICON",
+        "SELF_HIGHLIGHT_MODE_CIRCLE_OUTLINE_AND_ICON",
+        "SELF_HIGHLIGHT_ON"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

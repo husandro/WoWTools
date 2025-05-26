@@ -61,7 +61,31 @@ local function Init_RaidTarget_Menu(_, root)
         {
             text='|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
             type='isSelf',
-            tip=WoWTools_DataMixin.onlyChinese and '不在队伍' or PARTY_LEAVE,
+            tip= function(tooltip)
+                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '不在队伍' or PARTY_LEAVE)
+                local iconOn = GetCVarBool("findYourselfModeIcon")--CombatOverrides.lua
+                if not iconOn then
+                    return
+                end
+                local circleOn = GetCVarBool("findYourselfModeCircle")
+                local outlineOn = GetCVarBool("findYourselfModeOutline")
+
+                local value = (circleOn and 1 or 0) + (outlineOn and 2 or 0) + (iconOn and 4 or 0)
+                if value<4 or value>7 then
+                    return
+                end
+
+                local valueTab={
+                    [4]=WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_MODE_ICON,
+                    [5]=WoWTools_DataMixin.onlyChinese and '圆环和图标' or SELF_HIGHLIGHT_MODE_CIRCLE_AND_ICON,
+                    [6]=WoWTools_DataMixin.onlyChinese and '轮廓线和图标' or SELF_HIGHLIGHT_MODE_OUTLINE_AND_ICON,
+                    [7]=WoWTools_DataMixin.onlyChinese and '圆环、轮廓线和图标' or SELF_HIGHLIGHT_MODE_CIRCLE_OUTLINE_AND_ICON,
+                }
+                tooltip:AddLine(' ')
+                GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '综合' or GENERAL)
+                GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '开启自身高亮' or SELF_HIGHLIGHT_ON)
+                GameTooltip_AddErrorLine(tooltip, valueTab[value])
+            end,
             rest=restSelf,
             check=checkSelf
         },
@@ -82,12 +106,19 @@ local function Init_RaidTarget_Menu(_, root)
             WoWTools_MarkerMixin:Set_TankHealer(true)
             return MenuResponse.Refresh
         end, {
-            text= info.text, type=info.type, rest=info.rest
+            text= info.text,
+            type=info.type,
+            rest=info.rest,
+            tip=info.tip,
         })
 
         sub:SetTooltip(function(tooltip, desc)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重置' or RESET)
-            tooltip:AddLine(desc.data.tip)
+             if type(desc.data.tip)=='function' then
+                desc.data.tip(tooltip)
+            else
+                tooltip:AddLine(desc.data.tip)
+            end
         end)
         sub:AddInitializer(function(button, desc)
             local index=Save()[desc.data.type]
@@ -118,11 +149,21 @@ local function Init_RaidTarget_Menu(_, root)
                 WoWTools_MarkerMixin:Set_TankHealer(true)
                 return MenuResponse.Refresh
 
-            end, {text=info.text, index=i, type=info.type, tip=info.tip, check=info.check})
+            end, {
+                text=info.text,
+                index=i,
+                type=info.type,
+                tip=info.tip,
+                check=info.check
+            })
 
             sub:SetTooltip(function(tooltip, desc)
                 tooltip:AddDoubleLine(desc.data.text, desc.data.index)
-                tooltip:AddLine(desc.data.tip)
+                if type(desc.data.tip)=='function' then
+                    desc.data.tip(tooltip)
+                else
+                    tooltip:AddLine(desc.data.tip)
+                end
             end)
 
             sub:AddInitializer(function(button, desc)

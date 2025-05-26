@@ -23,7 +23,7 @@ local function Init()
         size=22,
     })
     btn:SetPoint('RIGHT', ProfessionsBookFrameCloseButton, 'LEFT')
-    
+
     function btn:set_alpha()
         local enabled= Save().wangquePrefessionText
         self:SetAlpha(enabled and 1 or 0.2)
@@ -35,7 +35,7 @@ local function Init()
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '自动输入 ‘忘却’' or (TRADE_SKILLS ..': '..UNLEARN_SKILL_CONFIRMATION))
             ..WoWTools_TextMixin:GetEnabeleDisable(Save().wangquePrefessionText),
-            
+
             WoWTools_DataMixin.Icon.left
         )
         GameTooltip:AddLine(' ')
@@ -45,7 +45,7 @@ local function Init()
         GameTooltip:Show()
         self:SetAlpha(1)
     end
-        
+
     btn:SetScript('OnClick', function(self)
         Save().wangquePrefessionText= not Save().wangquePrefessionText and true or nil
         self:set_alpha()
