@@ -46,7 +46,7 @@ local function Init()
         self:SetAlpha(1)
     end
         
-    btn:SetScript('OnDoubleClick', function(self)
+    btn:SetScript('OnClick', function(self)
         Save().wangquePrefessionText= not Save().wangquePrefessionText and true or nil
         self:set_alpha()
         self:set_tooltips()
