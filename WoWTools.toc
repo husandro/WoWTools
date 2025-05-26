@@ -128,7 +128,6 @@ Plus_Move\3_Options.lua
 Plus_Move\e_Other.lua
 Plus_Move\e_Professions.lua
 Plus_Move\e_ProfessionsCustomerOrders.lua
-Plus_Move\z_CharacterFrame.lua
 Plus_Move\z_Class_Power.lua
 Plus_Move\z_FriendsFrame.lua
 Plus_Move\z_Other.lua

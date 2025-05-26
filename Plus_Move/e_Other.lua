@@ -116,10 +116,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ItemInteractionUI()
     end)
 end
 
---专业书
-function WoWTools_MoveMixin.Events:Blizzard_ProfessionsBook()
-    self:Setup(ProfessionsBookFrame)
-end
+
 
 --虚空，仓库
 function WoWTools_MoveMixin.Events:Blizzard_VoidStorageUI()

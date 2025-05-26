@@ -301,15 +301,6 @@ end
 
 
 
---专业书
-function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
-    self:SetNineSlice(ProfessionsBookFrame, nil, nil, 0.3)
-    self:SetNineSlice(ProfessionsBookFrameInset, nil, nil, 0.3)
-    self:HideTexture(ProfessionsBookFrameBg)
-    self:HideTexture(ProfessionsBookFrameInset.Bg)
-    self:SetButton(ProfessionsBookFrameCloseButton, {all=true})
-end
-
 
 
 

@@ -28,10 +28,12 @@ local function Init()
         end
     end)
 
-    C_CVar.SetCVar("showNPETutorials",'0')
+    if C_CVar.GetCVarBool("showNPETutorials") and not InCombatLockdown() then
+        C_CVar.SetCVar("showNPETutorials",'0')
+    end
 
-    --Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
-    hooksecurefunc(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame, ofsX, ofsY, relativePoint, backupDirection, showMovieName, loopMovie, resolution)
+--Blizzard_TutorialPointerFrame.lua 隐藏, 新手教程
+    hooksecurefunc(TutorialPointerFrame, 'Show',function(self, content, direction, anchorFrame)
         if not anchorFrame or not self.DirectionData[direction] then
             return
         end
@@ -39,7 +41,11 @@ local function Init()
         if ID then
             C_Timer.After(2, function()
                 TutorialPointerFrame:Hide(ID-1)
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, '|cffff00ff'..content)
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+                    '|cffff00ff',
+                    WoWTools_TextMixin:CN(content)
+                )
             end)
         end
     end)
@@ -49,7 +55,11 @@ local function Init()
             C_Timer.After(1, function()
                 if self:IsShown() then
                     self:Hide()
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r', WoWTools_DataMixin.onlyChinese and '关闭' or CLOSE)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+                        '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '感谢您的举报！' or ERR_REPORT_SUBMITTED_SUCCESSFULLY)..'|r',
+                        WoWTools_DataMixin.onlyChinese and '关闭' or CLOSE
+                    )
                 end
             end)
         end
@@ -69,17 +79,19 @@ local function Init()
             if ScriptErrorsFrame then
                 if ScriptErrorsFrame:IsShown() then
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName)
-                    print(ScriptErrorsFrame.ScrollFrame.Text:GetText())
+                    print(WoWTools_TextMixin:CN(ScriptErrorsFrame.ScrollFrame.Text:GetText()))
                     ScriptErrorsFrame.Close:Click()
                 end
                 ScriptErrorsFrame:HookScript('OnShow', function(self)
                     print(WoWTools_TextureMixin.addName, WoWTools_TextureMixin.addName)
-                    print(self.ScrollFrame.Text:GetText())
+                    print(WoWTools_TextMixin:CN(self.ScrollFrame.Text:GetText()))
                     ScriptErrorsFrame.Close:Click()
                 end)
             end
         end
     end)
+
+    Init=function()end
 end
 
 

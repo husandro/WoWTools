@@ -28,8 +28,8 @@ local function Init()
     ReadyTipsButton:RegisterForDrag("RightButton")--移动
     ReadyTipsButton:SetMovable(true)
     ReadyTipsButton:SetClampedToScreen(true)
-    ReadyTipsButton:SetScript("OnDragStart", function(self)
-        if IsAltKeyDown() then
+    ReadyTipsButton:SetScript("OnDragStart", function(self, d)
+        if IsAltKeyDown() and d=='RightButton' then
             self:StartMoving()
         end
     end)
@@ -48,7 +48,9 @@ local function Init()
         end
     end)
 
-    ReadyTipsButton:SetScript("OnMouseUp", ResetCursor)--还原光标
+    ReadyTipsButton:SetScript("OnMouseUp", function()--还原光标
+        ResetCursor()
+    end)
 
     function ReadyTipsButton:set_Scale()
         self.text:SetScale(Save().tipsTextSacle or 1)
@@ -152,7 +154,11 @@ local function Init()
         end
     end)
 
-    ReadyTipsButton:SetScript('OnDoubleClick', ReadyTipsButton.set_Hide)--隐藏
+    ReadyTipsButton:SetScript('OnClick', function(self, d)--隐藏
+        if d=='LeftButton' and not IsModifierKeyDown() then
+            self:set_Hide()
+        end
+    end)
 
     ReadyTipsButton:SetScript('OnMouseWheel', function(self, delta)--缩放
         Save().tipsTextSacle= WoWTools_FrameMixin:ScaleFrame(self, delta, Save().tipsTextSacle)--设置Frame缩放
@@ -164,7 +170,7 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_MarkerMixin.addName, WoWTools_DataMixin.onlyChinese and '队员就绪信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, PLAYERS_IN_GROUP, format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, READY, INFO)))
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE, (WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '隐藏' or HIDE, WoWTools_DataMixin.Icon.left)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '移动' or NPE_MOVE,'Alt+'..WoWTools_DataMixin.Icon.right)
         GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE)..' |cnGREEN_FONT_COLOR:'..(Save().tipsTextSacle or 1), 'Alt+'..WoWTools_DataMixin.Icon.mid)
         GameTooltip:Show()

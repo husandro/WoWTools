@@ -12,10 +12,7 @@ local Button
 
 
 local function Init_Button()
-    if Button or Save().hide then
-        if Button then
-            Button:SetShown(not Save().hide)
-        end
+    if Save().hide then
         return
     end
 
@@ -32,7 +29,7 @@ local function Init_Button()
     Button:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     Button:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
     function Button:set_alpha(min)
-        self:SetAlpha(min and 0.3 or 1)
+        self:SetAlpha(min and 0.2 or 1)
     end
     function Button:set_texture()
         self:SetNormalAtlas(
@@ -100,7 +97,9 @@ local function Init_Button()
         WoWTools_PaperDollMixin:Init_Status_Menu(Button)
     end
 
-
+    Init_Button=function()
+        Button:SetShown(not Save().hide)
+    end
 end
 
 
@@ -112,5 +111,4 @@ end
 --属性，增强 PaperDollFrame.lua
 function WoWTools_PaperDollMixin:Init_Status_Plus()
     Init_Button()
-
 end

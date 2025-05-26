@@ -104,7 +104,7 @@ local function Init(frame)
         if isEnter then
             self:SetAlpha(1)
         else
-            self:SetAlpha(0.5)
+            self:SetAlpha(0.2)
         end
     end
     btn:set_alpha(false)
@@ -115,24 +115,12 @@ local function Init(frame)
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
 
-        --GameTooltip:AddDoubleLine(WoWTools_TextMixin:GetShowHide(not Save().hide), WoWTools_DataMixin.Icon.left)
-
         GameTooltip:AddLine(' ')
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
-        --GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '选项' or SETTINGS_TITLE, WoWTools_DataMixin.Icon.right)
+
         GameTooltip:Show()
         self:set_alpha(true)
     end)
-
-
---[[BG, 设置
-    btn.bgName= frame==PaperDollItemsFrame and 'CharacterFrame' or 'InspectFrame'
-    btn.bgIcon= btn.bgName=='CharacterFrame' and CharacterFrame.Background or InspectFrameBg
-    if btn.bgName=='CharacterFrame' then
-        CharacterFrame.Background:SetPoint('TOPLEFT')
-    end
-    
-    WoWTools_TextureMixin:SetBG_Settings(btn.bgName, btn.bgIcon)]]
 
     frame.ShowHideButton= btn
 end

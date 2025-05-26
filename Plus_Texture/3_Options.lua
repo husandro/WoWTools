@@ -130,7 +130,13 @@ local function Init_Options()
         checkTooltip= WoWTools_TextureMixin.addName,
         checkSetValue= function()
             Save().classPowerNum= not Save().classPowerNum and true or false
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            WoWTools_MoveMixin:Init_Class_Power()--职业
+            if not Save().classPowerNum then
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end
         end,
         sliderGetValue= function()
             local s= Save().classPowerNumSize
@@ -148,7 +154,12 @@ local function Init_Options()
                 local value3= WoWTools_Mixin:GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
                 WoWTools_MoveMixin:Init_Class_Power()--职业
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,'|cnGREEN_FONT_COLOR:'.. value3..'|r', WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+                    '|cnGREEN_FONT_COLOR:'.. value3..'|r',
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
             end
         end,
         layout= Layout,
@@ -156,13 +167,19 @@ local function Init_Options()
     })
 
     WoWTools_PanelMixin:OnlyCheck({
-        name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS ),
+        name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS),
         tooltip='HelpTip',
         category= Category,
         GetValue= function() return not Save().disabledHelpTip end,
         SetValue= function()
             Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+            WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
+            if Save().disabledHelpTip then
+                print(
+                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                )
+            end
         end
     })
 end

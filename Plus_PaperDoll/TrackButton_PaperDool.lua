@@ -534,7 +534,7 @@ function Init_EquipButton()
     EquipButton:SetPoint('RIGHT', CharacterFrameCloseButton, 'LEFT')
     EquipButton:SetFrameStrata(CharacterFrameCloseButton:GetFrameStrata())
     EquipButton:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
-    EquipButton:SetAlpha(0.3)
+    EquipButton:SetAlpha(0.2)
 
 
     function EquipButton:set_texture()
@@ -575,7 +575,7 @@ function Init_EquipButton()
     EquipButton:SetScript("OnLeave",function(self)
         GameTooltip_Hide()
         TrackButton:SetButtonState("NORMAL")
-        self:SetAlpha(0.3)
+        self:SetAlpha(0.2)
     end)
 
     EquipButton:settings()
