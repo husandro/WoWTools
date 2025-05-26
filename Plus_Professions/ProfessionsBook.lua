@@ -18,7 +18,10 @@ local UNLEARN_SKILL_CONFIRMATION= UNLEARN_SKILL_CONFIRMATION
 
 --专业书
 local function Init()
-    local btn= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrameCloseButton, {size=22})
+    local btn= WoWTools_ButtonMixin:Cbtn(ProfessionsBookFrameCloseButton, {
+        name='WoWtoolsUNLEARN_SKILLButton',
+        size=22,
+    })
     btn:SetPoint('RIGHT', ProfessionsBookFrameCloseButton, 'LEFT')
     
     function btn:set_alpha()
@@ -33,7 +36,7 @@ local function Init()
             (WoWTools_DataMixin.onlyChinese and '自动输入 ‘忘却’' or (TRADE_SKILLS ..': '..UNLEARN_SKILL_CONFIRMATION))
             ..WoWTools_TextMixin:GetEnabeleDisable(Save().wangquePrefessionText),
             
-            (WoWTools_DataMixin.onlyChinese and '双击' or BUFFER_DOUBLE)..WoWTools_DataMixin.Icon.left
+            WoWTools_DataMixin.Icon.left
         )
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '你确定要忘却%s并遗忘所有已经学会的配方？如果你选择回到此专业，你的专精知识将依然存在。|n|n在框内输入 \"忘却\" 以确认。' or UNLEARN_SKILL, nil,nil,nil, true)
@@ -42,8 +45,8 @@ local function Init()
         GameTooltip:Show()
         self:SetAlpha(1)
     end
-    btn:SetScript("OnDoubleClick", function(self)
-        print('OnDoubleClick')
+        
+    btn:SetScript('OnDoubleClick', function(self)
         Save().wangquePrefessionText= not Save().wangquePrefessionText and true or nil
         self:set_alpha()
         self:set_tooltips()
@@ -57,7 +60,6 @@ local function Init()
 
     --自动输入，忘却，文字，专业
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow", function(self)
-        print(Save().wangquePrefessionText)
         if Save().wangquePrefessionText then
             self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
         end
