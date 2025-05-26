@@ -6,7 +6,37 @@ end
 
 
 
+ local function restGroup()
+    Save().tank= 2
+    Save().tank2= 6
+    Save().healer= 1
+end
+local function checkGroup(index)
+    if Save().tank~=index and Save().healer~=index and Save().tank2~=index then
+        return true
+    end
+end
+local function restSelf()
+    Save().isSelf= 4
+    Save().target=7
+end
+local function checkSelf(index)
+    if Save().isSelf~=index and Save().target~=index then
+        return true
+    end
+end
 
+local function Get_selfModeIconValue()
+    local iconOn = GetCVarBool("findYourselfModeIcon")--CombatOverrides.lua
+    if iconOn then
+        local circleOn = GetCVarBool("findYourselfModeCircle")
+        local outlineOn = GetCVarBool("findYourselfModeOutline")
+        local value = (circleOn and 1 or 0) + (outlineOn and 2 or 0) + (iconOn and 4 or 0)
+        if value>=4 and value<=7 then
+            return value
+        end
+    end
+end
 
 
 
@@ -15,26 +45,6 @@ end
 
 local function Init_RaidTarget_Menu(_, root)
     local sub
-
-    local function restGroup()
-        Save().tank= 2
-        Save().tank2= 6
-        Save().healer= 1
-    end
-    local function checkGroup(index)
-        if Save().tank~=index and Save().healer~=index and Save().tank2~=index then
-            return true
-        end
-    end
-    local function restSelf()
-        Save().isSelf= 4
-        Save().target=7
-    end
-    local function checkSelf(index)
-        if Save().isSelf~=index and Save().target~=index then
-            return true
-        end
-    end
 
     local Tab={
         {
@@ -59,22 +69,16 @@ local function Init_RaidTarget_Menu(_, root)
             check=checkGroup
         },
         {
-            text='|A:auctionhouse-icon-favorite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+            text='|A:auctionhouse-icon-favorite:0:0|a'
+                ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                ..(Get_selfModeIconValue() and '|A:QuestLegendary:0:0|a' or ''),
             type='isSelf',
             tip= function(tooltip)
                 tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '不在队伍' or PARTY_LEAVE)
-                local iconOn = GetCVarBool("findYourselfModeIcon")--CombatOverrides.lua
-                if not iconOn then
+                local value= Get_selfModeIconValue()
+                if not value then
                     return
                 end
-                local circleOn = GetCVarBool("findYourselfModeCircle")
-                local outlineOn = GetCVarBool("findYourselfModeOutline")
-
-                local value = (circleOn and 1 or 0) + (outlineOn and 2 or 0) + (iconOn and 4 or 0)
-                if value<4 or value>7 then
-                    return
-                end
-
                 local valueTab={
                     [4]=WoWTools_DataMixin.onlyChinese and '图标' or SELF_HIGHLIGHT_MODE_ICON,
                     [5]=WoWTools_DataMixin.onlyChinese and '圆环和图标' or SELF_HIGHLIGHT_MODE_CIRCLE_AND_ICON,

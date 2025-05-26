@@ -86,7 +86,6 @@ local TextureTab={--TalentArt
 
 
 
-
 local function texture_list(root, name, icon, tab, texture, isAdd)
 
         local sub
@@ -117,8 +116,8 @@ local function texture_list(root, name, icon, tab, texture, isAdd)
             end
 
             WoWTools_TextureMixin:SetBG_Settings(data.name, data.icon, tab)
-            if tab.setFunc then
-                tab.setFunc(Save()[name].texture, Save()[name].alpha)
+            if tab.setValueFunc then
+                tab.setValueFunc(Save()[name].texture, Save()[name].alpha)
             end
         end, descData)
 
@@ -172,7 +171,9 @@ local function set_texture(self, texture, alpha)
     if not self then
         return
     end
+
     alpha= alpha or 0.3
+
     if texture then
         if C_Texture.GetAtlasInfo(texture) then
             self:SetAtlas(texture)
@@ -181,27 +182,140 @@ local function set_texture(self, texture, alpha)
         end
         self:SetVertexColor(1,1,1,1)
         self:SetAlpha(alpha)
+        self:SetShown(true)
     else
         WoWTools_TextureMixin:SetAlphaColor(self, nil, nil, alpha)
+        if self== self:GetParent().Add_Background then
+            self:SetShown(false)
+        end
     end
-    self:SetShown(true)
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Set_BGTexture(self)
-    if not self then
+    if not self or not self.set_BGData then
         return
     end
 
     local alpha= self.set_BGData.alpha
     local texture= self.set_BGData.texture
+    local tab= self.set_BGData.tab or {}
 
     set_texture(self, texture, alpha)
 
-    if self.set_BGData.tab.icons then
-        for _, bg in pairs(self.set_BGData.tab.icons) do
+    if tab.icons then
+        for _, bg in pairs(tab.icons) do
             set_texture(bg, texture, alpha)
         end
     end
+end
+
+
+
+
+
+
+
+local function Create_Anims(frame, icon)
+    if frame.AirParticlesFar or frame.backgroundAnims then
+        return
+    end
+
+    -- AirParticlesFar 粒子动画
+    frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
+    frame.AirParticlesFar:SetAtlas('talents-animations-particles')
+    frame.AirParticlesFar:SetPoint('TOPLEFT', icon, 30, -30)
+    frame.AirParticlesFar:SetPoint('BOTTOMRIGHT', icon, -30, 30)
+    frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
+    frame.AirParticlesFar:SetBlendMode("ADD")
+
+    if not frame.FullMask then
+        frame.FullMask = frame:CreateMaskTexture()
+        frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+        frame.FullMask:SetPoint('TOPLEFT', icon, 5, -5)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', icon, -5, 5)
+        frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+    end
+
+    -- 创建动画组
+    frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
+    frame.backgroundAnims:SetLooping("REPEAT")
+
+
+    -- Alpha 淡入
+    local alphaIn = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    alphaIn:SetOrder(2)
+    alphaIn:SetFromAlpha(0)
+    alphaIn:SetToAlpha(0.7)
+    alphaIn:SetDuration(5)
+    alphaIn:SetSmoothing("IN")
+
+    -- Alpha 淡出
+    local alphaOut = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    alphaOut:SetOrder(2)
+    alphaOut:SetFromAlpha(1)
+    alphaOut:SetToAlpha(0)
+    alphaOut:SetStartDelay(22)
+    alphaOut:SetDuration(5)
+    alphaOut:SetSmoothing("OUT")
+
+    -- 平移动画1
+    local trans1 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    trans1:SetOrder(1)
+    trans1:SetOffset(300, 0)
+    trans1:SetDuration(0)
+
+    -- 平移动画2
+    local trans2 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    trans2:SetOrder(2)
+    trans2:SetOffset(-600, 0)
+    trans2:SetStartDelay(0)
+    trans2:SetDuration(27)--27
+
+    -- 平移动画3
+    local trans3 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    trans3:SetOrder(3)
+    trans3:SetOffset(600, 0)
+    trans3:SetStartDelay(0)
+    trans3:SetDuration(0)
+
+    -- 旋转动画
+    local rotate = frame.backgroundAnims:CreateAnimation("Rotation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    rotate:SetOrder(3)
+    rotate:SetDegrees(20)
+    rotate:SetDuration(27)
+
+
+
+-- 显示时播放动画，隐藏时停止动画
+    if frame:IsVisible() then
+        frame.backgroundAnims:Play()
+    end
+
+    frame:HookScript("OnShow", function(f)
+        if not f.backgroundAnims:IsPlaying() then
+            f.backgroundAnims:Play()
+        end
+    end)
+    frame:HookScript("OnHide", function(f)
+        if f.backgroundAnims:IsPlaying() then
+            f.backgroundAnims:Stop()
+        end
+    end)
 end
 
 
@@ -219,19 +333,24 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
 
     Save()[name]= Save()[name] or {}
     tab= tab or {}
-    local texture= Save()[name].texture
 
+    local texture= Save()[name].texture
+    local alpha= Save()[name].alpha or self.min or 0.3
     local isInitial= not icon.set_BGData
 
     icon.set_BGData= {
         texture= texture,
-        alpha= Save()[name].alpha or self.min or 0.3,
+        alpha= alpha,
 
         p_texture= icon.set_BGData and icon.set_BGData.p_texture or icon:GetAtlas() or icon:GetTextureFileID(),
         tab=tab,--icons= tab.icons,
         name= name,
         icon= icon,
     }
+
+    if tab.settings then
+        tab.settings(texture, alpha)
+    end
 
 --初始
     if isInitial then
@@ -387,8 +506,8 @@ function WoWTools_TextureMixin:BGMenu(root, name, icon, tab)
         setValue=function(value)
             Save()[name].alpha=value
             self:SetBG_Settings(name, icon, tab)
-            if tab.setFunc then
-                tab.setFunc(Save()[name].texture, Save()[name].alpha)
+            if tab.setValueFunc then
+                tab.setValueFunc(Save()[name].texture, Save()[name].alpha)
             end
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
@@ -449,9 +568,24 @@ end
 
 
 
-
-
-
+--[[
+WoWTools_TextureMixin:Init_BGMenu_Frame(
+    frame,--框架, frame.PortraitContainer
+    name,--名称
+    icon,--Texture
+    {
+    icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
+    setValueFunc=function(textureName, alphaValue)--当菜单修改时，调用
+    end,
+    settings=function(textureName, alphaValue)--设置内容时，调用
+    end,
+    --isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
+    --isAddBg=true,--是否添加背景
+    --bgPoint=function(icon)--设置背景位置
+    --end,
+    }
+)
+]]
 
 
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
@@ -460,10 +594,29 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
     end
 
     name= name or frame:GetName()
+    tab= tab or {}
 
-    if not name or not icon then
+    if not name or (not icon and not tab.isAddBg) then
         return
     end
+
+    if tab.isAddBg then
+
+        if not frame.Add_Background then
+            frame.Add_Background= frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
+            if tab.bgPoint then
+                tab.bgPoint(frame.Add_Background)
+            else
+                frame.Add_Background:SetPoint('TOPLEFT', 6, -6)
+                frame.Add_Background:SetPoint('BOTTOMRIGHT',-6, 6)
+            end
+        end
+        icon= frame.Add_Background
+    end
+
+--创建动画组
+    Create_Anims(frame, icon)
+
 
     self:SetBG_Settings(name, icon, tab)
 

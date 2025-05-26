@@ -1,23 +1,4 @@
-local ItemButtons={
-        [1]	 = "CharacterHeadSlot",
-        [2]	 = "CharacterNeckSlot",
-        [3]	 = "CharacterShoulderSlot",
-        [4]	 = "CharacterShirtSlot",
-        [5]	 = "CharacterChestSlot",
-        [6]	 = "CharacterWaistSlot",
-        [7]	 = "CharacterLegsSlot",
-        [8]	 = "CharacterFeetSlot",
-        [9]	 = "CharacterWristSlot",
-        [10] = "CharacterHandsSlot",
-        [11] = "CharacterFinger0Slot",
-        [12] = "CharacterFinger1Slot",
-        [13] = "CharacterTrinket0Slot",
-        [14] = "CharacterTrinket1Slot",
-        [15] = "CharacterBackSlot",
-        [16] = "CharacterMainHandSlot",
-        [17] = "CharacterSecondaryHandSlot",
-        [19] = "CharacterTabardSlot",
-}
+
 
 --角色，界面
 function WoWTools_TextureMixin.Frames:PaperDollFrame()
@@ -30,7 +11,7 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:HideTexture(CharacterFrameBg)
     self:HideTexture(CharacterFrameInset.Bg)
 
-    --self:SetAlphaColor(CharacterFrame.Background)
+    self:SetAlphaColor(CharacterFrame.Background)
 
     self:HideTexture(PaperDollInnerBorderBottom)
     self:HideTexture(PaperDollInnerBorderRight)
@@ -51,7 +32,7 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:SetNineSlice(CharacterFrameInsetRight, nil, true)
 
 --角色，物品栏
-    for _, name in pairs(ItemButtons) do
+    for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
         self:HideFrame(_G[name])
     end
 
@@ -128,9 +109,16 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
 
 --BG, 菜单
     --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
-    CharacterFrame.Background:SetPoint('TOPLEFT',0, -2)
-    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-6, 2)
-    WoWTools_TextureMixin:Init_BGMenu_Frame(CharacterFrame, nil, CharacterFrame.Background, nil)
+    CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
+    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
+    WoWTools_TextureMixin:Init_BGMenu_Frame(CharacterFrame,
+        'CharacterFrame',
+        CharacterFrame.Background,
+        {
+            settings=function()
+            end,
+        }
+    )
 end
 
 
@@ -286,7 +274,7 @@ local function Init()
     CharacterFrame.Inset:SetPoint('TOPRIGHT', CharacterFrame.InsetRight, 'TOPLEFT')
     CharacterFrame.Inset.NineSlice:Hide()
 
-    CharacterFrame.Background:SetPoint('RIGHT')
+   
 
     ReputationFrame.ScrollBox:ClearAllPoints()
     ReputationFrame.ScrollBox:SetPoint('TOPLEFT', 4, -58)

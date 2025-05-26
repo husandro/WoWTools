@@ -62,7 +62,7 @@ local function Init()
     local SetValueTab={
         isHook=true,
         icons={PlayerSpellsFrame.SpecFrame.Background},
-        setFunc= Call_Bg,
+        setValueFunc= Call_Bg,
     }
 
     WoWTools_TextureMixin:SetBG_Settings('TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, SetValueTab)

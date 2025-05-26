@@ -90,11 +90,34 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     ProfessionsBookPage1:SetPoint('TOPLEFT', ProfessionsBookFrame, 'TOPLEFT', 0, -23)
     ProfessionsBookPage1:SetPoint('BOTTOM',0, -15)
     ProfessionsBookPage2:SetPoint('BOTTOMRIGHT', 15, -15)
-    self:SetNineSlice(ProfessionsBookFrame, nil, nil, 0.3)
+    self:SetNineSlice(ProfessionsBookFrame, true, nil, nil)
     self:SetNineSlice(ProfessionsBookFrameInset, nil, true, nil)
     self:HideTexture(ProfessionsBookFrameBg)
     self:HideTexture(ProfessionsBookFrameInset.Bg)
     self:SetButton(ProfessionsBookFrameCloseButton, {all=true})
+
+    ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
+
+    self:Init_BGMenu_Frame(
+        ProfessionsBookFrame,--框架, frame.PortraitContainer
+        'ProfessionsBookFrame',--名称
+        nil,--Texture
+        {
+        --icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
+        --setValueFunc=function(textureName, alphaValue)--当菜单修改时，调用
+        --end,
+        settings=function(textureName, alphaValue)--设置内容时，调用
+            
+            ProfessionsBookFrameBg:SetShown(textureName)
+
+            ProfessionsBookPage1:SetShown(not textureName)
+            ProfessionsBookPage2:SetShown(not textureName)
+            ProfessionsBookPage1:SetAlpha(alphaValue or 1)
+            ProfessionsBookPage2:SetAlpha(alphaValue or 1)
+        end,
+        --isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
+        isAddBg=true,--是否添加背景
+    })
 end
 
 
