@@ -5743,7 +5743,8 @@
         "SecondaryProfession3SpellButtonRightNameFrame",
         "PVPUIFrame_OnLoad",
         "LFGListEntryCreationGroupDropdown",
-        "LFGListEntryCreationActivityDropdown"
+        "LFGListEntryCreationActivityDropdown",
+        "LFGListEntryCreationPlayStyleDropdown"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

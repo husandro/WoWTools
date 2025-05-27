@@ -118,8 +118,11 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
     self:SetMenu(LFGListEntryCreationGroupDropdown)
     self:SetMenu(LFGListEntryCreationActivityDropdown)
-    self:SetEdit(LFGListFrame.EntryCreation.Name)
-    self:SetEdit(LFGListCreationDescription.EditBox)
+    self:SetMenu(LFGListEntryCreationPlayStyleDropdown)
+    self:SetEditBox(LFGListFrame.EntryCreation.Name)
+    self:SetEditBox(LFGListCreationDescription.EditBox)
+    self:SetEditBox(LFGListFrame.EntryCreation.ItemLevel.EditBox)
+    self:SetEditBox(LFGListFrame.EntryCreation.VoiceChat.EditBox)
 
     self:SetAlphaColor(LFGListFrameMiddleMiddle)
     self:SetAlphaColor(LFGListFrameMiddleLeft)
