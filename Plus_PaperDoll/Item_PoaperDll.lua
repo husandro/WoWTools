@@ -561,7 +561,7 @@ end
         if wq then
             self.du:SetPoint('TOP', self, 'BOTTOM')
         elseif isLeftSlot then
-            self.du:SetPoint('RIGHT', self, 'LEFT', -2.5,0)
+            self.du:SetPoint('RIGHT', self, 'LEFT', -1.5,0)
         else
             self.du:SetPoint('LEFT', self, 'RIGHT', 2.5,0)
         end
@@ -667,6 +667,7 @@ local function Init()
                 WoWTools_PaperDollMixin:Settings_Tab1()
             end
             set_Slot_Num_Label(self, slot, link and true or nil)--栏位
+            self.icon:SetAlpha((hasItem or Save().hide) and 1 or 0.3)--图标透明度
 
         elseif InventSlot_To_ContainerSlot[slot] then
             local numFreeSlots, numAllSlots, slot2
