@@ -532,7 +532,7 @@ Plus_Spell\SpellBookFrame.lua
 Plus_Spell\Spec_Button.lua
 ##法术弹出框，加名称
 Plus_Spell\Spell_Flyout.lua
-Plus_Spell\Blizzard_PlayerSpells.lua
+Plus_Spell\z_UI.lua
 
 ##宏增强
 Plus_Macro\0_MacroMixin.lua
