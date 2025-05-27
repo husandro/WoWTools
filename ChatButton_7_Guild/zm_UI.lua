@@ -201,8 +201,8 @@ local function Init()
 --公会，可以使用的服务
     WoWTools_MoveMixin:Setup(GuildRegistrarFrame)
 
-
-
+--公会和社区，列表
+    CommunitiesFrameCommunitiesList:SetPoint('BOTTOMRIGHT', CommunitiesFrame, 'BOTTOMLEFT', 170, 3)
 
 
 --设计，公会战袍
@@ -267,6 +267,8 @@ local function Init()
     sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(510, 480)
     end})]]
+
+
     Init=function()end
 end
 

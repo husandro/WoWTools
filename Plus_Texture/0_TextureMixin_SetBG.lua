@@ -493,7 +493,6 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
     bgPoint=function(icon)--设置背景位置
     end,
     notAnims=true
-    
     }
 )
 ]]
@@ -512,7 +511,6 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
     end
 
     if tab.isAddBg then
-
         if not frame.Add_Background then
             frame.Add_Background= frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
             if tab.bgPoint then
@@ -521,6 +519,7 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
                 frame.Add_Background:SetPoint('TOPLEFT', 3, -3)
                 frame.Add_Background:SetPoint('BOTTOMRIGHT',-3, 3)
             end
+            --frame.Add_Background:SetAtlas('Tooltip-Glues-NineSlice-Center')
         end
         icon= frame.Add_Background
     end

@@ -86,12 +86,6 @@ local function Init()
             end
         elseif d==-1 then
             PVEFrame_TabOnClick(PVEFrameTab3)
-            --[[if not ChallengesFrame or not ChallengesFrame:IsVisible() then
-                PVEFrame_ToggleFrame("ChallengesFrame", nil)
-            end
-            if not DelvesDashboardFrame or not DelvesDashboardFrame:IsShown() then
-                PVEFrame_ToggleFrame("DelvesDashboardFrame", nil)
-            end]]
         end
     end)
 

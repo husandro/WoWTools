@@ -6,43 +6,39 @@
     self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
 
     self:SetNineSlice(CommunitiesFrame, true)
-    self:SetScrollBar(CommunitiesFrameCommunitiesList)
+
     self:SetScrollBar(CommunitiesFrame.Chat)
-    self:SetScrollBar(CommunitiesFrame.MemberList)
-    self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+
+
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
 
 
-    self:SetAlphaColor(CommunitiesFrameBg)
-    self:SetAlphaColor(CommunitiesFrame.MemberList.ColumnDisplay.Background)
-    self:SetAlphaColor(CommunitiesFrameCommunitiesList.Bg)
-    self:SetAlphaColor(CommunitiesFrameInset.Bg, nil, nil, 0.3)
+
+
+
     self:SetNineSlice(CommunitiesFrameInset, nil, true)
-    self:SetNineSlice(CommunitiesFrameCommunitiesList.InsetFrame, true)
-    CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
+
+
 
     CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
-    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, true)
-    self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, true)
+    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, nil, true)
     self:SetAlphaColor(CommunitiesFrameMiddle)
 
 
-    self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
 
-    hooksecurefunc(CommunitiesFrameCommunitiesList,'UpdateCommunitiesList',function()
-        C_Timer.After(0.3, function()
-             local frame= CommunitiesFrameCommunitiesList.ScrollBox
-            if not frame or not frame:GetView() then
-                return
-            end
-            for _, button in pairs(frame:GetFrames() or {}) do
-                self:SetAlphaColor(button.Background)
-            end
-        end)
+--公会和社区，列表
+    self:HideTexture(CommunitiesFrameCommunitiesList.Bg)
+    self:SetNineSlice(CommunitiesFrameCommunitiesList.InsetFrame, nil, true)
+    self:SetScrollBar(CommunitiesFrameCommunitiesList)
+    self:HideFrame(CommunitiesFrameCommunitiesList.FilligreeOverlay)
+    self:HideTexture(CommunitiesFrameCommunitiesList.TopFiligree)
+    self:HideTexture(CommunitiesFrameCommunitiesList.BottomFiligree)
+
+    hooksecurefunc(CommunitiesListEntryMixin, 'Init', function(frame, data)
+        self:SetAlphaColor(frame.Background, nil, nil, true)
     end)
-
 
 
     self:HideFrame(CommunitiesFrame.ChatTab, {index=1})
@@ -58,6 +54,21 @@
     self:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
     self:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
 
+
+--成员，列表
+    self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, nil, true)
+    self:HideFrame(CommunitiesFrame.MemberList.ColumnDisplay)
+    self:SetScrollBar(CommunitiesFrame.MemberList)
+
+
+--公会奖励，列表
+    self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
+    self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+    CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
+    self:HideFrame(CommunitiesFrame.GuildBenefitsFrame)
+
+
+
 --公会设置
     self:SetFrame(GuildControlUI)
     self:SetFrame(GuildControlUIHbar)
@@ -66,10 +77,6 @@
     self:SetInset(GuildControlUIRankBankFrameInset)
     self:SetScrollBar(GuildControlUIRankBankFrameInsetScrollFrame)
     self:SetMenu(GuildControlUIRankSettingsFrameRankDropdown)
-
-
-
-
 
 
 --新建，公会, 签名
@@ -145,6 +152,7 @@
     self:SetFrame(CommunitiesFrameGuildDetailsFrame, {isMinAlpha=true})
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame)
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
+    --CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame:SetPoint('BOTTOMRIGHT')
 
 --公会信息， 点击以编辑
     --CommunitiesGuildTextEditFrame
@@ -171,8 +179,26 @@
     self:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderPendingTab, {index=1})
 
 --公会查找器
-    self:SetAlphaColor(ClubFinderGuildFinderFrame.InsetFrame.Bg)
+    self:HideTexture(ClubFinderGuildFinderFrame.InsetFrame.Bg)
+    self:SetNineSlice(ClubFinderGuildFinderFrame.InsetFrame, nil, true)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
     self:SetEditBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)
+
+
+    self:HideTexture(CommunitiesFrame.TopTileStreaks)
+
+    self:HideTexture(CommunitiesFrameInset.Bg)
+
+   self:SetAlphaColor(CommunitiesFrameBg, nil, nil, 0.3)
+
+--BG
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+    CommunitiesFrame,--框架, frame.PortraitContainer
+    'CommunitiesFrame',--名称
+    nil,--CommunitiesFrameInset.Bg,--Texture
+    {
+    isAddBg=true,--是否添加背景
+    }
+)
 end

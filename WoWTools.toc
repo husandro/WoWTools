@@ -131,7 +131,6 @@ Plus_Move\e_ProfessionsCustomerOrders.lua
 Plus_Move\z_Class_Power.lua
 Plus_Move\z_FriendsFrame.lua
 Plus_Move\z_Other.lua
-Plus_Move\z_PVEFrame.lua
 Plus_Move\z_WorldMapFrame.lua
 
 
@@ -428,7 +427,7 @@ Plus_Challenge\z_AvailableRewards.lua
 Plus_Challenge\z_Say_ChallengeComplete.lua
 Plus_Challenge\z_Is_HuSandro.lua
 Plus_Challenge\z_Chat_Affix.lua
-Plus_Challenge\z_Blizzard_ChallengesUI.lua
+
 
 ##邮件，增加
 Plus_Mail\1_mail.lua
@@ -643,6 +642,7 @@ ChatButton_5_LFD\Role_Info.lua
 ChatButton_5_LFD\Roll.lua
 ChatButton_5_LFD\z_LFGDungeonReadyDialog.lua
 ChatButton_5_LFD\z_LFGListInviteDialog.lua
+ChatButton_5_LFD\z_UI.lua
 
 
 ##世界频道
@@ -661,8 +661,8 @@ ChatButton_7_Guild\3_Menu.lua
 ChatButton_7_Guild\z_ClubFinder.lua
 ChatButton_7_Guild\z_CommunitiesFrame.lua
 ChatButton_7_Guild\z_PetitionFrame.lua
-ChatButton_7_Guild\t_Blizzard_Communities.lua
-ChatButton_7_Guild\m_Blizzard_Communities.lua
+ChatButton_7_Guild\zt_UI.lua
+ChatButton_7_Guild\zm_UI.lua
 ##队伍
 ChatButton\8_Group.lua
 ##说

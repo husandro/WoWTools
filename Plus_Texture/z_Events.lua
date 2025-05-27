@@ -97,37 +97,6 @@ end
 
 
 
---地下城和团队副本, PVP
-function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
-    self:HideTexture(HonorFrame.Inset.Bg)
-    self:HideTexture(HonorFrame.BonusFrame.ShadowOverlay)
-    self:HideTexture(HonorFrame.BonusFrame.WorldBattlesTexture)
-    self:SetNineSlice(HonorFrame.Inset, nil, true)
-    self:SetAlphaColor(HonorFrame.BonusFrame.WorldBattlesTexture)
-    self:HideTexture(HonorFrame.ConquestBar.Background)
-
-    self:SetNineSlice(PVPQueueFrame.HonorInset, nil, true)--最右边
-
-    self:SetNineSlice(ConquestFrame.Inset, nil, true)--中间
-    self:HideTexture(ConquestFrame.Inset.Bg)
-    self:HideTexture(ConquestFrameLeft)
-    self:HideTexture(ConquestFrameRight)
-    self:HideTexture(ConquestFrameTopRight)
-    self:HideTexture(ConquestFrameTop)
-    self:HideTexture(ConquestFrameTopLeft)
-    self:HideTexture(ConquestFrameBottomLeft)
-    self:HideTexture(ConquestFrameBottom)
-    self:HideTexture(ConquestFrameBottomRight)
-
-    self:SetAlphaColor(ConquestFrame.RatedBGTexture)
-    PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
-    self:SetAlphaColor(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
-
-    self:HideTexture(ConquestFrame.RatedBGTexture)
-    self:SetScrollBar(LFDQueueFrameSpecific)
-end
-
-
 
 
 
@@ -727,10 +696,7 @@ end
 
 
 
---地下堡
-function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
-    self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
-end
+
 
 
 function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()

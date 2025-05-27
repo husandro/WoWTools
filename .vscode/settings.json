@@ -5740,7 +5740,10 @@
         "SecondaryProfession2SpellButtonLeftNameFrame",
         "SecondaryProfession2SpellButtonRightNameFrame",
         "SecondaryProfession3SpellButtonLeftNameFrame",
-        "SecondaryProfession3SpellButtonRightNameFrame"
+        "SecondaryProfession3SpellButtonRightNameFrame",
+        "PVPUIFrame_OnLoad",
+        "LFGListEntryCreationGroupDropdown",
+        "LFGListEntryCreationActivityDropdown"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

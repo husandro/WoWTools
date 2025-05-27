@@ -79,49 +79,34 @@ end
 
 --公会，社区，在线人数
 
-local function CommunitiesList_ScrollBox(self)
-    if not self:GetView() then
-        return
+local function Init_List(btn, elementData)
+    local clubID= btn.clubId
+
+    local online, all, hasInvite, hasMessage, faction
+    if clubID then
+        online, all= WoWTools_GuildMixin:GetNumOnline(clubID)
+
+        hasInvite=  WoWTools_GuildMixin:GetApplicantList(clubID) and true or false
+        hasMessage= CommunitiesUtil.DoesCommunityHaveUnreadMessages(clubID)
+
+        elementData = elementData or (clubID and btn:GetElementData())
+        local clubInfo= elementData.clubInfo or {}
+        faction= clubInfo.crossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction]
+
+        Create_Texture(btn)
+
+        btn.factionTexture:SetAtlas(faction)
     end
-    for _, btn in pairs(self:GetFrames() or {}) do
-
-        local clubID= btn.clubId
-
-        local online, all, hasInvite, hasMessage, faction
-        if clubID then
-            online, all= WoWTools_GuildMixin:GetNumOnline(clubID)
-
-            hasInvite=  WoWTools_GuildMixin:GetApplicantList(clubID) and true or false
-            hasMessage= CommunitiesUtil.DoesCommunityHaveUnreadMessages(clubID)
-
-            local elementData = clubID and btn:GetElementData()
-            local clubInfo= elementData.clubInfo or {}
-
-            faction= clubInfo.crossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction]
-
-            Create_Texture(btn)
-
-            btn.factionTexture:SetAtlas(faction)
-        end
-        if btn.settings then
-            btn:settings(online, all, hasInvite, hasMessage, faction)
-        end
+    if btn.settings then
+        btn:settings(online, all, hasInvite, hasMessage, faction)
     end
 end
 
 
 
-
-local function Init()
-    hooksecurefunc(CommunitiesFrameCommunitiesList.ScrollBox, 'SetScrollTargetOffset', CommunitiesList_ScrollBox)--公会，社区，在线人数
-    return true
-end
 
 
 
 function WoWTools_GuildMixin:Plus_CommunitiesFrame()
-    if Init() then
-        Init=function()end
-        return true
-    end
+    hooksecurefunc(CommunitiesListEntryMixin, 'Init', Init_List)
 end
