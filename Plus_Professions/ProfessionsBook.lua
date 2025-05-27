@@ -107,18 +107,40 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
         --setValueFunc=function(textureName, alphaValue)--当菜单修改时，调用
         --end,
         settings=function(textureName, alphaValue)--设置内容时，调用
-            
-            ProfessionsBookFrameBg:SetShown(textureName)
-
             ProfessionsBookPage1:SetShown(not textureName)
             ProfessionsBookPage2:SetShown(not textureName)
             ProfessionsBookPage1:SetAlpha(alphaValue or 1)
             ProfessionsBookPage2:SetAlpha(alphaValue or 1)
+            if ProfessionsBookFrame.Add_Background and not textureName then
+                ProfessionsBookFrame.Add_Background:SetShown(false)
+            end
         end,
         --isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
         isAddBg=true,--是否添加背景
         alpha=1,
     })
+
+    PrimaryProfession1.bg= PrimaryProfession1:CreateTexture(nil, 'BACKGROUND')
+    PrimaryProfession1.bg:SetAtlas('delves-affix-mask')
+    PrimaryProfession1.bg:SetAllPoints(PrimaryProfession1Icon)
+
+    PrimaryProfession2.bg= PrimaryProfession2:CreateTexture(nil, 'BACKGROUND')
+    PrimaryProfession2.bg:SetAtlas('delves-affix-mask')
+    PrimaryProfession2.bg:SetAllPoints(PrimaryProfession2Icon)
+
+    self:HideTexture(PrimaryProfession1SpellButtonBottomNameFrame)
+    self:HideTexture(PrimaryProfession2SpellButtonBottomNameFrame)
+
+    self:HideTexture(SecondaryProfession1SpellButtonLeftNameFrame)
+    self:HideTexture(SecondaryProfession1SpellButtonRightNameFrame)
+
+    self:HideTexture(SecondaryProfession2SpellButtonLeftNameFrame)
+    self:HideTexture(SecondaryProfession2SpellButtonRightNameFrame)
+
+    self:HideTexture(SecondaryProfession3SpellButtonLeftNameFrame)
+    self:HideTexture(SecondaryProfession3SpellButtonRightNameFrame)
+
+
 end
 
 

@@ -5728,7 +5728,19 @@
         "SELF_HIGHLIGHT_MODE_OUTLINE_AND_ICON",
         "SELF_HIGHLIGHT_MODE_CIRCLE_OUTLINE_AND_ICON",
         "SELF_HIGHLIGHT_ON",
-        "ProfessionsBookFrameTutorialButton"
+        "ProfessionsBookFrameTutorialButton",
+        "PrimaryProfession2Icon",
+        "PrimaryProfession1Icon",
+        "PrimaryProfession1",
+        "PrimaryProfession2",
+        "PrimaryProfession1SpellButtonBottomNameFrame",
+        "PrimaryProfession2SpellButtonBottomNameFrame",
+        "SecondaryProfession1SpellButtonLeftNameFrame",
+        "SecondaryProfession1SpellButtonRightNameFrame",
+        "SecondaryProfession2SpellButtonLeftNameFrame",
+        "SecondaryProfession2SpellButtonRightNameFrame",
+        "SecondaryProfession3SpellButtonLeftNameFrame",
+        "SecondaryProfession3SpellButtonRightNameFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

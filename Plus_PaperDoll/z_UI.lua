@@ -11,7 +11,8 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:HideTexture(CharacterFrameBg)
     self:HideTexture(CharacterFrameInset.Bg)
 
-    self:SetAlphaColor(CharacterFrame.Background)
+    --self:SetAlphaColor(CharacterFrame.Background)
+    self:HideTexture(CharacterFrame.TopTileStreaks)
 
     self:HideTexture(PaperDollInnerBorderBottom)
     self:HideTexture(PaperDollInnerBorderRight)
@@ -29,6 +30,7 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:SetAlphaColor(PaperDollSidebarTabs.DecorRight, nil, nil, 0.3)
     self:SetAlphaColor(PaperDollSidebarTabs.DecorLeft, nil, nil, 0.3)
 
+
     self:SetNineSlice(CharacterFrameInsetRight, nil, true)
 
 --角色，物品栏
@@ -36,6 +38,12 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
         self:HideFrame(_G[name])
     end
 
+    --self:SetAlphaColor(PaperDollSidebarTab1.TabBg, nil, nil, true)
+    --WoWTools_ButtonMixin:AddMask(PaperDollSidebarTab2, nil, PaperDollSidebarTab2.TabBg)
+    --WoWTools_ButtonMixin:AddMask(PaperDollSidebarTab3, nil, PaperDollSidebarTab3.TabBg)
+
+
+--Tab
     self:SetTabButton(CharacterFrameTab1)
     self:SetTabButton(CharacterFrameTab2)
     self:SetTabButton(CharacterFrameTab3)
@@ -172,7 +180,7 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     --self:SetAlphaColor(InspectFrameBg)
     self:HideTexture(InspectFrameInset.Bg)
     self:HideTexture(InspectPVPFrame.BG)
-    
+
     self:HideTexture(InspectGuildFrameBG)
     self:SetTabButton(InspectFrameTab1)
     self:SetTabButton(InspectFrameTab2)
@@ -184,7 +192,7 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:SetAlphaColor(InspectModelFrameBackgroundBotLeft, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundBotRight, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundTopLeft, nil, nil, 0)
-    self:SetAlphaColor(InspectModelFrameBackgroundTopRight, nil, nil, 0)    
+    self:SetAlphaColor(InspectModelFrameBackgroundTopRight, nil, nil, 0)
 end
 
 
@@ -261,8 +269,8 @@ local function Init()
     CharacterStatsPane.ClassBackground:ClearAllPoints()
     CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
 
-    CharacterMainHandSlot:ClearAllPoints()
-    CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
+    --CharacterMainHandSlot:ClearAllPoints()
+    --CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
 
     CharacterFrame.InsetRight:ClearAllPoints()
     CharacterFrame.InsetRight:SetPoint('TOPRIGHT', 0, -58)
@@ -270,11 +278,11 @@ local function Init()
     CharacterFrame.InsetRight:SetWidth(203)
 
     CharacterFrame.Inset:ClearAllPoints()
-    CharacterFrame.Inset:SetPoint('BOTTOMLEFT')
     CharacterFrame.Inset:SetPoint('TOPRIGHT', CharacterFrame.InsetRight, 'TOPLEFT')
+    CharacterFrame.Inset:SetPoint('BOTTOMLEFT')
     CharacterFrame.Inset.NineSlice:Hide()
 
-   
+
 
     ReputationFrame.ScrollBox:ClearAllPoints()
     ReputationFrame.ScrollBox:SetPoint('TOPLEFT', 4, -58)
@@ -283,6 +291,34 @@ local function Init()
     TokenFrame.ScrollBox:ClearAllPoints()
     TokenFrame.ScrollBox:SetPoint('TOPLEFT', TokenFrame, 4, -58)
     TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
+
+    
+    local function Set_Slot_Point()
+        local w, h= CharacterFrame:GetSize()--366 * 337   (40+4)*8
+        local line= math.max(4, (h-16-42- 40*7- 58)/7)
+
+        CharacterHeadSlot:SetPoint('TOPLEFT', CharacterFrame, 8, -60)
+        CharacterNeckSlot:SetPoint('TOPLEFT', CharacterHeadSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterShoulderSlot:SetPoint('TOPLEFT', CharacterNeckSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterBackSlot:SetPoint('TOPLEFT', CharacterShoulderSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterChestSlot:SetPoint('TOPLEFT', CharacterBackSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterShirtSlot:SetPoint('TOPLEFT', CharacterChestSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterTabardSlot:SetPoint('TOPLEFT', CharacterShirtSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterWristSlot:SetPoint('TOPLEFT', CharacterTabardSlot, 'BOTTOMLEFT', 0, -line)
+
+        --CharacterHandsSlot
+        CharacterWaistSlot:SetPoint('TOPLEFT', CharacterHandsSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterLegsSlot:SetPoint('TOPLEFT', CharacterWaistSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterFeetSlot:SetPoint('TOPLEFT', CharacterLegsSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterFinger0Slot:SetPoint('TOPLEFT', CharacterFeetSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterFinger1Slot:SetPoint('TOPLEFT', CharacterFinger0Slot, 'BOTTOMLEFT', 0, -line)
+        CharacterTrinket0Slot:SetPoint('TOPLEFT', CharacterFinger1Slot, 'BOTTOMLEFT', 0, -line)
+        CharacterTrinket1Slot:SetPoint('TOPLEFT', CharacterTrinket0Slot, 'BOTTOMLEFT', 0, -line)
+
+        line= (w-40*2-100-203)/3
+        CharacterMainHandSlot:SetPoint('BOTTOMLEFT', 50+line, 16)
+        CharacterSecondaryHandSlot:SetPoint('TOPLEFT', CharacterMainHandSlot,'TOPRIGHT', math.max(5, line), 0)
+    end
 
     hooksecurefunc(CharacterFrame, 'UpdateSize', function(self)
         if not self.ResizeButton then
@@ -299,8 +335,8 @@ local function Init()
         if size then
             self:SetSize(size[1], size[2])
         end
+        Set_Slot_Point()
     end)
-
 
     WoWTools_MoveMixin:Setup(CharacterFrame, {
         minW=450,
@@ -313,6 +349,9 @@ local function Init()
             if PaperDollFrame.TitleManagerPane:IsVisible() then
                 WoWTools_Mixin:Call(PaperDollTitlesPane_Update)
             end
+            if CharacterHeadSlot:IsVisible() then
+                Set_Slot_Point()
+            end
         end,
         sizeStopFunc=function(btn)
             local self= btn.targetFrame
@@ -321,6 +360,7 @@ local function Init()
             else
                 Save().size['CharacterFrameCollapse']={self:GetSize()}
             end
+            Set_Slot_Point()
         end,
         sizeRestFunc=function()
             local find= (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) and true or false

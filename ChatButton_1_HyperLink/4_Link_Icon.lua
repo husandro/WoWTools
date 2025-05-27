@@ -264,11 +264,11 @@ end
 
 local function Currency(link)--货币 "|cffffffff|Hcurrency:1744|h[Corrupted Memento]|h|r"
     local info, num, _, _, isMax, canWeek, canEarned, canQuantity= WoWTools_CurrencyMixin:GetInfo(nil, nil, link)
-    if not info then
+    if not info or not info.iconFileID then
         return
     end
     return
-        (info.iconFileID and '|T'..info.iconFileID..Size..'|t')
+        '|T'..info.iconFileID..Size..'|t'
         ..WoWTools_HyperLink:CN_Link(link)
         ..(isMax and '|cnRED_FONT_COLOR:' or ((canWeek or canEarned or canQuantity) and '|cnGREEN_FONT_COLOR:' ) or '|cffffffff')
         ..(num and WoWTools_Mixin:MK(num,3))

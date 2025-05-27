@@ -64,8 +64,8 @@ function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
         btn.IconMask:SetPoint('BOTTOMRIGHT', region or btn, -0.5, 0.5)
     else--圆形，按钮
         btn.IconMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
-        btn.IconMask:SetPoint("TOPLEFT", region or btn, "TOPLEFT", 2, -2)
-        btn.IconMask:SetPoint("BOTTOMRIGHT", region or btn, "BOTTOMRIGHT", -2, 2)
+        btn.IconMask:SetPoint("TOPLEFT", region or btn, 2, -2)
+        btn.IconMask:SetPoint("BOTTOMRIGHT", region or btn, -2, 2)
     end
 
     local icon= region or btn.Icon or btn.icon or btn.texture or (btn.GetNormalTexture and btn:GetNormalTexture())

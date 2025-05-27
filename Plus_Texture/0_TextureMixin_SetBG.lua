@@ -172,7 +172,7 @@ local function set_texture(self, texture, alpha)
         return
     end
 
-    alpha= alpha or 0.3
+    alpha= alpha or 0.5
 
     if texture then
         if C_Texture.GetAtlasInfo(texture) then
@@ -182,13 +182,10 @@ local function set_texture(self, texture, alpha)
         end
         self:SetVertexColor(1,1,1,1)
         self:SetAlpha(alpha)
-        self:SetShown(true)
     else
         WoWTools_TextureMixin:SetAlphaColor(self, nil, nil, alpha)
-        if self== self:GetParent().Add_Background then
-            self:SetShown(false)
-        end
     end
+    self:SetShown(true)
 end
 
 
@@ -230,99 +227,6 @@ end
 
 
 
-local function Create_Anims(frame, icon)
-    if frame.AirParticlesFar or frame.backgroundAnims then
-        return
-    end
-
-    -- AirParticlesFar 粒子动画
-    frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
-    frame.AirParticlesFar:SetAtlas('talents-animations-particles')
-    frame.AirParticlesFar:SetPoint('TOPLEFT', icon, 30, -30)
-    frame.AirParticlesFar:SetPoint('BOTTOMRIGHT', icon, -30, 30)
-    frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
-    frame.AirParticlesFar:SetBlendMode("ADD")
-
-    if not frame.FullMask then
-        frame.FullMask = frame:CreateMaskTexture()
-        frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-        frame.FullMask:SetPoint('TOPLEFT', icon, 5, -5)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', icon, -5, 5)
-        frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
-    end
-
-    -- 创建动画组
-    frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
-    frame.backgroundAnims:SetLooping("REPEAT")
-
-
-    -- Alpha 淡入
-    local alphaIn = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    alphaIn:SetOrder(2)
-    alphaIn:SetFromAlpha(0)
-    alphaIn:SetToAlpha(0.7)
-    alphaIn:SetDuration(5)
-    alphaIn:SetSmoothing("IN")
-
-    -- Alpha 淡出
-    local alphaOut = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    alphaOut:SetOrder(2)
-    alphaOut:SetFromAlpha(1)
-    alphaOut:SetToAlpha(0)
-    alphaOut:SetStartDelay(22)
-    alphaOut:SetDuration(5)
-    alphaOut:SetSmoothing("OUT")
-
-    -- 平移动画1
-    local trans1 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    trans1:SetOrder(1)
-    trans1:SetOffset(300, 0)
-    trans1:SetDuration(0)
-
-    -- 平移动画2
-    local trans2 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    trans2:SetOrder(2)
-    trans2:SetOffset(-600, 0)
-    trans2:SetStartDelay(0)
-    trans2:SetDuration(27)--27
-
-    -- 平移动画3
-    local trans3 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    trans3:SetOrder(3)
-    trans3:SetOffset(600, 0)
-    trans3:SetStartDelay(0)
-    trans3:SetDuration(0)
-
-    -- 旋转动画
-    local rotate = frame.backgroundAnims:CreateAnimation("Rotation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    rotate:SetOrder(3)
-    rotate:SetDegrees(20)
-    rotate:SetDuration(27)
-
-
-
--- 显示时播放动画，隐藏时停止动画
-    if frame:IsVisible() then
-        frame.backgroundAnims:Play()
-    end
-
-    frame:HookScript("OnShow", function(f)
-        if not f.backgroundAnims:IsPlaying() then
-            f.backgroundAnims:Play()
-        end
-    end)
-    frame:HookScript("OnHide", function(f)
-        if f.backgroundAnims:IsPlaying() then
-            f.backgroundAnims:Stop()
-        end
-    end)
-end
-
-
-
-
-
-
 
 
 --BG, 设置
@@ -348,9 +252,7 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
         icon= icon,
     }
 
-    if tab.settings then
-        tab.settings(texture, alpha)
-    end
+   
 
 --初始
     if isInitial then
@@ -367,7 +269,7 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
     end
 
 --数据
-    if not texture then
+    if not texture and not tab.isAddBg then
         icon.set_BGData.texture= icon.set_BGData.p_texture
     end
 
@@ -378,6 +280,10 @@ function WoWTools_TextureMixin:SetBG_Settings(name, icon, tab)
 
     if not texture then
         icon.set_BGData.texture= nil
+    end
+
+    if tab.settings then
+        tab.settings(texture, alpha)
     end
 end
 
@@ -568,6 +474,9 @@ end
 
 
 
+
+
+
 --[[
 WoWTools_TextureMixin:Init_BGMenu_Frame(
     frame,--框架, frame.PortraitContainer
@@ -589,7 +498,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
 
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
-    if WoWToolsSave['Plus_Texture'].disabled or not frame then
+    if WoWToolsSave['Plus_Texture'].disabled or Save().disabled or not frame then
         return
     end
 
@@ -607,15 +516,15 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
             if tab.bgPoint then
                 tab.bgPoint(frame.Add_Background)
             else
-                frame.Add_Background:SetPoint('TOPLEFT', 6, -6)
-                frame.Add_Background:SetPoint('BOTTOMRIGHT',-6, 6)
+                frame.Add_Background:SetPoint('TOPLEFT', 3, -3)
+                frame.Add_Background:SetPoint('BOTTOMRIGHT',-3, 3)
             end
         end
         icon= frame.Add_Background
     end
 
 --创建动画组
-    Create_Anims(frame, icon)
+    self:Create_Anims(frame, icon, nil)
 
 
     self:SetBG_Settings(name, icon, tab)
@@ -651,8 +560,110 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
         end)
         frame.PortraitContainer.bg_Texture= icon
     end
+end
 
 
 
 
+
+--创建动画组
+function WoWTools_TextureMixin:Create_Anims(frame, icon, tab)
+    if not frame or not icon or frame.AirParticlesFar or frame.backgroundAnims then
+        return
+    end
+
+    -- AirParticlesFar 粒子动画
+    tab= tab or {}
+    local texture= tab.texture
+    local atlas= tab.atlas or 'talents-animations-particles'
+    local isType2= tab.isType2
+
+    frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
+
+    if texture then
+        frame.AirParticlesFar:SetTexture(texture)
+    else
+        frame.AirParticlesFar:SetAtlas(atlas)
+    end
+    frame.AirParticlesFar:SetAllPoints()
+    frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
+    frame.AirParticlesFar:SetBlendMode("ADD")
+
+    if not frame.FullMask then
+        frame.FullMask = frame:CreateMaskTexture()
+        if isType2 then
+            frame.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+        else
+            frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+        end
+        frame.FullMask:SetPoint('TOPLEFT', -25, 25)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', 25, -25)
+    end
+    frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+
+    -- 创建动画组
+    frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
+    frame.backgroundAnims:SetLooping("REPEAT")
+
+
+    -- Alpha 淡入
+    local alphaIn = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    alphaIn:SetOrder(2)
+    alphaIn:SetFromAlpha(0)
+    alphaIn:SetToAlpha(0.7)
+    alphaIn:SetDuration(5)
+    alphaIn:SetSmoothing("IN")
+
+    -- Alpha 淡出
+    local alphaOut = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    alphaOut:SetOrder(2)
+    alphaOut:SetFromAlpha(1)
+    alphaOut:SetToAlpha(0)
+    alphaOut:SetStartDelay(22)
+    alphaOut:SetDuration(5)
+    alphaOut:SetSmoothing("OUT")
+
+    -- 平移动画1
+    local trans1 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    trans1:SetOrder(1)
+    trans1:SetOffset(300, 0)
+    trans1:SetDuration(0)
+
+    -- 平移动画2
+    local trans2 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    trans2:SetOrder(2)
+    trans2:SetOffset(-600, 0)
+    trans2:SetStartDelay(0)
+    trans2:SetDuration(27)--27
+
+    -- 平移动画3
+    local trans3 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    trans3:SetOrder(3)
+    trans3:SetOffset(600, 0)
+    trans3:SetStartDelay(0)
+    trans3:SetDuration(0)
+
+    -- 旋转动画
+    local rotate = frame.backgroundAnims:CreateAnimation("Rotation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
+    rotate:SetOrder(3)
+    rotate:SetDegrees(20)
+    rotate:SetDuration(27)
+
+
+
+-- 显示时播放动画，隐藏时停止动画
+    if frame:IsVisible() then
+        frame.backgroundAnims:Play()
+    end
+
+    frame:HookScript("OnShow", function(f)
+        if not f.backgroundAnims:IsPlaying() then
+            f.backgroundAnims:Play()
+        end
+    end)
+    frame:HookScript("OnHide", function(f)
+        if f.backgroundAnims:IsPlaying() then
+            f.backgroundAnims:Stop()
+        end
+    end)
 end
