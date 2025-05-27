@@ -57,7 +57,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
 
     self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
-    
+
     self:SetEditBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
     self:SetFrame(PlayerSpellsFrame.SpellBookFrame.SearchPreviewContainer, {isMinAlpha=true})
 
@@ -85,7 +85,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     PlayerSpellsFrame.SpecFrame.Background:ClearAllPoints()
     PlayerSpellsFrame.SpecFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
     PlayerSpellsFrame.SpecFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
-    
+
 --天赋 ClassTalentsFrameTemplate
     PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
     PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
@@ -96,11 +96,11 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
 --法术书 SpellBookFrameTemplate
     --PlayerSpellsFrame.SpellBookFrame.BookBGHalved
-    
+
     --[[PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
     PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
     PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')]]
-    
+
 
 
     hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(frame)

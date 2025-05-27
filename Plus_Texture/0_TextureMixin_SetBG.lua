@@ -585,7 +585,7 @@ function WoWTools_TextureMixin:Create_Anims(frame, icon, tab)
         return
     end
 
-    -- AirParticlesFar 粒子动画
+-- AirParticlesFar 粒子动画
     
     local texture= tab.texture
     local atlas= tab.atlas or 'talents-animations-particles'
