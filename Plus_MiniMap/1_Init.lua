@@ -38,16 +38,16 @@ local P_Save={
 
     Icons={--收集图标
         noAdd={--过滤
-            ['BugSack']=true,
+            --['BugSack']=true,
         },
         hideAdd={--隐藏
             ['WoWTools']=true,
         },
         userAdd={},--自定义
         numLine=1,
-        hideInMove=true,
-        hideInCombat=true,
-        isEnterShow=true,
+        hideInMove= not WoWTools_DataMixin.Player.husandro,--移动时，隐藏
+        hideInCombat=not WoWTools_DataMixin.Player.husandro,--进入战斗，隐藏
+        isEnterShow=true,--Enter显示
         alphaBG=0,--bg
         bgAlpha=0.75,--收集图标
         borderAlpha=0.5,

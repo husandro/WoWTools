@@ -13,6 +13,8 @@
 
 
 local function Init(mixin)
+   
+
 
     mixin:HideTexture(GameMenuFrame.Header.RightBG)
     mixin:HideTexture(GameMenuFrame.Header.CenterBG)
@@ -99,47 +101,8 @@ local function Init(mixin)
 
 
 
-    --世界地图
-    mixin:SetButton(WorldMapFrameCloseButton, {all=true})
-    mixin:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
-    mixin:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton, {all=true})
 
-    mixin:SetNineSlice(WorldMapFrame.BorderFrame, true)
-    mixin:SetAlphaColor(WorldMapFrameBg)
-    mixin:SetAlphaColor(QuestMapFrame.Background)
-    mixin:HideTexture(WorldMapFrame.NavBar.overlay)
-    mixin:HideTexture(WorldMapFrame.NavBar.InsetBorderBottom)
-    mixin:HideTexture(WorldMapFrame.NavBar.InsetBorderRight)
-    mixin:HideTexture(WorldMapFrame.NavBar.InsetBorderLeft)
-    mixin:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomRight)
-    mixin:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
-    mixin:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
-    WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
-    mixin:SetScrollBar(QuestMapDetailsScrollFrame)
-    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(self)--最大化时，隐藏背景
-        if self:IsMaximized() then
-            self.BlackoutFrame:Hide()
-        end
-    end)
-    mixin:HideTexture(QuestScrollFrame.Background, true)
-    mixin:SetScrollBar(QuestScrollFrame)
 
-    mixin:SetScrollBar(MapLegendScrollFrame)
-    mixin:HideTexture(MapLegendScrollFrame.Background, true)
-    mixin:SetAlphaColor(QuestMapFrame.MapLegend.BorderFrame.Border, nil, nil, true)
-    mixin:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
-    mixin:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
-
-    mixin:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
-    mixin:SetEditBox(QuestScrollFrame.SearchBox)
-
---任务，列表 QuestLogHeaderCodeTemplate
-    hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
-        mixin:SetFrame(btn, {index=2, isMinAlpha=true})
-    end)
-
-    mixin:HideTexture(QuestMapFrame.MapLegendTab.Background)
-    mixin:HideTexture(QuestMapFrame.QuestsTab.Background)
 
 
 

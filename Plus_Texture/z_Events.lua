@@ -1,7 +1,3 @@
-local function Save()
-    return WoWToolsSave['Plus_Texture'] or {}
-end
-
 
 
 
@@ -144,15 +140,11 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:ClearAllPoints()
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:SetPoint('BOTTOM', EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:GetParent(), 'TOP', 0, 25)
 
-
-    C_Timer.After(0.3, function()
-        if EncounterJournalMonthlyActivitiesFrame then
-            self:HideTexture(EncounterJournalMonthlyActivitiesFrame.Bg)
-            self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
-            self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
-            self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
-        end
-    end)
+    self:HideTexture(EncounterJournalMonthlyActivitiesFrame.Bg)
+    self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ShadowRight)
+    self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
+    self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
+    self:SetFrame(EncounterJournalMonthlyActivitiesFrame.HelpButton, {alpha=0.3})
 end
 
 
@@ -832,3 +824,70 @@ function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
         auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
     end
 end
+
+
+
+
+
+
+
+
+--世界地图
+function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
+    self:SetButton(WorldMapFrameCloseButton, {all=true})
+    self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
+    self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton, {all=true})
+    self:SetFrame(WorldMapFrame.BorderFrame.Tutorial, {alpha=0.3})
+
+    self:SetNineSlice(WorldMapFrame.BorderFrame, true)
+    self:SetAlphaColor(WorldMapFrameBg)
+    self:SetAlphaColor(QuestMapFrame.Background)
+    self:HideTexture(WorldMapFrame.NavBar.overlay)
+    self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottom)
+    self:HideTexture(WorldMapFrame.NavBar.InsetBorderRight)
+    self:HideTexture(WorldMapFrame.NavBar.InsetBorderLeft)
+    self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomRight)
+    self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottomLeft)
+    self:HideTexture(WorldMapFrame.BorderFrame.InsetBorderTop)
+    WorldMapFrame.NavBar:DisableDrawLayer('BACKGROUND')
+
+    hooksecurefunc(WorldMapFrame, 'SynchronizeDisplayState', function(frame)--最大化时，隐藏背景
+        if frame:IsMaximized() then
+            frame.BlackoutFrame:Hide()
+        end
+    end)
+
+
+    self:HideTexture(QuestScrollFrame.Background, true)
+    self:SetScrollBar(QuestScrollFrame)
+    self:SetScrollBar(QuestMapDetailsScrollFrame)
+    self:SetScrollBar(MapLegendScrollFrame)
+    self:HideTexture(MapLegendScrollFrame.Background, true)
+    self:SetAlphaColor(QuestMapFrame.MapLegend.BorderFrame.Border, nil, nil, true)
+    self:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
+    self:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
+    self:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
+    self:SetEditBox(QuestScrollFrame.SearchBox)
+
+--任务，列表 QuestLogHeaderCodeTemplate
+    hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
+        self:SetFrame(btn, {index=2, isMinAlpha=true})
+    end)
+
+    self:HideTexture(QuestMapFrame.MapLegendTab.Background)
+    self:HideTexture(QuestMapFrame.QuestsTab.Background)
+end
+
+
+
+
+
+
+
+
+
+--[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
+    hooksecurefunc(MainHelpPlateButtonMixin, 'OnEnter', function(btn)
+        self:SetFrame(btn, {alpha=0.3})
+    end)
+end]]

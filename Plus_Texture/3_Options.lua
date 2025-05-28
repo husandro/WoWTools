@@ -139,7 +139,7 @@ local function Init_Options()
             end
         end,
         sliderGetValue= function()
-            local s= Save().classPowerNumSize
+            local s= Save().classPowerNumSize or 12
             if type(s)~='number' then
                 s= 12
                 Save().classPowerNumSize=12

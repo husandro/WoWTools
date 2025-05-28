@@ -264,7 +264,7 @@ function WoWTools_TextureMixin:SetButton(btn, tab)
     end
     tab= tab or {}
     if tab.all then
-        WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 1})
+        WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 0.3})
     else
         WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha or 1})
     end

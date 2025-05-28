@@ -233,7 +233,7 @@ function WoWTools_ButtonMixin:Menu(frame, tab)
     local btn= self:Cbtn(frame, tab)
 
     if tab.atlas== 'ui-questtrackerbutton-filter' then
-        WoWTools_ColorMixin:Setup(btn, {alpha=1, type='Button'})
+        WoWTools_TextureMixin:SetButton(btn, {all=true})
     end
 
     btn:SetFrameLevel(frame:GetFrameLevel()+7)

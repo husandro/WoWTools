@@ -2,7 +2,7 @@
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetButton(CollectionsJournalCloseButton, {all=true})
-    self:SetButton(PetJournalTutorialButton, {all=true})
+    self:SetFrame(PetJournalTutorialButton, {alpha=0.3})
 
     self:SetNineSlice(CollectionsJournal, true)
     self:SetAlphaColor(CollectionsJournalBg, nil, nil, true)
@@ -103,6 +103,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetFrame(HeirloomsJournal.FilterButton, {alpha=0.3})
 
+    self:SetFrame(WardrobeCollectionFrame.InfoButton, {alpha=0.3})
     self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
     self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
     self:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)

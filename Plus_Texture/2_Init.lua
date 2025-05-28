@@ -15,10 +15,18 @@ local P_Save={
     --disabledMainMenu= not WoWTools_DataMixin.Player.husandro, --主菜单，颜色，透明度
     --disabledHelpTip=true,--隐藏所有教程
 
-    HideTalentsBG=true,--隐藏，天赋，背景
-    BG={
-        ADD={},
-        --[name]={alpha=0.3, texture=icon},
+    Bg={
+        UseTexture={
+            --自定义，图片 Texture or Atlas
+
+        },
+        All={--统一设置
+            texture='Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga',
+            alpha=0.5
+        },
+        Add={--分开设置
+          --[name]={enabled=true, alpha=0.5, texture=texture or atlas}  
+        },
     },
 }
 
@@ -97,8 +105,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
-            Save().classPowerNumSize= Save().classPowerNumSize or 12
-            Save().BG= Save().BG or P_Save.BG
+
+            Save().Bg= Save().Bg or P_Save.Bg
+
+            if Save().BG and Save().ADD then--清除旧数据
+                Save().Bg.UseTexture= Save().ADD
+                Save().BG=nil
+                Save().HideTalentsBG=nil
+            end
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 

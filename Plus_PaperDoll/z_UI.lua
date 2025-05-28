@@ -27,8 +27,8 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:HideTexture(PaperDollInnerBorderBottom2)
     self:HideTexture(CharacterFrameInsetRight.Bg)
 
-    self:SetAlphaColor(PaperDollSidebarTabs.DecorRight, nil, nil, 0.3)
-    self:SetAlphaColor(PaperDollSidebarTabs.DecorLeft, nil, nil, 0.3)
+    self:HideTexture(PaperDollSidebarTabs.DecorRight)
+    self:HideTexture(PaperDollSidebarTabs.DecorLeft)
 
 
     self:SetNineSlice(CharacterFrameInsetRight, nil, true)
@@ -49,27 +49,32 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     self:SetTabButton(CharacterFrameTab3)
 
 --属性
-    self:SetAlphaColor(CharacterStatsPane.ClassBackground)
-    self:SetAlphaColor(CharacterStatsPane.EnhancementsCategory.Background)
-    self:SetAlphaColor(CharacterStatsPane.AttributesCategory.Background)
-    self:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background)
+    self:SetAlphaColor(CharacterStatsPane.ClassBackground, nil, nil, true)
+    self:SetAlphaColor(CharacterStatsPane.EnhancementsCategory.Background, nil, nil, true)
+    self:SetAlphaColor(CharacterStatsPane.AttributesCategory.Background, nil, nil, true)
+    self:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background, nil, nil, true)
 
 --头衔
-    hooksecurefunc('PaperDollTitlesPane_UpdateScrollBox', function()--PaperDollFrame.lua
-        local frame= PaperDollFrame.TitleManagerPane.ScrollBox
-        if not frame or not frame:GetView() then
-            return
-        end
-        for _, button in pairs(frame:GetFrames() or {}) do
-            self:SetAlphaColor(button.BgMiddle, nil, nil, true)
+    hooksecurefunc('PaperDollTitlesPane_InitButton', function(btn, data)
+        self:SetAlphaColor(btn.BgMiddle, nil, nil, true)
+        btn.BgMiddle:SetPoint('RIGHT', 4, 0)
+        if data.index == 1 then
+            btn.BgTop:SetShown(false)
+        elseif data.index==#PaperDollFrame.TitleManagerPane.titles then
+            btn.BgBottom:SetShown(false)
         end
     end)
     self:SetScrollBar(PaperDollFrame.TitleManagerPane)
 
 --装备方案
-    hooksecurefunc('PaperDollEquipmentManagerPane_Update', function()
-        for _, button in pairs(PaperDollFrame.EquipmentManagerPane.ScrollBox:GetFrames() or {}) do
-            self:SetAlphaColor(button.BgMiddle, nil, nil, true)
+    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn, data)
+        self:SetAlphaColor(btn.BgMiddle, nil, nil, true)
+        btn.BgMiddle:SetPoint('RIGHT', 4, 0)
+        if data.addSetButton then
+            btn.BgTop:SetShown(false)
+            btn.BgBottom:SetShown(false)
+        elseif data.index==1 then
+            btn.BgTop:SetShown(false)
         end
     end)
     self:SetScrollBar(PaperDollFrame.EquipmentManagerPane)
@@ -119,14 +124,11 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
     --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
     CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
     CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
-    WoWTools_TextureMixin:Init_BGMenu_Frame(CharacterFrame,
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+        CharacterFrame,
         'CharacterFrame',
         CharacterFrame.Background,
-        {
-            settings=function()
-            end,
-        }
-    )
+    nil)
 end
 
 
@@ -137,6 +139,9 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetFrame(TokenFramePopup.Border, {alpha=0.3})
     self:SetMenu(TokenFrame.filterDropdown)
 
+    hooksecurefunc(TokenHeaderMixin, 'Initialize', function(btn)
+        print(btn)
+    end)
 
     hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
@@ -151,15 +156,14 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
         end
     end)
 
---添加Bg
-    self:CreateBackground(TokenFrame.ScrollBox, {
+    self:CreateBackground(TokenFrame.ScrollBox, {--添加Bg
         atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
         alpha=0.3,
         isAllPoint=true,
     })
+    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, {all=true})
 
-
-    --货币转移
+--货币转移
     self:SetNineSlice(CurrencyTransferLog, true)
     self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
     self:SetNineSlice(CurrencyTransferLogInset, true)
@@ -169,6 +173,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetNineSlice(CurrencyTransferMenuInset)
     self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
     self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
+    
 end
 
 
@@ -269,8 +274,6 @@ local function Init()
     CharacterStatsPane.ClassBackground:ClearAllPoints()
     CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
 
-    --CharacterMainHandSlot:ClearAllPoints()
-    --CharacterMainHandSlot:SetPoint('BOTTOMRIGHT', CharacterFrameInset, 'BOTTOM', -2.5, 16)
 
     CharacterFrame.InsetRight:ClearAllPoints()
     CharacterFrame.InsetRight:SetPoint('TOPRIGHT', 0, -58)
@@ -315,8 +318,8 @@ local function Init()
         CharacterTrinket0Slot:SetPoint('TOPLEFT', CharacterFinger1Slot, 'BOTTOMLEFT', 0, -line)
         CharacterTrinket1Slot:SetPoint('TOPLEFT', CharacterTrinket0Slot, 'BOTTOMLEFT', 0, -line)
 
-        line= (w-40*2-100-203)/3
-        CharacterMainHandSlot:SetPoint('BOTTOMLEFT', 50+line, 16)
+        line= (w-40*2-200-203)/3
+        CharacterMainHandSlot:SetPoint('BOTTOMLEFT', 100+line, 16)
         CharacterSecondaryHandSlot:SetPoint('TOPLEFT', CharacterMainHandSlot,'TOPRIGHT', math.max(5, line), 0)
     end
 

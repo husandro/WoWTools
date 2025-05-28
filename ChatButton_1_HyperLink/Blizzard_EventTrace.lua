@@ -21,7 +21,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     self:SetAlphaColor(EventTraceBg, nil, nil, true)
     self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
     self:SetNineSlice(EventTraceInset, true)
-    self:SetButton(EventTrace.ResizeButton, {all=true, alpha=0.5})
+    self:SetButton(EventTrace.ResizeButton, {all=true})
     self:SetScrollBar(EventTrace.Log.Events)
     self:SetEditBox(EventTrace.Log.Bar.SearchBox)
 

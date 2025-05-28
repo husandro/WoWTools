@@ -97,15 +97,13 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     self:SetButton(ProfessionsBookFrameCloseButton, {all=true})
 
     ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
+    self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
 
     self:Init_BGMenu_Frame(
         ProfessionsBookFrame,--框架, frame.PortraitContainer
         'ProfessionsBookFrame',--名称
         nil,--Texture
         {
-        --icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
-        --setValueFunc=function(textureName, alphaValue)--当菜单修改时，调用
-        --end,
         settings=function(textureName, alphaValue)--设置内容时，调用
             ProfessionsBookPage1:SetShown(not textureName)
             ProfessionsBookPage2:SetShown(not textureName)

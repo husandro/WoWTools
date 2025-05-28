@@ -41,7 +41,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetButton(PlayerSpellsFrameCloseButton, {all=true})
     self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MaximizeButton, {all=true})
     self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MinimizeButton, {all=true})
-    self:SetButton(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton)
+    
 
     --self:SetAlphaColor(PlayerSpellsFrameBg)
     self:SetNineSlice(PlayerSpellsFrame, 0.3)
@@ -93,8 +93,10 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
     PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
     PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.ExpandedContainer.Background:SetAlpha(0.2)
+    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background:SetAlpha(0.2)
 
 --法术书 SpellBookFrameTemplate
+    self:SetFrame(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton, {alpha=0.3})
     --PlayerSpellsFrame.SpellBookFrame.BookBGHalved
 
     --[[PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
@@ -105,18 +107,21 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
     hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(frame)
         if PlayerSpellsFrameBg.Set_BGTexture then
-
-            local currentSpecID = frame:GetSpecID()
+            --[[local currentSpecID = frame:GetSpecID()
             local specVisuals = ClassTalentUtil.GetVisualsForSpecID(currentSpecID);
             if specVisuals and specVisuals.background and C_Texture.GetAtlasInfo(specVisuals.background) then
                 PlayerSpellsFrameBg.set_BGData.p_texture= specVisuals.background
-            end
+            end]]
 
             PlayerSpellsFrameBg:Set_BGTexture()
         end
     end)
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(PlayerSpellsFrame, 'PlayerSpellsFrame', PlayerSpellsFrameBg, {
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+        PlayerSpellsFrame,
+        'PlayerSpellsFrame',
+        PlayerSpellsFrameBg,
+    {
         notAnims=true,
         isHook=true,
         setValueFunc=function() WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame) end,
@@ -125,45 +130,4 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
             PlayerSpellsFrame.TalentsFrame.Background,
         }
     })
-    --[[WoWTools_TextureMixin:SetBG_Settings('TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, SetValueTab)
-
-    Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", function(_, root)
-        root:CreateDivider()
-        WoWTools_TextureMixin:BGMenu(root, 'TalentsFrameBackground', PlayerSpellsFrame.TalentsFrame.Background, SetValueTab)
-    end)
-
-    hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(frame)
-        if frame.Background.Set_BGTexture then
-
-            local currentSpecID = frame:GetSpecID()
-            local specVisuals = ClassTalentUtil.GetVisualsForSpecID(currentSpecID);
-            if specVisuals and specVisuals.background and C_Texture.GetAtlasInfo(specVisuals.background) then
-                frame.Background.set_BGData.p_texture= specVisuals.background
-            end
-
-            frame.Background:Set_BGTexture()
-        end
-    end)]]
 end
-    --Menu.ModifyMenu("MENU_CLASS_TALENT_PROFILE", Init_Menu)
-
-
---ClassTalentsFrameMixin
-    --[[hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(frame)
-        local icon= Save().bg.show and Save().bg.icon
-        if not icon then
-            return
-        end
-    
-        if WoWTools_TextureMixin:IsAtlas(icon) then
-            frame.Background:SetAtlas(icon)
-        else
-            frame.Background:SetTexture(icon)
-        end
-    end)]]
-
-
-
---[[function WoWTools_SpellMixin:Set_UI()
-    Set_UI(WoWTools_TextureMixin)
-end]]
