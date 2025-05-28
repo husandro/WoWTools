@@ -217,7 +217,6 @@ local function texture_list(root, name, icon, texture, isAdd)
         sub:SetTooltip(function(tooltip)
             tooltip:AddLine(icon2)
             tooltip:AddLine(texture)
-            tooltip:AddLine(' ')
             if IsEnabledSaveBg(name) then
                 GameTooltip_AddColoredLine(tooltip, string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, name), HIGHLIGHT_FONT_COLOR)
             else
@@ -569,7 +568,8 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
     isAddBg=true,--是否添加背景
     bgPoint=function(icon)--设置背景位置
     end,
-    notAnims=true
+    notAnims=true,
+    PortraitContainer=Frame.PortraitContainer,
     }
 )
 ]]
@@ -638,14 +638,15 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
 
     Settings(icon)
 
-
-    if frame.PortraitContainer then
-        frame.PortraitContainer:SetSize(48,48)
-        frame.PortraitContainer:HookScript('OnLeave', function(s)
+    local PortraitContainer= frame.PortraitContainer or tab.PortraitContainer
+    if PortraitContainer then
+        
+        PortraitContainer:SetSize(48,48)
+        PortraitContainer:HookScript('OnLeave', function(s)
             GameTooltip:Hide()
             s.portrait:SetAlpha(1)
         end)
-        frame.PortraitContainer:HookScript('OnEnter', function(s)
+        PortraitContainer:HookScript('OnEnter', function(s)
             GameTooltip:SetOwner(s)
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(
@@ -655,7 +656,7 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
             GameTooltip:Show()
             s.portrait:SetAlpha(0.7)
         end)
-        frame.PortraitContainer:HookScript('OnMouseDown', function(s, d)
+        PortraitContainer:HookScript('OnMouseDown', function(s, d)
             if d~='RightButton' then
                 return
             end
@@ -664,9 +665,9 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
 
             s.portrait:SetAlpha(0.3)
         end)
-        frame.PortraitContainer:HookScript('OnMouseUp', function(s)
+        PortraitContainer:HookScript('OnMouseUp', function(s)
             s.portrait:SetAlpha(0.7)
         end)
-        frame.PortraitContainer.bg_Texture= icon
+        PortraitContainer.bg_Texture= icon
     end
 end

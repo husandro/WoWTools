@@ -858,24 +858,41 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     end)
 
 
-    self:HideTexture(QuestScrollFrame.Background, true)
-    self:SetScrollBar(QuestScrollFrame)
+
     self:SetScrollBar(QuestMapDetailsScrollFrame)
-    self:SetScrollBar(MapLegendScrollFrame)
-    self:HideTexture(MapLegendScrollFrame.Background, true)
-    self:SetAlphaColor(QuestMapFrame.MapLegend.BorderFrame.Border, nil, nil, true)
-    self:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, true, nil, nil)
-    self:SetAlphaColor(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, true, nil, nil)
-    self:SetAlphaColor(QuestScrollFrame.BorderFrame.Border, true, nil, nil)
+
+    self:SetFrame(QuestMapFrame.MapLegend.BorderFrame, {alpha=0})
+    self:SetFrame(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, {alpha=0})
+    self:HideTexture(QuestMapFrame.MapLegendTab.Background)
+    self:HideTexture(QuestMapFrame.QuestsTab.Background)
+
+    self:SetFrame(QuestScrollFrame.BorderFrame, {alpha=0})
+    self:SetScrollBar(QuestScrollFrame)
+    self:SetAlphaColor(QuestScrollFrame.Background, nil, nil, 0.5)
+    
+    self:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, nil, nil, 0.9)
     self:SetEditBox(QuestScrollFrame.SearchBox)
+
+    self:SetScrollBar(MapLegendScrollFrame)
+    self:SetAlphaColor(MapLegendScrollFrame.Background, nil, nil, 0.3)
 
 --任务，列表 QuestLogHeaderCodeTemplate
     hooksecurefunc(QuestLogHeaderCodeMixin, 'OnLoad', function(btn)
         self:SetFrame(btn, {index=2, isMinAlpha=true})
     end)
 
-    self:HideTexture(QuestMapFrame.MapLegendTab.Background)
-    self:HideTexture(QuestMapFrame.QuestsTab.Background)
+
+
+
+    self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+        WorldMapFrame,
+        'WorldMapFrame',
+        nil,
+        {isAddBg=true,
+        PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer
+    }
+    )
 end
 
 
