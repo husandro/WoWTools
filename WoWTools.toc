@@ -125,14 +125,13 @@ Plus_Move\0b_ScaleSizeButton_Mixin.lua
 Plus_Move\1_Init.lua
 Plus_Move\2_Add_Button.lua
 Plus_Move\3_Options.lua
-Plus_Move\e_Other.lua
-Plus_Move\e_Professions.lua
-Plus_Move\e_ProfessionsCustomerOrders.lua
-Plus_Move\z_Class_Power.lua
-Plus_Move\z_FriendsFrame.lua
-Plus_Move\z_Other.lua
-Plus_Move\z_WorldMapFrame.lua
-
+Plus_Move\Professions.lua
+Plus_Move\ProfessionsCustomerOrders.lua
+Plus_Move\Class_Power.lua
+Plus_Move\FriendsFrame.lua
+Plus_Move\WorldMapFrame.lua
+Plus_Move\z_Events.lua
+Plus_Move\z_Frames.lua
 
 ##隐藏材质，透明度
 Plus_Texture\0_TextureMixin.lua
@@ -140,13 +139,12 @@ Plus_Texture\0_TextureMixin_SetBG.lua
 Plus_Texture\1_Setup_Mixin.lua
 Plus_Texture\2_Init.lua
 Plus_Texture\3_Options.lua
-Plus_Texture\a_ActionButton.lua
-Plus_Texture\a_ChatBubbles.lua
-Plus_Texture\a_ClassPower.lua
-Plus_Texture\a_HelpTip.lua
-Plus_Texture\z_All_Frame.lua
+Plus_Texture\ActionButton.lua
+Plus_Texture\ChatBubbles.lua
+Plus_Texture\ClassPower.lua
+Plus_Texture\HelpTip.lua
+Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
-##Plus_Texture\z_Frames.lua
 
 
 
@@ -166,8 +164,7 @@ Plus_Color\CODE.lua
 
 ##光环
 Plus_Aura\0_AuraMixin.lua
-Plus_Aura\0_Init.lua
-Plus_Aura\t_Blizzard_BuffFrame.lua
+##Plus_Aura\0_Init.lua
 
 
 ##鼠标，提示

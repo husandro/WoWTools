@@ -822,4 +822,13 @@ end
 
 
 
-
+--AuraButtonArtTemplate DebuffFrame
+function WoWTools_TextureMixin.Events:Blizzard_BuffFrame()
+    for _, auraFrame in ipairs(BuffFrame.auraFrames or {}) do
+        auraFrame.IconMask= auraFrame:CreateMaskTexture()
+        auraFrame.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
+        auraFrame.IconMask:SetPoint('TOPLEFT', auraFrame.Icon, 0.5, -0.5)
+        auraFrame.IconMask:SetPoint('BOTTOMRIGHT', auraFrame.Icon, -0.5, 0.5)
+        auraFrame.Icon:AddMaskTexture(auraFrame.IconMask)
+    end
+end
