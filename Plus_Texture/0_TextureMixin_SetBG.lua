@@ -474,8 +474,8 @@ local function Create_Anims(frame, tab)
         else
             frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
         end
-        frame.FullMask:SetPoint('TOPLEFT', -25, 25)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', 25, -25)
+        frame.FullMask:SetPoint('TOPLEFT', -45, 45)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', 45, -45)
     end
     frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
 
@@ -578,6 +578,44 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
 
 
+local function Set_Frame_Menu(frame, icon, tab)
+    local PortraitContainer= frame.PortraitContainer or tab.PortraitContainer
+    if PortraitContainer then
+        PortraitContainer:SetSize(48,48)
+        PortraitContainer:HookScript('OnLeave', function(s)
+            GameTooltip:Hide()
+            s.portrait:SetAlpha(1)
+        end)
+        PortraitContainer:HookScript('OnEnter', function(s)
+            GameTooltip:SetOwner(s)
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+                (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
+            )
+            GameTooltip:Show()
+            s.portrait:SetAlpha(0.7)
+        end)
+        PortraitContainer:HookScript('OnMouseDown', function(s, d)
+            if d~='RightButton' then
+                return
+            end
+
+            MenuUtil.CreateContextMenu(s, Init_Menu)
+
+            s.portrait:SetAlpha(0.3)
+        end)
+        PortraitContainer:HookScript('OnMouseUp', function(s)
+            s.portrait:SetAlpha(0.7)
+        end)
+        PortraitContainer.bg_Texture= icon
+    end
+end
+
+
+
+
+
 
 
 
@@ -592,7 +630,6 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
         return
     end
 
-    
 
     tab= tab or {}
 
@@ -614,8 +651,8 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
         icon= frame.Add_Background
     end
 
-    icon:SetTextureSliceMargins(24, 24, 24, 24);
-    icon:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
+    --icon:SetTextureSliceMargins(24, 24, 24, 24);
+    --icon:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
     if not IsEnabledSaveBg(name) then
         Icons[icon]=true
@@ -638,36 +675,6 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
 
     Settings(icon)
 
-    local PortraitContainer= frame.PortraitContainer or tab.PortraitContainer
-    if PortraitContainer then
-        
-        PortraitContainer:SetSize(48,48)
-        PortraitContainer:HookScript('OnLeave', function(s)
-            GameTooltip:Hide()
-            s.portrait:SetAlpha(1)
-        end)
-        PortraitContainer:HookScript('OnEnter', function(s)
-            GameTooltip:SetOwner(s)
-            GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(
-                WoWTools_DataMixin.Icon.icon2..self.addName,
-                (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
-            )
-            GameTooltip:Show()
-            s.portrait:SetAlpha(0.7)
-        end)
-        PortraitContainer:HookScript('OnMouseDown', function(s, d)
-            if d~='RightButton' then
-                return
-            end
-
-            MenuUtil.CreateContextMenu(s, Init_Menu)
-
-            s.portrait:SetAlpha(0.3)
-        end)
-        PortraitContainer:HookScript('OnMouseUp', function(s)
-            s.portrait:SetAlpha(0.7)
-        end)
-        PortraitContainer.bg_Texture= icon
-    end
+--设置，调用，菜单
+    Set_Frame_Menu(frame, icon, tab)
 end

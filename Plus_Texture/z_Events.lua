@@ -54,10 +54,14 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:HideFrame(AchievementFrame)
+    self:SetAlphaColor(AchievementFrameWaterMark, nil, true, 0)
+
+    self:SetNineSlice(AchievementFrameSummary, nil, true)
+
     self:SetButton(AchievementFrameCloseButton, {all=true})
     self:HideFrame(AchievementFrame.Header)
     self:HideFrame(AchievementFrameSummary)
-    self:SetNineSlice(AchievementFrameCategories, true)
+    self:SetNineSlice(AchievementFrameCategories, nil, true)
     self:SetScrollBar(AchievementFrameCategories)
 
     self:SetScrollBar(AchievementFrameAchievements)
@@ -82,6 +86,16 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     --比较
     AchievementFrameComparisonHeader:ClearAllPoints()
     AchievementFrameComparisonHeader:SetPoint('BOTTOMLEFT', AchievementFrameComparison, 'TOPRIGHT', -125, 0)
+
+    --WoWTools_ButtonMixin:AddMask(AchievementFrame, nil, AchievementFrame.Background)
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+        AchievementFrame,
+        'AchievementFrame',
+        AchievementFrame.Background,
+    {
+
+    })
+
 end
 
 
@@ -865,11 +879,12 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetFrame(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, {alpha=0})
     self:HideTexture(QuestMapFrame.MapLegendTab.Background)
     self:HideTexture(QuestMapFrame.QuestsTab.Background)
+    self:HideTexture(QuestMapFrame.QuestsTab.SelectedTexture)
 
     self:SetFrame(QuestScrollFrame.BorderFrame, {alpha=0})
     self:SetScrollBar(QuestScrollFrame)
     self:SetAlphaColor(QuestScrollFrame.Background, nil, nil, 0.5)
-    
+
     self:SetAlphaColor(QuestScrollFrame.SettingsDropdown.Icon, nil, nil, 0.9)
     self:SetEditBox(QuestScrollFrame.SearchBox)
 
@@ -881,6 +896,11 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
         self:SetFrame(btn, {index=2, isMinAlpha=true})
     end)
 
+    for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
+        self:SetFrame(frame, {alpha=0.5})
+    end
+    self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, {all=true, alpha=0.5})
+    self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, {all=true, alpha=0.5})
 
 
 

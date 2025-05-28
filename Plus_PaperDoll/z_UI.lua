@@ -129,6 +129,7 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
         'CharacterFrame',
         CharacterFrame.Background,
     nil)
+
 end
 
 

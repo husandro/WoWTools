@@ -1335,6 +1335,7 @@ local function Init_WorldFrame_Button()
         end
     end)
     hooksecurefunc(WorldMapFrame, 'OnMapChanged', function() WorldMapButton:set_texture() end)--uiMapIDs, 添加，移除 --Blizzard_WorldMap.lua
+    WoWTools_TextureMixin:SetButton(WorldMapButton, {all=true, alpha=0.7})
 end
 
 
