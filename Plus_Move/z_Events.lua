@@ -345,7 +345,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
         if not size or not btn then
             return
         end
-        
+
         if mode==AuctionHouseFrameDisplayMode.ItemSell or mode==AuctionHouseFrameDisplayMode.CommoditiesSell then
             frame:SetSize(800, 538)
             btn.minWidth = 800
@@ -398,13 +398,27 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     AchievementFrameCategories:ClearAllPoints()
     AchievementFrameCategories:SetPoint('TOPLEFT', 21, -19)
     AchievementFrameCategories:SetPoint('BOTTOMLEFT', 175, 19)
-    AchievementFrameMetalBorderRight:ClearAllPoints()
+
+    AchievementFrameMetalBorderRight:SetPoint('TOP', AchievementFrameMetalBorderTopRight, 'BOTTOM')
+    AchievementFrameMetalBorderLeft:SetPoint('TOP', AchievementFrameMetalBorderTopLeft, 'BOTTOM')
+    AchievementFrameMetalBorderRight:SetPoint('BOTTOM', AchievementFrameMetalBorderBottomRight, 'TOP')
+    AchievementFrameMetalBorderLeft:SetPoint('BOTTOM', AchievementFrameMetalBorderBottomLeft, 'TOP')
+
     AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)
 
+    local left= -38
+    AchievementFrameAchievements:SetPoint('RIGHT', left, 0)
+    AchievementFrameStats:SetPoint('RIGHT', left, 0)
+
+    AchievementFrameSummary:SetPoint('RIGHT', left, 0)
+
+    
+    AchievementFrameComparison:SetPoint('RIGHT', left, 0)
+
     self:Setup(AchievementFrame, {
-        minW=768,
-        maxW=768,
-        minH=500,
+        minW=460,
+        --maxW=768,
+        minH=215,
         setSize=true,
         sizeRestFunc= function(btn)
             btn.targetFrame:SetSize(768, 500)

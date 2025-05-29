@@ -1223,11 +1223,10 @@ local function Init()
         local p= Save().Icons.point
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
-        elseif WoWTools_DataMixin.Player.husandro then
+        elseif CharacterReagentBag0Slot:IsVisible() then
             self:SetPoint('RIGHT', CharacterReagentBag0Slot, 'LEFT', -2, 0)
         else
             self:SetPoint('BOTTOMLEFT', Minimap, 8, 15)
-            --self:SetPoint('CENTER', 100, 100)
         end
     end
 
