@@ -5764,7 +5764,12 @@
         "AchievementComparisonPlayerButton_OnLoad",
         "AchievementFrameComparisonBackground",
         "AchievementSearchPreviewButton_OnLoad",
-        "CommunitiesGuildRewardsButtonMixin"
+        "CommunitiesGuildRewardsButtonMixin",
+        "ClubFinderCommunitiesCardMixin",
+        "CommunitiesFrameGuildDetailsFrameInfoChallenge1",
+        "CommunitiesFrameGuildDetailsFrameInfoChallenge3",
+        "CommunitiesFrameGuildDetailsFrameInfoChallenge2",
+        "CommunitiesFrameGuildDetailsFrameInfoChallenge4"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

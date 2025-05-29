@@ -19,8 +19,8 @@ local function set_size(frame)
     else
         size= Save().size['CommunitiesFrameNormal']
         scale= Save().scale['CommunitiesFrameNormal']
-        self.ResizeButton.minWidth= 814
-        self.ResizeButton.minHeight= 426
+        self.ResizeButton.minWidth= 200--814
+        self.ResizeButton.minHeight= 200--426
     end
     if size then
         self:SetSize(size[1], size[2])
@@ -33,7 +33,7 @@ end
 
 
 
-
+--hooksecurefunc(ClubFinderCommunitiesCardMixin, 'Init', function(b)
 local function Init_Update(frame)
     if not frame:GetView() or WoWTools_FrameMixin:IsLocked(frame) then
         return
@@ -103,7 +103,7 @@ end
 
 
 
-
+--今日信息
 
 
 function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
@@ -114,19 +114,38 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
 
 --公会奖励
-    CommunitiesFrame.GuildBenefitsFrame.Perks:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame, 'TOP', -38, 0)
-    CommunitiesFrame.GuildBenefitsFrame.Rewards:SetPoint('LEFT', CommunitiesFrame.GuildBenefitsFrame.Perks, 'RIGHT', 38, 0)
+    CommunitiesFrame.GuildBenefitsFrame.Perks:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame, 'TOP', -17, 0)
+    CommunitiesFrame.GuildBenefitsFrame.Rewards:SetPoint('LEFT', CommunitiesFrame.GuildBenefitsFrame.Perks, 'RIGHT', 15, 0)
     CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame.Perks, 'BOTTOMRIGHT')
+    
+    CommunitiesFrame.GuildBenefitsFrame.Perks:GetRegions():SetPoint('BOTTOMRIGHT', 14, 0)--bg
+    CommunitiesFrame.GuildBenefitsFrame.Rewards:GetRegions():SetPoint('BOTTOMRIGHT', 14, 0)
 
 --寻找社区
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
 
 
---信息, 左边信息
-    CommunitiesFrameGuildDetailsFrameInfo:SetPoint('TOPRIGHT', CommunitiesFrameGuildDetailsFrame, 'TOP', -48, 0)
---今日信息
+
+
+
 
 --公会信息
+    CommunitiesFrameGuildDetailsFrameInfo:SetWidth(272)
+
+   
+
+    CommunitiesFrameGuildDetailsFrameInfo.Header1:SetPoint('RIGHT', 14,0)
+    CommunitiesFrameGuildDetailsFrameInfoChallenge1:SetPoint('RIGHT')
+    CommunitiesFrameGuildDetailsFrameInfoChallenge2:SetPoint('RIGHT')
+    CommunitiesFrameGuildDetailsFrameInfoChallenge3:SetPoint('RIGHT')
+    CommunitiesFrameGuildDetailsFrameInfoChallenge4:SetPoint('RIGHT')
+    CommunitiesFrameGuildDetailsFrameInfo.BG:SetPoint('RIGHT', 14, 0)
+
+    CommunitiesFrameGuildDetailsFrameInfo.Header2:SetPoint('RIGHT', 14,0)
+
+    CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame:SetPoint('BOTTOMLEFT', CommunitiesFrameGuildDetailsFrameInfoBar2Left, 'TOPLEFT', 14, 0)
+    CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame:SetPoint('RIGHT')
+
     CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:SetPoint('RIGHT')
     sub= CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:GetChildren()
     if sub and sub.Details then
@@ -134,8 +153,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
         sub.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
     end
 
---信息, 右边信息
-    CommunitiesFrameGuildDetailsFrameNews:SetPoint('TOPLEFT', CommunitiesFrameGuildDetailsFrame, 'TOP', -32, 0)
+    CommunitiesFrameGuildDetailsFrameNews:SetPoint('LEFT', CommunitiesFrameGuildDetailsFrameInfo, 'RIGHT', 15, 0)
     CommunitiesFrameGuildDetailsFrameNews.ScrollBox:SetPoint('BOTTOMRIGHT')
 
 
