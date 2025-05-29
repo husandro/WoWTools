@@ -19,9 +19,10 @@ local function set_size(frame)
     else
         size= Save().size['CommunitiesFrameNormal']
         scale= Save().scale['CommunitiesFrameNormal']
-        self.ResizeButton.minWidth= 200--814
-        self.ResizeButton.minHeight= 200--426
+        self.ResizeButton.minWidth= 562--814
+        self.ResizeButton.minHeight= 228--426
     end
+
     if size then
         self:SetSize(size[1], size[2])
     end
