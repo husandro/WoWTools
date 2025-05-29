@@ -8,7 +8,8 @@
     self:SetNineSlice(CommunitiesFrame, true)
 
     self:SetScrollBar(CommunitiesFrame.Chat)
-
+    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, nil, true)
+    self:CreateBackground(CommunitiesFrame.Chat, {isAllPoint=true})
 
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
 
@@ -23,7 +24,6 @@
     CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
-    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, nil, true)
     self:SetAlphaColor(CommunitiesFrameMiddle)
 
 

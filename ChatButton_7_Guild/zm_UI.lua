@@ -116,9 +116,45 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 --公会奖励
     CommunitiesFrame.GuildBenefitsFrame.Perks:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame, 'TOP', -38, 0)
     CommunitiesFrame.GuildBenefitsFrame.Rewards:SetPoint('LEFT', CommunitiesFrame.GuildBenefitsFrame.Perks, 'RIGHT', 38, 0)
+    CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame.Perks, 'BOTTOMRIGHT')
 
 --寻找社区
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
+
+
+--信息, 左边信息
+    CommunitiesFrameGuildDetailsFrameInfo:SetPoint('TOPRIGHT', CommunitiesFrameGuildDetailsFrame, 'TOP', -48, 0)
+--今日信息
+
+--公会信息
+    CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:SetPoint('RIGHT')
+    sub= CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:GetChildren()
+    if sub and sub.Details then
+        sub:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
+        sub.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
+    end
+
+--信息, 右边信息
+    CommunitiesFrameGuildDetailsFrameNews:SetPoint('TOPLEFT', CommunitiesFrameGuildDetailsFrame, 'TOP', -32, 0)
+    CommunitiesFrameGuildDetailsFrameNews.ScrollBox:SetPoint('BOTTOMRIGHT')
+
+
+
+
+    CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
+    CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
+    WoWTools_EditBoxMixin:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
+    hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
+        self:Set_SizeScale(frame)
+        frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
+    end)
+
+
+
+
+
+
+
 
     self:Setup(CommunitiesFrame, {
         setSize=true,
@@ -177,23 +213,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     self:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
     self:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
     self:Setup(CommunitiesTicketManagerDialog)
-    
-
---信息, 左边信息
-    CommunitiesFrameGuildDetailsFrameInfo:SetPoint('TOPRIGHT', CommunitiesFrameGuildDetailsFrame, 'TOP', -48, 0)
---今日信息
-
---公会信息
-    CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:SetPoint('RIGHT')
-    sub= CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame:GetChildren()
-    if sub and sub.Details then
-        sub:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
-        sub.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
-    end
-
---信息, 右边信息
-    CommunitiesFrameGuildDetailsFrameNews:SetPoint('TOPLEFT', CommunitiesFrameGuildDetailsFrame, 'TOP', -32, 0)
-    CommunitiesFrameGuildDetailsFrameNews.ScrollBox:SetPoint('BOTTOMRIGHT')
 
 --新闻过滤
     self:Setup(CommunitiesGuildNewsFiltersFrame, {notFuori=true})
@@ -214,13 +233,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
         btn.targetFrame:SetSize(295, 295)
     end})
     ]]
-    CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('RIGHT')
-    CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
-    WoWTools_EditBoxMixin:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
-    hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
-        self:Set_SizeScale(frame)
-        frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
-    end)
 
 
 
