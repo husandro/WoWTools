@@ -78,25 +78,57 @@ end
 
 
 
-local function Init()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     local sub
 
 
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Minimize', set_size)--maximizedCallback
     hooksecurefunc(CommunitiesFrame.MaxMinButtonFrame, 'Maximize', set_size)
 
+--公会奖励
+    CommunitiesFrame.GuildBenefitsFrame.Perks:SetPoint('TOPRIGHT', CommunitiesFrame.GuildBenefitsFrame, 'TOP', -38, 0)
+    CommunitiesFrame.GuildBenefitsFrame.Rewards:SetPoint('LEFT', CommunitiesFrame.GuildBenefitsFrame.Perks, 'RIGHT', 38, 0)
+
 --寻找社区
     hooksecurefunc(ClubFinderCommunityAndGuildFinderFrame.CommunityCards.ScrollBox, 'Update', Init_Update)
 
-    WoWTools_MoveMixin:Setup(CommunitiesFrame, {
+    self:Setup(CommunitiesFrame, {
         setSize=true,
         scaleStoppedFunc= function(btn)
-            local self= btn.targetFrame
-            local displayMode = self:GetDisplayMode()
+            local frame= btn.targetFrame
+            local displayMode = frame:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                Save().scale['CommunitiesFrameMINIMIZED']= self:GetScale()
+                Save().scale['CommunitiesFrameMINIMIZED']= frame:GetScale()
             else
-                Save().scale['CommunitiesFrameNormal']= self:GetScale()
+                Save().scale['CommunitiesFrameNormal']= frame:GetScale()
             end
         end,
         scaleRestFunc=function(btn)
@@ -108,23 +140,23 @@ local function Init()
             end
         end,
         sizeStopFunc=function(btn)
-            local self= btn.targetFrame
-            local displayMode = self:GetDisplayMode()
+            local frame= btn.targetFrame
+            local displayMode = frame:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                Save().size['CommunitiesFrameMINIMIZED']= {self:GetSize()}
+                Save().size['CommunitiesFrameMINIMIZED']= {frame:GetSize()}
             else
-                Save().size['CommunitiesFrameNormal']= {self:GetSize()}
+                Save().size['CommunitiesFrameNormal']= {frame:GetSize()}
             end
         end,
         sizeRestFunc=function(btn)
-            local self= btn.targetFrame
-            local displayMode = self:GetDisplayMode()
+            local frame= btn.targetFrame
+            local displayMode = frame:GetDisplayMode()
             if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
                 Save().size['CommunitiesFrameMINIMIZED']=nil
-                self:SetSize(322, 406)
+                frame:SetSize(322, 406)
             elseif Save().size['CommunitiesFrameNormal'] then
                 Save().size['CommunitiesFrameNormal']= nil
-                self:SetSize(814, 426)
+                frame:SetSize(814, 426)
             end
         end,
         sizeRestTooltipColorFunc=function(btn)
@@ -140,11 +172,11 @@ local function Init()
         end,
     })
 
-    WoWTools_MoveMixin:Setup(CommunitiesFrame.RecruitmentDialog)
-    WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog)
-    WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
-    WoWTools_MoveMixin:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
-    WoWTools_MoveMixin:Setup(CommunitiesTicketManagerDialog)
+    self:Setup(CommunitiesFrame.RecruitmentDialog)
+    self:Setup(CommunitiesFrame.NotificationSettingsDialog)
+    self:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
+    self:Setup(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, {frame=CommunitiesFrame.NotificationSettingsDialog})
+    self:Setup(CommunitiesTicketManagerDialog)
     
 
 --信息, 左边信息
@@ -164,19 +196,19 @@ local function Init()
     CommunitiesFrameGuildDetailsFrameNews.ScrollBox:SetPoint('BOTTOMRIGHT')
 
 --新闻过滤
-    WoWTools_MoveMixin:Setup(CommunitiesGuildNewsFiltersFrame, {notFuori=true})
+    self:Setup(CommunitiesGuildNewsFiltersFrame, {notFuori=true})
 
 
 
 --信息，查看记录
-    WoWTools_MoveMixin:Setup(CommunitiesGuildLogFrame, {
+    self:Setup(CommunitiesGuildLogFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(384, 432)
     end})
 
 --[[公会信息， 点击以编辑
-    WoWTools_MoveMixin:Setup(CommunitiesGuildTextEditFrame, {
+    self:Setup(CommunitiesGuildTextEditFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(295, 295)
@@ -186,9 +218,28 @@ local function Init()
     CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox:SetPoint('BOTTOM')
     WoWTools_EditBoxMixin:Setup(CommunitiesGuildTextEditFrame.Container.ScrollFrame.EditBox, {isMaxLetter=true})
     hooksecurefunc('CommunitiesGuildTextEditFrame_SetType', function(frame)
-        WoWTools_MoveMixin:Set_SizeScale(frame)
+        self:Set_SizeScale(frame)
         frame.Container.ScrollFrame.EditBox:SetScript("OnEnterPressed", nil)
     end)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 --新建，公会, 签名
     WoWTools_MoveMixin:Setup(PetitionFrame, {
@@ -231,22 +282,22 @@ local function Init()
     TabardModel:SetPoint('TOPRIGHT', -2, 0)
     TabardModel:SetPoint('BOTTOM', TabardFrame, 'BOTTOM', 0, 2)
 
-    TabardModel:HookScript('OnMouseWheel', function(self, d)--ModelFrameMixin.lua
+    TabardModel:HookScript('OnMouseWheel', function(frame, d)--ModelFrameMixin.lua
         local rotationsPerSecond = ROTATIONS_PER_SECOND;
         local elapsedTime= 0.05
         if d==-1 then
-            self.rotation = self.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
-            if ( self.rotation > (2 * PI) ) then
-                self.rotation = self.rotation - (2 * PI);
+            frame.rotation = frame.rotation + (elapsedTime * 2 * PI * rotationsPerSecond);
+            if ( frame.rotation > (2 * PI) ) then
+                frame.rotation = frame.rotation - (2 * PI);
             end
-            self:SetRotation(self.rotation);
+            frame:SetRotation(frame.rotation);
 
         else
-            self.rotation = self.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
-            if ( self.rotation < 0 ) then
-                self.rotation = self.rotation + (2 * PI);
+            frame.rotation = frame.rotation - (elapsedTime * 2 * PI * rotationsPerSecond);
+            if ( frame.rotation < 0 ) then
+                frame.rotation = frame.rotation + (2 * PI);
             end
-            self:SetRotation(self.rotation);
+            frame:SetRotation(frame.rotation);
         end
     end)
 
@@ -267,22 +318,4 @@ local function Init()
     sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(510, 480)
     end})]]
-
-
-    Init=function()end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
-    Init()
 end

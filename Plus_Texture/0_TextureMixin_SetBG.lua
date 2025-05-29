@@ -579,37 +579,48 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
 
 local function Set_Frame_Menu(frame, icon, tab)
-    local PortraitContainer= frame.PortraitContainer or tab.PortraitContainer
-    if PortraitContainer then
-        PortraitContainer:SetSize(48,48)
-        PortraitContainer:HookScript('OnLeave', function(s)
-            GameTooltip:Hide()
-            s.portrait:SetAlpha(1)
-        end)
-        PortraitContainer:HookScript('OnEnter', function(s)
-            GameTooltip:SetOwner(s)
-            GameTooltip:ClearLines()
-            GameTooltip:AddDoubleLine(
-                WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-                (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
-            )
-            GameTooltip:Show()
-            s.portrait:SetAlpha(0.7)
-        end)
-        PortraitContainer:HookScript('OnMouseDown', function(s, d)
-            if d~='RightButton' then
-                return
-            end
-
-            MenuUtil.CreateContextMenu(s, Init_Menu)
-
-            s.portrait:SetAlpha(0.3)
-        end)
-        PortraitContainer:HookScript('OnMouseUp', function(s)
-            s.portrait:SetAlpha(0.7)
-        end)
-        PortraitContainer.bg_Texture= icon
+    local PortraitContainer= frame.PortraitContainer or tab.PortraitContainer or tab.menuButton
+    if not PortraitContainer then
+        return
     end
+    if not tab.menuButton then
+        PortraitContainer:SetSize(48,48)
+    end
+    PortraitContainer:HookScript('OnLeave', function(s)
+        GameTooltip:Hide()
+        if s.portrait then
+            s.portrait:SetAlpha(1)
+        end
+    end)
+    PortraitContainer:HookScript('OnEnter', function(s)
+        GameTooltip:SetOwner(s)
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
+        )
+        GameTooltip:Show()
+        if s.portrait then
+            s.portrait:SetAlpha(0.7)
+        end
+    end)
+    PortraitContainer:HookScript('OnMouseDown', function(s, d)
+        if d~='RightButton' then
+            return
+        end
+
+        MenuUtil.CreateContextMenu(s, Init_Menu)
+        if s.portrait then
+            s.portrait:SetAlpha(0.3)
+        end
+    end)
+    PortraitContainer:HookScript('OnMouseUp', function(s)
+        if s.portrait then
+            s.portrait:SetAlpha(0.7)
+        end
+    end)
+    PortraitContainer.bg_Texture= icon
+    
 end
 
 

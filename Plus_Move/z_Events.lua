@@ -404,28 +404,75 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     AchievementFrameMetalBorderRight:SetPoint('BOTTOM', AchievementFrameMetalBorderBottomRight, 'TOP')
     AchievementFrameMetalBorderLeft:SetPoint('BOTTOM', AchievementFrameMetalBorderBottomLeft, 'TOP')
 
-    AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)
+    --hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+--成就，显示，按钮
+    hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+        
+        f.Label:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
+        f.Label:SetPoint('LEFT', f.PlusMinus, 'RIGHT')
+
+        f.Description:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
+        f.Description:SetPoint('LEFT', f.Icon, 'RIGHT')
+
+        f.Reward:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
+        f.Reward:SetPoint('LEFT', f.Icon, 'RIGHT')
+     end)
+
 
     local left= -38
     AchievementFrameAchievements:SetPoint('RIGHT', left, 0)
     AchievementFrameStats:SetPoint('RIGHT', left, 0)
-
+--总览
     AchievementFrameSummary:SetPoint('RIGHT', left, 0)
 
+--统计
+    AchievementFrameStatsBG:SetPoint('RIGHT')
+
+--比较
+    AchievementFrameComparison:SetPoint('RIGHT')
+
+    AchievementFrameComparison.AchievementContainer:SetPoint('RIGHT', left, 0)
+
+    AchievementFrameComparison.Summary:SetPoint('RIGHT', left, 0)
+    AchievementFrameComparison.Summary.Player:SetPoint('RIGHT', -120, 0)
+    AchievementFrameComparison.AchievementContainer.ScrollBar:SetPoint('TOPLEFT', AchievementFrameComparison.Summary, 'TOPRIGHT', 5, -5)
+    hooksecurefunc(AchievementComparisonTemplateMixin, 'OnLoad', function(f)
+        f.Player:SetPoint('RIGHT', -120, 0)
+    end)
+    AchievementFrameComparison.StatContainer:SetPoint('RIGHT', left, 0)
+
     
-    AchievementFrameComparison:SetPoint('RIGHT', left, 0)
+    AchievementFrame.Header:ClearAllPoints()
+    AchievementFrame.Header:SetPoint('BOTTOM', AchievementFrame, 'TOP', 0, -38)
+--Search
+    AchievementFrame.SearchResults:ClearAllPoints()
+    AchievementFrame.SearchResults:SetPoint('BOTTOMLEFT', 100, 8)
+    AchievementFrame.SearchResults:SetPoint('BOTTOMRIGHT', -100, 8)
+    AchievementFrame.SearchResults:SetPoint('TOP', 0, -250)
+
+    hooksecurefunc(AchievementFrame, 'SetWidth', function(f)
+        self:Set_SizeScale(f)
+    end)
 
     self:Setup(AchievementFrame, {
-        minW=460,
+        minW=768,
         --maxW=768,
-        minH=215,
+        minH=500,
         setSize=true,
         sizeRestFunc= function(btn)
             btn.targetFrame:SetSize(768, 500)
         end,
     })
 
+
+    self:Setup(AchievementFrame.Header, {frame=AchievementFrame})
+
+    --比较
     self:Setup(AchievementFrameComparisonHeader, {frame=AchievementFrame})
     self:Setup(AchievementFrameComparison, {frame=AchievementFrame})
-    self:Setup(AchievementFrame.Header, {frame=AchievementFrame})
+    self:Setup(AchievementFrameComparison.AchievementContainer, {frame=AchievementFrame})
+
+    AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)
+    
+    --self:Setup(AchievementFrame.SearchResults)--:SetPoint('TOP', 0, -15)
 end

@@ -59,14 +59,22 @@
     self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, nil, true)
     self:HideFrame(CommunitiesFrame.MemberList.ColumnDisplay)
     self:SetScrollBar(CommunitiesFrame.MemberList)
+    self:CreateBackground(CommunitiesFrame.MemberList, {isAllPoint=true})
 
 
---公会奖励，列表
+--公会奖励，列表, 物品，GuildRewards.lua
     self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
     self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
     CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
     self:HideFrame(CommunitiesFrame.GuildBenefitsFrame)
+    self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar.BG)
+    --hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(btn)
+    --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetPoint('BOTTOM')
+    --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAtlas('ChallengeMode-guild-background')
+    --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAlpha(0.3)
 
+    
+    --
 
 
 --公会设置

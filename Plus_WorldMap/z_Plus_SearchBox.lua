@@ -24,7 +24,7 @@ local function Init()
             CollapseQuestHeader(i)
         end
     end)
-    WoWTools_TextureMixin:SetButton(btnCollapse, {alpha=0.9})
+    --WoWTools_TextureMixin:SetButton(btnCollapse, {alpha=0.9})
 
     local btnExpand= WoWTools_ButtonMixin:Cbtn(QuestScrollFrame.SearchBox, {size=22, atlas='NPE_ArrowDown'})
     btnExpand:SetPoint('LEFT', btnCollapse, 'RIGHT')
@@ -41,7 +41,7 @@ local function Init()
             ExpandQuestHeader(i)
         end
     end)
-    WoWTools_TextureMixin:SetButton(btnExpand, {alpha=0.9})
+    --WoWTools_TextureMixin:SetButton(btnExpand, {alpha=0.9})
 end
 
 

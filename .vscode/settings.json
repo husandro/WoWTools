@@ -5750,7 +5750,21 @@
         "TokenHeaderMixin",
         "HelpPlateButtonMixin",
         "MainHelpPlateButtonMixin",
-        "TutorialFrame_OnLoad"
+        "TutorialFrame_OnLoad",
+        "AchievementFrameComparisonHeaderPortraitBg",
+        "AchievementFrameAchievementsBackdrop_OnLoad",
+        "AchievementFrameSummaryCategoriesStatusBarRight",
+        "AchievementFrameSummaryCategoriesStatusBar",
+        "AchievementFrameSummaryCategoriesStatusBarLeft",
+        "AchievementFrameSummaryCategoriesStatusBarMiddle",
+        "AchievementFrameSummaryCategoriesHeaderTexture",
+        "AchievementFrameSummaryAchievementsHeaderHeader",
+        "AchievementFrameSummaryCategoriesCategory10FillBar",
+        "AchievementFrameStats_OnLoad",
+        "AchievementComparisonPlayerButton_OnLoad",
+        "AchievementFrameComparisonBackground",
+        "AchievementSearchPreviewButton_OnLoad",
+        "CommunitiesGuildRewardsButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

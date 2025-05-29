@@ -54,46 +54,149 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:HideFrame(AchievementFrame)
-    self:SetAlphaColor(AchievementFrameWaterMark, nil, true, 0)
 
-    self:SetNineSlice(AchievementFrameSummary, nil, true)
+    hooksecurefunc(AchievementStatTemplateMixin, 'OnLoad', function(f)
+        if f.Middle then
+            self:SetAlphaColor(f.Middle, nil, nil, 0.5)
+            self:SetAlphaColor(f.Left, nil, nil, 0.5)
+            self:SetAlphaColor(f.Right, nil, nil, 0.5)
+        end
+    end)
 
-    self:SetButton(AchievementFrameCloseButton, {all=true})
-    self:HideFrame(AchievementFrame.Header)
-    self:HideFrame(AchievementFrameSummary)
-    self:SetNineSlice(AchievementFrameCategories, nil, true)
-    self:SetScrollBar(AchievementFrameCategories)
-
-    self:SetScrollBar(AchievementFrameAchievements)
-    self:HideFrame(AchievementFrameAchievements)
-
-    self:SetScrollBar(AchievementFrameStats)
+--Search
     self:SetEditBox(AchievementFrame.SearchBox)
-    self:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
+    AchievementFrame.SearchBox:ClearAllPoints()
+    AchievementFrame.SearchBox:SetPoint('LEFT', AchievementFrame.Header.PointBorder, 'RIGHT')
+    AchievementFrame.SearchBox:SetPoint('RIGHT', AchievementFrameCloseButton, 'LEFT', -23, 0)
+    AchievementFrame.SearchPreviewContainer:SetPoint('RIGHT', AchievementFrame.SearchBox)
+    for i=1, 5 do
+        AchievementFrame.SearchPreviewContainer['SearchPreview'..i]:SetPoint('RIGHT')
+    end
+
+    self:SetScrollBar(AchievementFrame.SearchResults)
+
+--Tab
+
     self:SetTabButton(AchievementFrameTab1, 0.3)
     self:SetTabButton(AchievementFrameTab2, 0.3)
     self:SetTabButton(AchievementFrameTab3, 0.3)
-    self:HideTexture(AchievementFrameSummaryCategoriesStatusBarFillBar)
+--成就，显示，按钮
+    hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+        --self:SetAlphaColor(f.Glow, nil, true, 0.85)
+        --self:SetAlphaColor(f.Background, nil, true, 0.85)
+        self:SetNineSlice(f, nil, true)
+     end)
 
+
+
+--左下边水印
+    self:SetAlphaColor(AchievementFrameWaterMark, nil, true, 0)
+
+--标题
+    self:HideTexture(AchievementFrame.Header.Left)
+    self:HideTexture(AchievementFrame.Header.Right)
+    self:HideTexture(AchievementFrame.Header.RightDDLInset)
+    self:HideTexture(AchievementFrame.Header.LeftDDLInset)
+    self:HideTexture(AchievementFrame.Header.PointBorder)
+
+    self:SetButton(AchievementFrameCloseButton, {all=true})
+
+--总列表
+    self:SetNineSlice(AchievementFrameCategories, nil, true)
+    self:SetScrollBar(AchievementFrameCategories)
+    hooksecurefunc(AchievementCategoryTemplateMixin, 'OnLoad', function(f)
+        self:SetAlphaColor(f.Button.Background, nil, nil, 0.85)
+    end)
+
+--成就，列表
+    self:SetScrollBar(AchievementFrameAchievements)
+    self:HideFrame(AchievementFrameAchievements)
+    self:SetNineSlice(AchievementFrameAchievements, nil, true, nil, nil, true)
+
+--总览
+    self:SetNineSlice(AchievementFrameSummary, nil, true)
+    self:HideFrame(AchievementFrameSummary)
+    self:SetNineSlice(AchievementFrameSummary, nil, true, nil, nil, true)
+--近期成就
+    self:SetAlphaColor(AchievementFrameSummaryAchievementsHeaderHeader, nil, nil, 0.5)
+    hooksecurefunc('AchievementFrameSummaryAchievement_OnLoad', function(f)
+        --self:SetAlphaColor(f.TitleBar, nil, nil, 0.5)
+        --self:SetAlphaColor(f.Glow, nil, nil, 0.3)
+        --self:SetAlphaColor(f.Background, nil, nil, 0.3)
+        self:SetNineSlice(f, nil, true)
+    end)
+
+
+    self:SetAlphaColor(AchievementFrameSummaryCategoriesHeaderTexture, nil, nil, 0.5)
+    self:HideTexture(AchievementFrameSummaryCategoriesStatusBarRight)
+    self:HideTexture(AchievementFrameSummaryCategoriesStatusBarMiddle)
+    self:HideTexture(AchievementFrameSummaryCategoriesStatusBarLeft)
+    self:SetAlphaColor(AchievementFrameSummaryCategoriesStatusBarFillBar, nil, nil, 0.5)
+    for i=1, 12 do
+        self:HideTexture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
+        self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
+        self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
+        self:HideTexture(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
+        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'FillBar'], nil, nil, 0.5)
+    end
+
+--比较
+    AchievementFrameComparisonHeader:ClearAllPoints()
+    AchievementFrameComparisonHeader:SetPoint('BOTTOMLEFT', AchievementFrameComparison, 'TOPRIGHT', -125, 15)
+    self:SetFrame(AchievementFrameComparison, {alpha=0})
     self:HideTexture(AchievementFrameComparisonHeaderBG)
 
-    for i=1, 10 do
-        self:HideTexture(_G['AchievementFrameCategoriesCategory'..i..'Bar'])
-        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Right'])
-        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Middle'])
-        self:SetAlphaColor(_G['AchievementFrameSummaryCategoriesCategory'..i..'Left'])
-    end
-    --比较
-    AchievementFrameComparisonHeader:ClearAllPoints()
-    AchievementFrameComparisonHeader:SetPoint('BOTTOMLEFT', AchievementFrameComparison, 'TOPRIGHT', -125, 0)
+    --self:SetFrame(AchievementFrameComparisonHeader, {alpha=0})
+    self:SetScrollBar(AchievementFrameComparison.AchievementContainer)
+    self:SetNineSlice(AchievementFrameComparison, nil, true, nil, nil, true)
+
+--目标名称
+    AchievementFrameComparisonHeaderName:SetWidth(0)
+    AchievementFrameComparisonHeaderName:ClearAllPoints()
+    AchievementFrameComparisonHeaderName:SetPoint('BOTTOMRIGHT', AchievementFrameCloseButton, 'TOPLEFT', 0, 25)
+    
+    --AchievementFrameComparisonHeaderName:SetPoint('CENTER', 0)
+    AchievementFrameComparisonHeaderName:SetTextScale(1.5)
+    AchievementFrameComparisonHeaderName:SetShadowOffset(1, -1)
+--目标成就点数
+    AchievementFrameComparisonHeader.Points:ClearAllPoints()
+    AchievementFrameComparisonHeader.Points:SetPoint('BOTTOM', AchievementFrameComparisonHeaderName, 'TOP',0,2)
+--创建 BG
+    self:CreateBackground(AchievementFrameComparisonHeader, {
+        point=function(icon)
+            icon:SetPoint('TOP', AchievementFrameComparisonHeader.Points, 0, 2)
+            icon:SetPoint('BOTTOM', AchievementFrameComparisonHeaderName, 0, -5)
+            icon:SetPoint('LEFT', AchievementFrameComparisonHeaderName, -2, 0)
+            icon:SetPoint('RIGHT', AchievementFrameComparisonHeaderName, 2, 0)
+        end
+    })
+--头像
+    AchievementFrameComparisonHeaderPortrait:ClearAllPoints()
+    AchievementFrameComparisonHeaderPortrait:SetPoint('BOTTOM', AchievementFrameComparisonHeader.Background, 'TOP')
+    self:SetAlphaColor(AchievementFrameComparisonHeaderPortraitBg, nil, nil, 0.5)
+
+
+--统计
+    self:SetNineSlice(AchievementFrameStats, nil, true, nil, nil, true)
+    self:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
+    self:SetScrollBar(AchievementFrameStats)
+    self:SetScrollBar(AchievementFrameComparison.StatContainer)
 
     --WoWTools_ButtonMixin:AddMask(AchievementFrame, nil, AchievementFrame.Background)
+    AchievementFrame.bgMenuButton= WoWTools_ButtonMixin:Cbtn(AchievementFrame.Header, {
+        size=23,
+        name='AchievementFrameBGMenuButton',
+        texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
+        alpha=0.75
+    })
+    AchievementFrame.bgMenuButton:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
+    
     WoWTools_TextureMixin:Init_BGMenu_Frame(
         AchievementFrame,
         'AchievementFrame',
         AchievementFrame.Background,
     {
-
+        menuButton=AchievementFrame.bgMenuButton
     })
 
 end

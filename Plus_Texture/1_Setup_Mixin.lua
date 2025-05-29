@@ -178,16 +178,31 @@ local NineSliceTabs={
     'Background',
     'Bg',
 }
-function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg)
-    if not frame or not frame.NineSlice then
+function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, isFind)
+    if not frame then
         return
     end
+
+    local f= frame.NineSlice
+    if not f and isFind then
+        for _, t in pairs({frame:GetChildren()})do
+            if t.NineSlice then
+                f= t.NineSlice
+                break
+            end
+        end
+    end
+
+    if not f then
+        return
+    end
+
     local alpha= min and self.min or nil
     for index, text in pairs(NineSliceTabs) do
-        if not hide then
-            self:SetAlphaColor(frame.NineSlice[text], notAlpha, nil, alpha)
+        if hide then
+            self:HideTexture(f[text])
         else
-            self:HideTexture(frame.NineSlice[text])
+            self:SetAlphaColor(f[text], notAlpha, nil, alpha)
         end
         if notBg and index==8 then
             break
