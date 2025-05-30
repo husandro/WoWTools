@@ -8,6 +8,21 @@ local P_UIPanelWindows= {}
 
 
 
+--设置大小
+local function Set_Frame_Size(self, w, h)
+    if not self:IsResizable() then
+        self:SetResizable(true)
+    end
+    self:SetSize(w, h)
+end
+
+
+
+
+
+
+
+
 
 
 
@@ -28,7 +43,7 @@ function WoWTools_MoveMixin:Set_SizeScale(frame)
     if frame.ResizeButton.setSize then
         local size= Save().size[name]
         if size then
-            frame:SetSize(size[1], size[2])
+            Set_Frame_Size(frame, size[1], size[2])--设置大小
         end
     end
 end
@@ -68,8 +83,7 @@ local function Set_ScalePercent(self, isSu)
         return
     end
 
-    self.targetFrame:SetSize(w,h)
-
+    Set_Frame_Size(self.targetFrame, w, h)--设置大小
     Save_Frame_Size(self)--保存，大小
 end
 
@@ -91,7 +105,6 @@ end
 
 
 --锁定框体位置
-
 local function FrameOnShow_SetPoint(self, isSet)
     local attributes= P_UIPanelWindows[self.name] or UIPanelWindows[self.name]
     if not self.targetFrame:CanChangeAttribute() or not attributes then
@@ -629,15 +642,13 @@ end
 
 
 
-local function Set_OnMouseUp(self, d)
+local function Set_OnMouseUp(self)
     self:SetScript("OnUpdate", nil)
-    self.isActiveButton= nil
-
     --[[if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
         return
     end]]
 
-    if self.setSize then--保存，大小 d=='RightButton' and
+    if self.isActiveButton=='RightButton' and self.setSize then--保存，大小 d=='RightButton' and
         local continueResizeStop = true
         if self.targetFrame.onResizeStopCallback then
             continueResizeStop = self.targetFrame.onResizeStopCallback(self)
@@ -647,13 +658,15 @@ local function Set_OnMouseUp(self, d)
         end
         Save_Frame_Size(self)--保存，大小
 
-    elseif d=='LeftButton' then--保存，缩放
+    elseif self.isActiveButton=='LeftButton' then--保存，缩放
         if self.scaleStoppedFunc then
             self.scaleStoppedFunc(self)
-        else
-            Save().scale[self.name]= self.targetFrame:GetScale()
         end
+        Save().scale[self.name]= self.targetFrame:GetScale()
+        print(self.name, self.targetFrame:GetScale())
     end
+
+    self.isActiveButton= nil
     --self:SetScript("OnUpdate", nil)
 end
 
@@ -667,8 +680,9 @@ local function Set_OnMouseDown(self, d)
         return
     end
 
+    self.isActiveButton = d
+
     if d=='LeftButton' then
-        self.isActiveButton= d
         local target= self.targetFrame
         self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
         self.SOS.scale = target:GetScale()
@@ -705,7 +719,7 @@ local function Set_OnMouseDown(self, d)
 
     elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] and not IsModifierKeyDown() then
 --开始，设置，大小
-        self.isActiveButton = d
+        
         local continueResizeStart = true
         if self.targetFrame.onResizeStartCallback then
             continueResizeStart = self.targetFrame.onResizeStartCallback(self)
@@ -758,7 +772,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
     if WoWTools_FrameMixin:IsLocked(target) then--not InCombatLockdown() or not sel:IsProtected() 
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)--btn2, target2, size2, initFunc2)
             if tab.size then
-                tab.target:SetSize(tab.size[1], tab.size[2])
+                Set_Frame_Size(tab.target, tab.size[1], tab.size[2])--设置大小
             end
             if initFunc then
                 initFunc(btn)
@@ -775,7 +789,7 @@ local function Set_Init_Frame(btn, target, size, initFunc)
         end
     else
         if size then
-            target:SetSize(size[1], size[2])
+            Set_Frame_Size(target, size[1], size[2])--设置大小
         end
         if initFunc then
             initFunc(btn)
@@ -828,7 +842,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     local btn= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
     btn:SetFrameStrata('DIALOG')
     btn:SetFrameLevel(frame:GetFrameLevel()+7)
-    btn:SetSize(16, 16)
+    btn:SetSize(18, 18)
 
 
     if setResizeButtonPoint then
@@ -876,7 +890,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
         local size= Save().size[name]
         if size or initFunc then
-            print(btn.name, size)
             Set_Init_Frame(btn, frame, size, initFunc)
         end
     end
@@ -896,6 +909,9 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     }
 
     local scale= Save().scale[name]
+    if scale then
+        print(name, scale)
+    end
     if scale and scale~=1 then
         if WoWTools_FrameMixin:IsLocked(frame) then
             EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, info)
@@ -911,7 +927,6 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         Set_OnMouseUp(s, d)
     end)
     btn:SetScript("OnMouseDown",function(s, d)
-        s.isOnMouseDown=true
         Set_OnMouseDown(s, d)
     end)
     btn:SetScript('OnMouseWheel', function(s)
@@ -919,7 +934,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         Set_Tooltip(s)
     end)
     btn.targetFrame:HookScript('OnHide', function(s)
-        if s.ResizeButton.isActiveButton then
+        if s.ResizeButton and s.ResizeButton.isActiveButton then
             Set_OnMouseUp(s.ResizeButton, s.ResizeButton.isActiveButton)
         end
     end)
