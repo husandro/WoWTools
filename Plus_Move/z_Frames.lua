@@ -18,16 +18,14 @@ end
 
 --对话
 function WoWTools_MoveMixin.Frames:GossipFrame()
-    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true, initFunc=function(btn)
-        btn.targetFrame.GreetingPanel:SetPoint('BOTTOMRIGHT')
-        btn.targetFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
-        btn.targetFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
-        --GreetingText:SetWidth(GreetingText:GetParent():GetWidth()-56)
-        hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(btn)
-            btn.GreetingText:SetWidth(btn:GetWidth()-22)
-        end)
-        --hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(btn, optionInfo)
-    end, sizeRestFunc=function(btn)
+    hooksecurefunc(GossipGreetingTextMixin, 'Setup', function(b)
+        b.GreetingText:SetWidth(b:GetWidth()-22)
+    end)
+    GossipFrame.GreetingPanel:SetPoint('BOTTOMRIGHT')
+    GossipFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
+    GossipFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
+
+    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(384, 512)
     end})
 end
@@ -36,14 +34,13 @@ end
 
 --试衣间
 function WoWTools_MoveMixin.Frames:DressUpFrame()
-    self:Setup(DressUpFrame, {setSize=true, minH=330, minW=330, initFunc=function(btn)
-        btn.targetFrame:HookScript('OnShow', function(b)--DressUpFrame_Show
-            local size= Save().size[b:GetName()]
-            if size then
-                b:SetSize(size[1], size[2])
-            end
-        end)
-    end, sizeRestFunc=function(btn)
+    DressUpFrame:HookScript('OnShow', function(b)--DressUpFrame_Show
+        local size= Save().size[b:GetName()]
+        if size then
+            b:SetSize(size[1], size[2])
+        end
+    end)
+    self:Setup(DressUpFrame, {setSize=true, minH=330, minW=330, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(450, 545)
     end})
 end

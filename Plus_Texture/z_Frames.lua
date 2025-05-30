@@ -391,3 +391,15 @@ function WoWTools_TextureMixin.Frames:ReadyCheckListenerFrame()
     self:SetNineSlice(ReadyCheckListenerFrame, true)
     self:SetAlphaColor(ReadyCheckListenerFrame.Bg, true)
 end
+
+
+
+
+
+
+
+
+
+
+
+

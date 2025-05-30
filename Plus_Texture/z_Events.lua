@@ -159,7 +159,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     AchievementFrameComparisonHeaderName:SetWidth(0)
     AchievementFrameComparisonHeaderName:ClearAllPoints()
     AchievementFrameComparisonHeaderName:SetPoint('BOTTOMRIGHT', AchievementFrameCloseButton, 'TOPLEFT', 0, 25)
-    
+
     --AchievementFrameComparisonHeaderName:SetPoint('CENTER', 0)
     AchievementFrameComparisonHeaderName:SetTextScale(1.5)
     AchievementFrameComparisonHeaderName:SetShadowOffset(1, -1)
@@ -195,7 +195,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
         alpha=0.75
     })
     AchievementFrame.bgMenuButton:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
-    
+
     self:Init_BGMenu_Frame(
         AchievementFrame,
         'AchievementFrame',
@@ -1266,7 +1266,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 --小队，背景
     self:SetFrame(PartyFrame.Background, {alpha= 0.3})
 
-    
+
 --施法条 CastingBarFrameTemplate
     for _, frame in pairs({
         PlayerCastingBarFrame,
@@ -1400,7 +1400,8 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
 
     --右边
-    self:HideTexture(PVEFrameLLVert)
+    self:HideFrame(PVEFrame)
+    --[[self:HideTexture(PVEFrameLLVert)
     self:HideTexture(PVEFrameRLVert)
     self:HideTexture(PVEFrameBLCorner)
     self:HideTexture(PVEFrameBottomLine)
@@ -1408,9 +1409,9 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:HideTexture(PVEFrameTLCorner)
     self:HideTexture(PVEFrameTopLine)
     self:HideTexture(PVEFrameTRCorner)
+    ]]
 
-
-    self:SetAlphaColor(PVEFrameBg)--左边
+    --self:HideTexture(PVEFrameBg)--左边
 
 
     self:HideTexture(PVEFrameBlueBg)
@@ -1432,6 +1433,8 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:HideTexture(LFDParentFrameRoleBackground)
     self:SetNineSlice(RaidFinderFrameRoleInset, nil, true)
     self:HideTexture(RaidFinderFrameRoleInset.Bg)
+
+    WoWTools_TextureMixin:Init_BGMenu_Frame(PVEFrame, 'PVEFrame', nil, nil)
 end
 
 
@@ -1493,4 +1496,886 @@ end
 --地下堡
 function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
     self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--角色，界面
+function WoWTools_TextureMixin.Frames:CharacterFrame()
+
+    self:SetButton(CharacterFrameCloseButton, {all=true})
+    self:SetNineSlice(CharacterFrameInset, true)
+    self:SetNineSlice(CharacterFrame, true)
+    self:SetNineSlice(CharacterFrameInsetRight, true)
+
+    self:HideTexture(CharacterFrameBg)
+    self:HideTexture(CharacterFrameInset.Bg)
+
+    --self:SetAlphaColor(CharacterFrame.Background)
+    self:HideTexture(CharacterFrame.TopTileStreaks)
+
+    self:HideTexture(PaperDollInnerBorderBottom)
+    self:HideTexture(PaperDollInnerBorderRight)
+    self:HideTexture(PaperDollInnerBorderLeft)
+    self:HideTexture(PaperDollInnerBorderTop)
+
+    self:HideTexture(PaperDollInnerBorderTopLeft)
+    self:HideTexture(PaperDollInnerBorderTopRight)
+    self:HideTexture(PaperDollInnerBorderBottomLeft)
+    self:HideTexture(PaperDollInnerBorderBottomRight)
+
+    self:HideTexture(PaperDollInnerBorderBottom2)
+    self:HideTexture(CharacterFrameInsetRight.Bg)
+
+    self:HideTexture(PaperDollSidebarTabs.DecorRight)
+    self:HideTexture(PaperDollSidebarTabs.DecorLeft)
+
+
+    self:SetNineSlice(CharacterFrameInsetRight, nil, true)
+
+--角色，物品栏
+    for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
+        self:HideFrame(_G[name])
+    end
+
+    --self:SetAlphaColor(PaperDollSidebarTab1.TabBg, nil, nil, true)
+    --WoWTools_ButtonMixin:AddMask(PaperDollSidebarTab2, nil, PaperDollSidebarTab2.TabBg)
+    --WoWTools_ButtonMixin:AddMask(PaperDollSidebarTab3, nil, PaperDollSidebarTab3.TabBg)
+
+
+--Tab
+    self:SetTabButton(CharacterFrameTab1)
+    self:SetTabButton(CharacterFrameTab2)
+    self:SetTabButton(CharacterFrameTab3)
+
+--属性
+    self:SetAlphaColor(CharacterStatsPane.ClassBackground, nil, nil, true)
+    self:SetAlphaColor(CharacterStatsPane.EnhancementsCategory.Background, nil, nil, true)
+    self:SetAlphaColor(CharacterStatsPane.AttributesCategory.Background, nil, nil, true)
+    self:SetAlphaColor(CharacterStatsPane.ItemLevelCategory.Background, nil, nil, true)
+
+--头衔
+    hooksecurefunc('PaperDollTitlesPane_InitButton', function(btn, data)
+        self:SetAlphaColor(btn.BgMiddle, nil, nil, true)
+        btn.BgMiddle:SetPoint('RIGHT', 4, 0)
+        if data.index == 1 then
+            btn.BgTop:SetShown(false)
+        elseif data.index==#PaperDollFrame.TitleManagerPane.titles then
+            btn.BgBottom:SetShown(false)
+        end
+    end)
+    self:SetScrollBar(PaperDollFrame.TitleManagerPane)
+
+--装备方案
+    hooksecurefunc('PaperDollEquipmentManagerPane_InitButton', function(btn, data)
+        self:SetAlphaColor(btn.BgMiddle, nil, nil, true)
+        btn.BgMiddle:SetPoint('RIGHT', 4, 0)
+        if data.addSetButton then
+            btn.BgTop:SetShown(false)
+            btn.BgBottom:SetShown(false)
+        elseif data.index==1 then
+            btn.BgTop:SetShown(false)
+        end
+    end)
+    self:SetScrollBar(PaperDollFrame.EquipmentManagerPane)
+
+
+
+    self:SetAlphaColor(CharacterModelFrameBackgroundTopLeft, nil, nil, 0)--角色3D背景
+    self:SetAlphaColor(CharacterModelFrameBackgroundTopRight, nil, nil, 0)
+    self:SetAlphaColor(CharacterModelFrameBackgroundBotLeft, nil, nil, 0)
+    self:SetAlphaColor(CharacterModelFrameBackgroundBotRight, nil, nil, 0)
+    self:SetAlphaColor(CharacterModelFrameBackgroundOverlay, nil, nil, 0)
+    CharacterModelFrameBackgroundOverlay:Hide()
+
+--图标，选取
+    self:HideFrame(GearManagerPopupFrame.BorderBox)
+    self:SetAlphaColor(GearManagerPopupFrame.BG, nil, nil, 0.3)
+    self:SetScrollBar(GearManagerPopupFrame.IconSelector)
+    self:SetEditBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
+    self:SetMenu(GearManagerPopupFrame.BorderBox.IconTypeDropdown)
+
+--声望
+    self:SetScrollBar(ReputationFrame)
+    self:SetMenu(ReputationFrame.filterDropdown)
+    self:SetFrame(ReputationFrame.ReputationDetailFrame.Border, {isMinAlpha=true})
+    hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(f)
+        if not f:GetView() then
+            return
+        end
+        for _, frame in pairs(f:GetFrames() or {}) do
+            if frame.Middle then
+                self:SetAlphaColor(frame.Middle, nil, nil, true)
+                self:SetAlphaColor(frame.Right, nil, nil, true)
+                self:SetAlphaColor(frame.Left, nil, nil, true)
+            end
+        end
+    end)
+--添加Bg
+    self:CreateBG(ReputationFrame.ScrollBox, {
+        atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
+        alpha=0.3,
+        isAllPoint=true,
+    })
+
+
+
+--BG, 菜单
+    --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
+    CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
+    CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+        CharacterFrame,
+        'CharacterFrame',
+        CharacterFrame.Background,
+    nil)
+
+end
+
+
+
+--货币
+function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
+    self:SetScrollBar(TokenFrame)
+    self:SetFrame(TokenFramePopup.Border, {alpha=0.3})
+    self:SetMenu(TokenFrame.filterDropdown)
+
+    hooksecurefunc(TokenHeaderMixin, 'Initialize', function(btn)
+        print(btn)
+    end)
+
+    hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
+        if not f:GetView() then
+            return
+        end
+        for _, frame in pairs(f:GetFrames() or {}) do
+            if frame.Middle then
+                self:SetAlphaColor(frame.Middle, nil, nil, true)
+                self:SetAlphaColor(frame.Right, nil, nil, true)
+                self:SetAlphaColor(frame.Left, nil, nil, true)
+            end
+        end
+    end)
+
+    self:CreateBG(TokenFrame.ScrollBox, {--添加Bg
+        atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
+        alpha=0.3,
+        isAllPoint=true,
+    })
+    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, {all=true})
+
+--货币转移
+    self:SetNineSlice(CurrencyTransferLog, true)
+    self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
+    self:SetNineSlice(CurrencyTransferLogInset, true)
+    self:SetScrollBar(CurrencyTransferLog)
+    self:SetNineSlice(CurrencyTransferMenu, true)
+    self:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
+    self:SetNineSlice(CurrencyTransferMenuInset)
+    self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
+    self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
+    
+end
+
+
+
+
+--玩家, 观察角色, 界面
+function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
+    self:SetNineSlice(InspectFrame, true)
+    --self:SetAlphaColor(InspectFrameBg)
+    self:HideTexture(InspectFrameInset.Bg)
+    self:HideTexture(InspectPVPFrame.BG)
+
+    self:HideTexture(InspectGuildFrameBG)
+    self:SetTabButton(InspectFrameTab1)
+    self:SetTabButton(InspectFrameTab2)
+    self:SetTabButton(InspectFrameTab3)
+    self:SetNineSlice(InspectFrame, true)
+    self:SetNineSlice(InspectFrameInset, nil, true)
+
+    self:SetAlphaColor(InspectModelFrameBackgroundOverlay, nil, nil, 0)
+    self:SetAlphaColor(InspectModelFrameBackgroundBotLeft, nil, nil, 0)
+    self:SetAlphaColor(InspectModelFrameBackgroundBotRight, nil, nil, 0)
+    self:SetAlphaColor(InspectModelFrameBackgroundTopLeft, nil, nil, 0)
+    self:SetAlphaColor(InspectModelFrameBackgroundTopRight, nil, nil, 0)
+end
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
+    local function set_button(btn)
+        if btn then
+            self:SetAlphaColor(btn.NormalTexture, nil, nil, true)
+            if btn.MouseoverOverlay then
+                btn.MouseoverOverlay:SetTexCoord(0,1,0.8,0)
+            end
+        end
+    end
+    self:SetButton(EventTraceCloseButton, {all=true})
+    self:SetNineSlice(EventTrace, true)
+    self:SetAlphaColor(EventTraceBg, nil, nil, true)
+    self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
+    self:SetNineSlice(EventTraceInset, true)
+    self:SetButton(EventTrace.ResizeButton, {all=true})
+    self:SetScrollBar(EventTrace.Log.Events)
+    self:SetEditBox(EventTrace.Log.Bar.SearchBox)
+
+    set_button(EventTrace.SubtitleBar.ViewLog)
+    set_button(EventTrace.SubtitleBar.ViewFilter)
+
+    set_button(EventTrace.Log.Bar.DiscardAllButton)
+    set_button(EventTrace.Log.Bar.PlaybackButton)
+    set_button(EventTrace.Log.Bar.MarkButton)
+
+    set_button(EventTrace.Filter.Bar.DiscardAllButton)
+    set_button(EventTrace.Filter.Bar.UncheckAllButton)
+    set_button(EventTrace.Filter.Bar.CheckAllButton)
+
+    self:SetFrame(EventTrace.Log.Events.ScrollBox, {index=1, isMinAlpha=true})
+    self:SetFrame(EventTrace.Filter.ScrollBox, {index=1, isMinAlpha=true})
+
+    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(frame)
+        self:SetButton(frame.HideButton, {all=true})
+        local icon= frame:GetRegions()
+        if icon:GetObjectType()=='Texture' then
+            icon:SetTexture(0)
+        end
+        --frame.Alternate:SetAlpha(0.75)
+    end)
+    hooksecurefunc(EventTraceFilterButtonMixin, 'Init', function(frame, elementData, hideCb)
+        local icon= frame:GetRegions()
+        if icon:GetObjectType()=='Texture' then
+            icon:SetTexture(0)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()--成就
+    GuildBankFrame.Emblem.Left:Hide()
+    GuildBankFrame.Emblem.Right:Hide()
+
+    self:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.BotLeftCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.BotRightCorner, nil, nil, true)
+
+    self:SetAlphaColor(GuildBankFrame.LeftBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.RightBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, true)
+
+    GuildBankFrame.BlackBG:ClearAllPoints()
+    GuildBankFrame.BlackBG:SetAllPoints()
+
+    self:HideTexture(GuildBankFrame.TitleBg)
+    self:HideTexture(GuildBankFrame.RedMarbleBG)
+    GuildBankFrame.MoneyFrameBG:DisableDrawLayer('BACKGROUND')
+
+
+
+    self:HideTexture(GuildBankFrameBottomOuter)
+    self:HideTexture(GuildBankFrameTopOuter)
+    self:HideTexture(GuildBankFrameLeftOuter)
+    self:HideTexture(GuildBankFrameRightOuter)
+
+    self:HideTexture(GuildBankFrameBottomLeftOuter)
+    self:HideTexture(GuildBankFrameBottomRightOuter)
+    self:HideTexture(GuildBankFrameTopLeftOuter)
+    self:HideTexture(GuildBankFrameTopRightOuter)
+
+    self:HideTexture(GuildBankFrameLeftInner)
+    self:HideTexture(GuildBankFrameRightInner)
+    self:HideTexture(GuildBankFrameTopInner)
+    self:HideTexture(GuildBankFrameBottomInner)
+
+    self:HideTexture(GuildBankFrameBottomLeftInner)
+    self:HideTexture(GuildBankFrameBottomRightInner)
+    self:HideTexture(GuildBankFrameTopLeftInner)
+    self:HideTexture(GuildBankFrameTopRightInner)
+
+    self:HideTexture(GuildBankFrame.TabLimitBG)
+    self:HideTexture(GuildBankFrame.TabLimitBGLeft)
+    self:HideTexture(GuildBankFrame.TabLimitBGRight)
+    self:SetEditBox(GuildItemSearchBox)
+
+    self:HideTexture(GuildBankFrame.TabTitleBG)
+    self:HideTexture(GuildBankFrame.TabTitleBGLeft)
+    self:HideTexture(GuildBankFrame.TabTitleBGRight)
+
+    for i=1, 7 do
+        local frame= GuildBankFrame['Column'..i]
+        if frame then
+            self:HideTexture(frame.Background)
+        end
+        self:SetFrame(_G['GuildBankFrameTab'..i], {notAlpha=true})
+    end
+
+
+    self:SetScrollBar(GuildBankFrame.Log)
+    self:SetScrollBar(GuildBankInfoScrollFrame)
+
+
+    for i=1, MAX_GUILDBANK_TABS do
+		local btn= GuildBankFrame.BankTabs[i].Button
+        btn.NormalTexture:SetTexture(0)
+
+        btn= _G['GuildBankTab'..i]
+        if btn then
+            self:SetFrame(btn, {alpha=0})
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+--天赋，法术书
+function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
+    self:SetButton(PlayerSpellsFrameCloseButton, {all=true})
+    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MaximizeButton, {all=true})
+    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MinimizeButton, {all=true})
+    
+
+    --self:SetAlphaColor(PlayerSpellsFrameBg)
+    self:SetNineSlice(PlayerSpellsFrame, 0.3)
+    self:SetTabSystem(PlayerSpellsFrame)
+
+    self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background, 0.3)--专精
+    self:HideTexture(PlayerSpellsFrame.SpecFrame.BlackBG)
+
+    self:SetAlphaColor(PlayerSpellsFrame.TalentsFrame.BottomBar, 0.3)--天赋
+    self:HideTexture(PlayerSpellsFrame.TalentsFrame.BlackBG)
+    self:SetEditBox(PlayerSpellsFrame.TalentsFrame.SearchBox)
+    self:SetMenu(PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
+
+
+    self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+
+    self:SetEditBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
+    self:SetFrame(PlayerSpellsFrame.SpellBookFrame.SearchPreviewContainer, {isMinAlpha=true})
+
+    self:SetTabSystem(PlayerSpellsFrame.SpellBookFrame)
+
+
+
+    --英雄专精
+    self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
+
+    if PlayerSpellsFrame.SpellBookFrame.SettingsDropdown then--11.1.7
+        self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)
+        self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.AssistedCombatRotationSpellFrame.Button.Border, nil, nil,  true)
+    end
+
+
+
+
+--背景
+    PlayerSpellsFrameBg:ClearAllPoints()
+    PlayerSpellsFrameBg:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
+    PlayerSpellsFrameBg:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+
+--专精 ClassSpecFrameTemplate
+    PlayerSpellsFrame.SpecFrame.Background:ClearAllPoints()
+    PlayerSpellsFrame.SpecFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
+    PlayerSpellsFrame.SpecFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+
+--天赋 ClassTalentsFrameTemplate
+    PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+
+    PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
+    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.ExpandedContainer.Background:SetAlpha(0.2)
+    PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.PreviewContainer.Background:SetAlpha(0.2)
+
+--法术书 SpellBookFrameTemplate
+    self:SetFrame(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton, {alpha=0.3})
+    --PlayerSpellsFrame.SpellBookFrame.BookBGHalved
+
+    --[[PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
+    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')]]
+
+
+
+    hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(frame)
+        if PlayerSpellsFrameBg.Set_BGTexture then
+            --[[local currentSpecID = frame:GetSpecID()
+            local specVisuals = ClassTalentUtil.GetVisualsForSpecID(currentSpecID);
+            if specVisuals and specVisuals.background and C_Texture.GetAtlasInfo(specVisuals.background) then
+                PlayerSpellsFrameBg.set_BGData.p_texture= specVisuals.background
+            end]]
+
+            PlayerSpellsFrameBg:Set_BGTexture()
+        end
+    end)
+
+    WoWTools_TextureMixin:Init_BGMenu_Frame(
+        PlayerSpellsFrame,
+        'PlayerSpellsFrame',
+        PlayerSpellsFrameBg,
+    {
+        notAnims=true,
+        isHook=true,
+        setValueFunc=function() WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame) end,
+        icons={
+            PlayerSpellsFrame.SpecFrame.Background,
+            PlayerSpellsFrame.TalentsFrame.Background,
+        }
+    })
+end
+
+
+
+
+
+
+
+
+
+
+
+--收藏
+function WoWTools_TextureMixin.Events:Blizzard_Collections()
+    self:SetButton(CollectionsJournalCloseButton, {all=true})
+    self:SetFrame(PetJournalTutorialButton, {alpha=0.3})
+
+    self:SetNineSlice(CollectionsJournal, true)
+    self:SetAlphaColor(CollectionsJournalBg, nil, nil, true)
+
+--坐骑
+    self:SetFrame(MountJournal.MountCount, {alpha=0.3})
+    self:HideTexture(MountJournal.LeftInset.Bg)
+    self:SetAlphaColor(MountJournal.MountDisplay.YesMountsTex)
+    self:HideTexture(MountJournal.RightInset.Bg)
+    self:SetAlphaColor(MountJournal.BottomLeftInset.Background)
+    self:HideTexture(MountJournal.BottomLeftInset.Bg)
+    self:SetScrollBar(MountJournal)
+    self:SetEditBox(MountJournalSearchBox)
+    self:SetNineSlice(MountJournal.BottomLeftInset, nil, true)
+    self:SetNineSlice(MountJournal.RightInset, nil, true)
+    self:SetNineSlice(MountJournal.LeftInset, nil, true)
+    if MountJournal.ToggleDynamicFlightFlyoutButton then--11.1.7
+        self:SetAlphaColor(MountJournal.ToggleDynamicFlightFlyoutButton.Border, true)
+    end
+    if MountJournal.SummonRandomFavoriteSpellFrame then
+        self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
+    end
+
+    self:SetAlphaColor(PetJournalPetCardBG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalPetCardInset.Bg)
+    self:SetAlphaColor(PetJournalRightInset.Bg)
+    self:SetAlphaColor(PetJournalLoadoutPet1BG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalLoadoutPet2BG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalLoadoutPet3BG, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournalLoadoutBorderSlotHeaderBG)
+    self:HideTexture(PetJournalLeftInset.Bg)
+    self:HideTexture(PetJournalLoadoutBorder)
+
+    self:SetScrollBar(PetJournal)
+    self:SetEditBox(PetJournalSearchBox)
+
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.Bg, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderBottomMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopRightMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopLeftMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderBottomLeft, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopLeft, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderBottomRight, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderTopRight, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderLeftMiddle, nil, nil, 0.3)
+    self:SetAlphaColor(PetJournal.PetCount.BorderRightMiddle, nil, nil, 0.3)
+
+    if PetJournal.SummonRandomPetSpellFrame then --11.1.7才有
+        self:SetAlphaColor(PetJournal.SummonRandomPetSpellFrame.Button.Border, true, nil, nil)
+        self:SetAlphaColor(PetJournal.HealPetSpellFrame.Button.Border, true, nil, nil)
+    else
+        self:SetAlphaColor(PetJournalSummonRandomFavoritePetButtonBorder, true, nil, nil)
+        self:SetAlphaColor(PetJournalHealPetButtonBorder, true, nil, nil)
+    end
+
+    self:SetFrame(PetJournalFilterButton, {alpha=0.3})
+    self:SetNineSlice(PetJournalLeftInset, nil, true)
+    self:SetNineSlice(PetJournalPetCardInset, nil, true)
+    self:SetNineSlice(PetJournalRightInset, nil, true)
+
+    if _G['RematchFrame'] then
+        self:HideTexture(_G['RematchFrame'].Bg)
+        self:HideTexture(_G['RematchFrame'].OptionsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].QueuePanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].TargetsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].TeamsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].ToolBar.Bg)
+    end
+
+
+    self:HideTexture(ToyBox.iconsFrame.BackgroundTile)
+    self:HideTexture(ToyBox.iconsFrame.Bg)
+    self:SetEditBox(ToyBox.searchBo)
+    self:SetEditBox(ToyBox.searchBox)
+    self:SetFrame(ToyBoxFilterButton, {alpha=0.3})
+    self:HideTexture(ToyBox.iconsFrame.ShadowLineTop)
+    self:HideTexture(ToyBox.iconsFrame.ShadowLineBottom)
+
+    self:SetNineSlice(ToyBox.iconsFrame, nil, true)
+    ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
+
+    self:HideTexture(HeirloomsJournal.iconsFrame.BackgroundTile)
+    self:HideTexture(HeirloomsJournal.iconsFrame.Bg)
+    self:SetEditBox(HeirloomsJournalSearchBox)
+    self:SetAlphaColor(HeirloomsJournalMiddleMiddle)
+    self:SetAlphaColor(HeirloomsJournalMiddleLeft)
+    self:SetAlphaColor(HeirloomsJournalMiddleRight)
+    self:SetAlphaColor(HeirloomsJournalBottomMiddle)
+    self:SetAlphaColor(HeirloomsJournalTopMiddle)
+    self:SetAlphaColor(HeirloomsJournalBottomLeft)
+    self:SetAlphaColor(HeirloomsJournalBottomRight)
+    self:SetAlphaColor(HeirloomsJournalTopLeft)
+    self:SetAlphaColor(HeirloomsJournalTopRight)
+    self:HideTexture(HeirloomsJournal.iconsFrame.ShadowLineBottom)
+    self:HideTexture(HeirloomsJournal.iconsFrame.ShadowLineTop)
+    self:SetNineSlice(HeirloomsJournal.iconsFrame, nil, true)
+    HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
+    self:SetFrame(HeirloomsJournal.FilterButton, {alpha=0.3})
+
+    self:SetFrame(WardrobeCollectionFrame.InfoButton, {alpha=0.3})
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineBottom)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
+    self:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.BackgroundTile)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.Bg)
+    self:HideTexture(WardrobeCollectionFrame.ItemsCollectionFrame.ShadowLineTop)
+
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BackgroundTile)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.Bg)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
+    self:SetScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineTop)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomRight)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.BGCornerBottomLeft)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.RightInset.ShadowLineBottom)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
+
+    self:SetEditBox(WardrobeCollectionFrameSearchBox)
+    self:SetAlphaColor(WardrobeCollectionFrameMiddleMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameTopMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameBottomMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameTopMiddle)
+    self:SetAlphaColor(WardrobeCollectionFrameMiddleLeft)
+    self:SetAlphaColor(WardrobeCollectionFrameMiddleRight)
+    self:SetAlphaColor(WardrobeCollectionFrameTopLeft)
+    self:SetAlphaColor(WardrobeCollectionFrameBottomLeft)
+    self:SetAlphaColor(WardrobeCollectionFrameBottomRight)
+    self:SetAlphaColor(WardrobeCollectionFrameTopLeft)
+
+    self:SetFrame(WardrobeCollectionFrame.FilterButton, {alpha=0.3})
+    self:SetFrame(WardrobeSetsCollectionVariantSetsButton, {alpha=0.3})
+
+    self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
+
+    self:SetTabButton(WardrobeCollectionFrameTab1)
+    self:SetTabButton(WardrobeCollectionFrameTab2)
+
+    --试衣间
+    self:SetNineSlice(WardrobeFrame, true)
+    self:HideTexture(WardrobeFrameBg)
+    self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
+    self:SetAlphaColor(WardrobeTransmogFrame.Inset.BG)
+    self:HideTexture(WardrobeCollectionFrame.SetsTransmogFrame.BackgroundTile)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
+    self:SetAlphaColor(WardrobeCollectionFrame.SetsTransmogFrame.Bg)
+
+
+    self:SetAlphaColor(WardrobeTransmogFrame.MoneyMiddle)
+    self:SetAlphaColor(WardrobeTransmogFrame.MoneyLeft)
+    self:SetAlphaColor(WardrobeTransmogFrame.MoneyRight)
+
+    hooksecurefunc(WardrobeCollectionFrame, 'SetTab', function(frame)
+        local f= frame.activeFrame
+        if f and f==frame.SetsTransmogFrame then
+            for i=1, f.PAGE_SIZE or 8 do
+                local btn= f.Models[i]
+                if btn then
+                    btn:DisableDrawLayer('BACKGROUND')
+                end
+            end
+        end
+    end)
+    for v=1,4 do
+        for h= 1, 2 do
+            local button= WardrobeCollectionFrame.SetsTransmogFrame['ModelR'..h..'C'..v]
+            if button then
+                button:DisableDrawLayer('BACKGROUND')
+            end
+        end
+    end
+    WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
+
+
+    for i=1, 7 do
+        self:SetFrame(_G['CollectionsJournalTab'..i], {notAlpha=true})
+    end
+
+    if _G['RematchJournal'] then
+        self:SetNineSlice(_G['RematchJournal'], true)
+        self:SetAlphaColor(_G['RematchJournalBg'])
+        self:SetAlphaColor(RematchLoadoutPanel.Target.InsetBack)
+        self:HideTexture(RematchPetPanel.Top.InsetBack)
+        self:SetAlphaColor(RematchQueuePanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchQueuePanel.Top.InsetBack)
+        self:HideTexture(RematchPetPanel.Top.TypeBar.NineSlice)
+        self:SetAlphaColor(RematchTeamPanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
+    end
+
+
+    if WarbandSceneJournal then--11.1
+        self:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
+        self:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--[[
+战斗宠物
+
+技能, 提示
+	PetBattlePrimaryUnitTooltip
+    PetBattleUnitTooltipTemplate
+    TooltipBackdropTemplate
+
+	PetBattlePrimaryAbilityTooltip
+    SharedPetBattleAbilityTooltipTemplate
+]]
+function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
+    self:HideTexture(PetBattleFrame.TopArtLeft)
+    self:HideTexture(PetBattleFrame.TopArtRight)
+    self:HideTexture(PetBattleFrame.TopVersus)
+    PetBattleFrame.TopVersusText:SetText('')
+    PetBattleFrame.TopVersusText:SetShown(false)
+    self:HideTexture(PetBattleFrame.WeatherFrame.BackgroundArt)
+
+    self:HideTexture(PetBattleFrameXPBarLeft)
+    self:HideTexture(PetBattleFrameXPBarRight)
+    self:HideTexture(PetBattleFrameXPBarMiddle)
+
+    self:HideTexture(PetBattleFrame.BottomFrame.LeftEndCap)
+    self:HideTexture(PetBattleFrame.BottomFrame.RightEndCap)
+    self:HideTexture(PetBattleFrame.BottomFrame.Background)
+    self:HideTexture(PetBattleFrame.BottomFrame.TurnTimer.ArtFrame2)
+
+    PetBattleFrame.BottomFrame.FlowFrame:SetShown(false)
+    PetBattleFrame.BottomFrame.Delimiter:SetShown(false)
+
+    for i=1,NUM_BATTLE_PETS_IN_BATTLE do
+        if PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i] then
+            WoWTools_ColorMixin:Setup(PetBattleFrame.BottomFrame.PetSelectionFrame['Pet'..i].SelectedTexture, {type='Texture', color={r=0,g=1,b=1}})
+        end
+    end
+
+    --宠物， 主面板,主技能, 提示
+    --for _, btn in pairs(PetBattleFrame.BottomFrame.abilityButtons) do
+    hooksecurefunc('PetBattleAbilityButton_UpdateHotKey', function(frame)
+        if not frame.HotKey:IsShown() then
+            return
+        end
+        local key= WoWTools_KeyMixin:GetHotKeyText(GetBindingKey("ACTIONBUTTON"..frame:GetID()), nil)
+        if key then
+            frame.HotKey:SetText(key);
+        end
+        frame.HotKey:SetTextColor(1,1,1)
+    end)
+
+    self:HideFrame(PetBattleFrame.BottomFrame.MicroButtonFrame)
+
+    hooksecurefunc('PetBattleFrame_UpdatePassButtonAndTimer', function(frame)--Blizzard_PetBattleUI.lua
+        self:HideTexture(frame.BottomFrame.TurnTimer.TimerBG)
+        self:HideTexture(frame.BottomFrame.TurnTimer.ArtFrame)
+        self:HideTexture(frame.BottomFrame.TurnTimer.ArtFrame2)
+    end)
+
+   -- WoWTools_ButtonMixin:AddMask(PetBattlePrimaryUnitTooltip)
+    --WoWTools_ButtonMixin:AddMask(PetBattlePrimaryAbilityTooltip)
+
+    PetBattlePrimaryUnitTooltip:SetBackdropBorderColor(0,0,0, 0.1)
+    PetBattlePrimaryAbilityTooltip:SetBackdropBorderColor(0,0,0, 0.1)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--宏
+function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
+    self:SetFrame(MacroFrame, {notAlpha=true})
+    self:SetNineSlice(MacroFrameInset, true)
+    self:SetNineSlice(MacroFrame, true)
+    self:SetNineSlice(MacroFrameTextBackground, true, nil, nil, true)
+    self:HideTexture(MacroFrameBg)
+    self:SetAlphaColor(MacroFrameInset.Bg)
+    self:SetAlphaColor(MacroHorizontalBarLeft, true)
+    self:HideTexture(MacroFrameSelectedMacroBackground)
+    self:SetScrollBar(MacroFrame.MacroSelector)
+    self:SetScrollBar(_G['WoWToolsMacroPlusNoteEditBox'])
+    self:SetScrollBar(MacroFrameScrollFrame)
+    self:SetButton(MacroFrameCloseButton, {all=true})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+--商店
+function WoWTools_TextureMixin.Events:Blizzard_AccountStore()
+    self:SetButton(AccountStoreFrameCloseButton, {all=true})
+
+    self:HideTexture(AccountStoreFrame.LeftInset.Bg)
+    self:HideTexture(AccountStoreFrame.RightInset.Bg)
+    self:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
+    self:HideTexture(AccountStoreFrameBg)
+
+    self:SetNineSlice(AccountStoreFrame)
+    self:SetScrollBar(AccountStoreFrame.CategoryList)
+    self:SetInset(AccountStoreFrame.RightInset)
+    self:SetInset(AccountStoreFrame.LeftInset)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--专业书
+function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
+    ProfessionsBookPage1:SetPoint('TOPLEFT', ProfessionsBookFrame, 'TOPLEFT', 0, -23)
+    ProfessionsBookPage1:SetPoint('BOTTOM',0, -15)
+    ProfessionsBookPage2:SetPoint('BOTTOMRIGHT', 15, -15)
+    self:SetNineSlice(ProfessionsBookFrame, true, nil, nil)
+    self:SetNineSlice(ProfessionsBookFrameInset, nil, true, nil)
+    self:HideTexture(ProfessionsBookFrameBg)
+    self:HideTexture(ProfessionsBookFrameInset.Bg)
+    self:SetButton(ProfessionsBookFrameCloseButton, {all=true})
+
+    ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
+    self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
+
+    self:Init_BGMenu_Frame(
+        ProfessionsBookFrame,--框架, frame.PortraitContainer
+        'ProfessionsBookFrame',--名称
+        nil,
+        {
+        settings=function(textureName, alphaValue)--设置内容时，调用
+            ProfessionsBookPage1:SetShown(not textureName)
+            ProfessionsBookPage2:SetShown(not textureName)
+            ProfessionsBookPage1:SetAlpha(alphaValue or 1)
+            ProfessionsBookPage2:SetAlpha(alphaValue or 1)
+            if ProfessionsBookFrame.Add_Background and not textureName then
+                ProfessionsBookFrame.Add_Background:SetShown(false)
+            end
+        end,
+        alpha=1,
+    })
+
+    PrimaryProfession1.bg= PrimaryProfession1:CreateTexture(nil, 'BACKGROUND')
+    PrimaryProfession1.bg:SetAtlas('delves-affix-mask')
+    PrimaryProfession1.bg:SetAllPoints(PrimaryProfession1Icon)
+
+    PrimaryProfession2.bg= PrimaryProfession2:CreateTexture(nil, 'BACKGROUND')
+    PrimaryProfession2.bg:SetAtlas('delves-affix-mask')
+    PrimaryProfession2.bg:SetAllPoints(PrimaryProfession2Icon)
+
+    self:HideTexture(PrimaryProfession1SpellButtonBottomNameFrame)
+    self:HideTexture(PrimaryProfession2SpellButtonBottomNameFrame)
+
+    self:HideTexture(SecondaryProfession1SpellButtonLeftNameFrame)
+    self:HideTexture(SecondaryProfession1SpellButtonRightNameFrame)
+
+    self:HideTexture(SecondaryProfession2SpellButtonLeftNameFrame)
+    self:HideTexture(SecondaryProfession2SpellButtonRightNameFrame)
+
+    self:HideTexture(SecondaryProfession3SpellButtonLeftNameFrame)
+    self:HideTexture(SecondaryProfession3SpellButtonRightNameFrame)
 end

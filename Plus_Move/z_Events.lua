@@ -12,16 +12,21 @@ end
 
 --专业训练师
 function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
-    self:Setup(ClassTrainerFrame, {minW=328, minH=197, setSize=true, initFunc=function(btn)
-        ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
-        ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
-        hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
-            ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
-        end)
-        btn.targetFrame.ScrollBox:ClearAllPoints()
-    end, sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(338, 424)
-    end})
+    ClassTrainerFrame.ScrollBox:ClearAllPoints()
+    ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
+    ClassTrainerFrameSkillStepButton:SetPoint('RIGHT', -12, 0)
+    ClassTrainerFrameBottomInset:SetPoint('BOTTOMRIGHT', -4, 28)
+    hooksecurefunc('ClassTrainerFrame_Update', function()--Blizzard_TrainerUI.lua
+        ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
+    end)
+    self:Setup(ClassTrainerFrame, {
+        minW=328,
+        minH=197,
+        setSize=true,
+        sizeRestFunc=function(btn)
+            btn.targetFrame:SetSize(338, 424)
+        end}
+    )
 end
 
 --小时图，时间
@@ -250,8 +255,8 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         minH=496,
         maxW=800,
         setSize=true,
-        sizeRestFunc=function(self)
-            self.targetFrame:SetSize(800, 496)
+        sizeRestFunc=function(b)
+            b.targetFrame:SetSize(800, 496)
         end
     })
 end
@@ -654,13 +659,12 @@ end
 
 --选项
 function WoWTools_MoveMixin.Events:Blizzard_Settings_Shared()
-    self:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, initFunc=function(btn)
-        for _, region in pairs({btn.targetFrame:GetRegions()}) do
-            if region:GetObjectType()=='Texture' then
-                region:SetPoint('BOTTOMRIGHT', -12, 38)
-            end
+    for _, region in pairs({SettingsPanel:GetRegions()}) do
+        if region:GetObjectType()=='Texture' then
+            region:SetPoint('BOTTOMRIGHT', -12, 38)
         end
-    end, sizeRestFunc=function(btn)
+    end
+    self:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, sizeRestFunc=function(btn)
         btn.targetFrame:SetSize(920, 724)
     end})
 end
@@ -709,4 +713,288 @@ function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
     self:Setup(BattleTagInviteFrame)
     self:Setup(OverrideActionBarExpBar, {notZoom=true})
     self:Setup(ReportFrame)
+end
+
+
+
+
+
+
+
+
+--角色
+function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角色
+    PaperDollFrame.TitleManagerPane:ClearAllPoints()
+    PaperDollFrame.TitleManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
+    PaperDollFrame.TitleManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
+
+    PaperDollFrame.TitleManagerPane.ScrollBox:ClearAllPoints()
+    PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('TOPLEFT',CharacterFrameInsetRight,4,-4)
+    PaperDollFrame.TitleManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22,4)
+
+    PaperDollFrame.EquipmentManagerPane:ClearAllPoints()
+    PaperDollFrame.EquipmentManagerPane:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -4)
+    PaperDollFrame.EquipmentManagerPane:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -4, 4)
+    PaperDollFrame.EquipmentManagerPane.ScrollBox:ClearAllPoints()
+    PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('TOPLEFT', CharacterFrameInsetRight, 4, -28)
+    PaperDollFrame.EquipmentManagerPane.ScrollBox:SetPoint('BOTTOMRIGHT', CharacterFrameInsetRight, -22, 4)
+
+    CharacterModelScene:ClearAllPoints()
+    CharacterModelScene:SetPoint('TOPLEFT', 52, -66)
+    CharacterModelScene:SetPoint('BOTTOMRIGHT', CharacterFrameInset, -50, 34)
+
+    CharacterModelFrameBackgroundOverlay:ClearAllPoints()
+    CharacterModelFrameBackgroundOverlay:SetAllPoints(CharacterModelScene)
+
+    CharacterModelFrameBackgroundTopLeft:ClearAllPoints()
+    CharacterModelFrameBackgroundTopLeft:SetPoint('TOPLEFT')
+    CharacterModelFrameBackgroundTopLeft:SetPoint('BOTTOMRIGHT',-19, 128)
+
+    CharacterModelFrameBackgroundTopRight:ClearAllPoints()
+    CharacterModelFrameBackgroundTopRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'TOPRIGHT')
+    CharacterModelFrameBackgroundTopRight:SetPoint('BOTTOMRIGHT', 0, 128)
+
+    CharacterModelFrameBackgroundBotLeft:ClearAllPoints()
+    CharacterModelFrameBackgroundBotLeft:SetPoint('TOPLEFT', CharacterModelFrameBackgroundTopLeft, 'BOTTOMLEFT')
+    CharacterModelFrameBackgroundBotLeft:SetPoint('BOTTOMRIGHT', -19, 0)
+
+    CharacterModelFrameBackgroundBotRight:ClearAllPoints()
+    CharacterModelFrameBackgroundBotRight:SetPoint('TOPLEFT', CharacterModelFrameBackgroundBotLeft, 'TOPRIGHT')
+    CharacterModelFrameBackgroundBotRight:SetPoint('BOTTOMRIGHT')
+
+    CharacterStatsPane.ClassBackground:ClearAllPoints()
+    CharacterStatsPane.ClassBackground:SetAllPoints(CharacterStatsPane)
+
+
+    CharacterFrame.InsetRight:ClearAllPoints()
+    CharacterFrame.InsetRight:SetPoint('TOPRIGHT', 0, -58)
+    CharacterFrame.InsetRight:SetPoint('BOTTOMRIGHT')
+    CharacterFrame.InsetRight:SetWidth(203)
+
+    CharacterFrame.Inset:ClearAllPoints()
+    CharacterFrame.Inset:SetPoint('TOPRIGHT', CharacterFrame.InsetRight, 'TOPLEFT')
+    CharacterFrame.Inset:SetPoint('BOTTOMLEFT')
+    CharacterFrame.Inset.NineSlice:Hide()
+
+
+
+    ReputationFrame.ScrollBox:ClearAllPoints()
+    ReputationFrame.ScrollBox:SetPoint('TOPLEFT', 4, -58)
+    ReputationFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -22, 2)
+
+    TokenFrame.ScrollBox:ClearAllPoints()
+    TokenFrame.ScrollBox:SetPoint('TOPLEFT', TokenFrame, 4, -58)
+    TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
+
+    
+    local function Set_Slot_Point()
+        local w, h= CharacterFrame:GetSize()--366 * 337   (40+4)*8
+        local line= math.max(4, (h-16-42- 40*7- 58)/7)
+
+        CharacterHeadSlot:SetPoint('TOPLEFT', CharacterFrame, 8, -60)
+        CharacterNeckSlot:SetPoint('TOPLEFT', CharacterHeadSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterShoulderSlot:SetPoint('TOPLEFT', CharacterNeckSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterBackSlot:SetPoint('TOPLEFT', CharacterShoulderSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterChestSlot:SetPoint('TOPLEFT', CharacterBackSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterShirtSlot:SetPoint('TOPLEFT', CharacterChestSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterTabardSlot:SetPoint('TOPLEFT', CharacterShirtSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterWristSlot:SetPoint('TOPLEFT', CharacterTabardSlot, 'BOTTOMLEFT', 0, -line)
+
+        --CharacterHandsSlot
+        CharacterWaistSlot:SetPoint('TOPLEFT', CharacterHandsSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterLegsSlot:SetPoint('TOPLEFT', CharacterWaistSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterFeetSlot:SetPoint('TOPLEFT', CharacterLegsSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterFinger0Slot:SetPoint('TOPLEFT', CharacterFeetSlot, 'BOTTOMLEFT', 0, -line)
+        CharacterFinger1Slot:SetPoint('TOPLEFT', CharacterFinger0Slot, 'BOTTOMLEFT', 0, -line)
+        CharacterTrinket0Slot:SetPoint('TOPLEFT', CharacterFinger1Slot, 'BOTTOMLEFT', 0, -line)
+        CharacterTrinket1Slot:SetPoint('TOPLEFT', CharacterTrinket0Slot, 'BOTTOMLEFT', 0, -line)
+
+        line= (w-40*2-200-203)/3
+        CharacterMainHandSlot:SetPoint('BOTTOMLEFT', 100+line, 16)
+        CharacterSecondaryHandSlot:SetPoint('TOPLEFT', CharacterMainHandSlot,'TOPRIGHT', math.max(5, line), 0)
+    end
+
+    hooksecurefunc(CharacterFrame, 'UpdateSize', function(f)
+        if not f.ResizeButton then
+            return
+        end
+        local size
+        if f.Expanded then
+            f.ResizeButton.minWidth=450
+            size= Save().size['CharacterFrameExpanded']
+        else
+            size= Save().size['CharacterFrameCollapse']
+            f.ResizeButton.minWidth=320
+        end
+        if size then
+            f:SetSize(size[1], size[2])
+        end
+        Set_Slot_Point()
+    end)
+
+    self:Setup(CharacterFrame, {
+        minW=450,
+        minH=424,
+        setSize=true,
+        sizeUpdateFunc=function()
+            if PaperDollFrame.EquipmentManagerPane:IsVisible() then
+                WoWTools_Mixin:Call(PaperDollEquipmentManagerPane_Update)
+            end
+            if PaperDollFrame.TitleManagerPane:IsVisible() then
+                WoWTools_Mixin:Call(PaperDollTitlesPane_Update)
+            end
+            if CharacterHeadSlot:IsVisible() then
+                Set_Slot_Point()
+            end
+        end,
+        sizeStopFunc=function(btn)
+            local f= btn.targetFrame
+            if CharacterFrame.Expanded then
+                Save().size['CharacterFrameExpanded']={f:GetSize()}
+            else
+                Save().size['CharacterFrameCollapse']={f:GetSize()}
+            end
+            Set_Slot_Point()
+        end,
+        sizeRestFunc=function()
+            local find= (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) and true or false
+            Save().size['CharacterFrameExpanded']=nil
+            Save().size['CharacterFrameCollapse']=nil
+            if find then
+                CharacterFrame:SetHeight(424)
+            end
+            WoWTools_Mixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
+        end,
+        sizeRestTooltipColorFunc=function(f)
+            return ((f.target.Expanded and Save().size['CharacterFrameExpanded']) or (not f.target.Expanded and Save().size['CharacterFrameCollapse'])) and '' or '|cff9e9e9e'
+        end
+    })
+
+    self:Setup(TokenFrame, {frame=CharacterFrame})
+    self:Setup(TokenFramePopup, {frame=CharacterFrame})
+    self:Setup(ReputationFrame, {frame=CharacterFrame})
+    self:Setup(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
+    self:Setup(CurrencyTransferMenu)
+    --self:Setup(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
+
+    self:Setup(CurrencyTransferLog, {
+        setSize=true,
+        sizeRestFunc=function(btn)
+            btn.targetFrame:ClearAllPoints()
+            btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+            btn.targetFrame:SetSize(340, 370)
+        end, scaleRestFunc= function(btn)
+            btn.targetFrame:ClearAllPoints()
+            btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+        end,
+    })
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+--移动 ETRACE
+function WoWTools_MoveMixin.Events:Blizzard_EventTrace()
+    EventTrace.Log.Bar.SearchBox:SetPoint('LEFT', EventTrace.Log.Bar.Label, 'RIGHT')
+    EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(frame)
+        frame:HighlightText()
+    end)
+    self:Setup(EventTrace)
+end
+
+
+
+
+
+
+
+
+
+--天赋，法术书
+function WoWTools_MoveMixin.Events:Blizzard_PlayerSpells()
+--英雄专精
+    HeroTalentsSelectionDialog.p_point={PlayerSpellsFrame:GetPoint(1)}
+    HeroTalentsSelectionDialog.p_point[2]= nil
+    HeroTalentsSelectionDialog:HookScript('OnShow', function(frame)
+        PlayerSpellsFrame:ClearAllPoints()
+        PlayerSpellsFrame:SetPoint(frame.p_point[1], UIParent, frame.p_point[3], frame.p_point[4], frame.p_point[5])
+    end)
+    HeroTalentsSelectionDialog:HookScript('OnHide', function()
+        self:SetPoint(PlayerSpellsFrame)
+    end)
+    self:Setup(HeroTalentsSelectionDialog)
+
+--天赋，法术书
+    self:Setup(PlayerSpellsFrame)
+
+--专精
+    for specContentFrame in PlayerSpellsFrame.SpecFrame.SpecContentFramePool:EnumerateActive() do
+        self:Setup(specContentFrame, {frame=PlayerSpellsFrame})
+    end
+
+--天赋
+    self:Setup(PlayerSpellsFrame.TalentsFrame, {frame=PlayerSpellsFrame})
+    self:Setup(PlayerSpellsFrame.TalentsFrame.ButtonsParent, {frame=PlayerSpellsFrame})
+
+--法术书
+    self:Setup(PlayerSpellsFrame.SpellBookFrame, {frame=PlayerSpellsFrame})
+end
+
+
+
+
+
+
+
+
+--宏
+function WoWTools_MoveMixin.Events:Blizzard_MacroUI()
+    if WoWToolsSave['Plus_Macro2'].disabled then
+        self:Setup(MacroFrame)
+    end
+end
+
+
+
+
+
+
+--商店
+function WoWTools_MoveMixin.Events:Blizzard_AccountStore()
+    self:Setup(AccountStoreFrame, {
+        setSize=true, minH=537, minW=800,
+    sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(800, 537)
+    end})
+end
+
+
+
+
+
+--专业书
+function WoWTools_MoveMixin.Events:Blizzard_ProfessionsBook()
+    self:Setup(ProfessionsBookFrame)
+end
+
+
+--邮件
+function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
+    if not WoWToolsSave['Plus_Mail']
+        or WoWToolsSave['Plus_Mail'].disabled
+        or WoWToolsSave['Plus_Mail'].hideUIPlus
+        or GameLimitedMode_IsActive()
+    then
+        self:Setup(MailFrame)
+        self:Setup(SendMailFrame, {frame=MailFrame})
+    end
 end

@@ -876,6 +876,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
 
         local size= Save().size[name]
         if size or initFunc then
+            print(btn.name, size)
             Set_Init_Frame(btn, frame, size, initFunc)
         end
     end

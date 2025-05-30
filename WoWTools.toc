@@ -131,6 +131,7 @@ Plus_Move\ClassPower.lua
 Plus_Move\FriendsFrame.lua
 Plus_Move\WorldMapFrame.lua
 Plus_Move\Blizzard_Communities.lua
+Plus_Move\Blizzard_Collections.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -229,7 +230,6 @@ Plus_PaperDoll\Tab2.lua
 Plus_PaperDoll\Tab3_Set_Plus.lua
 Plus_PaperDoll\Tab3.lua
 Plus_PaperDoll\TrackButton_PaperDool.lua
-Plus_PaperDoll\z_UI.lua
 
 
 ##声望面板
@@ -296,8 +296,6 @@ Plus_Collection\Wardrober_Items.lua
 Plus_Collection\Wardrober_Sets.lua
 Plus_Collection\DressUpFrames.lua
 Plus_Collection\2_Menu.lua
-Plus_Collection\zm_Blizzard_Collections.lua
-Plus_Collection\zt_Blizzard_Collections.lua
 
 
 ##世界地图，增强
@@ -364,7 +362,6 @@ Plus_BankGuild\Menu.lua
 Plus_BankGuild\Plus_Init.lua
 Plus_BankGuild\Plus_TabButton_Menu.lua
 Plus_BankGuild\Plus_Sort.lua
-Plus_BankGuild\t_Blizzard_GuildBankUI.lua
 
 ##容器
 Plus_Bag\0_BagMixin.lua
@@ -459,7 +456,6 @@ Plus_PetBattle\2_Blizzard_Settings.lua
 Plus_PetBattle\Click_To_Move.lua
 Plus_PetBattle\TypeButton.lua
 Plus_PetBattle\PetBattle_AbilityButton.lua
-Plus_PetBattle\z_Blizzard_PetBattleUI.lua
 
 
 ##插件，方案
@@ -529,7 +525,6 @@ Plus_Spell\SpellBookFrame.lua
 Plus_Spell\Spec_Button.lua
 ##法术弹出框，加名称
 Plus_Spell\Spell_Flyout.lua
-Plus_Spell\z_UI.lua
 
 ##宏增强
 Plus_Macro\0_MacroMixin.lua
@@ -541,7 +536,6 @@ Plus_Macro\MacroButton_Plus.lua
 Plus_Macro\NewEmptyButton.lua
 Plus_Macro\Select_Button.lua
 Plus_Macro\Set_UI.lua
-Plus_Macro\z_Blizzard_MacroUI.lua
 
 
 ##专业按钮

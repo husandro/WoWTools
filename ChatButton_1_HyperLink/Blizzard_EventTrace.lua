@@ -7,66 +7,6 @@ local EventTabs={}
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
-    local function set_button(btn)
-        if btn then
-            self:SetAlphaColor(btn.NormalTexture, nil, nil, true)
-            if btn.MouseoverOverlay then
-                btn.MouseoverOverlay:SetTexCoord(0,1,0.8,0)
-            end
-        end
-    end
-    self:SetButton(EventTraceCloseButton, {all=true})
-    self:SetNineSlice(EventTrace, true)
-    self:SetAlphaColor(EventTraceBg, nil, nil, true)
-    self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
-    self:SetNineSlice(EventTraceInset, true)
-    self:SetButton(EventTrace.ResizeButton, {all=true})
-    self:SetScrollBar(EventTrace.Log.Events)
-    self:SetEditBox(EventTrace.Log.Bar.SearchBox)
-
-    set_button(EventTrace.SubtitleBar.ViewLog)
-    set_button(EventTrace.SubtitleBar.ViewFilter)
-
-    set_button(EventTrace.Log.Bar.DiscardAllButton)
-    set_button(EventTrace.Log.Bar.PlaybackButton)
-    set_button(EventTrace.Log.Bar.MarkButton)
-
-    set_button(EventTrace.Filter.Bar.DiscardAllButton)
-    set_button(EventTrace.Filter.Bar.UncheckAllButton)
-    set_button(EventTrace.Filter.Bar.CheckAllButton)
-
-    self:SetFrame(EventTrace.Log.Events.ScrollBox, {index=1, isMinAlpha=true})
-    self:SetFrame(EventTrace.Filter.ScrollBox, {index=1, isMinAlpha=true})
-
-    hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(frame)
-        self:SetButton(frame.HideButton, {all=true})
-        local icon= frame:GetRegions()
-        if icon:GetObjectType()=='Texture' then
-            icon:SetTexture(0)
-        end
-        --frame.Alternate:SetAlpha(0.75)
-    end)
-    hooksecurefunc(EventTraceFilterButtonMixin, 'Init', function(frame, elementData, hideCb)
-        local icon= frame:GetRegions()
-        if icon:GetObjectType()=='Texture' then
-            icon:SetTexture(0)
-        end
-    end)
-end
-
-
-
---移动 ETRACE
-function WoWTools_MoveMixin.Events:Blizzard_EventTrace()
-    EventTrace.Log.Bar.SearchBox:SetPoint('LEFT', EventTrace.Log.Bar.Label, 'RIGHT')
-    EventTrace.Log.Bar.SearchBox:SetScript('OnEditFocusGained', function(frame)
-        frame:HighlightText()
-    end)
-    self:Setup(EventTrace)
-end
-
-
 
 
 

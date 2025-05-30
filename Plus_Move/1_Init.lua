@@ -57,7 +57,7 @@ local function Init()
                 print(WoWTools_MoveMixin.addName, 'Frames[|cnRED_FONT_COLOR:'..name..'|r]', '没有发现')
             end
         end
-        WoWTools_TextureMixin.Frames[name]= nil
+        WoWTools_MoveMixin.Frames[name]= nil
     end
 
     hooksecurefunc('UpdateUIPanelPositions', function(currentFrame)
