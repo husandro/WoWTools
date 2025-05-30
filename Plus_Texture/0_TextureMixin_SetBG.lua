@@ -532,8 +532,6 @@ local function Create_Anims(frame, tab)
 -- 显示时播放动画，隐藏时停止动画
     if frame:IsVisible() then
         frame.backgroundAnims:Play()
-    elseif frame.backgroundAnims:IsPlaying() then
-        frame.backgroundAnims:Stop()
     end
 
     frame:HookScript("OnShow", function(f)
