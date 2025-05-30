@@ -209,7 +209,6 @@ Plus_MiniMap\TimeManager.lua
 Plus_MiniMap\ExpansionLanding.lua
 Plus_MiniMap\Zoom.lua
 Plus_MiniMap\Collection_Icon.lua
-Plus_MiniMap\z_Blizzard_Minimap.lua
 
 ##角色面板
 Plus_PaperDoll\1_Init.lua
@@ -639,7 +638,6 @@ ChatButton_5_LFD\Role_Info.lua
 ChatButton_5_LFD\Roll.lua
 ChatButton_5_LFD\z_LFGDungeonReadyDialog.lua
 ChatButton_5_LFD\z_LFGListInviteDialog.lua
-ChatButton_5_LFD\z_UI.lua
 
 
 ##世界频道

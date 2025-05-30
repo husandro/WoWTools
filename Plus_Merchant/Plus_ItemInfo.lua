@@ -15,40 +15,6 @@ end
 
 
 
-local function UI_Texture_Color(self)
-    --self:SetButton(MerchantPrevPageButton, {all=true})
-    --self:SetButton(MerchantNextPageButton, {all=true})
-    self:SetAlphaColor(MerchantFrameLootFilterMiddle)
-    self:SetAlphaColor(MerchantFrameLootFilterLeft)
-    self:SetAlphaColor(MerchantFrameLootFilterRight)
-    self:SetTabButton(MerchantFrameTab1)
-    self:SetTabButton(MerchantFrameTab2)
-    self:SetScrollBar(MerchantFrame)
-    self:SetNineSlice(MerchantFrameInset, nil, true)
-    self:SetNineSlice(MerchantFrame, true)
-    self:SetMenu(MerchantFrame.FilterDropdown)
-
-    self:SetAlphaColor(MerchantMoneyInset.Bg)
-    self:HideTexture(MerchantMoneyBgMiddle)
-    self:HideTexture(MerchantMoneyBgLeft)
-    self:HideTexture(MerchantMoneyBgRight)
-    self:SetAlphaColor(MerchantExtraCurrencyBg)
-    self:SetAlphaColor(MerchantExtraCurrencyInset)
-    self:HideTexture(MerchantFrameBottomLeftBorder)
-    self:SetButton(MerchantFrameCloseButton, {all=true})
-
-    UI_Texture_Color= function()end
-end
-
-
-
-
---材质
-function WoWTools_TextureMixin.Frames:MerchantFrame()
-   UI_Texture_Color(self)
-end
-
-
 
 
 
@@ -157,7 +123,6 @@ local function Init_UI()
         )
     end
 
-    UI_Texture_Color(WoWTools_TextureMixin)
 
     Init_UI=function()end
 end
@@ -550,6 +515,8 @@ local function Init_StackSplitFrame()
         self.MaxButton:SetText(self.maxStack)
         self.MetaButton:SetText(floor(self.maxStack/2))
     end)
+
+    Init_StackSplitFrame=function()end
 end
 
 
@@ -561,9 +528,10 @@ end
 
 
 function WoWTools_MerchantMixin:Plus_ItemInfo()
-    if not Save().notPlus then
-        Init_UI()--移去 UI
-        Init_SetItem_Info()--物品，信息
-        Init_StackSplitFrame()--堆叠,数量,框架
+    if Save().notPlus then
+        return
     end
+    Init_UI()--移去 UI
+    Init_SetItem_Info()--物品，信息
+    Init_StackSplitFrame()--堆叠,数量,框架
 end

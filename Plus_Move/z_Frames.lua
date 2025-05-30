@@ -4,6 +4,12 @@ end
 
 
 
+--商人
+function WoWTools_MoveMixin.Frames:MerchantFrame()
+    if WoWToolsSave['Plus_SellBuy'].notPlus or WoWToolsSave['Plus_SellBuy'].disabled then
+        self:Setup(MerchantFrame)
+    end
+end
 
 
 

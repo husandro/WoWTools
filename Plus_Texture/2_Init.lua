@@ -64,7 +64,7 @@ local function Init_Texture()
         return
     end
 
-    WoWTools_TextureMixin:Init_All_Frame()
+
 
     for name in pairs(WoWTools_TextureMixin.Events) do
         Set_Event_Texture(name)
@@ -80,8 +80,6 @@ local function Init_Texture()
         end
         WoWTools_TextureMixin.Frames[name]= nil
     end
-
-    WoWTools_TextureMixin:Init_All_Frame()
 
     hooksecurefunc(DropdownTextMixin, 'OnLoad', function(self)
         WoWTools_TextureMixin:SetMenu(self)

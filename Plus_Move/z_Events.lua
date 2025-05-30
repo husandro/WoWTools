@@ -476,3 +476,172 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     
     --self:Setup(AchievementFrame.SearchResults)--:SetPoint('TOP', 0, -15)
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----地下城和团队副本 GroupFinderFrame
+function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
+   LFGListPVEStub:SetPoint('BOTTOMRIGHT')
+    LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
+
+    hooksecurefunc('GroupFinderFrame_SelectGroupButton', function(index)
+        local btn= PVEFrame.ResizeButton
+        if not btn or btn.disabledSize or not PVEFrame:IsProtected() then
+            return
+        end
+        if index==3 then
+            btn.setSize= true
+            local size= Save().size['PVEFrame_PVE']
+            if size then
+                PVEFrame:SetSize(size[1], size[2])
+                return
+            end
+        else
+            btn.setSize= false
+        end
+        PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+        LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -20, 0)
+    end)
+
+
+    self:Setup(PVEFrame, {
+        setSize=true,
+        minW=563,
+        minH=428,
+        sizeUpdateFunc=function()
+            if PVEFrame.activeTabIndex==3 then
+                WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
+            end
+        end, sizeStopFunc=function(btn)
+            if PVEFrame.activeTabIndex==1 then
+                Save().size['PVEFrame_PVE']= {btn.targetFrame:GetSize()}
+            elseif PVEFrame.activeTabIndex==2 then
+                if PVPQueueFrame.selection==LFGListPVPStub then
+                    Save().size['PVEFrame_PVP']= {btn.targetFrame:GetSize()}
+                end
+            elseif PVEFrame.activeTabIndex==3 then
+                Save().size['PVEFrame_KEY']= {btn.targetFrame:GetSize()}
+            end
+        end, sizeRestFunc=function(btn)
+            if PVEFrame.activeTabIndex==1 then
+                Save().size['PVEFrame_PVE']=nil
+                btn.targetFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+            elseif PVEFrame.activeTabIndex==2 then--Blizzard_PVPUI.lua
+                Save().size['PVEFrame_PVP']=nil
+                local width = PVE_FRAME_BASE_WIDTH;
+                width = width + PVPQueueFrame.HonorInset:Update();
+                btn.targetFrame:SetSize(width, 428)
+            elseif PVEFrame.activeTabIndex==3 then
+                Save().size['PVEFrame_KEY']=nil
+                btn.targetFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+                WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
+            end
+        end
+    })
+
+    --自定义，副本，创建，更多...
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:ClearAllPoints()
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('TOPLEFT',0, -30)
+    LFGListFrame.EntryCreation.ActivityFinder.Dialog:SetPoint('BOTTOMRIGHT')
+end
+
+
+
+
+
+
+
+
+
+--地下城和团队副本, PVP
+function WoWTools_MoveMixin.Events:Blizzard_PVPUI()
+    PVPUIFrame:SetPoint('BOTTOMRIGHT')
+    LFGListPVPStub:SetPoint('BOTTOMRIGHT')
+    LFGListFrame.ApplicationViewer.InfoBackground:SetPoint('RIGHT', -2,0)
+
+    hooksecurefunc('PVPQueueFrame_ShowFrame', function()
+        local btn= PVEFrame.ResizeButton
+        if not btn or btn.disabledSize or WoWTools_FrameMixin:IsLocked(PVEFrame) then
+            return
+        end
+        if PVPQueueFrame.selection==LFGListPVPStub then
+            btn.setSize= true
+            local size= Save().size['PVEFrame_PVP']
+            if size then
+                PVEFrame:SetSize(size[1], size[2])
+                return
+            end
+        else
+            btn.setSize= false
+        end
+        PVEFrame:SetHeight(428)
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--挑战, 钥匙插件, 界面
+function WoWTools_MoveMixin.Events:Blizzard_ChallengesUI()
+    self:Setup(ChallengesKeystoneFrame)
+
+    ChallengesFrame.WeeklyInfo:SetPoint('BOTTOMRIGHT')
+    ChallengesFrame.WeeklyInfo.Child:SetPoint('BOTTOMRIGHT')
+    ChallengesFrame.WeeklyInfo.Child.RuneBG:SetPoint('BOTTOMRIGHT')
+    for _, region in pairs({ChallengesFrame:GetRegions()}) do
+        if region:GetObjectType()=='Texture' then
+            region:SetPoint('BOTTOMRIGHT')
+        end
+    end
+    ChallengesFrame:HookScript('OnShow', function()
+        local frame= PVEFrame
+        if not frame.ResizeButton or frame.ResizeButton.disabledSize or not frame:CanChangeAttribute() then
+            return
+        end
+        local size= WoWToolsSave['Plus_Move'].size['PVEFrame_KEY']
+        frame.ResizeButton.setSize= true
+        if size then
+            frame:SetSize(size[1], size[2])
+        else
+            frame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+        end
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+--地下堡
+function WoWTools_MoveMixin.Events:Blizzard_DelvesDashboardUI()
+    self:Setup(DelvesDashboardFrame, {frame=PVEFrame})
+    self:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame, {frame=PVEFrame})
+    self:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame.CompanionConfigButtonPanel, {frame=PVEFrame})
+end
+

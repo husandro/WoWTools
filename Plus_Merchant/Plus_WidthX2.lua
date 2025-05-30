@@ -3,11 +3,7 @@ local function Save()
 end
 
 
-function WoWTools_MoveMixin.Frames:MerchantFrame()
-    if Save().notPlus or Save().disabled then
-        self:Setup(MerchantFrame)
-    end
-end
+
 
 
 --[[
@@ -323,6 +319,10 @@ end
 
 --WidthX2
 local function Init_WidthX2()
+    if Save().notPlus then
+        return
+    end
+
 --按钮，数量
     MERCHANT_ITEMS_PER_PAGE= Save().MERCHANT_ITEMS_PER_PAGE or MERCHANT_ITEMS_PER_PAGE or 24
 
@@ -577,12 +577,7 @@ end
 
 
 function WoWTools_MerchantMixin:Init_WidthX2()
-    if not Save().notPlus then
-        Init_WidthX2()
-    else
-
-        WoWTools_MoveMixin:Setup(MerchantFrame)
-    end
+    Init_WidthX2()
 end
 
 function WoWTools_MerchantMixin:ResizeButton2_Menu(...)
