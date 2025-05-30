@@ -216,11 +216,8 @@
    
 --BG
     self:Init_BGMenu_Frame(
-    CommunitiesFrame,--框架, frame.PortraitContainer
-    'CommunitiesFrame',--名称
-    nil,--CommunitiesFrameInset.Bg,--Texture
-    {
-    isAddBg=true,--是否添加背景
-    }
-)
+        CommunitiesFrame,--框架, frame.PortraitContainer
+        'CommunitiesFrame',--名称
+        nil--CommunitiesFrameInset.Bg
+    )
 end

@@ -187,8 +187,8 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameStats)
     self:SetScrollBar(AchievementFrameComparison.StatContainer)
 
-    --WoWTools_Buttonself:AddMask(AchievementFrame, nil, AchievementFrame.Background)
-    AchievementFrame.bgMenuButton= WoWTools_Buttonself:Cbtn(AchievementFrame.Header, {
+    --WoWTools_ButtonMixin:AddMask(AchievementFrame, nil, AchievementFrame.Background)
+    AchievementFrame.bgMenuButton= WoWTools_ButtonMixin:Cbtn(AchievementFrame.Header, {
         size=23,
         name='AchievementFrameBGMenuButton',
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
@@ -1017,7 +1017,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
         WorldMapFrame,
         'WorldMapFrame',
         nil,
-        {isAddBg=true,
+        {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer
     }
     )

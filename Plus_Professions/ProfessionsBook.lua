@@ -102,7 +102,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     self:Init_BGMenu_Frame(
         ProfessionsBookFrame,--框架, frame.PortraitContainer
         'ProfessionsBookFrame',--名称
-        nil,--Texture
+        nil,
         {
         settings=function(textureName, alphaValue)--设置内容时，调用
             ProfessionsBookPage1:SetShown(not textureName)
@@ -113,8 +113,6 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
                 ProfessionsBookFrame.Add_Background:SetShown(false)
             end
         end,
-        --isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
-        isAddBg=true,--是否添加背景
         alpha=1,
     })
 

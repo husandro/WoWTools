@@ -565,9 +565,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
     settings=function(textureName, alphaValue)--设置内容时，调用
     end,
     isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
-    isAddBg=true,--是否添加背景
-    bgPoint=function(icon)--设置背景位置
-    end,
+    
     notAnims=true,
     PortraitContainer=Frame.PortraitContainer,
     }
@@ -632,34 +630,27 @@ end
 
 
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, name, icon, tab)
-
     if Save().disabled
         or not frame
         or not name
-        or (not icon and not tab.isAddBg)
     then
         return
     end
 
-
     tab= tab or {}
+    WoWToolsSave['Plus_Texture'].Bg.Add[name]= WoWToolsSave['Plus_Texture'].Bg.Add[name] or {}
 
-    if not WoWToolsSave['Plus_Texture'].Bg.Add[name] then
-        WoWToolsSave['Plus_Texture'].Bg.Add[name]={}
-    end
-
-    if tab.isAddBg then
-        if not frame.Add_Background then
-            frame.Add_Background= frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
-            if tab.bgPoint then
-                tab.bgPoint(frame.Add_Background)
-            else
-                frame.Add_Background:SetPoint('TOPLEFT', 3, -3)
-                frame.Add_Background:SetPoint('BOTTOMRIGHT',-3, 3)
-            end
-            --frame.Add_Background:SetAtlas('Tooltip-Glues-NineSlice-Center')
+    if not icon then
+        if frame.Background then
+            frame.Background:ClearAllPoints()
+            frame.Background:SetPoint('TOPLEFT', 3, -3)
+            frame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
+        else
+            frame.Background= frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
+            frame.Background:SetPoint('TOPLEFT', 3, -3)
+            frame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
         end
-        icon= frame.Add_Background
+        icon= frame.Background
     end
 
     --icon:SetTextureSliceMargins(24, 24, 24, 24);
