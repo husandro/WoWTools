@@ -653,30 +653,32 @@ end
 
 
 local function Set_OnMouseUp(self)
+    local d= self.isActiveButton
+    local target= self.targetFrame
+
     self:SetScript("OnUpdate", nil)
-    --[[if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+    --[[if WoWTools_FrameMixin:IsLocked(target) then
         return
     end]]
 
-    if self.isActiveButton=='RightButton' and self.setSize then--保存，大小 d=='RightButton' and
+    if d=='RightButton' and self.setSize then--保存，大小 d=='RightButton' and
         local continueResizeStop = true
-        if self.targetFrame.onResizeStopCallback then
-            continueResizeStop = self.targetFrame.onResizeStopCallback(self)
+        if target.onResizeStopCallback then
+            continueResizeStop = target.onResizeStopCallback(self)
         end
         if continueResizeStop then
-            self.targetFrame:StopMovingOrSizing()
+            target:StopMovingOrSizing()
         end
         Save_Frame_Size(self)--保存，大小
 
-    elseif self.isActiveButton=='LeftButton' then--保存，缩放
+    elseif d=='LeftButton' then--保存，缩放
         if self.scaleStoppedFunc then
             self.scaleStoppedFunc(self)
         end
-        Save().scale[self.name]= self.targetFrame:GetScale()
+        Save().scale[self.name]= target:GetScale()
     end
 
     self.isActiveButton= nil
-    --self:SetScript("OnUpdate", nil)
 end
 
 
@@ -685,7 +687,10 @@ end
 
 
 local function Set_OnMouseDown(self, d)
-    if self.isActiveButton or WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+    if self.isActiveButton
+        or WoWTools_FrameMixin:IsLocked(self.targetFrame)
+        or IsModifierKeyDown()
+    then
         return
     end
 
@@ -731,7 +736,7 @@ local function Set_OnMouseDown(self, d)
             end
         end)
 
-    elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] and not IsModifierKeyDown() then
+    elseif d=='RightButton' and self.setSize and not Save().disabledSize[self.name] then
 --开始，设置，大小
 
         local continueResizeStart = true
@@ -938,14 +943,11 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         Set_Tooltip(s)
     end)
     btn.targetFrame:HookScript('OnHide', function(s)
-        local d= s.ResizeButton and s.ResizeButton.isActiveButton
+        local b= s.ResizeButton
+        local d= b and b.isActiveButton
         if d then
-            s:SetScript("OnUpdate", nil)
-            if d=='LeftButton' then
-                 s:StopMovingOrSizing()
-            end
-            s.isActiveButton= nil
-            --Set_OnMouseUp(s.ResizeButton, s.ResizeButton.isActiveButton)
+            b:SetScript("OnUpdate", nil)
+            b.isActiveButton= nil
         end
     end)
 
