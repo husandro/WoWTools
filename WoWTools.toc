@@ -130,6 +130,7 @@ Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
 Plus_Move\FriendsFrame.lua
 Plus_Move\WorldMapFrame.lua
+Plus_Move\Blizzard_Communities.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -143,6 +144,7 @@ Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua
 Plus_Texture\HelpTip.lua
+Plus_Texture\Blizzard_Communities.lua
 Plus_Texture\z_Frames.lua
 Plus_Texture\z_Events.lua
 
@@ -656,8 +658,6 @@ ChatButton_7_Guild\3_Menu.lua
 ChatButton_7_Guild\z_ClubFinder.lua
 ChatButton_7_Guild\z_CommunitiesFrame.lua
 ChatButton_7_Guild\z_PetitionFrame.lua
-ChatButton_7_Guild\zt_UI.lua
-ChatButton_7_Guild\zm_UI.lua
 ##队伍
 ChatButton\8_Group.lua
 ##说
