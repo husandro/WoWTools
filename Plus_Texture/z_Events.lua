@@ -1298,7 +1298,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Minimap()
        self:SetFrame(MinimapCluster.BorderTop)
     end
 
-    if WoWToolsSave['Minimap_Plus'].Icons.disabled then
+    if WoWToolsSave['Minimap_Plus'] and WoWToolsSave['Minimap_Plus'].Icons.disabled then
         WoWTools_MinimapMixin:Init_SetMinamp_Texture()
     end
 

@@ -252,7 +252,7 @@ end
 
 
 --背包 Bg FlatPanelBackgroundTemplate
-function WoWTools_TextureMixin.Frames:ContainerFrame_GenerateFrame()
+function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(ContainerFrameCombinedBags.CloseButton, {all=true})
     self:SetNineSlice(ContainerFrameCombinedBags, true)
 

@@ -38,7 +38,6 @@ local function Init()
     WoWTools_MoveMixin:Init_FriendsFrame()--好友列表
     --WoWTools_MoveMixin:Init_PVEFrame()--地下城和团队副本
     WoWTools_MoveMixin:Init_AddButton()--添加，移动/缩放，按钮
-    WoWTools_MoveMixin:Init_Other()
     WoWTools_MoveMixin:Init_Class_Power()--职业，能量条
 
     for name in pairs(WoWTools_MoveMixin.Events) do

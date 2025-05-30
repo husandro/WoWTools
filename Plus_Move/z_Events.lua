@@ -490,7 +490,7 @@ end
 
 
 
-----地下城和团队副本 GroupFinderFrame
+--地下城和团队副本 GroupFinderFrame
 function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
    LFGListPVEStub:SetPoint('BOTTOMRIGHT')
     LFGListFrame.CategorySelection.Inset.CustomBG:SetPoint('BOTTOMRIGHT')
@@ -645,3 +645,68 @@ function WoWTools_MoveMixin.Events:Blizzard_DelvesDashboardUI()
     self:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame.CompanionConfigButtonPanel, {frame=PVEFrame})
 end
 
+--聊天设置
+function WoWTools_MoveMixin.Events:Blizzard_Channels()
+    self:Setup(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(402, 423)
+    end})
+end
+
+--选项
+function WoWTools_MoveMixin.Events:Blizzard_Settings_Shared()
+    self:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, initFunc=function(btn)
+        for _, region in pairs({btn.targetFrame:GetRegions()}) do
+            if region:GetObjectType()=='Texture' then
+                region:SetPoint('BOTTOMRIGHT', -12, 38)
+            end
+        end
+    end, sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(920, 724)
+    end})
+end
+
+
+function WoWTools_MoveMixin.Events:Blizzard_ChatFrame()
+    self:Setup(ChatConfigFrame)
+    self:Setup(ChatConfigFrame.Header, {frame=ChatConfigFrame})
+    self:Setup(ChatConfigFrame.Border, {frame=ChatConfigFrame})
+end
+
+--插件
+function WoWTools_MoveMixin.Events:Blizzard_AddOnList()
+    if WoWToolsSave['Plus_AddOns'] and WoWToolsSave['Plus_AddOns'].disabled then
+        self:Setup(AddonList)
+    end
+end
+
+
+function WoWTools_MoveMixin.Events:Blizzard_StableUI()
+    if WoWTools_DataMixin.Player.Class=='HUNTER' and WoWToolsSave['Plus_StableFrame'] and WoWToolsSave['Plus_StableFrame'].disabled then--StableFrame
+        self:Setup(StableFrame)
+    end
+end
+
+--菜单
+function WoWTools_MoveMixin.Events:Blizzard_GameMenu()
+    self:Setup(GameMenuFrame)
+end
+
+
+function WoWTools_MoveMixin.Events:Blizzard_ActionBar()
+    self:Setup(ExtraActionButton1, {click='RightButton', notSave=true, notMoveAlpha=true, notFuori=true})--额外技能
+end
+
+function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
+    self:Setup(PartyFrame.Background, {frame=PartyFrame, notZoom=true, notSave=true})
+
+--其它
+    self:Setup(OpacityFrame)
+    self:Setup(ArcheologyDigsiteProgressBar, {notZoom=true})
+    self:Setup(VehicleSeatIndicator, {notZoom=true, notSave=true})
+    self:Setup(ExpansionLandingPage)
+    self:Setup(PlayerPowerBarAlt, {notMoveAlpha=true})
+    self:Setup(CreateChannelPopup)
+    self:Setup(BattleTagInviteFrame)
+    self:Setup(OverrideActionBarExpBar, {notZoom=true})
+    self:Setup(ReportFrame)
+end
