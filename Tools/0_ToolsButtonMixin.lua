@@ -255,7 +255,7 @@ button= WoWTools_ToolsMixin:CreateButton({
 
 function WoWTools_ToolsMixin:CreateBackgroundFrame(parent, name)
     local frame= CreateFrame('Frame', name, parent or UIParent)
-    WoWTools_TextureMixin:CreateBackground(frame, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(frame, {isAllPoint=true})
     --[[frame.texture=frame:CreateTexture(nil, 'BACKGROUND')
     frame.texture:SetAllPoints()
     frame.texture:SetAlpha(0.5)]]

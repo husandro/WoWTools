@@ -9,10 +9,10 @@
 
     self:SetScrollBar(CommunitiesFrame.Chat)
     self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, nil, true)
-    self:CreateBackground(CommunitiesFrame.Chat, {isAllPoint=true})
-
+    self:CreateBG(CommunitiesFrame.Chat, {isAllPoint=true})
+--新闻过滤
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
-
+    self:SetBG(CommunitiesFrameGuildDetailsFrameNews)
 
 
 
@@ -21,7 +21,7 @@
 
 
 
-    CommunitiesFrameGuildDetailsFrameNews:DisableDrawLayer('BACKGROUND')
+   
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
     self:SetAlphaColor(CommunitiesFrameMiddle)
@@ -59,7 +59,15 @@
     self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, nil, true)
     self:HideFrame(CommunitiesFrame.MemberList.ColumnDisplay)
     self:SetScrollBar(CommunitiesFrame.MemberList)
-    self:CreateBackground(CommunitiesFrame.MemberList, {isAllPoint=true})
+    self:CreateBG(CommunitiesFrame.MemberList, {isAllPoint=true, alpha=0.5})
+    --[[hooksecurefunc(CommunitiesMemberListEntryMixin, 'Init', function(frame, elementData, expanded)
+        info= elementData
+        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+    end)]]
+
+--成员,叙述
+    self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.Border, nil, nil, nil, true)
+    self:SetButton(CommunitiesFrame.GuildMemberDetailFrame.CloseButton, {all=true})
 
 
 --公会奖励，列表, 物品，GuildRewards.lua
@@ -68,6 +76,10 @@
     CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
     self:HideFrame(CommunitiesFrame.GuildBenefitsFrame)
     self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar.BG)
+        
+    hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(f)
+        self:SetBG(f)
+    end)
     --hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(btn)
     --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetPoint('BOTTOM')
     --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAtlas('ChallengeMode-guild-background')
@@ -200,6 +212,8 @@
 
    self:SetAlphaColor(CommunitiesFrameBg, nil, nil, 0.3)
 
+
+   
 --BG
     WoWTools_TextureMixin:Init_BGMenu_Frame(
     CommunitiesFrame,--框架, frame.PortraitContainer

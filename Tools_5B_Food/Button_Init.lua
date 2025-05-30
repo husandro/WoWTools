@@ -51,7 +51,7 @@ local function Init(btn)
     btn.texture:SetTexture(538745)
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(btn, {
+    WoWTools_TextureMixin:CreateBG(btn, {
         point=function(texture)
             texture:SetPoint('BOTTOMRIGHT', 1 , 1)
             texture:SetPoint('TOP', btn, 1 , 1)

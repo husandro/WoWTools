@@ -146,7 +146,7 @@ local function Init_Buttons()
     end
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(TypeButton.frame,
+    WoWTools_TextureMixin:CreateBG(TypeButton.frame,
     {point=function(texture)
         local num= #Buttons
         texture:SetPoint('LEFT', Buttons[1], -2, 0)

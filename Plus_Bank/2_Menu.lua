@@ -294,7 +294,7 @@ local function Init()
         BankFrameMoneyFrame:SetPoint('RIGHT', OptionButton, 'LEFT')
     else
         BankFrameMoneyFrame:SetPoint('BOTTOM', BankFrame, 'TOP')
-        WoWTools_TextureMixin:CreateBackground(BankFrameMoneyFrame, {isAllPoint=true})
+        WoWTools_TextureMixin:CreateBG(BankFrameMoneyFrame, {isAllPoint=true})
     end
     BankFrameMoneyFrame:SetFrameStrata(OptionButton:GetFrameStrata())
     BankFrameMoneyFrame:SetFrameLevel(OptionButton:GetFrameLevel()+1)

@@ -162,7 +162,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     AchievementFrameComparisonHeader.Points:ClearAllPoints()
     AchievementFrameComparisonHeader.Points:SetPoint('BOTTOM', AchievementFrameComparisonHeaderName, 'TOP',0,2)
 --创建 BG
-    self:CreateBackground(AchievementFrameComparisonHeader, {
+    self:CreateBG(AchievementFrameComparisonHeader, {
         point=function(icon)
             icon:SetPoint('TOP', AchievementFrameComparisonHeader.Points, 0, 2)
             icon:SetPoint('BOTTOM', AchievementFrameComparisonHeaderName, 0, -5)

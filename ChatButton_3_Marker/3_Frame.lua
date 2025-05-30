@@ -891,21 +891,21 @@ local function Init()--设置标记, 框架
 
 
 --背景
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.ping)
+    WoWTools_TextureMixin:CreateBG(MakerFrame.ping)
     MakerFrame.ping.Background:SetPoint('BOTTOMRIGHT', MakerFrame.ping.Button[1])
     MakerFrame.ping.Background:SetPoint('TOPLEFT', MakerFrame.ping.Button[#MakerFrame.ping.Button])
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.target)
+    WoWTools_TextureMixin:CreateBG(MakerFrame.target)
     MakerFrame.target.Background:SetPoint('BOTTOMRIGHT', MakerFrame.target.Button[2])
     MakerFrame.target.Background:SetPoint('TOPLEFT', MakerFrame.target.Button[#MakerFrame.target.Button])
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.marker)
+    WoWTools_TextureMixin:CreateBG(MakerFrame.marker)
     MakerFrame.marker.Background:SetPoint('BOTTOMRIGHT', MakerFrame.marker.Button[2])
     MakerFrame.marker.Background:SetPoint('TOPLEFT', MakerFrame.marker.Button[#MakerFrame.marker.Button])
 
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.countdown, {isAllPoint=true})
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.check, {isAllPoint=true})
-    WoWTools_TextureMixin:CreateBackground(MakerFrame.RolePoll, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.countdown, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.check, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(MakerFrame.RolePoll, {isAllPoint=true})
 
     function MakerFrame:set_background()
         --local show= Save().showMakerFrameBackground

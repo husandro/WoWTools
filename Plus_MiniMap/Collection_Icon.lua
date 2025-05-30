@@ -1079,7 +1079,7 @@ local function Init()
     Button.frame:SetAllPoints()
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(Button)--, {frame=Button.frame})
+    WoWTools_TextureMixin:CreateBG(Button)--, {frame=Button.frame})
     Button.Background:SetPoint('BOTTOMRIGHT', Button)
 
 

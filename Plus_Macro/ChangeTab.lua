@@ -92,7 +92,7 @@ end
 
 
 local function Init()
-    ScrollBoxBackground=WoWTools_TextureMixin:CreateBackground(MacroFrame.MacroSelector.ScrollBox)--, {isAllPoint=true})
+    ScrollBoxBackground=WoWTools_TextureMixin:CreateBG(MacroFrame.MacroSelector.ScrollBox)--, {isAllPoint=true})
     ScrollBoxBackground:SetAllPoints(MacroFrame.MacroSelector.ScrollBox.Shadows)
 
 --ScrollFrame

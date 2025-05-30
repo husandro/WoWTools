@@ -154,8 +154,11 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
         sub.Details:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, 0, 4)
     end
 
+--公会新闻
     CommunitiesFrameGuildDetailsFrameNews:SetPoint('LEFT', CommunitiesFrameGuildDetailsFrameInfo, 'RIGHT', 15, 0)
     CommunitiesFrameGuildDetailsFrameNews.ScrollBox:SetPoint('BOTTOMRIGHT')
+    CommunitiesFrameGuildDetailsFrameNews.Header:SetPoint('RIGHT', -14, 0)
+    --CommunitiesFrameGuildDetailsFrameNews.SetFiltersButton:SetPoint('RIGHT', CommunitiesFrameGuildDetailsFrameNews.Header, -2, 0)
 
 
 
@@ -226,7 +229,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
             return '|cff9e9e9e'
         end,
     })
-
+--[[
     self:Setup(CommunitiesFrame.RecruitmentDialog)
     self:Setup(CommunitiesFrame.NotificationSettingsDialog)
     self:Setup(CommunitiesFrame.NotificationSettingsDialog.Selector, {frame=CommunitiesFrame.NotificationSettingsDialog})
@@ -245,7 +248,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
         btn.targetFrame:SetSize(384, 432)
     end})
 
---[[公会信息， 点击以编辑
+--公会信息， 点击以编辑
     self:Setup(CommunitiesGuildTextEditFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)

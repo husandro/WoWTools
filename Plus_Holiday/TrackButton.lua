@@ -828,7 +828,7 @@ local function Init()
     TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {size=23,  name='WoWToolsHolidayTrackButton'})
     TrackButton= TrackButton
 
-    WoWTools_TextureMixin:CreateBackground(TrackButton)
+    WoWTools_TextureMixin:CreateBG(TrackButton)
 
     TrackButton.texture= TrackButton:CreateTexture(nil, 'BORDER')
     TrackButton.texture:SetAtlas('Adventure-MissionEnd-Line')
@@ -836,7 +836,7 @@ local function Init()
     TrackButton.texture:SetSize(12,10)
 
 --显示背景 Background
-    --WoWTools_TextureMixin:CreateBackground(TrackButton.Frame)
+    --WoWTools_TextureMixin:CreateBG(TrackButton.Frame)
 
     TrackButton.Frame= CreateFrame('Frame',nil, TrackButton)
     TrackButton.Frame:SetPoint('BOTTOM')

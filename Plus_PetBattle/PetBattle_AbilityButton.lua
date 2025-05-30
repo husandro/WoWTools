@@ -1056,7 +1056,7 @@ local function Init_Button(tab)
     --Set_PetUnit_Tooltip(btn.LevelUnderlay)--宠物，提示
 
 --显示背景 Background
-    WoWTools_TextureMixin:CreateBackground(btn.frame, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(btn.frame, {isAllPoint=true})
 
     --btn.Background= btn.frame:CreateTexture(nil, 'BACKGROUND', nil, 1)
     --btn.Background:SetAllPoints()

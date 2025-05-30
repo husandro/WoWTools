@@ -130,7 +130,7 @@ local function Init()
     })
     Frame.Text:SetPoint('TOPRIGHT')
 
-    WoWTools_TextureMixin:CreateBackground(Frame, {
+    WoWTools_TextureMixin:CreateBG(Frame, {
         point=function(texture)
             texture:SetPoint('TOPLEFT', Frame.Text, 0, 4)
             texture:SetPoint('BOTTOMRIGHT', Frame.Text, 4, -6)

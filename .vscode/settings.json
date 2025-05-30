@@ -5769,7 +5769,8 @@
         "CommunitiesFrameGuildDetailsFrameInfoChallenge1",
         "CommunitiesFrameGuildDetailsFrameInfoChallenge3",
         "CommunitiesFrameGuildDetailsFrameInfoChallenge2",
-        "CommunitiesFrameGuildDetailsFrameInfoChallenge4"
+        "CommunitiesFrameGuildDetailsFrameInfoChallenge4",
+        "CommunitiesMemberListEntryMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

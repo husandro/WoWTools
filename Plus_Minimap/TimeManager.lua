@@ -429,7 +429,7 @@ local function Init_TimeManager()
 
 
 --显示背景
-    WoWTools_TextureMixin:CreateBackground(btn, {
+    WoWTools_TextureMixin:CreateBG(btn, {
         point=function(texture)
             texture:SetPoint('TOPLEFT', TimeManagerClockTicker, -1, -1)
             texture:SetPoint('BOTTOMRIGHT', TimeManagerClockTicker, 1, 0)
@@ -631,7 +631,7 @@ local function Init_StopwatchFrame()
 
 
 --显示背景
-    WoWTools_TextureMixin:CreateBackground(StopwatchFrame, {
+    WoWTools_TextureMixin:CreateBG(StopwatchFrame, {
         point=function(texture)
             texture:SetPoint('TOPLEFT', StopwatchTickerHour, -1, -1.5)
             texture:SetPoint('BOTTOMRIGHT', StopwatchTickerSecond, 2, 0)

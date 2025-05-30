@@ -25,7 +25,37 @@ WoWTools_TextureMixin={
     Frames={},
 }
 
-function WoWTools_TextureMixin:CreateBackground(frame, tab)
+function WoWTools_TextureMixin:SetBG(frame, tab)
+    if not frame then
+        return
+    end
+    tab= tab or {}
+
+    local file= tab.file
+    local alpha= tab.alpha or 0.3
+    local all=true
+
+    if tab.all~=nil then
+        all=true
+    end
+
+    for _, r in pairs({CommunitiesFrameGuildDetailsFrameNews:GetRegions()}) do
+        if r:GetDrawLayer()~='BACKGROUND' then
+            break
+        end
+        if r:GetObjectType()=='Texture'
+            and (file and r:GetTextureFileID()==file or not file)
+        then
+            r:SetAtlas('ChallengeMode-guild-background')
+            r:SetAlpha(alpha)
+            if not all then
+                return
+            end
+        end
+    end
+end
+
+function WoWTools_TextureMixin:CreateBG(frame, tab)
     if not frame then
         return
     elseif frame.Background then
@@ -52,7 +82,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
     --frame.Background:SetPoint("TOPLEFT", -x, y)
     --frame.Background:SetPoint("BOTTOMRIGHT", x, -y)
     frame.Background:SetAtlas(atlas)
-    
+
     frame.Background:SetAlpha(alpha)
 
     --frame.Background:SetAtlas('ChallengeMode-guild-background')
@@ -64,7 +94,7 @@ function WoWTools_TextureMixin:CreateBackground(frame, tab)
 end
 --[[
 --显示背景 Background
-WoWTools_TextureMixin:CreateBackground(frame, {point=function(texture)end, isAllPoint})
+WoWTools_TextureMixin:CreateBG(frame, {point=function(texture)end, isAllPoint})
 ]]
 
 

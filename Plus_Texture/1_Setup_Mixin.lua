@@ -194,7 +194,11 @@ function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, i
     end
 
     if not f then
-        return
+        if frame.TopEdge then
+            f=frame
+        else
+            return
+        end
     end
 
     local alpha= min and self.min or nil

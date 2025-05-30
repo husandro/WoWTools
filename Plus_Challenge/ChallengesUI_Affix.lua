@@ -239,7 +239,7 @@ local function Init()
 
 
 
-    WoWTools_TextureMixin:CreateBackground(Frame,{point=function(texture)
+    WoWTools_TextureMixin:CreateBG(Frame,{point=function(texture)
         texture:SetPoint('TOPLEFT', -2, 6)
         texture:SetPoint('BOTTOMLEFT', -2, -2)
         texture:SetPoint('RIGHT', Frame.ScrollBar, 10, 0)

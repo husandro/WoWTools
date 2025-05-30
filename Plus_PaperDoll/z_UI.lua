@@ -112,7 +112,7 @@ function WoWTools_TextureMixin.Frames:PaperDollFrame()
         end
     end)
 --添加Bg
-    self:CreateBackground(ReputationFrame.ScrollBox, {
+    self:CreateBG(ReputationFrame.ScrollBox, {
         atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
         alpha=0.3,
         isAllPoint=true,
@@ -157,7 +157,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
         end
     end)
 
-    self:CreateBackground(TokenFrame.ScrollBox, {--添加Bg
+    self:CreateBG(TokenFrame.ScrollBox, {--添加Bg
         atlas= "UI-Character-Info-"..WoWTools_DataMixin.Player.Class.."-BG",
         alpha=0.3,
         isAllPoint=true,

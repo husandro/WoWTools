@@ -361,7 +361,7 @@ local function Init()
     TipsLabel= WoWTools_LabelMixin:Create(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})
     TipsLabel:SetPoint('BOTTOMLEFT', WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'BOTTOMRIGHT', 8, 8)
     if not WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.Background then
-        local texture= WoWTools_TextureMixin:CreateBackground(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
+        local texture= WoWTools_TextureMixin:CreateBG(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame)
         texture:SetPoint('TOPLEFT', TipsLabel, -4, 4)
         texture:SetPoint('BOTTOMRIGHT', TipsLabel, 4, -4)
     end

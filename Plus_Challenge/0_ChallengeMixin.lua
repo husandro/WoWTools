@@ -238,7 +238,7 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
 
     frame.WeekRewards= frame.WeekRewards or {}
 
-    WoWTools_TextureMixin:CreateBackground(frame)
+    WoWTools_TextureMixin:CreateBG(frame)
     frame.Background:SetPoint('TOPLEFT', -2, 2)
     local w=0
 

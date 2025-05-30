@@ -651,7 +651,7 @@ local function Init()
 --购买，背包栏
     BankFramePurchaseInfo:ClearAllPoints()
     BankFramePurchaseInfo:SetPoint('TOP', BankFrame, 'BOTTOM',0, -28)
-    WoWTools_TextureMixin:CreateBackground(BankFramePurchaseInfo, {isAllPoint=true})
+    WoWTools_TextureMixin:CreateBG(BankFramePurchaseInfo, {isAllPoint=true})
 
 
 --银行 1-7 背包 Free, BankFrame.lua
