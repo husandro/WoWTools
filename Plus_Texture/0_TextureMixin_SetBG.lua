@@ -295,7 +295,7 @@ local function Init_Menu(frame, root)
     end, function()
         WoWToolsSave['Plus_Texture'].Bg.Add[name].enabled= not WoWToolsSave['Plus_Texture'].Bg.Add[name].enabled and true or nil
         Icons[icon]= not IsEnabledSaveBg(name) and true or nil
-            
+
         Settings(icon)
     end)
 
@@ -456,94 +456,98 @@ local function Create_Anims(frame, tab)
     local atlas= tab.atlas or 'talents-animations-particles'
     local isType2= tab.isType2
 
-    frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
+CharacterStatsPane:Hide()
 
-    if texture then
-        frame.AirParticlesFar:SetTexture(texture)
+frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
+
+if texture then
+    frame.AirParticlesFar:SetTexture(texture)
+else
+    frame.AirParticlesFar:SetAtlas(atlas)
+end
+frame.AirParticlesFar:SetAllPoints()
+frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
+frame.AirParticlesFar:SetBlendMode("ADD")
+
+if not frame.FullMask then
+    frame.FullMask = frame:CreateMaskTexture()
+    if isType2 then
+        frame.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
     else
-        frame.AirParticlesFar:SetAtlas(atlas)
+        frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
     end
-    frame.AirParticlesFar:SetAllPoints()
-    frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
-    frame.AirParticlesFar:SetBlendMode("ADD")
+    frame.FullMask:SetPoint('TOPLEFT', -15, 15)
+    frame.FullMask:SetPoint('BOTTOMRIGHT', 15, -15)
+end
+frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+-- 创建动画组
+frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
+frame.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
+local alpha = 0.5
 
-    if not frame.FullMask then
-        frame.FullMask = frame:CreateMaskTexture()
-        if isType2 then
-            frame.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
-        else
-            frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')
-        end
-        frame.FullMask:SetPoint('TOPLEFT', -45, 45)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', 45, -45)
-    end
-    frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+-- 透明度变化动画
+local fadeIn = frame.backgroundAnims:CreateAnimation("Alpha")
+fadeIn:SetFromAlpha(0) -- 从透明
+fadeIn:SetToAlpha(alpha)   -- 变为不透明
+fadeIn:SetDuration(0)  -- 持续0秒
+fadeIn:SetOrder(1)     -- 第一个播放
 
-    -- 创建动画组
-    frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
-    frame.backgroundAnims:SetLooping("REPEAT")
+-- 创建淡出动画
+local fadeOut = frame.backgroundAnims:CreateAnimation("Alpha")
+fadeOut:SetFromAlpha(alpha)    -- 从不透明
+fadeOut:SetToAlpha(0)        -- 变为透明
+fadeOut:SetDuration(0)       -- 持续0秒
+fadeOut:SetOrder(2)          -- 第二个播放
 
+-- 移动动画：从右下角移动到左上角
+frame.backgroundAnims.moveAnim = frame.backgroundAnims:CreateAnimation("Translation")
+frame.backgroundAnims.moveAnim:SetOrder(1)           -- 第一个播放
 
-    -- Alpha 淡入
-    local alphaIn = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    alphaIn:SetOrder(2)
-    alphaIn:SetFromAlpha(0)
-    alphaIn:SetToAlpha(0.7)
-    alphaIn:SetDuration(5)
-    alphaIn:SetSmoothing("IN")
+-- 重置位置动画：瞬间回到原位
+frame.backgroundAnims.resetPos = frame.backgroundAnims:CreateAnimation("Translation")
+frame.backgroundAnims.resetPos:SetDuration(0)        -- 瞬间完成
+frame.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
 
-    -- Alpha 淡出
-    local alphaOut = frame.backgroundAnims:CreateAnimation("Alpha", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    alphaOut:SetOrder(2)
-    alphaOut:SetFromAlpha(1)
-    alphaOut:SetToAlpha(0)
-    alphaOut:SetStartDelay(22)
-    alphaOut:SetDuration(5)
-    alphaOut:SetSmoothing("OUT")
+-- 根据框架大小更新动画偏移量和速度的函数
+function frame.backgroundAnims:UpdateAnimationOffsets()
+    local width, height = frame:GetSize()
+    -- 动画从右下角到左上角
+    local xOffset = -width
+    local yOffset = height
+    local percent = height * 0.1
 
-    -- 平移动画1
-    local trans1 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    trans1:SetOrder(1)
-    trans1:SetOffset(300, 0)
-    trans1:SetDuration(0)
+    -- 初始位置在右下角
+    frame.AirParticlesFar:ClearAllPoints()
+    frame.AirParticlesFar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
+    frame.AirParticlesFar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
 
-    -- 平移动画2
-    local trans2 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    trans2:SetOrder(2)
-    trans2:SetOffset(-600, 0)
-    trans2:SetStartDelay(0)
-    trans2:SetDuration(27)--27
+    self.moveAnim:SetOffset(xOffset, yOffset - percent)    -- 右下到左上
+    self.resetPos:SetOffset(-xOffset, -yOffset + percent)  -- 回到右下
 
-    -- 平移动画3
-    local trans3 = frame.backgroundAnims:CreateAnimation("Translation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    trans3:SetOrder(3)
-    trans3:SetOffset(600, 0)
-    trans3:SetStartDelay(0)
-    trans3:SetDuration(0)
+    -- 根据对角线长度设置动画持续时间，保证速度一致
+    local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
+    local speed = 10 -- 像素每秒，可根据需要调整
+    local duration = distance / speed
+    self.moveAnim:SetDuration(duration)
+end
 
-    -- 旋转动画
-    local rotate = frame.backgroundAnims:CreateAnimation("Rotation", nil, 'TargetsVisibleWhilePlayingAnimGroupTemplate')
-    rotate:SetOrder(3)
-    rotate:SetDegrees(20)
-    rotate:SetDuration(27)
+frame.backgroundAnims:UpdateAnimationOffsets()
+frame.backgroundAnims:SetPlaying(frame:IsVisible())
 
+-- 添加事件监听
+frame:HookScript("OnShow", function(self)
+    self.backgroundAnims:SetPlaying(true)
+end)
 
+frame:HookScript("OnSizeChanged", function(self)
+    self.backgroundAnims:UpdateAnimationOffsets()
+    self.backgroundAnims:SetPlaying(true)
+end)
 
--- 显示时播放动画，隐藏时停止动画
-    if frame:IsVisible() then
-        frame.backgroundAnims:Play()
-    end
+frame:HookScript("OnHide", function(self)
+    self.backgroundAnims:SetPlaying(false)
+end)
 
-    frame:HookScript("OnShow", function(f)
-        if not f.backgroundAnims:IsPlaying() then
-            f.backgroundAnims:Play()
-        end
-    end)
-    frame:HookScript("OnHide", function(f)
-        if f.backgroundAnims:IsPlaying() then
-            f.backgroundAnims:Stop()
-        end
-    end)
 end
 
 
@@ -618,7 +622,7 @@ local function Set_Frame_Menu(frame, icon, tab)
         end
     end)
     PortraitContainer.bg_Texture= icon
-    
+
 end
 
 
