@@ -215,9 +215,5 @@
 
    
 --BG
-    self:Init_BGMenu_Frame(
-        CommunitiesFrame,--框架, frame.PortraitContainer
-        'CommunitiesFrame',--名称
-        nil--CommunitiesFrameInset.Bg
-    )
+    self:Init_BGMenu_Frame(CommunitiesFrame)
 end

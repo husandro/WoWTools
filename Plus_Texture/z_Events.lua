@@ -188,22 +188,18 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameComparison.StatContainer)
 
     --WoWTools_ButtonMixin:AddMask(AchievementFrame, nil, AchievementFrame.Background)
-    AchievementFrame.bgMenuButton= WoWTools_ButtonMixin:Cbtn(AchievementFrame.Header, {
-        size=23,
-        name='AchievementFrameBGMenuButton',
-        texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
-        alpha=0.75
-    })
-    AchievementFrame.bgMenuButton:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
 
-    self:Init_BGMenu_Frame(
-        AchievementFrame,
-        'AchievementFrame',
+    
+
+    self:Init_BGMenu_Frame(AchievementFrame,
         AchievementFrame.Background,
-    {
-        menuButton=AchievementFrame.bgMenuButton
-    })
-
+        {
+            isNewButton=AchievementFrame.Header,
+            newButtonPoint=function(btn)
+                btn:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
+            end
+        }
+    )
 end
 
 
@@ -1013,9 +1009,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
 
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
-    self:Init_BGMenu_Frame(
-        WorldMapFrame,
-        'WorldMapFrame',
+    self:Init_BGMenu_Frame(WorldMapFrame,
         nil,
         {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer
@@ -1434,8 +1428,20 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetNineSlice(RaidFinderFrameRoleInset, nil, true)
     self:HideTexture(RaidFinderFrameRoleInset.Bg)
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(PVEFrame, 'PVEFrame', nil, nil)
+    for i=1, 5 do
+        local b= _G['GroupFinderFrameGroupButton'..i]
+        if b then
+            self:SetAlphaColor(b.bg, nil, nil, 0.5)
+        end
+    end
+
+    WoWTools_TextureMixin:Init_BGMenu_Frame(PVEFrame)
 end
+
+
+
+
+
 
 
 
@@ -1466,9 +1472,14 @@ function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
     self:SetAlphaColor(ConquestFrame.RatedBGTexture)
     PVPQueueFrame.HonorInset:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.Background)
-
     self:HideTexture(ConquestFrame.RatedBGTexture)
 
+    for i=1, 4 do
+        local b= _G['PVPQueueFrameCategoryButton'..i]
+        if b then
+            self:SetAlphaColor(b.Background, nil, nil, 0.5)
+        end
+    end
 end
 
 
@@ -1476,16 +1487,29 @@ end
 --挑战, 钥匙插入， 界面
 function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:SetButton(ChallengesKeystoneFrame.CloseButton, {all=true})
-    self:SetAlphaColor(ChallengesFrameInset.Bg)
+    self:HideTexture(ChallengesFrameInset.Bg)
 
-    self:SetNineSlice(ChallengesFrameInset)
-    self:SetFrame(ChallengesKeystoneFrame, {index=1})
+    self:SetNineSlice(ChallengesFrameInset, nil, true)
+
+    self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG, nil, nil, 0.3)
+
+    self:HideFrame(ChallengesKeystoneFrame, {index=1})
     self:HideTexture(ChallengesKeystoneFrame.InstructionBackground)
-
     hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(frame)--钥匙插入， 界面
-        self:SetFrame(frame, {index=1})
+        self:HideTexture(frame, {index=1})
         self:HideTexture(frame.InstructionBackground)
     end)
+
+
+    WoWTools_TextureMixin:Init_BGMenu_Frame(ChallengesKeystoneFrame,
+        nil,
+        {
+        isNewButton=ChallengesKeystoneFrame.CloseButton,
+        newButtonPoint=function(btn)
+            btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT', -23, 0)
+        end
+        }
+    )
 end
 
 
@@ -1496,6 +1520,14 @@ end
 --地下堡
 function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
     self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
+
+    hooksecurefunc(DelvesDashboardFrame, 'UpdateGreatVaultVisibility', function(f)
+        local bg= f.ButtonPanelLayoutFrame.CompanionConfigButtonPanel.ButtonPanelBackground
+        bg:SetAlpha(bg:IsDesaturated() and 0.5 or 0)
+
+        bg = f.ButtonPanelLayoutFrame.GreatVaultButtonPanel.ButtonPanelBackground
+        bg:SetAlpha(bg:IsDesaturated() and 0.5 or 0)
+    end)
 end
 
 
@@ -1636,11 +1668,9 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
     CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
     CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
-    WoWTools_TextureMixin:Init_BGMenu_Frame(
-        CharacterFrame,
-        'CharacterFrame',
-        CharacterFrame.Background,
-    nil)
+    WoWTools_TextureMixin:Init_BGMenu_Frame(CharacterFrame,
+        CharacterFrame.Background
+    )
 
 end
 
@@ -1686,7 +1716,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetNineSlice(CurrencyTransferMenuInset)
     self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
     self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
-    
+
 end
 
 
@@ -1876,7 +1906,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetButton(PlayerSpellsFrameCloseButton, {all=true})
     self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MaximizeButton, {all=true})
     self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MinimizeButton, {all=true})
-    
+
 
     --self:SetAlphaColor(PlayerSpellsFrameBg)
     self:SetNineSlice(PlayerSpellsFrame, 0.3)
@@ -1952,19 +1982,18 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
         end
     end)
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(
-        PlayerSpellsFrame,
-        'PlayerSpellsFrame',
+    WoWTools_TextureMixin:Init_BGMenu_Frame(PlayerSpellsFrame,
         PlayerSpellsFrameBg,
-    {
-        notAnims=true,
-        isHook=true,
-        setValueFunc=function() WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame) end,
-        icons={
-            PlayerSpellsFrame.SpecFrame.Background,
-            PlayerSpellsFrame.TalentsFrame.Background,
+        {
+            notAnims=true,
+            isHook=true,
+            setValueFunc=function() WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame) end,
+            icons={
+                PlayerSpellsFrame.SpecFrame.Background,
+                PlayerSpellsFrame.TalentsFrame.Background,
+            }
         }
-    })
+    )
 end
 
 
@@ -2342,22 +2371,21 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
     self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
 
-    self:Init_BGMenu_Frame(
-        ProfessionsBookFrame,--框架, frame.PortraitContainer
-        'ProfessionsBookFrame',--名称
+    self:Init_BGMenu_Frame(ProfessionsBookFrame,--框架, frame.PortraitContainer
         nil,
         {
-        settings=function(textureName, alphaValue)--设置内容时，调用
-            ProfessionsBookPage1:SetShown(not textureName)
-            ProfessionsBookPage2:SetShown(not textureName)
-            ProfessionsBookPage1:SetAlpha(alphaValue or 1)
-            ProfessionsBookPage2:SetAlpha(alphaValue or 1)
-            if ProfessionsBookFrame.Add_Background and not textureName then
-                ProfessionsBookFrame.Add_Background:SetShown(false)
-            end
-        end,
-        alpha=1,
-    })
+            settings=function(textureName, alphaValue)--设置内容时，调用
+                ProfessionsBookPage1:SetShown(not textureName)
+                ProfessionsBookPage2:SetShown(not textureName)
+                ProfessionsBookPage1:SetAlpha(alphaValue or 1)
+                ProfessionsBookPage2:SetAlpha(alphaValue or 1)
+                if ProfessionsBookFrame.Add_Background and not textureName then
+                    ProfessionsBookFrame.Add_Background:SetShown(false)
+                end
+            end,
+            alpha=1,
+        }
+    )
 
     PrimaryProfession1.bg= PrimaryProfession1:CreateTexture(nil, 'BACKGROUND')
     PrimaryProfession1.bg:SetAtlas('delves-affix-mask')

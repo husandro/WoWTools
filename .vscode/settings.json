@@ -5771,7 +5771,9 @@
         "CommunitiesFrameGuildDetailsFrameInfoChallenge2",
         "CommunitiesFrameGuildDetailsFrameInfoChallenge4",
         "CommunitiesMemberListEntryMixin",
-        "ContainerFrame_GenerateFrame"
+        "ContainerFrame_GenerateFrame",
+        "GroupFinderFrameGroupButton3",
+        "DelvesDashboardFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

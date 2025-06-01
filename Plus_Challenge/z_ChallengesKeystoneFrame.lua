@@ -542,7 +542,7 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(ChallengesKeystoneFrame.CloseButton)
+    local btn= WoWTools_ButtonMixin:Menu(ChallengesKeystoneFrame.CloseButton, {name='ChallengesKeystoneFrameWoWToolsMenu'})
     btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
 
     btn:SetupMenu(Init_Menu)
