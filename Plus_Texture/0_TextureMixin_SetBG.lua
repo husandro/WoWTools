@@ -108,19 +108,15 @@ local TextureTab={--TalentArt
 
 
 local function set_texture(icon, texture, alpha)
-    texture= texture or icon.p_texture
-    if texture then
-        if C_Texture.GetAtlasInfo(texture) then
-            icon:SetAtlas(texture)
-        else
-            icon:SetTexture(texture)
-        end
-        icon:SetVertexColor(1,1,1,1)
-        icon:SetAlpha(alpha or 0.5)
-        icon:SetShown(true)
+    texture= texture or icon.p_texture or TextureTab[1]
+    if C_Texture.GetAtlasInfo(texture) then
+        icon:SetAtlas(texture)
     else
-        icon:SetTexture(0)
+        icon:SetTexture(texture)
     end
+    icon:SetVertexColor(1,1,1,1)
+    icon:SetAlpha(alpha)
+    icon:SetShown(true)
 end
 
 local function Set_BGTexture(icon)
@@ -265,6 +261,70 @@ end
 
 
 
+--自定义,列表
+local function UseFrame_Menu(_, root)
+    local sub, sub2
+    sub=root:CreateButton('|A:charactercreate-icon-dice:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM), function() return MenuResponse.Open end)
+
+    for _ in pairs(WoWToolsSave['Plus_Texture'].Bg.Add) do
+        WoWTools_MenuMixin:ClearAll(sub, function()
+            Save().Bg.UseTexture={}
+        end)
+        sub:CreateDivider()
+        break
+    end
+
+
+    --CHECK_ALL = "勾选所有";
+    --UNCHECK_ALL = "撤选所有";
+
+    for frameName, tab in pairs(WoWToolsSave['Plus_Texture'].Bg.Add) do
+        local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})
+        sub2= sub:CreateCheckbox(
+            frameName..'|cnGREEN_FONT_COLOR:'..(tab.alpha or 0.5),
+        function(data)
+            return WoWToolsSave['Plus_Texture'].Bg.Add[data.frame] and WoWToolsSave['Plus_Texture'].Bg.Add[data.frame].enabled
+        end, function(data)
+            WoWToolsSave['Plus_Texture'].Bg.Add[data.frame].enabled= not WoWToolsSave['Plus_Texture'].Bg.Add[data.frame].enabled and true or nil
+        end, {
+            frame=frameName,
+            alpha=tab.alpha,
+            texture=tab.texture,
+            icon2=icon2
+        })
+
+        if textureID then
+            sub:AddInitializer(function(button)
+                local t = button:AttachTexture()
+                t:SetSize(248, 64)
+                t:SetPoint("BOTTOMLEFT", button.fontString)
+                if isAtlas then
+                    t:SetAtlas(textureID)
+                else
+                    t:SetTexture(textureID)
+                end
+            end)
+        end
+
+        sub2:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine(desc.data.icon2)
+            tooltip:AddLine(desc.data.frame)
+            tooltip:AddLine(desc.data.texture)
+            tooltip:AddDoubleLine(desc.data.alpha or 0.5, 'Alpha')
+        end)
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -276,19 +336,28 @@ end
 
 
 --BG, 菜单
-local function Init_Menu(frame, root)
+local function Init_Menu(frame, root, isSub)
     local name= frame.bg_Texture.BgData.name
     local icon= frame.bg_Texture
 
 
     local sub, sub2, sub3
---背景
-    sub= root:CreateButton(
-        '|A:MonkUI-LightOrb:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
-    function()
-        return MenuResponse.Open
-    end)
+
+    if isSub then
+    --背景
+        sub= root:CreateButton(
+            '|A:MonkUI-LightOrb:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
+        function()
+            return MenuResponse.Open
+        end)
+    else
+        root:CreateTitle('|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND))
+        root:CreateTitle()
+        sub=root
+    end
+
+
 
 --自定义
     sub2= sub:CreateCheckbox(
@@ -311,7 +380,6 @@ local function Init_Menu(frame, root)
             GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '无' or NONE)--红色
         end
     end)
-
 
 
 --材质，列表
@@ -409,10 +477,8 @@ local function Init_Menu(frame, root)
     })
     sub:CreateSpacer()
 
-
-
-
-
+--自定义,列表
+    UseFrame_Menu(frame, root)
 
 --打开选项界面
     sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_TextureMixin.addName, category=WoWTools_TextureMixin.Category})
@@ -428,9 +494,13 @@ local function Init_Menu(frame, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
     end)
 
+
+
+
 --重新加载UI
     sub2:CreateDivider()
     WoWTools_MenuMixin:Reload(sub2)
+
 end
 
 
@@ -568,6 +638,9 @@ end
 
 
 
+
+
+
 local function Set_Frame_Menu(frame, icon, tab)
     local PortraitContainer= frame.bgMenuButton or frame.PortraitContainer or tab.PortraitContainer
     if not PortraitContainer then
@@ -601,7 +674,9 @@ local function Set_Frame_Menu(frame, icon, tab)
             return
         end
 
-        MenuUtil.CreateContextMenu(s, Init_Menu)
+        MenuUtil.CreateContextMenu(s, function(_, root)
+            Init_Menu(s, root, false)
+        end)
         if s.portrait then
             s.portrait:SetAlpha(0.3)
         end
@@ -685,7 +760,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
 
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
-    
+
     if Save().disabled
         or not frame
     then
@@ -698,9 +773,9 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
         return
     end
     tab.name= name
-    
+
     WoWToolsSave['Plus_Texture'].Bg.Add[name]= WoWToolsSave['Plus_Texture'].Bg.Add[name] or {}
-    
+
     local p_texture
 
     if not icon then
@@ -744,7 +819,7 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
     Create_Anims(frame, tab)
 
     Settings(icon)
-    
+
     Create_Button(frame, tab)
 
 --设置，调用，菜单

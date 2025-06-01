@@ -1435,7 +1435,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
         end
     end
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(PVEFrame)
+    self:Init_BGMenu_Frame(PVEFrame)
 end
 
 
@@ -1501,7 +1501,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     end)
 
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(ChallengesKeystoneFrame,
+    self:Init_BGMenu_Frame(ChallengesKeystoneFrame,
         nil,
         {
         isNewButton=ChallengesKeystoneFrame.CloseButton,
@@ -1668,7 +1668,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
     CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
     CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
-    WoWTools_TextureMixin:Init_BGMenu_Frame(CharacterFrame,
+    self:Init_BGMenu_Frame(CharacterFrame,
         CharacterFrame.Background
     )
 
@@ -1982,7 +1982,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
         end
     end)
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(PlayerSpellsFrame,
+    self:Init_BGMenu_Frame(PlayerSpellsFrame,
         PlayerSpellsFrameBg,
         {
             notAnims=true,
@@ -2012,14 +2012,16 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetFrame(PetJournalTutorialButton, {alpha=0.3})
 
     self:SetNineSlice(CollectionsJournal, true)
-    self:SetAlphaColor(CollectionsJournalBg, nil, nil, true)
+    self:HideTexture(CollectionsJournalBg)
 
 --坐骑
     self:SetFrame(MountJournal.MountCount, {alpha=0.3})
     self:HideTexture(MountJournal.LeftInset.Bg)
-    self:SetAlphaColor(MountJournal.MountDisplay.YesMountsTex)
+    self:HideTexture(MountJournal.MountDisplay.YesMountsTex)
+    self:HideTexture(MountJournal.MountDisplay.ShadowOverlay)
     self:HideTexture(MountJournal.RightInset.Bg)
-    self:SetAlphaColor(MountJournal.BottomLeftInset.Background)
+    self:HideTexture(MountJournal.BottomLeftInset.Background)
+    self:HideFrame(MountJournal.BottomLeftInset, {index=1})
     self:HideTexture(MountJournal.BottomLeftInset.Bg)
     self:SetScrollBar(MountJournal)
     self:SetEditBox(MountJournalSearchBox)
@@ -2207,6 +2209,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:HideTexture(WarbandSceneJournal.IconsFrame.BackgroundTile)
         self:HideTexture(WarbandSceneJournal.IconsFrame.Bg)
     end
+
+
+    self:Init_BGMenu_Frame(CollectionsJournal)
 end
 
 
