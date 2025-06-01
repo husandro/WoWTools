@@ -449,14 +449,14 @@ local function UpdateAnimationOffsets(self)
     local percent = height * 0.1
 
 
-    self.moveAnim:SetOffset(xOffset, yOffset - percent)    -- 右下到左上
-    self.resetPos:SetOffset(-xOffset, -yOffset + percent)  -- 回到右下
+    self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset - percent)    -- 右下到左上
+    self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset + percent)  -- 回到右下
 
     -- 根据对角线长度设置动画持续时间，保证速度一致
     local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
     local speed = 10 -- 像素每秒，可根据需要调整
     local duration = distance / speed
-    self.moveAnim:SetDuration(duration)
+    self.backgroundAnims.moveAnim:SetDuration(duration)
 end
 
 
@@ -486,82 +486,81 @@ local function Create_Anims(frame, tab)
 
 
 
-frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
+    frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
 
-if texture then
-    frame.AirParticlesFar:SetTexture(texture)
-else
-    frame.AirParticlesFar:SetAtlas(atlas)
-end
-frame.AirParticlesFar:SetAllPoints()
-frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
-frame.AirParticlesFar:SetBlendMode("ADD")
-
-if not frame.FullMask then
-    frame.FullMask = frame:CreateMaskTexture()
-    if isType2 then
-        frame.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+    if texture then
+        frame.AirParticlesFar:SetTexture(texture)
     else
-        frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
+        frame.AirParticlesFar:SetAtlas(atlas)
     end
-    frame.FullMask:SetPoint('TOPLEFT', -15, 15)
-    frame.FullMask:SetPoint('BOTTOMRIGHT', 15, -15)
-end
-frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+    frame.AirParticlesFar:SetAllPoints()
+    frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
+    frame.AirParticlesFar:SetBlendMode("ADD")
+
+    if not frame.FullMask then
+        frame.FullMask = frame:CreateMaskTexture()
+        if isType2 then
+            frame.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+        else
+            frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
+        end
+        frame.FullMask:SetPoint('TOPLEFT', -15, 15)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', 15, -15)
+    end
+    frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
 
 
 
 
 
--- 创建动画组
-frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
-frame.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
+    -- 创建动画组
+    frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
+    frame.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
 
 
-local alpha = 0.5
+    local alpha = 0.5
 
--- 透明度变化动画
-local fadeIn = frame.backgroundAnims:CreateAnimation("Alpha")
-fadeIn:SetFromAlpha(0) -- 从透明
-fadeIn:SetToAlpha(alpha)   -- 变为不透明
-fadeIn:SetDuration(0)  -- 持续0秒
-fadeIn:SetOrder(1)     -- 第一个播放
+    -- 透明度变化动画
+    local fadeIn = frame.backgroundAnims:CreateAnimation("Alpha")
+    fadeIn:SetFromAlpha(0) -- 从透明
+    fadeIn:SetToAlpha(alpha)   -- 变为不透明
+    fadeIn:SetDuration(0)  -- 持续0秒
+    fadeIn:SetOrder(1)     -- 第一个播放
 
--- 创建淡出动画
-local fadeOut = frame.backgroundAnims:CreateAnimation("Alpha")
-fadeOut:SetFromAlpha(alpha)    -- 从不透明
-fadeOut:SetToAlpha(0)        -- 变为透明
-fadeOut:SetDuration(0)       -- 持续0秒
-fadeOut:SetOrder(2)          -- 第二个播放
+    -- 创建淡出动画
+    local fadeOut = frame.backgroundAnims:CreateAnimation("Alpha")
+    fadeOut:SetFromAlpha(alpha)    -- 从不透明
+    fadeOut:SetToAlpha(0)        -- 变为透明
+    fadeOut:SetDuration(0)       -- 持续0秒
+    fadeOut:SetOrder(2)          -- 第二个播放
 
--- 移动动画：从右下角移动到左上角
-frame.backgroundAnims.moveAnim = frame.backgroundAnims:CreateAnimation("Translation")
-frame.backgroundAnims.moveAnim:SetOrder(1)           -- 第一个播放
+    -- 移动动画：从右下角移动到左上角
+    frame.backgroundAnims.moveAnim = frame.backgroundAnims:CreateAnimation("Translation")
+    frame.backgroundAnims.moveAnim:SetOrder(1)           -- 第一个播放
 
--- 重置位置动画：瞬间回到原位
-frame.backgroundAnims.resetPos = frame.backgroundAnims:CreateAnimation("Translation")
-frame.backgroundAnims.resetPos:SetDuration(0)        -- 瞬间完成
-frame.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
+    -- 重置位置动画：瞬间回到原位
+    frame.backgroundAnims.resetPos = frame.backgroundAnims:CreateAnimation("Translation")
+    frame.backgroundAnims.resetPos:SetDuration(0)        -- 瞬间完成
+    frame.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
 
 
 
-UpdateAnimationOffsets(frame.backgroundAnims)
-frame.backgroundAnims:SetPlaying(frame:IsVisible())
+    UpdateAnimationOffsets(frame)
+    frame.backgroundAnims:SetPlaying(frame:IsVisible())
 
--- 添加事件监听
-frame:HookScript("OnShow", function(self)
-    self.backgroundAnims:SetPlaying(true)
-end)
+    -- 添加事件监听
+    frame:HookScript("OnShow", function(self)
+        self.backgroundAnims:SetPlaying(true)
+    end)
 
-frame:HookScript("OnSizeChanged", function(self)
-    UpdateAnimationOffsets(self)
-    self.backgroundAnims:SetPlaying(true)
-end)
+    frame:HookScript("OnSizeChanged", function(self)
+        UpdateAnimationOffsets(self)
+        self.backgroundAnims:SetPlaying(true)
+    end)
 
-frame:HookScript("OnHide", function(self)
-    self.backgroundAnims:SetPlaying(false)
-end)
-
+    frame:HookScript("OnHide", function(self)
+        self.backgroundAnims:SetPlaying(false)
+    end)
 end
 
 
