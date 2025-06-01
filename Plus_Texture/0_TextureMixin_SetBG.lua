@@ -440,6 +440,34 @@ end
 
 
 
+-- 根据框架大小更新动画偏移量和速度的函数
+local function UpdateAnimationOffsets(self)
+    local width, height = self:GetSize()
+    -- 动画从右下角到左上角
+    local xOffset = -width
+    local yOffset = height
+    local percent = height * 0.1
+
+
+    self.moveAnim:SetOffset(xOffset, yOffset - percent)    -- 右下到左上
+    self.resetPos:SetOffset(-xOffset, -yOffset + percent)  -- 回到右下
+
+    -- 根据对角线长度设置动画持续时间，保证速度一致
+    local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
+    local speed = 10 -- 像素每秒，可根据需要调整
+    local duration = distance / speed
+    self.moveAnim:SetDuration(duration)
+end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -450,13 +478,13 @@ local function Create_Anims(frame, tab)
         return
     end
 
--- AirParticlesFar 粒子动画
+
 
     local texture= tab.texture
     local atlas= tab.atlas or 'talents-animations-particles'
     local isType2= tab.isType2
 
-CharacterStatsPane:Hide()
+
 
 frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
 
@@ -480,9 +508,16 @@ if not frame.FullMask then
     frame.FullMask:SetPoint('BOTTOMRIGHT', 15, -15)
 end
 frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+
+
+
+
+
 -- 创建动画组
 frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
 frame.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
+
+
 local alpha = 0.5
 
 -- 透明度变化动画
@@ -508,30 +543,9 @@ frame.backgroundAnims.resetPos = frame.backgroundAnims:CreateAnimation("Translat
 frame.backgroundAnims.resetPos:SetDuration(0)        -- 瞬间完成
 frame.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
 
--- 根据框架大小更新动画偏移量和速度的函数
-function frame.backgroundAnims:UpdateAnimationOffsets()
-    local width, height = frame:GetSize()
-    -- 动画从右下角到左上角
-    local xOffset = -width
-    local yOffset = height
-    local percent = height * 0.1
 
-    -- 初始位置在右下角
-    frame.AirParticlesFar:ClearAllPoints()
-    frame.AirParticlesFar:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 0, 0)
-    frame.AirParticlesFar:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
 
-    self.moveAnim:SetOffset(xOffset, yOffset - percent)    -- 右下到左上
-    self.resetPos:SetOffset(-xOffset, -yOffset + percent)  -- 回到右下
-
-    -- 根据对角线长度设置动画持续时间，保证速度一致
-    local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
-    local speed = 10 -- 像素每秒，可根据需要调整
-    local duration = distance / speed
-    self.moveAnim:SetDuration(duration)
-end
-
-frame.backgroundAnims:UpdateAnimationOffsets()
+UpdateAnimationOffsets(frame.backgroundAnims)
 frame.backgroundAnims:SetPlaying(frame:IsVisible())
 
 -- 添加事件监听
@@ -540,7 +554,7 @@ frame:HookScript("OnShow", function(self)
 end)
 
 frame:HookScript("OnSizeChanged", function(self)
-    self.backgroundAnims:UpdateAnimationOffsets()
+    UpdateAnimationOffsets(self)
     self.backgroundAnims:SetPlaying(true)
 end)
 
