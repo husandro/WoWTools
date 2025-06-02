@@ -23,10 +23,6 @@ local RestIcon= 'Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga'
 
 
 
-
-
-
-
 local TextureTab={
 [RestIcon]=1,
 ['Interface\\AddOns\\WoWTools\\Source\\Background\\White.tga']=1,
@@ -313,6 +309,12 @@ local function Texture_List_Menu(root, icon, name)
     )
     end)
 
+    --[[local newTab={}
+
+    for texture in pairs(Save().Bg.UseTexture or {}) do
+        table.insert(newTab, texture)
+    end]]
+
     local num=0
     for texture in pairs(Save().Bg.UseTexture or {}) do
         texture_list(root, name, icon,  texture, true)
@@ -404,19 +406,16 @@ local function Add_Frame_Menu(_, root)
             icon2=icon2,
         })
 
-        if textureID then
-            sub2:AddInitializer(function(button)
-                local t = button:AttachTexture()
-                t:SetSize(248, 64)
-                t:SetPoint("BOTTOMLEFT")
-                if isAtlas then
-                    t:SetAtlas(textureID)
-                else
-                    t:SetTexture(textureID)
-                end
-                return math.max(button.fontString:GetStringWidth()+20 or 248), 64+20
-            end)
-        end
+        sub2:AddInitializer(function(button)
+            local t = button:AttachTexture()
+            t:SetSize(248, 64)
+            t:SetPoint("LEFT")
+            if isAtlas then
+                t:SetAtlas(textureID)
+            else
+                t:SetTexture(textureID or RestIcon)
+            end
+        end)
 
         sub2:SetTooltip(function(tooltip, desc)
             tooltip:AddLine(desc.data.icon2)
