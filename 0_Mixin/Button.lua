@@ -236,7 +236,7 @@ function WoWTools_ButtonMixin:Menu(frame, tab)
         WoWTools_TextureMixin:SetButton(btn, {all=true})
     end
 
-    btn:SetFrameLevel(frame:GetFrameLevel()+7)
+    btn:SetFrameLevel(math.min(frame:GetFrameLevel()+7, 10000))
 
     function btn:HandlesGlobalMouseEvent(_, event)
         return event == "GLOBAL_MOUSE_DOWN"-- and d=='RightButton'
