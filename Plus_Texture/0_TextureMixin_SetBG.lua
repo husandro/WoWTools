@@ -115,7 +115,7 @@ local Icons={}
 local function Remove_Add_Icons(icon, enabled)
     enabled= enabled==true and true or nil
     Icons[icon]= enabled
-    for bg in (icon.BgData and icon.BgData.icon or {}) do
+    for _, bg in (icon.BgData and icon.BgData.icon or {}) do
         Icons[bg]=enabled
     end
 end
@@ -146,10 +146,8 @@ local function Set_BGTexture(icon)
 
     set_texture(icon, texture, alpha)
 
-    if icon.BgData.icons then
-        for _, bg in pairs(icon.BgData.icons) do
-            set_texture(bg, texture, alpha)
-        end
+    for _, bg in pairs(icon.BgData.icons or {}) do
+        set_texture(bg, texture, alpha)
     end
 end
 
