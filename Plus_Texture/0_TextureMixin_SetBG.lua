@@ -18,7 +18,6 @@ end
 
 
 local RestIcon= 'Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga'
-local Icons={}
 
 
 
@@ -115,6 +114,15 @@ local TextureTab={
 
 
 
+local Icons={}
+--从 Icons 添加 或 移除
+local function Remove_Add_Icons(icon, enabled)
+    enabled= enabled==true and true or nil
+    Icons[icon]= enabled
+    for bg in (icon.BgData and icon.BgData.icon or {}) do
+        Icons[bg]=enabled
+    end
+end
 
 
 
@@ -347,13 +355,6 @@ end
 
 
 
-local function Remove_Add_Icons(icon, enabled)
-    enabled= enabled==true and true or nil
-    Icons[icon]= enabled
-    for bg in (icon.BgData or {}) do
-        Icons[bg]=enabled
-    end
-end
 
 
 --分开设置, 列表
@@ -366,7 +367,7 @@ local function Add_Frame_Menu(_, root)
             for f in pairs(Save().Bg.Add) do
                 f=_G[f]
                 if f and f.bg_Texture then
-                    Remove_Add_Icons(f.bg_Texture, nil)
+                    Remove_Add_Icons(f.bg_Texture, nil)--从 Icons 添加 或 移除
                 end
             end
             Save().Bg.Add={}
@@ -392,8 +393,8 @@ local function Add_Frame_Menu(_, root)
 
             local icon= _G[data.frame] and _G[data.frame].bg_Texture
             if icon then
-                Remove_Add_Icons(icon, not enabled)
-                Set_BGTexture(icon)
+                Remove_Add_Icons(icon, not enabled)--从 Icons 添加 或 移除
+                Settings(icon)
             end
 
         end, {
@@ -479,11 +480,7 @@ local function Init_Menu(frame, root, isSub)
         Save().Bg.Add[name].enabled= not Save().Bg.Add[name].enabled and true or nil
 
         local enabled= not IsEnabledSaveBg(name) and true or nil
-        Icons[icon]= enabled
-        for _, bg in pairs(icon.BgData.icons or {}) do
-            Icons[bg]=enabled
-        end
-
+        Remove_Add_Icons(icon, enabled)--从 Icons 添加 或 移除
         Settings(icon)
     end)
     sub2:SetTooltip(function(tooltip)
@@ -536,6 +533,7 @@ local function Init_Menu(frame, root, isSub)
 
 --分开设置, 列表
     Add_Frame_Menu(frame, root)
+    sub:CreateSpacer()
 
 --打开选项界面
     sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_TextureMixin.addName, category=WoWTools_TextureMixin.Category})
@@ -559,6 +557,16 @@ local function Init_Menu(frame, root, isSub)
     WoWTools_MenuMixin:Reload(sub2)
 
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
