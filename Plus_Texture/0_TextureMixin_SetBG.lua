@@ -116,7 +116,7 @@ local function Remove_Add_Icons(icon, enabled)
     enabled= enabled==true and true or nil
     Icons[icon]= enabled
     if icon.BgData and icon.BgData.icons then
-        for _, bg in (icon.BgData.icons) do
+        for _, bg in pairs(icon.BgData.icons) do
             Icons[bg]=enabled
         end
     end
@@ -207,16 +207,16 @@ local function texture_list(root, name, icon, texture, isAdd)
     function()
         return texture== SaveBG(name).texture
     end, function()
-        --[[if IsEnabledSaveBg(name) then--仅限
+        if IsEnabledSaveBg(name) then--仅限
             SaveBG(name).texture= SaveBG(name).texture~=texture and texture or nil
-        else--统一设置]]
+        else--统一设置
             SaveBG(name).texture= texture
-        --end
+        end
 
         Settings(icon)
 
         if icon.BgData.setValueFunc then
-            icon.BgData.setValueFunc(SaveBG(name).texture or RestIcon, SaveBG(name).alpha or 0.5)
+            icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
         end
 
         return MenuResponse.Refresh
@@ -529,7 +529,7 @@ local function Init_Menu(frame, root, isSub)
             SaveBG(name).alpha=value
             Settings(icon)
             if icon.BgData.setValueFunc then
-                icon.BgData.setValueFunc(SaveBG(name).texture or RestIcon, SaveBG(name).alpha or 0.5)
+                icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
             end
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
