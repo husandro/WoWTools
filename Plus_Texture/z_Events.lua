@@ -1346,7 +1346,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     --地下城和团队副本
     self:SetButton(PVEFrameCloseButton, {all=true})
     self:HideTexture(PVEFrame.TopTileStreaks)--最上面
-    self:SetNineSlice(PVEFrame, true)
+    self:SetNineSlice(PVEFrame)
     self:SetEditBox(LFGListFrame.SearchPanel.SearchBox)
     self:SetScrollBar(LFGListFrame.SearchPanel)
     self:SetNineSlice(LFGListFrame.SearchPanel.ResultsInset, nil, true)
@@ -1442,6 +1442,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
             self:HideTexture(btn.Cover)
         end
     end)
+
     self:Init_BGMenu_Frame(PVEFrame)
 end
 
@@ -1555,8 +1556,8 @@ end
 function WoWTools_TextureMixin.Frames:CharacterFrame()
 
     self:SetButton(CharacterFrameCloseButton, {all=true})
-    self:SetNineSlice(CharacterFrameInset, true)
-    self:SetNineSlice(CharacterFrame, true)
+    self:SetNineSlice(CharacterFrameInset, nil, true)
+    self:SetNineSlice(CharacterFrame)
     self:SetNineSlice(CharacterFrameInsetRight, true)
 
     self:HideTexture(CharacterFrameBg)
@@ -1714,11 +1715,11 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, {all=true})
 
 --货币转移
-    self:SetNineSlice(CurrencyTransferLog, true)
+    self:SetNineSlice(CurrencyTransferLog)
     self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
-    self:SetNineSlice(CurrencyTransferLogInset, true)
+    self:SetNineSlice(CurrencyTransferLogInset, nil, true)
     self:SetScrollBar(CurrencyTransferLog)
-    self:SetNineSlice(CurrencyTransferMenu, true)
+    self:SetNineSlice(CurrencyTransferMenu)
     self:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
     self:SetNineSlice(CurrencyTransferMenuInset)
     self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
@@ -1731,7 +1732,7 @@ end
 
 --玩家, 观察角色, 界面
 function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
-    self:SetNineSlice(InspectFrame, true)
+    self:SetNineSlice(InspectFrame)
     --self:SetAlphaColor(InspectFrameBg)
     self:HideTexture(InspectFrameInset.Bg)
     self:HideTexture(InspectPVPFrame.BG)
@@ -1740,7 +1741,7 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:SetTabButton(InspectFrameTab1)
     self:SetTabButton(InspectFrameTab2)
     self:SetTabButton(InspectFrameTab3)
-    self:SetNineSlice(InspectFrame, true)
+    self:SetNineSlice(InspectFrame)
     self:SetNineSlice(InspectFrameInset, nil, true)
 
     self:SetAlphaColor(InspectModelFrameBackgroundOverlay, nil, nil, 0)
@@ -1769,10 +1770,10 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
         end
     end
     self:SetButton(EventTraceCloseButton, {all=true})
-    self:SetNineSlice(EventTrace, true)
+    self:SetNineSlice(EventTrace)
     self:SetAlphaColor(EventTraceBg, nil, nil, true)
     self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
-    self:SetNineSlice(EventTraceInset, true)
+    self:SetNineSlice(EventTraceInset)
     self:SetButton(EventTrace.ResizeButton, {all=true})
     self:SetScrollBar(EventTrace.Log.Events)
     self:SetEditBox(EventTrace.Log.Bar.SearchBox)
@@ -1916,7 +1917,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
 
     --self:SetAlphaColor(PlayerSpellsFrameBg)
-    self:SetNineSlice(PlayerSpellsFrame, 0.3)
+    self:SetNineSlice(PlayerSpellsFrame)
     self:SetTabSystem(PlayerSpellsFrame)
 
     self:SetAlphaColor(PlayerSpellsFrame.SpecFrame.Background, 0.3)--专精
@@ -1938,7 +1939,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
 
     --英雄专精
-    self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true, false)
+    self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true)
 
     if PlayerSpellsFrame.SpellBookFrame.SettingsDropdown then--11.1.7
         self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)
@@ -2018,7 +2019,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetButton(CollectionsJournalCloseButton, {all=true})
     self:SetFrame(PetJournalTutorialButton, {alpha=0.3})
 
-    self:SetNineSlice(CollectionsJournal, true)
+    self:SetNineSlice(CollectionsJournal)
     self:HideTexture(CollectionsJournalBg)
 
 --坐骑
@@ -2159,7 +2160,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetTabButton(WardrobeCollectionFrameTab2)
 
     --试衣间
-    self:SetNineSlice(WardrobeFrame, true)
+    self:SetNineSlice(WardrobeFrame)
     self:HideTexture(WardrobeFrameBg)
     self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
     self:SetAlphaColor(WardrobeTransmogFrame.Inset.BG)
@@ -2199,7 +2200,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     end
 
     if _G['RematchJournal'] then
-        self:SetNineSlice(_G['RematchJournal'], true)
+        self:SetNineSlice(_G['RematchJournal'])
         self:SetAlphaColor(_G['RematchJournalBg'])
         self:SetAlphaColor(RematchLoadoutPanel.Target.InsetBack)
         self:HideTexture(RematchPetPanel.Top.InsetBack)
@@ -2317,9 +2318,9 @@ end
 --宏
 function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
     self:SetFrame(MacroFrame, {notAlpha=true})
-    self:SetNineSlice(MacroFrameInset, true)
-    self:SetNineSlice(MacroFrame, true)
-    self:SetNineSlice(MacroFrameTextBackground, true, nil, nil, true)
+    self:SetNineSlice(MacroFrameInset)
+    self:SetNineSlice(MacroFrame)
+    self:SetNineSlice(MacroFrameTextBackground, nil, nil, nil, true)
     self:HideTexture(MacroFrameBg)
     self:SetAlphaColor(MacroFrameInset.Bg)
     self:SetAlphaColor(MacroHorizontalBarLeft, true)
@@ -2374,8 +2375,8 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     ProfessionsBookPage1:SetPoint('TOPLEFT', ProfessionsBookFrame, 'TOPLEFT', 0, -23)
     ProfessionsBookPage1:SetPoint('BOTTOM',0, -15)
     ProfessionsBookPage2:SetPoint('BOTTOMRIGHT', 15, -15)
-    self:SetNineSlice(ProfessionsBookFrame, true, nil, nil)
-    self:SetNineSlice(ProfessionsBookFrameInset, nil, true, nil)
+    self:SetNineSlice(ProfessionsBookFrame)
+    self:SetNineSlice(ProfessionsBookFrameInset, nil, true)
     self:HideTexture(ProfessionsBookFrameBg)
     self:HideTexture(ProfessionsBookFrameInset.Bg)
     self:SetButton(ProfessionsBookFrameCloseButton, {all=true})

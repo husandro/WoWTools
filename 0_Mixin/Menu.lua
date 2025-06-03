@@ -722,7 +722,7 @@ end
 
 
 function WoWTools_MenuMixin:ClearAll(root, SetValue)
-    root:CreateButton(
+    return root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
         --nil,
     function(data)
@@ -733,9 +733,6 @@ function WoWTools_MenuMixin:ClearAll(root, SetValue)
         )
         return MenuResponse.Refresh
     end, {SetValue=SetValue})
-
-
-    --root:CreateButton('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL), SetValue)
 end
 --[[
 --全部清除

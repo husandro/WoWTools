@@ -160,7 +160,7 @@ end
 
 --BG, 设置
 local function Settings(icon, frame)
-    icon= frame and frame.bg_Texture or frame
+    icon= frame and frame.bg_Texture or icon
 
 --单独设置
     if icon then
@@ -207,17 +207,18 @@ local function texture_list(root, name, icon, texture, isAdd)
     function()
         return texture== SaveBG(name).texture
     end, function()
-        if IsEnabledSaveBg(name) then--仅限
+        --[[if IsEnabledSaveBg(name) then--仅限
             SaveBG(name).texture= SaveBG(name).texture~=texture and texture or nil
-        else--统一设置
+        else--统一设置]]
             SaveBG(name).texture= texture
-        end
+        --end
 
         Settings(icon)
 
         if icon.BgData.setValueFunc then
-            icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
+            icon.BgData.setValueFunc(SaveBG(name).texture or RestIcon, SaveBG(name).alpha or 0.5)
         end
+
         return MenuResponse.Refresh
     end)
 
@@ -313,14 +314,14 @@ local function Texture_List_Menu(root, icon, name)
         table.insert(newTab, texture)
     end]]
 
-    local num=0
+    local find
     for texture in pairs(Save().Bg.UseTexture or {}) do
         texture_list(root, name, icon,  texture, true)
-        num=num+1
+        find=true
     end
 
 --全部清除
-    if num>0 then
+    if find then
         WoWTools_MenuMixin:ClearAll(root, function()
             Save().Bg.UseTexture={}
         end)
@@ -360,21 +361,16 @@ end
 --分开设置, 列表
 local function Add_Frame_Menu(_, root)
     local sub, sub2
-    sub=root:CreateButton('|A:charactercreate-icon-dice:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM), function() return MenuResponse.Open end)
+    sub=root:CreateButton(
+        '|A:charactercreate-icon-dice:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM),
+    function()
+        return MenuResponse.Open
+    end)
 
-    for _ in pairs(Save().Bg.Add) do
-        WoWTools_MenuMixin:ClearAll(sub, function()
-            for f in pairs(Save().Bg.Add) do
-                f=_G[f]
-                if f and f.bg_Texture then
-                    Remove_Add_Icons(f.bg_Texture, nil)--从 Icons 添加 或 移除
-                end
-            end
-            Save().Bg.Add={}
-        end)
-        sub:CreateDivider()
-        break
-    end
+    local find
+
+
 
 
     --CHECK_ALL = "勾选所有";
@@ -421,9 +417,34 @@ local function Add_Frame_Menu(_, root)
             tooltip:AddLine(desc.data.texture)
             tooltip:AddDoubleLine(desc.data.alpha or 0.5, 'Alpha')
         end)
+
+        find=true
     end
 
     WoWTools_MenuMixin:SetScrollMode(sub)
+
+
+
+--全部清除
+    if find then
+        sub:CreateDivider()
+        sub2= WoWTools_MenuMixin:ClearAll(sub, function()
+            for f in pairs(Save().Bg.Add) do
+                f=_G[f]
+                if f and f.bg_Texture then
+                    Remove_Add_Icons(f.bg_Texture, nil)--从 Icons 添加 或 移除
+                end
+            end
+            Save().Bg.Add={}
+            WoWTools_Mixin:Reload()
+        end)
+
+        sub2:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+        end)
+    end
+
+
 end
 
 
@@ -508,7 +529,7 @@ local function Init_Menu(frame, root, isSub)
             SaveBG(name).alpha=value
             Settings(icon)
             if icon.BgData.setValueFunc then
-                icon.BgData.setValueFunc(SaveBG(name).texture, value)
+                icon.BgData.setValueFunc(SaveBG(name).texture or RestIcon, SaveBG(name).alpha or 0.5)
             end
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
