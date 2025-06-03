@@ -23,6 +23,7 @@ background:SetAlpha(.925);
 WoWTools_TextureMixin={
     Events={},
     Frames={},
+    min=0.5,
 }
 
 function WoWTools_TextureMixin:SetBG(frame, tab)

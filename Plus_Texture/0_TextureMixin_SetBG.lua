@@ -115,8 +115,10 @@ local Icons={}
 local function Remove_Add_Icons(icon, enabled)
     enabled= enabled==true and true or nil
     Icons[icon]= enabled
-    for _, bg in (icon.BgData and icon.BgData.icon or {}) do
-        Icons[bg]=enabled
+    if icon.BgData and icon.BgData.icons then
+        for _, bg in (icon.BgData.icons) do
+            Icons[bg]=enabled
+        end
     end
 end
 
@@ -194,68 +196,66 @@ end
 
 --材质，列表, 菜单
 local function texture_list(root, name, icon, texture, isAdd)
-        local sub
-        local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {480, 240})
-        if not textureID then
-            return
+    local sub
+    local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {480, 240})
+    if not textureID then
+        return
+    end
+
+    sub=root:CreateRadio(
+        '',
+    function()
+        return texture== SaveBG(name).texture
+    end, function()
+        if IsEnabledSaveBg(name) then--仅限
+            SaveBG(name).texture= SaveBG(name).texture~=texture and texture or nil
+        else--统一设置
+            SaveBG(name).texture= texture
         end
 
-        sub=root:CreateRadio(
-            '',
+        Settings(icon)
+
+        if icon.BgData.setValueFunc then
+            icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
+        end
+        return MenuResponse.Refresh
+    end)
+
+    sub:AddInitializer(function(button)
+        local t = button:AttachTexture()
+        t:SetSize(248, 64)
+        t:SetPoint("RIGHT")
+        if isAtlas then
+            t:SetAtlas(texture)
+        else
+            t:SetTexture(texture)
+        end
+    end)
+
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(icon2)
+        tooltip:AddLine(texture)
+        if IsEnabledSaveBg(name) then
+            GameTooltip_AddColoredLine(tooltip, string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, name), HIGHLIGHT_FONT_COLOR)
+        else
+            GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
+            --GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        end
+    end)
+
+    if isAdd then
+        sub:CreateButton(
+            WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         function()
-            return texture== SaveBG(name).texture
-        end, function()
-            if IsEnabledSaveBg(name) then--仅限
-                SaveBG(name).texture= SaveBG(name).texture~=texture and texture or nil
-            else--统一设置
-                SaveBG(name).texture= texture
-            end
-
-            Settings(icon)
-
-            if icon.BgData.setValueFunc then
-                icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
-            end
-            return MenuResponse.Refresh
+            StaticPopup_Show('WoWTools_OK',
+            WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+            nil,
+            {SetValue=function()
+                Save().Bg.UseTexture[texture]= nil
+            end})
+            return MenuResponse.Open
         end)
-
-        sub:AddInitializer(function(button)
-            local t = button:AttachTexture()
-            t:SetSize(248, 64)
-            t:SetPoint("RIGHT")
-            if isAtlas then
-                t:SetAtlas(texture)
-            else
-                t:SetTexture(texture)
-            end
-        end)
-
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(icon2)
-            tooltip:AddLine(texture)
-            if IsEnabledSaveBg(name) then
-                GameTooltip_AddColoredLine(tooltip, string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, name), HIGHLIGHT_FONT_COLOR)
-            else
-                GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
-                --GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
-        end)
-
-        if isAdd then
-            sub:CreateButton(
-                WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-            function()
-                StaticPopup_Show('WoWTools_OK',
-                WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
-                nil,
-                {SetValue=function()
-                    Save().Bg.UseTexture[texture]= nil
-                end})
-                return MenuResponse.Open
-            end)
-        end
-
-    return sub
+    end
 end
 
 
@@ -422,6 +422,8 @@ local function Add_Frame_Menu(_, root)
             tooltip:AddDoubleLine(desc.data.alpha or 0.5, 'Alpha')
         end)
     end
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 

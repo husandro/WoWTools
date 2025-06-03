@@ -1413,7 +1413,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetNineSlice(PVEFrameLeftInset, nil, true)
     self:HideFrame(PVEFrame.shadows)
 
-    self:SetAlphaColor(LFDQueueFrameBackground)
+    self:SetAlphaColor(LFDQueueFrameBackground, nil, nil, 0.3)
     self:SetMenu(LFDQueueFrameTypeDropdown)
     self:SetMenu(LFGListFrame.SearchPanel.FilterButton)
 
@@ -1435,6 +1435,13 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
         end
     end
 
+    hooksecurefunc('LFGListCategorySelection_AddButton', function(frame, btnIndex)
+        local btn = frame.CategoryButtons[btnIndex];
+        if btn then
+            self:SetAlphaColor(btn.Icon, nil, nil, 0.5)
+            self:HideTexture(btn.Cover)
+        end
+    end)
     self:Init_BGMenu_Frame(PVEFrame)
 end
 

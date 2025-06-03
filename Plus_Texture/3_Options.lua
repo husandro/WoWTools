@@ -8,10 +8,10 @@ local Category, Layout
 
 
 
-local function GetMinValueAlpha()--透明度，最小值
+--[[local function GetMinValueAlpha()--透明度，最小值
     local alpha= Save().alpha or 0.5
     WoWTools_TextureMixin.min= alpha<0.5 and 0.5 or (alpha<0.3 and 0.3) or 0.5
-end
+end]]
 
 
 
@@ -21,8 +21,8 @@ end
 
 
 local function Init_Options()
-    GetMinValueAlpha()--min，透明度，最小值
-
+    --GetMinValueAlpha()--min，透明度，最小值
+local initializer, initializer2
     Category, Layout= WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_TextureMixin.addName,
         disabled= Save().disabled,
@@ -41,7 +41,7 @@ local function Init_Options()
     })
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
-    local initializer2= WoWTools_PanelMixin:Check_Button({
+    WoWTools_PanelMixin:Check_Button({
         checkName= WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER,
         GetValue= function() return not Save().disabledTexture end,
         SetValue= function()
@@ -57,7 +57,7 @@ local function Init_Options()
         category= Category
     })
 
-    local initializer= WoWTools_Mixin:OnlySlider({
+    --[[local initializer= WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
@@ -72,7 +72,7 @@ local function Init_Options()
             end
         end
     })
-    initializer:SetParentInitializer(initializer2, function() if Save().disabled then return false else return true end end)
+    initializer:SetParentInitializer(initializer2, function() if Save().disabled then return false else return true end end)]]
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
 

@@ -201,7 +201,7 @@ function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, i
         end
     end
 
-    local alpha= min and self.min or nil
+    local alpha= min and self.min or 0.3
     for index, text in pairs(NineSliceTabs) do
         if hide then
             self:HideTexture(f[text])
