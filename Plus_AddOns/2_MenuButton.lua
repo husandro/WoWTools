@@ -242,6 +242,10 @@ local function Init()
     local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {name='WoWTool_AddOnsOptionsButton'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
 
+--提升 Strata
+    AddonListCloseButton:SetFrameStrata(AddonList.TitleContainer:GetFrameStrata())
+    AddonListCloseButton:GetFrameLevel(AddonList.TitleContainer:GetFrameLevel()+1)
+
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
         if Save().load_list_top  then

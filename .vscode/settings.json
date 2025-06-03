@@ -5773,7 +5773,20 @@
         "CommunitiesMemberListEntryMixin",
         "ContainerFrame_GenerateFrame",
         "GroupFinderFrameGroupButton3",
-        "DelvesDashboardFrameMixin"
+        "DelvesDashboardFrameMixin",
+        "DelvesCompanionAbilityMixin",
+        "TabSystemMixin",
+        "TabSystemButtonMixin",
+        "TabSystemOwnerMixin",
+        "PanelTabButtonMixin",
+        "PanelTopTabButtonMixin",
+        "HeirloomsJournal_UpdateButton",
+        "CollectionsSpellButton_OnLoad",
+        "MountJournalIcon",
+        "MountJournalLore",
+        "WardrobeTransmogMoneyFrame",
+        "WardrobeSetsTransmogModelMixin",
+        "WardrobeItemsModelMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

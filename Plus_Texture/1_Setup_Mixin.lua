@@ -38,9 +38,9 @@ function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaOR
         end
         if not notAlpha then
             if alphaORmin==true then
-                object:SetAlpha(self.min or 0.5)
+                object:SetAlpha(self.min)
             else
-                object:SetAlpha(alphaORmin or Save().alpha or self.min or 0.5)
+                object:SetAlpha(alphaORmin or self.min)
             end
         end
     end
@@ -93,7 +93,7 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
     local notColor= tab.notColor
     local alpha
     if not tab.notAlpha then
-        alpha= tab.isMinAlpha and self.min or tab.alpha or Save().alpha
+        alpha= tab.alpha or self.min
     end
 
     if tab and tab.index then
@@ -302,21 +302,18 @@ function WoWTools_TextureMixin:SetMenu(frame, tab)
     end
 end
 
---TabSystem 
+--[[TabSystem 
 function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
     if not frame or not frame.GetTabSet then
         return
     end
     for _, tabID in pairs(frame:GetTabSet() or {}) do
-        local btn= frame:GetTabButton(tabID)
-        self:SetFrame(btn, {alpha=0.75})
+        self:SetTabButton(frame:GetTabButton(tabID))
     end
-end
+end]]
 
 function WoWTools_TextureMixin:SetTabButton(btn, alpha)--TabSystemOwner.lua
-    if btn then
-        self:SetFrame(btn, {alpha=alpha or 0.75})
-    end
+    self:SetFrame(btn, {alpha=alpha or 0.75})
 end
 
 

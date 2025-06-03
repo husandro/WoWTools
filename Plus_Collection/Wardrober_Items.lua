@@ -365,8 +365,9 @@ local function set_Items_Tooltips(self)--UpdateItems
             if not Save().hideItems then
                 idex= i + idexOffset
                 if not model.Text then
-                    model.Text= WoWTools_LabelMixin:Create(model)
-                    model.Text:SetPoint('TOPRIGHT', 3, 2)
+                    model.Text= WoWTools_LabelMixin:Create(model, {color={r=1,g=1,b=1}})
+                    model.Text:SetPoint('BOTTOMRIGHT', -3, 2)
+                    --model.Text:SetPoint('TOPRIGHT', 3, 2)
                     model.Text:SetAlpha(0.5)
                 end
             end
@@ -431,6 +432,9 @@ end
 
 
 local function Init()
+    if Save().hideItems then
+        return
+    end
     --外观，物品，提示, 索引
     hooksecurefunc(WardrobeCollectionFrame.ItemsCollectionFrame, 'UpdateItems', set_Items_Tooltips)
 
@@ -444,7 +448,7 @@ local function Init()
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT',WardrobeCollectionFrame.progressBar ,'RIGHT', 12, 0)
     WardrobeCollectionFrameSearchBox:SetPoint('LEFT', WardrobeCollectionFrame.progressBar, 'RIGHT')
 
-    return true
+    Init=function()end
 end
 
 
@@ -454,8 +458,6 @@ end
 
 
 function WoWTools_CollectionMixin:Init_Wardrober_Items()--幻化 5
-    if not Save().hideItems and Init() then
-        Init=function()end
-    end
+    Init()
 end
 
