@@ -60,27 +60,38 @@ function WoWTools_CollectedMixin:Item(itemIDOrLink, sourceID, icon, onlyBool)--�
     end
 end
 
-
-
---[[function e.GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
-    local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID)
+function WoWTools_CollectedMixin:SetID(setID, isLoot)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
     local numCollected, numAll=0,0
-    for _,v in pairs(info or {}) do
-        numAll=numAll+1
-        if v.collected then
-            numCollected=numCollected + 1
-        end
-    end
-    if numAll>0 then
-        if numCollected==numAll then
-            return '|A:transmog-icon-checkmark:0:0|a', numCollected, numAll, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
-        elseif numCollected==0 then
-            return '|cnRED_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+    if setID then
+        if isLoot then
+            for _, data in pairs(C_LootJournal.GetItemSetItems(setID) or {}) do
+                if data.itemID then
+                    numAll=numAll+1
+                    if C_TransmogCollection.PlayerHasTransmogByItemInfo(data.itemID) then
+                        numCollected=numCollected + 1
+                    end
+                end
+            end
         else
-            return ' |cnYELLOW_FONT_COLOR:'..numAll-numCollected..'|r ', numCollected, numAll, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+            for _, v in pairs(C_TransmogSets.GetSetPrimaryAppearances(setID) or {}) do
+                numAll=numAll+1
+                if v.collected then
+                    numCollected=numCollected + 1
+                end
+            end
         end
     end
-end]]
+
+    if numAll==0 then
+        return
+    elseif numCollected==numAll then
+        return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
+    elseif numCollected==0 then
+        return '|cff9e9e9e'..numAll-numCollected..'|r ', numCollected, numAll,  '|cff9e9e9e'..numCollected..'|r/'..numAll--, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+    else
+        return numAll-numCollected, numCollected, numAll, '|cffffffff'..numCollected..'|r/'..numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
+    end
+end
 
 
 

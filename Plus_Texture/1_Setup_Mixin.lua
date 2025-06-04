@@ -314,6 +314,9 @@ end]]
 
 function WoWTools_TextureMixin:SetTabButton(btn, alpha)--TabSystemOwner.lua
     self:SetFrame(btn, {alpha=alpha or 0.75})
+    if btn.Text then
+        btn.Text:SetShadowOffset(1, -1)
+    end
 end
 
 

@@ -237,10 +237,9 @@ local function texture_list(root, name, icon, texture, isAdd)
         tooltip:AddLine(icon2)
         tooltip:AddLine(texture)
         if IsEnabledSaveBg(name) then
-            GameTooltip_AddColoredLine(tooltip, string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, name), HIGHLIGHT_FONT_COLOR)
+            tooltip:AddLine('|cnGREEN_FONT_COLOR:'..name)
         else
             GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
-            --GameTooltip_AddInstructionLine(tooltip, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     end)
 
@@ -429,7 +428,7 @@ local function Add_Frame_Menu(_, root)
             tooltip:AddLine(desc.data.icon2)
             tooltip:AddLine(desc.data.name)
             if IsEnabledSaveBg(desc.data.name) then
-                tooltip:AddLine(string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, ''))
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..desc.data.name)
             else
                 GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一' or ALL, HIGHLIGHT_FONT_COLOR)
             end
@@ -542,11 +541,12 @@ local function Init_Menu(frame, root, isSub)
 
         Remove_Add_Icons(icon, enabled)--从 Icons 添加 或 移除
         Settings(icon)
+        return MenuResponse.Refresh
     end)
     sub2:SetTooltip(function(tooltip)
         local textureID, icon2= select(2, WoWTools_TextureMixin:IsAtlas(SaveBG(name).texture, {480, 240}))
         tooltip:AddLine(icon2)
-        tooltip:AddLine(name)
+        tooltip:AddLine((IsEnabledSaveBg(name) and '|cnGREEN_FONT_COLOR:' or '')..name)
         if textureID then
             tooltip:AddLine(textureID)
         else
@@ -580,9 +580,9 @@ local function Init_Menu(frame, root, isSub)
         bit='%.1f',
         tooltip=function(tooltip)
             if IsEnabledSaveBg(name) then
-                GameTooltip_AddColoredLine(tooltip, string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, name), HIGHLIGHT_FONT_COLOR)
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..name)
             else
-                GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
+                GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一' or ALL, HIGHLIGHT_FONT_COLOR)
             end
             if not SaveBG(name).texture then
                 tooltip:AddLine(' ')
@@ -768,52 +768,51 @@ end
 
 
 local function Set_Frame_Menu(frame, icon, tab)
-    local PortraitContainer= frame.bgMenuButton or frame.PortraitContainer or tab.PortraitContainer
-    if not PortraitContainer then
+    local self= frame.bgMenuButton or frame.PortraitContainer or tab.PortraitContainer
+    if not self then
         return
     end
 
     if frame.PortraitContainer then
-        PortraitContainer:SetSize(48,48)
+        self:SetSize(48,48)
     end
 
-    PortraitContainer:HookScript('OnLeave', function(s)
-        GameTooltip:Hide()
-        if s.portrait then
-            s.portrait:SetAlpha(1)
+    function self:set_texture_alpha()
+        local t= self.portrait or self.Icon
+        if not t then
+            return
         end
+        t:SetAlpha(GameTooltip:IsOwned(self) and 0.5 or 1)
+    end
+
+    self:HookScript('OnLeave', function(s)
+        GameTooltip:Hide()
+        self:set_texture_alpha()
     end)
-    PortraitContainer:HookScript('OnEnter', function(s)
-        GameTooltip:SetOwner(s)
-        GameTooltip:ClearLines()
+    self:HookScript('OnEnter', function(s)
+        if not GameTooltip:IsShown() then
+            GameTooltip:SetOwner(s)
+            GameTooltip:ClearLines()
+        else
+            GameTooltip:AddLine(' ')
+        end
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
             (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
         )
         GameTooltip:Show()
-        if s.portrait then
-            s.portrait:SetAlpha(0.7)
+        self:set_texture_alpha()
+    end)
+    self:HookScript('OnMouseDown', function(s, d)
+        if d=='RightButton' then
+            MenuUtil.CreateContextMenu(s, function(_, root)
+                Init_Menu(s, root, false)
+            end)
         end
     end)
-    PortraitContainer:HookScript('OnMouseDown', function(s, d)
-        if d~='RightButton' then
-            return
-        end
 
-        MenuUtil.CreateContextMenu(s, function(_, root)
-            Init_Menu(s, root, false)
-        end)
-        if s.portrait then
-            s.portrait:SetAlpha(0.3)
-        end
-    end)
-    PortraitContainer:HookScript('OnMouseUp', function(s)
-        if s.portrait then
-            s.portrait:SetAlpha(0.7)
-        end
-    end)
-    PortraitContainer.bg_Texture= icon
-
+    self.bg_Texture= icon
+    frame.bg_Texture= icon
 end
 
 

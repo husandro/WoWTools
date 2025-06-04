@@ -1,7 +1,9 @@
 local function Save()
     return WoWToolsSave['Plus_Move']
 end
-
+--[[
+/dump WoWTools_MoveMixin.Events.Blizzard_EncounterJournal(WoWTools_MoveMixin)
+]]
 
 
 
@@ -219,10 +221,73 @@ end
 
 --冒险指南
 function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
-    EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOM')
+    local s
+--旅行者日志
+    EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Top:SetPoint('LEFT')
+    EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Top:SetPoint('RIGHT')
+    EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Bottom:SetPoint('LEFT')
+    EncounterJournalMonthlyActivitiesFrame.ThemeContainer.Bottom:SetPoint('RIGHT')
+--旅行，点数
+    --EncounterJournalMonthlyActivitiesFrame.ThresholdContainer:SetPoint('RIGHT', -46-50 ,0)
 
+    EncounterJournalMonthlyActivitiesFrame.FilterList:SetPoint('BOTTOMLEFT', 225, 5)
+    EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOMLEFT', EncounterJournalMonthlyActivitiesFrame.FilterList, 'BOTTOMRIGHT', 25, 0)
+    EncounterJournalMonthlyActivitiesFrame.DividerVertical:SetPoint('BOTTOM')
+    EncounterJournalMonthlyActivitiesFrame.Divider:SetPoint('RIGHT')
+    EncounterJournalMonthlyActivitiesFrame.Divider:SetPoint('LEFT')
+
+--instanceSelect
     EncounterJournalInstanceSelectBG:SetPoint('BOTTOMRIGHT', 0,2)
-    EncounterJournalInstanceSelect.ScrollBox:SetPoint('BOTTOMLEFT', -3, 15)
+    EncounterJournalInstanceSelect.ScrollBox:SetPoint('BOTTOMRIGHT', 0, 15)
+    EncounterJournalInstanceSelect.ScrollBar:ClearAllPoints()
+    EncounterJournalInstanceSelect.ScrollBar:SetPoint('TOPRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 ,-6)
+    EncounterJournalInstanceSelect.ScrollBar:SetPoint('BOTTOMRIGHT', EncounterJournalInstanceSelect.ScrollBox, 0 , 6)
+    EncounterJournalInstanceSelect.ScrollBox:HookScript('OnSizeChanged', function(frame) --EncounterInstanceButtonTemplate Size x="174" y="96"
+        local spacing= frame.view:GetHorizontalSpacing()--15
+        local value= frame:GetWidth() / (174+ spacing)
+        value= math.max(1, math.modf(value))
+        if frame.view:GetStride()~= value then
+            frame.view:SetStride(value)
+            if frame:IsVisible() then
+                WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+            end
+        end
+    end)
+
+--推荐玩法 suggestFrame.Suggestion1
+    EncounterJournal.suggestFrame.Suggestion1:SetPoint('BOTTOMRIGHT', EncounterJournal.suggestFrame, 'BOTTOM', -14, 28)
+    EncounterJournalSuggestFrame.Suggestion2:SetPoint('TOPLEFT', EncounterJournalSuggestFrame.Suggestion1, 'TOPRIGHT', 14, 0)
+    EncounterJournalSuggestFrame.Suggestion2:SetPoint('BOTTOMRIGHT', EncounterJournal.suggestFrame, 'RIGHT', -28, 0)
+    EncounterJournalSuggestFrame.Suggestion3:SetPoint('BOTTOMRIGHT', EncounterJournalSuggestFrame, -28, 28)
+
+    s= EncounterJournal.suggestFrame.Suggestion1.centerDisplay
+    s:ClearAllPoints()
+    s:SetPoint('TOPLEFT', 24, -24)
+    s:SetPoint('BOTTOMRIGHT', -24, 24)
+    s.title:ClearAllPoints()
+    s.title:SetPoint('BOTTOMLEFT', s, 'LEFT')
+    s.title:SetPoint('BOTTOMRIGHT', s, 'RIGHT')
+    s.title.text:SetAllPoints(s.title)
+    s.description:ClearAllPoints()
+    s.description:SetPoint('TOPLEFT', s.title, 'BOTTOMLEFT', 10, -2)
+    s.description:SetPoint('TOPRIGHT', s.title, 'BOTTOMRIGHT', -10, -2)
+    s.description:SetPoint('BOTTOM', EncounterJournal.suggestFrame.Suggestion1.reward.text, 'TOP', 0, 2)
+    s.description.text:ClearAllPoints()
+    s.description.text:SetAllPoints(s.description)
+
+    for i=2, 3 do
+        s= EncounterJournalSuggestFrame['Suggestion'..i].centerDisplay
+        s:SetPoint('RIGHT', -70, 0)
+        s.title:SetPoint('RIGHT')
+        s.title.text:SetAllPoints(s.title)
+        s.description:SetPoint('RIGHT')
+        s.description.text:ClearAllPoints()
+        s.description.text:SetAllPoints(s.description)
+        s.button:ClearAllPoints()
+        s.button:SetPoint('TOP', s.description, 'BOTTOM', 0, -2)
+    end
+
+
     EncounterJournal.LootJournalItems.ItemSetsFrame:SetPoint('TOPRIGHT', -22, -10)
     for _, region in pairs({EncounterJournal.LootJournalItems:GetRegions()}) do
         if region:GetObjectType()=='Texture' then
@@ -237,7 +302,63 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
             break
         end
     end
-    EncounterJournalEncounterFrameInfo:SetPoint('TOP')
+
+--副本，信息
+    EncounterJournalEncounterFrameInfoBG:SetPoint('TOPLEFT')
+    EncounterJournalEncounterFrameInfo:SetPoint('TOPLEFT')
+    EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('TOP', 0, -35)
+    EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('BOTTOMRIGHT', EncounterJournalEncounterFrameInfo, 'BOTTOM', -35, 35)
+    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
+        btn.text:SetPoint('RIGHT', -3, 0)
+    end)
+--副本，概述
+    s= EncounterJournalEncounterFrameInstanceFrame--EncounterJournal.encounter.instance
+    s:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo.BossesScrollBox, 'TOPRIGHT')
+    s:SetPoint('BOTTOMRIGHT')
+--副本，图片
+    EncounterJournalEncounterFrameInstanceFrameBG:SetPoint('LEFT', 55, 0)
+    EncounterJournalEncounterFrameInstanceFrameBG:SetPoint('BOTTOMRIGHT', s, 'RIGHT', -15, -35)
+--名称
+    s.title:ClearAllPoints()
+    s.title:SetPoint('TOP',EncounterJournalEncounterFrameInstanceFrameBG, 0, -15)
+    s.titleBG:ClearAllPoints()
+    s.titleBG:SetPoint('CENTER', s.title, 0, -15)
+--副本，按钮
+    EncounterJournalEncounterFrameInstanceFrameMapButton:ClearAllPoints()
+    EncounterJournalEncounterFrameInstanceFrameMapButton:SetPoint('BOTTOMLEFT', EncounterJournalEncounterFrameInstanceFrameBG, 20, 20)
+--副本，概述，文本
+    s.LoreScrollingFont:ClearAllPoints()
+    s.LoreScrollingFont:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInstanceFrameBG, 'BOTTOMLEFT', 23, 5)
+    s.LoreScrollingFont:SetPoint('BOTTOMRIGHT', -23, 5)
+
+--掉落
+    EncounterJournalEncounterFrameInfo.LootContainer:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
+    hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)
+        --btn.bossTexture:SetPoint('RIGHT')
+        btn.name:SetPoint('RIGHT')
+    end)
+--BOSS, 概述
+    EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetPoint('RIGHT', -23, 0)
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription:SetPoint('LEFT')
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription:SetPoint('RIGHT', -23, 0)
+--技能
+    EncounterJournalEncounterFrameInfoDetailsScrollFrame:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
+    --[[hooksecurefunc("EncounterJournal_SetDescriptionWithBullets", function(header)
+        header:GetParent():SetPoint('RIGHT', -23, 0)
+        header:SetPoint('RIGHT')
+        header.button:SetPoint('RIGHT')
+        header.description:SetPoint('RIGHT')
+    end)]]
+    hooksecurefunc('EncounterJournal_SetUpOverview', function(header)
+        header:SetPoint('RIGHT', -23, 0)
+    end)
+    
+--模型
+    EncounterJournalEncounterFrameInfoModelFrame:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP')
+    EncounterJournalEncounterFrameInfoModelFrameDungeonBG:SetPoint('TOPRIGHT')
+    EncounterJournalEncounterFrameInfoModelFrameShadow:SetPoint('TOPLEFT')
+    --[[EncounterJournalEncounterFrameInfo:SetPoint('TOP')
     EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('TOP', 0, -43)
     EncounterJournalEncounterFrameInstanceFrame:SetPoint('TOP')
     EncounterJournalEncounterFrameInfoBG:SetPoint('TOP')
@@ -245,20 +366,23 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     EncounterJournalEncounterFrameInstanceFrameMapButton:SetPoint('TOPLEFT', 33, -275)
     EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:SetPoint('TOPRIGHT', -35, -330)
     EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOP',0,-43)
-    EncounterJournalEncounterFrameInfo.LootContainer:SetPoint('TOP', 0, -43)
+    E
     EncounterJournalEncounterFrameInfoDetailsScrollFrame:SetPoint('TOP', 0, -43)
     EncounterJournalEncounterFrameInfoModelFrame:ClearAllPoints()
-    EncounterJournalEncounterFrameInfoModelFrame:SetPoint('RIGHT', 0, 0)
+    EncounterJournalEncounterFrameInfoModelFrame:SetPoint('RIGHT')
+]]
 
     self:Setup(EncounterJournal, {
-        minW=800,
-        minH=496,
-        maxW=800,
+        minW=400,--800,
+        minH=248,--496,
+        --maxW=800,
         setSize=true,
         sizeRestFunc=function(b)
             b.targetFrame:SetSize(800, 496)
         end
     })
+
+    self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
 end
 
 
@@ -412,7 +536,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     --hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
 --成就，显示，按钮
     hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
-        
+
         f.Label:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
         f.Label:SetPoint('LEFT', f.PlusMinus, 'RIGHT')
 
@@ -446,7 +570,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     end)
     AchievementFrameComparison.StatContainer:SetPoint('RIGHT', left, 0)
 
-    
+
     AchievementFrame.Header:ClearAllPoints()
     AchievementFrame.Header:SetPoint('BOTTOM', AchievementFrame, 'TOP', 0, -38)
 --Search
@@ -478,7 +602,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     self:Setup(AchievementFrameComparison.AchievementContainer, {frame=AchievementFrame})
 
     AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)
-    
+
     --self:Setup(AchievementFrame.SearchResults)--:SetPoint('TOP', 0, -15)
 end
 
@@ -786,7 +910,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     TokenFrame.ScrollBox:SetPoint('TOPLEFT', TokenFrame, 4, -58)
     TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
 
-    
+
     local function Set_Slot_Point()
         local w, h= CharacterFrame:GetSize()--366 * 337   (40+4)*8
         local line= math.max(4, (h-16-42- 40*7- 58)/7)

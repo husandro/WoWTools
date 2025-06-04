@@ -228,23 +228,32 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetNineSlice(EncounterJournalInset, nil, true)
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
-    self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
+    
+--首领，信息
+    self:HideFrame(EncounterJournalEncounterFrameInfo)
+--Model
+    self:HideTexture(EncounterJournalEncounterFrameInfoModelFrameShadow)
+    self:SetAlphaColor(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
+
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
     self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
-    self:HideTexture(EncounterJournalNavBar.overlay)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
+--副本信息
+    self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
+
+    --[[EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
+    self:HideFrame(EncounterJournalNavBar.overlay)
     self:HideTexture(EncounterJournalNavBarInsetBottomBorder)
     self:HideTexture(EncounterJournalNavBarInsetRightBorder)
     self:HideTexture(EncounterJournalNavBarInsetLeftBorder)
     self:HideTexture(EncounterJournalNavBarInsetBotRightCorner)
     self:HideTexture(EncounterJournalNavBarInsetBotLeftCorner)
+    ]]
 
     self:HideTexture(EncounterJournalInstanceSelectBG)
     EncounterJournalInstanceSelectBG:SetAlpha(0)
-    self:SetAlphaColor(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
-    EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
-
-    self:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
-
+   
     --[[self:SetTabButton(EncounterJournalSuggestTab, {notAlpha=true})
     self:SetFrame(EncounterJournalMonthlyActivitiesTab, {notAlpha=true})
     self:SetFrame(EncounterJournalDungeonTab, {notAlpha=true})
@@ -253,21 +262,40 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
 
 
-    self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
-    self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
+    
+
     self:SetScrollBar(EncounterJournal.LootJournal)
 
+    self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
+    self:HideFrame(EncounterJournal.LootJournalItems)
+--重新设置专精，位置
     EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:ClearAllPoints()
-    EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:SetPoint('BOTTOM', EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:GetParent(), 'TOP', 0, 25)
-    self:HideFrame(EncounterJournal.LootJournalItems.ItemSetsFrame, {index=1})
+    EncounterJournal.LootJournalItems.ItemSetsFrame.ClassDropdown:SetPoint(
+        'TOPRIGHT',
+        EncounterJournalInstanceSelect.ExpansionDropdown,
+        'BOTTOMRIGHT',
+        0, 2
+    )
+    self:HideFrame(EncounterJournal.LootJournalItems.ItemSetsFrame)
+--套装,按钮
+    hooksecurefunc(LootJournalItemSetButtonMixin, 'Init', function(btn)
+        btn.Background:SetAlpha(0.3)
+        btn.Background:SetAtlas('timerunning-TopHUD-button-glow')
+    end)
 
     self:HideFrame(EncounterJournalMonthlyActivitiesFrame)
-
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
-    EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetTexture(0)
-    EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
 
+--旅行者日志
+    EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
+--任务，右边列表，按钮
+    hooksecurefunc(MonthlyActivitiesButtonMixin, 'UpdateDesaturatedShared', function(btn)
+        local data = btn:GetData()
+        local alpha = data and data.completed and 0.1 or 0.5
+        btn.NormalTexture:SetAlpha(alpha)
+        btn.HighlightTexture:SetAlpha(alpha)
+    end)
 
     --self:HideTexture(EncounterJournalMonthlyActivitiesFrame.Bg)
     self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBackground)
@@ -856,8 +884,11 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
         end
     end)
 
-    self:Init_BGMenu_Frame(DelvesCompanionConfigurationFrame, nil, {isNewButton=true})
-    self:Init_BGMenu_Frame(DelvesCompanionAbilityListFrame, nil, {isNewButton=true})
+    self:Init_BGMenu_Frame(DelvesCompanionConfigurationFrame, nil, {
+        PortraitContainer=DelvesCompanionConfigurationFrame.CompanionPortraitFrame
+    })
+    --{isNewButton=true})
+    self:Init_BGMenu_Frame(DelvesCompanionAbilityListFrame)
 end
 
 
@@ -1568,7 +1599,9 @@ end
 
 --地下堡
 function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
-    self:SetAlphaColor(DelvesDashboardFrame.DashboardBackground, nil, nil, 0.3)
+    self:HideTexture(DelvesDashboardFrame.DashboardBackground)
+    self:HideTexture(DelvesDashboardFrame.ThresholdBar.BarBackground)
+    self:SetAlphaColor(DelvesDashboardFrame.ThresholdBar.BarBorder, nil, nil, 0.3)
 
     hooksecurefunc(DelvesDashboardFrame, 'UpdateGreatVaultVisibility', function(f)
         local bg= f.ButtonPanelLayoutFrame.CompanionConfigButtonPanel.ButtonPanelBackground
@@ -2494,5 +2527,12 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
     hooksecurefunc(PanelTopTabButtonMixin, 'OnLoad', function(btn)
         self:SetTabButton(btn, 0.5)
+    end)
+    --hooksecurefunc(ButtonStateBehaviorMixin , 'OnLoad', function(btn)
+
+    hooksecurefunc('NavBar_Initialize', function(bar)
+        self:HideFrame(bar)
+        self:HideFrame(bar.overlay)
+        self:HideFrame(bar.Inset)
     end)
 end

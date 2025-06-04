@@ -8,40 +8,6 @@ local TipsLabel
 
 
 
-local function GetSetsCollectedNum(setID)--套装 , 收集数量, 返回: 图标, 数量, 最大数, 文本
-    local info= setID and C_TransmogSets.GetSetPrimaryAppearances(setID) or {}
-    local numCollected, numAll=0,0
-    for _,v in pairs(info) do
-        numAll=numAll+1
-        if v.collected then
-            numCollected=numCollected + 1
-        end
-    end
-    if numAll>0 then
-        if numCollected==numAll then
-            return '|A:AlliedRace-UnlockingFrame-Checkmark:12:12|a', numCollected, numAll--, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
-        elseif numCollected==0 then
-            return '|cff9e9e9e'..numAll-numCollected..'|r ', numCollected, numAll,  '|cff9e9e9e'..numCollected..'|r/'..numAll--, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
-        else
-            return numAll-numCollected, numCollected, numAll, '|cffffffff'..numCollected..'|r/'..numAll--, '|cnYELLOW_FONT_COLOR:'..numCollected..'/'..numAll..' '..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
-        end
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -191,7 +157,7 @@ local function Set_List_Button(btn, displayData)
     local text, isLimited, patch, version--版本
     for _, info in pairs(variantSets) do
         if info and info.setID then
-            local meno, collect, numAll = GetSetsCollectedNum(info.setID)
+            local meno, collect, numAll = WoWTools_CollectedMixin:SetID(info.setID)
             if meno and numAll then
 
                 text= (text or '').. meno..' '--未收集，数量

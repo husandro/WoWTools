@@ -5786,7 +5786,22 @@
         "MountJournalLore",
         "WardrobeTransmogMoneyFrame",
         "WardrobeSetsTransmogModelMixin",
-        "WardrobeItemsModelMixin"
+        "WardrobeItemsModelMixin",
+        "MonthlyActivitiesFilterListButtonMixin",
+        "ButtonStateBehaviorMixin",
+        "MonthlySupersedeActivitiesButtonMixin",
+        "NavBar_Initialize",
+        "LootJournalItemSetButtonMixin",
+        "LootJournalItemSetsMixin",
+        "EncounterJournalEncounterFrameInfoLeftHeaderShadow",
+        "EncounterJournalEncounterFrameInfoModelFrameShadow",
+        "EncounterJournalSuggestFrame",
+        "EncounterJournalEncounterFrameInstanceFrameBG",
+        "EncounterJournalEncounterFrameInstanceFrameTitle",
+        "EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChild",
+        "ScrollFrame_OnLoad",
+        "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription",
+        "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
