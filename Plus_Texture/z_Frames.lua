@@ -106,12 +106,12 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         ChatConfigOtherSettingsCreature,
     }) do
         if f and f.NineSlice then
-            self:SetNineSlice(f, nil, true, nil, true)
-            f.NineSlice:SetCenterColor(0,0,0, 0.3)
+            self:SetNineSlice(f, nil, true)
+            --f.NineSlice:SetCenterColor(0,0,0, 0.3)
         end
     end
 
-    self:HideTexture(ChatConfigFrame.Border)
+    self:HideFrame(ChatConfigFrame.Border)
     self:HideFrame(ChatConfigFrame.Header)
     ChatConfigFrame.Header.Text:ClearAllPoints()
     ChatConfigFrame.Header.Text:SetPoint('CENTER', 0, -10)
