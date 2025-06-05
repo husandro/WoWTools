@@ -230,8 +230,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetEditBox(EncounterJournalSearchBox)
 
 --首领，信息
-    self:HideFrame(EncounterJournalEncounterFrameInfo)
-    --EncounterJournalEncounterFrameInfoBG:SetColorTexture(0, 0, 0, 0.3)
+    --self:HideFrame(EncounterJournalEncounterFrameInfo)
 
 
 
@@ -249,16 +248,16 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         if btn:IsVisible() and not btn.set_texture then
             btn.bosslessTexture:SetTexture(0)
             btn.bosslessTexture:SetPoint('RIGHT')
-            btn.bosslessTexture:SetColorTexture(0, 0, 0, 0.3)
+            --btn.bosslessTexture:SetColorTexture(0, 0, 0, 0.3)
 
             btn.bossTexture:SetTexture(0)
-            btn.bossTexture:SetPoint('RIGHT')
+            --[[btn.bossTexture:SetPoint('RIGHT')
             btn.bossTexture:SetColorTexture(0, 0, 0, 0.3)
 
             btn.armorType:SetTextColor(1,1,1)
             btn.slot:SetTextColor(1,1,1)
             btn.boss:SetTextColor(1,1,1)
-            btn.armorType:ClearAllPoints()
+            btn.armorType:ClearAllPoints()]]
             btn.armorType:SetPoint('RIGHT', -2, -8)
             btn.name:SetPoint('RIGHT')
 
@@ -267,28 +266,33 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     end)
 --BOSS, 概述
     self:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
-    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetTextColor(1, 1, 1)
-    self:CreateBG(EncounterJournalEncounterFrameInfoOverviewScrollFrame, {isAllPoint=true})
+    --EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetTextColor(1, 1, 1)
+    --self:CreateBG(EncounterJournalEncounterFrameInfoOverviewScrollFrame, {isAllPoint=true})
 --BOSS, 技能
-    EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription:SetTextColor(1, 1, 1)
-    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription.Text:SetTextColor(1, 1, 1)
+    --EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription:SetTextColor(1, 1, 1)
+
     self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
-    self:CreateBG(EncounterJournalEncounterFrameInfoDetailsScrollFrame, {isAllPoint=true})
+    --self:CreateBG(EncounterJournalEncounterFrameInfoDetailsScrollFrame, {isAllPoint=true})
 
 --BOSS, 列表
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
+    hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
+        btn:GetRegions():SetAlpha(0)
+    end)
 --副本信息
     self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
-    local font= EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:GetFontString()
+    --[[local font= EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:GetFontString()
     if font then
         font:SetTextColor(1,1,1)
         self:CreateBG(EncounterJournalEncounterFrameInstanceFrame, {point=font})
     end
     --EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:SetTextColor(WHITE_FONT_COLOR)
+    ]]
     
 --副本列表
-    self:HideTexture(EncounterJournalInstanceSelectBG)
-    self:SetAlphaColor(EncounterJournalInstanceSelectBG, nil, true, 0)
+    EncounterJournalInstanceSelectBG:SetAlpha(0)
+    --self:HideTexture(EncounterJournalInstanceSelectBG)
+    --self:SetAlphaColor(EncounterJournalInstanceSelectBG, nil, true, 0)
 
 --套装
     self:SetScrollBar(EncounterJournal.LootJournal)
@@ -329,9 +333,10 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
     self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton, {all=true})
 
-    self:Init_BGMenu_Frame(EncounterJournal, nil, {settings=function(texture)
+    self:Init_BGMenu_Frame(EncounterJournal)
+    --[[, nil, {settings=function(texture)
         EncounterJournalEncounterFrameInfoBG:SetTexture(texture and 0 or 'Interface\\EncounterJournal\\UI-EJ-JournalBG')
-    end})
+    end})]]
 end
 
 

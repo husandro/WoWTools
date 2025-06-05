@@ -5809,7 +5809,8 @@
         "EncounterJournalEncounterFrameInfoModelTab",
         "EncounterJournalEncounterFrameInfoClassFilterClearFrame",
         "EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription",
-        "EncounterJournal_SetUpOverview"
+        "EncounterJournal_SetUpOverview",
+        "EncounterJournal_SetDescriptionWithBullets"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

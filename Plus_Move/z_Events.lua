@@ -323,13 +323,15 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     end
 
 --副本，信息
+    EncounterJournal.encounter.info:ClearAllPoints()
+    EncounterJournal.encounter.info:SetPoint('TOPLEFT', 2, 2)
+    EncounterJournal.encounter.info:SetPoint('BOTTOMRIGHT', 2, -2)
     EncounterJournalEncounterFrameInfoBG:SetPoint('TOPLEFT')
-    EncounterJournal.encounter.info:SetPoint('TOPLEFT')
+--BOSS 列表
     EncounterJournal.encounter.info.BossesScrollBox:SetPoint('TOP', 0, -35)
     EncounterJournal.encounter.info.BossesScrollBox:SetPoint('BOTTOMRIGHT', EncounterJournal.encounter.info, 'BOTTOM', -35, 35)
     hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
         btn.text:SetPoint('RIGHT', -3, 0)
-        btn:GetRegions():SetAlpha(0.5)
     end)
 --副本，概述
     s= EncounterJournalEncounterFrameInstanceFrame--EncounterJournal.encounter.instance
@@ -361,21 +363,18 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         end
     end)
 --BOSS, 概述
-    --EncounterJournal.encounter.overviewFrame:SetPoint('RIGHT', -23, 0)--.encounter.info.overviewScroll.child
-    EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOP', 0, -43)
-    --EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild:SetPoint('RIGHT', -23, 0)
-
+    EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
+    EncounterJournal.encounter.overviewFrame:SetPoint('RIGHT', -23, 0)--.encounter.info.overviewScroll.child
+    EncounterJournal.encounter.overviewFrame:HookScript('OnSizeChanged', function(f)
+        f:SetPoint('RIGHT', -23, 0)
+    end)
 
 --技能
-EncounterJournal.encounter.info.detailsScroll:SetPoint('TOP', 0, -43)
-    --[[
-    EncounterJournal.encounter.info.detailsScroll:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
-    hooksecurefunc('EncounterJournal_DisplayEncounter', function()
-        EncounterJournal.encounter.info.detailsScroll.child:SetPoint('RIGHT', -23, 0)
-        EncounterJournal.encounter.info.detailsScroll.child:SetPoint('LEFT')
-    end)]]
-
-    --EncounterJournal.encounter.infoFrame:SetPoint('BOTTOMRIGHT', -23, 0)
+    EncounterJournal.encounter.info.detailsScroll:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
+    EncounterJournal.encounter.info.detailsScroll.child:SetPoint('RIGHT', -23, 0)
+    EncounterJournal.encounter.info.detailsScroll.child:HookScript('OnSizeChanged', function(f)
+        f:SetPoint('RIGHT', -23, 0)
+    end)
 
 
 --模型
