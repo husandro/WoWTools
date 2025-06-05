@@ -210,12 +210,11 @@ local function texture_list(root, name, icon, texture, isAdd)
     end, function()
         if IsEnabledSaveBg(name) then--仅限
             SaveBG(name).texture= SaveBG(name).texture~=texture and texture or nil
+            Settings(icon)
         else--统一设置
             SaveBG(name).texture= texture
+            Settings()
         end
-
-
-        Settings(icon)
 
         if icon.BgData.setValueFunc then
             icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
@@ -353,8 +352,8 @@ end
 
 
 
-local function Add_Settings(frame, enabled)
-    local icon= _G[frame] and _G[frame].bg_Texture
+local function Add_Settings(name, enabled)
+    local icon= _G[name] and _G[name].bg_Texture
     if icon then
         Remove_Add_Icons(icon, enabled)--从 Icons 添加 或 移除
         Settings(icon)
@@ -570,7 +569,7 @@ local function Init_Menu(frame, root, isSub)
         end,
         setValue=function(value)
             SaveBG(name).alpha=value
-            Settings(icon)
+            Settings(IsEnabledSaveBg(name) and icon or nil)
             if icon.BgData.setValueFunc then
                 icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
             end
