@@ -111,7 +111,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         end
     end
 
-    self:SetAlphaColor(ChatConfigFrame.Border, nil, nil, 0.3)
+    self:HideTexture(ChatConfigFrame.Border)
     self:HideFrame(ChatConfigFrame.Header)
     ChatConfigFrame.Header.Text:ClearAllPoints()
     ChatConfigFrame.Header.Text:SetPoint('CENTER', 0, -10)
