@@ -106,8 +106,8 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         ChatConfigOtherSettingsCreature,
     }) do
         if f and f.NineSlice then
-            self:SetNineSlice(f, nil, true)
-            --f.NineSlice:SetCenterColor(0,0,0, 0.3)
+            self:SetNineSlice(f, nil, true, nil, true)
+            f.NineSlice:SetCenterColor(0,0,0, 0.3)
         end
     end
 
