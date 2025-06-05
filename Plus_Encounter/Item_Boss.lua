@@ -85,7 +85,7 @@ local function Init(btn)
     end
 
     if not btn.itemText then
-        btn.itemText= WoWTools_LabelMixin:Create(btn, {mouse=true, color={r=1, g=1, b=1}})
+        btn.itemText= WoWTools_LabelMixin:Create(btn, {mouse=true})--, color={r=1, g=1, b=1}})
         btn.itemText:SetPoint('BOTTOMRIGHT', btn.armorType, 'TOPRIGHT', 0, 2)
         btn.itemText:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
         btn.itemText:SetScript('OnEnter', function(self)
@@ -100,14 +100,14 @@ local function Init(btn)
             self:SetAlpha(0.3)
         end)
 
-        btn.upText= WoWTools_LabelMixin:Create(btn, { color={r=1, g=1, b=1}})
+        btn.upText= WoWTools_LabelMixin:Create(btn)--, { color={r=1, g=1, b=1}})
         btn.upText:SetPoint('BOTTOMRIGHT', btn.itemText, 'TOPRIGHT', 0, 2)
         --btn.upText:SetPoint('TOPRIGHT', -10,-16)
 --调整位置
         btn.name:SetPoint('TOPLEFT', btn.icon, 'TOPRIGHT', 7, -11)--<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="7" y="-7"/>
         btn.slot:ClearAllPoints()
         btn.slot:SetPoint('TOPLEFT', btn.name, 'BOTTOMLEFT', 0, -4)
-        btn.classLabel= WoWTools_LabelMixin:Create(btn, {color={r=1, g=1, b=1}})
+        btn.classLabel= WoWTools_LabelMixin:Create(btn)--, {color={r=1, g=1, b=1}})
         btn.classLabel:SetPoint('BOTTOMLEFT', btn.name, 'TOPLEFT', 0 ,2)
         --btn.classLabel:SetPoint('BOTTOM', btn, 0, 16)--<Size x="321" y="45"/>
 

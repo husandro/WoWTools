@@ -954,10 +954,6 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
     --icon:SetTextureSliceMargins(24, 24, 24, 24);
     --icon:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
-    if not IsEnabledSaveBg(name) then
-        Icons[icon]=true
-    end
-
     icon.BgData= {
         name= name,
         alpha= tab.alpha,
@@ -965,6 +961,10 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
         settings= tab.settings,
         setValueFunc= tab.setValueFunc,
     }
+
+     if not IsEnabledSaveBg(name) then--从 Icons 添加 或 移除
+        Remove_Add_Icons(icon, true)
+    end
 
     if tab.isHook then
         icon.Set_BGTexture= Set_BGTexture

@@ -231,9 +231,6 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
 --首领，信息
     --self:HideFrame(EncounterJournalEncounterFrameInfo)
-
-
-
     self:SetTabButton(EncounterJournalEncounterFrameInfoOverviewTab)
     self:SetTabButton(EncounterJournalEncounterFrameInfoLootTab)
     self:SetTabButton(EncounterJournalEncounterFrameInfoBossTab)
@@ -266,13 +263,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     end)
 --BOSS, 概述
     self:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
-    --EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetTextColor(1, 1, 1)
-    --self:CreateBG(EncounterJournalEncounterFrameInfoOverviewScrollFrame, {isAllPoint=true})
 --BOSS, 技能
-    --EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription:SetTextColor(1, 1, 1)
-
     self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
-    --self:CreateBG(EncounterJournalEncounterFrameInfoDetailsScrollFrame, {isAllPoint=true})
 
 --BOSS, 列表
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
@@ -281,19 +273,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     end)
 --副本信息
     self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
-    --[[local font= EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:GetFontString()
-    if font then
-        font:SetTextColor(1,1,1)
-        self:CreateBG(EncounterJournalEncounterFrameInstanceFrame, {point=font})
-    end
-    --EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:SetTextColor(WHITE_FONT_COLOR)
-    ]]
-    
 --副本列表
     EncounterJournalInstanceSelectBG:SetAlpha(0)
-    --self:HideTexture(EncounterJournalInstanceSelectBG)
-    --self:SetAlphaColor(EncounterJournalInstanceSelectBG, nil, true, 0)
-
 --套装
     self:SetScrollBar(EncounterJournal.LootJournal)
     self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
@@ -316,7 +297,6 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideFrame(EncounterJournalMonthlyActivitiesFrame)
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame)
     self:SetScrollBar(EncounterJournalMonthlyActivitiesFrame.FilterList)
-
 --旅行者日志
     EncounterJournalMonthlyActivitiesFrame.FilterList.Bg:SetColorTexture(0,0,0,0.3)
 --任务，右边列表，按钮
@@ -326,17 +306,11 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         btn.NormalTexture:SetAlpha(alpha)
         btn.HighlightTexture:SetAlpha(alpha)
     end)
-
-    --self:HideTexture(EncounterJournalMonthlyActivitiesFrame.Bg)
     self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBackground)
     self:SetAlphaColor(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBorder, nil, nil, 0.3)
 
     self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton, {all=true})
-
     self:Init_BGMenu_Frame(EncounterJournal)
-    --[[, nil, {settings=function(texture)
-        EncounterJournalEncounterFrameInfoBG:SetTexture(texture and 0 or 'Interface\\EncounterJournal\\UI-EJ-JournalBG')
-    end})]]
 end
 
 

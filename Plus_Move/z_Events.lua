@@ -376,7 +376,6 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         f:SetPoint('RIGHT', -23, 0)
     end)
 
-
 --模型
     EncounterJournalEncounterFrameInfoModelFrame:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP')
     EncounterJournalEncounterFrameInfoModelFrameDungeonBG:SetPoint('TOPRIGHT', 0, -2)
@@ -392,9 +391,9 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         end
     })
 
-
     self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
-
+    --self:Setup(EncounterJournalEncounterFrameInfo.LootContainer.ScrollBox, {frame=EncounterJournal})
+    --self:Setup(EncounterJournalEncounterFrameInfo.BossesScrollBox, {frame=EncounterJournal})
 end
 
 
