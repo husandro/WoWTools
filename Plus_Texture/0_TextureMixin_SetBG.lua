@@ -130,8 +130,8 @@ local function set_texture(icon, texture, alpha)
     else
         icon:SetTexture(texture)
     end
-    icon:SetVertexColor(1,1,1,alpha)
-    --icon:SetAlpha(alpha)
+    icon:SetVertexColor(1,1,1)
+    icon:SetAlpha(alpha)
     icon:SetShown(true)
 end
 
@@ -148,8 +148,10 @@ local function Set_BGTexture(icon)
 
     set_texture(icon, texture, alpha)
 
-    for _, bg in pairs(icon.BgData.icons or {}) do
-        set_texture(bg, texture, alpha)
+    if icon.BgData.icons then
+        for _, bg in pairs(icon.BgData.icons) do
+            set_texture(bg, texture, alpha)
+        end
     end
 end
 
@@ -862,7 +864,13 @@ end
 
 
 
-
+local function Get_Icon_Texture(icon)
+    if icon.GetAtlas then
+        return icon:GetAtlas()
+    elseif icon.GetTextureFileID then
+        return icon:GetTextureFileID()
+    end
+end
 
 
 local function Create_Background(frame, icon, tab)
@@ -871,16 +879,18 @@ local function Create_Background(frame, icon, tab)
             frame.Background:ClearAllPoints()
             frame.Background:SetPoint('TOPLEFT', 3, -3)
             frame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
-            frame.Background.p_texture= frame.Background.GetAtlas and frame.Background:GetAtlas() or frame.Background:GetTextureFileID()
+            frame.Background.p_texture= Get_Icon_Texture(frame.Background)
         else
-            frame.Background= frame:CreateTexture(nil, 'BACKGROUND', nil, 2)
+            frame.Background= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
             frame.Background:SetPoint('TOPLEFT', 3, -3)
             frame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
         end
     else
-        icon.p_texture= icon.GetAtlas and icon:GetAtlas() or icon:GetTextureFileID()
+
+        icon.p_texture= Get_Icon_Texture(icon)
+
         for _, t in pairs(tab.icons or {}) do
-            t.p_texture= t.GetAtlas and t:GetAtlas() or t:GetTextureFileID()
+            t.p_texture= Get_Icon_Texture(t)
         end
     end
     return icon or frame.Background

@@ -75,8 +75,13 @@ function WoWTools_TextureMixin:CreateBG(frame, tab)
 
     if isAllPoint==true then
         frame.Background:SetAllPoints()
-    elseif type(point)=='function' then
-        point(frame.Background)
+    elseif point then
+        if type(point)=='function' then
+            point(frame.Background)
+        else
+            frame.Background:SetPoint('TOPLEFT', point, -2, 2)
+            frame.Background:SetPoint('BOTTOMRIGHT', point, 2, -2)
+        end
     end
 
    --local x, y = 10, 3

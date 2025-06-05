@@ -5801,7 +5801,15 @@
         "EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChild",
         "ScrollFrame_OnLoad",
         "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription",
-        "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild"
+        "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild",
+        "MonthlyActivitiesFrameMixin",
+        "EncounterJournalEncounterFrameInfoOverviewTab",
+        "EncounterJournalEncounterFrameInfoLootTab",
+        "EncounterJournalEncounterFrameInfoBossTab",
+        "EncounterJournalEncounterFrameInfoModelTab",
+        "EncounterJournalEncounterFrameInfoClassFilterClearFrame",
+        "EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription",
+        "EncounterJournal_SetUpOverview"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

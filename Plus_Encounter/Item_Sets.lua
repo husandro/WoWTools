@@ -16,12 +16,14 @@ local function Init()
             text= WoWTools_CollectedMixin:SetID(data.setID, true)--套装, 收集数
         end
         for _, btn in pairs(frame.ItemButtons or {}) do
-            if C_Item.IsItemDataCachedByID(btn.itemID) then
-                WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {hideLevel=true, hideSet=true})
-            else
-                C_Timer.After(1, function()
-                    WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {hideLevel=true, hideSet=true})
-                end)
+            if btn.itemID then
+                if C_Item.IsItemDataCachedByID(btn.itemID) then
+                    WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {hideLevel=true, hideSet=true, itemID=btn.itemID})
+                else
+                    C_Timer.After(1, function()
+                        WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {hideLevel=true, hideSet=true})
+                    end)
+                end
             end
         end
         frame.setNum:SetText(text or '')

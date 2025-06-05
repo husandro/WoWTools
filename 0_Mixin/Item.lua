@@ -16,7 +16,10 @@ WoWTools_ItemMixin={}
 
 
 
-
+local ColorRed={
+    ['ffff2020']=1,
+    ['fefe1f1f']=1,
+}
 
 
 function WoWTools_ItemMixin:GetTooltip(tab)
@@ -99,9 +102,10 @@ function WoWTools_ItemMixin:GetTooltip(tab)
         if red and not data.red then
             local leftHex=line.leftColor and line.leftColor:GenerateHexColor()
             local rightHex=line.rightColor and line.rightColor:GenerateHexColor()
-            if leftHex == 'ffff2020' or leftHex=='fefe1f1f' then-- or hex=='fefe7f3f' then
+            --print(leftHex, '|c'..leftHex..line.leftText)
+            if ColorRed[leftHex] then-- or hex=='fefe7f3f' then
                 data.red= line.leftText
-            elseif rightHex== 'ffff2020' or rightHex=='fefe1f1f' then
+            elseif ColorRed[rightHex] then--== 'ffff2020' or rightHex=='fefe1f1f' then
                 data.red= line.rightText
             end
             if onlyRed and data.red then

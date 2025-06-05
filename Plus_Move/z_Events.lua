@@ -217,9 +217,20 @@ end
 
 
 
+--[[冒险指南
+EncounterJournal.encounter.info == EncounterJournalEncounterFrameInfo
+EncounterJournal.encounter.info.BossesScrollBox == EncounterJournalEncounterFrameInfo.BossesScrollBox
 
+EncounterJournal.encounter.info.detailsScroll == EncounterJournalEncounterFrameInfoDetailsScrollFrame
+EncounterJournal.encounter.infoFrame ==          EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChild
 
---冒险指南
+EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChild
+
+EncounterJournal.encounter.overviewFrame == EncounterJournal.encounter.info.overviewScroll.child
+EncounterJournal.encounter.overviewFrame == EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild
+
+]]
+
 function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     local s
 --旅行者日志
@@ -230,7 +241,10 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 --旅行，点数
     --EncounterJournalMonthlyActivitiesFrame.ThresholdContainer:SetPoint('RIGHT', -46-50 ,0)
 
-    EncounterJournalMonthlyActivitiesFrame.FilterList:SetPoint('BOTTOMLEFT', 225, 5)
+    C_Timer.After(0.3, function()
+        EncounterJournalMonthlyActivitiesFrame.FilterList:SetPoint('BOTTOMLEFT', 225, 5)--<Anchor point="TOPLEFT" x="5" y="-137"/>
+    end)
+
     EncounterJournalMonthlyActivitiesFrame.ScrollBox:SetPoint('BOTTOMLEFT', EncounterJournalMonthlyActivitiesFrame.FilterList, 'BOTTOMRIGHT', 25, 0)
     EncounterJournalMonthlyActivitiesFrame.DividerVertical:SetPoint('BOTTOM')
     EncounterJournalMonthlyActivitiesFrame.Divider:SetPoint('RIGHT')
@@ -288,6 +302,11 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     end
 
 
+--物品
+    s= EncounterJournal.LootJournalItems:GetRegions()
+    if s:GetObjectType()=='Texture' then
+        s:SetAllPoints()
+    end
     EncounterJournal.LootJournalItems.ItemSetsFrame:SetPoint('TOPRIGHT', -22, -10)
     for _, region in pairs({EncounterJournal.LootJournalItems:GetRegions()}) do
         if region:GetObjectType()=='Texture' then
@@ -305,15 +324,16 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
 
 --副本，信息
     EncounterJournalEncounterFrameInfoBG:SetPoint('TOPLEFT')
-    EncounterJournalEncounterFrameInfo:SetPoint('TOPLEFT')
-    EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('TOP', 0, -35)
-    EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('BOTTOMRIGHT', EncounterJournalEncounterFrameInfo, 'BOTTOM', -35, 35)
+    EncounterJournal.encounter.info:SetPoint('TOPLEFT')
+    EncounterJournal.encounter.info.BossesScrollBox:SetPoint('TOP', 0, -35)
+    EncounterJournal.encounter.info.BossesScrollBox:SetPoint('BOTTOMRIGHT', EncounterJournal.encounter.info, 'BOTTOM', -35, 35)
     hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
         btn.text:SetPoint('RIGHT', -3, 0)
+        btn:GetRegions():SetAlpha(0.5)
     end)
 --副本，概述
     s= EncounterJournalEncounterFrameInstanceFrame--EncounterJournal.encounter.instance
-    s:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo.BossesScrollBox, 'TOPRIGHT')
+    s:SetPoint('TOPLEFT', EncounterJournal.encounter.info.BossesScrollBox, 'TOPRIGHT')
     s:SetPoint('BOTTOMRIGHT')
 --副本，图片
     EncounterJournalEncounterFrameInstanceFrameBG:SetPoint('LEFT', 55, 0)
@@ -331,46 +351,37 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
     s.LoreScrollingFont:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInstanceFrameBG, 'BOTTOMLEFT', 23, 5)
     s.LoreScrollingFont:SetPoint('BOTTOMRIGHT', -23, 5)
 
---掉落
-    EncounterJournalEncounterFrameInfo.LootContainer:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
+--BOSS, 掉落
+    EncounterJournal.encounter.info.LootContainer:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
     hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)
-        --btn.bossTexture:SetPoint('RIGHT')
-        btn.name:SetPoint('RIGHT')
+        if btn:IsVisible() and not btn.set_texture then--btn.set_texture z_Events.lua Plus_Texture
+            btn.name:SetPoint('RIGHT')
+            btn.armorType:ClearAllPoints()
+            btn.armorType:SetPoint('RIGHT', -2, -8)
+        end
     end)
 --BOSS, 概述
-    EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
-    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetPoint('RIGHT', -23, 0)
-    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription:SetPoint('LEFT')
-    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription:SetPoint('RIGHT', -23, 0)
+    --EncounterJournal.encounter.overviewFrame:SetPoint('RIGHT', -23, 0)--.encounter.info.overviewScroll.child
+    EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOP', 0, -43)
+    --EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild:SetPoint('RIGHT', -23, 0)
+
+
 --技能
-    EncounterJournalEncounterFrameInfoDetailsScrollFrame:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
-    --[[hooksecurefunc("EncounterJournal_SetDescriptionWithBullets", function(header)
-        header:GetParent():SetPoint('RIGHT', -23, 0)
-        header:SetPoint('RIGHT')
-        header.button:SetPoint('RIGHT')
-        header.description:SetPoint('RIGHT')
+EncounterJournal.encounter.info.detailsScroll:SetPoint('TOP', 0, -43)
+    --[[
+    EncounterJournal.encounter.info.detailsScroll:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP', 30, -43)
+    hooksecurefunc('EncounterJournal_DisplayEncounter', function()
+        EncounterJournal.encounter.info.detailsScroll.child:SetPoint('RIGHT', -23, 0)
+        EncounterJournal.encounter.info.detailsScroll.child:SetPoint('LEFT')
     end)]]
-    hooksecurefunc('EncounterJournal_SetUpOverview', function(header)
-        header:SetPoint('RIGHT', -23, 0)
-    end)
-    
+
+    --EncounterJournal.encounter.infoFrame:SetPoint('BOTTOMRIGHT', -23, 0)
+
+
 --模型
-    EncounterJournalEncounterFrameInfoModelFrame:SetPoint('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOP')
-    EncounterJournalEncounterFrameInfoModelFrameDungeonBG:SetPoint('TOPRIGHT')
-    EncounterJournalEncounterFrameInfoModelFrameShadow:SetPoint('TOPLEFT')
-    --[[EncounterJournalEncounterFrameInfo:SetPoint('TOP')
-    EncounterJournalEncounterFrameInfo.BossesScrollBox:SetPoint('TOP', 0, -43)
-    EncounterJournalEncounterFrameInstanceFrame:SetPoint('TOP')
-    EncounterJournalEncounterFrameInfoBG:SetPoint('TOP')
-    EncounterJournalEncounterFrameInstanceFrameMapButton:ClearAllPoints()
-    EncounterJournalEncounterFrameInstanceFrameMapButton:SetPoint('TOPLEFT', 33, -275)
-    EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:SetPoint('TOPRIGHT', -35, -330)
-    EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOP',0,-43)
-    E
-    EncounterJournalEncounterFrameInfoDetailsScrollFrame:SetPoint('TOP', 0, -43)
-    EncounterJournalEncounterFrameInfoModelFrame:ClearAllPoints()
-    EncounterJournalEncounterFrameInfoModelFrame:SetPoint('RIGHT')
-]]
+    EncounterJournalEncounterFrameInfoModelFrame:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP')
+    EncounterJournalEncounterFrameInfoModelFrameDungeonBG:SetPoint('TOPRIGHT', 0, -2)
+    EncounterJournalEncounterFrameInfoModelFrameShadow:SetPoint('TOPLEFT', 0, -2)
 
     self:Setup(EncounterJournal, {
         minW=400,--800,
@@ -382,7 +393,9 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         end
     })
 
+
     self:Setup(EncounterJournalInstanceSelect.ScrollBox, {frame=EncounterJournal})
+
 end
 
 

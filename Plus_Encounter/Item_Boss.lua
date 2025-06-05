@@ -15,16 +15,20 @@ local ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT= ITEM_UPGRADE_FRAME_CURRENT_UPGR
 
 
 local function Init(btn)
+    if not btn:IsVisible() then
+       return
+    end
+
     local itemText--专精图标, 幻化，坐骑，宠物
     local tips--itemText提示用
     local classText--物品专精
     local upText--升级：
 
+    local show= not Save().hideEncounterJournal
 
-    local slotText= btn.slot and btn.slot:GetText()
-    local isEquipItem= not Save().hideEncounterJournal and slotText and slotText~=''--是装备物品
-    if not Save().hideEncounterJournal and btn.link then
-        if isEquipItem then
+    if show and btn.link then
+        local slotText= btn.slot and btn.slot:GetText() or ''--是装备物品
+        if slotText~='' then
             local specTable = C_Item.GetItemSpecInfo(btn.link) or {}--专精图标
             local specTableNum=#specTable
             if specTableNum>0 then
@@ -64,32 +68,25 @@ local function Init(btn)
             end
         end
 
-        local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=btn.link, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}, red=true})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
+        local dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=btn.link, text={ITEM_CLASSES_ALLOWED, ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT}})--物品提示，信息 format(ITEM_CLASSES_ALLOWED, '(.+)') --"职业：%s"
         classText= dateInfo.text[ITEM_CLASSES_ALLOWED]
         upText= dateInfo.text[ITEM_UPGRADE_FRAME_CURRENT_UPGRADE_FORMAT]
         if classText then
-            if WoW_Tools_Chinese_CN then--汉化
-
-                classText= string.gsub(classText..', ', '(.-), ', function(a)
-                    local b= WoWTools_TextMixin:CN(a)
-                    if b then
-                        return b..' '
-                    end
+            if WoWTools_ChineseMixin then--汉化
+                classText= (classText..PLAYER_LIST_DELIMITER):gsub('.-'..PLAYER_LIST_DELIMITER, function(a)
+                    return WoWTools_TextMixin:CN(a)
                 end)
             end
-            local className= UnitClass('player')
-            local locaClass= className and not classText:find(className) or dateInfo.red
-
-            if locaClass then
-                classText =  '|cff9e9e9e'..classText..'|r'
+            local class=UnitClass('player')
+            if not classText:find(class) then
+                classText= '|cff9e9e9e'..classText..'|r'
             end
         end
-
     end
 
-    if itemText and not btn.itemText then
-        btn.itemText= WoWTools_LabelMixin:Create(btn, {mouse=true, fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-        btn.itemText:SetPoint('TOPRIGHT', -10,-4)
+    if not btn.itemText then
+        btn.itemText= WoWTools_LabelMixin:Create(btn, {mouse=true, color={r=1, g=1, b=1}})
+        btn.itemText:SetPoint('BOTTOMRIGHT', btn.armorType, 'TOPRIGHT', 0, 2)
         btn.itemText:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
         btn.itemText:SetScript('OnEnter', function(self)
             if self.tips then
@@ -102,63 +99,60 @@ local function Init(btn)
             end
             self:SetAlpha(0.3)
         end)
+
+        btn.upText= WoWTools_LabelMixin:Create(btn, { color={r=1, g=1, b=1}})
+        btn.upText:SetPoint('BOTTOMRIGHT', btn.itemText, 'TOPRIGHT', 0, 2)
+        --btn.upText:SetPoint('TOPRIGHT', -10,-16)
+--调整位置
+        btn.name:SetPoint('TOPLEFT', btn.icon, 'TOPRIGHT', 7, -11)--<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeKey="$parent.icon" x="7" y="-7"/>
+        btn.slot:ClearAllPoints()
+        btn.slot:SetPoint('TOPLEFT', btn.name, 'BOTTOMLEFT', 0, -4)
+        btn.classLabel= WoWTools_LabelMixin:Create(btn, {color={r=1, g=1, b=1}})
+        btn.classLabel:SetPoint('BOTTOMLEFT', btn.name, 'TOPLEFT', 0 ,2)
+        --btn.classLabel:SetPoint('BOTTOM', btn, 0, 16)--<Size x="321" y="45"/>
+
+        btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
+        btn.spellTexture:SetSize(16,16)
+        btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT', -10, 0)
+        btn.spellTexture:SetScript('OnMouseDown', function(self)
+            if self.spellID then
+                WoWTools_ChatMixin:Chat( C_Spell.GetSpellLink(self.spellID) or self.spellID, nil, true)
+            end
+        end)
+        btn.spellTexture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
+        btn.spellTexture:SetScript('OnEnter', function(self)
+            if self.spellID then
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                GameTooltip:ClearLines()
+                GameTooltip:SetSpellByID(self.spellID)
+                GameTooltip:Show()
+            end
+            self:SetAlpha(0.5)
+        end)
     end
-    if btn.itemText then
-        btn.itemText:SetText(itemText or '')
-        btn.itemText.tips= tips
-    end
+
+    btn.itemText:SetText(itemText or '')
+    btn.itemText.tips= tips
+
 
     --拾取, 职业
-    if classText and not btn.classLable then
-        btn.classLable= WoWTools_LabelMixin:Create(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-        btn.classLable:SetPoint('BOTTOM', btn.IconBorder, 'BOTTOMRIGHT', 140, 4)--<Size x="321" y="45"/>
-    end
-    if btn.classLable then
-        btn.classLable:SetText(classText or '')
-    end
+    btn.classLabel:SetText(classText or '')
+    btn.upText:SetText(upText or '')
 
-    if upText and not btn.upText then
-        btn.upText= WoWTools_LabelMixin:Create(btn, {fontName='GameFontBlack', notFlag=true, color={r=0.25, g=0.1484375, b=0.02}, notShadow=true, layer='OVERLAY'})
-        btn.upText:SetPoint('TOPRIGHT', -10,-16)
-    end
-    if btn.upText then
-        btn.upText:SetText(upText or '')
-    end
+--显示, 物品, 属性
+    WoWTools_ItemStatsMixin:SetItem(btn, show and btn.link, {point= btn.IconBorder})
 
-    --显示, 物品, 属性
-    WoWTools_ItemStatsMixin:SetItem(btn, not Save().hideEncounterJournal and btn.link, {point= btn.IconBorder})
-
-    local spellID--物品法术，提示
-    if (btn.link or btn.itemID) and not Save().hideEncounterJournal then
+--物品法术，提示
+    local spellID
+    if show and (btn.link or btn.itemID) then
         spellID= select(2, C_Item.GetItemSpell(btn.link or btn.itemID))
-        if spellID and not btn.spellTexture then
-            btn.spellTexture= btn:CreateTexture(nil, 'OVERLAY', nil, 7)
-            btn.spellTexture:SetSize(16,16)
-            btn.spellTexture:SetPoint('LEFT', btn.IconBorder, 'RIGHT', -10, 0)
-            btn.spellTexture:SetScript('OnMouseDown', function(self)
-                if self.spellID then
-                    WoWTools_ChatMixin:Chat( C_Spell.GetSpellLink(self.spellID) or self.spellID, nil, true)
-                end
-            end)
-            btn.spellTexture:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(1) end)
-            btn.spellTexture:SetScript('OnEnter', function(self)
-                if self.spellID then
-                    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                    GameTooltip:ClearLines()
-                    GameTooltip:SetSpellByID(self.spellID)
-                    GameTooltip:Show()
-                end
-                self:SetAlpha(0.5)
-            end)
-        end
     end
-    if btn.spellTexture then
-        btn.spellTexture.spellID= spellID
-        btn.spellTexture:SetShown(spellID and true or false)
-        if spellID then
-            WoWTools_Mixin:Load({id=spellID, type='spell'})
-            SetPortraitToTexture(btn.spellTexture, C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
-        end
+
+    btn.spellTexture.spellID= spellID
+    btn.spellTexture:SetShown(spellID and true or false)
+    if spellID then
+        WoWTools_Mixin:Load({id=spellID, type='spell'})
+        SetPortraitToTexture(btn.spellTexture, C_Spell.GetSpellTexture(spellID) or 'soulbinds_tree_conduit_icon_utility')
     end
 end
 

@@ -228,44 +228,70 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetNineSlice(EncounterJournalInset, nil, true)
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
-    
+
 --首领，信息
     self:HideFrame(EncounterJournalEncounterFrameInfo)
+    --EncounterJournalEncounterFrameInfoBG:SetColorTexture(0, 0, 0, 0.3)
+
+
+
+    self:SetTabButton(EncounterJournalEncounterFrameInfoOverviewTab)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoLootTab)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoBossTab)
+    self:SetTabButton(EncounterJournalEncounterFrameInfoModelTab)
 --Model
     self:HideTexture(EncounterJournalEncounterFrameInfoModelFrameShadow)
     self:SetAlphaColor(EncounterJournalEncounterFrameInfoModelFrameDungeonBG)
-
+--BOSS, 掉落
+    EncounterJournalEncounterFrameInfoClassFilterClearFrame:GetRegions():SetAlpha(0.5)--职业过滤，标题
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.LootContainer)
-    self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
+    hooksecurefunc(EncounterJournalItemMixin,'Init', function(btn)
+        if btn:IsVisible() and not btn.set_texture then
+            btn.bosslessTexture:SetTexture(0)
+            btn.bosslessTexture:SetPoint('RIGHT')
+            btn.bosslessTexture:SetColorTexture(0, 0, 0, 0.3)
+
+            btn.bossTexture:SetTexture(0)
+            btn.bossTexture:SetPoint('RIGHT')
+            btn.bossTexture:SetColorTexture(0, 0, 0, 0.3)
+
+            btn.armorType:SetTextColor(1,1,1)
+            btn.slot:SetTextColor(1,1,1)
+            btn.boss:SetTextColor(1,1,1)
+            btn.armorType:ClearAllPoints()
+            btn.armorType:SetPoint('RIGHT', -2, -8)
+            btn.name:SetPoint('RIGHT')
+
+            btn.set_texture= true
+        end
+    end)
+--BOSS, 概述
     self:SetScrollBar(EncounterJournalEncounterFrameInfoOverviewScrollFrame)
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildLoreDescription:SetTextColor(1, 1, 1)
+    self:CreateBG(EncounterJournalEncounterFrameInfoOverviewScrollFrame, {isAllPoint=true})
+--BOSS, 技能
+    EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription:SetTextColor(1, 1, 1)
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChild.overviewDescription.Text:SetTextColor(1, 1, 1)
+    self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
+    self:CreateBG(EncounterJournalEncounterFrameInfoDetailsScrollFrame, {isAllPoint=true})
+
+--BOSS, 列表
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
 --副本信息
     self:SetScrollBar(EncounterJournalEncounterFrameInstanceFrame.LoreScrollBar)
-
-    --[[EncounterJournalNavBar:DisableDrawLayer('BACKGROUND')
-    self:HideFrame(EncounterJournalNavBar.overlay)
-    self:HideTexture(EncounterJournalNavBarInsetBottomBorder)
-    self:HideTexture(EncounterJournalNavBarInsetRightBorder)
-    self:HideTexture(EncounterJournalNavBarInsetLeftBorder)
-    self:HideTexture(EncounterJournalNavBarInsetBotRightCorner)
-    self:HideTexture(EncounterJournalNavBarInsetBotLeftCorner)
-    ]]
-
-    self:HideTexture(EncounterJournalInstanceSelectBG)
-    EncounterJournalInstanceSelectBG:SetAlpha(0)
-   
-    --[[self:SetTabButton(EncounterJournalSuggestTab, {notAlpha=true})
-    self:SetFrame(EncounterJournalMonthlyActivitiesTab, {notAlpha=true})
-    self:SetFrame(EncounterJournalDungeonTab, {notAlpha=true})
-    self:SetFrame(EncounterJournalRaidTab, {notAlpha=true})
-    self:SetFrame(EncounterJournalLootJournalTab, {notAlpha=true})]]
-
-
-
+    local font= EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:GetFontString()
+    if font then
+        font:SetTextColor(1,1,1)
+        self:CreateBG(EncounterJournalEncounterFrameInstanceFrame, {point=font})
+    end
+    --EncounterJournalEncounterFrameInstanceFrame.LoreScrollingFont:SetTextColor(WHITE_FONT_COLOR)
     
+--副本列表
+    self:HideTexture(EncounterJournalInstanceSelectBG)
+    self:SetAlphaColor(EncounterJournalInstanceSelectBG, nil, true, 0)
 
+--套装
     self:SetScrollBar(EncounterJournal.LootJournal)
-
     self:SetScrollBar(EncounterJournal.LootJournalItems.ItemSetsFrame)
     self:HideFrame(EncounterJournal.LootJournalItems)
 --重新设置专精，位置
@@ -279,7 +305,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideFrame(EncounterJournal.LootJournalItems.ItemSetsFrame)
 --套装,按钮
     hooksecurefunc(LootJournalItemSetButtonMixin, 'Init', function(btn)
-        btn.Background:SetAlpha(0.3)
+        btn.Background:SetAlpha(0.5)
         btn.Background:SetAtlas('timerunning-TopHUD-button-glow')
     end)
 
@@ -303,11 +329,10 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
 
     self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton, {all=true})
 
-    self:Init_BGMenu_Frame(EncounterJournal)
+    self:Init_BGMenu_Frame(EncounterJournal, nil, {settings=function(texture)
+        EncounterJournalEncounterFrameInfoBG:SetTexture(texture and 0 or 'Interface\\EncounterJournal\\UI-EJ-JournalBG')
+    end})
 end
-
-
-
 
 
 
@@ -2021,9 +2046,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
 
 --背景
-    PlayerSpellsFrameBg:ClearAllPoints()
-    PlayerSpellsFrameBg:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
-    PlayerSpellsFrameBg:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+    self:HideTexture(PlayerSpellsFrameBg)
 
 --专精 ClassSpecFrameTemplate
     PlayerSpellsFrame.SpecFrame.Background:ClearAllPoints()

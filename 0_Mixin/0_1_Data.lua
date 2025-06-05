@@ -37,7 +37,7 @@ local baseClass= UnitClassBase('player')
 local playerRealm= GetRealmName():gsub(' ', '')
 local currentRegion= GetCurrentRegion()
 local r, g, b, hex= GetClassColor(baseClass)
-hex= '|c'..hex
+
 
 local function GetWeek()--周数
     local region= currentRegion
@@ -72,8 +72,8 @@ WoWTools_DataMixin.Player={
     r= r,
     g= g,
     b= b,
-    col= hex,
-    useColor= {r=r, g=g, b=b, a=1, hex= hex},--使用颜色
+    col= '|c'..hex,
+    useColor= {r=r, g=g, b=b, a=1, hex='|c'..hex},--使用颜色
 
     --Lo= GetLocale(),
     Week= GetWeek(),--周数 date('%W')
