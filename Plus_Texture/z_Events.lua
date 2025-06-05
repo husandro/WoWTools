@@ -343,15 +343,15 @@ end
 
 --拍卖行
 function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
-    self:SetAlphaColor(AuctionHouseFrameBg)
+    self:HideFrame(AuctionHouseFrame)
     self:SetNineSlice(AuctionHouseFrame, true)
-    self:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
-    self:SetAlphaColor(AuctionHouseFrameLeft, nil, nil, 0.3)
-    self:SetAlphaColor(AuctionHouseFrameRight, nil, nil, 0.3)
+    --self:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
+    --self:SetAlphaColor(AuctionHouseFrameLeft, nil, nil, 0.3)
+    --self:SetAlphaColor(AuctionHouseFrameRight, nil, nil, 0.3)
 
-    self:SetFrame(AuctionHouseFrameBuyTab, {notAlpha=true})--{alpha= 0.3})
-    self:SetFrame(AuctionHouseFrameSellTab, {notAlpha=true})--{alpha= 0.3})
-    self:SetFrame(AuctionHouseFrameAuctionsTab, {notAlpha=true})--{alpha= 0.3})
+    self:SetTabButton(AuctionHouseFrameBuyTab)
+    self:SetTabButton(AuctionHouseFrameSellTab)
+    self:SetTabButton(AuctionHouseFrameAuctionsTab)
     self:SetFrame(AuctionHouseFrame.SearchBar.FilterButton, {alpha= 0.3})
 
     self:SetNineSlice(AuctionHouseFrame.CategoriesList, nil, true)
@@ -415,6 +415,13 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
     self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
+
+    self:Init_BGMenu_Frame(AuctionHouseFrame, nil, {
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            btn:SetPoint('RIGHT', AuctionHouseFrameCloseButton, 'LEFT', -23, 0)
+        end
+    })   
 end
 
 
@@ -911,7 +918,8 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:SetButton(SettingsPanel.ClosePanelButton, {all=true})
     self:SetNineSlice(SettingsPanel)
-    self:SetAlphaColor(SettingsPanel.Bg, nil, nil, 0.5)
+    self:HideFrame(SettingsPanel.Bg)
+    self:HideFrame(SettingsPanel)
     self:SetScrollBar(SettingsPanel.Container.SettingsList)
     self:SetScrollBar(SettingsPanel.CategoryList)
 
@@ -920,10 +928,15 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings()
 
     self:HideTexture(PingSystemTutorialBg)
 
-    self:SetFrame(SettingsPanel.GameTab, {notAlpha=true})
-    self:SetFrame(SettingsPanel.AddOnsTab, {notAlpha=true})
+    self:SetTabButton(SettingsPanel.GameTab)
+    self:SetTabButton(SettingsPanel.AddOnsTab)
     self:SetEditBox(SettingsPanel.SearchBox)
-    self:SetFrame(SettingsPanel, {index=1})
+
+    self:CreateBG(SettingsPanel.CategoryList, {isAllPoint=true, alpha=0.5, isColor=true})
+    self:CreateBG(SettingsPanel.Container, {isAllPoint=true, alpha=0.5, isColor=true})
+
+
+    self:Init_BGMenu_Frame(SettingsPanel, nil, {isNewButton=true})
 end
 
 
@@ -1099,12 +1112,17 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
-    self:HideTexture(GameMenuFrame.Header.RightBG)
-    self:HideTexture(GameMenuFrame.Header.CenterBG)
-    self:HideTexture(GameMenuFrame.Header.LeftBG)
+    self:HideFrame(GameMenuFrame.Header)
     GameMenuFrame.Header.Text:ClearAllPoints()
     GameMenuFrame.Header.Text:SetPoint('TOP', 0 ,-24)
-    self:SetFrame(GameMenuFrame.Border, {alpha= 0.3})
+    self:HideFrame(GameMenuFrame.Border)
+
+    self:Init_BGMenu_Frame(GameMenuFrame, nil, {
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOPLEFT', GameMenuFrame.Border)
+        end
+    })
 end
 
 
@@ -1117,9 +1135,11 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
     self:SetNineSlice(FriendsFrame, true)
-    self:SetAlphaColor(FriendsFrameBg)
-    self:SetNineSlice(FriendsFrameInset, true)
-    self:SetAlphaColor(FriendsFrameInset.Bg, nil, nil, 0.3)
+    self:HideFrame(FriendsFrame)
+
+    self:SetNineSlice(FriendsFrameInset, nil, true)
+    self:HideTexture(FriendsFrameInset.Bg)
+
     self:SetScrollBar(FriendsListFrame)
     self:SetScrollBar(IgnoreListFrame)
 
@@ -1129,10 +1149,10 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     --好友列表，召募
     self:SetScrollBar(RecruitAFriendFrame.RecruitList)
     self:SetAlphaColor(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
-    self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset)
-    self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
+    self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset, nil, true)
+    self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset, nil, true)
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
-    self:SetAlphaColor(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
+    self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
 
     --团队信息
     self:HideTexture(RaidInfoDetailHeader)
@@ -1140,19 +1160,13 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetAlphaColor(RaidInfoFrame.Header.CenterBG)
     self:SetAlphaColor(RaidInfoFrame.Header.RightBG)
     self:SetAlphaColor(RaidInfoDetailFooter)
-    self:SetAlphaColor(RaidInfoFrame.Border.LeftEdge, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.RightEdge, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.TopEdge, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.BottomEdge, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.TopLeftCorner, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.BottomLeftCorner, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.BottomRightCorner, nil, nil, 0.3)
-    self:SetAlphaColor(RaidInfoFrame.Border.TopRightCorner, nil, nil, 0.3)
+    self:SetFrame(RaidInfoFrame.Border.LeftEdge, {alpha=0.3})
+    self:HideTexture(RaidInfoFrame.Border.Bg)
     self:SetScrollBar(RaidInfoFrame)
-    self:SetAlphaColor(RaidInfoFrame.Border.Bg, nil, nil, 0.3)
 
-    self:SetNineSlice(WhoFrameListInset, true)
-    self:SetNineSlice(WhoFrameEditBoxInset, true)
+
+    self:SetNineSlice(WhoFrameListInset, nil, true)
+    self:SetNineSlice(WhoFrameEditBoxInset, nil, true)
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
@@ -1162,12 +1176,16 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(QuickJoinFrame)
 
     for i=1, 4 do
-        self:SetFrame(_G['FriendsFrameTab'..i], {notAlpha=true})
-        self:SetFrame(_G['FriendsTabHeaderTab'..i], {notAlpha=true})
+        self:SetTabButton(_G['FriendsFrameTab'..i])
+        self:SetTabButton(_G['FriendsTabHeaderTab'..i])
         self:SetFrame(_G['WhoFrameColumnHeader'..i], {notAlpha=true})
     end
 
     self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})
+
+    self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
+
+    self:Init_BGMenu_Frame(FriendsFrame)
 end
 
 
@@ -1202,18 +1220,25 @@ end
 
 --插件，管理
 function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
-    self:SetNineSlice(AddonList,true)
+    self:SetNineSlice(AddonList)
     self:SetScrollBar(AddonList)
-    self:SetAlphaColor(AddonListBg)
-    self:SetNineSlice(AddonListInset, true)
-    self:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
+    self:HideFrame(AddonList)
+
+    self:SetNineSlice(AddonListInset, nil, true)
+    self:HideTexture(AddonListInset.Bg)
+
     self:SetMenu(AddonList.Dropdown)
     self:SetEditBox(AddonList.SearchBox)
     self:SetButton(AddonListCloseButton, {all=true})
+    self:SetAlphaColor(AddonList.Performance.Divider, true)
 
-     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
-         self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
-     end
+    if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
+        self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
+    end
+
+    self:Init_BGMenu_Frame(AddonList, nil, {isNewButton=true, newButtonPoint=function(btn)
+        btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -23, 0)
+    end})
 end
 
 

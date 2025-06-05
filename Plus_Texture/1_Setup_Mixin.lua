@@ -312,10 +312,26 @@ function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
     end
 end]]
 
-function WoWTools_TextureMixin:SetTabButton(btn, alpha)--TabSystemOwner.lua
-    self:SetFrame(btn, {alpha=alpha or 0.75})
-    if btn.Text then
-        btn.Text:SetShadowOffset(1, -1)
+function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
+    if not frame then
+        return
+    end
+    if frame.GetTabSet then
+        local btn
+        for _, tabID in pairs(frame:GetTabSet()) do
+            btn= frame:GetTabButton(tabID)
+            if btn then
+                self:SetFrame(frame, {alpha=alpha or 0.75})
+                if frame.Text then
+                    frame.Text:SetShadowOffset(1, -1)
+                end
+            end
+        end
+    else
+        self:SetFrame(frame, {alpha=alpha or 0.75})
+        if frame.Text then
+            frame.Text:SetShadowOffset(1, -1)
+        end
     end
 end
 

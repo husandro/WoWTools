@@ -3,8 +3,14 @@ function WoWTools_TextureMixin.Frames:GossipFrame()
     self:SetButton(GossipFrameCloseButton, {all=true})
     self:SetNineSlice(GossipFrame, true)
     self:SetAlphaColor(GossipFrameBg)
+
     self:HideTexture(GossipFrameInset.Bg)
+    self:SetNineSlice(GossipFrameInset, nil, true)
+
     self:SetScrollBar(GossipFrame.GreetingPanel)
+    self:Init_BGMenu_Frame(GossipFrame, GossipFrame.Background, {
+        alpha=1,
+    })
 end
 
 --任务
@@ -82,42 +88,73 @@ end
 
 --频道, 设置
 function WoWTools_TextureMixin.Frames:ChatConfigFrame()
-    
-    self:SetNineSlice(ChatConfigCategoryFrame,true)
-    self:SetNineSlice(ChatConfigBackgroundFrame,true)
-    self:SetNineSlice(ChatConfigChatSettingsLeft, true)
-    self:HideTexture(ChatConfigBackgroundFrame.NineSlice.Center)
-    self:HideTexture(ChatConfigCategoryFrame.NineSlice.Center)
-    self:HideTexture(ChatConfigChatSettingsLeft.NineSlice.Center)
 
+    self:SetNineSlice(ChatConfigCategoryFrame, nil, true, nil, true)
+    ChatConfigCategoryFrame.NineSlice:SetCenterColor(0,0,0, 0.3)
+
+
+    self:SetNineSlice(ChatConfigBackgroundFrame,nil, true, nil, true)
+    ChatConfigBackgroundFrame.NineSlice:SetCenterColor(0,0,0, 0.3)
+    
+    self:SetNineSlice(ChatConfigChatSettingsLeft, nil, true)
+
+    self:SetNineSlice(ChatConfigCombatSettingsFilters,nil, true, nil, true)
+    ChatConfigCombatSettingsFilters.NineSlice:SetCenterColor(0,0,0, 0.3)
     self:SetScrollBar(ChatConfigCombatSettingsFilters)
 
+    for _, f in pairs({
+        ChatConfigCombatSettingsFilters,
+        ChatConfigBackgroundFrame,
+        CombatConfigMessageSourcesDoneBy,
+        CombatConfigMessageSourcesDoneTo,
+        ChatConfigOtherSettingsCombat,
+        ChatConfigOtherSettingsSystem,
+        ChatConfigOtherSettingsPVP,
+        ChatConfigOtherSettingsCreature,
+    }) do
+        if f and f.NineSlice then
+            self:SetNineSlice(f, nil, true, nil, true)
+            f.NineSlice:SetCenterColor(0,0,0, 0.3)
+        end
+    end
+
     self:SetAlphaColor(ChatConfigFrame.Border, nil, nil, 0.3)
-    self:SetAlphaColor(ChatConfigFrame.Header.RightBG, true)
-    self:SetAlphaColor(ChatConfigFrame.Header.LeftBG, true)
-    self:SetAlphaColor(ChatConfigFrame.Header.CenterBG, true)
+    self:HideFrame(ChatConfigFrame.Header)
+    ChatConfigFrame.Header.Text:ClearAllPoints()
+    ChatConfigFrame.Header.Text:SetPoint('CENTER', 0, -10)
+    --self:SetAlphaColor(ChatConfigFrame.Header.RightBG, true)
+    --self:SetAlphaColor(ChatConfigFrame.Header.LeftBG, true)
+    --self:SetAlphaColor(ChatConfigFrame.Header.CenterBG, true)
 
 
     for i= 1, 5 do
-        self:SetFrame(_G['CombatConfigTab'..i], {notAlpha=true})
+        self:SetTabButton(_G['CombatConfigTab'..i])
+    end
+
+    local function set_NinelSlice(checkBox, r, g, b)
+        if not checkBox or not checkBox.NineSlice then
+            return
+        end
+        if not checkBox.NineSlice.is_Clear then
+            self:HideTexture(checkBox.NineSlice.TopEdge)
+            self:HideTexture(checkBox.NineSlice.RightEdge)
+            self:HideTexture(checkBox.NineSlice.LeftEdge)
+            self:HideTexture(checkBox.NineSlice.TopRightCorner)
+            self:HideTexture(checkBox.NineSlice.TopLeftCorner)
+            self:HideTexture(checkBox.NineSlice.BottomRightCorner)
+            self:HideTexture(checkBox.NineSlice.BottomLeftCorner)
+            checkBox.NineSlice.is_Clear= true
+        end
+        if r and g and b then
+            checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
+        end
     end
 
     hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
         self:SetNineSlice(frame, nil, true)
         local checkBoxNameString = frame:GetName().."Checkbox"
-        local checkBoxName, checkBox
         for index in pairs(frame.checkBoxTable or {}) do
-            checkBoxName = checkBoxNameString..index
-            checkBox = _G[checkBoxName]
-            if checkBox and checkBox.NineSlice then
-                self:HideTexture(checkBox.NineSlice.TopEdge)
-                self:HideTexture(checkBox.NineSlice.RightEdge)
-                self:HideTexture(checkBox.NineSlice.LeftEdge)
-                self:HideTexture(checkBox.NineSlice.TopRightCorner)
-                self:HideTexture(checkBox.NineSlice.TopLeftCorner)
-                self:HideTexture(checkBox.NineSlice.BottomRightCorner)
-                self:HideTexture(checkBox.NineSlice.BottomLeftCorner)
-            end
+            set_NinelSlice(_G[checkBoxNameString..index])
         end
     end)
     hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
@@ -136,30 +173,15 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             if _G[checkBoxNameString..index.."CheckText"] then
                 _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
             end
-
-            local checkBox = _G[checkBoxNameString..index]
-            if checkBox and checkBox.NineSlice and checkBox.NineSlice.BottomEdge then
-                checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
-            end
+            set_NinelSlice(_G[checkBoxNameString..index], r, g, b)
         end
     end)
 
 
     hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)
         local checkBoxNameString = frame:GetName().."Swatch"
-        local checkBoxName, checkBox
         for index in pairs(frame.swatchTable or {}) do
-            checkBoxName = checkBoxNameString..index
-            checkBox = _G[checkBoxName]
-            if checkBox and checkBox.NineSlice then
-                self:HideTexture(checkBox.NineSlice.TopEdge)
-                self:HideTexture(checkBox.NineSlice.RightEdge)
-                self:HideTexture(checkBox.NineSlice.LeftEdge)
-                self:HideTexture(checkBox.NineSlice.TopRightCorner)
-                self:HideTexture(checkBox.NineSlice.TopLeftCorner)
-                self:HideTexture(checkBox.NineSlice.BottomRightCorner)
-                self:HideTexture(checkBox.NineSlice.BottomLeftCorner)
-            end
+            set_NinelSlice(checkBoxNameString..index)
         end
     end)
     hooksecurefunc('ChatConfig_UpdateSwatches', function(frame)
@@ -256,9 +278,9 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(ContainerFrameCombinedBags.CloseButton, {all=true})
     self:SetNineSlice(ContainerFrameCombinedBags, true)
 
-    ContainerFrameCombinedBags.Bg.BottomLeft:SetTexture(0)
-    ContainerFrameCombinedBags.Bg.BottomRight:SetTexture(0)
-    self:SetFrame(ContainerFrameCombinedBags.Bg)
+    --ContainerFrameCombinedBags.Bg.BottomLeft:SetTexture(0)
+    --ContainerFrameCombinedBags.Bg.BottomRight:SetTexture(0)
+    self:HideFrame(ContainerFrameCombinedBags.Bg)
 
     self:SetFrame(ContainerFrameCombinedBags.MoneyFrame.Border, {alpha=0.3})
     self:SetFrame(BackpackTokenFrame.Border, {alpha=0.3})
@@ -322,6 +344,9 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
             self:SetAlphaColor(_G[text]:GetNormalTexture(), true)
         end
     end
+
+    ContainerFrameCombinedBagsPortraitButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    self:Init_BGMenu_Frame(ContainerFrameCombinedBags)
 end
 
 
@@ -346,20 +371,23 @@ end
 
 --商人
 function WoWTools_TextureMixin.Frames:MerchantFrame()
-    self:SetAlphaColor(MerchantFrameLootFilterMiddle)
-    self:SetAlphaColor(MerchantFrameLootFilterLeft)
-    self:SetAlphaColor(MerchantFrameLootFilterRight)
+    self:SetScrollBar(MerchantFrame)
+    self:SetNineSlice(MerchantFrame)
+    self:HideFrame(MerchantFrame)
+
     self:SetTabButton(MerchantFrameTab1)
     self:SetTabButton(MerchantFrameTab2)
-    self:SetScrollBar(MerchantFrame)
+
     self:SetNineSlice(MerchantFrameInset, nil, true)
-    self:SetNineSlice(MerchantFrame, true)
+    self:HideTexture(MerchantFrameInset.Bg)
+
     self:SetMenu(MerchantFrame.FilterDropdown)
 
     self:SetAlphaColor(MerchantMoneyInset.Bg)
     self:HideTexture(MerchantMoneyBgMiddle)
     self:HideTexture(MerchantMoneyBgLeft)
     self:HideTexture(MerchantMoneyBgRight)
+
     self:SetAlphaColor(MerchantExtraCurrencyBg)
     self:SetAlphaColor(MerchantExtraCurrencyInset)
     self:HideTexture(MerchantFrameBottomLeftBorder)
@@ -376,6 +404,8 @@ function WoWTools_TextureMixin.Frames:MerchantFrame()
     self:HideFrame(MerchantRepairAllButton, {index=1})
     self:HideFrame(MerchantGuildBankRepairButton, {index=1})
     self:HideFrame(MerchantSellAllJunkButton, {index=1})
+
+    self:Init_BGMenu_Frame(MerchantFrame)
 end
 
 

@@ -5810,7 +5810,15 @@
         "EncounterJournalEncounterFrameInfoClassFilterClearFrame",
         "EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollChildDescription",
         "EncounterJournal_SetUpOverview",
-        "EncounterJournal_SetDescriptionWithBullets"
+        "EncounterJournal_SetDescriptionWithBullets",
+        "ContainerFrameCombinedBagsPortraitButton",
+        "MerchantMoneyFrame",
+        "CombatConfigMessageSourcesDoneBy",
+        "CombatConfigMessageSourcesDoneTo",
+        "ChatConfigOtherSettingsCombat",
+        "ChatConfigOtherSettingsSystem",
+        "ChatConfigOtherSettingsPVP",
+        "ChatConfigOtherSettingsCreature"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

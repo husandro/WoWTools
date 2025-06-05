@@ -242,6 +242,7 @@ local function texture_list(root, name, icon, texture, isAdd)
         else
             GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
         end
+        tooltip:AddLine('Alpha '..(SaveBG(name).alpha or 0.5))
     end)
 
     if isAdd then
@@ -769,12 +770,12 @@ end
 
 
 local function Set_Frame_Menu(frame, icon, tab)
-    local self= frame.bgMenuButton or frame.PortraitContainer or tab.PortraitContainer
+    local self= frame.bgMenuButton or frame.PortraitButton or frame.PortraitContainer or tab.PortraitContainer
     if not self then
         return
     end
 
-    if frame.PortraitContainer then
+    if self== frame.PortraitContainer then
         self:SetSize(48,48)
     end
 
@@ -829,7 +830,10 @@ local function Create_Button(frame, tab)
     if not tab.isNewButton then
         return
     end
-    local p= tab.isNewButton==true and (frame.CloseButton or frame) or tab.isNewButton
+
+    local closeButton= frame.ClosePanelButton or frame.CloseButton
+
+    local p= tab.isNewButton==true and (closeButton or frame) or tab.isNewButton
 
     frame.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
         size=23,
@@ -845,13 +849,13 @@ local function Create_Button(frame, tab)
 
     if tab.newButtonPoint then
         tab.newButtonPoint(frame.bgMenuButton)
-    elseif frame.CloseButton then
-        frame.bgMenuButton:SetPoint('RIGHT', frame.CloseButton, 'LEFT')
+    elseif closeButton then
+        frame.bgMenuButton:SetPoint('RIGHT', closeButton, 'LEFT')
     end
 
-    if frame.CloseButton then
-        frame.bgMenuButton:SetFrameStrata(frame.CloseButton:GetFrameStrata())
-        frame.bgMenuButton:SetFrameLevel(frame.CloseButton:GetFrameLevel()+1)
+    if closeButton then
+        frame.bgMenuButton:SetFrameStrata(closeButton:GetFrameStrata())
+        frame.bgMenuButton:SetFrameLevel(closeButton:GetFrameLevel()+1)
     end
 end
 
