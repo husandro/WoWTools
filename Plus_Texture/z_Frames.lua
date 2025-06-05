@@ -89,20 +89,13 @@ end
 --频道, 设置
 function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
-    self:SetNineSlice(ChatConfigCategoryFrame, nil, true, nil, true)
-    ChatConfigCategoryFrame.NineSlice:SetCenterColor(0,0,0, 0.3)
 
-
-    self:SetNineSlice(ChatConfigBackgroundFrame,nil, true, nil, true)
-    ChatConfigBackgroundFrame.NineSlice:SetCenterColor(0,0,0, 0.3)
-    
     self:SetNineSlice(ChatConfigChatSettingsLeft, nil, true)
 
-    self:SetNineSlice(ChatConfigCombatSettingsFilters,nil, true, nil, true)
-    ChatConfigCombatSettingsFilters.NineSlice:SetCenterColor(0,0,0, 0.3)
     self:SetScrollBar(ChatConfigCombatSettingsFilters)
 
     for _, f in pairs({
+        ChatConfigCategoryFrame,
         ChatConfigCombatSettingsFilters,
         ChatConfigBackgroundFrame,
         CombatConfigMessageSourcesDoneBy,
@@ -210,6 +203,12 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:SetNineSlice(CombatConfigColorsColorizeDamageSchool, nil, true)
     self:SetNineSlice(CombatConfigColorsColorizeEntireLine, nil, true)
 
+    self:Init_BGMenu_Frame(ChatConfigFrame, nil, {
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOPLEFT', ChatConfigFrame.Border, 2,-2)
+        end
+    })
 
 
 
