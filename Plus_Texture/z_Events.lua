@@ -2099,7 +2099,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
                 PlayerSpellsFrame.TalentsFrame.Background,
             }]]
             settings=function(texture, alpha)
-                if not PlayerSpellsFrame.Background then
+                if not PlayerSpellsFrame.bg_Texture then
                     return
                 end
                 PlayerSpellsFrame.SpecFrame.Background:SetShown(not texture)
@@ -2108,7 +2108,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
                 PlayerSpellsFrame.TalentsFrame.Background:SetShown(not texture)
                 PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(alpha)
 
-                PlayerSpellsFrame.Background:SetShown(texture)
+                PlayerSpellsFrame.bg_Texture:SetShown(texture)
             end
         }
     )
