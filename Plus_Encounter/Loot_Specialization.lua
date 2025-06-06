@@ -166,7 +166,8 @@ local function Init_Menu(self, root)
     end
 
     root:CreateDivider()
-    sub=root:CreateTitle(WoWTools_TextMixin:CN(self.name, {journalEncounterID=self.journalEncounterID})..' '..self.dungeonEncounterID)
+    
+    sub=root:CreateTitle((WoWTools_TextMixin:CN(self.name, {journalEncounterID=self.journalEncounterID, isName=true}) or self.name)..' '..self.dungeonEncounterID)
 
 
     num=0
