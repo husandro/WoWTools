@@ -1225,7 +1225,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
     self:HideFrame(AddonList)
 
     self:SetNineSlice(AddonListInset, nil, true)
-    self:HideTexture(AddonListInset.Bg)
+    self:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
 
     self:SetMenu(AddonList.Dropdown)
     self:SetEditBox(AddonList.SearchBox)

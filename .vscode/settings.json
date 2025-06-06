@@ -5818,7 +5818,21 @@
         "ChatConfigOtherSettingsCombat",
         "ChatConfigOtherSettingsSystem",
         "ChatConfigOtherSettingsPVP",
-        "ChatConfigOtherSettingsCreature"
+        "ChatConfigOtherSettingsCreature",
+        "ChatConfigChannelSettingsLeft",
+        "CombatConfig_Colorize_Update",
+        "CombatConfig_Formatting_Update",
+        "CombatConfig_Settings_Update",
+        "SetChatUnitColor",
+        "CombatConfigColorsColorizeSpellNamesColorSwatchSwatchBg",
+        "CombatConfigColorsColorizeSpellNamesCheckText",
+        "ChatConfig_CreateTieredCheckboxes",
+        "CombatConfigColorsColorizeSpellNamesColorSwatchNormalTexture",
+        "CombatConfigColorsColorizeDamageNumberCheckText",
+        "CombatConfigColorsColorizeDamageNumberColorSwatchNormalTexture",
+        "FCF_Tab_SetupMenu",
+        "ChatFrame1",
+        "ChatFrame1Background"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

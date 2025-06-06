@@ -355,6 +355,7 @@ end
 local function Init_EditBox()
     local Frame= WoWTools_EditBoxMixin:CreateFrame(EventTrace, {
         text= WoWTools_DataMixin.onlyChinese and '查看' or VIEW,
+        name= 'WoWToolsEventTraceViewEditBox',
     })
     --Frame:Hide()
     Frame.ScrollBar:ClearAllPoints()
@@ -383,7 +384,7 @@ local function Init_EditBox()
             nil
         )
     end)
-    Frame.View:Hide()
+    --Frame.View:Hide()
 
 --清除，按钮
     Frame.clearButton= CreateFrame('Button', nil, Frame)
@@ -406,7 +407,7 @@ local function Init_EditBox()
         self.Instructions2:SetShown(isText)
         self.Instructions:SetShown(not isText)
         p.clearButton:SetShown(isText)
-        p.View:SetShown(numLine>1)
+        --p.View:SetShown(numLine>1)
     end)
 
 

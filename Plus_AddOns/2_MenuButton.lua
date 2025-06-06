@@ -149,7 +149,7 @@ local function Init_Menu(self, root)
         )
     end)
 
-
+--[[
 --隐藏背景
     root:CreateDivider()
     sub=root:CreateButton(
@@ -176,7 +176,7 @@ local function Init_Menu(self, root)
         step=0.05,
         bit='%.2f',
     })
-    sub:CreateSpacer()
+    sub:CreateSpacer()]]
 
 
 
@@ -262,10 +262,10 @@ local function Init()
 
     btn:SetupMenu(Init_Menu)
 
-    function btn:set_bg()
+    --[[function btn:set_bg()
         AddonListInset.Bg:SetAlpha(Save().Bg_Alpha or 0.5)
     end
-    btn:set_bg()
+    btn:set_bg()]]
 
     WoWTools_AddOnsMixin.MenuButton= btn
 end

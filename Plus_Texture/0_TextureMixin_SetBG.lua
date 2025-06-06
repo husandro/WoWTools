@@ -512,18 +512,18 @@ end
 local function Init_Menu(frame, root, isSub)
     local name= frame.bg_Texture.BgData.name
     local icon= frame.bg_Texture
-
-
     local sub, sub2, sub3
 
     if isSub then
-    --背景
+        root:CreateDivider()
         sub= root:CreateButton(
             '|A:MonkUI-LightOrb:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
         function()
             return MenuResponse.Open
         end)
+        sub:CreateTitle(name)
+        sub:CreateDivider()
     else
         root:CreateTitle('|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND))
         sub=root
@@ -594,8 +594,8 @@ local function Init_Menu(frame, root, isSub)
     })
     sub:CreateSpacer()
 
---分开设置, 列表
-    Add_Frame_Menu(frame, root)
+--分开设置, 全部列表
+    Add_Frame_Menu(frame, sub)
     sub:CreateSpacer()
 
 --打开选项界面
@@ -694,7 +694,7 @@ local function Create_Anims(frame, tab)
     else
         frame.AirParticlesFar:SetAtlas(atlas)
     end
-    frame.AirParticlesFar:SetAllPoints()
+    frame.AirParticlesFar:SetAllPoints(frame.bgTexture)
     frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
     -- 设置混合模式为ADD，使粒子效果更亮 DISABLE, BLEND, ALPHAKEY, ADD, MOD
     frame.AirParticlesFar:SetBlendMode("ADD")
@@ -706,8 +706,8 @@ local function Create_Anims(frame, tab)
         else
             frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
         end
-        frame.FullMask:SetPoint('TOPLEFT', -15, 15)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', 15, -15)
+        frame.FullMask:SetPoint('TOPLEFT', frame.bg_Texture or frame, -15, 15)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', frame.bg_Texture or frame, 15, -15)
     end
     frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
 
@@ -763,13 +763,31 @@ end
 
 
 
-
+local function Hook_MenuTag(self, root, desc)
+    local p= self:GetParent()
+    if p and p.bg_Texture then
+        Init_Menu(p, root, true)
+    end
+end
 
 
 
 
 
 local function Set_Frame_Menu(frame, icon, tab)
+    if tab.menuTag then
+        frame.bg_Texture= icon
+
+        Menu.ModifyMenu(tab.menuTag, function(owner, root)
+            local p= owner:GetParent()
+            if p and p.bg_Texture then
+                Init_Menu(p, root, true)
+            end
+        end)
+        return
+    end
+
+
     local self= frame.bgMenuButton or frame.PortraitButton or frame.PortraitContainer or tab.PortraitContainer
     if not self then
         return
@@ -878,25 +896,37 @@ end
 
 local function Create_Background(frame, icon, tab)
     if not icon then
+--设置，位置
         if frame.Background then
-            frame.Background:ClearAllPoints()
-            frame.Background:SetPoint('TOPLEFT', 3, -3)
-            frame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
-            frame.Background.p_texture= Get_Icon_Texture(frame.Background)
+            icon= frame.Background
+            if not tab.bgPoint then
+                icon:ClearAllPoints()
+                icon:SetPoint('TOPLEFT', 3, -3)
+                icon:SetPoint('BOTTOMRIGHT',-3, 3)
+            end
         else
-            frame.Background= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
-            frame.Background:SetPoint('TOPLEFT', 3, -3)
-            frame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
+--新建，图片
+            frame.bg_Texture= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
+            icon= frame.bg_Texture
+            if not tab.bgPoint then
+                icon:SetPoint('TOPLEFT', 3, -3)
+                icon:SetPoint('BOTTOMRIGHT',-3, 3)
+            end
         end
-    else
-
-        icon.p_texture= Get_Icon_Texture(icon)
-
+--调用，设置
+        if tab.bgPoint then
+            tab.bgPoint(icon)
+        end
+    end
+--记录，初始图片
+    icon.p_texture= Get_Icon_Texture(icon)
+--记录其它，初始图片
+    if tab.icons then
         for _, t in pairs(tab.icons or {}) do
             t.p_texture= Get_Icon_Texture(t)
         end
     end
-    return icon or frame.Background
+    return icon
 end
 
 
@@ -928,6 +958,9 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
     isNewButton=true,
     newButtonPoint=function(btn)
+    end
+
+    bgPoint=function(icon)
     end
     }
 )

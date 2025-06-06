@@ -104,10 +104,19 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         ChatConfigOtherSettingsSystem,
         ChatConfigOtherSettingsPVP,
         ChatConfigOtherSettingsCreature,
+        CombatConfigColorsUnitColors,
+        CombatConfigColorsHighlighting,
+        CombatConfigColorsColorizeUnitName,
+        CombatConfigColorsColorizeSpellNames,
+        CombatConfigColorsColorizeDamageNumber,
+        CombatConfigColorsColorizeDamageSchool,
+        CombatConfigColorsColorizeEntireLine,
+        ChatConfigChannelSettingsLeft,
+
     }) do
         if f and f.NineSlice then
             self:SetNineSlice(f, nil, true, nil, true)
-            f.NineSlice:SetCenterColor(0,0,0, 0.3)
+            f.NineSlice:SetCenterColor(0,0,0, 0.15)
         end
     end
 
@@ -115,101 +124,113 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:HideFrame(ChatConfigFrame.Header)
     ChatConfigFrame.Header.Text:ClearAllPoints()
     ChatConfigFrame.Header.Text:SetPoint('CENTER', 0, -10)
-    --self:SetAlphaColor(ChatConfigFrame.Header.RightBG, true)
-    --self:SetAlphaColor(ChatConfigFrame.Header.LeftBG, true)
-    --self:SetAlphaColor(ChatConfigFrame.Header.CenterBG, true)
-
 
     for i= 1, 5 do
         self:SetTabButton(_G['CombatConfigTab'..i])
     end
 
-    local function set_NinelSlice(checkBox, r, g, b)
-        if not checkBox or not checkBox.NineSlice then
+
+
+
+    local function hook_texture(colorTexture, nineSlice, font)
+        if not colorTexture or colorTexture.isset_hook then
             return
         end
-        if not checkBox.NineSlice.is_Clear then
-            self:HideTexture(checkBox.NineSlice.TopEdge)
-            self:HideTexture(checkBox.NineSlice.RightEdge)
-            self:HideTexture(checkBox.NineSlice.LeftEdge)
-            self:HideTexture(checkBox.NineSlice.TopRightCorner)
-            self:HideTexture(checkBox.NineSlice.TopLeftCorner)
-            self:HideTexture(checkBox.NineSlice.BottomRightCorner)
-            self:HideTexture(checkBox.NineSlice.BottomLeftCorner)
-            checkBox.NineSlice.is_Clear= true
-        end
-        if r and g and b then
-            checkBox.NineSlice.BottomEdge:SetVertexColor(r,g,b)
-        end
+
+        colorTexture.BottomEdge= nineSlice and nineSlice.BottomEdge or nil
+        colorTexture.font= font
+
+        hooksecurefunc(colorTexture, 'SetVertexColor', function(f, r2, g2, b2, a2)
+            if r2 and r2 and b2 then
+                if f.BottomEdge then
+                    f.BottomEdge:SetVertexColor(r2, g2, b2, a2 or 1)
+                end
+                if f.font then
+                    f.font:SetTextColor(r2, g2, b2)
+                end
+            end
+        end)
+        colorTexture.isset_hook= true
     end
 
-    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
-        self:SetNineSlice(frame, nil, true)
-        local checkBoxNameString = frame:GetName().."Checkbox"
-        for index in pairs(frame.checkBoxTable or {}) do
-            set_NinelSlice(_G[checkBoxNameString..index])
-        end
-    end)
-    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
-        if not FCF_GetCurrentChatFrame() then return end
+    hook_texture(
+        CombatConfigColorsColorizeSpellNamesColorSwatchNormalTexture,
+        CombatConfigColorsColorizeSpellNames.NineSlice,
+        CombatConfigColorsColorizeSpellNamesCheckText
+    )
+    hook_texture(
+        CombatConfigColorsColorizeDamageNumberColorSwatchNormalTexture,
+        CombatConfigColorsColorizeDamageNumber.NineSlice,
+        CombatConfigColorsColorizeDamageNumberCheckText
+    )
 
-        local checkBoxNameString = frame:GetName().."Checkbox"
-        local baseName, colorSwatch
-        for index, value in pairs(frame.checkBoxTable or {}) do
-            local r,g,b
-            baseName = checkBoxNameString..index
-            colorSwatch = _G[baseName.."ColorSwatch"]
-            if  colorSwatch and not value.isBlank then
+    local function set_NinelSlice(name, index, value)
+        local check = _G[name..'Checkbox'..index]--ChatConfigChatSettingsLeft Checkbox 1 CheckText
+        local swatch = _G[name..'Swatch'..index]--CombatConfigColorsUnit ColorsSwatch 2 Text
+        local colorTexture, nineSlice, font, r, g, b
+
+        if check then
+            nineSlice= check.NineSlice
+            font= _G[name..'Checkbox'..index.."CheckText"]
+            if value and value.type then
                 r, g, b = GetMessageTypeColor(value.type)
             end
-            r,g,b= r or 1, g or 1, b or 1
-            if _G[checkBoxNameString..index.."CheckText"] then
-                _G[checkBoxNameString..index.."CheckText"]:SetTextColor(r,g,b)
+            local t= _G[name..'Checkbox'..index.."ColorSwatch"]
+            colorTexture= t and t.Color
+
+        elseif swatch then
+            nineSlice= swatch.NineSlice
+            font= _G[name..'Swatch'..index.."Text"]
+            if value and value.type then
+                r, g, b = GetChatUnitColor(value.type)
             end
-            set_NinelSlice(_G[checkBoxNameString..index], r, g, b)
+            colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
         end
-    end)
 
-
-    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)
-        local checkBoxNameString = frame:GetName().."Swatch"
-        for index in pairs(frame.swatchTable or {}) do
-            set_NinelSlice(checkBoxNameString..index)
+        if nineSlice then
+            nineSlice:SetVertexColor(0,0,0,0)
+            nineSlice.BottomEdge:SetVertexColor(r or 1, g or 1, b or 1, 1)
         end
-    end)
-    hooksecurefunc('ChatConfig_UpdateSwatches', function(frame)
-        if not FCF_GetCurrentChatFrame() then
+        if font then
+            font:SetTextColor(r or 1, g or 1, b or 1)
+        end
+
+        hook_texture(colorTexture, nineSlice, font)
+    end
+
+    local function settings(frame)
+        if  not FCF_GetCurrentChatFrame() then
             return
         end
-        local nameString = frame:GetName().."Swatch"
-        local baseName, colorSwatch, r,g,b
-        for index, value in ipairs(frame.swatchTable or {}) do
-            baseName = nameString..index
-            colorSwatch = _G[baseName.."ColorSwatch"]
-            if ( colorSwatch ) then
-                r,g,b= GetChatUnitColor(value.type)
-            end
-            r,g,b= r or 1, g or 1, b or 1
-            _G[baseName.."Text"]:SetTextColor(r, g, b)
-            _G[baseName].NineSlice.BottomEdge:SetVertexColor(r, g, b)
+        if frame.NineSlice then
+            frame.NineSlice:SetBorderColor(0,0,0,0,0)
+            frame.NineSlice:SetCenterColor(0,0,0,0.15)
         end
-    end)
 
-    self:SetNineSlice(CombatConfigColorsUnitColors, nil, true)
-    self:SetNineSlice(CombatConfigColorsHighlighting, nil, true)
-    self:SetNineSlice(CombatConfigColorsColorizeUnitName, nil, true)
-    self:SetNineSlice(CombatConfigColorsColorizeSpellNames, nil, true)
-    self:SetNineSlice(CombatConfigColorsColorizeDamageNumber, nil, true)
-    self:SetNineSlice(CombatConfigColorsColorizeDamageSchool, nil, true)
-    self:SetNineSlice(CombatConfigColorsColorizeEntireLine, nil, true)
+        local name = frame:GetName()
+        for index, value in pairs(frame.checkBoxTable or frame.swatchTable or {}) do
+            set_NinelSlice(name, index, value)
+        end
+    end
+    hooksecurefunc('ChatConfig_CreateCheckboxes', function(frame)--ChatConfigFrame.lua
+        settings(frame)
+    end)
+    hooksecurefunc('ChatConfig_UpdateCheckboxes', function(frame)--频道颜色设置 ChatConfigFrame.lua
+        settings(frame)
+    end)
+    hooksecurefunc('ChatConfig_CreateColorSwatches', function(frame)--ChatConfigFrame.lua
+        settings(frame)
+    end)
+    hooksecurefunc('ChatConfig_UpdateSwatches', function(frame)
+        settings(frame)
+    end)
 
     self:Init_BGMenu_Frame(ChatConfigFrame, nil, {
         isNewButton=true,
         newButtonPoint=function(btn)
-            btn:SetPoint('TOPLEFT', ChatConfigFrame.Border, 2,-2)
+            btn:SetPoint('TOPLEFT', ChatConfigFrame.Border)
         end
     })
-
 
 
 
@@ -235,6 +256,15 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     end
     end
     self:SetEditBox(ChatFrame1EditBox)
+
+
+    self:Init_BGMenu_Frame(GeneralDockManager, nil, {
+        name='ChatFrame1',
+        menuTag= 'MENU_FCF_TAB',
+        bgPoint=function(icon)
+            icon:SetAllPoints(ChatFrame1Background)
+        end
+    })
 end
 
 
