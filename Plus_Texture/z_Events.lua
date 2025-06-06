@@ -1165,7 +1165,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(RaidInfoFrame)
 
     self:SetNineSlice(WhoFrameListInset, nil, true)
-    self:SetNineSlice(WhoFrameEditBoxInset, nil, true)
+    self:SetNineSlice(WhoFrameEditBoxInset, true)
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
