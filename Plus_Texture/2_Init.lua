@@ -25,7 +25,8 @@ local P_Save={
             alpha=0.3
         },
         Add={--分开设置
-          --[name]={enabled=true, alpha=0.5, texture=texture or atlas}  
+           --[name]={enabled=true, alpha=0.5, texture=texture or atlas}
+           ['ChatFrame1']= {enabled=true, alpha=0}
         },
     },
 }

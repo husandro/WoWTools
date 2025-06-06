@@ -77,6 +77,11 @@ end
 
 local function Init()
     FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
+    --[[hooksecurefunc( FriendsListButtonMixin, 'OnLoad', function(btn)
+        btn.name:SetPoint('RIGHT')
+    end)]]
+
+
     RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')

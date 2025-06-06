@@ -5841,7 +5841,8 @@
         "ChatFrame1TopRightTexture",
         "ChatFrame1TopLeftTexture",
         "ChatFrame1BottomRightTexture",
-        "ChatFrame1BottomLeftTexture"
+        "ChatFrame1BottomLeftTexture",
+        "FriendsListButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

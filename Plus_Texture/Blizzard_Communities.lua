@@ -9,7 +9,7 @@
 
     self:SetScrollBar(CommunitiesFrame.Chat)
     self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, nil, true)
-    self:CreateBG(CommunitiesFrame.Chat, {isAllPoint=true})
+    self:CreateBG(CommunitiesFrame.Chat, {isAllPoint=true, isColor=true})
 --新闻过滤
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
     self:SetBG(CommunitiesFrameGuildDetailsFrameNews)
@@ -21,7 +21,7 @@
 
 
 
-   
+
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
     self:SetAlphaColor(CommunitiesFrameMiddle)
@@ -76,7 +76,7 @@
     CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
     self:HideFrame(CommunitiesFrame.GuildBenefitsFrame)
     self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar.BG)
-        
+
     hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(f)
         self:SetBG(f)
     end)
@@ -85,7 +85,7 @@
     --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAtlas('ChallengeMode-guild-background')
     --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAlpha(0.3)
 
-    
+
     --
 
 
@@ -210,10 +210,8 @@
 
     self:HideTexture(CommunitiesFrameInset.Bg)
 
-   self:SetAlphaColor(CommunitiesFrameBg, nil, nil, 0.3)
+   self:HideTexture(CommunitiesFrameBg)
 
-
-   
 --BG
     self:Init_BGMenu_Frame(CommunitiesFrame)
 end

@@ -421,7 +421,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', AuctionHouseFrameCloseButton, 'LEFT', -23, 0)
         end
-    })   
+    })
 end
 
 
@@ -1136,15 +1136,15 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
     self:SetNineSlice(FriendsFrame, true)
     self:HideFrame(FriendsFrame)
-
     self:SetNineSlice(FriendsFrameInset, nil, true)
     self:HideTexture(FriendsFrameInset.Bg)
-
     self:SetScrollBar(FriendsListFrame)
-    self:SetScrollBar(IgnoreListFrame)
-
+    self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
     self:SetButton(FriendsFrameCloseButton, {all=true})
+    self:SetMenu(FriendsFrameStatusDropdown, {alpha=1})
+
+    self:SetScrollBar(IgnoreListFrame)
 
     --好友列表，召募
     self:SetScrollBar(RecruitAFriendFrame.RecruitList)
@@ -1154,7 +1154,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
     self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
 
-    --团队信息
+--团队信息
     self:HideTexture(RaidInfoDetailHeader)
     self:SetAlphaColor(RaidInfoFrame.Header.LeftBG)
     self:SetAlphaColor(RaidInfoFrame.Header.CenterBG)
@@ -1164,15 +1164,15 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:HideTexture(RaidInfoFrame.Border.Bg)
     self:SetScrollBar(RaidInfoFrame)
 
-
     self:SetNineSlice(WhoFrameListInset, nil, true)
     self:SetNineSlice(WhoFrameEditBoxInset, nil, true)
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
-    self:SetMenu(FriendsFrameStatusDropdown, {alpha=1})
 
     self:HideTexture(WhoFrameEditBoxInset.Bg)
+    self:CreateBG(WhoFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
+
     self:SetScrollBar(QuickJoinFrame)
 
     for i=1, 4 do
@@ -1183,7 +1183,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
     self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})
 
-    self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
+
 
     self:Init_BGMenu_Frame(FriendsFrame)
 end
@@ -1197,19 +1197,21 @@ end
 
 --聊天设置
 function WoWTools_TextureMixin.Events:Blizzard_Channels()
-    self:SetAlphaColor(ChannelFrameBg)
+    self:HideFrame(ChannelFrame)
 
-    self:HideTexture(ChannelFrameInset.Bg)
-    self:HideTexture(ChannelFrame.RightInset.Bg)
-    self:HideTexture(ChannelFrame.LeftInset.Bg)
+    self:HideFrame(ChannelFrameInset)
+    self:SetAlphaColor(ChannelFrame.RightInset.Bg, nil, nil, 0.3)
+    self:SetAlphaColor(ChannelFrame.LeftInset, nil, nil, 0.3)
 
     self:SetScrollBar(ChannelFrame.ChannelRoster)
     self:SetScrollBar(ChannelFrame.ChannelList)
 
     self:SetNineSlice(ChannelFrame)
-    self:SetNineSlice(ChannelFrameInset)
-    self:SetNineSlice(ChannelFrame.RightInset)
-    self:SetNineSlice(ChannelFrame.LeftInset)
+    self:SetNineSlice(ChannelFrameInset, nil, true)
+    self:SetNineSlice(ChannelFrame.RightInset, nil, true)
+    self:SetNineSlice(ChannelFrame.LeftInset, nil, true)
+
+    self:Init_BGMenu_Frame(ChannelFrame)
 end
 
 
@@ -2458,17 +2460,19 @@ end
 
 --商店
 function WoWTools_TextureMixin.Events:Blizzard_AccountStore()
+    self:HideFrame(AccountStoreFrame)
+    self:SetNineSlice(AccountStoreFrame)
+
     self:SetButton(AccountStoreFrameCloseButton, {all=true})
 
-    self:HideTexture(AccountStoreFrame.LeftInset.Bg)
-    self:HideTexture(AccountStoreFrame.RightInset.Bg)
-    self:SetFrame(AccountStoreFrame.LeftDisplay, {alpha=0.3})
-    self:HideTexture(AccountStoreFrameBg)
+    self:HideFrame(AccountStoreFrame.LeftInset)
+    self:HideFrame(AccountStoreFrame.RightInset)
+    self:HideFrame(AccountStoreFrame.LeftDisplay)
+    AccountStoreFrame.RightDisplay.ShadowOverlay:SetAlpha(0)
 
-    self:SetNineSlice(AccountStoreFrame)
     self:SetScrollBar(AccountStoreFrame.CategoryList)
-    self:SetInset(AccountStoreFrame.RightInset)
-    self:SetInset(AccountStoreFrame.LeftInset)
+
+    self:Init_BGMenu_Frame(AccountStoreFrame)
 end
 
 
