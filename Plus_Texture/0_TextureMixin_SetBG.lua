@@ -523,13 +523,13 @@ local function Init_Menu(frame, root, isSub)
             return MenuResponse.Open
         end)
         sub:CreateTitle(name)
-        sub:CreateDivider()
+
     else
         root:CreateTitle('|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND))
         sub=root
     end
 
-
+    sub:CreateSpacer()
 
 --自定义，设置，分开或统一
     sub2= sub:CreateCheckbox(
