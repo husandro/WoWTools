@@ -239,28 +239,39 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
 
 --社交，按钮
-     self:SetAlphaColor(QuickJoinToastButton.FriendsButton, nil, nil, 0.5)
-     self:SetFrame(ChatFrameChannelButton, {alpha= 0.5})
-     self:SetFrame(ChatFrameMenuButton, {alpha= 0.5})
-     self:SetFrame(TextToSpeechButton, {alpha= 0.5})
+    self:SetAlphaColor(QuickJoinToastButton.FriendsButton, nil, nil, 0.5)
+    self:SetFrame(ChatFrameChannelButton, {alpha= 0.5})
+    self:SetFrame(ChatFrameMenuButton, {alpha= 0.5})
+    self:SetFrame(TextToSpeechButton, {alpha= 0.5})
 
-
+--聊天框
     for i=1, NUM_CHAT_WINDOWS do
-    local frame= _G["ChatFrame"..i]
-    if frame then
-        self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, 0.3)
-        self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, 0.3)
-        self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, 0.3)
-        self:SetScrollBar(frame)
-        self:SetFrame(frame.ScrollToBottomButton, {notAlpha=true})
+        local frame= _G["ChatFrame"..i]
+        if frame then
+            self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxMid'], nil, nil, 0.3)
+            self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxLeft'], nil, nil, 0.3)
+            self:SetAlphaColor(_G['ChatFrame'..i..'EditBoxRight'], nil, nil, 0.3)
+            self:SetScrollBar(frame)
+            self:SetFrame(frame.ScrollToBottomButton, {notAlpha=true})
+        end
     end
-    end
-    self:SetEditBox(ChatFrame1EditBox)
 
+    self:SetEditBox(ChatFrame1EditBox)
+    self:HideFrame(ChatFrame1ButtonFrame)
+    self:HideTexture(ChatFrame1LeftTexture)
+    self:HideTexture(ChatFrame1TopTexture)
+    self:HideTexture(ChatFrame1BottomTexture)
+    self:HideTexture(ChatFrame1RightTexture)
+
+    self:HideTexture(ChatFrame1TopRightTexture)
+    self:HideTexture(ChatFrame1TopLeftTexture)
+    self:HideTexture(ChatFrame1BottomRightTexture)
+    self:HideTexture(ChatFrame1BottomLeftTexture)
 
     self:Init_BGMenu_Frame(GeneralDockManager, nil, {
         name='ChatFrame1',
         menuTag= 'MENU_FCF_TAB',
+        alpha=0,
         bgPoint=function(icon)
             icon:SetAllPoints(ChatFrame1Background)
         end

@@ -143,7 +143,7 @@ local function Set_BGTexture(icon)
     local name= icon.BgData.name
     local data= SaveBG(name)
 
-    local alpha= data.alpha or 0.5
+    local alpha= data.alpha or icon.BgData.alpha or 0.5
     local texture= data.texture or icon.p_texture or RestIcon
 
     set_texture(icon, texture, alpha)
@@ -217,7 +217,7 @@ local function texture_list(root, name, icon, texture, isAdd)
         end
 
         if icon.BgData.setValueFunc then
-            icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
+            icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or icon.BgData.alpha or 0.5)
         end
 
         return MenuResponse.Refresh
@@ -242,7 +242,7 @@ local function texture_list(root, name, icon, texture, isAdd)
         else
             GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
         end
-        tooltip:AddLine('Alpha '..(SaveBG(name).alpha or 0.5))
+        tooltip:AddLine('Alpha '..(SaveBG(name).alpha or icon.BgData.alpha or 0.5))
     end)
 
     if isAdd then
@@ -435,7 +435,7 @@ local function Add_Frame_Menu(_, root)
                 GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一' or ALL, HIGHLIGHT_FONT_COLOR)
             end
             tooltip:AddLine(desc.data.texture)
-            tooltip:AddLine('Alpha '..(desc.data.alpha or 0.5))
+            tooltip:AddLine('Alpha |cnGREEN_FONT_COLOR:'..(desc.data.alpha or 0.5))
         end)
     end
 
@@ -566,13 +566,13 @@ local function Init_Menu(frame, root, isSub)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return SaveBG(name).alpha or 0.5
+            return SaveBG(name).alpha or frame.bg_Texture.BgData.alpha or 0.5
         end,
         setValue=function(value)
             SaveBG(name).alpha=value
             Settings(IsEnabledSaveBg(name) and icon or nil)
             if icon.BgData.setValueFunc then
-                icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or 0.5)
+                icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha)
             end
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
@@ -946,6 +946,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
     name,--名称
     icon,--Texture
     {
+    alpha=0,--默认alpha
     icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
     setValueFunc=function(textureName, alphaValue)--当菜单修改时，调用
     end,
@@ -954,6 +955,8 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
     isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
     
     notAnims=true,
+
+    menuTag='MENU_FCF_TAB',--菜单中，添加子菜单
     PortraitContainer=Frame.PortraitContainer,
 
     isNewButton=true,

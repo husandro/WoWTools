@@ -22,7 +22,7 @@ local P_Save={
         },
         All={--统一设置
             texture='Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga',
-            alpha=0.5
+            alpha=0.3
         },
         Add={--分开设置
           --[name]={enabled=true, alpha=0.5, texture=texture or atlas}  

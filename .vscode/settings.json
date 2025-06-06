@@ -5832,7 +5832,16 @@
         "CombatConfigColorsColorizeDamageNumberColorSwatchNormalTexture",
         "FCF_Tab_SetupMenu",
         "ChatFrame1",
-        "ChatFrame1Background"
+        "ChatFrame1Background",
+        "ChatFrame1ButtonFrame",
+        "ChatFrame1LeftTexture",
+        "ChatFrame1TopTexture",
+        "ChatFrame1BottomTexture",
+        "ChatFrame1RightTexture",
+        "ChatFrame1TopRightTexture",
+        "ChatFrame1TopLeftTexture",
+        "ChatFrame1BottomRightTexture",
+        "ChatFrame1BottomLeftTexture"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
