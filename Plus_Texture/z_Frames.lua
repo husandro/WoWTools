@@ -181,11 +181,14 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         elseif swatch then
             nineSlice= swatch.NineSlice
             font= _G[name..'Swatch'..index.."Text"]
-            if value and value.type and CHATCONFIG_SELECTED_FILTER
-             then
+            if value and value.type and CHATCONFIG_SELECTED_FILTER then
                 r, g, b = GetChatUnitColor(value.type)
             end
             colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
+        end
+
+        if not r and swatch then
+            r,g,b= swatch:GetVertexColor()
         end
 
         if nineSlice then
