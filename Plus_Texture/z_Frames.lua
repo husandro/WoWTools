@@ -187,10 +187,6 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
         end
 
-        if not r and swatch then
-            r,g,b= swatch:GetVertexColor()
-        end
-
         if nineSlice then
             nineSlice:SetVertexColor(0,0,0,0)
             nineSlice.BottomEdge:SetVertexColor(r or 1, g or 1, b or 1, 1)
@@ -203,7 +199,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     end
 
     local function settings(frame)
-        if not FCF_GetCurrentChatFrame() then
+        if not frame:IsVisible() or not FCF_GetCurrentChatFrame() then
             return
         end
         if frame.NineSlice then
