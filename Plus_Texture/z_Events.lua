@@ -1045,7 +1045,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetFrame(WorldMapFrame.BorderFrame.Tutorial, {alpha=0.3})
 
     self:SetNineSlice(WorldMapFrame.BorderFrame, true)
-    self:SetAlphaColor(WorldMapFrameBg)
+    self:HideTexture(WorldMapFrameBg)
     self:SetAlphaColor(QuestMapFrame.Background)
     self:HideTexture(WorldMapFrame.NavBar.overlay)
     self:HideTexture(WorldMapFrame.NavBar.InsetBorderBottom)
@@ -1146,13 +1146,15 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
     self:SetScrollBar(IgnoreListFrame)
 
-    --好友列表，召募
+--好友列表，召募
     self:SetScrollBar(RecruitAFriendFrame.RecruitList)
     self:SetAlphaColor(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
     self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset, nil, true)
     self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset, nil, true)
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
     self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
+    self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
+    self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {all=true, alpha=0.5})
 
 --团队信息
     self:HideTexture(RaidInfoDetailHeader)
@@ -1165,7 +1167,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(RaidInfoFrame)
 
     self:SetNineSlice(WhoFrameListInset, nil, true)
-    self:SetNineSlice(WhoFrameEditBoxInset, true)
+    self:SetNineSlice(WhoFrameEditBoxInset, 0.3)
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
@@ -1178,7 +1180,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     for i=1, 4 do
         self:SetTabButton(_G['FriendsFrameTab'..i])
         self:SetTabButton(_G['FriendsTabHeaderTab'..i])
-        self:SetFrame(_G['WhoFrameColumnHeader'..i], {notAlpha=true})
+        --self:SetFrame(_G['WhoFrameColumnHeader'..i], {notAlpha=true})
     end
 
     self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})
@@ -2035,7 +2037,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetMenu(PlayerSpellsFrame.TalentsFrame.LoadSystem.Dropdown)
 
 
-    --self:HideTexture(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
+    self:HideTexture(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
 
     self:SetEditBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
     self:SetFrame(PlayerSpellsFrame.SpellBookFrame.SearchPreviewContainer, {isMinAlpha=true})
@@ -2129,12 +2131,14 @@ end
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetButton(WardrobeCollectionFrame.InfoButton, {all=true})
+    WardrobeCollectionFrame.InfoButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
 
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton, {all=true})
     self:SetNineSlice(CollectionsJournal)
     self:HideTexture(CollectionsJournalBg)
     self:SetButton(PetJournalTutorialButton, {all=true})
+    PetJournalTutorialButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
 
 
 --坐骑
@@ -2544,6 +2548,11 @@ end
 
 
 
+function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
+    hooksecurefunc(HelpPlateButtonMixin, 'OnShow', function()
+        print('a')
+    end)
+end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_SharedXML()

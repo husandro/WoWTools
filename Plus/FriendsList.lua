@@ -795,9 +795,35 @@ local function set_WhoList_Update()--查询, 名单列表
     if not WhoFrame.ScrollBox:GetView() then
         return
     end
+
     local maxLevel= GetMaxLevelForLatestExpansion()
+
+    local class= WhoFrameColumnHeader4:GetFontString():GetStringWidth()+15
+    WhoFrameColumnHeader1:SetWidth(class)
+
+    local level= WhoFrameColumnHeader3:GetFontString():GetStringWidth()+15
+    WhoFrameColumnHeader3:SetWidth(level)
+
+    local width= ((WhoFrame.ScrollBox:GetWidth() -level - class)/ 2)- 18.5
+
+    WhoFrameColumnHeader1:SetWidth(width-7)
+    WhoFrameColumnHeader2:SetWidth(width+7)
+
     for _, btn in pairs(WhoFrame.ScrollBox:GetFrames()) do
+        btn.Name:SetWidth(width-7)
+        btn.Variable:SetWidth(width+7)
+
         if not btn.setOnDoubleClick then
+            btn.Level:SetWidth(level)
+            btn.Class:SetWidth(class)
+            for _, t in pairs({btn:GetRegions()}) do
+                if t:GetObjectType()=='Texture' then
+                    t:SetPoint('LEFT')
+                    t:SetPoint('RIGHT')
+                    break
+                end
+            end
+
             btn:SetScript('OnDoubleClick', function()
                 if WhoFrameGroupInviteButton:IsEnabled() then
                     WhoFrameGroupInviteButton:Click()
@@ -841,21 +867,24 @@ local function set_WhoList_Update()--查询, 名单列表
         btn.tooltip2=nil
 
         local info= btn.index and C_FriendList.GetWhoInfo(btn.index)
-        local r,g,b,level, hex
+        local r,g,b,lv, hex
+
         if info then
             if RAID_CLASS_COLORS[info.filename] then
                 r,g,b= RAID_CLASS_COLORS[info.filename]:GetRGB()
                 hex= RAID_CLASS_COLORS[info.filename]:GenerateHexColor()
-                local class=  WoWTools_UnitMixin:GetClassIcon(info.filename)
-                if class and btn.Class then
-                    btn.Class:SetText(class)
-                end
+                btn.Class:SetText(
+                    (info.gender==2
+                        and '|A:charactercreate-gendericon-male-selected:0:0|a'
+                        or (info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a')
+                        or ''
+                    )
+                    ..(WoWTools_UnitMixin:GetClassIcon(info.filename) or info.filename)
+                )
             end
-           level= info.level
-        end
-        btn.col= hex and '|c'..hex or ''
-        if r and g and b then
-            if btn.Name and info.fullName then
+           lv= info.level
+
+            if info.fullName then
                 if info.fullName== WoWTools_DataMixin.Player.Name then
                     btn.Name:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
                 else
@@ -868,19 +897,19 @@ local function set_WhoList_Update()--查询, 名单列表
                         btn.Name:SetText(nameText)
                     end
                 end
-                btn.Name:SetTextColor(r,g,b)
             end
-            if btn.Variable then
-                btn.Variable:SetTextColor(r,g,b)
-            end
-            if btn.Level then
-                if level==0 or level== maxLevel then
-                    btn.Level:SetTextColor(r,g,b)
-                    btn.Level:SetText('')
-                else
-                    btn.Level:SetTextColor(0,1,0)
-                end
-            end
+        end
+    
+        btn.col= hex and '|c'..hex or ''
+
+        r,g,b= r or 1, g or 1, b or 1
+        btn.Name:SetTextColor(r,g,b)
+        btn.Variable:SetTextColor(r,g,b)
+
+        if lv==0 or lv== maxLevel then
+            btn.Level:SetText('|cff626262'..lv..'|r')
+        else
+            btn.Level:SetTextColor(0,1,0)
         end
     end
 end

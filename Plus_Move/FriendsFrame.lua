@@ -66,7 +66,7 @@ local function Set_RaidFrame_Button_size()
             btn2:SetWidth(w)
         end
         local name= _G['RaidGroupButton'..i..'Name']
-        if name and name:CanChangeAttribute()  then--11+23+50 
+        if name then--11+23+50 
             name:SetWidth(w-114)
         end
     end
@@ -86,24 +86,24 @@ local function Init()
     RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
+    
 
 
     RaidFrameRaidDescription:SetPoint('BOTTOMRIGHT', -15, 35)
 
 
-    hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
+    --[[hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return
         end
-        for _, btn2 in pairs(self:GetFrames() or {}) do
-            btn2:SetPoint('RIGHT')
+        for _, btn in pairs(self:GetFrames() or {}) do
+            btn:SetPoint('RIGHT')
         end
-    end)
+    end)]]
     RaidFrame:HookScript('OnShow', Set_RaidFrame_Button_size)
 
 
     WoWTools_MoveMixin:Setup(FriendsFrame, {
-        --notInCombat=true,
         setSize=true,
         minW=338,
         minH=424,
@@ -129,6 +129,9 @@ local function Init()
 
     WoWTools_MoveMixin:Setup(FriendsFriendsFrame)
     WoWTools_MoveMixin:Setup(RecruitAFriendRewardsFrame)
+    WoWTools_MoveMixin:Setup(RecruitAFriendFrame.RewardClaiming.Inset, {frame=FriendsFrame})
+
+
     Init_RaidInfoFrame()
 end
 

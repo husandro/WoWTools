@@ -388,10 +388,59 @@ local function Add_Frame_Menu(_, root)
         return
     end
 
+
+
+--勾选所有
+    sub2=sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
+    function()
+        for name in pairs(Save().Bg.Add) do
+            Save().Bg.Add[name].enabled= true
+            Add_Settings(name, true)
+        end
+        return MenuResponse.Refresh
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, ''))
+    end)
+
+--撤选所有
+    sub2=sub:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
+    function()
+        for name in pairs(Save().Bg.Add) do
+            Save().Bg.Add[name].enabled= false
+            Add_Settings(name, false)
+        end
+        return MenuResponse.Refresh
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '统一' or ALL)
+    end)
+
+--全部清除
+    sub:CreateDivider()
+    sub2= WoWTools_MenuMixin:ClearAll(sub, function()
+        for f in pairs(Save().Bg.Add) do
+            f=_G[f]
+            if f and f.bg_Texture then
+                Remove_Add_Icons(f.bg_Texture, nil)--从 Icons 添加 或 移除
+            end
+        end
+        Save().Bg.Add={}
+        WoWTools_Mixin:Reload()
+    end)
+
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+    end)
+
+    sub:CreateDivider()
+
+
+
+
     table.sort(newTab, function(a, b) return a.name < b.name end)
-
-
-
 
     for index, tab in pairs(newTab) do
         local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})
@@ -441,51 +490,6 @@ local function Add_Frame_Menu(_, root)
 
     WoWTools_MenuMixin:SetScrollMode(sub)
 
-    sub:CreateDivider()
---勾选所有
-    sub2=sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
-    function()
-        for name in pairs(Save().Bg.Add) do
-            Save().Bg.Add[name].enabled= true
-            Add_Settings(name, true)
-        end
-        return MenuResponse.Refresh
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, ''))
-    end)
-
---撤选所有
-    sub2=sub:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
-    function()
-        for name in pairs(Save().Bg.Add) do
-            Save().Bg.Add[name].enabled= false
-            Add_Settings(name, false)
-        end
-        return MenuResponse.Refresh
-    end)
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '统一' or ALL)
-    end)
-
---全部清除
-    sub:CreateDivider()
-    sub2= WoWTools_MenuMixin:ClearAll(sub, function()
-        for f in pairs(Save().Bg.Add) do
-            f=_G[f]
-            if f and f.bg_Texture then
-                Remove_Add_Icons(f.bg_Texture, nil)--从 Icons 添加 或 移除
-            end
-        end
-        Save().Bg.Add={}
-        WoWTools_Mixin:Reload()
-    end)
-
-    sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
-    end)
 end
 
 
@@ -648,7 +652,7 @@ end
 
 -- 根据框架大小更新动画偏移量和速度的函数
 local function UpdateAnimationOffsets(self)
-    local width, height = self:GetSize()
+    local width, height = self.bg_Texture:GetSize()
     -- 动画从右下角到左上角
     local xOffset = -width
     local yOffset = height
@@ -679,7 +683,10 @@ end
 
 --创建动画组
 local function Create_Anims(frame, tab)
-    if frame.AirParticlesFar or frame.backgroundAnims or tab.notAnims then
+    if frame.AirParticlesFar
+        or frame.backgroundAnims
+        or tab.notAnims
+    then
         return
     end
 
@@ -708,8 +715,8 @@ local function Create_Anims(frame, tab)
         else
             frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
         end
-        frame.FullMask:SetPoint('TOPLEFT', frame.bg_Texture or frame, -15, 15)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', frame.bg_Texture or frame, 15, -15)
+        frame.FullMask:SetPoint('TOPLEFT', frame.bg_Texture, -15, 15)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', frame.bg_Texture, 15, -15)
     end
     frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
 

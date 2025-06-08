@@ -5842,7 +5842,10 @@
         "ChatFrame1TopLeftTexture",
         "ChatFrame1BottomRightTexture",
         "ChatFrame1BottomLeftTexture",
-        "FriendsListButtonMixin"
+        "FriendsListButtonMixin",
+        "WhoFrameColumnHeader2",
+        "WhoFrameColumnHeader3",
+        "WhoFrameColumnHeader1HighlightTexture"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -201,7 +201,7 @@ function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, i
         end
     end
 
-    local alpha= min and self.min or 0.3
+    local alpha= min and (type(min)=='number' and min or self.min) or 0.3
     for index, text in pairs(NineSliceTabs) do
         if hide then
             self:HideTexture(f[text])
@@ -283,7 +283,9 @@ function WoWTools_TextureMixin:SetButton(btn, tab)
     end
     tab= tab or {}
     if tab.all then
-        WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 0.3})
+        tab.alpha=tab.alpha or 0.3
+        self:SetFrame(btn, tab)
+        --WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 0.3})
     else
         WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha or 1})
     end
