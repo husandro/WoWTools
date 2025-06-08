@@ -199,7 +199,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     end
 
     local function settings(frame)
-        if  not FCF_GetCurrentChatFrame() then
+        if not CHATCONFIG_SELECTED_FILTER or not FCF_GetCurrentChatFrame() then
             return
         end
         if frame.NineSlice then

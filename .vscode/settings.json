@@ -5845,7 +5845,8 @@
         "FriendsListButtonMixin",
         "WhoFrameColumnHeader2",
         "WhoFrameColumnHeader3",
-        "WhoFrameColumnHeader1HighlightTexture"
+        "WhoFrameColumnHeader1HighlightTexture",
+        "CHATCONFIG_SELECTED_FILTER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
