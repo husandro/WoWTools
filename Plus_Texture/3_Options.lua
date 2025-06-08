@@ -22,7 +22,11 @@ end]]
 
 local function Init_Options()
     --GetMinValueAlpha()--min，透明度，最小值
-local initializer, initializer2
+    local sub
+    local tooltip= '|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+
+
     Category, Layout= WoWTools_PanelMixin:AddSubCategory({
         name= WoWTools_TextureMixin.addName,
         disabled= Save().disabled,
@@ -31,67 +35,87 @@ local initializer, initializer2
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
-        tooltip= WoWTools_TextureMixin.addName,
+        tooltip= tooltip,
         category= Category,
         GetValue= function() return not Save().disabled end,
         SetValue= function()
             Save().disabled= not Save().disabled and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end
     })
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
-    WoWTools_PanelMixin:Check_Button({
+
+    sub=WoWTools_PanelMixin:Check_Button({
         checkName= WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER,
         GetValue= function() return not Save().disabledTexture end,
         SetValue= function()
             Save().disabledTexture= not Save().disabledTexture and true or nil
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         buttonText= WoWTools_DataMixin.onlyChinese and '设置颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS ,COLOR),
         buttonFunc= function()
             WoWTools_PanelMixin:Open(nil, (WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '')..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR))
         end,
-        tooltip= WoWTools_TextureMixin.addName,
+        tooltip= tooltip,
         layout= Layout,
         category= Category
     })
 
-    --[[local initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().alpha or 0.5 end,
         minValue= 0,
         maxValue= 1,
         setp= 0.1,
-        tooltip= WoWTools_TextureMixin.addName,
+        tooltip= tooltip,
         category= Category,
         SetValue= function(_, _, value2)
             if value2 then
                 Save().alpha= WoWTools_Mixin:GetFormatter1to10(value2, 0, 1)
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                WoWTools_TextureMixin.min= Save().alpha or 0.5
             end
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().disabled then return false else return true end end)]]
+    }, sub)
+
+    WoWTools_PanelMixin:OnlyCheck({
+        name= '|A:MonkUI-LightOrb:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
+        tooltip=tooltip,
+        category= Category,
+        GetValue= function() return not Save().disabedBG end,
+        SetValue= function()
+            Save().disabedBG= not Save().disabedBG and true or nil
+        end
+    }, sub)
+
+
+
+
+
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '其它' or OTHER)
 
-    initializer2= WoWTools_PanelMixin:OnlyCheck({
+
+
+
+
+
+
+
+
+    sub= WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '聊天泡泡' or CHAT_BUBBLES_TEXT,
         tooltip= (WoWTools_DataMixin.onlyChinese and '在副本无效' or (INSTANCE..' ('..DISABLE..')'))
                 ..'|n|n'..((WoWTools_DataMixin.onlyChinese and '说' or SAY)..' CVar: chatBubbles '.. WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool("chatBubbles")))
-                ..'|n'..((WoWTools_DataMixin.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool("chatBubblesParty"))),
+                ..'|n'..((WoWTools_DataMixin.onlyChinese and '小队' or SAY)..' CVar: chatBubblesParty '.. WoWTools_TextMixin:GetShowHide(C_CVar.GetCVarBool("chatBubblesParty")))
+                ..'\n\n'..tooltip,
         category= Category,
         GetValue= function() return not Save().disabledChatBubble end,
         SetValue= function()
             Save().disabledChatBubble= not Save().disabledChatBubble and true or nil
             WoWTools_TextureMixin:Init_Chat_Bubbles()
-            if Save().disabledChatBubble and BubblesFrame then
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-            end
         end
     })
-    initializer= WoWTools_Mixin:OnlySlider({
+    --[[WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().chatBubbleAlpha or 0.5 end,
         minValue= 0,
@@ -105,10 +129,10 @@ local initializer, initializer2
                 WoWTools_TextureMixin:Init_Chat_Bubbles()
             end
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().disabledChatBubble then return false else return true end end)
+    }, sub)]]
+    
 
-    initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE,
         GetValue= function() return Save().chatBubbleSacal or 0.85 end,
         minValue= 0.3,
@@ -121,22 +145,20 @@ local initializer, initializer2
             Save().chatBubbleSacal= WoWTools_Mixin:GetFormatter1to10(value2, 0.3, 1)
             WoWTools_TextureMixin:Init_Chat_Bubbles()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().disabledChatBubble then return false else return true end end)
+    }, sub)
+
+
+
+
+
 
     WoWTools_Mixin:Check_Slider({
         checkName= (WoWTools_DataMixin.onlyChinese and '职业能量' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CLASS, ENERGY))..' 1 2 3',
         checkGetValue= function() return Save().classPowerNum end,
-        checkTooltip= WoWTools_TextureMixin.addName,
+        tooltip= tooltip,
         checkSetValue= function()
             Save().classPowerNum= not Save().classPowerNum and true or false
             WoWTools_MoveMixin:Init_Class_Power()--职业
-            if not Save().classPowerNum then
-                print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                )
-            end
         end,
         sliderGetValue= function()
             local s= Save().classPowerNumSize or 12
@@ -154,32 +176,25 @@ local initializer, initializer2
                 local value3= WoWTools_Mixin:GetFormatter1to10(value2, 6, 64)
                 Save().classPowerNumSize= value3
                 WoWTools_MoveMixin:Init_Class_Power()--职业
-
-                print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-                    '|cnGREEN_FONT_COLOR:'.. value3..'|r',
-                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                )
             end
         end,
         layout= Layout,
         category= Category,
     })
 
+
+
+
+
+
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '隐藏教程' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, SHOW_TUTORIALS),
-        tooltip='HelpTip',
+        tooltip='HelpTip'..'\n\n'..tooltip,
         category= Category,
         GetValue= function() return not Save().disabledHelpTip end,
         SetValue= function()
             Save().disabledHelpTip= not Save().disabledHelpTip and true or nil
             WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
-            if Save().disabledHelpTip then
-                print(
-                    WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-                    WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
-                )
-            end
         end
     })
 end

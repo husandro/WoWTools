@@ -18,7 +18,7 @@ local P_Save={
     Bg={
         UseTexture={
             --自定义，图片 Texture or Atlas
-            
+
         },
         All={--统一设置
             texture='Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga',
@@ -128,6 +128,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 WoWTools_TextureMixin:Init_Chat_Bubbles()--聊天泡泡
                 WoWTools_TextureMixin:Init_HelpTip()--隐藏教程
                 WoWTools_TextureMixin:Init_Action_Button()
+
+                --WoWTools_TextureMixin.min= Save().alpha or 0.5
 
                 if Save().disabledTexture then
                     self:UnregisterAllEvents()

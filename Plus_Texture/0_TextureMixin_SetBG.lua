@@ -763,18 +763,18 @@ end
 
 
 
-local function Hook_MenuTag(self, root, desc)
-    local p= self:GetParent()
-    if p and p.bg_Texture then
-        Init_Menu(p, root, true)
-    end
-end
 
 
 
 
-
+--设置 菜单
+--记录 bg_Texture
 local function Set_Frame_Menu(frame, icon, tab)
+    local extFrame= tab.name and _G[tab.name]
+    if extFrame then
+        extFrame.bg_Texture= icon
+    end
+
     if tab.menuTag then
         frame.bg_Texture= icon
 
@@ -971,7 +971,7 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
 
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
-    if Save().disabled
+    if Save().disabledTexture or Save().disabedBG
         or not frame
     then
         return
@@ -990,7 +990,7 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
 
     icon= Create_Background(frame, icon, tab)
 
-    --icon:SetTextureSliceMargins(24, 24, 24, 24);
+    icon:SetTextureSliceMargins(24, 24, 24, 24);
     --icon:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
     icon.BgData= {
@@ -1001,7 +1001,7 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
         setValueFunc= tab.setValueFunc,
     }
 
-     if not IsEnabledSaveBg(name) then--从 Icons 添加 或 移除
+    if not IsEnabledSaveBg(name) then--从 Icons 添加 或 移除
         Remove_Add_Icons(icon, true)
     end
 

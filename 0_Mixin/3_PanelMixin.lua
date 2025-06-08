@@ -9,22 +9,22 @@ WoWTools_PanelMixin:Slider(frame, {w=, h=, min=, max=, value=, setp=, color=, te
 WoWTools_PanelMixin:Open(category, name)
 WoWTools_PanelMixin:AddSubCategory(tab)
 WoWTools_PanelMixin:Header(layout, title)
-WoWTools_PanelMixin:OnlyCheck(tab)
+WoWTools_PanelMixin:OnlyCheck(tab, root)
 WoWTools_PanelMixin:OnlyButton(tab)
 WoWTools_PanelMixin:OnlyMenu(tab)
-WoWTools_PanelMixin:CheckMenu(tab, parentInitializer)
+WoWTools_PanelMixin:CheckMenu(tab, root)
 WoWTools_PanelMixin:Check_Button(tab)
 WoWTools_Mixin:Check_Slider(tab)
 WoWTools_Mixin:OnlySlider(tab)
 
 
-initializer:AddSearchTags(bindingName)
+sub:AddSearchTags(bindingName)
 
 local action = "INTERACTTARGET";
 local bindingIndex = C_KeyBindings.GetBindingIndex(action);
-local initializer = CreateKeybindingEntryInitializer(bindingIndex, true);
-initializer:AddSearchTags(GetBindingName(action));
-layout:AddInitializer(initializer);
+local sub = CreateKeybindingEntryInitializer(bindingIndex, true);
+sub:AddSearchTags(GetBindingName(action));
+layout:AddInitializer(sub);
 ]]
 
 
@@ -264,23 +264,35 @@ function WoWTools_PanelMixin:AddSubCategory(tab)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 --添加，标题
 function WoWTools_PanelMixin:Header(layout, title)
     layout= layout or Layout
     layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(title))
 end
 
-
-
-
-
-
 --Settings.RegisterProxySetting(categoryTbl, variable, variableType, name, defaultValue, getValue, setValue)
 
 
-
 --添加，Check
-function WoWTools_PanelMixin:OnlyCheck(tab, parentInitializer)
+function WoWTools_PanelMixin:OnlyCheck(tab, root)
     local setting=Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),
@@ -290,30 +302,33 @@ function WoWTools_PanelMixin:OnlyCheck(tab, parentInitializer)
         tab.GetValue,
         tab.SetValue or tab.func
     )
-    local initializer= Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
-    if parentInitializer then
-        initializer:SetParentInitializer(parentInitializer)
+    local sub= Settings.CreateCheckbox(tab.category or Category, setting, tab.tooltip)
+
+    if root then
+        sub:SetParentInitializer(root)
     end
-    return initializer
+    return sub
 end
 
 
 --添加，按钮
 --CreateSettingsButtonInitializer(name, buttonText, buttonClick, tooltip, addSearchTags)
-function WoWTools_PanelMixin:OnlyButton(tab, parentInitializer)
+function WoWTools_PanelMixin:OnlyButton(tab, root)
     local layout= tab.layout or Layout
-    local initializer= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
+    local sub= CreateSettingsButtonInitializer(--Blizzard_SettingControls.lua
         tab.title or '',
         tab.buttonText or '',
         tab.SetValue,
         tab.tooltip or tab.buttonText or tab.title or nil,
         Set_SearchTags_Text(tab.addSearchTags or tab.title or tab.buttonText)
     )
-    layout:AddInitializer(initializer)
-    if parentInitializer then
-        initializer:SetParentInitializer(parentInitializer)
+    layout:AddInitializer(sub)
+
+    if root then
+        sub:SetParentInitializer(root)
     end
-    return initializer
+
+    return sub
 end
 --[[
 WoWTools_PanelMixin:OnlyButton({
@@ -328,7 +343,7 @@ WoWTools_PanelMixin:OnlyButton({
 
 
 --添加，下拉菜单
-function WoWTools_PanelMixin:OnlyMenu(tab)
+function WoWTools_PanelMixin:OnlyMenu(tab, root)
     local setting= Settings.RegisterProxySetting(--categoryTbl, variable, variableType, name, defaultValue, getValue, setValue
         tab.category or Category,
         Set_VariableIndex(),
@@ -338,17 +353,24 @@ function WoWTools_PanelMixin:OnlyMenu(tab)
         tab.GetValue,
         tab.SetValue or tab.func
     )
-    return Settings.CreateDropdown(--setting, options, tooltip
-            tab.category or Category,
-            setting,
-            tab.GetOptions,
-            tab.tooltip
-        )
+
+    local sub= Settings.CreateDropdown(--setting, options, tooltip
+        tab.category or Category,
+        setting,
+        tab.GetOptions,
+        tab.tooltip
+    )
+
+    if root then
+        sub:SetParentInitializer(root)
+    end
+
+    return sub
 end
 
 --Blizzard_SettingControls.lua
 --CreateSettingsCheckboxDropdownInitializer(cbSetting, cbLabel, cbTooltip, dropdownSetting, dropdownOptions, dropDownLabel, dropDownTooltip)
-function WoWTools_PanelMixin:CheckMenu(tab, parentInitializer)
+function WoWTools_PanelMixin:CheckMenu(tab, root)
     local layout= tab.layout or Layout
     local cbSetting=Settings.RegisterProxySetting(
         tab.category or Category,--categoryTbl
@@ -382,13 +404,14 @@ function WoWTools_PanelMixin:CheckMenu(tab, parentInitializer)
 		dropDownLabel = tab.DropDownName or tab.name,
 		dropDownTooltip = tab.DropDownTooltip or tab.tooltip,
 	};
-	local initializer= Settings.CreateSettingInitializer("SettingsCheckboxDropdownControlTemplate", data)
-    layout:AddInitializer(initializer)
-    if parentInitializer then
-        initializer:SetParentInitializer(parentInitializer)
+	local sub= Settings.CreateSettingInitializer("SettingsCheckboxDropdownControlTemplate", data)
+    layout:AddInitializer(sub)
+
+    if root then
+        sub:SetParentInitializer(root)
     end
 
-    return initializer
+    return sub
 end
 --[[
 WoWTools_PanelMixin:CheckMenu({
@@ -419,7 +442,7 @@ end
 
 
 --添加，Check 和 按钮
-function WoWTools_PanelMixin:Check_Button(tab, parentInitializer)
+function WoWTools_PanelMixin:Check_Button(tab, root)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -430,18 +453,19 @@ function WoWTools_PanelMixin:Check_Button(tab, parentInitializer)
         tab.GetValue,
         tab.SetValue
     )
-    local initializer= CreateSettingsCheckboxWithButtonInitializer(
+    local sub= CreateSettingsCheckboxWithButtonInitializer(
         checkSetting,
         tab.buttonText,
         tab.buttonFunc,
         true,
         tab.tooltip
     )
-    layout:AddInitializer(initializer)
-    if parentInitializer then
-        initializer:SetParentInitializer(parentInitializer)
+    layout:AddInitializer(sub)
+
+    if root then
+        sub:SetParentInitializer(root)
     end
-    return initializer
+    return sub
 end
 
 
@@ -452,7 +476,7 @@ end
 
 
 
-function WoWTools_Mixin:Check_Slider(tab)
+function WoWTools_Mixin:Check_Slider(tab, root)
     local layout= tab.layout or Layout
     local checkSetting=Settings.RegisterProxySetting(
         tab.category or Category,
@@ -479,26 +503,30 @@ function WoWTools_Mixin:Check_Slider(tab)
        return WoWTools_Mixin:GetFormatter1to10(value or 1, 0, 1)
     end)
 
-    local initializer = CreateSettingsCheckboxSliderInitializer(
+    local sub = CreateSettingsCheckboxSliderInitializer(
         checkSetting,
         tab.checkName,
-        tab.checkTooltip,
+        tab.checkTooltip or tab.tooltip,
 
         sliderSetting,
         options,
         tab.sliderName or tab.checkName,
-        tab.siderTooltip or tab.checkTooltip
+        tab.siderTooltip or tab.checkTooltip or tab.tooltip
     )
 
     Settings.SetOnValueChangedCallback(sliderSetting:GetVariable(), tab.sliderSetValue)
-    layout:AddInitializer(initializer)
-    return initializer
+    layout:AddInitializer(sub)
+
+    if root then
+        sub:SetParentInitializer(root)
+    end
+    return sub
 end
 
 
 
 --添加，划动条
-function WoWTools_Mixin:OnlySlider(tab)
+function WoWTools_Mixin:OnlySlider(tab, root)
     local setting = Settings.RegisterProxySetting(
         tab.category or Category,
         Set_VariableIndex(),
@@ -514,9 +542,14 @@ function WoWTools_Mixin:OnlySlider(tab)
         return WoWTools_Mixin:GetFormatter1to10(value or 1, 0, 1)
     end)
 
-    local initializer=Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
+    local sub=Settings.CreateSlider(tab.category or Category, setting, options, tab.tooltip);
     Settings.SetOnValueChangedCallback(setting:GetVariable(), tab.SetValue)
-    return initializer
+
+    if root then
+        sub:SetParentInitializer(root)
+    end
+
+    return sub
 end
 
 

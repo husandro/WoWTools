@@ -52,7 +52,7 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\Time.lua
 0_Mixin\SetTooltip.lua
 0_Mixin\SetTooltip_Faction.lua
-0_Mixin\3_Panel.lua
+0_Mixin\3_PanelMixin.lua
 
 0_Panel.lua
 
