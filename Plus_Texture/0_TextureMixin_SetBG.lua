@@ -694,7 +694,9 @@ local function Create_Anims(frame, tab)
     else
         frame.AirParticlesFar:SetAtlas(atlas)
     end
-    frame.AirParticlesFar:SetAllPoints(frame.bgTexture)
+
+
+    frame.AirParticlesFar:SetAllPoints(frame.bg_Texture)
     frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
     -- 设置混合模式为ADD，使粒子效果更亮 DISABLE, BLEND, ALPHAKEY, ADD, MOD
     frame.AirParticlesFar:SetBlendMode("ADD")
@@ -769,20 +771,11 @@ end
 
 --设置 菜单
 --记录 bg_Texture
-local function Set_Frame_Menu(frame, icon, tab)
-    local extFrame= tab.name and _G[tab.name]
-    if extFrame then
-        extFrame.bg_Texture= icon
-    end
+local function Set_Frame_Menu(frame, tab)
 
     if tab.menuTag then
-        frame.bg_Texture= icon
-
-        Menu.ModifyMenu(tab.menuTag, function(owner, root)
-            local p= owner:GetParent()
-            if p and p.bg_Texture then
-                Init_Menu(p, root, true)
-            end
+        Menu.ModifyMenu(tab.menuTag, function(_, root)
+            Init_Menu(frame, root, true)
         end)
         return
     end
@@ -826,13 +819,10 @@ local function Set_Frame_Menu(frame, icon, tab)
     self:HookScript('OnMouseDown', function(s, d)
         if d=='RightButton' then
             MenuUtil.CreateContextMenu(s, function(_, root)
-                Init_Menu(s, root, false)
+                Init_Menu(frame, root, false)
             end)
         end
     end)
-
-    self.bg_Texture= icon
-    frame.bg_Texture= icon
 end
 
 
@@ -986,13 +976,18 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
 
     Save().Bg.Add[name]= Save().Bg.Add[name] or {}
 
-    tab.name= name
-
     icon= Create_Background(frame, icon, tab)
 
-    icon:SetTextureSliceMargins(24, 24, 24, 24);
-    --icon:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
+    local prentFrame= tab.name and _G[tab.name]
+    if prentFrame then
+        prentFrame.bg_Texture= icon
+    end
+    frame.bg_Texture= icon
 
+    --frame:SetTextureSliceMargins(24, 24, 24, 24);
+    --fram:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
+
+    
     icon.BgData= {
         name= name,
         alpha= tab.alpha,
@@ -1009,6 +1004,8 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
         icon.Set_BGTexture= Set_BGTexture
     end
 
+    tab.name= name
+
 --创建动画组
     Create_Anims(frame, tab)
 --BG, 设置
@@ -1016,5 +1013,5 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
 --创建，菜单按钮
     Create_Button(frame, tab)
 --设置，调用，菜单
-    Set_Frame_Menu(frame, icon, tab)
+    Set_Frame_Menu(frame, tab)
 end
