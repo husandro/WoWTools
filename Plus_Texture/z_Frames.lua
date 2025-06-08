@@ -172,7 +172,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         if check then
             nineSlice= check.NineSlice
             font= _G[name..'Checkbox'..index.."CheckText"]
-            if value and value.type then
+            if value and value.type and CHATCONFIG_SELECTED_FILTER then
                 r, g, b = GetMessageTypeColor(value.type)
             end
             local t= _G[name..'Checkbox'..index.."ColorSwatch"]
@@ -181,7 +181,8 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         elseif swatch then
             nineSlice= swatch.NineSlice
             font= _G[name..'Swatch'..index.."Text"]
-            if value and value.type then
+            if value and value.type and CHATCONFIG_SELECTED_FILTER
+             then
                 r, g, b = GetChatUnitColor(value.type)
             end
             colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
@@ -199,7 +200,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     end
 
     local function settings(frame)
-        if not CHATCONFIG_SELECTED_FILTER or not FCF_GetCurrentChatFrame() then
+        if not FCF_GetCurrentChatFrame() then
             return
         end
         if frame.NineSlice then
