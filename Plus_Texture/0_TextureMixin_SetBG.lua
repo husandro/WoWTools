@@ -130,7 +130,7 @@ end
 
 -- 根据框架大小更新动画偏移量和速度的函数
 local function Update_Animation(self)
-    local width, height = self:GetSize()
+    local width, height = self[BGName]:GetSize()
     -- 动画从右下角到左上角
     local xOffset = -width
     local yOffset = height
@@ -769,7 +769,7 @@ local function Create_Anims(self, icon, tab)
     end
 
 
-    self.AirParticlesFar:SetAllPoints()--self[BGName])
+    self.AirParticlesFar:SetAllPoints(icon)
     --self.AirParticlesFar:SetPoint('TOPLEFT', self, 'BOTTOMRIGHT')
     --self.AirParticlesFar:SetPoint('CENTER')
     self.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
