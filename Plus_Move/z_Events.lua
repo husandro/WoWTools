@@ -362,12 +362,15 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
             btn.armorType:SetPoint('RIGHT', -2, -8)
         end
     end)
+
 --BOSS, 概述
     EncounterJournalEncounterFrameInfoOverviewScrollFrame:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
     EncounterJournal.encounter.overviewFrame:SetPoint('RIGHT', -23, 0)--.encounter.info.overviewScroll.child
     EncounterJournal.encounter.overviewFrame:HookScript('OnSizeChanged', function(f)
         f:SetPoint('RIGHT', -23, 0)
     end)
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader:SetPoint('LEFT')
+    EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader:SetPoint('RIGHT', -23, 0)
 
 --技能
     EncounterJournal.encounter.info.detailsScroll:SetPoint('TOPLEFT', EncounterJournal.encounter.info, 'TOP', 30, -43)
@@ -806,6 +809,9 @@ end
 
 
 function WoWTools_MoveMixin.Events:Blizzard_ChatFrame()
+    CombatConfigFormattingExampleString1:SetPoint('RIGHT')
+    CombatConfigFormattingExampleString2:SetPoint('RIGHT')
+
     self:Setup(ChatConfigFrame)
     self:Setup(ChatConfigFrame.Header, {frame=ChatConfigFrame})
     self:Setup(ChatConfigFrame.Border, {frame=ChatConfigFrame})

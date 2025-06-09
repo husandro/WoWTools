@@ -1,3 +1,6 @@
+--EventRegistry:TriggerEvent("PerksProgram.UpdateCartShown", showCart)
+--EventRegistry:RegisterCallback("PerksProgram.UpdateCartShown", self.OnShoppingCartVisibilityUpdated, self);
+
 WoWTools_DataMixin= {
     addName= '|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools.tga:0|t|cffff00ffWoW|r|cff00ff00Tools|r',
     onlyChinese= LOCALE_zhCN and true or false,

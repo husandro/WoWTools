@@ -1000,6 +1000,36 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_PerksProgram()
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer)
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.ItemList)
+    self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramProductDetailsContainerFrame.SetDetailsScrollBoxContainer)
+    self:SetFrame(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.Border, {alpha=1})
+    self:SetNineSlice(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksProgramHoldFrame, 1)
+    self:SetAlphaColor(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksDividerTop, nil, nil, 1)
+    self:SetFrame(PerksProgramFrame.ProductsFrame.PerksProgramProductDetailsContainerFrame.Border, {alpha=1})
+    self:SetFrame(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.Background, {alpha=1})
+    self:SetAlphaColor(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.BottomDivider, nil, nil, 1)
+--列表
+    PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer:ClearAllPoints()
+    PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer:SetPoint('TOPLEFT', 3, -5)
+    PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer:SetPoint('BOTTOM', 0, 2)
+--过滤
+    PerksProgramFrame.ProductsFrame.PerksProgramFilter:ClearAllPoints()
+    --PerksProgramFrame.ProductsFrame.PerksProgramFilter:SetPoint('TOPLEFT', PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer, 'TOPRIGHT', 3, -52)
+    PerksProgramFrame.ProductsFrame.PerksProgramFilter:SetPoint('TOP', PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer, 0, -18)
+--货币
+    PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame.Icon:ClearAllPoints()
+    PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame.Icon:SetPoint('LEFT')
+    PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame.Text:ClearAllPoints()
+    PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame.Text:SetPoint('LEFT', PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame.Icon, 'RIGHT')
+    PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame.Text:SetJustifyH('RIGHT')
+    EventRegistry:RegisterCallback("PerksProgram.UpdateCartShown", function(frame, cartShown)
+        if not cartShown  then
+            frame:ClearAllPoints()
+            frame:SetPoint('TOPLEFT', frame:GetParent().ProductsScrollBoxContainer, 'TOPRIGHT', 3, 2)
+        end
+    end, PerksProgramFrame.ProductsFrame.PerksProgramCurrencyFrame)
+--离开
+    PerksProgramFrame.FooterFrame.LeaveButton:ClearAllPoints()
+    PerksProgramFrame.FooterFrame.LeaveButton:SetPoint('BOTTOMLEFT', PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer, 'BOTTOMRIGHT', 0, 30)
 end
 
 function WoWTools_TextureMixin.Events:Blizzard_Menu()
@@ -2239,11 +2269,11 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 --试衣间WardrobeFrame
     self:SetNineSlice(WardrobeFrame)
     self:HideFrame(WardrobeFrame)
-
     self:HideFrame(WardrobeTransmogFrame)
     self:SetNineSlice(WardrobeTransmogFrame.Inset, nil, true)
     self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
     self:HideTexture(WardrobeTransmogFrame.Inset.BG)
+    self:SetButton(WardrobeFrameCloseButton, {all=true})
 
 --试衣间, 套装
     self:HideFrame(WardrobeCollectionFrame.SetsTransmogFrame)

@@ -160,18 +160,17 @@ local function Init_Menu(self, root)
     end)
 
 
+--打开选项界面
+    root:CreateDivider()
+    sub= WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
 
     --重置位置
-    root:CreateDivider()
-    WoWTools_MenuMixin:RestPoint(self, root, Save().Point, function()
+    --root:CreateDivider()
+    WoWTools_MenuMixin:RestPoint(self, sub, Save().Point, function()
         Save().Point=nil
         self:set_point()
         return MenuResponse.Open
     end)
-
---打开选项界面
-    root:CreateDivider()
-    WoWTools_ChatMixin:Open_SettingsPanel(root, nil)
 end
 
 

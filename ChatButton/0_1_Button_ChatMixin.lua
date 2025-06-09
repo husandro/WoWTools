@@ -267,5 +267,5 @@ function WoWTools_ChatMixin:Get_All_Buttons()
 end
 
 function WoWTools_ChatMixin:Open_SettingsPanel(root, name)
-    WoWTools_MenuMixin:OpenOptions(root, {category=self.Category, name=name or self.addName})
+    return WoWTools_MenuMixin:OpenOptions(root, {category=self.Category, name=name or self.addName})
 end

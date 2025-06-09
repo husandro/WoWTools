@@ -175,8 +175,13 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             if value and value.type and CHATCONFIG_SELECTED_FILTER then
                 r, g, b = GetMessageTypeColor(value.type)
             end
+
             local t= _G[name..'Checkbox'..index.."ColorSwatch"]
             colorTexture= t and t.Color
+
+            if not r and colorTexture then
+                r,g,b= colorTexture:GetVertexColor()
+            end
 
         elseif swatch then
             nineSlice= swatch.NineSlice
@@ -186,6 +191,8 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             end
             colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
         end
+
+        
 
         if nineSlice then
             nineSlice:SetVertexColor(0,0,0,0)

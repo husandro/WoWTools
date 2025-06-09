@@ -5846,7 +5846,12 @@
         "WhoFrameColumnHeader2",
         "WhoFrameColumnHeader3",
         "WhoFrameColumnHeader1HighlightTexture",
-        "CHATCONFIG_SELECTED_FILTER"
+        "CHATCONFIG_SELECTED_FILTER",
+        "ChatConfigChatSettingsLeftCheckbox2ColorSwatch",
+        "CombatConfigFormattingExampleString1",
+        "CombatConfigFormattingExampleString2",
+        "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader",
+        "PerksProgramCurrencyFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

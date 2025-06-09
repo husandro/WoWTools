@@ -80,7 +80,7 @@ local function Init()
 	Button:SetFrameLevel(CharacterFrameCloseButton:GetFrameLevel()+1)
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
-	WoWTools_ColorMixin:Setup(Button.texture, {type='Texture'})--设置颜色
+	WoWTools_TextureMixin:SetButton(Button, {all=true})
 
 
 
