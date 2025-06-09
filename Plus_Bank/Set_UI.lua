@@ -571,8 +571,7 @@ local function Init_Texture(self)
 
     self:Init_BGMenu_Frame(BankFrame, {
         settings=function(texture, alpha)
-            AccountBankPanel.Background:SetShown(not texture)
-            AccountBankPanel.Background:SetAlpha(alpha)
+            AccountBankPanel.Background:SetAlpha(texture and 0 or alpha or 1)
         end
     })
 

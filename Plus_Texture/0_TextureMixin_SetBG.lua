@@ -139,7 +139,7 @@ local function set_texture(icon, texture, alpha)
 end
 
 local function Set_BGTexture(icon)
-    if not icon.BgData then
+    if not icon or not icon.BgData then
         return
     end
 
@@ -163,7 +163,7 @@ local function Set_BGTexture(icon)
 
     local bg= _G[name] and _G[name].Background
     if bg then
-        bg:SetAlpha(texture and alpha or 0)
+        bg:SetAlpha(texture and 0 or alpha)
     end
 end
 
@@ -530,7 +530,10 @@ local function Init_Menu(frame, root, isSub)
     end, function()
         local enabled= Save().Bg.Add[name].notLayer
         Save().Bg.Add[name].notLayer= not enabled and true or nil
-        frame:SetDrawLayerEnabled('BACKGROUND', enabled)
+        frame:SetDrawLayerEnabled('BACKGROUND', enabled or false)
+        if frame.backgroundAnims then
+            frame.backgroundAnims:SetPlaying(enabled or false)
+        end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(name)
@@ -763,16 +766,16 @@ local function Create_Anims(frame, tab)
     frame.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
 
     UpdateAnimationOffsets(frame)
-    frame.backgroundAnims:SetPlaying(frame:IsVisible())
+    frame.backgroundAnims:SetPlaying(frame:IsDrawLayerEnabled('BACKGROUND'))
 
     -- 添加事件监听
     frame:HookScript("OnSizeChanged", function(self)
         UpdateAnimationOffsets(self)
-        self.backgroundAnims:SetPlaying(true)
+        self.backgroundAnims:SetPlaying(frame:IsDrawLayerEnabled('BACKGROUND'))
     end)
 
     frame.AirParticlesFar:SetScript("OnShow", function(self)
-        self:GetParent().backgroundAnims:SetPlaying(true)
+        self:GetParent().backgroundAnims:SetPlaying(self:IsDrawLayerEnabled('BACKGROUND'))
     end)
 
     frame.AirParticlesFar:SetScript("OnHide", function(self)

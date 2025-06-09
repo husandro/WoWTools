@@ -2094,10 +2094,8 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
         notAnims=true,
         isHook=true,
         settings=function(texture, alpha)
-            PlayerSpellsFrame.SpecFrame.Background:SetAlpha(alpha)
-            PlayerSpellsFrame.SpecFrame.Background:SetShown(not texture)
-            PlayerSpellsFrame.TalentsFrame.Background:SetShown(not texture)
-            PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(alpha)
+            PlayerSpellsFrame.SpecFrame.Background:SetAlpha(texture and 0 or alpha or 1)
+            PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(texture and 0 or alpha or 1)
         end
     })
 end
@@ -2490,10 +2488,8 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
 
     self:Init_BGMenu_Frame(ProfessionsBookFrame, {
         settings=function(texture, alpha)--设置内容时，调用
-            ProfessionsBookPage1:SetShown(not texture)
-            ProfessionsBookPage1:SetAlpha(alpha)
-            ProfessionsBookPage2:SetShown(not texture)
-            ProfessionsBookPage2:SetAlpha(alpha)
+            ProfessionsBookPage1:SetAlpha(texture and 0 or alpha or 1)
+            ProfessionsBookPage2:SetAlpha(texture and 0 or alpha or 1)
         end,
         alpha=1,
     })
