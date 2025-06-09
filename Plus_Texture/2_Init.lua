@@ -29,6 +29,11 @@ local P_Save={
            ['GeneralDockManager']= {enabled=true, alpha=0},
            ['GossipFrame']={enabled=true, alpha=1},
         },
+        Anims={
+            --disabled=true,
+            alpha=0.75,
+            speed=10,
+        }
     },
 }
 
@@ -107,12 +112,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
 
             Save().Bg= Save().Bg or P_Save.Bg
-
-            if Save().BG and Save().ADD then--清除旧数据
-                Save().Bg.UseTexture= Save().ADD
-                Save().BG=nil
-                Save().HideTalentsBG=nil
-            end
+            Save().Bg.Anims= Save().Bg.Anims or P_Save.Bg.Anims
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 

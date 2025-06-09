@@ -1,5 +1,5 @@
 local function Save()
-    return WoWToolsSave['Plus_Texture']
+    return WoWToolsSave['Plus_Texture'].Bg
 end
 
 local BGName= 'WoWTools_BG'
@@ -7,11 +7,11 @@ local BGName= 'WoWTools_BG'
 
 local RestIcon= 'Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga'
 
-local function SaveBG(name)
-    if Save().Bg.Add[name].enabled then
-        return Save().Bg.Add[name]--分开设置
+local function SaveData(name)
+    if Save().Add[name].enabled then
+        return Save().Add[name]--分开设置
     else--统一设置
-        local data= Save().Bg.All or {}
+        local data= Save().All or {}
         data.alpha= data.alpha or 0.5
         data.texture= data.texture or RestIcon
         return data
@@ -19,7 +19,7 @@ local function SaveBG(name)
 end
 
 local function IsEnabledSaveBg(name)
-    return Save().Bg.Add[name].enabled
+    return Save().Add[name].enabled
 end
 
 
@@ -110,25 +110,58 @@ local TextureTab={
 ['hunter-stable-bg-art_tenacity']=1,
 ['pvpqueue-bg-alliance']=1,
 ['pvpqueue-bg-horde']=1,
+['UI-Frame-CypherChoice-FX-BottomGlow']=1,
+['ui-frame-genericplayerchoice-cardframe-bottomglow']=1,
 }
 
 
 
-local Icons={}
---从 Icons 添加 或 移除
-local function Remove_Add_Icons(icon, enabled)
-    enabled= enabled==true and true or nil
-    Icons[icon]= enabled
-    if icon.BgData and icon.BgData.icons then
-        for _, bg in pairs(icon.BgData.icons) do
-            Icons[bg]=enabled
-        end
-    end
+
+
+
+local function PlayStop_Anims(self)
+    local play= self:IsDrawLayerEnabled('BACKGROUND')
+            and self:IsVisible()
+            and not Save().Anims.disabled
+
+    self.backgroundAnims:SetPlaying(play)
+    self.AirParticlesFar:SetShown(play)
+end
+
+-- 根据框架大小更新动画偏移量和速度的函数
+local function Update_Animation(self)
+    local width, height = self:GetSize()
+    -- 动画从右下角到左上角
+    local xOffset = -width
+    local yOffset = height
+    self.AirParticlesFar:SetSize(-width, height)
+    self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset)    -- 右下到左上
+    self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)    -- 回到右下
+
+    -- 根据对角线长度设置动画持续时间，保证速度一致
+    local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
+    local speed = Save().Anims.speed or 10 -- 像素每秒，可根据需要调整
+    local duration = distance / speed
+    self.backgroundAnims.moveAnim:SetDuration(duration)
+
+    local alpha = Save().Anims.alpha or 0.75
+    self.backgroundAnims.fadeIn:SetToAlpha(alpha)   -- 变为不透明
+    self.backgroundAnims.fadeOut:SetFromAlpha(alpha)    -- 从不透明
 end
 
 
+local function Set_BGTexture(self, name)
+    local icon= self[BGName]
+    if not icon then
+        return
+    end
 
-local function set_texture(icon, texture, alpha)
+    name= name or self:GetName()
+    local data= SaveData(name)
+
+    local alpha= data.alpha or icon.BgData.alpha or 0.5
+    local texture= data.texture
+
     if texture and C_Texture.GetAtlasInfo(texture) then
         icon:SetAtlas(texture)
     else
@@ -136,50 +169,42 @@ local function set_texture(icon, texture, alpha)
     end
     icon:SetVertexColor(1,1,1)
     icon:SetAlpha(alpha)
-end
-
-local function Set_BGTexture(icon)
-    if not icon or not icon.BgData then
-        return
-    end
-
-    local name= icon.BgData.name
-    local data= SaveBG(name)
-
-    local alpha= data.alpha or icon.BgData.alpha or 0.5
-    local texture= data.texture or icon.p_texture
-
-    set_texture(icon, texture, alpha)
 
     if icon.BgData.settings then
         icon.BgData.settings(texture, alpha)
     end
 
-    if icon.BgData.icons then
-        for _, bg in pairs(icon.BgData.icons) do
-            set_texture(bg, texture, alpha)
-        end
-    end
-
-    local bg= _G[name] and _G[name].Background
+--Frame.Background
+    local bg= self.Background
     if bg then
         bg:SetAlpha(texture and 0 or alpha)
+    end
+
+--DrawLayer
+    self:SetDrawLayerEnabled('BACKGROUND', not Save().Add[name].notLayer)
+
+--动画
+    local anims= self.backgroundAnims
+    if anims and anims.fadeIn then
+        Update_Animation(self)
+        PlayStop_Anims(self)
     end
 end
 
 
 
 --BG, 设置
-local function Settings(icon, frame)
-    icon= frame and frame[BGName] or icon
-
+local function Settings(self)
 --单独设置
-    if icon then
-        Set_BGTexture(icon)
+    if self then
+        Set_BGTexture(self)
     else
 --统一设置
-        for bg in pairs(Icons) do
-            Set_BGTexture(bg)
+        for name in pairs(Save().Add) do
+            self=_G[name]
+            if self then
+                Set_BGTexture(self, name)
+            end
         end
     end
 end
@@ -199,7 +224,7 @@ end
 
 
 --材质，列表, 菜单
-local function texture_list(root, name, icon, texture, isAdd)
+local function texture_list(self, root, name, icon, texture, isAdd)
     local sub
     local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(texture, {480, 240})
     if not textureID then
@@ -209,19 +234,17 @@ local function texture_list(root, name, icon, texture, isAdd)
     sub=root:CreateRadio(
         '',
     function()
-        return texture== SaveBG(name).texture
+        return texture== SaveData(name).texture
     end, function()
         if IsEnabledSaveBg(name) then--仅限
-            SaveBG(name).texture= SaveBG(name).texture~=texture and texture or nil
-            Settings(icon)
+            SaveData(name).texture= SaveData(name).texture~=texture and texture or nil
+            Settings(self)
         else--统一设置
-            SaveBG(name).texture= texture
+            SaveData(name).texture= texture
             Settings()
         end
 
-        if icon.BgData.setValueFunc then
-            icon.BgData.setValueFunc(icon, SaveBG(name).texture, SaveBG(name).alpha or icon.BgData.alpha or 0.5)
-        end
+
 
         return MenuResponse.Refresh
     end)
@@ -245,7 +268,7 @@ local function texture_list(root, name, icon, texture, isAdd)
         else
             GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
         end
-        tooltip:AddLine('Alpha '..(SaveBG(name).alpha or icon.BgData.alpha or 0.5))
+        tooltip:AddLine('Alpha '..(SaveData(name).alpha or icon.BgData.alpha or 0.5))
     end)
 
     if isAdd then
@@ -256,7 +279,7 @@ local function texture_list(root, name, icon, texture, isAdd)
             WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
             nil,
             {SetValue=function()
-                Save().Bg.UseTexture[texture]= nil
+                Save().UseTexture[texture]= nil
             end})
             return MenuResponse.Open
         end)
@@ -273,7 +296,7 @@ end
 
 
 --材质，列表
-local function Texture_List_Menu(root, icon, name)
+local function Texture_List_Menu(self, root, icon, name)
     root:CreateButton(
         WoWTools_DataMixin.onlyChinese and '添加' or ADD,
     function()
@@ -289,20 +312,20 @@ local function Texture_List_Menu(root, icon, name)
             SetValue= function(s)
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
                 if textureID then
-                    Save().Bg.UseTexture[textureID]= true
+                    Save().UseTexture[textureID]= true
                 end
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, textureID)
             end,
             OnAlt=function(s)
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
-                Save().Bg.UseTexture[textureID]= nil
+                Save().UseTexture[textureID]= nil
             end,
             EditBoxOnTextChanged=function(s)
                 local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s:GetText(), 0))
                 local enabled= textureID
                     and textureID:gsub(' ', '')~='' and textureID~='Interface\\AddOns\\WoWTools\\Source\\Background\\'
 
-                local isAdd= Save().Bg.UseTexture[textureID]
+                local isAdd= Save().UseTexture[textureID]
                 local isTextureTab= TextureTab[textureID]
 
                 s:GetParent().button1:SetEnabled(enabled and not isAdd and not isTextureTab)
@@ -312,28 +335,36 @@ local function Texture_List_Menu(root, icon, name)
     )
     end)
 
-    --[[local newTab={}
+    local newTab={}
 
-    for texture in pairs(Save().Bg.UseTexture or {}) do
+    for texture in pairs(Save().UseTexture or {}) do
         table.insert(newTab, texture)
-    end]]
+    end
+    table.sort(newTab)
 
     local find
-    for texture in pairs(Save().Bg.UseTexture or {}) do
-        texture_list(root, name, icon,  texture, true)
+    for _, texture in pairs(newTab) do
+        texture_list(self, root, name, icon,  texture, true)
         find=true
     end
 
 --全部清除
     if find then
         WoWTools_MenuMixin:ClearAll(root, function()
-            Save().Bg.UseTexture={}
+            Save().UseTexture={}
         end)
     end
     root:CreateDivider()
 
+
+    newTab={}
     for texture in pairs(TextureTab) do
-        texture_list(root, name, icon, texture, false)
+        table.insert(newTab, texture)
+    end
+    table.sort(newTab)
+
+    for _, texture in pairs(newTab) do
+        texture_list(self, root, name, icon, texture, false)
     end
     WoWTools_MenuMixin:SetScrollMode(root)
 
@@ -356,15 +387,6 @@ end
 
 
 
-local function Add_Settings(name, enabled)
-    local icon= _G[name] and _G[name][BGName]
-    if icon then
-        Remove_Add_Icons(icon, enabled)--从 Icons 添加 或 移除
-        Settings(icon)
-    end
-end
-
-
 
 
 
@@ -381,7 +403,7 @@ local function Add_Frame_Menu(_, root)
     local find
     local newTab={}
 
-    for name, tab in pairs(Save().Bg.Add) do
+    for name, tab in pairs(Save().Add) do
         tab.name= name
         table.insert(newTab, tab)
         find=true
@@ -397,10 +419,10 @@ local function Add_Frame_Menu(_, root)
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
     function()
-        for name in pairs(Save().Bg.Add) do
-            Save().Bg.Add[name].enabled= true
-            Add_Settings(name, true)
+        for name in pairs(Save().Add) do
+            Save().Add[name].enabled= true
         end
+        Settings()
         return MenuResponse.Refresh
     end)
     sub2:SetTooltip(function(tooltip)
@@ -411,10 +433,10 @@ local function Add_Frame_Menu(_, root)
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL,
     function()
-        for name in pairs(Save().Bg.Add) do
-            Save().Bg.Add[name].enabled= false
-            Add_Settings(name, false)
+        for name in pairs(Save().Add) do
+            Save().Add[name].enabled= false
         end
+        Settings()
         return MenuResponse.Refresh
     end)
     sub2:SetTooltip(function(tooltip)
@@ -424,14 +446,7 @@ local function Add_Frame_Menu(_, root)
 --全部清除
     sub:CreateDivider()
     sub2= WoWTools_MenuMixin:ClearAll(sub, function()
-        local icon
-        for f in pairs(Save().Bg.Add) do
-            icon =_G[f] and _G[f][BGName]
-            if icon then
-                Remove_Add_Icons(icon, nil)--从 Icons 添加 或 移除
-            end
-        end
-        Save().Bg.Add={}
+        Save().Add={}
         WoWTools_Mixin:Reload()
     end)
 
@@ -453,12 +468,15 @@ local function Add_Frame_Menu(_, root)
             ..tab.name
             ..' |cnGREEN_FONT_COLOR:'..(tab.alpha or 0.5),
         function(data)
-            return Save().Bg.Add[data.name].enabled
+            return Save().Add[data.name].enabled
         end, function(data)
-            local enabled= Save().Bg.Add[data.name].enabled
+            local enabled= Save().Add[data.name].enabled
 
-            Save().Bg.Add[data.name].enabled= not enabled and true or nil
-            Add_Settings(data.name, not enabled)
+            Save().Add[data.name].enabled= not enabled and true or nil
+            
+            if _G[data.name] then
+                Settings(_G[data.name])
+            end
 
             return MenuResponse.Refresh
         end, {
@@ -517,29 +535,29 @@ end
 
 
 --BG, 主菜单
-local function Init_Menu(frame, root, isSub)
-    local icon= frame[BGName]
-    local name= icon.BgData.name
+local function Init_Menu(self, root, isSub)
+    local icon= self[BGName]
+    local name= self:GetName()
     local sub, sub2, sub3
 
     sub= root:CreateCheckbox(
         '|A:MonkUI-LightOrb:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
     function()
-        return frame:IsDrawLayerEnabled('BACKGROUND')
+        return self:IsDrawLayerEnabled('BACKGROUND')
     end, function()
-        local enabled= Save().Bg.Add[name].notLayer
-        Save().Bg.Add[name].notLayer= not enabled and true or nil
-        frame:SetDrawLayerEnabled('BACKGROUND', enabled or false)
-        if frame.backgroundAnims then
-            frame.backgroundAnims:SetPlaying(enabled or false)
+        local enabled= Save().Add[name].notLayer
+        Save().Add[name].notLayer= not enabled and true or nil
+        Settings(self)
+        if self.backgroundAnims then
+            self.backgroundAnims:SetPlaying(enabled or false)
         end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(name)
         tooltip:AddLine(
             'IsDrawLayerEnabled '
-            ..WoWTools_TextMixin:GetYesNo(frame:IsDrawLayerEnabled('BACKGROUND'))
+            ..WoWTools_TextMixin:GetYesNo(self:IsDrawLayerEnabled('BACKGROUND'))
         )
     end)
 
@@ -557,16 +575,13 @@ local function Init_Menu(frame, root, isSub)
     function()
         return IsEnabledSaveBg(name)
     end, function()
-        Save().Bg.Add[name].enabled= not Save().Bg.Add[name].enabled and true or nil
+        Save().Add[name].enabled= not Save().Add[name].enabled and true or nil
 
-        local enabled= not IsEnabledSaveBg(name) and true or nil
-
-        Remove_Add_Icons(icon, enabled)--从 Icons 添加 或 移除
-        Settings(icon)
+        Settings()
         return MenuResponse.Refresh
     end)
     sub2:SetTooltip(function(tooltip)
-        local textureID, icon2= select(2, WoWTools_TextureMixin:IsAtlas(SaveBG(name).texture, {480, 240}))
+        local textureID, icon2= select(2, WoWTools_TextureMixin:IsAtlas(SaveData(name).texture, {480, 240}))
         tooltip:AddLine(icon2)
         tooltip:AddLine((IsEnabledSaveBg(name) and '|cnGREEN_FONT_COLOR:' or '')..name)
         if textureID then
@@ -577,7 +592,7 @@ local function Init_Menu(frame, root, isSub)
     end)
 
 --材质，列表
-    Texture_List_Menu(sub2, icon, name)
+    Texture_List_Menu(self, sub2, icon, name)
 
 
 
@@ -586,39 +601,88 @@ local function Init_Menu(frame, root, isSub)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return SaveBG(name).alpha or frame[BGName].BgData.alpha or 0.5
+            return SaveData(name).alpha or self[BGName].BgData.alpha or 0.5
         end,
         setValue=function(value)
-            SaveBG(name).alpha=value
-            Settings(IsEnabledSaveBg(name) and icon or nil)
-            if icon.BgData.setValueFunc then
-                icon.BgData.setValueFunc(icon, SaveBG(name).texture, SaveBG(name).alpha)
-            end
+            SaveData(name).alpha=value
+            Settings(IsEnabledSaveBg(name) and self or nil)
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         minValue=0,
         maxValue=1,
-        step=0.1,
-        bit='%.1f',
+        step=0.05,
+        bit='%.2f',
         tooltip=function(tooltip)
             if IsEnabledSaveBg(name) then
                 tooltip:AddLine('|cnGREEN_FONT_COLOR:'..name)
             else
                 GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一' or ALL, HIGHLIGHT_FONT_COLOR)
             end
-            if not SaveBG(name).texture then
+            if not SaveData(name).texture then
                 tooltip:AddLine(' ')
                 GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '无' or NONE)--红色
             end
         end
     })
-    sub:CreateSpacer()
+    --sub:CreateSpacer()
 
 --分开设置, 全部列表
-    Add_Frame_Menu(frame, sub)
-    sub:CreateSpacer()
+    Add_Frame_Menu(self, sub)
+    --sub:CreateSpacer()
+
+
+--动画
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '动画' or ANIMATION,
+    function()
+        return not Save().Anims.disabled
+    end, function()
+        Save().Anims.disabled= not Save().Anims.disabled and true or nil
+        Settings()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+    end)
+
+
+--透明度
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save().Anims.alpha or 0.75
+        end,
+        setValue=function(value)
+            Save().Anims.alpha=value
+            Settings()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
+        minValue=0.1,
+        maxValue=1,
+        step=0.05,
+        bit='%.2f',
+    })
+    sub2:CreateSpacer()
+
+--速度
+    sub2:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub2, {
+        getValue=function()
+            return Save().Anims.speed or 10
+        end,
+        setValue=function(value)
+            Save().Anims.speed=value
+            Settings()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '速度' or SPEED,
+        minValue=1,
+        maxValue=130,
+        step=1,
+        --bit='%.2f',
+    })
+    sub2:CreateSpacer()
 
 --打开选项界面
+    --sub:CreateSpacer()
     sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_TextureMixin.addName, category=WoWTools_TextureMixin.Category})
 --Web
     sub3=sub2:CreateButton(
@@ -632,16 +696,7 @@ local function Init_Menu(frame, root, isSub)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
     end)
 
-    sub3= sub2:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '动画' or ANIMATION,
-    function()
-        return not Save().Bg.notAnims
-    end, function()
-        Save().Bg.notAnims= not Save().Bg.notAnims and true or nil
-    end)
-    sub3:SetTooltip(function(tooltip)
-        tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-    end)
+
 
 
 
@@ -676,23 +731,7 @@ end
 
 
 
--- 根据框架大小更新动画偏移量和速度的函数
-local function UpdateAnimationOffsets(self)
-    local width, height = self[BGName]:GetSize()
-    -- 动画从右下角到左上角
-    local xOffset = -width
-    local yOffset = height
 
-
-    self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset )    -- 右下到左上
-    self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)  -- 回到右下
-
-    -- 根据对角线长度设置动画持续时间，保证速度一致
-    local distance = math.sqrt(xOffset * xOffset + yOffset * yOffset)
-    local speed = 10 -- 像素每秒，可根据需要调整
-    local duration = distance / speed
-    self.backgroundAnims.moveAnim:SetDuration(duration)
-end
 
 
 
@@ -708,11 +747,11 @@ end
 
 
 --创建动画组
-local function Create_Anims(frame, tab)
-    if frame.AirParticlesFar
-        or frame.backgroundAnims
+local function Create_Anims(self, icon, tab)
+    if self.AirParticlesFar
+        or self.backgroundAnims
         or tab.notAnims
-        or Save().Bg.notAnims
+        or Save().Anims.disabled
     then
         return
     end
@@ -721,77 +760,86 @@ local function Create_Anims(frame, tab)
     local atlas= tab.atlas or 'talents-animations-particles'
     local isType2= tab.isType2
 
-    frame.AirParticlesFar = frame:CreateTexture(nil, 'BACKGROUND', nil, 7)
+    self.AirParticlesFar = self:CreateTexture(nil, 'BACKGROUND', nil, 7)
 
     if texture then
-        frame.AirParticlesFar:SetTexture(texture)
+        self.AirParticlesFar:SetTexture(texture)
     else
-        frame.AirParticlesFar:SetAtlas(atlas)
+        self.AirParticlesFar:SetAtlas(atlas)
     end
 
 
-    frame.AirParticlesFar:SetAllPoints(frame[BGName])
-    frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
+    self.AirParticlesFar:SetAllPoints()--self[BGName])
+    --self.AirParticlesFar:SetPoint('TOPLEFT', self, 'BOTTOMRIGHT')
+    --self.AirParticlesFar:SetPoint('CENTER')
+    self.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
     -- 设置混合模式为ADD，使粒子效果更亮 DISABLE, BLEND, ALPHAKEY, ADD, MOD
-    frame.AirParticlesFar:SetBlendMode("ADD")
+    self.AirParticlesFar:SetBlendMode("ADD")
 
-    if not frame.FullMask then
-        frame.FullMask = frame:CreateMaskTexture()
+    if not self.FullMask then
+        self.FullMask = self:CreateMaskTexture()
         if isType2 then
-            frame.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
+            self.FullMask:SetTexture('Interface\\CharacterFrame\\TempPortraitAlphaMask', "CLAMPTOBLACKADDITIVE" , "CLAMPTOBLACKADDITIVE")--ItemButtonTemplate.xml
         else
-            frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
+            self.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
         end
-        frame.FullMask:SetPoint('TOPLEFT', frame[BGName], -15, 15)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', frame[BGName], 15, -15)
+        self.FullMask:SetPoint('TOPLEFT', icon, -15, 15)
+        self.FullMask:SetPoint('BOTTOMRIGHT', icon, 15, -15)
     end
-    frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
+    self.AirParticlesFar:AddMaskTexture(self.FullMask)
 
     -- 创建动画组
-    frame.backgroundAnims = frame.AirParticlesFar:CreateAnimationGroup()
-    frame.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
+    self.backgroundAnims = self.AirParticlesFar:CreateAnimationGroup()
+    self.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
 
+--[[
+<AnimationGroup parentArray="backgroundAnims" looping="REPEAT" inherits="TargetsVisibleWhilePlayingAnimGroupTemplate">
+<Alpha childKey="AirParticlesFar" order="2" fromAlpha="0" toAlpha="0.14" duration="5" smoothing="NONE"/>
+<Alpha childKey="AirParticlesFar" order="2" fromAlpha="0.14" toAlpha="0" startDelay="31" duration="5" smoothing="NONE"/>
+<Translation childKey="AirParticlesFar" order="1" offsetX="100" offsetY="0"/>
+<Translation childKey="AirParticlesFar" order="2" offsetX="-200" offsetY="0" startDelay="0" duration="36"/>
+<Translation childKey="AirParticlesFar" order="3" offsetX="200" offsetY="0" startDelay="0"/>
+<Rotation childKey="AirParticlesFar" duration="36" order="2" degrees="-20" />
+</AnimationGroup>
+]]
 
-    local alpha = 0.75
 
     -- 透明度变化动画
-    local fadeIn = frame.backgroundAnims:CreateAnimation("Alpha")
-    fadeIn:SetFromAlpha(0) -- 从透明
-    fadeIn:SetToAlpha(alpha)   -- 变为不透明
-    fadeIn:SetDuration(0)  -- 持续0秒
-    fadeIn:SetOrder(1)     -- 第一个播放
+    self.backgroundAnims.fadeIn = self.backgroundAnims:CreateAnimation("Alpha")
+    self.backgroundAnims.fadeIn:SetFromAlpha(0) -- 从透明
+    --self.backgroundAnims.fadeIn:SetToAlpha(alpha)   -- 变为不透明
+    self.backgroundAnims.fadeIn:SetDuration(0)  -- 持续0秒
+    self.backgroundAnims.fadeIn:SetOrder(1)     -- 第一个播放
 
     -- 创建淡出动画
-    local fadeOut = frame.backgroundAnims:CreateAnimation("Alpha")
-    fadeOut:SetFromAlpha(alpha)    -- 从不透明
-    fadeOut:SetToAlpha(0)        -- 变为透明
-    fadeOut:SetDuration(0)       -- 持续0秒
-    fadeOut:SetOrder(2)          -- 第二个播放
+    self.backgroundAnims.fadeOut = self.backgroundAnims:CreateAnimation("Alpha")
+    --self.backgroundAnims.fadeOut:SetFromAlpha(alpha)    -- 从不透明
+    self.backgroundAnims.fadeOut:SetToAlpha(0)        -- 变为透明
+    self.backgroundAnims.fadeOut:SetDuration(0)       -- 持续0秒
+    self.backgroundAnims.fadeOut:SetOrder(2)          -- 第二个播放
 
     -- 移动动画：从右下角移动到左上角
-    frame.backgroundAnims.moveAnim = frame.backgroundAnims:CreateAnimation("Translation")
-    frame.backgroundAnims.moveAnim:SetOrder(1)           -- 第一个播放
+    self.backgroundAnims.moveAnim = self.backgroundAnims:CreateAnimation("Translation")
+    self.backgroundAnims.moveAnim:SetOrder(1)           -- 第一个播放
 
     -- 重置位置动画：瞬间回到原位
-    frame.backgroundAnims.resetPos = frame.backgroundAnims:CreateAnimation("Translation")
-    frame.backgroundAnims.resetPos:SetDuration(0)        -- 瞬间完成
-    frame.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
+    self.backgroundAnims.resetPos = self.backgroundAnims:CreateAnimation("Translation")
+    self.backgroundAnims.resetPos:SetDuration(0)        -- 瞬间完成
+    self.backgroundAnims.resetPos:SetOrder(2)           -- 第二个播放
 
-    UpdateAnimationOffsets(frame)
-    frame.backgroundAnims:SetPlaying(frame:IsDrawLayerEnabled('BACKGROUND'))
 
-    -- 添加事件监听
-    frame:HookScript("OnSizeChanged", function(self)
-        UpdateAnimationOffsets(self)
-        self.backgroundAnims:SetPlaying(frame:IsDrawLayerEnabled('BACKGROUND'))
+-- 添加事件监听
+    self:HookScript("OnSizeChanged", function(frame)
+        Update_Animation(frame)
+        PlayStop_Anims(frame)
     end)
 
-    frame.AirParticlesFar:SetScript("OnShow", function(self)
-        self:GetParent().backgroundAnims:SetPlaying(self:IsDrawLayerEnabled('BACKGROUND'))
+    self.AirParticlesFar:SetScript("OnShow", function(frame)
+        PlayStop_Anims(frame:GetParent())
     end)
 
-    frame.AirParticlesFar:SetScript("OnHide", function(self)
-         self:GetParent().backgroundAnims:SetPlaying(false)
+    self.AirParticlesFar:SetScript("OnHide", function(frame)
+         frame:GetParent().backgroundAnims:Stop()
     end)
 end
 
@@ -868,91 +916,41 @@ end
 
 
 
-local function Create_Button(frame, tab)
+local function Create_Button(self, tab)
     if not tab.isNewButton then
         return
     end
 
-    local closeButton= frame.ClosePanelButton or frame.CloseButton
+    local closeButton= self.ClosePanelButton or self.CloseButton
 
-    local p= tab.isNewButton==true and (closeButton or frame) or tab.isNewButton
+    local p= tab.isNewButton==true and (closeButton or self) or tab.isNewButton
 
-    frame.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
+    self.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
         size=23,
         name=tab.name..'BGMenuButton',
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     })
 
-    local icon= frame.bgMenuButton:GetNormalTexture()
+    local icon= self.bgMenuButton:GetNormalTexture()
     icon:ClearAllPoints()
     icon:SetPoint('CENTER')
     icon:SetSize(16,16)
     icon:SetAlpha(0.5)
 
     if tab.newButtonPoint then
-        tab.newButtonPoint(frame.bgMenuButton)
+        tab.newButtonPoint(self.bgMenuButton)
     elseif closeButton then
-        frame.bgMenuButton:SetPoint('RIGHT', closeButton, 'LEFT')
+        self.bgMenuButton:SetPoint('RIGHT', closeButton, 'LEFT')
     end
 
     if closeButton then
-        frame.bgMenuButton:SetFrameStrata(closeButton:GetFrameStrata())
-        frame.bgMenuButton:SetFrameLevel(closeButton:GetFrameLevel()+1)
+        self.bgMenuButton:SetFrameStrata(closeButton:GetFrameStrata())
+        self.bgMenuButton:SetFrameLevel(closeButton:GetFrameLevel()+1)
     end
 end
 
 
 
-
-
-
-
-
-
-local function Get_Icon_Texture(icon)
-    if icon.GetAtlas then
-        return icon:GetAtlas()
-    elseif icon.GetTextureFileID then
-        return icon:GetTextureFileID()
-    end
-end
-
-
-local function Create_Background(frame, tab)
-    local icon= tab.icon
-    if not icon then
---新建，图片
-        if frame[BGName] and WoWTools_DataMixin.Player.husandro then
-            print(frame:GetName(), '|cnRED_FONT_COLOR:背景，已存在')
-        end
-
-        frame[BGName]= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
-
-        icon= frame[BGName]
-        if not tab.bgPoint then
-            icon:SetPoint('TOPLEFT', 3, -3)
-            icon:SetPoint('BOTTOMRIGHT',-3, 3)
-        end
---调用，设置
-        if tab.bgPoint then
-            tab.bgPoint(icon)
-        end
-
-    else
---记录，初始图片
-        icon.p_texture= Get_Icon_Texture(icon)
---记录其它，初始图片
-        if tab.icons then
-            for _, t in pairs(tab.icons) do
-                t.p_texture= Get_Icon_Texture(t)
-            end
-        end
-        frame[BGName]= icon
-    end
-
-
-    return icon
-end
 
 
 
@@ -971,11 +969,10 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     icon=icon,
     alpha=0,--默认alpha
     icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
-    setValueFunc=function(icon, textureName, alphaValue)--当菜单修改时，调用
-    end,
+
     settings=function(icon, textureName, alphaValue)--设置内容时，调用
     end,
-    isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
+
     
     notAnims=true,
 
@@ -995,50 +992,51 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     tab= tab or {}
 
-    if (Save().disabledTexture or Save().disabedBG)
-        and not tab.enabled
+    local name=  frame:GetName()
+
+    if (
+            WoWToolsSave['Plus_Texture'].disabledTexture
+            or WoWToolsSave['Plus_Texture'].disabedBG
+        ) and not tab.enabled
+
         or not frame
+        or not name or name==''
     then
         return
     end
 
-    local name= tab.name or frame:GetName()
-    if not name or name=='' then
-        return
+    tab.name= name
+
+    Save().Add[name]= Save().Add[name] or {}
+
+    frame[BGName]= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)
+
+    local icon= frame[BGName]
+    if not tab.bgPoint then
+        icon:SetPoint('TOPLEFT', 3, -3)
+        icon:SetPoint('BOTTOMRIGHT',-3, 3)
     end
 
-    tab.name= tab.name or name
-
-    Save().Bg.Add[name]= Save().Bg.Add[name] or {}
-
-    local icon= Create_Background(frame, tab)
-
---DrawLayer
-    frame:SetDrawLayerEnabled('BACKGROUND', not Save().Bg.Add[name].notLayer)
+--调用，设置
+    if tab.bgPoint then
+        tab.bgPoint(icon)
+    end
 
     --frame:SetTextureSliceMargins(24, 24, 24, 24);
     --fram:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
     icon.BgData= {
-        name= name,
+        --name= name,
         alpha= tab.alpha,
-        icons= tab.icons,
         settings= tab.settings,
-        setValueFunc= tab.setValueFunc,
     }
 
-    if not IsEnabledSaveBg(name) then--从 Icons 添加 或 移除
-        Remove_Add_Icons(icon, true)
-    end
 
-    if tab.isHook then
-        icon.Set_BGTexture= Set_BGTexture
-    end
 
 --创建动画组
-    Create_Anims(frame, tab)
+    Create_Anims(frame, icon, tab)
 --BG, 设置
-    Settings(icon)
+    Settings(frame)
 --创建，菜单按钮
     Create_Button(frame, tab)
 --设置，调用，菜单

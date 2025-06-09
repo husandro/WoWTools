@@ -2074,14 +2074,14 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:HideTexture(PlayerSpellsFrameBg)
 
 --专精 ClassSpecFrameTemplate
-    PlayerSpellsFrame.SpecFrame.Background:ClearAllPoints()
-    PlayerSpellsFrame.SpecFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
-    PlayerSpellsFrame.SpecFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+    --PlayerSpellsFrame.SpecFrame.Background:ClearAllPoints()
+    --PlayerSpellsFrame.SpecFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
+    --PlayerSpellsFrame.SpecFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
 
 --天赋 ClassTalentsFrameTemplate
-    PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
+    --PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
+    --PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT', PlayerSpellsFrame, 3, -3)
+    --PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame, -3, 3)
 
     PlayerSpellsFrame.TalentsFrame.BottomBar:SetAlpha(0)
     PlayerSpellsFrame.TalentsFrame.HeroTalentsContainer.ExpandedContainer.Background:SetAlpha(0.2)
@@ -2091,8 +2091,8 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetFrame(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton, {alpha=0.3})
 
     self:Init_BGMenu_Frame(PlayerSpellsFrame, {
-        notAnims=true,
-        isHook=true,
+        --notAnims=true,
+        --isHook=true,
         settings=function(texture, alpha)
             PlayerSpellsFrame.SpecFrame.Background:SetAlpha(texture and 0 or alpha or 1)
             PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(texture and 0 or alpha or 1)
