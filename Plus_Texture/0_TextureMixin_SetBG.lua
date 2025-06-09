@@ -632,6 +632,17 @@ local function Init_Menu(frame, root, isSub)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '复制' or CALENDAR_COPY_EVENT)
     end)
 
+    sub3= sub2:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '动画' or ANIMATION,
+    function()
+        return not Save().Bg.notAnims
+    end, function()
+        Save().Bg.notAnims= not Save().Bg.notAnims and true or nil
+    end)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
+    end)
+
 
 
 
@@ -701,6 +712,7 @@ local function Create_Anims(frame, tab)
     if frame.AirParticlesFar
         or frame.backgroundAnims
         or tab.notAnims
+        or Save().Bg.notAnims
     then
         return
     end
