@@ -438,9 +438,9 @@ local function Init()
         local show= Save().left_List
         local showLeftList= Save().showLeftList
         if show and showLeftList then
-            local showBackground= Save().showBackground
-            self.frame.Background:SetAtlas(showBackground and 'bank-frame-background' or 'ChallengeMode-guild-background')
-            self.frame.Background:SetAlpha(showBackground and 1 or 0.7)
+            --local showBackground= Save().showBackground
+            self.frame.Background:SetAtlas('ChallengeMode-guild-background')
+            self.frame.Background:SetAlpha(0.7)
             self.frame:SetScale(Save().leftListScale or 1)
         else
             self.Text:SetText('')

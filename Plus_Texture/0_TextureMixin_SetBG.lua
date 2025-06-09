@@ -518,26 +518,35 @@ local function Init_Menu(frame, root, isSub)
     local icon= frame.bg_Texture
     local sub, sub2, sub3
 
-    if isSub then
-        root:CreateDivider()
-        sub= root:CreateButton(
-            '|A:MonkUI-LightOrb:0:0|a'
-            ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
-        function()
-            return MenuResponse.Open
-        end)
-        sub:CreateTitle(name)
+    sub= root:CreateCheckbox(
+        '|A:MonkUI-LightOrb:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
+    function()
+        return frame:IsDrawLayerEnabled('BACKGROUND')
+    end, function()
+        local enabled= Save().Bg.Add[name].notLayer
+        Save().Bg.Add[name].notLayer= not enabled and true or nil
+        frame:SetDrawLayerEnabled('BACKGROUND', enabled)
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(name)
+        tooltip:AddLine(
+            'IsDrawLayerEnabled '
+            ..WoWTools_TextMixin:GetYesNo(frame:IsDrawLayerEnabled('BACKGROUND'))
+        )
+    end)
 
+    if not isSub then
+        sub= root
     else
-        root:CreateTitle('|A:MonkUI-LightOrb:0:0|a'..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND))
-        sub=root
+        sub:CreateTitle(name)
+        sub:CreateSpacer()
     end
-
-    sub:CreateSpacer()
 
 --自定义，设置，分开或统一
     sub2= sub:CreateCheckbox(
-        string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, ''),
+        '|A:Warfronts-FieldMapIcons-Neutral-Banner-Minimap:0:0|a'
+        ..string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, ''),
     function()
         return IsEnabledSaveBg(name)
     end, function()
@@ -622,7 +631,6 @@ local function Init_Menu(frame, root, isSub)
 --重新加载UI
     sub2:CreateDivider()
     WoWTools_MenuMixin:Reload(sub2)
-
 end
 
 
@@ -894,35 +902,41 @@ end
 local function Create_Background(frame, icon, tab)
     if not icon then
 --设置，位置
-        if frame.Background then
+        --[[if frame.Background then
             icon= frame.Background
             if not tab.bgPoint then
                 icon:ClearAllPoints()
                 icon:SetPoint('TOPLEFT', 3, -3)
                 icon:SetPoint('BOTTOMRIGHT',-3, 3)
             end
-        else
+        else]]
 --新建，图片
-            frame.bg_Texture= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
-            icon= frame.bg_Texture
-            if not tab.bgPoint then
-                icon:SetPoint('TOPLEFT', 3, -3)
-                icon:SetPoint('BOTTOMRIGHT',-3, 3)
-            end
+        if frame.bg_Texture and WoWTools_DataMixin.Player.husandro then
+            print(frame:GetName(), '|cnRED_FONT_COLOR:背景，已存在')
+        end
+
+        frame.bg_Texture= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
+        icon= frame.bg_Texture
+        if not tab.bgPoint then
+            icon:SetPoint('TOPLEFT', 3, -3)
+            icon:SetPoint('BOTTOMRIGHT',-3, 3)
         end
 --调用，设置
         if tab.bgPoint then
             tab.bgPoint(icon)
         end
-    end
+    else
 --记录，初始图片
-    icon.p_texture= Get_Icon_Texture(icon)
+        icon.p_texture= Get_Icon_Texture(icon)
 --记录其它，初始图片
-    if tab.icons then
-        for _, t in pairs(tab.icons or {}) do
-            t.p_texture= Get_Icon_Texture(t)
+        if tab.icons then
+            for _, t in pairs(tab.icons or {}) do
+                t.p_texture= Get_Icon_Texture(t)
+            end
         end
     end
+
+
     return icon
 end
 
@@ -968,13 +982,14 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
 
 function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
-    if Save().disabledTexture or Save().disabedBG
+    tab= tab or {}
+
+    if (Save().disabledTexture or Save().disabedBG)
+        and not tab.enabled
         or not frame
     then
         return
     end
-
-    tab= tab or {}
 
     local name= tab.name or frame:GetName()
     if not name or name=='' then
@@ -991,10 +1006,14 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
     end
     frame.bg_Texture= icon
 
+
+
+--DrawLayer
+    frame:SetDrawLayerEnabled('BACKGROUND', not Save().Bg.Add[name].notLayer)
+
     --frame:SetTextureSliceMargins(24, 24, 24, 24);
     --fram:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
-    
     icon.BgData= {
         name= name,
         alpha= tab.alpha,

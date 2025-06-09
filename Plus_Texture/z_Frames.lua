@@ -8,8 +8,14 @@ function WoWTools_TextureMixin.Frames:GossipFrame()
     self:SetNineSlice(GossipFrameInset, nil, true)
 
     self:SetScrollBar(GossipFrame.GreetingPanel)
-    self:Init_BGMenu_Frame(GossipFrame, GossipFrame.Background, {
+    self:Init_BGMenu_Frame(GossipFrame, nil, {
         alpha=1,
+        settings=function(texture)
+            if GossipFrame.bg_Texture then
+                GossipFrame.Background:SetShown(not texture)
+                GossipFrame.bg_Texture:SetShown(texture)
+            end
+        end
     })
 end
 
@@ -276,7 +282,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:HideTexture(ChatFrame1BottomLeftTexture)
 
     self:Init_BGMenu_Frame(GeneralDockManager, nil, {
-        name='ChatFrame1',
+        --name='ChatFrame1',
         menuTag= 'MENU_FCF_TAB',
         alpha=0,
         bgPoint=function(icon)

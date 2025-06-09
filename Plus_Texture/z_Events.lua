@@ -58,7 +58,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
-    self:HideFrame(AchievementFrame)
+    self:HideFrame(AchievementFrame, {show={[AchievementFrame.Background]=true}})
 
     hooksecurefunc(AchievementStatTemplateMixin, 'OnLoad', function(f)
         if f.Middle then
@@ -187,19 +187,18 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameStats)
     self:SetScrollBar(AchievementFrameComparison.StatContainer)
 
-    --WoWTools_ButtonMixin:AddMask(AchievementFrame, nil, AchievementFrame.Background)
-
-
-
-    self:Init_BGMenu_Frame(AchievementFrame,
-        AchievementFrame.Background,
-        {
-            isNewButton=AchievementFrame.Header,
-            newButtonPoint=function(btn)
-                btn:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
+    self:Init_BGMenu_Frame(AchievementFrame, nil, {
+        isNewButton=AchievementFrame.Header,
+        settings=function(texture)
+            if AchievementFrame.bg_Texture then
+                AchievementFrame.Background:SetShown(not texture)
+                AchievementFrame.bg_Texture:SetShown(texture)
             end
-        }
-    )
+        end,
+        newButtonPoint=function(btn)
+            btn:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
+        end
+    })
 end
 
 
@@ -1128,12 +1127,9 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
 
     WorldMapFrame.BorderFrame.PortraitContainer:SetSize(48,48)
-    self:Init_BGMenu_Frame(WorldMapFrame,
-        nil,
-        {
+    self:Init_BGMenu_Frame(WorldMapFrame, nil, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer
-    }
-    )
+    })
 end
 
 
@@ -1270,7 +1266,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
         self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
-    self:Init_BGMenu_Frame(AddonList, nil, {isNewButton=true, newButtonPoint=function(btn)
+    self:Init_BGMenu_Frame(AddonList, nil, {
+        isNewButton=true,
+        newButtonPoint=function(btn)
         btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -23, 0)
     end})
 end
@@ -1644,15 +1642,12 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     end)
 
 
-    self:Init_BGMenu_Frame(ChallengesKeystoneFrame,
-        nil,
-        {
+    self:Init_BGMenu_Frame(ChallengesKeystoneFrame, nil, {
         isNewButton=ChallengesKeystoneFrame.CloseButton,
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT', -23, 0)
         end
-        }
-    )
+    })
 end
 
 
@@ -2536,21 +2531,18 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
     self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
 
-    self:Init_BGMenu_Frame(ProfessionsBookFrame,
-        nil,
-        {
-            settings=function(textureName, alphaValue)--设置内容时，调用
-                ProfessionsBookPage1:SetShown(not textureName)
-                ProfessionsBookPage2:SetShown(not textureName)
-                ProfessionsBookPage1:SetAlpha(alphaValue or 1)
-                ProfessionsBookPage2:SetAlpha(alphaValue or 1)
-                if ProfessionsBookFrame.Background and not textureName then
-                    ProfessionsBookFrame.Background:SetShown(false)
-                end
-            end,
-            alpha=1,
-        }
-    )
+    self:Init_BGMenu_Frame(ProfessionsBookFrame, nil, {
+        settings=function(textureName, alphaValue)--设置内容时，调用
+            ProfessionsBookPage1:SetShown(not textureName)
+            ProfessionsBookPage2:SetShown(not textureName)
+            ProfessionsBookPage1:SetAlpha(alphaValue or 1)
+            ProfessionsBookPage2:SetAlpha(alphaValue or 1)
+            if ProfessionsBookFrame.Background and not textureName then
+                ProfessionsBookFrame.Background:SetShown(false)
+            end
+        end,
+        alpha=1,
+    })
 
     PrimaryProfession1.bg= PrimaryProfession1:CreateTexture(nil, 'BACKGROUND')
     PrimaryProfession1.bg:SetAtlas('delves-affix-mask')

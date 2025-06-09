@@ -68,14 +68,17 @@ function WoWTools_TextureMixin:HideFrame(frame, tab)
     if not frame then
         return
     end
-    if tab and tab.index then
+
+    tab= tab or {}
+    tab.show= tab.show or {}
+    if tab.index then
         local icon= select(tab.index, frame:GetRegions())
         if icon and icon:GetObjectType()=="Texture" then
             icon:SetTexture(0)
         end
     else
         for _, icon in pairs({frame:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" then
+            if icon:GetObjectType()=="Texture" and not tab.show[icon] then
                 icon:SetTexture(0)
                 --icon:SetAlpha(0)
             end

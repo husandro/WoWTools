@@ -175,11 +175,7 @@ local function Init_BankSlotsFrame()
 
     BankSlotsFrame.EdgeShadows:Hide()
 
-    BankFrame:EnableDrawLayer('BACKGROUND')
-    BankFrame.Background:ClearAllPoints()
-    BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
-    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-    WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
+
 
 
 --背景
@@ -452,17 +448,12 @@ local function Init_AccountBankPanel()
 
 --清除，标签，名称
     AccountBankPanel.Header:ClearAllPoints()
-    function AccountBankPanel:RefreshHeaderText()
-    end
 
 --钱    
     AccountBankPanel.MoneyFrame.Border:Hide()
     AccountBankPanel.MoneyFrame.MoneyDisplay:ClearAllPoints()
     AccountBankPanel.MoneyFrame.MoneyDisplay:SetPoint('BOTTOM', AccountBankPanel.MoneyFrame.DepositButton, 'TOPLEFT', 6, -2)
 
---背景    
-    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
-    AccountBankPanel.Background:SetAllPoints()
 
     AccountBankPanel.NineSlice:ClearAllPoints()
     AccountBankPanel.NineSlice:SetAllPoints()
@@ -703,7 +694,29 @@ local function Init()
         end
     end)
 
-    return true
+
+
+    --BankFrame:EnableDrawLayer('BACKGROUND')
+--背景
+    BankFrame.Background:ClearAllPoints()
+    BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
+    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
+    --WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
+
+    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
+    AccountBankPanel.Background:SetAllPoints()
+
+    WoWTools_TextureMixin:Init_BGMenu_Frame(BankFrame, nil, {
+        settings=function(texture)
+            if BankFrame.bg_Texture then
+                BankFrame.Background:SetShown(not texture)
+                AccountBankPanel.Background:SetShown(not texture)
+                BankFrame.bg_Texture:SetShown(texture)
+            end
+        end
+    })
+
+    Init=function()end
 end
 
 
@@ -711,7 +724,5 @@ end
 
 
 function WoWTools_BankMixin:Init_UI()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end

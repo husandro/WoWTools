@@ -52,7 +52,7 @@ local function Init_Menu(self, root)
         WoWTools_BankMixin:Init_Plus()
     end)
 
---显示背景
+--[[显示背景
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
     function()
@@ -62,7 +62,7 @@ local function Init_Menu(self, root)
         WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
         WoWTools_BankMixin:Set_Background_Texture(AccountBankPanel.Background)
         WoWTools_BankMixin:Init_Left_List()
-    end)
+    end)]]
 
 --左边列表
     sub=root:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '物品列表' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, TYPE), function()

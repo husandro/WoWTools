@@ -260,7 +260,7 @@ end
 
 
 
-function WoWTools_BankMixin:Set_Background_Texture(texture)
+--[[function WoWTools_BankMixin:Set_Background_Texture(texture)
     if texture then
         if WoWToolsSave['Plus_Bank'].showBackground then
             texture:SetAtlas('bank-frame-background')
@@ -268,4 +268,4 @@ function WoWTools_BankMixin:Set_Background_Texture(texture)
             texture:SetTexture(0)
         end
     end
-end
+end]]
