@@ -8,14 +8,8 @@ function WoWTools_TextureMixin.Frames:GossipFrame()
     self:SetNineSlice(GossipFrameInset, nil, true)
 
     self:SetScrollBar(GossipFrame.GreetingPanel)
-    self:Init_BGMenu_Frame(GossipFrame, nil, {
+    self:Init_BGMenu_Frame(GossipFrame, {
         alpha=1,
-        settings=function(texture)
-            if GossipFrame.bg_Texture then
-                GossipFrame.Background:SetShown(not texture)
-                GossipFrame.bg_Texture:SetShown(texture)
-            end
-        end
     })
 end
 
@@ -238,7 +232,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         settings(frame)
     end)
 
-    self:Init_BGMenu_Frame(ChatConfigFrame, nil, {
+    self:Init_BGMenu_Frame(ChatConfigFrame, {
         isNewButton=true,
         newButtonPoint=function(btn)
             btn:SetPoint('TOPLEFT', ChatConfigFrame.Border)
@@ -281,7 +275,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:HideTexture(ChatFrame1BottomRightTexture)
     self:HideTexture(ChatFrame1BottomLeftTexture)
 
-    self:Init_BGMenu_Frame(GeneralDockManager, nil, {
+    self:Init_BGMenu_Frame(GeneralDockManager, {
         --name='ChatFrame1',
         menuTag= 'MENU_FCF_TAB',
         alpha=0,
@@ -330,10 +324,6 @@ end
 function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(ContainerFrameCombinedBags.CloseButton, {all=true})
     self:SetNineSlice(ContainerFrameCombinedBags, true)
-
-    --ContainerFrameCombinedBags.Bg.BottomLeft:SetTexture(0)
-    --ContainerFrameCombinedBags.Bg.BottomRight:SetTexture(0)
-    self:HideFrame(ContainerFrameCombinedBags.Bg)
 
     self:SetFrame(ContainerFrameCombinedBags.MoneyFrame.Border, {alpha=0.3})
     self:SetFrame(BackpackTokenFrame.Border, {alpha=0.3})
@@ -399,6 +389,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     end
 
     ContainerFrameCombinedBagsPortraitButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    ContainerFrameCombinedBags.Background= ContainerFrameCombinedBags.Bg
     self:Init_BGMenu_Frame(ContainerFrameCombinedBags)
 end
 

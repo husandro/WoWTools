@@ -2,13 +2,19 @@ local function Save()
     return WoWToolsSave['Plus_Texture']
 end
 
+local BGName= 'WoWTools_BG'
 
+
+local RestIcon= 'Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga'
 
 local function SaveBG(name)
     if Save().Bg.Add[name].enabled then
         return Save().Bg.Add[name]--分开设置
-    else
-        return Save().Bg.All--统一设置
+    else--统一设置
+        local data= Save().Bg.All or {}
+        data.alpha= data.alpha or 0.5
+        data.texture= data.texture or RestIcon
+        return data
     end
 end
 
@@ -16,8 +22,6 @@ local function IsEnabledSaveBg(name)
     return Save().Bg.Add[name].enabled
 end
 
-
-local RestIcon= 'Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga'
 
 
 
@@ -125,18 +129,17 @@ end
 
 
 local function set_texture(icon, texture, alpha)
-    if C_Texture.GetAtlasInfo(texture) then
+    if texture and C_Texture.GetAtlasInfo(texture) then
         icon:SetAtlas(texture)
     else
-        icon:SetTexture(texture)
+        icon:SetTexture(texture or 0)
     end
     icon:SetVertexColor(1,1,1)
     icon:SetAlpha(alpha)
-    icon:SetShown(true)
 end
 
 local function Set_BGTexture(icon)
-    if not icon or not icon.BgData then
+    if not icon.BgData then
         return
     end
 
@@ -144,35 +147,35 @@ local function Set_BGTexture(icon)
     local data= SaveBG(name)
 
     local alpha= data.alpha or icon.BgData.alpha or 0.5
-    local texture= data.texture or icon.p_texture or RestIcon
+    local texture= data.texture or icon.p_texture
 
     set_texture(icon, texture, alpha)
+
+    if icon.BgData.settings then
+        icon.BgData.settings(texture, alpha)
+    end
 
     if icon.BgData.icons then
         for _, bg in pairs(icon.BgData.icons) do
             set_texture(bg, texture, alpha)
         end
     end
+
+    local bg= _G[name] and _G[name].Background
+    if bg then
+        bg:SetAlpha(texture and alpha or 0)
+    end
 end
-
-
-
 
 
 
 --BG, 设置
 local function Settings(icon, frame)
-    icon= frame and frame.bg_Texture or icon
+    icon= frame and frame[BGName] or icon
 
 --单独设置
     if icon then
         Set_BGTexture(icon)
-
-        if icon.BgData.settings then
-            local name= icon.BgData.name
-            local alpha= SaveBG(name).alpha or icon.BgData.alpha or 0.5
-            icon.BgData.settings(SaveBG(name).texture, alpha)
-        end
     else
 --统一设置
         for bg in pairs(Icons) do
@@ -217,7 +220,7 @@ local function texture_list(root, name, icon, texture, isAdd)
         end
 
         if icon.BgData.setValueFunc then
-            icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha or icon.BgData.alpha or 0.5)
+            icon.BgData.setValueFunc(icon, SaveBG(name).texture, SaveBG(name).alpha or icon.BgData.alpha or 0.5)
         end
 
         return MenuResponse.Refresh
@@ -354,7 +357,7 @@ end
 
 
 local function Add_Settings(name, enabled)
-    local icon= _G[name] and _G[name].bg_Texture
+    local icon= _G[name] and _G[name][BGName]
     if icon then
         Remove_Add_Icons(icon, enabled)--从 Icons 添加 或 移除
         Settings(icon)
@@ -421,10 +424,11 @@ local function Add_Frame_Menu(_, root)
 --全部清除
     sub:CreateDivider()
     sub2= WoWTools_MenuMixin:ClearAll(sub, function()
+        local icon
         for f in pairs(Save().Bg.Add) do
-            f=_G[f]
-            if f and f.bg_Texture then
-                Remove_Add_Icons(f.bg_Texture, nil)--从 Icons 添加 或 移除
+            icon =_G[f] and _G[f][BGName]
+            if icon then
+                Remove_Add_Icons(icon, nil)--从 Icons 添加 或 移除
             end
         end
         Save().Bg.Add={}
@@ -514,8 +518,8 @@ end
 
 --BG, 主菜单
 local function Init_Menu(frame, root, isSub)
-    local name= frame.bg_Texture.BgData.name
-    local icon= frame.bg_Texture
+    local icon= frame[BGName]
+    local name= icon.BgData.name
     local sub, sub2, sub3
 
     sub= root:CreateCheckbox(
@@ -540,8 +544,8 @@ local function Init_Menu(frame, root, isSub)
         sub= root
     else
         sub:CreateTitle(name)
-        sub:CreateSpacer()
     end
+    sub:CreateSpacer()
 
 --自定义，设置，分开或统一
     sub2= sub:CreateCheckbox(
@@ -579,13 +583,13 @@ local function Init_Menu(frame, root, isSub)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return SaveBG(name).alpha or frame.bg_Texture.BgData.alpha or 0.5
+            return SaveBG(name).alpha or frame[BGName].BgData.alpha or 0.5
         end,
         setValue=function(value)
             SaveBG(name).alpha=value
             Settings(IsEnabledSaveBg(name) and icon or nil)
             if icon.BgData.setValueFunc then
-                icon.BgData.setValueFunc(SaveBG(name).texture, SaveBG(name).alpha)
+                icon.BgData.setValueFunc(icon, SaveBG(name).texture, SaveBG(name).alpha)
             end
         end,
         name=WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
@@ -660,7 +664,7 @@ end
 
 -- 根据框架大小更新动画偏移量和速度的函数
 local function UpdateAnimationOffsets(self)
-    local width, height = self.bg_Texture:GetSize()
+    local width, height = self[BGName]:GetSize()
     -- 动画从右下角到左上角
     local xOffset = -width
     local yOffset = height
@@ -711,7 +715,7 @@ local function Create_Anims(frame, tab)
     end
 
 
-    frame.AirParticlesFar:SetAllPoints(frame.bg_Texture)
+    frame.AirParticlesFar:SetAllPoints(frame[BGName])
     frame.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
     -- 设置混合模式为ADD，使粒子效果更亮 DISABLE, BLEND, ALPHAKEY, ADD, MOD
     frame.AirParticlesFar:SetBlendMode("ADD")
@@ -723,8 +727,8 @@ local function Create_Anims(frame, tab)
         else
             frame.FullMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--UI-HUD-CoolDownManager-Mask
         end
-        frame.FullMask:SetPoint('TOPLEFT', frame.bg_Texture, -15, 15)
-        frame.FullMask:SetPoint('BOTTOMRIGHT', frame.bg_Texture, 15, -15)
+        frame.FullMask:SetPoint('TOPLEFT', frame[BGName], -15, 15)
+        frame.FullMask:SetPoint('BOTTOMRIGHT', frame[BGName], 15, -15)
     end
     frame.AirParticlesFar:AddMaskTexture(frame.FullMask)
 
@@ -785,7 +789,7 @@ end
 
 
 --设置 菜单
---记录 bg_Texture
+--记录 [BGName]
 local function Set_Frame_Menu(frame, tab)
 
     if tab.menuTag then
@@ -899,24 +903,17 @@ local function Get_Icon_Texture(icon)
 end
 
 
-local function Create_Background(frame, icon, tab)
+local function Create_Background(frame, tab)
+    local icon= tab.icon
     if not icon then
---设置，位置
-        --[[if frame.Background then
-            icon= frame.Background
-            if not tab.bgPoint then
-                icon:ClearAllPoints()
-                icon:SetPoint('TOPLEFT', 3, -3)
-                icon:SetPoint('BOTTOMRIGHT',-3, 3)
-            end
-        else]]
 --新建，图片
-        if frame.bg_Texture and WoWTools_DataMixin.Player.husandro then
+        if frame[BGName] and WoWTools_DataMixin.Player.husandro then
             print(frame:GetName(), '|cnRED_FONT_COLOR:背景，已存在')
         end
 
-        frame.bg_Texture= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
-        icon= frame.bg_Texture
+        frame[BGName]= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)-- -8 7
+
+        icon= frame[BGName]
         if not tab.bgPoint then
             icon:SetPoint('TOPLEFT', 3, -3)
             icon:SetPoint('BOTTOMRIGHT',-3, 3)
@@ -925,15 +922,17 @@ local function Create_Background(frame, icon, tab)
         if tab.bgPoint then
             tab.bgPoint(icon)
         end
+
     else
 --记录，初始图片
         icon.p_texture= Get_Icon_Texture(icon)
 --记录其它，初始图片
         if tab.icons then
-            for _, t in pairs(tab.icons or {}) do
+            for _, t in pairs(tab.icons) do
                 t.p_texture= Get_Icon_Texture(t)
             end
         end
+        frame[BGName]= icon
     end
 
 
@@ -952,16 +951,14 @@ end
 
 
 --[[
-WoWTools_TextureMixin:Init_BGMenu_Frame(
-    frame,--框架, frame.PortraitContainer
-    name,--名称
-    icon,--Texture
-    {
+WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
+    name=名称,
+    icon=icon,
     alpha=0,--默认alpha
     icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
-    setValueFunc=function(textureName, alphaValue)--当菜单修改时，调用
+    setValueFunc=function(icon, textureName, alphaValue)--当菜单修改时，调用
     end,
-    settings=function(textureName, alphaValue)--设置内容时，调用
+    settings=function(icon, textureName, alphaValue)--设置内容时，调用
     end,
     isHook=true,--是否Hook icon.Set_BGTexture= Set_BGTexture
     
@@ -976,12 +973,11 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(
 
     bgPoint=function(icon)
     end
-    }
-)
+})
 ]]
 
 
-function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
+function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     tab= tab or {}
 
     if (Save().disabledTexture or Save().disabedBG)
@@ -996,17 +992,11 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
         return
     end
 
+    tab.name= tab.name or name
+
     Save().Bg.Add[name]= Save().Bg.Add[name] or {}
 
-    icon= Create_Background(frame, icon, tab)
-
-    local prentFrame= tab.name and _G[tab.name]
-    if prentFrame then
-        prentFrame.bg_Texture= icon
-    end
-    frame.bg_Texture= icon
-
-
+    local icon= Create_Background(frame, tab)
 
 --DrawLayer
     frame:SetDrawLayerEnabled('BACKGROUND', not Save().Bg.Add[name].notLayer)
@@ -1029,8 +1019,6 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, icon, tab)
     if tab.isHook then
         icon.Set_BGTexture= Set_BGTexture
     end
-
-    tab.name= name
 
 --创建动画组
     Create_Anims(frame, tab)

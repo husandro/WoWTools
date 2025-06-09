@@ -173,14 +173,7 @@ local function Init_BankSlotsFrame()
 
 
 
-    BankSlotsFrame.EdgeShadows:Hide()
 
-
-
-
---背景
-    BankFrameBg:SetAtlas('ChallengeMode-guild-background',true, 'NEAREST')
-    BankFrameBg:SetAlpha(0.5)
 
 --隐藏，ITEMSLOTTEXT"物品栏位" BAGSLOTTEXT"背包栏位"
     for _, region in pairs({BankSlotsFrame:GetRegions()}) do
@@ -188,8 +181,6 @@ local function Init_BankSlotsFrame()
             region:SetText('')
         end
     end
-
-    BankSlotsFrame.NineSlice:Hide()
 end
 
 
@@ -269,51 +260,11 @@ local function Init_ReagentBankFrame()
         ..'(|cff828282'..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS)..'|r)'
         Set_Button(btnAllOut)
 
-    --[[btnAllOut:SetScript('OnClick', function(self)
-        WoWTools_BankMixin:Take_Item(true, nil, nil, 2, false)
-        self:show_tooltips()
-    end)
-
-    function btnAllOut:set_tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        local free= WoWTools_BagMixin:GetFree(true)--self:get_free()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '取出所有材料' or 'Take out all reagents',
-            format('|A:4549254:0:0|a%s #%s%d',
-                WoWTools_DataMixin.onlyChinese and '材料' or AUCTION_CATEGORY_TRADE_GOODS,
-                free==0 and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:',
-                free)
-        )
-        GameTooltip:Show()
-    end
-    function btnAllOut:show_tooltips()
-        C_Timer.After(1, function() if GameTooltip:IsOwned(self) then self:set_tooltips() end end)
-    end
-    btnAllOut:HookScript('OnLeave', GameTooltip_Hide)
-    btnAllOut:HookScript('OnEnter', btnAllOut.set_tooltips)]]
-
 --提示，标签
     local label= WoWTools_LabelMixin:Create(btnAllOut, {color=true, size=14})
     label:SetPoint('LEFT', btnAllOut, 'RIGHT')
     label:SetText(WoWTools_DataMixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
 
-
-
---隐藏，背景
-    ReagentBankFrame:HookScript('OnShow', function(self)
-        if self.isSetPoint then--or not IsReagentBankUnlocked() then
-            return
-        end
-        self.isSetPoint=true
-        for _, region in pairs({ReagentBankFrame:GetRegions()}) do
-            if region:GetObjectType()=='Texture' then
-                region:SetTexture(0)
-            end
-        end
-    end)
-
-    ReagentBankFrame.NineSlice:Hide()
-    ReagentBankFrame.EdgeShadows:Hide()
     ReagentBankFrameUnlockInfo:ClearAllPoints()
     ReagentBankFrameUnlockInfo:SetPoint('TOPLEFT', 0,-20)
     ReagentBankFrameUnlockInfo:SetPoint('BOTTOMRIGHT', 0, 8)
@@ -446,18 +397,9 @@ local function Init_AccountBankPanel()
     label:SetPoint('RIGHT', check, 'LEFT')
     label:SetText('|A:questlog-questtypeicon-account:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL))
 
---清除，标签，名称
-    AccountBankPanel.Header:ClearAllPoints()
-
---钱    
-    AccountBankPanel.MoneyFrame.Border:Hide()
+--钱
     AccountBankPanel.MoneyFrame.MoneyDisplay:ClearAllPoints()
     AccountBankPanel.MoneyFrame.MoneyDisplay:SetPoint('BOTTOM', AccountBankPanel.MoneyFrame.DepositButton, 'TOPLEFT', 6, -2)
-
-
-    AccountBankPanel.NineSlice:ClearAllPoints()
-    AccountBankPanel.NineSlice:SetAllPoints()
-    WoWTools_TextureMixin:SetNineSlice(AccountBankPanel, true, false, false, false)
 
 --边框
     AccountBankPanel.NineSlice.LeftEdge:Hide()
@@ -469,8 +411,6 @@ local function Init_AccountBankPanel()
     icon:SetPoint('RIGHT', AccountBankPanelGoldButton, 'LEFT', 0,2)
     icon:SetSize(16,16)
     icon:SetAtlas('questlog-questtypeicon-account')
-
-    --C_Bank.DepositMoney(Enum.BankType.Account, 1000)
 end
 
 
@@ -583,7 +523,65 @@ end
 
 
 
+local function Init_Texture(self)
+    self:HideFrame(BankFrame, {show={[BankFrame.Background]=true}})
+    self:SetTabButton(BankFrameTab1)
+    self:SetTabButton(BankFrameTab2)
+    self:SetTabButton(BankFrameTab3)
+    self:SetNineSlice(BankFrame)
+    self:SetButton(BankFrameCloseButton, {all=true})
+--搜索框
+    WoWTools_TextureMixin:SetEditBox(BankItemSearchBox)
+    self:HideTexture(BankFrame.TopTileStreaks)
 
+    self:HideFrame(BankSlotsFrame)
+    self:HideFrame(BankSlotsFrame.EdgeShadows)
+    self:SetNineSlice(BankSlotsFrame, nil, true)
+
+--材料
+    self:SetNineSlice(ReagentBankFrame, nil, true)
+--隐藏，背景
+    self:HideFrame(ReagentBankFrame)
+    self:HideFrame(ReagentBankFrame.EdgeShadows)
+    ReagentBankFrame:HookScript('OnShow', function(f)
+        if f.isSetPoint then--or not IsReagentBankUnlocked() then
+            return
+        end
+        f.isSetPoint=true
+        for _, region in pairs({f:GetRegions()}) do
+            if region:GetObjectType()=='Texture' then
+                region:SetTexture(0)
+            end
+        end
+    end)
+
+--清除，标签，名称
+    AccountBankPanel.Header:ClearAllPoints()
+    self:HideTexture(AccountBankPanel.PurchaseTab.Border)
+    self:HideFrame(AccountBankPanel.MoneyFrame.Border)
+    self:SetNineSlice(AccountBankPanel, nil, true)
+
+--背景
+    BankFrame.Background:ClearAllPoints()
+    BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
+    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
+
+    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
+    AccountBankPanel.Background:SetAllPoints()
+
+    self:Init_BGMenu_Frame(BankFrame, {
+        settings=function(texture, alpha)
+            AccountBankPanel.Background:SetShown(not texture)
+            AccountBankPanel.Background:SetAlpha(alpha)
+        end
+    })
+
+    Init_Texture=function()end
+end
+
+function WoWTools_TextureMixin.Frames:BankFrame()
+    Init_Texture(self)
+end
 
 
 
@@ -601,9 +599,9 @@ local function Init()
     Init_AccountBankPanel()
 
     Init_OpenAllBag_Button()
+    Init_Texture(WoWTools_TextureMixin)
 
---搜索框
-    WoWTools_TextureMixin:SetEditBox(BankItemSearchBox)
+
 
 --移动，搜索框
     hooksecurefunc('BankFrame_UpdateAnchoringForPanel', function()
@@ -612,18 +610,10 @@ local function Init()
     end)
 
 --战团，Tabs
-    AccountBankPanel.PurchaseTab.Border:Hide()
     hooksecurefunc(AccountBankPanel, 'RefreshBankTabs', AccountBankPanel_RefreshBankTabs)
-    hooksecurefunc(BankPanelTabMixin, 'RefreshVisuals', function(self)
-        if self.Settings then self:Settings() end
-
+    hooksecurefunc(BankPanelTabMixin, 'RefreshVisuals', function(frame)
+        if frame.Settings then frame:Settings() end
     end)
-
-    WoWTools_TextureMixin:SetTabButton(BankFrameTab1)
-    WoWTools_TextureMixin:SetTabButton(BankFrameTab2)
-    WoWTools_TextureMixin:SetTabButton(BankFrameTab3)
-    WoWTools_TextureMixin:SetNineSlice(BankFrame, true, false, false, false)
-
 
 --背包位
     for index=1, NUM_BANKBAGSLOTS do--NUM_BANKBAGSLOTS 7
@@ -696,25 +686,9 @@ local function Init()
 
 
 
-    --BankFrame:EnableDrawLayer('BACKGROUND')
---背景
-    BankFrame.Background:ClearAllPoints()
-    BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
-    BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
-    --WoWTools_BankMixin:Set_Background_Texture(BankFrame.Background)
 
-    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
-    AccountBankPanel.Background:SetAllPoints()
 
-    WoWTools_TextureMixin:Init_BGMenu_Frame(BankFrame, nil, {
-        settings=function(texture)
-            if BankFrame.bg_Texture then
-                BankFrame.Background:SetShown(not texture)
-                AccountBankPanel.Background:SetShown(not texture)
-                BankFrame.bg_Texture:SetShown(texture)
-            end
-        end
-    })
+
 
     Init=function()end
 end

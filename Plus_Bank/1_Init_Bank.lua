@@ -41,7 +41,7 @@ local function Init()
     WoWTools_BankMixin:Init_UI()--存放，取出，所有
     WoWTools_BankMixin:Init_Left_List()
     WoWTools_BankMixin:Set_PortraitButton()
-    return true
+    Init=function()end
 end
 
 
@@ -86,9 +86,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         end
 
     elseif event=='BANKFRAME_OPENED' then
-        if Init() then
-            Init=function()end
-        end
+        Init()
         self:UnregisterEvent(event)
     end
 end)

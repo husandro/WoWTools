@@ -187,14 +187,8 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetScrollBar(AchievementFrameStats)
     self:SetScrollBar(AchievementFrameComparison.StatContainer)
 
-    self:Init_BGMenu_Frame(AchievementFrame, nil, {
+    self:Init_BGMenu_Frame(AchievementFrame, {
         isNewButton=AchievementFrame.Header,
-        settings=function(texture)
-            if AchievementFrame.bg_Texture then
-                AchievementFrame.Background:SetShown(not texture)
-                AchievementFrame.bg_Texture:SetShown(texture)
-            end
-        end,
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
         end
@@ -415,7 +409,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
 
-    self:Init_BGMenu_Frame(AuctionHouseFrame, nil, {
+    self:Init_BGMenu_Frame(AuctionHouseFrame, {
         isNewButton=true,
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', AuctionHouseFrameCloseButton, 'LEFT', -23, 0)
@@ -894,8 +888,8 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
         end
     end)
 
-    self:Init_BGMenu_Frame(DelvesCompanionConfigurationFrame, nil, {
-        PortraitContainer=DelvesCompanionConfigurationFrame.CompanionPortraitFrame
+    self:Init_BGMenu_Frame(DelvesCompanionConfigurationFrame, {
+        PortraitContainer=DelvesCompanionConfigurationFrame.CompanionPortraitFrame,
     })
     --{isNewButton=true})
     self:Init_BGMenu_Frame(DelvesCompanionAbilityListFrame)
@@ -935,7 +929,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:CreateBG(SettingsPanel.Container, {isAllPoint=true, alpha=0.5, isColor=true})
 
 
-    self:Init_BGMenu_Frame(SettingsPanel, nil, {isNewButton=true})
+    self:Init_BGMenu_Frame(SettingsPanel, {isNewButton=true})
 end
 
 
@@ -1127,7 +1121,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetFrame(WorldMapFrame.NavBar.overlay, {alpha=0})
 
     WorldMapFrame.BorderFrame.PortraitContainer:SetSize(48,48)
-    self:Init_BGMenu_Frame(WorldMapFrame, nil, {
+    self:Init_BGMenu_Frame(WorldMapFrame, {
         PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer
     })
 end
@@ -1143,7 +1137,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
     GameMenuFrame.Header.Text:SetPoint('TOP', 0 ,-24)
     self:HideFrame(GameMenuFrame.Border)
 
-    self:Init_BGMenu_Frame(GameMenuFrame, nil, {
+    self:Init_BGMenu_Frame(GameMenuFrame, {
         isNewButton=true,
         newButtonPoint=function(btn)
             btn:SetPoint('TOPLEFT', GameMenuFrame.Border)
@@ -1266,11 +1260,12 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
         self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture)
     end
 
-    self:Init_BGMenu_Frame(AddonList, nil, {
+    self:Init_BGMenu_Frame(AddonList, {
         isNewButton=true,
         newButtonPoint=function(btn)
-        btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -23, 0)
-    end})
+            btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -23, 0)
+        end,
+    })
 end
 
 
@@ -1642,7 +1637,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     end)
 
 
-    self:Init_BGMenu_Frame(ChallengesKeystoneFrame, nil, {
+    self:Init_BGMenu_Frame(ChallengesKeystoneFrame, {
         isNewButton=ChallengesKeystoneFrame.CloseButton,
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT', -23, 0)
@@ -1808,10 +1803,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     --CharacterFrame.PortraitContainer:SetPoint('TOPLEFT', -3, 3)
     CharacterFrame.Background:SetPoint('TOPLEFT', 3, -3)
     CharacterFrame.Background:SetPoint('BOTTOMRIGHT',-3, 3)
-    self:Init_BGMenu_Frame(CharacterFrame,
-        CharacterFrame.Background
-    )
-
+    self:Init_BGMenu_Frame(CharacterFrame)
 end
 
 
@@ -2097,50 +2089,17 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
 
 --法术书 SpellBookFrameTemplate
     self:SetFrame(PlayerSpellsFrame.SpellBookFrame.HelpPlateButton, {alpha=0.3})
-    --PlayerSpellsFrame.SpellBookFrame.BookBGHalved
 
-    --[[PlayerSpellsFrame.TalentsFrame.Background:ClearAllPoints()
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('TOPLEFT')
-    PlayerSpellsFrame.TalentsFrame.Background:SetPoint('BOTTOMRIGHT', PlayerSpellsFrame.TalentsFrame, 'BOTTOMRIGHT')]]
-
-
-
-    --[[hooksecurefunc(PlayerSpellsFrame.TalentsFrame, "UpdateSpecBackground", function(frame)
-        if PlayerSpellsFrameBg.Set_BGTexture then
-            local currentSpecID = frame:GetSpecID()
-            local specVisuals = ClassTalentUtil.GetVisualsForSpecID(currentSpecID);
-            if specVisuals and specVisuals.background and C_Texture.GetAtlasInfo(specVisuals.background) then
-                PlayerSpellsFrameBg.set_BGData.p_texture= specVisuals.background
-            end
-
-            PlayerSpellsFrameBg:Set_BGTexture()
+    self:Init_BGMenu_Frame(PlayerSpellsFrame, {
+        notAnims=true,
+        isHook=true,
+        settings=function(texture, alpha)
+            PlayerSpellsFrame.SpecFrame.Background:SetAlpha(alpha)
+            PlayerSpellsFrame.SpecFrame.Background:SetShown(not texture)
+            PlayerSpellsFrame.TalentsFrame.Background:SetShown(not texture)
+            PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(alpha)
         end
-    end)]]
-
-    self:Init_BGMenu_Frame(PlayerSpellsFrame,
-        nil,
-        {
-            notAnims=true,
-            isHook=true,
-            --setValueFunc=function() WoWTools_Mixin:Call(PlayerSpellsFrame.TalentsFrame.UpdateSpecBackground, PlayerSpellsFrame.TalentsFrame) end,
-            --[[icons={
-                PlayerSpellsFrame.SpecFrame.Background,
-                PlayerSpellsFrame.TalentsFrame.Background,
-            }]]
-            settings=function(texture, alpha)
-                if not PlayerSpellsFrame.bg_Texture then
-                    return
-                end
-                PlayerSpellsFrame.SpecFrame.Background:SetShown(not texture)
-                PlayerSpellsFrame.SpecFrame.Background:SetAlpha(alpha)
-
-                PlayerSpellsFrame.TalentsFrame.Background:SetShown(not texture)
-                PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(alpha)
-
-                PlayerSpellsFrame.bg_Texture:SetShown(texture)
-            end
-        }
-    )
+    })
 end
 
 
@@ -2357,14 +2316,12 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 --收集
     self:Init_BGMenu_Frame(CollectionsJournal)
 --试衣间
-    self:Init_BGMenu_Frame(WardrobeFrame,
-        nil,
-    {
+    self:Init_BGMenu_Frame(WardrobeFrame, {
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', WardrobeFrameCloseButton, -23, 0)
         end
-    }
-    )
+    })
+    
 end
 
 
@@ -2531,15 +2488,12 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
     self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
 
-    self:Init_BGMenu_Frame(ProfessionsBookFrame, nil, {
-        settings=function(textureName, alphaValue)--设置内容时，调用
-            ProfessionsBookPage1:SetShown(not textureName)
-            ProfessionsBookPage2:SetShown(not textureName)
-            ProfessionsBookPage1:SetAlpha(alphaValue or 1)
-            ProfessionsBookPage2:SetAlpha(alphaValue or 1)
-            if ProfessionsBookFrame.Background and not textureName then
-                ProfessionsBookFrame.Background:SetShown(false)
-            end
+    self:Init_BGMenu_Frame(ProfessionsBookFrame, {
+        settings=function(texture, alpha)--设置内容时，调用
+            ProfessionsBookPage1:SetShown(not texture)
+            ProfessionsBookPage1:SetAlpha(alpha)
+            ProfessionsBookPage2:SetShown(not texture)
+            ProfessionsBookPage2:SetAlpha(alpha)
         end,
         alpha=1,
     })
