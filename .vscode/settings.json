@@ -5864,7 +5864,8 @@
         "GarrisonLandingPageShipFollowerList",
         "GarrisonLandingPageTab1",
         "GarrisonLandingPageTab2",
-        "GarrisonLandingPageTab3"
+        "GarrisonLandingPageTab3",
+        "GarrisonLandingPageReport"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

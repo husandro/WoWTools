@@ -95,6 +95,7 @@ local function Unlock_Button(btn, name)
     end
 
 --更新位置
+    btn:ClearAllPoints()
     libDBIcon:SetButtonToPosition(btn, db and db.minimapPos or nil)
 
 --还原，显示/隐藏
@@ -469,7 +470,7 @@ local function Init_noAdd_Menu(self, root)
         end, function(data)
             Save().Icons.noAdd[data.name]= not Save().Icons.noAdd[data.name] and true or nil
             Save().Icons.hideAdd[data.name]=nil
-            Unlock_Button(nil, data.name)
+            Unlock_Button(btn, data.name)
             self:settings()
         end, {name=name})
     end
@@ -545,7 +546,7 @@ local function Init_hideAdd_Menu(self, root)
         end, function(data)
             Save().Icons.hideAdd[data.name]= not Save().Icons.hideAdd[data.name] and true or nil
             Save().Icons.noAdd[data.name]=nil
-            Unlock_Button(nil, data.name)
+            Unlock_Button(btn, data.name)
             self:settings()
         end, {name=name})
     end

@@ -687,29 +687,35 @@ end
 --要塞
 function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
     self:SetButton(GarrisonLandingPage.CloseButton, {all=true})
+
+    --要塞订单
     self:SetNineSlice(GarrisonCapacitiveDisplayFrame, nil, true)
+    self:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
+    self:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
+    self:HideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
 
-    if GarrisonCapacitiveDisplayFrame then--要塞订单
-        self:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
-        self:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
-        self:HideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
-    end
+    self:HideFrame(GarrisonLandingPage)
+    self:HideFrame(GarrisonLandingPage.Report)
 
-    self:SetFrame(GarrisonLandingPage, {alpha= 0.3})
-    self:SetFrame(GarrisonLandingPage.Report, {alpha= 0.3})
-    
     self:SetScrollBar(GarrisonLandingPageFollowerList)
     self:HideTexture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
+    self:SetEditBox(GarrisonLandingPageFollowerList.SearchBox)
+    self:HideTexture(GarrisonLandingPageFollowerList.FollowerHeaderBar)
 
     self:SetScrollBar(GarrisonLandingPageReportList)
-    
+    self:HideFrame(GarrisonLandingPageReportList)
+    self:HideTexture(GarrisonLandingPageReport.Background)
+
     self:SetScrollBar(GarrisonLandingPageShipFollowerList)
     self:HideTexture(GarrisonLandingPageShipFollowerList.FollowerScrollFrame)
     self:SetEditBox(GarrisonLandingPageShipFollowerList.SearchBox)
+    self:HideTexture(GarrisonLandingPageShipFollowerList.FollowerHeaderBar)
 
     self:SetTabButton(GarrisonLandingPageTab1)
     self:SetTabButton(GarrisonLandingPageTab2)
     self:SetTabButton(GarrisonLandingPageTab3)
+
+    self:Init_BGMenu_Frame(GarrisonLandingPage, {isNewButton=true})
 end
 
 
@@ -1035,8 +1041,9 @@ end
 
 --派系声望
 function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
-    self:SetAlphaColor(MajorFactionRenownFrame.Background)
+    --self:SetAlphaColor(MajorFactionRenownFrame.Background)
     self:SetNineSlice(MajorFactionRenownFrame)
+    self:SetButton(MajorFactionRenownFrame.CloseButton, {all=true})
 
 --解锁
     hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
@@ -1046,6 +1053,17 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
     hooksecurefunc(MajorFactionButtonLockedStateMixin, 'Refresh', function(frame)
         self:SetAlphaColor(frame.Background, nil, nil, 0.75)
     end)
+
+    self:Init_BGMenu_Frame(MajorFactionRenownFrame, {isNewButton=true,
+        newButtonAlpha=1,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOPLEFT', 10, -10)
+        end,
+        settings=function(texture, alpha)
+            MajorFactionRenownFrame.Background:SetAlpha(texture and 0 or alpha or 1)
+        end
+    })
+    
 end
 
 
