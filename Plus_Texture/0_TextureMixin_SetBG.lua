@@ -909,7 +909,7 @@ local function Create_Button(self, tab)
 
     local closeButton= self.ClosePanelButton or self.CloseButton
 
-    local p= tab.isNewButton==true and (closeButton or self) or tab.isNewButton
+    local p= tab.isNewButton==true and self or tab.isNewButton
 
     self.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
         size=23,
@@ -921,7 +921,7 @@ local function Create_Button(self, tab)
     icon:ClearAllPoints()
     icon:SetPoint('CENTER')
     icon:SetSize(16,16)
-    icon:SetAlpha(0.5)
+    icon:SetAlpha(tab.newButtonAlpha or 0.5)
 
     if tab.newButtonPoint then
         tab.newButtonPoint(self.bgMenuButton)
@@ -959,9 +959,12 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     notAnims=true,
     menuTag='MENU_FCF_TAB',--菜单中，添加子菜单
     PortraitContainer=Frame.PortraitContainer,
+
     isNewButton=true,
+    newButtonAlpha=1,
     newButtonPoint=function(btn)
     end
+
     bgPoint=function(icon)
     end
 })

@@ -621,6 +621,10 @@ function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
     end)
 
     self:Init_BGMenu_Frame(WeeklyRewardsFrame, {isNewButton=true,
+        newButtonAlpha=1,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOPLEFT', 10, -10)
+        end,
         bgPoint=function(icon)
             icon:SetPoint('TOPLEFT', 10, -10)
             icon:SetPoint('BOTTOMRIGHT', -10, 10)
@@ -682,7 +686,9 @@ end
 
 --要塞
 function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
-    self:SetNineSlice(GarrisonCapacitiveDisplayFrame, true)
+    self:SetButton(GarrisonLandingPage.CloseButton, {all=true})
+    self:SetNineSlice(GarrisonCapacitiveDisplayFrame, nil, true)
+
     if GarrisonCapacitiveDisplayFrame then--要塞订单
         self:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
         self:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
@@ -691,10 +697,19 @@ function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
 
     self:SetFrame(GarrisonLandingPage, {alpha= 0.3})
     self:SetFrame(GarrisonLandingPage.Report, {alpha= 0.3})
-    if GarrisonLandingPageFollowerList then
-        self:HideTexture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
-        self:SetScrollBar(GarrisonLandingPageReportList)
-    end
+    
+    self:SetScrollBar(GarrisonLandingPageFollowerList)
+    self:HideTexture(GarrisonLandingPageFollowerList.FollowerScrollFrame)
+
+    self:SetScrollBar(GarrisonLandingPageReportList)
+    
+    self:SetScrollBar(GarrisonLandingPageShipFollowerList)
+    self:HideTexture(GarrisonLandingPageShipFollowerList.FollowerScrollFrame)
+    self:SetEditBox(GarrisonLandingPageShipFollowerList.SearchBox)
+
+    self:SetTabButton(GarrisonLandingPageTab1)
+    self:SetTabButton(GarrisonLandingPageTab2)
+    self:SetTabButton(GarrisonLandingPageTab3)
 end
 
 
@@ -705,12 +720,13 @@ end
 --欲龙术
 function WoWTools_TextureMixin.Events:Blizzard_GenericTraitUI()
     self:HideFrame(GenericTraitFrame)
-    self:SetButton(GenericTraitFrame.CloseButton, {all=true})
+    self:SetButton(GenericTraitFrame.CloseButton, {all=true, alpha=1})
     self:SetNineSlice(GenericTraitFrame)
 
     self:Init_BGMenu_Frame(GenericTraitFrame, {isNewButton=true,
+        newButtonAlpha=1,
         newButtonPoint=function(btn)
-            btn:SetPoint('TOLEFT', 7, -8)
+            btn:SetPoint('TOPLEFT', 10, -10)
         end,
         bgPoint=function(icon)
             icon:SetPoint('TOPLEFT', 10, -10)
@@ -987,9 +1003,10 @@ function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
 
     self:Init_BGMenu_Frame(ExpansionLandingPage, {
         isNewButton=true,
+        newButtonAlpha=1,
         newButtonPoint=function(btn)
             if ExpansionLandingPage.overlayFrame then
-	            btn:SetPoint("TOPLEFT", ExpansionLandingPage.overlayFrame, 7, -8)
+	            btn:SetPoint('TOPLEFT', ExpansionLandingPage.overlayFrame, 7, -8)
             else
                 btn:SetPoint('TOPLEFT')
             end
