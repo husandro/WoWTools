@@ -151,6 +151,9 @@ local function Update_Animation(self)
     PlayStop_Anims(self)
 end
 
+local function Get_Alpha(name, icon)
+    return SaveData(name).alpha or icon.BgData.alpha or 0.5
+end
 
 local function Set_BGTexture(self, name)
     local icon= self[BGName]
@@ -161,7 +164,7 @@ local function Set_BGTexture(self, name)
     name= name or self:GetName()
     local data= SaveData(name)
 
-    local alpha= data.alpha or icon.BgData.alpha or 0.5
+    local alpha= Get_Alpha(name, icon)
     local texture= data.texture
 
     if texture and C_Texture.GetAtlasInfo(texture) then
@@ -244,9 +247,6 @@ local function texture_list(self, root, name, icon, texture, isAdd)
             SaveData(name).texture= texture
             Settings()
         end
-
-
-
         return MenuResponse.Refresh
     end)
 
@@ -269,7 +269,7 @@ local function texture_list(self, root, name, icon, texture, isAdd)
         else
             GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一设置' or ALL, HIGHLIGHT_FONT_COLOR)
         end
-        tooltip:AddLine('Alpha '..(SaveData(name).alpha or icon.BgData.alpha or 0.5))
+        tooltip:AddLine('Alpha '..Get_Alpha(name, icon))
     end)
 
     if isAdd then
@@ -474,7 +474,7 @@ local function Add_Frame_Menu(_, root)
             local enabled= Save().Add[data.name].enabled
 
             Save().Add[data.name].enabled= not enabled and true or nil
-            
+
             if _G[data.name] then
                 Settings(_G[data.name])
             end
@@ -602,7 +602,7 @@ local function Init_Menu(self, root, isSub)
     sub:CreateSpacer()
     WoWTools_MenuMixin:CreateSlider(sub, {
         getValue=function()
-            return SaveData(name).alpha or self[BGName].BgData.alpha or 0.5
+            return  Get_Alpha(name, icon)
         end,
         setValue=function(value)
             SaveData(name).alpha=value
@@ -874,10 +874,9 @@ local function Set_Frame_Menu(frame, tab)
 
     function self:set_texture_alpha()
         local t= self.portrait or self.Icon
-        if not t then
-            return
+        if t then
+            t:SetAlpha(GameTooltip:IsOwned(self) and 0.5 or 1)
         end
-        t:SetAlpha(GameTooltip:IsOwned(self) and 0.5 or 1)
     end
 
     self:HookScript('OnLeave', function(s)
@@ -968,21 +967,14 @@ WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     name=名称,
     icon=icon,
     alpha=0,--默认alpha
-    icons={},--Textures,是否修改其它图片 {icon1, icon2, ...}
-
     settings=function(icon, textureName, alphaValue)--设置内容时，调用
     end,
-
-    
     notAnims=true,
-
     menuTag='MENU_FCF_TAB',--菜单中，添加子菜单
     PortraitContainer=Frame.PortraitContainer,
-
     isNewButton=true,
     newButtonPoint=function(btn)
     end
-
     bgPoint=function(icon)
     end
 })
@@ -1006,17 +998,15 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     end
 
     tab.name= name
-
     Save().Add[name]= Save().Add[name] or {}
 
+--创建图片
     frame[BGName]= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)
-
     local icon= frame[BGName]
     if not tab.bgPoint then
         icon:SetPoint('TOPLEFT', 3, -3)
         icon:SetPoint('BOTTOMRIGHT',-3, 3)
     end
-
 --调用，设置
     if tab.bgPoint then
         tab.bgPoint(icon)
@@ -1026,19 +1016,16 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     --fram:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
     icon.BgData= {
-        --name= name,
         alpha= tab.alpha,
         settings= tab.settings,
     }
 
-
-
 --创建动画组
     Create_Anims(frame, icon, tab)
---BG, 设置
-    Settings(frame)
 --创建，菜单按钮
     Create_Button(frame, tab)
 --设置，调用，菜单
     Set_Frame_Menu(frame, tab)
+--BG, 设置
+    Settings(frame)
 end
