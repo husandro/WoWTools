@@ -78,8 +78,8 @@ local function Init(self)
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT', -48, 0)
         end,
-        settings=function(texture)
-            GuildBankFrame.BlackBG:SetShown(not texture)
+        settings=function(texture, alpha)
+            GuildBankFrame.BlackBG:SetAlpha(texture and 0 or alpha or 1)
         end
     })
 

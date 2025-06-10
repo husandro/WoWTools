@@ -687,7 +687,7 @@ local function Init()
 
 
 --背景
-    GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha or 1)
+    --GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha or 1)
 
 --移动，大小
     WoWTools_MoveMixin:Setup(GuildBankFrame, {

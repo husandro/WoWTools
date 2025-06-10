@@ -92,7 +92,7 @@ local function Init_Menu(self, root)
     end)
     root:CreateDivider()
 
-    root:CreateSpacer()
+    --[[root:CreateSpacer()
     sub= WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
             return Save().BgAplha or 1
@@ -111,7 +111,7 @@ local function Init_Menu(self, root)
         end
     })
     sub:SetEnabled(isEnabled)
-    root:CreateSpacer()
+    root:CreateSpacer()]]
 
 
 
