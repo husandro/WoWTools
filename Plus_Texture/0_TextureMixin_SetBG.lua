@@ -147,6 +147,8 @@ local function Update_Animation(self)
     local alpha = Save().Anims.alpha or 0.75
     self.backgroundAnims.fadeIn:SetToAlpha(alpha)   -- 变为不透明
     self.backgroundAnims.fadeOut:SetFromAlpha(alpha)    -- 从不透明
+
+    PlayStop_Anims(self)
 end
 
 
@@ -187,7 +189,6 @@ local function Set_BGTexture(self, name)
     local anims= self.backgroundAnims
     if anims and anims.fadeIn then
         Update_Animation(self)
-        PlayStop_Anims(self)
     end
 end
 
@@ -831,7 +832,6 @@ local function Create_Anims(self, icon, tab)
 -- 添加事件监听
     self:HookScript("OnSizeChanged", function(frame)
         Update_Animation(frame)
-        PlayStop_Anims(frame)
     end)
 
     self.AirParticlesFar:SetScript("OnShow", function(frame)
