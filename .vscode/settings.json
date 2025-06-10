@@ -5852,7 +5852,9 @@
         "CombatConfigFormattingExampleString2",
         "EncounterJournalEncounterFrameInfoOverviewScrollFrameScrollChildHeader",
         "PerksProgramCurrencyFrameMixin",
-        "ANIMATION"
+        "ANIMATION",
+        "ClassTrainerFrameCloseButton",
+        "ClassTrainerFramePortrait"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

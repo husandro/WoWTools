@@ -8,15 +8,18 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
-    self:SetFrame(ClassTrainerFrame, {alpha=0.3})
+    self:HideFrame(ClassTrainerFrame, {show={[ClassTrainerFramePortrait]=1}})
     self:SetScrollBar(ClassTrainerFrame)
-    self:SetNineSlice(ClassTrainerFrame, true)
+    self:SetNineSlice(ClassTrainerFrame)
+    self:SetButton(ClassTrainerFrameCloseButton, {all=true})
 
     self:HideTexture(ClassTrainerFrameInset.Bg)
-    self:SetNineSlice(ClassTrainerFrameInset, true)
+    self:SetNineSlice(ClassTrainerFrameInset, nil, true)
 
     self:HideTexture(ClassTrainerFrameBottomInset.Bg)
-    self:SetNineSlice(ClassTrainerFrameBottomInset, true)
+    self:SetNineSlice(ClassTrainerFrameBottomInset, nil, true)
+
+    self:Init_BGMenu_Frame(ClassTrainerFrame)
 end
 
 

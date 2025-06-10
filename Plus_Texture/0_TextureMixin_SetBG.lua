@@ -792,18 +792,6 @@ local function Create_Anims(self, icon, tab)
     self.backgroundAnims = self.AirParticlesFar:CreateAnimationGroup()
     self.backgroundAnims:SetLooping("REPEAT") -- 设置循环播放
 
---[[
-<AnimationGroup parentArray="backgroundAnims" looping="REPEAT" inherits="TargetsVisibleWhilePlayingAnimGroupTemplate">
-<Alpha childKey="AirParticlesFar" order="2" fromAlpha="0" toAlpha="0.14" duration="5" smoothing="NONE"/>
-<Alpha childKey="AirParticlesFar" order="2" fromAlpha="0.14" toAlpha="0" startDelay="31" duration="5" smoothing="NONE"/>
-<Translation childKey="AirParticlesFar" order="1" offsetX="100" offsetY="0"/>
-<Translation childKey="AirParticlesFar" order="2" offsetX="-200" offsetY="0" startDelay="0" duration="36"/>
-<Translation childKey="AirParticlesFar" order="3" offsetX="200" offsetY="0" startDelay="0"/>
-<Rotation childKey="AirParticlesFar" duration="36" order="2" degrees="-20" />
-</AnimationGroup>
-]]
-
-
     -- 透明度变化动画
     self.backgroundAnims.fadeIn = self.backgroundAnims:CreateAnimation("Alpha")
     self.backgroundAnims.fadeIn:SetFromAlpha(0) -- 从透明
@@ -833,11 +821,11 @@ local function Create_Anims(self, icon, tab)
         Update_Animation(frame)
     end)
 
-    self:SetScript("OnShow", function(frame)
+    self:HookScript("OnShow", function(frame)
         PlayStop_Anims(frame)
     end)
 
-    self:SetScript("OnHide", function(frame)
+    self:HookScript("OnHide", function(frame)
          frame.backgroundAnims:Stop()
     end)
 end
