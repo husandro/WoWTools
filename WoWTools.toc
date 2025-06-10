@@ -362,6 +362,7 @@ Plus_BankGuild\Menu.lua
 Plus_BankGuild\Plus_Init.lua
 Plus_BankGuild\Plus_TabButton_Menu.lua
 Plus_BankGuild\Plus_Sort.lua
+Plus_BankGuild\z_UI.lua
 
 ##容器
 Plus_Bag\0_BagMixin.lua

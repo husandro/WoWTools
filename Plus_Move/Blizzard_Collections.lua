@@ -300,6 +300,9 @@ local function Init_CollectionsJournal()
         end
     })
 
+    
+    WoWTools_MoveMixin:Setup(MountJournal.BottomLeftInset, {frame=CollectionsJournal})
+
     WoWTools_MoveMixin:Setup(PetJournalPetCard, {frame=CollectionsJournal})
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet1, {frame=CollectionsJournal})
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet2, {frame=CollectionsJournal})

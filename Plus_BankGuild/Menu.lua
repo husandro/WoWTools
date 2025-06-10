@@ -107,6 +107,7 @@ local function Init_Menu(self, root)
         bit='%.2f',
         tooltip=function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)
+            tooltip:AddLine('IsShown '..WoWTools_TextMixin:GetShowHide(GuildBankFrame.BlackBG:IsShown()))
         end
     })
     sub:SetEnabled(isEnabled)
@@ -178,10 +179,13 @@ end
 
 
 local function Init()
-    MenuButton= WoWTools_ButtonMixin:Menu(GuildBankFrame.CloseButton, {
+    MenuButton= WoWTools_ButtonMixin:Menu(GuildBankFrame.Column1.Button1, {
         name='WoWToolsGuildBankMenuButton',
     })
     MenuButton:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT', -2, 0)
+    MenuButton:SetFrameStrata(GuildBankFrame.CloseButton:GetFrameStrata())
+    MenuButton:SetFrameLevel(GuildBankFrame.CloseButton:GetFrameLevel()+1)
+
     MenuButton:SetupMenu(Init_Menu)
 
     RefreshButton=  WoWTools_ButtonMixin:Cbtn(MenuButton, {

@@ -35,7 +35,7 @@ local function UpdateMountDisplay()
     })
 
     function Button:set_Alpha()
-        self:GetNormalTexture():SetAlpha(Save().ShowMountDisplayInfo and 0.2 or 1)
+        self:GetNormalTexture():SetAlpha(Save().ShowMountDisplayInfo and 0.2 or 0.5)
     end
     function Button:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")

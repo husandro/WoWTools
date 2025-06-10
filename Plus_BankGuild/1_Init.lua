@@ -29,6 +29,7 @@ local function Init()
     WoWTools_GuildBankMixin:Init_Plus()
     WoWTools_GuildBankMixin:Init_GuildMenu()
     WoWTools_GuildBankMixin:Init_Plus_Sort()
+    WoWTools_GuildBankMixin:Init_UI()
 
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)
