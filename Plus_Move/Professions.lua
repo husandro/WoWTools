@@ -74,14 +74,15 @@ local function initFunc()
             return self:P_GetDesiredPageWidth()--1144
         end
     end
-    
+
     local function set_on_show(self)
         if not self.ResizeButton then
             return
         end
-        C_Timer.After(0.3, function()
+        --C_Timer.After(0.3, function()
             local size, scale
             local name= self:GetName()
+
             if ProfessionsUtil.IsCraftingMinimized() then
                 scale= Save().scale[name..'Mini']
                 size= Save().size[name..'Mini']
@@ -115,16 +116,35 @@ local function initFunc()
             if size then
                 self:SetSize(size[1], size[2])
             end
-        end)
+        --end)
     end
-    ProfessionsFrame:HookScript('OnShow', set_on_show)
+
+
+    set_on_show(ProfessionsFrame)
+    --[[ProfessionsFrame:HookScript('OnShow', function(self)
+        set_on_show(self)
+    end)]]
+
     for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
         local btn= ProfessionsFrame:GetTabButton(tabID)
-        btn:HookScript('OnClick', function()
-            set_on_show(ProfessionsFrame)
+        btn:HookScript('OnClick', function(self)
+            C_Timer.After(0.5, function()
+                set_on_show(self:GetParent():GetParent())
+            end)
        end)
     end
-    hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', set_on_show)
+
+    hooksecurefunc(ProfessionsFrame, 'SetTab', function(self)
+        if self.changingTabs then
+            return
+        end
+
+        --set_on_show(ProfessionsFrame)
+    end)
+    hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', function(self)
+        set_on_show(self)
+        print('ApplyDesiredWidth')
+    end)
 
 
 

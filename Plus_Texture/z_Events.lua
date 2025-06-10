@@ -777,59 +777,78 @@ end
 
 --专业, 初始化, 透明
 function WoWTools_TextureMixin.Events:Blizzard_Professions()
-    self:SetNineSlice(ProfessionsFrame, true)
-    self:HideTexture(ProfessionsFrameBg)
-    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.3)
-    self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.3)
+    self:SetNineSlice(ProfessionsFrame)
+    self:HideFrame(ProfessionsFrame)
+    self:SetButton(ProfessionsFrame.CloseButton, {all=true})
+    self:SetButton(ProfessionsFrame.MaximizeMinimize.MaximizeButton, {all=true})
+    self:SetButton(ProfessionsFrame.MaximizeMinimize.MinimizeButton, {all=true})
+    self:SetButton(ProfessionsFrame.CraftingPage.TutorialButton, {all=true})
 
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.5)
+
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.5)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm, nil, true)
+    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0.5)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
 
-    self:HideTexture(ProfessionsFrame.SpecPage.TreeView.Background)
+    self:SetAlphaColor(ProfessionsFrame.SpecPage.TreeView.Background, nil, nil, 0)
     self:HideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
     self:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.Path.DialBG)
     self:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
+    self:SetAlphaColor(ProfessionsFrame.SpecPage.TopDivider, nil, nil, 0)
 
-    self:SetNineSlice(InspectRecipeFrame, true)
+    self:SetNineSlice(InspectRecipeFrame, nil, true)
     self:SetAlphaColor(InspectRecipeFrameBg)
     self:SetAlphaColor(InspectRecipeFrame.SchematicForm.MinimalBackground)
     --self:SetTabSystem(ProfessionsFrame)
 
-    if ProfessionsFrame.SpecPage then
-        hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(frame)
-            for tab, bool in frame.tabsPool:EnumerateActive() do
-                if bool then
-                    self:SetFrame(tab, {alpha=0.3})
-                end
+    hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateTabs', function(frame)
+        for tab, bool in frame.tabsPool:EnumerateActive() do
+            if bool then
+                self:SetFrame(tab, {alpha=0.3})
             end
-        end)
-        self:SetAlphaColor(ProfessionsFrame.SpecPage.PanelFooter)
+        end
+    end)
+    self:SetAlphaColor(ProfessionsFrame.SpecPage.PanelFooter)
 
-        self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.Background, nil, nil, 0.3)
-        self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList.Background, nil,nil, 0.3)
-    end
+    --self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.Background, nil, nil, 0.3)
 
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.Background, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, 0.3)
-    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo)
-    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo, nil, true)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails, nil, true)
 
+    
+    self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
+    self:SetEditBox(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.SearchBox)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.BackgroundNineSlice, nil, true)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Left, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Middle, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, 0.3)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList.Background, nil,nil, 0.3)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList, nil, true)
+    self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrdersRemainingDisplay.Background, nil, nil, 0.3)
 
-    self:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, true)
+    for _, typeTab in ipairs(ProfessionsFrame.OrdersPage.BrowseFrame.orderTypeTabs) do
+        self:SetTabButton(typeTab)
+	end
+    --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton)
+    --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.GuildOrdersButton)
+    --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.GuildOrdersButton)
+
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, nil, true)
     self:SetScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
+
     self:SetScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.RecipeList.BackgroundNineSlice, nil, true)
 
-    self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm, true)
-    self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0)
 
-    self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
+
     self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
 
     self:Init_BGMenu_Frame(ProfessionsFrame)
@@ -844,13 +863,13 @@ end
 
 --点击，施法
 function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI()
-    self:SetNineSlice(ClickBindingFrame, true)
+    self:SetNineSlice(ClickBindingFrame)
     self:SetScrollBar(ClickBindingFrame)
     self:SetAlphaColor(ClickBindingFrameBg)
     ClickBindingFrame.ScrollBoxBackground:Hide()
     --self:SetNineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
 
-    self:SetNineSlice(ClickBindingFrame.TutorialFrame, true)
+    self:SetNineSlice(ClickBindingFrame.TutorialFrame)
 end
 
 
@@ -2598,11 +2617,11 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
+--[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
     hooksecurefunc(HelpPlateButtonMixin, 'OnShow', function()
-        print('a')
+        print('ab')
     end)
-end
+end]]
 
 
 function WoWTools_TextureMixin.Events:Blizzard_SharedXML()

@@ -5865,7 +5865,8 @@
         "GarrisonLandingPageTab1",
         "GarrisonLandingPageTab2",
         "GarrisonLandingPageTab3",
-        "GarrisonLandingPageReport"
+        "GarrisonLandingPageReport",
+        "ProfessionsMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

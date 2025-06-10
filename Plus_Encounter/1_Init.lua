@@ -42,7 +42,6 @@ local function Init_EncounterJournal()--冒险指南界面
             local tier= math.min(Save().EncounterJournalTier, max)
             if tier~= max then
                 EJ_SelectTier(tier)
-                print('a', tier)
             end
         end
     end

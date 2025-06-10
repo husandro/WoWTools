@@ -26,13 +26,16 @@ function WoWTools_TextureMixin:HideTexture(object)--, notClear)
         object:SetTexture(0)
     end
 end
-    --texture:SetAlpha(0)
-    --texture:SetShown(false)
+
 
 
 --设置，颜色，透明度
 function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaORmin)
     if object then
+        if alphaORmin==0 then
+            object:SetAlpha(0)
+            return
+        end
         if not notColor and WoWTools_DataMixin.Player.useColor then
             WoWTools_ColorMixin:Setup(object, {type=object:GetObjectType()})
         end
@@ -197,7 +200,7 @@ function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, i
     end
 
     if not f then
-        if frame.TopEdge then
+        if frame.TopEdge or not isFind then
             f=frame
         else
             return

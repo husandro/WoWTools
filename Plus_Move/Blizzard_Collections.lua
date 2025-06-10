@@ -227,6 +227,7 @@ local function Init_CollectionsJournal()
     MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
     MountJournal.RightInset:SetPoint('BOTTOM', 0, 26)
     MountJournal.LeftInset:SetPoint('RIGHT', MountJournal.RightInset, 'LEFT', -24, 0)
+    
     MountJournal.BottomLeftInset:SetPoint('TOPRIGHT', MountJournal.LeftInset, 'BOTTOMRIGHT', 0, -10)
     for _, region in pairs({MountJournal.BottomLeftInset:GetRegions()}) do
         region:SetPoint('RIGHT')
