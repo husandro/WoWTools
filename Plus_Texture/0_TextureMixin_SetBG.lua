@@ -571,8 +571,7 @@ local function Init_Menu(self, root, isSub)
 
 --自定义，设置，分开或统一
     sub2= sub:CreateCheckbox(
-        '|A:Warfronts-FieldMapIcons-Neutral-Banner-Minimap:0:0|a'
-        ..string.format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, ''),
+        WoWTools_DataMixin.onlyChinese and '仅限' or string.format(LFG_LIST_CROSS_FACTION, ''),
     function()
         return IsEnabledSaveBg(name)
     end, function()
@@ -834,12 +833,12 @@ local function Create_Anims(self, icon, tab)
         Update_Animation(frame)
     end)
 
-    self.AirParticlesFar:SetScript("OnShow", function(frame)
-        PlayStop_Anims(frame:GetParent())
+    self:SetScript("OnShow", function(frame)
+        PlayStop_Anims(frame)
     end)
 
-    self.AirParticlesFar:SetScript("OnHide", function(frame)
-         frame:GetParent().backgroundAnims:Stop()
+    self:SetScript("OnHide", function(frame)
+         frame.backgroundAnims:Stop()
     end)
 end
 

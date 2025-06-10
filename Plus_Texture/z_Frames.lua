@@ -2,12 +2,14 @@
 function WoWTools_TextureMixin.Frames:GossipFrame()
     self:SetButton(GossipFrameCloseButton, {all=true})
     self:SetNineSlice(GossipFrame, true)
-    self:SetAlphaColor(GossipFrameBg)
+    self:HideTexture(GossipFrameBg)
+    self:HideTexture(GossipFrame.TopTileStreaks)
 
     self:HideTexture(GossipFrameInset.Bg)
     self:SetNineSlice(GossipFrameInset, nil, true)
 
     self:SetScrollBar(GossipFrame.GreetingPanel)
+
     self:Init_BGMenu_Frame(GossipFrame, {
         alpha=1,
     })
