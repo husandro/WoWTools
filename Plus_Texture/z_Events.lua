@@ -19,6 +19,17 @@ function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
     self:HideTexture(ClassTrainerFrameBottomInset.Bg)
     self:SetNineSlice(ClassTrainerFrameBottomInset, nil, true)
 
+    self:HideTexture(ClassTrainerStatusBarBackground)
+    self:SetAlphaColor(ClassTrainerStatusBarRight, nil, nil, 0.3)
+    self:SetAlphaColor(ClassTrainerStatusBarLeft, nil, nil, 0.3)
+    self:SetAlphaColor(ClassTrainerStatusBarMiddle, nil, nil, 0.3)
+
+    ClassTrainerFrameSkillStepButton:SetNormalTexture(0)
+    hooksecurefunc('ClassTrainerFrame_InitServiceButton', function(btn)
+        btn:SetNormalTexture(0)
+    end)
+
+
     self:Init_BGMenu_Frame(ClassTrainerFrame)
 end
 
@@ -435,45 +446,37 @@ end
 
 --专业定制
 function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders()
+    self:HideFrame(ProfessionsCustomerOrdersFrame)
+    self:HideTexture(ProfessionsCustomerOrdersFrameBg)
     self:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
+    self:SetButton(ProfessionsCustomerOrdersFrameCloseButton, {all=true})
 
     self:SetEditBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleMiddle)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleLeft)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddleRight)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
-
-    --self:SetAlphaColor(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground.Background)
-    --self:SetAlphaColor(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground.Background)
-
-    self:HideTexture(ProfessionsCustomerOrdersFrame.MoneyFrameInset.Bg)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddle)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameRight)
+    self:HideTexture(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
 
     self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
     self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
-    self:SetFrame(ProfessionsCustomerOrdersFrameBrowseTab, {alpha=1})
-    self:SetFrame(ProfessionsCustomerOrdersFrameOrdersTab, {alpha=1})
+    self:SetTabButton(ProfessionsCustomerOrdersFrameBrowseTab)
+    self:SetTabButton(ProfessionsCustomerOrdersFrameOrdersTab)
 
-    self:SetFrame(ProfessionsCustomerOrdersFrame.MoneyFrameBorder)
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameLeft)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameRight)
-    self:SetAlphaColor(ProfessionsCustomerOrdersFrameMiddle)
+    self:HideFrame(ProfessionsCustomerOrdersFrame.MoneyFrameBorder)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset, nil, true)
+    self:HideFrame(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
 
     self:SetNineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
 
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, nil, true)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
-    self:HideTexture(ProfessionsCustomerOrdersFrameBg)
 
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, true)
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground, true)
+
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground)
+
+    self:Init_BGMenu_Frame(ProfessionsCustomerOrdersFrame)
 end
 
 
@@ -609,16 +612,20 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
-    self:SetAlphaColor(WeeklyRewardsFrame.BackgroundTile)
-    self:SetEditBox(WeeklyRewardsFrame.HeaderFrame)
-    self:SetAlphaColor(WeeklyRewardsFrame.RaidFrame.Background)
-    self:SetAlphaColor(WeeklyRewardsFrame.MythicFrame.Background)
-    self:SetAlphaColor(WeeklyRewardsFrame.PVPFrame.Background)
+    self:HideFrame(WeeklyRewardsFrame)
+    self:SetButton(WeeklyRewardsFrame.CloseButton, {all=true})
     hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(frame)
-        for _, frame in ipairs(frame.Activities) do
-            self:SetAlphaColor(frame.Background)
+        for _, f in ipairs(frame.Activities) do
+            self:SetAlphaColor(f.Background)
         end
     end)
+
+    self:Init_BGMenu_Frame(WeeklyRewardsFrame, {isNewButton=true,
+        bgPoint=function(icon)
+            icon:SetPoint('TOPLEFT', 10, -10)
+            icon:SetPoint('BOTTOMRIGHT', -10, 10)
+        end
+    })
 end
 
 
@@ -697,8 +704,19 @@ end
 
 --欲龙术
 function WoWTools_TextureMixin.Events:Blizzard_GenericTraitUI()
-    self:SetAlphaColor(GenericTraitFrame.Background)
-    self:SetNineSlice(GenericTraitFrame, true)
+    self:HideFrame(GenericTraitFrame)
+    self:SetButton(GenericTraitFrame.CloseButton, {all=true})
+    self:SetNineSlice(GenericTraitFrame)
+
+    self:Init_BGMenu_Frame(GenericTraitFrame, {isNewButton=true,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOLEFT', 7, -8)
+        end,
+        bgPoint=function(icon)
+            icon:SetPoint('TOPLEFT', 10, -10)
+            icon:SetPoint('BOTTOMRIGHT', -10, 10)
+        end
+    })
 end
 
 
@@ -951,26 +969,48 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
     local function SetOverlayFrame(frame)
-        self:SetScrollBar(frame.MajorFactionList)
-        self:SetAlphaColor(frame.Background, nil, nil,true)
-        self:HideTexture(frame.ScrollFadeOverlay)
-    end
-
-    hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
-        frame= frame.overlayFrame
-        if not frame or not frame:IsShown() then
+        if not frame then
             return
         end
-        SetOverlayFrame(frame)
+        self:HideFrame(frame, {show={[frame.Background]=1}})
+        self:SetScrollBar(frame.MajorFactionList)
+        self:SetButton(frame.CloseButton, {all=true})
+        self:HideFrame(frame.ScrollFadeOverlay)
+    end
+
+
+    SetOverlayFrame(ExpansionLandingPage.overlayFrame)
+
+    hooksecurefunc(ExpansionLandingPage, 'RefreshExpansionOverlay', function(frame)
+        SetOverlayFrame(frame.overlayFrame)
     end)
 
-    hooksecurefunc(DragonflightLandingOverlayMixin, 'RefreshOverlay', function(frame)
-        SetOverlayFrame(frame)
-    end)
-
-    hooksecurefunc(WarWithinLandingOverlayMixin, 'RefreshOverlay', function(frame)
-        SetOverlayFrame(frame)
-    end)
+    self:Init_BGMenu_Frame(ExpansionLandingPage, {
+        isNewButton=true,
+        newButtonPoint=function(btn)
+            if ExpansionLandingPage.overlayFrame then
+	            btn:SetPoint("TOPLEFT", ExpansionLandingPage.overlayFrame, 7, -8)
+            else
+                btn:SetPoint('TOPLEFT')
+            end
+            btn:SetFrameStrata('HIGH')
+        end,
+        bgPoint=function(icon)
+            if ExpansionLandingPage.overlayFrame then
+                icon:SetPoint('TOPLEFT', ExpansionLandingPage.overlayFrame, 10, -10)
+                icon:SetPoint('BOTTOMRIGHT', ExpansionLandingPage.overlayFrame, -10, 10)
+            else
+                icon:SetPoint('CENTER')
+                icon:SetSize(785, 550)
+            end
+        end,
+        settings=function(texture, alpha)
+            local bg= ExpansionLandingPage.overlayFrame and ExpansionLandingPage.overlayFrame.Background
+            if bg then
+                bg:SetAlpha(texture and 0 or alpha or 1)
+            end
+        end
+    })
 
 end
 
@@ -2322,7 +2362,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
             btn:SetPoint('RIGHT', WardrobeFrameCloseButton, -23, 0)
         end
     })
-    
+
 end
 
 

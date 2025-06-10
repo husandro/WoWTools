@@ -50,10 +50,11 @@ end
 --物品
 --####
 local function Set_Equip_Slot(btn)--装备
-    if not btn:CanChangeTalents() then
+    if btn and btn.CanChangeTalents and not btn:CanChangeTalents() or InCombatLockdown() then
         btn:RegisterEvent('PLAYER_REGEN_ENABLED')
         return
     end
+
     local slotItemID=GetInventoryItemID('player', btn.slot)
     local slotItemLink=GetInventoryItemLink('player', btn.slot)
     local name= slotItemLink and C_Item.GetItemInfo(slotItemLink) or slotItemID and C_Item.GetItemNameByID(slotItemID)

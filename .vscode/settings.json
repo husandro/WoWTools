@@ -5854,7 +5854,13 @@
         "PerksProgramCurrencyFrameMixin",
         "ANIMATION",
         "ClassTrainerFrameCloseButton",
-        "ClassTrainerFramePortrait"
+        "ClassTrainerFramePortrait",
+        "ClassTrainerFrame_InitServiceButton",
+        "ClassTrainerStatusBarBackground",
+        "ClassTrainerStatusBarRight",
+        "ClassTrainerStatusBarLeft",
+        "ClassTrainerStatusBarMiddle",
+        "ProfessionsCustomerOrdersFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -22,7 +22,7 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
         ClassTrainerFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -26, 34)
     end)
     self:Setup(ClassTrainerFrame, {
-        minW=328,
+        minW=200,--328,
         minH=197,
         setSize=true,
         sizeRestFunc=function(btn)
