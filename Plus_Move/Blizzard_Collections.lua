@@ -222,17 +222,37 @@ end
 local function Init_CollectionsJournal()
 --坐骑
     MountJournalSearchBox:SetPoint('RIGHT', MountJournal.FilterDropdown, 'LEFT', -2, 0)
+
     MountJournal.RightInset:ClearAllPoints()
     MountJournal.RightInset:SetWidth(400)
     MountJournal.RightInset:SetPoint('TOPRIGHT', -6, -60)
-    MountJournal.RightInset:SetPoint('BOTTOM', 0, 26)
-    MountJournal.LeftInset:SetPoint('RIGHT', MountJournal.RightInset, 'LEFT', -24, 0)
+    MountJournal.RightInset:SetPoint('BOTTOM', MountJournal, 0, 26)
+
+    MountJournal.LeftInset:ClearAllPoints()
+    MountJournal.LeftInset:SetPoint('TOPRIGHT', MountJournal.RightInset, 'TOPLEFT', -24, 0)
+    MountJournal.LeftInset:SetPoint('LEFT', 6, 0)
+    MountJournal.LeftInset:SetPoint('BOTTOM', MountJournalMountButton, 'TOP', 0, 2)
     
-    MountJournal.BottomLeftInset:SetPoint('TOPRIGHT', MountJournal.LeftInset, 'BOTTOMRIGHT', 0, -10)
-    for _, region in pairs({MountJournal.BottomLeftInset:GetRegions()}) do
-        region:SetPoint('RIGHT')
-    end
-    --MountJournalSearchBox:SetPoint('RIGHT', MountJournalFilterButton, 'LEFT', -2, 0)
+    --MountJournal.BottomLeftInset:SetPoint('TOPRIGHT', MountJournal.LeftInset, 'BOTTOMRIGHT', 0, -10)
+    MountJournal.BottomLeftInset:ClearAllPoints()
+    MountJournal.BottomLeftInset:SetPoint('BOTTOM', MountJournal.RightInset)
+    MountJournal.BottomLeftInset:SetSize(279, 75)
+    MountJournal.BottomLeftInset:SetFrameStrata('DIALOG')
+    
+    --MountJournal.MountDisplay.ModelScene.TogglePlayer:ClearAllPoints()
+    --MountJournal.MountDisplay.ModelScene.TogglePlayer:SetPoint('BOTTOMLEFT', MountJournal.BottomLeftInset, 'TOPLEFT', 22, -4)
+    MountJournal.MountDisplay.ModelScene.TogglePlayer:SetScript('OnLeave', GameTooltip_Hide)
+    MountJournal.MountDisplay.ModelScene.TogglePlayer:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '显示角色' or MOUNT_JOURNAL_PLAYER)
+        GameTooltip:Show()
+    end)
+    MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText:SetText('')
+    MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText:SetAlpha(0)
+    
+
+    MountJournal.MountDisplay.ModelScene.ControlFrame:ClearAllPoints()
+    MountJournal.MountDisplay.ModelScene.ControlFrame:SetPoint('TOP', MountJournalLore, 'BOTTOM', 0, -12)
 
     PetJournalRightInset:ClearAllPoints()
     PetJournalRightInset:SetPoint('TOPRIGHT', PetJournalPetCardInset, 'BOTTOMRIGHT', 0, -22)

@@ -15,18 +15,27 @@ end
 local Button
 
 local function UpdateMountDisplay()
-    Button= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {size=22, atlas='QuestNormal'})
-    Button:SetPoint('BOTTOMRIGHT', MountJournal.MountDisplay.ModelScene.TogglePlayer, 'TOPRIGHT',0, 2)
+    Button= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {
+        size=22,
+        atlas='QuestNormal',
+        name= 'WoWToolsMountDisplayInfo'
+    })
+    Button:SetPoint('TOPRIGHT')
 
-    Button.text= WoWTools_LabelMixin:Create(MountJournal.MountDisplay, {
+    Button.text= WoWTools_LabelMixin:Create(Button, {
         copyFont= MountJournal.MountCount.Label,
-        color=false,
+        --color=false,
         justifyH='LEFT'
     })
-    Button.text:SetPoint('TOPLEFT', MountJournalLore, 'BOTTOMLEFT',  0, -4)
+    Button.text:SetPoint('TOPLEFT', MountJournalLore, 'BOTTOMLEFT',  0, -12)
+
+    WoWTools_TextureMixin:CreateBG(Button, {
+        point=Button.text,
+        isColor=true,
+    })
 
     function Button:set_Alpha()
-        self:SetAlpha(Save().ShowMountDisplayInfo and 0.2 or 1)
+        self:GetNormalTexture():SetAlpha(Save().ShowMountDisplayInfo and 0.2 or 1)
     end
     function Button:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -50,10 +59,14 @@ local function UpdateMountDisplay()
 
                 local _, spellID, icon, _, _, sourceType= C_MountJournal.GetMountInfoByID(MountJournal.selectedMountID)
                 text= text..'|n|rspellID |cffffffff'..(spellID or '')
-                            ..'|n|ricon |cffffffff'..(icon and '|T'..icon..':0:0|t'..icon or '')
-                            ..'|n|rsourceType |cffffffff'..(WoWTools_TextMixin:CN(sourceType) or '').. (sourceType and WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType]) and ' ('..WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType])..')' or '')
+                            ..'|n|rtextureID |cffffffff'..(icon and '|T'..icon..':0:0|t'..icon or '')
+                            ..'|n|rsourceType |cffffffff'..(WoWTools_TextMixin:CN(sourceType) or '')
+                            ..(sourceType and WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType]) and ' ('..WoWTools_TextMixin:CN(_G['BATTLE_PET_SOURCE_'..sourceType])..')' or '')
         end
         self.text:SetText(text or '')
+        if self.Background then
+            self.Background:SetShown(text)
+        end
     end
     Button:SetScript('OnClick', function(self)
         Save().ShowMountDisplayInfo= not Save().ShowMountDisplayInfo and true or nil

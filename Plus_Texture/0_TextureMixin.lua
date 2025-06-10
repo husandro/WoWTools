@@ -57,10 +57,8 @@ function WoWTools_TextureMixin:SetBG(frame, tab)
 end
 
 function WoWTools_TextureMixin:CreateBG(frame, tab)
-    if not frame then
-        return
-    elseif frame.Background then
-        return frame.Background
+    if not frame or frame.Background then
+        return frame and frame.Background
     end
 
     tab= tab or {}
@@ -71,9 +69,8 @@ function WoWTools_TextureMixin:CreateBG(frame, tab)
     local isColor= tab.isColor
     local atlas= tab.atlas or 'ChallengeMode-guild-background'
 
-
     frame.Background= frame:CreateTexture(nil, 'BACKGROUND')
-
+--位置
     if isAllPoint==true then
         frame.Background:SetAllPoints()
     elseif point then
@@ -84,30 +81,17 @@ function WoWTools_TextureMixin:CreateBG(frame, tab)
             frame.Background:SetPoint('BOTTOMRIGHT', point, 2, -2)
         end
     end
-
-   --local x, y = 10, 3
-    --frame.Background:SetPoint("TOPLEFT", -x, y)
-    --frame.Background:SetPoint("BOTTOMRIGHT", x, -y)
+--颜色
     if isColor then
         frame.Background:SetColorTexture(0, 0, 0, alpha)
     else
         frame.Background:SetAtlas(atlas)
+        frame.Background:SetAlpha(alpha)
     end
-    
-
-    frame.Background:SetAlpha(alpha)
-
-    --frame.Background:SetAtlas('ChallengeMode-guild-background')
-    --frame.Background:SetAlpha(alpha)
-    --frame.Background:SetColorTexture(0,0,0)
-    --frame.Background:SetAlpha(alpha)
 
     return frame.Background
 end
---[[
---显示背景 Background
-WoWTools_TextureMixin:CreateBG(frame, {point=function(texture)end, isAllPoint})
-]]
+
 
 
 
