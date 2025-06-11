@@ -175,11 +175,12 @@ local function Init_UI()
     StatusLabel= WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=14})
     StatusLabel:SetPoint('TOPLEFT', InspectFrameTab1, 'BOTTOMLEFT',0,-4)
 
-    StatusLabel.Background= InspectFrame:CreateTexture(nil, 'BACKGROUND')
+    WoWTools_TextureMixin:CreateBG(InspectPaperDollFrame, {point=StatusLabel})
+    --[[StatusLabel.Background= InspectPaperDollFrame:CreateTexture(nil, 'BACKGROUND')
     StatusLabel.Background:SetPoint('TOPLEFT', StatusLabel, -2, 2)
     StatusLabel.Background:SetPoint('BOTTOMRIGHT', StatusLabel, 2, -2)
     StatusLabel.Background:SetAtlas('ChallengeMode-guild-background')
-    StatusLabel.Background:SetAlpha(0.5)
+    StatusLabel.Background:SetAlpha(0.5)]]
 
     function InspectFrame:set_status_label()
         local unit=self.unit
@@ -205,7 +206,9 @@ local function Init_UI()
         end
         StatusLabel:SetText(text or '')
     end
-    InspectFrame:HookScript('OnShow', InspectFrame.set_status_label)
+    InspectFrame:HookScript('OnShow', function(self)
+        self:set_status_label()
+    end)
 
 --挑战, 分数
     KeystoneLabel=  WoWTools_LabelMixin:Create(InspectPaperDollFrame, {size=18})
@@ -235,8 +238,12 @@ local function Init_UI()
         GameTooltip:Show()
     end)
 
-    hooksecurefunc('InspectPaperDollItemSlotButton_Update', set_InspectPaperDollItemSlotButton_Update)--目标, 装备
-    hooksecurefunc('InspectPaperDollFrame_SetLevel', set_InspectPaperDollFrame_SetLevel)--目标,天赋 装等
+    hooksecurefunc('InspectPaperDollItemSlotButton_Update', function()--目标, 装备
+        set_InspectPaperDollItemSlotButton_Update()
+    end)
+    hooksecurefunc('InspectPaperDollFrame_SetLevel', function()--目标,天赋 装等
+        set_InspectPaperDollFrame_SetLevel()
+    end)
 end
 
 
@@ -254,16 +261,15 @@ local function Init()
     if C_AddOns.IsAddOnLoaded('Blizzard_InspectUI') then
         Init_UI()
     else
-        local frame=CreateFrame('Frame')
-        frame:RegisterEvent('ADDON_LOADED')
-        frame:SetScript('OnEvent', function(self, _, arg1)
-            if arg1=='Blizzard_InspectUI' then
+        EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
+             if arg1=='Blizzard_InspectUI' then
                 Init_UI()
-                self:UnregisterAllEvents()
+                EventRegistry:UnregisterCallback('ADDON_LOADED', owner)
             end
         end)
-
     end
+
+    Init=function()end
 end
 
 

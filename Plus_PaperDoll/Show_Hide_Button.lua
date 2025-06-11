@@ -42,7 +42,7 @@ local function Settings()
         end
     end
 
-    if InspectFrame then
+    if InspectFrame and InspectLevelText.set_font_size then
         InspectLevelText:set_font_size()
         InspectFrame:set_status_label()--目标，属性
         InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)

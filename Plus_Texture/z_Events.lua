@@ -1947,7 +1947,9 @@ end
 --玩家, 观察角色, 界面
 function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:SetNineSlice(InspectFrame)
-    --self:SetAlphaColor(InspectFrameBg)
+    self:HideFrame(InspectFrame)
+    self:HideFrame(InspectModelFrame)
+    self:SetButton(InspectFrameCloseButton, {all=true})
     self:HideTexture(InspectFrameInset.Bg)
     self:HideTexture(InspectPVPFrame.BG)
 
@@ -1963,6 +1965,29 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:SetAlphaColor(InspectModelFrameBackgroundBotRight, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundTopLeft, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundTopRight, nil, nil, 0)
+       
+    self:HideTexture(InspectHeadSlotFrame)
+	self:HideTexture(InspectNeckSlotFrame)
+	self:HideTexture(InspectShoulderSlotFrame)
+	self:HideTexture(InspectBackSlotFrame)
+	self:HideTexture(InspectChestSlotFrame)
+	self:HideTexture(InspectShirtSlotFrame)
+	self:HideTexture(InspectTabardSlotFrame)
+	self:HideTexture(InspectWristSlotFrame)
+	self:HideTexture(InspectHandsSlotFrame)
+	self:HideTexture(InspectWaistSlotFrame)
+	self:HideTexture(InspectLegsSlotFrame)
+	self:HideTexture(InspectFeetSlotFrame)
+	self:HideTexture(InspectFinger0SlotFrame)
+	self:HideTexture(InspectFinger1SlotFrame)
+	self:HideTexture(InspectTrinket0SlotFrame)
+	self:HideTexture(InspectTrinket1SlotFrame)
+	self:HideTexture(InspectMainHandSlotFrame)
+	self:HideTexture(InspectSecondaryHandSlotFrame)
+
+    self:HideFrame(InspectMainHandSlot)
+
+    self:Init_BGMenu_Frame(InspectFrame)
 end
 
 
@@ -2395,7 +2420,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PetBattleUI()
         end
         local key= WoWTools_KeyMixin:GetHotKeyText(GetBindingKey("ACTIONBUTTON"..frame:GetID()), nil)
         if key then
-            frame.HotKey:SetText(key);
+            frame.HotKey:SetText(key)
         end
         frame.HotKey:SetTextColor(1,1,1)
     end)
