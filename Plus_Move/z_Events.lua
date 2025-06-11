@@ -67,12 +67,7 @@ function WoWTools_MoveMixin.Events:Blizzard_PlayerChoice()
     self:Setup(PlayerChoiceFrame, {notZoom=true})
 end
 
---公会银行
-function WoWTools_MoveMixin.Events:Blizzard_GuildBankUI()
-    if WoWToolsSave['Plus_GuildBank'].disabled then
-        self:Setup(GuildBankFrame)
-    end
-end
+
 
 --飞行地图
 function WoWTools_MoveMixin.Events:Blizzard_FlightMap()

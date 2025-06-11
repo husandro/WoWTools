@@ -326,13 +326,6 @@ end
 
 
 
---[[公会银行
-function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
-    if WoWToolsSave['Plus_GuildBank'].disabled then
-        WoWTools_GuildBankself:Init_Guild_Texture()
-    end
-end]]
-
 function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
     self:SetNineSlice(GuildRenameFrame)
     self:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)

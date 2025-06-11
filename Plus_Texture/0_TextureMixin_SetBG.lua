@@ -879,13 +879,20 @@ local function Set_Frame_Menu(frame, tab)
         end
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
-            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)..WoWTools_DataMixin.Icon.right
+            (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            ..(
+                s.isBgMenuButton
+                and WoWTools_DataMixin.Icon.left
+                or WoWTools_DataMixin.Icon.right
+            )
         )
         GameTooltip:Show()
         self:set_texture_alpha()
     end)
     self:HookScript('OnMouseDown', function(s, d)
-        if d=='RightButton' then
+        if d=='RightButton'
+            or s.isBgMenuButton
+        then
             MenuUtil.CreateContextMenu(s, function(_, root)
                 Init_Menu(frame, root, false)
             end)
@@ -913,9 +920,10 @@ local function Create_Button(self, tab)
 
     self.bgMenuButton= WoWTools_ButtonMixin:Cbtn(p, {
         size=23,
-        name=tab.name..'BGMenuButton',
+        name=tab.name..'WoWToolsBGMenuButton',
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     })
+    self.bgMenuButton.isBgMenuButton=true
 
     local icon= self.bgMenuButton:GetNormalTexture()
     icon:ClearAllPoints()

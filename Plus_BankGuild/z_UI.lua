@@ -2,15 +2,21 @@ local function Init(self)
     GuildBankFrame.Emblem.Left:Hide()
     GuildBankFrame.Emblem.Right:Hide()
 
-    self:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, true)
-    self:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, true)
-    self:SetAlphaColor(GuildBankFrame.BotLeftCorner, nil, nil, true)
-    self:SetAlphaColor(GuildBankFrame.BotRightCorner, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.BotLeftCorner, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.BotRightCorner, nil, nil, 0.3)
 
-    self:SetAlphaColor(GuildBankFrame.LeftBorder, nil, nil, true)
-    self:SetAlphaColor(GuildBankFrame.RightBorder, nil, nil, true)
-    self:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, true)
-    self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, true)
+    self:SetAlphaColor(GuildBankFrame.LeftBorder, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.RightBorder, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, 0.3)
+
+    self:SetButton(GuildBankFrame.CloseButton, {all=true,})
+
+    for i=1, 4 do
+        self:SetTabButton(_G['GuildBankFrameTab'..i])
+    end
 
     GuildBankFrame.BlackBG:ClearAllPoints()
     GuildBankFrame.BlackBG:SetAllPoints()
@@ -55,7 +61,6 @@ local function Init(self)
         if frame then
             self:HideTexture(frame.Background)
         end
-        self:SetFrame(_G['GuildBankFrameTab'..i], {notAlpha=true})
     end
 
 

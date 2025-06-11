@@ -3,6 +3,20 @@ local function Save()
     return WoWToolsSave['Plus_GuildBank'] or {}
 end
 
+
+local function Moving_Frame()
+    WoWTools_MoveMixin:Setup(GuildBankFrame)
+    Moving_Frame=function()end
+end
+--公会银行
+function WoWTools_MoveMixin.Events:Blizzard_GuildBankUI()
+   Moving_Frame()
+end
+
+
+
+
+
 --Blizzard_GuildBankUI.lua  bank, log, moneylog, tabinfo
 
 local MAX_GUILDBANK_SLOTS_PER_TAB = 98
@@ -588,19 +602,13 @@ end
 
 
 
-
-
-
-
-
 local function Init()
+    Moving_Frame()
+
     if
         Save().plusOnlyOfficerAndLeader--仅限公会官员
         and not (WoWTools_GuildMixin:IsLeaderOrOfficer())--会长或官员
     then
-        if not GuildBankFrame.ResizeButton then
-            WoWTools_MoveMixin:Setup(GuildBankFrame)
-        end
         return
     end
 

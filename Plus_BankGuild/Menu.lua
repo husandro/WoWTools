@@ -140,11 +140,6 @@ local function Init_Menu(self, root)
 
 
 
-
-
-
-
-
 --间隔
     root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
@@ -164,17 +159,19 @@ local function Init_Menu(self, root)
     root:CreateSpacer()
 
 
-
-
-
-
-    root:CreateDivider()
-    WoWTools_MenuMixin:Reload(root, false)
-
    -- root:CreateDivider()
-
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
+    WoWTools_MenuMixin:Reload(sub)
 end
+
+
+
+
+
+
+
+
+
 
 
 
