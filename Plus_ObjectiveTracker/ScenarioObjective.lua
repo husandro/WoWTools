@@ -18,10 +18,22 @@ local function Init()
     end)
 
 
+--local scenarioName, currentStage, numStages, flags, hasBonusStep, isBonusStepComplete, _, xp, money, scenarioType, areaName, _, scenarioID = C_Scenario.GetInfo();
+    ScenarioObjectiveTracker.StageBlock:HookScript('OnEnter', function(self)
+        local scenarioID = select(13, C_Scenario.GetInfo())
+        if not scenarioID then
+            return
+        end
+        if not GameTooltip:IsShown() then
+            GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+            GameTooltip:ClearLines()
+        end
 
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'scenarioID', scenarioID)
+        GameTooltip:Show()
+    end)
 
-
-
+    Init=function()end
 end
 
 

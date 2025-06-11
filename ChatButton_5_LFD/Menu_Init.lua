@@ -390,7 +390,8 @@ local function Init_Scenarios_Menu(root)--ScenarioFinder.lua
             if isAvailableForAll and isAvailableForPlayer then
                 reward, rewardIndex, rewardType, rewardArg= WoWTools_LFDMixin:GetRewardInfo(dungeonID)
                 sub2=sub:CreateButton(
-                    WoWTools_TextMixin:CN(name, {scenarioID=dungeonID, isName=true})..reward,
+                    --WoWTools_TextMixin:CN(name, {scenarioID=dungeonID, isName=true})..reward,
+                    WoWTools_TextMixin:CN(name)..reward,
                 function(data)
                     if GetLFGQueueStats(LE_LFG_CATEGORY_SCENARIO) then--not ( mode == "queued" or mode == "listed" or mode == "rolecheck" or mode == "suspended" ) then
                         LeaveLFG(LE_LFG_CATEGORY_SCENARIO)
