@@ -72,11 +72,14 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
 --设置 text2Right
     if isSelf then
+--头衔
         local titleID= GetCurrentTitle()
-        if titleID and titleID>1 then
+        if titleID and titleID>0 then
             local titleName= GetTitleName(titleID)
             text2Right= WoWTools_TextMixin:CN(titleName, {titleID= titleID})
-            text2Right= text2Right and text2Right:gsub('%%s', '')
+            if text2Right then
+                text2Right= format(text2Right, '')
+            end
         end
     else
 
@@ -128,16 +131,34 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         end
     end
 
-
+--公会
     local isInGuild= IsPlayerInGuildFromGUID(guid)
     local lineLeft2= isInGuild and _G[tooltipName..'TextLeft2']
     if lineLeft2 then
-        local text=lineLeft2:GetText()
-        if text and text~='' and not text:find('|A:') then
-            lineLeft2:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..(text:match('(.-)%-') or text))
-            local lineRight2= _G[tooltipName..'TextRight2']
-            if lineRight2 then
-                lineRight2:SetText(' ')
+        local guildName, guildRankName, guildRankIndex = GetGuildInfo(unit)
+          
+        --local lineRight2= _G[tooltipName..'TextRight2']
+        if guildName then
+            guildName= WoWTools_TextMixin:sub(guildName, 24, 12)
+            local rank=''
+            if guildRankIndex then
+                guildRankName= WoWTools_TextMixin:sub(guildRankName, 8, 4)
+                rank= guildRankIndex==0 and '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
+                    or (guildRankIndex==1 and '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t')
+                    or (' '..(guildRankName or guildRankIndex))
+            end
+            lineLeft2:SetText(
+                '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'
+                ..guildName
+                ..rank
+            )
+        else
+            local text=lineLeft2:GetText()
+            if text and text~='' and not text:find('|A:') then
+                lineLeft2:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..(text:match('(.-)%-') or text))
+                --[[if lineRight2 then
+                    lineRight2:SetText(' ')
+                end]]
             end
         end
     end

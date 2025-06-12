@@ -5888,7 +5888,8 @@
         "InspectTrinket1SlotFrame",
         "InspectMainHandSlotFrame",
         "InspectSecondaryHandSlotFrame",
-        "InspectFrameCloseButton"
+        "InspectFrameCloseButton",
+        "InspectGuildFrame_Update"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

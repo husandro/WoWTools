@@ -133,7 +133,7 @@ function WoWTools_TextMixin:sub(text, size, letterSize, lower)
     --local le = strlenutf8(text)
     --local le2= strlen(text)
 
-    text= self:CN(text)
+    --text= self:CN(text)
 
     --if le==le2 and text:find('%w') then
     if not text:find("[\228-\233][\128-\191][\128-\191]") then--检查 UTF-8 字符

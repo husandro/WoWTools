@@ -21,8 +21,8 @@ local function Init_Menu(_, root)
     for i=1, all, 1 do
         if not IsTitleKnown(i) then
             num= num+1
-            local name, playerTitle = GetTitleName(i)
-            if name and playerTitle then
+            local name = GetTitleName(i)
+            if name then
                 local cnName
                 cnName= WoWTools_TextMixin:CN(name, {titleID=i})
 
