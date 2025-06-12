@@ -1203,7 +1203,7 @@ local function Init_Menu(_, root)
 
 --离开载具
     sub:CreateButton(
-        ((UnitControllingVehicle("player") and CanExitVehicle()) and '' or '|cff9e9e9e')
+        (CanExitVehicle() and '' or '|cff9e9e9e')--UnitControllingVehicle("player"
         ..(WoWTools_DataMixin.onlyChinese and '离开载具' or BINDING_NAME_VEHICLEEXIT),
     function()
         WoWTools_Mixin:Call(VehicleExit)
