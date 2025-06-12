@@ -5892,7 +5892,8 @@
         "InspectGuildFrame_Update",
         "ModelPanningFrameMixin",
         "ModelControlFrameMixin",
-        "InspectModelFrameControlFrame"
+        "InspectModelFrameControlFrame",
+        "DressUpFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

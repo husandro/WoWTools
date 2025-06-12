@@ -295,13 +295,15 @@ end
 
 --试衣间
 function WoWTools_TextureMixin.Frames:DressUpFrame()
-    self:SetNineSlice(DressUpFrame, true)
-    self:SetAlphaColor(DressUpFrameBg)
-    self:HideTexture(DressUpFrameInset.Bg)
-    self:SetFrame(DressUpFrameInset)
-    self:SetAlphaColor(DressUpFrame.ModelBackground, nil, nil, 0.3)
-    self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
-    self:SetAlphaColor(DressUpFrame.OutfitDetailsPanel.BlackBackground)
+    self:HideFrame(DressUpFrame)
+    self:SetNineSlice(DressUpFrame, nil, true)
+    self:HideFrame(DressUpFrameInset)
+    self:HideFrame(DressUpFrame.OutfitDetailsPanel)
+    self:SetButton(DressUpFrame.MaxMinButtonFrame.MinimizeButton, {all=true,})
+    self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true,})
+    self:SetButton(DressUpFrameCloseButton, {all=true})
+
+    self:Init_BGMenu_Frame(DressUpFrame)
 end
 
 
