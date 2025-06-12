@@ -242,17 +242,17 @@ local function Init_UI()
     hooksecurefunc('InspectPaperDollFrame_SetLevel', function()--目标,天赋 装等
         set_InspectPaperDollFrame_SetLevel()
     end)
-
---替换，原生 出错 InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName);
+end
+--[[替换，原生 出错 InspectGuildFrame.guildRealmName:SetFormattedText(INSPECT_GUILD_REALM, guildRealmName);
     local P_InspectGuildFrame_Update= InspectGuildFrame_Update
     function InspectGuildFrame_Update()
         local unit= InspectFrame.unit
         if unit and GetGuildInfo(unit) then
             P_InspectGuildFrame_Update()
         end
-    end
+    end]]
 
-end
+
 
 
     --InspectFrame:HookScript('OnShow', Set_Target_Status)
