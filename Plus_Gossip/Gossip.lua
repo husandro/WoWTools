@@ -290,7 +290,7 @@ local function Init()
             self.gossipFrane_Button:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
         else
             self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-            self.gossipFrane_Button:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            self.gossipFrane_Button:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
         self:set_Alpha()
     end
