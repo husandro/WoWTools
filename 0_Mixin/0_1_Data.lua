@@ -101,9 +101,9 @@ end
 
 WoWTools_DataMixin.Icon={
     --player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=WoWTools_DataMixin.Player.GUID , race=nil , sex=WoWTools_DataMixin.Player.Sex , reAtlas=false}),
-    icon= 'orderhalltalents-done-glow',
+    --icon= 'orderhalltalents-done-glow',
+    icon= 'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     icon2='|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools:0|t',
-
 
     right='|A:NPE_RightClick:0:0|a',
     left='|A:NPE_LeftClick:0:0|a',

@@ -260,8 +260,10 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         local btn=itemFrame['btn'..i]
         if not btn then
-            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {icon=WoWTools_DataMixin.Icon.icon, size={26,10}})
-            btn:SetNormalAtlas('adventure-missionend-line')
+            btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {
+                atlas='adventure-missionend-line',
+                size={26,10}
+            })
             itemFrame['btn'..i]=btn
             if i==1 then
                 btn:SetPoint('BOTTOM', itemFrame, 'TOP', 0 ,1)
@@ -270,20 +272,17 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
             end
             btn:SetAlpha(0.2)
             btn:SetScript("OnEnter",function(self2)
-                    if not self2.link then
-                         return
-                    end
-                    self2:SetAlpha(1)
-                    GameTooltip:ClearLines()
-                    GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
-                    GameTooltip:SetHyperlink(self2.link)
-                    GameTooltip:Show()
+                if not self2.link then
+                        return
+                end
+                self2:SetAlpha(1)
+                GameTooltip:ClearLines()
+                GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
+                GameTooltip:SetHyperlink(self2.link)
+                GameTooltip:Show()
             end)
             btn:SetScript("OnMouseDown", function(self2)
                 WoWTools_ChatMixin:Chat(self2.link, nil, true)
-                --local chat=SELECTED_DOCK_FRAME
-                --ChatFrame_OpenChat((chat.editBox:GetText() or '')..self2.link, chat)
-
             end)
             btn:SetScript("OnLeave",function(self2)
                     self2:SetAlpha(0.2)

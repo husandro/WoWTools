@@ -73,7 +73,7 @@ end
 
 
 local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--按钮, 总开关
+    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22, icon='hide'})--按钮, 总开关
     Button:SetPoint('RIGHT',-22, -2)
     function Button:set_Tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -85,7 +85,11 @@ local function Init()
     end
     Button:SetScript('OnEnter', Button.set_Tooltips)
     function Button:set_icon()
-        self:SetNormalAtlas(Save().hideEncounterJournal and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon )
+        if Save().hideEncounterJournal then
+            self:SetNormalAtlas('talents-button-reset')
+        else
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        end
     end
     Button:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then

@@ -20,11 +20,7 @@ local function set_Loot_Spec_Texture(self)
     if self.dungeonEncounterID then
         local specID=Save().loot[WoWTools_DataMixin.Player.Class][self.dungeonEncounterID]
         local icon= specID and select(4, GetSpecializationInfoByID(specID))
-        if icon then
-            self.texture:SetTexture(icon)
-        else
-            self.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
-        end
+        self.texture:SetTexture(icon or 'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         self:SetAlpha(icon and 1 or 0.3)
     else
         self.texture:SetTexture(0)

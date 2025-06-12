@@ -27,7 +27,7 @@ local function Init()
     })
 
     btn:SetPoint('BOTTOM', TableAttributeDisplay.CloseButton, 'TOP')
-    btn:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
+    btn:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
     btn:SetScript('OnClick', function(self)
         FrameStackTooltip_ToggleDefaults()
         if Save().autoHideTableAttributeDisplay and FrameStackTooltip:IsVisible() then

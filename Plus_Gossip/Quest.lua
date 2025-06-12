@@ -167,12 +167,16 @@ end
 --###########
 local function Init_Quest()
 
-    QuestButton= WoWTools_ButtonMixin:Cbtn(WoWTools_GossipMixin.GossipButton, {
+    local QuestButton= WoWTools_ButtonMixin:Cbtn(WoWTools_GossipMixin.GossipButton, {
         size=22,
         name='WoWTools_GossipQuestButton',
+        icon='hide',
     })
     WoWTools_GossipMixin.QuestButton= QuestButton
-
+     
+    QuestButton.texture= QuestButton:CreateTexture(nil, 'BORDER')
+    QuestButton.texture:SetAllPoints()
+     
     QuestButton.Text=WoWTools_LabelMixin:Create(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
@@ -240,11 +244,11 @@ local function Init_Quest()
         self.texture:SetAlpha(Save().quest and 1 or 0.3)
     end
     function QuestButton:set_Texture()--设置，图片
-        if not self.texture then
-            self.texture= self:CreateTexture()
-            self.texture:SetAllPoints()
+        if Save().quest then
+            self.texture:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest')--AutoQuest-Badge-Campaign
+        else
+            self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
-        self.texture:SetAtlas(Save().quest and 'UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest' or WoWTools_DataMixin.Icon.icon)--AutoQuest-Badge-Campaign
         self:set_Alpha()
     end
 

@@ -337,7 +337,7 @@ local function Init()
     function Button:set_texture()
         local hide= Save().hide_MajorFactionRenownFrame_Button
         if hide then
-            self:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
             self:SetAlpha(0.3)
         else
             self:SetNormalTexture(0)

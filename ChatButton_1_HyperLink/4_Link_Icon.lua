@@ -663,7 +663,7 @@ local function Set_HyperLlinkIcon()
 
     Set_AddMessage(DEFAULT_CHAT_FRAME, enable)
 
-    WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and WoWTools_DataMixin.Icon.icon or 'voicechat-icon-STT-on')
+    WoWTools_HyperLink.LinkButton.texture:SetAtlas(enable and 'orderhalltalents-done-glow' or 'voicechat-icon-STT-on')
     WoWTools_HyperLink.LinkButton.texture:SetDesaturated(not enable)
 end
 

@@ -134,7 +134,7 @@ local function Init()--设置,团队
     CompactRaidFrameContainer:SetClampedToScreen(true)
     CompactRaidFrameContainer:SetMovable(true)
 
-    CompactRaidFrameContainer.moveFrame= WoWTools_ButtonMixin:Cbtn(CompactRaidFrameContainer, {atlas=WoWTools_DataMixin.Icon.icon, size=22})
+    CompactRaidFrameContainer.moveFrame= WoWTools_ButtonMixin:Cbtn(CompactRaidFrameContainer, {texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools', size=22})
     CompactRaidFrameContainer.moveFrame:SetPoint('TOPRIGHT', CompactRaidFrameContainer, 'TOPLEFT',-2, -13)
 
     CompactRaidFrameContainer.moveFrame:SetClampedToScreen(true)

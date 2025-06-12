@@ -504,7 +504,7 @@ local function Init_FriendsList()--好友列表, 初始化
 
     function FriendsButton:set_status(showPrint)
         if not BNConnected() then
-            self:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
             return
         end
         local bnetAFK, bnetDND= select(5, BNGetInfo())
@@ -535,7 +535,7 @@ local function Init_FriendsList()--好友列表, 初始化
             self:SetNormalTexture(FRIENDS_TEXTURE_DND)
 
         else
-            self:SetNormalAtlas(WoWTools_DataMixin.Icon.icon)
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
         if text then
             if showPrint then

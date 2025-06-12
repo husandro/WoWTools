@@ -103,6 +103,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
                     --or (isType2 and isItem and 'CircularItemButtonTemplate')
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
+    --local iconSize= tab.iconSize--自定义，图标大小
 
 
 
@@ -118,8 +119,9 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 --添加，遮罩
         self:AddMask(btn, isType2)
         btn.texture=btn:CreateTexture(nil, 'BORDER')
+--自定义，图标大小
         btn.texture:SetPoint("TOPLEFT", btn, "TOPLEFT", 0, 0)
-        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0,0)
+        btn.texture:SetPoint("BOTTOMRIGHT", btn, "BOTTOMRIGHT", 0, 0)
         btn.texture:AddMaskTexture(btn.IconMask)
     end
 
@@ -163,7 +165,6 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         elseif texture then
             btn.texture:SetTexture(texture)
         end
-
     elseif atlas then
         btn:SetNormalAtlas(atlas, useAtlasSize)
     elseif texture then

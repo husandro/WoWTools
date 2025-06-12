@@ -205,7 +205,7 @@ local function Init_Set_List(frame, addonIndex)
     end
 
     frame.check:SetID(addonIndex)
-    frame.check:SetCheckedTexture(iconTexture or WoWTools_DataMixin.Icon.icon)
+    frame.check:SetCheckedTexture(iconTexture or 'orderhalltalents-done-glow')
     frame.check.name= name
     frame.check.isDependencies= C_AddOns.GetAddOnDependencies(addonIndex) and true or false
     frame.check:SetChecked(isChecked)--fast

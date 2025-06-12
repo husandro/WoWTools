@@ -292,7 +292,8 @@ local function Init(isShow)
     TypeButton= WoWTools_ButtonMixin:Cbtn(nil, {
         name='WoWToolsPetBattleTypeButton',
         size=23,
-        isType2=true
+        isType2=true,
+        notBorder=true,
     })
     TypeButton.frame= CreateFrame("Frame", nil, TypeButton)
 
@@ -322,8 +323,14 @@ local function Init(isShow)
     function TypeButton:set_Frame_shown()
         local show= not Save().TypeButton.hideFrame
         self.frame:SetShown(show)
-        self:SetNormalAtlas(show and WoWTools_DataMixin.Icon.icon or 'WildBattlePetCapturable')
-        self:SetAlpha(show and 1 or 0.3)
+        if show then
+            self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        else
+            self.texture:SetAtlas('WildBattlePetCapturable')
+        end
+        self.texture:SetAlpha(
+            (GameTooltip:IsOwned(self) or show) and 1 or 0.5
+        )
     end
 
     function TypeButton:set_scale()
@@ -342,7 +349,6 @@ local function Init(isShow)
     end
 
     function TypeButton:set_Background()
-        --self.frame.Background:SetShown(Save().TypeButton.showBackground)
         self.frame.Background:SetAlpha(Save().TypeButton.bgAlpha or 0.5)
     end
 
@@ -409,8 +415,8 @@ local function Init(isShow)
         GameTooltip:Hide()
     end)
     TypeButton:SetScript('OnEnter', function(self)
-        self:SetAlpha(1)
         self:set_tooltip()
+        self.texture:SetAlpha(1)
         Set_Button_Highlight()
     end)
     TypeButton:SetScript('OnHide', function()

@@ -126,7 +126,10 @@ end
 
 
 local function Init()
-	local btn=WoWTools_ButtonMixin:Menu(ColorPickerFrame, {name='WoWToolsColorPickerFrameButton'})
+	local btn=WoWTools_ButtonMixin:Menu(ColorPickerFrame, {
+		name='WoWToolsColorPickerFrameButton',
+		icon='hide',
+	})
 	btn:SetPoint("TOPLEFT", ColorPickerFrame.Border, 7, -7)
 
 	function btn:set_alpha()
@@ -178,8 +181,13 @@ local function Init()
 	end)
 
 	function btn:Settings()
-		self:SetNormalAtlas(Save().hide and WoWTools_DataMixin.Icon.icon or 'ui-questtrackerbutton-filter')
-		self.frame:SetShown(not Save().hide)
+		local hide= Save().hide
+		if hide then
+			self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+		else
+			self:SetNormalAtlas('ui-questtrackerbutton-filter')
+		end
+		self.frame:SetShown(not hide)
 		self.frame:SetScale(Save().scale or 1)
 		ColorPickerFrame.Content.ColorPicker:SetColorRGB(ColorPickerFrame:GetColorRGB())
 		self.autoHideTexture:SetShown(not Save().notHideFuori)

@@ -271,12 +271,16 @@ end
 
 
 local function Init_Button()--预创建队伍增强    
-    local Button= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, atlas= Save().LFGPlus and WoWTools_DataMixin.Icon.icon or 'talents-button-reset'})
+    local Button= WoWTools_ButtonMixin:Cbtn(LFGListFrame, {size={20, 20}, icon='hide'})
     Button:SetPoint('LEFT', PVEFrame.TitleContainer)
     Button:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
     Button:SetAlpha(0.5)
     function Button:set_texture()
-        self:SetNormalAtlas(Save().LFGPlus and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        if Save().LFGPlus then
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        else
+            self:SetNormalAtlas('talents-button-reset')
+        end
     end
     Button:SetScript('OnClick', function(self)
         Save().LFGPlus= not Save().LFGPlus and true or nil
@@ -291,9 +295,11 @@ local function Init_Button()--预创建队伍增强
         GameTooltip:Show()
         self2:SetAlpha(1)
     end)
+    Button:set_texture()
 
     WoWTools_LFDMixin.LFGPlusButton= Button
 
+    Init_Button=function()end
 end
 
 
@@ -352,6 +358,10 @@ function WoWTools_LFDMixin:Init_LFG_Plus()
     Init_Button()--预创建队伍增强
 
 --预创建队伍增强
-    hooksecurefunc('LFGListSearchEntry_Update', Init_LFGListSearchEntry_Update)
-    hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', Init_LFGListUtil_SetSearchEntryTooltip)
+    hooksecurefunc('LFGListSearchEntry_Update', function(...)
+        Init_LFGListSearchEntry_Update(...)
+    end)
+    hooksecurefunc('LFGListUtil_SetSearchEntryTooltip', function(...)
+        Init_LFGListUtil_SetSearchEntryTooltip(...)
+    end)
 end

@@ -175,7 +175,7 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 		end)
 		frame.check:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.3) end)
 		frame.check:SetSize(18,22)
-		frame.check:SetCheckedTexture(WoWTools_DataMixin.Icon.icon)
+		frame.check:SetCheckedTexture('orderhalltalents-done-glow')
 	end
 	frame.check:SetShown(true)
 	frame.check:SetChecked(Save().factions[factionID])

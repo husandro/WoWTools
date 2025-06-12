@@ -24,10 +24,14 @@ local function Init()
     })
     btn:SetPoint('RIGHT', ProfessionsBookFrameCloseButton, 'LEFT')
 
-    function btn:set_alpha()
+    function btn:settings()
         local enabled= Save().wangquePrefessionText
-        self:SetAlpha(enabled and 1 or 0.2)
-        self:SetNormalAtlas(enabled and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
+        if enabled then
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        else
+            self:SetNormalAtlas('talents-button-reset')
+        end
     end
     function btn:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -48,15 +52,15 @@ local function Init()
 
     btn:SetScript('OnClick', function(self)
         Save().wangquePrefessionText= not Save().wangquePrefessionText and true or nil
-        self:set_alpha()
+        self:settings()
         self:set_tooltips()
     end)
     btn:SetScript('OnLeave', function(self)
         GameTooltip:Hide()
-        self:set_alpha()
+        self:settings()
     end)
     btn:SetScript('OnEnter', btn.set_tooltips)
-    btn:set_alpha()
+    btn:settings()
 
     --自动输入，忘却，文字，专业
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow", function(self)

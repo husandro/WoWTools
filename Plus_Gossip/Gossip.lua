@@ -225,12 +225,11 @@ end
 --对话，初始化
 --###########
 local function Init()
-    GossipButton= WoWTools_ButtonMixin:Cbtn(--闲话图标
-        nil,
-        {
-            size=22,
-            name='WoWTools_GossipButton'}
-        )
+    GossipButton= WoWTools_ButtonMixin:Cbtn(nil, {--闲话图标
+        size=22,
+        name='WoWTools_GossipButton',
+        icon='hide',
+    })
     WoWTools_GossipMixin.GossipButton= GossipButton
 
     GossipButton.texture= GossipButton:CreateTexture()
@@ -286,9 +285,13 @@ local function Init()
         self.texture:SetAlpha(Save().gossip and 1 or 0.3)
     end
     function GossipButton:set_Texture()--设置，图片 
-        local atlas= Save().gossip and 'SpecDial_LastPip_BorderGlow' or WoWTools_DataMixin.Icon.icon
-        self.texture:SetAtlas(atlas)
-        self.gossipFrane_Button:SetNormalAtlas(atlas)
+        if Save().gossip then
+            self.texture:SetAtlas('SpecDial_LastPip_BorderGlow')
+            self.gossipFrane_Button:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
+        else
+            self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            self.gossipFrane_Button:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        end
         self:set_Alpha()
     end
     function GossipButton:tooltip_Show()

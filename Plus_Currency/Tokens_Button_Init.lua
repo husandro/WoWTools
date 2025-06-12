@@ -91,9 +91,9 @@ local function Init()
 			self.texture:SetTexture(icon)
 			self.bagButton.texture:SetTexture(icon)
 		elseif Save().Hide then
-			self.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
+			self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
 			self.texture:SetAlpha(0.5)
-			self.bagButton.texture:SetAtlas(WoWTools_DataMixin.Icon.icon)
+			self.bagButton.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
 		else
 			self.texture:SetAlpha(1)
 			self.texture:SetAtlas('ui-questtrackerbutton-filter')

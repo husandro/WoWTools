@@ -908,10 +908,17 @@ end
 
 --总开关
 local function Init_Button_All()
-    local btn= WoWTools_ButtonMixin:Cbtn(ItemSocketingFrame.TitleContainer, {size=22})
+    local btn= WoWTools_ButtonMixin:Cbtn(ItemSocketingFrame.TitleContainer, {
+            size=22,
+            icon='hide',
+        })
     btn:SetPoint('LEFT', 26)
     function btn:set_texture()
-        btn:SetNormalAtlas(Save().hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
+        if Save().hide then
+            btn:SetNormalAtlas('talents-button-reset')
+        else
+            btn:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        end
     end
     function btn:set_shown()
         if Frame:CanChangeAttribute() then

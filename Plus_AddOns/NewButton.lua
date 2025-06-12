@@ -241,7 +241,7 @@ end
 
 --不禁用，本插件
 local function Init_NotDisabled_Button()
-    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18})
+    local btn= WoWTools_ButtonMixin:Cbtn(AddonList, {size=18, icon='hide'})
     btn:SetPoint('LEFT', AddonList.DisableAllButton, 'RIGHT', 2,0)
     btn:SetAlpha(0.3)
     function btn:set_tooltips()
@@ -288,7 +288,11 @@ local function Init_NotDisabled_Button()
         end
     end)
     function btn:set_icon()
-        self:SetNormalAtlas(Save().enableAllButtn and WoWTools_DataMixin.Icon.icon or 'talents-button-reset')
+        if Save().enableAllButtn then
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        else
+            self:SetNormalAtlas('talents-button-reset')
+        end
     end
     btn:SetScript('OnClick', function(self)
         Save().enableAllButtn= not Save().enableAllButtn and true or nil

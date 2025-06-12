@@ -68,11 +68,17 @@ local function Init()
     end)
 
     function btn:Settings()
-        self:SetNormalAtlas(not  WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
+        if WoWToolsSave['Plus_WorldMap'].ShowFlightMap_Name then
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        else
+            self:SetNormalAtlas('talents-button-reset')
+        end
     end
     btn:Settings()
 
-    hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', Set_Text)
+    hooksecurefunc(FlightMap_FlightPointPinMixin, 'SetFlightPathStyle', function(...)
+        Set_Text(...)
+    end)
 end
 
 

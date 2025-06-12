@@ -232,7 +232,9 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)
     end)
 
-    sub2=sub:CreateCheckbox('|A:'..WoWTools_DataMixin.Icon.icon..':0:0|a'..(WoWTools_DataMixin.onlyChinese and '图标' or EMBLEM_SYMBOL), function()
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '图标' or EMBLEM_SYMBOL,
+    function()
         return Save().showIcon
     end, function()
         Save().showIcon= not Save().showIcon and true or nil

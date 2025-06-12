@@ -168,7 +168,7 @@ local function Init()
         end
         Button:set_Currency()
     else
-        Button:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+        Button:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
     end
 
     function Button:set_Event()

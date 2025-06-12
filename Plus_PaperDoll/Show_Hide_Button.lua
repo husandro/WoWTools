@@ -45,13 +45,13 @@ local function Settings()
     if InspectFrame and InspectLevelText.set_font_size then
         InspectLevelText:set_font_size()
         InspectFrame:set_status_label()--目标，属性
-        InspectFrame.ShowHideButton:SetNormalAtlas(Save().hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
+        InspectFrame.ShowHideButton:settings()
         if InspectFrame:IsShown() then
             WoWTools_Mixin:Call(InspectPaperDollFrame_UpdateButtons)--InspectPaperDollFrame.lua
             WoWTools_Mixin:Call(InspectPaperDollFrame_SetLevel)--目标,天赋 装等
         end
     end
-    PaperDollItemsFrame.ShowHideButton:SetNormalAtlas(Save().hide and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
+    PaperDollItemsFrame.ShowHideButton:settings()
 end
 
 
@@ -65,7 +65,7 @@ end
 
 
 local function Init_Menu(_, root)
-    root:CreateCheckbox(
+    local sub= root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
     function()
         return not Save().hide
@@ -73,9 +73,8 @@ local function Init_Menu(_, root)
         Save().hide= not Save().hide and true or nil
         Settings()
     end)
-    root:CreateDivider()
 
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_PaperDollMixin.addName})
+    WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_PaperDollMixin.addName})
 end
 
 
@@ -92,24 +91,28 @@ local function Init(frame)
 
     local title= frame==PaperDollItemsFrame and CharacterFrame.TitleContainer or frame.TitleContainer
 
-    local btn= WoWTools_ButtonMixin:Cbtn(frame, {size=22, atlas= not Save().hide and WoWTools_DataMixin.Icon.icon or 'talents-button-reset'})
-    btn:SetPoint('LEFT', title)
+    local btn= WoWTools_ButtonMixin:Menu(frame, {size=22, icon='hide'})
+    btn:SetPoint('LEFT', title, 0,-2)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
-    btn:SetScript('OnClick', function(self)
+    btn:SetupMenu(Init_Menu)
+    --[[btn:SetScript('OnClick', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)
-    function btn:set_alpha(isEnter)
-        if isEnter then
-            self:SetAlpha(1)
+    end)]]
+    function btn:settings()
+        self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
+        if Save().hide then
+            self:SetNormalAtlas('talents-button-reset')
         else
-            self:SetAlpha(0.2)
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
     end
-    btn:set_alpha(false)
 
-    btn:SetScript('OnLeave', function(self) GameTooltip_Hide() self:set_alpha(false) end)
+    btn:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:settings()
+    end)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
@@ -119,8 +122,9 @@ local function Init(frame)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
 
         GameTooltip:Show()
-        self:set_alpha(true)
+        self:settings()
     end)
+    btn:settings()
 
     frame.ShowHideButton= btn
 end

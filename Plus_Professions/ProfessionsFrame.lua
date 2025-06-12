@@ -118,46 +118,55 @@ local function Init()
     --######
     --附魔纸
     --Blizzard_ProfessionsRecipeSchematicForm.lua
-    hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(self, recipeInfo)--, isRecraftOverride)
+    hooksecurefunc(ProfessionsFrame.CraftingPage.SchematicForm, 'Init', function(frame, recipeInfo)--, isRecraftOverride)
         local recipeID = recipeInfo and recipeInfo.recipeID
-        local isEnchant = recipeID and (self.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging()
+        local isEnchant = recipeID and (frame.recipeSchematic.recipeType == Enum.TradeskillRecipeType.Enchant) and not C_TradeSkillUI.IsRuneforging()
 
         if not isEnchant
-            or not self.enchantSlot
-            or not self.enchantSlot:IsShown()
+            or not frame.enchantSlot
+            or not frame.enchantSlot:IsShown()
             --or Save().disabled--禁用，按钮
             or ItemUtil.GetCraftingReagentCount(38682)==0--没有， 附魔纸
         then
-            if self.enchantSlot and self.enchantSlot.btn then
-                self.enchantSlot.btn:SetShown(false)
+            if frame.enchantSlot and frame.enchantSlot.btn then
+                frame.enchantSlot.btn:SetShown(false)
             end
             return
         end
 
-        local btn= self.enchantSlot.btn
+        local btn= frame.enchantSlot.btn
         if not btn then
-            btn= WoWTools_ButtonMixin:Cbtn(self.enchantSlot, {
+            btn= WoWTools_ButtonMixin:Cbtn(frame.enchantSlot, {
                 size=16,
-                atlas= Save().disabledEnchant and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon
+                icon='hide',
             })
-            btn:SetPoint('TOPLEFT', self.enchantSlot, 'BOTTOMLEFT')
+            btn:SetPoint('TOPLEFT', frame.enchantSlot, 'BOTTOMLEFT')
             btn:SetAlpha(0.3)
-            btn:SetScript('OnClick', function(self2)
+            function btn:settings()
+                if Save().disabledEnchant then
+                    self:SetNormalAtlas('talents-button-reset')
+                else
+                    self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+                end
+            end
+            btn:SetScript('OnClick', function(self)
                 Save().disabledEnchant= not Save().disabledEnchant and true or nil
-                self2:SetNormalAtlas(Save().disabledEnchant and 'talents-button-reset' or WoWTools_DataMixin.Icon.icon)
+                self:settings()
             end)
-            btn:SetScript('OnLeave', function(self2) GameTooltip:Hide() self2:SetAlpha(0.3) end)
-            btn:SetScript('OnEnter', function(self2)
-                GameTooltip:SetOwner(self2, "ANCHOR_LEFT")
+            btn:SetScript('OnLeave', function(self) GameTooltip:Hide() self:SetAlpha(0.3) end)
+            btn:SetScript('OnEnter', function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_LEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:SetItemByID(38682)
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动加入' or AUTO_JOIN, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledEnchant))
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
                 GameTooltip:Show()
-                self2:SetAlpha(1)
+                self:SetAlpha(1)
             end)
-            self.enchantSlot.btn=btn
+            btn:settings()
+            
+            frame.enchantSlot.btn=btn
         end
         btn:SetShown(true)
 
@@ -171,9 +180,9 @@ local function Init()
             if candidateGUIDs[index] and item and item:GetItemID()== 38682 then--附魔纸
                 local itemLocal= Item:CreateFromItemGUID(candidateGUIDs[index])
                 if itemLocal then
-                    self.transaction:SetEnchantAllocation(itemLocal);
-                    self.enchantSlot:SetItem(itemLocal);
-                    self:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
+                    frame.transaction:SetEnchantAllocation(itemLocal);
+                    frame.enchantSlot:SetItem(itemLocal);
+                    frame:TriggerEvent(ProfessionsRecipeSchematicFormMixin.Event.AllocationsModified);
                     break
                 end
             end
@@ -183,44 +192,44 @@ local function Init()
 
     --Blizzard_ProfessionsSpecializations.lua
     --全加点，专精，
-    hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(self, setLocked)
-        local button=self.DetailedView.SpendAllPointsButton
+    hooksecurefunc(ProfessionsFrame.SpecPage, 'UpdateDetailedPanel', function(frame, setLocked)
+        local button=frame.DetailedView.SpendAllPointsButton
         if not button then
-            button= WoWTools_ButtonMixin:Cbtn(self.DetailedView.SpendPointsButton, {isUI=true, size={80, 22}})
-            button:SetPoint('LEFT', self.DetailedView.SpendPointsButton, 'RIGHT',40,0)
+            button= WoWTools_ButtonMixin:Cbtn(frame.DetailedView.SpendPointsButton, {isUI=true, size={80, 22}})
+            button:SetPoint('LEFT', frame.DetailedView.SpendPointsButton, 'RIGHT',40,0)
             button:SetText(WoWTools_DataMixin.onlyChinese and '全部' or ALL)
-            button:SetScript('OnClick', function(self2)
-                local parent= self2:GetParent()
+            button:SetScript('OnClick', function(self)
+                local parent= self:GetParent()
                 while parent:IsEnabled() do
-                    local success= C_Traits.PurchaseRank(self2.configID, self2.nodeID)
+                    local success= C_Traits.PurchaseRank(self.configID, self.nodeID)
                     if not success then
                         return
                     end
                 end
             end)
-            button:SetScript('OnEnter', function(self2)
-                GameTooltip:SetOwner(self2, "ANCHOR_TOPLEFT")
+            button:SetScript('OnEnter', function(self)
+                GameTooltip:SetOwner(self, "ANCHOR_TOPLEFT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(not WoWTools_DataMixin.onlyChinese and PROFESSIONS_SPECS_ADD_KNOWLEDGE or "运用知识", WoWTools_DataMixin.onlyChinese and '全部' or ALL)
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_ProfessionMixin.addName)
                 GameTooltip:Show()
             end)
             button:SetScript('OnLeave', GameTooltip_Hide)
-            self.DetailedView.SpendAllPointsButton= button
+            frame.DetailedView.SpendAllPointsButton= button
         end
-        button:SetShown(self.DetailedView.SpendPointsButton:IsShown())
-        button:SetEnabled(self.DetailedView.SpendPointsButton:IsEnabled())
-        button.nodeID= self:GetDetailedPanelNodeID();
-        button.configID= self:GetConfigID()
+        button:SetShown(frame.DetailedView.SpendPointsButton:IsShown())
+        button:SetEnabled(frame.DetailedView.SpendPointsButton:IsEnabled())
+        button.nodeID= frame:GetDetailedPanelNodeID();
+        button.configID= frame:GetConfigID()
     end)
 
 
     --可加点数， 提示
-    hooksecurefunc(ProfessionsSpecPathMixin, 'UpdateProgressBar', function(self)
-        if not self.ProgressBar:IsShown() then
+    hooksecurefunc(ProfessionsSpecPathMixin, 'UpdateProgressBar', function(frame)
+        if not frame.ProgressBar:IsShown() then
             return
         end
-        local currRank, maxRank = self:GetRanks()
+        local currRank, maxRank = frame:GetRanks()
         local text
         if currRank and maxRank then
             if currRank<maxRank then
@@ -229,14 +238,16 @@ local function Init()
                 text= '|A:auctionhouse-icon-favorite:0:0|a'
             end
         end
-        if text and not self.SpendText2 then
-            self.SpendText2= WoWTools_LabelMixin:Create(self, {color={r=1, g=0, b=1}})
-            self.SpendText2:SetPoint('LEFT', self.SpendText, 'RIGHT')
+        if text and not frame.SpendText2 then
+            frame.SpendText2= WoWTools_LabelMixin:Create(frame, {color={r=1, g=0, b=1}})
+            frame.SpendText2:SetPoint('LEFT', frame.SpendText, 'RIGHT')
         end
-        if self.SpendText2 then
-            self.SpendText2:SetText(text or '')
+        if frame.SpendText2 then
+            frame.SpendText2:SetText(text or '')
         end
     end)
+
+    Init=function()end
 end
 
 
