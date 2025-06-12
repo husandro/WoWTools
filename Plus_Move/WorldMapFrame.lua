@@ -61,7 +61,7 @@ local function Init()
         minH=WorldMapFrame.questLogWidth,
         setSize=true,
         onShowFunc=true,
-        notMoveAlpha=true,
+        --notMoveAlpha=true,
         sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
             set_min_max_value({btn.targetFrame:GetSize()})
         end,

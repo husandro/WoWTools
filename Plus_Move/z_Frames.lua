@@ -32,17 +32,111 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 --试衣间
 function WoWTools_MoveMixin.Frames:DressUpFrame()
-    DressUpFrame:HookScript('OnShow', function(b)--DressUpFrame_Show
-        local size= Save().size[b:GetName()]
-        if size then
-            b:SetSize(size[1], size[2])
+    local function Set_Max(frame)
+        local w, h= UIParent:GetSize()
+        local s= (math.min(w, h)- 40)
+        s= math.max(s, 50)
+        frame:ClearAllPoints()
+        frame:SetPoint('CENTER')
+        frame:SetSize(s, s)
+    end
+    hooksecurefunc(DressUpFrame, 'SetShownOutfitDetailsPanel', function(frame)
+        if frame.ResizeButton and not GetCVarBool("miniDressUpFrame") then
+            Set_Max(frame)
         end
     end)
-    self:Setup(DressUpFrame, {setSize=true, minH=330, minW=330, sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(450, 545)
+    hooksecurefunc(DressUpFrame, 'ConfigureSize', function(frame, isMinimized)
+        if not frame.ResizeButton then
+            return
+        end
+        local name= frame:GetName()
+
+        frame:SetMovable(isMinimized)
+        frame.ResizeButton:SetShown(isMinimized)
+        frame:SetScale(isMinimized and Save().scale[name] or 1)
+
+        if isMinimized then
+            local size= Save().size[name]
+            if size then
+                frame:SetSize(size[1], size[2])
+            end
+        else
+            Set_Max(frame)
+        end
+
+        frame:Raise()
+    end)
+
+    self:Setup(DressUpFrame, {setSize=true, minH=320, minW=310,
+    sizeRestFunc=function(btn)
+        Save().size[btn.name]= nil
+        DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
+        DressUpFrame:Raise()
     end})
+
+
+
+    --[[hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
+        if not self.ResizeButton then
+            return
+        end
+        local name= self:GetName()
+        local size= Save().size[name]
+        if size then
+            self:SetSize(size[1], size[2])
+            set_min_max_value(size)
+        end
+        local scale= Save().scale[name]
+        if scale then
+            self:SetScale(scale)
+        end
+        self.ResizeButton:SetShown(true)
+    end)
+    hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
+        if not self.ResizeButton then
+            return
+        end
+        set_min_max_value()
+        if Save().scale[self:GetName()] then
+            self:SetScale(1)
+        end
+        if self.ResizeButton then
+            self.ResizeButton:SetShown(false)
+        end
+    end)
+
+    WoWTools_MoveMixin:Setup(WorldMapFrame, {
+        minW=(WorldMapFrame.questLogWidth or 290)*2+37,
+        minH=WorldMapFrame.questLogWidth,
+        setSize=true,
+        onShowFunc=true,
+        --notMoveAlpha=true,
+        sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
+            set_min_max_value({btn.targetFrame:GetSize()})
+        end,
+        sizeRestFunc= function(btn)
+            local target=btn.targetFrame
+           
+            target.minimizedWidth= minimizedWidth
+            target.minimizedHeight= minimizedHeight
+            target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
+            target.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'
+    })]]
 end
 
 --小，背包

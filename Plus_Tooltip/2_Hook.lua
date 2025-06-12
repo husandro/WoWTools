@@ -210,7 +210,8 @@ local function Init()
 --DressUpFrames.lua
     hooksecurefunc(DressUpOutfitDetailsSlotMixin, 'OnEnter', function(self)
         if self.transmogID then
-            GameTooltip:AddDoubleLine('transmogID', self.transmogID)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'transmogID', self.transmogID)
+            GameTooltip:Show()
         end
     end)
 

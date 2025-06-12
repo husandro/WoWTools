@@ -99,7 +99,10 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
             and (d== self.click or not self.click)
             and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
         then
-            (self.targetFrame or self):StartMoving()
+            local f= self.targetFrame or self
+            if f and f:IsMovable() then
+                f:StartMoving()
+            end
         end
     end)
 
@@ -128,7 +131,10 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
             and (d== self.click or not self.click)
             and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
         then
-            SetCursor('UI_MOVE_CURSOR')
+            local f= self.targetFrame or self
+            if f:IsMovable() then
+                SetCursor('UI_MOVE_CURSOR')
+            end
         end
     end)
 
