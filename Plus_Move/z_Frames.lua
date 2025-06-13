@@ -58,6 +58,7 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
         if frame.ResizeButton and not GetCVarBool("miniDressUpFrame") then
             Set_Max(frame)
         end
+        frame:Raise()
     end)
     hooksecurefunc(DressUpFrame, 'ConfigureSize', function(frame, isMinimized)
         if not frame.ResizeButton then
