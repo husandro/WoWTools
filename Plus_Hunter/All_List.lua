@@ -121,7 +121,6 @@ local function created_button(index)
             GameTooltip:Show()
         end
     end)
-    --set_button_size(btn)
 
     btn.Border:SetTexture(nil)
     btn.Border:ClearAllPoints()
@@ -147,16 +146,9 @@ end
 
 --初始，宠物列表
 local function Init()
-    if AllListFrame or not Save().show_All_List then
-        if AllListFrame then
-            AllListFrame:Settings()
-        end
+    if not Save().show_All_List then
         return
     end
-
-
-
-
 
     AllListFrame= CreateFrame('Frame', 'WoWTools_StableFrameAllList', StableFrame)
     AllListFrame:SetPoint('TOPLEFT', StableFrame, 'TOPRIGHT', StableFrame.Topper:IsShown() and 0 or 12,0)
@@ -166,10 +158,7 @@ local function Init()
 
     AllListFrame.Buttons={}
     AllListFrame.s= Save().all_List_Size or 28
-    AllListFrame.Bg= AllListFrame:CreateTexture(nil, "BACKGROUND")
-
-    AllListFrame.Bg:SetTexCoord(1,0,1,0)
-    AllListFrame.Bg:SetPoint('TOPLEFT')
+    WoWTools_TextureMixin:CreateBG(AllListFrame, {alpha=0.5, isColor=true})
 
     for i= EXTRA_PET_STABLE_SLOT_LUA_INDEX, NUM_PET_SLOTS_HUNTER do
         local btn= created_button(i)
@@ -192,10 +181,10 @@ local function Init()
                 x=x+ self.s
             end
         end
-        AllListFrame.Bg:ClearAllPoints()
-        AllListFrame.Bg:SetPoint('TOPLEFT', AllListFrame.Buttons[EXTRA_PET_STABLE_SLOT_LUA_INDEX])
-        AllListFrame.Bg:SetPoint('BOTTOM', btnY)
-        AllListFrame.Bg:SetPoint('RIGHT', AllListFrame.Buttons[NUM_PET_SLOTS_HUNTER])
+        AllListFrame.Background:ClearAllPoints()
+        AllListFrame.Background:SetPoint('TOPLEFT', AllListFrame.Buttons[EXTRA_PET_STABLE_SLOT_LUA_INDEX])
+        AllListFrame.Background:SetPoint('BOTTOM', btnY)
+        AllListFrame.Background:SetPoint('RIGHT', AllListFrame.Buttons[NUM_PET_SLOTS_HUNTER])
     end
 
 
@@ -243,14 +232,18 @@ local function Init()
 
     function AllListFrame:Settings()
         self:SetShown(Save().show_All_List)
-        self.Bg:SetAtlas(Save().showTexture and 'pet-list-bg' or 'footer-bg')
         self.s= Save().all_List_Size
         for _, btn2 in pairs(self.Buttons) do
             set_button_size(btn2)
         end
         self:set_point()
     end
+
     AllListFrame:Settings()
+
+    Init=function()
+        AllListFrame:Settings()
+    end
 end
 
 

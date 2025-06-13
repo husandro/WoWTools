@@ -5895,7 +5895,8 @@
         "InspectModelFrameControlFrame",
         "DressUpFrameCloseButton",
         "DressUpFrameOutfitDropdown",
-        "DressUpModelFrameMixin"
+        "DressUpModelFrameMixin",
+        "StabledPetListCategoryMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

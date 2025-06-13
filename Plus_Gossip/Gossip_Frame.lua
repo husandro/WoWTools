@@ -43,7 +43,7 @@ local function Chat_Menu(_, root)
     end
 
     local num=#find
-    if num>1 then
+    if num>0 then
         WoWTools_MenuMixin:SetScrollMode(root)
         root:CreateDivider()
         root:CreateButton(

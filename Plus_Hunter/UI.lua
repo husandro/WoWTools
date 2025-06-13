@@ -6,8 +6,7 @@ end
 
 
 
-
-local function Init_UI()
+local function Init_MoveUI()
     --移动，缩放
     StableFrame.PetModelScene:ClearAllPoints()
     StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame, 330, -86)
@@ -15,16 +14,10 @@ local function Init_UI()
     StableFrame.ActivePetList:ClearAllPoints()
     StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
     StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
-    WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
-    WoWTools_MoveMixin:Setup(StableFrame, {
-        --needSize=true, needMove=true,
-        setSize=true, minW=860, minH=440,
-    sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(1040, 638)
-    end})
+
+
 
     StableFrame.ReleasePetButton:ClearAllPoints()
-    --StableFrame.ReleasePetButton:SetPoint('BOTTOMLEFT', StableFrame.PetModelScene, 'TOPLEFT', 0,20)
     StableFrame.ReleasePetButton:SetPoint('BOTTOM', StableFrame.PetModelScene, 'TOP', 0, 12)
     StableFrame.ReleasePetButton:SetAlpha(0.5)
     StableFrame.ReleasePetButton:HookScript('OnLeave', function(self) self:SetAlpha(0.5) end)
@@ -32,13 +25,10 @@ local function Init_UI()
 
     StableFrame.StableTogglePetButton:ClearAllPoints()
     StableFrame.StableTogglePetButton:SetPoint('BOTTOMRIGHT', StableFrame.PetModelScene)
-    --StableFrame.StableTogglePetButton:SetWidth(StableFrame.StableTogglePetButton:GetFontString():GetWidth()+24)
 
     StableFrame.PetModelScene.AbilitiesList:ClearAllPoints()
     StableFrame.PetModelScene.AbilitiesList:SetPoint('LEFT', 8, -40)
 
-
-    --StableFrame.PetModelScene.PetInfo.Type:SetJustifyH('RIGHT')
     StableFrame.PetModelScene.PetInfo.Specialization:ClearAllPoints()
     StableFrame.PetModelScene.PetInfo.Specialization:SetPoint('TOPRIGHT', StableFrame.PetModelScene.PetInfo.Type, 'BOTTOMRIGHT', 0, -2)
 
@@ -49,6 +39,7 @@ local function Init_UI()
     StableFrame.ActivePetList.ActivePetListBG:ClearAllPoints()
     StableFrame.ActivePetList.ActivePetListBG:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -2)
     StableFrame.ActivePetList.ActivePetListBG:SetPoint('BOTTOMRIGHT', StableFrame)
+    StableFrame.ActivePetList.ActivePetListBG:SetAtlas('wood-topper')
     StableFrame.PetModelScene.ControlFrame:ClearAllPoints()
     StableFrame.PetModelScene.ControlFrame:SetPoint('TOP')
 
@@ -80,12 +71,12 @@ local function Init_UI()
     StableFrame.ActivePetList.ListName:ClearAllPoints()
     StableFrame.ActivePetList.ListName:SetPoint('BOTTOMLEFT', StableFrame.ActivePetList.ActivePetListBG, 'TOPLEFT',0,-6)
 
-    if StableFrame.Topper:IsShown() then--激活栏，添加材质
-        local texture= StableFrame:CreateTexture()
-        texture:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT')
-        texture:SetPoint('BOTTOMRIGHT')
-        texture:SetAtlas('wood-topper')
-    end
+    --激活栏，添加材质
+    StableFrame.ActivePetList.ActivePetListBG:SetAtlas('wood-topper')
+    --[[StableFrame.ActivePetList.ActivePetListBG2= StableFrame.ActivePetList:CreateTexture()
+    StableFrame.ActivePetList.ActivePetListBG2:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT')
+    StableFrame.ActivePetList.ActivePetListBG2:SetPoint('BOTTOMRIGHT')
+    StableFrame.ActivePetList.ActivePetListBG2:SetAtlas('wood-topper')]]
 
     StableFrame.PetModelScene.PetInfo.NameBox.EditButton:SetHighlightAtlas('AlliedRace-UnlockingFrame-BottomButtonsSelectionGlow')--修该，名称
     StableFrame.PetModelScene.PetInfo.NameBox.EditButton:HookScript('OnLeave', GameTooltip_Hide)
@@ -103,8 +94,13 @@ local function Init_UI()
         GameTooltip:Show()
     end)
 
+    WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
+    WoWTools_MoveMixin:Setup(StableFrame, {setSize=true, minW=860, minH=440,
+    sizeRestFunc=function(btn)
+        btn.targetFrame:SetSize(1040, 638)
+    end})
 
-    Init_UI= function()end
+    Init_MoveUI= function()end
 end
 
 
@@ -112,54 +108,77 @@ end
 
 
 
-local function Init_Texture_Script()
-    WoWTools_TextureMixin:SetEditBox(StableFrame.StabledPetList.FilterBar.SearchBox)
-    WoWTools_TextureMixin:SetScrollBar(StableFrame.StabledPetList)
-    WoWTools_TextureMixin:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
-    WoWTools_TextureMixin:SetMenu(StableFrame.StabledPetList.FilterBar)
-
-    WoWTools_TextureMixin:SetNineSlice(StableFrame, true, nil, nil)
-
-    hooksecurefunc(StableFrame.StabledPetList.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
-            return
-        end
-        for _, btn in pairs(self:GetFrames() or {}) do
-            if btn.CenterPiece then
-                WoWTools_TextureMixin:SetAlphaColor(btn.LeftPiece, nil, nil, 0.5)
-                WoWTools_TextureMixin:SetAlphaColor(btn.CenterPiece, nil, nil, 0.5)
-                WoWTools_TextureMixin:SetAlphaColor(btn.RightPiece, nil, nil, 0.5)
-            else
-                btn.Selected:SetVertexColor(0,1,0)
-            end
-        end
-    end)
-
-    WoWTools_TextureMixin:SetButton(StableFrameCloseButton, {all=true})
-
-    Init_Texture_Script=function()end
-end
 
 
 
-local function Init_Texture()
-    local show= WoWToolsSave['Plus_StableFrame'].showTexture
 
-    WoWTools_TextureMixin:SetAlphaColor(StableFrameBg, nil, nil, show and 1 or 0.5)
 
-    WoWTools_TextureMixin:SetAlphaColor(StableFrame.Topper, nil, nil, show and 1 or 0)
 
-    for _, object in pairs({StableFrame:GetRegions()}) do
-        if object~=StableFrameBg and object:GetObjectType()=='Texture' then
-            object:SetAlpha(show and 1 or 0)
+
+local function Set_BG(self, texture, alpha)
+    alpha= texture and 0 or alpha or 1
+   
+    StableFrame.Topper:SetAlpha(alpha)
+    StableFrame.TopTileStreaks:SetAlpha(alpha)
+    StableFrameBg:SetAlpha(alpha)
+
+    self:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=alpha, notColor=true})--frame
+    self:SetFrame(StableFrame.ActivePetList, {alpha=alpha, notColor=true})--frame
+    StableFrame.StabledPetList.Backgroud:SetAlpha(alpha)
+    StableFrame.StabledPetList.Inset.Bg:SetAlpha(alpha)
+    StableFrame.PetModelScene.Inset.Bg:SetAlpha(alpha)
+
+    local bgAlpha= texture and 1 or alpha or 1
+    for _, btn in ipairs(StableFrame.ActivePetList.PetButtons) do--已激，宠物栏，提示
+        if btn.model and btn.model.bg then
+            btn.model.bg:SetAlpha(bgAlpha)
         end
     end
+end
 
-    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Backgroud, nil, nil, show and 1 or 0)
-    WoWTools_TextureMixin:SetAlphaColor(StableFrame.StabledPetList.Inset.Bg, nil, nil, show and 1 or 0)
-    WoWTools_TextureMixin:SetFrame(StableFrame.StabledPetList.ListCounter, {alpha=show and 1 or 0.8})
 
-    Init_Texture_Script()
+
+
+
+local function Init_Texture(self)
+    self:SetEditBox(StableFrame.StabledPetList.FilterBar.SearchBox)
+    self:SetScrollBar(StableFrame.StabledPetList)
+    self:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
+    self:SetMenu(StableFrame.StabledPetList.FilterBar)
+
+    self:SetNineSlice(StableFrame)
+    self:SetNineSlice(StableFrame.StabledPetList.Inset, nil, true)
+    self:SetNineSlice(StableFrame.PetModelScene.Inset, nil, true)
+    self:SetButton(StableFrameCloseButton, {all=true})
+    self:SetButton(StableFrame.MainHelpButton, {all=true})
+ 
+    hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)
+        btn.Selected:SetVertexColor(0,1,0)
+        self:SetAlphaColor(btn.Background, nil, true, 0.75)
+    end)
+    hooksecurefunc(StabledPetListCategoryMixin, 'SetCollapseState', function(btn)
+        self:SetAlphaColor(btn.LeftPiece, nil, nil, 0.5)
+        self:SetAlphaColor(btn.CenterPiece, nil, nil, 0.5)
+        self:SetAlphaColor(btn.RightPiece, nil, nil, 0.5)
+    end)
+
+    for i=1, 5 do
+        self:HideTexture(StableFrame.ActivePetList['PetButton'..i].Background)
+    end
+    self:HideTexture(StableFrame.ActivePetList.BeastMasterSecondaryPetButton.Background)
+
+    self:HideFrame(StableFrame.StabledPetList.ListCounter)
+
+    StableFrame.MainHelpButton:SetFrameStrata(StableFrame.TitleContainer:GetFrameStrata())
+    StableFrame.MainHelpButton:SetFrameLevel(StableFrame.TitleContainer:GetFrameLevel()+1)
+
+    self:Init_BGMenu_Frame(StableFrame, {
+        settings=function(texture, alpha)
+            Set_BG(self, texture, alpha)
+        end
+    })
+
+    Init_Texture=function()end
 end
 
 
@@ -171,10 +190,14 @@ end
 
 
 function WoWTools_HunterMixin:Init_UI()
-    Init_UI()
-    Init_Texture()
+    Init_MoveUI()
+    Init_Texture(WoWTools_TextureMixin)
 end
 
-function WoWTools_HunterMixin:Set_UI_Texture()
-    Init_Texture()
+function WoWTools_TextureMixin.Events:Blizzard_StableUI()
+    Init_Texture(self)
+end
+
+function WoWTools_MoveMixin.Events:Blizzard_StableUI()
+    Init_MoveUI()
 end

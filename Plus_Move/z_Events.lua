@@ -820,11 +820,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AddOnList()
 end
 
 
-function WoWTools_MoveMixin.Events:Blizzard_StableUI()
-    if WoWTools_DataMixin.Player.Class=='HUNTER' and WoWToolsSave['Plus_StableFrame'] and WoWToolsSave['Plus_StableFrame'].disabled then--StableFrame
-        self:Setup(StableFrame)
-    end
-end
+
 
 --菜单
 function WoWTools_MoveMixin.Events:Blizzard_GameMenu()
