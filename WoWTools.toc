@@ -435,7 +435,6 @@ Plus_Mail\B_Set_UI.lua
 Plus_Mail\History_SendNameList.lua
 Plus_Mail\Item_FastButton.lua
 Plus_Mail\PlayerName_List.lua
-Plus_Mail\Move_Frame.lua
 
 
 ##拍卖行

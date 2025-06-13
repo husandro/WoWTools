@@ -45,27 +45,6 @@ end
 
 
 
---信箱
-function WoWTools_TextureMixin.Frames:MailFrame()
-    self:SetNineSlice(MailFrame, true)
-    self:SetAlphaColor(MailFrameBg)
-    self:SetAlphaColor(SendMailMoneyBgRight, nil, nil, 0.3)
-    self:SetAlphaColor(SendMailMoneyBgLeft, nil, nil, 0.3)
-    self:SetAlphaColor(SendMailMoneyBgMiddle, nil, nil, 0.3)
-    self:SetAlphaColor(MailFrameInset.Bg)
-    self:SetNineSlice(OpenMailFrame, true)
-    self:SetAlphaColor(OpenMailFrameBg)
-    self:SetAlphaColor(OpenMailFrameInset.Bg)
-    self:SetTabButton(MailFrameTab1)
-    self:SetTabButton(MailFrameTab2)
-    self:HideTexture(SendMailMoneyInset.Bg)
-    self:SetNineSlice(MailFrameInset, true)
-    self:SetScrollBar(SendMailScrollFrame)
-    self:SetScrollBar(OpenMailScrollFrame)
-end
-
-
-
 
 
 

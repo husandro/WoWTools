@@ -5896,7 +5896,12 @@
         "DressUpFrameCloseButton",
         "DressUpFrameOutfitDropdown",
         "DressUpModelFrameMixin",
-        "StabledPetListCategoryMixin"
+        "StabledPetListCategoryMixin",
+        "SendMailMoneyGold",
+        "SendMailMoneySilver",
+        "SendMailMoneyCopper",
+        "SendMailMoneyGoldRight",
+        "OpenMailFrameCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

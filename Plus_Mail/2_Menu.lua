@@ -1,9 +1,3 @@
-if GameLimitedMode_IsActive() then
-    return
-end
-
-
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end
@@ -14,22 +8,6 @@ end
 
 local function Init_Menu(_, root)
     local sub
-
-    local function set_tooltip(tooltip)
-        tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
-    end
-
-    sub=root:CreateCheckbox(
-        'UI Plus',
-    function()
-        return not Save().hideUIPlus
-    end, function()
-        Save().hideUIPlus= not Save().hideUIPlus and true or nil
-    end)
-    sub:SetTooltip(set_tooltip)
-
---重新加载UI
-    WoWTools_MenuMixin:Reload(sub)
 
     root:CreateTitle(WoWTools_DataMixin.onlyChinese and '收件箱' or INBOX)
     root:CreateCheckbox(
@@ -104,7 +82,8 @@ local function Init_Menu(_, root)
 
 
 --打开选项界面
-    WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
+    sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MailMixin.addName})
+    WoWTools_MenuMixin:Reload(sub)
 end
 
 

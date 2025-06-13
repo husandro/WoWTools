@@ -1,10 +1,4 @@
-if GameLimitedMode_IsActive() then
-    return
-end
-
-
 --快速，加载，物品，按钮
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end

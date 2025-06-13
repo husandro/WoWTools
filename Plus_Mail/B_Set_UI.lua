@@ -1,16 +1,17 @@
-
-
-
-
-
-
-if GameLimitedMode_IsActive() then
-    return
-end
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end
+
+
+
+
+
+
+
+
+
+
+
 
 local P_INBOXITEMS_TO_DISPLAY= INBOXITEMS_TO_DISPLAY--7
 
@@ -80,22 +81,15 @@ end
 
 
 local function Init()
-    if Save().hideUIPlus then
-        return
+    if Save().INBOXITEMS_TO_DISPLAY then
+        INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
+        Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
     end
 
+    WoWTools_MoveMixin:Setup(MailFrame, {setSize=true, minW=338, minH=424,
 
-
-    WoWTools_MoveMixin:Setup(MailFrame, {
-        --needSize=true, needMove=true,
-        setSize=true, minW=338, minH=424,
-    initFunc=function(btn)
-        if Save().INBOXITEMS_TO_DISPLAY then
-            INBOXITEMS_TO_DISPLAY= Save().INBOXITEMS_TO_DISPLAY
-            Set_Inbox_Button()--显示，隐藏，建立，收件，物品    
-        end
-    end, sizeUpdateFunc=function(btn)
-        local h= btn.targetFrame:GetHeight()-424
+    sizeUpdateFunc=function(btn)
+        local h= _G[btn.name]:GetHeight()-424
         local num= P_INBOXITEMS_TO_DISPLAY
         if h>45 then
             num= num+ math.modf(h/45)
@@ -104,8 +98,10 @@ local function Init()
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品
         Save().INBOXITEMS_TO_DISPLAY= num>P_INBOXITEMS_TO_DISPLAY and num or nil
         WoWTools_MailMixin:RefreshAll()
-    end, sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(338, 424)
+    end,
+
+    sizeRestFunc=function(btn)
+        _G[btn.name]:SetSize(338, 424)
         Save().INBOXITEMS_TO_DISPLAY=nil
         INBOXITEMS_TO_DISPLAY= P_INBOXITEMS_TO_DISPLAY
         Set_Inbox_Button()--显示，隐藏，建立，收件，物品
@@ -117,15 +113,6 @@ local function Init()
 
 
 
-
-
-
-
-
-
-
-
-    MailFrameInset.Bg:SetTexture(0)
 
 --收件箱
     InboxFrame:SetPoint('RIGHT')
@@ -139,11 +126,6 @@ local function Init()
     InboxNextPageButton:SetPoint('BOTTOMRIGHT', -10, 10)
     OpenAllMail:ClearAllPoints()--全部打开
     OpenAllMail:SetPoint('BOTTOM', 0, 10)
-
-    --InboxFrameBg:SetAtlas('QuestBG-Parchment')
-    --InboxFrameBg:SetAlpha(0.3)
-    InboxFrameBg:SetTexture(0)
-    --InboxFrameBg:SetPoint('BOTTOMRIGHT', -4,4)
 
 --发件箱
     SendMailFrame:SetPoint('BOTTOMRIGHT', 384-338, 424-512)
@@ -160,17 +142,11 @@ local function Init()
 
     SendMailBodyEditBox:SetPoint('BOTTOMRIGHT', SendMailScrollFrame)
 
-
-
     SendMailSubjectEditBox:SetPoint('RIGHT', MailFrame, -28, 0)--主题
     SendMailSubjectEditBoxMiddle:SetPoint('RIGHT', -8, 0)
     SendMailNameEditBox:SetPoint("TOPLEFT", 80, -30)
     SendMailNameEditBox:SetPoint('RIGHT', -75, -30)
     SendMailNameEditBoxMiddle:SetPoint('RIGHT',-8,0)
-    --SendMailNameEditBox:SetPoint('TOPLEFT', 122, -30 )--x="90" y="-30
-    --SendMailNameEditBox:SetPoint('RIGHT', SendMailCostMoneyFrame, 'LEFT', -54, 0)--收件人
-    --SendMailNameEditBoxMiddle:SetPoint('RIGHT', -8, 0)
-
 
     SendMailCostMoneyFrame:ClearAllPoints()
     SendMailCostMoneyFrame:SetPoint('TOPLEFT', SendMailScrollFrame)
@@ -210,6 +186,7 @@ local function Init()
             break
         end
     end
+
     SendMailNameEditBox.Instructions= WoWTools_LabelMixin:Create(SendMailNameEditBox, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
     SendMailNameEditBox.Instructions:SetPoint('LEFT')
     SendMailNameEditBox.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '收件人:' or MAIL_TO_LABEL)
@@ -258,8 +235,50 @@ end
 
 
 
+--信箱
+function WoWTools_TextureMixin.Frames:MailFrame()
+    self:SetNineSlice(MailFrame)
+    self:HideFrame(MailFrame)
+    self:SetButton(MailFrameCloseButton, {all=true})
+    self:SetTabButton(MailFrameTab1)
+    self:SetTabButton(MailFrameTab2)
+
+    self:HideFrame(MailFrameInset)
+    self:SetNineSlice(MailFrameInset, nil, true)
+
+    self:HideFrame(SendMailFrame)
+    self:HideFrame(SendMailMoneyFrame)
+    self:HideFrame(SendMailMoneyInset)
+    self:SetNineSlice(SendMailMoneyInset, nil, true)
+    self:HideFrame(SendMailMoneyBg)
+
+    self:SetScrollBar(SendMailScrollFrame)
+    self:SetFrame(SendMailMoneyGold, {alpha=0.5, show={[SendMailMoneyGold.texture]=true}})
+    self:SetFrame(SendMailMoneySilver, {alpha=0.5, show={[SendMailMoneySilver.texture]=true}})
+    self:SetFrame(SendMailMoneyCopper, {alpha=0.5, show={[SendMailMoneyCopper.texture]=true}})
+
+    self:SetNineSlice(OpenMailFrame)
+    self:HideFrame(OpenMailFrame)
+    OpenMailFrameBg:SetColorTexture(0,0,0, 0.5)
+    self:HideFrame(OpenMailFrameInset)
+    self:SetNineSlice(OpenMailFrameInset, nil, true)
+    self:SetButton(OpenMailFrameCloseButton, {all=true})
+
+    self:HideFrame(InboxFrame)
+    self:SetScrollBar(OpenMailScrollFrame)
+
+    self:Init_BGMenu_Frame(MailFrame)
+end
 
 
+
+
+
+
+--邮件
+function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
+    Init()
+end
 
 
 

@@ -1,10 +1,4 @@
-if GameLimitedMode_IsActive() then
-    return
-end
-
-
 --收件人，列表
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end

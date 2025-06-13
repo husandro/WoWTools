@@ -1,9 +1,3 @@
-if GameLimitedMode_IsActive() then
-    return
-end
-
-
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end
@@ -16,10 +10,6 @@ end
 
 
 local function Init()--字数
-    if Save().hideUIPlus then
-        return
-    end
-
     --清除，收件人
     SendMailNameEditBox.clearButton= WoWTools_ButtonMixin:Cbtn(SendMailNameEditBox, {
         size=22,
@@ -134,6 +124,7 @@ local function Init()--字数
     end)
     SendMailBodyEditBox:HookScript('OnEditFocusGained', SendMailBodyEditBox.wowtools_settings)
     SendMailBodyEditBox:HookScript('OnEditFocusLost', SendMailBodyEditBox.wowtools_settings)
+    SendMailBodyEditBox:wowtools_settings()
 
     Init=function()end
 end

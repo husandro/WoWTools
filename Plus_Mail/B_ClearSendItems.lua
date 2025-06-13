@@ -1,7 +1,3 @@
-if GameLimitedMode_IsActive() then
-    return
-end
-
 --清除所有，要发送物品
 
 
@@ -11,15 +7,10 @@ end
 
 
 
-
+local clearSendItem
 
 local function Init()
-    if WoWToolsSave['Plus_Mail'].hideUIPlus then
-        return
-    end
-
-
-    local clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailAttachment7, {size=22, atlas='bags-button-autosort-up'})
+    clearSendItem=WoWTools_ButtonMixin:Cbtn(SendMailFrame, {size=22, atlas='bags-button-autosort-up'})
     clearSendItem:SetPoint('BOTTOMRIGHT', SendMailAttachment7, 'TOPRIGHT')--,0, -4)
     clearSendItem.Text= WoWTools_LabelMixin:Create(clearSendItem)
     clearSendItem.Text:SetPoint('BOTTOMRIGHT', clearSendItem, 'BOTTOMLEFT',0, 4)
@@ -39,22 +30,23 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    SendMailFrame.clearSendItem= clearSendItem
+
     hooksecurefunc('SendMailFrame_Update', function()--发信箱，物品，信息
-        local self= SendMailFrame
-        local num= 0
+        local hasItem, btn, num= nil, nil, 0
         for i=1, ATTACHMENTS_MAX_SEND do
-            local sendMailAttachmentButton = self.SendMailAttachments[i]
-            local has= HasSendMailItem(i)
-            if has then
+            btn = SendMailFrame.SendMailAttachments[i]
+            hasItem= HasSendMailItem(i)
+            if hasItem then
                 num= num+ (select(4, GetSendMailItem(i)) or 1)
             end
-            if sendMailAttachmentButton and sendMailAttachmentButton:IsShown() then
-                WoWTools_ItemMixin:Setup(sendMailAttachmentButton, {itemLink=has and GetSendMailItemLink(i)})
+            if btn:IsShown() then
+                WoWTools_ItemMixin:Setup(btn, {itemLink=hasItem and GetSendMailItemLink(i)})
+                btn:SetAlpha(hasItem and 1 or 0.3)
             end
         end
-        self.clearSendItem.Text:SetText(num>0 and num or '')
-        self.clearSendItem:SetShown(num>0)
+
+        clearSendItem.Text:SetText(num>0 and num or '')
+        clearSendItem:SetShown(num>0)
     end)
 
     for _, btn in pairs(SendMailFrame.SendMailAttachments or {}) do

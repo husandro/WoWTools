@@ -1,8 +1,3 @@
-if GameLimitedMode_IsActive() then
-    return
-end
-
-
 local function Save()
     return WoWToolsSave['Plus_Mail']
 end
@@ -315,22 +310,6 @@ end
 
 
 
---总，内容，提示
-local function Create_AllTipsLable()
-    InboxFrame.AllTipsLable= WoWTools_LabelMixin:Create(InboxFrame)
-    InboxFrame.AllTipsLable:SetPoint('BOTTOM', InboxFrame, 'TOP', 0, 6)
-
-    --[[MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
-    MailFrameTrialError:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)
-    MailFrameTrialError:SetPoint('LEFT', InboxFrame, 55, 0)
-    MailFrameTrialError:SetPoint('RIGHT', InboxFrame)
-    MailFrameTrialError:SetWordWrap(false)
-
-    InboxTooMuchMail:SetPoint('BOTTOM', InboxFrame.AllTipsLable, 'TOP', 0, 2)]]
-end
-
-
-
 
 
 
@@ -474,8 +453,6 @@ end
 
 local function Init_InboxFrame_Update()
     local hide= Save().hide
-    --local numItems, totalItems = GetInboxNumItems()
-    --local index = ((InboxFrame.pageNum - 1) * INBOXITEMS_TO_DISPLAY) + 1;
 
     for i=1, INBOXITEMS_TO_DISPLAY do
         local btn=_G["MailItem"..i.."Button"]
@@ -484,6 +461,7 @@ local function Init_InboxFrame_Update()
             if btn.clear_all_date then
                 btn:clear_all_date()
             end
+            btn:GetParent():SetAlpha(0)
         else
 
             Create_Unit_Button(btn, i)
@@ -564,6 +542,7 @@ local function Init_InboxFrame_Update()
             btn.outItemOrMoney:SetShown((money or hasItem) and not isCOD)
 
             WoWTools_ItemMixin:Setup(btn, {itemLink=firstItemLink})
+            btn:GetParent():SetAlpha(1)
         end
     end
 
@@ -728,10 +707,13 @@ local function Set_OpenMail_Update()
         end
     end
 
+    local btn
     for i=1, ATTACHMENTS_MAX_RECEIVE do--物品，信息
-        local attachmentButton = OpenMailFrame.OpenMailAttachments[i]
-        if attachmentButton and attachmentButton:IsShown() then
-            WoWTools_ItemMixin:Setup(attachmentButton, {itemLink= (not hide and HasInboxItem(InboxFrame.openMailID, i)) and GetInboxItemLink(InboxFrame.openMailID, i)})
+        btn = OpenMailFrame.OpenMailAttachments[i]
+        if btn and btn:IsShown() then
+            WoWTools_ItemMixin:Setup(btn, {
+                itemLink= (not hide and HasInboxItem(InboxFrame.openMailID, i)) and GetInboxItemLink(InboxFrame.openMailID, i)
+            })
         end
     end
 end
@@ -758,9 +740,17 @@ local function Init()
 
     Create_DeleteAllButton()--删除所有信，按钮
     Create_ReAllButton()--退回，所有信，按钮
-    Create_AllTipsLable()--总，内容，提示
 
-    hooksecurefunc('InboxFrame_Update', Init_InboxFrame_Update)
+--总，内容，提示
+    InboxFrame.AllTipsLable= WoWTools_LabelMixin:Create(InboxFrame)
+    InboxFrame.AllTipsLable:SetPoint('BOTTOM', InboxFrame, 'TOP', 0, 6)
+    --MailFrameTrialError:ClearAllPoints()--你需要升级你的账号才能开启这项功能。
+
+    Init_InboxFrame_Update()
+    hooksecurefunc('InboxFrame_Update', function()
+        Init_InboxFrame_Update()
+    end)
+
     MailFrame:HookScript('OnHide', function()--隐藏时，清除数据
         for i=1, INBOXITEMS_TO_DISPLAY do
             local btn=_G["MailItem"..i.."Button"]
@@ -772,7 +762,9 @@ local function Init()
 
 
     --提示，需要付钱, 可收取钱
-    hooksecurefunc('OpenMail_Update', Set_OpenMail_Update)
+    hooksecurefunc('OpenMail_Update', function()
+        Set_OpenMail_Update()
+    end)
 
     Init=function()
         WoWTools_MailMixin:RefreshAll()

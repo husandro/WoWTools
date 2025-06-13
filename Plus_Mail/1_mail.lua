@@ -1,10 +1,10 @@
 --受限模式
 WoWTools_MailMixin={}
 
-if GameLimitedMode_IsActive() then
+--[[if GameLimitedMode_IsActive() then
     WoWTools_MailMixin.disabled= true
     return
-end
+end]]
 
 
 

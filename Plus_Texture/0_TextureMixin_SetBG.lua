@@ -123,7 +123,7 @@ local function PlayStop_Anims(self)
     local play= self:IsDrawLayerEnabled('BACKGROUND')
             and self:IsVisible()
             and not Save().Anims.disabled
-    print(self:GetName(),play, self:IsVisible(), self:IsShown())
+
     self.AirParticlesFar:SetShown(play)
     self.backgroundAnims:SetPlaying(play)
 end

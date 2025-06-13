@@ -113,8 +113,9 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         end
 
     else
+        local show= tab.show or {}
         for _, icon in pairs({frame:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" then
+            if icon:GetObjectType()=="Texture" and not show[icon] then
                 if not notColor then
                     WoWTools_ColorMixin:Setup(icon, {type='Texture'})
                 end
