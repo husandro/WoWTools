@@ -5,17 +5,14 @@ end
 
 
 
-
-local function Init_MoveUI()
-    --移动，缩放
+ --移动，缩放
+local function Init_MoveUI()   
     StableFrame.PetModelScene:ClearAllPoints()
     StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame, 330, -86)
     StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
     StableFrame.ActivePetList:ClearAllPoints()
     StableFrame.ActivePetList:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT', 0, -45)
     StableFrame.ActivePetList:SetPoint('TOPRIGHT', StableFrame.PetModelScene, 'BOTTOMRIGHT', 0, -45)
-
-
 
     StableFrame.ReleasePetButton:ClearAllPoints()
     StableFrame.ReleasePetButton:SetPoint('BOTTOM', StableFrame.PetModelScene, 'TOP', 0, 12)
@@ -73,10 +70,6 @@ local function Init_MoveUI()
 
     --激活栏，添加材质
     StableFrame.ActivePetList.ActivePetListBG:SetAtlas('wood-topper')
-    --[[StableFrame.ActivePetList.ActivePetListBG2= StableFrame.ActivePetList:CreateTexture()
-    StableFrame.ActivePetList.ActivePetListBG2:SetPoint('TOPLEFT', StableFrame.PetModelScene, 'BOTTOMLEFT')
-    StableFrame.ActivePetList.ActivePetListBG2:SetPoint('BOTTOMRIGHT')
-    StableFrame.ActivePetList.ActivePetListBG2:SetAtlas('wood-topper')]]
 
     StableFrame.PetModelScene.PetInfo.NameBox.EditButton:SetHighlightAtlas('AlliedRace-UnlockingFrame-BottomButtonsSelectionGlow')--修该，名称
     StableFrame.PetModelScene.PetInfo.NameBox.EditButton:HookScript('OnLeave', GameTooltip_Hide)
@@ -94,11 +87,12 @@ local function Init_MoveUI()
         GameTooltip:Show()
     end)
 
-    WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
+    
     WoWTools_MoveMixin:Setup(StableFrame, {setSize=true, minW=860, minH=440,
     sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(1040, 638)
+        StableFrame:SetSize(1040, 638)
     end})
+    WoWTools_MoveMixin:Setup(StableFrame.StabledPetList.ScrollBox, {frame=StableFrame})
 
     Init_MoveUI= function()end
 end

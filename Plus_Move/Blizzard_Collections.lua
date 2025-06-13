@@ -277,21 +277,19 @@ local function Init_CollectionsJournal()
         setSize=true,
         minW=703,
         minH=606,
-        --notInCombat=true,
         sizeUpdateFunc=function(btn)
             init_items_colllection(btn, true)
-
             if WarbandSceneJournal and WarbandSceneJournal:IsShown() then
                 WarbandSceneJournal:SetupJournalEntries()
             end
         end,
-        sizeStopFunc=function(btn)
-            Save().size[btn.name]= {btn.targetFrame:GetSize()}
+        sizeStopFunc=function()
+            Save().size['CollectionsJournal']= {CollectionsJournal:GetSize()}
             update_frame()
         end,
         sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(703, 606)
-            Save().size[btn.name]=nil
+            CollectionsJournal:SetSize(703, 606)
+            Save().size['CollectionsJournal']=nil
             init_items_colllection(btn)
             update_frame()
         end,
@@ -358,8 +356,8 @@ local function Init_WardrobeFrame()
         WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox.Label:SetPoint('RIGHT', WardrobeTransmogFrame.ToggleSecondaryAppearanceCheckbox, 'LEFT')
     end, sizeUpdateFunc=function(btn)
         init_items_colllection(btn, true)
-    end, sizeStopFunc=function(btn)
-        Save().size[btn.name]= {btn.targetFrame:GetSize()}
+    end, sizeStopFunc=function()
+        Save().size['WardrobeFrame']= {WardrobeFrame:GetSize()}
         update_frame()
     end, sizeRestFunc=function(btn)
         WardrobeFrame:SetSize(965, 606)

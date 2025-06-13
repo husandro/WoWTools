@@ -5,7 +5,11 @@ end
 
 
 
-local function initFunc()
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
     ProfessionsCustomerOrdersFrame.BrowseOrders:ClearAllPoints()
     ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('TOPLEFT')
     ProfessionsCustomerOrdersFrame.BrowseOrders:SetPoint('BOTTOMRIGHT')
@@ -20,18 +24,20 @@ local function initFunc()
     ProfessionsCustomerOrdersFrame.MyOrdersPage:ClearAllPoints()
     ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('TOPLEFT')
     ProfessionsCustomerOrdersFrame.MyOrdersPage:SetPoint('BOTTOMRIGHT')
-    hooksecurefunc(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
+
+    hooksecurefunc(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.ScrollBox, 'Update', function(f)
+        if not f:GetView() then
             return
         end
-        for _, btn2 in pairs(self:GetFrames() or {}) do
+        for _, btn2 in pairs(f:GetFrames() or {}) do
             btn2.HighlightTexture:SetPoint('RIGHT')
             btn2.NormalTexture:SetPoint('RIGHT')
             btn2.SelectedTexture:SetPoint('RIGHT')
         end
     end)
-    ProfessionsCustomerOrdersFrame.Form:HookScript('OnHide', function(self)
-        local frame= self:GetParent()
+
+    ProfessionsCustomerOrdersFrame.Form:HookScript('OnHide', function(f)
+        local frame= f:GetParent()
         if not frame.ResizeButton or frame.ResizeButton.disabledSize then
             return
         end
@@ -46,8 +52,9 @@ local function initFunc()
             frame:SetSize(size[1], size[2])
         end
     end)
-    ProfessionsCustomerOrdersFrame.Form:HookScript('OnShow', function(self)
-        local frame= self:GetParent()
+
+    ProfessionsCustomerOrdersFrame.Form:HookScript('OnShow', function(f)
+        local frame= f:GetParent()
         if frame.ResizeButton.disabledSize then
             return
         end
@@ -61,42 +68,29 @@ local function initFunc()
             frame:SetSize(825, 568)
         end
     end)
-end
 
-local function scaleStoppedFunc(btn)
-    local self= btn.targetFrame
-    local name= btn.name
-    if self.Form:IsShown() then
-        Save().scale[name..'From']= self:GetScale()
-    else
-        Save().scale[name]= self:GetScale()
-    end
-end
-
-local function scaleRestFunc(btn)
-    local name= btn.name
-    if btn.targetFrame.Form:IsShown() then
-        Save().scale[name..'From']= nil
-    else
-        Save().scale[name]= nil
-    end
-end
-
-local function sizeRestFunc(btn)
-    btn.targetFrame:SetSize(825, 568)
-end
-
-
-function WoWTools_MoveMixin.Events:Blizzard_ProfessionsCustomerOrders()
-    initFunc()
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame, {
         setSize=true,
         minW=825,
         minH=200,
         onShowFunc=true,
-        scaleStoppedFunc=scaleStoppedFunc,
-        scaleRestFunc=scaleRestFunc,
-        sizeRestFunc=sizeRestFunc,
+        scaleStoppedFunc=function()
+            local name= ProfessionsCustomerOrdersFrame:GetName()
+            local scale= ProfessionsCustomerOrdersFrame:GetScale()
+            if ProfessionsCustomerOrdersFrame.Form:IsShown() then
+                Save().scale[name..'From']= scale
+            else
+                Save().scale[name]= scale
+            end
+        end,
+        scaleRestFunc=function()
+            local name= ProfessionsCustomerOrdersFrame:GetName()
+            Save().scale[name..'From']= nil
+            Save().scale[name]= nil
+        end,
+        sizeRestFunc=function()
+            ProfessionsCustomerOrdersFrame:SetSize(825, 568)
+        end,
     })
     WoWTools_MoveMixin:Setup(ProfessionsCustomerOrdersFrame.Form, {frame=ProfessionsCustomerOrdersFrame})
     WoWTools_MoveMixin:Setup(InspectRecipeFrame)

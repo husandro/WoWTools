@@ -698,30 +698,29 @@ local function Init()
     --GuildBankFrame.BlackBG:SetAlpha(Save().BgAplha or 1)
 
 --移动，大小
-    WoWTools_MoveMixin:Setup(GuildBankFrame, {
-        --needSize=true, needMove=true,
-        setSize=true, minW=80, minH=140,
-    sizeRestFunc= function(btn)
+    WoWTools_MoveMixin:Setup(GuildBankFrame, {setSize=true, minW=80, minH=140,
+    sizeRestFunc= function()
         Save().otherSize= nil
         Save().num=15
-        if btn.targetFrame.mode== "bank" then
-            Init_Button(btn.targetFrame)
+        if GuildBankFrame.mode== "bank" then
+            Init_Button(GuildBankFrame)
         else
-            Set_Frame_Size(btn.targetFrame, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
+            Set_Frame_Size(GuildBankFrame, GetCurrentGuildBankTab(), GetNumGuildBankTabs())
         end
-    end, sizeStopFunc= function(btn)
-        if btn.targetFrame.mode== "bank" then
+    end, sizeStopFunc= function()
+        if GuildBankFrame.mode== "bank" then
             local h= math.ceil((GuildBankFrame:GetHeight()-90)/(Save().line+37))
             Save().num= h
-            Init_Button(btn.targetFrame)
+            Init_Button(GuildBankFrame)
         else
-            Save().otherSize= {btn.targetFrame:GetSize()}
+            Save().otherSize= {GuildBankFrame:GetSize()}
         end
     end})
 
 
-   -- hooksecurefunc(GuildBankFrame, 'Update', Init_Button)
-   hooksecurefunc(GuildBankFrame, 'Update', Init_Button)
+   hooksecurefunc(GuildBankFrame, 'Update', function(...)
+        Init_Button(...)
+   end)
 
     hooksecurefunc(GuildBankFrame, 'UpdateFiltered', function(self)
         if self.mode ~= "bank" then
@@ -735,7 +734,9 @@ local function Init()
         end
     end)
 
-    hooksecurefunc(GuildBankFrame, 'UpdateTabs', Set_UpdateTabs)
+    hooksecurefunc(GuildBankFrame, 'UpdateTabs', function(...)
+        Set_UpdateTabs(...)
+    end)
 
 
 --调整，UI

@@ -57,9 +57,10 @@ local function Init_Menu(self, root)
         WoWTools_MenuMixin:Scale(self, root, function()
             return Save().scale[self.name] or 1
         end, function(value)
-            if self.targetFrame and self.targetFrame:CanChangeAttribute() then
+            local frame= self:GetParent()
+            if frame:CanChangeAttribute() then
                 Save().scale[self.name]= value
-                self.targetFrame:SetScale(value)
+                frame:SetScale(value)
             end
         end)
     end
@@ -72,8 +73,9 @@ local function Init_Menu(self, root)
         Save().point[self.name]= nil
         local p=self.pointSave
         if p and p[1] then
-            self.targetFrame:ClearAllPoints()
-            self.targetFrame:SetPoint(p[1], p[2], p[3], p[4], p[5])
+            local frame= self:GetParent()
+            frame:ClearAllPoints()
+            frame:SetPoint(p[1], p[2] or UIParent, p[3], p[4], p[5])
         end
         return MenuResponse.Open
     end)
@@ -171,7 +173,7 @@ local function SetupButton(frame, tab)
 
         btn:SetScript('OnMouseWheel', function(self, delta)
             Save().scale[self.name]= WoWTools_FrameMixin:ScaleFrame(
-                self.targetFrame,
+                self:GetParent(),
                 delta,
                 Save().scale[self.name]
             )

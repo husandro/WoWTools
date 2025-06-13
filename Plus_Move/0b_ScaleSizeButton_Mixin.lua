@@ -544,12 +544,13 @@ end
 local function Set_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
+    local target= self.targetFrame
 
-    if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+    if WoWTools_FrameMixin:IsLocked(target) then
         GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
         GameTooltip:Show()
         return
-    elseif self.targetFrame:IsProtected() then
+    elseif target:IsProtected() then
         GameTooltip:AddDoubleLine(
             WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT,
             '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁止操作' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DISABLE, NPE_CONTROLS))
@@ -557,14 +558,14 @@ local function Set_Tooltip(self)
         GameTooltip:AddLine(' ')
     end
 
-    GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', WoWTools_DataMixin.onlyChinese and '实际' or 'Effective', self.targetFrame:GetEffectiveScale()))
-    local parent= self.targetFrame:GetParent()
+    GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', WoWTools_DataMixin.onlyChinese and '实际' or 'Effective', target:GetEffectiveScale()))
+    local parent= target:GetParent()
     if parent then
         GameTooltip:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
     end
 
     local scale
-    scale= tonumber(format('%.2f', self.targetFrame:GetScale() or 1))
+    scale= tonumber(format('%.2f', target:GetScale() or 1))
     scale= ((scale<=0.4 or scale>=2.5) and ' |cnRED_FONT_COLOR:' or ' |cnGREEN_FONT_COLOR:')..scale..' '
     GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), scale..WoWTools_DataMixin.Icon.left)
 
@@ -577,10 +578,10 @@ local function Set_Tooltip(self)
         col=col or (Save().size[self.name] and '' or '|cff9e9e9e')
 
         local w, h
-        w= math.modf(self.targetFrame:GetWidth())
+        w= math.modf(target:GetWidth())
         w= format('%s%d|r', ((self.minWidth and self.minWidth>=w) or (self.maxWidth and self.maxWidth<=w)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', w)
 
-        h= math.modf(self.targetFrame:GetHeight())
+        h= math.modf(target:GetHeight())
         h= format('%s%d|r', ((self.minHeight and self.minHeight>=h) or (self.maxHeight and self.maxHeight<=h)) and '|cnRED_FONT_COLOR:' or '|cnGREEN_FONT_COLOR:', h)
 
         GameTooltip:AddDoubleLine(
@@ -618,14 +619,14 @@ end
 
 
 
-local function Set_Enter(btn)
+local function Set_Enter(btn, target)
     if btn.alpha then
         btn:SetAlpha(btn.alpha)
         if btn.alpha==0 then
-            btn.targetFrame:HookScript('OnEnter', function(self)
+            target:HookScript('OnEnter', function(self)
                 self.ResizeButton:SetAlpha(1)
             end)
-            btn.targetFrame:HookScript('OnLeave', function(self)
+            target:HookScript('OnLeave', function(self)
                 self.ResizeButton:SetAlpha(0)
             end)
         end
@@ -638,10 +639,8 @@ local function Set_Enter(btn)
     end)
     btn:SetScript('OnEnter', function(self)
         Set_Tooltip(self)
-        --SetCursor("UI_RESIZE_CURSOR")
         SetCursor('Interface\\CURSOR\\Crosshair\\UI-Cursor-SizeRight')
-        --SetCursor('UI_RESIZE_CURSOR')
-        self:SetAlpha(1)--and 1 or 0.5)
+        self:SetAlpha(1)
     end)
 end
 
@@ -654,7 +653,7 @@ end
 
 local function Set_OnMouseUp(self)
     local d= self.isActiveButton
-    local target= self.targetFrame
+    local target= self:GetParent()
 
     self:SetScript("OnUpdate", nil)
     --[[if WoWTools_FrameMixin:IsLocked(target) then
@@ -687,15 +686,17 @@ end
 
 
 local function Set_OnMouseDown(self, d)
+    local target= self:GetParent()
+
     if self.isActiveButton
-        or WoWTools_FrameMixin:IsLocked(self.targetFrame)
+        or WoWTools_FrameMixin:IsLocked(target)
         or IsModifierKeyDown()
     then
         return
     end
 
     self.isActiveButton = d
-    local target= self.targetFrame
+    
 
     if d=='LeftButton' then
         self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
@@ -830,8 +831,8 @@ end
 
 
 
-function WoWTools_MoveMixin:ScaleSize(frame, tab)
-    local name= tab.name or frame:GetName()
+function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
+    local name= frame:GetName()
     tab= tab or {}
 
     if not name
@@ -900,7 +901,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         frame:SetResizable(true)
         btn:Init(frame, minW, minH, maxW , maxH, rotationDegrees)
         --[[
-            self.targetFrame = targetFrame
+            
             self.minWidth = minWidth
             self.minHeight = minHeight
             self.maxWidth = maxWidth
@@ -916,7 +917,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
     WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=1})--设置颜色
 
     btn:SetClampedToScreen(true)
-    Set_Enter(btn)
+    Set_Enter(btn, frame)
 
     btn.SOS = { --Scaler Original State
         dist = 0,
@@ -944,7 +945,7 @@ function WoWTools_MoveMixin:ScaleSize(frame, tab)
         end)
         Set_Tooltip(s)
     end)
-    btn.targetFrame:HookScript('OnHide', function(s)
+    frame:HookScript('OnHide', function(s)
         local b= s.ResizeButton
         local d= b and b.isActiveButton
         if d then

@@ -62,16 +62,14 @@ local function Init()
         setSize=true,
         onShowFunc=true,
         --notMoveAlpha=true,
-        sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
-            set_min_max_value({btn.targetFrame:GetSize()})
+        sizeUpdateFunc= function()--WorldMapMixin:UpdateMaximizedSize()
+            set_min_max_value({WorldMapFrame:GetSize()})
         end,
-        sizeRestFunc= function(btn)
-            local target=btn.targetFrame
-           
-            target.minimizedWidth= minimizedWidth
-            target.minimizedHeight= minimizedHeight
-            target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
-            target.BorderFrame.MaximizeMinimizeFrame:Minimize()
+        sizeRestFunc= function()
+            WorldMapFrame.minimizedWidth= minimizedWidth
+            WorldMapFrame.minimizedHeight= minimizedHeight
+            WorldMapFrame:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
+            WorldMapFrame.BorderFrame.MaximizeMinimizeFrame:Minimize()
         end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'
     })
 

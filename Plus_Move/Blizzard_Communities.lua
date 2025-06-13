@@ -176,57 +176,41 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 
 
 
-
+    local function CommunitiesMode_IsMini()
+        return CommunitiesFrame:GetDisplayMode()==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED
+    end
+    local function CommunitiesMode_GetName()
+        return CommunitiesMode_IsMini() and 'CommunitiesFrameMINIMIZED' or 'CommunitiesFrameNormal'
+    end
 
     self:Setup(CommunitiesFrame, {
         setSize=true,
-        scaleStoppedFunc= function(btn)
-            local frame= btn.targetFrame
-            local displayMode = frame:GetDisplayMode()
-            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                Save().scale['CommunitiesFrameMINIMIZED']= frame:GetScale()
+        scaleStoppedFunc= function()
+            Save().scale[CommunitiesMode_GetName()]= CommunitiesFrame:GetScale()
+            
+        end,
+        scaleRestFunc=function()
+            Save().scale['CommunitiesFrameMINIMIZED']= nil
+            Save().scale['CommunitiesFrameNormal']= nil
+        end,
+        sizeStopFunc=function()
+            Save().size[CommunitiesMode_GetName()]=  {CommunitiesFrame:GetSize()}
+        end,
+        sizeRestFunc=function()
+            if CommunitiesMode_IsMini() then
+                CommunitiesFrame:SetSize(322, 406)
             else
-                Save().scale['CommunitiesFrameNormal']= frame:GetScale()
+                CommunitiesFrame:SetSize(814, 426)
             end
+            Save().size['CommunitiesFrameMINIMIZED']=nil
+            Save().size['CommunitiesFrameNormal']= nil
         end,
-        scaleRestFunc=function(btn)
-            local displayMode = btn.targetFrame:GetDisplayMode()
-            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                Save().scale['CommunitiesFrameMINIMIZED']= nil
-            else
-                Save().scale['CommunitiesFrameNormal']= nil
-            end
-        end,
-        sizeStopFunc=function(btn)
-            local frame= btn.targetFrame
-            local displayMode = frame:GetDisplayMode()
-            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                Save().size['CommunitiesFrameMINIMIZED']= {frame:GetSize()}
-            else
-                Save().size['CommunitiesFrameNormal']= {frame:GetSize()}
-            end
-        end,
-        sizeRestFunc=function(btn)
-            local frame= btn.targetFrame
-            local displayMode = frame:GetDisplayMode()
-            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                Save().size['CommunitiesFrameMINIMIZED']=nil
-                frame:SetSize(322, 406)
-            elseif Save().size['CommunitiesFrameNormal'] then
-                Save().size['CommunitiesFrameNormal']= nil
-                frame:SetSize(814, 426)
-            end
-        end,
-        sizeRestTooltipColorFunc=function(btn)
-            local displayMode = btn.targetFrame:GetDisplayMode()
-            if displayMode==COMMUNITIES_FRAME_DISPLAY_MODES.MINIMIZED then
-                if Save().size['CommunitiesFrameMINIMIZED'] then
-                    return ''
-                end
-            elseif Save().size['CommunitiesFrameNormal'] then
+        sizeRestTooltipColorFunc=function()
+            if Save().size[CommunitiesMode_GetName()] then
                 return ''
+            else
+                return '|cff9e9e9e'
             end
-            return '|cff9e9e9e'
         end,
     })
 --[[
@@ -245,14 +229,14 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     self:Setup(CommunitiesGuildLogFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(384, 432)
+        CommunitiesGuildLogFrame:SetSize(384, 432)
     end})
 
 --公会信息， 点击以编辑
     self:Setup(CommunitiesGuildTextEditFrame, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(295, 295)
+        CommunitiesGuildTextEditFrame:SetSize(295, 295)
     end})
     ]]
 
@@ -278,8 +262,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 --新建，公会, 签名
     self:Setup(PetitionFrame, {
         setSize=true,
-    sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(338, 424)
+    sizeRestFunc=function()
+        PetitionFrame:SetSize(338, 424)
     end})
     PetitionFrame.Bg:SetPoint('BOTTOMRIGHT',-32,30)
 
@@ -293,8 +277,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 --设计，公会战袍
     self:Setup(TabardFrame, {
         setSize=true,
-    sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(338, 424)
+    sizeRestFunc=function()
+        TabardFrame:SetSize(338, 424)
     end})
 
     TabardFrameCancelButton:ClearAllPoints()
@@ -339,8 +323,8 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
 --公会设置
     self:Setup(GuildControlUI, {
         setSize=true, notFuori=true,
-    sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(338, 444)
+    sizeRestFunc=function()
+        GuildControlUI:SetSize(338, 444)
     end})
     GuildControlUIRankBankFrameInset:SetPoint('LEFT', 2, 0)
     GuildControlUIRankBankFrameInset:SetPoint('BOTTOMRIGHT', -2, 2)
@@ -350,6 +334,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     self:Setup(CommunitiesAvatarPickerDialog, {
         setSize=true, notFuori=true,
     sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(510, 480)
+        CommunitiesAvatarPickerDialog:SetSize(510, 480)
     end})]]
 end

@@ -26,7 +26,7 @@ function WoWTools_MoveMixin.Events:Blizzard_TrainerUI()
         minH=197,
         setSize=true,
         sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(338, 424)
+            ClassTrainerFrame:SetSize(338, 424)
         end}
     )
 end
@@ -384,8 +384,8 @@ function WoWTools_MoveMixin.Events:Blizzard_EncounterJournal()
         minH=248,--496,
         --maxW=800,
         setSize=true,
-        sizeRestFunc=function(b)
-            b.targetFrame:SetSize(800, 496)
+        sizeRestFunc=function()
+            EncounterJournal:SetSize(800, 496)
         end
     })
 
@@ -437,11 +437,11 @@ function WoWTools_MoveMixin.Events:Blizzard_DebugTools()
         minW=476,
         minH=150,
         setSize=true,
-        sizeUpdateFunc=function(btn)
-            btn.targetFrame:UpdateLines()--RefreshAllData()
+        sizeUpdateFunc=function()
+            TableAttributeDisplay:UpdateLines()--RefreshAllData()
         end,
-        sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(500, 400)
+        sizeRestFunc=function()
+            TableAttributeDisplay:SetSize(500, 400)
         end,
     })
 end
@@ -501,8 +501,8 @@ function WoWTools_MoveMixin.Events:Blizzard_AuctionHouseUI()
 
     self:Setup(AuctionHouseFrame, {
         setSize=true,
-        sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(800, 538)
+        sizeRestFunc=function()
+            AuctionHouseFrame:SetSize(800, 538)
         end
     })
 
@@ -597,8 +597,8 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
         --maxW=768,
         minH=500,
         setSize=true,
-        sizeRestFunc= function(btn)
-            btn.targetFrame:SetSize(768, 500)
+        sizeRestFunc= function()
+            AchievementFrame:SetSize(768, 500)
         end,
     })
 
@@ -661,28 +661,28 @@ function WoWTools_MoveMixin.Events:Blizzard_GroupFinder()
             if PVEFrame.activeTabIndex==3 then
                 WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
-        end, sizeStopFunc=function(btn)
+        end, sizeStopFunc=function()
             if PVEFrame.activeTabIndex==1 then
-                Save().size['PVEFrame_PVE']= {btn.targetFrame:GetSize()}
+                Save().size['PVEFrame_PVE']= {PVEFrame:GetSize()}
             elseif PVEFrame.activeTabIndex==2 then
                 if PVPQueueFrame.selection==LFGListPVPStub then
-                    Save().size['PVEFrame_PVP']= {btn.targetFrame:GetSize()}
+                    Save().size['PVEFrame_PVP']= {PVEFrame:GetSize()}
                 end
             elseif PVEFrame.activeTabIndex==3 then
-                Save().size['PVEFrame_KEY']= {btn.targetFrame:GetSize()}
+                Save().size['PVEFrame_KEY']= {PVEFrame:GetSize()}
             end
-        end, sizeRestFunc=function(btn)
+        end, sizeRestFunc=function()
             if PVEFrame.activeTabIndex==1 then
                 Save().size['PVEFrame_PVE']=nil
-                btn.targetFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+                PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
             elseif PVEFrame.activeTabIndex==2 then--Blizzard_PVPUI.lua
                 Save().size['PVEFrame_PVP']=nil
                 local width = PVE_FRAME_BASE_WIDTH;
                 width = width + PVPQueueFrame.HonorInset:Update();
-                btn.targetFrame:SetSize(width, 428)
+                PVEFrame:SetSize(width, 428)
             elseif PVEFrame.activeTabIndex==3 then
                 Save().size['PVEFrame_KEY']=nil
-                btn.targetFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
+                PVEFrame:SetSize(PVE_FRAME_BASE_WIDTH, 428)
                 WoWTools_Mixin:Call(ChallengesFrame.Update, ChallengesFrame)
             end
         end
@@ -786,7 +786,7 @@ end
 --聊天设置
 function WoWTools_MoveMixin.Events:Blizzard_Channels()
     self:Setup(ChannelFrame, {minW=402, minH=200, maxW=402, setSize=true,  sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(402, 423)
+        ChannelFrame:SetSize(402, 423)
     end})
 end
 
@@ -798,7 +798,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Settings_Shared()
         end
     end
     self:Setup(SettingsPanel, {setSize=true, minW=800, minH=200, sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(920, 724)
+        SettingsPanel:SetSize(920, 724)
     end})
 end
 
@@ -980,21 +980,19 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             end
         end,
         sizeStopFunc=function(btn)
-            local f= btn.targetFrame
-            if CharacterFrame.Expanded then
-                Save().size['CharacterFrameExpanded']={f:GetSize()}
+              if CharacterFrame.Expanded then
+                Save().size['CharacterFrameExpanded']={CharacterFrame:GetSize()}
             else
-                Save().size['CharacterFrameCollapse']={f:GetSize()}
+                Save().size['CharacterFrameCollapse']={CharacterFrame:GetSize()}
             end
             Set_Slot_Point()
         end,
         sizeRestFunc=function()
-            local find= (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) and true or false
-            Save().size['CharacterFrameExpanded']=nil
-            Save().size['CharacterFrameCollapse']=nil
-            if find then
+            if (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) then
                 CharacterFrame:SetHeight(424)
             end
+            Save().size['CharacterFrameExpanded']=nil
+            Save().size['CharacterFrameCollapse']=nil
             WoWTools_Mixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
         end,
         sizeRestTooltipColorFunc=function(f)
@@ -1011,13 +1009,13 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
 
     self:Setup(CurrencyTransferLog, {
         setSize=true,
-        sizeRestFunc=function(btn)
-            btn.targetFrame:ClearAllPoints()
-            btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
-            btn.targetFrame:SetSize(340, 370)
-        end, scaleRestFunc= function(btn)
-            btn.targetFrame:ClearAllPoints()
-            btn.targetFrame:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+        sizeRestFunc=function()
+            CurrencyTransferLog:ClearAllPoints()
+            CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
+            CurrencyTransferLog:SetSize(340, 370)
+        end, scaleRestFunc= function()
+            CurrencyTransferLog:ClearAllPoints()
+            CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
     })
 end
@@ -1105,7 +1103,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AccountStore()
     self:Setup(AccountStoreFrame, {
         setSize=true, minH=537, minW=800,
     sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(800, 537)
+        AccountStoreFrame:SetSize(800, 537)
     end})
 end
 

@@ -116,8 +116,8 @@ function WoWTools_FrameMixin:Create(parent, tab)
         minH=minH or 240,
         notFuori=true,
         setSize=true,
-        sizeRestFunc= sizeRestFunc or function(btn)
-            btn.targetFrame:SetSize(btn.targetFrame.width, btn.targetFrame.height)
+        sizeRestFunc= sizeRestFunc or function()
+            frame:SetSize(w, h)
         end,
     })
     WoWTools_MoveMixin:Setup(frame.Header, {frame=frame})

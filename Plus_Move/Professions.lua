@@ -79,71 +79,58 @@ local function initFunc()
         if not self.ResizeButton then
             return
         end
-        --C_Timer.After(0.3, function()
-            local size, scale
-            local name= self:GetName()
+        local size, scale
+        local name= self:GetName()
 
-            if ProfessionsUtil.IsCraftingMinimized() then
-                scale= Save().scale[name..'Mini']
-                size= Save().size[name..'Mini']
-                self.ResizeButton.minWidth= 404
-                self.ResizeButton.minHeight= 650
-            elseif self.TabSystem.selectedTabID==1 then
-                scale= Save().scale[name..'Normal']
-                size= Save().size[name..'Normal']
-                self.ResizeButton.minWidth= 830
-                self.ResizeButton.minHeight= 580
-                if size then
-                    self:Refresh()
-                end
-            elseif self.TabSystem.selectedTabID==2 then
-                scale= Save().scale[name..'Spec']
-                size= Save().size[name..'Spec']
-                self.ResizeButton.minWidth= 1144
-                self.ResizeButton.minHeight= 658
-            elseif self.TabSystem.selectedTabID==3 then
-                scale= Save().scale[name..'Order']
-                size= Save().size[name..'Order']
-                self.ResizeButton.minWidth= 1050
-                self.ResizeButton.minHeight= 240
-                if size then
-                    self:Refresh()
-                end
-            end
-            if scale then
-                self:SetScale(scale)
-            end
+        if ProfessionsUtil.IsCraftingMinimized() then
+            scale= Save().scale[name..'Mini']
+            size= Save().size[name..'Mini']
+            self.ResizeButton.minWidth= 404
+            self.ResizeButton.minHeight= 650
+        elseif self.TabSystem.selectedTabID==1 then
+            scale= Save().scale[name..'Normal']
+            size= Save().size[name..'Normal']
+            self.ResizeButton.minWidth= 830
+            self.ResizeButton.minHeight= 580
             if size then
-                self:SetSize(size[1], size[2])
+                self:Refresh()
             end
-        --end)
+        elseif self.TabSystem.selectedTabID==2 then
+            scale= Save().scale[name..'Spec']
+            size= Save().size[name..'Spec']
+            self.ResizeButton.minWidth= 1144
+            self.ResizeButton.minHeight= 658
+        elseif self.TabSystem.selectedTabID==3 then
+            scale= Save().scale[name..'Order']
+            size= Save().size[name..'Order']
+            self.ResizeButton.minWidth= 1050
+            self.ResizeButton.minHeight= 240
+            if size then
+                self:Refresh()
+            end
+        end
+        if scale then
+            self:SetScale(scale)
+        end
+        if size then
+            self:SetSize(size[1], size[2])
+        end
     end
 
 
     set_on_show(ProfessionsFrame)
-    --[[ProfessionsFrame:HookScript('OnShow', function(self)
-        set_on_show(self)
-    end)]]
 
     for _, tabID in pairs(ProfessionsFrame:GetTabSet() or {}) do
         local btn= ProfessionsFrame:GetTabButton(tabID)
-        btn:HookScript('OnClick', function(self)
+        btn:HookScript('OnClick', function()
             C_Timer.After(0.5, function()
-                set_on_show(self:GetParent():GetParent())
+                set_on_show(ProfessionsFrame)
             end)
        end)
     end
 
-    hooksecurefunc(ProfessionsFrame, 'SetTab', function(self)
-        if self.changingTabs then
-            return
-        end
-
-        --set_on_show(ProfessionsFrame)
-    end)
     hooksecurefunc(ProfessionsFrame, 'ApplyDesiredWidth', function(self)
         set_on_show(self)
-        print('ApplyDesiredWidth')
     end)
 
 
@@ -202,102 +189,14 @@ local function initFunc()
     hooksecurefunc(ProfessionsRecipeListRecipeMixin, 'Init', function(self)
         self.Label:SetPoint('RIGHT', -22, 0)
     end)
+
+    initFunc=function()end
 end
 
 
 
 
 
-
-
-
-local function scaleStoppedFunc(btn)
-    local self= btn.targetFrame
-    local sacle= self:GetScale()
-    local name= btn.name
-    if ProfessionsUtil.IsCraftingMinimized() then
-        Save().scale[name..'Mini']= sacle
-    elseif self.TabSystem.selectedTabID==2 then
-        Save().scale[name..'Spec']= sacle
-    elseif self.TabSystem.selectedTabID==3 then
-        Save().scale[name..'Order']= sacle
-    else
-        Save().scale[name..'Normal']= sacle
-    end
-end
-
-
-local function scaleRestFunc(btn)
-    local self= btn.targetFrame
-    local name= btn.name
-    if ProfessionsUtil.IsCraftingMinimized() then
-        Save().scale[name..'Mini']= nil
-    elseif self.TabSystem.selectedTabID==2 then
-        Save().scale[name..'Spec']= nil
-    elseif self.TabSystem.selectedTabID==3 then
-        Save().scale[name..'Order']= nil
-    else
-        Save().scale[name..'Normal']= nil
-    end
-end
-
-
-
-local function sizeRestTooltipColorFunc(btn)
-    local name= btn.name
-    if ProfessionsUtil.IsCraftingMinimized() then
-        return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
-    elseif btn.targetFrame.TabSystem.selectedTabID==2 then
-        return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
-    elseif btn.targetFrame.TabSystem.selectedTabID==3 then
-        return Save().size[name..'Order'] and '' or '|cff9e9e9e'
-    else
-        return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
-    end
-end
-
-
-
-local function sizeStopFunc(btn)
-    local self= btn.targetFrame
-    local name= btn.name
-    local size= {self:GetSize()}
-    if ProfessionsUtil.IsCraftingMinimized() then
-        Save().size[name..'Mini']= size
-    elseif self.TabSystem.selectedTabID==2 then
-        Save().size[name..'Spec']= size
-    elseif self.TabSystem.selectedTabID==3 then
-        Save().size[name..'Order']= size
-        self:Refresh()
-    else
-        Save().size[name..'Normal']= size
-        self:Refresh()
-    end
-end
-
-
-
-
-
-
-local function sizeRestFunc(btn)
-    local self= btn.targetFrame
-    local name= btn.name
-    if ProfessionsUtil.IsCraftingMinimized() then
-        self:SetSize(404, 658)
-        Save().size[name..'Mini']=nil
-    elseif self.TabSystem.selectedTabID==2 then
-        self:SetSize(1144, 658)
-        Save().size[name..'Spec']=nil
-    elseif self.TabSystem.selectedTabID==3 then
-        self:SetSize(1105, 658)
-        Save().size[name..'Order']=nil
-    else
-        self:SetSize(942, 658)
-        Save().size[name..'Normal']=nil
-        self:Refresh(self.professionInfo)
-    end
-end
 
 
 
@@ -305,12 +204,78 @@ function WoWTools_MoveMixin.Events:Blizzard_Professions()
 
     initFunc()
 
+    local name= ProfessionsFrame:GetName()
+
     self:Setup(ProfessionsFrame, {
         setSize=true,
-        scaleStoppedFunc=scaleStoppedFunc,
-        scaleRestFunc=scaleRestFunc,
-        sizeRestTooltipColorFunc=sizeRestTooltipColorFunc,
-        sizeStopFunc=sizeStopFunc,
-        sizeRestFunc=sizeRestFunc
+        scaleStoppedFunc=function()
+            local sacle= ProfessionsFrame:GetScale()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                Save().scale[name..'Mini']= sacle
+            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+                Save().scale[name..'Spec']= sacle
+            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+                Save().scale[name..'Order']= sacle
+            else
+                Save().scale[name..'Normal']= sacle
+            end
+        end,
+        scaleRestFunc=function()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                Save().scale[name..'Mini']= nil
+            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+                Save().scale[name..'Spec']= nil
+            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+                Save().scale[name..'Order']= nil
+            else
+                Save().scale[name..'Normal']= nil
+            end
+        end,
+        sizeRestTooltipColorFunc=function()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                return Save().size[name..'Mini'] and '' or '|cff9e9e9e'
+            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+                return Save().size[name..'Spec'] and '' or '|cff9e9e9e'
+            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+                return Save().size[name..'Order'] and '' or '|cff9e9e9e'
+            else
+                return Save().size[name..'Normal'] and '' or '|cff9e9e9e'
+            end
+        end,
+        sizeStopFunc=function()
+            local size= {ProfessionsFrame:GetSize()}
+
+            if ProfessionsUtil.IsCraftingMinimized() then
+                name= name..'Mini'
+            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+                name= name..'Spec'
+            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+                name= name..'Order'
+            else
+                name= name..'Normal'
+            end
+            Save().size[name]= size
+            ProfessionsFrame:Refresh()
+            --ProfessionsFrame:Refresh(ProfessionsFrame.professionInfo)
+        end,
+        sizeRestFunc=function()
+            if ProfessionsUtil.IsCraftingMinimized() then
+                ProfessionsFrame:SetSize(404, 658)
+
+            elseif ProfessionsFrame.TabSystem.selectedTabID==2 then
+                ProfessionsFrame:SetSize(1144, 658)
+
+            elseif ProfessionsFrame.TabSystem.selectedTabID==3 then
+                ProfessionsFrame:SetSize(1105, 658)
+
+            else
+                ProfessionsFrame:SetSize(942, 658)
+            end
+            ProfessionsFrame:Refresh()
+            Save().size[name..'Spec']=nil
+            Save().size[name..'Order']=nil
+            Save().size[name..'Normal']=nil
+            Save().size[name..'Mini']=nil
+        end
     })
 end

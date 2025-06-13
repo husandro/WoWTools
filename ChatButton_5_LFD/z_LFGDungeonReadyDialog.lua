@@ -37,9 +37,9 @@ local function Init()
     WoWTools_MoveMixin:Setup(LFGDungeonReadyPopup, {
         notFuori=true,
         setResizeButtonPoint={'BOTTOMRIGHT', LFGDungeonReadyPopup, 6, -6},
-    restPointFunc=function(btn)
-        btn.targetFrame:ClearAllPoints()
-        btn.targetFrame:SetPoint('TOP', UIParent, 'TOP', 0, -135)
+    restPointFunc=function()
+        LFGDungeonReadyPopup:ClearAllPoints()
+        LFGDungeonReadyPopup:SetPoint('TOP', UIParent, 'TOP', 0, -135)
     end})
     WoWTools_MoveMixin:Setup(LFGDungeonReadyDialog, {frame=LFGDungeonReadyPopup, notFuori=true})
     WoWTools_MoveMixin:Setup(LFGDungeonReadyStatus, {frame=LFGDungeonReadyPopup, notFuori=true})

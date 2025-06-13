@@ -22,44 +22,52 @@ local Frames={
 
 
 local function Set_Func_Point(self)
-    if self and self:IsShown() and self.setMoveFrame then
+    if self and self:IsShown() and self.moveFrameData then
         WoWTools_MoveMixin:SetPoint(self)
     end
 end
 
 
 
+local function Setup_Frame(name)
+    local frame= _G[name]
+    if not frame then
+        return
+    end
 
+    WoWTools_MoveMixin:Setup(frame, {
+        notFuori=true,
+        save=true,
+        notMoveAlpha=true,
+        alpha=0,
+        click='LeftButton',
+        restPointFunc=function(btn)
+            Save().scale[btn.name]=nil
+            if frame:CanChangeAttribute() then
+                frame:SetScale(1)
+                WoWTools_Mixin:Call(PlayerFrame_UpdateArt, PlayerFrame)
+            end
+        end
+    })
+
+    if frame.moveFrameData then
+        if frame.Update then--TotemFrame.lua
+            hooksecurefunc(frame, 'Update', function(...)
+                Set_Func_Point(...)
+            end)
+        end
+        if frame.Setup then
+            hooksecurefunc(frame, 'Setup', function(...)
+                Set_Func_Point(...)
+            end)
+        end
+    end
+end
 
 
 local function Init()--职业，能量条
     for _, name in pairs(Frames) do
-        local frame= _G[name]
-        if frame then
-            WoWTools_MoveMixin:Setup(frame, {
-                notFuori=true,
-                save=true,
-                notMoveAlpha=true,
-                alpha=0,
-                click='LeftButton',
-                restPointFunc=function(btn)
-                    Save().scale[btn.name]=nil
-                    if btn.targetFrame:CanChangeAttribute() then
-                        btn.targetFrame:SetScale(1)
-                        WoWTools_Mixin:Call(PlayerFrame_UpdateArt, PlayerFrame)
-                    end
-                end
-            })
-
-            if frame.setMoveFrame then
-                if frame.Update then--TotemFrame.lua
-                    hooksecurefunc(frame, 'Update', Set_Func_Point)
-                end
-                if frame.Setup then
-                    hooksecurefunc(frame, 'Setup', Set_Func_Point)
-                end
-            end
-        end
+        Setup_Frame(name)
     end
 
 
@@ -77,7 +85,7 @@ local function Init()--职业，能量条
     end)
 
 
-    if TotemFrame and TotemFrame.setMoveFrame then--SM
+    if TotemFrame and TotemFrame.moveFrameData then--SM
         for btn in TotemFrame.totemPool:EnumerateActive() do
             WoWTools_MoveMixin:Setup(btn, {frame=TotemFrame, click='LeftButton'})
         end
@@ -85,6 +93,8 @@ local function Init()--职业，能量条
             WoWTools_MoveMixin:Setup(self, {frame=TotemFrame, click='LeftButton'})
         end)
     end
+
+    Init=function()end
 end
 
 

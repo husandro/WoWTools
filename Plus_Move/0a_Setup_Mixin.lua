@@ -18,33 +18,79 @@ end
 
 
 --移动, 位置
-local function Set_Frame_Point(frame, name)--设置, 移动, 位置
-    if not frame
-        or not name
-        or not Save().SavePoint
-        or frame.notSave
-    then
+local function Set_Frame_Point(self, name)--设置, 移动, 位置
+    local data= self and self.moveFrameData
+
+    local p
+    if data and name and Save().SavePoint and not data.notSave then
+        p= Save().point[name]
+    end
+
+    if not p or not p[1] then
         return
     end
 
+    local frame= _G[data.target] or self
 
-    local p= Save().point[name]
-    if p and p[1] then
-        local target= frame.targetFrame or frame
+    if WoWTools_FrameMixin:IsLocked(frame) then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)
+            tab.target:ClearAllPoints()
+            tab.target:SetPoint(tab.p[1], UIParent, tab.p[3], tab.p[4], tab.p[5])
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end, nil, {
+            target=frame,
+            p=p,
+        })
 
-        if (target:IsProtected() and InCombatLockdown()) or issecure() then
-            EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, tab)
-                target:ClearAllPoints()
-                target:SetPoint(tab.p[1], UIParent, tab.p[3], tab.p[4], tab.p[5])
-                EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
-            end, nil, {
-                target=target,
-                p=p,
-            })
+    else
+        frame:ClearAllPoints()
+        frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+    end
+end
 
-        else
-            target:ClearAllPoints()
-            target:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+
+
+
+local function Set_OnDragStart(self, d)
+    local data= self.moveFrameData
+    if
+        (d=='RightButton' or d=='LeftButton')
+        and (d== data.click or not data.click)
+        and (data.isAltKeyDown and IsAltKeyDown() or not data.isAltKeyDown)
+    then
+        local frame= _G[data.target] or self
+        if frame and frame:IsMovable() then
+            frame:StartMoving()
+        end
+    end
+end
+
+local function Set_OnDragStop(self)
+    local data= self.moveFrameData
+    local frame= _G[data.target] or self
+    local name= frame:GetName()
+
+    ResetCursor()
+
+    frame:StopMovingOrSizing()
+
+    if not data.notSave and WoWTools_FrameMixin:IsInSchermo(frame) then
+        Save().point[name]= {frame:GetPoint(1)}
+        Save().point[name][2]= nil
+    end
+end
+
+--设置光标
+local function Set_OnMouseDown(self, d)
+    local data= self.moveFrameData
+    if
+        (d=='RightButton' or d=='LeftButton')
+        and (d== data.click or not data.click)
+        and (data.isAltKeyDown and IsAltKeyDown() or not data.isAltKeyDown)
+    then
+        local frame= _G[data.target] or self
+        if frame:IsMovable() then
+            SetCursor('UI_MOVE_CURSOR')
         end
     end
 end
@@ -58,33 +104,29 @@ end
 
 
 
---移动 Frame
 local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
-    if frame.setMoveFrame then
-        if WoWTools_DataMixin.Player.husandro then
-            print('移动Frame', (target or frame):GetName(), '已设置')
-        end
-        return
-    end
-
-    frame.targetFrame= target--要移动的Frame
-    frame.setMoveFrame=true
-    frame.click= click
-    frame.notSave= notSave
-    frame.isAltKeyDown= isAltKeyDown
-
+--设置，数据
+    frame.moveFrameData={
+        target= target and target:GetName() or nil,
+        click= click,
+        notSave= notSave,
+        isAltKeyDown= isAltKeyDown,
+    }
+--设置，可否到屏幕外
     if notFuori then
         frame:SetClampedToScreen(true)
-        if target then
+        if target and not target.moveFrameData then
             target:SetClampedToScreen(true)
         end
     end
 
+--设置，可移动
     frame:SetMovable(true)
-    if target then
+    if target and not target.moveFrameData then
         target:SetMovable(true)
     end
 
+--设置，响应事件
     if click=='RightButton' then
         frame:RegisterForDrag("RightButton")
     elseif click=='LeftButton' then
@@ -93,53 +135,26 @@ local function Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyD
         frame:RegisterForDrag("LeftButton", "RightButton")
     end
 
-    frame:HookScript("OnDragStart", function(self, d)
-        if
-            (d=='RightButton' or d=='LeftButton')
-            and (d== self.click or not self.click)
-            and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
-        then
-            local f= self.targetFrame or self
-            if f and f:IsMovable() then
-                f:StartMoving()
-            end
-        end
+--开始移动
+    frame:HookScript("OnDragStart", function(...)
+        Set_OnDragStart(...)
     end)
-
-    frame:HookScript("OnDragStop", function(f)
-
-        local self= f.targetFrame or f
-        local name= f.name or self:GetName()
-
+--停止移动
+    frame:HookScript("OnDragStop", function(...)
+        Set_OnDragStop(...)
+    end)
+--设置光标
+    frame:HookScript("OnMouseDown", function(...)
+       Set_OnMouseDown(...)
+    end)
+--还原光标
+    frame:HookScript("OnMouseUp", function()
         ResetCursor()
-
-        self:StopMovingOrSizing()
-
-        if not name or self.notSave then
-            return
-        end
-
-        if WoWTools_FrameMixin:IsInSchermo(self) then
-            Save().point[name]= {self:GetPoint(1)}
-            Save().point[name][2]= nil
-        end
     end)
-
-    frame:HookScript("OnMouseDown", function(self, d)--设置, 光标
-        if
-            (d=='RightButton' or d=='LeftButton')
-            and (d== self.click or not self.click)
-            and (self.isAltKeyDown and IsAltKeyDown() or not self.isAltKeyDown)
-        then
-            local f= self.targetFrame or self
-            if f:IsMovable() then
-                SetCursor('UI_MOVE_CURSOR')
-            end
-        end
+--还原光标
+    frame:HookScript("OnLeave", function()
+        ResetCursor()
     end)
-
-    frame:HookScript("OnMouseUp", ResetCursor)--停止移动
-    frame:HookScript("OnLeave", ResetCursor)
 end
 
 
@@ -167,42 +182,39 @@ end
 function WoWTools_MoveMixin:Setup(frame, tab)
     tab= tab or {}
 
-    local SavePoint= Save().SavePoint or tab.savePoint
-    local moveToScreenFuori= Save().moveToScreenFuori
-    --local disabledMove= Save().disabledMove
-
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
 
-    local click= tab.click
-    local notSave= ((tab.notSave or not SavePoint) and not tab.save) and true or nil
-    local notFuori=  not moveToScreenFuori and SavePoint or tab.notFuori
-    local isAltKeyDown= tab.isAltKeyDown
-
-    if not frame or not name then
+    if not frame or not name or frame.moveFrameData then
+        if WoWTools_DataMixin.Player.husandro then
+            print('移动Frame', name, '出现错误')
+        end
         return
     end
 
-    tab.name= name
+    local SavePoint= Save().SavePoint or tab.savePoint
+    local moveToScreenFuori= Save().moveToScreenFuori
 
-    self:ScaleSize(frame, tab)
+    local click= tab.click
+    local notSave= ((tab.notSave or not SavePoint) and not tab.save) and true or nil
+    local notFuori=  not moveToScreenFuori and SavePoint or tab.notFuori or nil
+    local isAltKeyDown= tab.isAltKeyDown or nil
 
-    --if (disabledMove and not tab.needMove) or tab.notMove  then
+    self:Scale_Size_Button(frame, tab)
+
     if tab.notMove  then
         return
     end
 
-    Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
-
-
-
-
+    do
+        Set_Move_Frame(frame, target, click, notSave, notFuori, isAltKeyDown)
+    end
 
     if frame.TitleContainer then
         Set_Move_Frame(frame.TitleContainer, frame, click, notSave, notFuori, isAltKeyDown)
     end
 
-    if not target or not target.setMoveFrame then
+    if not target or not target.moveFrameData then
         Set_Frame_Point(frame, name)--设置, 移动, 位置
     end
 end
@@ -214,10 +226,6 @@ end
 
 function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
     if frame then
-        name= name or frame:GetName()
-        if name then
-            
-            Set_Frame_Point(frame, name)
-        end
+        Set_Frame_Point(frame, name or frame:GetName())
     end
 end

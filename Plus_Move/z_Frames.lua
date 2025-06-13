@@ -25,8 +25,8 @@ function WoWTools_MoveMixin.Frames:GossipFrame()
     GossipFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
     GossipFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
 
-    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true, sizeRestFunc=function(btn)
-        btn.targetFrame:SetSize(384, 512)
+    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true, sizeRestFunc=function()
+        GossipFrame:SetSize(384, 512)
     end})
 end
 
@@ -83,8 +83,8 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
     end)
 
     self:Setup(DressUpFrame, {setSize=true, minH=320, minW=310,
-    sizeRestFunc=function(btn)
-        Save().size[btn.name]= nil
+    sizeRestFunc=function()
+        Save().size[DressUpFrame:GetName()]= nil
         DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
         DressUpFrame:Raise()
     end})
@@ -207,8 +207,8 @@ function WoWTools_MoveMixin.Frames:QuestFrame()
         minW=164,
         minH=128,
         setSize=true,
-        sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(338, 496)
+        sizeRestFunc=function()
+            QuestFrame:SetSize(338, 496)
         end
     })
 

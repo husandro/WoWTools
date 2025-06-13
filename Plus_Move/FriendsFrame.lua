@@ -26,10 +26,10 @@ local function Init_RaidInfoFrame()
         minW=345,
         minH=128,
         notMoveAlpha=true,
-        sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(345, 250)
+        sizeRestFunc=function()
+            RaidInfoFrame:SetSize(345, 250)
             RaidInfoFrame_Set_point()
-        end, restPointFunc=function(btn)
+        end, restPointFunc=function()
             RaidInfoFrame_Set_point()
         end
     })
@@ -116,7 +116,7 @@ local function Init()
             end
         end,
         sizeRestFunc=function(btn)
-            btn.targetFrame:SetSize(338, 424)
+            FriendsFrame:SetSize(338, 424)
             if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
                 if RaidGroupFrame_Update then
