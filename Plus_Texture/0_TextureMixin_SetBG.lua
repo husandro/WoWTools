@@ -123,9 +123,9 @@ local function PlayStop_Anims(self)
     local play= self:IsDrawLayerEnabled('BACKGROUND')
             and self:IsVisible()
             and not Save().Anims.disabled
-
-    self.backgroundAnims:SetPlaying(play)
+    print(self:GetName(),play, self:IsVisible(), self:IsShown())
     self.AirParticlesFar:SetShown(play)
+    self.backgroundAnims:SetPlaying(play)
 end
 
 -- 根据框架大小更新动画偏移量和速度的函数

@@ -361,11 +361,13 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
                 --self:HideTexture(btn.icon)
                 self:HideTexture(btn.ItemSlotBackground)
                 self:SetAlphaColor(btn.Background,nil, nil, 0.2)
+                
                 --self:HideTexture(btn.Background)
 
                 btn.icon:SetAlpha(0)
                 btn.NormalTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
-                btn.NormalTexture:SetAlpha(0.2)
+                --btn.NormalTexture:SetAtlas('_UI-Taxi-Line-horizontal')
+                btn.NormalTexture:SetAlpha(0.1)
             else
                 btn.icon:SetAlpha(1)
                 btn.NormalTexture:SetAlpha(0)

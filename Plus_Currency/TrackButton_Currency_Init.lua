@@ -26,7 +26,7 @@ local function Init_TrackButton()
 	end
 
 
-	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWTools_PlusTe', size=23})
+	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {name='WoWToolsCurrencyTrackButton', size=23})
 	WoWTools_CurrencyMixin.TrackButton= TrackButton
 
 

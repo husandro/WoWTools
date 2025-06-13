@@ -117,7 +117,7 @@ end
 
 local function Set_BG(self, texture, alpha)
     alpha= texture and 0 or alpha or 1
-   
+
     StableFrame.Topper:SetAlpha(alpha)
     StableFrame.TopTileStreaks:SetAlpha(alpha)
     StableFrameBg:SetAlpha(alpha)
@@ -151,7 +151,7 @@ local function Init_Texture(self)
     self:SetNineSlice(StableFrame.PetModelScene.Inset, nil, true)
     self:SetButton(StableFrameCloseButton, {all=true})
     self:SetButton(StableFrame.MainHelpButton, {all=true})
- 
+
     hooksecurefunc(StableStabledPetButtonTemplateMixin, 'SetPet', function(btn)
         btn.Selected:SetVertexColor(0,1,0)
         self:SetAlphaColor(btn.Background, nil, true, 0.75)
