@@ -330,7 +330,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == "PLAYER_ENTERING_WORLD" and button then
+    elseif event == 'PLAYER_ENTERING_WORLD' and button then
         Init()--初始
         self:UnregisterEvent(event)
     end

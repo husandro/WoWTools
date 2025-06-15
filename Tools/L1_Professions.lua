@@ -395,7 +395,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         Init()
         self:UnregisterEvent('PLAYER_REGEN_ENABLED')]]
 
-    elseif event == "PLAYER_ENTERING_WORLD" and WoWTools_ToolsMixin.Button then
+    elseif event == 'PLAYER_ENTERING_WORLD' and WoWTools_ToolsMixin.Button then
         Init()
         self:UnregisterEvent(event)
     end

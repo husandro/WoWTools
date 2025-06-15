@@ -609,7 +609,7 @@ end)
 EventRegistry:RegisterFrameEventAndCallback("ZONE_CHANGED_NEW_AREA", function()
     WoWTools_DataMixin.Player.Layer=nil
 end)
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function()
+EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function()
     WoWTools_DataMixin.Player.Layer=nil
 end)
 
@@ -765,7 +765,7 @@ end)
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
+EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(owner)
     if  WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
         Get_Info_Challenge()--挑战
     end

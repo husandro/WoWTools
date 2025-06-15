@@ -444,7 +444,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == "PLAYER_ENTERING_WORLD" and ToyButton then
+    elseif event == 'PLAYER_ENTERING_WORLD' and ToyButton then
         Init()
         self:UnregisterEvent(event)
     end

@@ -817,7 +817,7 @@ end
 --###########
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_ENTERING_WORLD")
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -853,7 +853,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event == "PLAYER_ENTERING_WORLD" and ToyButton then
+    elseif event == 'PLAYER_ENTERING_WORLD' and ToyButton then
         Init()--初始
        self:UnregisterEvent(event)
     end
