@@ -65,7 +65,7 @@ local function Save_Frame_Size(self)
     if self.sizeStopFunc ~= nil then
         self.sizeStopFunc(self)
     else
-        Save().size[self.name]= {self.targetFrame:GetSize()}
+        Save().size[self.name]= {self:GetParent():GetSize()}
     end
 end
 
@@ -73,7 +73,8 @@ end
 
 --百分比，设置大小
 local function Set_ScalePercent(self, isSu)
-    local w,h= self.targetFrame:GetSize()
+    local target= self:GetParent()
+    local w,h= target:GetSize()
     if isSu then
         w= w+ w* 0.1
         h= h+ h* 0.1
@@ -93,7 +94,7 @@ local function Set_ScalePercent(self, isSu)
         return
     end
 
-    Set_Frame_Size(self.targetFrame, w, h)--设置大小
+    Set_Frame_Size(target, w, h)--设置大小
     Save_Frame_Size(self)--保存，大小
 end
 
@@ -116,23 +117,28 @@ end
 
 --锁定框体位置
 local function FrameOnShow_SetPoint(self, isSet)
-    local attributes= P_UIPanelWindows[self.name] or UIPanelWindows[self.name]
-    if not self.targetFrame:CanChangeAttribute() or not attributes then
+    local name= self.name
+    local target= self:GetParent()
+
+    local attributes= P_UIPanelWindows[name] or UIPanelWindows[name]
+    if not target:CanChangeAttribute() or not attributes then
         return
     end
 
     if isSet then
-        SetUIPanelAttribute(self.targetFrame, self.name, true)
-        self.targetFrame:SetAttribute("UIPanelLayout-defined", true)
-        for name, att in pairs(attributes) do
-            self.targetFrame:SetAttribute("UIPanelLayout-"..name, att)
+        SetUIPanelAttribute(target, name, true)
+        target:SetAttribute("UIPanelLayout-defined", true)
+
+        for name2, att in pairs(attributes) do
+            target:SetAttribute("UIPanelLayout-"..name2, att)
         end
-        UpdateUIPanelPositions(self.targetFrame)
+        UpdateUIPanelPositions(target)
+
     else
 
-        self.targetFrame:SetAttribute("UIPanelLayout-defined", nil)
-        for name in pairs(attributes) do
-            self.targetFrame:SetAttribute("UIPanelLayout-"..name, nil)
+        target:SetAttribute("UIPanelLayout-defined", nil)
+        for name2 in pairs(attributes) do
+            target:SetAttribute("UIPanelLayout-"..name2, nil)
         end
     end
 end
@@ -146,37 +152,37 @@ local function Init_Point_Menu(self, root)
         return
     end
     local sub
-
+    local name= self.name
+    local target= self:GetParent()
 
 --当显示时，锁定框体位置
-
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '锁定框体位置' or LOCK_FOCUS_FRAME,
     function()
-        return Save().UIPanelWindows[self.name]
+        return Save().UIPanelWindows[name]
     end, function()
-        Save().UIPanelWindows[self.name]= not Save().UIPanelWindows[self.name] and true or nil
+        Save().UIPanelWindows[name]= not Save().UIPanelWindows[name] and true or nil
 
     --禁用，自动设置
-        if Save().UIPanelWindows[self.name] then
-            if UIPanelWindows[self.name] then
-                P_UIPanelWindows[self.name]= UIPanelWindows[self.name]
-                UIPanelWindows[self.name]= nil
+        if Save().UIPanelWindows[name] then
+            if UIPanelWindows[name] then
+                P_UIPanelWindows[name]= UIPanelWindows[name]
+                UIPanelWindows[name]= nil
                 FrameOnShow_SetPoint(self, false)
             end
     --还原
-        elseif P_UIPanelWindows[self.name] then
-            UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
-            P_UIPanelWindows[self.name]= nil
+        elseif P_UIPanelWindows[name] then
+            UIPanelWindows[name]= P_UIPanelWindows[name]
+            P_UIPanelWindows[name]= nil
             FrameOnShow_SetPoint(self, true)
         end
     end)
 
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(self.name)
+        tooltip:AddLine(name)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示时，自定义位置' or  'When show, custom position')
         tooltip:AddLine('|A:NPE_Icon:0:0|aEsc '..(WoWTools_DataMixin.onlyChinese and '无效' or DISABLE))
-        local tab= P_UIPanelWindows[self.name] or UIPanelWindows[self.name]
+        local tab= P_UIPanelWindows[name] or UIPanelWindows[name]
         if tab then
             tooltip:AddLine(' ')
             local t
@@ -191,9 +197,9 @@ local function Init_Point_Menu(self, root)
         end
     end)
     sub:SetEnabled(
-        (P_UIPanelWindows[self.name] or UIPanelWindows[self.name])
-        and Save().point[self.name]
-        and self.targetFrame:CanChangeAttribute()
+        (P_UIPanelWindows[name] or UIPanelWindows[name])
+        and Save().point[name]
+        and target:CanChangeAttribute()
     )
 
 --重新加载UI
@@ -269,24 +275,26 @@ end
 --菜单
 local function Init_Menu(self, root)
     root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
+    local target= self:GetParent()
+    local name= self.name
 
     local sub, sub2
-    if WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+    if WoWTools_FrameMixin:IsLocked(target) then
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
         return
     end
 
 --缩放
     WoWTools_MenuMixin:Scale(self, root, function()
-        return self.targetFrame:GetScale()
+        return target:GetScale()
     end, function(value)
-        if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
-            Save().scale[self.name]=value
-            Set_Frame_Scale(self.targetFrame, value)
+        if not WoWTools_FrameMixin:IsLocked(target) then
+            Save().scale[name]=value
+            Set_Frame_Scale(target, value)
         end
     end, function()
-        if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
-            Save().scale[self.name]=nil
+        if not WoWTools_FrameMixin:IsLocked(target) then
+            Save().scale[name]=nil
             if self.scaleRestFunc then
                 self.scaleRestFunc(self)
             end
@@ -298,18 +306,18 @@ local function Init_Menu(self, root)
         sub=root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE,
         function()
-            return not Save().disabledSize[self.name]
+            return not Save().disabledSize[name]
         end, function()
-            Save().disabledSize[self.name]= not Save().disabledSize[self.name] and true or nil
+            Save().disabledSize[name]= not Save().disabledSize[name] and true or nil
         end)
 --x
         sub:CreateSpacer()
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=function()
-                return math.modf(self.targetFrame:GetWidth())
+                return math.modf(target:GetWidth())
             end, setValue=function(value)
-                if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
-                    self.targetFrame:SetWidth(value)
+                if not WoWTools_FrameMixin:IsLocked(target) then
+                    target:SetWidth(value)
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
                         self:sizeUpdateFunc()
@@ -324,14 +332,14 @@ local function Init_Menu(self, root)
             maxValue=self.maxWidth or math.modf(UIParent:GetWidth()),
             step=5,
         })
-        sub2:SetEnabled(not Save().disabledSize[self.name])
+        sub2:SetEnabled(not Save().disabledSize[name])
         sub:CreateSpacer()
         sub:CreateSpacer()
         sub2=WoWTools_MenuMixin:CreateSlider(sub, {
             getValue=function()
-                return math.modf(self.targetFrame:GetHeight())
+                return math.modf(target:GetHeight())
             end, setValue=function()
-                if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+                if not WoWTools_FrameMixin:IsLocked(target) then
                     Save_Frame_Size(self)--保存，大小
                     if self.sizeUpdateFunc then
                         self:sizeUpdateFunc()
@@ -346,7 +354,7 @@ local function Init_Menu(self, root)
             maxValue= self.maxHeight or math.modf(UIParent:GetHeight()),
             step=5,
         })
-        sub2:SetEnabled(not Save().disabledSize[self.name])
+        sub2:SetEnabled(not Save().disabledSize[name])
         sub:CreateSpacer()
         sub:CreateButton(
             '+0.1%',
@@ -364,15 +372,16 @@ local function Init_Menu(self, root)
         sub:CreateRadio(
             WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         function()
-            return Save().size[self.name]
+            return Save().size[name]
         end, function()
-            Save().size[self.name]=nil
-            if not WoWTools_FrameMixin:IsLocked(self.targetFrame) then
+            Save().size[name]=nil
+            local target=self:GetParent()
+            if not WoWTools_FrameMixin:IsLocked(target) then
                 if self.sizeRestFunc then--还原
                     self:sizeRestFunc()
                 end
                 if not self.notUpdatePositon then
-                    WoWTools_Mixin:Call(UpdateUIPanelPositions, self.targetFrame)
+                    WoWTools_Mixin:Call(UpdateUIPanelPositions, target)
                 end
             end
             return MenuResponse.Refresh
@@ -384,9 +393,9 @@ local function Init_Menu(self, root)
         sub=root:CreateCheckbox(
             (WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' '..(Save().alpha or 1),
         function()
-            return not Save().disabledAlpha[self.name]
+            return not Save().disabledAlpha[name]
         end, function()
-            Save().disabledAlpha[self.name]= not Save().disabledAlpha[self.name] and true or nil
+            Save().disabledAlpha[name]= not Save().disabledAlpha[name] and true or nil
             self:set_move_event()
         end)
         sub:SetTooltip(function(tooltip)
@@ -401,27 +410,27 @@ local function Init_Menu(self, root)
 
     root:CreateDivider()
     sub=root:CreateCheckbox(
-        (Save().point[self.name] and '' or '|cff9e9e9e')
+        (Save().point[name] and '' or '|cff9e9e9e')
         ..(WoWTools_DataMixin.onlyChinese and '清除位置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, CHOOSE_LOCATION:gsub(CHOOSE , ''))),
     function()
-        return Save().point[self.name]
+        return Save().point[name]
     end, function()
-        if self.targetFrame.setMoveFrame
-            and not self.targetFrame.notSave
-            and not WoWTools_FrameMixin:IsLocked(self.targetFrame)
+        local data= self.moveFrameData or {}
+        if target.setMoveFrame
+            and not data.notSave
+            and not WoWTools_FrameMixin:IsLocked(target)
         then
-
-            if P_UIPanelWindows[self.name] then
-                UIPanelWindows[self.name]= P_UIPanelWindows[self.name]
-                P_UIPanelWindows[self.name]= nil
+            if P_UIPanelWindows[name] then
+                UIPanelWindows[name]= P_UIPanelWindows[name]
+                P_UIPanelWindows[name]= nil
             end
 
-            Save().point[self.name]=nil
+            Save().point[name]=nil
 
             if self.restPointFunc then
                 self.restPointFunc(self)
             elseif not self.notUpdatePositon then
-                WoWTools_Mixin:Call(UpdateUIPanelPositions, self.targetFrame)
+                WoWTools_Mixin:Call(UpdateUIPanelPositions, target)
             end
 
         end
@@ -466,14 +475,16 @@ local function Set_Move_Alpha(frame)
     if not frame or Save().notMoveAlpha or not name then
         return
     end
+
     local btn= frame.ResizeButton
     if not btn then
         btn= CreateFrame("Frame", nil, frame)
         btn.name= name
         frame.ResizeButton= btn
     end
+
     btn:SetScript('OnEvent', function(self, event)
-        local target= self.targetFrame or self:GetParent()
+        local target= self:GetParent()
         if event=='PLAYER_STARTED_MOVING' then
             target:SetAlpha(Save().alpha)
 
@@ -482,9 +493,9 @@ local function Set_Move_Alpha(frame)
 
         end
     end)
-    frame:HookScript('OnEnter', function(self)
-        self:SetAlpha(1)
-    end)
+
+
+
     function btn:set_move_event()
         if Save().disabledAlpha[self.name] or Save().alpha==1 then
             self:UnregisterAllEvents()
@@ -506,7 +517,12 @@ local function Set_Move_Alpha(frame)
             end)
         end
     end
+
     btn:set_move_event()
+
+    frame:HookScript('OnEnter', function(self)
+        self:SetAlpha(1)
+    end)
 end
 
 
@@ -544,7 +560,8 @@ end
 local function Set_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
-    local target= self.targetFrame
+    local target= self:GetParent()
+    local name= self.name
 
     if WoWTools_FrameMixin:IsLocked(target) then
         GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
@@ -558,7 +575,7 @@ local function Set_Tooltip(self)
         GameTooltip:AddLine(' ')
     end
 
-    GameTooltip:AddDoubleLine('|cffff00ff'..self.name, format('%s %.2f', WoWTools_DataMixin.onlyChinese and '实际' or 'Effective', target:GetEffectiveScale()))
+    GameTooltip:AddDoubleLine('|cffff00ff'..name, format('%s %.2f', WoWTools_DataMixin.onlyChinese and '实际' or 'Effective', target:GetEffectiveScale()))
     local parent= target:GetParent()
     if parent then
         GameTooltip:AddDoubleLine(parent:GetName() or 'Parent', format('%.2f', parent:GetScale()))
@@ -575,7 +592,7 @@ local function Set_Tooltip(self)
         if self.sizeRestTooltipColorFunc then
             col=self.sizeRestTooltipColorFunc(self)
         end
-        col=col or (Save().size[self.name] and '' or '|cff9e9e9e')
+        col=col or (Save().size[name] and '' or '|cff9e9e9e')
 
         local w, h
         w= math.modf(target:GetWidth())
@@ -586,7 +603,7 @@ local function Set_Tooltip(self)
 
         GameTooltip:AddDoubleLine(
             col..(WoWTools_DataMixin.onlyChinese and '尺寸' or HUD_EDIT_MODE_SETTING_ARCHAEOLOGY_BAR_SIZE)..format(' %s |cffffffffx|r %s', w, h),
-                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledSize[self.name])..WoWTools_DataMixin.Icon.right
+                WoWTools_TextMixin:GetEnabeleDisable(not Save().disabledSize[name])..WoWTools_DataMixin.Icon.right
         )
 
         if self.sizeTooltip then
@@ -602,7 +619,7 @@ local function Set_Tooltip(self)
     if self.set_move_event then--Frame 移动时，设置透明度
         GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '移动时透明度 ' or MAP_FADE_TEXT:gsub(WORLD_MAP, 'Frame')),
-            Save().disabledAlpha[self.name] and WoWTools_TextMixin:GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
+            Save().disabledAlpha[name] and WoWTools_TextMixin:GetEnabeleDisable(false) or ('|cnGREEN_FONT_COLOR:'..Save().alpha)
         )
     end
 
@@ -656,9 +673,6 @@ local function Set_OnMouseUp(self)
     local target= self:GetParent()
 
     self:SetScript("OnUpdate", nil)
-    --[[if WoWTools_FrameMixin:IsLocked(target) then
-        return
-    end]]
 
     if d=='RightButton' and self.setSize then--保存，大小 d=='RightButton' and
         local continueResizeStop = true
@@ -696,7 +710,7 @@ local function Set_OnMouseDown(self, d)
     end
 
     self.isActiveButton = d
-    
+
 
     if d=='LeftButton' then
         self.SOS.left, self.SOS.top = target:GetLeft(), target:GetTop()
@@ -874,7 +888,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
 
     frame.ResizeButton= btn
 
-    btn.targetFrame= frame
+    --btn.targetFrame= frame
     btn.name= name
 
 --设置缩放

@@ -25,9 +25,11 @@ function WoWTools_MoveMixin.Frames:GossipFrame()
     GossipFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
     GossipFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
 
-    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true, sizeRestFunc=function()
+    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true,
+    sizeRestFunc=function()
         GossipFrame:SetSize(384, 512)
-    end})
+    end
+    })
 end
 
 
@@ -88,56 +90,6 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
         DressUpFrame:ConfigureSize(GetCVarBool("miniDressUpFrame"))
         DressUpFrame:Raise()
     end})
-
-
-
-    --[[hooksecurefunc(WorldMapFrame, 'Minimize', function(self)
-        if not self.ResizeButton then
-            return
-        end
-        local name= self:GetName()
-        local size= Save().size[name]
-        if size then
-            self:SetSize(size[1], size[2])
-            set_min_max_value(size)
-        end
-        local scale= Save().scale[name]
-        if scale then
-            self:SetScale(scale)
-        end
-        self.ResizeButton:SetShown(true)
-    end)
-    hooksecurefunc(WorldMapFrame, 'Maximize', function(self)
-        if not self.ResizeButton then
-            return
-        end
-        set_min_max_value()
-        if Save().scale[self:GetName()] then
-            self:SetScale(1)
-        end
-        if self.ResizeButton then
-            self.ResizeButton:SetShown(false)
-        end
-    end)
-
-    WoWTools_MoveMixin:Setup(WorldMapFrame, {
-        minW=(WorldMapFrame.questLogWidth or 290)*2+37,
-        minH=WorldMapFrame.questLogWidth,
-        setSize=true,
-        onShowFunc=true,
-        --notMoveAlpha=true,
-        sizeUpdateFunc= function(btn)--WorldMapMixin:UpdateMaximizedSize()
-            set_min_max_value({btn.targetFrame:GetSize()})
-        end,
-        sizeRestFunc= function(btn)
-            local target=btn.targetFrame
-           
-            target.minimizedWidth= minimizedWidth
-            target.minimizedHeight= minimizedHeight
-            target:SetSize(minimizedWidth+ (WorldMapFrame.questLogWidth or 290), minimizedHeight)
-            target.BorderFrame.MaximizeMinimizeFrame:Minimize()
-        end, sizeTooltip='|cnRED_FONT_COLOR:BUG|r'
-    })]]
 end
 
 --小，背包
@@ -156,7 +108,6 @@ function WoWTools_MoveMixin.Frames:ContainerFrame1()
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
             local name= frame:GetName()
             if name then
-                --if not Save().disabledZoom and Save().scale[name] and Save().scale[name]~=1 then--缩放
                 if Save().scale[name] and Save().scale[name]~=1 then--缩放
                     frame:SetScale(Save().scale[name])
                 end

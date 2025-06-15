@@ -109,8 +109,6 @@ local function Init()
     end})
 
     WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-    WoWTools_MoveMixin:Setup(MailFrame.TitleContainer, {frame=MailFrame})
-
 
 
 

@@ -187,7 +187,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
 
     if not frame or not name or frame.moveFrameData then
         if WoWTools_DataMixin.Player.husandro then
-            print('移动Frame', name, '出现错误')
+            print('移动', frame, name, frame and frame.moveFrameData, '出现错误')
         end
         return
     end

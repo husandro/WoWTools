@@ -96,7 +96,6 @@ local function Init()
     WoWTools_MoveMixin:Setup(MapQuestInfoRewardsFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(QuestMapFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(QuestMapFrame.DetailsFrame, {frame=WorldMapFrame})
-    WoWTools_MoveMixin:Setup(QuestMapFrame.DetailsFrame.RewardsFrame, {frame=WorldMapFrame})
     WoWTools_MoveMixin:Setup(QuestMapDetailsScrollFrame, {frame=WorldMapFrame})
 end
 
