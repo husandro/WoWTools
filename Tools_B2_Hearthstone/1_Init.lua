@@ -32,7 +32,7 @@ local P_Save={
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -71,7 +71,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' and WoWTools_HearthstoneMixin.ToyButton then
+    elseif event=='PLAYER_ENTERING_WORLD' and WoWTools_HearthstoneMixin.ToyButton then
         WoWTools_HearthstoneMixin:Init_Button()
         self:UnregisterEvent(event)
     end

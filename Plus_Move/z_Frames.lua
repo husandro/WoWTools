@@ -220,10 +220,15 @@ function WoWTools_MoveMixin.Frames:LootFrame()
             frame:SetWidth(s[1])
         end
     end)
-    self:Setup(LootFrame, {setSize=true, isShow=true, sizeRestFunc=function()
+
+
+    self:Setup(LootFrame, {
+        setSize=true, isShow=true,
+    sizeStopFunc=function()
+        ScrollingFlatPanelMixin.Open(LootFrame, true)
+    end, sizeRestFunc=function()
         Save().size['LootFrame']= nil
         LootFrame:SetWidth(220)
-        local skipShow = true;
-	    ScrollingFlatPanelMixin.Open(LootFrame, skipShow)
+	    ScrollingFlatPanelMixin.Open(LootFrame, true)
     end})
 end

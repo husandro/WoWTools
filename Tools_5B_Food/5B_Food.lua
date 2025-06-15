@@ -138,7 +138,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("LOADING_SCREEN_DISABLED")
+panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -195,7 +195,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event == "LOADING_SCREEN_DISABLED" and WoWTools_FoodMixin.Button then
+    elseif event == "PLAYER_ENTERING_WORLD" and WoWTools_FoodMixin.Button then
         WoWTools_FoodMixin:Set_AltSpell()
         WoWTools_FoodMixin:Init_Button()
         WoWTools_FoodMixin:Init_Check()
