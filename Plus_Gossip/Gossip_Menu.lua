@@ -340,7 +340,7 @@ local function Init_Menu(self, root)
         return Save().scale or 1
     end, function(value)
         Save().scale= value
-        WoWTools_GossipMixin.GossipButton:set_Scale()
+        self:set_Scale()
     end)
 
 
@@ -348,8 +348,8 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     WoWTools_MenuMixin:RestPoint(self, sub, Save().point, function()
         Save().point=nil
-        WoWTools_GossipMixin.GossipButton:ClearAllPoints()
-        WoWTools_GossipMixin.GossipButton:set_Point()
+        self:ClearAllPoints()
+        self:set_Point()
     end)
 end
 
@@ -370,6 +370,6 @@ end
 
 
 
-function WoWTools_GossipMixin:Init_Menu_Gossip(frame, root)
-    Init_Menu(frame, root)
+function WoWTools_GossipMixin:Init_Menu_Gossip(_, root)
+    Init_Menu(self.GossipButton, root)
 end

@@ -1,5 +1,5 @@
 
-local GossipButton, Frame, Menu
+local Frame, List
 
 
 local function Save()
@@ -20,7 +20,7 @@ local function Chat_Menu(_, root)
     local find={}
     for _, info in pairs(tab) do
         if info.gossipOptionID then
-            local set= Menu:get_saved_all_date(info.gossipOptionID) or {}
+            local set= List:get_saved_all_date(info.gossipOptionID) or {}
             local name= set.name or info.name or ''
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(set.icon or info.icon)) or '     '
             local col= (set.hex and set.hex~='') and '|c'..set.hex
@@ -31,9 +31,9 @@ local function Chat_Menu(_, root)
             root:CreateCheckbox(
                 icon..col..name..info.gossipOptionID,
             function(data)
-                return data.gossipOptionID== Menu:get_gossipID()
+                return data.gossipOptionID== List:get_gossipID()
             end, function(data)
-                Menu:set_date(data.gossipOptionID)
+                List:set_date(data.gossipOptionID)
             end, {gossipOptionID=info.gossipOptionID})
 
             if not Save().Gossip_Text_Icon_Player[info.gossipOptionID] then
@@ -54,7 +54,7 @@ local function Chat_Menu(_, root)
                     Save().Gossip_Text_Icon_Player[info.gossipID]= {name=info.name}
                 end
             end
-            Menu:set_list()
+            List:set_list()
         end, {find=find})
 
     elseif #tab==0 then
@@ -82,10 +82,7 @@ local function Init()
     Frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
     WoWTools_GossipMixin.Frame= Frame
 
-    Menu = CreateFrame("Frame", nil, Frame, "WowScrollBoxList")
-    Frame.Menu= Menu
-
-
+    List = CreateFrame("Frame", 'GossipTextIconFrameList', Frame, "WowScrollBoxList")
 
 
     Frame:SetSize(580, 370)
@@ -112,28 +109,28 @@ local function Init()
 
 
 
-    Menu:SetPoint("TOPLEFT", 12, -30)
-    Menu:SetPoint("BOTTOMRIGHT", -310, 6)
+    List:SetPoint("TOPLEFT", 12, -30)
+    List:SetPoint("BOTTOMRIGHT", -310, 6)
 
-    Menu.bg= Menu:CreateTexture(nil, 'BACKGROUND')
-    Menu.bg:SetPoint('TOPLEFT', -35, 80)
-    Menu.bg:SetPoint('BOTTOMRIGHT',35, -72)
-    Menu.bg:SetAtlas('QuestBG-Trading-Post')
+    List.bg= List:CreateTexture(nil, 'BACKGROUND')
+    List.bg:SetPoint('TOPLEFT', -35, 80)
+    List.bg:SetPoint('BOTTOMRIGHT',35, -72)
+    List.bg:SetAtlas('QuestBG-Trading-Post')
 
-    Menu.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
-    Menu.ScrollBar:SetPoint("TOPLEFT", Menu, "TOPRIGHT", 8,0)
-    Menu.ScrollBar:SetPoint("BOTTOMLEFT", Menu, "BOTTOMRIGHT",8,12)
-    WoWTools_TextureMixin:SetScrollBar(Menu)
+    List.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
+    List.ScrollBar:SetPoint("TOPLEFT", List, "TOPRIGHT", 8,0)
+    List.ScrollBar:SetPoint("BOTTOMLEFT", List, "BOTTOMRIGHT",8,12)
+    WoWTools_TextureMixin:SetScrollBar(List)
 
-    Menu.view = CreateScrollBoxListLinearView()
-    ScrollUtil.InitScrollBoxListWithScrollBar(Menu, Menu.ScrollBar, Menu.view)
+    List.view = CreateScrollBoxListLinearView()
+    ScrollUtil.InitScrollBoxListWithScrollBar(List, List.ScrollBar, List.view)
 
-    Menu.view:SetElementInitializer("GossipTitleButtonTemplate", function(btn, info)-- UIPanelButtonTemplate GossipTitleButtonTemplate
+    List.view:SetElementInitializer("GossipTitleButtonTemplate", function(btn, info)-- UIPanelButtonTemplate GossipTitleButtonTemplate
         btn.gossipID= info.gossipID
         btn.spellID= info.spellID
         if not btn.delete then
             btn:SetScript("OnClick", function(self)
-                Frame.Menu:set_date(self.gossipID)
+                List:set_date(self.gossipID)
             end)
             btn:SetScript('OnLeave', function(self) self.delete:SetAlpha(0) end)
             btn:SetScript('OnEnter', function(self) self.delete:SetAlpha(1) end)
@@ -143,7 +140,7 @@ local function Init()
             btn.delete:SetScript('OnLeave', function(self) self:SetAlpha(0) end)
             btn.delete:SetScript('OnEnter', function(self) self:SetAlpha(1) end)
             btn.delete:SetScript('OnClick', function(self)
-                Frame.Menu:delete_gossip(self:GetParent().gossipID)
+                List:delete_gossip(self:GetParent().gossipID)
             end)
             btn.delete:SetAlpha(0)
             btn:GetFontString():SetPoint('RIGHT')
@@ -165,7 +162,7 @@ local function Init()
         btn:Resize()
     end)
 
-    function Menu:SortOrder(leftInfo, rightInfo)
+    function List:SortOrder(leftInfo, rightInfo)
         if GossipFrame:IsShown() then
             return leftInfo.orderIndex < rightInfo.orderIndex;
         else
@@ -173,7 +170,7 @@ local function Init()
         end
     end
 
-    function Menu:set_list()
+    function List:set_list()
         if self:IsShown() then
             local n=0
             local gossipNum=0--GossipFrame 有多少对话
@@ -216,7 +213,7 @@ local function Init()
     end
 
 
-    function Menu:update_list()
+    function List:update_list()
         if not self:GetView() then
             return
         end
@@ -244,10 +241,10 @@ local function Init()
     end
 
 
-    function Menu:get_gossipID()--取得gossipID
+    function List:get_gossipID()--取得gossipID
         return self.ID:GetNumber() or 0
     end
-    function Menu:get_name()--取得，名称
+    function List:get_name()--取得，名称
         local name= self.Name:GetText()
         if name=='' then
             return
@@ -255,15 +252,15 @@ local function Init()
             return name
         end
     end
-    function Menu:get_icon()--设置，图片
+    function List:get_icon()--设置，图片
         local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(self.Icon:GetText())
         return texture, isAtlas
     end
-    function Menu:set_texture_size()--图片，大小
+    function List:set_texture_size()--图片，大小
         self.Texture:SetSize(Save().Gossip_Text_Icon_Size, Save().Gossip_Text_Icon_Size)
     end
 
-    function Menu:set_all()
+    function List:set_all()
         local num= self:get_gossipID()
         local name= self:get_name()
         local icon= self:get_icon()
@@ -291,7 +288,7 @@ local function Init()
         self.Add:SetShown(num>0 and (name or icon or hex~='ff000000') and true or false)--显示/隐藏，添加按钮
     end
 
-    function Menu:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
+    function List:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
         if hex and hex~='' then
             r,g,b= WoWTools_ColorMixin:HEXtoRGB(hex)
         elseif r and g and b then
@@ -305,10 +302,10 @@ local function Init()
         self:set_all()
     end
 
-    function Menu:get_saved_all_date(gossipID)
+    function List:get_saved_all_date(gossipID)
         return Save().Gossip_Text_Icon_Player[gossipID] or WoWTools_GossipMixin:Get_GossipData()[gossipID]
     end
-    function Menu:set_date(gossipID)--读取，已保存数据
+    function List:set_date(gossipID)--读取，已保存数据
         if not gossipID then
             return
         end
@@ -332,7 +329,7 @@ local function Init()
     end
 
 
-    function Menu:add_gossip()
+    function List:add_gossip()
         if not self.Add:IsShown() then
             return
         end
@@ -374,7 +371,7 @@ local function Init()
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)]]
     end
 
-    function Menu:delete_gossip(gossipID)
+    function List:delete_gossip(gossipID)
         if gossipID and Save().Gossip_Text_Icon_Player[gossipID] then
             local info=Save().Gossip_Text_Icon_Player[gossipID]
             Save().Gossip_Text_Icon_Player[gossipID]=nil
@@ -386,83 +383,81 @@ local function Init()
     end
 
 
-    Menu.ID= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
-    Menu.ID:SetSize(234, 22)
-    Menu.ID:SetNumeric(true)
-    Menu.ID:SetPoint('TOPLEFT', Menu, 'TOPRIGHT', 25, -40)
-    Menu.ID:SetAutoFocus(false)
-    Menu.ID.Instructions:SetText('gossipOptionID '..(WoWTools_DataMixin.onlyChinese and '数字' or 'Numeri'))
-    Menu.ID.searchIcon:SetAtlas('auctionhouse-icon-favorite')
-    Menu.ID:HookScript("OnTextChanged", function(self)
-        local f= self:GetParent().Menu
-        f:set_all()
-        f:update_list()
+    List.ID= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
+    List.ID:SetSize(234, 22)
+    List.ID:SetNumeric(true)
+    List.ID:SetPoint('TOPLEFT', List, 'TOPRIGHT', 25, -40)
+    List.ID:SetAutoFocus(false)
+    List.ID.Instructions:SetText('gossipOptionID '..(WoWTools_DataMixin.onlyChinese and '数字' or 'Numeri'))
+    List.ID.searchIcon:SetAtlas('auctionhouse-icon-favorite')
+    List.ID:HookScript("OnTextChanged", function(self)
+        List:set_all()
+        List:update_list()
     end)
 
-    Menu.Name= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
-    Menu.Name:SetPoint('TOPLEFT', Menu.ID, 'BOTTOMLEFT')
-    Menu.Name:SetSize(250, 22)
-    Menu.Name:SetAutoFocus(false)
-    Menu.Name:ClearFocus()
-    Menu.Name.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '替换文本', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, LOCALE_TEXT_LABEL))
-    Menu.Name.searchIcon:SetAtlas('NPE_ArrowRight')
-    Menu.Name:HookScript("OnTextChanged", function(self) self:GetParent().Menu:set_all() end)
+    List.Name= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
+    List.Name:SetPoint('TOPLEFT', List.ID, 'BOTTOMLEFT')
+    List.Name:SetSize(250, 22)
+    List.Name:SetAutoFocus(false)
+    List.Name:ClearFocus()
+    List.Name.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '替换文本', format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REPLACE, LOCALE_TEXT_LABEL))
+    List.Name.searchIcon:SetAtlas('NPE_ArrowRight')
+    List.Name:HookScript("OnTextChanged", function() List:set_all() end)
 
-    Menu.Name:SetFontObject('QuestFontLeft')
-    Menu.Name.r, Menu.Name.g, Menu.Name.b= Menu.Name:GetTextColor()
-    Menu.Name.texture=Menu.Name:CreateTexture(nil, 'BORDER')
-    Menu.Name.texture:SetAtlas('QuestBG-Parchment')
-    Menu.Name.texture:SetPoint('TOPLEFT', 8,-4)
-    Menu.Name.texture:SetPoint('BOTTOMRIGHT', -18, 3)
-    Menu.Name.texture:SetTexCoord(0.23243, 0.24698, 0.13550, 0.12206)
-    --Menu.Name.Middle:SetAtlas('QuestBG-Parchment')
+    List.Name:SetFontObject('QuestFontLeft')
+    List.Name.r, List.Name.g, List.Name.b= List.Name:GetTextColor()
+    List.Name.texture=List.Name:CreateTexture(nil, 'BORDER')
+    List.Name.texture:SetAtlas('QuestBG-Parchment')
+    List.Name.texture:SetPoint('TOPLEFT', 8,-4)
+    List.Name.texture:SetPoint('BOTTOMRIGHT', -18, 3)
+    List.Name.texture:SetTexCoord(0.23243, 0.24698, 0.13550, 0.12206)
+    --List.Name.Middle:SetAtlas('QuestBG-Parchment')
 
-    Menu.Icon= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
-    Menu.Icon:SetPoint('TOPLEFT', Menu.Name, 'BOTTOMLEFT')
-    Menu.Icon:SetSize(250, 22)
-    Menu.Icon:SetAutoFocus(false)
-    Menu.Icon:ClearFocus()
-    Menu.Icon.Instructions:SetText((WoWTools_DataMixin.onlyChinese and '图标' or EMBLEM_SYMBOL)..' Texture or Atlas')
-    Menu.Icon.searchIcon:SetAtlas('NPE_ArrowRight')
-    Menu.Icon:HookScript("OnTextChanged", function(self)
-        local frame= self:GetParent().Menu
-        local texture, isAtlas = frame:get_icon()
+    List.Icon= CreateFrame("EditBox", nil, Frame, 'SearchBoxTemplate')
+    List.Icon:SetPoint('TOPLEFT', List.Name, 'BOTTOMLEFT')
+    List.Icon:SetSize(250, 22)
+    List.Icon:SetAutoFocus(false)
+    List.Icon:ClearFocus()
+    List.Icon.Instructions:SetText((WoWTools_DataMixin.onlyChinese and '图标' or EMBLEM_SYMBOL)..' Texture or Atlas')
+    List.Icon.searchIcon:SetAtlas('NPE_ArrowRight')
+    List.Icon:HookScript("OnTextChanged", function()
+        local texture, isAtlas = List:get_icon()
         if isAtlas and texture then
-            frame.Texture:SetAtlas(texture)
+            List.Texture:SetAtlas(texture)
         else
-            frame.Texture:SetTexture(texture or 0)
+            List.Texture:SetTexture(texture or 0)
         end
-        frame:set_all()
+        List:set_all()
     end)
 
     --设置，TAB键
-    Menu.tabGroup= CreateTabGroup(Menu.ID, Menu.Name, Menu.Icon)
-    Menu.ID:SetScript('OnTabPressed', function(self) self:GetParent().Menu.tabGroup:OnTabPressed() end)
-    Menu.Icon:SetScript('OnTabPressed', function(self) self:GetParent().Menu.tabGroup:OnTabPressed() end)
-    Menu.Name:SetScript('OnTabPressed', function(self) self:GetParent().Menu.tabGroup:OnTabPressed() end)
+    List.tabGroup= CreateTabGroup(List.ID, List.Name, List.Icon)
+    List.ID:SetScript('OnTabPressed', function() List.tabGroup:OnTabPressed() end)
+    List.Icon:SetScript('OnTabPressed', function() List.tabGroup:OnTabPressed() end)
+    List.Name:SetScript('OnTabPressed', function() List.tabGroup:OnTabPressed() end)
 
     --设置，Enter键
-    Menu.ID:SetScript('OnEnterPressed', function(self)  self:GetParent().Menu:add_gossip() end)
-    Menu.Icon:SetScript('OnEnterPressed', function(self) self:GetParent().Menu:add_gossip() end)
-    Menu.Name:SetScript('OnEnterPressed', function(self) self:GetParent().Menu:add_gossip() end)
+    List.ID:SetScript('OnEnterPressed', function() List:add_gossip() end)
+    List.Icon:SetScript('OnEnterPressed', function() List:add_gossip() end)
+    List.Name:SetScript('OnEnterPressed', function() List:add_gossip() end)
 
 
 
     --图标
-    Menu.Texture= Frame:CreateTexture()
-    Menu.Texture:SetPoint('BOTTOM', Menu.ID, 'TOP' , 0, 2)
-    Menu:set_texture_size()
+    List.Texture= Frame:CreateTexture()
+    List.Texture:SetPoint('BOTTOM', List.ID, 'TOP' , 0, 2)
+    List:set_texture_size()
 
     --对话，内容
-    Menu.GossipText= WoWTools_LabelMixin:Create(Frame)
-    Menu.GossipText:SetPoint('TOP', Menu.Icon, 'BOTTOM', 0,-2)
+    List.GossipText= WoWTools_LabelMixin:Create(Frame)
+    List.GossipText:SetPoint('TOP', List.Icon, 'BOTTOM', 0,-2)
 
 
     --查找，图标，按钮
-    Menu.FindIcon= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='mechagon-projects'})
-    Menu.FindIcon:SetPoint('LEFT', Menu.Icon, 'RIGHT', 2,0)
-    Menu.FindIcon:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.FindIcon:SetScript('OnEnter', function(self)
+    List.FindIcon= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='mechagon-projects'})
+    List.FindIcon:SetPoint('LEFT', List.Icon, 'RIGHT', 2,0)
+    List.FindIcon:SetScript('OnLeave', GameTooltip_Hide)
+    List.FindIcon:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -473,7 +468,7 @@ local function Init()
         end
         GameTooltip:Show()
     end)
-    Menu.FindIcon:SetScript('OnClick', function(f)
+    List.FindIcon:SetScript('OnClick', function(f)
         local frame= f.frame
         if frame then
             frame:SetShown(not frame:IsShown())
@@ -512,7 +507,7 @@ local function Init()
         end)
         function frame:Update()
             local texture
-            texture= Frame.Menu:get_icon()
+            texture= List:get_icon()
             if texture then
                 texture=tonumber(texture)
             end
@@ -537,13 +532,13 @@ local function Init()
         function frame:OkayButton_OnClick()
             IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self);
             local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture();
-            Menu.Icon:SetText(iconTexture or '')
-            local gossip= Menu:get_gossipID()
+            List.Icon:SetText(iconTexture or '')
+            local gossip= List:get_gossipID()
             if gossip==0 then
-                Menu.ID:SetFocus()
+                List.ID:SetFocus()
             else
-                Menu.Name:SetFocus()
-                Menu:add_gossip()
+                List.Name:SetFocus()
+                List:add_gossip()
             end
         end
         f.frame= frame
@@ -552,11 +547,11 @@ local function Init()
 
 
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
-        Menu.tav= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
-        Menu.tav:SetPoint('TOP', Menu.FindIcon, 'BOTTOM', 0, -2)
-        Menu.tav:SetScript('OnClick', function() _G['TAV_CoreFrame']:SetShown(not _G['TAV_CoreFrame']:IsShown()) end)
-        Menu.tav:SetScript('OnLeave', GameTooltip_Hide)
-        Menu.tav:SetScript('OnEnter', function(self)
+        List.tav= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='communities-icon-searchmagnifyingglass'})
+        List.tav:SetPoint('TOP', List.FindIcon, 'BOTTOM', 0, -2)
+        List.tav:SetScript('OnClick', function() _G['TAV_CoreFrame']:SetShown(not _G['TAV_CoreFrame']:IsShown()) end)
+        List.tav:SetScript('OnLeave', GameTooltip_Hide)
+        List.tav:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -567,11 +562,11 @@ local function Init()
     end
 
     --颜色
-    Menu.Color= CreateFrame('Button', nil, Frame, 'ColorSwatchTemplate')--ColorSwatchMixin
-    Menu.Color:SetPoint('LEFT', Menu.ID, 'RIGHT', 2,0)
-    Menu.Color:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-    Menu.Color:SetScript('OnLeave', GameTooltip_Hide)
-    function Menu.Color:set_tooltips()
+    List.Color= CreateFrame('Button', nil, Frame, 'ColorSwatchTemplate')--ColorSwatchMixin
+    List.Color:SetPoint('LEFT', List.ID, 'RIGHT', 2,0)
+    List.Color:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
+    List.Color:SetScript('OnLeave', GameTooltip_Hide)
+    function List.Color:set_tooltips()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName , WoWTools_GossipMixin.addName)
@@ -581,36 +576,35 @@ local function Init()
         GameTooltip:AddDoubleLine(format('%s%s', col, WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT), WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end
-    Menu.Color:SetScript('OnEnter', Menu.Color.set_tooltips)
-    Menu.Color:SetScript('OnClick', function(self, d)
+    List.Color:SetScript('OnEnter', List.Color.set_tooltips)
+    List.Color:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             local R=self.r or 1
             local G=self.g or 1
             local B=self.b or 1
             WoWTools_ColorMixin:ShowColorFrame(R, G, B, nil, function()--swatchFunc
                 local r,g,b = WoWTools_ColorMixin:Get_ColorFrameRGBA()
-                Frame.Menu:set_color(r,g,b)
-                Frame.Menu:add_gossip()
+                List:set_color(r,g,b)
+                List:add_gossip()
             end, function()--cancelFunc
-                Frame.Menu:set_color(R,G,B)
-                Frame.Menu:add_gossip()
+                List:set_color(R,G,B)
+                List:add_gossip()
             end)
         else
-            Frame.Menu:set_color(0,0,0)
-            Frame.Menu:add_gossip()
+            List:set_color(0,0,0)
+            List:add_gossip()
         end
         self:set_tooltips()
     end)
 
     --添加
-    Menu.Add= WoWTools_ButtonMixin:Cbtn(Frame, {size=22})
-    Menu.Add:SetPoint('LEFT', Menu.Color, 'RIGHT', 2, 0)
-    Menu.Add:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.Add:SetScript('OnEnter', function(self)
-        local frame=Frame.Menu
-        local num= frame:get_gossipID()
-        local texture = frame:get_icon()
-        local name= frame:get_name()
+    List.Add= WoWTools_ButtonMixin:Cbtn(Frame, {size=22})
+    List.Add:SetPoint('LEFT', List.Color, 'RIGHT', 2, 0)
+    List.Add:SetScript('OnLeave', GameTooltip_Hide)
+    List.Add:SetScript('OnEnter', function(self)
+        local num= List:get_gossipID()
+        local texture = List:get_icon()
+        local name= List:get_name()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName , WoWTools_GossipMixin.addName)
@@ -620,35 +614,35 @@ local function Init()
         GameTooltip:AddDoubleLine('gossipOptionID', num)
         GameTooltip:AddDoubleLine('name', name)
         GameTooltip:AddDoubleLine('icon', texture)
-        GameTooltip:AddDoubleLine('hex', frame.Color.hex)
+        GameTooltip:AddDoubleLine('hex', List.Color.hex)
         GameTooltip:Show()
     end)
-    Menu.Add:SetScript('OnClick', function(self)
-        self:GetParent().Menu:add_gossip()
+    List.Add:SetScript('OnClick', function()
+        List:add_gossip()
     end)
 
     --删除，内容
-    Menu.Delete= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='common-icon-redx'})
-    Menu.Delete:SetPoint('BOTTOM', Menu.Add, 'TOP', 0,2)
-    Menu.Delete:Hide()
-    Menu.Delete:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.Delete:SetScript('OnEnter', function(self)
+    List.Delete= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='common-icon-redx'})
+    List.Delete:SetPoint('BOTTOM', List.Add, 'TOP', 0,2)
+    List.Delete:Hide()
+    List.Delete:SetScript('OnLeave', GameTooltip_Hide)
+    List.Delete:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '删除' or DELETE, Frame.Menu.gossipID)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '删除' or DELETE, List.gossipID)
         GameTooltip:Show()
     end)
-    Menu.Delete:SetScript('OnClick', function()
-        Frame.Menu:delete_gossip(Frame.Menu.gossipID)
+    List.Delete:SetScript('OnClick', function()
+        List:delete_gossip(List.gossipID)
     end)
 
     --删除，玩家数据
-    Menu.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-button-autosort-up'})
-    Menu.DeleteAllPlayerData:SetPoint('BOTTOMLEFT', Menu, 'TOPLEFT', -3, 2)
-    Menu.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.DeleteAllPlayerData:SetScript('OnEnter', function(self)
+    List.DeleteAllPlayerData=WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-button-autosort-up'})
+    List.DeleteAllPlayerData:SetPoint('BOTTOMLEFT', List, 'TOPLEFT', -3, 2)
+    List.DeleteAllPlayerData:SetScript('OnLeave', GameTooltip_Hide)
+    List.DeleteAllPlayerData:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -656,7 +650,7 @@ local function Init()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
         GameTooltip:Show()
     end)
-    Menu.DeleteAllPlayerData:SetScript('OnClick', function()
+    List.DeleteAllPlayerData:SetScript('OnClick', function()
         if not StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data'] then
             StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
                 text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
@@ -666,7 +660,7 @@ local function Init()
                 OnAccept = function()
                     Save().Gossip_Text_Icon_Player={}
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
-                    Frame.Menu:set_list()
+                    List:set_list()
                 end,
             }
         end
@@ -674,14 +668,14 @@ local function Init()
     end)
 
     --自定义，对话，文本，数量
-    Menu.NumLabel= WoWTools_LabelMixin:Create(Frame)
-    Menu.NumLabel:SetPoint('LEFT', Menu.DeleteAllPlayerData, 'RIGHT')
+    List.NumLabel= WoWTools_LabelMixin:Create(Frame)
+    List.NumLabel:SetPoint('LEFT', List.DeleteAllPlayerData, 'RIGHT')
 
 
 
 
     --图标大小, 设置
-    Menu.Size= WoWTools_PanelMixin:Slider(Frame, {min=8, max=72, value=Save().Gossip_Text_Icon_Size, setp=1, color=false, w=255,
+    List.Size= WoWTools_PanelMixin:Slider(Frame, {min=8, max=72, value=Save().Gossip_Text_Icon_Size, setp=1, color=false, w=255,
         text= WoWTools_DataMixin.onlyChinese and '图标大小' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
         func=function(frame, value)
             value= math.modf(value)
@@ -689,15 +683,14 @@ local function Init()
             frame:SetValue(value)
             frame.Text:SetText(value)
             Save().Gossip_Text_Icon_Size= value
-            local f= frame:GetParent().Menu
-            f:set_texture_size()
-            local icon= f.Texture:GetTexture()--设置，图片，如果没有
+            List:set_texture_size()
+            local icon= List.Texture:GetTexture()--设置，图片，如果没有
             if not icon or icon==0 then
-                f.Texture:SetTexture(3847780)
+                List.Texture:SetTexture(3847780)
             end
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
     end})
-    Menu.Size:SetPoint('TOP', Menu.Icon, 'BOTTOM', 0, -36)
+    List.Size:SetPoint('TOP', List.Icon, 'BOTTOM', 0, -36)
 
 
 
@@ -705,14 +698,14 @@ local function Init()
     --if LOCALE_zhCN or LOCALE_zhTW then
       --  Save().Gossip_Text_Icon_cnFont=nil
     --elseif WoWTools_DataMixin.onlyChinese then
-        Menu.font= CreateFrame("CheckButton", nil, Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
-        Menu.font:SetPoint('TOPLEFT', Menu.Size, 'BOTTOMLEFT', 0, -12)
-        Menu.font:SetChecked(Save().Gossip_Text_Icon_cnFont)
-        Menu.font.Text:SetText('修改字体')
-        Menu.font.Text:SetFont('Fonts\\ARHei.ttf', 12)
-        --Menu.font.Text:SetFont('\\Interface\\AddOns\\WoWTools\\Source\\ARHei.ttf', 12)
-        Menu.font:SetScript('OnLeave', GameTooltip_Hide)
-        Menu.font:SetScript('OnEnter', function(self)
+        List.font= CreateFrame("CheckButton", nil, Frame, 'InterfaceOptionsCheckButtonTemplate')--ChatConfigCheckButtonTemplate
+        List.font:SetPoint('TOPLEFT', List.Size, 'BOTTOMLEFT', 0, -12)
+        List.font:SetChecked(Save().Gossip_Text_Icon_cnFont)
+        List.font.Text:SetText('修改字体')
+        List.font.Text:SetFont('Fonts\\ARHei.ttf', 12)
+        --List.font.Text:SetFont('\\Interface\\AddOns\\WoWTools\\Source\\ARHei.ttf', 12)
+        List.font:SetScript('OnLeave', GameTooltip_Hide)
+        List.font:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName , WoWTools_GossipMixin.addName)
@@ -721,10 +714,10 @@ local function Init()
            -- GameTooltip:AddDoubleLine('Interface\\AddOns\\WoWTools\\Source\\ARHei.TTF', '方正准圆')
             GameTooltip:Show()
         end)
-        Menu.font:SetScript('OnMouseDown', function()
+        List.font:SetScript('OnMouseDown', function()
             Save().Gossip_Text_Icon_cnFont= not Save().Gossip_Text_Icon_cnFont and true or nil
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-            Frame.Menu:set_list()
+            List:set_list()
             if not Save().Gossip_Text_Icon_cnFont then
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '需要重新加载UI' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, RELOADUI))
             end
@@ -732,11 +725,11 @@ local function Init()
     --end
 
     --已打开，对话，列表
-    Menu.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='transmog-icon-chat'})
-    Menu.chat:SetNormalAtlas('transmog-icon-chat')
-    Menu.chat:SetPoint('LEFT', Menu.Name, 'RIGHT', 2, 0)
-    Menu.chat:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.chat:SetScript('OnEnter', function(self)
+    List.chat= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='transmog-icon-chat'})
+    List.chat:SetNormalAtlas('transmog-icon-chat')
+    List.chat:SetPoint('LEFT', List.Name, 'RIGHT', 2, 0)
+    List.chat:SetScript('OnLeave', GameTooltip_Hide)
+    List.chat:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName , WoWTools_GossipMixin.addName)
@@ -744,23 +737,25 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '当前对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, ENABLE_DIALOG), WoWTools_DataMixin.onlyChinese and '添加' or ADD)
         GameTooltip:Show()
     end)
-    Menu.chat:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Chat_Menu)
+    List.chat:SetScript('OnMouseDown', function(self)
+        MenuUtil.CreateContextMenu(self,  function(...)
+            Chat_Menu(...)
+        end)
     end)
-    --Menu.chat:SetupMenu(Chat_Menu)
+    --List.chat:SetupMenu(Chat_Menu)
 
     --GossipFrame 有多少对话
-    Menu.chat.Text= WoWTools_LabelMixin:Create(Menu.chat, {justifyH='CENTER'})
-    Menu.chat.Text:SetPoint('CENTER', 1, 4.2)
+    List.chat.Text= WoWTools_LabelMixin:Create(List.chat, {justifyH='CENTER'})
+    List.chat.Text:SetPoint('CENTER', 1, 4.2)
 
 
 
     --默认，自定义，列表
-    Menu.System= WoWTools_ButtonMixin:Cbtn(Frame, {size=22})
-    Menu.System:SetPoint('BOTTOMRIGHT', Menu.ID, 'TOPRIGHT', 0, 2)
-    Menu.System.Text= WoWTools_LabelMixin:Create(Menu.System)
-    Menu.System.Text:SetPoint('CENTER')
-    function Menu.System:set_num()--默认，自定义，列表        
+    List.System= WoWTools_ButtonMixin:Cbtn(Frame, {size=22})
+    List.System:SetPoint('BOTTOMRIGHT', List.ID, 'TOPRIGHT', 0, 2)
+    List.System.Text= WoWTools_LabelMixin:Create(List.System)
+    List.System.Text:SetPoint('CENTER')
+    function List.System:set_num()--默认，自定义，列表        
         local n=0
         for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do
             n= n+1
@@ -769,10 +764,10 @@ local function Init()
         self.Text:SetText(n)
         self.num=n
     end
-    Menu.System:set_num()
-    Menu.System:SetScript('OnShow', Menu.System.set_num)
-    Menu.System:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.System:SetScript('OnEnter', function(self)
+    List.System:set_num()
+    List.System:SetScript('OnShow', List.System.set_num)
+    List.System:SetScript('OnLeave', GameTooltip_Hide)
+    List.System:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(format('%s |cnGREEN_FONT_COLOR:%d|r', WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, self.num or 0), WoWTools_DataMixin.Icon.left)
@@ -780,37 +775,50 @@ local function Init()
         GameTooltip:Show()
         self:set_num()
     end)
-    Menu.System:SetScript('OnClick', function(self, d)
+    List.System:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             WoWTools_GossipMixin:GossipData_Menu(self)
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(_, root) WoWTools_GossipMixin:Init_Menu_Gossip(GossipButton, root) end)
+            MenuUtil.CreateContextMenu(self, function(...)
+                WoWTools_GossipMixin:Init_Menu_Gossip(...)
+            end)
         end
     end)
 
 
 
     --导入数据
-    Menu.DataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
+    List.DataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         --isInstructions= 'text'
     })
-    Menu.DataFrame:Hide()
-    Menu.DataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)
-    Menu.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
+    List.DataFrame:Hide()
+    List.DataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)
+    List.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
 
-    Menu.DataFrame.CloseButton=CreateFrame('Button', nil, Menu.DataFrame, 'UIPanelCloseButton')
-    Menu.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
-    Menu.DataFrame.CloseButton:SetScript('OnClick', function(self)
+    List.DataFrame.CloseButton=CreateFrame('Button', nil, List.DataFrame, 'UIPanelCloseButton')
+    List.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
+    List.DataFrame.CloseButton:SetScript('OnClick', function(self)
         local frame=self:GetParent()
         frame:Hide()
         frame:SetText("")
     end)
 
-    Menu.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(Menu.DataFrame, {size={100, 23}, isUI=true})
-    Menu.DataFrame.enter:SetPoint('BOTTOM', Menu.DataFrame, 'TOP', 0, 5)
-    Menu.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
-    Menu.DataFrame.enter:Hide()
-    function Menu.DataFrame.enter:set_date(tooltips)--导入数据，和提示
+    List.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(List.DataFrame, {size={100, 23}, isUI=true})
+    List.DataFrame.enter:SetPoint('BOTTOM', List.DataFrame, 'TOP', 0, 5)
+    List.DataFrame.enter:SetFormattedText('|A:Professions_Specialization_arrowhead:0:0|a%s', WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
+    List.DataFrame.enter:Hide()
+
+
+    local function get_text_value(text)
+        if text then
+            local value= text:gsub(' ', '')
+            if value~='' and value~='nil' then
+                return value:match('"(.+)"') or value
+            end
+        end
+    end
+
+    function List.DataFrame.enter:set_date(tooltips)--导入数据，和提示
         local frame= self:GetParent()
         if not frame then
             return
@@ -818,18 +826,21 @@ local function Init()
 
         local add, del, exist= {}, 0, 0
         local text= string.gsub(frame:GetText() or '', '(%[%d+]={.-})', function(t)
-            --local num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
+
             local num, icon, name, hex= t:match('(%d+).-icon="(.-)", name="(.-)", hex="(.-)"}')
             if not num and not icon and not name and not hex then
-                num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
+                  num, icon, name, hex= t:match('(%d+).-icon=(.-), name=(.-), hex=(.-)}')
             end
+
             local gossipID= num and tonumber(num)
             if gossipID then
-                icon= icon and icon:gsub(' ', '') or nil
-                if icon=='' then icon=nil end
-                if name=='' then name=nil end
-                hex= hex and hex:gsub(' ', '') or nil
-                if hex=='' then hex=nil end
+
+                icon= get_text_value(icon)
+                name= get_text_value(name)
+                hex= get_text_value(hex)
+
+                
+
                 if not Save().Gossip_Text_Icon_Player[gossipID] then
                     if icon or name or hex then
                         table.insert(add, {gossipID=gossipID, tab={icon=icon, name=name, hex=hex}})
@@ -849,14 +860,19 @@ local function Init()
         if not tooltips then
             for _, info in pairs(add) do
                 Save().Gossip_Text_Icon_Player[info.gossipID]= info.tab
-                local texture, icon= select(2, WoWTools_TextureMixin:IsAtlas(info.tab.icon))
-                print(format('|cnGREEN_FONT_COLOR:%s|r|n', WoWTools_DataMixin.onlyChinese and '添加', ADD),
-                    info.gossipID, texture and format('%s%s', icon, texture) or '',
-                    info.tab.name,
-                    info.tab.hex and format('|c%s%s', info.tab.hex, info.tab.hex) or '')
+                local icon= select(3, WoWTools_TextureMixin:IsAtlas(info.tab.icon)) or ''
+                local hex= info.tab.hex and format('|c%s', info.tab.hex) or ''
+                local name= info.tab.name or ''
+                print(
+                    info.gossipID,
+                    icon..hex..name
+                )
             end
-            Frame.Menu:set_list()
+
+            List:set_list()
+
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|n', format('%s|n%s|n%s', addText, delText, existText))
+
             frame:SetText(text)
             self:GetParent():SetInstructions(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         else
@@ -865,8 +881,8 @@ local function Init()
             GameTooltip:AddLine(existText)
         end
     end
-    Menu.DataFrame.enter:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.DataFrame.enter:SetScript('OnEnter', function(self)
+    List.DataFrame.enter:SetScript('OnLeave', GameTooltip_Hide)
+    List.DataFrame.enter:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -875,15 +891,15 @@ local function Init()
         self:set_date(true)
         GameTooltip:Show()
     end)
-    Menu.DataFrame.enter:SetScript('OnClick', function(self)--导入
+    List.DataFrame.enter:SetScript('OnClick', function(self)--导入
        self:set_date()
 
     end)
 
-    Menu.DataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
-    Menu.DataUscita:SetPoint('LEFT', Menu.DeleteAllPlayerData, 'RIGHT', 22, 0)
-    Menu.DataUscita:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.DataUscita:SetScript('OnEnter', function(self)
+    List.DataUscita= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='bags-greenarrow'})
+    List.DataUscita:SetPoint('LEFT', List.DeleteAllPlayerData, 'RIGHT', 22, 0)
+    List.DataUscita:SetScript('OnLeave', GameTooltip_Hide)
+    List.DataUscita:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -891,8 +907,8 @@ local function Init()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
         GameTooltip:Show()
     end)
-    Menu.DataUscita:SetScript('OnClick', function(self)
-        local frame= self:GetParent().Menu.DataFrame
+    List.DataUscita:SetScript('OnClick', function(self)
+        local frame= List.DataFrame
         frame:SetShown(true)
         frame.enter:SetShown(false)
         local text=''
@@ -917,14 +933,16 @@ local function Init()
                 info.hex or ''
             )
         end
+
+        text= text:gsub('=""', '=nil')
         frame:SetText(text)
         frame:SetInstructions(WoWTools_DataMixin.onlyChinese and '导出' or SOCIAL_SHARE_TEXT or  HUD_EDIT_MODE_SHARE_LAYOUT)
     end)
 
-    Menu.DataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
-    Menu.DataEnter:SetPoint('LEFT', Menu.DataUscita, 'RIGHT')
-    Menu.DataEnter:SetScript('OnLeave', GameTooltip_Hide)
-    Menu.DataEnter:SetScript('OnEnter', function(self)
+    List.DataEnter= WoWTools_ButtonMixin:Cbtn(Frame, {size=22, atlas='Professions_Specialization_arrowhead'})
+    List.DataEnter:SetPoint('LEFT', List.DataUscita, 'RIGHT')
+    List.DataEnter:SetScript('OnLeave', GameTooltip_Hide)
+    List.DataEnter:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -932,8 +950,8 @@ local function Init()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '导入' or HUD_CLASS_TALENTS_IMPORT_LOADOUT_ACCEPT_BUTTON)
         GameTooltip:Show()
     end)
-    Menu.DataEnter:SetScript('OnClick', function(self)
-        local frame= self:GetParent().Menu.DataFrame
+    List.DataEnter:SetScript('OnClick', function(self)
+        local frame= List.DataFrame
         frame:SetShown(true)
         frame.enter:SetShown(true)
         frame:SetText('')
@@ -942,25 +960,25 @@ local function Init()
 
 
 
-    Menu.chat:SetShown(GossipFrame:IsShown())
-    Menu:set_list()
-    Menu:set_color()
+    List.chat:SetShown(GossipFrame:IsShown())
+    List:set_list()
+    List:set_color()
 
 
 
 
     GossipFrame:HookScript('OnShow', function()--已打开，对话，列表
-        Frame.Menu.chat:SetShown(true)
-        Frame.Menu:set_list()
+        List.chat:SetShown(true)
+        List:set_list()
     end)
     GossipFrame:HookScript('OnHide', function()
-        Frame.Menu.chat:SetShown(false)
-        Frame.Menu:set_list()
+        List.chat:SetShown(false)
+        List:set_list()
     end)
 
     Frame:SetScript('OnHide', function(self)
         WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-        self.Menu:set_list()
+        List:set_list()
         if not GossipFrame.GreetingPanel.ScrollBox:GetView() then
             return
         end
@@ -970,7 +988,7 @@ local function Init()
     end)
     Frame:SetScript('OnShow', function(self)
         WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-        self.Menu:set_list()
+        List:set_list()
     end)
     WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
 
@@ -983,15 +1001,20 @@ local function Init()
 --插件
     local tavFrame= _G['TAV_InfoPanel']
     if tavFrame and tavFrame.Name then
-        local btn= WoWTools_ButtonMixin:Cbtn(Frame, {atlas='SpecDial_LastPip_BorderGlow'})
+        local btn= WoWTools_ButtonMixin:Cbtn(tavFrame, {atlas='SpecDial_LastPip_BorderGlow'})
         btn:SetPoint('RIGHT', tavFrame.Name, 'LEFT', -14, 0)
         btn.edit= tavFrame.Name
         btn:SetScript('OnClick', function(self)
             local text= self.edit:GetText()
             if text and text~='' then
-                Menu.Icon:SetText(text)
+                List.Icon:SetText(text)
             end
         end)
+    end
+
+
+    Init=function()
+        Frame:SetShown(not Frame:IsShown())
     end
 end
 
@@ -1012,14 +1035,7 @@ end
 
 
 function WoWTools_GossipMixin:Init_Options_Frame()
-    if not self.GossipButton then
-        return
-    end
-
-    if Frame then
-        Frame:SetShown(not Frame:IsShown())
-    else
-        GossipButton= self.GossipButton
-        Init()
+    if self.GossipButton then
+       Init()
     end
 end

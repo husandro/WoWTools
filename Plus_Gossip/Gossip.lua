@@ -248,7 +248,9 @@ local function Init()
                 frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
             end
         else
-            MenuUtil.CreateContextMenu(self, function(_, root) WoWTools_GossipMixin:Init_Menu_Gossip(GossipButton, root) end)
+            MenuUtil.CreateContextMenu(self, function(...)
+                WoWTools_GossipMixin:Init_Menu_Gossip(...)
+            end)
         end
     end)
     GossipButton.gossipFrane_Button:SetAlpha(0.3)
@@ -358,7 +360,7 @@ local function Init()
             if not Gossip_Text_Icon_Frame then
                 WoWTools_GossipMixin:Init_Options_Frame()
             else
-                Gossip_Text_Icon_Frame:SetShown(d==-1)
+                Gossip_Text_Icon_Frame:SetShown(d==1)
             end
             --WoWTools_PanelMixin:Open('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
         end
@@ -376,7 +378,9 @@ local function Init()
                 self:tooltip_Show()
 
             elseif d=='RightButton' and not key then--菜单
-                MenuUtil.CreateContextMenu(self, function(...) WoWTools_GossipMixin:Init_Menu_Gossip(...) end)
+                MenuUtil.CreateContextMenu(self, function(...)
+                    WoWTools_GossipMixin:Init_Menu_Gossip(...)
+                end)
             end
         end
     end)
@@ -676,20 +680,6 @@ local function Init()
             C_GossipInfo.SelectActiveQuest(questID)
         end
     end)
-
-
-
-
-    --[[if not StaticPopupDialogs['SPELL_CONFIRMATION_PROMPT'].OnShow then
-        StaticPopupDialogs['SPELL_CONFIRMATION_PROMPT'].OnShow=function(self, data)
-            if not self.button1:IsEnabled() or not Save().gossip or IsModifierKeyDown() then
-                return
-            end
-            if data==424700 then--离开地下堡
-               self.button1:Click() 
-            end
-        end
-    end]]
 end
 
 
