@@ -173,6 +173,7 @@ local function Init(OpenButton)
                 end
                 self:settings()
             end)
+
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='UNIT_ENTERED_VEHICLE'--车辆
             or event=='UNIT_EXITED_VEHICLE'
