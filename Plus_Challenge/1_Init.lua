@@ -113,7 +113,7 @@ end
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
 panel:RegisterEvent('CHALLENGE_MODE_COMPLETED')
-panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('CHALLENGE_MODE_START')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -176,7 +176,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     elseif event=='CHALLENGE_MODE_START' then --赏金, 说 Bounty
         WoWTools_ChallengeMixin:Chat_Affix()
 
-    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
         WoWTools_ChallengeMixin:Is_HuSandro()--低等级，开启，为测试用
         WoWTools_ChallengeMixin:AvailableRewards() --打开周奖励时，提示拾取专精
 

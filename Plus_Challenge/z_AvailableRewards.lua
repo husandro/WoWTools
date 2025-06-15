@@ -35,7 +35,7 @@ local function Init()
     Frame:SetShown(false)
 
     Frame:RegisterEvent('PLAYER_UPDATE_RESTING')
-    Frame:RegisterEvent('LOADING_SCREEN_DISABLED')
+    Frame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     Frame:SetScript('OnEnter', function(frame)
         frame:set_Show(false)
@@ -89,7 +89,7 @@ local function Init()
     end
 
     Frame:SetScript('OnEvent', function(self, event, unit, target, _, spellID)
-        if event=='PLAYER_UPDATE_RESTING' or event=='LOADING_SCREEN_DISABLED' then
+        if event=='PLAYER_UPDATE_RESTING' or event=='PLAYER_ENTERING_WORLD' then
             self:set_Event()
 
         elseif (spellID==392391 or spellID==449976) and unit=='player' and target and target:find(RATED_PVP_WEEKLY_VAULT) then

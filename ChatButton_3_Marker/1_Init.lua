@@ -88,7 +88,7 @@ local function Init()
     end
 
 
-    MarkerButton:RegisterEvent('LOADING_SCREEN_DISABLED')
+    MarkerButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     MarkerButton:RegisterEvent('GROUP_ROSTER_UPDATE')
     MarkerButton:RegisterEvent('GROUP_LEFT')
     MarkerButton:RegisterEvent('GROUP_JOINED')

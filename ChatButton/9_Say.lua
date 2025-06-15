@@ -569,7 +569,7 @@ panel:RegisterEvent("CHAT_MSG_WHISPER_INFORM")
 panel:RegisterEvent("CHAT_MSG_WHISPER")
 panel:RegisterEvent("CHAT_MSG_BN_WHISPER")
 panel:RegisterEvent("CHAT_MSG_BN_WHISPER_INFORM")
-panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent('CVAR_UPDATE')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
@@ -599,7 +599,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2, ...)
     elseif event=='CHAT_MSG_WHISPER_INFORM' or event=='CHAT_MSG_WHISPER' or event=='CHAT_MSG_BN_WHISPER' or event=='CHAT_MSG_BN_WHISPER_INFORM' then
         getWhisper(event, arg1, arg2, ...)
 
-    elseif event== 'LOADING_SCREEN_DISABLED' and WoWToolsSave then
+    elseif event== 'PLAYER_ENTERING_WORLD' and WoWToolsSave then
         set_InInstance_Disabled_Bubbles()--副本禁用，其它开启
 
     elseif event=='CVAR_UPDATE' and arg1=='chatBubbles' and WoWToolsSave then

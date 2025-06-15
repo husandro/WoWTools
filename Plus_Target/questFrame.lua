@@ -136,7 +136,7 @@ local function Init()
             return
         end
 
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
         local isPvPArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
         local isIns= isPvPArena
@@ -161,7 +161,7 @@ local function Init()
     end
 
     questFrame:SetScript("OnEvent", function(self, event, arg1)
-        if event=='LOADING_SCREEN_DISABLED' then
+        if event=='PLAYER_ENTERING_WORLD' then
             self:Settings()--注册，事件
 
         elseif event=='NAME_PLATE_UNIT_ADDED'  then

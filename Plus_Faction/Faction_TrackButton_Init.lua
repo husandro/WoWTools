@@ -198,7 +198,7 @@ local function Init()
 		else
 			self:RegisterEvent('UPDATE_FACTION')
 			self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-			self:RegisterEvent('LOADING_SCREEN_DISABLED')
+			self:RegisterEvent('PLAYER_ENTERING_WORLD')
 			self:RegisterEvent('PET_BATTLE_OPENING_DONE')
 			self:RegisterEvent('PET_BATTLE_CLOSE')
 			self:RegisterEvent('PLAYER_REGEN_DISABLED')

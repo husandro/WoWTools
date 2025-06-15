@@ -13,7 +13,7 @@ local function Settings(self)
     self:UnregisterAllEvents()
 
     if Save().ReMe then
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 
         if WoWTools_MapMixin:IsInPvPArea() then
@@ -40,7 +40,7 @@ end
 
 local function Event(self, event)
 
-    if event=='LOADING_SCREEN_DISABLED' then
+    if event=='PLAYER_ENTERING_WORLD' then
         Settings(self)
 
     elseif event=='PLAYER_DEAD' then

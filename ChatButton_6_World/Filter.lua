@@ -455,7 +455,7 @@ end
 
 
 local function Init()
-    EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(owner, arg1)
+    EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner, arg1)
         FilterTextTab={}--记录, 屏蔽内容
     end)
 

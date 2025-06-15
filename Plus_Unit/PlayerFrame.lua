@@ -153,7 +153,7 @@ local function Create_lootButton(frame)
         self:SetShown(find)
     end
 
-    frame.lootButton:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.lootButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     frame.lootButton:RegisterEvent('PLAYER_LOOT_SPEC_UPDATED')
     frame.lootButton:RegisterUnitEvent('UNIT_ENTERED_VEHICLE','player')
     frame.lootButton:RegisterUnitEvent('UNIT_EXITED_VEHICLE','player')
@@ -360,10 +360,10 @@ local function Create_instanceFrame(frame)
     frame.instanceFrame.raidDifficultyStr= ERR_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"团队副本难度设置为%s。"
     frame.instanceFrame.legacyRaidDifficultyStr= ERR_LEGACY_RAID_DIFFICULTY_CHANGED_S:gsub('%%s', '(.+)')--"已将经典团队副本难度设置为%s。"
 
-    frame.instanceFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.instanceFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     frame.instanceFrame:SetScript('OnEvent', function(self, event, arg1)
-        if event=='LOADING_SCREEN_DISABLED' then
+        if event=='PLAYER_ENTERING_WORLD' then
             if IsInInstance() then
                 self:UnregisterEvent('CHAT_MSG_SYSTEM')--会出错误，冒险指南，打开世界BOSS
             else
@@ -443,7 +443,7 @@ local function Create_keystoneFrame(frame)
         )
     end
 
-    frame.keystoneFrame:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.keystoneFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
     frame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')--地下城挑战
     frame.keystoneFrame:RegisterEvent('WEEKLY_REWARDS_UPDATE')--地下城挑战
     frame.keystoneFrame:RegisterEvent('CHALLENGE_MODE_COMPLETED')
@@ -513,7 +513,7 @@ local function Create_warModeButton(frame)
         self:set_tooltip()
     end)
 
-    frame.warModeButton:RegisterEvent('LOADING_SCREEN_DISABLED')
+    frame.warModeButton:RegisterEvent('PLAYER_ENTERING_WORLD')
     frame.warModeButton:RegisterEvent('PLAYER_FLAGS_CHANGED')
     frame.warModeButton:RegisterEvent('PLAYER_UPDATE_RESTING')
     function frame.warModeButton:set_settings()

@@ -563,7 +563,7 @@ local function Init_Print()
 
 
     Frame.events={
-        LOADING_SCREEN_DISABLED=true,
+        PLAYER_ENTERING_WORLD=true,
         PLAYER_ENTERING_WORLD=true,
         PLAYER_LOGIN=true,
         ADDON_LOADED=true,

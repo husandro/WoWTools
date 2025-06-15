@@ -765,7 +765,7 @@ end)
 
 
 
-EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(owner)
+EventRegistry:RegisterFrameEventAndCallback("PLAYER_ENTERING_WORLD", function(owner)
     if  WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
         Get_Info_Challenge()--挑战
     end
@@ -804,6 +804,6 @@ EventRegistry:RegisterFrameEventAndCallback("LOADING_SCREEN_DISABLED", function(
 
     Get_WoW_GUID_Info()--战网，好友GUID
 
-    EventRegistry:UnregisterCallback('LOADING_SCREEN_DISABLED', owner)
+    EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
 end)
 

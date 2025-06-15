@@ -873,7 +873,7 @@ local function Init()
         if Save().hide then
             return
         end
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
         self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
 
         self:RegisterEvent('PLAYER_REGEN_DISABLED')
@@ -893,7 +893,7 @@ local function Init()
     end
 
     TrackButton:SetScript('OnEvent', function(self, event)
-        if event=='LOADING_SCREEN_DISABLED'
+        if event=='PLAYER_ENTERING_WORLD'
             or event=='ZONE_CHANGED_NEW_AREA'
             or event=='PLAYER_REGEN_DISABLED'
             or event=='PLAYER_REGEN_ENABLED'

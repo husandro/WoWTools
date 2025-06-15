@@ -844,7 +844,7 @@ local function Init()--设置标记, 框架
 
     function MakerFrame:set_Event()
         if Save().markersFrame then
-            self:RegisterEvent('LOADING_SCREEN_DISABLED')--显示/隐藏
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')--显示/隐藏
             self:RegisterEvent('CVAR_UPDATE')
             self:RegisterEvent('GROUP_ROSTER_UPDATE')
             self:RegisterEvent('GROUP_LEFT')
@@ -866,7 +866,7 @@ local function Init()--设置标记, 框架
             self:UnregisterEvent('PLAYER_REGEN_ENABLED')
             self:set_Shown()
 
-        elseif event=='LOADING_SCREEN_DISABLED' then
+        elseif event=='PLAYER_ENTERING_WORLD' then
             self:set_Shown()
 
         elseif event=='CVAR_UPDATE' then

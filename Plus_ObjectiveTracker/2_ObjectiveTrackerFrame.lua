@@ -171,7 +171,7 @@ local function Init()
         self:UnregisterAllEvents()
 
         if Save().autoHide then
-            self:RegisterEvent('LOADING_SCREEN_DISABLED')
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:RegisterEvent("CHALLENGE_MODE_START")
             self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
             

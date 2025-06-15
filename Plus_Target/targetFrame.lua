@@ -165,7 +165,7 @@ local function Init()
         if event=='PLAYER_TARGET_CHANGED'
             or event=='RAID_TARGET_UPDATE'
             or event=='UNIT_FLAGS'
-            or event=='LOADING_SCREEN_DISABLED'
+            or event=='PLAYER_ENTERING_WORLD'
             or (event=='CVAR_UPDATE'
                 and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends')
             )
@@ -183,7 +183,7 @@ local function Init()
         if not Save().target then
             self:SetShown(false)
         else
-            self:RegisterEvent('LOADING_SCREEN_DISABLED')
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:RegisterEvent('CVAR_UPDATE')
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
             self:RegisterEvent('RAID_TARGET_UPDATE')

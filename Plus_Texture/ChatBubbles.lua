@@ -57,7 +57,7 @@ local function Init()
         if Save().disabledChatBubble then
             return
         end
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
         if not IsInInstance() then
             local chatBubblesEvents={
                 'CHAT_MSG_SAY',
@@ -75,7 +75,7 @@ local function Init()
     end
 
     BubblesFrame:SetScript('OnEvent', function(self, event)
-        if event=='LOADING_SCREEN_DISABLED' then
+        if event=='PLAYER_ENTERING_WORLD' then
             self:set_event()
         else
             self:set_chat_bubbles()

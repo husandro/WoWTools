@@ -265,7 +265,7 @@ local function Init_Quest()
         self:RegisterEvent("QUEST_LOG_UPDATE")--更新数量
         self:RegisterEvent('MINIMAP_UPDATE_TRACKING')--其它任务,低等任务,追踪
         if Save().autoSortQuest then----显示本区域任务
-            self:RegisterEvent('LOADING_SCREEN_DISABLED')
+            self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:RegisterEvent('ZONE_CHANGED')
             self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
             self:RegisterEvent('SCENARIO_UPDATE')
@@ -278,7 +278,7 @@ local function Init_Quest()
         if Save().showAllQuestNum then--显示所有任务数量, 过区域时，更新当前地图任务，数量
             self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
         end
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     end
 
@@ -350,7 +350,7 @@ local function Init_Quest()
         if event=='MINIMAP_UPDATE_TRACKING' then
             IsQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)--其它任务,低等任务,追踪
 
-        elseif event=='QUEST_LOG_UPDATE' or event=='LOADING_SCREEN_DISABLED' or event=='ZONE_CHANGED_NEW_AREA' then--更新数量
+        elseif event=='QUEST_LOG_UPDATE' or event=='PLAYER_ENTERING_WORLD' or event=='ZONE_CHANGED_NEW_AREA' then--更新数量
             self:set_Quest_Num_Text()
 
         elseif event=='GROUP_ROSTER_UPDATE' then

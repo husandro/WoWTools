@@ -72,7 +72,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 panel:RegisterEvent("PLAYER_LOGOUT")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -112,7 +112,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then
+    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then
         Init()
         self:UnregisterEvent(event)
 

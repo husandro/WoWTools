@@ -166,7 +166,7 @@ local function Init(OpenButton)
 
     OpenButton:SetScript('OnEvent', function(self, event)
 
-        if event=='LOADING_SCREEN_DISABLED' or event=='PLAYER_MAP_CHANGED' then--出进副本
+        if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
             C_Timer.After(1, function()
                 if not InCombatLockdown() then
                     self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
@@ -208,7 +208,7 @@ local function Init(OpenButton)
 
 
     OpenButton:RegisterEvent('PLAYER_MAP_CHANGED')
-    OpenButton:RegisterEvent('LOADING_SCREEN_DISABLED')
+    OpenButton:RegisterEvent('PLAYER_ENTERING_WORLD')
 
     function OpenButton:settings()
         self.isDisabled= (IsInInstance() and not WoWTools_MapMixin:IsInDelve())

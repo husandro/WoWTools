@@ -556,7 +556,7 @@ local function Create_positionFrame(frame)
         local r,g,b= select(2, WoWTools_UnitMixin:GetColor(unit))
         self.map.Text:SetTextColor(r,g,b)
 
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
         self:set_shown()
     end)
 end
@@ -642,7 +642,7 @@ local function Create_deadFrame(frame)
     end
 
     deadFrame:SetScript('OnEvent', function(self, event)
-        if event=='LOADING_SCREEN_DISABLED' or event=='CHALLENGE_MODE_START' then
+        if event=='PLAYER_ENTERING_WORLD' or event=='CHALLENGE_MODE_START' then
             self.dead= 0
         else
             if UnitIsDeadOrGhost(self.unit) then--死亡，次数
@@ -660,7 +660,7 @@ local function Create_deadFrame(frame)
     deadFrame:SetScript('OnShow', function(self)
         self.dead=0
         self.unit= self:GetParent():GetUnit()
-        self:RegisterEvent('LOADING_SCREEN_DISABLED')
+        self:RegisterEvent('PLAYER_ENTERING_WORLD')
         self:RegisterEvent('CHALLENGE_MODE_START')
         self:RegisterUnitEvent('UNIT_FLAGS', self.unit)
         self:RegisterUnitEvent('UNIT_HEALTH', self.unit)

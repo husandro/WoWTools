@@ -103,7 +103,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("LOADING_SCREEN_DISABLED")
+panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -141,7 +141,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             Set_Event_Texture(arg1)
         end
 
-    elseif event=='LOADING_SCREEN_DISABLED' and WoWToolsSave then--需要这个事件
+    elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then--需要这个事件
         Init_Texture()
         self:UnregisterEvent(event)
     end
