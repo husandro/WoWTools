@@ -269,7 +269,7 @@ local function Init()
     end)
 
     function GossipButton:Is_ShowOptionsFrame()
-        local frame=-_G['WoWToolsGossipTextIconOptionsFrame']
+        local frame=_G['WoWToolsGossipTextIconOptionsFrame']
         if frame and frame:IsShown() then
             return frame
         end

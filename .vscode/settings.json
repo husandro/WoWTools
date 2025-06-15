@@ -5900,7 +5900,10 @@
         "SendMailMoneySilver",
         "SendMailMoneyCopper",
         "SendMailMoneyGoldRight",
-        "OpenMailFrameCloseButton"
+        "OpenMailFrameCloseButton",
+        "PaperDollFrame_OnShow",
+        "SetPaperDollBackground",
+        "PaperDollBgDesaturate"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

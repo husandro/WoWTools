@@ -137,10 +137,10 @@ Plus_Move\z_Frames.lua
 
 ##隐藏材质，透明度
 Plus_Texture\0_TextureMixin.lua
-Plus_Texture\0_TextureMixin_SetBG.lua
 Plus_Texture\1_Setup_Mixin.lua
-Plus_Texture\2_Init.lua
-Plus_Texture\3_Options.lua
+Plus_Texture\2_TextureMixin_SetBG.lua
+Plus_Texture\3_Init.lua
+Plus_Texture\4_Options.lua
 Plus_Texture\ActionButton.lua
 Plus_Texture\ChatBubbles.lua
 Plus_Texture\ClassPower.lua

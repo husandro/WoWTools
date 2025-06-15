@@ -752,6 +752,10 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
         self:SetAlphaColor(frame.Header)
         self:SetEditBox(frame.Title)
     end)
+
+    self:SetButton(PlayerChoiceFrame.CloseButton, {all=true,})
+
+    self:Init_BGMenu_Frame(PlayerChoiceFrame, {isNewButton=true})
 end
 
 
@@ -1802,6 +1806,10 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
 
     self:SetNineSlice(CharacterFrameInsetRight, nil, true)
 
+    PaperDollFrame:HookScript('OnShow', function()
+        CharacterModelScene.ControlFrame:SetShown(false)
+    end)
+
 --角色，物品栏
     for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
         self:HideFrame(_G[name])
@@ -2218,14 +2226,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(PetJournalPetCardInset, nil, true)
     self:SetNineSlice(PetJournalRightInset, nil, true)
 
-    if _G['RematchFrame'] then
-        self:HideTexture(_G['RematchFrame'].Bg)
-        self:HideTexture(_G['RematchFrame'].OptionsPanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].QueuePanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].TargetsPanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].TeamsPanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].ToolBar.Bg)
-    end
+
 --玩具
     self:SetEditBox(ToyBox.searchBox)
     self:HideFrame(ToyBox.iconsFrame)
@@ -2290,50 +2291,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:HideTexture(btn.Border)
     end)
 
-    --[[self:HideTexture(WardrobeTransmogMoneyFrame)
-
-    hooksecurefunc(WardrobeCollectionFrame, 'SetTab', function(frame)
-        local f= frame.activeFrame
-        if f and f==frame.SetsTransmogFrame then
-            for i=1, f.PAGE_SIZE or 8 do
-                local btn= f.Models[i]
-                if btn then
-                    btn:DisableDrawLayer('BACKGROUND')
-                end
-            end
-        end
-    end)
-
-    for v=1,4 do
-        for h= 1, 2 do
-            local button= WardrobeCollectionFrame.SetsTransmogFrame['ModelR'..h..'C'..v]
-            if button then
-               -- button:DisableDrawLayer('BACKGROUND')
-            end
-        end
-    end]]
-
-
-
-    --[[for i=1, 7 do
-        self:SetFrame(_G['CollectionsJournalTab'..i], {notAlpha=true})
-    end]]
-
-    if _G['RematchJournal'] then
-        self:SetNineSlice(_G['RematchJournal'])
-        self:SetAlphaColor(_G['RematchJournalBg'])
-        self:SetAlphaColor(RematchLoadoutPanel.Target.InsetBack)
-        self:HideTexture(RematchPetPanel.Top.InsetBack)
-        self:SetAlphaColor(RematchQueuePanel.List.Background.InsetBack)
-        self:SetAlphaColor(RematchQueuePanel.Top.InsetBack)
-        self:NineSlice(RematchPetPanel.Top.TypeBar, nil, true)
-        self:SetAlphaColor(RematchTeamPanel.List.Background.InsetBack)
-        self:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
-        self:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
-    end
-
-
-
     self:HideFrame(WarbandSceneJournal.IconsFrame)
     self:SetNineSlice(WarbandSceneJournal.IconsFrame, nil, true)
 
@@ -2358,6 +2315,33 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         end
     })
 
+
+
+
+
+
+
+    if _G['RematchJournal'] then
+        self:SetNineSlice(_G['RematchJournal'])
+        self:SetAlphaColor(_G['RematchJournalBg'])
+        self:SetAlphaColor(RematchLoadoutPanel.Target.InsetBack)
+        self:HideTexture(RematchPetPanel.Top.InsetBack)
+        self:SetAlphaColor(RematchQueuePanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchQueuePanel.Top.InsetBack)
+        self:NineSlice(RematchPetPanel.Top.TypeBar, nil, true)
+        self:SetAlphaColor(RematchTeamPanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
+        self:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
+    end
+
+    if _G['RematchFrame'] then
+        self:HideTexture(_G['RematchFrame'].Bg)
+        self:HideTexture(_G['RematchFrame'].OptionsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].QueuePanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].TargetsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].TeamsPanel.List.Back)
+        self:HideTexture(_G['RematchFrame'].ToolBar.Bg)
+    end
 end
 
 

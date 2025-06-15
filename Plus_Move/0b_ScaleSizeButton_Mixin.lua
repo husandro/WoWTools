@@ -415,8 +415,8 @@ local function Init_Menu(self, root)
     function()
         return Save().point[name]
     end, function()
-        local data= self.moveFrameData or {}
-        if target.setMoveFrame
+        local data= target.moveFrameData
+        if data
             and not data.notSave
             and not WoWTools_FrameMixin:IsLocked(target)
         then

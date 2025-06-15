@@ -64,7 +64,14 @@ end
 
 --任务选择
 function WoWTools_MoveMixin.Events:Blizzard_PlayerChoice()
-    self:Setup(PlayerChoiceFrame, {notZoom=true})
+    self:Setup(PlayerChoiceFrame)
+
+    
+    hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(frame)
+        for optionFrame in frame.optionPools:EnumerateActiveByTemplate(frame.optionFrameTemplate) do
+            self:Setup(optionFrame, {frame=frame})
+        end
+    end)
 end
 
 

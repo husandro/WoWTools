@@ -131,10 +131,15 @@ end
 -- 根据框架大小更新动画偏移量和速度的函数
 local function Update_Animation(self)
     local width, height = self[BGName]:GetSize()
+    if width==0 or height==0 then
+        PlayStop_Anims(self)
+        return
+    end
+
     -- 动画从右下角到左上角
     local xOffset = -width
     local yOffset = height
-    self.AirParticlesFar:SetSize(-width, height)
+    --self.AirParticlesFar:SetSize(-width, height)
     self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset)    -- 右下到左上
     self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)    -- 回到右下
 
@@ -822,11 +827,12 @@ local function Create_Anims(self, icon, tab)
     end)
 
     self:HookScript("OnShow", function(frame)
+        Update_Animation(frame)
         PlayStop_Anims(frame)
     end)
 
     self:HookScript("OnHide", function(frame)
-         frame.backgroundAnims:Stop()
+        frame.backgroundAnims:Stop()
     end)
 end
 
@@ -986,7 +992,7 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
 
     if (
             WoWToolsSave['Plus_Texture'].disabledTexture
-            or WoWToolsSave['Plus_Texture'].disabedBG
+            --or WoWToolsSave['Plus_Texture'].disabedBG
         ) and not tab.enabled
 
         or not frame

@@ -59,7 +59,7 @@ local function Init_Options()
         layout= Layout,
         category= Category
     })
-
+    --[[
     WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '透明度' or CHANGE_OPACITY,
         GetValue= function() return Save().alpha or 0.5 end,
@@ -76,7 +76,7 @@ local function Init_Options()
         end
     }, sub)
 
-    WoWTools_PanelMixin:OnlyCheck({
+WoWTools_PanelMixin:OnlyCheck({
         name= '|A:MonkUI-LightOrb:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
         tooltip=tooltip,
@@ -85,7 +85,7 @@ local function Init_Options()
         SetValue= function()
             Save().disabedBG= not Save().disabedBG and true or nil
         end
-    }, sub)
+    }, sub)]]
 
 
 
