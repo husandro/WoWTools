@@ -370,6 +370,8 @@ end
 
 
 
-function WoWTools_GossipMixin:Init_Menu_Gossip(_, root)
-    Init_Menu(self.GossipButton, root)
+function WoWTools_GossipMixin:Init_Menu_Gossip(frame)
+    MenuUtil.CreateContextMenu(frame, function(_, root)
+        Init_Menu(self.GossipButton, root)
+    end)
 end

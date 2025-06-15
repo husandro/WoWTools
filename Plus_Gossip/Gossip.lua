@@ -149,7 +149,7 @@ local function Create_CheckButton(frame, info)
             check:SetPoint("RIGHT")
             check:SetSize(18, 18)
             check:SetScript("OnEnter", function(self)--GameTooltip:SetSpellByID(self.spellID)
-                local f= GossipButton:isShow_Gossip_Text_Icon_Frame()
+                local f= GossipButton:Is_ShowOptionsFrame()
                 GameTooltip:SetOwner(f or self, f and "ANCHOR_BOTTOM" or "ANCHOR_RIGHT")
                 GameTooltip:ClearLines()
                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
@@ -179,7 +179,7 @@ local function Create_CheckButton(frame, info)
             end)
 
             function check:set_settings()
-                local showFrame= GossipButton:isShow_Gossip_Text_Icon_Frame()
+                local showFrame= GossipButton:Is_ShowOptionsFrame()
                 self:SetAlpha((showFrame or Save().gossipOption[self.id]) and 1 or 0)
                 self.Text:SetText(showFrame and self.id or '')
             end
@@ -241,16 +241,18 @@ local function Init()
     GossipButton.gossipFrane_Button:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
     GossipButton.gossipFrane_Button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
-            WoWTools_GossipMixin:Init_Options_Frame()
-            local frame= _G['Gossip_Text_Icon_Frame']
+            do
+                if not _G['WoWToolsGossipTextIconOptionsFrame'] then
+                    WoWTools_GossipMixin:Init_Options_Frame()
+                end
+            end
+            local frame= _G['WoWToolsGossipTextIconOptionsFrame']
             if frame and frame:IsShown() then
                 frame:ClearAllPoints()
                 frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
             end
         else
-            MenuUtil.CreateContextMenu(self, function(...)
-                WoWTools_GossipMixin:Init_Menu_Gossip(...)
-            end)
+            WoWTools_GossipMixin:Init_Menu_Gossip(self)
         end
     end)
     GossipButton.gossipFrane_Button:SetAlpha(0.3)
@@ -266,9 +268,11 @@ local function Init()
         self:SetAlpha(1)
     end)
 
-    function GossipButton:isShow_Gossip_Text_Icon_Frame()
-        local frame= WoWTools_GossipMixin.Frame
-        return  frame and frame:IsShown() and frame or false
+    function GossipButton:Is_ShowOptionsFrame()
+        local frame=-_G['WoWToolsGossipTextIconOptionsFrame']
+        if frame and frame:IsShown() then
+            return frame
+        end
     end
 
 
@@ -357,10 +361,11 @@ local function Init()
             self:set_Scale()
             self:tooltip_Show()
         elseif not IsModifierKeyDown() then
-            if not Gossip_Text_Icon_Frame then
+            local frame= _G['WoWToolsGossipTextIconOptionsFrame']
+            if not frame then
                 WoWTools_GossipMixin:Init_Options_Frame()
             else
-                Gossip_Text_Icon_Frame:SetShown(d==1)
+                frame:SetShown(d==1)
             end
             --WoWTools_PanelMixin:Open('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
         end
@@ -378,9 +383,7 @@ local function Init()
                 self:tooltip_Show()
 
             elseif d=='RightButton' and not key then--菜单
-                MenuUtil.CreateContextMenu(self, function(...)
-                    WoWTools_GossipMixin:Init_Menu_Gossip(...)
-                end)
+                WoWTools_GossipMixin:Init_Menu_Gossip(self)
             end
         end
     end)

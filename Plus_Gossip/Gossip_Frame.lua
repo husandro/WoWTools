@@ -79,10 +79,10 @@ end
 
 
 local function Init()
-    Frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
-    WoWTools_GossipMixin.Frame= Frame
+    Frame= CreateFrame('Frame', 'WoWToolsGossipTextIconOptionsFrame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
 
-    List = CreateFrame("Frame", 'GossipTextIconFrameList', Frame, "WowScrollBoxList")
+
+    List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
 
 
     Frame:SetSize(580, 370)
@@ -468,82 +468,81 @@ local function Init()
         end
         GameTooltip:Show()
     end)
+
+
     List.FindIcon:SetScript('OnClick', function(f)
-        local frame= f.frame
-        if frame then
-            frame:SetShown(not frame:IsShown())
-            return
-        end
-        frame= CreateFrame('Frame', 'Gossip_Text_Icon_Frame_IconSelectorPopupFrame', Frame, 'IconSelectorPopupFrameTemplate')
-        frame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
-        WoWTools_MoveMixin:Setup(frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524,
-        sizeRestFunc=function()
-            frame:SetSize(524, 495)
-        end})
-
-        frame:Hide()
-        frame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(WoWTools_DataMixin.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
-        frame.BorderBox.IconSelectorEditBox:SetAutoFocus(false)
-        frame:SetScript('OnShow', function(self)
-            IconSelectorPopupFrameTemplateMixin.OnShow(self);
-            if self.iconDataProvider==nil then
-                self.iconDataProvider= CreateAndInitFromMixin(IconDataProviderMixin, IconDataProviderExtraType.None)
-            end
-            self:SetIconFilter(self:GetIconFilter() or IconSelectorPopupFrameIconFilterTypes.All);
-            --self.BorderBox.IconTypeDropDown:SetSelectedValue(self.BorderBox.IconTypeDropDown:GetSelectedValue() or IconSelectorPopupFrameIconFilterTypes.All);
-            self:Update()
-            self.BorderBox.IconSelectorEditBox:OnTextChanged()
-            local function OnIconSelected(_, icon)
-                self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(icon);
-                self.BorderBox.IconSelectorEditBox:SetText(icon)
-            end
-            self.IconSelector:SetSelectedCallback(OnIconSelected);
-        end)
-
-        frame:SetScript('OnHide', function(self)
-            IconSelectorPopupFrameTemplateMixin.OnHide(self);
-            self.iconDataProvider:Release();
-            self.iconDataProvider = nil;
-        end)
-        function frame:Update()
-            local texture
-            texture= List:get_icon()
-            if texture then
-                texture=tonumber(texture)
-            end
-            if not texture then
-                self.origName = "";
-                self.BorderBox.IconSelectorEditBox:SetText("");
-                local initialIndex = 1;
-                self.IconSelector:SetSelectedIndex(initialIndex);
-                self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(self:GetIconByIndex(initialIndex));
-            else
-                self.BorderBox.IconSelectorEditBox:SetText(texture);
-                self.BorderBox.IconSelectorEditBox:HighlightText();
-                self.IconSelector:SetSelectedIndex(self:GetIndexOfIcon(texture));
-                self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(texture);
-            end
-            local getSelection = GenerateClosure(self.GetIconByIndex, self);
-            local getNumSelections = GenerateClosure(self.GetNumIcons, self);
-            self.IconSelector:SetSelectionsDataProvider(getSelection, getNumSelections);
-            self.IconSelector:ScrollToSelectedIndex();
-            self:SetSelectedIconText();
-        end
-        function frame:OkayButton_OnClick()
-            IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self);
-            local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture();
-            List.Icon:SetText(iconTexture or '')
-            local gossip= List:get_gossipID()
-            if gossip==0 then
-                List.ID:SetFocus()
-            else
-                List.Name:SetFocus()
-                List:add_gossip()
-            end
-        end
-        f.frame= frame
-        frame:Show()
+       f.frame:SetShown(not f.frame:IsShown())
     end)
+
+
+    List.FindIcon.frame= CreateFrame('Frame', 'WoWToolsGossipTextIconFrame_IconSelectorPopupFrame', Frame, 'IconSelectorPopupFrameTemplate')
+    List.FindIcon.frame.IconSelector:SetPoint('BOTTOMRIGHT', -10, 36)
+    WoWTools_MoveMixin:Setup(List.FindIcon.frame, {notMove=true, setSize=true, minW=524, minH=276, maxW=524,
+    sizeRestFunc=function()
+        List.FindIcon.frame:SetSize(524, 495)
+    end})
+
+    List.FindIcon.frame:Hide()
+    List.FindIcon.frame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconDescription:SetText(WoWTools_DataMixin.onlyChinese and '点击在列表中浏览' or ICON_SELECTION_CLICK)
+    List.FindIcon.frame.BorderBox.IconSelectorEditBox:SetAutoFocus(false)
+    List.FindIcon.frame:SetScript('OnShow', function(self)
+        IconSelectorPopupFrameTemplateMixin.OnShow(self);
+        if self.iconDataProvider==nil then
+            self.iconDataProvider= CreateAndInitFromMixin(IconDataProviderMixin, IconDataProviderExtraType.None)
+        end
+        self:SetIconFilter(self:GetIconFilter() or IconSelectorPopupFrameIconFilterTypes.All);
+        --self.BorderBox.IconTypeDropDown:SetSelectedValue(self.BorderBox.IconTypeDropDown:GetSelectedValue() or IconSelectorPopupFrameIconFilterTypes.All);
+        self:Update()
+        self.BorderBox.IconSelectorEditBox:OnTextChanged()
+        local function OnIconSelected(_, icon)
+            self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(icon);
+            self.BorderBox.IconSelectorEditBox:SetText(icon)
+        end
+        self.IconSelector:SetSelectedCallback(OnIconSelected);
+    end)
+
+    List.FindIcon.frame:SetScript('OnHide', function(self)
+        IconSelectorPopupFrameTemplateMixin.OnHide(self);
+        self.iconDataProvider:Release();
+        self.iconDataProvider = nil;
+    end)
+    function List.FindIcon.frame:Update()
+        local texture
+        texture= List:get_icon()
+        if texture then
+            texture=tonumber(texture)
+        end
+        if not texture then
+            self.origName = "";
+            self.BorderBox.IconSelectorEditBox:SetText("");
+            local initialIndex = 1;
+            self.IconSelector:SetSelectedIndex(initialIndex);
+            self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(self:GetIconByIndex(initialIndex));
+        else
+            self.BorderBox.IconSelectorEditBox:SetText(texture);
+            self.BorderBox.IconSelectorEditBox:HighlightText();
+            self.IconSelector:SetSelectedIndex(self:GetIndexOfIcon(texture));
+            self.BorderBox.SelectedIconArea.SelectedIconButton:SetIconTexture(texture);
+        end
+        local getSelection = GenerateClosure(self.GetIconByIndex, self);
+        local getNumSelections = GenerateClosure(self.GetNumIcons, self);
+        self.IconSelector:SetSelectionsDataProvider(getSelection, getNumSelections);
+        self.IconSelector:ScrollToSelectedIndex();
+        self:SetSelectedIconText();
+    end
+    function List.FindIcon.frame:OkayButton_OnClick()
+        IconSelectorPopupFrameTemplateMixin.OkayButton_OnClick(self);
+        local iconTexture = self.BorderBox.SelectedIconArea.SelectedIconButton:GetIconTexture();
+        List.Icon:SetText(iconTexture or '')
+        local gossip= List:get_gossipID()
+        if gossip==0 then
+            List.ID:SetFocus()
+        else
+            List.Name:SetFocus()
+            List:add_gossip()
+        end
+    end
+
 
 
     if _G['TAV_CoreFrame'] then--查找，图标，按钮， Texture Atlas Viewer， 插件
@@ -779,9 +778,7 @@ local function Init()
         if d=='LeftButton' then
             WoWTools_GossipMixin:GossipData_Menu(self)
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, function(...)
-                WoWTools_GossipMixin:Init_Menu_Gossip(...)
-            end)
+            WoWTools_GossipMixin:Init_Menu_Gossip(self)
         end
     end)
 

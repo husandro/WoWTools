@@ -159,23 +159,32 @@ end
 
 
 local function Init_Menu(_, root)
-    local num=0
+    local List= _G['WoWToolsGossipTextIconOptionsList']
+    if not List then
+        return
+    end
+
+    local find=false
     for gossipID, tab in pairs(GossipTextIcon) do
-        local icon= select(3, WoWTools_TextureMixin:IsAtlas(tab.icon)) or '     '
+        local icon= select(3, WoWTools_TextureMixin:IsAtlas(tab.icon)) or ''
         root:CreateCheckbox(
             icon
             ..'|c'..(tab.hex and tab.hex~='' and tab.hex or 'ffffffff')..(tab.name or '')..'|r '
             ..(Save().Gossip_Text_Icon_Player[gossipID] and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
             ..gossipID,
+
         function(data)
-            return WoWTools_GossipMixin.Frame.Menu:get_gossipID()==data.gossipID
+            return List:get_gossipID()==data.gossipID
+
         end, function(data)
-            WoWTools_GossipMixin.Frame.Menu:set_date(data.gossipID)
+            List:set_date(data.gossipID)
+
         end, {gossipID=gossipID, tab=tab})
-        num= num+1
+
+        find=true
     end
 
-    if num>0 then
+    if find then
         WoWTools_MenuMixin:SetScrollMode(root)
     else
         root:CreateTitle(WoWTools_DataMixin.onlyChinese and '无' or NONE)
