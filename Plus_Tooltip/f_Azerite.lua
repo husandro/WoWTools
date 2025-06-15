@@ -1,6 +1,6 @@
 --艾泽拉斯之心
 function WoWTools_TooltipMixin:Set_Azerite(tooltip, powerID)
-    if not powerID then
+    if not powerID or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -12,6 +12,6 @@ function WoWTools_TooltipMixin:Set_Azerite(tooltip, powerID)
     if info and info.spellID then
         WoWTools_TooltipMixin:Set_Spell(tooltip, info.spellID)
     else
-        GameTooltip_CalculatePadding(tooltip)
+        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
     end
 end

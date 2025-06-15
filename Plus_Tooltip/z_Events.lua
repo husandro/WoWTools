@@ -29,7 +29,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_Professions()
             local name= self.WoWHead..'profession-trait/'..(f.nodeID or '')
             self:Set_Web_Link(GameTooltip, {name=name})
             --GameTooltip:Show()
-            GameTooltip_CalculatePadding(GameTooltip)
+            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         end
     end)
 end
@@ -47,7 +47,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_FlightMap()
         local info= f.taxiNodeData
         if info then
             GameTooltip:AddDoubleLine('nodeID '..(info.nodeID or ''), 'slotIndex '..(info.slotIndex or ''))
-            GameTooltip_CalculatePadding(GameTooltip)
+            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         end
     end)
 end
@@ -57,7 +57,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_PlayerChoice()
         if f.optionInfo and f.optionInfo.spellID then
             GameTooltip:ClearLines()
             GameTooltip:SetSpellByID(f.optionInfo.spellID)
-            GameTooltip_CalculatePadding(GameTooltip)
+            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         end
     end)
 end
@@ -82,7 +82,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_OrderHallUI()
         if info.ability and info.ability.id and info.ability.id>0 then
             GameTooltip:AddDoubleLine('ability '..info.ability.id, info.ability.icon and '|T'..info.ability.icon..':0|t'..info.ability.icon)
         end
-        GameTooltip_CalculatePadding(GameTooltip)
+        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
     end)
     hooksecurefunc(GarrisonTalentButtonMixin, 'SetTalent', function(f)--是否已激活, 和等级
         local info= f.talent
@@ -137,7 +137,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_GenericTraitUI()
         end
         local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
         GameTooltip:AddDoubleLine(format('traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
-        GameTooltip_CalculatePadding(GameTooltip)
+        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
     end)
 end
 
@@ -273,7 +273,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_ChallengesUI()
         end
         GameTooltip:AddDoubleLine('affixID '..f.affixID, filedataid and '|T'..filedataid..':0|t'..filedataid or ' ')
         self:Set_Web_Link(GameTooltip, {type='affix', id=f.affixID, name=name, isPetUI=false})--取得网页，数据链接
-        GameTooltip_CalculatePadding(GameTooltip)
+        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         --GameTooltip:Show()
     end)
 end

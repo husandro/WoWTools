@@ -7,8 +7,10 @@ function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
     if WoWToolsSave['Plus_Tootips'].hideHealth then
         return
     end
+
     unit= unit or select(2, TooltipUtil.GetDisplayedUnit(GameTooltip))
-    if not unit or frame:GetWidth()<100 then
+
+    if not unit or frame:GetWidth()<100 or WoWTools_FrameMixin:IsLocked(frame) then
         frame.text:SetText('')
         frame.textLeft:SetText('')
         frame.textRight:SetText('')

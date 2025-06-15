@@ -3,6 +3,10 @@
 
 --设置单位, NPC
 function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
+    if WoWTools_FrameMixin:IsLocked(tooltip) then
+        return
+    end
+
     local textLeft, text2Left, textRight, text2Right=' ', '', '', ''
 
     --怪物, 图标
@@ -92,7 +96,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 
     self:Set_Width(tooltip)--设置，宽度
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 
 

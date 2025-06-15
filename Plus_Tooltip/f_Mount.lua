@@ -8,7 +8,9 @@
 
 
 function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
-    if mountID==268435455 then
+    if WoWTools_FrameMixin:IsLocked(tooltip) then
+        return
+    elseif mountID==268435455 then
         self:Set_Spell(tooltip, 150544)--法术
         return
     end
@@ -69,6 +71,6 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     end
     self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=creatureName, col=nil, isPetUI=false})--取得网页，数据链接    
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 

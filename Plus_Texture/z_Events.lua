@@ -754,6 +754,11 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
     end)
 
     self:SetButton(PlayerChoiceFrame.CloseButton, {all=true,})
+    self:SetAlphaColor(PlayerChoiceFrame.CloseButton.Border)
+    
+    PlayerChoiceFrame.Title.Middle:ClearAllPoints()
+    PlayerChoiceFrame.Title.Middle:SetPoint('LEFT', PlayerChoiceFrame.Title.Left, 'RIGHT', -10,0)
+    PlayerChoiceFrame.Title.Middle:SetPoint('RIGHT', PlayerChoiceFrame.Title.Right, 'LEFT', 10, 0)
 
     self:Init_BGMenu_Frame(PlayerChoiceFrame, {isNewButton=true})
 end

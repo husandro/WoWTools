@@ -173,7 +173,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
             colorTexture=_G[name..'Swatch'..index.."ColorSwatchNormalTexture"]
         end
 
-        
+
 
         if nineSlice then
             nineSlice:SetVertexColor(0,0,0,0)
@@ -277,7 +277,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrame)
     self:SetNineSlice(DressUpFrame)
     self:SetMenu(DressUpFrameOutfitDropdown)
-    
+
     self:SetNineSlice(DressUpFrameInset, nil, true)
     self:HideFrame(DressUpFrameInset)
 
@@ -326,6 +326,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
             frame.Bg:SetFrameStrata('LOW')
             self:SetNineSlice(frame, true)
             self:SetFrame(frame.Bg)
+            self:Init_BGMenu_Frame(frame)
          end
     end
 
@@ -337,16 +338,10 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
         end
         for _, btn in frame:EnumerateValidItems() do
             if not btn.hasItem then
-                --self:HideTexture(btn.icon)
                 self:HideTexture(btn.ItemSlotBackground)
                 self:SetAlphaColor(btn.Background,nil, nil, 0.2)
-                
-                --self:HideTexture(btn.Background)
-
                 btn.icon:SetAlpha(0)
-                btn.NormalTexture:SetVertexColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
-                --btn.NormalTexture:SetAtlas('_UI-Taxi-Line-horizontal')
-                btn.NormalTexture:SetAlpha(0.1)
+                self:SetAlphaColor(btn.NormalTexture, nil, nil, 0.1)
             else
                 btn.icon:SetAlpha(1)
                 btn.NormalTexture:SetAlpha(0)
@@ -356,31 +351,19 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
 
     hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
         for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-            if not frame.SetBagAlpha then
+            if not frame.set_BagAlpha then
                 set_BagTexture(frame)
                 hooksecurefunc(frame, 'UpdateItems', set_BagTexture)
                 frame:SetTitle('')--名称
                 hooksecurefunc(frame, 'UpdateName', function(self2) self2:SetTitle('') end)
-                frame.SetBagAlpha=true
+                frame.set_BagAlpha=true
             end
         end
     end)
 
 
-    for _, text in pairs({
-        'CharacterBag0Slot',
-        'CharacterBag1Slot',
-        'CharacterBag2Slot',
-        'CharacterBag3Slot',
-        'CharacterReagentBag0Slot',
-    }) do
-        if _G[text] then
-            self:SetAlphaColor(_G[text]:GetNormalTexture(), true)
-        end
-    end
+    --ContainerFrameCombinedBags.Background= ContainerFrameCombinedBags.Bg
 
-    ContainerFrameCombinedBagsPortraitButton:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
-    ContainerFrameCombinedBags.Background= ContainerFrameCombinedBags.Bg
     self:Init_BGMenu_Frame(ContainerFrameCombinedBags)
 end
 
@@ -466,5 +449,16 @@ end
 
 
 
+function WoWTools_TextureMixin.Frames:LootFrame()
+    self:SetNineSlice(LootFrame)
+    self:HideFrame(LootFrameBg)
+    self:SetButton(LootFrame.ClosePanelButton, {all=true})
 
+
+    hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
+        btn.BorderFrame:Hide()
+    end)
+
+    self:Init_BGMenu_Frame(LootFrame, {isNewButton=true})
+end
 

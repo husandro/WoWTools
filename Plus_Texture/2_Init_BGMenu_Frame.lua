@@ -130,16 +130,23 @@ end
 
 -- 根据框架大小更新动画偏移量和速度的函数
 local function Update_Animation(self)
-    local width, height = self[BGName]:GetSize()
+    local width, height= 0, 0
+    if self and self.backgroundAnims and self.backgroundAnims.fadeIn then
+        width, height= self[BGName]:GetSize()
+    end
+
     if width==0 or height==0 then
-        PlayStop_Anims(self)
+        if self.backgroundAnims then
+            self.backgroundAnims:SetPlaying(false)
+            self.AirParticlesFar:SetShown(false)
+        end
         return
     end
 
     -- 动画从右下角到左上角
     local xOffset = -width
     local yOffset = height
-    --self.AirParticlesFar:SetSize(-width, height)
+    
     self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset)    -- 右下到左上
     self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)    -- 回到右下
 
@@ -194,10 +201,7 @@ local function Set_BGTexture(self, name)
     self:SetDrawLayerEnabled('BACKGROUND', not Save().Add[name].notLayer)
 
 --动画
-    local anims= self.backgroundAnims
-    if anims and anims.fadeIn then
-        Update_Animation(self)
-    end
+    Update_Animation(self)
 end
 
 
@@ -775,9 +779,8 @@ local function Create_Anims(self, icon, tab)
 
 
     self.AirParticlesFar:SetAllPoints(icon)
-    --self.AirParticlesFar:SetPoint('TOPLEFT', self, 'BOTTOMRIGHT')
-    --self.AirParticlesFar:SetPoint('CENTER')
     self.AirParticlesFar:SetTexCoord(1, 0, 1, 0)
+
     -- 设置混合模式为ADD，使粒子效果更亮 DISABLE, BLEND, ALPHAKEY, ADD, MOD
     self.AirParticlesFar:SetBlendMode("ADD")
 
@@ -861,7 +864,9 @@ local function Set_Frame_Menu(frame, tab)
         return
     end
 
-    if self== frame.PortraitContainer then
+    if self==frame.PortraitButton then
+        self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+    elseif self== frame.PortraitContainer then
         self:SetSize(48,48)
     end
 
@@ -884,7 +889,7 @@ local function Set_Frame_Menu(frame, tab)
             GameTooltip:AddLine(' ')
         end
         GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName,
+            WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2,
             (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..(
                 s.isBgMenuButton

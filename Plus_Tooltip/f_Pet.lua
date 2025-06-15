@@ -2,7 +2,9 @@
 
 
 function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
-    if not speciesID or speciesID< 1 then
+    speciesID = speciesID and tonumber(speciesID) or -1
+
+    if speciesID< 1 or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -100,5 +102,5 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
     WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)--PetBattle.lua 联动
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

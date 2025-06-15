@@ -81,9 +81,7 @@ end
 local function Init()
     Frame= CreateFrame('Frame', 'WoWToolsGossipTextIconOptionsFrame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
 
-
     List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
-
 
     Frame:SetSize(580, 370)
     Frame:SetFrameStrata('HIGH')

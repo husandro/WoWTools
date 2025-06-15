@@ -3,18 +3,20 @@
 
 --宠物面板提示
 function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQuality, maxHealth, power, speed, customName)
-    if not speciesID or speciesID < 1 then
+    speciesID= speciesID and tonumber(speciesID) or -1
+
+    if speciesID < 1 or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
+
     WoWTools_TooltipMixin:Set_Init_Item(tooltip)
 
-    --BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
 
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     local size= self.iconSize--20
 
     WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
-    --tooltip.itemModel:SetDisplayInfo(creatureDisplayID)
+
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
         if numCollected==0 then
@@ -95,7 +97,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
 
     --tooltip:Show()
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 
 

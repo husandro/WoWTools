@@ -191,8 +191,39 @@ function WoWTools_MoveMixin.Frames:ColorPickerFrame()
     self:Setup(ColorPickerFrame.Content, {frame=ColorPickerFrame})
 end
 
-
 --物品拾取
 function WoWTools_MoveMixin.Frames:LootFrame()
-    self:Setup(LootFrame, {save=false})
+
+    LootFrame.ScrollBox:SetPoint('RIGHT')
+
+    hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
+        btn.Text:SetPoint('RIGHT', -8, 0)
+    end)
+
+    hooksecurefunc(LootFrame, 'Open', function(frame)
+        if WoWTools_FrameMixin:IsLocked(frame) then
+            return
+        end
+
+        local s= Save().size['LootFrame']
+        local p
+
+        if not GetCVarBool("lootUnderMouse") then
+            p= Save().point['LootFrame']
+        end
+
+        if p and p[1] then
+            frame:ClearAllPoints()
+            frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+        end
+        if s and s[1] then
+            frame:SetWidth(s[1])
+        end
+    end)
+    self:Setup(LootFrame, {setSize=true, isShow=true, sizeRestFunc=function()
+        Save().size['LootFrame']= nil
+        LootFrame:SetWidth(220)
+        local skipShow = true;
+	    ScrollingFlatPanelMixin.Open(LootFrame, skipShow)
+    end})
 end

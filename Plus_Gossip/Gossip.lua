@@ -157,7 +157,7 @@ local function Create_CheckButton(frame, info)
                 GameTooltip:AddDoubleLine(' ')
                 GameTooltip:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..self.id..'|r')
                 if f and not ColorPickerFrame:IsShown() then
-                   f.Menu:set_date(self.id)--设置，数据
+                   _G['WoWToolsGossipTextIconOptionsList']:set_date(self.id)--设置，数据
                 elseif not Save().not_Gossip_Text_Icon and (Save().Gossip_Text_Icon_Player[self.id] or WoWTools_GossipMixin:Get_GossipData()[self.id]) then
                     for _, info2 in pairs( C_GossipInfo.GetOptions() or {}) do
                         if info2.gossipOptionID==self.id and info.name then
@@ -166,7 +166,7 @@ local function Create_CheckButton(frame, info)
                         end
                     end
                 end
-                 GameTooltip:Show()
+                GameTooltip:Show()
                 self:SetAlpha(1)
             end)
 

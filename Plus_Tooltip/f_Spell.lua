@@ -60,6 +60,10 @@ end
 
 
 function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术    
+    if WoWTools_FrameMixin:IsLocked(tooltip) then
+        return
+    end
+
     spellID = spellID or select(2, tooltip:GetSpell())
     local name, icon, originalIcon
     local spellInfo= spellID and C_Spell.GetSpellInfo(spellID)
@@ -87,7 +91,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
         WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 
 --[[local overrideSpellID = FindSpellOverrideByID(spellID)

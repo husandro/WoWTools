@@ -5,9 +5,10 @@
 function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     questID= questID or (info and info.questID or nil)
 
-    if not questID then
+    if not questID or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
+
     tooltip:AddLine(WoWTools_Mixin:GetExpansionText(nil, questID))--任务版本
 
     local lv=C_QuestLog.GetQuestDifficultyLevel(questID)--等级
@@ -66,5 +67,5 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

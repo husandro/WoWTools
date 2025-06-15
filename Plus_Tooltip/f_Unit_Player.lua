@@ -2,6 +2,10 @@
 
 --设置单位, 玩家
 function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
+    if WoWTools_FrameMixin:IsLocked(tooltip) then
+        return
+    end
+
     local realm= select(2, UnitName(unit)) or WoWTools_DataMixin.Player.realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
@@ -290,7 +294,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
     self:Set_Width(tooltip)--设置，宽度
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
     --if hideLine then
         --tooltip:Show()
     --end

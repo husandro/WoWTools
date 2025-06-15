@@ -5,10 +5,11 @@
 
 --声望
 function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
-    local info= factionID and WoWTools_FactionMixin:GetInfo(factionID, nil, true)
-    if not info.factionID then
+    local info= WoWTools_FrameMixin:IsLocked(tooltip) and WoWTools_FactionMixin:GetInfo(factionID, nil, true)
+    if not info.factionID  then
         return
     end
+
     local size= self.iconSize
 
     local icon= info.texture and ('|T'..info.texture..':'..size..'|t')
@@ -23,7 +24,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         )
     elseif info.isMajor then
         tooltip:AddLine(
-            icon 
+            icon
             ..(WoWTools_DataMixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)
             ..' '
             ..info.factionID
@@ -52,6 +53,6 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         GameTooltip_AddBlankLineToTooltip(tooltip)
     end
     --tooltip:Show()
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 

@@ -2,7 +2,7 @@
 
 
 function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
-    if not achievementID then
+    if not achievementID or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -46,6 +46,6 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='achievement', id=achievementID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 

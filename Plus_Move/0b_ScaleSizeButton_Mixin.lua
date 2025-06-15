@@ -432,7 +432,6 @@ local function Init_Menu(self, root)
             elseif not self.notUpdatePositon then
                 WoWTools_Mixin:Call(UpdateUIPanelPositions, target)
             end
-
         end
         return MenuResponse.Refresh
     end)

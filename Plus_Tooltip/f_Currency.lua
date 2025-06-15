@@ -3,7 +3,7 @@
 
 function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     local info2 = (tooltip and currencyID) and C_CurrencyInfo.GetCurrencyInfo(currencyID)
-    if not info2 then
+    if not info2 or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -73,5 +73,5 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='currency', id=currencyID, name=info2.name, col=nil, isPetUI=false})--取得网页，数据链接 npc item spell currency
 
     --tooltip:Show()
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

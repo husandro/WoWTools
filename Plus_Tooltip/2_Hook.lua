@@ -81,7 +81,7 @@ local function Init()
                 self:AddDoubleLine(data.spellID and (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
                 if data.actionID or data.itemType then
                     self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
-                    GameTooltip_CalculatePadding(self)
+                    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, self)
                 end
             end
         end
@@ -157,7 +157,7 @@ local function Init()
                 GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
             end
         end
-        GameTooltip_CalculatePadding(GameTooltip)
+        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         --GameTooltip:Show()
     end)
 
@@ -270,7 +270,7 @@ local function Init()
                     (WoWTools_DataMixin.onlyChinese and '共享' or SHARE_QUEST)..' '..(acceto..'/'..(n-1)),
                     WoWTools_TextMixin:GetYesNo(C_QuestLog.IsPushableQuest(info.questID))
                 )
-                GameTooltip_CalculatePadding(GameTooltip)
+                WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
             end
         end
 
@@ -291,7 +291,7 @@ local function Init()
         if uiWidgetSetID then
             tooltip:AddLine(' ')
             tooltip:AddDoubleLine('WidgetSetID', uiWidgetSetID)
-            GameTooltip_CalculatePadding(tooltip)
+            WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
             --tooltip:Show()
         end
     end)
@@ -318,7 +318,7 @@ local function Init()
                             GameTooltip:AddDoubleLine('action '..self.action, 'ID '..ID)
                             GameTooltip:AddDoubleLine(actionType and 'actionType '..actionType, subType and 'subType '..subType)
                         end
-                        GameTooltip_CalculatePadding(GameTooltip)
+                        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
                     end
                 end
             end)
@@ -381,7 +381,7 @@ local function Init()
             WoWTools_TextMixin:CN(_G['ITEM_QUALITY'..quality..'_DESC'] or '')
         )
 
-        GameTooltip_CalculatePadding(tooltip)
+        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
     end)
 
 --商店

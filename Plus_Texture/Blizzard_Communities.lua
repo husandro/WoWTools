@@ -59,11 +59,8 @@
     self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, nil, true)
     self:HideFrame(CommunitiesFrame.MemberList.ColumnDisplay)
     self:SetScrollBar(CommunitiesFrame.MemberList)
-    self:CreateBG(CommunitiesFrame.MemberList, {isAllPoint=true, alpha=0.5})
-    --[[hooksecurefunc(CommunitiesMemberListEntryMixin, 'Init', function(frame, elementData, expanded)
-        info= elementData
-        for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-    end)]]
+    self:CreateBG(CommunitiesFrame.MemberList, {isAllPoint=true})
+
 
 --成员,叙述
     self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.Border, nil, nil, nil, true)

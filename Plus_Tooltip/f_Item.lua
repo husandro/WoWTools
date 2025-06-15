@@ -285,7 +285,7 @@ end
 
 
 function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
-    if not itemLink and not itemID then
+    if not itemLink and not itemID or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -403,7 +403,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
     --tooltip:Show()
 end
 

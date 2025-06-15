@@ -86,11 +86,6 @@ local function Set_Bag_OnLeave_Alpha(self)
     end
     texture=_G[name..'NormalTexture']
     if texture then
-        texture:SetAlpha(Save().mainMenuAlphaValue)
-    end
-
-    texture=_G[name..'NormalTexture']
-    if texture then
         texture:SetAlpha(0)
     end
 end
@@ -124,8 +119,8 @@ local function Set_Alpha()
         local btn= _G[name]
         if btn then
             if not IsHookAlpha then
-                btn:HookScript('OnEnter', Set_MicroButton_OnEnter_Alpha)
-                btn:HookScript('OnLeave', Set_MicroButton_OnLeave_Alpha)
+                btn:HookScript('OnEnter', function(...) Set_MicroButton_OnEnter_Alpha(...) end)
+                btn:HookScript('OnLeave', function(...) Set_MicroButton_OnLeave_Alpha(...) end)
             end
             Set_MicroButton_OnLeave_Alpha(btn)
         end
@@ -135,14 +130,17 @@ local function Set_Alpha()
         local btn= _G[name]
         if btn then
             if not IsHookAlpha then
-                btn:HookScript('OnEnter', Set_Bag_OnEnter_Alpha)
-                btn:HookScript('OnLeave', Set_Bag_OnLeave_Alpha)
-                WoWTools_ColorMixin:Setup(_G[name..'NormalTexture'], {type='Texture'})
-                _G[name..'NormalTexture']:SetVertexColor(0,1,0)
+                btn:HookScript('OnEnter', function(...) Set_Bag_OnEnter_Alpha(...) end)
+                btn:HookScript('OnLeave', function(...) Set_Bag_OnLeave_Alpha(...) end)
+                WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0)
             end
             Set_Bag_OnLeave_Alpha(btn)
         end
     end
+    
+    local alpha= Save().mainMenuAlphaValue or 0.7
+
+    WoWTools_TextureMixin:SetAlphaColor(BagBarExpandToggle.NormalTexture, nil, nil, alpha)
 
     IsHookAlpha=true
 end

@@ -57,7 +57,7 @@ local function Init_Options()--初始, 选项
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_MainMenuMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
         end,
         sliderGetValue= function() return Save().mainMenuAlphaValue end,
-        minValue= 0,
+        minValue= 0.1,
         maxValue= 1,
         step= 0.1,
         sliderSetValue= function(_, _, value2)

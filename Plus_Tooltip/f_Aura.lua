@@ -3,6 +3,10 @@
 
 
 function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
+    if WoWTools_FrameMixin:IsLocked(tooltip) then
+        return
+    end
+
     local spellID= data.id
 
     local name= C_Spell.GetSpellName(spellID)
@@ -25,7 +29,7 @@ end
 
 --来源
 function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
-    local data=C_UnitAuras.GetAuraDataByIndex(...)
+    local data= not WoWTools_FrameMixin:IsLocked(tooltip) and C_UnitAuras.GetAuraDataByIndex(...)
     local source= data and data.sourceUnit
     if not source then
         return
@@ -46,5 +50,5 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
 
     tooltip:AddLine((col or '|cffffffff') ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
 
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

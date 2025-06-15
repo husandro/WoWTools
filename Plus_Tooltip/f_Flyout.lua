@@ -4,7 +4,7 @@
 --法术, 弹出框
 function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     local name, _, numSlots, isKnown= GetFlyoutInfo(flyoutID)
-    if not name then
+    if not name or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -32,7 +32,7 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     end
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine((not isKnown and '|cnRED_FONT_COLOR:' or '')..'flyoutID|r '..flyoutID, icon and icon>0 and format('|T%d:'..self.iconSize..'|t%d', icon, icon))
-    GameTooltip_CalculatePadding(tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 
 

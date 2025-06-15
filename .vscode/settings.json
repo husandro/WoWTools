@@ -5087,7 +5087,6 @@
         "MONTHLY_ACTIVITIES_TAB",
         "GenerateFlatClosure",
         "G_GameMenuFrameContextKey",
-        "CharacterBag0SlotNormalTexture",
         "AccountStoreUtil",
         "AccountStoreFrame",
         "WOWLABS_BINDING_HEADER",
@@ -5903,7 +5902,13 @@
         "OpenMailFrameCloseButton",
         "PaperDollFrame_OnShow",
         "SetPaperDollBackground",
-        "PaperDollBgDesaturate"
+        "PaperDollBgDesaturate",
+        "BagBarExpandToggle",
+        "ContainerFrame6PortraitButton",
+        "LootFrameMixin",
+        "LootFrameBg",
+        "ScrollingFlatPanelMixin",
+        "LootFrameBaseElementMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
