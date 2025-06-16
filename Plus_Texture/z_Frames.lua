@@ -17,15 +17,20 @@ end
 
 --任务
 function WoWTools_TextureMixin.Frames:QuestFrame()
-    self:SetButton(QuestFrameCloseButton, {all=true})
-    self:SetNineSlice(QuestFrame, true)
-    self:SetAlphaColor(QuestFrameBg)
-    self:HideTexture(QuestFrameInset.Bg)
+    self:HideFrame(QuestFrame)
+    self:SetNineSlice(QuestFrame)
     self:SetScrollBar(QuestFrame)
+    
+    self:SetButton(QuestFrameCloseButton, {all=true})
+    
+    self:HideTexture(QuestFrameInset.Bg)
+    self:SetNineSlice(QuestFrameInset, nil, true)
+    self:SetScrollBar(QuestRewardScrollFrame)
+    
     self:SetScrollBar(QuestProgressScrollFrame)
     self:SetScrollBar(QuestDetailScrollFrame)
 
-    self:SetNineSlice(QuestLogPopupDetailFrame, true)
+    self:SetNineSlice(QuestLogPopupDetailFrame, nil, true)
     self:SetAlphaColor(QuestLogPopupDetailFrameBg)
     self:HideFrame(QuestLogPopupDetailFrameInset)
     self:SetScrollBar(QuestLogPopupDetailFrameScrollFrame)
@@ -34,6 +39,14 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:SetFrame(QuestModelScene)
     self:SetAlphaColor(QuestNPCModelTextFrameBg, nil, nil, 0.3)
     self:SetScrollBar(QuestNPCModelTextScrollChildFrame)
+
+    self:Init_BGMenu_Frame(QuestFrame, {
+        settings=function(_, texture, alpha)
+            alpha= texture and 0 or alpha or 1
+            QuestFrameRewardPanelBg:SetAlpha(alpha)
+            QuestFrameDetailPanelBg:SetAlpha(alpha)
+        end
+    })
 end
 
 
@@ -286,24 +299,37 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true,})
     self:SetButton(DressUpFrameCloseButton, {all=true})
 
-    self:Init_BGMenu_Frame(DressUpFrame, {settings=function(texture, alpha)
-        DressUpFrame.ModelBackground:SetAlpha(texture and 0 or alpha or 1)
-    end})
+    self:Init_BGMenu_Frame(DressUpFrame, {
+        settings=function(_, texture, alpha)
+            DressUpFrame.ModelBackground:SetAlpha(texture and 0 or alpha or 1)
+        end
+    })
 end
 
 
 
 
 function WoWTools_TextureMixin.Frames:ItemTextFrame()
-    self:SetNineSlice(ItemTextFrame, true)
+    self:SetNineSlice(ItemTextFrame)
+    self:HideTexture(ItemTextFrame.TopTileStreaks)
     self:HideTexture(ItemTextFrameBg)
+    self:SetButton(ItemTextFrameCloseButton, {all=true})
+
+    self:SetScrollBar(ItemTextScrollFrame)
+
     self:HideFrame(ItemTextFrameInset)
+    self:SetNineSlice(ItemTextFrameInset, nil, true)
+    
     self:SetAlphaColor(ItemTextMaterialTopLeft, nil, nil, 0.3)
     self:SetAlphaColor(ItemTextMaterialTopRight, nil, nil, 0.3)
     self:SetAlphaColor(ItemTextMaterialBotLeft, nil, nil, 0.3)
     self:SetAlphaColor(ItemTextMaterialBotRight, nil, nil, 0.3)
-    self:SetScrollBar(ItemTextScrollFrame)
-    self:SetNineSlice(ItemTextFrameInset, true)
+
+    self:Init_BGMenu_Frame(ItemTextFrame, {
+        settings=function(_, texture, alpha)
+            ItemTextFramePageBg:SetAlpha(texture and 0 or alpha or 1)
+        end
+    })
 end
 
 

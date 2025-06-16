@@ -6,7 +6,7 @@
 --声望
 function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
     local info= WoWTools_FrameMixin:IsLocked(tooltip) and WoWTools_FactionMixin:GetInfo(factionID, nil, true)
-    if not info.factionID  then
+    if not info or not info.factionID  then
         return
     end
 

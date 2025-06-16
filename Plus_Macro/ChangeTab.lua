@@ -26,8 +26,6 @@ local function Init_ChangeTab(self, tabID)
     self.MacroSelector:ClearAllPoints()
 
     local point= Save().toRightLeft
-
-    --if tabID==1 and (point==1 or point==2) then
         if point==1 then--左边
             self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
             self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
@@ -37,7 +35,6 @@ local function Init_ChangeTab(self, tabID)
             self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
 
         elseif point==4 then--左|右
-            --local h, w= MacroFrame:GetSize()
             self.MacroSelector:SetPoint('TOPLEFT', self, 12, -66)
             self.MacroSelector:SetPoint('BOTTOMRIGHT', self, 'BOTTOM', 0, 45)
 
@@ -61,7 +58,7 @@ local function Init_ChangeTab(self, tabID)
     if _G['WoWToolsMacroPlusNoteEditBox'] then
         _G['WoWToolsMacroPlusNoteEditBox']:SetShown(show)
     end
-    ScrollBoxBackground:SetShown(show)
+    --ScrollBoxBackground:SetShown(show)
 
 --图像
     if tabID==2 then
@@ -92,8 +89,8 @@ end
 
 
 local function Init()
-    ScrollBoxBackground=WoWTools_TextureMixin:CreateBG(MacroFrame.MacroSelector.ScrollBox)--, {isAllPoint=true})
-    ScrollBoxBackground:SetAllPoints(MacroFrame.MacroSelector.ScrollBox.Shadows)
+    --ScrollBoxBackground=WoWTools_TextureMixin:CreateBG(MacroFrame.MacroSelector.ScrollBox)--, {isAllPoint=true})
+    --ScrollBoxBackground:SetAllPoints(MacroFrame.MacroSelector.ScrollBox.Shadows)
 
 --ScrollFrame
     MacroFrameScrollFrame:ClearAllPoints()

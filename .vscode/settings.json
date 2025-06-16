@@ -5908,7 +5908,11 @@
         "LootFrameMixin",
         "LootFrameBg",
         "ScrollingFlatPanelMixin",
-        "LootFrameBaseElementMixin"
+        "LootFrameBaseElementMixin",
+        "QuestFrameRewardPanelBg",
+        "QuestFrameDetailPanelBg",
+        "ItemTextFrameCloseButton",
+        "ItemTextFramePageBg"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

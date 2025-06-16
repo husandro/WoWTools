@@ -4,7 +4,7 @@
 --生命条提示
 --#########
 function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
-    if WoWToolsSave['Plus_Tootips'].hideHealth then
+    if WoWToolsSave['Plus_Tootips'].hideHealth or WoWTools_FrameMixin:IsLocked(frame) then
         return
     end
 
@@ -16,9 +16,11 @@ function WoWTools_TooltipMixin:Set_HealthBar_Unit(frame, unit)
         frame.textRight:SetText('')
         return
     end
+
     local value= unit and UnitHealth(unit)
     local max= unit and UnitHealthMax(unit)
     local r, g, b, left, right, col, text
+
     if value and max then
         r, g, b, col = GetClassColor(select(2, UnitClass(unit)))
         if UnitIsFeignDeath(unit) then

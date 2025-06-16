@@ -881,7 +881,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     if setResizeButtonPoint then
         btn:SetPoint(setResizeButtonPoint[1] or 'BOTTOMRIGHT', setResizeButtonPoint[2] or frame, setResizeButtonPoint[3] or 'BOTTOMRIGHT', setResizeButtonPoint[4] or 0, setResizeButtonPoint[5] or 0)
     else
-        btn:SetPoint('BOTTOMRIGHT', frame)--m, 6,-6)
+        btn:SetPoint('BOTTOMRIGHT', frame, 3, -3)
     end
 
 

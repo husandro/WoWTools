@@ -188,7 +188,7 @@ local function Set_BGTexture(self, name)
     icon:SetAlpha(alpha)
 
     if icon.BgData.settings then
-        icon.BgData.settings(texture, alpha)
+        icon.BgData.settings(icon, texture, alpha)
     end
 
 --Frame.Background
@@ -552,7 +552,7 @@ local function Init_Menu(self, root, isSub)
 
     sub= root:CreateCheckbox(
         '|A:MonkUI-LightOrb:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '背景' or BACKGROUND),
+        ..(WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND),
     function()
         return self:IsDrawLayerEnabled('BACKGROUND')
     end, function()
@@ -565,9 +565,9 @@ local function Init_Menu(self, root, isSub)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(name)
-        tooltip:AddLine(
-            'IsDrawLayerEnabled '
-            ..WoWTools_TextMixin:GetYesNo(self:IsDrawLayerEnabled('BACKGROUND'))
+        tooltip:AddDoubleLine(
+            'IsDrawLayerEnabled("BACKGROUND")',
+            WoWTools_TextMixin:GetEnabeleDisable(self:IsDrawLayerEnabled('BACKGROUND'))
         )
     end)
 
@@ -633,7 +633,7 @@ local function Init_Menu(self, root, isSub)
             end
         end
     })
-    --sub:CreateSpacer()
+    sub:CreateSpacer()
 
 --分开设置, 全部列表
     Add_Frame_Menu(self, sub)
@@ -866,6 +866,8 @@ local function Set_Frame_Menu(frame, tab)
 
     if self==frame.PortraitButton then
         self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
+        self.isRightShowButton=true
+
     elseif self== frame.PortraitContainer then
         self:SetSize(48,48)
     end
@@ -892,18 +894,17 @@ local function Set_Frame_Menu(frame, tab)
             WoWTools_TextureMixin.addName..WoWTools_DataMixin.Icon.icon2,
             (WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..(
-                s.isBgMenuButton
-                and WoWTools_DataMixin.Icon.left
-                or WoWTools_DataMixin.Icon.right
+                s.isRightShowButton
+                and WoWTools_DataMixin.Icon.right
+                or WoWTools_DataMixin.Icon.left
             )
         )
         GameTooltip:Show()
         self:set_texture_alpha()
     end)
+
     self:HookScript('OnMouseDown', function(s, d)
-        if d=='RightButton'
-            or s.isBgMenuButton
-        then
+        if d=='RightButton' and s.isRightShowButton or not s.isRightShowButton then
             MenuUtil.CreateContextMenu(s, function(_, root)
                 Init_Menu(frame, root, false)
             end)
@@ -934,7 +935,7 @@ local function Create_Button(self, tab)
         name=tab.name..'WoWToolsBGMenuButton',
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     })
-    self.bgMenuButton.isBgMenuButton=true
+    --self.bgMenuButton.isLeftShowMenu=true
 
     local icon= self.bgMenuButton:GetNormalTexture()
     icon:ClearAllPoints()
@@ -1037,4 +1038,13 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     Set_Frame_Menu(frame, tab)
 --BG, 设置
     Settings(frame)
+end
+
+
+
+
+
+
+function WoWTools_TextureMixin:Get_BGName()
+    return BGName
 end

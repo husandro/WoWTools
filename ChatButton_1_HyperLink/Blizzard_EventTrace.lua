@@ -563,10 +563,10 @@ local function Init_Print()
 
 
     Frame.events={
-        PLAYER_ENTERING_WORLD=true,
-        PLAYER_ENTERING_WORLD=true,
-        PLAYER_LOGIN=true,
-        ADDON_LOADED=true,
+        LOADING_SCREEN_DISABLED=1,
+        PLAYER_ENTERING_WORLD=1,
+        PLAYER_LOGIN=1,
+        ADDON_LOADED=1,
     }
 
     Frame:SetScript('OnEvent', function(self, event, arg1, ...)

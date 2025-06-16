@@ -167,7 +167,7 @@ local function Init_Texture(self)
     StableFrame.MainHelpButton:SetFrameLevel(StableFrame.TitleContainer:GetFrameLevel()+1)
 
     self:Init_BGMenu_Frame(StableFrame, {
-        settings=function(texture, alpha)
+        settings=function(_, texture, alpha)
             Set_BG(self, texture, alpha)
         end
     })

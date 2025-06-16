@@ -65,13 +65,16 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
     end
 
     spellID = spellID or select(2, tooltip:GetSpell())
+
     local name, icon, originalIcon
     local spellInfo= spellID and C_Spell.GetSpellInfo(spellID)
+
     if spellInfo then
         name= spellInfo.name
         icon= spellInfo.iconID
         originalIcon= spellInfo.originalIconID
     end
+
     if not name then
         return
     end

@@ -1,3 +1,6 @@
+local function Save()
+    return WoWToolsSave['Plus_Macro2']
+end
 
 local ScrollFrame
 
@@ -8,6 +11,55 @@ local ScrollFrame
 
 
 
+local function bgPoint(icon)
+    local value= not Save().disabled and Save().toRightLeft or 3 -- 1,2, 3, 4 左边 右边 默认 左|右
+    icon:ClearAllPoints()
+    if value==1 then--左边
+        icon:SetPoint('TOPRIGHT', 3, 3)
+        icon:SetPoint('BOTTOMRIGHT', 3, -3)
+        icon:SetPoint('LEFT', MacroFrame.MacroSelector, -3, 0)
+    elseif value==2 then--右边
+        icon:SetPoint('TOPLEFT', -3, 3)
+        icon:SetPoint('BOTTOMLEFT', -3, -3)
+        icon:SetPoint('RIGHT', MacroFrame.MacroSelector, 3, 0)
+    else
+        icon:SetPoint('TOPLEFT', 3, -3)
+        icon:SetPoint('BOTTOMRIGHT',-3, 3)
+    end
+end
+
+
+
+
+
+
+
+--宏
+function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
+    self:HideFrame(MacroFrame)
+    self:SetNineSlice(MacroFrame)
+
+    self:SetNineSlice(MacroFrameInset, nil, true)
+    self:HideFrame(MacroFrameInset)
+    self:SetNineSlice(MacroFrameTextBackground, nil, nil, nil, true)
+
+    self:SetAlphaColor(MacroHorizontalBarLeft, true)
+    self:HideTexture(MacroFrameSelectedMacroBackground)
+    self:SetScrollBar(MacroFrame.MacroSelector)
+    self:SetScrollBar(_G['WoWToolsMacroPlusNoteEditBox'])
+    self:SetScrollBar(MacroFrameScrollFrame)
+    self:SetButton(MacroFrameCloseButton, {all=true})
+
+    self:Init_BGMenu_Frame(MacroFrame, {
+        bgPoint=function(icon)
+            bgPoint(icon)
+        end,
+        settings=function(icon, texture, alpha)
+            bgPoint(icon)
+        end
+    })
+end
+
 
 
 
@@ -15,10 +67,6 @@ local ScrollFrame
 
 
 local function Init()
-    --MacroFrameScrollFrame.ScrollBar:SetHideIfUnscrollable(true)
-    --MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
-    --MacroFrame.MacroSelector.ScrollBar:SetHideIfUnscrollable(true)
-    
 --输入宏命令，字符
     MacroFrameEnterMacroText:SetText('')
     MacroFrameEnterMacroText:Hide()
@@ -46,7 +94,6 @@ local function Init()
         end
     end)
 
-
 --角色，专用宏，颜色
     MacroFrameTab2.Text:SetTextColor(WoWTools_DataMixin.Player.r, WoWTools_DataMixin.Player.g, WoWTools_DataMixin.Player.b)
 
@@ -69,11 +116,7 @@ local function Init()
     MacroSaveButton:HookScript('OnClick', set_saveTip)
 
 
-
-
-
 --宏数量
-    --Blizzard_MacroUI.lua
     MacroFrameTab1.label= WoWTools_LabelMixin:Create(MacroFrameTab1)
     MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
     MacroFrameTab1.label:SetAlpha(0.7)
@@ -150,8 +193,6 @@ local function Init()
     MacroFrameTextBackground:ClearAllPoints()
     MacroFrameTextBackground:SetPoint('TOPLEFT',MacroFrameScrollFrame, -4, 4)
     MacroFrameTextBackground:SetPoint('BOTTOMRIGHT', MacroFrameScrollFrame, 4,-4)
-
-
 end
 
 
@@ -227,4 +268,11 @@ end
 function WoWTools_MacroMixin:Init_Set_UI()
     Init()
     Init_Scroll()--恢复宏选择框的滚动条位置
+end
+
+function WoWTools_MacroMixin:Init_Set_BG()
+    local icon= MacroFrame[WoWTools_TextureMixin:Get_BGName()]
+    if icon then
+        bgPoint(icon)
+    end
 end

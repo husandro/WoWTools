@@ -232,3 +232,8 @@ function WoWTools_MoveMixin.Frames:LootFrame()
 	    ScrollingFlatPanelMixin.Open(LootFrame, true)
     end})
 end
+
+
+function WoWTools_MoveMixin.Frames:ItemTextFrame()
+    self:Setup(ItemTextFrame, {setSize=true})
+end

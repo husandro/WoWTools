@@ -285,12 +285,13 @@ end
 
 
 function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
-    if not itemLink and not itemID or WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not (itemLink or itemID) or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
     local itemName, _, itemQuality, itemLevel, _, itemType, itemSubType, _, itemEquipLoc, itemTexture, _, classID, subclassID, bindType, expacID, setID =  C_Item.GetItemInfo(itemLink or itemID)
     itemID= itemID or WoWTools_ItemMixin:GetItemID(itemLink)
+
     if not itemID then
         return
     end

@@ -28,6 +28,7 @@ local P_Save={
            --[name]={enabled=true, alpha=0.5, texture=texture or atlas, notLayer=true}
            ['GeneralDockManager']= {enabled=true, alpha=0},
            ['GossipFrame']={enabled=true, alpha=1},
+           ['ItemTextFrame']={enabled=true, alpha=1},
         },
         Anims={
             --disabled=true,

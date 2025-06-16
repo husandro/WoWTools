@@ -3,7 +3,7 @@
 
 --设置单位, NPC
 function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
-    if WoWTools_FrameMixin:IsLocked(tooltip) then
+    if WoWTools_FrameMixin:IsLocked(tooltip) or not UnitExists(unit) then
         return
     end
 

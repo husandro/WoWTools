@@ -613,7 +613,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
         end
     end)
 
-    self:Init_BGMenu_Frame(WeeklyRewardsFrame, {isNewButton=true,
+    self:Init_BGMenu_Frame(WeeklyRewardsFrame, {
+        isNewButton=true,
         newButtonAlpha=1,
         newButtonPoint=function(btn)
             btn:SetPoint('TOPLEFT', 10, -10)
@@ -1048,7 +1049,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
                 icon:SetSize(785, 550)
             end
         end,
-        settings=function(texture, alpha)
+        settings=function(_, texture, alpha)
             local bg= ExpansionLandingPage.overlayFrame and ExpansionLandingPage.overlayFrame.Background
             if bg then
                 bg:SetAlpha(texture and 0 or alpha or 1)
@@ -1080,7 +1081,7 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
         newButtonPoint=function(btn)
             btn:SetPoint('TOPLEFT', 10, -10)
         end,
-        settings=function(texture, alpha)
+        settings=function(_, texture, alpha)
             MajorFactionRenownFrame.Background:SetAlpha(texture and 0 or alpha or 1)
         end
     })
@@ -2144,7 +2145,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:Init_BGMenu_Frame(PlayerSpellsFrame, {
         --notAnims=true,
         --isHook=true,
-        settings=function(texture, alpha)
+        settings=function(_, texture, alpha)
             PlayerSpellsFrame.SpecFrame.Background:SetAlpha(texture and 0 or alpha or 1)
             PlayerSpellsFrame.TalentsFrame.Background:SetAlpha(texture and 0 or alpha or 1)
         end
@@ -2442,23 +2443,6 @@ end
 
 
 
---宏
-function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
-    self:HideFrame(MacroFrame)
-    self:SetNineSlice(MacroFrame)
-
-    self:SetNineSlice(MacroFrameInset, nil, true)
-    self:HideFrame(MacroFrameInset)
-    self:SetNineSlice(MacroFrameTextBackground, nil, nil, nil, true)
-
-    self:SetAlphaColor(MacroHorizontalBarLeft, true)
-    self:HideTexture(MacroFrameSelectedMacroBackground)
-    self:SetScrollBar(MacroFrame.MacroSelector)
-    self:SetScrollBar(_G['WoWToolsMacroPlusNoteEditBox'])
-    self:SetScrollBar(MacroFrameScrollFrame)
-    self:SetButton(MacroFrameCloseButton, {all=true})
-end
-
 
 
 
@@ -2515,7 +2499,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
 
     self:Init_BGMenu_Frame(ProfessionsBookFrame, {
-        settings=function(texture, alpha)--设置内容时，调用
+        settings=function(_, texture, alpha)--设置内容时，调用
             ProfessionsBookPage1:SetAlpha(texture and 0 or alpha or 1)
             ProfessionsBookPage2:SetAlpha(texture and 0 or alpha or 1)
         end,

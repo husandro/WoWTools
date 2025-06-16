@@ -21,7 +21,8 @@ local function Init_Menu(self, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
-    local sub, num, num2, text
+
+    local sub, sub2, num, num2, text
 
 --备注
     root:CreateButton(
@@ -63,19 +64,23 @@ local PointTab={
         if info=='-' then
             sub:CreateDivider()
         else
-            sub:CreateRadio(
+            sub2= sub:CreateRadio(
                 info.text,
             function(data)
                 return Save().toRightLeft==data.value
             end, function(data)
                 if not WoWTools_FrameMixin:IsLocked(MacroFrame) then
                     Save().toRightLeft=data.value
-                    --self:set_texture()
                     WoWTools_Mixin:Call(MacroFrame.ChangeTab, MacroFrame, 1)
                     TargetButton:settings()
+                    WoWTools_MacroMixin:Init_Set_BG()
                 end
                 return MenuResponse.Refresh
             end, {value=info.value})
+
+            sub2:SetTooltip(function(tooltip, desc)
+                tooltip:AddLine(desc.data.value)
+            end)
         end
     end
 

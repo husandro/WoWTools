@@ -570,7 +570,7 @@ local function Init_Texture(self)
     AccountBankPanel.Background:SetAllPoints()
 
     self:Init_BGMenu_Frame(BankFrame, {
-        settings=function(texture, alpha)
+        settings=function(_, texture, alpha)
             AccountBankPanel.Background:SetAlpha(texture and 0 or alpha or 1)
         end
     })
