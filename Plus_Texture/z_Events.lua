@@ -2444,7 +2444,7 @@ end
 
 --宏
 function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
-    self:SetFrame(MacroFrame, {notAlpha=true})
+    self:HideFrae(MacroFrame, {notAlpha=true})
     self:SetNineSlice(MacroFrameInset)
     self:SetNineSlice(MacroFrame)
     self:SetNineSlice(MacroFrameTextBackground, nil, nil, nil, true)
