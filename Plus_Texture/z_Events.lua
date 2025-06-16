@@ -2444,12 +2444,13 @@ end
 
 --宏
 function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
-    self:HideFrae(MacroFrame, {notAlpha=true})
-    self:SetNineSlice(MacroFrameInset)
+    self:HideFrame(MacroFrame)
     self:SetNineSlice(MacroFrame)
+
+    self:SetNineSlice(MacroFrameInset, nil, true)
+    self:HideFrame(MacroFrameInset)
     self:SetNineSlice(MacroFrameTextBackground, nil, nil, nil, true)
-    self:HideTexture(MacroFrameBg)
-    self:SetAlphaColor(MacroFrameInset.Bg)
+
     self:SetAlphaColor(MacroHorizontalBarLeft, true)
     self:HideTexture(MacroFrameSelectedMacroBackground)
     self:SetScrollBar(MacroFrame.MacroSelector)
