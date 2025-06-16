@@ -218,13 +218,13 @@ function WoWTools_QuestMixin:GetQuestAll()
     end
     local num= select(2, C_QuestLog.GetNumQuestLogEntries())
     local all=C_QuestLog.GetAllCompletedQuestIDs() or {}--完成次数
-    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), self:GetColor('Day').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
+    GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '已完成' or  CRITERIA_COMPLETED)..' '..WoWTools_Mixin:MK(#all, 3), self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..GetDailyQuestsCompleted()..format('|A:%s:0:0|a', 'common-icon-checkmark'))
     GameTooltip:AddLine(WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '上限' or CAPPED)..': '..(numQuest+ dayNum+ weekNum)..'/'..(C_QuestLog.GetMaxNumQuestsCanAccept() or 38))
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '当前地图' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REFORGE_CURRENT, WORLD_MAP))..': '..inMapNum)
     GameTooltip:AddLine(' ')
-    GameTooltip:AddLine(self:GetColor('Day').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..dayNum)
-    GameTooltip:AddLine(self:GetColor('Week').hex..(WoWTools_DataMixin.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
+    GameTooltip:AddLine(self:GetColor('Daily').hex..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY)..': '..dayNum)
+    GameTooltip:AddLine(self:GetColor('Weekly').hex..(WoWTools_DataMixin.onlyChinese and '周长' or WEEKLY)..': '..weekNum)
     GameTooltip:AddLine((num>=MAX_QUESTS and '|cnRED_FONT_COLOR:' or '|cffffffff')..(WoWTools_DataMixin.onlyChinese and '一般' or RESISTANCE_FAIR)..': '..numQuest..'/'..MAX_QUESTS)
     GameTooltip:AddLine(' ')
     GameTooltip:AddLine(self:GetColor('Legendary').hex..(WoWTools_DataMixin.onlyChinese and '传说' or GARRISON_FOLLOWER_QUALITY6_DESC)..': '..legendaryNum)
@@ -259,15 +259,25 @@ end
 [Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
 ]]
 local QustColorTab={
-    Day={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--日常
-    Week={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
+    Important={r=1, g=0, b=1, hex='|cffff00ff'},--重要
     Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说, 战役
-    Calling={r=1, g=0, b=0.9, hex='|cffff00e6'},--使命
+    Campaign={},
+	Calling={r=1, g=0, b=0.9, hex='|cffff00e6'},--使命
+	Meta={r=1,g=1,b=1, hex='|cffffffff'},--综合
+
+	Recurring={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--可重复
+	Questline={r=0.67, g=0.83, b=0.45, hex='|cffaad372'},--故事线
+	Normal={r=1,g=1,b=1, hex='|cffffffff'},--普通
+	BonusObjective={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--威胁
+	Threat={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},--威胁
+	WorldQuest={r=0.9, g=0.8, b=0.5, hex='|cffe6cc80'},--威胁
+    
 
     Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty
     Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
     Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
-    Impossible={r=1, g=0, b=0.08, hex='|cffff0014'},--4
+    Impossible={r=1, g=0, b=1, hex='|cffff00ff'},--4
+
 
     Story={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},
     Complete={r=0.10, g=1.00, b=0.10, a=1.00, hex='|cff19ff19'},
@@ -277,9 +287,32 @@ local QustColorTab={
     WoW={r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},
     PvP={r=0.80, g=0.30, b=0.22, a=1.00, hex='|cffcc4d38'},
 
-    Scheduler= {r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'}--游戏活动
+    Default={r=1,g=1,b=1, hex='|cffffffff'},
+    Daily={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--日常
+    Week={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
+    ResetByScheduler= {r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},--游戏活动
+
+
+   
+    
+    --[[
+0	Important	
+1	Legendary	
+2	Campaign	
+3	Calling	
+4	Meta	
+5	Recurring	
+6	Questline	
+7	Normal	
+8	BonusObjective	11.0.2
+9	Threat	11.0.2
+10	WorldQuest	11.0.2
+    ]]
+    
+
+    
 }
-function WoWTools_QuestMixin:GetColor(text, questID, frequency)
+function WoWTools_QuestMixin:GetColor(text, questID)
 
     if text then
         return QustColorTab[text]
@@ -335,7 +368,7 @@ function WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, isComplete)--
         tagID, color, atlas= "FAILED", self:GetColor('Failed'), nil
 
     elseif tagInfo.tagID==267 or tagInfo.tagName==TRADE_SKILLS then--专业
-        tagID, color, atlas= nil, self:GetColor('Week'), '|A:Professions-Icon-Quality-Mixed-Small:0:0|a'
+        tagID, color, atlas= nil, self:GetColor('Weekly'), '|A:Professions-Icon-Quality-Mixed-Small:0:0|a'
 
     elseif info.isCalling then
         local secondsRemaining = C_TaskQuest.GetQuestTimeLeftSeconds(questID)
@@ -358,10 +391,10 @@ function WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, isComplete)--
         end
 
     elseif info.frequency == Enum.QuestFrequency.Daily then--日常
-        tagID, color, atlas= "DAILY", self:GetColor('Day'), nil
+        tagID, color, atlas= "DAILY", self:GetColor('Daily'), nil
 
     elseif info.frequency == Enum.QuestFrequency.Weekly then--周常
-        tagID, color, atlas= "WEEKLY", self:GetColor('Week'), nil
+        tagID, color, atlas= "WEEKLY", self:GetColor('Weekly'), nil
 
     else
         tagID, color, atlas= tagInfo.tagID, nil, nil

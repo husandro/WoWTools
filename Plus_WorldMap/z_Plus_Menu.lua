@@ -2,6 +2,7 @@
 
 local function Is_Check(info, tab)
     local complete= tab.complete
+
     local frequency= tab.frequency
     local class= tab.questClassification
 
@@ -57,28 +58,37 @@ end
 
 
 
-
+local function Color(text)
+    local hex
+    if text then
+        local col= WoWTools_QuestMixin:GetColor(text)
+        if col then
+            hex= col.hex
+        end
+    end
+    return hex or ''
+end
 
 local frequencyText={
-    [0]= '|cffffffff'..(WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT),
-    [1]= '|cff1062cf'..(WoWTools_DataMixin.onlyChinese and '日常' or DAILY),
-    [2]= '|cff05ffa8'..(WoWTools_DataMixin.onlyChinese and '每周' or WEEKLY),
-    [3]= '|cff00ccff'..(WoWTools_DataMixin.onlyChinese and '游戏活动' or EVENT_SCHEDULER_FRAME_LABEL),
+[0]= WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
+[1]= WoWTools_DataMixin.onlyChinese and '日常' or DAILY,
+[2]= WoWTools_DataMixin.onlyChinese and '每周' or WEEKLY,
+[3]= WoWTools_DataMixin.onlyChinese and '游戏活动' or EVENT_SCHEDULER_FRAME_LABEL,
 }
 
 
 local classText={
-    [0]=WoWTools_DataMixin.onlyChinese and '重要' or QUEST_CLASSIFICATION_IMPORTANT,
-    [1]=WoWTools_DataMixin.onlyChinese and '传说' or QUEST_CLASSIFICATION_LEGENDARY,
-    [2]=WoWTools_DataMixin.onlyChinese and '战役' or QUEST_CLASSIFICATION_CAMPAIGN,
-    [3]=WoWTools_DataMixin.onlyChinese and '使命' or QUEST_CLASSIFICATION_CALLING,
-    [4]=WoWTools_DataMixin.onlyChinese and '统合' or QUEST_CLASSIFICATION_META,
-    [5]=WoWTools_DataMixin.onlyChinese and '可重复' or QUEST_CLASSIFICATION_RECURRING,
-    [6]=WoWTools_DataMixin.onlyChinese and '故事线' or QUEST_CLASSIFICATION_QUESTLINE,
-    [7]=WoWTools_DataMixin.onlyChinese and '普通' or PLAYER_DIFFICULTY1,
-    [8]=WoWTools_DataMixin.onlyChinese and '奖励目标' or MAP_LEGEND_BONUSOBJECTIVE,
-    [9]=WoWTools_DataMixin.onlyChinese and '威胁' or PING_TYPE_THREAT,
-    [10]=WoWTools_DataMixin.onlyChinese and '世界任务' or WORLD_QUEST_BANNER,
+[0]= WoWTools_DataMixin.onlyChinese and '重要' or QUEST_CLASSIFICATION_IMPORTANT,
+[1]= WoWTools_DataMixin.onlyChinese and '传说' or QUEST_CLASSIFICATION_LEGENDARY,
+[2]= WoWTools_DataMixin.onlyChinese and '战役' or QUEST_CLASSIFICATION_CAMPAIGN,
+[3]= WoWTools_DataMixin.onlyChinese and '使命' or QUEST_CLASSIFICATION_CALLING,
+[4]= WoWTools_DataMixin.onlyChinese and '综合' or QUEST_CLASSIFICATION_META,
+[5]= WoWTools_DataMixin.onlyChinese and '可重复' or QUEST_CLASSIFICATION_RECURRING,
+[6]= WoWTools_DataMixin.onlyChinese and '故事线' or QUEST_CLASSIFICATION_QUESTLINE,
+[7]= WoWTools_DataMixin.onlyChinese and '普通' or PLAYER_DIFFICULTY1,
+[8]= WoWTools_DataMixin.onlyChinese and '奖励目标' or MAP_LEGEND_BONUSOBJECTIVE,
+[9]= WoWTools_DataMixin.onlyChinese and '威胁' or PING_TYPE_THREAT,
+[10]=WoWTools_DataMixin.onlyChinese and '世界任务' or WORLD_QUEST_BANNER,
 }
 
 
@@ -112,7 +122,8 @@ local function Init_Menu(self, root)
                 frequency[info.frequency]= (frequency[info.frequency] or 0)+1
             end
 --classification 数量
-            if info.classification then
+            if info.questClassification	 then
+                print(info.questClassification	)
                 class[info.questClassification]= (class[info.questClassification] or 0)+1
             end
 --完成数量
@@ -148,7 +159,8 @@ set_tooltip(sub)
 
 --QuestFrequency 频率
 for enum, index in pairs(Enum.QuestFrequency) do
-    name= (frequencyText[index] or enum)
+    name= Color(enum)
+        ..(frequencyText[index] or enum)
         ..' #'
         ..(frequency[index] and '|cnGREEN_FONT_COLOR:' or '|cff626262')
         ..(frequency[index] or 0)
@@ -175,7 +187,8 @@ end
 --QuestClassification 类型
 sub:CreateDivider()
 for enum, index in pairs(Enum.QuestClassification) do
-    name= (classText[index] or enum)
+    name= Color(enum)
+        ..(classText[index] or enum)
         ..' #'
         ..(class[index] and '|cnGREEN_FONT_COLOR:' or '|cff626262')
         ..(class[index] or 0)
@@ -200,7 +213,12 @@ end
 
 --任务完成
 sub:CreateDivider()
-name= (WoWTools_DataMixin.onlyChinese and '任务完成' or QUEST_COMPLETE)..' #|cnGREEN_FONT_COLOR:'
+name= Color('Complete')
+    ..(WoWTools_DataMixin.onlyChinese and '任务完成' or QUEST_COMPLETE)
+    ..' #'
+    ..(complete>0 and '|cnGREEN_FONT_COLOR' or '|cff626262')
+    ..complete
+
 sub:CreateButton(
     name,
 function(data)
@@ -272,11 +290,14 @@ local function Init()
         OnAccept = function(_, data)
            Abandon_Quest(data)
         end,
-        whileDead=true, hideOnEscape=true, exclusive=true,
+        whileDead=true,
+        hideOnEscape=true,
+        exclusive=true,
+
         showAlert= true,
         fullScreenCover =true,
         --timeout=60,
-        acceptDelay= not WoWTools_DataMixin.Player.husandro and 2 or nil,
+        acceptDelay= 1--not WoWTools_DataMixin.Player.husandro and 2 or nil,
     }
 
 
