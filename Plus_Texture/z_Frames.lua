@@ -11,7 +11,11 @@ function WoWTools_TextureMixin.Frames:GossipFrame()
     self:SetScrollBar(GossipFrame.GreetingPanel)
 
     self:Init_BGMenu_Frame(GossipFrame, {
+        enabled=true,
         alpha=1,
+        settings=function(_, texture, alpha)
+            GossipFrame.Background:SetAlpha(texture and 0 or alpha or 1)
+        end
     })
 end
 
@@ -41,10 +45,13 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:SetScrollBar(QuestNPCModelTextScrollChildFrame)
 
     self:Init_BGMenu_Frame(QuestFrame, {
+        enabled=true,
+        alpha=1,
         settings=function(_, texture, alpha)
             alpha= texture and 0 or alpha or 1
             QuestFrameRewardPanelBg:SetAlpha(alpha)
             QuestFrameDetailPanelBg:SetAlpha(alpha)
+            QuestFrameProgressPanelBg:SetAlpha(alpha)
         end
     })
 end
@@ -270,8 +277,8 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
     self:HideTexture(ChatFrame1BottomLeftTexture)
 
     self:Init_BGMenu_Frame(GeneralDockManager, {
-        --name='ChatFrame1',
         menuTag= 'MENU_FCF_TAB',
+        enabled=true,
         alpha=0,
         bgPoint=function(icon)
             icon:SetAllPoints(ChatFrame1Background)
@@ -326,6 +333,8 @@ function WoWTools_TextureMixin.Frames:ItemTextFrame()
     self:SetAlphaColor(ItemTextMaterialBotRight, nil, nil, 0.3)
 
     self:Init_BGMenu_Frame(ItemTextFrame, {
+        enabled=true,
+        alpha=1,
         settings=function(_, texture, alpha)
             ItemTextFramePageBg:SetAlpha(texture and 0 or alpha or 1)
         end

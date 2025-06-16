@@ -51,6 +51,7 @@ StaticPopupDialogs['WoWTools_RestData']= {
     hideOnEscape=true,
     exclusive=true,
     showAlert=true,
+    acceptDelay= not WoWTools_DataMixin.Player.husandro and 3 or nil,
 }
 --StaticPopup_Show('WoWTools_RestData','aa', nil, function() print('c') end)
 

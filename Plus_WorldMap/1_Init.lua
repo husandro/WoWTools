@@ -21,6 +21,15 @@ local P_Save={
     ShowDungeon_Name=true,
     ShowWorldQues_Name=true,
     --ShowFlightMap_Name=true,
+    --[[Abandon={
+        filter={
+            Complete=true,
+            Campaign=true,
+            Important=true,
+            Legendary=true,
+            Calling=true,
+        }
+    },]]
 }
 
 
@@ -35,7 +44,8 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-             WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or P_Save
+            WoWToolsSave['Plus_WorldMap']= WoWToolsSave['Plus_WorldMap'] or P_Save
+            --WoWToolsSave['Plus_WorldMap'].Abandon= WoWToolsSave['Plus_WorldMap'].Abandon or P_Save.Abandon
 
             WoWTools_WorldMapMixin.addName= '|A:poi-islands-table:0:0|a'..(WoWTools_DataMixin.onlyChinese and '世界地图' or WORLDMAP_BUTTON)
             --WoWTools_WorldMapMixin.addName2= WoWTools_DataMixin.onlyChinese and '时实坐标' or RESET_POSITION:gsub(RESET, PLAYER)

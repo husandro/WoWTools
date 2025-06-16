@@ -972,8 +972,9 @@ end
 --[[
 WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     name=名称,
-    icon=icon,
+    
     alpha=0,--默认alpha
+    
     settings=function(icon, textureName, alphaValue)--设置内容时，调用
     end,
     notAnims=true,
@@ -1008,7 +1009,13 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
     end
 
     tab.name= name
-    Save().Add[name]= Save().Add[name] or {}
+    
+    Save().Add[name]= Save().Add[name] or {
+        enabled=tab.enabled,
+        texture=tab.texture,
+        alpha=tab.alpha,
+        notLayer=tab.notLayer,
+    }
 
 --创建图片
     frame[BGName]= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)

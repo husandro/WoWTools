@@ -5912,7 +5912,18 @@
         "QuestFrameRewardPanelBg",
         "QuestFrameDetailPanelBg",
         "ItemTextFrameCloseButton",
-        "ItemTextFramePageBg"
+        "ItemTextFramePageBg",
+        "ItemTextPageText",
+        "ItemTextPageScrollChild",
+        "QuestFrameProgressPanelBg",
+        "EVENT_SCHEDULER_FRAME_LABEL",
+        "Important",
+        "Campaign",
+        "Meta",
+        "QUEST_COMPLETE",
+        "MAP_LEGEND_BONUSOBJECTIVE",
+        "WORLD_QUEST_BANNER",
+        "PING_TYPE_THREAT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

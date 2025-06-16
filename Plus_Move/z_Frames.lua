@@ -25,10 +25,13 @@ function WoWTools_MoveMixin.Frames:GossipFrame()
     GossipFrame.GreetingPanel.ScrollBox:SetPoint('BOTTOMRIGHT', -28,28)
     GossipFrame.Background:SetPoint('BOTTOMRIGHT', -28,28)
 
-    self:Setup(GossipFrame, {minW=220, minH=220, setSize=true,
-    sizeRestFunc=function()
-        GossipFrame:SetSize(384, 512)
-    end
+    self:Setup(GossipFrame, {
+        minW=220,
+        minH=220,
+        setSize=true,
+        sizeRestFunc=function()
+            GossipFrame:SetSize(384, 512)
+        end
     })
 end
 
@@ -233,7 +236,11 @@ function WoWTools_MoveMixin.Frames:LootFrame()
     end})
 end
 
-
 function WoWTools_MoveMixin.Frames:ItemTextFrame()
-    self:Setup(ItemTextFrame, {setSize=true})
+    self:Setup(ItemTextFrame, {
+        --setSize=true,
+        sizeRestFunc=function()
+            ItemTextFrame:SetSize(338, 424)
+        end
+    })
 end

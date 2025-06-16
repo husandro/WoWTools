@@ -25,10 +25,15 @@ local P_Save={
             alpha=0.3
         },
         Add={--分开设置
-           --[name]={enabled=true, alpha=0.5, texture=texture or atlas, notLayer=true}
-           ['GeneralDockManager']= {enabled=true, alpha=0},
-           ['GossipFrame']={enabled=true, alpha=1},
-           ['ItemTextFrame']={enabled=true, alpha=1},
+--[[   
+            [name]={
+                enabled=true,--分开设置
+                alpha=0.5,
+                texture=texture or atlas,
+                notLayer=true-- self:SetDrawLayerEnabled('BACKGROUND', not Save().Add[name].notLayer)
+            }
+]]
+       
         },
         Anims={
             --disabled=true,
