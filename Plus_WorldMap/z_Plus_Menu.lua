@@ -122,8 +122,7 @@ local function Init_Menu(self, root)
                 frequency[info.frequency]= (frequency[info.frequency] or 0)+1
             end
 --classification 数量
-            if info.questClassification	 then
-                print(info.questClassification	)
+            if info.questClassification	then
                 class[info.questClassification]= (class[info.questClassification] or 0)+1
             end
 --完成数量
