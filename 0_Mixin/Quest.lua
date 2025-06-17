@@ -266,7 +266,7 @@ local QustColorTab={
 	Meta={r=1,g=1,b=1, hex='|cffffffff'},--综合 C_QuestLog.IsMetaQuest(questID) 
 
 	Recurring={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--可重复 C_QuestLog.IsRepeatableQuest(questID)
-	Questline={r=0.67, g=0.83, b=0.45, hex='|cffaad372'},--故事线
+	Questline={r=0.67, g=0.83, b=0.45, hex='|cffaad372'},--故事线 IsStoryQuest(questID)
 	Normal={r=1,g=1,b=1, hex='|cffffffff'},--普通
 	BonusObjective={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--C_QuestLog.IsQuestBounty(questID) 
 	Threat={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},--威胁 C_QuestLog.IsThreatQuest(questID)
