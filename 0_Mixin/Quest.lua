@@ -259,21 +259,21 @@ end
 [Enum.StatusBarColorTintValue.Blue] = RARE_BLUE_COLOR,
 ]]
 local QustColorTab={
-    Important={r=1, g=0, b=1, hex='|cffff00ff'},--重要
-    Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说, 战役
-    Campaign={},
-	Calling={r=1, g=0, b=0.9, hex='|cffff00e6'},--使命
-	Meta={r=1,g=1,b=1, hex='|cffffffff'},--综合
+    Important={r=1, g=0, b=1, hex='|cffff00ff'},--重要 C_QuestLog.IsImportantQuest(questID)
+    Legendary={r=1, g=0.49, b=0, hex='|cffff7d00'},--传说,
+    Campaign={r=1, g=0.82, b=0, hex='|cffffd100'},--战役 C_CampaignInfo.IsCampaignQuest(questID)
+	Calling={r=0.53, g=0.53, b=0.93, hex='|cff8788ee'},--使命 C_QuestLog.IsQuestCalling(questID)
+	Meta={r=1,g=1,b=1, hex='|cffffffff'},--综合 C_QuestLog.IsMetaQuest(questID) 
 
-	Recurring={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--可重复
+	Recurring={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--可重复 C_QuestLog.IsRepeatableQuest(questID)
 	Questline={r=0.67, g=0.83, b=0.45, hex='|cffaad372'},--故事线
 	Normal={r=1,g=1,b=1, hex='|cffffffff'},--普通
-	BonusObjective={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--威胁
-	Threat={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},--威胁
-	WorldQuest={r=0.9, g=0.8, b=0.5, hex='|cffe6cc80'},--威胁
+	BonusObjective={r=0.09, g=0.78, b=0.39, a=1.00, hex='|cff17c864'},--C_QuestLog.IsQuestBounty(questID) 
+	Threat={r=1.00, g=0.00, b=0.00, a=1.00, hex='|cffff0000'},--威胁 C_QuestLog.IsThreatQuest(questID)
+	WorldQuest={r=0.9, g=0.8, b=0.5, hex='|cffe6cc80'},--世界任务 C_QuestLog.IsWorldQuest(questID)
     
 
-    Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty
+    Trivial={r=0.53, g=0.53, b=0.53, hex='|cff878787'},--0 难度 Difficulty C_QuestLog.IsQuestTrivial(questID)
     Easy={r=0.63, g=1, b=0.61, hex='|cffa1ff9c'},--1
     Difficult={r=1, g=0.43, b=0.42, hex='|cffff6e6b'},--3
     Impossible={r=1, g=0, b=1, hex='|cffff00ff'},--4
@@ -289,29 +289,13 @@ local QustColorTab={
 
     Default={r=1,g=1,b=1, hex='|cffffffff'},
     Daily={r=0.06, g=0.38, b=0.81, hex='|cff1062cf'},--日常
-    Week={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
+    Weekly={r=0.02, g=1, b=0.66, hex='|cff05ffa8'},--周长
     ResetByScheduler= {r=0.00, g=0.80, b=1.00, a=1.00, hex='|cff00ccff'},--游戏活动
-
-
-   
-    
-    --[[
-0	Important	
-1	Legendary	
-2	Campaign	
-3	Calling	
-4	Meta	
-5	Recurring	
-6	Questline	
-7	Normal	
-8	BonusObjective	11.0.2
-9	Threat	11.0.2
-10	WorldQuest	11.0.2
-    ]]
-    
-
-    
 }
+
+
+    
+
 function WoWTools_QuestMixin:GetColor(text, questID)
 
     if text then
