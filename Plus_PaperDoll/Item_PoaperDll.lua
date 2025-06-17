@@ -208,11 +208,13 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
 
         end
     end
-    if self.noEnchant and not WoWTools_FrameMixin:IsLocked(self.noEnchant) then
+    if self.noEnchant then
         self.noEnchant.tab=tab
-        self.noEnchant:SetShown(tab and true or false)
-        if tab then
+        if tab and self.noEnchant:CanChangeAttribute() then
             self.noEnchant:SetAttribute("item", tab.bag..' '..tab.slot)
+        end
+        if not WoWTools_FrameMixin:IsLocked(self.noEnchant) then
+            self.noEnchant:SetShown(tab and true or false)
         end
     end
 end
