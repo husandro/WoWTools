@@ -149,13 +149,13 @@ local function QuestList_Tooltip(tooltip, data)
         end
     end
     
-    --[[if QuestScrollFrame.SearchBox:IsEnabled() then
+    if QuestScrollFrame.SearchBox:IsEnabled() then
         if text then
-           -- QuestScrollFrame.SearchBox:SetText(text)
+           QuestScrollFrame.SearchBox:SetText(text)
         else
-            --QuestScrollFrame.SearchBox:Clear()
+            QuestScrollFrame.SearchBox:Clear()
         end
-    end]]
+    end
 end
 
 
