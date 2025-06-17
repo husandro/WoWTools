@@ -592,7 +592,7 @@ WoWTools_MenuMixin:OpenJournal(root, {--战团藏品
 function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
     local sub=root:CreateButton(
         tab.name or ('|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON)),
-    function(data)
+    function()
         if SettingsPanel:IsShown() then--ToggleGameMenu()
             SettingsPanel:Close()
         end
@@ -603,15 +603,7 @@ function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
             PlayerSpellsUtil.OpenToClassTalentsTab()
 
         elseif tab.index== PlayerSpellsUtil.FrameTabs.SpellBook then--3
-            --[[if data.spellBookCategory then
-                PlayerSpellsUtil:OpenToSpellBookTabAtCategory(data.spellBookCategory)
-            end]]
-
-            --if tab.spellID then--bug
-                --PlayerSpellsUtil.OpenToSpellBookTabAtSpell(data.spellID)-- PlayerSpellsUtil.OpenToSpellBookTabAtSpell(spellID, knownSpellsOnly, toggleFlyout, flyoutReason)
-            --else
-                PlayerSpellsUtil.OpenToSpellBookTab()
-            --end
+            PlayerSpellsUtil.OpenToSpellBookTab()
         end
 
         return MenuResponse.Refresh

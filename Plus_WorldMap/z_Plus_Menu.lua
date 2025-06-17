@@ -105,12 +105,12 @@ end
 
 
 local function QuestList_Tooltip(tooltip, data)
-    tooltip:AddDoubleLine(data.name, data.num)
+    tooltip:AddDoubleLine(data.name, '#'..data.num)
 
     if data.enum then
-        tooltip:AddDoubleLine(
-            'Enum.'..data.type..'.'..data.enum,
-            Enum[data.type][data.enum]
+        tooltip:AddLine(
+            'Enum.'..data.type..'.'..data.enum
+            --Enum[data.type][data.enum]
         )
     end
     if data.num>0 then
@@ -130,7 +130,11 @@ local function QuestList_Tooltip(tooltip, data)
             tooltip:AddDoubleLine(
                 WoWTools_TextMixin:CN(
                     GetQuestLink(info.questID) or info.title or info.questID, {questID=info.questID, isName=true}
-                ),
+                )
+                ..(C_QuestLog.IsComplete(info.questID) and ' |cnGREEN_FONT_COLOR:'..(
+                    WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
+                ) or '')
+                ,
                 '|cffffffff'..num..')'
             )
 
@@ -226,7 +230,7 @@ for _, tab in pairs(AbandoList) do
         name= (tab.enum and Color(tab.enum) or Color(tab.type))
             ..tab.name
             ..' #'
-            ..(num==0 and '|cff626262' or '')
+            ..(num==0 and '|cff626262' or '|cffffffff')
             ..num
 
         sub2=sub:CreateButton(
