@@ -404,6 +404,7 @@ local function Init()
     end
 
     --FloatingPetBattleAbilityTooltip
+    --StoryHeaderMixin:ShowTooltip() QuestScrollFrame.StoryTooltip
     Init=function()end
 end
 

@@ -117,6 +117,7 @@ local function QuestList_Tooltip(tooltip, data)
         tooltip:AddLine(' ')
     end
 
+    local text
     local num=0
     for index=1, C_QuestLog.GetNumQuestLogEntries() do
         local info=C_QuestLog.GetInfo(index)
@@ -126,7 +127,15 @@ local function QuestList_Tooltip(tooltip, data)
             and Is_Check(info, data)
         then
 
+            
+--QuestMapFrame.QuestsFrame.ScrollFrame:ScrollToQuest(info.questID)
+--QuestMapFrame:OnHighlightedQuestPOIChange(info.questID)
+
             num=num+1
+
+            if num==1 then
+               text= info.title
+            end
             tooltip:AddDoubleLine(
                 WoWTools_TextMixin:CN(
                     GetQuestLink(info.questID) or info.title or info.questID, {questID=info.questID, isName=true}
@@ -137,9 +146,16 @@ local function QuestList_Tooltip(tooltip, data)
                 ,
                 '|cffffffff'..num..')'
             )
-
         end
     end
+    
+    --[[if QuestScrollFrame.SearchBox:IsEnabled() then
+        if text then
+           -- QuestScrollFrame.SearchBox:SetText(text)
+        else
+            --QuestScrollFrame.SearchBox:Clear()
+        end
+    end]]
 end
 
 
