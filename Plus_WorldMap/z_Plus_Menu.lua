@@ -1,40 +1,4 @@
-local AbandoList= {
-{name='|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED), type='All'},
-{name='-'},
-
-{name=WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, type='QuestFrequency', enum='Default'},--0
-{name=WoWTools_DataMixin.onlyChinese and '日常' or DAILY, type='QuestFrequency', enum='Daily'},
-{name=WoWTools_DataMixin.onlyChinese and '每周' or WEEKLY, type='QuestFrequency', enum='Weekly'},
-{name=WoWTools_DataMixin.onlyChinese and '游戏活动' or EVENT_SCHEDULER_FRAME_LABEL, type='QuestFrequency', enum='ResetByScheduler'},--3
-{name='-'},
-
-{name=WoWTools_DataMixin.onlyChinese and '重要' or QUEST_CLASSIFICATION_IMPORTANT, type='QuestClassification', enum='Important'},--0
-{name=WoWTools_DataMixin.onlyChinese and '传说' or QUEST_CLASSIFICATION_LEGENDARY, type='QuestClassification', enum='Legendary'},
-{name=WoWTools_DataMixin.onlyChinese and '战役' or QUEST_CLASSIFICATION_CAMPAIGN, type='QuestClassification', enum='Campaign'},
-{name=WoWTools_DataMixin.onlyChinese and '使命' or QUEST_CLASSIFICATION_CALLING, type='QuestClassification', enum='Calling'},
-{name=WoWTools_DataMixin.onlyChinese and '综合' or QUEST_CLASSIFICATION_META, type='QuestClassification', enum='Meta'},
-{name=WoWTools_DataMixin.onlyChinese and '可重复' or QUEST_CLASSIFICATION_RECURRING, type='QuestClassification', enum='Recurring'},
-{name=WoWTools_DataMixin.onlyChinese and '故事线' or QUEST_CLASSIFICATION_QUESTLINE, type='QuestClassification', enum='Questline'},
-{name=WoWTools_DataMixin.onlyChinese and '普通' or PLAYER_DIFFICULTY1, type='QuestClassification', enum='Normal'},
-{name=WoWTools_DataMixin.onlyChinese and '奖励目标' or MAP_LEGEND_BONUSOBJECTIVE, type='QuestClassification', enum='BonusObjective'},
-{name=WoWTools_DataMixin.onlyChinese and '威胁' or PING_TYPE_THREAT, type='QuestClassification', enum='Threat'},
-{name=WoWTools_DataMixin.onlyChinese and '世界任务' or WORLD_QUEST_BANNER, type='QuestClassification', enum='WorldQuest'},--10
-{name='-'},
-
-{name=WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE, type='Complete'},
-{name=WoWTools_DataMixin.onlyChinese and '未完成' or INCOMPLETE, type='Incomplete'},
-{name=WoWTools_DataMixin.onlyChinese and '低等级' or TRIVIAL_QUEST_LABEL, type='Trivial'}
-}
-
-
-
-
-
-
-
-
-
-
+local AbandoList
 
 local function Is_Check(info, tab)
     local All= tab.type=='All'
@@ -128,7 +92,7 @@ local function Abandon_Quest(tab)
             return
         end
     end
-    
+
 end
 
 
@@ -142,7 +106,7 @@ end
 
 local function QuestList_Tooltip(tooltip, data)
     tooltip:AddDoubleLine(data.name, data.num)
-    tooltip:AddDoubleLine(data.name, data.num)
+
     if data.enum then
         tooltip:AddDoubleLine(
             'Enum.'..data.type..'.'..data.enum,
@@ -159,13 +123,15 @@ local function QuestList_Tooltip(tooltip, data)
         if info
             and info.questID
             and C_QuestLog.CanAbandonQuest(info.questID)
-            and Is_Check(data)
+            and Is_Check(info, data)
         then
 
             num=num+1
             tooltip:AddDoubleLine(
-                GetQuestLink(info.questID) or info.title or info.questID,
-                num..')'
+                WoWTools_TextMixin:CN(
+                    GetQuestLink(info.questID) or info.title or info.questID, {questID=info.questID, isName=true}
+                ),
+                '|cffffffff'..num..')'
             )
 
         end
@@ -189,75 +155,70 @@ local function Init_Menu(self, root)
         return
     end
 
+    local sub, sub2, name, info
 
-    local Num={
-        Totale=0,
-        All=0,
-        Complete=0,
-        Incomplete=0,
-        Trivial=0,
-        QuestFrequency={},
-        QuestClassification={}
-    }
-    local sub, sub2, name
+    root:CreateDivider()
+    sub= root:CreateButton(
+        (WoWTools_DataMixin.onlyChinese and '放弃任务' or ABANDON_QUEST)
+        ..' #'
+        ..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0),
+    function()
+        return MenuResponse.Open
+    end)
 
-    for index=1 , C_QuestLog.GetNumQuestLogEntries() do
-        local info=C_QuestLog.GetInfo(index)
-        if info and info.questID then
-            if C_QuestLog.CanAbandonQuest(info.questID) then
 
-                Num.All= Num.All+1
 
-    --frequency 数量
-                if info.frequency then
-                    Num.QuestFrequency[info.frequency]= (Num.QuestFrequency[info.frequency] or 0)+1
-                end
-    --classification 数量
-                if info.questClassification	then
-                    Num.QuestClassification[info.questClassification]= (Num.QuestClassification[info.questClassification] or 0)+1
-                end
-    --完成数量
-                if C_QuestLog.IsComplete(info.questID) then
-                    Num.Complete= Num.Complete+1
-                else
-                    Num.Incomplete= Num.Incomplete+1
-                end
 
-                if C_QuestLog.IsQuestTrivial(info.questID) then
-                    Num.Trivial= Num.Trivial+1
-                end
-    --加载数据  
-            elseif not info.isHeader and not info.isHidden then
-                Num.Totale=Num.Totale+1
-            end
 
-            WoWTools_Mixin:Load({id=info and info.questID, type='quest'})
+
+ local Num={
+    Totale=0,
+    All=0,
+    Complete=0,
+    Incomplete=0,
+    Trivial=0,
+    QuestFrequency={},
+    QuestClassification={}
+}
+
+for index=1 , C_QuestLog.GetNumQuestLogEntries() do
+    info=C_QuestLog.GetInfo(index)
+    if info and info.questID  and C_QuestLog.CanAbandonQuest(info.questID) then
+
+        Num.All= Num.All+1
+
+--frequency 数量
+        if info.frequency then
+            Num.QuestFrequency[info.frequency]= (Num.QuestFrequency[info.frequency] or 0)+1
         end
+--classification 数量
+        if info.questClassification	then
+            Num.QuestClassification[info.questClassification]= (Num.QuestClassification[info.questClassification] or 0)+1
+        end
+--完成数量
+        if C_QuestLog.IsComplete(info.questID) then
+            Num.Complete= Num.Complete+1
+        else
+            Num.Incomplete= Num.Incomplete+1
+        end
+--低等任务
+        if C_QuestLog.IsQuestTrivial(info.questID) then
+            Num.Trivial= Num.Trivial+1
+        end
+--加载数据
+        WoWTools_Mixin:Load({id=info and info.questID, type='quest'})
     end
-
-
-
-
-
-
-
-root:CreateDivider()
-sub= root:CreateButton(
-    (WoWTools_DataMixin.onlyChinese and '放弃任务' or ABANDON_QUEST)
-    ..' #'
-    ..Num.Totale,--(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0),
-function()
-    return MenuResponse.Open
-end)
-
+end
 
 for _, tab in pairs(AbandoList) do
     if tab.name=='-' then
         sub:CreateDivider()
     else
-        local num= Num[tab.type]
-        if type(num)=='table' then
-            num= tab.enum and num[tab.enum]
+        local num
+        if tab.enum then
+            num= Num[tab.type][Enum[tab.type][tab.enum]]
+        else
+            num= Num[tab.type]
         end
 
         num= num or 0
@@ -295,117 +256,12 @@ WoWTools_MenuMixin:SetScrollMode(sub)
 
 
 
---[[
---全部放弃
-root:CreateDivider()
-name= '|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED)
-    ..' #|cnGREEN_FONT_COLOR:'
-    ..num
-    ..'|r/'
-    ..(select(2, C_QuestLog.GetNumQuestLogEntries()) or 0)
-
-sub=root:CreateButton(
-    name,
-function(data)
-    StaticPopup_Show("WoWTools_WORLDMAP_ABANDONQUEST",
-        data.name,
-        nil,
-        {all=true}
-    )
-end, {name=name})
-sub:SetTooltip(function(tooltip)
-    tooltip:AddLine(WoWTools_WorldMapMixin.addName..WoWTools_DataMixin.Icon.icon2)
-end)
 
 
 
-QuestFrequency 频率
-for enum, index in pairs(Enum.QuestFrequency) do
-    name= Color(enum)
-        ..(frequencyText[index] or enum)
-        ..' #'
-        ..(frequency[index] and '|cnGREEN_FONT_COLOR:' or '|cff626262')
-        ..(frequency[index] or 0)
-
-    sub2= sub:CreateButton(
-        name,
-    function(data)
-        StaticPopup_Show("WoWTools_WORLDMAP_ABANDONQUEST",
-            data.name..'\n\n'..'Enum.QuestFrequency.'..data.enum,
-            nil,
-            data.check
-        )
-    end, {
-        name=name,
-        index=index,
-        enum=enum,
-        check={QuestFrequency=index},
-    })
-
-    sub2:SetTooltip(function(tooltip, desc)
-        tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '放弃任务' or ABANDON_QUEST, desc.data.name)
-        tooltip:AddLine('Enum.QuestFrequency.'..desc.data.enum..' = '..desc.data.index)
-        quest_list_tooltip(tooltip,  desc.data.check)
-    end)
-end
 
 
 
---QuestClassification 类型
-sub:CreateDivider()
-for enum, index in pairs(Enum.QuestClassification) do
-    name= Color(enum)
-        ..(classText[index] or enum)
-        ..' #'
-        ..(class[index] and '|cnGREEN_FONT_COLOR:' or '|cff626262')
-        ..(class[index] or 0)
-
-    sub2= sub:CreateButton(
-        name,
-    function(data)
-        StaticPopup_Show("WoWTools_WORLDMAP_ABANDONQUEST",
-            data.name..'\n\n'..'Enum.QuestClassification.'..data.enum,
-            nil,
-            data.check
-        )
-    end, {
-        name=name,
-        index=index,
-        enum=enum,
-        check={QuestClassification=index}
-    })
-
-    sub2:SetTooltip(function(tooltip, desc)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '放弃任务' or ABANDON_QUEST)
-        tooltip:AddLine(desc.data.name)
-        tooltip:AddLine('Enum.QuestClassification.'..desc.data.enum..' = '..desc.data.index)
-    end)
-
-    sub2:SetTooltip(function(tooltip, desc)
-        tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '放弃任务' or ABANDON_QUEST, desc.data.name)
-        tooltip:AddLine('Enum.QuestClassification.'..desc.data.enum..' = '..desc.data.index)
-        quest_list_tooltip(tooltip,  desc.data.check)
-    end)
-end
-
-
---任务完成
-sub:CreateDivider()
-name= Color('Complete')
-    ..(WoWTools_DataMixin.onlyChinese and '任务完成' or QUEST_COMPLETE)
-    ..' #'
-    ..(complete>0 and '|cnGREEN_FONT_COLOR' or '|cff626262')
-    ..complete
-
-sub:CreateButton(
-    name,
-function(data)
-    StaticPopup_Show("WoWTools_WORLDMAP_ABANDONQUEST",
-        data.name..'\n\n'..'Enum.QuestClassification.'..data.enum,
-        nil,
-        {complete=true}
-    )
-end, {name=name})]]
 
 
 
@@ -460,6 +316,42 @@ end
 
 
 local function Init()
+
+AbandoList= {
+{name='|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '全部放弃' or LOOT_HISTORY_ALL_PASSED), type='All'},
+{name='-'},
+
+{name=WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT, type='QuestFrequency', enum='Default'},--0
+{name=WoWTools_DataMixin.onlyChinese and '日常' or DAILY, type='QuestFrequency', enum='Daily'},
+{name=WoWTools_DataMixin.onlyChinese and '每周' or WEEKLY, type='QuestFrequency', enum='Weekly'},
+{name=WoWTools_DataMixin.onlyChinese and '游戏活动' or EVENT_SCHEDULER_FRAME_LABEL, type='QuestFrequency', enum='ResetByScheduler'},--3
+{name='-'},
+
+{name=WoWTools_DataMixin.onlyChinese and '重要' or QUEST_CLASSIFICATION_IMPORTANT, type='QuestClassification', enum='Important'},--0
+{name=WoWTools_DataMixin.onlyChinese and '传说' or QUEST_CLASSIFICATION_LEGENDARY, type='QuestClassification', enum='Legendary'},
+{name=WoWTools_DataMixin.onlyChinese and '战役' or QUEST_CLASSIFICATION_CAMPAIGN, type='QuestClassification', enum='Campaign'},
+{name=WoWTools_DataMixin.onlyChinese and '使命' or QUEST_CLASSIFICATION_CALLING, type='QuestClassification', enum='Calling'},
+{name=WoWTools_DataMixin.onlyChinese and '综合' or QUEST_CLASSIFICATION_META, type='QuestClassification', enum='Meta'},
+{name=WoWTools_DataMixin.onlyChinese and '可重复' or QUEST_CLASSIFICATION_RECURRING, type='QuestClassification', enum='Recurring'},
+{name=WoWTools_DataMixin.onlyChinese and '故事线' or QUEST_CLASSIFICATION_QUESTLINE, type='QuestClassification', enum='Questline'},
+{name=WoWTools_DataMixin.onlyChinese and '普通' or PLAYER_DIFFICULTY1, type='QuestClassification', enum='Normal'},
+{name=WoWTools_DataMixin.onlyChinese and '奖励目标' or MAP_LEGEND_BONUSOBJECTIVE, type='QuestClassification', enum='BonusObjective'},
+{name=WoWTools_DataMixin.onlyChinese and '威胁' or PING_TYPE_THREAT, type='QuestClassification', enum='Threat'},
+{name=WoWTools_DataMixin.onlyChinese and '世界任务' or WORLD_QUEST_BANNER, type='QuestClassification', enum='WorldQuest'},--10
+{name='-'},
+
+{name=WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE, type='Complete'},
+{name=WoWTools_DataMixin.onlyChinese and '未完成' or INCOMPLETE, type='Incomplete'},
+{name=WoWTools_DataMixin.onlyChinese and '低等级' or TRIVIAL_QUEST_LABEL, type='Trivial'}
+}
+
+
+
+
+
+
+
+
     StaticPopupDialogs["WoWTools_WORLDMAP_ABANDONQUEST"] =  {
         text= (WoWTools_DataMixin.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)
             ..'|n|n|cnYELLOW_FONT_COLOR:'
@@ -470,7 +362,7 @@ local function Init()
             PlaySound(SOUNDKIT.IG_QUEST_LOG_ABANDON_QUEST)
         end,
         OnAccept = function(_, data)
-           Abandon_Quest(data)
+            Abandon_Quest(data)
         end,
         whileDead=true,
         hideOnEscape=true,
