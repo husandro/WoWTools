@@ -115,6 +115,15 @@ local function set_Engineering(self, slot, link, use, isPaperDollItemSlot)
     self.engineering:SetShown(true)
 end
 
+
+
+
+
+
+
+
+
+
 local subClassToSlot={
     [1]= 0,--头	
     [2]= 1,--脖子	
@@ -205,7 +214,6 @@ local function set_no_Enchant(self, slot, find, isPaperDollItemSlot)--附魔，�
             local texture= self.noEnchant:CreateTexture(nil, 'OVERLAY')
             texture:SetAllPoints()
             texture:SetAtlas('bags-icon-addslots')
-
         end
     end
     if self.noEnchant then
@@ -527,11 +535,6 @@ elseif not Save().hide and self.SocketDisplay:IsShown() and link then
                 else
                     self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT', -8, 0)
                 end
-                --[[if isLeftSlot then
-                    self.SocketDisplay:SetPoint('RIGHT', self, 'LEFT')
-                else
-                    self.SocketDisplay:SetPoint('LEFT', self, 'RIGHT')
-                end]]
                 frame:SetSize(14, 14)
                 frame:SetFrameStrata('HIGH')
                 frame.Slot:ClearAllPoints()
@@ -546,7 +549,6 @@ elseif not Save().hide and self.SocketDisplay:IsShown() and link then
             frame.Slot:SetAtlas(atlas or 'character-emptysocket')
         end
     end
-
 end
 
 
@@ -610,6 +612,18 @@ end
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Slot_Num_Label(frame, slot, isEquipped)--栏位
     if not frame.slotText and not Save().hide and not isEquipped then
         frame.slotText=WoWTools_LabelMixin:Create(frame, {color=true, justifyH='CENTER', mouse=true})
@@ -649,10 +663,7 @@ end
 
 
 local function Init()
-
-    --#######
-    --装备属性
-    --#######
+--装备属性
     hooksecurefunc('PaperDollItemSlotButton_Update',  function(self)--PaperDollFrame.lua
         local slot= self:GetID()
         if not slot  then
@@ -697,6 +708,7 @@ local function Init()
             set_Slot_Num_Label(self, InventSlot_To_ContainerSlot[slot], isbagEquipped)--栏位
         end
     end)
+    Init=function()end
 end
 
 
