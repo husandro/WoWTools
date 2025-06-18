@@ -5925,7 +5925,10 @@
         "WORLD_QUEST_BANNER",
         "PING_TYPE_THREAT",
         "TRIVIAL_QUEST_LABEL",
-        "QuestLogSearchBoxMixin"
+        "QuestLogSearchBoxMixin",
+        "AchievementObjectives_DisplayProgressiveAchievement",
+        "AchievementFrameFilterDropdown",
+        "WeeklyRewardsMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

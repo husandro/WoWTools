@@ -553,7 +553,6 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
     --hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
 --成就，显示，按钮
     hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
-
         f.Label:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
         f.Label:SetPoint('LEFT', f.PlusMinus, 'RIGHT')
 
@@ -562,7 +561,9 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
 
         f.Reward:SetPoint('RIGHT', f.Shield.Icon, 'LEFT')
         f.Reward:SetPoint('LEFT', f.Icon, 'RIGHT')
-     end)
+    end)
+    --hooksecurefunc('AchievementObjectives_DisplayProgressiveAchievement', function(objectivesFrame, id)
+
 
 
     local left= -38
@@ -590,15 +591,14 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
 
     AchievementFrame.Header:ClearAllPoints()
     AchievementFrame.Header:SetPoint('BOTTOM', AchievementFrame, 'TOP', 0, -38)
+    
+    AchievementFrameFilterDropdown:ClearAllPoints()
+    AchievementFrameFilterDropdown:SetPoint('CENTER', AchievementFrame.Header.LeftDDLInset, -2, 3)
 --Search
-    AchievementFrame.SearchResults:ClearAllPoints()
+    --[[AchievementFrame.SearchResults:ClearAllPoints()
     AchievementFrame.SearchResults:SetPoint('BOTTOMLEFT', 100, 8)
     AchievementFrame.SearchResults:SetPoint('BOTTOMRIGHT', -100, 8)
-    AchievementFrame.SearchResults:SetPoint('TOP', 0, -250)
-
-    hooksecurefunc(AchievementFrame, 'SetWidth', function(f)
-        self:Set_SizeScale(f)
-    end)
+    AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)]]
 
     self:Setup(AchievementFrame, {
         minW=768,
@@ -609,18 +609,17 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
             AchievementFrame:SetSize(768, 500)
         end,
     })
-
-
     self:Setup(AchievementFrame.Header, {frame=AchievementFrame})
-
-    --比较
+--比较
     self:Setup(AchievementFrameComparisonHeader, {frame=AchievementFrame})
     self:Setup(AchievementFrameComparison, {frame=AchievementFrame})
     self:Setup(AchievementFrameComparison.AchievementContainer, {frame=AchievementFrame})
 
-    AchievementFrame.SearchResults:SetPoint('TOP', 0, -15)
-
-    --self:Setup(AchievementFrame.SearchResults)--:SetPoint('TOP', 0, -15)
+    hooksecurefunc(AchievementFrame, 'SetWidth', function(f)
+        if f.ResizeButton and not f.ResizeButton.isActiveButton then
+            self:Set_SizeScale(f)
+        end
+    end)
 end
 
 

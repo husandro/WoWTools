@@ -38,7 +38,7 @@ local function Color(text)
             hex= col.hex
         end
     end
-    return hex or ''
+    return hex
 end
 
 
@@ -58,7 +58,7 @@ local function Abandon_Quest(tab)
         ..'|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '放弃任务' or ABANDON_QUEST),
 
-        Color(tab.enum)..tab.name
+        tab.name
     )
 
 
@@ -105,7 +105,7 @@ end
 
 
 local function QuestList_Tooltip(tooltip, data)
-    tooltip:AddDoubleLine(data.name, '#'..data.num)
+    tooltip:AddLine(data.name)
 
     if data.enum then
         tooltip:AddLine(
@@ -243,11 +243,12 @@ for _, tab in pairs(AbandoList) do
 
         num= num or 0
 
-        name= (tab.enum and Color(tab.enum) or Color(tab.type))
+        name= (tab.enum and Color(tab.enum) or Color(tab.type) or '|cffffffff')
             ..tab.name
-            ..' #'
+            ..' |r#'
             ..(num==0 and '|cff626262' or '|cffffffff')
             ..num
+            ..'|r'
 
         sub2=sub:CreateButton(
             name,
@@ -258,7 +259,7 @@ for _, tab in pairs(AbandoList) do
                 data
             )
         end,{
-            name=tab.name,
+            name=name,
             type=tab.type,
             enum=tab.enum,
             num= num,
@@ -373,9 +374,12 @@ AbandoList= {
 
 
     StaticPopupDialogs["WoWTools_WORLDMAP_ABANDONQUEST"] =  {
-        text= (WoWTools_DataMixin.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)
+        text= '\n'..(WoWTools_DataMixin.onlyChinese and "放弃\"%s\"？" or ABANDON_QUEST_CONFIRM)
             ..'|n|n|cnYELLOW_FONT_COLOR:'
-            ..(not WoWTools_DataMixin.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not WoWTools_DataMixin.onlyChinese and VOICEMACRO_1_Sc_0..' ' or "危险！")..(not WoWTools_DataMixin.onlyChinese and VOICEMACRO_1_Sc_0 or "危险！"),
+            ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
+            ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
+            ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
+            ..'\n',
         button1 = '|cnRED_FONT_COLOR:'..(not WoWTools_DataMixin.onlyChinese and ABANDON_QUEST_ABBREV or "放弃"),
         button2 = '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL),
         OnShow=function()
@@ -389,8 +393,8 @@ AbandoList= {
         exclusive=true,
 
         showAlert= true,
-        fullScreenCover =true,
-        --timeout=60,
+        --fullScreenCover =true,
+        timeout=60,
         acceptDelay= 1--not WoWTools_DataMixin.Player.husandro and 2 or nil,
     }
 

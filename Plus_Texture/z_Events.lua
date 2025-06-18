@@ -72,6 +72,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
+
     self:HideFrame(AchievementFrame, {show={[AchievementFrame.Background]=true}})
 
     hooksecurefunc(AchievementStatTemplateMixin, 'OnLoad', function(f)
@@ -91,22 +92,13 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     for i=1, 5 do
         AchievementFrame.SearchPreviewContainer['SearchPreview'..i]:SetPoint('RIGHT')
     end
-
     self:SetScrollBar(AchievementFrame.SearchResults)
 
---Tab
 
+--Tab
     self:SetTabButton(AchievementFrameTab1, 0.3)
     self:SetTabButton(AchievementFrameTab2, 0.3)
     self:SetTabButton(AchievementFrameTab3, 0.3)
---成就，显示，按钮
-    hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
-        --self:SetAlphaColor(f.Glow, nil, true, 0.85)
-        --self:SetAlphaColor(f.Background, nil, true, 0.85)
-        self:SetNineSlice(f, nil, true)
-     end)
-
-
 
 --左下边水印
     self:SetAlphaColor(AchievementFrameWaterMark, nil, true, 0)
@@ -124,13 +116,29 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetNineSlice(AchievementFrameCategories, nil, true)
     self:SetScrollBar(AchievementFrameCategories)
     hooksecurefunc(AchievementCategoryTemplateMixin, 'OnLoad', function(f)
-        self:SetAlphaColor(f.Button.Background, nil, nil, 0.85)
+        self:SetAlphaColor(f.Button.Background, nil, nil, 0.5)
+        --f.Button.Background:SetAtlas('ChallengeMode-guild-background')
+        --f.Button.Background:SetTexture(0)
+        --f.Background:SetColorTexture(0,0,0,0.3)
     end)
 
---成就，列表
+--成就，列表, 显示，按钮
     self:SetScrollBar(AchievementFrameAchievements)
-    self:HideFrame(AchievementFrameAchievements)
+    self:HideFrame(AchievementFrameAchievements)--, {show={[AchievementFrameAchievements.Background]=true,}})
     self:SetNineSlice(AchievementFrameAchievements, nil, true, nil, nil, true)
+    hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
+        --self:SetAlphaColor(f.Glow, nil, true, 0.85)
+       -- self:SetAlphaColor(f.Background, nil, true, 0.5)
+        self:SetNineSlice(f, nil, true)
+    end)
+    hooksecurefunc(AchievementTemplateMixin, 'Init', function(f)--, data)
+        local alpha= (f.completed and not f.Highlight:IsShown()) and 0 or 1
+        self:SetFrame(f, {alpha=alpha, notColor=true})
+--点数，外框
+        f.Shield.Icon:SetAlpha(alpha)
+--图标，外框
+        --print(f.Icon.Overlay, f.Icon.overlay, f.overlay)
+    end)
 
 --总览
     self:SetNineSlice(AchievementFrameSummary, nil, true)
@@ -141,7 +149,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     hooksecurefunc('AchievementFrameSummaryAchievement_OnLoad', function(f)
         --self:SetAlphaColor(f.TitleBar, nil, nil, 0.5)
         --self:SetAlphaColor(f.Glow, nil, nil, 0.3)
-        --self:SetAlphaColor(f.Background, nil, nil, 0.3)
+        self:SetAlphaColor(f.Background, nil, nil, 0)
         self:SetNineSlice(f, nil, true)
     end)
 
@@ -205,6 +213,10 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
         isNewButton=AchievementFrame.Header,
         newButtonPoint=function(btn)
             btn:SetPoint('RIGHT', AchievementFrame.Header.Points, 'LEFT', -4, 0)
+        end,
+        bgPoint=function(icon)
+            icon:SetPoint('TOPLEFT', -3, 33)
+            icon:SetPoint('BOTTOMRIGHT', 0, 2)
         end
     })
 end
@@ -604,27 +616,6 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
-    self:HideFrame(WeeklyRewardsFrame)
-    self:SetButton(WeeklyRewardsFrame.CloseButton, {all=true})
-    hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(frame)
-        for _, f in ipairs(frame.Activities) do
-            self:SetAlphaColor(f.Background)
-        end
-    end)
-
-    self:Init_BGMenu_Frame(WeeklyRewardsFrame, {
-        isNewButton=true,
-        newButtonAlpha=1,
-        newButtonPoint=function(btn)
-            btn:SetPoint('TOPLEFT', 10, -10)
-        end,
-        bgPoint=function(icon)
-            icon:SetPoint('TOPLEFT', 10, -10)
-            icon:SetPoint('BOTTOMRIGHT', -10, 10)
-        end
-    })
-end
 
 
 
@@ -1720,18 +1711,19 @@ end
 
 
 
---挑战, 钥匙插入， 界面
+--挑战, 钥匙插入，界面
 function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
-    self:SetButton(ChallengesKeystoneFrame.CloseButton, {all=true})
+    self:HideFrame(ChallengesFrame)
+    --ChallengesFrame.Background
     self:HideTexture(ChallengesFrameInset.Bg)
-
     self:SetNineSlice(ChallengesFrameInset, nil, true)
-
     self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG, nil, nil, 0.3)
 
+--钥匙插入，界面
+    self:SetButton(ChallengesKeystoneFrame.CloseButton, {all=true})
     self:HideFrame(ChallengesKeystoneFrame, {index=1})
     self:HideTexture(ChallengesKeystoneFrame.InstructionBackground)
-    hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(frame)--钥匙插入， 界面
+    hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(frame)
         self:HideTexture(frame, {index=1})
         self:HideTexture(frame.InstructionBackground)
     end)
@@ -1745,6 +1737,40 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     })
 end
 
+
+
+
+function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
+    self:HideFrame(WeeklyRewardsFrame)
+    self:SetButton(WeeklyRewardsFrame.CloseButton, {all=true})
+
+    hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(f)
+        f= f.Overlay
+        if not f or not f:IsShown() then
+            return
+        end
+        self:SetNineSlice(f)
+        self:SetFrame(f)
+    end)
+
+    hooksecurefunc(WeeklyRewardsFrame,'UpdateSelection', function(frame)
+        for _, f in ipairs(frame.Activities) do
+            self:SetAlphaColor(f.Background)
+        end
+    end)
+
+    self:Init_BGMenu_Frame(WeeklyRewardsFrame, {
+        isNewButton=true,
+        newButtonAlpha=1,
+        newButtonPoint=function(btn)
+            btn:SetPoint('TOPLEFT', 10, -10)
+        end,
+        bgPoint=function(icon)
+            icon:SetPoint('TOPLEFT', 10, -10)
+            icon:SetPoint('BOTTOMRIGHT', -10, 10)
+        end
+    })
+end
 
 
 
