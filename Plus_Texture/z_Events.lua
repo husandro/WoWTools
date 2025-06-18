@@ -11,7 +11,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
     self:HideFrame(ClassTrainerFrame, {show={[ClassTrainerFramePortrait]=1}})
     self:SetScrollBar(ClassTrainerFrame)
     self:SetNineSlice(ClassTrainerFrame)
-    self:SetButton(ClassTrainerFrameCloseButton, {all=true})
+    self:SetButton(ClassTrainerFrameCloseButton)
 
     self:HideTexture(ClassTrainerFrameInset.Bg)
     self:SetNineSlice(ClassTrainerFrameInset, nil, true)
@@ -110,7 +110,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:HideTexture(AchievementFrame.Header.LeftDDLInset)
     self:HideTexture(AchievementFrame.Header.PointBorder)
 
-    self:SetButton(AchievementFrameCloseButton, {all=true})
+    self:SetButton(AchievementFrameCloseButton)
 
 --总列表
     self:SetNineSlice(AchievementFrameCategories, nil, true)
@@ -249,7 +249,7 @@ end
 --冒险指南
 function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideTexture(EncounterJournal.TopTileStreaks)
-    self:SetButton(EncounterJournalCloseButton, {all=true})
+    self:SetButton(EncounterJournalCloseButton)
     self:SetNineSlice(EncounterJournal, true)
 
     self:HideTexture(EncounterJournalBg)
@@ -338,7 +338,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideTexture(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBackground)
     self:SetAlphaColor(EncounterJournalMonthlyActivitiesFrame.ThresholdContainer.BarBorder, nil, nil, 0.3)
 
-    self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton, {all=true})
+    self:SetButton(EncounterJournalMonthlyActivitiesFrame.HelpButton)
     self:Init_BGMenu_Frame(EncounterJournal)
 end
 
@@ -464,7 +464,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders()
     self:HideFrame(ProfessionsCustomerOrdersFrame)
     self:HideTexture(ProfessionsCustomerOrdersFrameBg)
     self:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
-    self:SetButton(ProfessionsCustomerOrdersFrameCloseButton, {all=true})
+    self:SetButton(ProfessionsCustomerOrdersFrameCloseButton)
 
     self:SetEditBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
@@ -681,7 +681,7 @@ end
 
 --要塞
 function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
-    self:SetButton(GarrisonLandingPage.CloseButton, {all=true})
+    self:SetButton(GarrisonLandingPage.CloseButton)
 
     --要塞订单
     self:SetNineSlice(GarrisonCapacitiveDisplayFrame, nil, true)
@@ -783,10 +783,10 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetNineSlice(ProfessionsFrame)
     self:HideFrame(ProfessionsFrame)
-    self:SetButton(ProfessionsFrame.CloseButton, {all=true})
-    self:SetButton(ProfessionsFrame.MaximizeMinimize.MaximizeButton, {all=true})
-    self:SetButton(ProfessionsFrame.MaximizeMinimize.MinimizeButton, {all=true})
-    self:SetButton(ProfessionsFrame.CraftingPage.TutorialButton, {all=true})
+    self:SetButton(ProfessionsFrame.CloseButton)
+    self:SetButton(ProfessionsFrame.MaximizeMinimize.MaximizeButton)
+    self:SetButton(ProfessionsFrame.MaximizeMinimize.MinimizeButton)
+    self:SetButton(ProfessionsFrame.CraftingPage.TutorialButton)
 
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.5)
 
@@ -923,7 +923,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
-    self:SetButton(DelvesCompanionConfigurationFrame.CloseButton, {all=true})
+    self:SetButton(DelvesCompanionConfigurationFrame.CloseButton)
     self:SetNineSlice(DelvesCompanionConfigurationFrame)
     self:HideFrame(DelvesCompanionConfigurationFrame.Border)
     self:HideTexture(DelvesCompanionConfigurationFrame.Bg)
@@ -942,7 +942,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesCompanionConfiguration()
     self:SetNineSlice(DelvesCompanionAbilityListFrame)
     self:HideTexture(DelvesCompanionAbilityListFrameBg)
     self:HideTexture(DelvesCompanionAbilityListFrame.CompanionAbilityListBackground)
-    self:SetButton(DelvesCompanionAbilityListFrame.CloseButton, {all=true})
+    self:SetButton(DelvesCompanionAbilityListFrame.CloseButton)
     self:SetMenu(DelvesCompanionAbilityListFrame.DelvesCompanionRoleDropdown)
     self:HideTexture(DelvesCompanionAbilityListFrame.TopTileStreaks)
 --添加Bg
@@ -975,7 +975,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
-    self:SetButton(SettingsPanel.ClosePanelButton, {all=true})
+    self:SetButton(SettingsPanel.ClosePanelButton)
     self:SetNineSlice(SettingsPanel)
     self:HideFrame(SettingsPanel.Bg)
     self:HideFrame(SettingsPanel)
@@ -1019,7 +1019,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ExpansionLandingPage()
         end
         self:HideFrame(frame, {show={[frame.Background]=1}})
         self:SetScrollBar(frame.MajorFactionList)
-        self:SetButton(frame.CloseButton, {all=true})
+        self:SetButton(frame.CloseButton)
         self:HideFrame(frame.ScrollFadeOverlay)
     end
 
@@ -1066,7 +1066,7 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
     --self:SetAlphaColor(MajorFactionRenownFrame.Background)
     self:SetNineSlice(MajorFactionRenownFrame)
-    self:SetButton(MajorFactionRenownFrame.CloseButton, {all=true})
+    self:SetButton(MajorFactionRenownFrame.CloseButton)
 
 --解锁
     hooksecurefunc(MajorFactionButtonUnlockedStateMixin, 'Refresh', function(frame)--Blizzard_MajorFactionsLandingTemplates.lua
@@ -1163,10 +1163,10 @@ end
 
 --世界地图
 function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
-    self:SetButton(WorldMapFrameCloseButton, {all=true})
-    self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
-    self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton, {all=true})
-    self:SetFrame(WorldMapFrame.BorderFrame.Tutorial, {alpha=0.3})
+    self:SetButton(WorldMapFrameCloseButton)
+    self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MaximizeButton)
+    self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton)
+    self:SetButton(WorldMapFrame.BorderFrame.Tutorial)
 
     self:SetNineSlice(WorldMapFrame.BorderFrame, true)
     self:HideTexture(WorldMapFrameBg)
@@ -1214,8 +1214,8 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     for _, frame in ipairs(WorldMapFrame.overlayFrames or {}) do
         self:SetFrame(frame, {alpha=0.5})
     end
-    self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, {all=true, alpha=0.5})
-    self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, {all=true, alpha=0.5})
+    self:SetButton(WorldMapFrame.SidePanelToggle.CloseButton, {alpha=0.5})
+    self:SetButton(WorldMapFrame.SidePanelToggle.OpenButton, {alpha=0.5})
 
 
 
@@ -1262,7 +1262,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(FriendsListFrame)
     self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
-    self:SetButton(FriendsFrameCloseButton, {all=true})
+    self:SetButton(FriendsFrameCloseButton)
     self:SetMenu(FriendsFrameStatusDropdown, {alpha=1})
 
     self:SetScrollBar(IgnoreListFrame)
@@ -1275,7 +1275,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
     self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
     self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
-    self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {all=true, alpha=0.5})
+    self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {alpha=0.5})
 
 --团队信息
     self:HideTexture(RaidInfoDetailHeader)
@@ -1354,7 +1354,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
 
     self:SetMenu(AddonList.Dropdown)
     self:SetEditBox(AddonList.SearchBox)
-    self:SetButton(AddonListCloseButton, {all=true})
+    self:SetButton(AddonListCloseButton)
     self:SetAlphaColor(AddonList.Performance.Divider, true)
 
     if MainStatusTrackingBarContainer then--货币，XP，追踪，最下面BAR
@@ -1387,7 +1387,7 @@ end
 
 --编辑模式
 function WoWTools_TextureMixin.Events:Blizzard_EditMode()
-        self:SetButton(EditModeManagerFrame.CloseButton, {all=true})
+        self:SetButton(EditModeManagerFrame.CloseButton)
     self:SetScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
     self:SetFrame(EditModeManagerFrame.Border, {alpha=0.3})
     self:SetFrame(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=0.3})
@@ -1573,7 +1573,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetTabButton(PVEFrameTab4)
 
     --地下城和团队副本
-    self:SetButton(PVEFrameCloseButton, {all=true})
+    self:SetButton(PVEFrameCloseButton)
     self:HideTexture(PVEFrame.TopTileStreaks)--最上面
     self:SetNineSlice(PVEFrame)
     self:SetEditBox(LFGListFrame.SearchPanel.SearchBox)
@@ -1730,7 +1730,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG, nil, nil, 0.3)
 
 --钥匙插入，界面
-    self:SetButton(ChallengesKeystoneFrame.CloseButton, {all=true})
+    self:SetButton(ChallengesKeystoneFrame.CloseButton)
     self:HideFrame(ChallengesKeystoneFrame, {index=1})
     self:HideTexture(ChallengesKeystoneFrame.InstructionBackground)
     hooksecurefunc(ChallengesKeystoneFrame, 'Reset', function(frame)
@@ -1752,7 +1752,7 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_WeeklyRewards()--周奖励提示
     self:HideFrame(WeeklyRewardsFrame)
-    self:SetButton(WeeklyRewardsFrame.CloseButton, {all=true})
+    self:SetButton(WeeklyRewardsFrame.CloseButton)
 
     hooksecurefunc(WeeklyRewardsFrame, 'UpdateOverlay', function(f)
         f= f.Overlay
@@ -1818,7 +1818,7 @@ end
 --角色，界面
 function WoWTools_TextureMixin.Frames:CharacterFrame()
 
-    self:SetButton(CharacterFrameCloseButton, {all=true})
+    self:SetButton(CharacterFrameCloseButton)
     self:SetNineSlice(CharacterFrameInset, nil, true)
     self:SetNineSlice(CharacterFrame)
     self:SetNineSlice(CharacterFrameInsetRight, true)
@@ -1976,7 +1976,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
         alpha=0.3,
         isAllPoint=true,
     })
-    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton, {all=true})
+    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton)
 
 --货币转移
     self:SetNineSlice(CurrencyTransferLog)
@@ -2000,7 +2000,7 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:HideFrame(InspectFrame)
     self:HideFrame(InspectModelFrame)
     self:HideFrame(InspectModelFrameControlFrame)
-    self:SetButton(InspectFrameCloseButton, {all=true})
+    self:SetButton(InspectFrameCloseButton)
     self:HideTexture(InspectFrameInset.Bg)
     self:HideTexture(InspectPVPFrame.BG)
 
@@ -2059,12 +2059,12 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
             end
         end
     end
-    self:SetButton(EventTraceCloseButton, {all=true})
+    self:SetButton(EventTraceCloseButton)
     self:SetNineSlice(EventTrace)
     self:SetAlphaColor(EventTraceBg, nil, nil, true)
     self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
     self:SetNineSlice(EventTraceInset)
-    self:SetButton(EventTrace.ResizeButton, {all=true})
+    self:SetButton(EventTrace.ResizeButton)
     self:SetScrollBar(EventTrace.Log.Events)
     self:SetEditBox(EventTrace.Log.Bar.SearchBox)
 
@@ -2083,7 +2083,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
     self:SetFrame(EventTrace.Filter.ScrollBox, {index=1, isMinAlpha=true})
 
     hooksecurefunc(EventTraceLogEventButtonMixin, 'OnLoad', function(frame)
-        self:SetButton(frame.HideButton, {all=true})
+        self:SetButton(frame.HideButton)
         local icon= frame:GetRegions()
         if icon:GetObjectType()=='Texture' then
             icon:SetTexture(0)
@@ -2123,9 +2123,9 @@ end
 
 --天赋，法术书
 function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
-    self:SetButton(PlayerSpellsFrameCloseButton, {all=true})
-    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MaximizeButton, {all=true})
-    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MinimizeButton, {all=true})
+    self:SetButton(PlayerSpellsFrameCloseButton)
+    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MaximizeButton)
+    self:SetButton(PlayerSpellsFrame.MaximizeMinimizeButton.MinimizeButton)
     self:HideTexture(PlayerSpellsFrame.TopTileStreaks)
 
 
@@ -2200,14 +2200,14 @@ end
 
 --收藏
 function WoWTools_TextureMixin.Events:Blizzard_Collections()
-    self:SetButton(WardrobeCollectionFrame.InfoButton, {all=true})
+    self:SetButton(WardrobeCollectionFrame.InfoButton)
     WardrobeCollectionFrame.InfoButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
 
     self:HideTexture(CollectionsJournal.TopTileStreaks)
-    self:SetButton(CollectionsJournalCloseButton, {all=true})
+    self:SetButton(CollectionsJournalCloseButton)
     self:SetNineSlice(CollectionsJournal)
     self:HideTexture(CollectionsJournalBg)
-    self:SetButton(PetJournalTutorialButton, {all=true})
+    self:SetButton(PetJournalTutorialButton)
     PetJournalTutorialButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
 
 
@@ -2306,7 +2306,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     self:SetNineSlice(WardrobeTransmogFrame.Inset, nil, true)
     self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
     self:HideTexture(WardrobeTransmogFrame.Inset.BG)
-    self:SetButton(WardrobeFrameCloseButton, {all=true})
+    self:SetButton(WardrobeFrameCloseButton)
 
 --试衣间, 套装
     self:HideFrame(WardrobeCollectionFrame.SetsTransmogFrame)
@@ -2495,7 +2495,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AccountStore()
     self:HideFrame(AccountStoreFrame)
     self:SetNineSlice(AccountStoreFrame)
 
-    self:SetButton(AccountStoreFrameCloseButton, {all=true})
+    self:SetButton(AccountStoreFrameCloseButton)
 
     self:HideFrame(AccountStoreFrame.LeftInset)
     self:HideFrame(AccountStoreFrame.RightInset)
@@ -2529,7 +2529,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     self:SetNineSlice(ProfessionsBookFrameInset, nil, true)
     self:HideTexture(ProfessionsBookFrameBg)
     self:HideTexture(ProfessionsBookFrameInset.Bg)
-    self:SetButton(ProfessionsBookFrameCloseButton, {all=true})
+    self:SetButton(ProfessionsBookFrameCloseButton)
 
     ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
     self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})

@@ -48,7 +48,7 @@ function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
     self:SetScrollBar(MacroFrame.MacroSelector)
     self:SetScrollBar(_G['WoWToolsMacroPlusNoteEditBox'])
     self:SetScrollBar(MacroFrameScrollFrame)
-    self:SetButton(MacroFrameCloseButton, {all=true})
+    self:SetButton(MacroFrameCloseButton)
 
     self:Init_BGMenu_Frame(MacroFrame, {
         bgPoint=function(icon)

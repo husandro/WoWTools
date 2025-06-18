@@ -192,9 +192,12 @@ local function Set_BGTexture(self, name)
     end
 
 --Frame.Background
-    local bg= self.Background
-    if bg then
-        bg:SetAlpha(texture and 0 or alpha)
+    if self.Background then
+        self.Background:SetAlpha(texture and 0 or alpha)
+    end
+
+    if self.NineSlice then
+        self.NineSlice:SetAlpha(texture and 0 or alpha)
     end
 
 --DrawLayer
@@ -926,7 +929,9 @@ local function Create_Button(self, tab)
         return
     end
 
-    local closeButton= self.ClosePanelButton or self.CloseButton
+    local closeButton= self.ClosePanelButton
+                    or self.CloseButton
+                    or _G[(tab.name or self:GetName())..'CloseButton']
 
     local p= tab.isNewButton==true and self or tab.isNewButton
 

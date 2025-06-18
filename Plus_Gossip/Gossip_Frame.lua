@@ -92,7 +92,7 @@ local function Init()
     Header:Setup('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE)))
     local CloseButton=CreateFrame('Button', nil, Frame, 'UIPanelCloseButton')
     CloseButton:SetPoint('TOPRIGHT')
-    WoWTools_TextureMixin:SetButton(CloseButton, {all=true})
+    WoWTools_TextureMixin:SetButton(CloseButton)
 
     WoWTools_TextureMixin:SetFrame(border, {alpha=0.5})
     WoWTools_TextureMixin:SetFrame(Header, {alpha=0.7})

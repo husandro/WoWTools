@@ -5929,7 +5929,11 @@
         "AchievementObjectives_DisplayProgressiveAchievement",
         "AchievementFrameFilterDropdown",
         "WeeklyRewardsMixin",
-        "AchievementFrameSummaryAchievement_OnEnter"
+        "AchievementFrameSummaryAchievement_OnEnter",
+        "TabardFrameCloseButton",
+        "TabardFrameMoneyFrame",
+        "TabardFrameCustomizationFrame",
+        "TabardFrameCustomization4"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

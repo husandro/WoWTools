@@ -237,7 +237,7 @@ end
 function WoWTools_TextureMixin.Frames:MailFrame()
     self:SetNineSlice(MailFrame)
     self:HideFrame(MailFrame)
-    self:SetButton(MailFrameCloseButton, {all=true})
+    self:SetButton(MailFrameCloseButton)
     self:SetTabButton(MailFrameTab1)
     self:SetTabButton(MailFrameTab2)
 
@@ -260,7 +260,7 @@ function WoWTools_TextureMixin.Frames:MailFrame()
     OpenMailFrameBg:SetColorTexture(0,0,0, 0.5)
     self:HideFrame(OpenMailFrameInset)
     self:SetNineSlice(OpenMailFrameInset, nil, true)
-    self:SetButton(OpenMailFrameCloseButton, {all=true})
+    self:SetButton(OpenMailFrameCloseButton)
 
     self:HideFrame(InboxFrame)
     self:SetScrollBar(OpenMailScrollFrame)

@@ -1,9 +1,9 @@
 
  --公会和社区 Blizzard_Communities
  function WoWTools_TextureMixin.Events:Blizzard_Communities()
-    self:SetButton(CommunitiesFrameCloseButton, {all=true})
-    self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MinimizeButton, {all=true})
-    self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MaximizeButton, {all=true})
+    self:SetButton(CommunitiesFrameCloseButton)
+    self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MinimizeButton)
+    self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MaximizeButton)
 
     self:SetNineSlice(CommunitiesFrame, true)
 
@@ -55,7 +55,7 @@
 
 --成员,叙述
     self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.Border, nil, nil, nil, true)
-    self:SetButton(CommunitiesFrame.GuildMemberDetailFrame.CloseButton, {all=true})
+    self:SetButton(CommunitiesFrame.GuildMemberDetailFrame.CloseButton)
 
 
 --公会奖励，列表, 物品，GuildRewards.lua
@@ -105,8 +105,8 @@
     self:SetScrollBar(GuildRegistrarFrame)
 
 --设计，公会战袍
-    --self:SetNineSlice(TabardFrameInset)
-    TabardFrameInset:Hide()
+
+    --[[TabardFrameInset:Hide()
     self:SetNineSlice(TabardFrame)
     TabardFrameBg:SetAtlas('ChallengeMode-guild-background')
 
@@ -148,11 +148,26 @@
 
     TabardFrameCustomization5Middle:Hide()
     TabardFrameCustomization5Left:Hide()
-    TabardFrameCustomization5Right:Hide()
+    TabardFrameCustomization5Right:Hide()]]
 
+    --self:HideFrame(TabardFrame)
+    self:SetAllFrames(TabardFrame, {
+        frames={TabardFrameCustomizationFrame},
+        bg=true,
+    })
+    for i=1, 5 do
+        self:HideTexture(_G['TabardFrameCustomization'..i..'Middle'])
+        self:HideTexture(_G['TabardFrameCustomization'..i..'Left'])
+        self:HideTexture(_G['TabardFrameCustomization'..i..'Right'])
+        self:SetButton(_G['TabardFrameCustomization'..i..'LeftButton'], {alpha=0.75})
+        self:SetButton(_G['TabardFrameCustomization'..i..'RightButton'], {alpha=0.75})
+    end
+    self:SetButton(TabardCharacterModelRotateLeftButton)
+    self:SetButton(TabardCharacterModelRotateRightButton)
 
-    self:SetButton(TabardCharacterModelRotateLeftButton, {alpha=0.5})
-    self:SetButton(TabardCharacterModelRotateRightButton, {alpha=0.5})
+    
+    --self:SetButton(TabardFrameCloseButton)
+    
 
 --信息
     self:SetFrame(CommunitiesFrameGuildDetailsFrameInfo, {isMinAlpha=true})

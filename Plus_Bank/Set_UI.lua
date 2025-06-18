@@ -529,7 +529,7 @@ local function Init_Texture(self)
     self:SetTabButton(BankFrameTab2)
     self:SetTabButton(BankFrameTab3)
     self:SetNineSlice(BankFrame)
-    self:SetButton(BankFrameCloseButton, {all=true})
+    self:SetButton(BankFrameCloseButton)
 --搜索框
     WoWTools_TextureMixin:SetEditBox(BankItemSearchBox)
     self:HideTexture(BankFrame.TopTileStreaks)

@@ -121,7 +121,7 @@ local function Init_Menu(_, root)
 
 local function Init()
     local btn= WoWTools_ButtonMixin:Menu(StableFrameCloseButton, {name='WoWToolsHunterPlusMenuButton'})
-    WoWTools_TextureMixin:SetButton(btn, {all=true})
+    WoWTools_TextureMixin:SetButton(btn)
     btn:SetPoint('RIGHT', StableFrameCloseButton, 'LEFT', -2, 0)
 
 

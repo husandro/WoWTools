@@ -82,7 +82,7 @@ local function Init()
 	Button.texture= Button:CreateTexture()
 	Button.texture:SetAllPoints()
 
-	WoWTools_TextureMixin:SetButton(Button, {all=true})
+	WoWTools_TextureMixin:SetButton(Button)
 
 	function Button:set_texture(icon)--设置,按钮, 图标
 		if icon then
@@ -113,7 +113,7 @@ local function Init()
 	Button.bagButton:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT',-2,0)
 	Button.bagButton:SetFrameStrata(ContainerFrameCombinedBags.CloseButton:GetFrameStrata())
 	Button.bagButton:SetFrameLevel(ContainerFrameCombinedBags.CloseButton:GetFrameLevel()+1)
-	WoWTools_TextureMixin:SetButton(Button.bagButton, {all=true})
+	WoWTools_TextureMixin:SetButton(Button.bagButton)
 
 	Button.bagButton.texture= Button.bagButton:CreateTexture()
 	Button.bagButton.texture:SetAllPoints()

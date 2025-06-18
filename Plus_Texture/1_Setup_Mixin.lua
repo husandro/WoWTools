@@ -68,7 +68,7 @@ end
 
 --隐藏, frame, 子材质
 function WoWTools_TextureMixin:HideFrame(frame, tab)
-    if not frame then
+    if not frame or not frame.GetRegions then
         return
     end
 
@@ -288,14 +288,24 @@ function WoWTools_TextureMixin:SetButton(btn, tab)
         return
     end
     tab= tab or {}
-    if tab.all then
+    --if tab.all then
         tab.alpha=tab.alpha or 0.3
+        if not tab.show then
+            tab.show= {}
+            local p= btn:GetPushedTexture()
+            local d= btn:GetDisabledTexture()
+            local h= btn:GetHighlightTexture()
+            if p then tab.show[p]=true end
+            if d then tab.show[d]=true end
+            if h then tab.show[h]=true end
+        end
         self:SetFrame(btn, tab)
         --WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 0.3})
-    else
-        WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha or 1})
-    end
+    --else
+        --WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha or 1})
+    --end
 end
+
 
 --下拉，菜单 set_Menu
 function WoWTools_TextureMixin:SetMenu(frame, tab)
@@ -373,6 +383,87 @@ function WoWTools_TextureMixin:SetInset(frame, alphaORmin)
 
 end
 
+
+
+local function set_frame(frame)
+    if frame then
+        WoWTools_TextureMixin:HideFrame(frame)
+        if frame.NineSlice then
+            frame.NineSlice:SetVertexColor(0,0,0,0)
+        end
+    end
+end
+
+--[[
+frames={...},
+isChildren=true,
+bg={..} or true,
+]]
+function WoWTools_TextureMixin:SetAllFrames(frame, tab)
+    tab= tab or {}
+
+--自定义
+    local frames= tab.frames
+    local isChildren= tab.isChildren
+    local bg= tab.bg
+
+    local col= WoWTools_DataMixin.Player.useColor
+    local r,g, b= col.r, col.g, col.b
+    local name= frame:GetName()
+
+    self:HideFrame(frame)
+    if frame.NineSlice then
+        frame.NineSlice:SetBorderColor(r, g, b, 0.3)
+        frame.NineSlice:SetCenterColor(0,0,0,0)
+    end
+--Header
+    set_frame(frame.Header)
+
+--CloseButton
+    local clearButton= frame.ClosePanelButton or frame.CloseButton or _G[name..'CloseButton']
+    self:SetButton(clearButton)
+
+--Inset
+    set_frame(frame.Inset or _G[name..'Inset'])
+
+--CostFrame
+    set_frame(frame.CostFrame or _G[name..'CostFrame'])
+
+--moneyInset
+    local moneyInset= _G[name..'MoneyInset']
+    if moneyInset then
+        set_frame(moneyInset)
+        self:HideFrame(_G[name..'MoneyBg'])
+    end
+
+--自定义
+--frames
+    if frames then
+        for _, f in pairs(tab.frames) do
+            set_frame(f)
+        end
+    end
+
+--isChildren
+    if isChildren then
+        for _, f in pairs({frame:GetChildren()})do
+            if f:GetObjectType()=='Frame' then
+                set_frame(f)
+            end
+        end
+    end
+
+--Bg
+    if bg then
+        self:Init_BGMenu_Frame(frame,
+            bg==true
+            and {
+                isNewButton= not (frame.PortraitButton or frame.PortraitContainer) and clearButton,
+            }
+            or bg
+        )
+    end
+end
 --[[function WoWTools_TextureMixin:SetUIFrame(frame)
     --self:SetAlphaColor(frame.TitleContainer, nil, nil, true)
     self:SetNineSlice(frame)

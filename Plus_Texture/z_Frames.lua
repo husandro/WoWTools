@@ -1,6 +1,6 @@
 --GossipFrame
 function WoWTools_TextureMixin.Frames:GossipFrame()
-    self:SetButton(GossipFrameCloseButton, {all=true})
+    self:SetButton(GossipFrameCloseButton)
     self:SetNineSlice(GossipFrame, true)
     self:HideTexture(GossipFrameBg)
     self:HideTexture(GossipFrame.TopTileStreaks)
@@ -25,7 +25,7 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:SetNineSlice(QuestFrame)
     self:SetScrollBar(QuestFrame)
     
-    self:SetButton(QuestFrameCloseButton, {all=true})
+    self:SetButton(QuestFrameCloseButton)
     
     self:HideTexture(QuestFrameInset.Bg)
     self:SetNineSlice(QuestFrameInset, nil, true)
@@ -297,6 +297,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrame)
     self:SetNineSlice(DressUpFrame)
     self:SetMenu(DressUpFrameOutfitDropdown)
+    self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
 
     self:SetNineSlice(DressUpFrameInset, nil, true)
     self:HideFrame(DressUpFrameInset)
@@ -304,7 +305,7 @@ function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
     self:SetButton(DressUpFrame.MaxMinButtonFrame.MinimizeButton, {all=true,})
     self:SetButton(DressUpFrame.MaxMinButtonFrame.MaximizeButton, {all=true,})
-    self:SetButton(DressUpFrameCloseButton, {all=true})
+    self:SetButton(DressUpFrameCloseButton)
 
     self:Init_BGMenu_Frame(DressUpFrame, {
         settings=function(_, texture, alpha)
@@ -320,7 +321,7 @@ function WoWTools_TextureMixin.Frames:ItemTextFrame()
     self:SetNineSlice(ItemTextFrame)
     self:HideTexture(ItemTextFrame.TopTileStreaks)
     self:HideTexture(ItemTextFrameBg)
-    self:SetButton(ItemTextFrameCloseButton, {all=true})
+    self:SetButton(ItemTextFrameCloseButton)
 
     self:SetScrollBar(ItemTextScrollFrame)
 
@@ -346,7 +347,7 @@ end
 
 --背包 Bg FlatPanelBackgroundTemplate
 function WoWTools_TextureMixin.Frames:ContainerFrame1()
-    self:SetButton(ContainerFrameCombinedBags.CloseButton, {all=true})
+    self:SetButton(ContainerFrameCombinedBags.CloseButton)
     self:SetNineSlice(ContainerFrameCombinedBags, true)
 
    
@@ -446,7 +447,7 @@ function WoWTools_TextureMixin.Frames:MerchantFrame()
     self:SetAlphaColor(MerchantExtraCurrencyBg)
     self:SetAlphaColor(MerchantExtraCurrencyInset)
     self:HideTexture(MerchantFrameBottomLeftBorder)
-    self:SetButton(MerchantFrameCloseButton, {all=true})
+    self:SetButton(MerchantFrameCloseButton)
 
     for i=1, math.max(MERCHANT_ITEMS_PER_PAGE, BUYBACK_ITEMS_PER_PAGE) do --MERCHANT_ITEMS_PER_PAGE = 10 BUYBACK_ITEMS_PER_PAGE = 12
         self:SetAlphaColor(_G['MerchantItem'..i..'SlotTexture'])
@@ -489,7 +490,7 @@ end
 function WoWTools_TextureMixin.Frames:LootFrame()
     self:SetNineSlice(LootFrame)
     self:HideFrame(LootFrameBg)
-    self:SetButton(LootFrame.ClosePanelButton, {all=true})
+    self:SetButton(LootFrame.ClosePanelButton)
 
 
     hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
