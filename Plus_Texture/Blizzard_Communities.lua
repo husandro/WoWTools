@@ -14,19 +14,10 @@
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
     self:SetBG(CommunitiesFrameGuildDetailsFrameNews)
 
-
-
-
     self:SetNineSlice(CommunitiesFrameInset, nil, true)
-
-
-
-
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
     self:SetAlphaColor(CommunitiesFrameMiddle)
-
-
 
 --公会和社区，列表
     self:HideTexture(CommunitiesFrameCommunitiesList.Bg)
@@ -40,20 +31,20 @@
         self:SetAlphaColor(frame.Background, nil, nil, true)
     end)
 
-
     self:HideFrame(CommunitiesFrame.ChatTab, {index=1})
     self:HideFrame(CommunitiesFrame.RosterTab, {index=1})
     self:HideFrame(CommunitiesFrame.GuildBenefitsTab, {index=1})
     self:HideFrame(CommunitiesFrame.GuildInfoTab, {index=1})
+    WoWTools_ButtonMixin:AddMask(CommunitiesFrame.ChatTab, true)
+    WoWTools_ButtonMixin:AddMask(CommunitiesFrame.RosterTab, true)
+    WoWTools_ButtonMixin:AddMask(CommunitiesFrame.GuildBenefitsTab, true)
+    WoWTools_ButtonMixin:AddMask(CommunitiesFrame.GuildInfoTab, true)
 
     self:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
-
-
 
     self:SetFrame(CommunitiesFrame.NotificationSettingsDialog.Selector)
     self:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
     self:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
-
 
 --成员，列表
     self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, nil, true)
