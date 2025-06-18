@@ -349,8 +349,9 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(ContainerFrameCombinedBags.CloseButton, {all=true})
     self:SetNineSlice(ContainerFrameCombinedBags, true)
 
-    self:SetFrame(ContainerFrameCombinedBags.MoneyFrame.Border, {alpha=0.3})
-    self:SetFrame(BackpackTokenFrame.Border, {alpha=0.3})
+   
+    self:HideFrame(ContainerFrameCombinedBags.MoneyFrame.Border)
+    self:HideFrame(BackpackTokenFrame.Border)
     self:SetEditBox(BagItemSearchBox)
 
      for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
@@ -396,10 +397,11 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
         end
     end)
 
-
-    --ContainerFrameCombinedBags.Background= ContainerFrameCombinedBags.Bg
-
-    self:Init_BGMenu_Frame(ContainerFrameCombinedBags)
+    self:Init_BGMenu_Frame(ContainerFrameCombinedBags, {
+        settings=function(_, texture, alpha)
+             ContainerFrameCombinedBags.Bg:SetAlpha(texture and 0 or alpha or 1)
+        end
+    })
 end
 
 

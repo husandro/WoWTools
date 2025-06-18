@@ -46,7 +46,7 @@ end
         btn.indexLable:SetPoint('CENTER')
         btn.indexLable:SetAlpha(0.2)
         WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
-        WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.2)
+        WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.1)
 
         WoWTools_TextureMixin:HideTexture(btn.Background)
     end

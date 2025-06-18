@@ -84,8 +84,12 @@ end
 
 local function Init()
 --展开,合起	
-	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_CurrencyMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
-	WoWTools_CurrencyMixin.Button.down= down
+	local down= WoWTools_ButtonMixin:Cbtn(_G['WoWToolsPlusCurrencyMenuButton'], {
+		size=22,
+		atlas='NPE_ArrowDown',
+		name='WoWToolsCurrencyExpandeListButton',
+	})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
+	--_G['WoWToolsPlusCurrencyMenuButton'].down= down
 
 	down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
 
@@ -144,7 +148,7 @@ local function Init()
     end)
 	edit:SetSize(180, 23)
 
-	WoWTools_CurrencyMixin.Button:settings()
+	_G['WoWToolsPlusCurrencyMenuButton']:settings()
 end
 
 

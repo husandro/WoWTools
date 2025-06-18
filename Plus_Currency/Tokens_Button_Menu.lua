@@ -235,7 +235,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().Hide= not Save().Hide and true or nil
 		WoWTools_CurrencyMixin:Init_TrackButton()
-		WoWTools_CurrencyMixin.Button:set_texture()
+		_G['WoWToolsPlusCurrencyMenuButton']:set_texture()
 	end)
 
 --TrackButton 选项
@@ -345,7 +345,7 @@ local function Init_Menu(self, root)
 	end, function()
 		Save().notPlus= not Save().notPlus and true or nil
 		WoWTools_CurrencyMixin:UpdateTokenFrame()
-		WoWTools_CurrencyMixin.Button:settings()
+		_G['WoWToolsPlusCurrencyMenuButton']:settings()
 	end)
 
 	root:CreateDivider()

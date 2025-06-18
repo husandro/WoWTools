@@ -127,17 +127,23 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:HideFrame(AchievementFrameAchievements)--, {show={[AchievementFrameAchievements.Background]=true,}})
     self:SetNineSlice(AchievementFrameAchievements, nil, true, nil, nil, true)
     hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
-        --self:SetAlphaColor(f.Glow, nil, true, 0.85)
-       -- self:SetAlphaColor(f.Background, nil, true, 0.5)
         self:SetNineSlice(f, nil, true)
     end)
-    hooksecurefunc(AchievementTemplateMixin, 'Init', function(f)--, data)
-        local alpha= (f.completed and not f.Highlight:IsShown()) and 0 or 1
+
+    local function Set_AchievementTemplate(f, show)
+        local alpha= (f.completed and not f:IsSelected() and not show) and 0 or 1-- f.Highlight:IsShown()
         self:SetFrame(f, {alpha=alpha, notColor=true})
 --点数，外框
         f.Shield.Icon:SetAlpha(alpha)
---图标，外框
-        --print(f.Icon.Overlay, f.Icon.overlay, f.overlay)
+    end
+    hooksecurefunc(AchievementTemplateMixin, 'Init', function(f)--, data)
+        Set_AchievementTemplate(f, nil)
+    end)
+    hooksecurefunc(AchievementTemplateMixin, 'OnEnter', function(f)
+        Set_AchievementTemplate(f, true)
+    end)
+    hooksecurefunc(AchievementTemplateMixin, 'OnLeave', function(f)
+        Set_AchievementTemplate(f, nil)
     end)
 
 --总览
@@ -147,10 +153,14 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 --近期成就
     self:SetAlphaColor(AchievementFrameSummaryAchievementsHeaderHeader, nil, nil, 0.5)
     hooksecurefunc('AchievementFrameSummaryAchievement_OnLoad', function(f)
-        --self:SetAlphaColor(f.TitleBar, nil, nil, 0.5)
-        --self:SetAlphaColor(f.Glow, nil, nil, 0.3)
-        self:SetAlphaColor(f.Background, nil, nil, 0)
+        self:SetAlphaColor(f.Background, nil, true, 0)
+        f:HookScript('OnLeave', function(f2)
+            self:SetAlphaColor(f.Background, nil, true, 0)
+        end)
         self:SetNineSlice(f, nil, true)
+    end)
+    hooksecurefunc('AchievementFrameSummaryAchievement_OnEnter', function(f)
+         self:SetAlphaColor(f.Background, nil, true, 1)
     end)
 
 
