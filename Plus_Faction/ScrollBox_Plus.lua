@@ -15,12 +15,14 @@ end
 
 
 
-local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
-	local data= btn.elementData or {}
+local function Setup(btn, data)--factionRow, elementData)--ReputationFrame.lua
+	data= data or btn.elementData
 	local factionID = data.factionID --or btn.factionIndex
 	local frame = btn.Content
+
 	if not frame or factionID==0 then
 		return
+
     elseif Save().notPlus then
 		frame.Name:SetTextColor(1,1,1)
 		if frame.watchedIcon then--显示为经验条
@@ -41,11 +43,11 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 		return
 	end
 
-	local bar = frame.ReputationBar;
+	local bar = frame.ReputationBar
 
 	local barColor, levelText, texture, atlas,isCapped
-	local isMajorFaction = C_Reputation.IsMajorFaction(factionID);
-	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID);
+	local isMajorFaction = C_Reputation.IsMajorFaction(factionID)
+	local repInfo = C_GossipInfo.GetFriendshipReputation(factionID)
 
 	if repInfo and repInfo.friendshipFactionID and repInfo.friendshipFactionID > 0 then--好友声望
 		local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
@@ -88,14 +90,15 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 		end
 	end
 
-	if barColor then--标题, 颜色
-		if C_Reputation.IsAccountWideReputation(factionID) then
-			frame.Name:SetTextColor(0, 0.8, 1)
-        elseif isCapped then
-            frame.Name:SetTextColor(1, 0.62, 0)
-		else
-			frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
-		end
+
+	--if C_Reputation.IsAccountWideReputation(factionID) then
+	--	frame.Name:SetTextColor(0, 0.8, 1)
+	if isCapped then
+		frame.Name:SetTextColor(1, 0.62, 0)
+	elseif barColor then
+		frame.Name:SetTextColor(barColor.r, barColor.g, barColor.b)
+	else
+		frame.Name:SetTextColor(1, 1, 1)
 	end
 
 	local completedParagon--完成次数
@@ -122,8 +125,8 @@ local function Setup(btn)--factionRow, elementData)--ReputationFrame.lua
 	end
 
 	if levelText and not frame.levelText then--等级
-		frame.levelText= WoWTools_LabelMixin:Create(bar, {size=10})--10, nil, nil, nil, nil, 'RIGHT')
-		frame.levelText:SetPoint('RIGHT')
+		frame.levelText= WoWTools_LabelMixin:Create(bar, {size=10})
+		frame.levelText:SetPoint('TOPRIGHT', 8, 3)
 	end
 	if frame.levelText then
 		frame.levelText:SetText(levelText or '')
@@ -195,18 +198,42 @@ end
 
 
 
-
-
-
-
-
-function WoWTools_FactionMixin:Init_ScrollBox_Plus()
-    hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
+local function Init()
+	--[[hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(self)
         if not self:GetView() then
             return
         end
         for _, btn in pairs(self:GetFrames()or {}) do
             Setup(btn)
         end
-    end)
+    end)]]
+
+	hooksecurefunc(ReputationEntryMixin, 'Initialize', function(...)
+		Setup(...)
+	end)
+
+	hooksecurefunc(ReputationEntryMixin, 'RefreshAccountWideIcon', function(self)
+		local showAccountWideIcon = C_Reputation.IsAccountWideReputation(self.factionID)
+		self.Content.AccountWideIcon:SetShown(showAccountWideIcon)
+	end)
+	hooksecurefunc(ReputationEntryMixin, 'OnLoad', function(self)
+		self.Content.AccountWideIcon:SetScale(0.6)
+	end)
+
+
+	hooksecurefunc(ReputationSubHeaderMixin, 'RefreshAccountWideIcon', function(self)
+		local showAccountWideIcon = C_Reputation.IsAccountWideReputation(self.factionID)
+		self.Content.AccountWideIcon:SetShown(showAccountWideIcon)
+	end)
+	hooksecurefunc(ReputationSubHeaderMixin, 'OnLoad', function(self)
+		self.Content.AccountWideIcon:SetScale(0.6)
+	end)
+	Init=function()end
+end
+
+
+
+
+function WoWTools_FactionMixin:Init_ScrollBox_Plus()
+   Init()
 end

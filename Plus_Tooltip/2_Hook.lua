@@ -103,6 +103,21 @@ local function Init()
         WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
     end)
 
+    hooksecurefunc(ReputationSubHeaderMixin, 'ShowStandardTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationSubHeaderMixin, 'ShowMajorFactionRenownTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationSubHeaderMixin, 'ShowFriendshipReputationTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+    end)
+    hooksecurefunc(ReputationSubHeaderMixin, 'ShowParagonRewardsTooltip', function(self)
+        WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+    end)
+
+     
+
     
     local factionIDText=WoWTools_LabelMixin:Create(ReputationFrame.ReputationDetailFrame,{
             name= 'ReputationDetailFramFactionIDText',
