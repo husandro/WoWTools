@@ -77,7 +77,12 @@ end
 
 local function Init()
     FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
-    hooksecurefunc( FriendsListButtonMixin, 'OnLoad', function(btn)
+
+    FriendsFrameBattlenetFrame:ClearAllPoints()
+    FriendsFrameBattlenetFrame:SetPoint('LEFT', FriendsFrameStatusDropdown, 'RIGHT')
+FriendsFrameBattlenetFrame.BroadcastButton:SetPoint('LEFT', FriendsFrameBattlenetFrame, 'RIGHT')
+
+    hooksecurefunc(FriendsListButtonMixin, 'OnLoad', function(btn)
         btn.name:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
         btn.info:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
     end)
