@@ -91,7 +91,7 @@ local function ShowFriendshipReputationTooltip(self)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
 	--GameTooltip:Show()
-	return true
+	return GameTooltip
 end
 
 --Major
@@ -128,6 +128,8 @@ local function ShowMajorFactionRenownTooltip(self)
 	end
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
+
+	return GameTooltip
 end
 
 --Standard
@@ -143,6 +145,8 @@ local function ShowStandardTooltip(self)
 	TryAppendAccountReputationLineToTooltip(GameTooltip, self.factionID)
 	GameTooltip_AddBlankLineToTooltip(GameTooltip)
 	WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
+
+	return GameTooltip
 end
 
 
@@ -155,23 +159,26 @@ end
 
 
 
-
+--需要GameTooltip:Show()
 function WoWTools_SetTooltipMixin:Faction(frame)--ANCHOR_RIGHT=true
-    if not frame.factionID then
+    if not frame or not frame.factionID then
 		return
 	end
 
+	local tooltip
 	if C_Reputation.IsFactionParagon(frame.factionID) then
-		ShowParagonRewardsTooltip(frame)
+		tooltip= ShowParagonRewardsTooltip(frame)
 
 	elseif C_Reputation.IsMajorFaction(frame.factionID) then
-		ShowMajorFactionRenownTooltip(frame)
+		tooltip= ShowMajorFactionRenownTooltip(frame)
 
 	else
-		if not ShowFriendshipReputationTooltip(frame) then
-			ShowStandardTooltip(frame)
+		tooltip= ShowFriendshipReputationTooltip(frame)
+		if not tooltip then
+			tooltip= ShowStandardTooltip(frame)
 		end
 	end
+	return tooltip
 end
 
 function WoWTools_SetTooltipMixin:FactionMenu(root)

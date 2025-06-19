@@ -102,31 +102,39 @@ local function Init()
     hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
         WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
     end)
-    hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
-        local self= ReputationFrame.ReputationDetailFrame
-        if not self.factionIDText then
-            self.factionIDText=WoWTools_LabelMixin:Create(self)
-            self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
-        end
-        self.factionIDText:SetText(frame.elementData.factionID or '')
+
+    
+    local factionIDText=WoWTools_LabelMixin:Create(ReputationFrame.ReputationDetailFrame,{
+            name= 'ReputationDetailFramFactionIDText',
+            mouse=true,
+    })
+    factionIDText:SetPoint('BOTTOM', ReputationFrame.ReputationDetailFrame, 'TOP')
+    factionIDText:SetScript('OnLeave', function(self)
+        GameTooltip:Hide()
+        self:SetAlpha(1)
     end)
-    ReputationFrame.ReputationDetailFrame:HookScript('OnShow', function(self)
+    factionIDText:SetScript('OnEnter', function(self)
+        local tooltip= WoWTools_SetTooltipMixin:Faction(self)
+        if tooltip then
+            tooltip:Show()
+        end
+        self:SetAlpha(0.5)
+    end)
+    function factionIDText:settings()
         local selectedFactionIndex = C_Reputation.GetSelectedFaction();
-        local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
-        if factionData and factionData.factionID> 0 then
-            if not self.factionIDText then
-                self.factionIDText=WoWTools_LabelMixin:Create(self)
-                self.factionIDText:SetPoint('BOTTOM', self, 'TOP', 0,-4)
-            end
-            self.factionIDText:SetText(factionData.factionID)
-        end
+	    local factionData = C_Reputation.GetFactionDataByIndex(selectedFactionIndex);
+	    local factionID= factionData and factionData.factionID > 0 and factionData.factionID or nil
+        self:SetText(factionID or '')
+        self.factionID= factionID
+    end
+    EventRegistry:RegisterCallback('ReputationFrame.NewFactionSelected', function()
+        factionIDText:settings()
     end)
-
-
-
-
-
-
+--第一次，需要刷新
+    hooksecurefunc(ReputationFrame.ReputationDetailFrame, 'Refresh', function()
+        factionIDText:settings()
+    end)
+--hooksecurefunc(ReputationEntryMixin, 'OnClick', function(frame)
 
 
 

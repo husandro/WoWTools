@@ -46,6 +46,8 @@ local function Init()
 			WoWTools_CurrencyMixin:Init_TrackButton()
 		end
 	end)
+
+	Init=function()end
 end
 
 
@@ -120,7 +122,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 				if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
 					Init_ItemInteractionUI()
-					self:UnregisterEvent(event)
+				end
+
+				if C_AddOns.IsAddOnLoaded('Blizzard_TokenUI') then
+					WoWTools_CurrencyMixin:Init_Currency_Transfer()--货币，转移
 				end
 			end
 
@@ -130,7 +135,17 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 			else
 				Init_ItemInteractionUI()
 			end
-			self:UnregisterEvent(event)
+
+			if C_AddOns.IsAddOnLoaded('Blizzard_TokenUI') then
+				self:UnregisterEvent(event)
+			end
+
+		elseif arg1=='Blizzard_TokenUI' then
+			WoWTools_CurrencyMixin:Init_Currency_Transfer()--货币，转移
+
+			if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+				self:UnregisterEvent(event)
+			end
 		end
 
 	elseif event=='PLAYER_ENTERING_WORLD' and WoWToolsSave then

@@ -48,8 +48,12 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     local zone, npc
     if guid then
         zone, npc = select(5, strsplit("-", guid))--位面,NPCID
-        if zone then
-            tooltip:AddDoubleLine(WoWTools_DataMixin.Player.Language.layer..' '..zone, 'npcID '..npc)
+        if zone or npc then
+            tooltip:AddDoubleLine(
+                zone and WoWTools_DataMixin.Player.Language.layer..WoWTools_DataMixin.Icon.icon2..zone,
+                npc and 'npcID'..WoWTools_DataMixin.Icon.icon2..npc
+            )
+
             WoWTools_DataMixin.Player.Layer=zone
         end
         self:Set_Web_Link(tooltip, {type='npc', id=npc, name=name, isPetUI=false})--取得网页，数据链接 
@@ -86,11 +90,10 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         tooltip.textRight:SetTextColor(r, g, b)
         tooltip.text2Right:SetTextColor(r, g, b)
 
-        --[[if tooltip.StatusBar then
+        if tooltip.StatusBar then
             tooltip.StatusBar:SetStatusBarColor(r,g,b)
-        else
-            self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-        end]]
+        end
+        --self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
     end
 
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型

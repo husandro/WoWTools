@@ -4,8 +4,7 @@ function WoWTools_TooltipMixin:Set_Azerite(tooltip, powerID)
         return
     end
 
-    tooltip:AddLine(' ')
-    tooltip:AddDoubleLine('powerID', powerID)
+    tooltip:AddLine('powerID'..WoWTools_DataMixin.Icon.icon2..powerID)
 
 --法术
     local info = C_AzeriteEmpoweredItem.GetPowerInfo(powerID)

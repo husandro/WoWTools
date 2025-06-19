@@ -19,6 +19,7 @@ local function Init()
 		if not self:GetView() or Save().notPlus then
             return
         end
+	
 		for _, btn in pairs(self:GetFrames() or {}) do
 			local data= btn.transactionData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.sourceCharacterGUID, reName=true, reRealm=true})
@@ -34,8 +35,10 @@ local function Init()
 		end
 	end)
 
+local content= CurrencyTransferMenu.Content--11.2
+	or CurrencyTransferMenu
 
-	hooksecurefunc(CurrencyTransferMenu.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
+	hooksecurefunc(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		if not Save().notPlus then
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true})
 			if name~='' then
@@ -44,7 +47,7 @@ local function Init()
 		end
 	end)
 
-	hooksecurefunc(CurrencyTransferMenu.SourceBalancePreview, 'SetCharacterName', function(self)
+	hooksecurefunc(content.SourceBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus then
 			local data= self:GetParent().sourceCharacterData or {}
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
@@ -53,7 +56,8 @@ local function Init()
 			end
 		end
     end)
-    hooksecurefunc(CurrencyTransferMenu.PlayerBalancePreview, 'SetCharacterName', function(self)
+
+    hooksecurefunc(content.PlayerBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus then
 			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true, reRealm=true})
 			if name~='' then
@@ -62,12 +66,12 @@ local function Init()
 		end
     end)
 
-	CurrencyTransferMenu.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1, 0, 0)
-	CurrencyTransferMenu.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0, 1, 0)
+	content.SourceBalancePreview.BalanceInfo.Amount:SetTextColor(1, 0, 0)
+	content.PlayerBalancePreview.BalanceInfo.Amount:SetTextColor(0, 1, 0)
 
 --总数
-	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:Create(CurrencyTransferMenu, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
-	CurrencyTransferMenu.wowNumLabel:SetPoint('BOTTOM', CurrencyTransferMenu.SourceSelector.Dropdown, 'TOP', 0, 2)
+	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:Create(content, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
+	CurrencyTransferMenu.wowNumLabel:SetPoint('BOTTOM', content.SourceSelector.Dropdown, 'TOP', 0, 2)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', GameTooltip_Hide)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnEnter', function(self)
 		if not Save().notPlus then
@@ -89,6 +93,8 @@ local function Init()
 		self.wowNumLabel:SetText(text or '')
 		self.wowNumLabel.currencyID= currencyID
 	end)
+
+	Init=function()end
 end
 
 

@@ -14,7 +14,7 @@ function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
 
     tooltip:AddLine(' ')
 
-    tooltip:AddDoubleLine('auraID '..spellID, icon and '|T'..icon..':'..self.iconSize..'|t'..icon)
+    tooltip:AddDoubleLine('auraID'..WoWTools_DataMixin.Icon.icon2..spellID, icon and '|T'..icon..':'..self.iconSize..'|t'..icon)
 
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
     if mountID then

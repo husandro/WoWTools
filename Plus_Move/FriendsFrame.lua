@@ -88,8 +88,9 @@ local function Init()
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
     
 
-
-    RaidFrameRaidDescription:SetPoint('BOTTOMRIGHT', -15, 35)
+    if RaidFrameRaidDescription then--11.2没有了
+        RaidFrameRaidDescription:SetPoint('BOTTOMRIGHT', -15, 35)
+    end
 
 
     --[[hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)

@@ -14,12 +14,13 @@ local function Init_Label()
 
 
     Label= WoWTools_LabelMixin:Create(frame, {
+        name='WoWToolsServerInfoText',
         color= GameLimitedMode_IsActive() and {r=0,g=1,b=1} or {r=1,g=1,b=1},
         mouse=true,
     })
 
     Label:SetPoint('LEFT')
-    Label:SetAlpha(1)
+    --Label:SetAlpha(1)
 
     Label:SetScript("OnLeave",function(self) GameTooltip:Hide() self:SetAlpha(1) end)
     Label:SetScript("OnEnter",function(self)

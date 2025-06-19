@@ -23,7 +23,14 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
         end
         levelText= levelText..(WoWTools_DataMixin.onlyChinese and '等级' or LEVEL)
     end
-    tooltip:AddDoubleLine('questID '..questID, levelText)
+
+    tooltip:AddDoubleLine(
+        'questID'
+        ..WoWTools_DataMixin.Icon.icon2
+        ..questID,
+
+        levelText
+    )
 
     if not info then
         local questLogIndex= C_QuestLog.GetLogIndexForQuestID(questID)
@@ -62,7 +69,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
                 (icon or '')..(wowNum and WoWTools_Mixin:MK(wowNum) or '')
             )
         end
-        
+
     end
 
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接

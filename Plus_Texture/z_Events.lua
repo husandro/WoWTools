@@ -1288,12 +1288,19 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(RaidInfoFrame)
 
     self:SetNineSlice(WhoFrameListInset, nil, true)
-    self:SetNineSlice(WhoFrameEditBoxInset, 0.3)
+    
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
 
-    self:HideTexture(WhoFrameEditBoxInset.Bg)
+    if WhoFrameEditBoxInset then--11.2 没有了
+        self:HideTexture(WhoFrameEditBoxInset.Bg)
+        self:SetNineSlice(WhoFrameEditBoxInset, 0.3)
+    else
+        self:HideTexture(WhoFrameEditBox.Bg)
+        self:SetEditBox(WhoFrameEditBox)
+    end
+
     self:CreateBG(WhoFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
 
     self:SetScrollBar(QuickJoinFrame)
@@ -1917,7 +1924,9 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
 --声望
     self:SetScrollBar(ReputationFrame)
     self:SetMenu(ReputationFrame.filterDropdown)
-    self:SetFrame(ReputationFrame.ReputationDetailFrame.Border, {isMinAlpha=true})
+    self:SetFrame(ReputationFrame.ReputationDetailFrame.Border)
+    self:SetButton(ReputationFrame.ReputationDetailFrame.CloseButton)
+    self:SetAlphaColor(ReputationFrame.ReputationDetailFrame.Divider)
     hooksecurefunc(ReputationFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
             return
@@ -1986,9 +1995,14 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetNineSlice(CurrencyTransferMenu)
     self:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
     self:SetNineSlice(CurrencyTransferMenuInset)
-    self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
-    self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
 
+    if CurrencyTransferMenu.AmountSelector then--11.2 没有了
+        self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
+        self:SetMenu(CurrencyTransferMenu.SourceSelector.Dropdown)
+    else
+        self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
+        self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
+    end
 end
 
 

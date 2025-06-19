@@ -10,7 +10,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     local _, name, points, completed, _, _, _, _, flags, icon, _, isGuild = GetAchievementInfo(achievementID)
 
     tooltip:AddDoubleLine(
-        'achievementID '..(flags==0x20000 and '|cffff00ff'..WoWTools_DataMixin.Icon.wow2..achievementID or achievementID),
+        'achievementID'..WoWTools_DataMixin.Icon.icon2..(flags==0x20000 and '|cffff00ff'..WoWTools_DataMixin.Icon.wow2..achievementID or achievementID),
         icon and '|T'..icon..':'..self.iconSize..'|t'..icon
     )
 

@@ -12,15 +12,26 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     local AllCollected, CollectedNum, CollectedText, text2Right, typeTexture
     local size= self.iconSize--20
 
-    if obtainable then--可得到的
-        tooltip:AddLine(' ')
+    tooltip:AddLine(' ')
 
-        AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)--收集数量
+--speciesID, icon
+    tooltip:AddDoubleLine(
+        'speciesID'
+        ..WoWTools_DataMixin.Icon.icon2
+        ..speciesID,
 
-        tooltip:AddDoubleLine('speciesID '..speciesID, speciesIcon and '|T'..speciesIcon..':'..size..'|t'..speciesIcon)
-        tooltip:AddDoubleLine(creatureDisplayID and 'displayID '..creatureDisplayID, companionID and 'companionID '..companionID)--ID
+        speciesIcon and '|T'..speciesIcon..':'..size..'|t'..speciesIcon
+    )
+
+--displayID companionID
+    tooltip:AddDoubleLine(
+        creatureDisplayID and 'displayID'..WoWTools_DataMixin.Icon.icon2..creatureDisplayID,
+
+        companionID and 'companionID '..companionID
+    )
 
 --技能图标
+    if canBattle then
         local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size+10)
         if abilityIconA or abilityIconB then
             --tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
@@ -28,19 +39,15 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
             tooltip:AddLine(abilityIconA)
             tooltip:AddLine(abilityIconB)
         end
---该宠物不可交易
-        if not isTradeable then
-            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE)
-
-        end
+    else
 --该生物无法对战。
-        if not canBattle then
-            GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE)
-        end
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该生物无法对战。' or BATTLE_PET_CANNOT_BATTLE)
     end
 
-
-
+--该宠物不可交易
+    if not isTradeable then
+        GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '该宠物不可交易' or BATTLE_PET_NOT_TRADABLE)
+    end
 
     tooltip:AddLine(' ')
 --中文， 来源 名称
@@ -92,15 +99,21 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     tooltip.Portrait:SetShown(typeTexture)
 
 --收集数量
+    if obtainable then--可得到的
+        AllCollected, CollectedNum, CollectedText= WoWTools_PetBattleMixin:Collected(speciesID)
+    end
     tooltip.textLeft:SetText(CollectedNum or '')
     tooltip.text2Left:SetText(CollectedText or '')
     tooltip.textRight:SetText(AllCollected or '')
+
 --强弱
     tooltip.text2Right:SetText(text2Right or '')
 
-    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})--取得网页，数据链接
+--取得网页，数据链接
+    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})
 
-    WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)--PetBattle.lua 联动
+--PetBattle.lua 联动
+    WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)
 
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

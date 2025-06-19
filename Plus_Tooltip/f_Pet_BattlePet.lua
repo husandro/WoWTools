@@ -23,7 +23,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
             BattlePetTooltipTemplate_AddTextLine(tooltip, format(WoWTools_DataMixin.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
         end
     end
-    BattlePetTooltipTemplate_AddTextLine(tooltip, 'speciesID '..speciesID..'    |T'..speciesIcon..':'..size..'|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(tooltip, 'speciesID'..WoWTools_DataMixin.Icon.icon2..speciesID..'    |T'..speciesIcon..':'..size..'|t'..speciesIcon)
     BattlePetTooltipTemplate_AddTextLine(tooltip, 'companionID '..companionID..'    displayID '..creatureDisplayID)
 
     BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')

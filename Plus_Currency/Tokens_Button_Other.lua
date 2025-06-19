@@ -97,10 +97,12 @@ local function Init()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info and info.isHeader and not info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i, true)
-				WoWTools_CurrencyMixin:UpdateTokenFrame()
+				do
+					C_CurrencyInfo.ExpandCurrencyList(i, true)
+				end
 			end
 		end
+		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
 	down:SetScript("OnLeave", GameTooltip_Hide)
 	down:SetScript('OnEnter', function(self)
@@ -119,7 +121,9 @@ local function Init()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info  and info.isHeader and info.isHeaderExpanded then
-				C_CurrencyInfo.ExpandCurrencyList(i, false)
+				do
+					C_CurrencyInfo.ExpandCurrencyList(i, false)
+				end
 			end
 		end
 		WoWTools_CurrencyMixin:UpdateTokenFrame()

@@ -54,15 +54,12 @@ local function Set_HunterPet(tooltip, spellID, size)
             icon
         )
     end
-   
+
 end
 
 
 
 function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术    
-    if WoWTools_FrameMixin:IsLocked(tooltip) then
-        return
-    end
 
     spellID = spellID or select(2, tooltip:GetSpell())
 
@@ -75,7 +72,7 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
         originalIcon= spellInfo.originalIconID
     end
 
-    if not name then
+    if not name or WoWTools_FrameMixin:IsLocked(tooltip) then
         return
     end
 
@@ -83,7 +80,13 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
 
     local spellTexture=  originalIcon or icon
     tooltip:AddLine(' ')
-    tooltip:AddDoubleLine('spellID '..spellID, spellTexture and '|T'..spellTexture..':'..size..'|t'..spellTexture)
+    tooltip:AddDoubleLine(
+        'spellID'
+        ..WoWTools_DataMixin.Icon.icon2
+        ..spellID,
+
+        spellTexture and '|T'..spellTexture..':'..size..'|t'..spellTexture
+    )
 
     Set_HunterPet(tooltip, spellID, size)--猎人兽栏，宠物
 
