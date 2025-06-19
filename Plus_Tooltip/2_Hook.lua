@@ -114,10 +114,7 @@ local function Init()
         self:SetAlpha(1)
     end)
     factionIDText:SetScript('OnEnter', function(self)
-        local tooltip= WoWTools_SetTooltipMixin:Faction(self)
-        if tooltip then
-            tooltip:Show()
-        end
+        WoWTools_SetTooltipMixin:Faction(self)
         self:SetAlpha(0.5)
     end)
     function factionIDText:settings()
