@@ -36,6 +36,10 @@ end
 
 
 local function Init_Button_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub
 
     sub=root:CreateCheckbox(

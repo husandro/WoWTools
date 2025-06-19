@@ -59,6 +59,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub
     local col= Is_Locked() and '|cff828282' or ''
 

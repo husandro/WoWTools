@@ -271,6 +271,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub, sub2, sub3, name
 --小号. 史诗钥石
     local num, playerNum=0, 0

@@ -9,7 +9,11 @@ local Button
 
 
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local all= GetNumTitles()
     root:CreateTitle(
        ((#GetKnownTitles()-1)..'/'..GetNumTitles()..' ')

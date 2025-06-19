@@ -181,8 +181,10 @@ local function Create_ListButton(index)
     btn:SetScript('OnMouseDown', btn.set_tooltip)
     btn:SetScript('OnHide', btn.rest)
 
-    btn:SetupMenu(function(...)
-        Init_Button_Menu(...)
+    btn:SetupMenu(function(f, ...)
+        if f:IsVisible() then
+            Init_Button_Menu(f, ...)
+        end
     end)
 
     table.insert(Buttons, btn)
@@ -485,6 +487,10 @@ local function Init()
 
 --菜单
     ListButton:SetupMenu(function(self, root)
+        if not self:IsVisible() then
+            return
+        end
+        
         local sub
         root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '显示' or SHOW,

@@ -69,6 +69,10 @@ local function Init_Button()
 
     if Save().notStatusPlus then
         Button:SetupMenu(function(self, root)
+            if not self:IsVisible() then
+                return
+            end
+
             local sub= root:CreateCheckbox(
                 WoWTools_DataMixin.onlyChinese and '启用' or ENABLE,
             function()

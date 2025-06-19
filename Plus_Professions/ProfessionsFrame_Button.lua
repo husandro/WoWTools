@@ -236,9 +236,10 @@ end
 
 
 local function Init_Menu(self, root)
-    if Save().showFuocoButton and WoWTools_MenuMixin:CheckInCombat(root) then
+    if Save().showFuocoButton and WoWTools_MenuMixin:CheckInCombat(root) or not self:IsVisible() then
         return
     end
+    
     local sub, sub2
 
 --启用

@@ -208,6 +208,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub
 
 --地图和任务日志

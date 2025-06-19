@@ -171,8 +171,12 @@ local function Init_Cursor_Options()
     dropDown.Text:SetPoint('CENTER')
     dropDown:SetDefaultText(Save().Atlas[Save().atlasIndex] or select(3, WoWTools_TextureMixin:IsAtlas(WoWTools_CursorMixin.DefaultTexture, 0)))
     dropDown:SetupMenu(function(self, root)
+        if not self:IsVisible() then
+            return
+        end
+
         local sub
-        local num=0
+        --local num=0
         for index, texture in pairs(Save().Atlas) do
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(texture, 0)) or texture
             sub=root:CreateCheckbox(
@@ -196,7 +200,7 @@ local function Init_Cursor_Options()
                 btn.fontString:ClearAllPoints()
                 btn.fontString:SetPoint('CENTER')
             end)
-            num= index
+            --num= index
         end
         WoWTools_MenuMixin:SetScrollMode(root)
     end)
@@ -366,8 +370,11 @@ local function Init_GCD_Options()
     dropDown.Text:SetPoint('CENTER')
     dropDown:SetDefaultText(Save().Atlas[Save().gcdTextureIndex] or select(3, WoWTools_TextureMixin:IsAtlas(WoWTools_CursorMixin.DefaultGCDTexture, 0)))
     dropDown:SetupMenu(function(self, root)
+        if not self:IsVisible() then
+            return
+        end
         local sub
-        local num=0
+        --local num=0
         for index, texture in pairs(Save().GCDTexture) do
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(texture, 0)) or texture
             sub=root:CreateCheckbox(
@@ -391,7 +398,7 @@ local function Init_GCD_Options()
                 btn.fontString:ClearAllPoints()
                 btn.fontString:SetPoint('CENTER')
             end)
-            num= index
+            --num= index
         end
         WoWTools_MenuMixin:SetScrollMode(root)
     end)

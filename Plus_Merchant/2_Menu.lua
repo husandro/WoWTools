@@ -242,6 +242,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+    
     local sub, sub2, num
 
 --自动出售垃圾

@@ -503,7 +503,9 @@ end
 --numIn 是否放入：true, false
 
 local function Init_Menu(self, root)
-    if WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
+    if not self:IsVisible() then
+        return
+    elseif WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
         self.isInRun=true--停止，已运行
     end
 

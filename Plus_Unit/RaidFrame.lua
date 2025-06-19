@@ -223,6 +223,10 @@ local function Init()--设置,团队
         self:SetAlpha(1)
     end)
     CompactRaidFrameManager.ScaleButton:SetupMenu(function(self, root)
+        if not self:IsVisible() then
+            return
+        end
+
 --缩放
         WoWTools_MenuMixin:Scale(self, root, function()
             return Save().managerScale or 1

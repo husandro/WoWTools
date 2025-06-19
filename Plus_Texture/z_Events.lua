@@ -1264,6 +1264,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
     self:SetButton(FriendsFrameCloseButton)
     self:SetMenu(FriendsFrameStatusDropdown, {alpha=1})
+    self:HideTexture(FriendsFrameStatusDropdown.Background)
 
     self:SetScrollBar(IgnoreListFrame)
 

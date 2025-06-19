@@ -55,7 +55,9 @@ local function Init()
     end
 
     LFDButton:SetupMenu(function(...)
-        WoWTools_LFDMixin:Init_Menu(...)
+        if LFDButton:IsVisible() then
+            WoWTools_LFDMixin:Init_Menu(...)
+        end
     end)
 
     function LFDButton:set_OnMouseDown()

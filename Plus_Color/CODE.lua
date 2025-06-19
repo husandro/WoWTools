@@ -294,6 +294,10 @@ local Tab={
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub
     for _, name in pairs(Tab) do
         local color = _G[name..'_CODE']

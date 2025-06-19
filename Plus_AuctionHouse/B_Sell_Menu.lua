@@ -15,6 +15,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+    
     local sub, sub2, name
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示' or SHOW,

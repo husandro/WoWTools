@@ -131,7 +131,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self.dungeonEncounterID then
+    if not self.dungeonEncounterID or not self:IsVisible() then
         return
     end
     local sub, num

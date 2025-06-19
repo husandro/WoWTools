@@ -17,6 +17,10 @@ local MenuButton, RefreshButton
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub
 
     local frame= self:GetParent():GetParent()--GuildBankFrame

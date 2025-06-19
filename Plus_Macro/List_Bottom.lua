@@ -519,7 +519,7 @@ end
 
 
 local function Init_SpellBook_Menu(self, root)
-    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+    if not self:IsVisible() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
 
@@ -587,8 +587,8 @@ end
 
 
 --PVP，天赋，法术
-local function Init_PvP_Menu(_, root)
-    local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
+local function Init_PvP_Menu(self, root)
+    local slotInfo = self:IsVisible() and C_SpecializationInfo.GetPvpTalentSlotInfo(1)
     if not slotInfo or not slotInfo.availableTalentIDs or WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
@@ -644,8 +644,8 @@ end
 
 
 
-local function Init_Equip_Menu(_, root)
-    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+local function Init_Equip_Menu(self, root)
+    if not self:IsVisible() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
     local sub, icon, name, spellID, itemLink
@@ -699,7 +699,7 @@ end
 
 --谈话，表情
 local function Init_Chat_Menu(self, root)
-    if WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+    if not self:IsVisible() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
     local i, sub
@@ -744,7 +744,11 @@ end
 
 
 --常用，宏
-local function Init_MacroList_Menu(_, root)
+local function Init_MacroList_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub
     for _, info in pairs(MacroList) do
         sub=root:CreateButton(

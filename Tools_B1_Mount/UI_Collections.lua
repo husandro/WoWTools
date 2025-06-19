@@ -156,6 +156,10 @@ end
 
 --过滤，列表，菜单
 local function Init_UI_List_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     for _, type in pairs(MountType) do
         root:CreateCheckbox(WoWTools_TextMixin:CN(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type), function(data)
             return self.Type[data]

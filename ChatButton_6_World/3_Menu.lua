@@ -205,8 +205,11 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
 
-    --世界频道
+--世界频道
     local world = GetChannelName(Save().world)
     Add_Menu(self, root, Save().world, world)
 

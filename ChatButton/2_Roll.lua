@@ -142,7 +142,11 @@ end
 --主菜单
 --#####
 
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub, sub2, icon
     local rollNum= #RollTab
     local saveNum= #Save().save

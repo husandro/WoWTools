@@ -219,6 +219,10 @@ end
 
 
 local function Init_Friends_Menu(self, root)
+    if not self:IsVisible() then
+        return
+    end
+
     local sub, name
     if not BNConnected() then
         root:CreateTitle('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '断开战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SOCIAL_TWITTER_DISCONNECT, COMMUNITY_COMMAND_BATTLENET))..'|r')
@@ -357,12 +361,16 @@ end
 --#############
 local function Init_FriendsList()--好友列表, 初始化
 
-    FriendsButton= WoWTools_ButtonMixin:Cbtn(FriendsListFrame, {size=20})
-    FriendsButton:SetScript('OnMouseDown', function(self)
+    --[[FriendsButton= WoWTools_ButtonMixin:Cbtn(FriendsListFrame, {size=20})
+     FriendsButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Friends_Menu)
-    end)
-    FriendsButton:SetPoint('LEFT', FriendsFrameStatusDropdown, 'RIGHT')
-
+    end)]]
+    FriendsButton= WoWTools_ButtonMixin:Menu(FriendsListFrame)
+   
+    FriendsButton:SetPoint('RIGHT', FriendsFrameCloseButton, 'LEFT')
+    FriendsButton:GetFrameStrata(FriendsFrameCloseButton:GetFrameStrata())
+    FriendsButton:SetFrameLevel(FriendsFrameCloseButton:GetFrameLevel()+1)
+    FriendsButton:SetupMenu(Init_Friends_Menu)
 
     FriendsButton.playerRealmID = GetRealmID()
     FriendsButton:SetScript('OnEvent', function(self, _, friendIndex)
