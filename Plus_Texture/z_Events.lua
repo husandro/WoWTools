@@ -1782,7 +1782,7 @@ end
 --挑战, 钥匙插入，界面
 function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:HideFrame(ChallengesFrame)
-    --ChallengesFrame.Background
+    self:SetAlphaColor(ChallengesFrame.Background, nil, nil, 0)
     self:HideTexture(ChallengesFrameInset.Bg)
     self:SetNineSlice(ChallengesFrameInset, nil, true)
     self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG, nil, nil, 0.3)
