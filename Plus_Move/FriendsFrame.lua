@@ -78,35 +78,27 @@ end
 local function Init()
     FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
 
-    FriendsFrameBattlenetFrame:ClearAllPoints()
-    FriendsFrameBattlenetFrame:SetPoint('LEFT', FriendsFrameStatusDropdown, 'RIGHT')
-FriendsFrameBattlenetFrame.BroadcastButton:SetPoint('LEFT', FriendsFrameBattlenetFrame, 'RIGHT')
+    --FriendsFrameBattlenetFrame:ClearAllPoints()
+    --FriendsFrameBattlenetFrame:SetPoint('LEFT', FriendsFrameStatusDropdown, 'RIGHT')
+
+    --FriendsFrameBattlenetFrame.BroadcastButton:ClearAllPoints()
+    --FriendsFrameBattlenetFrame.BroadcastButton:SetPoint('LEFT', FriendsFrameBattlenetFrame, 'RIGHT')
 
     hooksecurefunc(FriendsListButtonMixin, 'OnLoad', function(btn)
         btn.name:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
         btn.info:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
     end)
 
-
     RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
     RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
-    
 
     if RaidFrameRaidDescription then--11.2没有了
         RaidFrameRaidDescription:SetPoint('BOTTOMRIGHT', -15, 35)
     end
 
 
-    --[[hooksecurefunc(WhoFrame.ScrollBox, 'Update', function(self)
-        if not self:GetView() then
-            return
-        end
-        for _, btn in pairs(self:GetFrames() or {}) do
-            btn:SetPoint('RIGHT')
-        end
-    end)]]
-    RaidFrame:HookScript('OnShow', Set_RaidFrame_Button_size)
+    RaidFrame:HookScript('OnShow', function(...) Set_RaidFrame_Button_size(...) end)
 
 
     WoWTools_MoveMixin:Setup(FriendsFrame, {
