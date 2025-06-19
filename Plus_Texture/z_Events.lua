@@ -1985,9 +1985,9 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
         alpha=0.3,
         isAllPoint=true,
     })
-    self:SetButton(TokenFrame.CurrencyTransferLogToggleButton)
+   -- self:SetButton(TokenFrame.CurrencyTransferLogToggleButton)
 
---货币转移
+--[[货币转移
     self:SetNineSlice(CurrencyTransferLog)
     self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
     self:SetNineSlice(CurrencyTransferLogInset, nil, true)
@@ -2002,7 +2002,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     else
         self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
         self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
-    end
+    end]]
 end
 
 

@@ -120,12 +120,18 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 					WoWTools_Mixin:Load({id=itemID, type='item'})--加载 item quest spell
 				end
 
-				if C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI') then
+
+				local a= C_AddOns.IsAddOnLoaded('Blizzard_ItemInteractionUI')
+				if a then
 					Init_ItemInteractionUI()
 				end
 
-				if C_AddOns.IsAddOnLoaded('Blizzard_TokenUI') then
+				local b= C_AddOns.IsAddOnLoaded('Blizzard_TokenUI')
+				if b then
 					WoWTools_CurrencyMixin:Init_Currency_Transfer()--货币，转移
+				end
+				if a and b then
+					self:UnregisterEvent(event)
 				end
 			end
 

@@ -202,6 +202,8 @@ WoWTools_DataMixin.ChallengesSpellTabs={
     [506]= {spell=445440, ins=1272, name='燧酿酒庄', spellName='酒庄之路', spellDes='传送至|cff00ccff燧酿酒庄|r入口处。'},
     [507]= {spell=445424, ins=71, name='格瑞姆巴托', spellName='格瑞姆巴托之路', spellDes='传送至|cff00ccff格瑞姆巴托|r入口处。'},
     [525]= {spell=1216786, ins=1298, name='水闸行动', spellName='水闸行动之路', spellDes='传送至|cff00ccff水闸行动|r入口处。'},
+    [542]= {spell=1237215, ins=1303, name='生态圆顶', spellName='生态圆顶之路', spellDes='传送至|cff00ccff奥尔达尼生态圆顶|r入口处。'}
+
 }
 
 --双法术，

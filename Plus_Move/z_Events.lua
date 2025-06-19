@@ -1011,8 +1011,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     self:Setup(TokenFramePopup, {frame=CharacterFrame})
     self:Setup(ReputationFrame, {frame=CharacterFrame})
     self:Setup(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
-    self:Setup(CurrencyTransferMenu)
-    --self:Setup(CurrencyTransferMenu.TitleContainer, {frame=CurrencyTransferMenu})
+    --[[self:Setup(CurrencyTransferMenu)
 
     self:Setup(CurrencyTransferLog, {
         setSize=true,
@@ -1024,7 +1023,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             CurrencyTransferLog:ClearAllPoints()
             CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
-    })
+    })]]
 end
 
 

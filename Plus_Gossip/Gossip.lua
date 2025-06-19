@@ -424,7 +424,14 @@ local function Init()
                 if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
                 end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|n|cnRED_FONT_COLOR:',  format(WoWTools_DataMixin.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN, arg1 or '', ...))
+                print(
+                    WoWTools_DataMixin.Icon.icon2
+                    ..WoWTools_GossipMixin.addName,
+                    '|n|cnRED_FONT_COLOR:',
+                    format(WoWTools_DataMixin.onlyChinese and '%s|r已被禁用，因为该功能只对暴雪的UI开放。\n你可以禁用这个插件并重新装载UI。' or ADDON_ACTION_FORBIDDEN,
+                    arg1 or '',
+                    ...
+                ))
             end
         end
     end)

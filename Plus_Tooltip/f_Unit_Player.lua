@@ -140,7 +140,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local lineLeft2= isInGuild and _G[tooltipName..'TextLeft2']
     if lineLeft2 then
         local guildName, guildRankName, guildRankIndex = GetGuildInfo(unit)
-          
+
         --local lineRight2= _G[tooltipName..'TextRight2']
         if guildName then
             guildName= WoWTools_TextMixin:sub(guildName, 24, 12)
@@ -284,11 +284,13 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     else
         self:Set_Web_Link(hideLine, {unitName=name, realm=realm, col=col})--取得单位, raider.io 网页，数据链接
     end
-    --[[if tooltip.StatusBar then
+
+    if tooltip.StatusBar then
         tooltip.StatusBar:SetStatusBarColor(r,g,b)
-    else
-        self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
-    end]]
+    end
+    --else
+        --self:Set_HealthBar_Unit(GameTooltipStatusBar, unit)--生命条提示
+    --end]]
 
     self:Set_Item_Model(tooltip, {unit=unit, guid=guid})--设置, 3D模型
 

@@ -74,7 +74,7 @@ end
 -- target (object) - target object that is being disabled
 --
 -- Unhooks all hooks when the target disables.
--- this method should bWoWTools_Mixin:Called by the target manually or by an addon framework
+-- this method should be called by the target manually or by an addon framework
 function AceHook:OnEmbedDisable( target )
 	target:UnhookAll()
 end
@@ -249,7 +249,7 @@ function hook(self, obj, method, handler, script, secure, raw, forceSecure, usag
 end
 
 --- Hook a function or a method on an object.
--- The hook created will be a "safe hook", that means that your handler will bWoWTools_Mixin:Called
+-- The hook created will be a "safe hook", that means that your handler will be called
 -- before the hooked function ("Pre-Hook"), and you don't have to call the original function yourself,
 -- however you cannot stop the execution of the function, or modify any of the arguments/return values.\\
 -- This type of hook is typically used if you need to know if some function got called, and don't want to modify it.
@@ -341,7 +341,7 @@ function AceHook:SecureHook(object, method, handler)
 end
 
 --- Hook a script handler on a frame.
--- The hook created will be a "safe hook", that means that your handler will bWoWTools_Mixin:Called
+-- The hook created will be a "safe hook", that means that your handler will be called
 -- before the hooked script ("Pre-Hook"), and you don't have to call the original function yourself,
 -- however you cannot stop the execution of the function, or modify any of the arguments/return values.\\
 -- This is the frame script equivalent of the :Hook safe-hook. It would typically be used to be notified

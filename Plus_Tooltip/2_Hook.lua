@@ -116,9 +116,9 @@ local function Init()
         WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
     end)
 
-     
 
-    
+
+
     local factionIDText=WoWTools_LabelMixin:Create(ReputationFrame.ReputationDetailFrame,{
             name= 'ReputationDetailFramFactionIDText',
             mouse=true,
