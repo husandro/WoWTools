@@ -207,7 +207,10 @@ local function Init()--设置,团队
 
     --团体, 管理, 缩放
 
-    CompactRaidFrameManager.ScaleButton= WoWTools_ButtonMixin:Menu(CompactRaidFrameManagerDisplayFrameOptionsButton, {size=18})
+    CompactRaidFrameManager.ScaleButton= WoWTools_ButtonMixin:Menu(CompactRaidFrameManagerDisplayFrameOptionsButton, {
+        size=18,
+        name='CompactRaidFrameManagerScaleMenuButton'
+    })
     CompactRaidFrameManager.ScaleButton:SetPoint('RIGHT', CompactRaidFrameManagerDisplayFrameRaidMemberCountLabel, 'LEFT')
     CompactRaidFrameManager.ScaleButton:SetAlpha(0.3)
     function CompactRaidFrameManager.ScaleButton:settings()

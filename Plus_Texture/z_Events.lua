@@ -757,7 +757,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerChoice()
 
     self:SetButton(PlayerChoiceFrame.CloseButton, {all=true,})
     self:SetAlphaColor(PlayerChoiceFrame.CloseButton.Border)
-    
+
     PlayerChoiceFrame.Title.Middle:ClearAllPoints()
     PlayerChoiceFrame.Title.Middle:SetPoint('LEFT', PlayerChoiceFrame.Title.Left, 'RIGHT', -10,0)
     PlayerChoiceFrame.Title.Middle:SetPoint('RIGHT', PlayerChoiceFrame.Title.Right, 'LEFT', 10, 0)
@@ -824,7 +824,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo, nil, true)
     self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails, nil, true)
 
-    
+
     self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
     self:SetEditBox(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.SearchBox)
     self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.BackgroundNineSlice, nil, true)
@@ -1086,7 +1086,7 @@ function WoWTools_TextureMixin.Events:Blizzard_MajorFactions()
             MajorFactionRenownFrame.Background:SetAlpha(texture and 0 or alpha or 1)
         end
     })
-    
+
 end
 
 
@@ -1288,7 +1288,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:SetScrollBar(RaidInfoFrame)
 
     self:SetNineSlice(WhoFrameListInset, nil, true)
-    
+
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
     self:SetMenu(WhoFrameDropdown)
@@ -1410,16 +1410,66 @@ end
 
 --隐藏, 团队, 材质 Blizzard_CompactRaidFrameManager.lua
 function WoWTools_TextureMixin.Events:Blizzard_CompactRaidFrames()
-    self:SetAlphaColor(_G['CompactRaidFrameManagerBG-regulars'], nil, nil, 0)
-    self:SetAlphaColor(_G['CompactRaidFrameManagerBG-party-leads'], nil, nil, 0)
-    self:SetAlphaColor(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
-    self:SetAlphaColor(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
+    if _G['CompactRaidFrameManagerBG-regulars'] then--11.2没有了
+        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-regulars'], nil, nil, 0)
+        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-party-leads'], nil, nil, 0)
+        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-leads'], nil, nil, 0)
+        self:SetAlphaColor(_G['CompactRaidFrameManagerBG-party-regulars'], nil,nil,0)
+        CompactRaidFrameManagerToggleButtonForward:SetAlpha(0.3)
+        CompactRaidFrameManagerToggleButtonBack:SetAlpha(0.3)
+        self:HideTexture(_G['CompactRaidFrameManagerBG-assists'])
+    else
+        self:HideFrame(CompactRaidFrameManager, {show={[CompactRaidFrameManager.Background]=true}})
 
-    CompactRaidFrameManagerToggleButtonForward:SetAlpha(0.3)
-    CompactRaidFrameManagerToggleButtonBack:SetAlpha(0.3)
+--打开
+        CompactRaidFrameManagerToggleButtonBack.hoverTex= 'common-icon-rotateleft'
+        CompactRaidFrameManagerToggleButtonBack.normalTex= 'common-icon-backarrow'
+        CompactRaidFrameManagerToggleButtonBack:GetNormalTexture():SetAlpha(0.3)
+        CompactRaidFrameManagerToggleButtonBack:SetNormalAtlas('common-icon-backarrow')
+        local icon= CompactRaidFrameManagerToggleButtonBack:GetPushedTexture()
+        icon:SetAtlas('common-icon-backarrow')
+        icon= CompactRaidFrameManagerToggleButtonBack:GetDisabledTexture()
+        icon:SetAtlas('common-icon-backarrow')
+        icon:SetDesaturated(true)
+--合
+        CompactRaidFrameManagerToggleButtonForward:GetNormalTexture():SetAlpha(0.3)
+        CompactRaidFrameManagerToggleButtonForward.hoverTex= 'common-icon-rotateright'
+        CompactRaidFrameManagerToggleButtonForward.normalTex= 'common-icon-forwardarrow'
+        CompactRaidFrameManagerToggleButtonForward:SetNormalAtlas('common-icon-forwardarrow')
+        icon= CompactRaidFrameManagerToggleButtonForward:GetPushedTexture()
+        icon:SetAtlas('common-icon-forwardarrow')
+        icon= CompactRaidFrameManagerToggleButtonForward:GetDisabledTexture()
+        icon:SetAtlas('common-icon-forwardarrow')
+        icon:SetDesaturated(true)
+--Background
+        self:SetAlphaColor(CompactRaidFrameManager.Background, true)
+        CompactRaidFrameManager.Background:SetShown(CompactRaidFrameManagerToggleButtonBack:IsShown())
+            CompactRaidFrameManagerToggleButtonBack:HookScript('OnShow', function(b)
+            b:GetParent().Background:SetShown(true)
+        end)
+        CompactRaidFrameManagerToggleButtonForward:HookScript('OnShow', function(b)
+            b:GetParent().Background:SetShown(false)
+        end)
+--BG
+        self:Init_BGMenu_Frame(CompactRaidFrameManagerDisplayFrame, {
+            isNewButton=true,
+            newButtonPoint=function(btn)
+                if _G['CompactRaidFrameManagerScaleMenuButton'] then
+                    btn:SetPoint('RIGHT', _G['CompactRaidFrameManagerScaleMenuButton'], 'LEFT')
+                else
+                    btn:SetPoint('LEFT', CompactRaidFrameManagerDisplayFrameModeControlDropdown, 'RIGHT')
+                end
+            end,
+            settings=function(_, texture, alpha)
+                CompactRaidFrameManager.Background:SetAlpha(texture and 0 or alpha or 1)
+            end
+        })
+
+        CompactRaidFrameManagerDisplayFrameRaidMembersLabel:SetText('')--队员
+    end
+
     self:SetMenu(CompactRaidFrameManagerDisplayFrameRestrictPingsDropdown)
-    self:SetMenu(CompactRaidFrameManagerDisplayFrameModeControlDropdown, {alpha=1})
-    self:HideTexture(_G['CompactRaidFrameManagerBG-assists'])
+    self:SetMenu(CompactRaidFrameManagerDisplayFrameModeControlDropdown)
 end
 
 
@@ -2030,7 +2080,7 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:SetAlphaColor(InspectModelFrameBackgroundBotRight, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundTopLeft, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundTopRight, nil, nil, 0)
-       
+
     self:HideTexture(InspectHeadSlotFrame)
 	self:HideTexture(InspectNeckSlotFrame)
 	self:HideTexture(InspectShoulderSlotFrame)

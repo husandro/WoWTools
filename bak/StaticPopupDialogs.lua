@@ -85,7 +85,7 @@ info.closeButtonIsHide
 
 
 
-function StaticPopup_Show(which, text_arg1, text_arg2, data, insertedFrame)
+hooksecurefunc('StaticPopup_Show', function(self, which, text_arg1, text_arg2, data, insertedFrame)
 	local info = StaticPopupDialogs[which];
 	if ( not info ) then
 		return nil;
@@ -432,7 +432,7 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data, insertedFrame)
 
 	-- Button layout logic depends on the width of the dialog, so this needs to be resized to account
 	-- for any configuration options first. It will be resized again after the buttons have been arranged.
-	StaticPopup_Resize(dialog, which);
+	if StaticPopup_Resize then StaticPopup_Resize(dialog, which) end
 
 	local buttonPadding = 10;
 	local totalButtonPadding = (#buttons - 1) * buttonPadding;
@@ -552,13 +552,9 @@ function StaticPopup_Show(which, text_arg1, text_arg2, data, insertedFrame)
 
 	-- Finally size and show the dialog
 	StaticPopup_SetUpPosition(dialog);
-	dialog:Show();
+	--dialog:Show();
 
-	StaticPopup_Resize(dialog, which);
+	if StaticPopup_Resize then StaticPopup_Resize(dialog, which) end
 
-	if ( info.sound ) then
-		PlaySound(info.sound);
-	end
-
-	return dialog;
-end
+	--return dialog;
+end)

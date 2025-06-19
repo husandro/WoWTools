@@ -5936,7 +5936,8 @@
         "TabardFrameCustomization4",
         "WhoFrameEditBox",
         "ReputationDetailViewRenownButtonMixin",
-        "ReputationSubHeaderMixin"
+        "ReputationSubHeaderMixin",
+        "CompactRaidFrameManagerDisplayFrameRaidMembersLabel"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
