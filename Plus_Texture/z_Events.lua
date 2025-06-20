@@ -1855,11 +1855,13 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
         bg:SetAlpha(bg:IsDesaturated() and 0.5 or 0)
     end)
 
+end
+
+function WoWTools_TextureMixin.Events:Blizzard_DelvesDifficultyPicker()
     self:SetNineSlice(DelvesDifficultyPickerFrame, nil, true)
     self:HideFrame(DelvesDifficultyPickerFrame.Border)
     self:SetButton(DelvesDifficultyPickerFrame.CloseButton)
 end
-
 
 
 
