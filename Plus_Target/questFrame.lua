@@ -49,19 +49,24 @@ local function Get_Unit_Text(_, unit)
     end
 
     if not UnitIsPlayer(unit) then
+        if C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
+            local tooltipData = C_TooltipInfo.GetUnit(unit)
+            if tooltipData and tooltipData.lines then
+                for i = 4, #tooltipData.lines do
+                    local line = tooltipData.lines[i]
+                    local text= Find_Text(line.leftText)
+                    if text then
+                        return text
+                    end
+                end
+            end
+
+            return '|A:QuestLegendary:0:0|a'
+        end
+
         local type = UnitClassification(unit)
         if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
             return '|A:VignetteEvent:18:18|a'
-        end
-        local tooltipData = C_TooltipInfo.GetUnit(unit)
-        if tooltipData and tooltipData.lines then
-            for i = 4, #tooltipData.lines do
-                local line = tooltipData.lines[i]
-                local text= Find_Text(line.leftText)
-                if text then
-                    return text
-                end
-            end
         end
 
     else--if not UnitInParty(unit) and not UnitInRaid(unit) then

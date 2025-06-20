@@ -418,7 +418,7 @@ local function Init()
                 else
                     Save().movie[arg1]= date("%d/%m/%y %H:%M:%S")
                 end
-                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1)
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:movieID', arg1, ...)
             end
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
