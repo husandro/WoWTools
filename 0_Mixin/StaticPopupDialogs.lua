@@ -39,7 +39,6 @@ end
 
 
 local function Init()
-
     if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay then
         StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay=3
     end
