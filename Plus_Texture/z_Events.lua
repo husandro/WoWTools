@@ -1126,17 +1126,6 @@ function WoWTools_TextureMixin.Events:Blizzard_PerksProgram()
     PerksProgramFrame.FooterFrame.LeaveButton:SetPoint('BOTTOMLEFT', PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer, 'BOTTOMRIGHT', 0, 30)
 end
 
-function WoWTools_TextureMixin.Events:Blizzard_Menu()
-    hooksecurefunc(MenuProxyMixin, 'OnLoad', function(menu)
-        self:SetScrollBar(menu)
-    end)
-    hooksecurefunc(MenuStyle1Mixin, 'Generate', function(frame)
-        local icon= frame:GetRegions()
-        if icon:GetObjectType()=="Texture" then
-           icon:SetVertexColor(0, 0, 0, 0.925)
-        end
-    end)
-end
 
 
 
@@ -2646,6 +2635,21 @@ end
         print('ab')
     end)
 end]]
+
+
+function WoWTools_TextureMixin.Events:Blizzard_Menu()
+    hooksecurefunc(MenuProxyMixin, 'OnLoad', function(menu)
+        self:SetScrollBar(menu)
+
+        
+    end)
+    hooksecurefunc(MenuStyle1Mixin, 'Generate', function(frame)
+        local icon= frame:GetRegions()
+        if icon and icon:GetObjectType()=="Texture" then
+           icon:SetVertexColor(0, 0, 0, 0.925)
+        end
+    end)
+end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_SharedXML()

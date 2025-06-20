@@ -1,6 +1,7 @@
 --https://wago.tools/db2/Movie
 
 local list={
+1040,
 1035,
 1030,
 1029,
@@ -372,12 +373,13 @@ local function Init_Menu(_, root)
         for _, movieID in pairs(movieEntry.movieIDs) do
             tab[movieID]= true
             sub2=sub:CreateButton(
-                movieID
-                ..('|A:'..(movieEntry.upAtlas or '')..':0:0|a')
-                ..WoWTools_TextMixin:CN(movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion]) or movieID,
+                '|A:'..(movieEntry.upAtlas or '')..':0:0|a'
+                ..(WoWTools_TextMixin:CN(movieEntry.title or movieEntry.text or _G["EXPANSION_NAME"..movieEntry.expansion]) or '')
+                ..' '..movieID,
             function(data)
                 MovieFrame_PlayMovie(MovieFrame, data.movieID)
             end, {movieID=movieID, atlas=movieEntry.upAtlas})
+
 
             sub2:SetTooltip(function(tooltip, desc)
                 if desc.data.atlas then
@@ -409,7 +411,9 @@ local function Init_Menu(_, root)
             Movie_SubMenu(sub2, movieID)
         end
     end
+
     WoWTools_MenuMixin:SetScrollMode(sub)
+    tab=nil
 end
 
 
