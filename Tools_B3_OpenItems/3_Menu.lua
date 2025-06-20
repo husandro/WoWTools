@@ -25,19 +25,25 @@ local function Edit_Item(self, info)
 
         text=Save().use[info.itemID],
         OnShow=function(s, data)
-            s.editBox:SetNumeric(true)
+            local edit= s.editBox or s:GetEditBox()
+            local b3= s.button3 or s:GetButton3()
+            edit:SetNumeric(true)
             local useStr=ITEM_SPELL_TRIGGER_ONUSE..'(.+)'--使用：
             local dateInfo= WoWTools_ItemMixin:GetTooltip({bag=nil, guidBank=nil, merchant=nil, inventory=nil, hyperLink=data.itemLink, itemID=data.itemID, text={useStr}, onlyText=true, wow=nil, onlyWoW=nil, red=nil, onlyRed=nil})--物品提示，信息 使用：
             local num= dateInfo.text[useStr] and dateInfo.text[useStr]:match('%d+')
             num= num and tonumber(num)
-            s.editBox:SetNumber(num or Save().use[data.itemID] or 1)
-            s.button3:SetText(self.noText)
+
+            edit:SetNumber(num or Save().use[data.itemID] or 1)
+            b3:SetText(self.noText)
         end,
         OnHide=function(s)
-            s.editBox:SetNumeric(false)
+            local edit= s.editBox or s:GetEditBox()
+            edit:SetNumeric(false)
+            edit:ClearFocus()
         end,
         SetValue= function(s, data)
-            local num= s.editBox:GetNumber()
+            local edit= s.editBox or s:GetEditBox()
+            local num= edit:GetNumber()
             num = num<1 and 1 or num
             Save().use[data.itemID]=num
             Save().no[data.itemID]=nil
@@ -60,10 +66,12 @@ local function Edit_Item(self, info)
         end,
         EditBoxOnTextChanged=function(s)
             local num= s:GetNumber()
+            local p=s:GetParent()
+            local b1= p.button1 or p:GetButton1()
             if num>1 then
-                s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
+                b1:SetText('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '合成' or AUCTION_STACK_SIZE)..' '..num..'|r')
             else
-                s:GetParent().button1:SetText('|cnGREEN_FONT_COLOR:'..self.useText..'|r');
+                b1:SetText('|cnGREEN_FONT_COLOR:'..self.useText..'|r');
             end
         end,
     }

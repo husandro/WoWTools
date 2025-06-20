@@ -300,8 +300,9 @@ local function Init_Menu(self, root)
             nil,
             {
                 text=Save().guildWelcomeText,
-                SetValue= function(self)
-                    local text= self.editBox:GetText()
+                SetValue= function(s)
+                    local edit= s.editBox or s:GetEditBox()
+                    local text= edit:GetText()
                     Save().guildWelcomeText= text
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, text)
                 end
@@ -343,8 +344,9 @@ local function Init_Menu(self, root)
             nil,
             {
                 text=Save().groupWelcomeText,
-                SetValue= function(frame)
-                    local text= frame.editBox:GetText()
+                SetValue= function(s)
+                    local edit= s.editBox or s:GetEditBox()
+                    local text= edit:GetText()
                     Save().groupWelcomeText=text
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, text)
                 end

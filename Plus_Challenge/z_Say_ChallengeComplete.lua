@@ -96,7 +96,8 @@ local function Edit_Say_Text()
             )
         end,
         SetValue= function(s)
-            local text= s.editBox:GetText()
+            local edit= s.editBox or s:GetEditBox()
+            local text= edit:GetText() or ''
             Save().EndKeystoneSayText= text:gsub(' ', '')~='' and text or nil
             Settings(true)
         end,

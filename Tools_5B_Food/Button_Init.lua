@@ -22,8 +22,10 @@ local function Add_Item(info)
         texture= itemTexture,
         count=C_Item.GetItemCount(info.itemID, true, true, true, true),
         OnShow=function(self, data)
-           self.button1:SetEnabled(not Save().addItems[data.itemID])
-           self.button3:SetEnabled(Save().addItems[data.itemID])
+            local b1= self.button1 or self:GetButton1()
+            local b3= self.button3 or self:GetButton3()
+            b1:SetEnabled(not Save().addItems[data.itemID])
+            b3:SetEnabled(Save().addItems[data.itemID])
         end,
         SetValue = function(_, data)
             Save().addItems[data.itemID]= true

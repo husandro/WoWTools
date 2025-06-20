@@ -51,20 +51,24 @@ local function Init_Menu(self, root)
         nil,
         {
             OnShow=function(s)
-                s.editBox:SetNumeric(true)
-                s.editBox:SetNumber(Save().SayTime or 120)
+                local edit= s.editBox or s:GetEditBox()
+                edit:SetNumeric(true)
+                edit:SetNumber(Save().SayTime or 120)
             end,
             OnHide=function(s)
                 s.editBox:SetNumeric(false)
             end,
             SetValue= function(s)
-                local num=s.editBox:GetNumber()
+                local edit= s.editBox or s:GetEditBox()
+                local num=edit:GetNumber()
                 WoWTools_ChatMixin:Chat(WoWTools_TimeMixin:SecondsToClock(num), nil, nil)
                 Save().SayTime= num
             end,
             EditBoxOnTextChanged=function(s)
                 local num= s:GetNumber() or 0
-                s:GetParent().button1:SetEnabled(num>=60 and num<2147483647)
+                local p= s:GetParent()
+                local b1= p.button1 or p:GetButton1()
+                b1:SetEnabled(num>=60 and num<2147483647)
             end,
         }
     )

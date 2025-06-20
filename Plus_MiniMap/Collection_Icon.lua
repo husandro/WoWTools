@@ -589,32 +589,36 @@ local function Init_UserAdd_Menu(_, root)
         {
 
             SetValue= function(s)
-                local t= s.editBox:GetText()
+                local edit= s.editBox or s:GetEditBox()
+                local t= edit:GetText() or ''
                 if t:gsub(' ', '')~='' then
                     Save().Icons.userAdd[t]=true
                     Init_Buttons()
                 end
             end,
             OnAlt=function(s)
-                local t= s.editBox:GetText()
+                local edit= s.editBox or s:GetEditBox()
+                local t= edit:GetText()
                 Save().Icons.userAdd[t]= nil
                 Rest_Ueser_Button(_G[t])
                 Init_Buttons()
             end,
             EditBoxOnTextChanged=function(s, _, text)
                 local p= s:GetParent()
+                local b1= p.button1 or p:GetButton1()
+                local b3= p.button3 or p:GetButton3()
                 if _G[text] and _G[text].GetFrameStrata then
-                    p.button1:SetText(
+                    b1:SetText(
                         '|cnGREEN_FONT_COLOR:'
                         ..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
                     )
                 else
-                    p.button1:SetText(
+                    b1:SetText(
                         '|cff626262'
                         ..(WoWTools_DataMixin.onlyChinese and '添加' or ADD)
                     )
                 end
-                p.button3:SetEnabled(text~='' and Save().Icons.userAdd[text] and true or false)
+                b3:SetEnabled(text~='' and Save().Icons.userAdd[text] and true or false)
             end,
         })
         return MenuResponse.Open

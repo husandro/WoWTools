@@ -117,7 +117,8 @@ local function Init_Menu(self, root)
         nil, {
             text=Save().ChannelText,
             SetValue= function(s)
-                Save().ChannelText = string.upper(s.editBox:GetText())
+                local edit= s.editBox or s:GetEditBox()
+                Save().ChannelText = string.upper(edit:GetText() or '')
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_DataMixin.onlyChinese and '频道' or CHANNEL,'|cnGREEN_FONT_COLOR:'..Save().ChannelText..'|r')
             end,
         })
@@ -223,7 +224,8 @@ local function Init_Menu(self, root)
             {
                 text= Save().SummonThxText or WoWTools_InviteMixin.SummonThxText,
                 SetValue= function(s)
-                    Save().SummonThxText=s.editBox:GetText()
+                    local edit= s.editBox or s:GetEditBox()
+                    Save().SummonThxText=edit:GetText()
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, Save().SummonThxText)
                 end,
                 OnAlt=function()

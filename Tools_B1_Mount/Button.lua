@@ -329,9 +329,13 @@ local function Set_Item_Spell_Edit(info)
                     local mapID= C_Map.GetBestMapForUnit("player")
                     text= (mapID and text..mapID or text)..', '
                 end
-                self.editBox:SetText(text)
-                self.data.text= text
-                self.button3:SetEnabled(Save().Mounts[FLOOR][data.spellID] and true or false)
+                local edit= self.editBox or self:GetEditBox()
+                local b3= self.button3 or self:GetButton3()
+                edit:SetText(text)
+                b3:SetEnabled(Save().Mounts[FLOOR][data.spellID] and true or false)
+                if self.data then
+                    self.data.text= text
+                end
             end,
             SetValue = function(_, data, tab, text)
                 Save().Mounts[FLOOR][data.spellID]= tab
@@ -373,8 +377,10 @@ local function Set_Item_Spell_Edit(info)
         texture= texture,
         count=count,
         OnShow=function(self, data)
-            self.button3:SetEnabled(Save().Mounts[data.type][data.ID] and true or false)
-            self.button1:SetEnabled(not Save().Mounts[data.type][data.ID] and true or false)
+            local b1= self.button1 or self:GetButton1()
+            local b3= self.button3 or self:GetButton3()
+            b3:SetEnabled(Save().Mounts[data.type][data.ID] and true or false)
+            b1:SetEnabled(not Save().Mounts[data.type][data.ID] and true or false)
         end,
         SetValue = function(_, data)
             Save().Mounts[data.type][data.ID]=true

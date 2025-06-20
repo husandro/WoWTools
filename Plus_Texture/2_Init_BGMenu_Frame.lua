@@ -323,14 +323,16 @@ local function Texture_List_Menu(self, root, icon, name)
                 s.editBox:SetText('Interface\\AddOns\\WoWTools\\Source\\Background\\')
             end,
             SetValue= function(s)
-                local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
+                local edit= s.editBox or s:GetEditBox()
+                local textureID= select(2, WoWTools_TextureMixin:IsAtlas(edit:GetText(), 0))
                 if textureID then
                     Save().UseTexture[textureID]= true
                 end
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_TextureMixin.addName, textureID)
             end,
             OnAlt=function(s)
-                local textureID= select(2, WoWTools_TextureMixin:IsAtlas(s.editBox:GetText(), 0))
+                local edit= s.editBox or s:GetEditBox()
+                local textureID= select(2, WoWTools_TextureMixin:IsAtlas(edit:GetText(), 0))
                 Save().UseTexture[textureID]= nil
             end,
             EditBoxOnTextChanged=function(s)
@@ -341,8 +343,11 @@ local function Texture_List_Menu(self, root, icon, name)
                 local isAdd= Save().UseTexture[textureID]
                 local isTextureTab= TextureTab[textureID]
 
-                s:GetParent().button1:SetEnabled(enabled and not isAdd and not isTextureTab)
-                s:GetParent().button3:SetEnabled(enabled and isAdd and not isTextureTab)
+                local p= s:GetParent()
+                local b1= p.button1 or p:GetButton1()
+                local b3= p.button3 or p:GetButton3()
+                b1:SetEnabled(enabled and not isAdd and not isTextureTab)
+                b3:SetEnabled(enabled and isAdd and not isTextureTab)
             end,
         }
     )
