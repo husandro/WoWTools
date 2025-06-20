@@ -308,15 +308,26 @@ end
 
 
 --下拉，菜单 set_Menu
-function WoWTools_TextureMixin:SetMenu(frame, tab)
-    tab= tab or {}
-    if frame then
-        self:SetAlphaColor(frame.Background, nil, nil, tab.alpha or 0.5)
+function WoWTools_TextureMixin:SetMenu(frame)
+    if not frame then
+        return
+    end
 
-        if frame.FilterDropdown then
-            self:SetAlphaColor(frame.FilterDropdown.Background, nil, nil, tab.alpha or 0.8)
-        end
-        self:SetAlphaColor(frame.Arrow, nil, nil, tab.alpha or 0.8)
+    if frame.Arrow and frame.Background and frame.Text then
+        self:SetAlphaColor(frame.Arrow, nil, nil, 0.7)
+
+        frame.Text:ClearAllPoints()
+        frame.Text:SetPoint('RIGHT', frame.Arrow, 'LEFT', 1, 3.5)
+        frame.Text:SetJustifyH('RIGHT')
+
+        frame.Background:SetTexture(0)
+        frame.Background:SetColorTexture(0,0,0, 0.3)
+
+        frame.Background:ClearAllPoints()
+        frame.Background:SetPoint('TOPLEFT', frame.Text, -2, 2)
+        frame.Background:SetPoint('BOTTOMRIGHT', frame.Text, 4, -2)
+    else
+        self:SetAlphaColor(frame.Background, nil, nil, 0.7)
     end
 end
 

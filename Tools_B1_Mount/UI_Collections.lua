@@ -140,7 +140,7 @@ local function Updata_MountJournal_FullUpdate(self)
     MountJournal_FullUpdate=New_MountJournal_FullUpdate--过滤，列表，Func
 
     MountJournal.FilterDropdown:Reset()
-    WoWTools_Mixin:Call(MountJournal_SetUnusableFilter,true)
+    WoWTools_Mixin:Call(MountJournal_SetUnusableFilter, true)
     WoWTools_Mixin:Call(MountJournal_FullUpdate, MountJournal)
     C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
 
@@ -288,13 +288,12 @@ local function Init()
 
     --local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
     local btn= CreateFrame('DropdownButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'WowStyle1FilterDropdownTemplate')
-    btn:SetPoint('BOTTOM', MountJournal.FilterDropdown, 'TOP', 0, 6)
-
+    btn:SetPoint('BOTTOMLEFT', MountJournal.FilterDropdown, 'TOPLEFT', 0, 6)
+    --btn:SetWidth(MountJournal.FilterDropdown:GetWidth())
 
     MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
-        local btn2= _G['MountJournalFilterButtonWoWTools']
-        if btn2.ResetButton:IsShown() then
-            btn2.ResetButton:Click()
+        if btn.ResetButton:IsShown() then
+            btn.ResetButton:Click()
         end
     end)
 
@@ -311,7 +310,7 @@ local function Init()
         self:SetText('Tools')
     end
 
-    --重置
+--重置
     btn.ResetButton:SetScript('OnClick', function(self)
         local frame= self:GetParent()
         MountJournal_FullUpdate= frame.MountJournal_FullUpdate
@@ -327,7 +326,6 @@ local function Init()
     MountJournal.MountCount:ClearAllPoints()
     MountJournal.MountCount:SetPoint('BOTTOMRIGHT', MountJournalSearchBox, 'TOPRIGHT', 0, 4)
 
-
     btn:rest_type()
     btn:set_text()
     btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单    
@@ -338,7 +336,6 @@ end
 
 
 function WoWTools_MountMixin:Init_MountJournal()
-   
     Init()
 end
 

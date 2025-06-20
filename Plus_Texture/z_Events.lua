@@ -1701,7 +1701,14 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:HideFrame(PVEFrame.shadows)
 
     self:SetAlphaColor(LFDQueueFrameBackground, nil, nil, 0.3)
+
     self:SetMenu(LFDQueueFrameTypeDropdown)
+    LFDQueueFrameTypeDropdownName:ClearAllPoints()
+    LFDQueueFrameTypeDropdownName:SetPoint('BOTTOMLEFT', LFDQueueFrameRandomScrollFrame, 'TOPLEFT', 0, 15)
+    LFDQueueFrameTypeDropdownName:SetWidth(LFDQueueFrameTypeDropdownName:GetStringWidth()+4)
+    --LFDQueueFrameTypeDropdownName:SetJustifyH('LEFT')
+
+    
     self:SetMenu(LFGListFrame.SearchPanel.FilterButton)
 
     self:SetNineSlice(LFDParentFrameInset, nil, true)
@@ -1782,10 +1789,11 @@ end
 --挑战, 钥匙插入，界面
 function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:HideFrame(ChallengesFrame)
-    self:SetAlphaColor(ChallengesFrame.Background, nil, nil, 0)
+    self:HideTexture(ChallengesFrame.Background)
+    ChallengesFrame.Background:ClearAllPoints()
     self:HideTexture(ChallengesFrameInset.Bg)
     self:SetNineSlice(ChallengesFrameInset, nil, true)
-    self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG, nil, nil, 0.3)
+    self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG)
 
 --钥匙插入，界面
     self:SetButton(ChallengesKeystoneFrame.CloseButton)

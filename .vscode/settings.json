@@ -5937,7 +5937,9 @@
         "WhoFrameEditBox",
         "ReputationDetailViewRenownButtonMixin",
         "ReputationSubHeaderMixin",
-        "CompactRaidFrameManagerDisplayFrameRaidMembersLabel"
+        "CompactRaidFrameManagerDisplayFrameRaidMembersLabel",
+        "LFDQueueFrameTypeDropdownName",
+        "LFDQueueFrameRandomScrollFrame"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
