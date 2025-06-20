@@ -35,7 +35,7 @@ function WoWTools_ColorMixin:RGBtoHEX(r, g, b, a, frame)
         local hex=format("%02x%02x%02x%02x", a*255, r*255, g*255, b*255)
 
         set_Frame_Color(frame, r, g, b, a, hex)
-        
+
         return hex
     end
 end
@@ -147,7 +147,7 @@ function WoWTools_ColorMixin:Setup(object, tab)--设置颜色
         else
             object:SetVertexColor(r, g, b, a)
         end
-    
+
     elseif Type=='Button' then
         local icon= object:GetNormalTexture()
         if icon then

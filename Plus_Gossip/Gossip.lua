@@ -530,7 +530,13 @@ local function Init()
         elseif (npc and Save().NPC[npc]) then--禁用NPC
             return
 
-        elseif Save().quest and (quest or name:find('0000FF') or  name:find(QUESTS_LABEL) or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)) then--任务
+        elseif Save().quest and (
+                quest or name:find('0000FF')
+                or name:find(QUESTS_LABEL)
+                or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)
+                or name:find(RENOWN_LEVEL_UP_SKIP_BUTTON)
+            )
+        then--任务
             if quest then
                 name= WoWTools_TextMixin:CN(info.name)..'<|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL)..'|r>'
             end
