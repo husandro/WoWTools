@@ -309,11 +309,14 @@ end
 
 --下拉，菜单 set_Menu
 function WoWTools_TextureMixin:SetMenu(frame)
-    if not frame then
-        return
+    if frame then
+        self:SetAlphaColor(frame.Background, nil, nil, 0.3)
+        self:SetAlphaColor(frame.Arrow, nil, nil, 0.7)
+        
+        WoWTools_ColorMixin:Setup(frame.Text, {type='FontString'})
     end
-
-    if frame.Arrow and frame.Background and frame.Text then
+end
+    --[[if frame.Arrow and frame.Background and frame.Text then
         self:SetAlphaColor(frame.Arrow, nil, nil, 0.7)
 
         frame.Text:ClearAllPoints()
@@ -325,11 +328,10 @@ function WoWTools_TextureMixin:SetMenu(frame)
 
         frame.Background:ClearAllPoints()
         frame.Background:SetPoint('TOPLEFT', frame.Text, -2, 2)
-        frame.Background:SetPoint('BOTTOMRIGHT', frame.Text, 4, -2)
-    else
-        self:SetAlphaColor(frame.Background, nil, nil, 0.7)
-    end
-end
+        frame.Background:SetPoint('BOTTOMRIGHT', frame.Text, 4, -2)]]
+    
+    
+    
 
 --[[TabSystem 
 function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
