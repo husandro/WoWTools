@@ -136,6 +136,7 @@ local function Add_BuyItem(itemID, itemLink)
         local icon
         icon= C_Item.GetItemIconByID(itemLink)
         icon= icon and '|T'..icon..':0|t' or ''
+
         StaticPopupDialogs['WoWTools_AutoBuy']= {
             text =WoWTools_DataMixin.addName..' '..WoWTools_MerchantMixin.addName
             ..'|n|n'.. (WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..icon ..itemLink
@@ -173,8 +174,7 @@ local function Add_BuyItem(itemID, itemLink)
                 edit:SetText("")
                 edit:ClearFocus()
             end,
-            EditBoxOnEscapePressed = function(s)
-                s:SetAutoFocus(false)
+            EditBoxOnEscapePressed =function(s)
                 s:ClearFocus()
                 s:GetParent():Hide()
             end,

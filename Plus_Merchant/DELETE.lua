@@ -13,19 +13,27 @@ end
 
 
 local function Init()
+    StaticPopupDialogs["DELETE_GOOD_ITEM"].acceptDelay=1
     hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
         if not Save().notDELETE then
-            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText(DELETE_ITEM_CONFIRM_STRING)
         end
     end)
+
+    StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"].acceptDelay=1
     hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_QUEST_ITEM"], "OnShow",function(self)
-        if not Save().notDELETE and self.editBox then
-            self.editBox:SetText(DELETE_ITEM_CONFIRM_STRING)
+        if not Save().notDELETE then
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText(DELETE_ITEM_CONFIRM_STRING)
         end
     end)
+
+    StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"].acceptDelay=1
     hooksecurefunc(StaticPopupDialogs["CONFIRM_DESTROY_COMMUNITY"],"OnShow",function(self)
-        if not Save().notDELETE and self.editBox then
-            self.editBox:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
+        if not Save().notDELETE then
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
         end
     end)
 end

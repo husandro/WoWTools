@@ -246,18 +246,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 [ITEM_MOD_CR_SPEED_SHORT]=WoWTools_DataMixin.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
                 --[ITEM_MOD_EXTRA_ARMOR_SHORT]= WoWTools_DataMixin.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
             }
-
-
-            if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow then
-                --你想要将所有用户界面和插件设置重置为默认状态，还是只重置这个界面或插件的设置？
-                --所有设置
-                StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].OnShow= function(frame)
-                    frame.button1:SetEnabled(false)
-                    C_Timer.After(3, function()
-                        frame.button1:SetEnabled(true)
-                    end)
-                end
-            end
+           
 
             self:UnregisterEvent(event)
         end

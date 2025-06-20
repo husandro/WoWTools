@@ -47,10 +47,9 @@ local function Init_Dialogs()
             local num= self:GetNumber() or 0
             self:GetParent().button1:SetEnabled(num>=10 and num<2147483647)
         end,
-        EditBoxOnEscapePressed = function(self2)
-            self2:SetAutoFocus(false)
-            self2:ClearFocus()
-            self2:GetParent():Hide()
+        EditBoxOnEscapePressed = function(self)
+            self:ClearFocus()
+            self:GetParent():Hide()
         end,
     }
 
@@ -62,7 +61,8 @@ local function Init_Dialogs()
         button1= WoWTools_DataMixin.onlyChinese and '添加' or ADD,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnShow = function(self)
-            self.button1:SetEnabled(false)
+            local b1= self.button1 or self:GetButton1()
+            b1:SetEnabled(false)
         end,
         OnHide= function(self)
             local edit= self.editBox or self:GetEditBox()
@@ -70,7 +70,7 @@ local function Init_Dialogs()
         end,
         OnAccept = function(self)
             local edit= self.editBox or self:GetEditBox()
-            local text= edit:GetText()
+            local text= edit:GetText() or ''
             if not text:find('%-') then
                 text= text..'-'..WoWTools_DataMixin.Player.realm
             end
@@ -97,7 +97,8 @@ local function Init_Dialogs()
             then
                 enabled=false
             end
-            self:GetParent().button1:SetEnabled(enabled)
+            local b1= self.button1 or self:GetButton1()
+            b1:SetEnabled(enabled)
         end,
         EditBoxOnEscapePressed = function(self)
             self:GetParent():Hide()
@@ -116,7 +117,8 @@ local function Init_Dialogs()
             local edit= self.editBox or self:GetEditBox()
             edit:SetAutoFocus(false)
             edit:SetText(WoWTools_DataMixin.Player.Region==5 and '大脚世界频道' and Save().world or 'World')
-            self.button1:SetEnabled(false)
+            local b1= self.button1 or self:GetButton1()
+            b1:SetEnabled(false)
         end,
         OnHide= function(self)
             local edit= self.editBox or self:GetEditBox()
@@ -128,12 +130,12 @@ local function Init_Dialogs()
             Save().world= edit:GetText()
             WoWTools_Mixin:Reload()
         end,
-        EditBoxOnTextChanged=function(s)
-            local t= s:GetText()
-            s:GetParent().button1:SetEnabled(t~= Save().world and t:gsub(' ', '')~='')
+        EditBoxOnTextChanged=function(self)
+            local t= self:GetText() or ''
+            local b1= self.button1 or self:GetButton1()
+            b1:SetEnabled(t~= Save().world and t:gsub(' ', '')~='')
         end,
         EditBoxOnEscapePressed = function(s)
-            s:SetAutoFocus(false)
             s:ClearFocus()
             s:GetParent():Hide()
         end,

@@ -168,7 +168,7 @@ local function Init()
                 ExitIns=nil
             end
         end,
-        EditBoxOnEscapePressed = function(s)
+        --[[EditBoxOnEscapePressed = function(s)
             s:SetAutoFocus(false)
             s:ClearFocus()
             ExitIns=nil
@@ -178,9 +178,9 @@ local function Init()
                 WoWTools_DataMixin.onlyChinese and '离开' or LEAVE
             )
             s:GetParent():Hide()
-        end,
-        whileDead=true, hideOnEscape=true, exclusive=true,
-        timeout=Save().sec}
+        end,]]
+        whileDead=true, exclusive=true,--hideOnEscape=true, 
+        timeout=Save().sec or 3}
 
     Init_Frame()
     
@@ -195,7 +195,7 @@ local function Init()
         end
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -204,7 +204,5 @@ end
 
 
 function WoWTools_LFDMixin:Init_Exit_Instance()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end

@@ -63,9 +63,11 @@ local function Init()
     btn:settings()
 
     --自动输入，忘却，文字，专业
+    StaticPopupDialogs["UNLEARN_SKILL"].acceptDelay= 1
     hooksecurefunc(StaticPopupDialogs["UNLEARN_SKILL"], "OnShow", function(self)
         if Save().wangquePrefessionText then
-            self.editBox:SetText(UNLEARN_SKILL_CONFIRMATION);
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText(UNLEARN_SKILL_CONFIRMATION);
         end
     end)
 

@@ -135,12 +135,14 @@ function WoWTools_KeyMixin:SetMenu(frame, root, tab)
                 text=data.key,
                 key=data.key,
                 OnShow=function(s, tab2)
+                    local edit= s.editBox or s:GetEditBox()
                     if not tab2.key then
-                        s.editBox:SetText('BUTTON5')
+                        edit:SetText('BUTTON5')
                     end
                 end,
                 SetValue=function(s, tab2)
-                    local text= s.editBox:GetText()
+                    local edit= s.editBox or s:GetEditBox()
+                    local text= edit:GetText()
                     text=text:gsub(' ','')
                     text=text:gsub('%[','')
                     text=text:gsub(']','')

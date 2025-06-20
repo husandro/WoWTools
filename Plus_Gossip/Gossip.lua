@@ -31,7 +31,7 @@ local SXBuff={
     [264689]= true,--疲倦
     [80354]= true,--时空错位
     [390435]= true,--筋疲力尽
-    
+
 }
 --[466904]= true,--鹞鹰尖啸 LR
 
@@ -379,8 +379,10 @@ local function Init()
             local key=IsModifierKeyDown()
             if d=='LeftButton' and not key then--禁用，启用
                 Save().gossip= not Save().gossip and true or nil
+                WoWTools_GossipMixin:Init_Gossip_Data()
                 self:set_Texture()--设置，图片
                 self:tooltip_Show()
+                WoWTools_GossipMixin:Init_Gossip()
 
             elseif d=='RightButton' and not key then--菜单
                 WoWTools_GossipMixin:Init_Menu_Gossip(self)
@@ -421,9 +423,9 @@ local function Init()
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
             if Save().gossip then
-                if StaticPopup1:IsShown() then
+                --[[if StaticPopup1:IsShown() then
                     StaticPopup1:Hide()
-                end
+                end]]
                 print(
                     WoWTools_DataMixin.Icon.icon2
                     ..WoWTools_GossipMixin.addName,
@@ -436,9 +438,7 @@ local function Init()
         end
     end)
 
-    if Save().gossip then
-        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= 0.3
-    end
+
 
 
 
@@ -690,6 +690,15 @@ local function Init()
             C_GossipInfo.SelectActiveQuest(questID)
         end
     end)
+
+
+
+
+    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
+
+    Init=function()
+        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
+    end
 end
 
 

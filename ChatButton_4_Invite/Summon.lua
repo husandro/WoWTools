@@ -28,15 +28,16 @@ local function Init()
             return
         end
 
-        if not UnitAffectingCombat("player") and PlayerCanTeleport() then--启用，召唤
+        if not InCombatLockdown() and PlayerCanTeleport() then--启用，召唤
             if not self.enabledAutoSummon then
                 self.enabledAutoSummon= true
                 if self.SummonTimer and not self.SummonTimer:IsCancelled() then
                     self.SummonTimer:Cancel()
                 end
                 WoWTools_CooldownMixin:Setup(self, nil, 3, nil, true, true, nil)--冷却条
+
                 self.SummonTimer= C_Timer.NewTimer(3, function()
-                    if not UnitAffectingCombat("player") and PlayerCanTeleport() then
+                    if not InCombatLockdown() and PlayerCanTeleport() then
                         C_SummonInfo.ConfirmSummon()
                         StaticPopup_Hide("CONFIRM_SUMMON")
                         if not IsInGroup() or Save().notSummonChat then
@@ -73,6 +74,8 @@ local function Init()
         end
         print(WoWTools_DataMixin.Icon.icon2..WoWTools_InviteMixin.addName, WoWTools_DataMixin.onlyChinese and '召唤' or SUMMON, name, '|A:poi-islands-table:0:0|a|cnGREEN_FONT_COLOR:', C_SummonInfo.GetSummonConfirmAreaName())
     end)
+
+    Init=function()end
 end
 
 

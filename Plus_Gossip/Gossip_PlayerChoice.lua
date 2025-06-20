@@ -13,9 +13,10 @@ local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EX
 --Blizzard_PlayerChoice
 local function Init()
     --命运, 字符
-    hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow",function(s)
-        if Save().gossip and s.editBox then
-            s.editBox:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
+    hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow", function(s)
+        local edit= s.editBox or s:GetEditBox()
+        if Save().gossip and edit then
+           edit:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
         end
     end)
 

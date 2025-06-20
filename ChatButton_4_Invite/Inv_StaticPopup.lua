@@ -141,8 +141,14 @@ end
 
 
 local function Init()
+    if Save().notInvitePlus then
+        return
+    end
 
-    EventRegistry:RegisterFrameEventAndCallback("PARTY_INVITE_REQUEST", Settings)
+
+    EventRegistry:RegisterFrameEventAndCallback("PARTY_INVITE_REQUEST", function(...)
+        Settings(...)
+    end)
 
 
     StaticPopupDialogs["PARTY_INVITE"].button3= WoWTools_DataMixin.onlyChinese and '添加拒绝' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, DECLINE)--添加拒绝按钮
@@ -187,7 +193,7 @@ local function Init()
         WoWTools_CooldownMixin:Setup(self)--冷却条  
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -201,8 +207,5 @@ end
 
 
 function WoWTools_InviteMixin:Init_StaticPopup()
-    if not Save().notInvitePlus and Init() then
-        Init=function()end
-        return true
-    end
+    Init()
 end

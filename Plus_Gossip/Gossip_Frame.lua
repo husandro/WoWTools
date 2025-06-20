@@ -647,20 +647,19 @@ local function Init()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
         GameTooltip:Show()
     end)
+
+    StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
+        text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+        whileDead=true, hideOnEscape=true, exclusive=true,
+        button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
+        button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
+        OnAccept = function()
+            Save().Gossip_Text_Icon_Player={}
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
+            List:set_list()
+        end,
+    }
     List.DeleteAllPlayerData:SetScript('OnClick', function()
-        if not StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data'] then
-            StaticPopupDialogs['WoWTools_Gossip_Delete_All_Player_Data']={
-                text=WoWTools_DataMixin.addName..' '..WoWTools_GossipMixin.addName..'|n|n|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
-                button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-                OnAccept = function()
-                    Save().Gossip_Text_Icon_Player={}
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
-                    List:set_list()
-                end,
-            }
-        end
         StaticPopup_Show('WoWTools_Gossip_Delete_All_Player_Data')
     end)
 

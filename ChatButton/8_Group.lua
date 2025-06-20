@@ -366,7 +366,8 @@ local function Init_Menu(self, root)
                         else
                             edit:SetText(WoWTools_DataMixin.Player.Region==5 and '1' or 'inv, thx')
                         end
-                        f.button3:SetEnabled(false)
+                        local b3= f.button3 or f:GetButton3()
+                        b3:SetEnabled(false)
                     end
                     edit:SetWidth(f:GetWidth())
                 end,
@@ -388,10 +389,12 @@ local function Init_Menu(self, root)
                 end,
                 EditBoxOnTextChanged=function(f)
                     local text2= f:GetText()
+                    local p=f:GetParent()
+                    local b1= p.button1 or p:GetButton1()
                     if text2:gsub(' ','')=='' then
-                        f:GetParent().button1:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+                        b1:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
                     else
-                        f:GetParent().button1:SetText(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)
+                        b1:SetText(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)
                     end
                 end,
                 EditBoxOnEscapePressed = function(s)

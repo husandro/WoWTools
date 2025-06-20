@@ -4,6 +4,13 @@ WoWTools_EditText
 WoWTools_Item
 WoWTools_GetMapID
 WoWTools_OK
+
+exclusive=boolean 当显示任何其他弹出窗口时，隐藏，
+whileDead=boolean 即使玩家是鬼魂也会显示对话框
+acceptDelay=numberi 5秒后启用
+compactItemFrame = boolean
+hideOnEscape = 1,
+timeout = 0,
 ]]
 
 
@@ -33,7 +40,9 @@ end
 
 local function Init()
 
-
+    if not StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay then
+        StaticPopupDialogs['GAME_SETTINGS_APPLY_DEFAULTS'].acceptDelay=3
+    end
 
 
 --重置, 数据
@@ -74,8 +83,11 @@ StaticPopupDialogs['WoWTools_EditText']={
         local edit= self.editBox or self:GetEditBox()
         edit:SetAutoFocus(false)
         edit:SetText(data.text or '')
-        self.button3:SetShown(data.OnAlt and true or false)
+
+        local b3= self.button3 or self:GetButton3()
+        b3:SetShown(data.OnAlt and true or false)
         edit:SetFocus(true)
+
         if data.OnShow then
             data.OnShow(self, data)
         end
@@ -97,28 +109,29 @@ StaticPopupDialogs['WoWTools_EditText']={
         end
     end,
     EditBoxOnTextChanged=function(self, data)
-        if not self:IsVisible() then
-            return
-        end
         local text= self:GetText() or ''
-        self:GetParent().button1:SetEnabled(text:gsub(' ', '')~='' and text~=data.text)
+        local p= self:GetParent()
+
+        local b1= p.button1 or p:GetButton1()
+        b1:SetEnabled(text:gsub(' ', '')~='' and text~=data.text)
+
         if data.EditBoxOnTextChanged then
             data.EditBoxOnTextChanged(self, data, text)
         end
     end,
-    EditBoxOnEscapePressed = function(self, data)
-        local text=self:GetText()
-        if data.text==text or text=='' then
-            self:GetParent():Hide()
-        end
+    EditBoxOnEscapePressed = function(self)
+        self:ClearFocus()
+        self:GetParent():Hide()
     end,
     EditBoxOnEnterPressed = function(self, data)
-        local parent = self:GetParent();
-        if parent.button1:IsEnabled() then
-            parent.data.SetValue(parent, data)
-            parent:Hide();
-        else
-            self:ClearFocus()
+        self:ClearFocus()
+        local p = self:GetParent();
+        local b1= p.button1 or p:GetButton1()
+        if b1:IsEnabled() then
+            if p.SetValue then
+                data.SetValue(p, data)
+            end
+            p:Hide()
         end
     end,
     hideOnEscape=true,
@@ -158,7 +171,8 @@ StaticPopupDialogs['WoWTools_Item'] = {
         if data.OnShow then
             data.OnShow(self, data)
         end
-        self.button3:SetShown(data.OnAlt and true or false)
+        local b3= self.button3 or self:GetButton3()
+        b3:SetShown(data.OnAlt and true or false)
     end,
 	OnAccept =function(self, data)
         data.SetValue(self, data)
@@ -202,7 +216,10 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             local edit= self.editBox or self:GetEditBox()
             edit:SetAutoFocus(false)
             edit:SetText(data.text or '')
-            self.button3:SetShown(data.OnAlt and true or false)
+
+            local b3= self.button3 or self:GetButton3()
+            b3:SetShown(data.OnAlt and true or false)
+
             if data.OnShow then
                 data.OnShow(self, data)
             end
@@ -223,30 +240,26 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             end
         end,
         EditBoxOnTextChanged=function(self, data)
-            if not self:IsVisible() then
-                return
-            end
             local _, text= Get_UIMapIDs_Name(self:GetText())
-            local frame= self:GetParent()
-            local btn=frame.button1
-            btn:SetEnabled((text and text~=data.text) and true or false)
-            btn:SetText(text or (WoWTools_DataMixin.onlyChinese and '无' or NONE))
+            local p= self:GetParent()
+            local b1= p.button1 or p:GetButton1()
+            b1:SetEnabled((text and text~=data.text) and true or false)
+            b1:SetText(text or (WoWTools_DataMixin.onlyChinese and '无' or NONE))
         end,
-        EditBoxOnEscapePressed = function(self, data)
-            local text=self:GetText()
-            if data.text==text or text=='' then
-                self:GetParent():Hide()
-            end
+        EditBoxOnEscapePressed = function(self)
+            self:ClearFocus()
+            self:GetParent():Hide()
         end,
         EditBoxOnEnterPressed = function(self, data)
+            self:ClearFocus()
             local p = self:GetParent();
-            if p.button1:IsEnabled() then
-                local edit= self.editBox or self:GetEditBox()
-                local tab, text= Get_UIMapIDs_Name(edit:GetText())
-                p.data.SetValue(p, data, tab, text)
-                p:Hide();
-            else
-                self:ClearFocus()
+            local b1= p.button1 or p:GetButton1()
+            if b1:IsEnabled() then
+                local tab, text= Get_UIMapIDs_Name(self:GetText())
+                if data and data.SetValue then
+                    data.SetValue(p, data, tab, text)
+                end
+                p:Hide()
             end
         end,
         hideOnEscape=true,
@@ -294,7 +307,6 @@ return MenuResponse.Open
         button1 = WoWTools_DataMixin.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
             local edit= self.editBox or self:GetEditBox()
-            
             edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName,
@@ -320,21 +332,16 @@ return MenuResponse.Open
             edit:ClearFocus()
         end,
         EditBoxOnTextChanged= function (self, web)
-            if not self:IsVisible() then
-                return
-            end
             self:SetText(web)
             self:HighlightText()
         end,
         EditBoxOnEnterPressed = function(self)
-            local parent= self:GetParent()
-            parent.button1:Click()
-            parent:Hide()
+            self:ClearFocus()
+            self:GetParent():Hide()
         end,
-        EditBoxOnEscapePressed = function(self2)
-            self2:SetAutoFocus(false)
-            self2:ClearFocus()
-            self2:GetParent():Hide()
+        EditBoxOnEscapePressed = function(self)
+            self:ClearFocus()
+            self:GetParent():Hide()
         end,
         hasEditBox = true,
         --editBoxWidth = 320,
@@ -352,26 +359,26 @@ return MenuResponse.Open
         hasEditBox=true,
         button1= WoWTools_DataMixin.onlyChinese and '添加' or ADD,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-        OnShow=function(s, data)
-            s.editBox:SetNumeric(true)
-            s.editBox:SetNumber(data.GetValue() or 0)
+        OnShow=function(self, data)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetNumeric(true)
+            edit:SetNumber(data.GetValue() or 0)
         end,
         OnHide= function(s)
             s.editBox:ClearFocus()
         end,
-        OnAccept= function(s, data)
-            local currencyID= s.editBox:GetNumber()
+        OnAccept= function(self, data)
+            local edit= self.editBox or self:GetEditBox()
+            local currencyID= edit:GetNumber()
             if currencyID and currencyID>0 then
                 data.SetValue(currencyID)
             end
         end,
-        EditBoxOnTextChanged=function(s, data)
-            if not s:IsVisible() then
-                return
-            end
-            local currencyID= s:GetNumber()
+        EditBoxOnTextChanged=function(self, data)
+            local p= self:GetParent()
+            local b1= p.button1 or p:GetButton1()
+            local currencyID= self:GetNumber()
             local name, info, text, icon
-            local p= s:GetParent()
             if currencyID>0 and currencyID<214748364 then
                 name, info=WoWTools_CurrencyMixin:GetName(currencyID, nil, nil)
                 text=(WoWTools_DataMixin.onlyChinese and '货币' or TOKENS)
@@ -379,14 +386,14 @@ return MenuResponse.Open
                     text= text..'|n|n'..name
                     icon=info.iconFileID
                 end
-                data.CheckValue(p.button1, currencyID)
+                data.CheckValue(b1, currencyID)
             end
             p.text:SetText(text)
-            p.button1:SetEnabled(name and info)
+            b1:SetEnabled(name and info)
             p.AlertIcon:SetTexture(icon or 0)
         end,
-        EditBoxOnEscapePressed = function(s)
-            s:GetParent():Hide()
+        EditBoxOnEscapePressed = function(self)
+            self:GetParent():Hide()
         end,
         whileDead=true, hideOnEscape=true, exclusive=true, showAlert=true,
     }

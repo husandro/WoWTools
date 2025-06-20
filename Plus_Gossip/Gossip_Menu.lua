@@ -64,7 +64,7 @@ end
 
 
 local function Init_Menu(self, root)
-    local sub, sub2, sub3, num, num2
+    local sub, sub2, num, num2
 
 --启用
     sub=root:CreateCheckbox(
@@ -76,6 +76,7 @@ local function Init_Menu(self, root)
         WoWTools_GossipMixin:Init_Gossip_Data()
         self:set_Texture()--设置，图片
         self:tooltip_Show()
+        WoWTools_GossipMixin:Init_Gossip()
         return MenuResponse.Close
     end)
     sub:SetTooltip(function(tooltip)

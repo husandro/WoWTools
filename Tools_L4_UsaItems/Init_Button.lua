@@ -19,8 +19,10 @@ local function Init_Dia()
         OnShow = function(self, data)
             local find=WoWTools_UseItemsMixin:Find_Type(data.type, data.ID)
             data.index=find
-            self.button3:SetEnabled(find)
-            self.button1:SetEnabled(not find)
+            local b1= self.button1 or self:GetButton1()
+            local b3= self.button3 or self:GetButton3()
+            b1:SetEnabled(not find)
+            b3:SetEnabled(find)
         end,
         OnAccept = function(_, data)
             table.insert(Save()[data.type], data.ID)

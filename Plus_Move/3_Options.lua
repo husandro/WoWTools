@@ -43,7 +43,7 @@ local function Init_Options()
                 ..(WoWTools_DataMixin.onlyChinese and '保存位置' or (Save()..CHOOSE_LOCATION:gsub(CHOOSE , ''))),
                 button1 = '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                 button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-                whileDead=true, hideOnEscape=true, exclusive=true,
+                whileDead=true, hideOnEscape=true, exclusive=true, acceptDelay=2,
                 OnAccept=function()
                     Save().point={}
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_MoveMixin.addName, WoWTools_DataMixin.onlyChinese and '重设到默认位置' or HUD_EDIT_MODE_RESET_POSITION, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD))
