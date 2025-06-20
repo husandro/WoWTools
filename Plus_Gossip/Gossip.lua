@@ -531,7 +531,9 @@ local function Init()
             return
 
         elseif Save().quest and (
-                quest or name:find('0000FF')
+                quest
+                or name:find('0000FF')--PURE_BLUE_COLOR
+                or name:find('0000ff')
                 or name:find(QUESTS_LABEL)
                 or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)
                 or name:find(RENOWN_LEVEL_UP_SKIP_BUTTON)
