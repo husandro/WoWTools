@@ -61,6 +61,10 @@ local function Get_Unit_Text(_, unit)
                 end
             end
 
+            if UnitIsQuestBoss(unit) then
+                return '|A:Crosshair_Attack_128:0:0|a'
+            end
+
             return '|A:QuestLegendary:0:0|a'
         end
 
