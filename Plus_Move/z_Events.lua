@@ -788,6 +788,8 @@ function WoWTools_MoveMixin.Events:Blizzard_DelvesDashboardUI()
     self:Setup(DelvesDashboardFrame, {frame=PVEFrame})
     self:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame, {frame=PVEFrame})
     self:Setup(DelvesDashboardFrame.ButtonPanelLayoutFrame.CompanionConfigButtonPanel, {frame=PVEFrame})
+
+    self:Setup(DelvesDifficultyPickerFrame)
 end
 
 --聊天设置

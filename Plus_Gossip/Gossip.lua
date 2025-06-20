@@ -521,8 +521,10 @@ local function Init()
         end
 
         local find
-        local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
+        --local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
 
+	    local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
+	
         if Save().gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
@@ -532,8 +534,9 @@ local function Init()
 
         elseif Save().quest and (
                 quest
-                or name:find('0000FF')--PURE_BLUE_COLOR
-                or name:find('0000ff')
+                --or name:find('0000FF')--PURE_BLUE_COLOR
+                --or name:find('0000ff')
+                --or FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend)
                 or name:find(QUESTS_LABEL)
                 or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)
                 or name:find(RENOWN_LEVEL_UP_SKIP_BUTTON)
