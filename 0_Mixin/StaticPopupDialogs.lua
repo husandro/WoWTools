@@ -86,11 +86,12 @@ StaticPopupDialogs['WoWTools_EditText']={
 
         local b3= self.button3 or self:GetButton3()
         b3:SetShown(data.OnAlt and true or false)
-        edit:SetFocus(true)
 
         if data.OnShow then
             data.OnShow(self, data)
         end
+
+        edit:SetFocus()
     end,
     OnHide=function(self, data)
         if data.OnHide then
@@ -223,6 +224,8 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
             if data.OnShow then
                 data.OnShow(self, data)
             end
+
+            edit:SetFocus()
         end,
         OnHide=function(self)
             local edit= self.editBox or self:GetEditBox()
