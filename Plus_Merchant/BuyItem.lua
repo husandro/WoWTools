@@ -145,8 +145,9 @@ local function Add_BuyItem(itemID, itemLink)
             button1 = WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE,
             button2 = WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
             whileDead=true, hideOnEscape=true, exclusive=true, hasEditBox=true,
-            OnAccept=function(s)
-                local num= s.editBox:GetNumber()
+            OnAccept=function(self)
+                local edit= self.editBox or self:GetEditBox()
+                local num= edit:GetNumber()
                 if num==0 then
                     SaveBuyItem(itemID, nil)
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|r', itemLink)
@@ -159,16 +160,18 @@ local function Add_BuyItem(itemID, itemLink)
                 BuyItemButton:set_text()--回购，数量，提示
                 WoWTools_MerchantMixin:Update_MerchantFrame()
             end,
-            OnShow=function(s)
-                s.editBox:SetNumeric(true)
+            OnShow=function(self)
+                local edit= self.editBox or self:GetEditBox()
+                edit:SetNumeric(true)
                 local num= Get_Buy_Num(itemID) or 1
                 if num then
-                    s.editBox:SetText(num)
+                    edit:SetText(num)
                 end
             end,
-            OnHide= function(self3)
-                self3.editBox:SetText("")
-                self3.editBox:ClearFocus()
+            OnHide= function(self)
+                local edit= self.editBox or self:GetEditBox()
+                edit:SetText("")
+                edit:ClearFocus()
             end,
             EditBoxOnEscapePressed = function(s)
                 s:SetAutoFocus(false)

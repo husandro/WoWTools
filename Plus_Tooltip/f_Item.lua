@@ -1,8 +1,68 @@
 --设置,物品信息
+--[[
+if LOCALE_zhCN then
+    function BreakUpLargeNumbers(value)
+        return WoWTools_Mixin:MK(value, 3)
+    end
+end
+FIRST_NUMBER = "千";
+SECOND_NUMBER = "万";
+THIRD_NUMBER = "亿"
+]]
 
+local function Set_Value_Text(line)
+    local text= line and line:GetText()
+    if not text or text=='' then
+        return
+    end
 
+    local t= text:gsub('%d+', function(v)
+        v=tonumber(v)
+        if v>=1000 then
+            return WoWTools_Mixin:MK(v, 3)
+        end
+    end)
 
+    t= t:gsub('%d+,%d%d%d', function(v)
+        local a,b= v:match('(%d+),(%d%d%d)')
+        v= tonumber(a..b)
+        return WoWTools_Mixin:MK(v, 3)
+    end)
 
+    t= t:gsub('%d+ '..SECOND_NUMBER, function(v)--千
+        local a= v:match('(%d+)')
+        v= tonumber(a..'000')
+        return WoWTools_Mixin:MK(v, 3)
+    end)
+
+    t= t:gsub('%d+ '..SECOND_NUMBER, function(v)--万
+        local a= v:match('(%d+)')
+        v= tonumber(a..'0000')
+        return WoWTools_Mixin:MK(v, 3)
+    end)
+
+    t= t:gsub('%d+ '..THIRD_NUMBER, function(v)--亿
+        local a= v:match('(%d+)')
+        v= tonumber(a..'00000000')
+        return WoWTools_Mixin:MK(v, 3)
+    end)
+
+    if t~=text then
+        line:SetText(t)
+    end
+end
+
+local function Set_Value(tooltip)
+    if not WoWTools_DataMixin.onlyChinese then
+        return
+    end
+
+    local name= tooltip:GetName()
+     for i=5, tooltip:NumLines() or 0, 1 do
+        Set_Value_Text(_G[name..'TextLeft'..i])
+        Set_Value_Text(_G[name..'TextRight'..i])
+    end
+end
 
 
 
@@ -296,6 +356,8 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         return
     end
 
+    Set_Value(tooltip)
+
     local r, g, b, col= 1,1,1,WoWTools_DataMixin.Player.col
     if itemQuality then
         r, g, b, col= C_Item.GetItemQualityColor(itemQuality)
@@ -378,7 +440,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         tooltip:AddDoubleLine(
             (itemName~=spellName and '|cff71d5ff['..cnName..']|r' or '')
             ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID,
-    
+
             spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture
         )
     end

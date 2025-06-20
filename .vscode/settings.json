@@ -5939,7 +5939,9 @@
         "ReputationSubHeaderMixin",
         "CompactRaidFrameManagerDisplayFrameRaidMembersLabel",
         "LFDQueueFrameTypeDropdownName",
-        "LFDQueueFrameRandomScrollFrame"
+        "LFDQueueFrameRandomScrollFrame",
+        "THIRD_NUMBER",
+        "SECOND_NUMBER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -352,28 +352,31 @@ local function Init_Menu(self, root)
                     ..'|n|n|cnGREEN_FONT_COLOR:'..format('|A:%s:0:0|a', data.icon)..data.text..'|r|n|n'
                     ..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
                 whileDead=true, hideOnEscape=true, exclusive=true,
-                hasEditBox=1,
+                hasEditBox=true,
                 button1= WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
                 button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
                 button3= WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE,
-                OnShow = function(self)
+                OnShow = function(f)
+                    local edit= f.editBox or f:GetEditBox()
                     if Save()[data.type] then
-                        self.editBox:SetText(Save()[data.type])
+                        edit:SetText(Save()[data.type])
                     else
                         if data.type=='mouseUP' then
-                            self.editBox:SetText(WoWTools_DataMixin.Player.Region==5 and '求拉, 谢谢' or 'sum me, pls')
+                            edit:SetText(WoWTools_DataMixin.Player.Region==5 and '求拉, 谢谢' or 'sum me, pls')
                         else
-                            self.editBox:SetText(WoWTools_DataMixin.Player.Region==5 and '1' or 'inv, thx')
+                            edit:SetText(WoWTools_DataMixin.Player.Region==5 and '1' or 'inv, thx')
                         end
-                        self.button3:SetEnabled(false)
+                        f.button3:SetEnabled(false)
                     end
-                    self.editBox:SetWidth(self:GetWidth())
+                    edit:SetWidth(f:GetWidth())
                 end,
-                OnHide=function(self)
-                    self.editBox:ClearFocus()
+                OnHide=function(f)
+                    local edit= f.editBox or f:GetEditBox()
+                    edit:ClearFocus()
                 end,
-                OnAccept = function(self)
-                    local text2= self.editBox:GetText()
+                OnAccept = function(f)
+                    local edit= f.editBox or f:GetEditBox()
+                    local text2= edit:GetText()
                     if text2:gsub(' ','')=='' then
                         Save()[data.type]=nil
                     else
@@ -383,12 +386,12 @@ local function Init_Menu(self, root)
                 OnAlt = function()
                     Save()[data.type]=nil
                 end,
-                EditBoxOnTextChanged=function(self)
-                    local text2= self:GetText()
+                EditBoxOnTextChanged=function(f)
+                    local text2= f:GetText()
                     if text2:gsub(' ','')=='' then
-                        self:GetParent().button1:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+                        f:GetParent().button1:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
                     else
-                        self:GetParent().button1:SetText(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)
+                        f:GetParent().button1:SetText(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)
                     end
                 end,
                 EditBoxOnEscapePressed = function(s)

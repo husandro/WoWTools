@@ -71,10 +71,11 @@ StaticPopupDialogs['WoWTools_EditText']={
     button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
     button3= WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
     OnShow=function(self, data)
-        self.editBox:SetAutoFocus(false)
-        self.editBox:SetText(data.text or '')
+        local edit= self.editBox or self:GetEditBox()
+        edit:SetAutoFocus(false)
+        edit:SetText(data.text or '')
         self.button3:SetShown(data.OnAlt and true or false)
-        self.editBox:SetFocus(true)
+        edit:SetFocus(true)
         if data.OnShow then
             data.OnShow(self, data)
         end
@@ -83,8 +84,9 @@ StaticPopupDialogs['WoWTools_EditText']={
         if data.OnHide then
             data.OnHide(self, data)
         end
-        self.editBox:SetText("")
-        self.editBox:ClearFocus()
+        local edit= self.editBox or self:GetEditBox()
+        edit:SetText("")
+        edit:ClearFocus()
     end,
     OnAccept=function(self, data)
         data.SetValue(self, data)
@@ -197,20 +199,22 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         button2=WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         button3=WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
         OnShow = function(self, data)
-            self.editBox:SetAutoFocus(false)
-            self.editBox:SetText(data.text or '')
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetAutoFocus(false)
+            edit:SetText(data.text or '')
             self.button3:SetShown(data.OnAlt and true or false)
             if data.OnShow then
                 data.OnShow(self, data)
             end
-            self.editBox:SetFocus()
         end,
         OnHide=function(self)
-            self.editBox:SetText("")
-            self.editBox:ClearFocus()
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText("")
+            edit:ClearFocus()
         end,
         OnAccept = function(self, data)
-            local tab, text= Get_UIMapIDs_Name(self.editBox:GetText())
+            local edit= self.editBox or self:GetEditBox()
+            local tab, text= Get_UIMapIDs_Name(edit:GetText())
             data.SetValue(self, data, tab, text)
         end,
         OnAlt = function(self, data)
@@ -237,7 +241,8 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         EditBoxOnEnterPressed = function(self, data)
             local p = self:GetParent();
             if p.button1:IsEnabled() then
-                local tab, text= Get_UIMapIDs_Name(self.editBox:GetText())
+                local edit= self.editBox or self:GetEditBox()
+                local tab, text= Get_UIMapIDs_Name(edit:GetText())
                 p.data.SetValue(p, data, tab, text)
                 p:Hide();
             else
@@ -288,7 +293,9 @@ return MenuResponse.Open
         text= '|n|cffff00ff%s|r |cnGREEN_FONT_COLOR:Ctrl+C |r'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK),
         button1 = WoWTools_DataMixin.onlyChinese and '关闭' or CLOSE,
         OnShow = function(self, web)
-            self.editBox:SetScript("OnKeyUp", function(s, key)
+            local edit= self.editBox or self:GetEditBox()
+            
+            edit:SetScript("OnKeyUp", function(s, key)
                 if IsControlKeyDown() and key == "C" then
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_TooltipMixin.addName,
                             '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '复制链接' or BROWSER_COPY_LINK)..'|r',
@@ -297,19 +304,20 @@ return MenuResponse.Open
                     s:GetParent():Hide()
                 end
             end)
-            self.editBox:SetScript('OnCursorChanged', function(s)
+            edit:SetScript('OnCursorChanged', function(s)
                 s:SetText(web)
                 s:HighlightText()
             end)
-            self.editBox:SetMaxLetters(0)
-            self.editBox:SetWidth(self:GetWidth())
-            self.editBox:SetFocus()
+            edit:SetMaxLetters(0)
+            edit:SetWidth(self:GetWidth())
+            edit:SetFocus()
         end,
         OnHide= function(self)
-            self.editBox:SetScript("OnKeyUp", nil)
-            self.editBox:SetScript("OnCursorChanged", nil)
-            self.editBox:SetText("")
-            self.editBox:ClearFocus()
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetScript("OnKeyUp", nil)
+            edit:SetScript("OnCursorChanged", nil)
+            edit:SetText("")
+            edit:ClearFocus()
         end,
         EditBoxOnTextChanged= function (self, web)
             if not self:IsVisible() then

@@ -108,7 +108,7 @@ local function Set_Texture(self)
 
         self:SetScript('OnUpdate', function(frame, elapsed)
             frame.elapsed= (frame.elapsed or Save().elapsed) + elapsed
-            
+
             if frame.elapsed> Save().elapsed then
 
                 frame.elapsed=0

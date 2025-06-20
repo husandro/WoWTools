@@ -33,11 +33,13 @@ local function Init_Dialogs()
         button1= WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnShow = function(self)
-            self.editBox:SetNumeric(true)
-            self.editBox:SetNumber(Save().myChatFilterNum)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetNumeric(true)
+            edit:SetNumber(Save().myChatFilterNum)
         end,
         OnAccept = function(self)
-            local num= self.editBox:GetNumber()
+            local edit= self.editBox or self:GetEditBox()
+            local num= edit:GetNumber()
             Save().myChatFilterNum= num
             print(WoWTools_DataMixin.addName, WoWTools_WorldMixin.addName, WoWTools_WorldMixin.Button:Get_myChatFilter_Text())
         end,
@@ -63,10 +65,12 @@ local function Init_Dialogs()
             self.button1:SetEnabled(false)
         end,
         OnHide= function(self)
-            self.editBox:ClearFocus()
+            local edit= self.editBox or self:GetEditBox()
+            edit:ClearFocus()
         end,
         OnAccept = function(self)
-            local text= self.editBox:GetText()
+            local edit= self.editBox or self:GetEditBox()
+            local text= edit:GetText()
             if not text:find('%-') then
                 text= text..'-'..WoWTools_DataMixin.Player.realm
             end
@@ -105,21 +109,23 @@ local function Init_Dialogs()
     StaticPopupDialogs['WoWToolsChatButtonWorldChangeNamme']={
         text=(WoWTools_DataMixin.onlyChinese and '修改名称' or EQUIPMENT_SET_EDIT:gsub('/.+',''))..'|n|n'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI ),
         whileDead=true, hideOnEscape=true, exclusive=true,
-        hasEditBox=1,
+        hasEditBox=true,
         button1= WoWTools_DataMixin.onlyChinese and '确定' or OKAY,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-        OnShow= function(s)
-            s.editBox:SetAutoFocus(false)
-            s.editBox:SetText(WoWTools_DataMixin.Player.Region==5 and '大脚世界频道' and Save().world or 'World')
-            s.button1:SetEnabled(false)
-            s.editBox:SetFoucus()
+        OnShow= function(self)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetAutoFocus(false)
+            edit:SetText(WoWTools_DataMixin.Player.Region==5 and '大脚世界频道' and Save().world or 'World')
+            self.button1:SetEnabled(false)
         end,
-        OnHide= function(s)
-            s.editBox:SetText("")
-            s.editBox:ClearFocus()
+        OnHide= function(self)
+            local edit= self.editBox or self:GetEditBox()
+            edit:SetText("")
+            edit:ClearFocus()
         end,
-        OnAccept= function(s)
-            Save().world= s.editBox:GetText()
+        OnAccept= function(self)
+            local edit= self.editBox or self:GetEditBox()
+            Save().world= edit:GetText()
             WoWTools_Mixin:Reload()
         end,
         EditBoxOnTextChanged=function(s)

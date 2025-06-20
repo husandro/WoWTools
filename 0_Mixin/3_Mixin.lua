@@ -135,13 +135,13 @@ function WoWTools_Mixin:MK(number, bit)
     local text= ''
     if number>=1e6 then
         number= number/1e6
-        text= 'm'
+        text='m'-- '|cffff00ffm|r'
     elseif number>= 1e4 and WoWTools_DataMixin.onlyChinese then
         number= number/1e4
-        text='w'
+        text='w'--'|cff00ff00w|r'
     elseif number>=1e3 then
         number= number/1e3
-        text= 'k'
+        text='k'-- '|cffffffffk|r'
     end
     if bit==0 then
         number= math.modf(number)
@@ -277,7 +277,7 @@ end]]
 function WoWTools_Mixin:StaticPopup_FindVisible(which)
     local info = StaticPopupDialogs[which];
 	if info then
-        for index = 1, STATICPOPUP_NUMDIALOGS, 1 do--4
+        for index = 1, STATICPOPUP_NUMDIALOGS or 4, 1 do--4
             local frame = StaticPopup_GetDialog(index);
             if frame and frame:IsShown() and (frame.which == which) then-- and (not info.multiple or (frame.data == data)) ) then
                 return frame, frame.timeleft--StaticPopup1

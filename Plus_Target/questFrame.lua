@@ -43,7 +43,11 @@ end
 
 
 ---取得，内容 GameTooltip.lua --local questID= line and line.id
-local function Get_Unit_Text(self, unit)
+local function Get_Unit_Text(_, unit)
+    if UnitIsUnit('player', unit) then
+        return
+    end
+
     if not UnitIsPlayer(unit) then
         local type = UnitClassification(unit)
         if type=='rareelite' or type=='rare' or type=='worldboss' then--or type=='elite'
@@ -59,7 +63,8 @@ local function Get_Unit_Text(self, unit)
                 end
             end
         end
-    elseif not (UnitInParty(unit) or UnitIsUnit('player', unit)) then
+
+    else--if not UnitInParty(unit) and not UnitInRaid(unit) then
         local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, UnitGUID(unit), nil)--检测, 是否好友
         local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save().questShowAllFaction)--检查, 是否同一阵营
         local text
