@@ -49,18 +49,18 @@ local function Get_Unit_Text(_, unit)
     end
 
     if not UnitIsPlayer(unit) then
-        if C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
-            local tooltipData = C_TooltipInfo.GetUnit(unit)
-            if tooltipData and tooltipData.lines then
-                for i = 4, #tooltipData.lines do
-                    local line = tooltipData.lines[i]
-                    local text= Find_Text(line.leftText)
-                    if text then
-                        return text
-                    end
+        local tooltipData = C_TooltipInfo.GetUnit(unit)
+        if tooltipData and tooltipData.lines then
+            for i = 4, #tooltipData.lines do
+                local line = tooltipData.lines[i]
+                local text= Find_Text(line.leftText)
+                if text then
+                    return text
                 end
             end
+        end
 
+        if C_QuestLog.UnitIsRelatedToActiveQuest(unit) then
             if UnitIsQuestBoss(unit) then
                 return '|A:Crosshair_Attack_128:0:0|a'
             end
