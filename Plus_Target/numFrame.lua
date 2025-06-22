@@ -86,9 +86,15 @@ end
 
 
 local function Init_Button()
-    numButton= WoWTools_ButtonMixin:Cbtn(nil, {size=23})
+    numButton= WoWTools_ButtonMixin:Cbtn(nil, {
+        size=23,
+        name='WoWToolsTarget_NumButton'
+    })
 
-    numButton.Text= WoWTools_LabelMixin:Create(numButton, {size=Save().creatureFontSize, color={r=1,g=1,b=1}})
+    numButton.Text= WoWTools_LabelMixin:Create(numButton, {
+        size=Save().creatureFontSize,
+        color={r=1,g=1,b=1},
+    })
     numButton.Text:SetScript('OnLeave', function(self) self:GetParent():SetButtonState('NORMAL') end)
     numButton.Text:SetScript('OnEnter', function(self) self:GetParent():SetButtonState('PUSHED') end)
     numButton.Text:SetPoint('LEFT', numButton, 'RIGHT')
@@ -98,8 +104,10 @@ local function Init_Button()
         local p= Save().creaturePoint
         if p and p[1] then
             self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
+
         elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('BOTTOM', _G['PlayerFrame'], 'TOP', 0,24)
+
         else
             self:SetPoint('CENTER', -50, 20)
         end
@@ -174,6 +182,8 @@ local function Init_Button()
     numButton:SetScript('OnLeave', GameTooltip_Hide)
     numButton:SetScript("OnEnter", numButton.set_tooltip)
 
+
+
     return numButton
 end
 
@@ -245,6 +255,10 @@ local function Init()
     if Save().creature then
         if Save().creatureUIParent or not Save().target then
             Frame= numButton or Init_Button()
+            Frame:SetButtonState('PUSHED')
+            C_Timer.After(3, function()
+                Frame:SetButtonState('NORMAL')
+            end)
         else
             Frame= numFrame or Init_Frame()
         end

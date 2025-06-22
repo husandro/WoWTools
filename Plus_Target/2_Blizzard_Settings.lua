@@ -582,26 +582,36 @@ local function Init_Options()
             return
         end
 
-        local num, icon, sub= 0, nil, nil
+        local num=0
+        local sub, isAtlas, _, icon
         for name in pairs(get_texture_tab()) do
-            icon= select(3, WoWTools_TextureMixin:IsAtlas(name))
+            isAtlas, _, icon= WoWTools_TextureMixin:IsAtlas(name, 20)
             if icon then
                 sub=root:CreateRadio(
-                    icon,
+                    '',--icon,
                 function(data)
                     return Save().unitIsMeTextrue== data.name
                 end, function(data)
                     Save().unitIsMeTextrue= data.name
                     self:set_icon()
                     WoWTools_TargetMixin:Set_All_Init()
-                end, {name=name, icon=icon})
-                sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(description.data.icon:gsub(':0', ':64'))
-                    tooltip:AddLine(description.data.name)
+                end, {name=name, icon=icon, isAtlas=isAtlas})
+
+
+                sub:AddInitializer(function(btn, desc)
+                    local t = btn:AttachTexture()
+                    t:SetSize(32, 32)
+                    t:SetPoint("RIGHT")
+                    if desc.data.isAtlas then
+                        t:SetAtlas(desc.data.name)
+                    else
+                        t:SetTexture(desc.data.name or 0)
+                    end
                 end)
-                sub:AddInitializer(function(btn)
-                    btn.fontString:ClearAllPoints()
-                    btn.fontString:SetPoint('CENTER')
+
+                sub:SetTooltip(function(tooltip, desc)
+                    tooltip:AddLine(select(3, WoWTools_TextureMixin:IsAtlas(desc.data.name, 64)), nil)
+                    tooltip:AddLine(desc.data.name)
                 end)
                 num= num+1
             end
