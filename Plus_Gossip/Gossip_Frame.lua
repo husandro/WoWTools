@@ -6,7 +6,9 @@ local function Save()
     return WoWToolsSave['Plus_Gossip']
 end
 
-
+local function PlayerDataSave()
+    return WoWTools_PlayerDate['GossipTextIcon']
+end
 
 
 
@@ -25,7 +27,7 @@ local function Chat_Menu(_, root)
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(set.icon or info.icon)) or '     '
             local col= (set.hex and set.hex~='') and '|c'..set.hex
                 or (WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] and '|cnGREEN_FONT_COLOR:')
-                or (Save().Gossip_Text_Icon_Player[info.gossipOptionID] and '|cffff00ff')
+                or (PlayerDataSave()[info.gossipOptionID] and '|cffff00ff')
                 or ''
 
             root:CreateCheckbox(
@@ -36,7 +38,7 @@ local function Chat_Menu(_, root)
                 List:set_date(data.gossipOptionID)
             end, {gossipOptionID=info.gossipOptionID})
 
-            if not Save().Gossip_Text_Icon_Player[info.gossipOptionID] then
+            if not PlayerDataSave()[info.gossipOptionID] then
                 table.insert(find, {gossipID=info.gossipOptionID, name=info.name})
             end
         end
@@ -50,8 +52,8 @@ local function Chat_Menu(_, root)
             (WoWTools_DataMixin.onlyChinese and '全部添加' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, ADD))..' '..num,
         function(data)
             for _, info in pairs(data.find) do
-                if not Save().Gossip_Text_Icon_Player[info.gossipID] then
-                    Save().Gossip_Text_Icon_Player[info.gossipID]= {name=info.name}
+                if not PlayerDataSave()[info.gossipID] then
+                    PlayerDataSave()[info.gossipID]= {name=info.name}
                 end
             end
             List:set_list()
@@ -176,7 +178,7 @@ local function Init()
             if GossipFrame:IsShown() then
                 local tabs={}
                 for _, info in pairs(C_GossipInfo.GetOptions() or {}) do
-                    local data= Save().Gossip_Text_Icon_Player[info.gossipOptionID]
+                    local data= PlayerDataSave()[info.gossipOptionID]
                     if data then
                         data.gossipOptionID= info.gossipOptionID
                         data.orderIndex= info.orderIndex
@@ -191,11 +193,11 @@ local function Init()
                     self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
                 self.chat.Text:SetFormattedText('%s%d', gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e', gossipNum)--GossipFrame 有多少已设置
-                for _ in pairs(Save().Gossip_Text_Icon_Player) do
+                for _ in pairs(PlayerDataSave()) do
                     n=n+1
                 end
             else
-                for gossipID, data in pairs(Save().Gossip_Text_Icon_Player) do
+                for gossipID, data in pairs(PlayerDataSave()) do
                     self.dataProvider:Insert({gossipID=gossipID, icon=data.icon, name=data.name or gossipID, hex=data.hex})
                     n=n+1
                 end
@@ -262,7 +264,7 @@ local function Init()
         local num= self:get_gossipID()
         local name= self:get_name()
         local icon= self:get_icon()
-        local info= Save().Gossip_Text_Icon_Player[num]
+        local info= PlayerDataSave()[num]
         if info then
             self.gossipID=num
         else
@@ -301,7 +303,7 @@ local function Init()
     end
 
     function List:get_saved_all_date(gossipID)
-        return Save().Gossip_Text_Icon_Player[gossipID] or WoWTools_GossipMixin:Get_GossipData()[gossipID]
+        return PlayerDataSave()[gossipID] or WoWTools_GossipMixin:Get_GossipData()[gossipID]
     end
     function List:set_date(gossipID)--读取，已保存数据
         if not gossipID then
@@ -346,7 +348,7 @@ local function Init()
             hex=nil
         end
         if num and (name or texture or hex) then
-            Save().Gossip_Text_Icon_Player[num]= {
+            PlayerDataSave()[num]= {
                 name= name,
                 icon= texture,
                 hex= hex,
@@ -370,9 +372,9 @@ local function Init()
     end
 
     function List:delete_gossip(gossipID)
-        if gossipID and Save().Gossip_Text_Icon_Player[gossipID] then
-            local info=Save().Gossip_Text_Icon_Player[gossipID]
-            Save().Gossip_Text_Icon_Player[gossipID]=nil
+        if gossipID and PlayerDataSave()[gossipID] then
+            local info=PlayerDataSave()[gossipID]
+            PlayerDataSave()[gossipID]=nil
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r|n', gossipID, info.icon, info.hex, info.name)
             self:set_list()
             WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
@@ -654,7 +656,7 @@ local function Init()
         button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnAccept = function()
-            Save().Gossip_Text_Icon_Player={}
+            WoWTools_PlayerDate['GossipTextIcon']= {}
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
             List:set_list()
         end,
@@ -835,7 +837,7 @@ local function Init()
 
                 
 
-                if not Save().Gossip_Text_Icon_Player[gossipID] then
+                if not PlayerDataSave()[gossipID] then
                     if icon or name or hex then
                         table.insert(add, {gossipID=gossipID, tab={icon=icon, name=name, hex=hex}})
                         return ''
@@ -853,7 +855,7 @@ local function Init()
         local existText= format('|cnRED_FONT_COLOR:%s %d|r', WoWTools_DataMixin.onlyChinese and '已存在' or format(ERR_ZONE_EXPLORED, PROFESSIONS_CURRENT_LISTINGS), exist)
         if not tooltips then
             for _, info in pairs(add) do
-                Save().Gossip_Text_Icon_Player[info.gossipID]= info.tab
+                PlayerDataSave()[info.gossipID]= info.tab
                 local icon= select(3, WoWTools_TextureMixin:IsAtlas(info.tab.icon)) or ''
                 local hex= info.tab.hex and format('|c%s', info.tab.hex) or ''
                 local name= info.tab.name or ''
@@ -907,7 +909,7 @@ local function Init()
         frame.enter:SetShown(false)
         local text=''
         local tabs= {}
-        local old= Save().Gossip_Text_Icon_Player
+        local old= PlayerDataSave()
         for gossipID, info in pairs(old) do
             info.gossipID= gossipID
             table.insert(tabs, info)

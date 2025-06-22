@@ -1586,6 +1586,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
 
     self:Init_BGMenu_Frame(ObjectiveTrackerFrame,{
         alpha=0,
+        enabled=true,
         bgPoint=function(icon)
             icon:SetAllPoints(ObjectiveTrackerFrame.NineSlice)
         end,
@@ -2634,6 +2635,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
             ProfessionsBookPage2:SetAlpha(texture and 0 or alpha or 1)
         end,
         alpha=1,
+        enabled=true,
     })
 
     PrimaryProfession1.bg= PrimaryProfession1:CreateTexture(nil, 'BACKGROUND')

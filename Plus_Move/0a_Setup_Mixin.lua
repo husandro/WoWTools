@@ -193,11 +193,11 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     end
 
     local SavePoint= Save().SavePoint or tab.savePoint
-    local moveToScreenFuori= Save().moveToScreenFuori
+    --local moveToScreenFuori= Save().moveToScreenFuori
 
     local click= tab.click
     local notSave= ((tab.notSave or not SavePoint) and not tab.save) and true or nil
-    local notFuori=  not moveToScreenFuori and SavePoint or tab.notFuori or nil
+    local notFuori=  tab.notFuori or nil
     local isAltKeyDown= tab.isAltKeyDown or nil
 
     self:Scale_Size_Button(frame, tab)

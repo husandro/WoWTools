@@ -113,7 +113,7 @@ local function Init_Data()
     if WoWTools_ChineseMixin_GossipTextData_Tabs then
         do
             for gossipID, tab in pairs(WoWTools_ChineseMixin_GossipTextData_Tabs) do
-                if not GossipTextIcon[gossipID] and not Save().Gossip_Text_Icon_Player[gossipID] then
+                if not GossipTextIcon[gossipID] and not WoWTools_PlayerDate['GossipTextIcon'][gossipID] then
                     local hex= tab.hex and tab.hex~='' and tab.hex or nil
                     local icon= tab.icon and tab.icon~='' and tab.icon or nil
                     local name= tab.name and tab.name~='' and tab.name or nil
@@ -132,7 +132,7 @@ local function Init_Data()
             hooksecurefunc(GossipOptionButtonMixin, 'Setup', function()
                 local num=0
                 for _, data in pairs(C_GossipInfo.GetOptions() or {}) do
-                    if not GossipTextIcon[data.gossipOptionID] and not Save().Gossip_Text_Icon_Player[data.gossipOptionID] then
+                    if not GossipTextIcon[data.gossipOptionID] and not WoWTools_PlayerDate['GossipTextIcon'][data.gossipOptionID] then
                         num=num+1
                     end
                 end
@@ -170,7 +170,7 @@ local function Init_Menu(_, root)
         root:CreateCheckbox(
             icon
             ..'|c'..(tab.hex and tab.hex~='' and tab.hex or 'ffffffff')..(tab.name or '')..'|r '
-            ..(Save().Gossip_Text_Icon_Player[gossipID] and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+            ..(WoWTools_PlayerDate['GossipTextIcon'][gossipID] and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
             ..gossipID,
 
         function(data)

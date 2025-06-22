@@ -85,7 +85,7 @@ local function Set_Gossip_Text(self, info)
     local text
     local gossipOptionID= info and info.gossipOptionID
     if gossipOptionID and info.name then
-        local zoneInfo= Save().Gossip_Text_Icon_Player[gossipOptionID] or WoWTools_GossipMixin:Get_GossipData()[gossipOptionID]
+        local zoneInfo= WoWTools_PlayerDate['GossipTextIcon'][gossipOptionID] or WoWTools_GossipMixin:Get_GossipData()[gossipOptionID]
         if zoneInfo then
             local icon= select(3, WoWTools_TextureMixin:IsAtlas(zoneInfo.icon, size))
             local name= zoneInfo.name or WoWTools_TextMixin:CN(info.name, {questID=info.questID, isName=true})
@@ -158,7 +158,7 @@ local function Create_CheckButton(frame, info)
                 GameTooltip:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOption: |cnGREEN_FONT_COLOR:'..self.id..'|r')
                 if f and not ColorPickerFrame:IsShown() then
                    _G['WoWToolsGossipTextIconOptionsList']:set_date(self.id)--设置，数据
-                elseif not Save().not_Gossip_Text_Icon and (Save().Gossip_Text_Icon_Player[self.id] or WoWTools_GossipMixin:Get_GossipData()[self.id]) then
+                elseif not Save().not_Gossip_Text_Icon and (WoWTools_PlayerDate['GossipTextIcon'][self.id] or WoWTools_GossipMixin:Get_GossipData()[self.id]) then
                     for _, info2 in pairs( C_GossipInfo.GetOptions() or {}) do
                         if info2.gossipOptionID==self.id and info.name then
                             GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..info2.name)

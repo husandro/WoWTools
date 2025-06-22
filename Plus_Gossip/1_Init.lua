@@ -27,18 +27,14 @@ local P_Save={
     --point=nil,
 
     --not_Gossip_Text_Icon=true,--自定义，对话，文本
-    Gossip_Text_Icon_Player={--玩家，自定义，对话，文本
-        [55193]={
-            icon='communities-icon-invitemail',
-            name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),
-            hex='ffff00ff'}
-    },
+
     Gossip_Text_Icon_Size=14,
 
     Gossip_Text_Icon_cnFont=true,--仅限，外文, 修该字体
 
     --delvesDifficultyMaxLevel=nil,--地下堡指定难度
 }
+
 
 local function Save()
     return WoWToolsSave['Plus_Gossip']
@@ -98,6 +94,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Gossip']= WoWToolsSave['Plus_Gossip'] or P_Save
+
+--玩家，自定义，对话，文本
+            if WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player then
+                WoWTools_PlayerDate['GossipTextIcon']= WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player
+                WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player= nil
+            else
+                WoWTools_PlayerDate['GossipTextIcon']= WoWTools_PlayerDate['GossipTextIcon'] or {
+                    [55193]={
+                        icon='communities-icon-invitemail',
+                        name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),
+                        hex='ffff00ff'
+                    }
+                }
+            end
 
             WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
 

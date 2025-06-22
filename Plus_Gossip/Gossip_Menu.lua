@@ -139,7 +139,7 @@ local function Init_Menu(self, root)
 --对话替换
     root:CreateDivider()
     num, num2= 0, 0
-    for _ in pairs(Save().Gossip_Text_Icon_Player) do
+    for _ in pairs(WoWTools_PlayerDate['GossipTextIcon']) do
         num=num+1
     end
     for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do
@@ -156,7 +156,7 @@ local function Init_Menu(self, root)
         Save().not_Gossip_Text_Icon= not Save().not_Gossip_Text_Icon and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
         WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-        return MenuResponse.Close
+        --return MenuResponse.Close
     end)
 
 --对话替换, 打开自定义, Frame
@@ -181,7 +181,7 @@ local function Init_Menu(self, root)
         Save().notGossipPlayerData= not Save().notGossipPlayerData and true or nil
         WoWTools_GossipMixin:Init_Gossip_Data()
         WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-        return MenuResponse.CloseAll
+        --return MenuResponse.CloseAll
     end)
 
 

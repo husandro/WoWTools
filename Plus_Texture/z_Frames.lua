@@ -24,13 +24,13 @@ function WoWTools_TextureMixin.Frames:QuestFrame()
     self:HideFrame(QuestFrame)
     self:SetNineSlice(QuestFrame)
     self:SetScrollBar(QuestFrame)
-    
+
     self:SetButton(QuestFrameCloseButton)
-    
+
     self:HideTexture(QuestFrameInset.Bg)
     self:SetNineSlice(QuestFrameInset, nil, true)
     self:SetScrollBar(QuestRewardScrollFrame)
-    
+
     self:SetScrollBar(QuestProgressScrollFrame)
     self:SetScrollBar(QuestDetailScrollFrame)
 
@@ -327,7 +327,7 @@ function WoWTools_TextureMixin.Frames:ItemTextFrame()
 
     self:HideFrame(ItemTextFrameInset)
     self:SetNineSlice(ItemTextFrameInset, nil, true)
-    
+
     self:SetAlphaColor(ItemTextMaterialTopLeft, nil, nil, 0.3)
     self:SetAlphaColor(ItemTextMaterialTopRight, nil, nil, 0.3)
     self:SetAlphaColor(ItemTextMaterialBotLeft, nil, nil, 0.3)
@@ -350,7 +350,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(ContainerFrameCombinedBags.CloseButton)
     self:SetNineSlice(ContainerFrameCombinedBags, true)
 
-   
+
     self:HideFrame(ContainerFrameCombinedBags.MoneyFrame.Border)
     self:HideFrame(BackpackTokenFrame.Border)
     self:SetEditBox(BagItemSearchBox)

@@ -56,7 +56,7 @@ local function Init_Options()
     })
 
 
-    WoWTools_PanelMixin:OnlyCheck({
+    --[[WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '可以移到屏幕外' or 'Can be moved off screen',
         tooltip= WoWTools_MoveMixin.addName,
         GetValue= function() return Save().moveToScreenFuori end,
@@ -64,7 +64,7 @@ local function Init_Options()
         SetValue= function()
             Save().moveToScreenFuori= not Save().moveToScreenFuori and true or nil
         end
-    })
+    })]]
     --initializer:SetParentInitializer(initializer2, function() if Save().disabledMove then return false else return true end end)
 
     --[[缩放

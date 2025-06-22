@@ -10,6 +10,7 @@ local function Send_Player_Choice_Response(optionInfo)
     if not optionInfo or not optionInfo.buttons or not optionInfo.buttons[1] then
         return
     end
+
     do
         C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
     end

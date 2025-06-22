@@ -690,6 +690,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
     WoWTools_WoWDate= WoWTools_WoWDate or {}
 
+    WoWTools_PlayerDate= WoWTools_PlayerDate or {}
+
     local day= date('%x')--日期
     local guid= WoWTools_DataMixin.Player.GUID
     if not WoWTools_WoWDate[guid] then

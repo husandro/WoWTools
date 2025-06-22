@@ -52,9 +52,11 @@ local function Init_Options()
                 nil,
             function()
                 WoWTools_DataMixin.ClearAllSave= true
+
                 EventRegistry:RegisterFrameEventAndCallback("PLAYER_LOGOUT", function()
                     WoWToolsSave={}
                 end)
+
                 WoWTools_Mixin:Reload()
             end)
         end
@@ -214,9 +216,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event=='ADDON_LOADED' then
         if arg1== 'WoWTools' then
 
-            if not WoWToolsSave['WoWTools_Settings'] then
-                WoWToolsSave['WoWTools_Settings'] = P_Save
-            end
+            WoWToolsSave['WoWTools_Settings']= WoWToolsSave['WoWTools_Settings'] or P_Save
 
             WoWTools_DataMixin.onlyChinese= LOCALE_zhCN or Save().onlyChinese
 
@@ -246,7 +246,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 [ITEM_MOD_CR_SPEED_SHORT]=WoWTools_DataMixin.onlyChinese and '速' or WoWTools_TextMixin:sub(SPEED, 1,2,true),
                 --[ITEM_MOD_EXTRA_ARMOR_SHORT]= WoWTools_DataMixin.onlyChinese and '护' or WoWTools_TextMixin:sub(ARMOR, 1,2,true)
             }
-           
 
             self:UnregisterEvent(event)
         end
