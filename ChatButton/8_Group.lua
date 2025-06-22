@@ -724,6 +724,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or P_Save
+
+            if WoWToolsSave['ChatButtonGroup'].mouseUP then
+                
+            end
+
             addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)
 

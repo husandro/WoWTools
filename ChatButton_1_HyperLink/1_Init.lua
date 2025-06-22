@@ -115,10 +115,12 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
                 WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsSave['ChatButton_HyperLink'].groupWelcomeText
                 WoWToolsSave['ChatButton_HyperLink'].groupWelcomeText= nil
-            else
-                WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
-                --WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.cn and '欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
             end
+
+
+            WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
+            WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.cn and '欢迎' or EMOTE103_CMD1:gsub('/',''))
+            WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
 
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
