@@ -10,8 +10,21 @@ local function Send_Player_Choice_Response(optionInfo)
     if not optionInfo or not optionInfo.buttons or not optionInfo.buttons[1] then
         return
     end
+    do
+        C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+    end
 
-    C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+    if not C_PlayerChoice.GetCurrentPlayerChoiceInfo() then
+        C_PlayerChoice.OnUIClosed()
+    else
+        PlayerChoiceFrame:OnSelectionMade()
+    end
+
+
+
+    --[[for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
+        optionFrame:SetShown(false)
+    end]]
 
     print(
         WoWTools_DataMixin.Icon.icon2
@@ -28,14 +41,6 @@ local function Send_Player_Choice_Response(optionInfo)
             or ''
         )
     )
-
-    for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
-        optionFrame:SetShown(false)
-    end
-
-    C_PlayerChoice.OnUIClosed()
-
-    PlayerChoiceFrame:OnSelectionMade()
 end
 
 
