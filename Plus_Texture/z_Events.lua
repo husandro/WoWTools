@@ -1582,12 +1582,37 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
     self:SetAlphaColor(ScenarioObjectiveTracker.StageBlock.NormalBG, nil, nil, 0.3)
 
+    self:SetButton(ObjectiveTrackerFrame.Header.MinimizeButton)
+
+    self:Init_BGMenu_Frame(ObjectiveTrackerFrame,{
+        alpha=0,
+        bgPoint=function(icon)
+            icon:SetAllPoints(ObjectiveTrackerFrame.NineSlice)
+        end,
+        isNewButton=true,
+        newButtonPoint=function(btn, icon)
+            btn:SetPoint('RIGHT', ObjectiveTrackerFrame.Header.MinimizeButton, 'LEFT', -23, 0)
+            btn:SetFrameStrata(ObjectiveTrackerFrame.Header.MinimizeButton:GetFrameStrata())
+            btn:SetFrameLevel(ObjectiveTrackerFrame.Header.MinimizeButton:GetFrameLevel()+1)
+
+            hooksecurefunc(ObjectiveTrackerFrame.Header, 'SetCollapsed', function(_, collapsed)
+                btn:SetShown(not collapsed)
+                icon:SetShown(not collapsed)
+            end)
+        end,
+        settings=function(icon, texture, alpha)
+            ObjectiveTrackerFrame.NineSlice:SetAlpha(texture and 0 or 1)
+            icon:SetAlpha(texture and alpha or 0)
+            ObjectiveTrackerFrame.AirParticlesFar:SetAlpha(texture and 1 or 0)
+        end
+    })
 end
 
 --对话框
 function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Frame()
     self:SetFrame(StaticPopup1.Border, {notAlpha=true})
     self:SetAlphaColor(StaticPopup1.Border.Bg, true)
+
 end
 
 

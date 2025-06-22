@@ -33,18 +33,23 @@ local ObjectiveTabs={
     ['AdventureObjectiveTracker']=true,
 }
 
-local function Is_Locked()
-    return WoWTools_FrameMixin:IsLocked(ObjectiveTrackerFrame)
+local function Is_Locked(frame)
+    if frame then
+        WoWTools_FrameMixin:IsLocked(frame)
+    else
+        return WoWTools_FrameMixin:IsLocked(ObjectiveTrackerFrame)
+    end
 end
 
 local function Set_Collapse(collapse, isAllCollapse)
-    if Is_Locked() or ObjectiveTrackerFrame:IsCollapsed() then
+    if ObjectiveTrackerFrame:IsCollapsed() then
         return
     end
 
     for frame, isCheck in pairs(ObjectiveTabs) do
         frame= _G[frame]
         if frame:IsVisible()
+            and not Is_Locked(frame)
             and (isCheck or isAllCollapse)
             and frame:IsCollapsed()~=collapse
         then
@@ -72,6 +77,7 @@ local function Init_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '收起选项 |A:editmode-up-arrow:0:0|a' or HUD_EDIT_MODE_COLLAPSE_OPTIONS),
     function()
         Set_Collapse(true, true)
+        return MenuResponse.Open
     end)
 
 --战斗中
@@ -90,6 +96,7 @@ local function Init_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '展开选项 |A:editmode-down-arrow:0:0|a' or HUD_EDIT_MODE_EXPAND_OPTIONS),
     function()
         Set_Collapse(false, true)
+        return MenuResponse.Open
     end)
 
 --自动
@@ -121,7 +128,6 @@ local function Init_Menu(self, root)
     end)
 
 --缩放
-    
     root:CreateDivider()
     WoWTools_MenuMixin:Scale(ObjectiveTrackerFrame, root, function()
         return Save().scale
@@ -158,11 +164,12 @@ end
 
 local function Init()
     MenuButton= WoWTools_ButtonMixin:Menu(ObjectiveTrackerFrame.Header, {
-        size=20
+        size=20,
+        name='WoWToolsObjectiveTrackerFrameMenuButton'
     })
 
     function MenuButton:set_scale()
-        if not WoWTools_FrameMixin:IsLocked(ObjectiveTrackerFrame) then
+        if not Is_Locked() then
             ObjectiveTrackerFrame:SetScale(Save().scale or 1)
         end
     end
@@ -178,7 +185,7 @@ local function Init()
             self:RegisterEvent('PLAYER_ENTERING_WORLD')
             self:RegisterEvent("CHALLENGE_MODE_START")
             self:RegisterEvent('ZONE_CHANGED_NEW_AREA')
-            
+
             if Save().autoHideInCombat then
                 self:RegisterEvent('PLAYER_REGEN_DISABLED')
                 self:RegisterEvent('PLAYER_REGEN_ENABLED')
@@ -267,7 +274,11 @@ local function Init()
     end
 
 
---移动
+--[[移动
+    WoWTools_MoveMixin:Setup(ObjectiveTrackerFrame.Header, {
+        notSave=true,
+    })
+
     ObjectiveTrackerFrame:SetMovable(true)
     ObjectiveTrackerFrame.Header.MinimizeButton:RegisterForDrag("RightButton")
 
@@ -288,7 +299,7 @@ local function Init()
     end)
     ObjectiveTrackerFrame.Header.MinimizeButton:HookScript('OnMouseUp', function()
         ResetCursor()
-    end)
+    end)]]
 
 
 

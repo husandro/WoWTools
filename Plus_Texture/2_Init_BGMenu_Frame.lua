@@ -123,6 +123,7 @@ local function PlayStop_Anims(self)
     local play= self:IsDrawLayerEnabled('BACKGROUND')
             and self:IsVisible()
             and not Save().Anims.disabled
+            and self.AirParticlesFar:GetAlpha()>0
 
     self.AirParticlesFar:SetShown(play)
     self.backgroundAnims:SetPlaying(play)
@@ -954,7 +955,8 @@ local function Create_Button(self, tab)
     icon:SetAlpha(tab.newButtonAlpha or 0.5)
 
     if tab.newButtonPoint then
-        tab.newButtonPoint(self.bgMenuButton)
+        tab.newButtonPoint(self.bgMenuButton, icon)
+
     elseif closeButton then
         self.bgMenuButton:SetPoint('RIGHT', closeButton, 'LEFT')
     end

@@ -1114,7 +1114,7 @@ end
 function WoWTools_MoveMixin.Events:Blizzard_AccountStore()
     self:Setup(AccountStoreFrame, {
         setSize=true, minH=537, minW=800,
-    sizeRestFunc=function(btn)
+    sizeRestFunc=function()
         AccountStoreFrame:SetSize(800, 537)
     end})
 end
@@ -1128,3 +1128,11 @@ function WoWTools_MoveMixin.Events:Blizzard_ProfessionsBook()
     self:Setup(ProfessionsBookFrame)
 end
 
+--追踪栏
+function WoWTools_MoveMixin.Events:Blizzard_ObjectiveTracker()
+    self:Setup(ObjectiveTrackerFrame.Header, {
+        notSave=true,
+        notZoom=true,
+        frame=ObjectiveTrackerFrame,
+    })
+end
