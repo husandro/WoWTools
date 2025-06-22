@@ -160,7 +160,7 @@ local function Init_Menu(self, root)
         return
     end
 
-    local sub, sub2, col, playerName
+    local sub, col
     local isInGroup= IsInGroup()
     local isInRaid= IsInRaid()
     local isInInstance= IsInInstance()
@@ -218,9 +218,9 @@ local function Init_Menu(self, root)
                 button.leftTexture2:SetAtlas('newplayertutorial-icon-mouse-leftbutton')
             end
         end)
+    end
 
-
-        if isInGroup then
+        --[[if isInGroup then
             local unit
             if index==1 then
 --队伍，子目录
@@ -261,8 +261,7 @@ local function Init_Menu(self, root)
                 end
                 sub:SetGridMode(MenuConstants.VerticalGridDirection, 4)
             end
-        end
-    end
+        end]]
 
 
 --跨阵营
@@ -302,7 +301,6 @@ local function Init_Menu(self, root)
 
 
 --组队聊天泡泡
-    root:CreateDivider()
     sub=root:CreateCheckbox((isInBat and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '组队聊天泡泡' or PARTY_CHAT_BUBBLES_TEXT), function()
         return C_CVar.GetCVarBool("chatBubblesParty")
     end, function()
@@ -319,91 +317,42 @@ local function Init_Menu(self, root)
     end)
 
 
-    sub=root:CreateButton(
-        (WoWToolsPlayerDate['GroupMouseUpText'] and '|A:bags-greenarrow:0:0|a' or '')
-        ..( WoWToolsPlayerDate['GroupMouseDownText'] and '|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a' or '')
-        ..(not WoWToolsPlayerDate['GroupMouseUpText'] and not  WoWToolsPlayerDate['GroupMouseDownText'] and '|cff9e9e9e' or '')
-        ..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..'|A:voicechat-icon-textchat-silenced:0:0|a',
-    function()
-        return MenuResponse.Refresh
-    end)
 
 
-    local tab2={
-        {type= 'mouseUP', text= WoWTools_DataMixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, icon= 'bags-greenarrow'},
-        {type= 'mouseDown', text= WoWTools_DataMixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLRed-Up'},
-    }
-    for _, tab in pairs(tab2) do
-        local text=Save()[tab.type]
-        if text then
-            text= set_Text(text)--处理%s
-        else
-            text= tab.text
-        end
-        text= format('|A:%s:0:0|a%s', tab.icon, text)
 
-        sub:CreateCheckbox(
-            text,
+    root:CreateDivider()
+    for _, tab in pairs({
+        {type= 'GroupMouseUpText', text= WoWTools_DataMixin.onlyChinese and '鼠标滚轮向上滚动' or KEY_MOUSEWHEELUP, icon= 'bags-greenarrow'},
+        {type= 'GroupMouseDownText', text= WoWTools_DataMixin.onlyChinese and '鼠标滚轮向下滚动' or KEY_MOUSEWHEELDOWN, icon= 'UI-HUD-MicroMenu-StreamDLRed-Up'},
+    }) do
+        sub= root:CreateButton(
+            '|A:'..tab.icon..':0:0|a'
+            ..WoWTools_TextMixin:sub(WoWToolsPlayerDate[tab.type], 8, 16),
         function(data)
-            return Save()[data.type]
+            self:chat_Up_down(data.type=='GroupMouseUpText' and 1 or -1)
+        end, tab)
+        sub:SetTooltip(function(tooltip, desc)
+            tooltip:AddLine('|A:voicechat-icon-textchat-silenced:0:0|a|A:'..desc.data.icon..':0:0|a'..desc.data.text)
+            tooltip:AddLine(WoWToolsPlayerDate[desc.data.type])
+        end)
 
-        end, function(data)
-            StaticPopupDialogs['WoWTools_ChatButton_Group_CUSTOM']={--区域,设置对话框
-                text=addName
-                    ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '自定义发送信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, SEND_MESSAGE))
-                    ..'|n|n|cnGREEN_FONT_COLOR:'..format('|A:%s:0:0|a', data.icon)..data.text..'|r|n|n'
-                    ..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
-                whileDead=true, hideOnEscape=true, exclusive=true,
-                hasEditBox=true,
-                button1= WoWTools_DataMixin.onlyChinese and '修改' or EDIT,
-                button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
-                button3= WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE,
-                OnShow = function(f)
+        sub:CreateButton(
+            '|A:'..tab.icon..':0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '修改' or HUD_EDIT_MODE_RENAME_LAYOUT),
+        function(data)
+            StaticPopup_Show('WoWTools_EditText',
+                addName
+                ..'|n|n'..(WoWTools_DataMixin.onlyChinese and '自定义发送信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, SEND_MESSAGE))
+                ..'|n|n|cnGREEN_FONT_COLOR:'..format('|A:%s:0:0|a', data.icon)..data.text..'|r|n|n'
+                ..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_GROUPS),
+            nil,
+            {
+                text= WoWToolsPlayerDate[data.type],
+                SetValue= function(f)
                     local edit= f.editBox or f:GetEditBox()
-                    if Save()[data.type] then
-                        edit:SetText(Save()[data.type])
-                    else
-                        if data.type=='mouseUP' then
-                            edit:SetText(WoWTools_DataMixin.Player.Region==5 and '求拉, 谢谢' or 'sum me, pls')
-                        else
-                            edit:SetText(WoWTools_DataMixin.Player.Region==5 and '1' or 'inv, thx')
-                        end
-                        local b3= f.button3 or f:GetButton3()
-                        b3:SetEnabled(false)
-                    end
-                    edit:SetWidth(f:GetWidth())
-                end,
-                OnHide=function(f)
-                    local edit= f.editBox or f:GetEditBox()
-                    edit:ClearFocus()
-                end,
-                OnAccept = function(f)
-                    local edit= f.editBox or f:GetEditBox()
-                    local text2= edit:GetText()
-                    if text2:gsub(' ','')=='' then
-                        Save()[data.type]=nil
-                    else
-                        Save()[data.type]=text2
-                    end
-                end,
-                OnAlt = function()
-                    Save()[data.type]=nil
-                end,
-                EditBoxOnTextChanged=function(f)
-                    local text2= f:GetText()
-                    local p=f:GetParent()
-                    local b1= p.button1 or p:GetButton1()
-                    if text2:gsub(' ','')=='' then
-                        b1:SetText(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
-                    else
-                        b1:SetText(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)
-                    end
-                end,
-                EditBoxOnEscapePressed = function(s)
-                    s:GetParent():Hide()
-                end,
-            }
-            StaticPopup_Show('WoWTools_ChatButton_Group_CUSTOM')
+                    WoWToolsPlayerDate[data.type]= edit:GetText()
+                end
+            })
         end, tab)
     end
 end
@@ -606,34 +555,28 @@ local function Init()
             self.type and self.type..WoWTools_DataMixin.Icon.left
         )
 
-        local down, up=  WoWToolsPlayerDate['GroupMouseDownText'], WoWToolsPlayerDate['GroupMouseUpText']
-        if down or up then
-            GameTooltip:AddLine(' ')
-        end
-        if up then
-            GameTooltip:AddLine(
-                WoWTools_DataMixin.Icon.mid
-                ..'|A:bags-greenarrow:0:0|a'
-                ..up
-                ..'|A:voicechat-icon-textchat-silenced:0:0|a',
-                nil,nil,nil, true
-            )
-        end
-        if down then
-            GameTooltip:AddLine(
-                WoWTools_DataMixin.Icon.mid
-                ..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'
-                ..down
-                ..'|A:voicechat-icon-textchat-silenced:0:0|a',
-                nil,nil,nil, true
-            )
-        end
+        GameTooltip:AddLine(' ')
+
+        GameTooltip:AddLine(
+            '|A:voicechat-icon-textchat-silenced:0:0|a'
+            ..WoWTools_DataMixin.Icon.mid
+            ..'|A:bags-greenarrow:0:0|a'
+            ..WoWToolsPlayerDate['GroupMouseUpText']
+        )
+
+        GameTooltip:AddLine(
+            '|A:voicechat-icon-textchat-silenced:0:0|a'
+            ..WoWTools_DataMixin.Icon.mid
+            ..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'
+            ..WoWToolsPlayerDate['GroupMouseDownText']
+        )
+
         GameTooltip:Show()
     end
 
 
     GroupButton:SetupMenu(Init_Menu)
-
+ --[[
     function GroupButton:set_OnMouseDown()
         if self.type then
             WoWTools_ChatMixin:Say(self.type)
@@ -641,7 +584,7 @@ local function Init()
             return true
         end
     end
-    --[[GroupButton:SetScript('OnMouseDown',function(self, d)
+   GroupButton:SetScript('OnMouseDown',function(self, d)
         if d=='LeftButton' and self.type then
             WoWTools_ChatMixin:Say(self.type)
             self:CloseMenu()
@@ -660,7 +603,7 @@ local function Init()
         end
     end)]]
 
-    GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
+    function GroupButton:chat_Up_down(d)
         local text
         if d==1 then
             text= WoWToolsPlayerDate['GroupMouseUpText']
@@ -668,7 +611,7 @@ local function Init()
             text=  WoWToolsPlayerDate['GroupMouseDownText']
         end
         if text then
-            text=set_Text(text)--处理%s
+            text= set_Text(text)--处理%s
             if IsInRaid() then
                 SendChatMessage(text, 'RAID')
             elseif IsInGroup() then
@@ -677,6 +620,9 @@ local function Init()
                 WoWTools_ChatMixin:Chat(text, nil, nil)
             end
         end
+    end
+    GroupButton:SetScript('OnMouseWheel', function(self, d)--发送自定义信息
+       self:chat_Up_down(d)
     end)
 
 
@@ -740,7 +686,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 or (WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢')
                 or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME)
 
-            WoWToolsPlayerDate['GroupMouseDownText']= WoWToolsPlayerDate['GroupMouseDownText'] or WoWTools_DataMixin.Player.Region~=5 and 'inv, thx' or '1'
+            WoWToolsPlayerDate['GroupMouseDownText']= WoWToolsPlayerDate['GroupMouseDownText']
+                or (WoWTools_DataMixin.Player.Region~=5 and 'inv, thx') or '1'
 
             addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)
