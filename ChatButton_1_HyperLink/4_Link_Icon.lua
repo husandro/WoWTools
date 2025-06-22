@@ -618,7 +618,7 @@ local function New_AddMessage(self, s, ...)
 
 --关键词, 内容颜色，和频道名称替换
     if not Save().disabledKeyColor then
-        for k in pairs(Save().text or {}) do--内容加颜色
+        for k in pairs(WoWToolsPlayerDate['HyperLinkColorText']) do--内容加颜色
             s=s:gsub(k, '|cnGREEN_FONT_COLOR:'..k..'|r')
         end
     end

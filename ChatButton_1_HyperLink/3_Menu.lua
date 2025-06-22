@@ -69,7 +69,7 @@ local function Init_Menu(self, root)
         return not Save().disabledKeyColor
     end, function()
         Save().disabledKeyColor= not Save().disabledKeyColor and true or nil
-        for t in pairs(Save().text or {}) do
+        for t in pairs(WoWToolsPlayerDate['HyperLinkColorText']) do
             print(t)
             break
         end
@@ -291,7 +291,7 @@ local function Init_Menu(self, root)
         WoWTools_HyperLink:Init_Welcome()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(Save().guildWelcomeText)
+        tooltip:AddLine(WoWToolsPlayerDate['HyperLinkGuildWelcomeText'])
     end)
 
     sub2= sub:CreateButton('|A:communities-guildbanner-background:0:0|a'..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT), function ()
@@ -299,18 +299,21 @@ local function Init_Menu(self, root)
             (WoWTools_DataMixin.onlyChinese and '欢迎加入' or 'Welcome to join')..'|n|A:communities-guildbanner-background:0:0|a'..(WoWTools_DataMixin.onlyChinese and '公会新成员' or LFG_LIST_GUILD_MEMBER),
             nil,
             {
-                text=Save().guildWelcomeText,
+                text=WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or WoWTools_DataMixin.Player.cn and '欢迎' or EMOTE103_CMD1:gsub('/',''),
                 SetValue= function(s)
                     local edit= s.editBox or s:GetEditBox()
                     local text= edit:GetText()
-                    Save().guildWelcomeText= text
+                    WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= text
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, text)
+                end,
+                OnAlt= function()
+                    WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= nil
                 end
             }
         )
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(Save().guildWelcomeText)
+        tooltip:AddLine(WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or WoWTools_DataMixin.Player.cn and '欢迎' or EMOTE103_CMD1:gsub('/',''))
     end)
 
 --队伍新成员
@@ -322,7 +325,7 @@ local function Init_Menu(self, root)
         WoWTools_HyperLink:Init_Welcome()
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(Save().groupWelcomeText)
+        tooltip:AddLine(WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}'))
         tooltip:AddLine(' ')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限队长或团长' or format(LFG_LIST_CROSS_FACTION, LEADER))
     end)
@@ -333,7 +336,7 @@ local function Init_Menu(self, root)
         Save().welcomeOnlyHomeGroup= not Save().welcomeOnlyHomeGroup and true or nil
     end)
     sub2:SetTooltip(function (tooltip)
-        tooltip:AddLine(tooltip, Save().groupWelcomeText)
+        tooltip:AddLine(WoWToolsPlayerDate['HyperLinkGroupWelcomeText'])
         tooltip:AddLine(' ')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '队伍查找器' or DUNGEONS_BUTTON)
     end)
@@ -343,18 +346,21 @@ local function Init_Menu(self, root)
             (WoWTools_DataMixin.onlyChinese and '欢迎加入' or 'Welcome to join')..'|n|A:socialqueuing-icon-group:0:0|a'..(WoWTools_DataMixin.onlyChinese and '队伍新成员' or SPELL_TARGET_TYPE14_DESC),
             nil,
             {
-                text=Save().groupWelcomeText,
+                text=WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}'),
                 SetValue= function(s)
                     local edit= s.editBox or s:GetEditBox()
                     local text= edit:GetText()
-                    Save().groupWelcomeText=text
+                    WoWToolsPlayerDate['HyperLinkGroupWelcomeText']=text
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_HyperLink.addName, text)
+                end,
+                OnAlt= function()
+                    WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= nil
                 end
             }
         )
     end)
     sub2:SetTooltip(function(tooltip)
-        tooltip:AddLine(Save().groupWelcomeText)
+        tooltip:AddLine(WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}'))
         tooltip:AddLine(' ')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '仅限队长或团长' or format(LFG_LIST_CROSS_FACTION, LEADER))
     end)

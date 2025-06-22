@@ -97,10 +97,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
 --玩家，自定义，对话，文本
             if WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player then
-                WoWTools_PlayerDate['GossipTextIcon']= WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player
+                WoWToolsPlayerDate['GossipTextIcon']= WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player
                 WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player= nil
             else
-                WoWTools_PlayerDate['GossipTextIcon']= WoWTools_PlayerDate['GossipTextIcon'] or {
+                WoWToolsPlayerDate['GossipTextIcon']= WoWToolsPlayerDate['GossipTextIcon'] or {
                     [55193]={
                         icon='communities-icon-invitemail',
                         name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),

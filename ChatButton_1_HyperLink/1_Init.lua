@@ -7,16 +7,16 @@ local P_Save={
     channels={--频道名称替换 
         --['世界'] = '[世]',
     },
-    text={--内容颜色,
+    --[[text={--内容颜色,
         [ACHIEVEMENTS]=true,
-    },
+    },]]
     disabledKeyColor= not WoWTools_DataMixin.Player.husandro,--禁用，内容颜色，和频道名称替换
 
     groupWelcome= WoWTools_DataMixin.Player.husandro,--欢迎
-    groupWelcomeText= WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
+    --groupWelcomeText= WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
 
     guildWelcome= WoWTools_DataMixin.Player.husandro,
-    guildWelcomeText= WoWTools_DataMixin.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
+    --guildWelcomeText= WoWTools_DataMixin.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
 
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
 
@@ -73,7 +73,7 @@ local function Init()
         end
     end
 
-    
+
     WoWTools_HyperLink:Init_Button_Menu()
     WoWTools_HyperLink:Init_Link_Icon()--超链接，图标
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
@@ -82,7 +82,7 @@ local function Init()
     WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
 
     WoWTools_HyperLink:Blizzard_DebugTools()
-    
+
     WoWTools_HyperLink:Blizzard_Settings()
     WoWTools_HyperLink:Blizzard_EventTrace()
 end
@@ -106,6 +106,20 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
             WoWToolsSave['ChatButton_HyperLink']= WoWToolsSave['ChatButton_HyperLink'] or P_Save
 
+            if WoWToolsSave['ChatButton_HyperLink'].text then
+                WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsSave['ChatButton_HyperLink'].text
+                WoWToolsSave['ChatButton_HyperLink'].text= nil
+
+                WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsSave['ChatButton_HyperLink'].guildWelcomeText
+                WoWToolsSave['ChatButton_HyperLink'].guildWelcomeText= nil
+
+                WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsSave['ChatButton_HyperLink'].groupWelcomeText
+                WoWToolsSave['ChatButton_HyperLink'].groupWelcomeText= nil
+            else
+                WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
+                --WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.cn and '欢迎你加入' or EMOTE103_CMD1:gsub('/',''))
+            end
+
             Save().linkIcon= not Save().disabed
             Save().disabed= nil
 
@@ -117,7 +131,7 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             if LinkButton then
                 Init()
 
-               
+
             else
                 --DEFAULT_CHAT_FRAME.P_AddMessage= nil
                 self:UnregisterAllEvents()

@@ -22,6 +22,10 @@ local guildMS= ERR_GUILD_JOIN_S:gsub("%%s", "(.+)")--加入了公会
 
 
 local function Init()
+    if not Save().guildWelcome and Save().groupWelcome then
+        return
+    end
+
     EventRegistry:RegisterFrameEventAndCallback("CHAT_MSG_SYSTEM", function(_, text)
         if not text then
             return
@@ -32,14 +36,14 @@ local function Init()
 
         if group then
             if UnitIsGroupLeader('player') and (Save().welcomeOnlyHomeGroup and IsInGroup(LE_PARTY_CATEGORY_HOME) or not Save().welcomeOnlyHomeGroup) then
-                WoWTools_ChatMixin:Chat(Save().groupWelcomeText or EMOTE103_CMD1:gsub('/',''), group, nil)
+                WoWTools_ChatMixin:Chat(WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}'), group, nil)
             end
 
         elseif guild and IsInGuild() and text:find(guildMS) then
 
             C_Timer.After(2, function()
                 SendChatMessage(
-                    (Save().guildWelcomeText or EMOTE103_CMD1:gsub('/',''))
+                    (WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.cn and '欢迎' or EMOTE103_CMD1:gsub('/','')))
                     ..' '
                     .. guild
                     ..' '..GUILD_INVITE_JOIN,
@@ -51,7 +55,7 @@ local function Init()
         end
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -67,7 +71,5 @@ end
 
 --欢迎加入
 function WoWTools_HyperLink:Init_Welcome()
-    if (Save().guildWelcome or Save().groupWelcome) and Init() then
-       Init=function()end
-    end
+    Init()
 end

@@ -139,7 +139,7 @@ local function Init_Menu(self, root)
 --对话替换
     root:CreateDivider()
     num, num2= 0, 0
-    for _ in pairs(WoWTools_PlayerDate['GossipTextIcon']) do
+    for _ in pairs(WoWToolsPlayerDate['GossipTextIcon']) do
         num=num+1
     end
     for _ in pairs(WoWTools_GossipMixin:Get_GossipData()) do

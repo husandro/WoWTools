@@ -7,7 +7,7 @@ local function Save()
 end
 
 local function PlayerDataSave()
-    return WoWTools_PlayerDate['GossipTextIcon']
+    return WoWToolsPlayerDate['GossipTextIcon']
 end
 
 
@@ -656,7 +656,7 @@ local function Init()
         button1= WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL,
         button2= WoWTools_DataMixin.onlyChinese and '取消' or CANCEL,
         OnAccept = function()
-            WoWTools_PlayerDate['GossipTextIcon']= {}
+            WoWToolsPlayerDate['GossipTextIcon']= {}
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL, format('|cnGREEN_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '完成' or DONE))
             List:set_list()
         end,
