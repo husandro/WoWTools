@@ -1,18 +1,20 @@
 
 local addName
 local P_Save={
-    mouseUP=  (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
-                or WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢'
-                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME),
-    mouseDown= WoWTools_DataMixin.Player.Region~=5 and 'inv, thx' or '1' ,
     --type='/raid'
     --text=团队
 }
+    --[[mouseUP=  (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
+                or WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢'
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME),
+    mouseDown= WoWTools_DataMixin.Player.Region~=5 and 'inv, thx' or '1' ,
+ 
+}]]
 
 --1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
 
 local function Save()
-    return WoWToolsSave['ChatButtonGroup'] or {}
+    return WoWToolsSave['ChatButtonGroup']
 end
 
 local GroupButton
@@ -318,9 +320,9 @@ local function Init_Menu(self, root)
 
 
     sub=root:CreateButton(
-        (Save().mouseUP and '|A:bags-greenarrow:0:0|a' or '')
-        ..(Save().mouseDown and '|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a' or '')
-        ..(not Save().mouseUP and not Save().mouseDown and '|cff9e9e9e' or '')
+        (WoWToolsPlayerDate['GroupMouseUpText'] and '|A:bags-greenarrow:0:0|a' or '')
+        ..( WoWToolsPlayerDate['GroupMouseDownText'] and '|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a' or '')
+        ..(not WoWToolsPlayerDate['GroupMouseUpText'] and not  WoWToolsPlayerDate['GroupMouseDownText'] and '|cff9e9e9e' or '')
         ..(WoWTools_DataMixin.onlyChinese and '自定义' or CUSTOM)..'|A:voicechat-icon-textchat-silenced:0:0|a',
     function()
         return MenuResponse.Refresh
@@ -604,7 +606,7 @@ local function Init()
             self.type and self.type..WoWTools_DataMixin.Icon.left
         )
 
-        local down, up= Save().mouseDown, Save().mouseUP
+        local down, up=  WoWToolsPlayerDate['GroupMouseDownText'], WoWToolsPlayerDate['GroupMouseUpText']
         if down or up then
             GameTooltip:AddLine(' ')
         end
@@ -661,9 +663,9 @@ local function Init()
     GroupButton:SetScript('OnMouseWheel', function(_, d)--发送自定义信息
         local text
         if d==1 then
-            text= Save().mouseUP
+            text= WoWToolsPlayerDate['GroupMouseUpText']
         elseif d==-1 then
-            text= Save().mouseDown
+            text=  WoWToolsPlayerDate['GroupMouseDownText']
         end
         if text then
             text=set_Text(text)--处理%s
@@ -725,9 +727,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['ChatButtonGroup']= WoWToolsSave['ChatButtonGroup'] or P_Save
 
-            if WoWToolsSave['ChatButtonGroup'].mouseUP then
-                
+            if Save().mouseUP then
+                WoWToolsPlayerDate['GroupMouseUpText']= Save().mouseUP
+                Save().mouseUP= nil
+
+                WoWToolsPlayerDate['GroupMouseDownText']= Save().mouseDown
+                Save().mouseDown= nil
             end
+
+            WoWToolsPlayerDate['GroupMouseUpText']= WoWToolsPlayerDate['GroupMouseUpText']
+                or (WoWTools_DataMixin.Player.Region==1 or WoWTools_DataMixin.Player.Region==3) and 'sum me, pls'
+                or (WoWTools_DataMixin.Player.Region==5  and '求拉, 谢谢')
+                or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC,SUMMON, COMBATLOG_FILTER_STRING_ME)
+
+            WoWToolsPlayerDate['GroupMouseDownText']= WoWToolsPlayerDate['GroupMouseDownText'] or WoWTools_DataMixin.Player.Region~=5 and 'inv, thx' or '1'
 
             addName= '|A:socialqueuing-icon-group:0:0:|a'..(WoWTools_DataMixin.onlyChinese and '队伍' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SORT_BY_SETTING_GROUP)
             GroupButton= WoWTools_ChatMixin:CreateButton('Group', addName)

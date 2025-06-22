@@ -86,15 +86,11 @@ local function Edit_Say_Text()
     (WoWTools_DataMixin.onlyChinese and '添加' or ADD),
     nil,
     {
-        OnShow=function(s)
-            s.editBox:SetText(
-                Save().EndKeystoneSayText
-                or (WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ')
-                or (WoWTools_DataMixin.Player.Region==4 and '{rt1}還要繼續嗎? ')
-                or (WoWTools_DataMixin.Player.Region==2 and '{rt1}계속하시겠습니까? ')
-                or '{rt1}Want to continue? '
-            )
-        end,
+        text= Save().EndKeystoneSayText
+            or (WoWTools_DataMixin.Player.Region==5 and '{rt1}你们还继续吗? ')
+            or (WoWTools_DataMixin.Player.Region==4 and '{rt1}還要繼續嗎? ')
+            or (WoWTools_DataMixin.Player.Region==2 and '{rt1}계속하시겠습니까? ')
+            or '{rt1}Want to continue? ',
         SetValue= function(s)
             local edit= s.editBox or s:GetEditBox()
             local text= edit:GetText() or ''
@@ -104,8 +100,6 @@ local function Edit_Say_Text()
         OnAlt=function()
             Save().EndKeystoneSayText=nil
         end,
-        --EditBoxOnTextChanged=function(s, data)
-        --end,
     }
 )
 end

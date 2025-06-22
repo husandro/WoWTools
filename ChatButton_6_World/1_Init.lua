@@ -45,10 +45,15 @@ local function Init_Dialogs()
         end,
         EditBoxOnTextChanged=function(self)
             local num= self:GetNumber() or 0
-            self:GetParent().button1:SetEnabled(num>=10 and num<2147483647)
+            local p= self:GetParent()
+            local b1= p.button1 or p:GetButton1()
+            b1:SetEnabled(num>=10 and num<2147483647)
+        end,
+        OnHide=function(self)
+            local edit= self.editBox or self:GetEditBox()
+            edit:ClearFocus()
         end,
         EditBoxOnEscapePressed = function(self)
-            self:ClearFocus()
             self:GetParent():Hide()
         end,
     }
@@ -97,7 +102,8 @@ local function Init_Dialogs()
             then
                 enabled=false
             end
-            local b1= self.button1 or self:GetButton1()
+            local p= self:GetParent()
+            local b1= p.button1 or p:GetButton1()
             b1:SetEnabled(enabled)
         end,
         EditBoxOnEscapePressed = function(self)
@@ -132,11 +138,11 @@ local function Init_Dialogs()
         end,
         EditBoxOnTextChanged=function(self)
             local t= self:GetText() or ''
-            local b1= self.button1 or self:GetButton1()
+            local p= self:GetParent()
+            local b1= p.button1 or p:GetButton1()
             b1:SetEnabled(t~= Save().world and t:gsub(' ', '')~='')
         end,
         EditBoxOnEscapePressed = function(s)
-            s:ClearFocus()
             s:GetParent():Hide()
         end,
     }
