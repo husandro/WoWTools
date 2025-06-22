@@ -198,7 +198,7 @@ end
 
 local function Init_Frame()
     numFrame= CreateFrame('Frame')
-    numFrame.Text= WoWTools_LabelMixin:Create(WoWTools_TargetMixin.targetFrame, {size=Save().creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
+    numFrame.Text= WoWTools_LabelMixin:Create(_G['WoWToolTarget_TargetFrame'], {size=Save().creatureFontSize, color={r=1,g=1,b=1}})--10, nil, nil, {1,1,1}, 'BORDER', 'RIGHT')
     function numFrame:set_point()
         self.Text:ClearAllPoints()
         if Save().TargetFramePoint=='LEFT' then

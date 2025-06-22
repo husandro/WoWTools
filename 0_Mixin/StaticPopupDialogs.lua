@@ -291,6 +291,7 @@ StaticPopupDialogs['WoWTools_GetMapID'] = {--区域,设置对话框
         hideOnEscape=true,
         exclusive=true,
         showAlert=true,
+        acceptDelay=1,
     }
 --[[
 StaticPopup_Show('WoWTools_OK',

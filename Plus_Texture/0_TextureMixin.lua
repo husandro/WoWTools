@@ -105,19 +105,22 @@ function WoWTools_TextureMixin:IsAtlas(texture, size)--Atlas or Texture
     end
 
     local s, s2
-    if type(size)=='table' then
+    local t= type(size)
+    if t=='table' then
         s2, s= size[1], size[2]
+    elseif t=='number' then
+        s2, s= size,size
     end
     s= s or 0
     s2= s2 or s
 
-    local t= type(texture)
+    t= type(texture)
     if t=='number' then
         if texture>0 then
             isAtlas, textureID, icon= false, texture, format('|T%d:%d:%d|t', texture, s, s2)
         end
-    elseif t=='string' then
 
+    elseif t=='string' then
         local atlasInfo= C_Texture.GetAtlasInfo(texture)
         isAtlas= atlasInfo and true or false
         textureID= texture

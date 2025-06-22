@@ -69,9 +69,9 @@ local TextureTab={
 
 
 local function get_texture_tab()
-    for name, _ in pairs(Save().targetTextureNewTab) do
+    for name, _ in pairs(WoWToolsPlayerDate['TargetTexture']) do
         if TextureTab[name] then
-            Save().targetTextureNewTab[name]=nil
+            WoWToolsPlayerDate['TargetTexture'][name]=nil
         else
             TextureTab[name]= 'use'
         end
@@ -285,11 +285,10 @@ local function Init_Options()
         self2:SetValue(value)
         self2.Text:SetText(value)
         Save().scale= value
-        if value==1 then
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
-        end
         WoWTools_TargetMixin:Set_All_Init()
-    end})
+    end,
+    --tooltip= '1 = '..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
+    })
     sliderScale:SetPoint("TOPLEFT", sliderX, 'BOTTOMLEFT', 0,-16)
 
     local sliderElapsed = WoWTools_PanelMixin:Slider(Frame, {min=0.3, max=1.5, value=Save().elapsed or 0.5, setp=0.1, w= 100, color=true,
@@ -314,12 +313,14 @@ local function Init_Options()
             return
         end
 
-        local num, icon, sub= 0, nil, nil
-        for name in pairs(get_texture_tab()) do
-            icon= select(3, WoWTools_TextureMixin:IsAtlas(name))
+        local num=0
+        local sub, isAtlas, _, icon
+        for name, use in pairs(get_texture_tab()) do
+            isAtlas, _, icon= WoWTools_TextureMixin:IsAtlas(name, 128)
             if icon then
                 sub=root:CreateRadio(
-                    icon,
+                    (use=='use' and '|cnGREEN_FONT_COLOR:' or '')
+                    ..(name:match('.+\\(.+)') or name):gsub('%..+', ''),
                 function(data)
                     return Save().targetTextureName== data.name
                 end, function(data)
@@ -327,14 +328,22 @@ local function Init_Options()
                     self:SetDefaultText(data.icon)
                     self.edit:SetText(data.name)
                     WoWTools_TargetMixin:Set_All_Init()
-                end, {name=name, icon=icon})
-                sub:SetTooltip(function(tooltip, description)
-                    tooltip:AddLine(description.data.icon:gsub(':0', ':64'))
-                    tooltip:AddLine(description.data.name)
+                end, {name=name, icon=icon, isAtlas=isAtlas})
+
+                sub:AddInitializer(function(btn, desc)
+                    local t = btn:AttachTexture()
+                    t:SetSize(32, 32)
+                    t:SetPoint("RIGHT")
+                    if desc.data.isAtlas then
+                        t:SetAtlas(desc.data.name)
+                    else
+                        t:SetTexture(desc.data.name or 0)
+                    end
                 end)
-                sub:AddInitializer(function(btn)
-                    btn.fontString:ClearAllPoints()
-                    btn.fontString:SetPoint('CENTER')
+
+                sub:SetTooltip(function(tooltip, desc)
+                    tooltip:AddLine(desc.data.icon)
+                    tooltip:AddLine(desc.data.name)
                 end)
                 num= num+1
             end
@@ -371,8 +380,8 @@ local function Init_Options()
                 Frame.tipTargetTexture:SetTexture(0)
             end
         end
-        self.del:SetShown(name and Save().targetTextureNewTab[name])
-        self.add:SetShown(name and not Save().targetTextureNewTab[name])
+        self.del:SetShown(name and WoWToolsPlayerDate['TargetTexture'][name])
+        self.add:SetShown(name and not WoWToolsPlayerDate['TargetTexture'][name])
     end)
 
     --删除，图片
@@ -381,8 +390,8 @@ local function Init_Options()
     menu.edit.del:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtals, name= WoWTools_TextureMixin:IsAtlas(parent:GetText())
-        if name and Save().targetTextureNewTab[name] then
-            Save().targetTextureNewTab[name]= nil
+        if name and WoWToolsPlayerDate['TargetTexture'][name] then
+            WoWToolsPlayerDate['TargetTexture'][name]= nil
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_TargetMixin.addName,
                 '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)..'|r',
                 (isAtals and '|A:'..name..':0:0|a' or ('|T'..name..':0|t'))..name
@@ -398,8 +407,8 @@ local function Init_Options()
     menu.edit.add:SetScript('OnClick', function(self)
         local parent= self:GetParent()
         local isAtlas, icon= WoWTools_TextureMixin:IsAtlas(parent:GetText())
-        if icon and not Save().targetTextureNewTab[icon] then
-            Save().targetTextureNewTab[icon]= isAtlas and 'a' or 't'
+        if icon and not WoWToolsPlayerDate['TargetTexture'][icon] then
+            WoWToolsPlayerDate['TargetTexture'][icon]= isAtlas and 'a' or 't'
             parent:SetText('')
             print(WoWTools_DataMixin.addName,
                 WoWTools_TargetMixin.addName,

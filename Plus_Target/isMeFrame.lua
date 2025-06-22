@@ -91,8 +91,12 @@ end
 
 
 local function Init()
-    isMeFrame= CreateFrame('Frame')
-    WoWTools_TargetMixin.isMeFrame= isMeFrame
+    if not Save().unitIsMe then
+        return
+    end
+
+    isMeFrame= CreateFrame('Frame', 'WoWToolsTarget_IsMeFrame')
+    --WoWTools_TargetMixin.isMeFrame= isMeFrame
 
     hooksecurefunc(NamePlateBaseMixin, 'OnAdded', function(_, unit)
         Set_Plate(nil, unit)
@@ -134,15 +138,19 @@ local function Init()
                     Set_Plate(plate, nil)--设置
                 end
             end
+
         else--禁用
-        
             for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
                 self:hide_plate(plate)
             end
         end
     end
 
-    return true
+    isMeFrame:Settings()
+
+    Init= function()
+        isMeFrame:Settings()
+    end
 end
 
 
@@ -157,11 +165,5 @@ end
 
 
 function WoWTools_TargetMixin:Init_isMeFrame()
-    if Save().unitIsMe and Init() then
-        Init=function()end
-    end
-
-    if isMeFrame then
-        isMeFrame:Settings()
-    end
+    Init()
 end

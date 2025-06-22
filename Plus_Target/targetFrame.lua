@@ -10,35 +10,23 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-local function Set_Target(self)
+local function Set_Target()
     local plate= C_NamePlate.GetNamePlateForUnit("target", issecure())
     if not plate or not plate.UnitFrame then
-        self:SetShown(false)
+        targetFrame:SetShown(false)
         return
     end
 
     local UnitFrame = plate.UnitFrame
     local frame--= get_isAddOnPlater(plate.UnitFrame.unit)--C_AddOns.IsAddOnLoaded("Plater")
-    self:ClearAllPoints()
+    targetFrame:ClearAllPoints()
     if Save().TargetFramePoint=='TOP' then
         if UnitFrame.SoftTargetFrame.Icon:IsShown() then
             frame= UnitFrame.SoftTargetFrame
         else
             frame= UnitFrame.name or UnitFrame.healthBar
         end
-        self:SetPoint('BOTTOM', frame or UnitFrame, 'TOP', Save().x, Save().y)
+        targetFrame:SetPoint('BOTTOM', frame or UnitFrame, 'TOP', Save().x, Save().y)
 
     elseif Save().TargetFramePoint=='HEALTHBAR' then
         frame= UnitFrame.healthBar or UnitFrame.name or UnitFrame
@@ -60,8 +48,8 @@ local function Set_Target(self)
             p= UnitFrame.questProgress:GetWidth()
         end
         n, p= n or 0, p or 0
-        self:SetSize(w+ n+ p, h)
-        self:SetPoint('CENTER', UnitFrame, Save().x+ (-n+p)/2, Save().y)
+        targetFrame:SetSize(w+ n+ p, h)
+        targetFrame:SetPoint('CENTER', UnitFrame, Save().x+ (-n+p)/2, Save().y)
     else
 
         if UnitFrame.RaidTargetFrame.RaidTargetIcon:IsVisible() then
@@ -75,9 +63,9 @@ local function Set_Target(self)
         else
             frame= UnitFrame.healthBar or UnitFrame.name
         end
-        self:SetPoint('RIGHT', frame or UnitFrame, 'LEFT',Save().x, Save().y)
+        targetFrame:SetPoint('RIGHT', frame or UnitFrame, 'LEFT',Save().x, Save().y)
     end
-    self:SetShown(true)
+    targetFrame:SetShown(true)
 end
 
 
@@ -95,33 +83,36 @@ end
 
 
 
-local function Set_Texture(self)
-    self:SetSize(Save().w, Save().h)--设置大小
+local function Set_Texture()
+    targetFrame:SetSize(Save().w, Save().h)--设置大小
     local isAtlas, texture= WoWTools_TextureMixin:IsAtlas(Save().targetTextureName)--设置，图片
     if isAtlas then
-        self.Texture:SetAtlas(texture)
+        targetFrame.Texture:SetAtlas(texture)
     else
-        self.Texture:SetTexture(texture or 0)
+        targetFrame.Texture:SetTexture(texture or 0)
     end
 
-    if Save().scale~=1 then
+    local scale= Save().scale
+    local elapse= Save().elapsed
 
-        self:SetScript('OnUpdate', function(frame, elapsed)
-            frame.elapsed= (frame.elapsed or Save().elapsed) + elapsed
+    targetFrame.elapsed= nil
+    targetFrame:SetScale(1)--缩放
+    targetFrame:set_color(Save().targetInCombat and UnitAffectingCombat('player') or false)
 
-            if frame.elapsed> Save().elapsed then
-
-                frame.elapsed=0
-                frame:SetScale(frame:GetScale()==1 and Save().scale or 1)
+    if scale~=1 then
+        targetFrame:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed= (self.elapsed or elapse) + elapsed
+            if self.elapsed> elapse then
+                self.elapsed=0
+                self:SetScale(self:GetScale()==1 and scale or 1)
             end
         end)
 
     else
-        self:SetScript('OnUpdate', nil)
+        targetFrame:SetScript('OnUpdate', nil)
     end
-    self:SetScale(1)--缩放
-    self:set_color(Save().targetInCombat and UnitAffectingCombat('player') or false)
-    Set_Target(self)
+
+    Set_Target()
 end
 
 
@@ -139,8 +130,11 @@ end
 --指示目标 Blizzard_NamePlates.xml
 --HealthBarsContainer castBar WidgetContainer
 local function Init()
-    targetFrame= CreateFrame('Frame')
-    WoWTools_TargetMixin.targetFrame= targetFrame
+    if not Save().target then
+        return
+    end
+
+    targetFrame= CreateFrame('Frame', 'WoWToolTarget_TargetFrame')
 
     targetFrame.Texture= targetFrame:CreateTexture(nil, 'BACKGROUND')
     targetFrame.Texture:SetAllPoints(targetFrame)
@@ -157,26 +151,11 @@ local function Init()
 
     hooksecurefunc(NamePlateDriverFrame, 'OnSoftTargetUpdate', function()
         if Save().TargetFramePoint=='TOP' and Save().target then
-            Set_Target(targetFrame)
+            Set_Target()
         end
     end)
 
-    targetFrame:SetScript("OnEvent", function(self, event, arg1)
-        if event=='PLAYER_TARGET_CHANGED'
-            or event=='RAID_TARGET_UPDATE'
-            or event=='UNIT_FLAGS'
-            or event=='PLAYER_ENTERING_WORLD'
-            or (event=='CVAR_UPDATE'
-                and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends')
-            )
-        then
-            C_Timer.After(0.15, function() Set_Target(self) end)
 
-        elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
-            self:set_color(event=='PLAYER_REGEN_DISABLED')
-
-        end
-    end)
 
     function targetFrame:Settings()
         self:UnregisterAllEvents()
@@ -192,12 +171,35 @@ local function Init()
                 self:RegisterEvent('PLAYER_REGEN_DISABLED')
                 self:RegisterEvent('PLAYER_REGEN_ENABLED')
             end
-            Set_Texture(self)
+            Set_Texture()
             self:SetShown(UnitExists('target'))
         end
     end
 
-    return true
+
+    targetFrame:SetScript("OnEvent", function(self, event, arg1)
+        if event=='PLAYER_TARGET_CHANGED'
+            or event=='RAID_TARGET_UPDATE'
+            or event=='UNIT_FLAGS'
+            or event=='PLAYER_ENTERING_WORLD'
+            or (event=='CVAR_UPDATE'
+                and (arg1=='nameplateShowAll' or arg1=='nameplateShowEnemies' or arg1=='nameplateShowFriends')
+            )
+        then
+            C_Timer.After(0.15, function() Set_Target() end)
+
+        elseif event=='PLAYER_REGEN_DISABLED' or event=='PLAYER_REGEN_ENABLED' then--颜色
+            self:set_color(event=='PLAYER_REGEN_DISABLED')
+
+        end
+    end)
+
+
+    targetFrame:Settings()
+
+    Init=function()
+        targetFrame:Settings()
+    end
 end
 
 
@@ -211,11 +213,5 @@ end
 
 
 function WoWTools_TargetMixin:Init_targetFrame()
-    if Save().target and Init() then
-        Init=function()end
-    end
-
-    if targetFrame then
-        targetFrame:Settings()
-    end
+    Init()
 end

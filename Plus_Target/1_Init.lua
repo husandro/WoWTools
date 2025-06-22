@@ -3,7 +3,7 @@ WoWTools_TargetMixin={}
 
 local P_Save= {
     target= true,
-    targetTextureNewTab={},
+    --targetTextureNewTab={},
     targetTextureName='common-icon-rotateright',
 
     targetColor= {r=1,g=1,b=1,a=1},--颜色
@@ -45,11 +45,11 @@ local P_Save= {
 
 local function OnRemoved()
     hooksecurefunc(NamePlateBaseMixin, 'OnRemoved', function(plate)--移除所有
-        if WoWTools_TargetMixin.isMeFrame then
-            WoWTools_TargetMixin.isMeFrame:hide_plate(plate)
+        if _G['WoWToolsTarget_IsMeFrame'] then
+            _G['WoWToolsTarget_IsMeFrame']:hide_plate(plate)
         end
-        if WoWTools_TargetMixin.questFrame then
-            WoWTools_TargetMixin.questFrame:hide_plate(plate)
+        if _G['WoWToolsTarget_QuestFrame'] then
+           _G['WoWToolsTarget_QuestFrame']:hide_plate(plate)
         end
     end)
 
@@ -70,8 +70,6 @@ function WoWTools_TargetMixin:Set_All_Init()
     WoWTools_TargetMixin:Init_numFrame()
     WoWTools_TargetMixin:Init_questFrame()
     WoWTools_TargetMixin:Init_isMeFrame()
-
-    WoWTools_TargetMixin.Set_All_Init=function()end
 end
 
 
@@ -94,8 +92,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
         WoWToolsSave['Plus_Target']= WoWToolsSave['Plus_Target'] or P_Save
 
-        WoWTools_TargetMixin.addName= '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
+        if WoWToolsSave['Plus_Target'].targetTextureNewTab then
+            WoWToolsPlayerDate['TargetTexture']= WoWToolsSave['Plus_Target'].targetTextureNewTab
+            WoWToolsSave['Plus_Target'].targetTextureNewTab= nil
+        end
+        WoWToolsPlayerDate['TargetTexture']= WoWToolsPlayerDate['TargetTexture'] or {}
 
+        WoWTools_TargetMixin.addName= '|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
 
         WoWTools_TargetMixin:Set_All_Init()
 

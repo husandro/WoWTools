@@ -131,8 +131,8 @@ end
 --任务，数量
 --#########
 local function Init()
-    questFrame= CreateFrame('Frame')
-    WoWTools_TargetMixin.questFrame= questFrame
+    questFrame= CreateFrame('Frame', 'WoWToolsTarget_QuestFrame')
+    --WoWTools_TargetMixin.questFrame= questFrame
 
     function questFrame:hide_plate(plate)--移除，内容
         if plate and plate.UnitFrame and plate.UnitFrame.questProgress then--任务
