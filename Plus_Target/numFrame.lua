@@ -95,8 +95,9 @@ local function Init_Button()
 
     function numButton:set_point()
         self:ClearAllPoints()
-        if Save().creaturePoint then
-            self:SetPoint(Save().creaturePoint[1], UIParent, Save().creaturePoint[3], Save().creaturePoint[4], Save().creaturePoint[5])
+        local p= Save().creaturePoint
+        if p and p[1] then
+            self:SetPoint(p[1], UIParent, p[3], p[4], p[5])
         elseif WoWTools_DataMixin.Player.husandro then
             self:SetPoint('BOTTOM', _G['PlayerFrame'], 'TOP', 0,24)
         else
