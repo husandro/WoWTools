@@ -16,10 +16,10 @@ local P_Save={
     --disabledHelpTip=true,--隐藏所有教程
 
     Bg={
-        UseTexture={
+        --[[UseTexture={
             --自定义，图片 Texture or Atlas
 
-        },
+        },]]
         All={--统一设置
             texture='Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga',
             alpha=0.3
@@ -116,6 +116,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
+
+            if WoWToolsSave['Plus_Texture'].Bg.UseTexture then
+                WoWToolsPlayerDate['BGTexture']= WoWToolsSave['Plus_Texture'].Bg.UseTexture
+                WoWToolsSave['Plus_Texture'].Bg.UseTexture=nil
+            end
+            WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
 
             Save().Bg= Save().Bg or P_Save.Bg
             Save().Bg.Anims= Save().Bg.Anims or P_Save.Bg.Anims
