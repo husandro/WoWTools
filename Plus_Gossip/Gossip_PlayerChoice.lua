@@ -3,41 +3,60 @@ local function Save()
     return WoWToolsSave['Plus_Gossip']
 end
 
-
-
-
-
 local SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING= SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING
+
+ --自动选择奖励 Blizzard_PlayerChoice.lua
+local function Send_Player_Choice_Response(optionInfo)
+    if not optionInfo or not optionInfo.buttons or not optionInfo.buttons[1] then
+        return
+    end
+
+    C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
+
+    print(
+        WoWTools_DataMixin.Icon.icon2
+        ..'|A:SpecDial_LastPip_BorderGlow:0:0|a'
+        ..(optionInfo.spellID and
+            C_Spell.GetSpellLink(optionInfo.spellID)
+            or ''
+        ),
+        '|n',
+        '|T'..(optionInfo.choiceArtID or 0)..':0|t'
+        ..(optionInfo.rarityColor
+            and optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
+            or optionInfo.description
+            or ''
+        )
+    )
+
+    for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
+        optionFrame:SetShown(false)
+    end
+
+    C_PlayerChoice.OnUIClosed()
+
+    PlayerChoiceFrame:OnSelectionMade()
+end
+
+
+
+
+
+
+
+
 
 
 --Blizzard_PlayerChoice
 local function Init()
     --命运, 字符
     hooksecurefunc(StaticPopupDialogs["CONFIRM_PLAYER_CHOICE_WITH_CONFIRMATION_STRING"], "OnShow", function(s)
-        local edit= s.editBox or s:GetEditBox()
-        if Save().gossip and edit then
+        if Save().gossip then
+            local edit= s.editBox or s:GetEditBox()
            edit:SetText(SHADOWLANDS_EXPERIENCE_THREADS_OF_FATE_CONFIRMATION_STRING)
         end
     end)
 
-
-    --自动选择奖励 Blizzard_PlayerChoice.lua
-    local function Send_Player_Choice_Response(optionInfo)
-        if optionInfo then
-            C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
-            
-            print('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID) or ''),
-                '|n',
-                '|T'..(optionInfo.choiceArtID or 0)..':0|t'
-                ..(optionInfo.rarityColor and optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '') or optionInfo.description or '')
-            )
-            PlayerChoiceFrame:OnSelectionMade()
-            C_PlayerChoice.OnUIClosed()
-            for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
-                optionFrame:SetShown(false)
-            end
-        end
-    end
     hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(frame)
         if IsModifierKeyDown() or not Save().gossip then
             return
@@ -182,6 +201,7 @@ local function Init()
             PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
             PlayerChoiceFrame.allButton:set_text()
             PlayerChoiceFrame.allButton:SetShown(true)
+   
         elseif PlayerChoiceFrame.allButton then
             PlayerChoiceFrame.allButton:SetShown(false)
         end

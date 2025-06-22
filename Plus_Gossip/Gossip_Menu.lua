@@ -238,6 +238,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine('PlayerChoiceFrame')
         tooltip:AddLine('Blizzard_PlayerChoice')
     end)
+
 --列表，PlayerChoiceFrame
     for spellID, rarity in pairs(Save().choice) do
         local hex= select(4, C_Item.GetItemQualityColor(rarity))

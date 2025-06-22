@@ -48,7 +48,14 @@ local function Get_Unit_Text(_, unit)
         return
     end
 
-    if not UnitIsPlayer(unit) then
+    if UnitInPartyIsAI(unit) then
+
+        local role = UnitGroupRolesAssigned(unit)
+        if role and role~='NONE' then
+            return WoWTools_DataMixin.Icon[role]
+        end--if role=='TANK' or role=='HEALER' then
+
+    elseif not UnitIsPlayer(unit) then
         local tooltipData = C_TooltipInfo.GetUnit(unit)
         if tooltipData and tooltipData.lines then
             for i = 4, #tooltipData.lines do
@@ -74,6 +81,7 @@ local function Get_Unit_Text(_, unit)
         end
 
     else--if not UnitInParty(unit) and not UnitInRaid(unit) then
+
         local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, UnitGUID(unit), nil)--检测, 是否好友
         local faction= WoWTools_UnitMixin:GetFaction(unit, nil, Save().questShowAllFaction)--检查, 是否同一阵营
         local text
@@ -137,8 +145,14 @@ local function Init()
         end
     end
     function questFrame:check_all()--检查，所有
-        for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
-            Set_Quest_Text(self, plate, nil)
+        if not self.isInCheckAll then
+            self.isInCheckAll= true
+            do
+                for _, plate in pairs(C_NamePlate.GetNamePlates(issecure()) or {}) do
+                    Set_Quest_Text(self, plate, nil)
+                end
+            end
+            self.isInCheckAll= nil
         end
     end
 
@@ -153,11 +167,13 @@ local function Init()
         self:RegisterEvent('PLAYER_ENTERING_WORLD')
 
         local isPvPArena= WoWTools_MapMixin:IsInPvPArea()--是否在，PVP区域中
-        local isIns= isPvPArena
+        local isDisabledCheck= isPvPArena
                 or (not Save().questShowInstance and IsInInstance()
                     and (GetNumGroupMembers()>3 or C_ChallengeMode.IsChallengeModeActive())
                 )
-        if not isIns then
+        if isDisabledCheck then
+            self:rest_all()
+        else
             local eventTab= {
                 'UNIT_QUEST_LOG_CHANGED',
                 'SCENARIO_UPDATE',
@@ -168,9 +184,12 @@ local function Init()
                 --'NAME_PLATE_UNIT_REMOVED',
             }
             FrameUtil.RegisterFrameForEvents(self, eventTab)
+
+            if UnitInPartyIsAI('party1') then
+                self:RegisterEvent('GROUP_ROSTER_UPDATE')
+            end
+
             self:check_all()
-        else
-            self:rest_all()
         end
     end
 
@@ -181,8 +200,13 @@ local function Init()
         elseif event=='NAME_PLATE_UNIT_ADDED'  then
             Set_Quest_Text(self, nil, arg1)--任务
 
+        elseif event=='GROUP_ROSTER_UPDATE' then
+            self:check_all()
+
         else--event=='UNIT_QUEST_LOG_CHANGED' or event=='QUEST_POI_UPDATE' or event=='SCENARIO_COMPLETED' or event=='SCENARIO_UPDATE' or event=='SCENARIO_CRITERIA_UPDATE' then
-            C_Timer.After(2, function() self:check_all() end)
+            C_Timer.After(2, function()
+                self:check_all()
+            end)
         end
     end)
 

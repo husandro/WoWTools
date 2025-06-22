@@ -5941,7 +5941,8 @@
         "LFDQueueFrameTypeDropdownName",
         "LFDQueueFrameRandomScrollFrame",
         "THIRD_NUMBER",
-        "SECOND_NUMBER"
+        "SECOND_NUMBER",
+        "XP"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

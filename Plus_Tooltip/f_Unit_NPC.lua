@@ -1,3 +1,50 @@
+--npc=210759/布莱恩·铜须
+local function Set_BrannBronzebeard(tooltip, unit, npcID)
+    if npcID~='210759' then
+        return
+    end
+
+    local role= UnitGroupRolesAssigned(unit)
+    local left= role~='NONE' and WoWTools_DataMixin.Icon[role] or nil
+    local right
+
+    local companionFactionID = C_DelvesUI.GetFactionForCompanion()
+    if not companionFactionID then
+        return
+    end
+
+    local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(companionFactionID)
+    if rankInfo and rankInfo.currentLevel and rankInfo.maxLevel then
+--等级
+        if rankInfo.currentLevel == rankInfo.maxLevel then
+            left= (left or '')..rankInfo.currentLevel
+        else
+            left= (left or '')..'|cnGREEN_FONT_COLOR:'..rankInfo.currentLevel..'|r/'..rankInfo.maxLevel
+
+            local repInfo = C_GossipInfo.GetFriendshipReputation(companionFactionID)
+            if repInfo and repInfo.nextThreshold and repInfo.standing and repInfo.nextThreshold>0 then
+--经验
+                left= (left or '')..format('|A:GarrMission_CurrencyIcon-Xp:0:0|a|cnGREEN_FONT_COLOR:%i%%|r', repInfo.standing/repInfo.nextThreshold*100)
+--图标
+                if repInfo.texture and repInfo.texture>0 then
+                    right= '|T'..repInfo.texture..':0|t'..repInfo.texture
+                end
+            end
+        end
+    end
+
+    if left or right then
+        tooltip:AddDoubleLine(left, right)
+    end
+
+    tooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'companionFactionID', companionFactionID)
+end
+
+
+
+
+
+
 
 
 
@@ -27,7 +74,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
         elseif classification == "rare" then--稀有
             text2Left= WoWTools_DataMixin.onlyChinese and '稀有' or GARRISON_MISSION_RARE
-            tooltip.Portrait:SetAtlas('UUnitFrame-Target-PortraitOn-Boss-Rare-Star')
+            tooltip.Portrait:SetAtlas('UnitFrame-Target-PortraitOn-Boss-Rare-Star')
             tooltip.Portrait:SetShown(true)
         else
             SetPortraitTexture(tooltip.Portrait, unit)
@@ -42,12 +89,15 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
     local uiWidgetSet= UnitWidgetSet(unit)
     if uiWidgetSet and uiWidgetSet>0 then
-        GameTooltip:AddDoubleLine('WidgetSetID', uiWidgetSet)
+        tooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'uiWidgetSetID', uiWidgetSet)
     end
 
     local zone, npc
     if guid then
-        zone, npc = select(5, strsplit("-", guid))--位面,NPCID
+--位面,NPCID
+        zone, npc = select(5, strsplit("-", guid))
+--布莱恩·铜须
+        Set_BrannBronzebeard(tooltip, unit, npc)
         if zone or npc then
             tooltip:AddDoubleLine(
                 zone and WoWTools_DataMixin.Player.Language.layer..WoWTools_DataMixin.Icon.icon2..zone,

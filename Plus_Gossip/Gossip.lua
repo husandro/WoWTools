@@ -524,7 +524,7 @@ local function Init()
         --local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
 
 	    local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
-	
+
         if Save().gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
