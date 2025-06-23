@@ -53,7 +53,7 @@ end
 
 
 local function ADDON_LOADED()
-    WoWToolsSave['Other_VoiceTalking']= WoWToolsSave['Other_VoiceTalking'] or {}
+    WoWToolsSave['Other_VoiceTalking']= WoWToolsSave['Other_VoiceTalking'] or {notPrint=true}
 
     addName= '|A:TalkingHeads-Glow-TopSpike:0:0|a'..(WoWTools_DataMixin.onlyChinese and '隐藏NPC发言' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, HIDE, VOICE_TALKING))
 

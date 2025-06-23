@@ -5943,7 +5943,9 @@
         "THIRD_NUMBER",
         "SECOND_NUMBER",
         "XP",
-        "OverrideActionBar"
+        "OverrideActionBar",
+        "UIParentRightManagedFrameContainer",
+        "NPEV2_RIGHT_ARROW"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

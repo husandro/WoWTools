@@ -11,7 +11,7 @@ local function Save()
 end
 
 local addName
-local de='>'--分隔符
+local de= NPEV2_RIGHT_ARROW--'->'分隔符
 local UMark
 
 local function COMBAT_LOG_EVENT_UNFILTERED()

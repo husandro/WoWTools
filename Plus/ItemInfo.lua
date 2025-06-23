@@ -356,7 +356,7 @@ local function Setup(self, tab)
                         itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                     end
 
-                    
+
 
                     if dateInfo.text[equipStr] then--套装名称，                
                         local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
@@ -416,6 +416,7 @@ local function Setup(self, tab)
                         rightText= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'
                     end
                     if WoWTools_DataMixin.Player.IsMaxLevel and dateInfo.text[upgradeStr] then--"升级：%s/%s"
+
                         local min, max= dateInfo.text[upgradeStr]:match('(%d+)/(%d+)')
                         local upText= dateInfo.text[upgradeStr]:match('(.-)%d+/%d+')
 
@@ -467,10 +468,12 @@ local function Setup(self, tab)
             end
 
             --if C_Item.IsItemBindToAccountUntilEquip(itemLink) then
-              
+
             if containerInfo and not containerInfo.isBound and (bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE) and not topRightText then
                 rightText='|A:greatVault-lock:16:16|a'--可交易
             end
+
+            leftText= leftText or ''--不显示，物品数量
 
         elseif battlePetSpeciesID or itemID==82800 or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then--宠物
             local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物
@@ -676,7 +679,7 @@ end
 
 function WoWTools_ItemMixin:Setup(frame, tab)
     --if not frame or (not frame:IsShown() and not tab.isShow) then
-    
+
     Setup(frame, tab)
 end
 

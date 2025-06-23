@@ -137,7 +137,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
 
             if wow and not data.wow and AccountTab[line.leftText] then
 
-                data.wow= WoWTools_DataMixin.Icon.wow2 --'|A:questlog-questtypeicon-account:0:0:a'
+                data.wow= '|A:questlog-questtypeicon-account:0:0:a'
                 if onlyWoW then
                     break
                 end
@@ -417,11 +417,11 @@ function WoWTools_ItemMixin:GetCount(itemID, tab)
 
     local text
     if zoro or wow>0 then
-        text= (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(wow, 3)..'|r'..WoWTools_DataMixin.Icon.wow2
+        text= (wow==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a'
     end
     if zoro or net>0 then
         text= (text and text..' ' or '')
-            ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a'
+            ..(net==0 and '|cff9e9e9e' or '|cff00ccff')..WoWTools_Mixin:MK(net, 3)..'|r|A:questlog-questtypeicon-account:0:0|a'--..CreateAtlasMarkup("questlog-questtypeicon-account", 18, 18)--|A:questlog-questtypeicon-account:0:0|a'
     end
     if zoro or bank>0 then
         text= (text and text..' ' or '')
