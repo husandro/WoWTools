@@ -697,8 +697,8 @@ end
 
 --超链接，图标
 function WoWTools_HyperLink:Init_Link_Icon()
+    self:Link_Icon_Settings()
     Init()
-
     Set_HyperLlinkIcon()
 end
 

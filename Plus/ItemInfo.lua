@@ -145,6 +145,10 @@ end
 
 
 local function Setup(self, tab)
+    if not self or not self:IsVisible() then
+        return
+    end
+
     local itemLevel, itemQuality, battlePetSpeciesID
     local itemLink, containerInfo, itemID, isBound
     local topLeftText, bottomRightText, leftText, rightText, bottomLeftText, topRightText, setIDItem--, isWoWItem--setIDItem套装
@@ -194,7 +198,6 @@ local function Setup(self, tab)
 
 
     if itemLink then
-
         itemID= itemID or C_Item.GetItemInfoInstant(itemLink)
         if not itemID then
             itemID= itemLink:match('|H.-:(%d+):')
@@ -342,21 +345,25 @@ local function Setup(self, tab)
 
             else
                 local isRedItem
-                if itemQuality and (itemQuality>1 or WoWTools_DataMixin.Is_Timerunning) then
+                if itemQuality and itemQuality>1  then
                     local upItemLevel= 0
                     local dateInfo= WoWTools_ItemMixin:GetTooltip({
                         bag=tab.bag, merchant=tab.merchant, guidBank=tab.guidBank, hyperLink=itemLink, itemID=itemID,
                         text={equipStr, pvpItemStr, upgradeStr, classStr, itemLevelStr, 'Set di equipaggiamenti(.-)'}, wow=true, red=true})--物品提示，信息
                     isRedItem= dateInfo.red
+
                     if dateInfo.text[itemLevelStr] then--物品等级：%d
                         itemLevel= tonumber(dateInfo.text[itemLevelStr]) or itemLevel
                     end
+
+                    
+
                     if dateInfo.text[equipStr] then--套装名称，                
                         local text= dateInfo.text[equipStr]:match('(.+),') or dateInfo.text[equipStr]:match('(.+)，') or dateInfo.text[equipStr]
                         bottomLeftText= '|cff00ccff'..(WoWTools_TextMixin:sub(text,3,4, true) or '')..'|r'
 
                     elseif dateInfo.wow then--战网
-                        bottomLeftText= WoWTools_DataMixin.Icon.wow2
+                        bottomLeftText= dateInfo.wow--WoWTools_DataMixin.Icon.wow2
                         if subclassID==0 then
                             if itemLevel and itemLevel>1 then
                                 bottomLeftText= bottomLeftText.. itemLevel
@@ -458,6 +465,9 @@ local function Setup(self, tab)
                     topRightText= '|A:Coin-Silver:0:0|a'
                 end
             end
+
+            --if C_Item.IsItemBindToAccountUntilEquip(itemLink) then
+              
             if containerInfo and not containerInfo.isBound and (bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE) and not topRightText then
                 rightText='|A:greatVault-lock:16:16|a'--可交易
             end
@@ -665,9 +675,8 @@ end
 
 
 function WoWTools_ItemMixin:Setup(frame, tab)
-    if not frame or (not frame:IsShown() and not tab.isShow) then
-        return
-    end
+    --if not frame or (not frame:IsShown() and not tab.isShow) then
+    
     Setup(frame, tab)
 end
 

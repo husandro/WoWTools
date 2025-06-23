@@ -21,6 +21,15 @@ local ColorRed={
     ['fefe1f1f']=1,
 }
 
+local AccountTab={
+    [ITEM_ACCOUNTBOUND]=1,--战团绑定
+    [ITEM_BNETACCOUNTBOUND]=1,--战团绑定
+    [ITEM_BIND_TO_BNETACCOUNT]=1,--绑定至战团
+    [ITEM_BIND_TO_ACCOUNT]=1,--绑定至战团
+    [ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP]=1,--装备前战团绑定
+    [ITEM_ACCOUNTBOUND_UNTIL_EQUIP]=1,--装备前战团绑定
+}
+
 
 function WoWTools_ItemMixin:GetTooltip(tab)
     local tooltipData
@@ -112,6 +121,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
                 break
             end
         end
+
         if line.leftText and findText then
             if text then
                 for _, t in pairs(text) do
@@ -124,18 +134,12 @@ function WoWTools_ItemMixin:GetTooltip(tab)
                     end
                 end
             end
-            if wow and not data.wow then
-                if line.leftText==ITEM_ACCOUNTBOUND--战团绑定
-                    or line.leftText==ITEM_BNETACCOUNTBOUND
-                    or line.leftText==ITEM_BIND_TO_BNETACCOUNT
-                    or line.leftText==ITEM_BIND_TO_ACCOUNT
-                    or line.leftText==ITEM_BIND_TO_ACCOUNT_UNTIL_EQUIP--装备前战团绑定
-                    or line.leftText==ITEM_ACCOUNTBOUND_UNTIL_EQUIP--装备前战团绑定
-                then
-                    data.wow='|A:questlog-questtypeicon-account:0:0:a'
-                    if onlyWoW then
-                        break
-                    end
+
+            if wow and not data.wow and AccountTab[line.leftText] then
+
+                data.wow= WoWTools_DataMixin.Icon.wow2 --'|A:questlog-questtypeicon-account:0:0:a'
+                if onlyWoW then
+                    break
                 end
             end
         end

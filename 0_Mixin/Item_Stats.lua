@@ -11,6 +11,10 @@ local itemLevelStr= ITEM_LEVEL:gsub('%%d', '%(%%d%+%)')--"物品等级：%d"
 
 --local AndStr = COVENANT_RENOWN_TOAST_REWARD_COMBINER:format('(.-)','(.+)')--"%s 和 %s"
 function WoWTools_ItemStatsMixin:Gem(frame, itemLink)--显示, 宝石, 属性
+    if not frame or not frame:IsVisible() then
+        return
+    end
+    
     local leftText, bottomLeftText
     if itemLink then
         local dateInfo

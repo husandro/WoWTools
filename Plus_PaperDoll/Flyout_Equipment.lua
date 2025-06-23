@@ -46,6 +46,7 @@ local function setFlyout(button, itemLink, slot)
             button.level= WoWTools_LabelMixin:Create(button)
             button.level:SetPoint('BOTTOM')
         end
+        
         dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, itemID=itemLink and C_Item.GetItemInfoInstant(itemLink) , text={upgradeStr, pvpItemStr, itemLevelStr}, onlyText=true})--物品提示，信息
 
         if dateInfo and dateInfo.text[itemLevelStr] then
