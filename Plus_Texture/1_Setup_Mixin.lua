@@ -34,6 +34,7 @@ function WoWTools_TextureMixin:SetAlphaColor(object, notAlpha, notColor, alphaOR
     if object then
         if alphaORmin==0 then
             object:SetAlpha(0)
+            object:SetTexture(0)
             return
         end
         if not notColor and WoWTools_DataMixin.Player.useColor then

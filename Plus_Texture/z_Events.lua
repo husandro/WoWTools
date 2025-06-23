@@ -1496,32 +1496,30 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 
 
     hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
-        if OverrideActionBarEndCapL then
-            self:HideTexture(OverrideActionBarEndCapL)
-            self:HideTexture(OverrideActionBarEndCapR)
-            self:HideTexture(OverrideActionBarBorder)
-            self:HideTexture(OverrideActionBarBG)
-            self:HideTexture(OverrideActionBarButtonBGMid)
-            self:HideTexture(OverrideActionBarButtonBGR)
-            self:HideTexture(OverrideActionBarButtonBGL)
-        end
-        if OverrideActionBarMicroBGMid then
-            self:HideTexture(OverrideActionBarMicroBGMid)
-            self:HideTexture(OverrideActionBarMicroBGR)
-            self:HideTexture(OverrideActionBarMicroBGL)
-            self:HideTexture(OverrideActionBarLeaveFrameExitBG)
+            self:SetAlphaColor(OverrideActionBarEndCapL, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarEndCapR, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarBorder, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarBG, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarButtonBGMid, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarButtonBGR, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarButtonBGL, nil, nil, 0)
 
-            self:HideTexture(OverrideActionBarDivider2)
-            self:HideTexture(OverrideActionBarLeaveFrameDivider3)
-        end
-        if OverrideActionBarExpBar then
-            self:HideTexture(OverrideActionBarExpBarXpMid)
-            self:HideTexture(OverrideActionBarExpBarXpR)
-            self:HideTexture(OverrideActionBarExpBarXpL)
+            self:SetAlphaColor(OverrideActionBarMicroBGMid, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarMicroBGR, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarMicroBGL, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarLeaveFrameExitBG, nil, nil, 0)
+
+            self:SetAlphaColor(OverrideActionBarDivider2, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarLeaveFrameDivider3, nil, nil, 0)
+
+            self:SetAlphaColor(OverrideActionBarExpBarXpMid, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarExpBarXpR, nil, nil, 0)
+            self:SetAlphaColor(OverrideActionBarExpBarXpL, nil, nil, 0)
+
             for i=1, 19 do
                 self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0.3)
             end
-        end
+
     end)
 
     self:HideTexture(MultiBarBottomLeftButton10.SlotBackground)
@@ -2672,7 +2670,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ArtifactUI()
         self:SetFrame(ArtifactFrame.PerksTab, {alpha=0})
         self:SetAlphaColor(ArtifactFrame.PerksTab.BackgroundBack, nil, nil, 0)
         --self:SetFrame(ArtifactFrame.PerksTab.DisabledFrame, {alpha= 0.3})
-        
+
         self:HideFrame(ArtifactFrame.PerksTab.Model)
     end
 

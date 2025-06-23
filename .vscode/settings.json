@@ -5942,7 +5942,8 @@
         "LFDQueueFrameRandomScrollFrame",
         "THIRD_NUMBER",
         "SECOND_NUMBER",
-        "XP"
+        "XP",
+        "OverrideActionBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
