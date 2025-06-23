@@ -1,5 +1,5 @@
 WoWTools_LabelMixin={}
-
+local IndexLabel=0
 
 
 
@@ -18,9 +18,11 @@ end
 
 
 function WoWTools_LabelMixin:Create(frame, tab)
+    IndexLabel= IndexLabel+1
+
     tab= tab or {}
     frame= frame or UIParent
-    local name= tab.name
+    local name= tab.name or ((frame:GetName() or 'WoWTools')..'Label'..IndexLabel)
     local alpha= tab.alpha
     local font= tab.changeFont
     local layer= tab.layer or 'OVERLAY'--BACKGROUND BORDER ARTWORK OVERLAY HIGHLIGHT

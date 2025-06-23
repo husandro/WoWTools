@@ -99,22 +99,21 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player then
                 WoWToolsPlayerDate['GossipTextIcon']= WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player
                 WoWToolsSave['Plus_Gossip'].Gossip_Text_Icon_Player= nil
-            else
-                WoWToolsPlayerDate['GossipTextIcon']= WoWToolsPlayerDate['GossipTextIcon'] or {
-                    [55193]={
-                        icon='communities-icon-invitemail',
-                        name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),
-                        hex='ffff00ff'
-                    }
-                }
             end
+            WoWToolsPlayerDate['GossipTextIcon']= WoWToolsPlayerDate['GossipTextIcon'] or {
+                [55193]={
+                    icon='communities-icon-invitemail',
+                    name=(WoWTools_DataMixin.onlyChinese and '打开邮件' or OPENMAIL),
+                    hex='ffff00ff'
+                }
+            }
 
             WoWTools_GossipMixin.addName= '|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '闲谈选项' or GOSSIP_OPTIONS)
 
             WoWTools_GossipMixin.addName2= '|A:UI-HUD-UnitFrame-Target-PortraitOn-Boss-Quest:0:0|a'
                 ..(WoWTools_DataMixin.onlyChinese and '任务选项' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, QUESTS_LABEL, GAMEMENU_OPTIONS))
 
-             --添加控制面板
+--添加控制面板
             WoWTools_PanelMixin:Check_Button({
                  checkName= WoWTools_GossipMixin.addName,
                  GetValue= function() return not Save().disabled end,

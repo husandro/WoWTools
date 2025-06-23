@@ -92,7 +92,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isTexture= tab.addTexture or (isType2 and not tab.notTexture)
     local useAtlasSize= tab.useAtlasSize and TextureKitConstants.UseAtlasSize or TextureKitConstants.IgnoreAtlasSize
 
-    local name= tab.name or ('WoWToolsMenuButton'..get_index())
+    local name= tab.name or  ((frame and frame:GetName() or 'WoWTools')..'Button'..get_index())
     local frameType= tab.frameType
                     or (isMenu and 'DropdownButton')
                     or (isItem and 'ItemButton')

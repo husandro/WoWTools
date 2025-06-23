@@ -46,6 +46,8 @@ local function Set_Frame_Point(self, name)--设置, 移动, 位置
         frame:ClearAllPoints()
         frame:SetPoint(p[1], UIParent, p[3], p[4], p[5])
     end
+
+    return true
 end
 
 
@@ -215,7 +217,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     end
 
     if not target or not target.moveFrameData then
-        Set_Frame_Point(frame, name)--设置, 移动, 位置
+        return Set_Frame_Point(frame, name)--设置, 移动, 位置
     end
 end
 
@@ -226,6 +228,6 @@ end
 
 function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
     if frame then
-        Set_Frame_Point(frame, name or frame:GetName())
+        return Set_Frame_Point(frame, name or frame:GetName())
     end
 end

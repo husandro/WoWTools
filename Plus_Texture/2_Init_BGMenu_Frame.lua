@@ -706,7 +706,7 @@ local function Init_Menu(self, root, isSub)
     sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_TextureMixin.addName, category=WoWTools_TextureMixin.Category})
 --Web
     sub3=sub2:CreateButton(
-        'Web',
+        '|A:QuestLegendary:0:0|aWeb',
     function(data)
         WoWTools_TooltipMixin:Show_URL(nil, nil, nil, data.name)
         return MenuResponse.Open
@@ -718,11 +718,20 @@ local function Init_Menu(self, root, isSub)
 
 
 
+--关闭
+    sub3= sub2:CreateButton(
+        '|A:RedButton-Exit:0:0|a'
+        ..(WoWTools_FrameMixin:IsLocked(self) and '|cff626262' or '')
+        ..(WoWTools_DataMixin.onlyChinese and '关闭' or CLOSE),
+    function()
+        HideUIPanel(self)
+    end)
+    sub3:SetTooltip(function(tooltip)
+        tooltip:AddLine(name)
+    end)
 
-
-
---重新加载UI
     sub2:CreateDivider()
+--重新加载UI
     WoWTools_MenuMixin:Reload(sub2)
 end
 

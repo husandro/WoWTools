@@ -119,12 +119,6 @@ end
 
 
 local function Init()
-    for type, tab in pairs(Save().Mounts) do
-        for ID in pairs(tab) do
-            WoWTools_Mixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
-        end
-    end
-
     WoWTools_MountMixin:Init_Button()
     WoWTools_MountMixin:Init_Mount_Show()--坐骑秀
     WoWTools_MountMixin:Init_SpellFlyoutButton()
@@ -156,6 +150,12 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if WoWTools_MountMixin.MountButton then
+                 for type, tab in pairs(Save().Mounts) do
+                    for ID in pairs(tab) do
+                        WoWTools_Mixin:Load({id=ID, type= type==ITEMS and 'item' or 'spell'})
+                    end
+                end
+
                 if C_AddOns.IsAddOnLoaded('Blizzard_Collections') then
                     WoWTools_MountMixin:Init_MountJournal()
                 end

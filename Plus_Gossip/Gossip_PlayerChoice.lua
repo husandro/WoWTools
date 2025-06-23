@@ -15,13 +15,14 @@ local function Send_Player_Choice_Response(optionInfo)
         C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
     end
 
-    if not C_PlayerChoice.GetCurrentPlayerChoiceInfo() then
+    do
         C_PlayerChoice.OnUIClosed()
-    else
-        PlayerChoiceFrame:OnSelectionMade()
     end
 
-
+    if PlayerChoiceFrame:IsShown() then
+        HideUIPanel(PlayerChoiceFrame)
+    end
+    --PlayerChoiceFrame:OnSelectionMade()
 
     --[[for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
         optionFrame:SetShown(false)
@@ -207,7 +208,7 @@ local function Init()
             PlayerChoiceFrame.allButton:SetEnabled(not info2.buttons[2].disabled and true or false)
             PlayerChoiceFrame.allButton:set_text()
             PlayerChoiceFrame.allButton:SetShown(true)
-   
+
         elseif PlayerChoiceFrame.allButton then
             PlayerChoiceFrame.allButton:SetShown(false)
         end

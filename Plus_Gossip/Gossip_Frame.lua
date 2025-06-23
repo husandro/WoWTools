@@ -80,14 +80,17 @@ end
 --自定义，对话，文本，放在主菜单，前
 
 
-local function Init()
+local function Init(isShow)
+    if isShow==false then
+        return
+    end
+
     Frame= CreateFrame('Frame', 'WoWToolsGossipTextIconOptionsFrame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
+    Frame:Hide()
 
     List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
 
-    Frame:SetSize(580, 370)
-    Frame:SetFrameStrata('HIGH')
-    Frame:SetPoint('CENTER')
+
 
     local border= CreateFrame('Frame', nil, Frame,'DialogBorderTemplate')
     local Header= CreateFrame('Frame', nil, Frame, 'DialogHeaderTemplate')--DialogHeaderMixin
@@ -98,10 +101,9 @@ local function Init()
 
     WoWTools_TextureMixin:SetFrame(border, {alpha=0.5})
     WoWTools_TextureMixin:SetFrame(Header, {alpha=0.7})
-    WoWTools_MoveMixin:Setup(Frame, {minW=370, minH=240, setSize=true,
-    sizeRestFunc=function()
-        Frame:SetSize(580, 370)
-    end})
+
+
+
 
 
 
@@ -189,10 +191,16 @@ local function Init()
                     end
                 end
                 table.sort(tabs, function(a, b) return a.orderIndex< b.orderIndex end)
+
                 for _, data in pairs(tabs) do
                     self.dataProvider:Insert({gossipID=data.gossipOptionID, icon=data.icon, name=data.name, hex=data.hex, spellID=data.spellID})
                 end
-                self.chat.Text:SetFormattedText('%s%d', gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e', gossipNum)--GossipFrame 有多少已设置
+--GossipFrame 有多少已设置
+                self.chat.Text:SetFormattedText('%s%d',
+                    gossipNum>0 and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e', 
+                    gossipNum
+                )
+
                 for _ in pairs(PlayerDataSave()) do
                     n=n+1
                 end
@@ -288,7 +296,8 @@ local function Init()
         self.Add:SetShown(num>0 and (name or icon or hex~='ff000000') and true or false)--显示/隐藏，添加按钮
     end
 
-    function List:set_color(r, g, b, hex)--设置，颜色，颜色按钮，
+--设置，颜色，颜色按钮，
+    function List:set_color(r, g, b, hex)
         if hex and hex~='' then
             r,g,b= WoWTools_ColorMixin:HEXtoRGB(hex)
         elseif r and g and b then
@@ -305,7 +314,8 @@ local function Init()
     function List:get_saved_all_date(gossipID)
         return PlayerDataSave()[gossipID] or WoWTools_GossipMixin:Get_GossipData()[gossipID]
     end
-    function List:set_date(gossipID)--读取，已保存数据
+--读取，已保存数据
+    function List:set_date(gossipID)
         if not gossipID then
             return
         end
@@ -359,16 +369,6 @@ local function Init()
         end
 
         self:set_all()
-        --[[local icon
-        local isAtlas, texture2= WoWTools_TextureMixin:IsAtlas(texture)
-        if texture2 then
-            if isAtlas then
-                icon= '|A:'..texture2..':0:0|a'
-            else
-                icon= '|T'..texture2..':0|t'
-            end
-        end
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:'..num..'|r', icon or '', '|c'..(hex or 'ff000000'), name)]]
     end
 
     function List:delete_gossip(gossipID)
@@ -786,10 +786,15 @@ local function Init()
     --导入数据
     List.DataFrame=WoWTools_EditBoxMixin:CreateFrame(Frame,{
         --isInstructions= 'text'
+        'WoWToolsGossipTextIconOutInScrollFrame'
     })
     List.DataFrame:Hide()
     List.DataFrame:SetPoint('TOPLEFT', Frame, 'TOPRIGHT', 0, -10)
     List.DataFrame:SetPoint('BOTTOMRIGHT', 310, 8)
+
+    List:SetScript('OnSizeChanged', function(self, width)
+        self.DataFrame:SetPoint('BOTTOMRIGHT', width, 8)
+    end)
 
     List.DataFrame.CloseButton=CreateFrame('Button', nil, List.DataFrame, 'UIPanelCloseButton')
     List.DataFrame.CloseButton:SetPoint('TOPRIGHT',0, 13)
@@ -835,7 +840,7 @@ local function Init()
                 name= get_text_value(name)
                 hex= get_text_value(hex)
 
-                
+
 
                 if not PlayerDataSave()[gossipID] then
                     if icon or name or hex then
@@ -954,39 +959,12 @@ local function Init()
     end)
 
 
-
-
-    List.chat:SetShown(GossipFrame:IsShown())
+    
     List:set_list()
     List:set_color()
-
-
-
-
-    GossipFrame:HookScript('OnShow', function()--已打开，对话，列表
-        List.chat:SetShown(true)
-        List:set_list()
-    end)
-    GossipFrame:HookScript('OnHide', function()
-        List.chat:SetShown(false)
-        List:set_list()
-    end)
-
-    Frame:SetScript('OnHide', function(self)
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-        List:set_list()
-        if not GossipFrame.GreetingPanel.ScrollBox:GetView() then
-            return
-        end
-        for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
-            b:UnlockHighlight()
-        end
-    end)
-    Frame:SetScript('OnShow', function(self)
-        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
-        List:set_list()
-    end)
     WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+
+
 
 
 
@@ -1009,8 +987,91 @@ local function Init()
     end
 
 
-    Init=function()
-        Frame:SetShown(not Frame:IsShown())
+
+
+
+
+
+
+
+
+
+
+
+--GossipFrame事件
+    GossipFrame:HookScript('OnShow', function()--已打开，对话，列表
+        if Frame:IsShown() then
+            List.chat:SetShown(true)
+            List:set_list()
+            Frame:set_point()
+        end
+    end)
+    GossipFrame:HookScript('OnHide', function()
+        if Frame:IsShown() then
+            WoWTools_MoveMixin:SetPoint(Frame)
+            List.chat:SetShown(false)
+            List:set_list()
+        end
+    end)
+
+
+    Frame:SetSize(580, 370)
+    Frame:SetFrameStrata('HIGH')
+
+--移动
+    WoWTools_MoveMixin:Setup(Frame, {
+        minW=370, minH=240, setSize=true,
+    sizeRestFunc=function()
+        Frame:SetSize(580, 370)
+    end})
+
+
+
+--Frame 设置
+    Frame:SetScript('OnHide', function()
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        List:set_list()
+        if GossipFrame:IsShown() and GossipFrame.GreetingPanel.ScrollBox:GetView() then
+           for _, b in pairs(GossipFrame.GreetingPanel.ScrollBox:GetFrames() or {}) do
+                b:UnlockHighlight()
+            end
+        end
+    end)
+
+    Frame:SetScript('OnShow', function()
+        WoWTools_LoadUIMixin:UpdateGossipFrame()--更新GossipFrame
+        List:set_list()
+    end)
+
+
+    function Frame:set_point()
+        if self:IsShown() then
+            self:ClearAllPoints()
+            if GossipFrame:IsShown() then
+                self:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
+            elseif not WoWTools_MoveMixin:SetPoint(self) then
+                self:SetPoint('CENTER')
+            end
+        end
+    end
+
+    function Frame:set_shown(show)
+        if show==nil then
+            show= not self:IsShown()
+        end
+
+        self:SetShown(show)
+
+        List.chat:SetShown(GossipFrame:IsShown())
+    end
+
+
+    Frame:set_shown(isShow)
+    Frame:set_point()
+
+    Init=function(show)
+        Frame:set_shown(show)
+        Frame:set_point()
     end
 end
 
@@ -1030,8 +1091,7 @@ end
 
 
 
-function WoWTools_GossipMixin:Init_Options_Frame()
-    if self.GossipButton then
-       Init()
-    end
+function WoWTools_GossipMixin:Init_Options_Frame(isShow)
+    --if self.GossipButton then
+    Init(isShow)
 end

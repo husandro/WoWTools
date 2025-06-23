@@ -237,24 +237,36 @@ local function Init()
 
 
     --打开，自定义，对话，文本，按钮
-    GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {size=20})
-    GossipButton.gossipFrane_Button:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -2, -4)
+    GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {
+        size=20,
+        name='WoWToolsOpenGossipIconTextButton'
+    })
+    GossipButton.gossipFrane_Button:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -3, -4)
     GossipButton.gossipFrane_Button:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
-            do
-                if not _G['WoWToolsGossipTextIconOptionsFrame'] then
-                    WoWTools_GossipMixin:Init_Options_Frame()
-                end
-            end
-            local frame= _G['WoWToolsGossipTextIconOptionsFrame']
-            if frame and frame:IsShown() then
-                frame:ClearAllPoints()
-                frame:SetPoint('TOPLEFT', GossipFrame, 'TOPRIGHT')
-            end
+            WoWTools_GossipMixin:Init_Options_Frame()
         else
             WoWTools_GossipMixin:Init_Menu_Gossip(self)
         end
     end)
+
+    GossipButton.gossipFrane_Button.Text= WoWTools_LabelMixin:Create(GossipButton.gossipFrane_Button)
+    GossipButton.gossipFrane_Button.Text:SetPoint('TOPRIGHT', 3, 4)
+    function GossipButton.gossipFrane_Button:set_text()
+        local num= 0
+        for _, info in pairs(C_GossipInfo.GetOptions()) do
+            if not WoWToolsPlayerDate['GossipTextIcon'][info.gossipOptionID] and not WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] then
+                num= num +1
+            end
+        end
+        self.Text:SetText(num)
+    end
+
+
+    hooksecurefunc(GossipFrame, 'Update', function()
+        GossipButton.gossipFrane_Button:set_text()
+    end)
+
     GossipButton.gossipFrane_Button:SetAlpha(0.3)
     GossipButton.gossipFrane_Button:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
     GossipButton.gossipFrane_Button:SetScript('OnEnter', function(self)
@@ -361,12 +373,7 @@ local function Init()
             self:set_Scale()
             self:tooltip_Show()
         elseif not IsModifierKeyDown() then
-            local frame= _G['WoWToolsGossipTextIconOptionsFrame']
-            if not frame then
-                WoWTools_GossipMixin:Init_Options_Frame()
-            else
-                frame:SetShown(d==1)
-            end
+            WoWTools_GossipMixin:Init_Options_Frame(d==1)
             --WoWTools_PanelMixin:Open('|A:SpecDial_LastPip_BorderGlow:0:0|a'..(WoWTools_DataMixin.onlyChinese and '对话和任务' or WoWTools_GossipMixin.addName))
         end
     end)
@@ -521,9 +528,8 @@ local function Init()
         end
 
         local find
-        --local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
-
-	    local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
+        local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
+	    --local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
 
         if Save().gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
@@ -534,7 +540,7 @@ local function Init()
 
         elseif Save().quest and (
                 quest
-                --or name:find('0000FF')--PURE_BLUE_COLOR
+                or name:find('0000FF')--PURE_BLUE_COLOR
                 --or name:find('0000ff')
                 --or FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend)
                 or name:find(QUESTS_LABEL)

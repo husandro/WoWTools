@@ -76,7 +76,7 @@ end
 function WoWTools_FrameMixin:Create(parent, tab)
     tab= tab or {}
 
-    local name= tab.name
+    local name= tab.name or ((parent:GetName() or 'WoWTools')..'Frame'..getIndex())
     local size= tab.size
     local strata= tab.strata
     local template= tab.template
