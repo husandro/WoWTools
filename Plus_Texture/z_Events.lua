@@ -1723,7 +1723,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     LFDQueueFrameTypeDropdownName:SetWidth(LFDQueueFrameTypeDropdownName:GetStringWidth()+4)
     --LFDQueueFrameTypeDropdownName:SetJustifyH('LEFT')
 
-    
+
     self:SetMenu(LFGListFrame.SearchPanel.FilterButton)
 
     self:SetNineSlice(LFDParentFrameInset, nil, true)
@@ -2661,9 +2661,24 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ArtifactUI()
-    self:HideText(ArtifactFrame)
+    self:HideFrame(ArtifactFrame)
     self:SetButton(ArtifactFrame.CloseButton)
-    self:HideTexture(ArtifactFrame.Background)
+    self:SetFrame(ArtifactFrame.BorderFrame)
+    self:SetAlphaColor(ArtifactFrame.ForgeBadgeFrame.ItemIconBorder, true)
+
+
+
+    if ArtifactFrame.PerksTab then
+        self:SetFrame(ArtifactFrame.PerksTab, {alpha=0})
+        self:SetAlphaColor(ArtifactFrame.PerksTab.BackgroundBack, nil, nil, 0)
+        --self:SetFrame(ArtifactFrame.PerksTab.DisabledFrame, {alpha= 0.3})
+        
+        self:HideFrame(ArtifactFrame.PerksTab.Model)
+    end
+
+    self:Init_BGMenu_Frame(ArtifactFrame, {
+        isNewButton=true
+    })
 end
 
 

@@ -187,12 +187,21 @@ function WoWTools_MoveMixin:Setup(frame, tab)
     local target= tab.frame
     local name= tab.name or (target and target:GetName()) or (frame and frame:GetName())
 
+
+
     if not frame or not name or frame.moveFrameData then
         if WoWTools_DataMixin.Player.husandro then
             print('移动', frame, name, frame and frame.moveFrameData, '出现错误')
         end
         return
+    elseif WoWTools_FrameMixin:IsLocked(target or frame) then
+         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            self:Setup(frame, tab)
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+        return
     end
+
 
     local SavePoint= Save().SavePoint or tab.savePoint
     --local moveToScreenFuori= Save().moveToScreenFuori
@@ -227,7 +236,16 @@ end
 
 
 function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
-    if frame then
+    if not frame then
+        return
+    end
+    if WoWTools_FrameMixin:IsLocked(frame) then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            self:SetPoint(frame, name)
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+        return true
+    else
         return Set_Frame_Point(frame, name or frame:GetName())
     end
 end

@@ -117,7 +117,9 @@ function WoWTools_FrameMixin:Create(parent, tab)
         notFuori=true,
         setSize=true,
         sizeRestFunc= sizeRestFunc or function()
-            frame:SetSize(w, h)
+            if not self:IsLocked(frame) then
+                frame:SetSize(w, h)
+            end
         end,
     })
     WoWTools_MoveMixin:Setup(frame.Header, {frame=frame})

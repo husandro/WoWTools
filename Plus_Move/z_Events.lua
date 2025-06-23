@@ -933,6 +933,9 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
 
 
     local function Set_Slot_Point()
+        if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
+            return
+        end
         local w, h= CharacterFrame:GetSize()--366 * 337   (40+4)*8
         local line= math.max(4, (h-16-42- 40*7- 58)/7)
 
@@ -1001,12 +1004,14 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             Set_Slot_Point()
         end,
         sizeRestFunc=function()
-            if (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) then
-                CharacterFrame:SetHeight(424)
+            if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
+                if (Save().size['CharacterFrameExpanded'] or Save().size['CharacterFrameCollapse']) then
+                    CharacterFrame:SetHeight(424)
+                end
+                Save().size['CharacterFrameExpanded']=nil
+                Save().size['CharacterFrameCollapse']=nil
+                WoWTools_Mixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
             end
-            Save().size['CharacterFrameExpanded']=nil
-            Save().size['CharacterFrameCollapse']=nil
-            WoWTools_Mixin:Call(CharacterFrame.UpdateSize, CharacterFrame)
         end,
         sizeRestTooltipColorFunc=function(f)
             return ((f.target.Expanded and Save().size['CharacterFrameExpanded']) or (not f.target.Expanded and Save().size['CharacterFrameCollapse'])) and '' or '|cff9e9e9e'
