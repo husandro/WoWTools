@@ -173,20 +173,19 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
     end
 
     local followerList= {}
-    local dungeoNum= 0
 	for _, dungeonID in ipairs( GetLFDChoiceOrder() or {}) do--LFDFrame.lua
         local lockMap= LFGLockList or GetLFGLockList()
 		if not lockMap[dungeonID] or not lockMap[dungeonID].hideEntry then
 			if dungeonID >= 0 and C_LFGInfo.IsLFGFollowerDungeon(dungeonID) then
 				table.insert(followerList, dungeonID)
-                dungeoNum= dungeoNum+1
 			end
 		end
 	end
 
-    if dungeoNum==0 then
+    if #followerList==0 then
         return
     end
+
     local sub, sub2
     local reward, rewardIndex, rewardType, rewardArg
 
@@ -244,7 +243,8 @@ local function Set_LFGFollower_Dungeon_List(root)--追随者，副本
 
         end
     end
-    WoWTools_MenuMixin:SetGridMode(sub, dungeoNum)
+
+    WoWTools_MenuMixin:SetScrollMode(sub)
 end
 
 
@@ -1209,6 +1209,9 @@ local function Init_Menu(_, root)
         WoWTools_Mixin:Call(VehicleExit)
         return MenuResponse.Open
     end)
+
+
+     WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

@@ -889,7 +889,7 @@ WoWTools_MenuMixin:SetGridMode(sub, num)
 
 --SetScrollMode UIParent:GetHeight()
 function WoWTools_MenuMixin:SetScrollMode(root)
-    root:SetScrollMode(math.max(20*35,  GetScreenHeight()-100))
+    root:SetScrollMode(math.max(20*35,  GetScreenHeight()-70))
 end
 --[[
 --SetScrollMod

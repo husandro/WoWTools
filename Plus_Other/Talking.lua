@@ -25,10 +25,10 @@ local function TALKINGHEAD_REQUESTED()
     end
 
     if not WoWToolsSave['Other_VoiceTalking'].notPrint and (text or voHandle) then
-        print(
+        print(WoWTools_DataMixin.Icon.icon2,
             '|cff00ff00'..name..'|r',
             '|cffff00ff'..text..'|r',
-            WoWTools_DataMixin.Icon.icon2..addName,
+            addName,
             'soundKitID',
             vo
         )

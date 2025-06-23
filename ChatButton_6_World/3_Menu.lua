@@ -231,6 +231,8 @@ local function Init_Menu(self, root)
 
 
     WoWTools_WorldMixin:Init_Filter_Menu(root)--屏蔽刷屏, 菜单
+
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 

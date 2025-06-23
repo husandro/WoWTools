@@ -405,12 +405,17 @@ local function Init_Menu(self, root)
     end
 
 --公会在线列表
-    Guild_Player_List(_, root)
+    Guild_Player_List(self, root)
+
+
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
 
 
 function WoWTools_GuildMixin:Init_Menu(btn)
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end

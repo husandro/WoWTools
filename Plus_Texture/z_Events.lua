@@ -2660,7 +2660,11 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
 end
 
 
-
+function WoWTools_TextureMixin.Events:Blizzard_ArtifactUI()
+    self:HideText(ArtifactFrame)
+    self:SetButton(ArtifactFrame.CloseButton)
+    self:HideTexture(ArtifactFrame.Background)
+end
 
 
 
