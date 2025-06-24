@@ -113,7 +113,7 @@ local function Init()
                 end
             end
         end,
-        sizeRestFunc=function(btn)
+        sizeRestFunc=function()
             FriendsFrame:SetSize(338, 424)
             if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
