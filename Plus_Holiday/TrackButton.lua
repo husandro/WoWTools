@@ -21,7 +21,7 @@ local Buttons={}
 local function Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
     for _, questID in pairs({
         40168, 40173, 40786, 45563, 55499, 40168, 40173, 40787, 45563, 55498, 64710,64709,
-        72725,--迷离的时光之路 熊猫人之迷
+        72725, 83362,--迷离的时光之路 熊猫人之迷
     }) do
         if C_QuestLog.IsQuestFlaggedCompleted(questID) then
             return format('|A:%s:0:0|a', 'common-icon-checkmark')
@@ -216,8 +216,8 @@ local function Get_Button_Text(event)
 
     elseif event.calendarType=='HOLIDAY' and event.eventID then
 
-        if event.title:find(PLAYER_DIFFICULTY_TIMEWALKER)--时空漫游
-            or event.eventID==1063
+        if event.title:find(PLAYER_DIFFICULTY_TIMEWALKER)--时空漫游 559
+            --[[or event.eventID==1063
             or event.eventID==616
             or event.eventID==617
             or event.eventID==623
@@ -226,7 +226,7 @@ local function Get_Button_Text(event)
             or event.eventID==654
             or event.eventID==1068
             or event.eventID==1277
-            or event.eventID==1269
+            or event.eventID==1269]]
          then
             local isCompleted= Check_TimeWalker_Quest_Completed()--迷离的时光之路，任务是否完成
 

@@ -526,6 +526,8 @@ end
 
 --日历
 function WoWTools_TextureMixin.Events:Blizzard_Calendar()
+    self:SetButton(CalendarCloseButton)
+    
     self:SetAlphaColor(CalendarFrameTopMiddleTexture)
     self:SetAlphaColor(CalendarFrameTopLeftTexture)
     self:SetAlphaColor(CalendarFrameTopRightTexture)

@@ -5949,7 +5949,8 @@
         "ArchaeologyFrameBgLeft",
         "ArchaeologyFrameBgRight",
         "OverrideActionBarExpBarOverlayFrame",
-        "OverrideActionBarExpBarOverlayFrameText"
+        "OverrideActionBarExpBarOverlayFrameText",
+        "CalendarCloseButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
