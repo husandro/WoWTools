@@ -1504,35 +1504,34 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     end
 
 
-    hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
-        self:SetAlphaColor(OverrideActionBarEndCapL, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarEndCapR, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarBorder, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarBG, nil, nil, 0.3)
-        self:SetAlphaColor(OverrideActionBarButtonBGMid, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarButtonBGR, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarButtonBGL, nil, nil, 0)
+    --hooksecurefunc('PlayerFrame_UpdateArt', function()--隐藏材质, 载具
+    self:SetAlphaColor(OverrideActionBarEndCapL, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarEndCapR, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarBorder, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarBG, nil, nil, 0.3)
+    self:SetAlphaColor(OverrideActionBarButtonBGMid, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarButtonBGR, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarButtonBGL, nil, nil, 0)
 
-        self:SetAlphaColor(OverrideActionBarMicroBGMid, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarMicroBGR, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarMicroBGL, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarLeaveFrameExitBG, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarMicroBGMid, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarMicroBGR, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarMicroBGL, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarLeaveFrameExitBG, nil, nil, 0)
 
-        self:SetAlphaColor(OverrideActionBarDivider2, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarLeaveFrameDivider3, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarDivider2, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarLeaveFrameDivider3, nil, nil, 0)
 
-        self:SetAlphaColor(OverrideActionBarExpBarXpMid, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarExpBarXpR, nil, nil, 0)
-        self:SetAlphaColor(OverrideActionBarExpBarXpL, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarExpBarXpMid, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarExpBarXpR, nil, nil, 0)
+    self:SetAlphaColor(OverrideActionBarExpBarXpL, nil, nil, 0)
 
-        for i=1, 19 do
-            self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0)
-        end
+    for i=1, 19 do
+        self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0)
+    end
 
 --货币，XP，追踪，最下面BAR
-        self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.15)
-        self:HideTexture(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.15)
-    end)
+    self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0)
+    self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0)
 
     self:HideTexture(MultiBarBottomLeftButton10.SlotBackground)
 
@@ -1542,7 +1541,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
 --额外技能
     self:SetAlphaColor(ExtraActionButton1.style, nil, true, 0.3)
 --区域技能
-    self:HideTexture(ZoneAbilityFrame.Style, nil, true, 0.3)
+    self:SetAlphaColor(ZoneAbilityFrame.Style, nil, true, 0.3)
 --小队，背景
     self:SetFrame(PartyFrame.Background, {alpha= 0.3})
 

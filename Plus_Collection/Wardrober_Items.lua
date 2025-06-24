@@ -276,13 +276,20 @@ local function set_Items_Tooltips(self)--UpdateItems
                 for index, tab in pairs(itemLinks) do
                     local btn= model.itemButton[index]
                     if not btn then
-                        btn=WoWTools_ButtonMixin:Cbtn(model, {size=index==1 and {14.4, 14.4} or h})
+
+                        btn=WoWTools_ButtonMixin:Cbtn(model, {
+                            size=index==1 and {14.4, 14.4} or h,
+                        })
                         if index==1 then
                             btn:SetPoint('BOTTOMLEFT', -4, -4)
                         else
                             btn:SetPoint('BOTTOMLEFT', x, y)
                         end
-                        btn:SetAlpha(0.5)
+                        if index>1 then
+                            btn:SetAlpha(0.5)
+                        else
+                            btn.isPrima=true
+                        end
 
                         btn:SetScript("OnEnter",function(self2)
                             local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
@@ -320,7 +327,9 @@ local function set_Items_Tooltips(self)--UpdateItems
                             WoWTools_ChatMixin:Chat(link2, nil, true)
                         end)
                         btn:SetScript("OnLeave",function(self2)
-                            self2:SetAlpha(0.5)
+                            if not self2.isPrima then
+                                self2:SetAlpha(0.5)
+                            end
                             GameTooltip:Hide()
                         end)
                         model.itemButton[index]=btn
