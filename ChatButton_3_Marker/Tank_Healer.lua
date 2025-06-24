@@ -95,7 +95,10 @@ local function Set_TankHealer(set)--设置队伍标记
             isSelf= true
         end
         if Save().target then
-            WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
+            local index= GetRaidTargetIndex('target')
+            if not index or (index>8 and index<0) then
+                WoWTools_MarkerMixin:Set_Taget('target', Save().target or (set and 0))--设置,目标,标记
+            end
             isSelf= true
         end
     end

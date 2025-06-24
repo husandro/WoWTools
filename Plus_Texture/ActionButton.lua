@@ -80,22 +80,19 @@ local function Init()
 
         local dividersPool = self.isHorizontal and self.HorizontalDividersPool or self.VerticalDividersPool
         if dividersPool then
-            --for i, actionButton in pairs(self.actionButtons) do
-                for pool in dividersPool:EnumerateActive() do
-                    WoWTools_TextureMixin:SetFrame(pool)
-                end
-            --end
-        end
-    end)
-
-    --[[local dividersPool = MainMenuBar.isHorizontal and MainMenuBar.HorizontalDividersPool or MainMenuBar.VerticalDividersPool
-    if dividersPool then
-        for i, actionButton in pairs(MainMenuBar.actionButtons) do
             for pool in dividersPool:EnumerateActive() do
                 WoWTools_TextureMixin:SetFrame(pool)
             end
         end
-    end]]
+    end)
+
+    OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.3)
+    OverrideActionBarExpBar:HookScript('OnLeave', function()
+        OverrideActionBarExpBarOverlayFrameText:SetAlpha(0.3)
+    end)
+    OverrideActionBarExpBar:HookScript('OnEnter', function()
+        OverrideActionBarExpBarOverlayFrameText:SetAlpha(1)
+    end)
 
     WoWTools_TextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.UpButton, {alpha=0.5})
     WoWTools_TextureMixin:SetFrame(MainMenuBar.ActionBarPageNumber.DownButton, {alpha=0.5})
@@ -106,9 +103,6 @@ local function Init()
         WoWTools_TextureMixin:SetAlphaColor(MainMenuBar.EndCaps.RightEndCap, true, nil, nil)
     end
     WoWTools_TextureMixin:SetAlphaColor(MainMenuBar.BorderArt, nil, nil, 0.3)
-
-
-
 end
 
 

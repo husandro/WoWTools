@@ -378,7 +378,7 @@ end
 
 --幻化
 local function TransmogAppearance(link)
-    local appearanceID=link:match('Htransmogillusion:(%d+)')
+    local appearanceID=link:match('Htransmogappearance:(%d+)')
     if appearanceID then
         return WoWTools_HyperLink:CN_Link(link)
             ..Get_CompletedIcon(C_TransmogCollection.PlayerHasTransmogItemModifiedAppearance(appearanceID))

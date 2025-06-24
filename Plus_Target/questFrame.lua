@@ -49,7 +49,6 @@ local function Get_Unit_Text(_, unit)
     end
 
     if UnitInPartyIsAI(unit) then
-
         local role = UnitGroupRolesAssigned(unit)
         if role and role~='NONE' then
             return WoWTools_DataMixin.Icon[role]

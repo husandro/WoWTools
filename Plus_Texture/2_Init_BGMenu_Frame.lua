@@ -670,7 +670,7 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).nineSliceAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name=WoWTools_DataMixin.onlyChinese and '外框' or 'NineSlice',
+        name= (self.NineSlice and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '外框' or 'NineSlice'),
         minValue=0,
         maxValue=1,
         step=0.05,
