@@ -167,7 +167,7 @@ end
 --###########
 local function Init_Quest()
 
-    local QuestButton= WoWTools_ButtonMixin:Cbtn(WoWTools_GossipMixin.GossipButton, {
+    local QuestButton= WoWTools_ButtonMixin:Cbtn(_G['WoWToolsGossipButton'], {
         size=22,
         name='WoWTools_GossipQuestButton',
         icon='hide',
@@ -180,7 +180,7 @@ local function Init_Quest()
     QuestButton.Text=WoWTools_LabelMixin:Create(QuestButton, {justifyH='RIGHT', color=true, size=14})--任务数量
     QuestButton.Text:SetPoint('RIGHT', QuestButton, 'LEFT', 0, 1)
 
-    QuestButton:SetPoint('RIGHT', WoWTools_GossipMixin.GossipButton, 'LEFT')
+    QuestButton:SetPoint('RIGHT', _G['WoWToolsGossipButton'], 'LEFT')
 
     function QuestButton:set_Only_Show_Zone_Quest()--显示本区域任务
         if not Save().autoSortQuest or IsInInstance() or UnitAffectingCombat('player') then
@@ -652,10 +652,6 @@ end
 
 
 function WoWTools_GossipMixin:Init_Quest()
-    if not self.GossipButton then
-        return
-    end
-
     IsQuestTrivialTracking= WoWTools_MapMixin:Get_Minimap_Tracking(MINIMAP_TRACKING_TRIVIAL_QUESTS, false)
     Init_Quest()
 end

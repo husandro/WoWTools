@@ -5,16 +5,16 @@
     self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MinimizeButton)
     self:SetButton(CommunitiesFrame.MaximizeMinimizeFrame.MaximizeButton)
 
-    self:SetNineSlice(CommunitiesFrame, true)
+    --self:SetNineSlice(CommunitiesFrame, true)
 
     self:SetScrollBar(CommunitiesFrame.Chat)
-    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame, nil, true)
+    self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame)
     self:CreateBG(CommunitiesFrame.Chat, {isAllPoint=true, isColor=true})
 --新闻过滤
     self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
     self:SetBG(CommunitiesFrameGuildDetailsFrameNews)
 
-    self:SetNineSlice(CommunitiesFrameInset, nil, true)
+    self:SetNineSlice(CommunitiesFrameInset)
 
     self:SetEditBox(CommunitiesFrame.ChatEditBox)
     self:SetAlphaColor(CommunitiesFrameMiddle)
@@ -28,7 +28,7 @@
     self:HideTexture(CommunitiesFrameCommunitiesList.BottomFiligree)
 
     hooksecurefunc(CommunitiesListEntryMixin, 'Init', function(frame, data)
-        self:SetAlphaColor(frame.Background, nil, nil, true)
+        self:SetAlphaColor(frame.Background, 1, true)
     end)
 
     self:HideFrame(CommunitiesFrame.ChatTab, {index=1})
@@ -47,14 +47,14 @@
     self:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
 
 --成员，列表
-    self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame, nil, true)
+    self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame)
     self:HideFrame(CommunitiesFrame.MemberList.ColumnDisplay)
     self:SetScrollBar(CommunitiesFrame.MemberList)
     self:CreateBG(CommunitiesFrame.MemberList, {isAllPoint=true})
 
 
 --成员,叙述
-    self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.Border, nil, nil, nil, true)
+    self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.Border, 1)
     self:SetButton(CommunitiesFrame.GuildMemberDetailFrame.CloseButton)
 
 
@@ -105,52 +105,6 @@
     self:SetScrollBar(GuildRegistrarFrame)
 
 --设计，公会战袍
-
-    --[[TabardFrameInset:Hide()
-    self:SetNineSlice(TabardFrame)
-    TabardFrameBg:SetAtlas('ChallengeMode-guild-background')
-
-    self:SetAlphaColor(TabardFrameBg, nil, nil, true)
-
-    self:HideTexture(TabardFrameMoneyBgMiddle)
-    self:HideTexture(TabardFrameMoneyBgLeft)
-    self:HideTexture(TabardFrameMoneyBgRight)
-    self:HideTexture(TabardFrameMoneyInset.Bg)
-
-    TabardFrameMoneyInset.NineSlice:Hide()
-    TabardFrameCostFrame.NineSlice:Hide()
-    TabardFrameOuterFrameTopLeft:Hide()
-    TabardFrameOuterFrameTopRight:Hide()
-    TabardFrameOuterFrameBottomLeft:Hide()
-    TabardFrameOuterFrameBottomRight:Hide()
-    TabardFrameOuterFrameLeftTop:Hide()
-    TabardFrameOuterFrameLeftBottom:Hide()
-    TabardFrameOuterFrameRightTop:Hide()
-    TabardFrameOuterFrameRightBottom:Hide()
-    TabardFrameOuterFrameBottom:Hide()
-    TabardFrameOuterFrameTop:Hide()
-
-    TabardFrameCustomization1Middle:Hide()
-    TabardFrameCustomization1Left:Hide()
-    TabardFrameCustomization1Right:Hide()
-
-    TabardFrameCustomization2Middle:Hide()
-    TabardFrameCustomization2Left:Hide()
-    TabardFrameCustomization2Right:Hide()
-
-    TabardFrameCustomization3Middle:Hide()
-    TabardFrameCustomization3Left:Hide()
-    TabardFrameCustomization3Right:Hide()
-
-    TabardFrameCustomization4Middle:Hide()
-    TabardFrameCustomization4Left:Hide()
-    TabardFrameCustomization4Right:Hide()
-
-    TabardFrameCustomization5Middle:Hide()
-    TabardFrameCustomization5Left:Hide()
-    TabardFrameCustomization5Right:Hide()]]
-
-    --self:HideFrame(TabardFrame)
     self:SetAllFrames(TabardFrame, {
         frames={TabardFrameCustomizationFrame},
         bg=true,
@@ -180,12 +134,12 @@
 --公会信息， 点击以编辑
     --CommunitiesGuildTextEditFrame
     self:SetFrame(CommunitiesGuildTextEditFrame, {isMinAlpha=true})
-    self:SetNineSlice(CommunitiesGuildTextEditFrame.Container, nil, nil, nil, true)
+    self:SetNineSlice(CommunitiesGuildTextEditFrame.Container, nil, true)
     self:SetScrollBar(CommunitiesGuildTextEditFrame.Container.ScrollFrame)
 
 --查看日志，记录
     self:SetFrame(CommunitiesGuildLogFrame)
-    self:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, nil, nil, true)
+    self:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, true)
     self:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
 
 
@@ -195,7 +149,7 @@
 --寻找社区
     self:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
     self:SetEditBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
-    self:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame, nil, true)
+    self:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame)
     self:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
     self:SetAlphaColor(ClubFinderCommunityAndGuildFinderFrame.InsetFrame.Bg)
     self:HideFrame(ClubFinderCommunityAndGuildFinderFrame.ClubFinderSearchTab, {index=1})
@@ -203,7 +157,7 @@
 
 --公会查找器
     self:HideTexture(ClubFinderGuildFinderFrame.InsetFrame.Bg)
-    self:SetNineSlice(ClubFinderGuildFinderFrame.InsetFrame, nil, true)
+    self:SetNineSlice(ClubFinderGuildFinderFrame.InsetFrame)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubFilterDropdown)
     self:SetMenu(ClubFinderGuildFinderFrame.OptionsList.ClubSizeDropdown)
     self:SetEditBox(ClubFinderGuildFinderFrame.OptionsList.SearchBox)

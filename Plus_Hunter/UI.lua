@@ -140,9 +140,9 @@ local function Init_Texture(self)
     self:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
     self:SetMenu(StableFrame.StabledPetList.FilterBar)
 
-    self:SetNineSlice(StableFrame)
-    self:SetNineSlice(StableFrame.StabledPetList.Inset, nil, true)
-    self:SetNineSlice(StableFrame.PetModelScene.Inset, nil, true)
+    --self:SetNineSlice(StableFrame)
+    self:SetNineSlice(StableFrame.StabledPetList.Inset)
+    self:SetNineSlice(StableFrame.PetModelScene.Inset)
     self:SetButton(StableFrameCloseButton)
     self:SetButton(StableFrame.MainHelpButton)
 

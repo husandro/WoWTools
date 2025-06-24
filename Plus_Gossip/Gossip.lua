@@ -1,5 +1,5 @@
 
-local GossipButton
+local GossipButton, GButton2, NumGossipCNLabel
 
 local function Save()
     return WoWToolsSave['Plus_Gossip']
@@ -227,58 +227,14 @@ end
 local function Init()
     GossipButton= WoWTools_ButtonMixin:Cbtn(nil, {--闲话图标
         size=22,
-        name='WoWTools_GossipButton',
+        name='WoWToolsGossipButton',
         icon='hide',
     })
-    WoWTools_GossipMixin.GossipButton= GossipButton
-
+    --WoWTools_GossipMixin.GossipButton= GossipButton
     GossipButton.texture= GossipButton:CreateTexture()
     GossipButton.texture:SetAllPoints()
 
 
-    --打开，自定义，对话，文本，按钮
-    GossipButton.gossipFrane_Button= WoWTools_ButtonMixin:Cbtn(GossipFrame, {
-        size=20,
-        name='WoWToolsOpenGossipIconTextButton'
-    })
-    GossipButton.gossipFrane_Button:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -3, -4)
-    GossipButton.gossipFrane_Button:SetScript('OnMouseDown', function(self, d)
-        if d=='LeftButton' then
-            WoWTools_GossipMixin:Init_Options_Frame()
-        else
-            WoWTools_GossipMixin:Init_Menu_Gossip(self)
-        end
-    end)
-
-    GossipButton.gossipFrane_Button.Text= WoWTools_LabelMixin:Create(GossipButton.gossipFrane_Button)
-    GossipButton.gossipFrane_Button.Text:SetPoint('TOPRIGHT', 3, 4)
-    function GossipButton.gossipFrane_Button:set_text()
-        local num= 0
-        for _, info in pairs(C_GossipInfo.GetOptions()) do
-            if not WoWToolsPlayerDate['GossipTextIcon'][info.gossipOptionID] and not WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] then
-                num= num +1
-            end
-        end
-        self.Text:SetText(num)
-    end
-
-
-    hooksecurefunc(GossipFrame, 'Update', function()
-        GossipButton.gossipFrane_Button:set_text()
-    end)
-
-    GossipButton.gossipFrane_Button:SetAlpha(0.3)
-    GossipButton.gossipFrane_Button:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip_Hide() end)
-    GossipButton.gossipFrane_Button:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
-        GameTooltip:Show()
-        self:SetAlpha(1)
-    end)
 
     function GossipButton:Is_ShowOptionsFrame()
         local frame=_G['WoWToolsGossipTextIconOptionsFrame']
@@ -290,6 +246,7 @@ local function Init()
 
 
     function GossipButton:set_Point()--设置位置
+        self:ClearAllPoints()
         if Save().point then
             self:SetPoint(Save().point[1], UIParent, Save().point[3], Save().point[4], Save().point[5])
         else
@@ -305,10 +262,10 @@ local function Init()
     function GossipButton:set_Texture()--设置，图片 
         if Save().gossip then
             self.texture:SetAtlas('SpecDial_LastPip_BorderGlow')
-            self.gossipFrane_Button:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
+            GButton2:SetNormalAtlas('SpecDial_LastPip_BorderGlow')
         else
             self.texture:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-            self.gossipFrane_Button:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            GButton2:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
         end
         self:set_Alpha()
     end
@@ -331,10 +288,7 @@ local function Init()
         self:SetShown(not C_PetBattles.IsInBattle())
     end
 
-    GossipButton:set_Texture()
-    GossipButton:set_Scale()
-    GossipButton:set_Point()
-    GossipButton:set_shown()
+
 
     GossipButton:SetMovable(true)--移动
     GossipButton:SetClampedToScreen(true)
@@ -430,9 +384,6 @@ local function Init()
 
         elseif event=='ADDON_ACTION_FORBIDDEN'  then
             if Save().gossip then
-                --[[if StaticPopup1:IsShown() then
-                    StaticPopup1:Hide()
-                end]]
                 print(
                     WoWTools_DataMixin.Icon.icon2
                     ..WoWTools_GossipMixin.addName,
@@ -500,12 +451,81 @@ local function Init()
 
 
 
+--打开，自定义，对话，文本，按钮
+    GButton2= WoWTools_ButtonMixin:Cbtn(GossipFrame, {
+        size=20,
+        name='WoWToolsOpenGossipIconTextButton'
+    })
+
+    GButton2:SetAlpha(0.3)
+    GButton2:SetScript('OnLeave', function(self) self:SetAlpha(0.3) GameTooltip:Hide() end)
+    GButton2:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '对话替换' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DIALOG_VOLUME, REPLACE), WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL, WoWTools_DataMixin.Icon.right)
+        GameTooltip:Show()
+        self:SetAlpha(1)
+    end)
+    GButton2:SetPoint('TOP', GossipFrameCloseButton, 'BOTTOM', -3, -4)
+    GButton2:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            WoWTools_GossipMixin:Init_Options_Frame()
+        else
+            WoWTools_GossipMixin:Init_Menu_Gossip(self)
+        end
+    end)
+
+
+--当前对话， 有多少已修该
+    NumGossipCNLabel= WoWTools_LabelMixin:Create(GossipButton, {
+        name= 'WoWToolsOpenGossipNumCNLabel',
+    })
+    NumGossipCNLabel:SetPoint('TOPRIGHT', GButton2, 3, 4)
+    hooksecurefunc(GossipFrame, 'Update', function()
+        local num= 0
+        for _, info in pairs(C_GossipInfo.GetOptions()) do
+            if not WoWToolsPlayerDate['GossipTextIcon'][info.gossipOptionID] and not WoWTools_GossipMixin:Get_GossipData()[info.gossipOptionID] then
+                num= num +1
+            end
+        end
+        NumGossipCNLabel:SetText(num)
+    end)
 
 
 
 
 
 
+
+
+
+
+
+
+    GossipButton:set_Texture()
+    GossipButton:set_Scale()
+    GossipButton:set_Point()
+    GossipButton:set_shown()
+
+    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
+
+    Init=function()
+        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
+    end
+end
+
+
+
+
+
+
+
+
+
+local function Init_Hook()
 
 
     --自定义闲话选项, 按钮 GossipFrameShared.lua https://wago.io/MK7OiGqCu https://wago.io/hR_KBVGdK
@@ -513,7 +533,13 @@ local function Init()
         Create_CheckButton(self, info)--建立，自动选取，选项
         Set_Gossip_Text(self, info)--自定义，对话，文本
 
-        if not info or not info.gossipOptionID or not Save().gossip then
+        print(NumGossipCNLabel:GetText())
+
+        if not info
+            or not info.gossipOptionID
+            or not Save().gossip
+            or (WoWTools_DataMixin.Player.husandro and NumGossipCNLabel:GetText()~='0')
+        then
             return
         end
 
@@ -710,13 +736,10 @@ local function Init()
 
 
 
-
-    StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
-
-    Init=function()
-        StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
-    end
+    Init_Hook= function()end
 end
+
+
 
 
 
@@ -730,4 +753,5 @@ end
 
 function WoWTools_GossipMixin:Init_Gossip()
     Init()
+    Init_Hook()
 end

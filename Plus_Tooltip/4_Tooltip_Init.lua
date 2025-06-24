@@ -68,10 +68,8 @@ local function Create(tooltip)
         if self.NineSlice then
             self.NineSlice:SetBorderColor(r,g,b,a)
         end
-        --self:SetBackdropBorderColor(r,g,b,a)--SharedTooltipTemplates.lua
         self.backgroundColor:SetShown(show)
     end
-    --tooltip.backgroundColor:SetAllPoints(tooltip)
 
     if not tooltip.Portrait then
         tooltip.Portrait= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
@@ -87,14 +85,6 @@ local function Create(tooltip)
         WoWTools_TooltipMixin:Set_Rest_Item(self)--清除，数据
     end)
 
---function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg)
-    --WoWTools_TextureMixin:SetNineSlice(tooltip, nil, true, true, true)
-
-    --[[tooltip.IconMask= tooltip.IconMask or tooltip:CreateMaskTexture()
-    tooltip.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
-    tooltip.IconMask:SetPoint('TOPLEFT', tooltip, 0.5, -0.5)
-    tooltip.IconMask:SetPoint('BOTTOMRIGHT', tooltip, -0.5, 0.5)
-    tooltip.backgroundColor:AddMaskTexture(tooltip.IconMask)]]
 end
 
 

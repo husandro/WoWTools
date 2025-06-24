@@ -5945,7 +5945,9 @@
         "XP",
         "OverrideActionBar",
         "UIParentRightManagedFrameContainer",
-        "NPEV2_RIGHT_ARROW"
+        "NPEV2_RIGHT_ARROW",
+        "ArchaeologyFrameBgLeft",
+        "ArchaeologyFrameBgRight"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

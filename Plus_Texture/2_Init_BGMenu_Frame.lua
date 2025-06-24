@@ -23,6 +23,13 @@ local function IsEnabledSaveBg(name)
 end
 
 
+local function Get_Alpha(name, icon)
+    return SaveData(name).alpha or icon.BgData.alpha or 0.5
+end
+
+local function Get_NineSlice_Alpha(name, icon)
+    return SaveData(name).nineSliceAlpha or icon.BgData.nineSliceAlpha or 0
+end
 
 
 
@@ -112,6 +119,12 @@ local TextureTab={
 ['pvpqueue-bg-horde']=1,
 ['UI-Frame-CypherChoice-FX-BottomGlow']=1,
 ['ui-frame-genericplayerchoice-cardframe-bottomglow']=1,
+
+['QuestBG-Alliance']=1,
+['QuestBG-Horde']=1,
+['QuestBG-Parchment']=1,
+['talenttree-alliance-background']=1,
+['talenttree-horde-background']=1,
 }
 
 
@@ -147,7 +160,7 @@ local function Update_Animation(self)
     -- 动画从右下角到左上角
     local xOffset = -width
     local yOffset = height
-    
+
     self.backgroundAnims.moveAnim:SetOffset(xOffset, yOffset)    -- 右下到左上
     self.backgroundAnims.resetPos:SetOffset(-xOffset, -yOffset)    -- 回到右下
 
@@ -164,9 +177,6 @@ local function Update_Animation(self)
     PlayStop_Anims(self)
 end
 
-local function Get_Alpha(name, icon)
-    return SaveData(name).alpha or icon.BgData.alpha or 0.5
-end
 
 local function Set_BGTexture(self, name)
     local icon= self[BGName]
@@ -178,7 +188,10 @@ local function Set_BGTexture(self, name)
     local data= SaveData(name)
 
     local alpha= Get_Alpha(name, icon)
+    local nineSliceAlpha= Get_NineSlice_Alpha(name, icon)
     local texture= data.texture
+
+
 
     if texture and C_Texture.GetAtlasInfo(texture) then
         icon:SetAtlas(texture)
@@ -189,7 +202,7 @@ local function Set_BGTexture(self, name)
     icon:SetAlpha(alpha)
 
     if icon.BgData.settings then
-        icon.BgData.settings(icon, texture, alpha)
+        icon.BgData.settings(icon, texture, alpha, nineSliceAlpha)
     end
 
 --Frame.Background
@@ -197,8 +210,9 @@ local function Set_BGTexture(self, name)
         self.Background:SetAlpha(texture and 0 or alpha)
     end
 
+--NineSlice
     if self.NineSlice then
-        self.NineSlice:SetAlpha(texture and 0 or alpha)
+        WoWTools_TextureMixin:SetNineSlice(self, nineSliceAlpha)
     end
 
 --DrawLayer
@@ -646,6 +660,32 @@ local function Init_Menu(self, root, isSub)
     })
     sub:CreateSpacer()
 
+--NineSlice 透明度
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Get_NineSlice_Alpha(name, icon)
+        end,
+        setValue=function(value)
+            SaveData(name).nineSliceAlpha=value
+            Settings(IsEnabledSaveBg(name) and self or nil)
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '外框' or 'NineSlice',
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%.2f',
+        tooltip=function(tooltip)
+            if IsEnabledSaveBg(name) then
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..name)
+            else
+                GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一' or ALL, HIGHLIGHT_FONT_COLOR)
+            end
+            tooltip:AddLine('NineSlice')
+        end
+    })
+    sub:CreateSpacer()
+
 --分开设置, 全部列表
     Add_Frame_Menu(self, sub)
     --sub:CreateSpacer()
@@ -884,6 +924,9 @@ local function Set_Frame_Menu(frame, tab)
         return
     end
 
+    if frame== WorldMapFrame.BorderFrame then
+        print(self==frame.PortraitButton)
+    end
     if self==frame.PortraitButton then
         self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
         self.isRightShowButton=true
@@ -1028,11 +1071,12 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
         or not frame
         or not name or name==''
     then
+        self:SetNineSlice(tab.NineSlice or frame)
         return
     end
 
     tab.name= name
-    
+
     Save().Add[name]= Save().Add[name] or {
         enabled=tab.enabled,
         texture=tab.texture,

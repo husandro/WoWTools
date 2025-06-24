@@ -1,44 +1,44 @@
 --GossipFrame
 function WoWTools_TextureMixin.Frames:GossipFrame()
     self:SetButton(GossipFrameCloseButton)
-    self:SetNineSlice(GossipFrame, true)
+    --self:SetNineSlice(GossipFrame, true)
     self:HideTexture(GossipFrameBg)
     self:HideTexture(GossipFrame.TopTileStreaks)
 
     self:HideTexture(GossipFrameInset.Bg)
-    self:SetNineSlice(GossipFrameInset, nil, true)
+    self:SetNineSlice(GossipFrameInset)
 
     self:SetScrollBar(GossipFrame.GreetingPanel)
 
     self:Init_BGMenu_Frame(GossipFrame, {
         enabled=true,
         alpha=1,
-        settings=function(_, texture, alpha)
-            GossipFrame.Background:SetAlpha(texture and 0 or alpha or 1)
-        end
+        --settings=function(_, texture, alpha)
+          --  GossipFrame.Background:SetAlpha(texture and 0 or alpha or 1)
+        --end
     })
 end
 
 --任务
 function WoWTools_TextureMixin.Frames:QuestFrame()
     self:HideFrame(QuestFrame)
-    self:SetNineSlice(QuestFrame)
+    --self:SetNineSlice(QuestFrame)
     self:SetScrollBar(QuestFrame)
 
     self:SetButton(QuestFrameCloseButton)
 
     self:HideTexture(QuestFrameInset.Bg)
-    self:SetNineSlice(QuestFrameInset, nil, true)
+    self:SetNineSlice(QuestFrameInset)
     self:SetScrollBar(QuestRewardScrollFrame)
 
     self:SetScrollBar(QuestProgressScrollFrame)
     self:SetScrollBar(QuestDetailScrollFrame)
 
-    self:SetNineSlice(QuestLogPopupDetailFrame, nil, true)
+    self:SetNineSlice(QuestLogPopupDetailFrame)
     self:SetAlphaColor(QuestLogPopupDetailFrameBg)
     self:HideFrame(QuestLogPopupDetailFrameInset)
     self:SetScrollBar(QuestLogPopupDetailFrameScrollFrame)
-    self:SetNineSlice(QuestLogPopupDetailFrameInset, nil, true)
+    self:SetNineSlice(QuestLogPopupDetailFrameInset)
 
     self:SetFrame(QuestModelScene)
     self:SetAlphaColor(QuestNPCModelTextFrameBg, nil, nil, 0.3)
@@ -73,7 +73,7 @@ end
 
 --拾取, 历史
 function WoWTools_TextureMixin.Frames:GroupLootHistoryFrame()
-    self:SetNineSlice(GroupLootHistoryFrame, true)
+    self:SetNineSlice(GroupLootHistoryFrame, self.min, true)
     self:SetAlphaColor(GroupLootHistoryFrameBg)
     self:SetScrollBar(GroupLootHistoryFrame)
     self:SetAlphaColor(GroupLootHistoryFrameMiddle)
@@ -91,7 +91,7 @@ end
 function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
 
-    self:SetNineSlice(ChatConfigChatSettingsLeft, nil, true)
+    self:SetNineSlice(ChatConfigChatSettingsLeft)
 
     self:SetScrollBar(ChatConfigCombatSettingsFilters)
 
@@ -116,7 +116,7 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
 
     }) do
         if f and f.NineSlice then
-            self:SetNineSlice(f, nil, true, nil, true)
+            self:SetNineSlice(f, nil, true)
             f.NineSlice:SetCenterColor(0,0,0, 0.15)
         end
     end
@@ -295,11 +295,11 @@ end
 --试衣间
 function WoWTools_TextureMixin.Frames:DressUpFrame()
     self:HideFrame(DressUpFrame)
-    self:SetNineSlice(DressUpFrame)
+    --self:SetNineSlice(DressUpFrame)
     self:SetMenu(DressUpFrameOutfitDropdown)
     self:SetButton(DressUpFrame.ToggleOutfitDetailsButton)
 
-    self:SetNineSlice(DressUpFrameInset, nil, true)
+    self:SetNineSlice(DressUpFrameInset)
     self:HideFrame(DressUpFrameInset)
 
     self:SetFrame(DressUpFrame.OutfitDetailsPanel, {alpha=0.3})
@@ -318,7 +318,7 @@ end
 
 
 function WoWTools_TextureMixin.Frames:ItemTextFrame()
-    self:SetNineSlice(ItemTextFrame)
+    --self:SetNineSlice(ItemTextFrame)
     self:HideTexture(ItemTextFrame.TopTileStreaks)
     self:HideTexture(ItemTextFrameBg)
     self:SetButton(ItemTextFrameCloseButton)
@@ -326,7 +326,7 @@ function WoWTools_TextureMixin.Frames:ItemTextFrame()
     self:SetScrollBar(ItemTextScrollFrame)
 
     self:HideFrame(ItemTextFrameInset)
-    self:SetNineSlice(ItemTextFrameInset, nil, true)
+    self:SetNineSlice(ItemTextFrameInset)
 
     self:SetAlphaColor(ItemTextMaterialTopLeft, nil, nil, 0.3)
     self:SetAlphaColor(ItemTextMaterialTopRight, nil, nil, 0.3)
@@ -348,7 +348,7 @@ end
 --背包 Bg FlatPanelBackgroundTemplate
 function WoWTools_TextureMixin.Frames:ContainerFrame1()
     self:SetButton(ContainerFrameCombinedBags.CloseButton)
-    self:SetNineSlice(ContainerFrameCombinedBags, true)
+    self:SetNineSlice(ContainerFrameCombinedBags, self.min, true)
 
 
     self:HideFrame(ContainerFrameCombinedBags.MoneyFrame.Border)
@@ -361,7 +361,7 @@ function WoWTools_TextureMixin.Frames:ContainerFrame1()
             self:SetColorTexture(frame.Bg.BottomLeft)
             self:SetColorTexture(frame.Bg.BottomRight)
             frame.Bg:SetFrameStrata('LOW')
-            self:SetNineSlice(frame, true)
+            self:SetNineSlice(frame, self.min, true)
             self:SetFrame(frame.Bg)
             self:Init_BGMenu_Frame(frame)
          end
@@ -428,13 +428,13 @@ end
 --商人
 function WoWTools_TextureMixin.Frames:MerchantFrame()
     self:SetScrollBar(MerchantFrame)
-    self:SetNineSlice(MerchantFrame)
+    --self:SetNineSlice(MerchantFrame)
     self:HideFrame(MerchantFrame)
 
     self:SetTabButton(MerchantFrameTab1)
     self:SetTabButton(MerchantFrameTab2)
 
-    self:SetNineSlice(MerchantFrameInset, nil, true)
+    self:SetNineSlice(MerchantFrameInset)
     self:HideTexture(MerchantFrameInset.Bg)
 
     self:SetMenu(MerchantFrame.FilterDropdown)
@@ -474,7 +474,7 @@ end
 
 --就绪
 function WoWTools_TextureMixin.Frames:ReadyCheckListenerFrame()
-    self:SetNineSlice(ReadyCheckListenerFrame, true)
+    self:SetNineSlice(ReadyCheckListenerFrame, self.min, true)
     self:SetAlphaColor(ReadyCheckListenerFrame.Bg, true)
 end
 

@@ -235,19 +235,19 @@ end
 
 --信箱
 function WoWTools_TextureMixin.Frames:MailFrame()
-    self:SetNineSlice(MailFrame)
+    --self:SetNineSlice(MailFrame)
     self:HideFrame(MailFrame)
     self:SetButton(MailFrameCloseButton)
     self:SetTabButton(MailFrameTab1)
     self:SetTabButton(MailFrameTab2)
 
     self:HideFrame(MailFrameInset)
-    self:SetNineSlice(MailFrameInset, nil, true)
+    self:SetNineSlice(MailFrameInset)
 
     self:HideFrame(SendMailFrame)
     self:HideFrame(SendMailMoneyFrame)
     self:HideFrame(SendMailMoneyInset)
-    self:SetNineSlice(SendMailMoneyInset, nil, true)
+    self:SetNineSlice(SendMailMoneyInset)
     self:HideFrame(SendMailMoneyBg)
 
     self:SetScrollBar(SendMailScrollFrame)
@@ -259,7 +259,7 @@ function WoWTools_TextureMixin.Frames:MailFrame()
     self:HideFrame(OpenMailFrame)
     OpenMailFrameBg:SetColorTexture(0,0,0, 0.5)
     self:HideFrame(OpenMailFrameInset)
-    self:SetNineSlice(OpenMailFrameInset, nil, true)
+    self:SetNineSlice(OpenMailFrameInset)
     self:SetButton(OpenMailFrameCloseButton)
 
     self:HideFrame(InboxFrame)

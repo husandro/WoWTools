@@ -10,14 +10,14 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_TrainerUI()
     self:HideFrame(ClassTrainerFrame, {show={[ClassTrainerFramePortrait]=1}})
     self:SetScrollBar(ClassTrainerFrame)
-    self:SetNineSlice(ClassTrainerFrame)
+    --self:SetNineSlice(ClassTrainerFrame)
     self:SetButton(ClassTrainerFrameCloseButton)
 
     self:HideTexture(ClassTrainerFrameInset.Bg)
-    self:SetNineSlice(ClassTrainerFrameInset, nil, true)
+    self:SetNineSlice(ClassTrainerFrameInset)
 
     self:HideTexture(ClassTrainerFrameBottomInset.Bg)
-    self:SetNineSlice(ClassTrainerFrameBottomInset, nil, true)
+    self:SetNineSlice(ClassTrainerFrameBottomInset)
 
     self:HideTexture(ClassTrainerStatusBarBackground)
     self:SetAlphaColor(ClassTrainerStatusBarRight, nil, nil, 0.3)
@@ -39,7 +39,7 @@ end
 
 --小时图，时间
 function WoWTools_TextureMixin.Events:Blizzard_TimeManager()
-    self:SetNineSlice(TimeManagerFrame, true)
+    self:SetNineSlice(TimeManagerFrame, self.min, true)
     self:SetAlphaColor(TimeManagerFrameBg)
     self:HideTexture(TimeManagerFrameInset.Bg)
     self:SetEditBox(TimeManagerAlarmMessageEditBox)
@@ -113,7 +113,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     self:SetButton(AchievementFrameCloseButton)
 
 --总列表
-    self:SetNineSlice(AchievementFrameCategories, nil, true)
+    self:SetNineSlice(AchievementFrameCategories)
     self:SetScrollBar(AchievementFrameCategories)
     hooksecurefunc(AchievementCategoryTemplateMixin, 'OnLoad', function(f)
         self:SetAlphaColor(f.Button.Background, nil, nil, 0.5)
@@ -125,9 +125,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 --成就，列表, 显示，按钮
     self:SetScrollBar(AchievementFrameAchievements)
     self:HideFrame(AchievementFrameAchievements)--, {show={[AchievementFrameAchievements.Background]=true,}})
-    self:SetNineSlice(AchievementFrameAchievements, nil, true, nil, nil, true)
+    self:SetNineSlice(AchievementFrameAchievements)
     hooksecurefunc(AchievementTemplateMixin, 'OnLoad', function(f)
-        self:SetNineSlice(f, nil, true)
+        self:SetNineSlice(f)
     end)
 
     local function Set_AchievementTemplate(f, show)
@@ -147,9 +147,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     end)
 
 --总览
-    self:SetNineSlice(AchievementFrameSummary, nil, true)
+    self:SetNineSlice(AchievementFrameSummary, 1, true)
     self:HideFrame(AchievementFrameSummary)
-    self:SetNineSlice(AchievementFrameSummary, nil, true, nil, nil, true)
+
 --近期成就
     self:SetAlphaColor(AchievementFrameSummaryAchievementsHeaderHeader, nil, nil, 0.5)
     hooksecurefunc('AchievementFrameSummaryAchievement_OnLoad', function(f)
@@ -157,7 +157,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
         f:HookScript('OnLeave', function(f2)
             self:SetAlphaColor(f.Background, nil, true, 0)
         end)
-        self:SetNineSlice(f, nil, true)
+        self:SetNineSlice(f)
     end)
     hooksecurefunc('AchievementFrameSummaryAchievement_OnEnter', function(f)
          self:SetAlphaColor(f.Background, nil, true, 1)
@@ -185,7 +185,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 
     --self:SetFrame(AchievementFrameComparisonHeader, {alpha=0})
     self:SetScrollBar(AchievementFrameComparison.AchievementContainer)
-    self:SetNineSlice(AchievementFrameComparison, nil, true, nil, nil, true)
+    self:SetNineSlice(AchievementFrameComparison)
 
 --目标名称
     AchievementFrameComparisonHeaderName:SetWidth(0)
@@ -214,7 +214,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
 
 
 --统计
-    self:SetNineSlice(AchievementFrameStats, nil, true, nil, nil, true)
+    self:SetNineSlice(AchievementFrameStats)
     self:SetAlphaColor(AchievementFrameStatsBG, nil, nil, 0.3)
     self:SetScrollBar(AchievementFrameStats)
     self:SetScrollBar(AchievementFrameComparison.StatContainer)
@@ -250,11 +250,11 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideTexture(EncounterJournal.TopTileStreaks)
     self:SetButton(EncounterJournalCloseButton)
-    self:SetNineSlice(EncounterJournal, true)
+    --self:SetNineSlice(EncounterJournal, true)
 
     self:HideTexture(EncounterJournalBg)
     self:HideTexture(EncounterJournalInset.Bg)
-    self:SetNineSlice(EncounterJournalInset, nil, true)
+    self:SetNineSlice(EncounterJournalInset)
     self:SetScrollBar(EncounterJournalInstanceSelect)
     self:SetEditBox(EncounterJournalSearchBox)
 
@@ -366,7 +366,7 @@ end
 --拍卖行
 function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:HideFrame(AuctionHouseFrame)
-    self:SetNineSlice(AuctionHouseFrame, true)
+    --self:SetNineSlice(AuctionHouseFrame)
     --self:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
     --self:SetAlphaColor(AuctionHouseFrameLeft, nil, nil, 0.3)
     --self:SetAlphaColor(AuctionHouseFrameRight, nil, nil, 0.3)
@@ -376,31 +376,31 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetTabButton(AuctionHouseFrameAuctionsTab)
     self:SetFrame(AuctionHouseFrame.SearchBar.FilterButton, {alpha= 0.3})
 
-    self:SetNineSlice(AuctionHouseFrame.CategoriesList, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.CategoriesList)
     self:SetScrollBar(AuctionHouseFrame.CategoriesList)
     self:HideTexture(AuctionHouseFrame.CategoriesList.Background)
 
     self:SetScrollBar(AuctionHouseFrameAuctionsFrame.BidsList)
-    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.BidsList, nil, true)
-    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList, nil, true)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.BidsList)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
     self:SetScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
     self:SetScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
-    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.SummaryList, nil, true)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.SummaryList)
 
 
-    self:SetNineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList)
     self:SetScrollBar(AuctionHouseFrame.BrowseResultsFrame.ItemList)
 
-    self:SetNineSlice(AuctionHouseFrame.MoneyFrameInset, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.MoneyFrameInset)
     self:HideTexture(AuctionHouseFrame.MoneyFrameInset.Bg)
     self:HideFrame(AuctionHouseFrame.MoneyFrameBorder)
 
     self:SetEditBox(AuctionHouseFrame.SearchBar.SearchBox)
 
 
-    self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.CommoditiesSellList)
     self:SetScrollBar(AuctionHouseFrame.CommoditiesSellList)
-    self:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.CommoditiesSellFrame)
     self:SetFrame(AuctionHouseFrame.CommoditiesSellFrame.ItemDisplay, {alpha=0})
     self:SetEditBox(AuctionHouseFrame.CommoditiesSellFrame.QuantityInput.InputBox)
     self:SetEditBox(AuctionHouseFrame.CommoditiesSellFrame.PriceInput.MoneyInputFrame.GoldBox)
@@ -410,9 +410,9 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
 
-    self:SetNineSlice(AuctionHouseFrame.ItemSellList, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.ItemSellList)
     self:SetScrollBar(AuctionHouseFrame.ItemSellList)
-    self:SetNineSlice(AuctionHouseFrame.ItemSellFrame, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.ItemSellFrame)
     self:SetFrame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
     self:SetEditBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
     self:SetEditBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
@@ -427,16 +427,16 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetEditBox(AuctionHouseFrameAuctionsFrameAuctionsTab)
     self:SetFrame(AuctionHouseFrameAuctionsFrameGold, {alpha=0.3})
     self:SetFrame(AuctionHouseFrameAuctionsFrameSilver, {alpha=0.3})
-    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay, nil, true)
-    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList, nil, true)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.ItemDisplay)
+    self:SetNineSlice(AuctionHouseFrameAuctionsFrame.CommoditiesList)
 
     --时光
     self:SetScrollBar(AuctionHouseFrame.WoWTokenResults.DummyScrollBar)
-    self:SetNineSlice(AuctionHouseFrame.WoWTokenResults, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.WoWTokenResults)
     --购买
-    self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemDisplay)
     self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
-    self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList, nil, true)
+    self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList)
 
     self:Init_BGMenu_Frame(AuctionHouseFrame, {
         isNewButton=true,
@@ -463,32 +463,32 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_ProfessionsCustomerOrders()
     self:HideFrame(ProfessionsCustomerOrdersFrame)
     self:HideTexture(ProfessionsCustomerOrdersFrameBg)
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
+    --self:SetNineSlice(ProfessionsCustomerOrdersFrame, true)
     self:SetButton(ProfessionsCustomerOrdersFrameCloseButton)
 
     self:SetEditBox(ProfessionsCustomerOrdersFrame.BrowseOrders.SearchBar.SearchBox)
 
     self:HideTexture(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList.Background)
 
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList, nil, true)
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.CategoryList)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.BrowseOrders.RecipeList)
     self:SetTabButton(ProfessionsCustomerOrdersFrameBrowseTab)
     self:SetTabButton(ProfessionsCustomerOrdersFrameOrdersTab)
 
     self:HideFrame(ProfessionsCustomerOrdersFrame.MoneyFrameBorder)
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
     self:HideFrame(ProfessionsCustomerOrdersFrame.MoneyFrameInset)
 
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.MyOrdersPage.OrderList)
 
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.CurrentListings)
     self:SetScrollBar(ProfessionsCustomerOrdersFrame.Form.CurrentListings.OrderList)
 
 
-    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground, nil, true)
+    self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.LeftPanelBackground)
     self:SetNineSlice(ProfessionsCustomerOrdersFrame.Form.RightPanelBackground)
 
     self:Init_BGMenu_Frame(ProfessionsCustomerOrdersFrame)
@@ -544,8 +544,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Calendar()
     self:SetAlphaColor(CalendarCreateEventFrame.Border.Bg)
     self:SetFrame(CalendarCreateEventFrame.Border, {notAlpha=true})
     self:SetEditBox(CalendarCreateEventTitleEdit)
-    self:SetNineSlice(CalendarCreateEventDescriptionContainer, nil, nil, true)
-    self:SetNineSlice(CalendarCreateEventInviteList, nil, nil, true)
+    self:SetNineSlice(CalendarCreateEventDescriptionContainer)
+    self:SetNineSlice(CalendarCreateEventInviteList)
     self:SetAlphaColor(CalendarCreateEventDivider, true)
     self:SetEditBox(CalendarCreateEventInviteEdit)
     self:SetAlphaColor(CalendarCreateEventFrameButtonBackground, true)
@@ -567,7 +567,7 @@ end
 
 --飞行地图
 function WoWTools_TextureMixin.Events:Blizzard_FlightMap()
-    self:SetNineSlice(FlightMapFrame.BorderFrame, true)
+    self:SetNineSlice(FlightMapFrame.BorderFrame, self.min)
     self:HideTexture(FlightMapFrame.ScrollContainer.Child.TiledBackground)
     self:HideTexture(FlightMapFrameBg)
 end
@@ -580,8 +580,8 @@ end
 
 --镶嵌宝石，界面
 function WoWTools_TextureMixin.Events:Blizzard_ItemSocketingUI()
-    self:SetNineSlice(ItemSocketingFrame, true)
-    self:SetNineSlice(ItemSocketingFrameInset, nil, true)
+    self:SetNineSlice(ItemSocketingFrame, self.min)
+    self:SetNineSlice(ItemSocketingFrameInset)
     self:SetAlphaColor(ItemSocketingFrameBg)
 
     ItemSocketingFrameInset.Bg:ClearAllPoints()
@@ -633,7 +633,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ItemInteractionUI()--套装, 转换
-    self:SetNineSlice(ItemInteractionFrame, true)
+    self:SetNineSlice(ItemInteractionFrame, self.min)
     self:SetAlphaColor(ItemInteractionFrameBg)
     self:SetAlphaColor(ItemInteractionFrame.Inset.Bg)
     self:SetAlphaColor(ItemInteractionFrameMiddle)
@@ -655,7 +655,7 @@ end
 
 --装备升级,界面 
 function WoWTools_TextureMixin.Events:Blizzard_ItemUpgradeUI()
-    self:SetNineSlice(ItemUpgradeFrame, true)
+    --self:SetNineSlice(ItemUpgradeFrame, true)
     self:SetAlphaColor(ItemUpgradeFrameBg)
     self:HideTexture(ItemUpgradeFrame.TopBG)
     self:HideTexture(ItemUpgradeFrame.BottomBG)
@@ -684,7 +684,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GarrisonUI()
     self:SetButton(GarrisonLandingPage.CloseButton)
 
     --要塞订单
-    self:SetNineSlice(GarrisonCapacitiveDisplayFrame, nil, true)
+    self:SetNineSlice(GarrisonCapacitiveDisplayFrame)
     self:SetAlphaColor(GarrisonCapacitiveDisplayFrameBg)
     self:HideTexture(GarrisonCapacitiveDisplayFrame.TopTileStreaks)
     self:HideTexture(GarrisonCapacitiveDisplayFrameInset.Bg)
@@ -781,7 +781,7 @@ end
 
 --专业, 初始化, 透明
 function WoWTools_TextureMixin.Events:Blizzard_Professions()
-    self:SetNineSlice(ProfessionsFrame)
+    --self:SetNineSlice(ProfessionsFrame)
     self:HideFrame(ProfessionsFrame)
     self:SetButton(ProfessionsFrame.CloseButton)
     self:SetButton(ProfessionsFrame.MaximizeMinimize.MaximizeButton)
@@ -791,7 +791,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.5)
 
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.5)
-    self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm, nil, true)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0.5)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
@@ -803,7 +803,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetAlphaColor(ProfessionsFrame.SpecPage.DetailedView.UnspentPoints.CurrencyBackground)
     self:SetAlphaColor(ProfessionsFrame.SpecPage.TopDivider, nil, nil, 0)
 
-    self:SetNineSlice(InspectRecipeFrame, nil, true)
+    self:SetNineSlice(InspectRecipeFrame)
     self:SetAlphaColor(InspectRecipeFrameBg)
     self:SetAlphaColor(InspectRecipeFrame.SchematicForm.MinimalBackground)
     --self:SetTabSystem(ProfessionsFrame)
@@ -821,13 +821,13 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
 
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderInfo.Background, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.OrderView.OrderDetails.Background, nil, nil, 0.3)
-    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo, nil, true)
-    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails, nil, true)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderInfo)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.OrderView.OrderDetails)
 
 
     self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList)
     self:SetEditBox(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.SearchBox)
-    self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.BackgroundNineSlice, nil, true)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.RecipeList.BackgroundNineSlice)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Middle, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Right, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton.Left, nil, nil, 0.3)
@@ -835,7 +835,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Right, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.PersonalOrdersButton.Left, nil, nil, 0.3)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList.Background, nil,nil, 0.3)
-    self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList, nil, true)
+    self:SetNineSlice(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
     self:SetAlphaColor(ProfessionsFrame.OrdersPage.BrowseFrame.OrdersRemainingDisplay.Background, nil, nil, 0.3)
 
     for _, typeTab in ipairs(ProfessionsFrame.OrdersPage.BrowseFrame.orderTypeTabs) do
@@ -845,11 +845,11 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.GuildOrdersButton)
     --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.GuildOrdersButton)
 
-    self:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog, nil, true)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog)
     self:SetScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
 
     self:SetScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
-    self:SetNineSlice(ProfessionsFrame.CraftingPage.RecipeList.BackgroundNineSlice, nil, true)
+    self:SetNineSlice(ProfessionsFrame.CraftingPage.RecipeList.BackgroundNineSlice)
 
 
 
@@ -867,12 +867,10 @@ end
 
 --点击，施法
 function WoWTools_TextureMixin.Events:Blizzard_ClickBindingUI()
-    self:SetNineSlice(ClickBindingFrame)
+    self:SetNineSlice(ClickBindingFrame, 1, true)
     self:SetScrollBar(ClickBindingFrame)
     self:SetAlphaColor(ClickBindingFrameBg)
     ClickBindingFrame.ScrollBoxBackground:Hide()
-    --self:SetNineSlice(ClickBindingFrame.ScrollBoxBackground, nil, true)
-
     self:SetNineSlice(ClickBindingFrame.TutorialFrame)
 end
 
@@ -885,14 +883,23 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
-    self:SetNineSlice(ArchaeologyFrame, true)
-    self:SetNineSlice(ArchaeologyFrameInset, nil, true)
+    --self:SetNineSlice(ArchaeologyFrame, true)
+    self:SetNineSlice(ArchaeologyFrameInset)
     self:HideTexture(ArchaeologyFrameBg)
     self:HideTexture(ArchaeologyFrameInset.Bg)
     self:HideTexture(ArchaeologyFrameRankBarBackground)
     self:SetAlphaColor(ArchaeologyFrameRaceFilterMiddle, nil, nil, 0.3)
     self:SetAlphaColor(ArchaeologyFrameRaceFilterLeft, nil, nil, 0.3)
     self:SetAlphaColor(ArchaeologyFrameRaceFilterRight, nil, nil, 0.3)
+
+    self:Init_BGMenu_Frame(ArchaeologyFrame, {
+        settings= function(_, texture, alpha)
+            alpha= texture and 0 or alpha or 1
+            ArchaeologyFrameBgLeft:SetAlpha(alpha)
+            ArchaeologyFrameBgRight:SetAlpha(alpha)
+        end
+    }
+    )
 end
 
 
@@ -904,11 +911,11 @@ end
 
 --分解 ScrappingMachineFrame
 function WoWTools_TextureMixin.Events:Blizzard_ScrappingMachineUI()
-    self:SetNineSlice(ScrappingMachineFrame, true)
+    self:SetNineSlice(ScrappingMachineFrame, self.min)
     self:SetAlphaColor(ScrappingMachineFrameBg, nil, nil, 0.3)
     self:HideTexture(ScrappingMachineFrame.Background)
     self:HideTexture(ScrappingMachineFrameInset.Bg)
-    self:SetNineSlice(ScrappingMachineFrameInset, true)
+    self:SetNineSlice(ScrappingMachineFrameInset, self.min)
 end
 
 
@@ -976,13 +983,13 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_Settings()
     self:SetButton(SettingsPanel.ClosePanelButton)
-    self:SetNineSlice(SettingsPanel)
+    --self:SetNineSlice(SettingsPanel)
     self:HideFrame(SettingsPanel.Bg)
     self:HideFrame(SettingsPanel)
     self:SetScrollBar(SettingsPanel.Container.SettingsList)
     self:SetScrollBar(SettingsPanel.CategoryList)
 
-    self:SetNineSlice(PingSystemTutorial, true)
+    self:SetNineSlice(PingSystemTutorial, 1, true)
     self:SetNineSlice(PingSystemTutorialInset, nil, true)
 
     self:HideTexture(PingSystemTutorialBg)
@@ -1096,7 +1103,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PerksProgram()
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.ItemList)
     self:SetScrollBar(PerksProgramFrame.ProductsFrame.PerksProgramProductDetailsContainerFrame.SetDetailsScrollBoxContainer)
     self:SetFrame(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.Border, {alpha=1})
-    self:SetNineSlice(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksProgramHoldFrame, 1)
+    self:SetNineSlice(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksProgramHoldFrame, self.min)
     self:SetAlphaColor(PerksProgramFrame.ProductsFrame.ProductsScrollBoxContainer.PerksDividerTop, nil, nil, 1)
     self:SetFrame(PerksProgramFrame.ProductsFrame.PerksProgramProductDetailsContainerFrame.Border, {alpha=1})
     self:SetFrame(PerksProgramFrame.ProductsFrame.PerksProgramShoppingCartFrame.Background, {alpha=1})
@@ -1157,7 +1164,7 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
     self:SetButton(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame.MinimizeButton)
     self:SetButton(WorldMapFrame.BorderFrame.Tutorial)
 
-    self:SetNineSlice(WorldMapFrame.BorderFrame, true)
+    self:SetNineSlice(WorldMapFrame.BorderFrame, self.min)
     self:HideTexture(WorldMapFrameBg)
     self:SetAlphaColor(QuestMapFrame.Background)
     self:HideTexture(WorldMapFrame.NavBar.overlay)
@@ -1212,7 +1219,11 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     WorldMapFrame.BorderFrame.PortraitContainer:SetSize(48,48)
     self:Init_BGMenu_Frame(WorldMapFrame, {
-        PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer
+        PortraitContainer=WorldMapFrame.BorderFrame.PortraitContainer,
+        NineSlice= WorldMapFrame.BorderFrame.NineSlice,
+        settings=function(_, _, _, nineSliceAlpha)
+            self:SetNineSlice(WorldMapFrame.BorderFrame, nineSliceAlpha)
+        end
     })
 end
 
@@ -1244,9 +1255,9 @@ end
 --好友列表
 function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 
-    self:SetNineSlice(FriendsFrame, true)
+    --self:SetNineSlice(FriendsFrame, true)
     self:HideFrame(FriendsFrame)
-    self:SetNineSlice(FriendsFrameInset, nil, true)
+    self:SetNineSlice(FriendsFrameInset)
     self:HideTexture(FriendsFrameInset.Bg)
     self:SetScrollBar(FriendsListFrame)
     self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
@@ -1260,8 +1271,8 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
 --好友列表，召募
     self:SetScrollBar(RecruitAFriendFrame.RecruitList)
     self:SetAlphaColor(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
-    self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset, nil, true)
-    self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset, nil, true)
+    self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset)
+    self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
     self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
     self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
@@ -1277,7 +1288,7 @@ function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
     self:HideTexture(RaidInfoFrame.Border.Bg)
     self:SetScrollBar(RaidInfoFrame)
 
-    self:SetNineSlice(WhoFrameListInset, nil, true)
+    self:SetNineSlice(WhoFrameListInset)
 
     self:HideTexture(WhoFrameListInset.Bg)
     self:SetScrollBar(WhoFrame)
@@ -1327,9 +1338,9 @@ function WoWTools_TextureMixin.Events:Blizzard_Channels()
     self:SetScrollBar(ChannelFrame.ChannelList)
 
     self:SetNineSlice(ChannelFrame)
-    self:SetNineSlice(ChannelFrameInset, nil, true)
-    self:SetNineSlice(ChannelFrame.RightInset, nil, true)
-    self:SetNineSlice(ChannelFrame.LeftInset, nil, true)
+    self:SetNineSlice(ChannelFrameInset)
+    self:SetNineSlice(ChannelFrame.RightInset)
+    self:SetNineSlice(ChannelFrame.LeftInset)
 
     self:Init_BGMenu_Frame(ChannelFrame)
 end
@@ -1346,7 +1357,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
     self:SetScrollBar(AddonList)
     self:HideFrame(AddonList)
 
-    self:SetNineSlice(AddonListInset, nil, true)
+    self:SetNineSlice(AddonListInset)
     self:SetAlphaColor(AddonListInset.Bg, nil, nil, 0.3)
 
     self:SetMenu(AddonList.Dropdown)
@@ -1354,9 +1365,6 @@ function WoWTools_TextureMixin.Events:Blizzard_AddOnList()
     self:SetButton(AddonListCloseButton)
     self:SetAlphaColor(AddonList.Performance.Divider, true)
 
-    --货币，XP，追踪，最下面BAR
-    self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.15)
-    self:HideTexture(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.15)
 
     self:Init_BGMenu_Frame(AddonList, {
         isNewButton=true,
@@ -1516,11 +1524,13 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
         self:SetAlphaColor(OverrideActionBarExpBarXpR, nil, nil, 0)
         self:SetAlphaColor(OverrideActionBarExpBarXpL, nil, nil, 0)
 
-       
-
         for i=1, 19 do
             self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0.3)
         end
+
+--货币，XP，追踪，最下面BAR
+        self:HideTexture(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.15)
+        self:HideTexture(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.15)
     end)
 
     self:HideTexture(MultiBarBottomLeftButton10.SlotBackground)
@@ -1528,10 +1538,10 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     self:HideTexture(PlayerFrameAlternateManaBarBorder)
     self:HideTexture(PlayerFrameAlternateManaBarLeftBorder)
     self:HideTexture(PlayerFrameAlternateManaBarRightBorder)
-
-    if ExtraActionButton1 then self:HideTexture(ExtraActionButton1.style) end--额外技能
-    if ZoneAbilityFrame then self:HideTexture(ZoneAbilityFrame.Style) end--区域技能
-
+--额外技能
+    self:SetAlphaColor(ExtraActionButton1.style, nil, true, 0.3)
+--区域技能
+    self:HideTexture(ZoneAbilityFrame.Style, nil, true, 0.3)
 --小队，背景
     self:SetFrame(PartyFrame.Background, {alpha= 0.3})
 
@@ -1647,13 +1657,13 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     --地下城和团队副本
     self:SetButton(PVEFrameCloseButton)
     self:HideTexture(PVEFrame.TopTileStreaks)--最上面
-    self:SetNineSlice(PVEFrame)
+    --self:SetNineSlice(PVEFrame)
     self:SetEditBox(LFGListFrame.SearchPanel.SearchBox)
     self:SetScrollBar(LFGListFrame.SearchPanel)
-    self:SetNineSlice(LFGListFrame.SearchPanel.ResultsInset, nil, true)
+    self:SetNineSlice(LFGListFrame.SearchPanel.ResultsInset)
 
     self:SetFrame(LFGListFrame.CategorySelection.Inset, {alpha= 0.3})
-    self:SetNineSlice(LFGListFrame.CategorySelection.Inset, nil, true)
+    self:SetNineSlice(LFGListFrame.CategorySelection.Inset)
     self:HideTexture(LFGListFrame.CategorySelection.Inset.Bg)
     self:HideTexture(LFGListFrame.CategorySelection.Inset.CustomBG)
 
@@ -1664,7 +1674,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:SetScrollBar(LFDQueueFrameSpecific)
 
 
-    self:SetNineSlice(LFGListFrame.EntryCreation.Inset, nil, true)
+    self:SetNineSlice(LFGListFrame.EntryCreation.Inset)
     self:HideTexture(LFGListFrame.EntryCreation.Inset.CustomBG)
     self:HideTexture(LFGListFrame.EntryCreation.Inset.Bg)
 
@@ -1711,7 +1721,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
     self:HideTexture(PVEFrameBlueBg)
     self:HideTexture(PVEFrameLeftInset.Bg)
-    self:SetNineSlice(PVEFrameLeftInset, nil, true)
+    self:SetNineSlice(PVEFrameLeftInset)
     self:HideFrame(PVEFrame.shadows)
 
     self:SetAlphaColor(LFDQueueFrameBackground, nil, nil, 0.3)
@@ -1725,15 +1735,15 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
 
     self:SetMenu(LFGListFrame.SearchPanel.FilterButton)
 
-    self:SetNineSlice(LFDParentFrameInset, nil, true)
+    self:SetNineSlice(LFDParentFrameInset)
     self:HideTexture(LFDParentFrameInset.Bg)
-    self:SetNineSlice(RaidFinderFrameBottomInset, nil, true)
+    self:SetNineSlice(RaidFinderFrameBottomInset)
     self:SetAlphaColor(RaidFinderFrameBottomInset.Bg)
 
     self:SetAlphaColor(LFDParentFrameRoleBackground)
 
     self:HideTexture(LFDParentFrameRoleBackground)
-    self:SetNineSlice(RaidFinderFrameRoleInset, nil, true)
+    self:SetNineSlice(RaidFinderFrameRoleInset)
     self:HideTexture(RaidFinderFrameRoleInset.Bg)
 
     for i=1, 5 do
@@ -1767,14 +1777,14 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_PVPUI()
     self:HideTexture(HonorFrame.Inset.Bg)
 
-    self:SetNineSlice(HonorFrame.Inset, nil, true)
+    self:SetNineSlice(HonorFrame.Inset)
     HonorFrame.BonusFrame.WorldBattlesTexture:SetAlpha(0)
     HonorFrame.BonusFrame.ShadowOverlay:SetAlpha(0)
 
     self:HideTexture(HonorFrame.ConquestBar.Background)
-    self:SetNineSlice(PVPQueueFrame.HonorInset, nil, true)--最右边
+    self:SetNineSlice(PVPQueueFrame.HonorInset)--最右边
 
-    self:SetNineSlice(ConquestFrame.Inset, nil, true)--中间
+    self:SetNineSlice(ConquestFrame.Inset)--中间
     self:HideTexture(ConquestFrame.Inset.Bg)
     self:HideTexture(ConquestFrameLeft)
     self:HideTexture(ConquestFrameRight)
@@ -1806,7 +1816,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ChallengesUI()
     self:HideTexture(ChallengesFrame.Background)
     ChallengesFrame.Background:ClearAllPoints()
     self:HideTexture(ChallengesFrameInset.Bg)
-    self:SetNineSlice(ChallengesFrameInset, nil, true)
+    self:SetNineSlice(ChallengesFrameInset)
     self:HideTexture(ChallengesFrame.WeeklyInfo.Child.RuneBG)
 
 --钥匙插入，界面
@@ -1883,7 +1893,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
 end
 
 function WoWTools_TextureMixin.Events:Blizzard_DelvesDifficultyPicker()
-    self:SetNineSlice(DelvesDifficultyPickerFrame, nil, true)
+    self:SetNineSlice(DelvesDifficultyPickerFrame, self.min, true)
     self:HideFrame(DelvesDifficultyPickerFrame.Border)
     self:SetButton(DelvesDifficultyPickerFrame.CloseButton)
 end
@@ -1906,14 +1916,13 @@ end
 function WoWTools_TextureMixin.Frames:CharacterFrame()
 
     self:SetButton(CharacterFrameCloseButton)
-    self:SetNineSlice(CharacterFrameInset, nil, true)
-    self:SetNineSlice(CharacterFrame)
-    self:SetNineSlice(CharacterFrameInsetRight, true)
+    self:SetNineSlice(CharacterFrameInset, self.min, true)
+    --self:SetNineSlice(CharacterFrame)
+    self:SetNineSlice(CharacterFrameInsetRight, self.min, true)
 
     self:HideTexture(CharacterFrameBg)
     self:HideTexture(CharacterFrameInset.Bg)
 
-    --self:SetAlphaColor(CharacterFrame.Background)
     self:HideTexture(CharacterFrame.TopTileStreaks)
 
     self:HideTexture(PaperDollInnerBorderBottom)
@@ -1933,7 +1942,7 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:HideTexture(PaperDollSidebarTabs.DecorLeft)
 
 
-    self:SetNineSlice(CharacterFrameInsetRight, nil, true)
+    self:SetNineSlice(CharacterFrameInsetRight)
 
     PaperDollFrame:HookScript('OnShow', function()
         CharacterModelScene.ControlFrame:SetShown(false)
@@ -1943,10 +1952,6 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     for _, name in pairs(WoWTools_PaperDollMixin.ItemButtons) do
         self:HideFrame(_G[name])
     end
-
-    --self:SetAlphaColor(PaperDollSidebarTab1.TabBg, nil, nil, true)
-    --WoWTools_ButtonMixin:AddMask(PaperDollSidebarTab2, nil, PaperDollSidebarTab2.TabBg)
-    --WoWTools_ButtonMixin:AddMask(PaperDollSidebarTab3, nil, PaperDollSidebarTab3.TabBg)
 
 
 --Tab
@@ -2090,7 +2095,7 @@ end
 
 --玩家, 观察角色, 界面
 function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
-    self:SetNineSlice(InspectFrame)
+    --self:SetNineSlice(InspectFrame)
     self:HideFrame(InspectFrame)
     self:HideFrame(InspectModelFrame)
     self:HideFrame(InspectModelFrameControlFrame)
@@ -2102,8 +2107,8 @@ function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
     self:SetTabButton(InspectFrameTab1)
     self:SetTabButton(InspectFrameTab2)
     self:SetTabButton(InspectFrameTab3)
-    self:SetNineSlice(InspectFrame)
-    self:SetNineSlice(InspectFrameInset, nil, true)
+    --self:SetNineSlice(InspectFrame)
+    self:SetNineSlice(InspectFrameInset)
 
     self:SetAlphaColor(InspectModelFrameBackgroundOverlay, nil, nil, 0)
     self:SetAlphaColor(InspectModelFrameBackgroundBotLeft, nil, nil, 0)
@@ -2154,7 +2159,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EventTrace()
         end
     end
     self:SetButton(EventTraceCloseButton)
-    self:SetNineSlice(EventTrace)
+    self:SetNineSlice(EventTrace, self.min, true)
     self:SetAlphaColor(EventTraceBg, nil, nil, true)
     self:SetAlphaColor(EventTraceInset.Bg, nil, nil, true)
     self:SetNineSlice(EventTraceInset)
@@ -2242,7 +2247,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:SetFrame(PlayerSpellsFrame.SpellBookFrame.SearchPreviewContainer, {isMinAlpha=true})
 
     --英雄专精
-    self:SetNineSlice(HeroTalentsSelectionDialog, nil, nil, true)
+    self:SetNineSlice(HeroTalentsSelectionDialog, self.min, true)
 
     if PlayerSpellsFrame.SpellBookFrame.SettingsDropdown then--11.1.7
         self:SetAlphaColor(PlayerSpellsFrame.SpellBookFrame.SettingsDropdown.Icon, true, nil, nil)
@@ -2299,7 +2304,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton)
-    self:SetNineSlice(CollectionsJournal)
+    --self:SetNineSlice(CollectionsJournal)
     self:HideTexture(CollectionsJournalBg)
     self:SetButton(PetJournalTutorialButton)
     PetJournalTutorialButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
@@ -2318,14 +2323,14 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 
     self:HideFrame(MountJournal.BottomLeftInset)
-    self:SetNineSlice(MountJournal.BottomLeftInset, nil, true)
+    self:SetNineSlice(MountJournal.BottomLeftInset)
 
 
     self:SetScrollBar(MountJournal)
     self:SetEditBox(MountJournalSearchBox)
 
-    self:SetNineSlice(MountJournal.RightInset, nil, true)
-    self:SetNineSlice(MountJournal.LeftInset, nil, true)
+    self:SetNineSlice(MountJournal.RightInset)
+    self:SetNineSlice(MountJournal.LeftInset)
     if MountJournal.ToggleDynamicFlightFlyoutButton then--11.1.7
         self:SetAlphaColor(MountJournal.ToggleDynamicFlightFlyoutButton.Border, true)
     end
@@ -2333,7 +2338,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
     end
 --宠物
-    self:HideFrame(PetJournalLoadoutBorder, nil, true)
+    self:HideFrame(PetJournalLoadoutBorder)
 
     self:HideTexture(PetJournalPetCardInset.Bg)
     self:SetAlphaColor(PetJournalPetCardBG, nil, nil, 0.3)
@@ -2358,27 +2363,27 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     end
 
     self:SetFrame(PetJournalFilterButton, {alpha=0.3})
-    self:SetNineSlice(PetJournalLeftInset, nil, true)
-    self:SetNineSlice(PetJournalPetCardInset, nil, true)
-    self:SetNineSlice(PetJournalRightInset, nil, true)
+    self:SetNineSlice(PetJournalLeftInset)
+    self:SetNineSlice(PetJournalPetCardInset)
+    self:SetNineSlice(PetJournalRightInset)
 
 
 --玩具
     self:SetEditBox(ToyBox.searchBox)
     self:HideFrame(ToyBox.iconsFrame)
-    self:SetNineSlice(ToyBox.iconsFrame, nil, true)
+    self:SetNineSlice(ToyBox.iconsFrame)
     ToyBox.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(ToyBox.progressBar.border, nil, nil, 0.3)
 
 --传家宝
     self:SetEditBox(HeirloomsJournalSearchBox)
     self:HideFrame(HeirloomsJournal.iconsFrame)
-    self:SetNineSlice(HeirloomsJournal.iconsFrame, nil, true)
+    self:SetNineSlice(HeirloomsJournal.iconsFrame)
     HeirloomsJournal.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(HeirloomsJournal.progressBar.border, nil, nil, 0.3)
 
 --物品
-    self:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame, nil, true)
+    self:SetNineSlice(WardrobeCollectionFrame.ItemsCollectionFrame)
     self:HideFrame(WardrobeCollectionFrame.ItemsCollectionFrame)
     WardrobeCollectionFrame.progressBar:DisableDrawLayer('BACKGROUND')
     self:SetAlphaColor(WardrobeCollectionFrame.progressBar.border, nil, nil, 0.3)
@@ -2387,24 +2392,24 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 --套装
     self:SetScrollBar(WardrobeCollectionFrame.SetsCollectionFrame.ListContainer)
-    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset, nil, true)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset)
     self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.LeftInset.Bg)
     self:HideFrame(WardrobeCollectionFrame.SetsCollectionFrame.RightInset)
-    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset, nil, true)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsCollectionFrame.RightInset)
     self:HideTexture(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.ModelFadeTexture)
 
 --试衣间WardrobeFrame
-    self:SetNineSlice(WardrobeFrame)
+    --self:SetNineSlice(WardrobeFrame)
     self:HideFrame(WardrobeFrame)
     self:HideFrame(WardrobeTransmogFrame)
-    self:SetNineSlice(WardrobeTransmogFrame.Inset, nil, true)
+    self:SetNineSlice(WardrobeTransmogFrame.Inset)
     self:HideTexture(WardrobeTransmogFrame.Inset.Bg)
     self:HideTexture(WardrobeTransmogFrame.Inset.BG)
     self:SetButton(WardrobeFrameCloseButton)
 
 --试衣间, 套装
     self:HideFrame(WardrobeCollectionFrame.SetsTransmogFrame)
-    self:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame, nil, true)
+    self:SetNineSlice(WardrobeCollectionFrame.SetsTransmogFrame)
 
 
 --试衣间，物品 WardrobeItemsModelTemplate
@@ -2428,7 +2433,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     end)
 
     self:HideFrame(WarbandSceneJournal.IconsFrame)
-    self:SetNineSlice(WarbandSceneJournal.IconsFrame, nil, true)
+    self:SetNineSlice(WarbandSceneJournal.IconsFrame)
 
 --玩具, 传家宝，建立按钮，Bg, CollectionsSpellButton_OnLoad
     hooksecurefunc('CollectionsSpellButton_OnShow', function(btn)--CollectionsSpellButton_OnLoad
@@ -2464,7 +2469,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:HideTexture(RematchPetPanel.Top.InsetBack)
         self:SetAlphaColor(RematchQueuePanel.List.Background.InsetBack)
         self:SetAlphaColor(RematchQueuePanel.Top.InsetBack)
-        self:NineSlice(RematchPetPanel.Top.TypeBar, nil, true)
+        self:NineSlice(RematchPetPanel.Top.TypeBar)
         self:SetAlphaColor(RematchTeamPanel.List.Background.InsetBack)
         self:SetAlphaColor(RematchOptionPanel.List.Background.InsetBack)
         self:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
@@ -2620,13 +2625,13 @@ function WoWTools_TextureMixin.Events:Blizzard_ProfessionsBook()
     ProfessionsBookPage1:SetPoint('BOTTOM',0, -15)
     ProfessionsBookPage2:SetPoint('BOTTOMRIGHT', 15, -15)
     self:SetNineSlice(ProfessionsBookFrame)
-    self:SetNineSlice(ProfessionsBookFrameInset, nil, true)
+    self:SetNineSlice(ProfessionsBookFrameInset)
     self:HideTexture(ProfessionsBookFrameBg)
     self:HideTexture(ProfessionsBookFrameInset.Bg)
     self:SetButton(ProfessionsBookFrameCloseButton)
 
     ProfessionsBookFrameTutorialButton:SetFrameLevel(ProfessionsBookFrameCloseButton:GetFrameLevel()+1)
-    self:SetFrame(ProfessionsBookFrameTutorialButton, {alpha=0.3})
+    self:SetButton(ProfessionsBookFrameTutorialButton)
 
     self:Init_BGMenu_Frame(ProfessionsBookFrame, {
         settings=function(_, texture, alpha)--设置内容时，调用

@@ -528,7 +528,7 @@ local function Init_Texture(self)
     self:SetTabButton(BankFrameTab1)
     self:SetTabButton(BankFrameTab2)
     self:SetTabButton(BankFrameTab3)
-    self:SetNineSlice(BankFrame)
+    --self:SetNineSlice(BankFrame)
     self:SetButton(BankFrameCloseButton)
 --搜索框
     WoWTools_TextureMixin:SetEditBox(BankItemSearchBox)
@@ -536,10 +536,10 @@ local function Init_Texture(self)
 
     self:HideFrame(BankSlotsFrame)
     self:HideFrame(BankSlotsFrame.EdgeShadows)
-    self:SetNineSlice(BankSlotsFrame, nil, true)
+    self:SetNineSlice(BankSlotsFrame)
 
 --材料
-    self:SetNineSlice(ReagentBankFrame, nil, true)
+    self:SetNineSlice(ReagentBankFrame)
 --隐藏，背景
     self:HideFrame(ReagentBankFrame)
     self:HideFrame(ReagentBankFrame.EdgeShadows)
@@ -559,7 +559,7 @@ local function Init_Texture(self)
     AccountBankPanel.Header:ClearAllPoints()
     self:HideTexture(AccountBankPanel.PurchaseTab.Border)
     self:HideFrame(AccountBankPanel.MoneyFrame.Border)
-    self:SetNineSlice(AccountBankPanel, nil, true)
+    self:SetNineSlice(AccountBankPanel)
 
 --背景
     BankFrame.Background:ClearAllPoints()

@@ -190,8 +190,43 @@ local NineSliceTabs={
     'Background',
     'Bg',
 }
-function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, isFind)
-    if not frame then
+function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
+    if frame and not frame.NineSlice then
+        for _, t in pairs({frame:GetChildren()})do
+            if t.NineSlice then
+                frame= t
+                break
+            end
+        end
+    end
+
+    if not frame or not frame.NineSlice then
+        return
+    end
+
+    local col= WoWTools_DataMixin.Player.useColor
+    local r,g, b= col.r, col.g, col.b
+
+    if alpha==true then
+        alpha= self.min
+        if WoWTools_DataMixin.Player.husandro then
+            print('SetNineSlice, alpha==true', frame:GetName())
+        end
+    end
+
+    
+    alpha= alpha==nil and 0 or alpha or self.min
+
+    frame.NineSlice:SetBorderColor(r, g, b, alpha)
+    if notBg then
+        frame.NineSlice:SetVertexColor(0.32, 0.32, 0.32, 0.5)
+    else
+        frame.NineSlice:SetCenterColor(0.32, 0.32, 0.32, 0)
+    end
+end
+
+--function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, isFind)
+    --[[if not frame then
         return
     end
 
@@ -223,8 +258,8 @@ function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, i
         if notBg and index==8 then
             break
         end
-    end
-end
+    end]]
+
 
 --设置，滚动条，颜色
 function WoWTools_TextureMixin:SetScrollBar(bar)
@@ -294,22 +329,19 @@ function WoWTools_TextureMixin:SetButton(btn, tab)
         return
     end
     tab= tab or {}
-    --if tab.all then
-        tab.alpha=tab.alpha or 0.3
-        if not tab.show then
-            tab.show= {}
-            local p= btn:GetPushedTexture()
-            local d= btn:GetDisabledTexture()
-            local h= btn:GetHighlightTexture()
-            if p then tab.show[p]=true end
-            if d then tab.show[d]=true end
-            if h then tab.show[h]=true end
-        end
-        self:SetFrame(btn, tab)
-        --WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=tab.alpha or 0.3})
-    --else
-        --WoWTools_ColorMixin:Setup(btn:GetNormalTexture(), {type='Texture', alpha=tab.alpha or 1})
-    --end
+    tab.alpha=tab.alpha or 0.3
+    if not tab.show then
+        tab.show= {}
+        local p= btn:GetPushedTexture()
+        local d= btn:GetDisabledTexture()
+        local h= btn:GetHighlightTexture()
+        if p then tab.show[p]=true end
+        if d then tab.show[d]=true end
+        if h then tab.show[h]=true end
+    end
+    self:SetFrame(btn, tab)
+
+    self:HideTexture(btn.Ring)
 end
 
 
@@ -318,7 +350,7 @@ function WoWTools_TextureMixin:SetMenu(frame)
     if frame then
         self:SetAlphaColor(frame.Background, nil, nil, 0.3)
         self:SetAlphaColor(frame.Arrow, nil, nil, 0.7)
-        
+
         WoWTools_ColorMixin:Setup(frame.Text, {type='FontString'})
     end
 end
@@ -335,9 +367,9 @@ end
         frame.Background:ClearAllPoints()
         frame.Background:SetPoint('TOPLEFT', frame.Text, -2, 2)
         frame.Background:SetPoint('BOTTOMRIGHT', frame.Text, 4, -2)]]
-    
-    
-    
+
+
+
 
 --[[TabSystem 
 function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua

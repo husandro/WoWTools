@@ -62,6 +62,7 @@ end
 
 local function Init()
     WoWTools_GossipMixin:Init_Gossip_Data()--自定义，对话，文本
+
     do
         WoWTools_GossipMixin:Init_Gossip()--对话，初始化
     end
@@ -124,10 +125,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                  buttonText= WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION,
                  buttonFunc= function()
                      Save().point=nil
-                     local btn= WoWTools_GossipMixin.GossipButton
-                     if btn then
-                        btn:ClearAllPoints()
-                        btn:set_Point()
+                     if _G['WoWToolsGossipButton'] then
+                        _G['WoWToolsGossipButton']:set_Point()
                      end
                      print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
                  end,

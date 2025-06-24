@@ -112,7 +112,7 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     scrollFrame.bg:SetScript('OnMouseDown', function(s)
         s:GetParent().editBox:SetFocus()
     end)
-    WoWTools_TextureMixin:SetNineSlice(scrollFrame.bg, true, nil, nil, true)
+    WoWTools_TextureMixin:SetNineSlice(scrollFrame.bg, 0.5, true)
 
 
     scrollFrame.editBox= CreateFrame('EditBox', nil, scrollFrame)--, 'SearchBoxTemplate')

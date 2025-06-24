@@ -22,7 +22,8 @@ local P_Save={
         },]]
         All={--统一设置
             texture='Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga',
-            alpha=0.3
+            alpha=0.3,
+            nineSlice=0,
         },
         Add={--分开设置
 --[[   
