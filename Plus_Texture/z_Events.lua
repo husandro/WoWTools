@@ -554,11 +554,17 @@ function WoWTools_TextureMixin.Events:Blizzard_Calendar()
     self:SetAlphaColor(CalendarCreateEventCreateButtonBorder, true)
     self:SetFrame(CalendarCreateEventFrame.Header, {notAlpha=true})
 
+    self:SetButton(CalendarViewHolidayCloseButton)
     self:SetFrame(CalendarViewHolidayFrame.Header, {notAlpha=true})
     self:SetFrame(CalendarViewHolidayFrame.Border, {notAlpha=true})
 
     self:SetAlphaColor(CalendarMonthBackground)
     self:SetAlphaColor(CalendarYearBackground)
+
+    self:SetFrame(CalendarEventPickerFrame.Header, {notAlpha=true})
+    self:SetFrame(CalendarEventPickerFrame.Border, {notAlpha=true})
+    self:SetAlphaColor(CalendarEventPickerFrameButtonBackground, true)
+    self:SetAlphaColor(CalendarEventPickerCloseButtonBorder, true)
 end
 
 
