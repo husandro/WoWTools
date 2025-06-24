@@ -565,6 +565,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Calendar()
     self:SetFrame(CalendarEventPickerFrame.Border, {notAlpha=true})
     self:SetAlphaColor(CalendarEventPickerFrameButtonBackground, true)
     self:SetAlphaColor(CalendarEventPickerCloseButtonBorder, true)
+    self:SetScrollBar(CalendarEventPickerFrame)
 end
 
 
