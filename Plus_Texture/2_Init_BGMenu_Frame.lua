@@ -120,11 +120,11 @@ local TextureTab={
 ['UI-Frame-CypherChoice-FX-BottomGlow']=1,
 ['ui-frame-genericplayerchoice-cardframe-bottomglow']=1,
 
-['QuestBG-Alliance']=1,
+--[[['QuestBG-Alliance']=1,
 ['QuestBG-Horde']=1,
 ['QuestBG-Parchment']=1,
 ['talenttree-alliance-background']=1,
-['talenttree-horde-background']=1,
+['talenttree-horde-background']=1,]]
 }
 
 

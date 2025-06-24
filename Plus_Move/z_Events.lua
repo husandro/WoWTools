@@ -857,13 +857,12 @@ function WoWTools_MoveMixin.Events:Blizzard_UnitFrame()
     self:Setup(CreateChannelPopup)
     self:Setup(BattleTagInviteFrame)
 
-    self:Setup(OverrideActionBarExpBar, {notZoom=true})
-
     self:Setup(StatusTrackingBarManager)
     self:Setup(SecondaryStatusTrackingBarContainer, {frame=StatusTrackingBarManager})
     self:Setup(MainStatusTrackingBarContainer, {frame=StatusTrackingBarManager})
 
     self:Setup(OverrideActionBar, {notMoveAlpha=true})
+    self:Setup(OverrideActionBarExpBar, {frame=OverrideActionBar})
 
     self:Setup(ReportFrame)
 end

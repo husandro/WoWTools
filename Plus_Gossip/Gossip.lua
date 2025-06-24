@@ -173,8 +173,12 @@ local function Create_CheckButton(frame, info)
             check:SetScript("OnMouseDown", function(self)
                 Save().gossipOption[self.id]= not Save().gossipOption[self.id] and (self.name or '') or nil
                 if Save().gossipOption[self.id] and not IsModifierKeyDown() and Save().gossip then
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, format('|cnGREEN_FONT_COLOR:%s|r %d', self.name or '', self.id))
                     C_GossipInfo.SelectOption(self.id)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                        '|cnGREEN_FONT_COLOR:',
+                        self.name,
+                        self.id)
                 end
             end)
 
@@ -225,7 +229,7 @@ end
 --对话，初始化
 --###########
 local function Init()
-    GossipButton= WoWTools_ButtonMixin:Cbtn(nil, {--闲话图标
+    GossipButton= WoWTools_ButtonMixin:Cbtn(GossipFrame, {--闲话图标
         size=22,
         name='WoWToolsGossipButton',
         icon='hide',
@@ -411,7 +415,12 @@ local function Init()
             return
         end
         Save().NPC[self.npc]= not Save().NPC[self.npc] and self.name or nil
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, self.name, self.npc, WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc]))
+        print(
+            WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+            self.name,
+            self.npc,
+            WoWTools_TextMixin:GetEnabeleDisable(Save().NPC[self.npc])
+        )
     end)
     GossipFrame.WoWToolsSelectNPC:SetScript('OnEnter',function (self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -483,6 +492,7 @@ local function Init()
     NumGossipCNLabel= WoWTools_LabelMixin:Create(GossipButton, {
         name= 'WoWToolsOpenGossipNumCNLabel',
     })
+    NumGossipCNLabel:SetText(0)
     NumGossipCNLabel:SetPoint('TOPRIGHT', GButton2, 3, 4)
     hooksecurefunc(GossipFrame, 'Update', function()
         local num= 0
@@ -532,8 +542,6 @@ local function Init_Hook()
     hooksecurefunc(GossipOptionButtonMixin, 'Setup', function(self, info)--GossipFrameShared.lua
         Create_CheckButton(self, info)--建立，自动选取，选项
         Set_Gossip_Text(self, info)--自定义，对话，文本
-
-        print(NumGossipCNLabel:GetText())
 
         if not info
             or not info.gossipOptionID
@@ -672,7 +680,12 @@ local function Init_Hook()
                         C_GossipInfo.SelectAvailableQuest(frame.id)
                     end
                 else
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r', WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL,'ID')
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName2,
+                        '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '无' or NONE)..'|r',
+                        WoWTools_DataMixin.onlyChinese and '任务' or QUESTS_LABEL,
+                        'ID'
+                    )
                 end
             end)
         end

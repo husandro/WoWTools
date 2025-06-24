@@ -115,10 +115,9 @@ function WoWTools_TextureMixin.Frames:ChatConfigFrame()
         ChatConfigChannelSettingsLeft,
 
     }) do
-        if f and f.NineSlice then
-            self:SetNineSlice(f, nil, true)
-            f.NineSlice:SetCenterColor(0,0,0, 0.15)
-        end
+      
+        self:SetNineSlice(f)
+        --f.NineSlice:SetCenterColor(0,0,0, 0.15)
     end
 
     self:HideFrame(ChatConfigFrame.Border)
@@ -500,3 +499,10 @@ function WoWTools_TextureMixin.Frames:LootFrame()
     self:Init_BGMenu_Frame(LootFrame, {isNewButton=true})
 end
 
+
+
+
+function WoWTools_TextureMixin.Frames:UIWidgetBelowMinimapContainerFrame()
+    
+
+end

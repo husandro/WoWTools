@@ -175,7 +175,7 @@ local nineSliceSetup =
 	{ pieceName = "LeftEdge", point = "TOPLEFT", relativePoint = "BOTTOMLEFT", relativePieces = { "TopLeftCorner", "BottomLeftCorner" }, tileVertical = true, fn = SetupEdge, },
 	{ pieceName = "RightEdge", point = "TOPRIGHT", relativePoint = "BOTTOMRIGHT", relativePieces = { "TopRightCorner", "BottomRightCorner" }, mirrorHorizontal = true, tileVertical = true, fn = SetupEdge, },
 	{ pieceName = "Center", fn = SetupCenter, },
-};]]
+};
 local NineSliceTabs={
     'TopEdge',
     'BottomEdge',
@@ -189,7 +189,7 @@ local NineSliceTabs={
     'Center',
     'Background',
     'Bg',
-}
+}]]
 function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
     if frame and not frame.NineSlice then
         for _, t in pairs({frame:GetChildren()})do
@@ -219,9 +219,9 @@ function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
 
     frame.NineSlice:SetBorderColor(r, g, b, alpha)
     if notBg then
-        frame.NineSlice:SetVertexColor(0.32, 0.32, 0.32, 0.5)
+        frame.NineSlice:SetVertexColor(0, 0, 0, 0.5)
     else
-        frame.NineSlice:SetCenterColor(0.32, 0.32, 0.32, 0)
+        frame.NineSlice:SetCenterColor(0, 0, 0, 0)
     end
 end
 

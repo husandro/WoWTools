@@ -1392,11 +1392,12 @@ end
 
 --编辑模式
 function WoWTools_TextureMixin.Events:Blizzard_EditMode()
-        self:SetButton(EditModeManagerFrame.CloseButton)
+    self:SetButton(EditModeManagerFrame.CloseButton)
     self:SetScrollBar(EditModeManagerFrame.AccountSettings.SettingsContainer)
     self:SetFrame(EditModeManagerFrame.Border, {alpha=0.3})
     self:SetFrame(EditModeManagerFrame.AccountSettings.SettingsContainer.BorderArt, {alpha=0.3})
     self:SetSlider(EditModeManagerFrame.GridSpacingSlider)
+    self:SetMenu(EditModeManagerFrame.LayoutDropdown)
 end
 
 
@@ -1525,7 +1526,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
         self:SetAlphaColor(OverrideActionBarExpBarXpL, nil, nil, 0)
 
         for i=1, 19 do
-            self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0.3)
+            self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0)
         end
 
 --货币，XP，追踪，最下面BAR
