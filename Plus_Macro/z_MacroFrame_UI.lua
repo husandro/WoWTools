@@ -2,6 +2,29 @@ local function Save()
     return WoWToolsSave['Plus_Macro2']
 end
 
+
+
+
+--移动
+function WoWTools_MoveMixin.Events:Blizzard_MacroUI()
+    if Save().disabled then
+        self:Setup(MacroFrame)
+    else
+
+        WoWTools_MoveMixin:Setup(MacroFrame, {
+            needSize=true, setSize=true, minW=260, minH=250,
+            sizeRestFunc=function()
+                MacroFrame:SetSize(338, 424)
+            end
+        })
+    end
+end
+
+
+
+
+
+
 local ScrollFrame
 
 

@@ -1110,12 +1110,6 @@ end
 
 
 
---宏
-function WoWTools_MoveMixin.Events:Blizzard_MacroUI()
-    if WoWToolsSave['Plus_Macro2'].disabled then
-        self:Setup(MacroFrame)
-    end
-end
 
 
 

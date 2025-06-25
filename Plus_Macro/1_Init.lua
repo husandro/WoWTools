@@ -22,13 +22,28 @@ end
 
 
 local function Init()
-    WoWTools_MacroMixin:Init_Set_UI()
-    WoWTools_MacroMixin:Init_Button()--宏列表，位置
-    WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
-    WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
-    WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
-    WoWTools_MacroMixin:Init_ChangeTab()
-    WoWTools_MacroMixin:Init_MacroButton_Plus()
+    if WoWTools_FrameMixin:IsLocked(MacroFrame) then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            WoWTools_MacroMixin:Init_Set_UI()
+            WoWTools_MacroMixin:Init_Button()--宏列表，位置
+            WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
+            WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
+            WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
+            WoWTools_MacroMixin:Init_ChangeTab()
+            WoWTools_MacroMixin:Init_MacroButton_Plus()
+
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+
+    else
+        WoWTools_MacroMixin:Init_Set_UI()
+        WoWTools_MacroMixin:Init_Button()--宏列表，位置
+        WoWTools_MacroMixin:Init_Select_Macro_Button()--选定宏，点击，弹出菜单，自定图标
+        WoWTools_MacroMixin:Init_List_Button()--命令，按钮，列表
+        WoWTools_MacroMixin:Init_AddNew_Button()--创建，空，按钮
+        WoWTools_MacroMixin:Init_ChangeTab()
+        WoWTools_MacroMixin:Init_MacroButton_Plus()
+    end
 
     Init=function()end
 end

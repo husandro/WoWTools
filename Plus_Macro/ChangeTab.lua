@@ -109,11 +109,7 @@ local function Init()
         end
     end)
 
---移动
-    WoWTools_MoveMixin:Setup(MacroFrame, {needSize=true, setSize=true, minW=260, minH=250,
-    sizeRestFunc=function()
-        MacroFrame:SetSize(338, 424)
-    end})
+
 
 --设置，列表
     hooksecurefunc(MacroFrame, 'ChangeTab', function(...)

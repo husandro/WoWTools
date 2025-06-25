@@ -194,6 +194,7 @@ function WoWTools_MoveMixin:Setup(frame, tab)
             print('移动', frame, name, frame and frame.moveFrameData, '出现错误')
         end
         return
+
     elseif WoWTools_FrameMixin:IsLocked(target or frame) then
          EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
             self:Setup(frame, tab)
