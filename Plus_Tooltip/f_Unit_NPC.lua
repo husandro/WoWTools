@@ -17,9 +17,9 @@ local function Set_BrannBronzebeard(tooltip, unit, npcID)
     if rankInfo and rankInfo.currentLevel and rankInfo.maxLevel then
 --等级
         if rankInfo.currentLevel == rankInfo.maxLevel then
-            left= (left or '')..rankInfo.currentLevel
+            left= (left or '')..format(WoWTools_DataMixin.onlyChinese and '等级 %d' or UNIT_LEVEL_TEMPLATE, rankInfo.currentLevel)
         else
-            left= (left or '')..'|cnGREEN_FONT_COLOR:'..rankInfo.currentLevel..'|r/'..rankInfo.maxLevel
+            left= (left or '')..'|cnGREEN_FONT_COLOR:'..format(WoWTools_DataMixin.onlyChinese and '等级 %d/%d' or TOOLTIP_TALENT_RANK, rankInfo.currentLevel, rankInfo.maxLevel)..'|r'
 
             local repInfo = C_GossipInfo.GetFriendshipReputation(companionFactionID)
             if repInfo and repInfo.nextThreshold and repInfo.standing and repInfo.nextThreshold>0 then
@@ -33,11 +33,11 @@ local function Set_BrannBronzebeard(tooltip, unit, npcID)
         end
     end
 
-    if left or right then
-        tooltip:AddDoubleLine(left, right)
+    if left then
+        tooltip:AddLine(left)
     end
 
-    tooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'companionFactionID', companionFactionID)
+    tooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'companionFactionID '.. companionFactionID, right)
 end
 
 
@@ -89,7 +89,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 
     local uiWidgetSet= UnitWidgetSet(unit)
     if uiWidgetSet and uiWidgetSet>0 then
-        tooltip:AddDoubleLine(WoWTools_DataMixin.Icon.icon2..'uiWidgetSetID', uiWidgetSet)
+        tooltip:AddLine(WoWTools_DataMixin.Icon.icon2..'uiWidgetSetID '..uiWidgetSet)
     end
 
     local zone, npc
@@ -100,8 +100,8 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         Set_BrannBronzebeard(tooltip, unit, npc)
         if zone or npc then
             tooltip:AddDoubleLine(
-                zone and WoWTools_DataMixin.Player.Language.layer..WoWTools_DataMixin.Icon.icon2..zone,
-                npc and 'npcID'..WoWTools_DataMixin.Icon.icon2..npc
+                zone and WoWTools_DataMixin.Icon.icon2..WoWTools_DataMixin.Player.Language.layer..zone,
+                npc and 'npcID '..npc
             )
 
             WoWTools_DataMixin.Player.Layer=zone

@@ -5953,7 +5953,9 @@
         "CalendarCloseButton",
         "CalendarViewHolidayCloseButton",
         "CalendarEventPickerFrameButtonBackground",
-        "CalendarEventPickerCloseButtonBorder"
+        "CalendarEventPickerCloseButtonBorder",
+        "TOOLTIP_TALENT_RANK",
+        "PlayerChoiceFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -229,7 +229,7 @@ end
 --对话，初始化
 --###########
 local function Init()
-    GossipButton= WoWTools_ButtonMixin:Cbtn(GossipFrame, {--闲话图标
+    GossipButton= WoWTools_ButtonMixin:Cbtn(nil, {--闲话图标
         size=22,
         name='WoWToolsGossipButton',
         icon='hide',
@@ -489,11 +489,11 @@ local function Init()
 
 
 --当前对话， 有多少已修该
-    NumGossipCNLabel= WoWTools_LabelMixin:Create(GossipButton, {
+    NumGossipCNLabel= WoWTools_LabelMixin:Create(GButton2, {
         name= 'WoWToolsOpenGossipNumCNLabel',
     })
     NumGossipCNLabel:SetText(0)
-    NumGossipCNLabel:SetPoint('TOPRIGHT', GButton2, 3, 4)
+    NumGossipCNLabel:SetPoint('TOPRIGHT', 3, 4)
     hooksecurefunc(GossipFrame, 'Update', function()
         local num= 0
         for _, info in pairs(C_GossipInfo.GetOptions()) do
@@ -526,6 +526,33 @@ local function Init()
         StaticPopupDialogs["ADDON_ACTION_FORBIDDEN"].timeout= Save().gossip and 0.1 or nil
     end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

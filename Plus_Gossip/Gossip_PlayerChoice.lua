@@ -15,31 +15,30 @@ local function Send_Player_Choice_Response(optionInfo)
         C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
     end
 
-    do
-        C_PlayerChoice.OnUIClosed()
-    end
+    --C_PlayerChoice.OnUIClosed()
 
-    if PlayerChoiceFrame:IsShown() then
-        HideUIPanel(PlayerChoiceFrame)
-    end
-    --PlayerChoiceFrame:OnSelectionMade()
+
+
+
+    PlayerChoiceFrame:OnCloseUIFromExitButton()--HideUIPanel(PlayerChoiceFrame)
+
 
     --[[for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
         optionFrame:SetShown(false)
     end]]
-
+    
+    local desc= WoWTools_TextMixin:CN(optionInfo.description)
     print(
         WoWTools_DataMixin.Icon.icon2
-        ..'|A:SpecDial_LastPip_BorderGlow:0:0|a'
-        ..(optionInfo.spellID and
-            C_Spell.GetSpellLink(optionInfo.spellID)
-            or ''
-        ),
+        ..'|A:SpecDial_LastPip_BorderGlow:0:0|a',
+        optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID),
+
         '|n',
+
         '|T'..(optionInfo.choiceArtID or 0)..':0|t'
         ..(optionInfo.rarityColor
-            and optionInfo.rarityColor:WrapTextInColorCode(optionInfo.description or '')
-            or optionInfo.description
+            and optionInfo.rarityColor:WrapTextInColorCode(desc or '')
+            or desc
             or ''
         )
     )
@@ -85,7 +84,11 @@ local function Init()
                                 Send_Player_Choice_Response(optionInfo)
                             end
                         else
-                            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,'|cnRED_FONT_COLOR:', not WoWTools_DataMixin.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误')
+                            print(
+                                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                                '|cnRED_FONT_COLOR:',
+                                not WoWTools_DataMixin.onlyChinese and ERRORS..' ('..UNKNOWN..')' or '未知错误'
+                            )
                         end
                     end)
                     optionFrame.check:SetScript('OnLeave', GameTooltip_Hide)
