@@ -5955,7 +5955,10 @@
         "CalendarEventPickerFrameButtonBackground",
         "CalendarEventPickerCloseButtonBorder",
         "TOOLTIP_TALENT_RANK",
-        "PlayerChoiceFrameMixin"
+        "PlayerChoiceFrameMixin",
+        "PlayerChoiceBaseOptionButtonsContainerMixin",
+        "PlayerChoiceBaseOptionCurrencyRewardMixin",
+        "PlayerChoiceBaseOptionTemplateMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

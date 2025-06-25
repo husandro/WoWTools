@@ -15,16 +15,15 @@ local function Send_Player_Choice_Response(optionInfo)
         C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
     end
 
-    PlayerChoiceFrame:OnCloseUIFromExitButton()--HideUIPanel(PlayerChoiceFrame)
-
+    C_Timer.After(0.5, function()
+        PlayerChoiceFrame:SetShown(false)
+    end)
 
     local desc= WoWTools_TextMixin:CN(optionInfo.description)
     print(
         WoWTools_DataMixin.Icon.icon2
         ..'|A:SpecDial_LastPip_BorderGlow:0:0|a',
         optionInfo.spellID and C_Spell.GetSpellLink(optionInfo.spellID),
-
-        '|n',
 
         '|T'..(optionInfo.choiceArtID or 0)..':0|t'
         ..(optionInfo.rarityColor
@@ -54,8 +53,12 @@ local function Init()
         end
     end)
 
+
+     --hooksecurefunc(PlayerChoiceBaseOptionButtonsContainerMixin, 'Setup', function(btn, optionInfo, showAsList)
+       
+
     hooksecurefunc(PlayerChoiceFrame, 'SetupOptions', function(frame)
-        if IsModifierKeyDown() or not Save().gossip then
+        if not Save().gossip then
             return
         end
 
@@ -105,12 +108,19 @@ local function Init()
                         optionFrame.check:SetChecked(saveChecked)
                         if saveChecked or (soloOption and Save().unique) then
                             optionFrame.optionInfo.rarity = optionFrame.optionInfo.rarity or 0
+
+
                             table.insert(tab, optionFrame.optionInfo)
                         end
                     end
                 end
             end
         end
+
+        if IsModifierKeyDown() then
+            return
+        end
+
         if #tab>0 then
             table.sort(tab, function(a,b)
                 if a.rarity== b.rarity then
@@ -119,6 +129,7 @@ local function Init()
                     return a.rarity> b.rarity
                 end
             end)
+
             Send_Player_Choice_Response(tab[1])
         end
     end)
@@ -159,7 +170,11 @@ local function Init()
                     if s.time and not s.time:IsCancelled() then
                         s.time:Cancel()
                         s:set_text()
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1)
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                            '|cnRED_FONT_COLOR:',
+                            WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1
+                        )
                         return
                     else
                         s:set_text()
@@ -186,11 +201,19 @@ local function Init()
                         then
                             C_PlayerChoice.SendPlayerChoiceResponse(info.buttons[2].id)--Blizzard_PlayerChoiceOptionBase.lua
                             n=n+1
-                            print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName, '|cnGREEN_FONT_COLOR:'..n..'|r', '('..all-n..')', '|cnRED_FONT_COLOR:Alt' )
+                            print(
+                                WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                                '|cnGREEN_FONT_COLOR:'..n..'|r',
+                                '('..all-n..')', '|cnRED_FONT_COLOR:Alt'
+                            )
                             --self.parentOption:OnSelected()
                         elseif s.time then
                         s.time:Cancel()
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,'|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1, '|r'..n)
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..WoWTools_GossipMixin.addName,
+                            '|cnRED_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '停止' or SLASH_STOPWATCH_PARAM_STOP1,
+                            '|r'..n
+                        )
                         end
                         s:set_text()
                     end, all)
@@ -212,6 +235,7 @@ local function Init()
 
 
     --PlayerChoiceGenericPowerChoiceOptionTemplat
+--BUFF信息
     hooksecurefunc(PlayerChoicePowerChoiceTemplateMixin, 'Setup', function(frame)
         if frame.settings then
             frame:settings()
@@ -220,13 +244,17 @@ local function Init()
 
         function frame:settings()
             local text, charges, applications
-            local data= frame.optionInfo
+            local data= self.optionInfo
             if data and data.spellID then
                 local info= C_UnitAuras.GetPlayerAuraBySpellID(data.spellID)
                 if info then
                     applications= info.applications
                     if info.expirationTime then
                         text= WoWTools_TimeMixin:Info(nil, false, nil, info.expirationTime)
+                        
+                        if info.duration then
+                            text= text..'|n|cff626262'..SecondsToTime(info.duration)
+                        end
                         applications= applications==0 and 1 or applications
                     end
                     if info.charges then
@@ -240,19 +268,21 @@ local function Init()
                         end
                     end
                 end
-                text= text or (WoWTools_DataMixin.onlyChinese and '无' or NONE)
+                text= text or ('|cff626262'..(WoWTools_DataMixin.onlyChinese and '无' or NONE))
             end
-            frame.TimeText:SetText(text or '')
-            frame.ChargeText:SetText(charges or '')
-            frame.ApplicationsText:SetText(applications or '')
+            self.TimeText:SetText(text or '')
+            self.ChargeText:SetText(charges or '')
+            self.ApplicationsText:SetText(applications or '')
 
-            frame.frameTips:SetShown(data.spellID)
+            self.frameTips:SetShown(data.spellID)
         end
 
-        frame.TimeText= WoWTools_LabelMixin:Create(frame, {color={r=0, g=1, b=0}, size=18})
-        frame.TimeText:SetPoint('TOP', frame.Artwork, 'BOTTOM', 0, -4)
+        frame.TimeText= WoWTools_LabelMixin:Create(frame, {color={r=0, g=1, b=0}, size=18, justifyH='CENTER'})
+        frame.TimeText:SetPoint('TOP', frame.Artwork, 'BOTTOM')
+
         frame.ChargeText= WoWTools_LabelMixin:Create(frame,  {color={r=0, g=1, b=0}, size=18})
-        frame.ChargeText:SetPoint('CENTER', frame.Artwork, 0, 0)
+        frame.ChargeText:SetPoint('CENTER', frame.Artwork)
+
         frame.ApplicationsText= WoWTools_LabelMixin:Create(frame, {color={r=1, g=1, b=1}, size=22})
         frame.ApplicationsText:SetPoint('BOTTOMRIGHT', frame.Artwork, -6, 6)
 
