@@ -15,18 +15,9 @@ local function Send_Player_Choice_Response(optionInfo)
         C_PlayerChoice.SendPlayerChoiceResponse(optionInfo.buttons[1].id)
     end
 
-    --C_PlayerChoice.OnUIClosed()
-
-
-
-
     PlayerChoiceFrame:OnCloseUIFromExitButton()--HideUIPanel(PlayerChoiceFrame)
 
 
-    --[[for optionFrame in PlayerChoiceFrame.optionPools:EnumerateActiveByTemplate(PlayerChoiceFrame.optionFrameTemplate) do
-        optionFrame:SetShown(false)
-    end]]
-    
     local desc= WoWTools_TextMixin:CN(optionInfo.description)
     print(
         WoWTools_DataMixin.Icon.icon2
