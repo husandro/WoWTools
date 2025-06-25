@@ -573,7 +573,7 @@ local function Init_Hook()
         if not info
             or not info.gossipOptionID
             or not Save().gossip
-            or (WoWTools_DataMixin.Player.husandro and NumGossipCNLabel:GetText()~='0')
+            --or (WoWTools_DataMixin.Player.husandro and NumGossipCNLabel:GetText()~='0')
         then
             return
         end
@@ -602,7 +602,7 @@ local function Init_Hook()
         elseif Save().quest and (
                 quest
                 or name:find('0000FF')--PURE_BLUE_COLOR
-                --or name:find('0000ff')
+               -- or name:find('0000ff')
                 --or FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend)
                 or name:find(QUESTS_LABEL)
                 or name:find(LOOT_JOURNAL_LEGENDARIES_SOURCE_QUEST)

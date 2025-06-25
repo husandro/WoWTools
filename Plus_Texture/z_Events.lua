@@ -1542,7 +1542,7 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
     self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0)
     self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0)
 
-    self:HideTexture(MultiBarBottomLeftButton10.SlotBackground)
+    self:SetAlphaColor(MultiBarBottomLeftButton10.SlotBackground, nil, nil, 0)
 
     self:HideTexture(PlayerFrameAlternateManaBarBorder)
     self:HideTexture(PlayerFrameAlternateManaBarLeftBorder)
