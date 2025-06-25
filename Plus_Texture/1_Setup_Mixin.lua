@@ -207,15 +207,9 @@ function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
     local col= WoWTools_DataMixin.Player.useColor
     local r,g, b= col.r, col.g, col.b
 
-    if alpha==true then
-        alpha= self.min
-        if WoWTools_DataMixin.Player.husandro then
-            print('SetNineSlice, alpha==true', frame:GetName())
-        end
-    end
-
-    
-    alpha= alpha==nil and 0 or alpha or self.min
+    alpha= (alpha==nil and 0)
+        or (type(alpha)=='number' and alpha)
+        or self.min
 
     frame.NineSlice:SetBorderColor(r, g, b, alpha)
     if notBg then

@@ -64,7 +64,8 @@ function WoWTools_TextureMixin.Events:Blizzard_MacroUI()
 
     self:SetNineSlice(MacroFrameInset)
     self:HideFrame(MacroFrameInset)
-    self:SetNineSlice(MacroFrameTextBackground, 0.5)
+    self:SetNineSlice(MacroFrameTextBackground, nil, true)
+    MacroFrameTextBackground.NineSlice:SetBorderColor(0, 0, 0, 0)
 
     self:SetAlphaColor(MacroHorizontalBarLeft, true)
     self:HideTexture(MacroFrameSelectedMacroBackground)
