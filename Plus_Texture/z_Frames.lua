@@ -315,9 +315,7 @@ end
 
 
 
-
 function WoWTools_TextureMixin.Frames:ItemTextFrame()
-    --self:SetNineSlice(ItemTextFrame)
     self:HideTexture(ItemTextFrame.TopTileStreaks)
     self:HideTexture(ItemTextFrameBg)
     self:SetButton(ItemTextFrameCloseButton)
@@ -339,7 +337,29 @@ function WoWTools_TextureMixin.Frames:ItemTextFrame()
             ItemTextFramePageBg:SetAlpha(texture and 0 or alpha or 1)
         end
     })
+
+
+
+    ItemTextPrevPageButton:SetNormalAtlas('common-icon-backarrow')
+    ItemTextPrevPageButton:SetAlpha(0.3)
+    ItemTextNextPageButton:SetNormalAtlas('common-icon-forwardarrow')
+    ItemTextNextPageButton:SetAlpha(0.3)
+    ItemTextScrollFrame:SetScript('OnMouseWheel', function(_, d)
+        if d==1 then
+            if ItemTextGetPage()>1 then
+                PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                ItemTextPrevPage()
+            end
+        else
+            if ItemTextHasNextPage() then
+                PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)
+                ItemTextNextPage()
+            end
+        end
+    end)
 end
+
+
 
 
 

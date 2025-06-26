@@ -5958,7 +5958,10 @@
         "PlayerChoiceFrameMixin",
         "PlayerChoiceBaseOptionButtonsContainerMixin",
         "PlayerChoiceBaseOptionCurrencyRewardMixin",
-        "PlayerChoiceBaseOptionTemplateMixin"
+        "PlayerChoiceBaseOptionTemplateMixin",
+        "ItemTextPrevPageButton",
+        "ItemTextNextPageButton",
+        "ItemTextFramePortrait"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
