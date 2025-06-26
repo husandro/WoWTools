@@ -1,4 +1,17 @@
 
+function WoWTools_MoveMixin.Events:Blizzard_RecruitAFriend()
+    RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
+    RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
+    RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
+    WoWTools_MoveMixin:Setup(RecruitAFriendRewardsFrame)
+    WoWTools_MoveMixin:Setup(RecruitAFriendFrame.RewardClaiming.Inset, {frame=FriendsFrame})
+end
+
+function WoWTools_MoveMixin.Events:Blizzard_RaidFrame()
+
+end
+
+
 
 function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
     FriendsListFrame.ScrollBox:SetPoint('BOTTOMRIGHT', -24, 30)
@@ -7,10 +20,6 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
         btn.name:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
         btn.info:SetPoint('RIGHT', btn.gameIcon, 'LEFT', -2, 0)
     end)
-
-    RecruitAFriendFrame.RecruitList.ScrollBox:SetPoint('BOTTOMRIGHT', -20,0)
-    RecruitAFriendFrame.RewardClaiming.Background:SetPoint('LEFT')
-    RecruitAFriendFrame.RewardClaiming.Background:SetPoint('RIGHT')
 
 
 
@@ -22,6 +31,8 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
 --好友的好友，列表
     local function Set_RaidFrame_Button_size()
+        
+
         local w= FriendsFrame:GetWidth()/2-8
         for i=1, 8 do
             local frame= _G['RaidGroup'..i]
@@ -57,29 +68,19 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
         minW=385,
         minH=424,
         sizeUpdateFunc=function()
-            if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
+            if RaidFrame:IsShown() and not WoWTools_FrameMixin:IsLocked(RaidFrame) then
                 Set_RaidFrame_Button_size()
-                if RaidGroupFrame_Update then
-                    WoWTools_Mixin:Call(RaidGroupFrame_Update)
-                end
+                WoWTools_Mixin:Call(RaidGroupFrame_Update)
             end
         end,
         sizeRestFunc=function()
             FriendsFrame:SetSize(385, 424)
             if RaidFrame:IsShown() and RaidFrame:CanChangeAttribute() then
                 Set_RaidFrame_Button_size()
-                if RaidGroupFrame_Update then
-                    WoWTools_Mixin:Call(RaidGroupFrame_Update)
-                end
+                WoWTools_Mixin:Call(RaidGroupFrame_Update)
             end
         end
     })
-
-    WoWTools_MoveMixin:Setup(RecruitAFriendRewardsFrame)
-    WoWTools_MoveMixin:Setup(RecruitAFriendFrame.RewardClaiming.Inset, {frame=FriendsFrame})
-
-
-
 
 
 
@@ -119,7 +120,7 @@ function WoWTools_MoveMixin.Events:Blizzard_FriendsFrame()--好友列表
 
     RaidFrame:HookScript('OnShow', function(...) Set_RaidFrame_Button_size(...) end)
 
---团队，信息
+--团队信息， 副本击杀信息
     RaidInfoFrame.ScrollBox:SetPoint('BOTTOMRIGHT',-35, 38)
     RaidInfoDetailFooter:SetPoint('RIGHT', -12, 0)
     RaidInfoInstanceLabel:SetWidth(200)

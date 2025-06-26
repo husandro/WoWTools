@@ -79,3 +79,4 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     end
 end)
 
+-- C_AddOns.IsAddOnLoaded('Blizzard_RaidFrame')

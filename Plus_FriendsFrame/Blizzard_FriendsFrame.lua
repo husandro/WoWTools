@@ -172,13 +172,14 @@ end
 
 local function Init()--好友列表, 初始化
     OptionText= (WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS).."|T%s:0:|t %s"
-  RegionNames = {
+    RegionNames = {
         [1] = WoWTools_DataMixin.onlyChinese and '北美' or NORTH_AMERICA,
         [2] = WoWTools_DataMixin.onlyChinese and '韩国' or KOREA,
         [3] = WoWTools_DataMixin.onlyChinese and '欧洲' or EUROPE,
         [4] = WoWTools_DataMixin.onlyChinese and '台湾' or TAIWAN,
         [5] = WoWTools_DataMixin.onlyChinese and '中国' or CHINA,
     }
+    FriendsFrameStatusDropdown:SetSize(58, 25)--原生，有点问题
 
     FriendsButton= WoWTools_ButtonMixin:Menu(FriendsListFrame)
 

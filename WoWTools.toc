@@ -330,6 +330,7 @@ Plus_FriendsFrame\1_Init.lua
 Plus_FriendsFrame\Blizzard_FriendsFrame.lua
 Plus_FriendsFrame\Blizzard_QuickJoin.lua
 Plus_FriendsFrame\Blizzard_RaidFrame.lua
+Plus_FriendsFrame\Blizzard_RaidUI.lua
 Plus_FriendsFrame\z_UI.lua
 
 

@@ -1,5 +1,5 @@
+--团队信息，副本信息
 
-    --好友界面， 团队，团队信息 RaidFrame.xml
 local function Init()
     hooksecurefunc('RaidInfoFrame_InitButton', function(btn, elementData)
         if not btn:IsVisible() then
@@ -39,7 +39,7 @@ local function Init()
         end
     end)
 
-    FriendsFrameStatusDropdown:SetSize(58, 25)--原生，有点问题
+
 
     Init=function()end
 end
