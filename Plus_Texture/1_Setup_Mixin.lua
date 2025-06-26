@@ -209,11 +209,7 @@ function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
         or self.min
 
     frame.NineSlice:SetBorderColor(r, g, b, alpha)
-    if notBg then
-        frame.NineSlice:SetVertexColor(0, 0, 0, 0.5)
-    else
-        frame.NineSlice:SetCenterColor(0, 0, 0, 0)
-    end
+    frame.NineSlice:SetCenterColor(0, 0, 0, notBg and 0.5 or 0)
 end
 
 --function WoWTools_TextureMixin:SetNineSlice(frame, min, hide, notAlpha, notBg, isFind)

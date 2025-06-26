@@ -344,7 +344,7 @@ function WoWTools_TextureMixin.Frames:ItemTextFrame()
     ItemTextPrevPageButton:SetAlpha(0.3)
     ItemTextNextPageButton:SetNormalAtlas('common-icon-forwardarrow')
     ItemTextNextPageButton:SetAlpha(0.3)
-    ItemTextScrollFrame:SetScript('OnMouseWheel', function(_, d)
+    ItemTextScrollFrame:HookScript('OnMouseWheel', function(_, d)
         if d==1 then
             if ItemTextGetPage()>1 then
                 PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON)

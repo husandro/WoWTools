@@ -1261,73 +1261,6 @@ end
 
 
 
---好友列表
-function WoWTools_TextureMixin.Events:Blizzard_FriendsFrame()
-
-    --self:SetNineSlice(FriendsFrame, true)
-    self:HideFrame(FriendsFrame)
-    self:SetNineSlice(FriendsFrameInset)
-    self:HideTexture(FriendsFrameInset.Bg)
-    self:SetScrollBar(FriendsListFrame)
-    self:CreateBG(FriendsListFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
-    self:SetFrame(FriendsFrameBattlenetFrame.BroadcastButton, {notAlpha=true})
-    self:SetButton(FriendsFrameCloseButton)
-    self:SetMenu(FriendsFrameStatusDropdown, {alpha=1})
-    self:HideTexture(FriendsFrameStatusDropdown.Background)
-
-    self:SetScrollBar(IgnoreListFrame)
-
---好友列表，召募
-    self:SetScrollBar(RecruitAFriendFrame.RecruitList)
-    self:SetAlphaColor(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
-    self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset)
-    self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
-    self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
-    self:HideTexture(RecruitAFriendFrame.RewardClaiming.Inset.Bg)
-    self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
-    self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {alpha=0.5})
-
---团队信息
-    self:HideTexture(RaidInfoDetailHeader)
-    self:SetAlphaColor(RaidInfoFrame.Header.LeftBG)
-    self:SetAlphaColor(RaidInfoFrame.Header.CenterBG)
-    self:SetAlphaColor(RaidInfoFrame.Header.RightBG)
-    self:SetAlphaColor(RaidInfoDetailFooter)
-    self:SetFrame(RaidInfoFrame.Border.LeftEdge, {alpha=0.3})
-    self:HideTexture(RaidInfoFrame.Border.Bg)
-    self:SetScrollBar(RaidInfoFrame)
-
-    self:SetNineSlice(WhoFrameListInset)
-
-    self:HideTexture(WhoFrameListInset.Bg)
-    self:SetScrollBar(WhoFrame)
-    self:SetMenu(WhoFrameDropdown)
-
-    if WhoFrameEditBoxInset then--11.2 没有了
-        self:HideTexture(WhoFrameEditBoxInset.Bg)
-        self:SetNineSlice(WhoFrameEditBoxInset, 0.3)
-    else
-        self:HideTexture(WhoFrameEditBox.Bg)
-        self:SetEditBox(WhoFrameEditBox)
-    end
-
-    self:CreateBG(WhoFrame.ScrollBox, {isAllPoint=true, isColor=true, alpha=0.5})
-
-    self:SetScrollBar(QuickJoinFrame)
-
-    for i=1, 4 do
-        self:SetTabButton(_G['FriendsFrameTab'..i])
-        self:SetTabButton(_G['FriendsTabHeaderTab'..i])
-        --self:SetFrame(_G['WhoFrameColumnHeader'..i], {notAlpha=true})
-    end
-
-    self:SetFrame(BattleTagInviteFrame.Border, {notAlpha=true})
-
-
-
-    self:Init_BGMenu_Frame(FriendsFrame)
-end
-
 
 
 
@@ -1498,9 +1431,7 @@ function WoWTools_TextureMixin.Events:Blizzard_ReportFrame()
 end
 
 
-function WoWTools_TextureMixin.Events:Blizzard_BNet()
-    self:SetFrame(BNToastFrame, {alpha=0.3})
-end
+
 
 
 

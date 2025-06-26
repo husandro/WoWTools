@@ -5961,7 +5961,10 @@
         "PlayerChoiceBaseOptionTemplateMixin",
         "ItemTextPrevPageButton",
         "ItemTextNextPageButton",
-        "ItemTextFramePortrait"
+        "ItemTextFramePortrait",
+        "FriendsFriends_InitButton",
+        "FriendsFriendsFrameDropdown",
+        "QuickJoinMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

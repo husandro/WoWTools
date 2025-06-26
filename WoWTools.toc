@@ -128,7 +128,6 @@ Plus_Move\3_Options.lua
 Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
-Plus_Move\FriendsFrame.lua
 Plus_Move\WorldMapFrame.lua
 Plus_Move\Blizzard_Communities.lua
 Plus_Move\Blizzard_Collections.lua
@@ -327,7 +326,11 @@ Plus_Unit\RaidFrame.lua
 Plus_Unit\TargetFrame.lua
 
 ##好友，面板
-Plus\FriendsList.lua
+Plus_FriendsFrame\1_Init.lua
+Plus_FriendsFrame\Blizzard_FriendsFrame.lua
+Plus_FriendsFrame\Blizzard_QuickJoin.lua
+Plus_FriendsFrame\Blizzard_RaidFrame.lua
+Plus_FriendsFrame\z_UI.lua
 
 
 ##卖买

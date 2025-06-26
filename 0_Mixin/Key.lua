@@ -224,28 +224,41 @@ function WoWTools_KeyMixin:SetButtonKey(frame, set, key, click)--设置清除快
 end
 
 
-
+--NPE_ArrowDown
+--NPE_ArrowUp
 
 local KeyTabs={
     KEY_BUTTON1='|A:newplayertutorial-icon-mouse-leftbutton:0:0|a',
     KEY_BUTTON2='|A:newplayertutorial-icon-mouse-rightbutton:0:0|a',
     KEY_BUTTON3='|A:newplayertutorial-icon-mouse-middlebutton:0:0|a',
+    KEY_MOUSEWHEELUP='|A:NPE_ArrowUp:0:0|a',
+    KEY_MOUSEWHEELDOWN= '|A:NPE_ArrowDown:0:0|a',
 }
 local KEY_BUTTON = KEY_BUTTON10:gsub(10, '')--"鼠标按键10"
 
+local function set_keytext(keyText)
+    local text= keyText
+    if not text or text=='' then
+        return
+    end
+
+    if KeyTabs[text] then
+        return KeyTabs[text]
+    end
+
+    text= text:gsub(KEY_BUTTON, 'm')
+    text= text:gsub('鼠标按键', 'm')
+
+    if text~=keyText then
+        return text
+    end
+end
+
 function WoWTools_KeyMixin:GetHotKeyText(text, action)
     if text then
-        local t= KeyTabs[text]
-        if t then
-            return t
-        elseif text:find(KEY_BUTTON) then
-            return text:gsub(KEY_BUTTON, 'm')
-        end
+        return set_keytext(text)
+
     elseif action then
-        text= GetBindingKeyForAction(action, false, false)
-        if text and text:find(KEY_BUTTON) then
-            text= text:gsub(KEY_BUTTON, 'm')
-        end
-        return text
+        return set_keytext(GetBindingKeyForAction(action, false, false))
     end
 end
