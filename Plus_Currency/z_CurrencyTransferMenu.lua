@@ -4,8 +4,6 @@ local function Save()
 end
 
 
-
-
 local function IsLocked()
 	return WoWTools_FrameMixin:IsLocked(CurrencyTransferMenu) or issecure()
 end
@@ -113,9 +111,5 @@ end
 
 
 function WoWTools_CurrencyMixin:Init_Currency_Transfer()
-	if WoWTools_DataMixin.Player.husandro then
-    	Init()
-	else
-		Init=function()end
-	end
+    Init()
 end

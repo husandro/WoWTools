@@ -5964,7 +5964,8 @@
         "ItemTextFramePortrait",
         "FriendsFriends_InitButton",
         "FriendsFriendsFrameDropdown",
-        "QuickJoinMixin"
+        "QuickJoinMixin",
+        "TokenSubHeaderMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

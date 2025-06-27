@@ -527,7 +527,7 @@ end
 --日历
 function WoWTools_TextureMixin.Events:Blizzard_Calendar()
     self:SetButton(CalendarCloseButton)
-    
+
     self:SetAlphaColor(CalendarFrameTopMiddleTexture)
     self:SetAlphaColor(CalendarFrameTopLeftTexture)
     self:SetAlphaColor(CalendarFrameTopRightTexture)
@@ -1984,13 +1984,19 @@ end
 
 --货币
 function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
-    self:SetScrollBar(TokenFrame)
     self:SetFrame(TokenFramePopup.Border, {alpha=0.3})
+    self:SetButton(CurrencyTransferMenuCloseButton)
+    self:SetFrame(TokenFrame)
     self:SetMenu(TokenFrame.filterDropdown)
 
-    --[[hooksecurefunc(TokenHeaderMixin, 'Initialize', function(btn)
-        
-    end)]]
+    self:SetScrollBar(TokenFrame, {notHide=true})--bug，货币转移，出错
+    --[[self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.Begin, true)
+    self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.Middle, true)
+    self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.End, true)]]
+
+
+
+
 
     hooksecurefunc(TokenFrame.ScrollBox, 'Update', function(f)
         if not f:GetView() then
@@ -2010,16 +2016,19 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
         alpha=0.3,
         isAllPoint=true,
     })
-   -- self:SetButton(TokenFrame.CurrencyTransferLogToggleButton)
 
---[[货币转移
+
+--货币转移
     self:SetNineSlice(CurrencyTransferLog)
     self:SetAlphaColor(CurrencyTransferLogBg, nil, nil, 0.3)
     self:SetNineSlice(CurrencyTransferLogInset, nil, true)
     self:SetScrollBar(CurrencyTransferLog)
+
     self:SetNineSlice(CurrencyTransferMenu)
-    self:SetAlphaColor(CurrencyTransferMenuBg, nil, nil, 0.3)
+    self:SetAlphaColor(CurrencyTransferMenu.TransactionDivider)
+    self:HideTexture(CurrencyTransferMenuBg)
     self:SetNineSlice(CurrencyTransferMenuInset)
+
 
     if CurrencyTransferMenu.AmountSelector then--11.2 没有了
         self:SetEditBox(CurrencyTransferMenu.AmountSelector.InputBox)
@@ -2027,7 +2036,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     else
         self:SetEditBox(CurrencyTransferMenu.Content.AmountSelector.InputBox)
         self:SetMenu(CurrencyTransferMenu.Content.SourceSelector.Dropdown)
-    end]]
+    end
 end
 
 
@@ -2035,7 +2044,6 @@ end
 
 --玩家, 观察角色, 界面
 function WoWTools_TextureMixin.Events:Blizzard_InspectUI()
-    --self:SetNineSlice(InspectFrame)
     self:HideFrame(InspectFrame)
     self:HideFrame(InspectModelFrame)
     self:HideFrame(InspectModelFrameControlFrame)

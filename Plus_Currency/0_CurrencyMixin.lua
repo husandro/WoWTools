@@ -12,11 +12,11 @@ WoWTools_CurrencyMixin={}
 
 local function get_info(currencyID, index, link)
     local info
-    if not currencyID then
+    if not currencyID or currencyID<1 then
         link= link or (index and C_CurrencyInfo.GetCurrencyListLink(index))
         currencyID= link and C_CurrencyInfo.GetCurrencyIDFromLink(link)
     end
-   if not currencyID or currencyID<=0 then
+   if not currencyID or currencyID<1 then
         return
    end
     info=C_CurrencyInfo.GetCurrencyInfo(currencyID)
@@ -35,6 +35,8 @@ function WoWTools_CurrencyMixin:Find(currencyID, name)--选中提示
     if all==0 then
         return
     end
+    
+    currencyID= currencyID and currencyID>0 and currencyID or nil
 
     if currencyID or name then
         for index=1, all do
@@ -84,18 +86,19 @@ end
 
 --GetAccountIcon
 function WoWTools_CurrencyMixin:GetAccountIcon(currencyID, index, link)
-    if not currencyID then
+    if not currencyID or currencyID<1 then
         local info= get_info(currencyID, index, link)
         currencyID= info and info.currencyID
     end
-    if currencyID then
+
+    if currencyID and currencyID>0 then
         if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then--可转移
             local isTrans= true
             return '|A:warbands-transferable-icon:18:0|a', false, isTrans, '|cff00ccff', 'warbands-transferable-icon'
 
         elseif C_CurrencyInfo.IsAccountWideCurrency(currencyID) then--战网
             local isWide= true
-            return '|A:questlog-questtypeicon-account:0:0|a', isWide, false, '|cff00ccff', 'questlog-questtypeicon-account'
+            return '|A:questlog-questtypeicon-account:0:0|a', isWide, false, '|cffff7c0a', 'questlog-questtypeicon-account'
         end
     end
 end
@@ -215,17 +218,19 @@ end
 
 
 
-function WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
+function WoWTools_CurrencyMixin:GetAccountInfo(currencyID, notSelf)
     local new={}
     local num=0
     if currencyID and currencyID>0 then
         if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
             for _, tab in pairs(C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyID) or {}) do
-                if WoWTools_WoWDate[tab.characterGUID] then
-                    tab.faction= WoWTools_WoWDate[tab.characterGUID].faction
+                if not notSelf or tab.characterGUID~=WoWTools_DataMixin.Player.GUID then
+                    if WoWTools_WoWDate[tab.characterGUID] then
+                        tab.faction= WoWTools_WoWDate[tab.characterGUID].faction
+                    end
+                    table.insert(new, tab)
+                    num= num+ tab.quantity
                 end
-                table.insert(new, tab)
-                num= num+ tab.quantity
             end
         else
             C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()

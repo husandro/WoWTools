@@ -4,6 +4,9 @@ function WoWTools_TextureMixin.Events:Blizzard_BNet()
     self:SetFrame(BNToastFrame, {alpha=0.3})
 end
 
+--[[function WoWTools_MoveMixin.Events:Blizzard_BNet()
+    self:Setup(BNToastFrame)
+end]]
 
 
 

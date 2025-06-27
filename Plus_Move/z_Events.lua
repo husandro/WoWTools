@@ -591,7 +591,7 @@ function WoWTools_MoveMixin.Events:Blizzard_AchievementUI()
 
     AchievementFrame.Header:ClearAllPoints()
     AchievementFrame.Header:SetPoint('BOTTOM', AchievementFrame, 'TOP', 0, -38)
-    
+
     AchievementFrameFilterDropdown:ClearAllPoints()
     AchievementFrameFilterDropdown:SetPoint('CENTER', AchievementFrame.Header.LeftDDLInset, -2, 3)
 --Search
@@ -1029,8 +1029,8 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     self:Setup(TokenFramePopup, {frame=CharacterFrame})
     self:Setup(ReputationFrame, {frame=CharacterFrame})
     self:Setup(ReputationFrame.ReputationDetailFrame, {frame=CharacterFrame})
-    --[[self:Setup(CurrencyTransferMenu)
 
+    self:Setup(CurrencyTransferMenu)
     self:Setup(CurrencyTransferLog, {
         setSize=true,
         sizeRestFunc=function()
@@ -1041,7 +1041,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             CurrencyTransferLog:ClearAllPoints()
             CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
-    })]]
+    })
 end
 
 
