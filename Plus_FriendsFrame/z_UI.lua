@@ -22,7 +22,7 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_RecruitAFriend()
     self:SetScrollBar(RecruitAFriendFrame.RecruitList)
-    self:SetAlphaColor(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
+    self:HideTexture(RecruitAFriendFrame.RecruitList.ScrollFrameInset.Bg)
     self:SetNineSlice(RecruitAFriendFrame.RewardClaiming.Inset)
     self:SetNineSlice(RecruitAFriendFrame.RecruitList.ScrollFrameInset)
     self:HideTexture(RecruitAFriendFrame.RecruitList.Header.Background)
@@ -30,6 +30,7 @@ function WoWTools_TextureMixin.Events:Blizzard_RecruitAFriend()
     self:SetFrame(RecruitAFriendFrame.RewardClaiming, {alpha=0.3})
     self:SetButton(RecruitAFriendFrame.RewardClaiming.NextRewardInfoButton, {alpha=0.5})
 --好友召募奖励
+    
     self:HideFrame(RecruitAFriendRewardsFrame.Border)
     self:SetButton(RecruitAFriendRewardsFrame.CloseButton)
 end
