@@ -15,6 +15,18 @@ local function Init()
 	CurrencyTransferLogCloseButton:SetFrameLevel(CurrencyTransferLog.TitleContainer:GetFrameLevel()+2)
 	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
 
+	--[[hooksecurefunc(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
+		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=elementData.sourceCharacterGUID, reName=true, reRealm=true})
+		if name~='' then
+			self.SourceName:SetText(name)
+		end
+
+		name= WoWTools_UnitMixin:GetPlayerInfo({guid=elementData.destinationCharacterGUID, reName=true, reRealm=true})
+		if name~='' then
+			self.DestinationName:SetText(name)
+		end
+
+	end)]]--货币转移，bug
 
 	hooksecurefunc(CurrencyTransferLog.ScrollBox, 'Update', function(self)
 		if not self:GetView() or Save().notPlus or WoWTools_FrameMixin:IsLocked(self:GetParent()) then
@@ -73,29 +85,31 @@ local content= CurrencyTransferMenu.Content--11.2
 --总数
 	CurrencyTransferMenu.wowNumLabel= WoWTools_LabelMixin:Create(content, {color={r=0,g=0.8,b=1}, size=16, mouse=true})
 	CurrencyTransferMenu.wowNumLabel:SetPoint('BOTTOM', content.SourceSelector.Dropdown, 'TOP', 0, 2)
-	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', GameTooltip_Hide)
+	CurrencyTransferMenu.wowNumLabel:SetScript('OnLeave', function(self)
+		GameTooltip_Hide()
+		self:SetAlpha(1)
+	end)
 	CurrencyTransferMenu.wowNumLabel:SetScript('OnEnter', function(self)
-		if not Save().notPlus then
-			WoWTools_SetTooltipMixin:Frame(self)
-		end
+		WoWTools_SetTooltipMixin:Frame(self)
+		self:SetAlpha(0.5)
 	end)
 
 	hooksecurefunc(CurrencyTransferMenu, 'FullRefresh', function(self)
-		if IsLocked() then
+		if IsLocked() or not self.currencyInfo or Save().notPlus then
+			self.wowNumLabel:SetText('')
 			return
 		end
 
-		local text
-		local currencyID= self:GetCurrencyID()
-		if not Save().notPlus then
-			if currencyID and currencyID>0 then
-				local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
-				if num>0 then
-					text= #tab..WoWTools_DataMixin.Icon.wow2..WoWTools_Mixin:MK(num, 3)
-				end
+		local text= '|T'..(self.currencyInfo.iconFileID or 0)..':0|t'
+
+		local currencyID= self.currencyInfo.currencyID-- self:GetCurrencyID()
+		if currencyID and currencyID>0 then
+			local num, tab= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
+			if num>0 then
+				text= text..#tab..WoWTools_DataMixin.Icon.wow2..WoWTools_Mixin:MK(num, 3)
 			end
 		end
-		self.wowNumLabel:SetText(text or '')
+		self.wowNumLabel:SetText(text)
 		self.wowNumLabel.currencyID= currencyID
 	end)
 

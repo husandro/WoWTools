@@ -25,8 +25,15 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
 
 
     local num, data= 0, {}
+--战团可转移货币
     if isTrans then
         num, data= WoWTools_CurrencyMixin:GetAccountInfo(currencyID)
+--[[
+        tooltip:AddLine(col..(WoWTools_DataMixin.onlyChinese and '战团可转移货币' or ACCOUNT_TRANSFERRABLE_CURRENCY))
+--战团通用
+    elseif isWide then
+        tooltip:AddLine(col..(WoWTools_DataMixin.onlyChinese and '战团货币' or ACCOUNT_LEVEL_CURRENCY))
+]]
 
     elseif not isWide then
         for guid, info in pairs(WoWTools_WoWDate or {}) do--帐号数据

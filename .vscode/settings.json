@@ -5965,7 +5965,10 @@
         "FriendsFriends_InitButton",
         "FriendsFriendsFrameDropdown",
         "QuickJoinMixin",
-        "TokenSubHeaderMixin"
+        "TokenSubHeaderMixin",
+        "CurrencyTransferLogEntryMixin",
+        "ACCOUNT_TRANSFERRABLE_CURRENCY",
+        "ITEM_UPGRADE_DISCOUNT_TOOLTIP_ACCOUNT_WIDE"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

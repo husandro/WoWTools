@@ -89,6 +89,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function set_Tokens_Button(self)--设置, 列表, 内容
 	Create(self)
 
@@ -104,6 +117,7 @@ local function set_Tokens_Button(self)--设置, 列表, 内容
 		local lable= self.Content.Name2 or self.Content.Name--汉化，新建
 		lable:SetTextColor(1,1,1)
 		self.percentText:SetText('')
+		self.accountWideText:SetText('')
 		return
 	end
 
@@ -193,13 +207,7 @@ local function Init()
 		self:SetAlpha(1)
 	end)
 	TokenFramePopup.Name:SetScript('OnEnter', function(self)
-		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-		GameTooltip:ClearLines()
-		if self.currencyID then
-			GameTooltip:SetCurrencyByID(self.currencyID)
-			GameTooltip:AddLine(" ")
-		end
-		GameTooltip:Show()
+		WoWTools_SetTooltipMixin:Frame(self)
 		self:SetAlpha(0.5)
 	end)
 	hooksecurefunc(TokenFrame, 'UpdatePopup', function(_, btn)
