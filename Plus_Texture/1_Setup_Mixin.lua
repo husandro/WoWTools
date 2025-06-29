@@ -271,6 +271,13 @@ function WoWTools_TextureMixin:SetScrollBar(bar, tab)
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, true)
 
+    if not bar:GetParent():IsIsProtected() then
+        bar:SetHideIfUnscrollable(true)
+        --bar.hideIfUnscrollable =true
+    else
+        bar.scrollBarHideIfUnscrollable=true
+    end
+    --bar.scrollBarHideIfUnscrollable=true
     --[[if bar.SetHideIfUnscrollable and not tab.notHide then--货币转移，出错, 这鸟BUG
        bar:SetHideIfUnscrollable(true)
     end]]

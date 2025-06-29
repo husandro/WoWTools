@@ -807,6 +807,7 @@ local function Init(isShow)
         frame:Hide()
         frame:SetText("")
     end)
+    WoWTools_TextureMixin:SetButton(List.DataFrame.CloseButton)
 
     List.DataFrame.enter= WoWTools_ButtonMixin:Cbtn(List.DataFrame, {size={100, 23}, isUI=true})
     List.DataFrame.enter:SetPoint('BOTTOM', List.DataFrame, 'TOP', 0, 5)
