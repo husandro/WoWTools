@@ -150,11 +150,12 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     local DRAGONRIDING_TREE_ID = 672;]]
 
     local numDragonriding=''
-    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1);
+    local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1)
+    
     if dragonridingConfigID then
-        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false) or {}
-        local num= treeCurrencies[1] and treeCurrencies[1].quantity
-        if num and num>0 then
+        local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false)
+        local num = treeCurrencies and treeCurrencies[1] and treeCurrencies[1].quantity
+        if num then
             numDragonriding= format(' %s%d|r |T%d:0|t', num==0 and '|cff9e9e9e' or '|cnGREEN_FONT_COLOR:', num, select(4, C_Traits.GetTraitCurrencyInfo(2563)) )
         end
     end
