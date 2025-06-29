@@ -785,8 +785,8 @@ local function Init()--设置标记, 框架
     function MakerFrame:Init_Set_Frame()--位置
         if Save().markersFramePoint then
             self:SetPoint(Save().markersFramePoint[1], UIParent, Save().markersFramePoint[3], Save().markersFramePoint[4], Save().markersFramePoint[5])
-        elseif WoWTools_DataMixin.Player.husandro then
-            self:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 60)
+        --elseif WoWTools_DataMixin.Player.husandro then
+            --self:SetPoint('BOTTOMRIGHT', _G['MultiBarBottomLeftButton11'], 'TOPRIGHT', 0, 60)
         else
             self:SetPoint('CENTER', -150, 50)
         end

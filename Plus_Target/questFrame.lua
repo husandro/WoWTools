@@ -48,6 +48,9 @@ local function Get_Unit_Text(_, unit)
         return
     end
 
+    --C_WorldLootObject.IsWorldLootObject(unit)
+    --C_WorldLootObject.GetWorldLootObjectInfo(unit)
+
     if UnitInPartyIsAI(unit) then
         local role = UnitGroupRolesAssigned(unit)
         if role and role~='NONE' then
@@ -93,6 +96,14 @@ local function Get_Unit_Text(_, unit)
         return text
     end
 end
+
+
+
+
+
+
+
+
 
 
 --设置，内容

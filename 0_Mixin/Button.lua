@@ -53,6 +53,7 @@ AvatarButtonTemplate
 
 GarrMission_RewardsShadow
 UI-HUD-CoolDownManager-Mask
+
 ]]
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
@@ -75,6 +76,17 @@ function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
 end
 
 
+
+
+
+
+
+
+
+
+--[[template
+UIPanelCloseButton
+]]
 function WoWTools_ButtonMixin:Cbtn(frame, tab)
     tab= tab or {}
     local text= tab.text

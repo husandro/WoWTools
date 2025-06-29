@@ -255,7 +255,7 @@ function WoWTools_TextureMixin:SetScrollBar(bar, tab)
         return
     end
 
-    tab=tab or {}
+    --tab=tab or {}
 
     self:SetAlphaColor(bar.Track.Thumb.Middle, true)
     self:SetAlphaColor(bar.Track.Thumb.Begin, true)
@@ -271,9 +271,9 @@ function WoWTools_TextureMixin:SetScrollBar(bar, tab)
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, true)
 
-    if bar.SetHideIfUnscrollable and not tab.notHide then--货币转移，出错, 这鸟BUG
+    --[[if bar.SetHideIfUnscrollable and not tab.notHide then--货币转移，出错, 这鸟BUG
        bar:SetHideIfUnscrollable(true)
-    end
+    end]]
 end
 
 

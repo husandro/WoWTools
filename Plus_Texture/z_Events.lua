@@ -1833,7 +1833,7 @@ function WoWTools_TextureMixin.Events:Blizzard_DelvesDashboardUI()
 end
 
 function WoWTools_TextureMixin.Events:Blizzard_DelvesDifficultyPicker()
-    self:SetNineSlice(DelvesDifficultyPickerFrame, self.min, true)
+    self:SetNineSlice(DelvesDifficultyPickerFrame)
     self:HideFrame(DelvesDifficultyPickerFrame.Border)
     self:SetButton(DelvesDifficultyPickerFrame.CloseButton)
 end
