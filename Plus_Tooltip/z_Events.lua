@@ -132,11 +132,11 @@ end
 function WoWTools_TooltipMixin.Events:Blizzard_GenericTraitUI()
     GenericTraitFrame.Currency:HookScript('OnEnter', function(f)
         local currencyInfo = f:GetParent().treeCurrencyInfo and f:GetParent().treeCurrencyInfo[1] or {}
-        if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<=0 then
+        if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<1 then
             return
         end
         local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
-        GameTooltip:AddDoubleLine(format('traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
+        GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.Icon.icon2..'traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
         WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
     end)
 end
