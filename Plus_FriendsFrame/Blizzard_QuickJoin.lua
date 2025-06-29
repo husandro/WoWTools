@@ -167,7 +167,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
         if self.AcceptButton:IsEnabled() and not IsModifierKeyDown() then
             local tank2, healer2, dps2= self:GetSelectedRoles()
             self.AcceptButton:Click()
-            print(WoWTools_DataMixin.Icon.icon2.. WoWTools_FriendsMixin.addName,
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_FriendsMixin.addName,
                     tank2 and INLINE_TANK_ICON, healer2 and INLINE_HEALER_ICON, dps2 and INLINE_DAMAGER_ICON,
                     WoWTools_TextMixin:GetEnabeleDisable(false)..'Alt',
                     link

@@ -80,7 +80,7 @@ local function Init_Dialogs()
                 text= text..'-'..WoWTools_DataMixin.Player.realm
             end
             Save().userChatFilterTab[text]={num=0, guid=nil}
-            print(WoWTools_DataMixin.Icon.icon2.. WoWTools_WorldMixin.addName, WoWTools_DataMixin.onlyChinese and '添加' or ADD, text, WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
+            print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, WoWTools_DataMixin.onlyChinese and '添加' or ADD, text, WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
         end,
         EditBoxOnTextChanged=function(self)
             local text= self:GetText() or ''

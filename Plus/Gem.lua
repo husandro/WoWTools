@@ -90,7 +90,7 @@ local function Init_Button_Menu(self, root)
     end, function()
         Save().favorites[self.itemID]= not Save().favorites[self.itemID] and true or nil
         self:set_favorite()
-        print(WoWTools_DataMixin.Icon.icon2.. addName, Save().favorites[self.itemID] and self.itemID or '', WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
+        print(WoWTools_DataMixin.Icon.icon2..addName, Save().favorites[self.itemID] and self.itemID or '', WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
         Func.Set_Gem()
     end)
     root:CreateDivider()
@@ -811,7 +811,7 @@ local function Init_Menu(self, root)
         return not Save().disableSpell
     end, function()
         Save().disableSpell= not Save().disableSpell and true or nil
-        print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disableSpell), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+        print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disableSpell), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end, {})
 
     root:CreateDivider()
@@ -1003,6 +1003,59 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Set_Move(self)
+    if Save().disabled then
+         self:Setup(ItemSocketingFrame)
+
+    else
+        self:Setup(ItemSocketingFrame, {
+        setSize=true,
+        minW=338,
+        minH=424,
+        sizeRestFunc=function()
+            ItemSocketingFrame:SetSize(338, 424)
+            set_point()
+            Func.Set_Gem()
+        end, sizeUpdateFunc=function()
+            set_point()
+            Func.Set_Gem()
+        end})
+    end
+
+    self:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
+
+    Set_Move= function()end
+end
+
+--镶嵌宝石，界面
+function WoWTools_MoveMixin.Events:Blizzard_ItemSocketingUI()
+    Set_Move(self)
+end
+
+
+
+
+
+
+
 local function Init()
     Frame= CreateFrame("Frame", nil, ItemSocketingFrame)
     Frame.buttons={}
@@ -1031,32 +1084,22 @@ local function Init()
     ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
-
-    WoWTools_MoveMixin:Setup(ItemSocketingFrame, {
-        --needSize=true, needMove=true,
-        setSize=true, minW=338, minH=424,
-    sizeRestFunc=function()
-        ItemSocketingFrame:SetSize(338, 424)
-        set_point()
-        Func.Set_Gem()
-    end, sizeUpdateFunc=function()
-        set_point()
-        Func.Set_Gem()
-    end})
-    WoWTools_MoveMixin:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
-
     hooksecurefunc('ItemSocketingFrame_Update', Init_ItemSocketingFrame_Update)--宝石，数据
-
 
     Init_Button_All()
     Init_Spell_Button()
 
-
     local region= select(3, ItemSocketingFrame:GetRegions())
     if region:GetObjectType()=='FontString' then
-        region:SetParent(ItemSocketingFrame.TitleContainer)    
+        region:SetParent(ItemSocketingFrame.TitleContainer)
     end
+
+    Set_Move(WoWTools_MoveMixin)
+
+    Init=function()end
 end
+
+
 
 
 
@@ -1067,7 +1110,6 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -1081,12 +1123,20 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled = not Save().disabled and true or nil
-                    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+
+                    Init()
+
+                    if Save().disabled then
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..addName,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    end
                 end
             })
 
             if Save().disabled then
                 self:UnregisterEvent(event)
+
             elseif C_AddOns.IsAddOnLoaded('Blizzard_ItemSocketingUI') then
                 Init()
                 self:UnregisterEvent(event)

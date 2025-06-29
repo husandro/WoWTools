@@ -57,7 +57,7 @@ local function Init()
     button:SetScript('OnHide', function(self)
         local num= C_Item.GetItemCount(37829, true, false, true)
         if self.item and self.item<num then
-            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_ItemMixin:GetLink(37829), self.item)
+            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_ItemMixin:GetLink(37829), self.item)
         end
         self.item=nil
     end)
@@ -113,7 +113,7 @@ local function Init()
 
         Save().scale=sacle
         self:set_Scale()
-        print(WoWTools_DataMixin.Icon.icon2.. addName, (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
+        print(WoWTools_DataMixin.Icon.icon2..addName, (WoWTools_DataMixin.onlyChinese and '缩放' or UI_SCALE), '|cnGREEN_FONT_COLOR:'..sacle)
     end)
 
     function button:set_Point()
@@ -226,7 +226,7 @@ local function Init()
     button:SetScript('OnClick', function(_, d)
         if d=='LeftButton' and IsShiftKeyDown() then
             local macroId = CreateMacro('Ram', 236912, '/click ExtraActionButton1')
-            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
+            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '创建宏' or CREATE_MACROS, 'Ram',
                 macroId and '/click ExtraActionButton1' or (WoWTools_DataMixin.onlyChinese and '无法创建' or NONE)
             )
         end
@@ -289,7 +289,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 button:ClearAllPoints()
                 button:set_Point()
             end
-            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
+            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '重置位置' or RESET_POSITION)
         end,
         tooltip=function()
             return WoWTools_DataMixin.onlyChinese and '节日: 美酒节（赛羊）'

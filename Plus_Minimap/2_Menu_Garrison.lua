@@ -148,10 +148,9 @@ function WoWTools_MinimapMixin:Garrison_Menu(_, root)
     local DRAGONRIDING_ACCOUNT_ACHIEVEMENT_ID = 15794;
     local DRAGONRIDING_TRAIT_SYSTEM_ID = 1;
     local DRAGONRIDING_TREE_ID = 672;]]
-print('aaaaa')
+
     local numDragonriding=''
     local dragonridingConfigID = C_Traits.GetConfigIDBySystemID(1)
-    
     if dragonridingConfigID then
         local treeCurrencies = C_Traits.GetTreeCurrencyInfo(dragonridingConfigID, 672, false)
         local num = treeCurrencies and treeCurrencies[1] and treeCurrencies[1].quantity

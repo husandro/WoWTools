@@ -99,13 +99,6 @@ function WoWTools_MoveMixin.Events:Blizzard_WeeklyRewards()
     self:Setup(WeeklyRewardsFrame.Blackout, {frame=WeeklyRewardsFrame})
 end
 
---镶嵌宝石，界面
-function WoWTools_MoveMixin.Events:Blizzard_ItemSocketingUI()
-    C_Timer.After(2, function()
-        self:Setup(ItemSocketingFrame)
-        self:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
-    end)
-end
 
 --装备升级,界面
 function WoWTools_MoveMixin.Events:Blizzard_ItemUpgradeUI()

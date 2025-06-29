@@ -135,7 +135,7 @@ local function Remove_Toy(itemID)--移除
     elseif ToyButton.itemID==itemID then
         ToyButton:Init_Random(Save().lockedToy)
     end
-    print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
+    print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE, WoWTools_ItemMixin:GetLink(itemID))
 end
 
 
@@ -365,7 +365,7 @@ local function Init_Menu(self, root)
         nil,
         {SetValue=function()
             Save().items={}
-            print(WoWTools_DataMixin.Icon.icon2.. addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+            print(WoWTools_DataMixin.Icon.icon2..addName, WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
             ToyButton:Rest_Random()
         end})
     end, {name=name})
@@ -386,7 +386,7 @@ local function Init_Menu(self, root)
         {SetValue=function()
             Save().items= P_Items
             ToyButton:Rest_Random()
-            print(WoWTools_DataMixin.Icon.icon2.. addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
+            print(WoWTools_DataMixin.Icon.icon2..addName, '|cnGREEN_FONT_COLOR:', WoWTools_DataMixin.onlyChinese and '还原' or TRANSMOGRIFY_TOOLTIP_REVERT)
         end})
         return MenuResponse.Open
     end, {name=name})

@@ -27,7 +27,7 @@ local function Set_Add_All_Player_Filter()
             if not Save().myChatFilterPlayers[guid] then
                 Save().myChatFilterPlayers[guid]= 1
                 index= index+1
-                print(WoWTools_DataMixin.Icon.icon2.. WoWTools_WorldMixin.addName,
+                print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName,
                     WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE,
                     '|cff9e9e9e'..index..'|r',
                     WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true, reName=true, reRealm=true})
@@ -140,9 +140,9 @@ local function Init_Filter_Menu(self, root)
             sub3=sub2:CreateButton('|cff9e9e9e'..index..')|r '..name..' |cff9e9e9e#'.. WoWTools_Mixin:MK(num, 3)..'|r', function(data)
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reName=true, reRealm=true, reLink=true})
                 if Save().myChatFilterPlayers[data.guid] then
-                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_WorldMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', player)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)..'|r', player)
                 else
-                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_WorldMixin.addName, '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', player)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, '|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '尚未发现' or TAXI_PATH_UNREACHABLE)..'|r', player)
                 end
                 Save().myChatFilterPlayers[data.guid]=nil
                 return MenuResponse.Open
@@ -277,10 +277,10 @@ local function Init_Filter_Menu(self, root)
             for guid, name in pairs(data.guid or {}) do
                 local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reLink=true, reName=true, reRealm=true})
                 if Save().myChatFilterPlayers[guid] then
-                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_WorldMixin.addName, player)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, player)
                 else
                     Save().myChatFilterPlayers[guid]= 1
-                    print(WoWTools_DataMixin.Icon.icon2.. WoWTools_WorldMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE)..'|r', player)
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '屏蔽' or IGNORE)..'|r', player)
                 end
             end
             FilterTextTab[data.text]= nil
