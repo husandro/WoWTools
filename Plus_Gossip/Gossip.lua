@@ -523,7 +523,7 @@ local function Create_GossipOptionCheckBox(frame, info)
 
         elseif not Save().not_Gossip_Text_Icon and (WoWToolsPlayerDate['GossipTextIcon'][self.gossipOptionID] or WoWTools_GossipMixin:Get_GossipData()[self.gossipOptionID]) then
             for _, info2 in pairs( C_GossipInfo.GetOptions() or {}) do
-                if info2.gossipOptionID==self.gossipOptionID and info.name then
+                if info2.gossipOptionID==self.gossipOptionID and info.name and info.name~=self.name then
                     GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..info2.name)
                     break
                 end
