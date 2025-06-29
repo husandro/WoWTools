@@ -18,10 +18,10 @@ local function Init()
         for _, btn in pairs(frame.ItemButtons or {}) do
             if btn.itemID then
                 if C_Item.IsItemDataCachedByID(btn.itemID) then
-                    WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {hideLevel=true, hideSet=true, itemID=btn.itemID})
+                    WoWTools_ItemMixin:SetItemStats(btn, btn.itemLink, {hideLevel=true, hideSet=true, itemID=btn.itemID})
                 else
                     C_Timer.After(1, function()
-                        WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {hideLevel=true, hideSet=true})
+                        WoWTools_ItemMixin:SetItemStats(btn, btn.itemLink, {hideLevel=true, hideSet=true})
                     end)
                 end
             end
@@ -31,7 +31,7 @@ local function Init()
 
 --LootJournalItemSetsMixin
     hooksecurefunc(EncounterJournal.LootJournalItems.ItemSetsFrame, 'ConfigureItemButton', function(_, btn)
-        WoWTools_ItemStatsMixin:SetItem(btn, btn.itemLink, {
+        WoWTools_ItemMixin:SetItemStats(btn, btn.itemLink, {
             itemID=btn.itemID,
             hideLevel=true,
             hideSet=true

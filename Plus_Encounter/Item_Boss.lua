@@ -140,7 +140,7 @@ local function Init(btn)
     btn.upText:SetText(upText or '')
 
 --显示, 物品, 属性
-    WoWTools_ItemStatsMixin:SetItem(btn, show and btn.link, {point= btn.IconBorder})
+    WoWTools_ItemMixin:SetItemStats(btn, show and btn.link, {point= btn.IconBorder})
 
 --物品法术，提示
     local spellID

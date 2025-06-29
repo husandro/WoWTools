@@ -13,7 +13,7 @@ end
 
 function WoWTools_TooltipMixin:Set_PlayerModel(tooltip)
     if not tooltip.playerModel then
-        tooltip.playerModel= CreateFrame("PlayerModel", nil, tooltip)--PlayerModel ModelScene DressUpModel PlayerModel        
+        tooltip.playerModel= CreateFrame("PlayerModel", tooltip:GetName()..'PlayerModel', tooltip)--PlayerModel ModelScene DressUpModel PlayerModel        
     else
         tooltip.playerModel:ClearAllPoints()
     end
@@ -40,24 +40,25 @@ local function Create(tooltip)
         return
     end
 
+    local name= tooltip:GetName()
 
-    tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16})
+    tooltip.textLeft=WoWTools_LabelMixin:Create(tooltip, {size=16, name=name..'TextLeft'})
     tooltip.textLeft:SetPoint('BOTTOMLEFT', tooltip, 'TOPLEFT')
 
-    tooltip.text2Left=WoWTools_LabelMixin:Create(tooltip, {size=16})--左上角字符2
+    tooltip.text2Left=WoWTools_LabelMixin:Create(tooltip, {size=16, name=name..'Text2Left'})--左上角字符2
     tooltip.text2Left:SetPoint('LEFT', tooltip.textLeft, 'RIGHT', 5, 0)
 
-    tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符
+    tooltip.textRight=WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT', name=name..'TextRight'})--右上角字符
     if tooltip.CloseButton then
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT', 0, 3)
     else
         tooltip.textRight:SetPoint('BOTTOMRIGHT', tooltip, 'TOPRIGHT')
     end
 
-    tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT'})--右上角字符2
+    tooltip.text2Right= WoWTools_LabelMixin:Create(tooltip, {size=12, justifyH='RIGHT', name=name..'Text2Right'})--右上角字符2
     tooltip.text2Right:SetPoint('BOTTOMRIGHT', tooltip.textRight, 'TOPRIGHT', 0, 4)
 
-    tooltip.backgroundColor= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 1)--背景颜色
+    tooltip.backgroundColor= tooltip:CreateTexture(name..'BackgroundColor', 'BACKGROUND',nil, 1)--背景颜色
     tooltip.backgroundColor:SetPoint('TOPLEFT')
     tooltip.backgroundColor:SetPoint('BOTTOMRIGHT')
     tooltip.backgroundColor:Hide()
@@ -72,7 +73,7 @@ local function Create(tooltip)
     end
 
     if not tooltip.Portrait then
-        tooltip.Portrait= tooltip:CreateTexture(nil, 'BACKGROUND',nil, 2)--右上角图标
+        tooltip.Portrait= tooltip:CreateTexture(name..'Portrait', 'BACKGROUND', nil, 2)--右上角图标
         if tooltip.CloseButton then
             tooltip.Portrait:SetPoint('TOPRIGHT', tooltip.CloseButton, 'BOTTOMRIGHT', -6, 0)
         else

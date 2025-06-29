@@ -131,7 +131,7 @@ local function UpdateButton(_, button)
     end
     button.levelBackground:SetShown(level>0 and has)
 
-    WoWTools_ItemStatsMixin:SetItem(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
+    WoWTools_ItemMixin:SetItemStats(button, C_Heirloom.GetHeirloomLink(button.itemID), {point=button.iconTexture, itemID=button.itemID, hideSet=true, hideLevel=not has, hideStats=not has})--设置，物品，4个次属性，套装，装等，
 end
 
 

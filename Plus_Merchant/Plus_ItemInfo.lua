@@ -231,7 +231,7 @@ local function Set_Item_Info()
 --物品，属性
             local classID= itemLink and select(6, C_Item.GetItemInfoInstant(itemLink))
             if classID==2 or classID==4 then--装备
-                local stat= WoWTools_ItemStatsMixin:GetItem(itemLink)--物品，属性，表
+                local stat= WoWTools_ItemMixin:GetItemStats(itemLink)--物品，属性，表
                 for _, tab in pairs(stat) do
                     stats= stats and stats..' ' or ''
                     stats= (stats and stats..' ' or '')..tab.text

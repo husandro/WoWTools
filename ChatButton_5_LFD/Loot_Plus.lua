@@ -24,7 +24,7 @@ local function Init()
                 btn.itemSubTypeLabel:SetText("")
             end
             btn:SetAlpha(1)
-            WoWTools_ItemStatsMixin:SetItem(btn.Item)
+            WoWTools_ItemMixin:SetItemStats(btn.Item)
             return
         end
 
@@ -119,7 +119,7 @@ local function Init()
             end
         end
 
-        WoWTools_ItemStatsMixin:SetItem(btn.Item, notGreed and btn.dropInfo.itemHyperlink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
+        WoWTools_ItemMixin:SetItemStats(btn.Item, notGreed and btn.dropInfo.itemHyperlink, {point= btn.Item and btn.Item.IconBorder})--设置，物品，4个次属性，套装，装等
 
         local text
         if not btn.itemSubTypeLabel then

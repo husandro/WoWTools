@@ -37,7 +37,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\Frame.lua
 0_Mixin\Group.lua
 0_Mixin\Item_Stats.lua
-0_Mixin\Item.lua
 0_Mixin\ItemLocation.lua
 0_Mixin\Key.lua
 0_Mixin\Label.lua
@@ -151,7 +150,8 @@ Plus_Texture\z_Events.lua
 
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
-Plus\ItemInfo.lua
+Plus_Item\0_ItemMixin.lua
+Plus_Item\1_Init.lua
  
 
 ##颜色选择器
@@ -482,7 +482,7 @@ Plus_Holiday\TrackButton.lua
 
 
 ##镶嵌宝石
-Plus\Gem.lua
+Plus_Gem\1_Init.lua
 
 
 ##目标指示

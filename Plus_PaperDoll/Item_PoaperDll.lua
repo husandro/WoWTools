@@ -675,7 +675,7 @@ local function Init()
             local link=hasItem and GetInventoryItemLink('player', slot) or nil--装等                
             if slot~=4 and slot~=19 then
                 set_Item_Tips(self, slot, link, true)
-                WoWTools_ItemStatsMixin:SetItem(self, not Save().hide and link or nil, {point=self.icon})
+                WoWTools_ItemMixin:SetItemStats(self, not Save().hide and link or nil, {point=self.icon})
                 WoWTools_PaperDollMixin:Settings_Tab3()
                 WoWTools_PaperDollMixin:Settings_Tab1()
             end

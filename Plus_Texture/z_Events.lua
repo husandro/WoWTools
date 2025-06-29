@@ -589,37 +589,13 @@ end
 
 --镶嵌宝石，界面
 function WoWTools_TextureMixin.Events:Blizzard_ItemSocketingUI()
-    self:SetNineSlice(ItemSocketingFrame, self.min)
+    self:HideFrame(ItemSocketingFrame)
     self:SetNineSlice(ItemSocketingFrameInset)
-    self:SetAlphaColor(ItemSocketingFrameBg)
-
-    ItemSocketingFrameInset.Bg:ClearAllPoints()
-    ItemSocketingFrameInset.Bg:SetAllPoints(ItemSocketingScrollFrame)
-    self:HideTexture(ItemSocketingFrame['SocketFrame-Right'])
-    self:HideTexture(ItemSocketingFrame['SocketFrame-Left'])
-    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Top'])
-    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Bottom'])
-    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Right'])
-    self:HideTexture(ItemSocketingFrame['ParchmentFrame-Left'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Top'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Bottom'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Right'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-Left'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-BottomLeft'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-TopLeft'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-BottomRight'])
-    self:SetAlphaColor(ItemSocketingFrame['GoldBorder-TopRight'])
-    self:SetAlphaColor(_G['ItemSocketingScrollFrameMiddle'])
-    self:SetAlphaColor(_G['ItemSocketingScrollFrameTop'])
-    self:SetAlphaColor(_G['ItemSocketingScrollFrameBottom'])
+    self:SetButton(ItemSocketingFrameCloseButton)
+    self:HideTexture(ItemSocketingFrameInset.Bg)
     self:SetScrollBar(ItemSocketingScrollFrame)
-
-    self:HideTexture(ItemSocketingFrame.TopLeftNub)
-    self:HideTexture(ItemSocketingFrame.TopRightNub)
-    self:HideTexture(ItemSocketingFrame.MiddleLeftNub)
-    self:HideTexture(ItemSocketingFrame.MiddleRightNub)
-    self:HideTexture(ItemSocketingFrame.BottomLeftNub)
-    self:HideTexture(ItemSocketingFrame.BottomRightNub)
+    self:HideFrame(ItemSocketingFrame)
+    self:Init_BGMenu_Frame(ItemSocketingFrame)
 end
 
 

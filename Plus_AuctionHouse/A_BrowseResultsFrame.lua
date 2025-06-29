@@ -49,7 +49,7 @@ local function Set_BrowseResultsFrame(frame)
                     end
                 end
                 if not text and select(6, C_Item.GetItemInfoInstant(itemKeyInfo.itemID))==3 then--显示, 宝石, 属性
-                    local t1, t2= WoWTools_ItemStatsMixin:Gem(nil, WoWTools_AuctionHouseMixin:GetItemLink(btn.rowData))
+                    local t1, t2= WoWTools_ItemMixin:SetGemStats(nil, WoWTools_AuctionHouseMixin:GetItemLink(btn.rowData))
                     if t1 then
                         text= t1..(t2 and ' '..t2 or '')
                     end

@@ -1,5 +1,4 @@
 
-
 local P_Save={
     --hide=true,--显示，隐藏 Frame
     --scale=1,--缩放
@@ -12,9 +11,9 @@ local P_Save={
 }
 
 
-local Func={}
 local addName
 local Frame
+local Set_Gem
 local SpellButton
 local SpellsTab={
     433397,--取出宝石
@@ -22,7 +21,7 @@ local SpellsTab={
 }
 
 local function Save()
-    return WoWToolsSave['Plus_Gem'] or {}
+    return WoWToolsSave['Plus_Gem']
 end
 
 
@@ -47,15 +46,7 @@ local function Get_Item_Color(itemLink)
     return r or 1, g or 1, b or 1
 end
 
-local function set_point()
-    ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
-    ItemSocketingScrollChild:ClearAllPoints()
-    ItemSocketingScrollChild:SetPoint('TOPLEFT')
-    ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
-    ItemSocketingDescription:SetPoint('LEFT')
-    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollChild:GetWidth()-18, true)--调整，宽度
-    ItemSocketingDescription:SetSocketedItem()
-end
+
 
 --保存，slot, 数据
 local function set_save_gem(itemEquipLoc, gemLink, index)
@@ -91,7 +82,7 @@ local function Init_Button_Menu(self, root)
         Save().favorites[self.itemID]= not Save().favorites[self.itemID] and true or nil
         self:set_favorite()
         print(WoWTools_DataMixin.Icon.icon2..addName, Save().favorites[self.itemID] and self.itemID or '', WoWTools_DataMixin.onlyChinese and '需求刷新' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, NEED, REFRESH))
-        Func.Set_Gem()
+        Set_Gem()
     end)
     root:CreateDivider()
 
@@ -102,7 +93,7 @@ local function Init_Button_Menu(self, root)
         return Save().gemLeft[self.itemID]
     end, function ()
         Save().gemLeft[self.itemID]= not Save().gemLeft[self.itemID] and true or nil
-        Func.Set_Gem()
+        Set_Gem()
     end)
 
     root:CreateCheckbox(
@@ -112,7 +103,7 @@ local function Init_Button_Menu(self, root)
         return Save().gemTop[self.itemID]
     end, function ()
         Save().gemTop[self.itemID]= not Save().gemTop[self.itemID] and true or nil
-        Func.Set_Gem()
+        Set_Gem()
     end)
 
     root:CreateCheckbox(
@@ -122,7 +113,7 @@ local function Init_Button_Menu(self, root)
         return Save().gemRight[self.itemID]
     end, function ()
         Save().gemRight[self.itemID]= not Save().gemRight[self.itemID] and true or nil
-        Func.Set_Gem()
+        Set_Gem()
     end)
 end
 
@@ -171,8 +162,8 @@ local function creatd_button(index, parent)
             self:UnregisterAllEvents()
         end
     end
-    btn:SetScript('OnHide', btn.set_event)
-    btn:SetScript('OnShow', btn.set_event)
+    btn:SetScript('OnHide', function(self) self:set_event() end)
+    btn:SetScript('OnShow', function(self) self:set_event() end)
 
     function btn:set_favorite()
         self.favorite:SetShown(Save().favorites[self.itemID])
@@ -221,10 +212,10 @@ local function creatd_button(index, parent)
         if IsAltKeyDown() then
             if d=='LeftButton' then
                 Save().gemLeft[self.itemID]= not Save().gemLeft[self.itemID] and true or nil
-                Func.Set_Gem()
+                Set_Gem()
             elseif d=='RightButton' then
                 Save().gemRight[self.itemID]= not Save().gemRight[self.itemID] and true or nil
-                Func.Set_Gem()
+                Set_Gem()
             end
         elseif d=='LeftButton' then
             C_Container.PickupContainerItem(self.bagID, self.slotID)
@@ -236,7 +227,7 @@ local function creatd_button(index, parent)
     btn:SetScript("OnMouseWheel", function(self)
         if IsAltKeyDown() then
             Save().gemTop[self.itemID]= not Save().gemTop[self.itemID] and true or nil
-            Func.Set_Gem()
+            Set_Gem()
         end
     end)
     btn:SetScript('OnEnter', function(self)
@@ -291,7 +282,7 @@ local function Set_Button_Att(btn, info)
     btn:set_favorite()
     btn:SetItem(itemLink)
     btn:SetItemButtonCount(info.info.stackCount)
-    WoWTools_ItemStatsMixin:Gem(btn, itemLink)
+    WoWTools_ItemMixin:SetGemStats(btn, itemLink)
     btn:SetShown(true)
 end
 
@@ -315,7 +306,7 @@ local function Set_Sort_Button(tab)
     end)
 end
 
-Func.Set_Gem= function()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
+function Set_Gem()--Blizzard_ItemSocketingUI.lua MAX_NUM_SOCKETS
     local items, gemLeft, gemTop, gemRight= {}, {}, {}, {}
     local scale= Save().scale or 1
 
@@ -623,6 +614,8 @@ end
 
 --宝石，数据
 local function Init_ItemSocketingFrame_Update()
+    ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+
     local numSockets = GetNumSockets() or 0
     CurTypeGemTab={}
     local itemEquipLoc
@@ -688,10 +681,10 @@ local function Init_ItemSocketingFrame_Update()
                     self:SetEnabled(count>0)
                     self:SetAlpha(count>0 and 1 or 0.3)
                 end
-                btn.gemButton:SetScript('OnEvent', btn.gemButton.settings)
-                btn.gemButton:SetScript('OnShow',  btn.gemButton.set_event)
-                btn.gemButton:SetScript('OnHide',  btn.gemButton.set_event)
-                btn.gemButton:SetScript('OnLeave', function(self)
+                btn.gemButton:SetScript('OnEvent', function(self) self:settings() end)
+                btn.gemButton:SetScript('OnShow',  function(self) self:set_event() end)
+                btn.gemButton:SetScript('OnHide',  function(self) self:set_event() end)
+                btn.gemButton:SetScript('OnLeave', function()
                     WoWTools_BagMixin:Find(false)
                 end)
                 btn.gemButton:SetScript('OnEnter', function(self)
@@ -713,7 +706,7 @@ local function Init_ItemSocketingFrame_Update()
 
             local gemLinkExist= GetExistingSocketLink(i)
             local gemLink= GetNewSocketLink(i) or gemLinkExist
-            local left, right= WoWTools_ItemStatsMixin:Gem(nil, gemLink)
+            local left, right= WoWTools_ItemMixin:SetGemStats(nil, gemLink)
             local atlas
             if gemLink then
                 if WoWTools_DataMixin.Is_Timerunning then
@@ -766,8 +759,8 @@ local function Init_ItemSocketingFrame_Update()
         ItemSocketingSocket3:ClearAllPoints()
         ItemSocketingSocket3:SetPoint('BOTTOMRIGHT', -50, 33)
     end
-    set_point()
-    Func.Set_Gem()
+
+    Set_Gem()
 end
 
 
@@ -845,7 +838,7 @@ local function Init_Menu(self, root)
          ..num,
     function()
         Save().gemLeft={}
-        Func.Set_Gem()
+        Set_Gem()
         return MenuResponse.Refresh
     end)
 
@@ -861,7 +854,7 @@ local function Init_Menu(self, root)
         ..num,
     function()
         Save().gemTop={}
-        Func.Set_Gem()
+        Set_Gem()
         return MenuResponse.Refresh
     end)
 
@@ -877,7 +870,7 @@ local function Init_Menu(self, root)
          ..num,
     function()
         Save().gemRight={}
-        Func.Set_Gem()
+        Set_Gem()
         return MenuResponse.Refresh
     end)
 
@@ -931,7 +924,7 @@ local function Init_Button_All()
     function btn:set_scale()
         if Frame:CanChangeAttribute() then
             Frame:SetScale(Save().scale or 1)
-            Func.Set_Gem()
+            Set_Gem()
         else
             self:RegisterEvent('PLAYER_REGEN_ENABLED')
         end
@@ -1026,21 +1019,33 @@ local function Set_Move(self)
          self:Setup(ItemSocketingFrame)
 
     else
+        ItemSocketingScrollFrame:SetPoint('BOTTOMRIGHT', -22, 90)
+
+        ItemSocketingScrollChild:ClearAllPoints()
+        ItemSocketingScrollChild:SetPoint('TOPLEFT')
+        ItemSocketingScrollChild:SetPoint('TOPRIGHT', -18, -254)
+
+        ItemSocketingDescription:ClearAllPoints()
+        ItemSocketingDescription:SetAllPoints()
+        ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
+
         self:Setup(ItemSocketingFrame, {
         setSize=true,
         minW=338,
         minH=424,
         sizeRestFunc=function()
             ItemSocketingFrame:SetSize(338, 424)
-            set_point()
-            Func.Set_Gem()
+            Set_Gem()
+            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
         end, sizeUpdateFunc=function()
-            set_point()
-            Func.Set_Gem()
+            Set_Gem()
+            ItemSocketingDescription:SetMinimumWidth(ItemSocketingScrollFrame:GetWidth()-36, true)--调整，宽度
         end})
     end
 
     self:Setup(ItemSocketingScrollChild, {frame=ItemSocketingFrame})
+    self:Setup(ItemSocketingFrameInset, {frame=ItemSocketingFrame})
+    self:Setup(ItemSocketingScrollFrame, {frame=ItemSocketingFrame})
 
     Set_Move= function()end
 end
@@ -1070,9 +1075,9 @@ local function Init()
             self:UnregisterAllEvents()
         end
     end
-    Frame:SetScript('OnHide', Frame.set_event)
-    Frame:SetScript('OnShow', Frame.set_event)
-    Frame:SetScript('OnEvent', Func.Set_Gem)
+    Frame:SetScript('OnHide', function(self) self:set_event() end)
+    Frame:SetScript('OnShow', function(self) self:set_event() end)
+    Frame:SetScript('OnEvent', function() Set_Gem() end)
     Frame:set_event()
 
     ItemSocketingSocket3Left:ClearAllPoints()
@@ -1084,7 +1089,9 @@ local function Init()
     ItemSocketingFrame['SocketFrame-Left']:SetPoint('TOPRIGHT', ItemSocketingFrame, 'BOTTOM',0, 77)
     ItemSocketingFrame['SocketFrame-Right']:SetPoint('BOTTOMLEFT', ItemSocketingFrame, 'BOTTOM', 0, 26)
 
-    hooksecurefunc('ItemSocketingFrame_Update', Init_ItemSocketingFrame_Update)--宝石，数据
+    hooksecurefunc('ItemSocketingFrame_Update', function(...)--宝石，数据
+        Init_ItemSocketingFrame_Update(...)
+    end)
 
     Init_Button_All()
     Init_Spell_Button()
@@ -1095,6 +1102,33 @@ local function Init()
     end
 
     Set_Move(WoWTools_MoveMixin)
+
+
+--Plus_Tooltip 加上的
+    C_Timer.After(0.3, function()
+        if not ItemSocketingDescription.backgroundColor then
+            return
+        end
+
+        ItemSocketingDescription.backgroundColor:SetAlpha(0)
+
+        ItemSocketingDescription.textLeft:SetParent(ItemSocketingScrollFrame)
+        ItemSocketingDescription.textLeft:ClearAllPoints()
+        ItemSocketingDescription.textLeft:SetPoint('BOTTOMLEFT', ItemSocketingScrollFrame, 'TOPLEFT')
+
+        ItemSocketingDescription.text2Left:SetParent(ItemSocketingScrollFrame)
+
+        ItemSocketingDescription.textRight:SetParent(ItemSocketingScrollFrame)
+        ItemSocketingDescription.textRight:ClearAllPoints()
+        ItemSocketingDescription.textRight:SetPoint('BOTTOMRIGHT', ItemSocketingScrollFrame, 'TOPRIGHT')
+
+        ItemSocketingDescription.text2Right:SetParent(ItemSocketingScrollFrame)
+
+        if ItemSocketingDescription.playerModel then
+            ItemSocketingDescription.playerModel:SetParent(ItemSocketingScrollFrame)
+        end
+    end)
+
 
     Init=function()end
 end
@@ -1142,7 +1176,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterEvent(event)
             end
 
-        elseif arg1=='Blizzard_ItemSocketingUI' then
+        elseif arg1=='Blizzard_ItemSocketingUI' and WoWToolsSave then
             Init()
             self:UnregisterEvent(event)
         end

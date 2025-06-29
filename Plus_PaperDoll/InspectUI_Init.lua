@@ -26,7 +26,7 @@ local function set_InspectPaperDollItemSlotButton_Update(frame)
 
     WoWTools_PaperDollMixin:Set_Item_Tips(frame, slot, link, false)
     WoWTools_PaperDollMixin:Set_Slot_Num_Label(frame, slot, link and true or false)--栏位, 帐号最到物品等级
-    WoWTools_ItemStatsMixin:SetItem(frame, link, {point=frame.icon})
+    WoWTools_ItemMixin:SetItemStats(frame, link, {point=frame.icon})
     if not frame.OnEnter and not Save().hide then
         frame:SetScript('OnEnter', function(self)
             if self.link then
