@@ -109,7 +109,7 @@ local function Init()
     end})
 
     WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
-
+    WoWTools_MoveMixin:Setup(OpenMailFrame)
 
 
 --收件箱
@@ -275,7 +275,11 @@ end
 
 --邮件
 function WoWTools_MoveMixin.Events:Blizzard_MailFrame()
-    Init()
+    if Save().disabled then
+        WoWTools_MoveMixin:Setup(MailFrame)
+        WoWTools_MoveMixin:Setup(SendMailFrame, {frame=MailFrame})
+        WoWTools_MoveMixin:Setup(OpenMailFrame)
+    end
 end
 
 

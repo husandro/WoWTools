@@ -5968,7 +5968,9 @@
         "TokenSubHeaderMixin",
         "CurrencyTransferLogEntryMixin",
         "ACCOUNT_TRANSFERRABLE_CURRENCY",
-        "ITEM_UPGRADE_DISCOUNT_TOOLTIP_ACCOUNT_WIDE"
+        "ITEM_UPGRADE_DISCOUNT_TOOLTIP_ACCOUNT_WIDE",
+        "BidAmountGold",
+        "BidAmountSilver"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

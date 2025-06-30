@@ -250,7 +250,6 @@ end
 function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:HideTexture(EncounterJournal.TopTileStreaks)
     self:SetButton(EncounterJournalCloseButton)
-    --self:SetNineSlice(EncounterJournal, true)
 
     self:HideTexture(EncounterJournalBg)
     self:HideTexture(EncounterJournalInset.Bg)
@@ -274,19 +273,9 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
         if btn:IsVisible() and not btn.set_texture then
             btn.bosslessTexture:SetTexture(0)
             btn.bosslessTexture:SetPoint('RIGHT')
-            --btn.bosslessTexture:SetColorTexture(0, 0, 0, 0.3)
-
             btn.bossTexture:SetTexture(0)
-            --[[btn.bossTexture:SetPoint('RIGHT')
-            btn.bossTexture:SetColorTexture(0, 0, 0, 0.3)
-
-            btn.armorType:SetTextColor(1,1,1)
-            btn.slot:SetTextColor(1,1,1)
-            btn.boss:SetTextColor(1,1,1)
-            btn.armorType:ClearAllPoints()]]
             btn.armorType:SetPoint('RIGHT', -2, -8)
             btn.name:SetPoint('RIGHT')
-
             btn.set_texture= true
         end
     end)
@@ -363,13 +352,17 @@ end
 
 
 
+
+
+
+
+
+
+
 --拍卖行
 function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:HideFrame(AuctionHouseFrame)
-    --self:SetNineSlice(AuctionHouseFrame)
-    --self:SetAlphaColor(AuctionHouseFrameMiddle, nil, nil, 0.3)
-    --self:SetAlphaColor(AuctionHouseFrameLeft, nil, nil, 0.3)
-    --self:SetAlphaColor(AuctionHouseFrameRight, nil, nil, 0.3)
+    self:SetButton(AuctionHouseFrameCloseButton)
 
     self:SetTabButton(AuctionHouseFrameBuyTab)
     self:SetTabButton(AuctionHouseFrameSellTab)
@@ -386,6 +379,11 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetScrollBar(AuctionHouseFrameAuctionsFrame.AllAuctionsList)
     self:SetScrollBar(AuctionHouseFrameAuctionsFrame.SummaryList)
     self:SetNineSlice(AuctionHouseFrameAuctionsFrame.SummaryList)
+
+--购买
+    self:SetNineSlice(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay)
+    self:SetNineSlice(AuctionHouseFrame.CommoditiesBuyFrame.ItemList)
+    self:SetScrollBar(AuctionHouseFrame.CommoditiesBuyFrame.ItemList)
 
 
     self:SetNineSlice(AuctionHouseFrame.BrowseResultsFrame.ItemList)
@@ -409,10 +407,13 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabMiddle, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabLeft, nil, nil, 0.3)
     self:SetAlphaColor(AuctionHouseFrame.CommoditiesSellFrame.CreateAuctionTabRight, nil, nil, 0.3)
+    self:SetEditBox(AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.QuantityInput.InputBox)
 
     self:SetNineSlice(AuctionHouseFrame.ItemSellList)
     self:SetScrollBar(AuctionHouseFrame.ItemSellList)
+
     self:SetNineSlice(AuctionHouseFrame.ItemSellFrame)
+    self:SetAlphaColor(AuctionHouseFrame.ItemSellFrame.ItemDisplay.ItemButton.EmptyBackground, nil, nil, 0.3)
     self:SetFrame(AuctionHouseFrame.ItemSellFrame.ItemDisplay, {alpha=0})
     self:SetEditBox(AuctionHouseFrame.ItemSellFrame.QuantityInput.InputBox)
     self:SetEditBox(AuctionHouseFrame.ItemSellFrame.PriceInput.MoneyInputFrame.GoldBox)
@@ -438,10 +439,35 @@ function WoWTools_TextureMixin.Events:Blizzard_AuctionHouseUI()
     self:SetScrollBar(AuctionHouseFrame.ItemBuyFrame.ItemList)
     self:SetNineSlice(AuctionHouseFrame.ItemBuyFrame.ItemList)
 
+
+    --目录，列表
+    local Alpha
+    hooksecurefunc('AuctionHouseFilterButton_SetUp', function(btn)
+        if btn.NormalTexture then
+            btn.NormalTexture:SetAlpha(Alpha or 1)
+        end
+    end)
+
+    local function settings(alpha)
+        AuctionHouseFrame.BrowseResultsFrame.ItemList.Background:SetAlpha(alpha)
+        AuctionHouseFrame.ItemSellList.Background:SetAlpha(alpha)
+        AuctionHouseFrame.ItemSellFrame.Background:SetAlpha(alpha)
+        AuctionHouseFrame.CommoditiesSellList.Background:SetAlpha(alpha)
+        AuctionHouseFrame.CommoditiesSellFrame.Background:SetAlpha(alpha)
+        AuctionHouseFrameAuctionsFrame.SummaryList.Background:SetAlpha(alpha)
+        AuctionHouseFrameAuctionsFrame.AllAuctionsList.Background:SetAlpha(alpha)
+        AuctionHouseFrameAuctionsFrame.BidsList.Background:SetAlpha(alpha)
+        AuctionHouseFrame.CommoditiesBuyFrame.BuyDisplay.Background:SetAlpha(alpha)
+        AuctionHouseFrame.CommoditiesBuyFrame.ItemList.Background:SetAlpha(alpha)
+
+        Alpha= alpha
+    end
+
     self:Init_BGMenu_Frame(AuctionHouseFrame, {
-        isNewButton=true,
-        newButtonPoint=function(btn)
-            btn:SetPoint('RIGHT', AuctionHouseFrameCloseButton, 'LEFT', -23, 0)
+        enabled=true,
+        alpha=1,
+        settings=function(_, texture, alpha)
+            settings(texture and 0 or alpha or 1)
         end
     })
 end
