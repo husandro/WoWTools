@@ -378,6 +378,7 @@ function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
     end
 end]]
 
+--PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
 function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
     if not frame then
         return

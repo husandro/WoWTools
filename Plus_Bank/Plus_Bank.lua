@@ -44,13 +44,15 @@ end
                     or {r=1,g=1,b=1}
         btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
         btn.indexLable:SetPoint('CENTER')
-        btn.indexLable:SetAlpha(0.2)
+        btn.indexLable:SetAlpha(0.3)
+
         WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
-        WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.1)
+        --WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.5)
+        btn.NormalTexture:SetVertexColor(color.r, color.g, color.b, 0.3)
 
         WoWTools_TextureMixin:HideTexture(btn.Background)
     end
-    btn.indexLable:SetText( Save().showIndex and index or '')
+    btn.indexLable:SetText(Save().showIndex and index or '')
 end
 
 
@@ -271,16 +273,18 @@ local function Set_AccountBankPanel(index)
 
 
     if index==1 then
-        --AccountBankPanel:GenerateItemSlotsForSelectedTab()
+        do
+            AccountBankPanel:SetShown(true)
+        end
 
-        local Data= AccountBankPanel.purchasedBankTabData
+        local Data= AccountBankPanel.purchasedBankTabData or C_Bank.FetchPurchasedBankTabData(Enum.BankType.Account)
         local selectedTabID= AccountBankPanel.selectedTabID or -1
+
         if not Data or #Data<=1 or selectedTabID==-1 then
+            AccountBankPanel:Hide()
             return
         end
 
-        AccountBankPanel:SetShown(true)
-    
         local line= Save().line
         local num= Save().num
         local last
@@ -345,18 +349,15 @@ end
 
 
 local function Init()
-    --[[if not Save().disabledAccountBag then
-        AccountBankPanel:Clean()
-    end]]
 
 --背包，需要这个函数 ContainerFrame7 - 13 <Frame name="ContainerFrame7" inherits="ContainerFrameBankTemplate"/>
     function BankSlotsFrame:IsCombinedBagContainer()
         return false
     end
 
-    hooksecurefunc('BankFrame_ShowPanel', Settings)
-    hooksecurefunc('BankFrameItemButtonBag_OnClick', Settings)
-    hooksecurefunc(BankPanelTabMixin, 'OnClick', Settings)
+    hooksecurefunc('BankFrame_ShowPanel', function() Settings() end)
+    hooksecurefunc('BankFrameItemButtonBag_OnClick', function() Settings() end)
+    hooksecurefunc(BankPanelTabMixin, 'OnClick', function() Settings() end)
 
     hooksecurefunc('BankFrameItemButton_Update', function(self)
         if self.isBag and self.set_point_toleft then
@@ -390,18 +391,21 @@ local function Init()
     end)
 
 --去掉，基础银行，背影
-    BankSlotsFrame:DisableDrawLayer('BORDER')
+    --BankSlotsFrame:DisableDrawLayer('BORDER')
+    WoWTools_TextureMixin:HideFrame(BankSlotsFrame)
 
     for i=1, NUM_BANKBAGSLOTS do
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
-
             WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, nil, 0.2)
             WoWTools_TextureMixin:SetAlphaColor(btn.icon, nil, nil, nil, 0.2)
-
         end
     end
-    return true
+
+
+    Init=function()
+        Settings()
+    end
 end
 
 
@@ -419,9 +423,5 @@ end
 
 --整合
 function WoWTools_BankMixin:Init_Plus()
-    if Init() then
-        Init= function() end
-    else
-        Settings()
-    end
+    Init()
 end

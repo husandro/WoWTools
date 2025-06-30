@@ -16,10 +16,6 @@ local P_Save={
 
     openBagInBank=WoWTools_DataMixin.Player.husandro,
 
-    --disabledBankBag=true,--银行背包
-    --disabledReagentFrame= true,--材料银行
-    --disabledAccountBag= true,--战团银行
-
     allAccountBag=true,--战团银行,整合
 
     guild={

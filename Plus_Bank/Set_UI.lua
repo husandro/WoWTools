@@ -522,14 +522,18 @@ end
 
 
 
-
 local function Init_Texture(self)
-    self:HideFrame(BankFrame, {show={[BankFrame.Background]=true}})
+   
     self:SetTabButton(BankFrameTab1)
     self:SetTabButton(BankFrameTab2)
     self:SetTabButton(BankFrameTab3)
-    --self:SetNineSlice(BankFrame)
+    BankFrameTab2:SetText(WoWTools_DataMixin.onlyChinese and '材料' or PROFESSIONS_COLUMN_HEADER_REAGENTS)
+    BankFrameTab3:SetText(WoWTools_DataMixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+    PanelTemplates_TabResize(BankFrameTab2)
+    PanelTemplates_TabResize(BankFrameTab3)
+
     self:SetButton(BankFrameCloseButton)
+
 --搜索框
     WoWTools_TextureMixin:SetEditBox(BankItemSearchBox)
     self:HideTexture(BankFrame.TopTileStreaks)
@@ -562,16 +566,19 @@ local function Init_Texture(self)
     self:SetNineSlice(AccountBankPanel)
 
 --背景
+    self:HideFrame(BankFrame, {show={[BankFrame.Background]=true}})
     BankFrame.Background:ClearAllPoints()
     BankFrame.Background:SetPoint('TOPLEFT', BankFrame)
     BankFrame.Background:SetPoint('BOTTOMRIGHT', BankFrame)
 
-    AccountBankPanel.Background=AccountBankPanel:CreateTexture(nil, 'BACKGROUND')
-    AccountBankPanel.Background:SetAllPoints()
+    self:SetFrame(BankCleanUpConfirmationPopup.Border, {alpha=1})
 
     self:Init_BGMenu_Frame(BankFrame, {
+        enabled=true,
+        alpha=1,
         settings=function(_, texture, alpha)
-            AccountBankPanel.Background:SetAlpha(texture and 0 or alpha or 1)
+            alpha= texture and 0 or alpha or 1
+            BankFrame.Background:SetAlpha(alpha)
         end
     })
 
@@ -634,54 +641,6 @@ local function Init()
     WoWTools_TextureMixin:CreateBG(BankFramePurchaseInfo, {isAllPoint=true})
 
 
---银行 1-7 背包 Free, BankFrame.lua
-    local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
-    for i=NUM_BANKBAGSLOTS, 1, -1 do
-        local button= BankSlotsFrame['Bag'..i]
-        if button then
-
-            button.numFreeSlots=WoWTools_LabelMixin:Create(button, {color=true, justifyH='CENTER'})
-            button.numFreeSlots:SetPoint('TOP', 0, 2)
-            button.numMaxSlots=WoWTools_LabelMixin:Create(button, {justifyH='CENTER', color={r=0.82,g=0.82,b=0.82, a=0.7}})
-            button.numMaxSlots:SetPoint('BOTTOM')
-
-            button.NormalTexture:SetAlpha(0.2)
-
-            function button:set_free()
-                local hasItem = GameTooltip:SetInventoryItem("player", self:GetInventorySlot())
-                local numFreeSlots, maxSlot
-
-                if hasItem then
-                    local bagID= self:GetBagID()
-                    numFreeSlots= C_Container.GetContainerNumFreeSlots(bagID)
-                    maxSlot= C_Container.GetContainerNumSlots(bagID)
-                end
-
-                self.numFreeSlots:SetText(numFreeSlots or '')
-                self.numMaxSlots:SetText(maxSlot or '')
-                self.icon:SetAlpha(hasItem and 1 or 0.2)
-            end
-
-        end
-
-        local frame= _G['ContainerFrame'..(i+numBag)]
-        if frame then
-            hooksecurefunc(frame,'UpdateItems', function(self)
-                local bagID= self:GetBagID()-NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES-1
-                local btn= BankSlotsFrame['Bag'..bagID]
-                if btn and btn.set_free then
-                    btn:set_free()
-                end
-            end)
-        end
-
-    end
-
-    hooksecurefunc('BankFrameItemButton_Update', function(btn)
-        if btn.set_free then
-            btn:set_free()
-        end
-    end)
 
 
 

@@ -20,6 +20,7 @@ local function Init()
     sizeUpdateFunc= function()
         local h= math.ceil((BankFrame:GetHeight()-108)/(Save().line+37))
         Save().num= h
+        --WoWTools_BankMixin:Init_Plus()
     end, sizeRestFunc= function()
         Save().num=15
         WoWTools_BankMixin:Init_Plus()
@@ -28,6 +29,7 @@ local function Init()
     end})
 
     WoWTools_MoveMixin:Setup(AccountBankPanel, {frame=BankFrame})
+    WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
 
     hooksecurefunc('BankFrame_ShowPanel', function()
         local index= BankFrame.activeTabIndex

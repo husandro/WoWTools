@@ -5975,7 +5975,8 @@
         "EnchantingItemButtonAnimMixin",
         "EncounterJournalEncounterFrameInfoRightHeaderShadow",
         "COSTS_LABEL",
-        "ITEM_UPGRADE_COST_LABEL"
+        "ITEM_UPGRADE_COST_LABEL",
+        "REPUTATION_SORT_TYPE_ACCOUNT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

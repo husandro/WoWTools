@@ -81,28 +81,6 @@ function WoWTools_ItemMixin.Frames:LootFrame()
 end
 
 
---银行
-function WoWTools_ItemMixin.Frames:BankPanelItemButtonMixin()
-    hooksecurefunc( BankPanelItemButtonMixin, 'Refresh', function (frame)
-        WoWTools_ItemMixin:SetupInfo(frame, {itemLink=frame.itemInfo and frame.itemInfo.hyperlink})
-    end)
-
---银行, BankFrame.lua
-    hooksecurefunc('BankFrameItemButton_Update', function(frame)
-        if not frame.isBag then
-            local bag, slot= WoWTools_BankMixin:GetBagAndSlot(frame)
-            WoWTools_ItemMixin:SetupInfo(frame, {bag={bag=bag, slot=slot}})
-            --WoWTools_ItemMixin:SetupInfo(frame, {bag={bag=frame:GetParent():GetID(), slot=frame:GetID()}})
-        end
-    end)
-
---战团银行
-    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(frame)
-        local info= frame.itemInfo or {}
-        info.isShow=true
-        WoWTools_ItemMixin:SetupInfo(frame, info)
-    end)
-end
 
 
 

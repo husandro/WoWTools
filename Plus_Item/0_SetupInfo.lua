@@ -745,7 +745,7 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
 
     local topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem
 
-    if frame:IsVisible() and tab then
+    if tab then
         Create_Label(frame, tab)
         topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem= Get_Info(tab)
 

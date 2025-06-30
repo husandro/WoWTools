@@ -359,6 +359,7 @@ Plus_Bank\Left_List.lua
 Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua
 Plus_Bank\PortraitButton.lua
+Plus_Bank\ItemInfo.lua
 
 
 ##公会银行
