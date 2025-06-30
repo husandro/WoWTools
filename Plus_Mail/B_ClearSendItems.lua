@@ -40,7 +40,7 @@ local function Init()
                 num= num+ (select(4, GetSendMailItem(i)) or 1)
             end
             if btn:IsShown() then
-                WoWTools_ItemMixin:Setup(btn, {itemLink=hasItem and GetSendMailItemLink(i)})
+                WoWTools_ItemMixin:SetupInfo(btn, {itemLink=hasItem and GetSendMailItemLink(i)})
                 btn:SetAlpha(hasItem and 1 or 0.3)
             end
         end

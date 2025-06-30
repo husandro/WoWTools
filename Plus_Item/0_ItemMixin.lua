@@ -1,4 +1,6 @@
 WoWTools_ItemMixin={
+    Events={},
+    Frames={},
 }
 --[[
 WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性

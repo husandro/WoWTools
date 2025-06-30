@@ -250,7 +250,7 @@ local function Set_Item_Info()
         btn.stats:SetText(stats or '')
         btn.stats.spellID= spellID
 --提示
-        WoWTools_ItemMixin:Setup(
+        WoWTools_ItemMixin:SetupInfo(
             _G["MerchantItem"..i..'ItemButton'],
             {merchant={slot=index, buyBack= not isMerce}}
         )
@@ -258,7 +258,7 @@ local function Set_Item_Info()
 
 --回购，物品，信息
     if isMerce then
-        WoWTools_ItemMixin:Setup(
+        WoWTools_ItemMixin:SetupInfo(
             MerchantBuyBackItemItemButton,
             {merchant={slot=numBuybackItems, buyBack=true}}
         )

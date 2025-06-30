@@ -311,7 +311,7 @@ local function Init()
     for btn in ScrappingMachineFrame.ItemSlots.scrapButtons:EnumerateActive() do
         if (btn) then
             hooksecurefunc(btn, 'RefreshIcon', function(self)
-                WoWTools_ItemMixin:Setup(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
+                WoWTools_ItemMixin:SetupInfo(self, {itemLink=self.itemLink})-- itemLocation= self.itemLocation})
             end)
         end
     end

@@ -152,7 +152,8 @@ Plus_Texture\z_Events.lua
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
 Plus_Item\0_ItemMixin.lua
 Plus_Item\1_Init.lua
- 
+Plus_Item\Events.lua
+Plus_Item\Frames.lua
 
 ##颜色选择器
 Plus_Color\0_ColorMixin.lua
