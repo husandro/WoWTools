@@ -415,7 +415,7 @@ local function Init()
 
 
 --当前对话， 有多少已修该
-    NumGossipCNLabel= WoWTools_LabelMixin:Create(GButton2, {
+    NumGossipCNLabel= WoWTools_LabelMixin:Create(GossipFrame, {
         name= 'WoWToolsOpenGossipNumCNLabel',
     })
     NumGossipCNLabel:SetText(0)

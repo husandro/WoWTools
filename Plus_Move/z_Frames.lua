@@ -174,13 +174,7 @@ function WoWTools_MoveMixin.Frames:SplashFrame()
 end
 
 
---银行
-function WoWTools_MoveMixin.Frames:BankFrame()
-    if WoWToolsSave['Plus_Bank'] and WoWToolsSave['Plus_Bank'].disabled then
-        self:Setup(BankFrame)
-        self:Setup(AccountBankPanel, {frame=BankFrame})
-    end
-end
+
 
 --就绪
 function WoWTools_MoveMixin.Frames:ReadyCheckFrame()

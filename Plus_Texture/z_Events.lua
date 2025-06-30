@@ -276,6 +276,7 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
             btn.bossTexture:SetTexture(0)
             btn.armorType:SetPoint('RIGHT', -2, -8)
             btn.name:SetPoint('RIGHT')
+            btn.name:SetTextColor(0,0,0)
             btn.set_texture= true
         end
     end)
@@ -285,6 +286,8 @@ function WoWTools_TextureMixin.Events:Blizzard_EncounterJournal()
     self:SetScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrame)
 
 --BOSS, 列表
+    self:HideTexture(EncounterJournalEncounterFrameInfoLeftHeaderShadow)
+    self:HideTexture(EncounterJournalEncounterFrameInfoRightHeaderShadow)
     self:SetScrollBar(EncounterJournalEncounterFrameInfo.BossesScrollBar)
     hooksecurefunc(EncounterBossButtonMixin, 'Init', function(btn)
         btn:GetRegions():SetAlpha(0)

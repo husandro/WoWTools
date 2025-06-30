@@ -61,7 +61,7 @@ end
 
 --拾取
 function WoWTools_ItemMixin.Frames:LootFrame()
-        
+
     hooksecurefunc(LootFrame, 'Open', function(frame)--LootFrame.lua
         if not frame.ScrollBox:GetView() then
             return
@@ -133,7 +133,7 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
                 end
             end)
         end
-        return
+
 
     elseif C_AddOns.IsAddOnLoaded("Baggins") then
         hooksecurefunc(_G['Baggins'], 'UpdateItemButton', function(_, _, button, bagID, slotID)
@@ -141,7 +141,6 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
                 WoWTools_ItemMixin:SetupInfo(button, {bag={bag=bagID, slot=slotID}})
             end
         end)
-        return
 
     elseif C_AddOns.IsAddOnLoaded('Inventorian') then
         local lib = LibStub("AceAddon-3.0", true)
@@ -155,28 +154,31 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
                 hooksecurefunc(item, "Update", InvLevel.Update)
             end
             hooksecurefunc(ADDON.Item, "WrapItemButton", InvLevel.WrapItemButton)
-            return
         end
 
     else
+
+
         local function setBags(frame)--背包设置
-            if not frame:IsVisible() then
-                return
-            end
             for _, itemButton in frame:EnumerateValidItems() do
                 if itemButton.hasItem then
                     local slotID, bagID= itemButton:GetSlotAndBagID()--:GetID() GetBagID()
                     WoWTools_ItemMixin:SetupInfo(itemButton, {bag={bag=bagID, slot=slotID}})
                 else
-                    WoWTools_ItemMixin:SetupInfo(itemButton, {})
+                    WoWTools_ItemMixin:SetupInfo(itemButton)
                 end
             end
         end
+
         hooksecurefunc('ContainerFrame_GenerateFrame',function()
             for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
                 if not frame.SetBagInfo then
                     setBags(frame)
-                    hooksecurefunc(frame, 'UpdateItems', setBags)
+
+                    hooksecurefunc(frame, 'UpdateItems', function(f)
+
+                        setBags(f)
+                    end)
                     frame.SetBagInfo=true
                 end
             end

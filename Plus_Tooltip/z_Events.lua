@@ -130,15 +130,41 @@ end
 
 
 function WoWTools_TooltipMixin.Events:Blizzard_GenericTraitUI()
+    GenericTraitFrame.Currency:HookScript('OnLeave', function(f)
+        f:SetAlpha(1)
+    end)
     GenericTraitFrame.Currency:HookScript('OnEnter', function(f)
         local currencyInfo = f:GetParent().treeCurrencyInfo and f:GetParent().treeCurrencyInfo[1] or {}
+
         if not currencyInfo.traitCurrencyID or currencyInfo.traitCurrencyID<1 then
             return
         end
-        local overrideIcon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
-        GameTooltip:AddDoubleLine(format(WoWTools_DataMixin.Icon.icon2..'traitCurrencyID: %d', currencyInfo.traitCurrencyID), format('|T%d:0|t%d', overrideIcon or 0, overrideIcon or 0))
-        WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
+
+        if not GameTooltip:IsShown() then
+            GameTooltip:SetOwner(f, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine()
+        end
+
+        local icon = select(4, C_Traits.GetTraitCurrencyInfo(currencyInfo.traitCurrencyID))
+
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)..HEADER_COLON
+            ..(currencyInfo.quantity or 0)
+            ..'/'
+            ..(currencyInfo.maxQuantity or (WoWTools_DataMixin.onlyChinese and '无限' or UNLIMITED)),
+
+            (WoWTools_DataMixin.onlyChinese and '总花费：' or ITEM_UPGRADE_COST_LABEL)..(currencyInfo.spent or 0)
+        )
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.Icon.icon2..'traitCurrencyID '..currencyInfo.traitCurrencyID,
+            icon and '  |T'..icon..':0|t'..icon
+        )
+
+        GameTooltip:Show()
+        f:SetAlpha(0.5)
     end)
+
 end
 
 

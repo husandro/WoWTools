@@ -5970,7 +5970,12 @@
         "ACCOUNT_TRANSFERRABLE_CURRENCY",
         "ITEM_UPGRADE_DISCOUNT_TOOLTIP_ACCOUNT_WIDE",
         "BidAmountGold",
-        "BidAmountSilver"
+        "BidAmountSilver",
+        "ContainerFrameItemButtonMixin",
+        "EnchantingItemButtonAnimMixin",
+        "EncounterJournalEncounterFrameInfoRightHeaderShadow",
+        "COSTS_LABEL",
+        "ITEM_UPGRADE_COST_LABEL"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

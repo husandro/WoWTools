@@ -192,32 +192,46 @@ end
 
 
 local function Create_Label(frame, tab)
-    frame.topRightText=WoWTools_LabelMixin:Create(frame, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
-    frame.topRightText:SetPoint('TOPRIGHT', tab.point or frame, 2,0)
+    if frame.topRightText then
+        return
+    end
 
-    frame.topLeftText=WoWTools_LabelMixin:Create(frame, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+    local labelInfo={
+        size=tab.size or size,
+        color=tab.color or {r=1, g=1, b=1},
+    }
+
+
+    frame.topLeftText=WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.topLeftText:SetPoint('TOPLEFT', tab.point or frame)
 
-    frame.bottomRightText=WoWTools_LabelMixin:Create(frame, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
-    frame.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or frame)
-
-    frame.leftText=WoWTools_LabelMixin:Create(frame, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
+    frame.leftText=WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.leftText:SetPoint('LEFT', tab.point or frame)
 
-    frame.rightText=WoWTools_LabelMixin:Create(frame, {size=tab.size or size, color={r=1,g=1,b=1}})--size, nil, nil, nil, 'OVERLAY')
-    frame.rightText:SetPoint('RIGHT', tab.point or frame)
-
-    frame.bottomLeftText=WoWTools_LabelMixin:Create(frame, {size=tab.size or size, color={r=1,g=1,b=1}})--size)
+    frame.bottomLeftText=WoWTools_LabelMixin:Create(frame, labelInfo)
     frame.bottomLeftText:SetPoint('BOTTOMLEFT', tab.point or frame)
 
+
+    frame.topRightText=WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.topRightText:SetPoint('TOPRIGHT', tab.point or frame, 2,0)
+
+    frame.rightText=WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.rightText:SetPoint('RIGHT', tab.point or frame)
+
+    frame.bottomRightText=WoWTools_LabelMixin:Create(frame, labelInfo)
+    frame.bottomRightText:SetPoint('BOTTOMRIGHT', tab.point or frame)
+
+
     frame.setIDItem=frame:CreateTexture()
-    frame.setIDItem:SetAllPoints(frame)
+    frame.setIDItem:SetPoint('TOPLEFT', -4, 4)
+    frame.setIDItem:SetPoint('BOTTOMRIGHT', 4, -4)
     frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')
 
     if frame.Count then
         frame.Count:ClearAllPoints()
-        frame.Count:SetPoint('BottomRight')
+        frame.Count:SetPoint('BOTTOMRIGHT')
     end
+
 end
 
 
@@ -269,7 +283,7 @@ local function Get_Info(tab)
             if info.quantity and info.quantity>0 then
                 topLeftText= WoWTools_Mixin:MK(info.quantity, 3)
             end
-            return topRightText, rightText, bottomRightText, topLeftText, leftText, bottomLeftText, setIDItem
+            return topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem
         else
             itemLink= GetLootSlotLink(tab.lootIndex)
         end
@@ -312,6 +326,10 @@ local function Get_Info(tab)
         return
     end
 
+
+
+
+
     itemID= itemID or C_Item.GetItemInfoInstant(itemLink) or C_Item.GetItemIDForItemInfo(itemLink)
 
     local itemName, _, itemQuality2, itemLevel2, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, _, _, classID, subclassID, bindType, expacID, setID, isCraftingReagent = C_Item.GetItemInfo(itemLink)
@@ -323,8 +341,13 @@ local function Get_Info(tab)
     itemQuality= itemQuality or itemQuality2
     expacID= expacID or 0
 
-    setIDItem= setID and true or nil--套装
-
+--套装，传说5，神器6，传家宝，提示
+    if itemQuality and itemQuality>=Enum.ItemQuality.Legendary or setID then
+        --setIDItem=true
+    --elseif itemQuality and itemQuality>=Enum.ItemQuality.Legendary then--5 or itemQuality==Enum.ItemQuality.Artifact then
+        setIDItem= itemQuality or true
+    end
+    --setIDItem= setID and true or ((itemQuality==Enum.ItemQuality.Legendary or itemQuality==Enum.ItemQuality.Artifact) and itemQuality) or nil
 
     local lowerVer= not WoWTools_DataMixin.Is_Timerunning and expacID< WoWTools_DataMixin.ExpansionLevel and itemID~='5512' and itemID~='113509'--低版本，5512糖 食物,113509[魔法汉堡]
 
@@ -332,7 +355,7 @@ local function Get_Info(tab)
     if tab.bag and containerInfo and not containerInfo.isLocked then
         sellItem= WoWTools_MerchantMixin:CheckSellItem(itemID, itemLink, itemQuality, isBound)--检测是否是出售物品
     end
-    
+
 --检测是否是出售物品
     if sellItem then
         if itemQuality==0 then
@@ -341,7 +364,7 @@ local function Get_Info(tab)
             topLeftText= itemLevel and itemLevel>20 and (classID==2 or classID==4) and itemLevel
             topRightText= '|T236994:0|t'
         end
-    
+
 --炉石
     elseif itemID==6948 then
         bottomLeftText=WoWTools_TextMixin:sub(WoWTools_TextMixin:CN(GetBindLocation()), 3, 6, true)
@@ -589,6 +612,7 @@ local function Get_Info(tab)
 
         leftText= leftText or ''--不显示，物品数量
 
+
 --宠物
     elseif battlePetSpeciesID or itemID==82800 or classID==17 or (classID==15 and subclassID==2) or itemLink:find('Hbattlepet:(%d+)') then
         local speciesID = battlePetSpeciesID or itemLink:match('Hbattlepet:(%d+)') or (itemID and select(13, C_PetJournal.GetPetInfoByItemID(itemID)))--宠物
@@ -693,7 +717,7 @@ local function Get_Info(tab)
         end
     end
 
-    return topRightText, rightText, bottomRightText, topLeftText, leftText, bottomLeftText, setIDItem
+    return topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem
 end
 
 
@@ -715,21 +739,37 @@ end
 
 
 function WoWTools_ItemMixin:SetupInfo(frame, tab)
-    if not frame or not frame:IsVisible() then
+    if not frame then
         return
-    else
-        Create_Label(frame, tab)
     end
 
+    local topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem
 
-    local topRightText, rightText, bottomRightText, topLeftText, leftText, bottomLeftText, setIDItem= Get_Info(tab)
+    if frame:IsVisible() and tab then
+        Create_Label(frame, tab)
+        topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem= Get_Info(tab)
+
+    elseif not frame.topRightText then
+        return
+    end
 
     frame.topRightText:SetText(topRightText or '')
-    frame.topLeftText:SetText(topLeftText or '')
-    frame.bottomRightText:SetText(bottomRightText or '')
-    frame.leftText:SetText(leftText or '')
     frame.rightText:SetText(rightText or '')
+    frame.bottomRightText:SetText(bottomRightText or '')
+
+    frame.topLeftText:SetText(topLeftText or '')
+    frame.leftText:SetText(leftText or '')
     frame.bottomLeftText:SetText(bottomLeftText or '')
+
+
+    if setIDItem then
+        if type(setIDItem)=='number' then
+            local r, g, b = C_Item.GetItemQualityColor(setIDItem)
+            frame.setIDItem:SetVertexColor(r or 1, g or 1, b or 1)
+        else            
+            frame.setIDItem:SetVertexColor(0,1,0)
+        end
+    end
     frame.setIDItem:SetShown(setIDItem)
 end
 

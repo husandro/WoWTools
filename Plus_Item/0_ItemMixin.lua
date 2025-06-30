@@ -183,11 +183,13 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     if link then
         if not hideSet then
             setID= select(16 , C_Item.GetItemInfo(link))--套装
-            if setID and not frame.itemSet then
-                frame.itemSet= frame:CreateTexture()
-                frame.itemSet:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
-                frame.itemSet:SetAllPoints(point)
-                frame.itemSet:SetAlpha(0.7)
+            if setID and not frame.setIDItem then
+                frame.setIDItem= frame:CreateTexture()
+                frame.setIDItem:SetAtlas('UI-HUD-MicroMenu-Highlightalert')--'UI-HUD-MicroMenu-Highlightalert')--services-icon-goldborder
+                --frame.setIDItem:SetPoint('TOPLEFT', -4, 3)
+                --frame.setIDItem:SetPoint('BOTTOMRIGHT', 4, -3)
+                frame.setIDItem:SetAllPoints(point)
+                --frame.setIDItem:SetAlpha(0.75)
             end
         end
 
@@ -249,7 +251,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
         end
     end
 
-    if frame.itemSet then frame.itemSet:SetShown(setID) end--套装
+    if frame.setIDItem then frame.setIDItem:SetShown(setID) end--套装
     if frame.itemLevel then frame.itemLevel:SetText(itemLevel or '') end--装等
 
     local tab= not hideStats and self:GetItemStats(link) or {}--物品，次属性，表
@@ -422,7 +424,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
 
             if wow and not data.wow and AccountTab[line.leftText] then
 
-                data.wow= '|A:questlog-questtypeicon-account:0:0:a'
+                data.wow= '|A:questlog-questtypeicon-account:0:0|a'
                 if onlyWoW then
                     break
                 end
