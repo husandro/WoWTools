@@ -42,6 +42,9 @@ local function MoveToLeft_Frame(frame)
     if not WoWTools_FrameMixin:IsLocked(frame) then
         frame:ClearAllPoints()
         frame:SetPoint('RIGHT', UIParent, 'LEFT', -30, 0)
+        if frame.ResizeButton then
+            frame.ResizeButton:SetClampedToScreen(false)
+        end
     end
 end
 

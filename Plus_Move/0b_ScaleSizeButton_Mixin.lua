@@ -457,19 +457,18 @@ end
 
 --Frame 移动时，设置透明度
 local function Set_Move_Alpha(frame)
-    local name= frame:GetName()
-    if not frame or Save().notMoveAlpha or not name then
+    local name= frame and frame:GetName()
+    if not name or Save().notMoveAlpha then
         return
     end
 
-    local btn= frame.ResizeButton
-    if not btn then
-        btn= CreateFrame("Frame", nil, frame)
-        btn.name= name
-        frame.ResizeButton= btn
-    end
 
-    btn:SetScript('OnEvent', function(self, event)
+    if not frame.ResizeButton then
+        frame.ResizeButton= CreateFrame("Frame", nil, frame)
+    end
+    frame.ResizeButton.name= name
+
+    frame.ResizeButton:SetScript('OnEvent', function(self, event)
         local target= self:GetParent()
         if event=='PLAYER_STARTED_MOVING' then
             target:SetAlpha(Save().alpha)
@@ -482,7 +481,7 @@ local function Set_Move_Alpha(frame)
 
 
 
-    function btn:set_move_event()
+    function frame.ResizeButton:set_move_event()
         if Save().disabledAlpha[self.name] or Save().alpha==1 then
             self:UnregisterAllEvents()
             self:SetScript('OnShow', nil)
@@ -504,7 +503,7 @@ local function Set_Move_Alpha(frame)
         end
     end
 
-    btn:set_move_event()
+    frame.ResizeButton:set_move_event()
 
     frame:HookScript('OnEnter', function(self)
         self:SetAlpha(1)
@@ -547,7 +546,7 @@ local function Set_Tooltip(self)
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
     local target= self:GetParent()
-    local name= self.name
+    local name= self.name or target:GetName()
 
     if WoWTools_FrameMixin:IsLocked(target) then
         GameTooltip:AddDoubleLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT), WoWTools_TextMixin:GetEnabeleDisable(false))
@@ -852,7 +851,9 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     local initFunc= tab.initFunc--初始
 
 
-    local btn= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+    frame.ResizeButton= CreateFrame('Button', 'WoWToolsResizeButton'..name, frame, 'PanelResizeButtonTemplate')--SharedUIPanelTemplates.lua
+    local btn= frame.ResizeButton
+
     btn:SetFrameStrata('DIALOG')
     btn:SetFrameLevel(frame:GetFrameLevel()+7)
     btn:SetSize(18, 18)
@@ -864,8 +865,6 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         btn:SetPoint('BOTTOMRIGHT', frame, 3, -3)
     end
 
-
-    frame.ResizeButton= btn
 
     btn.name= name
 
