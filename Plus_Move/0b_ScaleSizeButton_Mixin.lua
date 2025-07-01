@@ -433,7 +433,7 @@ local function Init_Menu(self, root)
     WoWTools_MenuMixin:OpenOptions(root, {
         category=WoWTools_MoveMixin.Category,
         name=WoWTools_MoveMixin.addName,
-        name2=name,
+        --name2=name,
     })
 end
 
@@ -832,7 +832,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         --or (Save().disabledZoom and not tab.needSize)
         or tab.notZoom
         or frame.ResizeButton
-        or tab.frame
+        or (tab.frame and not tab.needSize)
         or _G['WoWToolsResizeButton'..name]
 
     then
@@ -867,7 +867,6 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
 
     frame.ResizeButton= btn
 
-    --btn.targetFrame= frame
     btn.name= name
 
 --设置缩放

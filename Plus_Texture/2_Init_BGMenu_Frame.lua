@@ -783,7 +783,7 @@ local function Init_Menu(self, root, isSub)
     sub2=WoWTools_MenuMixin:OpenOptions(sub, {
         category=WoWTools_TextureMixin.Category,
         name=WoWTools_TextureMixin.addName,
-        name2=name,
+        --name2=name,
     })
 --Web
     sub3=sub2:CreateButton(

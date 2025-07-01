@@ -470,14 +470,9 @@ local function Set_PortraitButton()
                 frame:SetParent(BankSlotsFrame)
                 frame.PortraitButton:SetSize(20,20)
                 frame.PortraitButton:SetPoint('BOTTOMRIGHT', BankSlotsFrame['Bag'..index])
-
-                --frame.PortraitButton:SetParent(BankSlotsFrame['Bag'..index])
-                --frame.FilterIcon.Icon:SetParent(BankSlotsFrame['Bag'..index])
             else
-                frame:SetParent(UIParent)
+                frame:SetParent(ContainerFrameContainer)
                 frame.PortraitButton:SetAllPoints(_G['ContainerFrame'..slotID..'Portrait'])
-                --frame.PortraitButton:SetParent(frame)
-                --frame.FilterIcon.Icon:SetParent(frame.FilterIcon)
             end
 
             frame.FilterIcon.Icon:ClearAllPoints()
