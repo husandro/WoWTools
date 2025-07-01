@@ -343,8 +343,6 @@ local function Get_Info(tab)
 
 --套装，传说5，神器6，传家宝，提示
     if itemQuality and itemQuality>=Enum.ItemQuality.Legendary or setID then
-        --setIDItem=true
-    --elseif itemQuality and itemQuality>=Enum.ItemQuality.Legendary then--5 or itemQuality==Enum.ItemQuality.Artifact then
         setIDItem= itemQuality or true
     end
     --setIDItem= setID and true or ((itemQuality==Enum.ItemQuality.Legendary or itemQuality==Enum.ItemQuality.Artifact) and itemQuality) or nil
@@ -529,7 +527,7 @@ local function Get_Info(tab)
                             else
                                 for className, icon in pairs (ClassNameIconTab) do
                                     if dateInfo.text[classStr]:find(className) then
-                                        text= select(2, math.modf(n/4))==0 and text..'|n' or text
+                                        text= select(2, math.modf(n/2))==0 and text..'|n' or text
                                         text=text..icon
                                         n= n+1
                                     end
@@ -571,18 +569,20 @@ local function Get_Info(tab)
                     end
                 end
 
-                if not dateInfo.red then--装等，提示
-                    local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
-                    if text then
-                        topLeftText= topLeftText and topLeftText..'|r'..text or text
+                if not topLeftText then
+                    if not dateInfo.red then--装等，提示
+                        local text= get_itemLeve_color(itemLink, itemLevel, itemEquipLoc, itemQuality, upItemLevel)
+                        if text then
+                            topLeftText= topLeftText and topLeftText..'|r'..text or text
+                        end
+
+                    elseif itemMinLevel<=WoWTools_DataMixin.Player.Level and itemQuality~=7 then--不可使用
+                        topLeftText='|A:talents-button-reset:0:0|a'
+                        isRedItem=true
                     end
-                elseif itemMinLevel<=WoWTools_DataMixin.Player.Level and itemQuality~=7 then--不可使用
-                    topLeftText=format('|A:%s:0:0|a', 'talents-button-reset')
-                    isRedItem=true
                 end
-
             end
-
+            
 
             local collectedIcon, isCollected= WoWTools_CollectedMixin:Item(itemLink, nil, true)--幻化
             bottomRightText= not isCollected and collectedIcon or bottomRightText

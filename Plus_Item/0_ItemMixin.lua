@@ -424,7 +424,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
 
             if wow and not data.wow and AccountTab[line.leftText] then
 
-                data.wow= '|A:questlog-questtypeicon-account:0:0|a'
+                data.wow= WoWTools_DataMixin.Icon.wow2 --'|A:questlog-questtypeicon-account:0:0|a'
                 if onlyWoW then
                     break
                 end

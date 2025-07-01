@@ -38,6 +38,13 @@ local function Set_Frame_Size()--index)
 end
 
 
+local function MoveToLeft_Frame(frame)
+    if not WoWTools_FrameMixin:IsLocked(frame) then
+        frame:ClearAllPoints()
+        frame:SetPoint('RIGHT', UIParent, 'LEFT', -30, 0)
+    end
+end
+
 
 
 
@@ -111,6 +118,7 @@ local function Set_BankSlotsFrame(index)
                         btn:SetShown(isShow)
                     end
                 end
+                MoveToLeft_Frame(frame)
             end
         end
     end
@@ -374,13 +382,14 @@ local function Init()
         if not Save().disabledBankBag and BankFrame:IsShown() then
             for slotID= NUM_CONTAINER_FRAMES, (NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES+1), -1 do-- 13 到 7
                 local frame= _G['ContainerFrame'..slotID]
-                if frame and frame:IsShown() and not WoWTools_FrameMixin:IsLocked(frame) then
-                    frame:ClearAllPoints()
-                    frame:SetPoint('RIGHT', UIParent, 'LEFT', -30, 0)
+                if frame and frame:IsShown() then
+                    MoveToLeft_Frame(frame)
                 end
             end
         end
     end)
+    
+
 
 --整合，战团事件
     AccountBankPanel:HookScript('OnEvent', function(self, event, ...)
