@@ -41,7 +41,7 @@ function WoWTools_BankMixin:GetFree(index)
         end
 
         --银行，背包
-        for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do--6-12
+        for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do--6-12 NUM_CONTAINER_FRAMES = 13;
             free= free+ (C_Container.GetContainerNumFreeSlots(bag) or 0)
             all= all+ C_Container.GetContainerNumSlots(bag)
         end
@@ -121,7 +121,7 @@ function WoWTools_BankMixin:GetItems(index)--从最后，到第一
         end
 
 --银行，背包
-        for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do--6-12
+        for bag=NUM_TOTAL_EQUIPPED_BAG_SLOTS+1, (NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS) do--6-12 NUM_CONTAINER_FRAMES = 13;
             for slot=1, C_Container.GetContainerNumSlots(bag) or 0, 1 do
                 local info = C_Container.GetContainerItemInfo(bag, slot)
                 if info and info.itemID then
@@ -242,6 +242,10 @@ function WoWTools_BankMixin:Take_Item(isOutItem, classID, subClassID, index, onl
         free= free-1
     end
 end
+
+
+
+
 --[[NewTab={
     info=,
     bag=,

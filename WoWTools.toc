@@ -358,7 +358,6 @@ Plus_Bank\3_MoveFrame.lua
 Plus_Bank\Left_List.lua
 Plus_Bank\Set_UI.lua
 Plus_Bank\Plus_Bank.lua
-Plus_Bank\PortraitButton.lua
 Plus_Bank\ItemInfo.lua
 
 
@@ -375,7 +374,7 @@ Plus_BankGuild\z_UI.lua
 Plus_Bag\0_BagMixin.lua
 Plus_Bag\1_Init_Bag.lua
 Plus_Bag\z_Container_Menu.lua
-##Plus_Bag\z_PortraitButton.lua
+Plus_Bag\z_UI.lua
 
 
 ##自动对话，任务

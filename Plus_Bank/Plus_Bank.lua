@@ -1,4 +1,12 @@
---整合
+--[[
+整合
+NUM_CONTAINER_FRAMES = 13;
+NUM_BAG_FRAMES = Constants.InventoryConstants.NumBagSlots; 4
+NUM_REAGENTBAG_FRAMES = Constants.InventoryConstants.NumReagentBagSlots; 1
+NUM_TOTAL_BAG_FRAMES = Constants.InventoryConstants.NumBagSlots + Constants.InventoryConstants.NumReagentBagSlots; 5
+CONTAINER_OFFSET_Y = 85;
+CONTAINER_OFFSET_X = -4;
+]]
 
 
 local function Save()
@@ -36,23 +44,24 @@ end
 
 
 
+
  --索引，提示
  local function Set_IndexLabel(btn, index, frameIndex)
     if not btn.indexLable then
         local color= frameIndex==2 and {r=1,g=0.5,b=0}
                     or (frameIndex==3 and {r=0,g=0.82,b=1})
-                    or {r=1,g=1,b=1}
+                    or {r=0,g=1,b=0}
         btn.indexLable= WoWTools_LabelMixin:Create(btn, {layer='BACKGROUND', color=color})
         btn.indexLable:SetPoint('CENTER')
         btn.indexLable:SetAlpha(0.3)
 
         WoWTools_TextureMixin:HideTexture(btn.ItemSlotBackground)
-        --WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, 0.5)
-        btn.NormalTexture:SetVertexColor(color.r, color.g, color.b, 0.3)
+        btn.NormalTexture:SetVertexColor(color.r, color.g, color.b)
 
         WoWTools_TextureMixin:HideTexture(btn.Background)
     end
     btn.indexLable:SetText(Save().showIndex and index or '')
+    btn.NormalTexture:SetAlpha(Save().NormalTextureAlpha or 0.5)
 end
 
 
@@ -86,19 +95,19 @@ local function Set_BankSlotsFrame(index)
 
 --背包
     if not Save().disabledBankBag then
-        local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
-        for i=NUM_BANKBAGSLOTS, 1, -1 do
-            local frame= _G['ContainerFrame'..(i+numBag)]
+        --local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
+        local isShow, frame
+        local maxBagID= NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES--6
+        for slotID= NUM_CONTAINER_FRAMES, (maxBagID+1), -1 do-- NUM_BANKBAGSLOTS, 1, -1 do
+            frame= _G['ContainerFrame'..slotID]
             if frame then
-                local isShow= frame:IsShown()
-                if frame.bank_settings then
-                    frame:bank_settings()
-                end
+                isShow= frame:IsShown()--select(2, GetInventorySlotInfo("Bag"..(slotID-maxBagID))) and
                 for _, btn in frame:EnumerateValidItems()  do
                     if btn then
                         if isShow then
                             table.insert(tab, 1, btn)
                         end
+
                         btn:SetShown(isShow)
                     end
                 end
@@ -359,11 +368,18 @@ local function Init()
     hooksecurefunc('BankFrameItemButtonBag_OnClick', function() Settings() end)
     hooksecurefunc(BankPanelTabMixin, 'OnClick', function() Settings() end)
 
-    hooksecurefunc('BankFrameItemButton_Update', function(self)
-        if self.isBag and self.set_point_toleft then
-            C_Timer.After(0.3, self.set_point_toleft)
+
+--当整合银行背包时，隐藏ContainerFrame7 到 13
+    hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
+        if not Save().disabledBankBag and BankFrame:IsShown() then
+            for slotID= NUM_CONTAINER_FRAMES, (NUM_TOTAL_BAG_FRAMES+NUM_REAGENTBAG_FRAMES+1), -1 do-- 13 到 7
+                local frame= _G['ContainerFrame'..slotID]
+                if frame and frame:IsShown() and not WoWTools_FrameMixin:IsLocked(frame) then
+                    frame:ClearAllPoints()
+                    frame:SetPoint('RIGHT', UIParent, 'LEFT', -30, 0)
+                end
+            end
         end
-        --self.icon:SetShown(self.hasItem)
     end)
 
 --整合，战团事件
@@ -394,11 +410,13 @@ local function Init()
     --BankSlotsFrame:DisableDrawLayer('BORDER')
     WoWTools_TextureMixin:HideFrame(BankSlotsFrame)
 
+--银行，背包
     for i=1, NUM_BANKBAGSLOTS do
         local btn= BankSlotsFrame['Bag'..i]
         if btn then
-            WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, nil, nil, 0.2)
-            WoWTools_TextureMixin:SetAlphaColor(btn.icon, nil, nil, nil, 0.2)
+            WoWTools_TextureMixin:HideTexture(btn.NormalTexture)
+            WoWTools_TextureMixin:HideTexture(btn.icon)
+            WoWTools_ButtonMixin:AddMask(btn)
         end
     end
 
@@ -419,9 +437,61 @@ end
 
 
 
+local function Set_PortraitButton()
+    local isAll = not Save().disabledBankBag--整合
+    local numBag= NUM_TOTAL_EQUIPPED_BAG_SLOTS+ NUM_REAGENTBAG_FRAMES--5+1
+    local frame, slotID
+
+    for index=1, NUM_BANKBAGSLOTS do--7
+        slotID= index+ numBag
+        frame= _G['ContainerFrame'..slotID]
+
+        if frame then
+            for _, button in frame:EnumerateValidItems()  do
+                if button then
+                    button:SetParent(isAll and BankSlotsFrame or frame)
+                    --if not isAll then
+                        --button:SetShown(true)
+                    --end
+                end
+            end
+
+            frame.PortraitButton:ClearAllPoints()
+            if isAll then
+                frame:SetParent(BankSlotsFrame)
+                frame.PortraitButton:SetSize(20,20)
+                frame.PortraitButton:SetPoint('BOTTOMRIGHT', BankSlotsFrame['Bag'..index])
+
+                --frame.PortraitButton:SetParent(BankSlotsFrame['Bag'..index])
+                --frame.FilterIcon.Icon:SetParent(BankSlotsFrame['Bag'..index])
+            else
+                frame:SetParent(UIParent)
+                frame.PortraitButton:SetAllPoints(_G['ContainerFrame'..slotID..'Portrait'])
+                --frame.PortraitButton:SetParent(frame)
+                --frame.FilterIcon.Icon:SetParent(frame.FilterIcon)
+            end
+
+            frame.FilterIcon.Icon:ClearAllPoints()
+            frame.FilterIcon.Icon:SetAllPoints(frame.PortraitButton)
+            --BankSlotsFrame['Bag'..index].MatchesBagID= frame.MatchesBagID
+        end
+    end
+end
+
+
+
+
 
 
 --整合
 function WoWTools_BankMixin:Init_Plus()
+    Set_PortraitButton()
     Init()
 end
+
+
+
+
+
+
+

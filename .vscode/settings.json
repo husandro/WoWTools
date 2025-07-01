@@ -5976,7 +5976,13 @@
         "EncounterJournalEncounterFrameInfoRightHeaderShadow",
         "COSTS_LABEL",
         "ITEM_UPGRADE_COST_LABEL",
-        "REPUTATION_SORT_TYPE_ACCOUNT"
+        "REPUTATION_SORT_TYPE_ACCOUNT",
+        "DISPLAY_BORDERS",
+        "UpdateBagSlotStatus",
+        "ContainerFrame1MoneyFrame",
+        "ContainerFrameUtil_EnumerateContainerFrames",
+        "ContainerFrame2",
+        "NUM_CONTAINER_FRAMES"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

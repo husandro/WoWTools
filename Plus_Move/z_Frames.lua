@@ -95,38 +95,6 @@ function WoWTools_MoveMixin.Frames:DressUpFrame()
     end})
 end
 
---小，背包
-function WoWTools_MoveMixin.Frames:ContainerFrame1()
-    for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
-        local frame= _G['ContainerFrame'..i]
-        if frame then
-            if i==1 then
-                self:Setup(frame, {save=true})
-            else
-                self:Setup(frame)
-            end
-        end
-    end
-    hooksecurefunc('UpdateContainerFrameAnchors', function()--ContainerFrame.lua
-        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-            local name= frame:GetName()
-            if name then
-                if Save().scale[name] and Save().scale[name]~=1 then--缩放
-                    frame:SetScale(Save().scale[name])
-                end
-                if (frame==ContainerFrameCombinedBags or frame==ContainerFrame1) then--位置
-                    self:SetPoint(frame, name)--设置, 移动, 位置
-                end
-            end
-        end
-    end)
-
---背包
-    self:MoveAlpha(BagsBar)
-
-    self:Setup(ContainerFrameCombinedBags)
-end
-
 
 
 

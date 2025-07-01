@@ -364,66 +364,6 @@ end
 
 
 
---背包 Bg FlatPanelBackgroundTemplate
-function WoWTools_TextureMixin.Frames:ContainerFrame1()
-    self:SetButton(ContainerFrameCombinedBags.CloseButton)
-    self:SetNineSlice(ContainerFrameCombinedBags, self.min, true)
-
-
-    self:HideFrame(ContainerFrameCombinedBags.MoneyFrame.Border)
-    self:HideFrame(BackpackTokenFrame.Border)
-    self:SetEditBox(BagItemSearchBox)
-
-     for i=1 ,NUM_TOTAL_EQUIPPED_BAG_SLOTS + NUM_BANKBAGSLOTS+1 do
-         local frame= _G['ContainerFrame'..i]
-         if frame then
-            self:SetColorTexture(frame.Bg.BottomLeft)
-            self:SetColorTexture(frame.Bg.BottomRight)
-            frame.Bg:SetFrameStrata('LOW')
-            self:SetNineSlice(frame, self.min, true)
-            self:SetFrame(frame.Bg)
-            self:Init_BGMenu_Frame(frame)
-         end
-    end
-
-
-
-    local function set_BagTexture(frame)
-        if not frame:IsVisible() then
-            return
-        end
-        for _, btn in frame:EnumerateValidItems() do
-            if not btn.hasItem then
-                self:HideTexture(btn.ItemSlotBackground)
-                self:SetAlphaColor(btn.Background,nil, nil, 0.2)
-                btn.icon:SetAlpha(0)
-                self:SetAlphaColor(btn.NormalTexture, nil, nil, 0.1)
-            else
-                btn.icon:SetAlpha(1)
-                btn.NormalTexture:SetAlpha(0)
-            end
-        end
-    end
-
-    hooksecurefunc('ContainerFrame_GenerateFrame',function()--ContainerFrame.lua 背包里，颜色
-        for _, frame in ipairs(ContainerFrameSettingsManager:GetBagsShown()) do
-            if not frame.set_BagAlpha then
-                set_BagTexture(frame)
-                hooksecurefunc(frame, 'UpdateItems', set_BagTexture)
-                frame:SetTitle('')--名称
-                hooksecurefunc(frame, 'UpdateName', function(self2) self2:SetTitle('') end)
-                frame.set_BagAlpha=true
-            end
-        end
-    end)
-
-    self:Init_BGMenu_Frame(ContainerFrameCombinedBags, {
-        settings=function(_, texture, alpha)
-             ContainerFrameCombinedBags.Bg:SetAlpha(texture and 0 or alpha or 1)
-        end
-    })
-end
-
 
 
 

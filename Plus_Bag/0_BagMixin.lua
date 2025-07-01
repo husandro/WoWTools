@@ -237,6 +237,50 @@ end
 
 
 
+function WoWTools_BagMixin:SetFreeNum(btn)
+    if not btn then
+        return
+
+    elseif btn.set_free then
+        btn:set_free()
+        return
+    end
+
+    btn.numFreeSlots=WoWTools_LabelMixin:Create(btn, {color=true, justifyH='CENTER'})
+    btn.numFreeSlots:SetPoint('TOP', 0, 2)
+    btn.numMaxSlots=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', color={r=0.82,g=0.82,b=0.82, a=0.7}})
+    btn.numMaxSlots:SetPoint('BOTTOM')
+
+    btn.set_free= function(b)
+        local hasItem = GameTooltip:SetInventoryItem("player",  b:GetInventorySlot())
+        local free, maxSlot
+        
+        if hasItem then
+            local bagID= b:GetBagID()
+            maxSlot= C_Container.GetContainerNumSlots(bagID)
+            if maxSlot and maxSlot>0 then
+                local value= math.modf((C_Container.GetContainerNumFreeSlots(bagID) or 0)/maxSlot*100)
+                if value>80 then
+                    free= '|cnGREEN_FONT_COLOR:'..value..'%|r'
+                elseif value==0 then
+                    free= '|cnRED_FONT_COLOR:'..value..'%|r'
+                else
+                    free= '|cffedd100'..value..'%|r'
+                end
+            end
+        end
+
+        b.numFreeSlots:SetText(free or '')
+        b.numMaxSlots:SetText(maxSlot or '')
+        b.icon:SetAlpha(hasItem and 1 or 0.2)
+    end
+    btn:set_free()
+end
+
+
+
+
+
 
 
 

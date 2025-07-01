@@ -6,6 +6,7 @@ local P_Save={
     scale=0.85,
 
     --showIndex=true,--显示，索引
+    NormalTextureAlpha=0.5,
     showBackground= true,--设置，背景
 
 
@@ -36,7 +37,6 @@ local function Init()
     WoWTools_BankMixin:Init_Plus()--整合，一起
     WoWTools_BankMixin:Init_UI()--存放，取出，所有
     WoWTools_BankMixin:Init_Left_List()
-    WoWTools_BankMixin:Set_PortraitButton()
     Init=function()end
 end
 

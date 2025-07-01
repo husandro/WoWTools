@@ -36,27 +36,7 @@ end
 
 
 
-function WoWTools_MoveMixin:Set_SizeScale(frame)
-    local name= frame and frame:GetName()
-    if not name
-        or WoWTools_FrameMixin:IsLocked(frame)
-        or not frame.ResizeButton
-    then
-        return
-    end
 
-    local scale= Save().scale[name]
-    if scale then
-        Set_Frame_Scale(frame, scale)
-    end
-
-    if frame.ResizeButton.setSize then
-        local size= Save().size[name]
-        if size then
-            Set_Frame_Size(frame, size[1], size[2])--设置大小
-        end
-    end
-end
 
 
 
@@ -403,7 +383,10 @@ local function Init_Menu(self, root)
         end)
 
 --设置
-        WoWTools_MenuMixin:OpenOptions(sub, {category=WoWTools_MoveMixin.Category, name=WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS})
+        WoWTools_MenuMixin:OpenOptions(sub, {
+            category=WoWTools_MoveMixin.Category,
+            name=WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS
+        })
     end
 
 --清除，位置，数据
@@ -447,7 +430,11 @@ local function Init_Menu(self, root)
 
 --打开，选项
     root:CreateDivider()
-    WoWTools_MenuMixin:OpenOptions(root, {category=WoWTools_MoveMixin.Category, name=WoWTools_MoveMixin.addName})
+    WoWTools_MenuMixin:OpenOptions(root, {
+        category=WoWTools_MoveMixin.Category,
+        name=WoWTools_MoveMixin.addName,
+        name2=name,
+    })
 end
 
 
@@ -788,14 +775,7 @@ end
 
 
 local function Set_OnShow(self)
-    if WoWTools_FrameMixin:IsLocked(self) then
-        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner, frame)
-            WoWTools_MoveMixin:Set_SizeScale(frame)
-            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
-        end, nil, self)
-    else
-        WoWTools_MoveMixin:Set_SizeScale(self)
-    end
+
 end
 
 
@@ -970,7 +950,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     if onShowFunc then
         if onShowFunc==true then
             frame:HookScript('OnShow', function(s)
-                Set_OnShow(s)
+                WoWTools_MoveMixin:Set_SizeScale(s)
             end)
         else
             frame:HookScript('OnShow', onShowFunc)
@@ -998,4 +978,33 @@ end
 
 function WoWTools_MoveMixin:MoveAlpha(frame)
     Set_Move_Alpha(frame)
+end
+
+function WoWTools_MoveMixin:Set_SizeScale(frame)
+    local name= frame and frame:GetName()
+    if not name
+        or not frame.ResizeButton
+    then
+        return
+    end
+
+    if WoWTools_FrameMixin:IsLocked(frame) then
+        EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
+            self:Set_SizeScale(frame)
+            EventRegistry:UnregisterCallback('PLAYER_REGEN_ENABLED', owner)
+        end)
+        return
+    end
+
+    local scale= Save().scale[name]
+    if scale then
+        Set_Frame_Scale(frame, scale)
+    end
+
+    if frame.ResizeButton.setSize then
+        local size= Save().size[name]
+        if size then
+            Set_Frame_Size(frame, size[1], size[2])--设置大小
+        end
+    end
 end

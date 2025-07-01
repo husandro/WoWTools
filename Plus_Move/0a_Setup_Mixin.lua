@@ -241,6 +241,12 @@ function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
     if not frame then
         return
     end
+
+    name= name or frame:GetName()
+    if not name then
+        return
+    end
+
     if WoWTools_FrameMixin:IsLocked(frame) then
         EventRegistry:RegisterFrameEventAndCallback("PLAYER_REGEN_ENABLED", function(owner)
             self:SetPoint(frame, name)
@@ -248,6 +254,6 @@ function WoWTools_MoveMixin:SetPoint(frame, name)--设置, 移动,
         end)
         return true
     else
-        return Set_Frame_Point(frame, name or frame:GetName())
+        return Set_Frame_Point(frame, name)
     end
 end

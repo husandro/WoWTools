@@ -154,7 +154,6 @@ function WoWTools_ItemMixin.Frames:ContainerFrame_GenerateFrame()
                     setBags(frame)
 
                     hooksecurefunc(frame, 'UpdateItems', function(f)
-
                         setBags(f)
                     end)
                     frame.SetBagInfo=true

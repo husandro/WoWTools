@@ -31,6 +31,9 @@ local function Get_NineSlice_Alpha(name, icon)
     return SaveData(name).nineSliceAlpha or icon.BgData.nineSliceAlpha or 0
 end
 
+local function Get_Portrait_Alpha(name, icon)
+    return SaveData(name).portraitAlpha or icon.BgData.portraitAlpha or 1
+end
 
 
 
@@ -189,6 +192,7 @@ local function Set_BGTexture(self, name)
 
     local alpha= Get_Alpha(name, icon)
     local nineSliceAlpha= Get_NineSlice_Alpha(name, icon)
+    local portraitAlpha= Get_Portrait_Alpha(name, icon)
     local texture= data.texture
 
 
@@ -213,6 +217,11 @@ local function Set_BGTexture(self, name)
 --NineSlice
     if self.NineSlice then
         WoWTools_TextureMixin:SetNineSlice(self, nineSliceAlpha)
+    end
+
+--PortraitContainer
+    if self.PortraitContainer then
+        WoWTools_TextureMixin:SetAlphaColor(self.PortraitContainer.portrait, nil, true, portraitAlpha)
     end
 
 --DrawLayer
@@ -670,7 +679,7 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).nineSliceAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name= (self.NineSlice and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '外框' or 'NineSlice'),
+        name= (self.NineSlice and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '边框' or EMBLEM_BORDER),--EMBLEM_BORDER
         minValue=0,
         maxValue=1,
         step=0.05,
@@ -685,6 +694,34 @@ local function Init_Menu(self, root, isSub)
         end
     })
     sub:CreateSpacer()
+
+--头像
+    sub:CreateSpacer()
+    WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Get_Portrait_Alpha(name, icon)
+        end,
+        setValue=function(value)
+            SaveData(name).portraitAlpha=value
+            Settings(IsEnabledSaveBg(name) and self or nil)
+        end,
+        name= (self.PortraitContainer and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '头像' or 'Portrait'),
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%.2f',
+        tooltip=function(tooltip)
+            if IsEnabledSaveBg(name) then
+                tooltip:AddLine('|cnGREEN_FONT_COLOR:'..name)
+            else
+                GameTooltip_AddColoredLine(tooltip, WoWTools_DataMixin.onlyChinese and '统一' or ALL, HIGHLIGHT_FONT_COLOR)
+            end
+            tooltip:AddLine('PortraitContainer')
+        end
+    })
+    sub:CreateSpacer()
+
+
 
 --分开设置, 全部列表
     Add_Frame_Menu(self, sub)
@@ -743,7 +780,11 @@ local function Init_Menu(self, root, isSub)
 
 --打开选项界面
     --sub:CreateSpacer()
-    sub2=WoWTools_MenuMixin:OpenOptions(sub, {name=WoWTools_TextureMixin.addName, category=WoWTools_TextureMixin.Category})
+    sub2=WoWTools_MenuMixin:OpenOptions(sub, {
+        category=WoWTools_TextureMixin.Category,
+        name=WoWTools_TextureMixin.addName,
+        name2=name,
+    })
 --Web
     sub3=sub2:CreateButton(
         '|A:QuestLegendary:0:0|aWeb',
@@ -924,9 +965,7 @@ local function Set_Frame_Menu(frame, tab)
         return
     end
 
-    if frame== WorldMapFrame.BorderFrame then
-        print(self==frame.PortraitButton)
-    end
+
     if self==frame.PortraitButton then
         self:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
         self.isRightShowButton=true
@@ -938,7 +977,11 @@ local function Set_Frame_Menu(frame, tab)
     function self:set_texture_alpha()
         local t= self.portrait or self.Icon
         if t then
-            t:SetAlpha(GameTooltip:IsOwned(self) and 0.5 or 1)
+            t:SetAlpha(
+                GameTooltip:IsOwned(self) and 0.5
+                or (self.portrait and Get_Portrait_Alpha(frame:GetName(), frame[BGName]))
+                or 1
+            )
         end
     end
 
@@ -1038,11 +1081,15 @@ end
 --[[
 WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
     name=名称,
+    enabled=true,
     
     alpha=0,--默认alpha
+    nineSliceAlpha=tab.nineSliceAlpha,
+    portraitAlpha=tab.portraitAlpha,
     
     settings=function(icon, textureName, alphaValue)--设置内容时，调用
     end,
+
     notAnims=true,
     menuTag='MENU_FCF_TAB',--菜单中，添加子菜单
     PortraitContainer=Frame.PortraitContainer,
@@ -1086,26 +1133,28 @@ function WoWTools_TextureMixin:Init_BGMenu_Frame(frame, tab)
 
 --创建图片
     frame[BGName]= frame:CreateTexture(nil, 'BACKGROUND', nil, -8)
-    local icon= frame[BGName]
+
     if not tab.bgPoint then
-        icon:SetPoint('TOPLEFT', 3, -3)
-        icon:SetPoint('BOTTOMRIGHT',-3, 3)
+        frame[BGName]:SetPoint('TOPLEFT', 3, -3)
+        frame[BGName]:SetPoint('BOTTOMRIGHT',-3, 3)
     end
 --调用，设置
     if tab.bgPoint then
-        tab.bgPoint(icon)
+        tab.bgPoint(frame[BGName])
     end
 
     --frame:SetTextureSliceMargins(24, 24, 24, 24);
     --fram:SetTextureSliceMode(Enum.UITextureSliceMode.Tiled)
 
-    icon.BgData= {
+    frame[BGName].BgData= {
         alpha= tab.alpha,
+        nineSliceAlpha= tab.nineSliceAlpha,
+        portraitAlpha=tab.portraitAlpha,
         settings= tab.settings,
     }
 
 --创建动画组
-    Create_Anims(frame, icon, tab)
+    Create_Anims(frame, frame[BGName], tab)
 --创建，菜单按钮
     Create_Button(frame, tab)
 --设置，调用，菜单

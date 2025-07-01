@@ -56,6 +56,10 @@ local function Init_Menu(self, root)
         WoWTools_BankMixin:Init_Plus()
     end)
 
+
+
+
+
 --[[显示背景
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
@@ -154,7 +158,6 @@ local function Init_Menu(self, root)
             WoWTools_BagMixin:OpenBag(nil, true)
         end
         WoWTools_BankMixin:Init_Plus()
-        WoWTools_BankMixin:Set_PortraitButton()
     end)
     settings(sub, isBank)
 
@@ -202,7 +205,8 @@ local function Init_Menu(self, root)
 
 --行数
 
-root:CreateDivider()
+    --root:CreateDivider()
+    root:CreateSpacer()
     root:CreateSpacer()
     sub=WoWTools_MenuMixin:CreateSlider(root, {
         getValue=function()
@@ -235,9 +239,26 @@ root:CreateDivider()
         bit=nil,
     })
     sub:SetEnabled(isBank or isAccount)
+
+
+    root:CreateSpacer()
+    sub=WoWTools_MenuMixin:CreateSlider(root, {
+        getValue=function()
+            return Save().NormalTextureAlpha or 0.5
+        end, setValue=function(value)
+            Save().NormalTextureAlpha= value
+            WoWTools_BankMixin:Init_Plus()
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '边框' or EMBLEM_BORDER,
+        minValue=0,
+        maxValue=1,
+        step=0.05,
+        bit='%.2f',
+    })
+    sub:SetEnabled(isBank or isAccount)
     root:CreateSpacer()
 
-    root:CreateDivider()
+    --root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
     WoWTools_MenuMixin:Reload(sub, false)
 end
