@@ -432,7 +432,9 @@ local function Init()--显示地图ID
     end)
     MenuButton:SetScript('OnEnter', Init_OnEnter)
 
-    MenuButton:SetupMenu(Init_Menu)
+    MenuButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
     --[[MenuButton:SetScript('OnClick', function(self)
         MenuUtil.CreateContextMenu(self, function(...)
             Init_Menu(...)

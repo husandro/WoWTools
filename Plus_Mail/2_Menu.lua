@@ -114,7 +114,9 @@ local function Init()
     end)
 
 
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end
 
 

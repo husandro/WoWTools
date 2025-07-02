@@ -100,7 +100,9 @@ local function Init(frame)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
     --[[btn:SetScript('OnClick', function(self)
         MenuUtil.CreateContextMenu(self, Init_Menu)
     end)]]

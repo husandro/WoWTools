@@ -264,7 +264,9 @@ local function Init()
         GameTooltip:Show()
     end)
 
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 
     --[[function btn:set_bg()
         AddonListInset.Bg:SetAlpha(Save().Bg_Alpha or 0.5)

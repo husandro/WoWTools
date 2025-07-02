@@ -575,7 +575,9 @@ local function Init()
     end
 
 
-    GroupButton:SetupMenu(Init_Menu)
+    GroupButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
  --[[
     function GroupButton:set_OnMouseDown()
         if self.type then

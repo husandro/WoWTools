@@ -197,7 +197,9 @@ local function Init()
 		self.autoHideTexture:SetShown(not Save().notHideFuori)
 	end
 
-	btn:SetupMenu(Init_Menu)
+	btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 	btn:Settings()
 	btn:set_alpha()
 end

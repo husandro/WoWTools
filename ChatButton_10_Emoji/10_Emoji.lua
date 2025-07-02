@@ -542,7 +542,9 @@ local function Init()
     EmojiButton:set_event()
     EmojiButton:set_filter_event()
 
-    EmojiButton:SetupMenu(Init_Menu)
+    EmojiButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 
     function EmojiButton:set_OnMouseDown()
         if Save().On_Click_Show then

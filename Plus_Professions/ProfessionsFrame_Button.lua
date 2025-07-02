@@ -314,6 +314,8 @@ function WoWTools_ProfessionMixin:Init_ProfessionsFrame_Button()
         GameTooltip:Show()
     end)
 
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
     Init()
 end

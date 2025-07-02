@@ -341,5 +341,7 @@ end
 
 
 function WoWTools_MarkerMixin:Setup_Menu()
-    self.MarkerButton:SetupMenu(Init_Menu)
+    self.MarkerButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end

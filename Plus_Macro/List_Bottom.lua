@@ -846,7 +846,7 @@ local function Init()
             --[[btn:SetScript('OnMouseDown', function(self)
                 MenuUtil.CreateContextMenu(self, Init_SpellBook_Menu)
             end)]]
-            btn:SetupMenu(Init_SpellBook_Menu)
+            btn:SetupMenu(function(...) Init_SpellBook_Menu(...) end)
             Set_Button_OnEnter(btn)
             last= btn
         end
@@ -863,7 +863,7 @@ local function Init()
     --[[pvpButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_PvP_Menu)
     end)]]
-    pvpButton:SetupMenu(Init_PvP_Menu)
+    pvpButton:SetupMenu(function(...) Init_PvP_Menu(...) end)
     pvpButton.name= WoWTools_DataMixin.onlyChinese and 'PvP天赋' or PVP_LABEL_PVP_TALENTS
     Set_Button_OnEnter(pvpButton)
     last=pvpButton
@@ -878,7 +878,7 @@ local function Init()
     --[[equipButton:SetScript('OnMouseDown', function(self)
         MenuUtil.CreateContextMenu(self, Init_Equip_Menu)
     end)]]
-    equipButton:SetupMenu(Init_Equip_Menu)
+    equipButton:SetupMenu(function(...) Init_Equip_Menu(...) end)
     equipButton.name= WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP
     Set_Button_OnEnter(equipButton)
     last=equipButton
@@ -896,7 +896,7 @@ local function Init()
             Init_Chat_Menu(root, TextEmoteSpeechList)
         end)
     end)]]
-    spellchButton:SetupMenu(Init_Chat_Menu)
+    spellchButton:SetupMenu(function(...) Init_Chat_Menu(...) end)
     spellchButton.name= WoWTools_DataMixin.onlyChinese and '谈话' or VOICEMACRO_LABEL
     Set_Button_OnEnter(spellchButton)
     last=spellchButton
@@ -915,7 +915,7 @@ local function Init()
             Init_Chat_Menu(root, EmoteList)
         end)
     end)]]
-    emoteButton:SetupMenu(Init_Chat_Menu)
+    emoteButton:SetupMenu(function(...) Init_Chat_Menu(...) end)
     emoteButton.name= WoWTools_DataMixin.onlyChinese and '表情' or EMOTE
     Set_Button_OnEnter(emoteButton)
     last= emoteButton
@@ -929,11 +929,7 @@ local function Init()
         name='WoWToolsMacroBottomListNormalButton'
     })
     macroListButton:SetPoint('LEFT', last, 'RIGHT')
-    --macroListButton:SetupMenu(Init_MacroList_Menu)
-    --[[macroListButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_MacroList_Menu)
-    end)]]
-    macroListButton:SetupMenu(Init_MacroList_Menu)
+    macroListButton:SetupMenu(function(...) Init_MacroList_Menu(...) end)
 --设置
     function Frame:settings()
         self:SetScale(Save().bottomListScale or 1)

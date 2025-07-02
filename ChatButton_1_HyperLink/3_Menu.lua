@@ -571,5 +571,7 @@ end
 
 
 function WoWTools_HyperLink:Init_Button_Menu()
-    self.LinkButton:SetupMenu(Init_Menu)
+    self.LinkButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end

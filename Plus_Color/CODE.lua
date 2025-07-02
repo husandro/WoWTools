@@ -328,7 +328,9 @@ local function Init(frame)
     local btn= WoWTools_ButtonMixin:Menu(frame, {atlas='AnimaChannel-Bar-Necrolord-Gem'})
     
     btn:SetPoint('RIGHT', frame.Instructions, 'LEFT')
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end
 
 

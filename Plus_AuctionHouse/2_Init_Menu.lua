@@ -90,5 +90,7 @@ end
 function WoWTools_AuctionHouseMixin:Init_MenuButton()
     local btn=WoWTools_ButtonMixin:Menu(AuctionHouseFrameCloseButton, {name='WoWToolsAuctionHouseMenuButton'})
     btn:SetPoint('RIGHT', AuctionHouseFrameCloseButton, 'LEFT')
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end

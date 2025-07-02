@@ -209,7 +209,7 @@ local function Create_Button(indexAdd)
         self.loadTexture:SetShown(Save().load_Button_Name==self.name)
     end
 
-    btn:SetupMenu(Init_Button_Menu)
+    btn:SetupMenu(function(...) Init_Button_Menu(...) end)
 
     btn:SetScript('OnEnter', function(self)
         WoWTools_AddOnsMixin:Update_Usage()--更新，使用情况

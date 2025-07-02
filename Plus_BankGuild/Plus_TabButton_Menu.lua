@@ -583,7 +583,9 @@ end
 
 
 --[[function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
-    --btn:SetupMenu(Init_Menu)
+    --btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
     btn:SetScript('OnMouseDown', function(frame)
         MenuUtil.CreateContextMenu(frame, Init_Menu)
     end)

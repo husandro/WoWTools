@@ -212,5 +212,7 @@ end
 
 
 function WoWTools_CombatMixin:Init_SetupMenu()
-    self.CombatButton:SetupMenu(Init_Menu)
+    self.CombatButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end

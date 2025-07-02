@@ -549,7 +549,9 @@ local function Init()
     local btn= WoWTools_ButtonMixin:Menu(ChallengesKeystoneFrame.CloseButton, {name='ChallengesKeystoneFrameWoWToolsMenu'})
     btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
 
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 
     KeyFrame= CreateFrame('Frame', nil, ChallengesKeystoneFrame.CloseButton)
     KeyFrame:SetFrameLevel(ChallengesKeystoneFrame.CloseButton:GetFrameLevel()+1)

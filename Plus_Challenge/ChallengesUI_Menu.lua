@@ -623,7 +623,9 @@ local function Init()
     btn:SetPoint('RIGHT', PVEFrameCloseButton, 'LEFT')
     btn:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
 
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 
     Init=function()end
 end

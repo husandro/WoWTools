@@ -370,5 +370,7 @@ end
 
 
 function WoWTools_InviteMixin:Setup_Menu(btn)
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end

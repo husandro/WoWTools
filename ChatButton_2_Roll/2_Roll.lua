@@ -285,7 +285,9 @@ local function Init()
         RandomRoll(1, 100)
     end
 
-    RollButton:SetupMenu(Init_Menu)
+    RollButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 
     setAutoClearRegisterEvent()--注册自动清除事件
 end

@@ -250,8 +250,9 @@ end
 
 
 local function Init(btn)
-
-    btn:SetupMenu(Init_Menu)
+    btn:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 end
 
 function WoWTools_WorldMixin:Init_Menu()

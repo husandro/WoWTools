@@ -744,7 +744,6 @@ local function Init(isShow)
             Chat_Menu(...)
         end)
     end)
-    --List.chat:SetupMenu(Chat_Menu)
 
     --GossipFrame 有多少对话
     List.chat.Text= WoWTools_LabelMixin:Create(List.chat, {justifyH='CENTER'})

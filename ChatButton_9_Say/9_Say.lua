@@ -484,7 +484,9 @@ local function Init()
         self:set_tooltip()
     end)]]
 
-    SayButton:SetupMenu(Init_Menu)
+    SayButton:SetupMenu(function(...)
+        Init_Menu(...)
+    end)
 
     function SayButton:set_OnMouseDown()
         if Save().type or Save().name then
