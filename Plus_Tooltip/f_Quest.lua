@@ -42,7 +42,10 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     if tagInfo and tagInfo.tagID then
         local atlas, color = WoWTools_QuestMixin:GetAtlasColor(questID, info, tagInfo, nil)
         local col= color and color.hex or ''
-        tooltip:AddDoubleLine(col..(atlas or '')..'tagID', col..tagInfo.tagID)
+        tooltip:AddDoubleLine(
+            col..(atlas or '')..'tagID',
+            col..tagInfo.tagID
+        )
         name= tagInfo.name
     else
         local tagID= C_QuestLog.GetQuestType(questID)
@@ -72,7 +75,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
 
     end
 
-    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
+    self:Set_Web_Link(tooltip, {type='quest', id=questID, name=name or C_QuestLog.GetTitleForQuestID(questID), col=nil, isPetUI=false})--取得网页，数据链接
 
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

@@ -22,10 +22,10 @@ local function Set_HunterPet(tooltip, spellID, size)
 
     local atlas= WoWTools_DataMixin.Icon[info.specialization]
     tooltip:AddDoubleLine(
-        (WoWTools_TextMixin:CN(info.familyName) or '')
-        ..(info.name and info.name~=info.familyName and '<'..info.name..'>' or ''),
+        (atlas and '|A:'..atlas..':'..size..':'..size..'|a' or ' ')..(WoWTools_TextMixin:CN(info.specialization) or ' '),
 
-        (atlas and '|A:'..atlas..':'..size..':'..size..'|a' or '')..(WoWTools_TextMixin:CN(info.specialization) or '')
+        (WoWTools_TextMixin:CN(info.familyName) or '')
+        ..(info.name and info.name~=info.familyName and '<'..info.name..'>' or '')
     )
 
     local icon, icon2='', ''
@@ -44,14 +44,14 @@ local function Set_HunterPet(tooltip, spellID, size)
     end
     if icon2~='' then
         tooltip:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES),
-            icon2
+            icon2,
+            WoWTools_DataMixin.onlyChinese and '专精技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SPECIALIZATION, ABILITIES)
         )
     end
     if icon~='' then
         tooltip:AddDoubleLine(
-            WoWTools_DataMixin.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES),
-            icon
+            icon,
+            WoWTools_DataMixin.onlyChinese and '基础技能' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, BASE_SETTINGS_TAB, ABILITIES)
         )
     end
 
@@ -76,28 +76,28 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
         return
     end
 
-    local size= self.iconSize
+
 
     local spellTexture=  originalIcon or icon
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine(
+        spellTexture and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture or ' ',
+        
         'spellID'
         ..WoWTools_DataMixin.Icon.icon2
-        ..spellID,
-
-        spellTexture and '|T'..spellTexture..':'..size..'|t'..spellTexture
+        ..spellID
     )
 
-    Set_HunterPet(tooltip, spellID, size)--猎人兽栏，宠物
+    Set_HunterPet(tooltip, spellID, self.iconSize)--猎人兽栏，宠物
 
     local mountID = spellID~=150544 and C_MountJournal.GetMountFromSpell(spellID)--坐骑
     if mountID then
-        WoWTools_TooltipMixin:Set_Mount(tooltip, mountID)
+        self:Set_Mount(tooltip, mountID)
     else
-        WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
+        self:Set_Web_Link(tooltip, {type='spell', id=spellID, name=name, col=nil, isPetUI=false})--取得网页，数据链接
     end
 
-    --WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
+    WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
     --tooltip:Show()
 end
 

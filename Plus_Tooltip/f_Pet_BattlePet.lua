@@ -9,13 +9,13 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
         return
     end
 
-    WoWTools_TooltipMixin:Set_Init_Item(tooltip)
+    self:Set_Init_Item(tooltip)
 
 
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, _, _, _, _, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
-    local size= self.iconSize--20
 
-    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
+
+    self:Set_Item_Model(tooltip, {creatureDisplayID=creatureDisplayID})--设置, 3D模型
 
     if obtainable then
         local numCollected, limit = C_PetJournal.GetNumCollectedInfo(speciesID)
@@ -23,13 +23,13 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
             BattlePetTooltipTemplate_AddTextLine(tooltip, format(WoWTools_DataMixin.onlyChinese and '已收集（%d/%d）' or ITEM_PET_KNOWN, 0, limit), 1,0,0)
         end
     end
-    BattlePetTooltipTemplate_AddTextLine(tooltip, 'speciesID'..WoWTools_DataMixin.Icon.icon2..speciesID..'    |T'..speciesIcon..':'..size..'|t'..speciesIcon)
-    BattlePetTooltipTemplate_AddTextLine(tooltip, 'companionID '..companionID..'    displayID '..creatureDisplayID)
+    BattlePetTooltipTemplate_AddTextLine(tooltip, 'speciesID'..WoWTools_DataMixin.Icon.icon2..speciesID..'   |T'..speciesIcon..':'..self.iconSize..'|t'..speciesIcon)
+    BattlePetTooltipTemplate_AddTextLine(tooltip, 'companionID '..companionID..'   displayID '..creatureDisplayID)
 
     BattlePetTooltipTemplate_AddTextLine(tooltip, ' ')
 
 --技能图标
-    local abilityIconA, abilityIconB= WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size)
+    local abilityIconA, abilityIconB= WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, self.iconSize)
     if abilityIconA and abilityIconB then
         BattlePetTooltipTemplate_AddTextLine(tooltip, abilityIconA)
         BattlePetTooltipTemplate_AddTextLine(tooltip, abilityIconB)
@@ -84,7 +84,9 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
      if petType and PET_TYPE_SUFFIX[petType] then
         local typeTexture= "Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType]
         local strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
-        text2Right= '|T'..strongTexture..':'..size..'|t|cnGREEN_FONT_COLOR:<|r|T'..typeTexture..':'..size..':|t|cnRED_FONT_COLOR:>|r|T'..weakHintsTexture..':'..size..'|t'
+        text2Right= '|T'..strongTexture..':'..self.iconSize..'|t'
+            ..'|cnGREEN_FONT_COLOR:<|r|T'..typeTexture..':'..self.iconSize..':|t'
+            ..'|cnRED_FONT_COLOR:>|r|T'..weakHintsTexture..':'..self.iconSize..'|t'
     end
 
     tooltip.textLeft:SetText(CollectedNum or '')
@@ -94,7 +96,7 @@ function WoWTools_TooltipMixin:Set_Battle_Pet(tooltip, speciesID, level, breedQu
     tooltip.text2Right:SetText(text2Right or '')
 
 
-    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
+    self:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col=nil, isPetUI=true})--取得网页，数据链接
 
     --tooltip:Show()
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)

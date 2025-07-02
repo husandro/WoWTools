@@ -33,12 +33,12 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
     end
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine(
+        icon and '|T'..icon..':'..self.iconSize..'|t'..icon,
+
         (not isKnown and '|cnRED_FONT_COLOR:' or '')
         ..'flyoutID|r'
         ..WoWTools_DataMixin.Icon.icon2
-        ..flyoutID,
-        
-        icon and '|T'..icon..':'..self.iconSize..'|t'..icon
+        ..flyoutID
     )
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

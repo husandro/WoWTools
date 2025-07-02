@@ -102,7 +102,7 @@ end
 
 --初始
 local function Init()
-    WoWTools_TooltipMixin.iconSize= Save().iconSize
+    WoWTools_TooltipMixin.iconSize= Save().iconSize or 0
 
     for name in pairs(WoWTools_TooltipMixin.Events)do
         if C_AddOns.IsAddOnLoaded(name) then
@@ -120,10 +120,7 @@ local function Init()
     WoWTools_TooltipMixin:Init_SetPoint()
     WoWTools_TooltipMixin:Init_CVar()
 
-
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
-
-
 
 --移除，<右键点击设置框体> 替换原生
     if not Save().UNIT_POPUP_RIGHT_CLICK then
@@ -137,6 +134,8 @@ local function Init()
         end
     end
 
+
+    Init=function()end
 end
 
 

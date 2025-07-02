@@ -22,12 +22,11 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     WoWTools_Mixin:Load({id=spellID, type='spell'})
 
     tooltip:AddDoubleLine(
+        spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':'..self.iconSize..'|t'..'spellID '..spellID or ' ',
+
         'mountID'
         ..WoWTools_DataMixin.Icon.icon2
-        ..mountID,
-        
-        spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':'..self.iconSize..'|t'..'spellID '..spellID
-        or nil
+        ..mountID
     )
 
     local textRight
@@ -50,7 +49,10 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
 
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID, spellVisualKitID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
-        tooltip:AddDoubleLine(format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '模型' or MODEL, creatureDisplayInfoID), isSelfMount and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID) or nil)
+        tooltip:AddDoubleLine(
+            'creatureDisplayInfoID'..WoWTools_DataMixin.Icon.icon2..'creatureDisplayInfoID',
+            isSelfMount and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID)
+        )
     end
 
     if source then--显示来源
@@ -64,15 +66,23 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
         animID=animID,
         spellVisualKitID=spellVisualKitID,
     })
-    tooltip.text2Left:SetText(isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
-    
+    tooltip.text2Left:SetText(
+        isCollected
+        and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r'
+        or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r')
+    )
+
+--召唤坐骑 
     local can= isCollected and isUsable and not isActive and not UnitCastingInfo('player')
     if can and IsAltKeyDown() then
         C_MountJournal.SummonByID(mountID)
         print(WoWTools_DataMixin.addName, self.addName, spellID and C_Spell.GetSpellLink(spellID), '|cnGREEN_FONT_COLOR:Alt+'..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT))
     end
     local col= can and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e'
-    tooltip:AddDoubleLine(col..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT), col..'Alt+|A:NPE_Icon:0:0|a')
+    tooltip:AddDoubleLine(
+        col..(WoWTools_DataMixin.onlyChinese and '召唤坐骑' or MOUNT),
+        col..'Alt+|A:NPE_Icon:0:0|a'
+    )
 
     if type and MountJournal and MountJournal:IsVisible() and creatureName then
         MountJournalSearchBox:SetText(creatureName)

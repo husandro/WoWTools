@@ -10,17 +10,16 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
     local speciesName, speciesIcon, petType, companionID, tooltipSource, tooltipDescription, isWild, canBattle, isTradeable, isUnique, obtainable, creatureDisplayID = C_PetJournal.GetPetInfoBySpeciesID(speciesID)
     local AllCollected, CollectedNum, CollectedText, text2Right, typeTexture
-    local size= self.iconSize--20
 
     tooltip:AddLine(' ')
 
 --speciesID, icon
     tooltip:AddDoubleLine(
+        speciesIcon and '|T'..speciesIcon..':'..self.iconSize..'|t'..speciesIcon,
+
         'speciesID'
         ..WoWTools_DataMixin.Icon.icon2
-        ..speciesID,
-
-        speciesIcon and '|T'..speciesIcon..':'..size..'|t'..speciesIcon
+        ..speciesID
     )
 
 --displayID companionID
@@ -32,9 +31,8 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
 --技能图标
     if canBattle then
-        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, size+10)
+        local abilityIconA, abilityIconB = WoWTools_PetBattleMixin:GetAbilityIcon(speciesID, nil, nil, false, self.iconSize)
         if abilityIconA or abilityIconB then
-            --tooltip:AddDoubleLine(abilityIconA or ' ', abilityIconB)
             tooltip:AddLine(' ')
             tooltip:AddLine(abilityIconA)
             tooltip:AddLine(abilityIconB)
@@ -70,7 +68,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
 	--loadoutPlate.modelScene:TransitionToModelSceneID(loadoutModelSceneID, CAMERA_TRANSITION_TYPE_IMMEDIATE, CAMERA_MODIFICATION_TYPE_DISCARD)
 --设置, 3D模型
-    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {
+    self:Set_Item_Model(tooltip, {
        -- modelSceneID= loadoutModelSceneID,
         creatureDisplayID=creatureDisplayID
     })
@@ -91,7 +89,9 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
         typeTexture= "Interface\\TargetingFrame\\PetBadge-"..PET_TYPE_SUFFIX[petType]
 
         local strongTexture, weakHintsTexture= WoWTools_PetBattleMixin:GetPetStrongWeakHints(petType)
-        text2Right= '|T'..strongTexture..':'..size..'|t|cnGREEN_FONT_COLOR:<|r|T'..typeTexture..':'..size..':|t|cnRED_FONT_COLOR:>|r|T'..weakHintsTexture..':'..size..'|t'
+        text2Right= '|T'..strongTexture..':0|t'
+            ..'|cnGREEN_FONT_COLOR:<|r|T'..typeTexture..':0:|t'
+            ..'|cnRED_FONT_COLOR:>|r|T'..weakHintsTexture..':'..self.iconSize..'|t'
     end
 
 --图像
@@ -110,7 +110,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     tooltip.text2Right:SetText(text2Right or '')
 
 --取得网页，数据链接
-    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})
+    self:Set_Web_Link(tooltip, {type='npc', id=companionID, name=speciesName, col= nil, isPetUI=false})
 
 --PetBattle.lua 联动
     WoWTools_PetBattleMixin.Set_TypeButton_Tips(petType)

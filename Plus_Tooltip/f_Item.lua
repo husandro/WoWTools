@@ -71,7 +71,7 @@ end
 
 
 
-local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
     local textLeft, text2Left
 --装等
     itemLevel= itemLink and C_Item.GetDetailedItemLevelInfo(itemLink) or itemLevel
@@ -118,7 +118,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
             text2Left=sourceInfo.isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'
         end
     end
-    WoWTools_TooltipMixin:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
+    self:Set_Item_Model(tooltip, {itemID=itemID, sourceID=sourceID, appearanceID=appearanceID, visualID=visualID})--设置, 3D模型
 
     if bindType==LE_ITEM_BIND_ON_EQUIP or bindType==LE_ITEM_BIND_ON_USE then--绑定装备,使用时绑定
         tooltip.Portrait:SetAtlas('greatVault-lock')
@@ -137,7 +137,7 @@ local function Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bin
 
 
                 if WoWTools_DataMixin.Player.Class==classFile then
-                    player=player..'|T'..icon2..':'..WoWTools_TooltipMixin.iconSize..'|t'
+                    player=player..'|T'..icon2..':'..self.iconSize..'|t'
 
                 elseif not otherTab[classFile] then
                     other= other..(WoWTools_UnitMixin:GetClassIcon(classFile) or '')
@@ -381,11 +381,11 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 --itemID,  图标
     tooltip:AddDoubleLine(
+        itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t'..itemTexture or ' ',
+
         'itemID'
         ..WoWTools_DataMixin.Icon.icon2
-        ..itemID,
-
-        itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t'..itemTexture
+        ..itemID
     )
 
 --物品，类型
@@ -398,7 +398,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 --装备
     if classID==2 or classID==4 then
-        textLeft, text2Left= Set_Equip(tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
+        textLeft, text2Left= Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLoc, bindType, col)
 
 --炉石
     elseif itemID==6948 then
@@ -420,9 +420,9 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         local mountID = C_MountJournal.GetMountFromItem(itemID)--坐骑物品
         local speciesID = select(13, C_PetJournal.GetPetInfoByItemID(itemID))
         if mountID then
-            WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, 'item')--坐骑
+            self:Set_Mount(tooltip, mountID, 'item')--坐骑
         elseif speciesID then
-            WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
+            self:Set_Pet(tooltip, speciesID)--宠物
         end
     end
 
@@ -438,10 +438,10 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         local spellTexture= C_Spell.GetSpellTexture(spellID)
         local cnName= WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true})
         tooltip:AddDoubleLine(
-            (itemName~=spellName and '|cff71d5ff['..cnName..']|r' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID,
+            spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture or ' ',
 
-            spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture
+            (itemName~=spellName and '|cff71d5ff['..cnName..']|r' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID
         )
     end
 
@@ -468,7 +468,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     --print(r,g,b)
     --tooltip.backgroundColor:SetShown(true)
 
-    WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
+    self:Set_Web_Link(tooltip, {type='item', id=itemID, name=itemName, col=col, isPetUI=false})--取得网页，数据链接
 
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
     --tooltip:Show()
