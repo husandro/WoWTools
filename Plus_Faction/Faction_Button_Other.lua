@@ -64,131 +64,30 @@ end
 
 
 
-local function set_expand_collapse(show)
+
+local function Expand_All()
 	local num= C_Reputation.GetNumFactions() or 0
 	if num<=0 then
 		return
 	end
---[[do
-	if show then
-		C_Reputation.ExpandAllFactionHeaders()
 
-	else
-		C_Reputation.CollapseAllFactionHeaders()
-	end
-end]]
 	for index= num, 1,-1 do
 		local data= C_Reputation.GetFactionDataByIndex(index)
-		if data and data.isHeader then
-			if show then
-				do
-					C_Reputation.ExpandFactionHeader(index)
-				end
-			else
-				do
-					C_Reputation.CollapseFactionHeader(index)
-				end
-			end
-		end
-	end
-
-	do
-		for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames() or {}) do
-			if frame.elementData.isHeader and frame:IsCollapsed() then
-				frame:ToggleCollapsed()
-			end
-		end
-	end
-end
-	--[[for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames()) do
-		if frame.elementData and frame.elementData.isHeader then
-			if show then
-				if frame:IsCollapsed() then
-					frame:ToggleCollapsed()
-				end
-			else
-				if not frame:IsCollapsed() then
-					frame:ToggleCollapsed()
-				end
-			end
-		end
-	end]]
-
-
-
-
---[[
-local function Init_Search(self)
-	local numList= self:IsVisible() and C_Reputation.GetNumFactions() or 0
-	if numList<=0 then
-		return
-	end
-
-	local factionID, name
-
-	local currID=math.max(self:GetNumber() or 0)
-	currID= math.min(currID, 2147483647)
-
-	local text= self:GetText()
-	local info = currID>0 and C_Reputation.GetFactionDataByID(currID)
-	if info then
-		if info.factionID then
-			factionID= info.factionID
-		else
-			return
-		end
-	else
-		text= text:gsub(' ', '')
-		if text~='' then
-			name=text
-		else
-			return
-		end
-	end
-
-	--local findHeader=true
-	local find, find2
-	local cur1, cur2
-
-
-	for index=1, numList, 1 do
-		local data= C_Reputation.GetFactionDataByIndex(index) or {}
-
-		if factionID== data.factionID or data.name==name then
-			find= index
-			cur1= data.factionID
-			--break
-
-		elseif name and data.name:find(name) then
-			find2= index
-			cur2= data.factionID
-		end
-
-		if data.isHeader and data.isCollapsed then
+		if data and data.isHeader and data.isCollapsed then
 			C_Reputation.ExpandFactionHeader(index)
 		end
 	end
 
-
-	find= find or find2
-	cur1= cur1 or cur2
-
-
-	if find and cur1 then
-
-		ReputationFrame.ScrollBox:ScrollToElementDataIndex(find)
-
-		for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames() or {}) do
-			if frame.Content and frame.elementData then
-				if frame.elementData.factionID==cur1 then
-					frame.Content.BackgroundHighlight:SetAlpha(0.2)
-				else
-					frame.Content.BackgroundHighlight:SetAlpha(0)
-				end
-			end
+	for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames()) do
+		if frame.elementData.isHeader and frame:IsCollapsed() then
+			frame:ToggleCollapsed()
 		end
 	end
-end]]
+end
+
+
+
+
 
 
 
@@ -199,13 +98,11 @@ end]]
 
 
 local function Init()
-
-
 	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_FactionMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
     WoWTools_FactionMixin.down= down
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
-		set_expand_collapse(true)
+		Expand_All()
 	end)
 	down:SetScript("OnLeave", function() GameTooltip_Hide() end)
 	down:SetScript('OnEnter', function(self)
@@ -219,7 +116,7 @@ local function Init()
 	local up= WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	up:SetPoint("RIGHT", down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
-		set_expand_collapse(false)
+		C_Reputation.CollapseAllFactionHeaders()
 	end)
 	up:SetScript("OnLeave", function() GameTooltip_Hide() end)
 	up:SetScript('OnEnter', function(self)
@@ -249,7 +146,7 @@ local function Init()
 	end)
 	edit:HookScript('OnEditFocusGained', function(self)
 		self:SetAlpha(1)
-		set_expand_collapse(true)
+		Expand_All()
 		if self:GetText()~='' then
 			Init_Search(self)
 		end
