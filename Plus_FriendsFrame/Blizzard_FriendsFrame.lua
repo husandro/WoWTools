@@ -117,6 +117,7 @@ local function Init_Friends_Menu(self, root)
         return not Save().disabledBNFriendInfo
     end, function()
         Save().disabledBNFriendInfo= not Save().disabledBNFriendInfo and true or nil
+        self:set_events()
     end)
 
     sub:CreateCheckbox(format(WoWTools_DataMixin.onlyChinese and '仅限%s' or LFG_LIST_CROSS_FACTION, 'WoW'..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '好友' or FRIEND)), function()
@@ -159,6 +160,126 @@ end
 
 
 
+--处理，好友，在线信息
+local function Set_Friend_Event(self, _, friendIndex)
+--战斗中，不显示，好友，提示
+    if (not Save().showInCombatFriendInfo and UnitAffectingCombat('player') and IsInInstance()) then
+        self.tips=nil
+        return
+    end
+
+    local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
+    if not accountInfo
+        or (
+            not Save().allFriendInfo--仅限，WoW，好友
+            and accountInfo.gameAccountInfo.isOnline
+            and (
+                    accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW
+                    or accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID
+                    or not accountInfo.gameAccountInfo.isInCurrentRegion
+                )
+            )
+        or (not accountInfo.isFavorite and Save().showFriendInfoOnlyFavorite)--仅限收藏好友
+    then
+        return
+    end
+
+    local text= ((accountInfo.note and accountInfo.note:gsub(' ', '')~='') and accountInfo.note or accountInfo.accountName or accountInfo.battleTag or '')--备注 或名称 战网名称
+    text= '|cff00ccff['..GetBNPlayerLink(accountInfo.accountName, text, accountInfo.bnetAccountID, 0, 0, 0)..'] '
+    if accountInfo.gameAccountInfo.isOnline then--是不在线
+        if accountInfo.isAFK or accountInfo.gameAccountInfo.isGameAFK then
+            text= text..'|T'..FRIENDS_TEXTURE_AFK..':0|t'
+        elseif accountInfo.isDND or accountInfo.gameAccountInfo.isGameBusy then
+            text= text..'|T'..FRIENDS_TEXTURE_DND..':0|t'
+        else
+            text= text..'|T'..FRIENDS_TEXTURE_ONLINE..':0|t'
+        end
+    else
+        text= text..'|T'..FRIENDS_TEXTURE_OFFLINE..':0|t'
+    end
+
+    if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForLatestExpansion() then--角色等级
+        text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
+    end
+
+    if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
+        if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
+            text= text..WoWTools_UnitMixin:GetPlayerInfo({
+                        guid=accountInfo.gameAccountInfo.playerGuid,
+                        reLink= accountInfo.gameAccountInfo.factionName==WoWTools_DataMixin.Player.Faction,
+                        reName=true,
+                        --reRealm=true,
+                        faction=accountInfo.gameAccountInfo.factionName,
+                    })..' '
+        else
+            text= text..(accountInfo.gameAccountInfo.characterName or '')
+                    ..(accountInfo.gameAccountInfo.realmName and accountInfo.gameAccountInfo.realmName~='' and '-'..accountInfo.gameAccountInfo.realmName or '')
+                    ..(accountInfo.gameAccountInfo.className and '('..accountInfo.gameAccountInfo.className..')' or '')
+        end
+    end
+
+    if accountInfo.gameAccountInfo.clientProgram then
+        C_Texture.GetTitleIconTexture(accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua
+            if success and texture then
+                text= text..'|T'..texture..':0|t'
+            end
+        end)
+    end
+
+    if not accountInfo.gameAccountInfo.isInCurrentRegion then
+        if accountInfo.gameAccountInfo.regionID and RegionNames[accountInfo.gameAccountInfo.regionID] then
+            text= text..' |cnRED_FONT_COLOR:'..RegionNames[accountInfo.gameAccountInfo.regionID]..'|r'
+        end
+    elseif accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID then
+        text= text..' |cnRED_FONT_COLOR:CLASSIC'..accountInfo.gameAccountInfo.wowProjectID..'|r'
+    end
+
+    local infoText
+    local function ShowRichPresenceOnly(client, wowProjectID, faction, realmID)
+        if (client ~= BNET_CLIENT_WOW) or (wowProjectID ~= WOW_PROJECT_ID) then
+            return true;
+        elseif (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and ((faction ~= WoWTools_DataMixin.Player.Faction) or (realmID ~= self.playerRealmID)) then
+            return true
+        end
+    end
+    local function GetOnlineInfoText(client, isMobile, rafLinkType, locationText)
+        if locationText then
+            if isMobile then
+                return '|A:UI-ChatIcon-App:0:0|a'..locationText
+            end
+            if (client == BNET_CLIENT_WOW) and (rafLinkType ~= Enum.RafLinkType.None) and not isMobile then
+                if rafLinkType == Enum.RafLinkType.Recruit then
+                    return format(WoWTools_DataMixin.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|a|cffffd200招募的战友：|r %s' or RAF_RECRUIT_FRIEND, locationText);
+                else
+                    return format(WoWTools_DataMixin.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|acffffd200招募者：|r %s' or RAF_RECRUITER_FRIEND, locationText);
+                end
+            end
+        end
+        return locationText;
+    end
+    if ShowRichPresenceOnly(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.wowProjectID, accountInfo.gameAccountInfo.factionName, accountInfo.gameAccountInfo.realmID) then
+        infoText = GetOnlineInfoText(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.isWowMobile, accountInfo.rafLinkType, accountInfo.gameAccountInfo.richPresence);
+    else
+        infoText = GetOnlineInfoText(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.isWowMobile, accountInfo.rafLinkType, accountInfo.gameAccountInfo.areaName);
+    end
+    text= text..(infoText or '')
+
+    if accountInfo.gameAccountInfo.canSummon then
+        text= text..'|A:socialqueuing-friendlist-summonbutton-up:0:0|a'
+    end
+
+    if self.tips~= text then
+        self.tips= text
+        print(text)
+    end
+end
+
+
+
+
+
+
+
 
 
 
@@ -181,7 +302,10 @@ local function Init()--好友列表, 初始化
     }
     FriendsFrameStatusDropdown:SetSize(58, 25)--原生，有点问题
 
-    FriendsButton= WoWTools_ButtonMixin:Menu(FriendsListFrame)
+    FriendsButton= WoWTools_ButtonMixin:Menu(FriendsListFrame, {
+        name= 'WoWToolsFriendsMenuButton',
+        icon='hide',
+    })
 
     FriendsButton:SetPoint('RIGHT', FriendsFrameCloseButton, 'LEFT')
     FriendsButton:GetFrameStrata(FriendsFrameCloseButton:GetFrameStrata())
@@ -189,128 +313,22 @@ local function Init()--好友列表, 初始化
     FriendsButton:SetupMenu(function(...) Init_Friends_Menu(...) end)
 
     FriendsButton.playerRealmID = GetRealmID()
-    FriendsButton:SetScript('OnEvent', function(self, _, friendIndex)
-        if Save().disabledBNFriendInfo then
-            return
-        end
-        if not Save().showInCombatFriendInfo and UnitAffectingCombat('player') and IsInInstance() then--战斗中，不显示，好友，提示
-            self.tips=nil
-            return
-        end
-        local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
-        if not accountInfo
-            or (
-                not Save().allFriendInfo--仅限，WoW，好友
-                and accountInfo.gameAccountInfo.isOnline
-                and (
-                        accountInfo.gameAccountInfo.clientProgram ~= BNET_CLIENT_WOW
-                        or accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID
-                        or not accountInfo.gameAccountInfo.isInCurrentRegion
-                    )
-                )
-            or (not accountInfo.isFavorite and Save().showFriendInfoOnlyFavorite)--仅限收藏好友
-        then
-            return
-        end
 
-        local text= ((accountInfo.note and accountInfo.note:gsub(' ', '')~='') and accountInfo.note or accountInfo.accountName or accountInfo.battleTag or '')--备注 或名称 战网名称
-        text= '|cff00ccff['..GetBNPlayerLink(accountInfo.accountName, text, accountInfo.bnetAccountID, 0, 0, 0)..'] '
-        if accountInfo.gameAccountInfo.isOnline then--是不在线
-            if accountInfo.isAFK or accountInfo.gameAccountInfo.isGameAFK then
-                text= text..'|T'..FRIENDS_TEXTURE_AFK..':0|t'
-            elseif accountInfo.isDND or accountInfo.gameAccountInfo.isGameBusy then
-                text= text..'|T'..FRIENDS_TEXTURE_DND..':0|t'
-            else
-                text= text..'|T'..FRIENDS_TEXTURE_ONLINE..':0|t'
-            end
-        else
-            text= text..'|T'..FRIENDS_TEXTURE_OFFLINE..':0|t'
-        end
-
-        if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForLatestExpansion() then--角色等级
-            text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
-        end
-
-        if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
-            if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
-                text= text..WoWTools_UnitMixin:GetPlayerInfo({
-                            guid=accountInfo.gameAccountInfo.playerGuid,
-                            reLink= accountInfo.gameAccountInfo.factionName==WoWTools_DataMixin.Player.Faction,
-                            reName=true,
-                            --reRealm=true,
-                            faction=accountInfo.gameAccountInfo.factionName,
-                        })..' '
-            else
-                text= text..(accountInfo.gameAccountInfo.characterName or '')
-                        ..(accountInfo.gameAccountInfo.realmName and accountInfo.gameAccountInfo.realmName~='' and '-'..accountInfo.gameAccountInfo.realmName or '')
-                        ..(accountInfo.gameAccountInfo.className and '('..accountInfo.gameAccountInfo.className..')' or '')
-            end
-        end
-
-        if accountInfo.gameAccountInfo.clientProgram then
-            C_Texture.GetTitleIconTexture(accountInfo.gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)--FriendsFrame.lua BnetShared.lua
-                if success and texture then
-                    text= text..'|T'..texture..':0|t'
-                end
-            end)
-        end
-
-        if not accountInfo.gameAccountInfo.isInCurrentRegion then
-            if accountInfo.gameAccountInfo.regionID and RegionNames[accountInfo.gameAccountInfo.regionID] then
-                text= text..' |cnRED_FONT_COLOR:'..RegionNames[accountInfo.gameAccountInfo.regionID]..'|r'
-            end
-        elseif accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW and accountInfo.gameAccountInfo.wowProjectID ~= WOW_PROJECT_ID then
-            text= text..' |cnRED_FONT_COLOR:CLASSIC'..accountInfo.gameAccountInfo.wowProjectID..'|r'
-        end
-
-        local infoText
-        local function ShowRichPresenceOnly(client, wowProjectID, faction, realmID)
-            if (client ~= BNET_CLIENT_WOW) or (wowProjectID ~= WOW_PROJECT_ID) then
-                return true;
-            elseif (WOW_PROJECT_ID == WOW_PROJECT_CLASSIC) and ((faction ~= WoWTools_DataMixin.Player.Faction) or (realmID ~= self.playerRealmID)) then
-                return true
-            end
-        end
-        local function GetOnlineInfoText(client, isMobile, rafLinkType, locationText)
-            if locationText then
-                if isMobile then
-                    return '|A:UI-ChatIcon-App:0:0|a'..locationText
-                end
-                if (client == BNET_CLIENT_WOW) and (rafLinkType ~= Enum.RafLinkType.None) and not isMobile then
-                    if rafLinkType == Enum.RafLinkType.Recruit then
-                        return format(WoWTools_DataMixin.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|a|cffffd200招募的战友：|r %s' or RAF_RECRUIT_FRIEND, locationText);
-                    else
-                        return format(WoWTools_DataMixin.onlyChinese and '|A:recruitafriend_V2_tab_icon:0:0|acffffd200招募者：|r %s' or RAF_RECRUITER_FRIEND, locationText);
-                    end
-                end
-            end
-            return locationText;
-        end
-        if ShowRichPresenceOnly(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.wowProjectID, accountInfo.gameAccountInfo.factionName, accountInfo.gameAccountInfo.realmID) then
-            infoText = GetOnlineInfoText(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.isWowMobile, accountInfo.rafLinkType, accountInfo.gameAccountInfo.richPresence);
-        else
-            infoText = GetOnlineInfoText(accountInfo.gameAccountInfo.clientProgram, accountInfo.gameAccountInfo.isWowMobile, accountInfo.rafLinkType, accountInfo.gameAccountInfo.areaName);
-        end
-        text= text..(infoText or '')
-
-        if accountInfo.gameAccountInfo.canSummon then
-            text= text..'|A:socialqueuing-friendlist-summonbutton-up:0:0|a'
-        end
-
-        if self.tips~= text then
-            self.tips= text
-            print(text)
-        end
+--处理，好友，在线信息
+    FriendsButton:SetScript('OnEvent', function(...)
+        Set_Friend_Event(...)
     end)
 
-    if Save().showFriendInfoOnlyFavorite then
-        FriendsButton:RegisterEvent('BN_FRIEND_INFO_CHANGED')
-    else
-        C_Timer.After(2, function()
-            FriendsButton:RegisterEvent('BN_FRIEND_INFO_CHANGED')
-        end)
-    end
 
+    function FriendsButton:set_events()
+        if Save().disabledBNFriendInfo then
+            self.tips= nil
+            self:UnregisterEvents('BN_FRIEND_INFO_CHANGED')
+        else
+            self:RegisterEvent('BN_FRIEND_INFO_CHANGED')
+        end
+    end
+    FriendsButton:set_events()
 
 
 
@@ -328,13 +346,15 @@ local function Init()--好友列表, 初始化
 
     function FriendsButton:set_status(showPrint)
         if not BNConnected() then
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            self:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+            self:GetNormalTexture():SetAlpha(0.3)
             return
         end
+
         local bnetAFK, bnetDND= select(5, BNGetInfo())
         local text
 
-
+        local alpha= 1
         if Save().Friends[WoWTools_DataMixin.Player.GUID]=='Availabel' then
             if bnetAFK or bnetDND then
                 BNSetAFK(false)
@@ -359,8 +379,12 @@ local function Init()--好友列表, 初始化
             self:SetNormalTexture(FRIENDS_TEXTURE_DND)
 
         else
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+            self:SetNormalTexture(WoWTools_DataMixin.Icon.icon)
+            alpha= 0.3
         end
+
+        self:GetNormalTexture():SetAlpha(alpha)
+
         if text then
             if showPrint then
                 print(WoWTools_DataMixin.Icon.icon2..WoWTools_FriendsMixin.addName, text)
@@ -368,7 +392,7 @@ local function Init()--好友列表, 初始化
                 WoWTools_Mixin:Call(FriendsFrame_CheckBattlenetStatus)
             end
 
-C_Timer.After(1.3, function()
+
             bnetAFK, bnetDND = select(5, BNGetInfo());
             if bnetAFK then
                 FriendsTabHeader.bnStatus = FRIENDS_TEXTURE_AFK;
@@ -378,9 +402,9 @@ C_Timer.After(1.3, function()
                 FriendsTabHeader.bnStatus = FRIENDS_TEXTURE_ONLINE;
             end
             FriendsFrameStatusDropdown.Text:SetFormattedText("\124T%s.tga:16:16:0:0\124t", FriendsTabHeader.bnStatus)
-end)
         end
     end
+
     FriendsButton:set_status(true)
 
 
@@ -595,9 +619,12 @@ end)
     hooksecurefunc('WhoList_Update', function()
         set_WhoList_Update()
     end)
+    
     hooksecurefunc(WhoFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         set_WhoList_Update(self)
     end)
+
+
 
     Init=function()end
 end

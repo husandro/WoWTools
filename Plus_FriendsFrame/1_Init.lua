@@ -17,6 +17,8 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
+panel:RegisterEvent('LOADING_SCREEN_DISABLED')
+
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
@@ -43,40 +45,22 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
 
             else
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_FriendsFrame') then
-                    WoWTools_FriendsMixin:Blizzard_FriendsFrame()
-                end
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_QuickJoin') then
-                    WoWTools_FriendsMixin:Blizzard_QuickJoin()
-                end
-
-                if C_AddOns.IsAddOnLoaded('Blizzard_RaidFrame') then
-                    WoWTools_FriendsMixin:Blizzard_RaidFrame()
-                end
+                WoWTools_FriendsMixin:Blizzard_QuickJoin()
+                WoWTools_FriendsMixin:Blizzard_RaidFrame()
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_RaidUI') then
                     WoWTools_FriendsMixin:Blizzard_RaidUI()
+                    self:UnregisterEvent(event)
                 end
             end
 
-        elseif WoWToolsSave then
-
-            if arg1=='Blizzard_FriendsFrame' then
-                WoWTools_FriendsMixin:Blizzard_FriendsFrame()
-
-            elseif arg1=='Blizzard_QuickJoin' then
-                WoWTools_FriendsMixin:Blizzard_QuickJoin()
-
-            elseif arg1=='Blizzard_RaidFrame' then
-                WoWTools_FriendsMixin:Blizzard_RaidFrame()
-
-            elseif arg1=='Blizzard_RaidUI' then
-                WoWTools_FriendsMixin:Blizzard_RaidUI()
-            end
+        elseif arg1=='Blizzard_RaidUI' and WoWToolsSave then
+            WoWTools_FriendsMixin:Blizzard_RaidUI()
+            self:UnregisterEvent(event)
         end
+
+    elseif event=='LOADING_SCREEN_DISABLED' then
+        WoWTools_FriendsMixin:Blizzard_FriendsFrame()
+        self:UnregisterEvent(event)
     end
 end)
-
--- C_AddOns.IsAddOnLoaded('Blizzard_RaidFrame')
