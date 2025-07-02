@@ -2,7 +2,7 @@ WoWTools_TooltipMixin={
     WoWHead= 'https://www.wowhead.com/',
     Events={},
     addName= '|A:newplayertutorial-drag-cursor:0:0|aTooltips',
-    iconSize=18,
+    iconSize=0,
 }
 
 local P_Save={
@@ -102,6 +102,8 @@ end
 
 --初始
 local function Init()
+    WoWTools_TooltipMixin.iconSize= Save().iconSize
+
     for name in pairs(WoWTools_TooltipMixin.Events)do
         if C_AddOns.IsAddOnLoaded(name) then
             do
@@ -120,20 +122,8 @@ local function Init()
 
 
     WoWTools_TooltipMixin:Set_Init_Item(GameTooltip)
-    --WoWTools_TooltipMixin:Set_Init_Item(GlueTooltip)
 
-    --[[hooksecurefunc("UnitFrame_UpdateTooltip", function(self)
-        for i = GameTooltip:NumLines(), 3, -1 do
-            local line = _G["GameTooltipTextLeft"..i]
-            local text = line and line:GetText()
-            if text == UNIT_POPUP_RIGHT_CLICK then
-                GameTooltip:SetUnit(self.unit, self.hideStatusOnTooltip)
-                line= _G["GameTooltipTextLeft"..(i-1)]
-                print(line:GetText()==' ')
-                break
-            end
-        end
-    end)]]
+
 
 --移除，<右键点击设置框体> 替换原生
     if not Save().UNIT_POPUP_RIGHT_CLICK then

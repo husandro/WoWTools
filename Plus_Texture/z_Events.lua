@@ -147,7 +147,7 @@ function WoWTools_TextureMixin.Events:Blizzard_AchievementUI()--成就
     end)
 
 --总览
-    self:SetNineSlice(AchievementFrameSummary, 1, true)
+    self:SetNineSlice(AchievementFrameSummary)
     self:HideFrame(AchievementFrameSummary)
 
 --近期成就

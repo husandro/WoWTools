@@ -6,7 +6,7 @@ end
 
 
  --移动，缩放
-local function Init_MoveUI()   
+local function Init_MoveUI()
     StableFrame.PetModelScene:ClearAllPoints()
     StableFrame.PetModelScene:SetPoint('TOPLEFT', StableFrame, 330, -86)
     StableFrame.PetModelScene:SetPoint('BOTTOMRIGHT', -2, 92)
@@ -87,7 +87,7 @@ local function Init_MoveUI()
         GameTooltip:Show()
     end)
 
-    
+
     WoWTools_MoveMixin:Setup(StableFrame, {setSize=true, minW=860, minH=440,
     sizeRestFunc=function(btn)
         StableFrame:SetSize(1040, 638)
@@ -136,6 +136,8 @@ end
 
 local function Init_Texture(self)
     self:SetEditBox(StableFrame.StabledPetList.FilterBar.SearchBox)
+    self:SetMenu(StableFrame.StabledPetList.FilterBar.FilterDropdown)
+
     self:SetScrollBar(StableFrame.StabledPetList)
     self:SetMenu(StableFrame.PetModelScene.PetInfo.Specialization)
     self:SetMenu(StableFrame.StabledPetList.FilterBar)

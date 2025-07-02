@@ -38,9 +38,10 @@ local function Init_Panel()
     local addName= WoWTools_TooltipMixin.addName
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
+    local root
 
 
-    local initializer2= WoWTools_PanelMixin:OnlyCheck({
+    root= WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '跟随鼠标' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, FOLLOW, MOUSE_LABEL),
         tooltip= addName,
         GetValue= function() return Save().setDefaultAnchor end,
@@ -54,7 +55,7 @@ local function Init_Panel()
         end
     })
 
-    local initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= 'X',
         GetValue= function() return Save().cursorX or 0 end,
         minValue= -240,
@@ -67,10 +68,10 @@ local function Init_Panel()
             Save().cursorX= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    }, root)
+   
 
-    initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= 'Y',
         GetValue= function() return Save().cursorY or 0 end,
         minValue= -240,
@@ -83,10 +84,10 @@ local function Init_Panel()
             Save().cursorY= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    }, root)
+    
 
-    initializer= WoWTools_PanelMixin:OnlyCheck({
+    WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '右边' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,
         tooltip= addName,
         GetValue= function() return Save().cursorRight end,
@@ -95,10 +96,10 @@ local function Init_Panel()
             Save().cursorRight= not Save().cursorRight and true or nil
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    }, root)
+    
 
-    initializer= WoWTools_PanelMixin:OnlyCheck({
+    WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '战斗中：默认' or (HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT..': '..DEFAULT),
         tooltip= addName,
         GetValue= function() return Save().inCombatDefaultAnchor end,
@@ -107,13 +108,12 @@ local function Init_Panel()
             Save().inCombatDefaultAnchor= not Save().inCombatDefaultAnchor and true or nil
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().setDefaultAnchor then return true else return false end end)
+    }, root)
 
 
     WoWTools_PanelMixin:Header(Layout, WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS)
 
-    initializer2= WoWTools_PanelMixin:OnlyCheck({
+    root= WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '模型' or MODEL,
         tooltip= addName,
         GetValue= function() return not Save().hideModel end,
@@ -124,7 +124,7 @@ local function Init_Panel()
         end
     })
 
-    initializer= WoWTools_PanelMixin:OnlyCheck({
+    WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '左' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_LEFT,
         tooltip= addName,
         GetValue= function() return Save().modelLeft end,
@@ -133,10 +133,10 @@ local function Init_Panel()
             Save().modelLeft= not Save().modelLeft and true or nil
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
+    }, root)
 
-    --[[initializer= WoWTools_PanelMixin:OnlyCheck({
+
+    --[[WoWTools_PanelMixin:OnlyCheck({
         name= (WoWTools_DataMixin.onlyChinese and '模型' or MODEL)..' ID',
         tooltip= addName,
         value= Save().showModelFileID,
@@ -145,10 +145,9 @@ local function Init_Panel()
             Save().showModelFileID= not Save().showModelFileID and true or nil
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
+    }, root)
 ]]
-    initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '大小' or HUD_EDIT_MODE_SETTING_BAGS_SIZE,
         GetValue= function() return Save().modelSize or 100 end,
         minValue= 40,
@@ -161,10 +160,9 @@ local function Init_Panel()
             Save().modelSize= WoWTools_Mixin:GetFormatter1to10(value2, 40, 300)
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
+    }, root)
 
-    initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= 'X',
         GetValue= function() return Save().modelX or 0 end,
         minValue= -240,
@@ -177,10 +175,9 @@ local function Init_Panel()
             Save().modelX= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
+    }, root)
 
-    initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= 'Y',
         GetValue= function() return Save().modelY or -24 end,
         minValue= -240,
@@ -193,10 +190,9 @@ local function Init_Panel()
             Save().modelY= WoWTools_Mixin:GetFormatter1to10(value2, -200, 200)
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
+    }, root)
 
-    initializer= WoWTools_Mixin:OnlySlider({
+    WoWTools_Mixin:OnlySlider({
         name= WoWTools_DataMixin.onlyChinese and '方向' or HUD_EDIT_MODE_SETTING_BAGS_DIRECTION,
         GetValue= function() return Save().modelFacing or -24 end,
         minValue= -1,
@@ -209,8 +205,7 @@ local function Init_Panel()
             Save().modelFacing= WoWTools_Mixin:GetFormatter1to10(value2, -1, 1)
             set_Cursor_Tips()
         end
-    })
-    initializer:SetParentInitializer(initializer2, function() if Save().hideModel then return false else return true end end)
+    }, root)
 
     WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and 'NPC职业颜色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, 'NPC', CLASS_COLORS),
@@ -258,9 +253,30 @@ local function Init_Panel()
 
 
 
+
+    WoWTools_Mixin:OnlySlider({
+        name= WoWTools_DataMixin.onlyChinese and '图标尺寸' or HUD_EDIT_MODE_SETTING_ACTION_BAR_ICON_SIZE,
+        GetValue= function() return Save().iconSize or 0 end,
+        minValue= 0,
+        maxValue= 32,
+        setp= 1,
+        tooltip= addName,
+        category= Category,
+        SetValue= function(_, _, value2)
+            if value2 then
+                Save().iconSize= WoWTools_Mixin:GetFormatter1to10(value2, 0, 32)
+                WoWTools_TooltipMixin.iconSize= Save().iconSize
+            end
+        end
+    })
+
+
+
+
+
     WoWTools_PanelMixin:Header(Layout, 'CVar')
 
-    initializer2= WoWTools_PanelMixin:OnlyCheck({
+    root= WoWTools_PanelMixin:OnlyCheck({
         name= WoWTools_DataMixin.onlyChinese and '自动设置' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SETTINGS),
         tooltip= function() return WoWTools_TooltipMixin:Set_CVar(nil, true, true) end,
         GetValue= function() return Save().setCVar end,
@@ -271,25 +287,23 @@ local function Init_Panel()
         end
     })
 
-    initializer= WoWTools_PanelMixin:OnlyButton({
+    WoWTools_PanelMixin:OnlyButton({
         buttonText= WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS,
         layout= Layout,
         SetValue= function()
             WoWTools_TooltipMixin:Set_CVar()
             print(WoWTools_DataMixin.onlyChinese and '设置完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SETTINGS, COMPLETE))
         end
-    })
-    initializer:SetParentInitializer(initializer2)
+    }, root)
 
-    initializer= WoWTools_PanelMixin:OnlyButton({
+    WoWTools_PanelMixin:OnlyButton({
         buttonText= WoWTools_DataMixin.onlyChinese and '默认' or DEFAULT,
         layout= Layout,
         SetValue= function()
             WoWTools_TooltipMixin:Set_CVar(true, nil, nil)
             print(WoWTools_DataMixin.onlyChinese and '默认完成' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DEFAULT, COMPLETE))
         end
-    })
-    initializer:SetParentInitializer(initializer2)
+    }, root)
 
     WoWTools_PanelMixin:OnlyMenu({
         SetValue= function(value)
@@ -314,8 +328,8 @@ local function Init_Panel()
                 }) end,
         category= Category
     })
-
-    --[[initializer2= WoWTools_PanelMixin:OnlyCheck({
+end
+    --[[root= WoWTools_PanelMixin:OnlyCheck({
         name= (WoWTools_DataMixin.onlyChinese and '提示选项CVar名称' or 'Show Option CVar Name'),
         tooltip= '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '友情提示: 可能会出现错误' or (LABEL_NOTE..': '..ENABLE_ERROR_SPEECH)..'|r'),
         GetValue= function() return Save().ShowOptionsCVarTips end,
@@ -327,7 +341,7 @@ local function Init_Panel()
             end
         end
     })]]
-end
+
 
 
 
