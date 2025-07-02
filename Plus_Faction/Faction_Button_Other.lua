@@ -1,34 +1,126 @@
 
 
-local isGo
-local function set_expand_collapse(show)
-    if isGo then
-        return
-    end
-    isGo=true
-    for index=1, C_Reputation.GetNumFactions() do
-        local data= C_Reputation.GetFactionDataByIndex(index) or {}
-        if data.isHeader then
-            if show then
-                if data.isCollapsed then
-                    C_Reputation.ExpandFactionHeader(index);
-                end
-            else
-                if not data.isCollapsed then
-                    C_Reputation.CollapseFactionHeader(index);
-                end
-            end
-        end
-    end
-    isGo=nil
+local function Init_Search(self)
+	local numList= self:IsVisible() and C_Reputation.GetNumFactions() or 0
+	if numList<=0 then
+		return
+	end
+
+	local factionID, name, factionIndex
+	local findTab={}
+
+	factionID =math.max(self:GetNumber() or 0)
+	factionID= factionID>0 and factionID or nil
+
+	name= self:GetText() or ''
+	name= name:gsub(' ', '')~='' and name or nil
+
+	if name or factionID then
+		for index= numList, 1, -1 do
+			local data= C_Reputation.GetFactionDataByIndex(index)
+			if data and data.factionID and data.name then
+	--查找 ID
+				if factionID and data.factionID==factionID then
+					findTab[data.factionID]=true
+					factionIndex= index
+					break
+	--查找 名称
+				elseif name then
+					local cn= WoWTools_TextMixin:CN(data.name)
+					cn= cn~=data.name and cn or nil
+					if cn and cn==name or data.name== name then
+						findTab[data.factionID]=true
+						factionIndex= index
+						break
+
+					elseif cn and cn:find(name) or data.name:find(name) then
+						findTab[data.factionID]=true
+						factionIndex= index
+					end
+				end
+			end
+		end
+	end
+
+	if factionIndex then
+		ReputationFrame.ScrollBox:ScrollToElementDataIndex(factionIndex)
+	end
+
+	for _, btn in pairs(ReputationFrame.ScrollBox:GetFrames()) do
+		if btn.Content and btn.elementData then
+			if findTab[btn.elementData.factionID] then
+				btn.Content.BackgroundHighlight:SetAlpha(0.3)
+			else
+				btn.Content.BackgroundHighlight:SetAlpha(0)
+			end
+		end
+	end
+
+	findTab=nil
 end
 
 
 
 
+
+
+local function set_expand_collapse(show)
+	local num= C_Reputation.GetNumFactions() or 0
+	if num<=0 then
+		return
+	end
+--[[do
+	if show then
+		C_Reputation.ExpandAllFactionHeaders()
+
+	else
+		C_Reputation.CollapseAllFactionHeaders()
+	end
+end]]
+	for index= num, 1,-1 do
+		local data= C_Reputation.GetFactionDataByIndex(index)
+		if data and data.isHeader then
+			if show then
+				do
+					C_Reputation.ExpandFactionHeader(index)
+				end
+			else
+				do
+					C_Reputation.CollapseFactionHeader(index)
+				end
+			end
+		end
+	end
+
+	do
+		for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames() or {}) do
+			if frame.elementData.isHeader and frame:IsCollapsed() then
+				frame:ToggleCollapsed()
+			end
+		end
+	end
+end
+	--[[for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames()) do
+		if frame.elementData and frame.elementData.isHeader then
+			if show then
+				if frame:IsCollapsed() then
+					frame:ToggleCollapsed()
+				end
+			else
+				if not frame:IsCollapsed() then
+					frame:ToggleCollapsed()
+				end
+			end
+		end
+	end]]
+
+
+
+
+--[[
 local function Init_Search(self)
-	local numList= C_Reputation.GetNumFactions()
-	if numList==0 then
+	local numList= self:IsVisible() and C_Reputation.GetNumFactions() or 0
+	if numList<=0 then
 		return
 	end
 
@@ -74,7 +166,6 @@ local function Init_Search(self)
 
 		if data.isHeader and data.isCollapsed then
 			C_Reputation.ExpandFactionHeader(index)
-			WoWTools_CurrencyMixin:UpdateTokenFrame()
 		end
 	end
 
@@ -87,7 +178,6 @@ local function Init_Search(self)
 
 		ReputationFrame.ScrollBox:ScrollToElementDataIndex(find)
 
-
 		for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames() or {}) do
 			if frame.Content and frame.elementData then
 				if frame.elementData.factionID==cur1 then
@@ -97,11 +187,8 @@ local function Init_Search(self)
 				end
 			end
 		end
-
 	end
-
-
-end
+end]]
 
 
 
@@ -120,7 +207,7 @@ local function Init()
 	down:SetScript("OnClick", function()
 		set_expand_collapse(true)
 	end)
-	down:SetScript("OnLeave", GameTooltip_Hide)
+	down:SetScript("OnLeave", function() GameTooltip_Hide() end)
 	down:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
@@ -134,7 +221,7 @@ local function Init()
 	up:SetScript("OnClick", function()
 		set_expand_collapse(false)
 	end)
-	up:SetScript("OnLeave", GameTooltip_Hide)
+	up:SetScript("OnLeave", function() GameTooltip_Hide() end)
 	up:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
@@ -143,20 +230,31 @@ local function Init()
 		GameTooltip:Show()
 	end)
 
-	local edit= WoWTools_EditBoxMixin:Create(up, {name='WoWTools_PlusFactionSearchBox', Template='SearchBoxTemplate'})
+	local edit= WoWTools_EditBoxMixin:Create(up, {
+		name='WoWTools_PlusFactionSearchBox',
+		Template='SearchBoxTemplate'
+	})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
 	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
-	edit:SetScript('OnTextChanged', Init_Search)
-	edit:SetScript('OnEnterPressed', Init_Search)
-	edit:HookScript('OnEditFocusLost', function(self) self:SetAlpha(0.3) end)
-	edit:HookScript('OnEditFocusGained', function(self) self:SetAlpha(1) end)
-	edit:SetSize(180, 23)
 
-	edit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH)
-	edit:HookScript('OnTextChanged', function(s)
-        s.Instructions:SetShown(s:GetText() == "")
-    end)
+	edit:HookScript('OnTextChanged', function(self)
+		Init_Search(self)
+	end)
+	edit:SetScript('OnEnterPressed', function(self)
+		Init_Search(self)
+	end)
+	edit:HookScript('OnEditFocusLost', function(self)
+		self:SetAlpha(0.3)
+	end)
+	edit:HookScript('OnEditFocusGained', function(self)
+		self:SetAlpha(1)
+		set_expand_collapse(true)
+		if self:GetText()~='' then
+			Init_Search(self)
+		end
+	end)
+
 end
 
 

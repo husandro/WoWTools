@@ -75,7 +75,7 @@ local function Expand_All()
 	do
 		for i=num, 1, -1 do--展开所有
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-			if info and info.isHeader then--not info.isHeaderExpanded
+			if info and info.isHeader and not info.isHeaderExpanded then
 				C_CurrencyInfo.ExpandCurrencyList(i, true)
 			end
 		end
@@ -128,7 +128,7 @@ local function Init()
 	up:SetScript("OnClick", function()
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-			if info  and info.isHeader and info.isHeaderExpanded then
+			if info and info.isHeader then
 				do
 					C_CurrencyInfo.ExpandCurrencyList(i, false)
 				end
@@ -156,9 +156,8 @@ local function Init()
 	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
 
-	edit:SetScript('OnTextChanged', function(self)
+	edit:HookScript('OnTextChanged', function(self)
 		Init_Search(self)
-		self.Instructions:SetShown(self:GetText() == "")
 	end)
 	edit:SetScript('OnEnterPressed', function(self)
 		Init_Search(self)
@@ -169,13 +168,10 @@ local function Init()
 	edit:HookScript('OnEditFocusGained', function(self)
 		self:SetAlpha(1)
 		Expand_All()
-	end)
-	edit:SetScript('OnHide', function(self)
-		if self:HasFocus() then
-			self:ClearFocus()
+		if self:GetText()~='' then
+			Init_Search(self)
 		end
 	end)
-	edit:SetSize(180, 23)
 
 	_G['WoWToolsPlusCurrencyMenuButton']:settings()
 end

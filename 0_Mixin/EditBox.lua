@@ -55,12 +55,12 @@ function WoWTools_EditBoxMixin:Create(frame, tab)
     editBox:SetTextColor(1,1,1)
     editBox:SetHeight(23)
 
-    editBox:SetScript('OnEscapePressed', EditBox_ClearFocus)
-    editBox:SetScript('OnHide', function(s) s:ClearFocus() end)
+    editBox:SetScript('OnEscapePressed', function(...) EditBox_ClearFocus(...) end)
+    editBox:SetScript('OnHide', function(s) if s:HasFocus() then s:ClearFocus() end end)
     WoWTools_TextureMixin:SetEditBox(editBox)
 
-    if text and editBox.Instructions then
-        editBox.Instructions:SetText(tab.text)
+    if editBox.Instructions then
+        editBox.Instructions:SetText(text or (WoWTools_DataMixin.onlyChinese and '搜索' or SEARCH))
     end
     if editBox.searchIcon then
         if atlas then
