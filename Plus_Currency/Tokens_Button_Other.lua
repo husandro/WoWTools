@@ -1,90 +1,95 @@
 
-
-
-
 local function Init_Search(self)
-	if self.isSearching then
+	local numList= self:IsVisible() and C_CurrencyInfo.GetCurrencyListSize() or 0
+	if numList<=0 then
 		return
 	end
 
-	self.isSearching= true
+	local currencyID, name, currencyIndex
+	local findTab={}
 
-	local numList= C_CurrencyInfo.GetCurrencyListSize()
+	currencyID =math.max(self:GetNumber() or 0)
+	currencyID= currencyID>0 and currencyID or nil
 
-	local currencyID, name
+	name= self:GetText() or ''
+	name= name:gsub(' ', '')~='' and name or nil
 
-	local currID=math.max(self:GetNumber() or 0)
-	currID= math.min(currID, 2147483647)
+	if name or currencyID then
+		for index= numList, 1, -1 do
+			local data= C_CurrencyInfo.GetCurrencyListInfo(index)
+			if data and not data.isHeader and data.currencyID and data.name then
+	--查找 ID
+				if currencyID and data.currencyID==currencyID then
+					findTab[data.currencyID]=true
+					currencyIndex= index
+					break
+	--查找 名称
+				elseif name then
+					local cn= WoWTools_TextMixin:CN(data.name)
+					cn= cn~=data.name and cn or nil
+					if cn and cn==name or data.name== name then
+						findTab[data.currencyID]=true
+						currencyIndex= index
+						break
 
-	local text= self:GetText()
-	local info = currID>0 and C_CurrencyInfo.GetCurrencyInfo(currID)
-
-	if info and info.currencyID and info.currencyID>0 then
-		currencyID= info.currencyID
-
-	else
-		text= text:gsub(' ', '')
-		if text~='' then
-			name=text
-		else
-			self.isSearching= nil
-			return
+					elseif cn and cn:find(name) or data.name:find(name) then
+						findTab[data.currencyID]=true
+						currencyIndex= index
+					end
+				end
+			end
 		end
 	end
 
+	if currencyIndex then
+		TokenFrame.ScrollBox:ScrollToElementDataIndex(currencyIndex)
+	end
 
-
-	local data, cnName
-	local indexTab={}
-
-	for index=1, numList, 1 do
-		
-		data= C_CurrencyInfo.GetCurrencyListInfo(index) or {}
-		
-		if data.isHeader then
-			if not data.isHeaderExpanded then
-				do C_CurrencyInfo.ExpandCurrencyList(index, true) end
+	for _, btn in pairs(TokenFrame.ScrollBox:GetFrames()) do
+		if btn.Content and btn.elementData then
+			if findTab[btn.elementData.currencyID] then
+				btn.Content.BackgroundHighlight:SetAlpha(0.3)
+			else
+				btn.Content.BackgroundHighlight:SetAlpha(0)
 			end
-		elseif data.currencyID then
-			
-			cnName= WoWTools_TextMixin:CN(data.name)
-			print(currencyID, data.currencyID)
-			if currencyID== data.currencyID or (name and (data.name==name or cnName==name)) then
-				indexTab={
-					[data.currencyID]=index
-				}
-				break
+		end
+	end
 
-			elseif name and (data.name:find(name) or cnName:find(name)) then
-				indexTab[data.currencyID]= index
+	findTab=nil
+end
+
+
+
+
+
+
+
+
+
+local function Expand_All()
+	local num= C_CurrencyInfo.GetCurrencyListSize() or 0
+	if num<=0 then
+		return
+	end
+
+	do
+		for i=num, 1, -1 do--展开所有
+			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
+			if info and info.isHeader then--not info.isHeaderExpanded
+				C_CurrencyInfo.ExpandCurrencyList(i, true)
 			end
 		end
 	end
 
 	do
-		WoWTools_CurrencyMixin:UpdateTokenFrame()
-	end
-
-
-	local index= indexTab[1]
-print('index', index)
-
-	if index then
-		TokenFrame.ScrollBox:ScrollToElementDataIndex(index)
-
 		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
-			if frame.Content and frame.elementData then
-				if indexTab[frame.elementData.currencyID] then
-					
-					frame.Content.BackgroundHighlight:SetAlpha(0.2)
-				else
-					frame.Content.BackgroundHighlight:SetAlpha(0)
-				end
+			if frame.elementData.isHeader and frame:IsCollapsed() then
+				frame:ToggleCollapsed()
 			end
 		end
 	end
-	indexTab= nil
-	self.isSearching=nil
+
+	WoWTools_CurrencyMixin:UpdateTokenFrame()
 end
 
 
@@ -105,23 +110,7 @@ local function Init()
 	down:SetPoint('RIGHT', TokenFrame.filterDropdown, 'LEFT', -2, 0)
 
 	down:SetScript("OnClick", function()
-		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
-			if frame.elementData.isHeader and frame:IsCollapsed() then
-				do
-					
-					frame:ToggleCollapsed()
-				end
-			end
-		end
-		--[[for i=1, C_CurrencyInfo.GetCurrencyListSize() do--展开所有
-			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
-			if info and info.isHeader and not info.isHeaderExpanded then
-				do
-					C_CurrencyInfo.ExpandCurrencyList(i, true)
-				end
-			end
-		end
-		WoWTools_CurrencyMixin:UpdateTokenFrame()]]
+		Expand_All()
 	end)
 	down:SetScript("OnLeave", GameTooltip_Hide)
 	down:SetScript('OnEnter', function(self)
@@ -137,8 +126,6 @@ local function Init()
 	local up= WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	up:SetPoint('RIGHT', down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
-
-
 		for i=1, C_CurrencyInfo.GetCurrencyListSize() do
 			local info = C_CurrencyInfo.GetCurrencyListInfo(i)
 			if info  and info.isHeader and info.isHeaderExpanded then
@@ -149,7 +136,9 @@ local function Init()
 		end
 		WoWTools_CurrencyMixin:UpdateTokenFrame()
 	end)
-	up:SetScript("OnLeave", GameTooltip_Hide)
+	up:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
 	up:SetScript('OnEnter', function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:ClearLines()
@@ -159,17 +148,19 @@ local function Init()
 	end)
 
 
-	--[[local edit= WoWTools_EditBoxMixin:Create(up, {name='WoWTools_PlusTokensSearchBox', Template='SearchBoxTemplate'})
+	local edit= WoWTools_EditBoxMixin:Create(up, {
+		name='WoWTools_PlusTokensSearchBox',
+		Template='SearchBoxTemplate'
+	})
 	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
 	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
 	edit:SetAlpha(0.3)
-	--edit.Instructions:SetText(WoWTools_DataMixin.onlyChinese and '需求：展开选项' or (NEED..': '..HUD_EDIT_MODE_EXPAND_OPTIONS:gsub(' |A:.+|a', '')))
-	
+
 	edit:SetScript('OnTextChanged', function(self)
 		Init_Search(self)
+		self.Instructions:SetShown(self:GetText() == "")
 	end)
 	edit:SetScript('OnEnterPressed', function(self)
-		self.isSearching=nil
 		Init_Search(self)
 	end)
 	edit:HookScript('OnEditFocusLost', function(self)
@@ -177,19 +168,14 @@ local function Init()
 	end)
 	edit:HookScript('OnEditFocusGained', function(self)
 		self:SetAlpha(1)
-		for _, frame in pairs(TokenFrame.ScrollBox:GetFrames() or {}) do
-			if frame.elementData.isHeader and frame:IsCollapsed() then
-				do
-					
-					frame:ToggleCollapsed()
-				end
-			end
+		Expand_All()
+	end)
+	edit:SetScript('OnHide', function(self)
+		if self:HasFocus() then
+			self:ClearFocus()
 		end
 	end)
-	edit:HookScript('OnTextChanged', function(s)
-        s.Instructions:SetShown(s:GetText() == "")
-    end)
-	edit:SetSize(180, 23)]]
+	edit:SetSize(180, 23)
 
 	_G['WoWToolsPlusCurrencyMenuButton']:settings()
 end

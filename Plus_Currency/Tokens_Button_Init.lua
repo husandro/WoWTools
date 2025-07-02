@@ -121,7 +121,7 @@ local function Init()
 	Button.bagButton.texture:SetAlpha(0.3)
 
 	Button.bagButton:SetScript('OnMouseDown', function(...)
-		click()
+		click(...)
 	end)
 	Button.bagButton:SetScript('OnEnter', function(...)
 		enter(...)
