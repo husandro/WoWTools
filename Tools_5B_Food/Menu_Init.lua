@@ -506,5 +506,5 @@ end
 
 
 function WoWTools_FoodMixin:Init_Menu(btn)
-    MenuUtil.CreateContextMenu(btn, Init_Menu)
+    MenuUtil.CreateContextMenu(btn, function(...) Init_Menu(...) end)
 end

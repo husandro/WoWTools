@@ -171,7 +171,7 @@ local function Init_Cursor_Options()
     dropDown.Text:SetPoint('CENTER')
     dropDown:SetDefaultText(Save().Atlas[Save().atlasIndex] or select(3, WoWTools_TextureMixin:IsAtlas(WoWTools_CursorMixin.DefaultTexture, 0)))
     dropDown:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
 
@@ -370,7 +370,7 @@ local function Init_GCD_Options()
     dropDown.Text:SetPoint('CENTER')
     dropDown:SetDefaultText(Save().Atlas[Save().gcdTextureIndex] or select(3, WoWTools_TextureMixin:IsAtlas(WoWTools_CursorMixin.DefaultGCDTexture, 0)))
     dropDown:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
         local sub

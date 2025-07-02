@@ -487,10 +487,10 @@ local function Init()
 
 --菜单
     ListButton:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
-        
+
         local sub
         root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '显示' or SHOW,

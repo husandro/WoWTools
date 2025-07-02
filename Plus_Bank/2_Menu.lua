@@ -20,7 +20,7 @@ end
 --设置菜单
 --#######
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
     
@@ -340,6 +340,8 @@ local function Init()
     BankFrameMoneyFrameCopperButton:HookScript('OnEnter', function()
         SetCursor('Interface\\Cursor\\Cast.blp')--Redlist.xml
     end)
+
+    Init=function()end
 end
 
 

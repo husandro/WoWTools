@@ -144,7 +144,7 @@ end
 
 
 local function Init()
-    BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', WoWTools_AddOnsMixin.MenuButton)
+    BottomFrame= CreateFrame('Frame', 'WoWToolsAddOnsBottomFrame', _G['WoWToolAddOnsOptionsMenuButton'])
 
     BottomFrame:SetSize(1,1)
     function BottomFrame:set_frame_point()

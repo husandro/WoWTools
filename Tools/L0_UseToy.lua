@@ -420,9 +420,9 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
+
+
     Init_Menu_Toy(self, root)
-
-
 end
 
 
@@ -499,7 +499,7 @@ local function setToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 self:set_tooltips()
                 self:set_alpha()
             else
-                MenuUtil.CreateContextMenu(self, Init_Menu_Toy)
+                MenuUtil.CreateContextMenu(self, function(...) Init_Menu_Toy(...) end)
             end
         end)
         btn.useToy:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha() end)
@@ -683,8 +683,8 @@ local function Init()
     ToyButton:SetScript("OnMouseDown", function(self,d)
         if d=='RightButton' and not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+                Init_Menu(...)
+            end)
         end
     end)
 

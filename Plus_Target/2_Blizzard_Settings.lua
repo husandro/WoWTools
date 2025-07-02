@@ -211,7 +211,7 @@ local function Init_Options()
     menuPoint.Text:SetPoint('CENTER')
     menuPoint:SetDefaultText(Save().TargetFramePoint)
     menuPoint:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
 
@@ -309,7 +309,7 @@ local function Init_Options()
     menu.Text:ClearAllPoints()
     menu.Text:SetPoint('CENTER')
     menu:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
 
@@ -535,7 +535,7 @@ local function Init_Options()
     menuUnitIsMePoint.Text:ClearAllPoints()
     menuUnitIsMePoint.Text:SetPoint('CENTER')
     menuUnitIsMePoint:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
 
@@ -578,7 +578,7 @@ local function Init_Options()
     menuUnitIsMe.Text:ClearAllPoints()
     menuUnitIsMe.Text:SetPoint('CENTER')
     menuUnitIsMe:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
 

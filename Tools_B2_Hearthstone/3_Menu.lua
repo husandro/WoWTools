@@ -131,5 +131,5 @@ end
 
 
 function WoWTools_HearthstoneMixin:Setup_Menu()
-    MenuUtil.CreateContextMenu(self.ToyButton, Init_Menu)
+    MenuUtil.CreateContextMenu(self.ToyButton, function(...) Init_Menu(...) end)
 end

@@ -156,9 +156,10 @@ end
 
 --初始，监视, 文本
 local function Init()
-	if not Save().btn or TrackButton then
+	if not Save().btn then
 		return
 	end
+
 	TrackButton= WoWTools_ButtonMixin:Cbtn(nil, {
 		size=23,
 		name='WoWToolsFactionTrackListMainButton',
@@ -324,6 +325,8 @@ local function Init()
 	hooksecurefunc(ReputationFrame, 'Update', function()
 		WoWTools_FactionMixin:TrackButton_Settings()--更新, 监视, 文本
 	end)
+
+	Init=function()end
 end
 
 
@@ -344,6 +347,4 @@ function WoWTools_FactionMixin:Init_TrackButton()
 	end
 
     Init()
-
-	
 end

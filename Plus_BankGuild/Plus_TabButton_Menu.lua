@@ -503,7 +503,7 @@ end
 --numIn 是否放入：true, false
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     elseif WoWTools_GuildBankMixin.isInRun then--禁用，按钮移动事件
         self.isInRun=true--停止，已运行
@@ -580,16 +580,6 @@ end
 
 
 
-
-
---[[function WoWTools_GuildBankMixin:Set_TabButton_Menu(btn)
-    --btn:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
-    btn:SetScript('OnMouseDown', function(frame)
-        MenuUtil.CreateContextMenu(frame, Init_Menu)
-    end)
-end]]
 
 function WoWTools_GuildBankMixin:Init_Button_Menu(...)
     Init_Menu(...)

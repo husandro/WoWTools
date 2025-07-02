@@ -65,7 +65,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -103,9 +103,7 @@ local function Init(frame)
     btn:SetupMenu(function(...)
         Init_Menu(...)
     end)
-    --[[btn:SetScript('OnClick', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Menu)
-    end)]]
+
     function btn:settings()
         self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)
         if Save().hide then

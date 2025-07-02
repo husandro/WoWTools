@@ -208,7 +208,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -435,11 +435,7 @@ local function Init()--显示地图ID
     MenuButton:SetupMenu(function(...)
         Init_Menu(...)
     end)
-    --[[MenuButton:SetScript('OnClick', function(self)
-        MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
-    end)]]
+
     Init=function()end
 end
 

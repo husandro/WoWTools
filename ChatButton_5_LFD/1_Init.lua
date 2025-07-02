@@ -54,9 +54,9 @@ local function Init()
         GameTooltip:Show()
     end
 
-    LFDButton:SetupMenu(function(...)
-        if LFDButton:IsVisible() then
-            WoWTools_LFDMixin:Init_Menu(...)
+    LFDButton:SetupMenu(function(self, ...)
+        if self:IsMouseOver() then
+            WoWTools_LFDMixin:Init_Menu(self, ...)
         end
     end)
 

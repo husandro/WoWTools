@@ -257,8 +257,8 @@ local function Init_Disabled_Button()
             self:set_tooltips()
         else
             MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+                Init_Menu(...)
+            end)
         end
     end)
 

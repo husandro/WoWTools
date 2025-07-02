@@ -801,7 +801,7 @@ end
 
 --初始菜单
 local function Init_Menu(_, root)
-    local sub, sub2, sub3, tab, line, num
+    local sub, sub2, sub3, num
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
     local tank, healer, dps
 

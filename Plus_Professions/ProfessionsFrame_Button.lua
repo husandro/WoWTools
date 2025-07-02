@@ -136,7 +136,7 @@ local function Init_Fuoco_Button(button)
         btn:SetAttribute('unit', 'player')
 
         btn:SetAttribute('type2', 'item')
-        btn:SetAttribute('item2', toyName or 134020)    
+        btn:SetAttribute('item2', toyName or 134020)
     end
 end
 
@@ -236,10 +236,13 @@ end
 
 
 local function Init_Menu(self, root)
-    if Save().showFuocoButton and WoWTools_MenuMixin:CheckInCombat(root) or not self:IsVisible() then
+    if Save().showFuocoButton
+        and WoWTools_MenuMixin:CheckInCombat(root)
+        or not self:IsMouseOver()
+    then
         return
     end
-    
+
     local sub, sub2
 
 --启用
@@ -277,7 +280,7 @@ local function Init_Menu(self, root)
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 
-   
+
 
     --缩放
     WoWTools_MenuMixin:Scale(self, root, function()

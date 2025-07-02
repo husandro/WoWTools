@@ -427,8 +427,8 @@ local function Init()
         end
         if d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+                Init_Menu(...)
+            end)
 
         elseif d=='LeftButton' then
             self:set_shown()

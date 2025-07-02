@@ -410,8 +410,9 @@ local function Sub_Menu(root, tab)
         end, tab)
         sub:SetEnabled(MacroFrameSelectedMacroButton:IsShown())
     end
---查询
-    --[[if tab.spellID then
+
+--[[查询 BUG
+    if tab.spellID then
         sub=root:CreateButton(--bug
             '|A:common-search-magnifyingglass:0:0|a'..(WoWTools_DataMixin.onlyChinese and '查询' or WHO),
         function(data)
@@ -419,6 +420,7 @@ local function Sub_Menu(root, tab)
             return MenuResponse.Open
         end, tab)
         WoWTools_SetTooltipMixin:Set_Menu(sub)--技能，提示
+        sub:SetEnabled(not InCombatLockdown())
     end]]
 
 --链接至聊天栏
@@ -519,7 +521,7 @@ end
 
 
 local function Init_SpellBook_Menu(self, root)
-    if not self:IsVisible() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+    if not self:IsMouseOver() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
 
@@ -588,7 +590,7 @@ end
 
 --PVP，天赋，法术
 local function Init_PvP_Menu(self, root)
-    local slotInfo = self:IsVisible() and C_SpecializationInfo.GetPvpTalentSlotInfo(1)
+    local slotInfo = self:IsMouseOver() and C_SpecializationInfo.GetPvpTalentSlotInfo(1)
     if not slotInfo or not slotInfo.availableTalentIDs or WoWTools_MenuMixin:CheckInCombat(root) then
         return
     end
@@ -645,7 +647,7 @@ end
 
 
 local function Init_Equip_Menu(self, root)
-    if not self:IsVisible() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+    if not self:IsMouseOver() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
     local sub, icon, name, spellID, itemLink
@@ -699,7 +701,7 @@ end
 
 --谈话，表情
 local function Init_Chat_Menu(self, root)
-    if not self:IsVisible() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
+    if not self:IsMouseOver() or WoWTools_MenuMixin:CheckInCombat(root) then--战斗中
         return
     end
     local i, sub
@@ -745,7 +747,7 @@ end
 
 --常用，宏
 local function Init_MacroList_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -843,9 +845,7 @@ local function Init()
             btn:SetPoint('LEFT', last, 'RIGHT')
             btn.name= data.name
             btn.index= i
-            --[[btn:SetScript('OnMouseDown', function(self)
-                MenuUtil.CreateContextMenu(self, Init_SpellBook_Menu)
-            end)]]
+
             btn:SetupMenu(function(...) Init_SpellBook_Menu(...) end)
             Set_Button_OnEnter(btn)
             last= btn
@@ -860,9 +860,6 @@ local function Init()
         })
     pvpButton:SetNormalAtlas('')
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
-    --[[pvpButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_PvP_Menu)
-    end)]]
     pvpButton:SetupMenu(function(...) Init_PvP_Menu(...) end)
     pvpButton.name= WoWTools_DataMixin.onlyChinese and 'PvP天赋' or PVP_LABEL_PVP_TALENTS
     Set_Button_OnEnter(pvpButton)
@@ -875,9 +872,6 @@ local function Init()
         name='WoWToolsMacroBottomListEquipButton',
     })
     equipButton:SetPoint('LEFT', last, 'RIGHT')
-    --[[equipButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, Init_Equip_Menu)
-    end)]]
     equipButton:SetupMenu(function(...) Init_Equip_Menu(...) end)
     equipButton.name= WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP
     Set_Button_OnEnter(equipButton)
@@ -891,11 +885,6 @@ local function Init()
     })
     spellchButton:SetPoint('LEFT', last, 'RIGHT')
     spellchButton.listTab= TextEmoteSpeechList
-    --[[spellchButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, function(_, root)
-            Init_Chat_Menu(root, TextEmoteSpeechList)
-        end)
-    end)]]
     spellchButton:SetupMenu(function(...) Init_Chat_Menu(...) end)
     spellchButton.name= WoWTools_DataMixin.onlyChinese and '谈话' or VOICEMACRO_LABEL
     Set_Button_OnEnter(spellchButton)
@@ -909,12 +898,6 @@ local function Init()
         })
     emoteButton:SetPoint('LEFT', last, 'RIGHT')
     emoteButton.listTab= EmoteList
-
-    --[[emoteButton:SetScript('OnMouseDown', function(self)
-        MenuUtil.CreateContextMenu(self, function(_, root)
-            Init_Chat_Menu(root, EmoteList)
-        end)
-    end)]]
     emoteButton:SetupMenu(function(...) Init_Chat_Menu(...) end)
     emoteButton.name= WoWTools_DataMixin.onlyChinese and '表情' or EMOTE
     Set_Button_OnEnter(emoteButton)

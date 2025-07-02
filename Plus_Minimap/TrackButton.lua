@@ -1078,8 +1078,8 @@ local function Init_Button()
 
             elseif d=='RightButton' and not key then
                 MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+                    Init_Menu(...)
+                end)
             end
         end
     end)

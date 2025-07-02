@@ -17,7 +17,7 @@ local MenuButton, RefreshButton
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 

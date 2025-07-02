@@ -12,7 +12,7 @@ end
 
 ]]
 --玩家，添加，列表
-local function Init_Menu(_, root, data)    
+local function Init_Menu(_, root, data)
     if
         --not Save().myChatFilter
             not data.chatTarget
@@ -69,5 +69,5 @@ end
 
 
 function WoWTools_WorldMixin:MENU_UNIT_FRIEND()
-    Menu.ModifyMenu("MENU_UNIT_FRIEND", Init_Menu)
+    Menu.ModifyMenu("MENU_UNIT_FRIEND", function(...) Init_Menu(...) end)
 end

@@ -448,8 +448,8 @@ local function Init_TrackButton()--添加装备管理框
 
         elseif d=='RightButton' then
             MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
+                Init_Menu(...)
+            end)
         end
     end)
 

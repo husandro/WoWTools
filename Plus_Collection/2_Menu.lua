@@ -142,6 +142,8 @@ local function Init()
             Init_Menu(...)
         end)
     end)
+
+    Init=function()end
 end
 
 

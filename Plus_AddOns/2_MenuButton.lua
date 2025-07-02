@@ -15,7 +15,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -153,34 +153,6 @@ local function Init_Menu(self, root)
         )
     end)
 
---[[
---隐藏背景
-    root:CreateDivider()
-    sub=root:CreateButton(
-        WoWTools_DataMixin.onlyChinese and '显示背景' or HUD_EDIT_MODE_SETTING_UNIT_FRAME_SHOW_PARTY_FRAME_BACKGROUND,
-    function()
-        return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine((WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY)..' 0.5')
-    end)
-
-
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
-        getValue=function()
-            return Save().Bg_Alpha or 0.5
-        end, setValue=function(value)
-            Save().Bg_Alpha=value
-            self:set_bg()
-        end,
-        name=WoWTools_DataMixin.onlyChinese and '改变透明度' or CHANGE_OPACITY ,
-        minValue=0,
-        maxValue=1,
-        step=0.05,
-        bit='%.2f',
-    })
-    sub:CreateSpacer()]]
 
 
 
@@ -243,7 +215,7 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {name='WoWTool_AddOnsOptionsButton'})
+    local btn= WoWTools_ButtonMixin:Menu(AddonListCloseButton, {name='WoWToolAddOnsOptionsMenuButton'})
     btn:SetPoint('RIGHT', AddonListCloseButton, 'LEFT', -2, 0)
 
 --提升 Strata
@@ -268,12 +240,7 @@ local function Init()
         Init_Menu(...)
     end)
 
-    --[[function btn:set_bg()
-        AddonListInset.Bg:SetAlpha(Save().Bg_Alpha or 0.5)
-    end
-    btn:set_bg()]]
-
-    WoWTools_AddOnsMixin.MenuButton= btn
+    Init=function()end
 end
 
 

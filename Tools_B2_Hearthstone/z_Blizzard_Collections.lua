@@ -88,7 +88,9 @@ local function ToySpellButton_UpdateButton(btn)--标记, 是否已选取
                 self:set_tooltips()
                 self:set_alpha()
             else
-                MenuUtil.CreateContextMenu(self, WoWTools_HearthstoneMixin.Init_Menu_Toy)
+                MenuUtil.CreateContextMenu(self, function(...)
+                    WoWTools_HearthstoneMixin:Init_Menu_Toy(...)
+                end)
             end
         end)
         btn.hearthstone:SetScript('OnLeave', function(self) GameTooltip:Hide() self:set_alpha() end)

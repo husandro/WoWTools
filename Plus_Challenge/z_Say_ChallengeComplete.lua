@@ -457,10 +457,14 @@ function WoWTools_ChallengeMixin:Say_ChallengeComplete()
     Init()
 end
 
-function WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(_, root)
-    Init_Menu(SayButton, root)
+function WoWTools_ChallengeMixin:Say_ChallengeComplete_Menu(frame, root)
+    if frame:IsMouseOver() then
+        Init_Menu(SayButton, root)
+    end
 end
 
-function WoWTools_ChallengeMixin:Say_Menu(...)
-    Say_Menu(...)
+function WoWTools_ChallengeMixin:Say_Menu(frame, ...)
+    if frame:IsMouseOver() then
+        Say_Menu(frame, ...)
+    end
 end

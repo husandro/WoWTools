@@ -156,7 +156,7 @@ end
 
 --主菜单
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -578,32 +578,6 @@ local function Init()
     GroupButton:SetupMenu(function(...)
         Init_Menu(...)
     end)
- --[[
-    function GroupButton:set_OnMouseDown()
-        if self.type then
-            WoWTools_ChatMixin:Say(self.type)
-        else
-            return true
-        end
-    end
-   GroupButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' and self.type then
-            WoWTools_ChatMixin:Say(self.type)
-            self:CloseMenu()
-            self:set_tooltip()
-        end
-    end)
-
-    GroupButton:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' and self.type then
-            WoWTools_ChatMixin:Say(self.type)
-        else
-            MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
-            GameTooltip:Hide()
-        end
-    end)]]
 
     function GroupButton:chat_Up_down(d)
         local text
@@ -628,16 +602,7 @@ local function Init()
     end)
 
 
-    --[[GroupButton:SetScript('OnLeave', function(self)
-        GameTooltip:Hide()
-        self:state_leave()
-    end)
-    GroupButton:SetScript('OnEnter', function(self)
-        self:set_tooltip()
-        self:state_enter()--Init_Menu)
-    end)]]
-
-    C_Timer.After(0.3, Settings)--队伍信息提示
+    C_Timer.After(0.3, function() Settings() end)--队伍信息提示
 end
 
 

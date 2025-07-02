@@ -69,7 +69,7 @@ local function Init_Button()
 
     if Save().notStatusPlus then
         Button:SetupMenu(function(self, root)
-            if not self:IsVisible() then
+            if not self:IsMouseOver() then
                 return
             end
 

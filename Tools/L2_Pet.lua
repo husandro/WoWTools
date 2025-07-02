@@ -299,7 +299,7 @@ local function Init()
             end
 
         elseif d=='RightButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...) Init_Menu(...) end)
         end
     end)
 

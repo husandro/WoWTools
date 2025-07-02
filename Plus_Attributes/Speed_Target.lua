@@ -12,6 +12,10 @@ local btn
 
 
 local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
 --右
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '右' or HUD_EDIT_MODE_SETTING_AURA_FRAME_ICON_DIRECTION_RIGHT,

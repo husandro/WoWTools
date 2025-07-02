@@ -171,10 +171,6 @@ end
 
 --设置菜单
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
-        return
-    end
-
     local sub, sub2, name, info
 
     root:CreateDivider()

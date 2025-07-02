@@ -32,7 +32,7 @@ local FriendsButton
 
 
 local function Init_Friends_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 

@@ -156,7 +156,7 @@ end
 
 --过滤，列表，菜单
 local function Init_UI_List_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -275,21 +275,8 @@ local function Init()
         frame.WoWToolsText:SetText(text or '')--提示， 文本
     end)
 
-    --[[if not MountJournal.MountDisplay.tipsMenu then
-        MountJournal.MountDisplay.tipsMenu= WoWTools_ButtonMixin:Cbtn(MountJournal.MountDisplay, {icon=true, size={22,22}})
-        MountJournal.MountDisplay.tipsMenu:SetPoint('LEFT')
-        MountJournal.MountDisplay.tipsMenu:SetAlpha(0.3)
-        MountJournal.MountDisplay.tipsMenu:SetScript('OnMouseDown', function(self)
-            WoWTools_MountMixin:Init_Menu(self)
-            self:SetAlpha(1)
-        end)
-        MountJournal.MountDisplay.tipsMenu:SetScript('OnLeave', function(self) self:SetAlpha(0.3) end)
-    end]]
-
-    --local btn= CreateFrame('DropDownToggleButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'UIResettableDropdownButtonTemplate')--SharedUIPanelTemplates.lua
     local btn= CreateFrame('DropdownButton', 'MountJournalFilterButtonWoWTools', MountJournal, 'WowStyle1FilterDropdownTemplate')
     btn:SetPoint('BOTTOMLEFT', MountJournal.FilterDropdown, 'TOPLEFT', 0, 6)
-    --btn:SetWidth(MountJournal.FilterDropdown:GetWidth())
 
     MountJournal.FilterDropdown.ResetButton:HookScript('OnClick', function()
         if btn.ResetButton:IsShown() then

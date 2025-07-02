@@ -242,7 +242,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
     
@@ -519,7 +519,6 @@ end
 
 function WoWTools_MerchantMixin:Init_Menu()
     Init()
-    --MenuUtil.CreateContextMenu(frame, Init_Menu)
 end
 
 --购买物品

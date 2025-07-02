@@ -205,7 +205,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
 
@@ -249,12 +249,8 @@ end
 
 
 
-local function Init(btn)
-    btn:SetupMenu(function(...)
+function WoWTools_WorldMixin:Init_Menu()
+    self.Button:SetupMenu(function(...)
         Init_Menu(...)
     end)
-end
-
-function WoWTools_WorldMixin:Init_Menu()
-    Init(self.Button)
 end

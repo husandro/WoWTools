@@ -20,6 +20,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+    
     local sub
     root:CreateButton(
         '|A:characterundelete-RestoreButton:0:0|a'..(WoWTools_DataMixin.onlyChinese and '重置数值' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, RESET, STATUS_TEXT_VALUE)),
@@ -123,5 +127,5 @@ end
 
 
 function WoWTools_AttributesMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
+    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu(...) end)
 end

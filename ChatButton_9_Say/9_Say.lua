@@ -137,7 +137,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self:IsVisible() then
+    if not self:IsMouseOver() then
         return
     end
     
@@ -475,15 +475,6 @@ local function Init()
         GameTooltip:Show()
     end
 
-    --[[SayButton:SetScript('OnLeave', function(self)
-        self:state_leave()
-        GameTooltip:Hide()
-    end)
-    SayButton:SetScript('OnEnter', function(self)
-        self:state_enter()--Init_Menu)
-        self:set_tooltip()
-    end)]]
-
     SayButton:SetupMenu(function(...)
         Init_Menu(...)
     end)
@@ -500,38 +491,6 @@ local function Init()
             return true
         end
     end
-
-    --[[SayButton:SetScript('OnMouseDown',function(self, d)
-        if d=='LeftButton' and (Save().type or Save().name) then
-            local name, wow= Save().name, Save().isWoW
-            if Save().type==SLASH_WHISPER1 and UnitIsPlayer('target') then
-                name=GetUnitName('target', true)
-                wow= false
-            end
-            WoWTools_ChatMixin:Say(Save().type, name, wow)
-            self:CloseMenu()
-            self:set_tooltip()
-        end
-    end)
-    SayButton:SetScript('OnClick', function(self, d)
-
-        if d=='LeftButton' and (Save().type or Save().name) then
-
-            local name, wow= Save().name, Save().isWoW
-            if Save().type==SLASH_WHISPER1 and UnitIsPlayer('target') then
-                name=GetUnitName('target', true)
-                wow= false
-            end
-
-            WoWTools_ChatMixin:Say(Save().type, name, wow)
-
-        else
-            MenuUtil.CreateContextMenu(self, function(...)
-            Init_Menu(...)
-        end)
-            GameTooltip:Hide()
-        end
-    end)]]
 
     function SayButton:settings(type, text, name, isWoW)
         Save().type= type

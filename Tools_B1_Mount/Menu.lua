@@ -582,15 +582,15 @@ end
 
 
 function WoWTools_MountMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
+    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu(...) end)
 end
 
 function WoWTools_MountMixin:Init_Menu_Spell(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu_Spell)
+    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu_Spell(...) end)
 end
 
 function WoWTools_MountMixin:Init_Menu_Item(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu_Item)
+    MenuUtil.CreateContextMenu(frame, function(...) Init_Menu_Item(...) end)
 end
 
 function WoWTools_MountMixin:Set_Mount_Sub_Options(...)

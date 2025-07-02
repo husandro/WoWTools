@@ -223,7 +223,7 @@ local function Init()--设置,团队
         self:SetAlpha(1)
     end)
     CompactRaidFrameManager.ScaleButton:SetupMenu(function(self, root)
-        if not self:IsVisible() then
+        if not self:IsMouseOver() then
             return
         end
 

@@ -245,41 +245,6 @@ end
 
 
 
---[[
-local function Init_Menu(self, root)
-    local sub
-
---时间信息  
-    sub=root:CreateButton(
-        '|A:auctionhouse-icon-clock:0:0:|a'
-        ..(self==TimeManagerClockButton and '|cnGREEN_FONT_COLOR:' or '')
-        ..(WoWTools_DataMixin.onlyChinese and '时间信息' or TIMEMANAGER_TOOLTIP_TITLE),
-    function()
-        return MenuResponse.Open
-    end)
-    Init_TimeManager_Menu(self, sub)
-
---秒表
-    root:CreateDivider()
-    sub=root:CreateCheckbox(
-        '|TInterface\\Icons\\INV_Misc_PocketWatch_01:0:|t'
-        --..(self==StopwatchFrame and '|cnGREEN_FONT_COLOR:' )
-        ..(WoWTools_DataMixin.onlyChinese and '秒表' or STOPWATCH_TITLE),
-    function()
-        return StopwatchFrame:IsShown()
-    end, function()
-        WoWTools_Mixin:Call(Stopwatch_Toggle)
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示/隐藏' or (SHOW..'/'..HIDE))
-    end)
-    Init_Stopwatch_Menu(self, sub)
-end
-]]
-
-
-
-
 
 
 
@@ -395,36 +360,6 @@ local function Init_TimeManager()
     --设置，时间，颜色
     TimeManagerClockTicker:SetShadowOffset(1, -1)
     WoWTools_ColorMixin:Setup(TimeManagerClockTicker, {type='FontString', alpha=1})--设置颜色
-
-
-    --[[小时图，使用服务器, ServerTime
-    btn.TimeManagerClockButton_Update_R= TimeManagerClockButton_Update
-    function btn:set_Server_Timer()--小时图，使用服务器, 时间
-        if Save().useServerTimer then
-            TimeManagerClockButton_Update=function()
-                TimeManagerClockTicker:SetText(WoWTools_TimeMixin:SecondsToClock(C_DateAndTime.GetServerTimeLocal(), true, true))
-            end
-        else
-            TimeManagerClockButton_Update= self.TimeManagerClockButton_Update_R
-        end
-        WoWTools_Mixin:Call(TimeManagerClockButton_Update)
-    end
-    if Save().useServerTimer then
-        btn:set_Server_Timer()
-    end]]
-
-
---[[显示秒
-    if Save().isTimeManagerShowSeconds then
-        btn.elapsed=1
-        btn:HookScript('OnUpdate', function(self, elapsed)
-            self.elapsed= self.elapsed+elapsed
-            if self.elapsed>1 then
-                self.elapsed=0
-                TimeManagerClockButton_Update()
-            end
-        end)
-    end]]
 
 
 

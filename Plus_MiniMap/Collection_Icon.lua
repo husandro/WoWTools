@@ -1114,7 +1114,7 @@ local function Init()
             self:set_tooltip()
 
         elseif d=='LeftButton' then
-            MenuUtil.CreateContextMenu(self, Init_Menu)
+            MenuUtil.CreateContextMenu(self, function(...) Init_Menu(...) end)
             self:set_tooltip()
         end
     end)

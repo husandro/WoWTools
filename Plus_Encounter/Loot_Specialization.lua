@@ -131,7 +131,7 @@ end
 
 
 local function Init_Menu(self, root)
-    if not self.dungeonEncounterID or not self:IsVisible() then
+    if not self.dungeonEncounterID or not self:IsMouseOver() then
         return
     end
     local sub, num
@@ -229,8 +229,8 @@ local function set_Loot_Spec(button)
         button.LootButton= WoWTools_ButtonMixin:Menu(button, {isType2=true, size=26, icon='hide'})
         button.LootButton:SetPoint('LEFT', button, 'RIGHT', -3, 0)
         button.LootButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+            Init_Menu(...)
+        end)
 
         if not button.OnEnter then
             button:SetScript('OnLeave', GameTooltip_Hide)

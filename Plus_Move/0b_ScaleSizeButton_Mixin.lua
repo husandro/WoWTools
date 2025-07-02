@@ -255,6 +255,7 @@ end
 --菜单
 local function Init_Menu(self, root)
     root:SetTag('WOWTOOLS_RESIZEBUTTON_MENU')
+
     local target= self:GetParent()
     local name= self.name
 

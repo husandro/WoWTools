@@ -357,7 +357,9 @@ end
 
 
 function WoWTools_CurrencyMixin:Init_Menu(frame)
-    MenuUtil.CreateContextMenu(frame, Init_Menu)
+    MenuUtil.CreateContextMenu(frame, function(...)
+		Init_Menu(...)
+	end)
 end
 
 

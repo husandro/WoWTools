@@ -314,7 +314,6 @@ local function Init()
             ClearCursor()
 
         else
-            --WoWTools_MerchantMixin:Init_Menu(self)
             MenuUtil.CreateContextMenu(self,  function(f, root)
                 root:CreateTitle(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
                 root:CreateDivider()
