@@ -585,7 +585,6 @@ Plus_Other\Talking.lua
 ChatButton\0_0_ChatMixin.lua
 ChatButton\0_1_Button_ChatMixin.lua
 ChatButton\0_2_Init_Button.lua
-
 ##超链接， 欢迎, 一些其他功能
 ChatButton_1_HyperLink\0_HyperLinkMixin.lua
 ChatButton_1_HyperLink\1_Init.lua
@@ -599,10 +598,8 @@ ChatButton_1_HyperLink\z_Event_Sound.lua
 ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
 ChatButton_1_HyperLink\z_Welcome.lua
-
 ##ROLL
-ChatButton\2_Roll.lua
-
+ChatButton_2_Roll\2_Roll.lua
 ##标记
 ChatButton_3_Marker\0_MarkerMixin.lua
 ChatButton_3_Marker\1_Init.lua
@@ -612,8 +609,6 @@ ChatButton_3_Marker\3_Frame_Menu.lua
 ChatButton_3_Marker\Tank_Healer.lua
 ChatButton_3_Marker\Ready_Info.lua
 ChatButton_3_Marker\Ready_Auto.lua
-
-
 ##邀请， 自动接受， 拒绝，屏蔽
 ChatButton_4_Invite\4_Invite.lua
 ChatButton_4_Invite\Init_Menu.lua
@@ -624,8 +619,6 @@ ChatButton_4_Invite\Inv_All_Unit.lua
 ChatButton_4_Invite\Summon.lua
 ChatButton_4_Invite\Resting.lua
 ChatButton_4_Invite\Foucs.lua
-
-
 ##查找器， 地下城和团队， 自动退出，进入，Roll装
 ChatButton_5_LFD\0_LFDMixin.lua
 ChatButton_5_LFD\1_Init.lua
@@ -641,16 +634,12 @@ ChatButton_5_LFD\Role_Info.lua
 ChatButton_5_LFD\Roll.lua
 ChatButton_5_LFD\z_LFGDungeonReadyDialog.lua
 ChatButton_5_LFD\z_LFGListInviteDialog.lua
-
-
 ##世界频道
 ChatButton_6_World\1_Init.lua
 ChatButton_6_World\2_SetButton.lua
 ChatButton_6_World\3_MENU_UNIT_FRIEND.lua
 ChatButton_6_World\3_Menu.lua
 ChatButton_6_World\Filter.lua
-
-
 ##公会
 ChatButton_7_Guild\0_GuildMixin.lua
 ChatButton_7_Guild\1_7_Guild.lua
@@ -660,13 +649,11 @@ ChatButton_7_Guild\z_ClubFinder.lua
 ChatButton_7_Guild\z_CommunitiesFrame.lua
 ChatButton_7_Guild\z_PetitionFrame.lua
 ##队伍
-ChatButton\8_Group.lua
+ChatButton_8_Group\8_Group.lua
 ##说
-ChatButton\9_Say.lua
+ChatButton_9_Say\9_Say.lua
 ##表情，如不是中文，默认关闭
-ChatButton\10_Emoji.lua
-
-
+ChatButton_10_Emoji\10_Emoji.lua
 ##各种, 战斗时间
 ChatButton_11_Combat\11_Combat.lua
 ChatButton_11_Combat\CombatButton.lua

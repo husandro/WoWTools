@@ -249,7 +249,7 @@ end
 
 
 --设置，滚动条，颜色
-function WoWTools_TextureMixin:SetScrollBar(bar, tab)
+function WoWTools_TextureMixin:SetScrollBar(bar)
     bar= bar and bar.ScrollBar or bar
     if not bar or not bar.Track then
         return
@@ -270,14 +270,14 @@ function WoWTools_TextureMixin:SetScrollBar(bar, tab)
 
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, true)
-
-    if not bar:GetParent():IsProtected() then
+end
+    --[[if not bar:GetParent():IsProtected() then
         bar:SetHideIfUnscrollable(true)
         --bar.hideIfUnscrollable =true
     else
         bar.scrollBarHideIfUnscrollable=true
-    end
-end
+    end]]
+
     --bar.scrollBarHideIfUnscrollable=true
     --[[if bar.SetHideIfUnscrollable and not tab.notHide then--货币转移，出错, 这鸟BUG
        bar:SetHideIfUnscrollable(true)
