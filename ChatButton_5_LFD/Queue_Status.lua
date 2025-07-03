@@ -375,7 +375,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                         local leaderName
                         for index=1 , applicantInfo.numMembers do
                             local name, class, _, level, itemLevel, honorLevel, tank, healer, dps, _, _, dungeonScore, pvpItemLevel= C_LFGList.GetApplicantMemberInfo(applicantID, index)
-                            local icon= WoWTools_UnitMixin:GetClassIcon(class)
+                            local icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, class)
                             if icon and name and class then
                                 local col= '|c'..select(4, GetClassColor(class))--颜色
 

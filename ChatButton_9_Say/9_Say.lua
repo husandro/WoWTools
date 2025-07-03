@@ -154,7 +154,7 @@ local function Init_Menu(self, root)
                 tab.text
                 ..' '
                 ..tab.type
-                ..(tab.isWhisper and ' '..WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true}) or ''),
+                ..(tab.isWhisper and ' '..WoWTools_UnitMixin:GetPlayerInfo('target', nil, nil, {reName=true}) or ''),
             function(data)
                     return Save().type==data.type
 
@@ -232,7 +232,7 @@ local function Init_Menu(self, root)
 
 
         for index, tab in pairs(Save().WhisperTab) do
-            local playerName= WoWTools_UnitMixin:GetPlayerInfo({unit=tab.unit, guid=tab.guid, name=tab.name, faction=tab.faction, reName=true, reRealm=true})
+            local playerName= WoWTools_UnitMixin:GetPlayerInfo(tab.unit, tab.guid, tab.name, {faction=tab.faction, reName=true, reRealm=true})
             playerName= playerName=='' and tab.name or playerName
             sub2=sub:CreateButton('|cff9e9e9e'..index..')|r '..(tab.wow and WoWTools_DataMixin.Icon.wow2 or '')..(playerName or ' '), function(data)
                 WoWTools_ChatMixin:Say(nil, data.name, data.wow)
@@ -290,7 +290,7 @@ local function Init_Menu(self, root)
                 for player in pairs(playerList) do
                     text=text..'|n|cff9e9e9e'..player..'|r <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n'
                 end
-                WoWTools_TextMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo({name=data.name, guid=data.guid, reName=true, reRealm=true}))
+                WoWTools_TextMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, data.name, {reName=true, reRealm=true}))
                 return MenuResponse.Open
             end, tab)
 
@@ -354,7 +354,7 @@ local function Init_Menu(self, root)
                 end
             end
             if gameAccountInfo.playerGuid then
-                text= text..WoWTools_UnitMixin:GetPlayerInfo({guid=gameAccountInfo.playerGuid, faction=gameAccountInfo.factionName, reName=true, reRealm=true,})
+                text= text..WoWTools_UnitMixin:GetPlayerInfo(nil, gameAccountInfo.playerGuid, nil, {faction=gameAccountInfo.factionName, reName=true, reRealm=true,})
                 if gameAccountInfo.areaName then --位置
                     if gameAccountInfo.areaName==playerMapNamp then
                         text=text..'|A:poi-islands-table:0:0|a'

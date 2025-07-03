@@ -113,7 +113,7 @@ local function set_InspectPaperDollFrame_SetLevel()--目标,天赋 装等
             local effectiveLevel= UnitEffectiveLevel(unit)
             local sex = UnitSex(unit)
 
-            local text= WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid})
+            local text= WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil)
 
             local icon, role = select(4, GetSpecializationInfoByID(info.specID, sex))
             if icon and role then

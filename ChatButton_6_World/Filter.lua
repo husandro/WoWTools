@@ -367,7 +367,7 @@ local function Init_User_Filter_Menu(_, root)
 
         local player
         for name, tab in pairs(Save().userChatFilterTab) do
-            player= WoWTools_UnitMixin:GetPlayerInfo({name=name, guid=tab.guid, reName=true, reRealm=true})
+            player= WoWTools_UnitMixin:GetPlayerInfo(nil, tab.guid, name, {reName=true, reRealm=true})
             player= (not player or player=='') and name or player
 
             sub2=sub:CreateCheckbox(

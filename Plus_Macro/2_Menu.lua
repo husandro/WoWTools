@@ -141,8 +141,12 @@ local PointTab={
 
 --删除,专用宏
     sub:CreateDivider()
-    text=format(WoWTools_DataMixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS, WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true}))
+    text=format(
+            WoWTools_DataMixin.onlyChinese and '%s专用宏' or CHARACTER_SPECIFIC_MACROS,
+            WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
+        )
         ..(num2==0 and ' |cff9e9e9e#' or ' #')..num2
+    
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
     function(data)

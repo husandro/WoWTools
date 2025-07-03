@@ -49,7 +49,7 @@ local function Set_Text()
         return
     end
 
-   
+
     local name, _, _, texture, backgroundTexture = C_ChallengeMode.GetMapUIInfo(data.mapChallengeModeID)
     if backgroundTexture and backgroundTexture>0 then
         Frame.Background:SetTexture(texture, false)
@@ -73,7 +73,7 @@ local function Set_Text()
             ..'|r'
     elseif data.name then
         local col= select(5,WoWTools_UnitMixin:GetColor(nil, nil, data.classFilename))
-        local icon= WoWTools_UnitMixin:GetClassIcon(data.classFilename)
+        local icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, data.classFilename)
         text= text..'|n|n'
             ..(col or '')
             ..data.name
@@ -85,15 +85,15 @@ local function Set_Text()
         local member= data.members[i]
         if member.name and member.name~=data.name then
             local col= select(5,WoWTools_UnitMixin:GetColor(nil, nil, member.classFileName))
-            local icon= WoWTools_UnitMixin:GetClassIcon(member.classFileName)
+            local icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, member.classFileName)
             text= text..'|n'
-                ..(col or '') 
-                ..member.name 
+                ..(col or '')
+                ..member.name
                 ..(icon or '')
                 ..(col and '|r' or '')
         end
     end
-    Frame.Text:SetText(text)    
+    Frame.Text:SetText(text)
 end
     --[[
 Field	Type	Description
@@ -138,7 +138,7 @@ local function Init()
     })
 
     function Frame:Settings()
-        self:SetPoint('TOPRIGHT', ChallengesFrame, Save().guildX or -15, Save().guildY or -32)        
+        self:SetPoint('TOPRIGHT', ChallengesFrame, Save().guildX or -15, Save().guildY or -32)
         self:SetScale(Save().guildScale or 1)
         self.Background:SetAlpha(Save().guildBgAlpha or 0.5)
         self:SetShown(not Save().hideGuild and IsInGuild())

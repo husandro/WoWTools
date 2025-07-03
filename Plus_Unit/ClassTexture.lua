@@ -64,7 +64,7 @@ local function Craete_Frame(frame)
                             find2= true
                         end
                     else
-                        local class= WoWTools_UnitMixin:GetClassIcon(nil, unit2, nil, true)--职业, 图标
+                        local class= WoWTools_UnitMixin:GetClassIcon(unit2, nil, nil, {reAtlas=true})--职业, 图标
                         if class then
                             self.Portrait:SetAtlas(class)
                             find2=true

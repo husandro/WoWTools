@@ -16,12 +16,12 @@ local function Init()
 	CurrencyTransferMenuCloseButton:SetFrameLevel(CurrencyTransferMenu.TitleContainer:GetFrameLevel()+2)
 
 	--[[hooksecurefunc(CurrencyTransferLogEntryMixin, 'Initialize', function(self, elementData)
-		local name= WoWTools_UnitMixin:GetPlayerInfo({guid=elementData.sourceCharacterGUID, reName=true, reRealm=true})
+		local name= WoWTools_UnitMixin:GetPlayerInfo(nil, elementData.sourceCharacterGUID, nil, {reName=true, reRealm=true})
 		if name~='' then
 			self.SourceName:SetText(name)
 		end
 
-		name= WoWTools_UnitMixin:GetPlayerInfo({guid=elementData.destinationCharacterGUID, reName=true, reRealm=true})
+		name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid=elementData.destinationCharacterGUID, nil, {reName=true, reRealm=true})
 		if name~='' then
 			self.DestinationName:SetText(name)
 		end
@@ -35,12 +35,12 @@ local function Init()
 
 		for _, btn in pairs(self:GetFrames() or {}) do
 			local data= btn.transactionData or {}
-			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.sourceCharacterGUID, reName=true, reRealm=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.sourceCharacterGUID, nil, {reName=true, reRealm=true})
 			if name~='' then
 				btn.SourceName:SetText(name)
 			end
 
-			name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.destinationCharacterGUID, reName=true, reRealm=true})
+			name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.destinationCharacterGUID, nil, {reName=true, reRealm=true})
 			if name~='' then
 				btn.DestinationName:SetText(name)
 			end
@@ -53,7 +53,7 @@ local content= CurrencyTransferMenu.Content--11.2
 
 	hooksecurefunc(content.SourceSelector, 'RefreshPlayerName', function(self)--收取人，我 提示		
 		if not Save().notPlus and not IsLocked() then
-			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
 			if name~='' then
 				self.PlayerName:SetFormattedText(WoWTools_DataMixin.onlyChinese and '收取人 %s' or CURRENCY_TRANSFER_DESTINATION, name)
 			end
@@ -63,7 +63,7 @@ local content= CurrencyTransferMenu.Content--11.2
 	hooksecurefunc(content.SourceBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus and not IsLocked() then
 			local data= self:GetParent().sourceCharacterData or {}
-			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=data.characterGUID, reName=true, reRealm=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.characterGUID, nil, {reName=true, reRealm=true})
 			if name~='' then
 				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnRED_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 			end
@@ -72,7 +72,7 @@ local content= CurrencyTransferMenu.Content--11.2
 
     hooksecurefunc(content.PlayerBalancePreview, 'SetCharacterName', function(self)
 		if not Save().notPlus and not IsLocked() then
-			local name= WoWTools_UnitMixin:GetPlayerInfo({guid=WoWTools_DataMixin.Player.GUID, reName=true, reRealm=true})
+			local name= WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true, reRealm=true})
 			if name~='' then
 				self.Label:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s |cnGREEN_FONT_COLOR:的新余额|r' or CURRENCY_TRANSFER_NEW_BALANCE_PREVIEW, name)
 			end

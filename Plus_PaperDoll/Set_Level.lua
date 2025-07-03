@@ -79,7 +79,7 @@ local function Settings()
     end
 
     local race= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
-    local class= WoWTools_UnitMixin:GetClassIcon(nil, 'player', nil, true)
+    local class= WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {reAltlas=true})
     local level
     level= UnitLevel("player")
     local effectiveLevel = UnitEffectiveLevel("player")

@@ -67,9 +67,6 @@ end
 function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     if type(unit)=='table' then
         tab= unit
-        unit= tab.unit
-        name= tab.name
-        guid= tab.guid
     else
         tab= tab or {}
     end
@@ -78,18 +75,24 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     unit= unit or tab.unit or (guid and UnitTokenFromGUID(guid))
     name= name or tab.name
     guid= guid or tab.guid or (UnitExists(unit) and UnitGUID(unit)) or self:GetGUID(unit, name)
-
+    
 
     local faction= tab.faction
     local reLink= tab.reLink
     local reName= tab.reName
     local reNotRegion= tab.reNotRegion
     local reRealm= tab.reRealm
+    local size= tab.size or 0
 
 
-
-    if guid==WoWTools_DataMixin.Player.GUID or name==WoWTools_DataMixin.Player.Name or name==WoWTools_DataMixin.Player.name_realm then
-        return WoWTools_DataMixin.Icon.Player..((reName or reLink) and WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or '')..'|A:auctionhouse-icon-favorite:0:0|a'
+    if guid==WoWTools_DataMixin.Player.GUID
+        or name==WoWTools_DataMixin.Player.Name
+        or name==WoWTools_DataMixin.Player.name_realm
+    then
+        return WoWTools_DataMixin.Icon.Player
+            ..(
+                (reName or reLink) and WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|r' or ''
+            )..'|A:auctionhouse-icon-favorite:0:0|a'
     end
 
     if reLink then
@@ -117,8 +120,8 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         text= (server and server.col or '')
                     ..(friend or '')
                     ..(self:GetFaction(unit, faction) or '')--检查, 是否同一阵营
-                    ..(self:GetRaceIcon({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false}) or '')
-                    ..(self:GetClassIcon(englishClass, unit ) or '')
+                    ..(self:GetRaceIcon({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false, size=size}) or '')
+                    ..(self:GetClassIcon(unit, guid, englishClass, {size=size}) or '')
 
         if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
             text= text..WoWTools_DataMixin.Icon[groupInfo.combatRole]..(groupInfo.subgroup or '')
@@ -360,7 +363,12 @@ end
 
 
 --职业图标 groupfinder-icon-emptyslot'
-function WoWTools_UnitMixin:GetClassIcon(classFilename, unit, guid, reAltlas, tab)
+function WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, tab)
+    tab= tab or {}
+
+    local reAltlas= tab.reAltlas
+    local size= tab.size or 0
+
     if not classFilename then
         if unit then
             classFilename= UnitClassBase(unit)
@@ -378,7 +386,6 @@ function WoWTools_UnitMixin:GetClassIcon(classFilename, unit, guid, reAltlas, ta
         if reAltlas then
             return classFilename
         else
-            local size= tab and tab.size or 0
             return '|A:'..classFilename ..':'..size..':'..size..'|a'
         end
     end

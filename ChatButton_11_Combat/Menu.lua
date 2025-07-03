@@ -177,9 +177,11 @@ local function Init_Menu(self, root)
         if time and time>0 then
             numPlayer= numPlayer+1
             timeAll= timeAll + time
-            sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({guid=guid,  reName=true, reRealm=true, factionName=tab.faction})..'|A:socialqueuing-icon-clock:0:0|a  '..SecondsToTime(time), function()
-                return MenuResponse.Open
-            end)
+            sub:CreateTitle(
+                WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, factionName=tab.faction})
+                ..'|A:socialqueuing-icon-clock:0:0|a'
+                ..SecondsToTime(time)
+            )
         end
     end
     WoWTools_MenuMixin:SetScrollMode(sub)

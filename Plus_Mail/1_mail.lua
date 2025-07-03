@@ -124,11 +124,11 @@ function WoWTools_MailMixin:GetNameInfo(name)
     name = WoWTools_UnitMixin:GetFullName(name)--取得全名
     for guid, tab in pairs(WoWTools_WoWDate) do
         if name== WoWTools_UnitMixin:GetFullName(nil, nil, guid) then
-            reName= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=tab.faction, reName=true, realm=true})
+            reName= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=tab.faction, reName=true, realm=true})
             break
         end
     end
-    reName= reName or WoWTools_UnitMixin:GetPlayerInfo({name=name, reName=true, reRealm=true})
+    reName= reName or WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name, {reName=true, reRealm=true})
     return reName and reName:gsub('%-'..WoWTools_DataMixin.Player.realm, '') or name
 end
 

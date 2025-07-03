@@ -44,9 +44,10 @@ local function Get_Text()
             end
         end
         if text then
-            msg=msg and msg..'|n' or ''
-            msg= msg ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})..'|n'
-            msg= msg.. text
+            msg= (msg and msg..'|n' or '')
+                ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true})
+                ..'|n'
+                ..text
         end
     end
     msg=msg or '...'

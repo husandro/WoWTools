@@ -88,7 +88,7 @@ local function UI_Party_Info()--队友位置
                 end
             end
 
-            text= text..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, unit=unit, name=name, reName=true, reRealm=true})--信息
+            text= text..WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, {reName=true, reRealm=true})--信息
 
             local name2, uiMapID2=WoWTools_MapMixin:GetUnit(unit)
             if (name and name==name2) or (uiMapID and uiMapID==uiMapID2) then--地图名字

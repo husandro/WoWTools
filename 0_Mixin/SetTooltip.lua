@@ -231,7 +231,7 @@ local function Set_DungeonScore(self, dungeonScoreLink)
 	--GameTooltip_SetTitle(self, classColor:WrapTextInColorCode(playerName))
 	GameTooltip_AddColoredLine(self, format(
         WoWTools_DataMixin.onlyChinese and '等级%d %s' or DUNGEON_SCORE_LINK_LEVEL_CLASS_FORMAT_STRING,
-        playerLevel, (WoWTools_UnitMixin:GetClassIcon(classFileName, nil, guid, false) or '').. WoWTools_TextMixin:CN(className)
+        playerLevel, (WoWTools_UnitMixin:GetClassIcon(nil, guid, classFileName) or '').. WoWTools_TextMixin:CN(className)
     ), HIGHLIGHT_FONT_COLOR)
 	GameTooltip_AddNormalLine(self, format(
         WoWTools_DataMixin.onlyChinese and '物品等级：|A:charactercreate-icon-customize-body-selected:0:0|a|cffffffff%d|r' or DUNGEON_SCORE_LINK_ITEM_LEVEL,

@@ -37,7 +37,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         if info.specID then--设置天赋
             local icon, role= select(4, GetSpecializationInfoByID(info.specID))
             if icon then
-                text2Left= '|T'..icon..size..'|t'..(WoWTools_DataMixin.Icon[role] or '')
+                text2Left= '|T'..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
         end
     else
@@ -69,12 +69,19 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         end
     end
     if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
-        text2Left= text2Left..'|T236347'..size..'|t'
+        text2Left= text2Left..'|T236347:0|t'
     end
 
 --设置 textRight
     local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
-    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite'..size..'|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', 'common-icon-checkmark') or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
+    textRight=realm
+        ..(isSelf
+            and '|A:auctionhouse-icon-favorite:0:0|a'
+            or (realm==WoWTools_DataMixin.Player.realm and '|A:common-icon-checkmark:0:0|a')
+            or (WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a')
+            or ''
+        )
+        ..(region and region.col or '')
 
 --设置 text2Right
     if isSelf then
@@ -116,8 +123,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local lineLeft1=_G[tooltipName..'TextLeft1']--名称
     if lineLeft1 then
         lineLeft1:SetText(
-            (isSelf and '|A:auctionhouse-icon-favorite'..size..'|a' or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil) or '')
-            ..'|A:common-icon-rotateright:0:0|a'..name..'|A:common-icon-rotateleft:'..self.iconSize..':'..self.iconSize..'|a'
+            (isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil) or '')
+            ..'|A:common-icon-rotateright:0:0|a'..name..'|A:common-icon-rotateleft:0:0|a'
         )
         local lineRight1= _G[tooltipName..'TextRight1']
         if lineRight1 then
@@ -161,10 +168,10 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         else
             local text=lineLeft2:GetText()
             if text and text~='' and not text:find('|A:') then
-                lineLeft2:SetText('|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'..(text:match('(.-)%-') or text))
-                --[[if lineRight2 then
-                    lineRight2:SetText(' ')
-                end]]
+                lineLeft2:SetText(
+                    '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'
+                    ..(text:match('(.-)%-') or text)
+                )
             end
         end
     end
@@ -175,7 +182,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local sex = UnitSex(unit)
         local raceName, raceFile= UnitRace(unit)
         local level= UnitLevel(unit)
-        local text= sex==2 and '|A:charactercreate-gendericon-male-selected'..size..'|a' or ('|A:charactercreate-gendericon-female-selected'..size..'|a')
+        local text= sex==2
+                    and '|A:charactercreate-gendericon-male-selected'..size..'|a'
+                    or ('|A:charactercreate-gendericon-female-selected'..size..'|a')
 
         if GetMaxLevelForLatestExpansion()==level then
             text= text.. level
@@ -190,8 +199,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
         info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false}) or '')
-                    ..' '..WoWTools_UnitMixin:GetClassIcon(classFilename)
+            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false, size=self.iconSize}) or '')
+                    ..' '..WoWTools_UnitMixin:GetClassIcon(nil, nil, classFilename)
                     ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
                     ..' |A:recipetoast-icon-star:0:0|a|cffffffff'..info.currentSeasonScore..'|r'
 
@@ -209,7 +218,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         else
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false, size=self.iconSize})  or '')
                     ..(WoWTools_TextMixin:CN(raceName) or WoWTools_TextMixin:CN(raceFile) or '')
-                    ..' '..(WoWTools_UnitMixin:GetClassIcon(classFilename, nil, nil, nil, {size=self.iconSize}) or '')
+                    ..' '..(WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, {size=self.iconSize}) or '')
                     ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
         end
         lineLeft3:SetText(text)

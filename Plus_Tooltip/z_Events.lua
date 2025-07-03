@@ -391,7 +391,7 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
         end
     end)
     hooksecurefunc('AchievementFrameComparison_SetUnit', function(unit)--比较成就
-        local text= WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true})--玩家信息图标
+        local text= WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true})--玩家信息图标
         if text~='' then
             AchievementFrameComparisonHeaderName:SetText(text)
         end

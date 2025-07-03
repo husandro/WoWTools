@@ -77,7 +77,7 @@ local function Init_RaidGroupFrame_Update()
                             text= "|T"..texture..':0|t'
                         end
                     end
-                    text= text or WoWTools_UnitMixin:GetClassIcon(fileName)--职业图标
+                    text= text or WoWTools_UnitMixin:GetClassIcon(nil, nil, fileName)--职业图标
 
                     if text then
                         if guid and WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLevel then

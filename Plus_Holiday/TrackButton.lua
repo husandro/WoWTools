@@ -139,7 +139,7 @@ local function Get_Button_Text(event)
     if _CalendarFrame_IsPlayerCreatedEvent(event.calendarType) then--自定义,事件
         local invitInfo= C_Calendar.EventGetInvite(event.index) or {}
         if invitInfo.guid then
-            atlas= WoWTools_UnitMixin:GetPlayerInfo({guid=invitInfo.guid, reAtlas=true})
+            atlas= WoWTools_UnitMixin:GetPlayerInfo(nil, invitInfo.guid, nil, {reAtlas=true})
         end
         if UnitIsUnit("player", event.invitedBy) then--我
             atlas= atlas or WoWTools_UnitMixin:GetRaceIcon({unit='player',reAtlas=true})

@@ -195,7 +195,7 @@ local function WoW_List(_, root)
             realm= info.Guild.data[4]
 
             sub2= sub:CreateButton(
-                WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=false})
+                WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=false})
                 ..' '
                 ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex, true)
                 ..name
@@ -224,7 +224,7 @@ local function WoW_List(_, root)
                     '|A:'..(data.isCrossFaction and 'CrossedFlags' or WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction])..':0:0|a'
                     ..'|T'..(data.tabardInfo and data.tabardInfo.emblemFileID or 0)..':0|t'
                     ..(desc.data.name or data.name),
-                    WoWTools_UnitMixin:GetPlayerInfo({guid=data.lastPosterGUID, reName=true, reRealm=false})
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, data.lastPosterGUID, nil, {reName=true, reRealm=false})--data.lastPosterGUID
                 )
                 if desc.data.realm then
                     tooltip:AddLine(
@@ -234,7 +234,9 @@ local function WoW_List(_, root)
                 end
                 tooltip:AddLine(desc.data.text)
                 tooltip:AddLine(' ')
-                tooltip:AddLine( WoWTools_UnitMixin:GetPlayerInfo({guid=desc.data.playerGuid, reName=true, reRealm=true}))
+                if desc.data.playerGuid~= data.lastPosterGUID then
+                    tooltip:AddLine( WoWTools_UnitMixin:GetPlayerInfo(nil, desc.data.playerGuid, nil, {reName=true, reRealm=true}))
+                end
                 tooltip:AddLine(
                     WoWTools_GuildMixin:Get_Rank_Texture(desc.data.rankIndex, true)
                     ..desc.data.rankName
@@ -310,7 +312,7 @@ local function Guild_Player_List(_, root)
                     or '  '
                 )
                 ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex)--官员
-                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, name=name, reName=true, reRealm=true})--名称
+                ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, name, {reName=true, reRealm=true})--名称
                 ..(level and level~=maxLevel and ' |cnGREEN_FONT_COLOR:'..level..'|r' or '')--等级
                 ..(isOnline and zone and (zone==map and '|A:poi-islands-table:0:0|a' or WoWTools_TextMixin:CN(zone)) or '')--地区
                 ..((publicNote or officerNote) and '|A:QuestLegendary:0:0|a' or ''),--提示有备注

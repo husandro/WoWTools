@@ -61,7 +61,10 @@ local function Set_WorldData_Tooltip(self)
             find=true
         end
         if find then
-            GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}), guid==WoWTools_DataMixin.Player.GUID and '|A:auctionhouse-icon-favorite:0:0|a')
+            GameTooltip:AddDoubleLine(
+                WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}),
+                guid==WoWTools_DataMixin.Player.GUID and '|A:auctionhouse-icon-favorite:0:0|a'
+            )
         end
     end
     if self.instanceID then

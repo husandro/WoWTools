@@ -21,7 +21,7 @@ local function set_EncounterJournal_Keystones_Tips(self)--险指南界面, 挑�
             GameTooltip:AddDoubleLine(
                 (info.Keystone.weekNum or 0)
                 .. (info.Keystone.weekMythicPlus and ' |cnGREEN_FONT_COLOR:('..info.Keystone.weekMythicPlus..') ' or '')
-                ..WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true})
+                ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true})
                 ..(info.Keystone.score and ' ' or '')..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.Keystone.score)),
                 info.Keystone.link)
         end
@@ -38,7 +38,10 @@ local function Set_Money(self, isTooltip)--险指南界面, 钱
     for guid, info in pairs(WoWTools_WoWDate or {}) do
         if info.Money then
             if isTooltip then
-                GameTooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo({ guid=guid, faction=info.faction, reName=true, reRealm=true}), C_CurrencyInfo.GetCoinTextureString(info.Money))
+                GameTooltip:AddDoubleLine(
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}),
+                    C_CurrencyInfo.GetCoinTextureString(info.Money)
+                )
             end
             numPlayer=numPlayer+1
             allMoney= allMoney + info.Money
@@ -130,7 +133,7 @@ local function Init()
                     find= true
                 end
                 if find then
-                    GameTooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo({guid=guid, faction=info.faction, reName=true, reRealm=true}))
+                    GameTooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=info.faction, reName=true, reRealm=true}))
                 end
             end
         end

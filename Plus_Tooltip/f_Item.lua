@@ -141,7 +141,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
                     player=player..'|T'..icon2..':'..self.iconSize..'|t'
 
                 elseif not otherTab[classFile] then
-                    other= other..(WoWTools_UnitMixin:GetClassIcon(classFile) or '')
+                    other= other..(WoWTools_UnitMixin:GetClassIcon(nil, nil, classFile) or '')
                 end
             end
         end
@@ -216,7 +216,7 @@ local function Set_keystonee(tooltip, itemLink)
         tooltip:AddDoubleLine(
             (info.weekNum==0 and '|cff9e9e9e0|r' or info.weekNum or '')
             ..(info.weekMythicPlus and '|cnGREEN_FONT_COLOR:('..info.weekMythicPlus..') ' or '')
-            ..WoWTools_UnitMixin:GetPlayerInfo({guid=info.guid, faction=info.faction, reName=true, reRealm=true})
+            ..WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil, {faction=info.faction, reName=true, reRealm=true})
             ..WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score, false, nil)..(WoWTools_ChallengeMixin:KeystoneScorsoColor(info.score,true)),
 
             WoWTools_HyperLink:CN_Link(info.link, {isName=true})

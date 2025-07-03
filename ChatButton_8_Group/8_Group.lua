@@ -228,7 +228,7 @@ local function Init_Menu(self, root)
                     unit='party'..i
                     if UnitExists(unit) and UnitIsPlayer(unit) then
                         playerName=GetUnitName(unit, true)
-                        sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}), function(data)
+                        sub2= sub:CreateButton(WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}), function(data)
                             if data and data~=WoWTools_DataMixin.Player.Name then
                                 WoWTools_ChatMixin:Say(nil, data, nil)
                             end
@@ -245,7 +245,7 @@ local function Init_Menu(self, root)
                     unit='raid'..i
                    if UnitExists(unit) and not UnitIsUnit(unit, 'player') and UnitIsPlayer(unit) then
                         sub2=sub:CreateButton(
-                            WoWTools_UnitMixin:GetPlayerInfo({unit=unit, reName=true, reRealm=true}),
+                            WoWTools_UnitMixin:GetPlayerInfo(unit, nil, nil, {reName=true, reRealm=true}),
                         function(data)
                             if data and data~=WoWTools_DataMixin.Player.Name then
                                 WoWTools_ChatMixin:Say(nil, data, nil)
@@ -421,7 +421,7 @@ local function show_Group_Info_Toolstip()--玩家,信息, 提示
             if maxHP and role then
                 if UnitIsPlayer(unit) then
                     info.name= (WoWTools_UnitMixin:GetOnlineInfo(unit) or '')
-                        ..WoWTools_UnitMixin:GetPlayerInfo({unit=unit, guid=guid, reName=true, reRealm=true})
+                        ..WoWTools_UnitMixin:GetPlayerInfo(unit, guid, nil, {reName=true, reRealm=true})
                         ..(WoWTools_DataMixin.UnitItemLevel[guid] and WoWTools_DataMixin.UnitItemLevel[guid].itemLeve or '')
                 else
                     info.name= UnitName(unit)

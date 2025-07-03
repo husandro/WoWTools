@@ -99,14 +99,17 @@ local function Init_Friends_Menu(self, root)
 
     for guid, stat in pairs(Save().Friends) do
         if guid~=WoWTools_DataMixin.Player.GUID then
-            local btn= sub:CreateButton(format('|A:%s:0:0|a', OptionTexture[stat] or '').. WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true}), function(data)
-                if data then
-                    Save().Friends[data]= nil
-                end
-            end)
+            local btn= sub:CreateCheckbox(
+                format('|A:%s:0:0|a', OptionTexture[stat] or '')
+                ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
+            function(data)
+                return Save().Friends[data.guid]
+            end, function(data)
+                Save().Friends[data.guid]= not Save().Friends[data.guid] and data.stat or nil
+            end, {guid=guid, stat=stat})
             btn:SetData(guid)
-            btn:SetTooltip(function(tooltip, elementDescription)
-                GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(elementDescription))
+            btn:SetTooltip(function(tooltip, desc)
+                GameTooltip_SetTitle(tooltip, MenuUtil.GetElementText(desc))
                 GameTooltip_AddNormalLine(tooltip, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE)
             end)
         end
@@ -204,11 +207,9 @@ local function Set_Friend_Event(self, _, friendIndex)
 
     if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.clientProgram == BNET_CLIENT_WOW then
         if accountInfo.gameAccountInfo.wowProjectID == WOW_PROJECT_ID  and accountInfo.gameAccountInfo.isInCurrentRegion then
-            text= text..WoWTools_UnitMixin:GetPlayerInfo({
-                        guid=accountInfo.gameAccountInfo.playerGuid,
+            text= text..WoWTools_UnitMixin:GetPlayerInfo(nil, accountInfo.gameAccountInfo.playerGuid, nil, {
                         reLink= accountInfo.gameAccountInfo.factionName==WoWTools_DataMixin.Player.Faction,
                         reName=true,
-                        --reRealm=true,
                         faction=accountInfo.gameAccountInfo.factionName,
                     })..' '
         else
@@ -426,7 +427,7 @@ local function Init()--好友列表, 初始化
             if not info or not info.guid then
                 return
             end
-            local text=WoWTools_UnitMixin:GetPlayerInfo({guid=info.guid})
+            local text=WoWTools_UnitMixin:GetPlayerInfo(nil, info.guid, nil)
             if text~='' then
                 text= text..(info.area and info.connected and ' '..info.area or '')
                 self.info:SetText(text)
@@ -460,7 +461,7 @@ local function Init()--好友列表, 初始化
             if accountInfo.gameAccountInfo.characterLevel and accountInfo.gameAccountInfo.characterLevel>0 and accountInfo.gameAccountInfo.characterLevel~= GetMaxLevelForLatestExpansion() then--角色等级
                 text= text..'|cnGREEN_FONT_COLOR:'..accountInfo.gameAccountInfo.characterLevel..'|r '
             end
-            text= text.. WoWTools_UnitMixin:GetPlayerInfo({guid=accountInfo.gameAccountInfo.playerGuid, reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
+            text= text.. WoWTools_UnitMixin:GetPlayerInfo(nil, accountInfo.gameAccountInfo.playerGuid, nil, {reName=true, reRealm=true, faction=accountInfo.gameAccountInfo.factionName })
 
             if accountInfo.gameAccountInfo.isOnline and accountInfo.gameAccountInfo.areaName then--区域
                 text= text..' '..accountInfo.gameAccountInfo.areaName
@@ -544,7 +545,7 @@ local function Init()--好友列表, 初始化
                     local info = index and C_FriendList.GetWhoInfo(index)
                     if info and info.fullName then
                         GameTooltip:AddLine((info.gender==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a' or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight))
-                                    ..(WoWTools_UnitMixin:GetClassIcon(info.filename) or '')
+                                    ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, info.filename) or '')
                                     ..self.col
                                     ..info.fullName
                                     ..(WoWTools_UnitMixin:GetIsFriendIcon(info.fullName) or '')
@@ -581,7 +582,7 @@ local function Init()--好友列表, 初始化
                             or (info.gender==3 and '|A:charactercreate-gendericon-female-selected:0:0|a')
                             or ''
                         )
-                        ..(WoWTools_UnitMixin:GetClassIcon(info.filename) or info.filename)
+                        ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, info.filename) or info.filename)
                     )
                 end
             lv= info.level

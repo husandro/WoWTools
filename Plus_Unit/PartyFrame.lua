@@ -145,7 +145,7 @@ local function Create_potFrame(frame)
 
 --目标，职业
             if UnitIsPlayer(self.tt) then
-                self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(nil, self.tt, nil, true))
+                self.class:SetAtlas(WoWTools_UnitMixin:GetClassIcon(self.tt, nil, nil, {reAltlas=true}))
             elseif UnitIsBossMob(self.tt) then
                 self.class:SetAtlas('UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare')
             else

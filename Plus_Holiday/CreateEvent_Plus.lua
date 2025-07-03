@@ -58,11 +58,9 @@ local function Init_WoW_Menu(_, root)
         local wow=C_BattleNet.GetFriendAccountInfo(i) or {}
         local wowInfo= wow.gameAccountInfo
         if wowInfo and wowInfo.playerGuid and wowInfo.characterName and wowInfo.wowProjectID==1 then
-            local text= WoWTools_UnitMixin:GetPlayerInfo({--角色信息
-                guid=wowInfo.playerGuid,
+            local text= WoWTools_UnitMixin:GetPlayerInfo(nil, wowInfo.playerGuid, wowInfo.characterName, {
                 faction=wowInfo.factionName,
                 level=wowInfo.characterLevel,
-                name=wowInfo.characterName,
                 reName=true,
                 reRealm=true
             })
@@ -121,9 +119,7 @@ local function Init_Friend_Menu(_, root)
     for i=1 , C_FriendList.GetNumFriends() do
         local game=C_FriendList.GetFriendInfoByIndex(i)
         if game and game.name then
-            local text=WoWTools_UnitMixin:GetPlayerInfo({--角色信息
-                guid=game.guid,
-                name=game.name,
+            local text=WoWTools_UnitMixin:GetPlayerInfo(nil, game.guid, game.name, {
                 reName=true,
                 reRealm=true,
                 level=game.level,
@@ -189,9 +185,7 @@ local function Init_Guild_Menu(_, root)
     for index=1, GetNumGuildMembers() do
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         if name and guid and guid~=WoWTools_DataMixin.Player.GUID then
-            local text=WoWTools_UnitMixin:GetPlayerInfo({--名称
-                guid=guid,
-                name=name,
+            local text=WoWTools_UnitMixin:GetPlayerInfo(guid, name, nil, {
                 reName=true,
                 reRealm=true,
                 levle=lv
@@ -281,7 +275,7 @@ local function InviteListScrollFrame_Update()
         for index, btn in pairs(frame:GetFrames() or {}) do--ScrollBox.lua
             local inviteInfo = C_Calendar.EventGetInvite(index)
             if inviteInfo and inviteInfo.guid then
-                btn.Class:SetText(WoWTools_UnitMixin:GetPlayerInfo({guid=inviteInfo.guid, name=inviteInfo.name}))
+                btn.Class:SetText(WoWTools_UnitMixin:GetPlayerInfo(nil, inviteInfo.guid, inviteInfo.name))
             end
         end
     end

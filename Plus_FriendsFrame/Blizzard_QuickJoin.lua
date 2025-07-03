@@ -150,7 +150,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
         end
 
         local leaderGUID = select(8, C_SocialQueue.GetGroupInfo(guid))--玩家名称
-        local link= leaderGUID and WoWTools_UnitMixin:GetPlayerInfo({guid=leaderGUID, reName=true, reRealm=true, reLink=true,})
+        local link= leaderGUID and WoWTools_UnitMixin:GetPlayerInfo(nil, leaderGUID, nil, {reName=true, reRealm=true, reLink=true,})
         if link and not self.nameInfo then
             self.nameInfo= WoWTools_LabelMixin:Create(self)
             self.nameInfo:SetPoint('BOTTOM', self.CancelButton, 'TOPLEFT', 2, 0)

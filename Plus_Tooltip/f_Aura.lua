@@ -48,7 +48,7 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
     end
     local text= source=='player' and (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
             or source=='pet' and (WoWTools_DataMixin.onlyChinese and '宠物' or PET)
-            or UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo({unit=source, reName=true})
+            or UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo(source, nil, nil, {reName=true})
             or UnitName(source) or _G[source] or source
 
     tooltip:AddLine((col or '|cffffffff') ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')

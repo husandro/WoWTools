@@ -242,7 +242,7 @@ local function Init_Fast_Button_Menu(self, root)
     if playerName then
         Fast_Button_Set_Menu(
             self, root,
-            WoWTools_UnitMixin:GetPlayerInfo({name=playerName, reName=true}),
+            WoWTools_UnitMixin:GetPlayerInfo(nil, nil, playerName, {reName=true}),
             playerName
         )
     end
@@ -251,7 +251,7 @@ local function Init_Fast_Button_Menu(self, root)
     if newName and newName:gsub(' ', '')~='' and newName~=playerName then
         Fast_Button_Set_Menu(
             self, root,
-            WoWTools_UnitMixin:GetPlayerInfo({name=newName, reName=true}),
+            WoWTools_UnitMixin:GetPlayerInfo(nil, nil, newName, {reName=true}),
             newName
         )
     end
@@ -266,7 +266,7 @@ local function Init_Fast_Button_Menu(self, root)
     for guid, info in pairs(WoWTools_WoWDate) do
         Fast_Button_Set_Menu(
             self, sub,
-            WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=info.level, faction=info.faction}),
+            WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, level=info.level, faction=info.faction}),
             WoWTools_UnitMixin:GetFullName(nil, nil, guid)
         )
         num=num+1

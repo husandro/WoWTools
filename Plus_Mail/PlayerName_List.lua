@@ -28,7 +28,7 @@ local function Init_IsSelf(root)
     local num=0
     for guid, info in pairs(new) do
         root:CreateButton(
-            WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, faction=info.faction}),
+            WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, faction=info.faction}),
         function(data)
             WoWTools_MailMixin:SetSendName(nil, data.guid)
             return MenuResponse.Open
@@ -49,7 +49,7 @@ local function Init_IsSelf(root)
             local guid=info.characterGUID
             if guid and not new[guid] then
                 root:CreateButton(
-                    WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, faction=info.faction}),
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, faction=info.faction}),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
                     return MenuResponse.Open
@@ -86,7 +86,7 @@ local function Init_WoW(root)
             local name= WoWTools_UnitMixin:GetFullName(wowInfo.characterName, nil, wowInfo.playerGuid)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 sub=root:CreateButton(
-                    WoWTools_UnitMixin:GetPlayerInfo({guid=wowInfo.playerGuid, reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, wowInfo.playerGuid, nil, {reName=true, reRealm=true, level=wowInfo.characterLevel, faction=wowInfo.factionName})
                     ..(wowInfo.isOnline and '' or ('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)))
                     ..(wow.isFavorite and '|A:auctionhouse-icon-favorite:0:0|a' or ''),
                 function(data)
@@ -136,7 +136,7 @@ local function Init_Friend(root)
             local name= WoWTools_UnitMixin:GetFullName(nil, nil, guid)
             if not WoWTools_MailMixin:GetRealmInfo(name) then
                 root:CreateButton(
-                    WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=game.level, faction=game.faction})
+                    WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, level=game.level, faction=game.faction})
                     ..(game.connected and '' or ('|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE))),
                 function(data)
                     WoWTools_MailMixin:SetSendName(nil, data.guid)
@@ -180,7 +180,7 @@ local function Init_Guild(root)
         local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not WoWTools_WoWDate[guid] then
         if name and guid and (isOnline or rankIndex<2 or Save().show['GUILD']) and not WoWTools_WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
-            local text= WoWTools_UnitMixin:GetPlayerInfo({guid=guid, reName=true, reRealm=true, level=lv})--角色信息
+            local text= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, level=lv})--角色信息
 
             if not isOnline then
                 text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
@@ -240,7 +240,7 @@ local function Init_Club(root, clubID)
         if tab and tab.guid and tab.name and (tab.zone or tab.role<4 or (Save().show['CLUB'])) and not WoWTools_WoWDate[tab.guid] then
             if not WoWTools_MailMixin:GetRealmInfo(tab.name) then
                 local faction= tab.faction==Enum.PvPFaction.Alliance and 'Alliance' or tab.faction==Enum.PvPFaction.Horde and 'Horde'
-                local  text= WoWTools_UnitMixin:GetPlayerInfo({guid=tab.guid, reName=true, reRealm=true, faction=faction, level=tab.level})--角色信息
+                local  text= WoWTools_UnitMixin:GetPlayerInfo(nil, tab.guid, nil, {reName=true, reRealm=true, faction=faction, level=tab.level})--角色信息
                 if not tab.zone then
                     text= text..'|cff9e9e9e'..(WoWTools_DataMixin.onlyChinese and '离线' or FRIENDS_LIST_OFFLINE)..'|r'
                 end
@@ -420,7 +420,10 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_MailMixin.addName, WoWTools_DataMixin.onlyChinese and '名单列表' or WHO_LIST)
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '收件人：' or MAIL_TO_LABEL, WoWTools_UnitMixin:GetPlayerInfo({unit='target', reName=true, reRealm=true}))
+        GameTooltip:AddDoubleLine(
+            WoWTools_DataMixin.onlyChinese and '收件人：' or MAIL_TO_LABEL,
+            WoWTools_UnitMixin:GetPlayerInfo('target', nil, nil, {reName=true, reRealm=true})
+        )
         if self.tooltip then
             GameTooltip:AddLine(self.tooltip)
         end
