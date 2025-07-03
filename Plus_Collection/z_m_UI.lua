@@ -312,9 +312,9 @@ local function Init_CollectionsJournal()
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet3.modelScene.cardButton, {frame=CollectionsJournal})
 
 
-   
-    WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
-
+    C_Timer.After(0.3, function()
+        WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
+    end)
     if _G['RematchFrame'] then
         _G['RematchFrame']:HookScript('OnShow', init_rematch)
         hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', init_rematch)

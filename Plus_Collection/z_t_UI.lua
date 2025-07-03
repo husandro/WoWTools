@@ -160,10 +160,14 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 
 
-
+    C_Timer.After(0.3, function()
+        if not _G['ManuscriptsJournal'] then
+            return
+        end
+        self:HideFrame(ManuscriptsJournal.iconsFrame.NineSlice)
+    end)
     
     
-
     if _G['RematchJournal'] then
         self:SetNineSlice(_G['RematchJournal'])
         self:SetAlphaColor(_G['RematchJournalBg'])
