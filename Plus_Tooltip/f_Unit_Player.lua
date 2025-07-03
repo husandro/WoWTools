@@ -16,6 +16,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local textLeft, text2Left, textRight, text2Right='', '', '', ''
     local tooltipName=tooltip:GetName() or 'GameTooltip'
 
+    local size= ':'..self.iconSize..':0'..self.iconSize
+
 --图像
     tooltip.Portrait:SetAtlas(WoWTools_DataMixin.Icon[englishFaction] or 'Neutral')
     tooltip.Portrait:SetShown(true)
@@ -35,7 +37,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         if info.specID then--设置天赋
             local icon, role= select(4, GetSpecializationInfoByID(info.specID))
             if icon then
-                text2Left= "|T"..icon..':0|t'..(WoWTools_DataMixin.Icon[role] or '')
+                text2Left= '|T'..icon..size..'|t'..(WoWTools_DataMixin.Icon[role] or '')
             end
         end
     else
@@ -67,12 +69,12 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         end
     end
     if not IsInInstance() and UnitHasLFGRandomCooldown(unit) then
-        text2Left= text2Left..'|T236347:0|t'
+        text2Left= text2Left..'|T236347'..size..'|t'
     end
 
 --设置 textRight
     local region= WoWTools_RealmMixin:Get_Region(realm)--服务器，EU， US
-    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', 'common-icon-checkmark') or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
+    textRight=realm..(isSelf and '|A:auctionhouse-icon-favorite'..size..'|a' or realm==WoWTools_DataMixin.Player.realm and format('|A:%s:0:0|a', 'common-icon-checkmark') or WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a' or '')..(region and region.col or '')
 
 --设置 text2Right
     if isSelf then
@@ -114,8 +116,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     local lineLeft1=_G[tooltipName..'TextLeft1']--名称
     if lineLeft1 then
         lineLeft1:SetText(
-            (isSelf and '|A:auctionhouse-icon-favorite:0:0|a' or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil) or '')
-            ..'|A:common-icon-rotateright:0:0|a'..name..'|A:common-icon-rotateleft:0:0|a'
+            (isSelf and '|A:auctionhouse-icon-favorite'..size..'|a' or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil) or '')
+            ..'|A:common-icon-rotateright:0:0|a'..name..'|A:common-icon-rotateleft:'..self.iconSize..':'..self.iconSize..'|a'
         )
         local lineRight1= _G[tooltipName..'TextRight1']
         if lineRight1 then
@@ -147,8 +149,8 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             local rank=''
             if guildRankIndex then
                 guildRankName= WoWTools_TextMixin:sub(guildRankName, 8, 4)
-                rank= guildRankIndex==0 and '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
-                    or (guildRankIndex==1 and '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t')
+                rank= guildRankIndex==0 and '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:'..size..'|t'
+                    or (guildRankIndex==1 and '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:'..size..'|t')
                     or (' '..(guildRankName or guildRankIndex))
             end
             lineLeft2:SetText(
@@ -173,7 +175,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         local sex = UnitSex(unit)
         local raceName, raceFile= UnitRace(unit)
         local level= UnitLevel(unit)
-        local text= sex==2 and '|A:charactercreate-gendericon-male-selected:0:0|a' or '|A:charactercreate-gendericon-female-selected:0:0|a'
+        local text= sex==2 and '|A:charactercreate-gendericon-male-selected'..size..'|a' or ('|A:charactercreate-gendericon-female-selected'..size..'|a')
 
         if GetMaxLevelForLatestExpansion()==level then
             text= text.. level
@@ -205,9 +207,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 end
             end
         else
-            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false})  or '')
+            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false, size=self.iconSize})  or '')
                     ..(WoWTools_TextMixin:CN(raceName) or WoWTools_TextMixin:CN(raceFile) or '')
-                    ..' '..(WoWTools_UnitMixin:GetClassIcon(classFilename) or '')
+                    ..' '..(WoWTools_UnitMixin:GetClassIcon(classFilename, nil, nil, nil, {size=self.iconSize}) or '')
                     ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))
         end
         lineLeft3:SetText(text)
@@ -225,8 +227,13 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         if lineLeft then
             local show=true
             if i==num then
-                if isSelf then--位面ID, 战争模式
-                    lineLeft:SetText(WoWTools_DataMixin.Player.Layer and '|A:nameplates-holypower2-on:0:0|a'..WoWTools_DataMixin.Player.Language.layer..' '..WoWTools_DataMixin.Player.Layer or ' ')
+                if isSelf then
+--位面ID, 战争模式
+                    lineLeft:SetText(
+                        WoWTools_DataMixin.Player.Layer
+                        and '|A:nameplates-holypower2-on:0:0|a'..WoWTools_DataMixin.Player.Language.layer..' '..WoWTools_DataMixin.Player.Layer
+                        or ' '
+                    )
                     local lineRight= _G[tooltipName..'TextRight'..i]
                     if lineRight then
                         if isWarModeDesired then

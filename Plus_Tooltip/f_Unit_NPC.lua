@@ -1,5 +1,5 @@
 --npc=210759/布莱恩·铜须
-local function Set_BrannBronzebeard(tooltip, unit, npcID)
+local function Set_BrannBronzebeard(tooltip, unit, npcID, size)
     if npcID~='210759' then
         return
     end
@@ -27,7 +27,7 @@ local function Set_BrannBronzebeard(tooltip, unit, npcID)
                 left= (left or '')..format('|A:GarrMission_CurrencyIcon-Xp:0:0|a|cnGREEN_FONT_COLOR:%i%%|r', repInfo.standing/repInfo.nextThreshold*100)
 --图标
                 if repInfo.texture and repInfo.texture>0 then
-                    right= '|T'..repInfo.texture..':0|t'..repInfo.texture
+                    right= '|T'..repInfo.texture..':'..size..'|t'..repInfo.texture
                 end
             end
         end
@@ -100,7 +100,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
 --位面,NPCID
         zone, npc = select(5, strsplit("-", guid))
 --布莱恩·铜须
-        Set_BrannBronzebeard(tooltip, unit, npc)
+        Set_BrannBronzebeard(tooltip, unit, npc, self.iconSize)
         if zone or npc then
             tooltip:AddDoubleLine(
                 zone and WoWTools_DataMixin.Icon.icon2..WoWTools_DataMixin.Player.Language.layer..zone,

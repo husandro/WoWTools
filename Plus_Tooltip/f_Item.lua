@@ -89,6 +89,7 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
                 (WoWTools_TextMixin:CN(_G[itemEquipLoc]) or '')..' '..(itemEquipLoc or ''),
                 ( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot
             )
+
             local slotLink=GetInventoryItemLink('player', slot)
             local text
             if slotLink then
@@ -141,7 +142,6 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
 
                 elseif not otherTab[classFile] then
                     other= other..(WoWTools_UnitMixin:GetClassIcon(classFile) or '')
-                    --otherTab[classFile]= true
                 end
             end
         end
@@ -149,7 +149,6 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
 
         tooltip:AddDoubleLine(player or ' ', other)
     end
-    -- tooltip:Show()
 
     return textLeft, text2Left
 end

@@ -78,9 +78,15 @@ local function Init()
             local data= C_SpellBook.GetSpellBookItemInfo(slot, Enum.SpellBookSpellBank.Pet)
             if data then
                 self:AddLine(' ')
-                self:AddDoubleLine(data.spellID and (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..data.spellID or ' ', data.iconID and '|T'..data.iconID..':0|t'..data.iconID)
+                self:AddDoubleLine(
+                    data.iconID and '|T'..data.iconID..':'..WoWTools_TooltipMixin.iconSize..'|t'..data.iconID or ' ',
+                    data.spellID and (WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..data.spellID
+                )
                 if data.actionID or data.itemType then
-                    self:AddDoubleLine(data.itemType and 'itemType '..data.itemType or ' ', 'actionID '..data.actionID)
+                    self:AddDoubleLine(
+                        data.itemType and 'itemType '..data.itemType or ' ',
+                        'actionID '..data.actionID
+                    )
                     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, self)
                 end
             end
@@ -161,7 +167,7 @@ local function Init()
             GameTooltip:AddDoubleLine('widgetSetID', self.widgetSetID)
             for _,widget in ipairs(C_UIWidgetManager.GetAllWidgetsBySetID(self.widgetSetID) or {}) do
                 if widget and widget.widgetID and widget.shownState==1 then
-                    GameTooltip:AddDoubleLine('|A:characterupdate_arrow-bullet-point:0:0|awidgetID', widget.widgetID)
+                    GameTooltip:AddLine('widgetID'..WoWTools_DataMixin.Icon.icon2..widget.widgetID)
                 end
             end
         end
@@ -171,12 +177,12 @@ local function Init()
         if self.factionID then
             WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.factionID)
         end
-        if self.areaPoiID and uiMapID then
+        --[[if self.areaPoiID and uiMapID then
             local poiInfo= C_AreaPoiInfo.GetAreaPOIInfo(uiMapID, self.areaPoiID)
             if poiInfo and poiInfo.atlasName  then
                 GameTooltip:AddDoubleLine('atlasName', '|A:'..poiInfo.atlasName..':0:0|a'..poiInfo.atlasName)
             end
-        end
+        end]]
         WoWTools_Mixin:Call(GameTooltip_CalculatePadding, GameTooltip)
         --GameTooltip:Show()
     end)

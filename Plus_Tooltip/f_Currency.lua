@@ -8,11 +8,12 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
     end
 
     local icon, isWide, isTrans, col= WoWTools_CurrencyMixin:GetAccountIcon(currencyID)
-    local currIcon= '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'
+
 
     tooltip:AddDoubleLine(
-        (icon or '')..(col or '')..'currencyID'..WoWTools_DataMixin.Icon.icon2..currencyID,
-        info2.iconFileID and currIcon..(col or '')..info2.iconFileID
+        info2.iconFileID and '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'..(col or '')..info2.iconFileID,
+
+        (icon or '')..(col or '')..'currencyID'..WoWTools_DataMixin.Icon.icon2..currencyID
     )
 
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
@@ -73,7 +74,7 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
             ..numPlayer
             ..(icon or WoWTools_DataMixin.Icon.wow2)
             ..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)
-            ..currIcon..WoWTools_Mixin:MK(num, 3)
+            ..('|T'..(info2.iconFileID or 0)..':0|t')..WoWTools_Mixin:MK(num, 3)
         )
     end
 

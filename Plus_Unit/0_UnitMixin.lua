@@ -297,10 +297,10 @@ function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好
                 local gameAccountInfo = C_BattleNet.GetGameAccountInfoByGUID(guid)
                 if gameAccountInfo then--C_BattleNet.GetAccountInfoByGUID(guid)
                     local text
-                    if C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small) then
-                        C_Texture.GetTitleIconTexture(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Small, function(success, texture)
+                    if C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Large) then
+                        C_Texture.GetTitleIconTexture(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Large, function(success, texture)
                             if success then
-                                text = BNet_GetClientEmbeddedTexture(texture, 32, 32, 0).." ";
+                                text = BNet_GetClientEmbeddedTexture(texture)--.." ";
                             end
                         end);
                     end
@@ -360,7 +360,7 @@ end
 
 
 --职业图标 groupfinder-icon-emptyslot'
-function WoWTools_UnitMixin:GetClassIcon(classFilename, unit, guid, reAltlas)
+function WoWTools_UnitMixin:GetClassIcon(classFilename, unit, guid, reAltlas, tab)
     if not classFilename then
         if unit then
             classFilename= UnitClassBase(unit)
@@ -378,7 +378,8 @@ function WoWTools_UnitMixin:GetClassIcon(classFilename, unit, guid, reAltlas)
         if reAltlas then
             return classFilename
         else
-            return '|A:'..classFilename ..':0:0|a'
+            local size= tab and tab.size or 0
+            return '|A:'..classFilename ..':'..size..':'..size..'|a'
         end
     end
 end
@@ -388,11 +389,15 @@ end
 function WoWTools_UnitMixin:GetRaceIcon(tab)--玩家种族图标 {unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false} 
     local race =tab.race or tab.unit and select(2,UnitRace(tab.unit))
     local sex= tab.sex
+    local size= tab.size or 0
+
     if not (race or sex) and tab.guid then
         race, sex = select(4, GetPlayerInfoByGUID(tab.guid))
     end
+
     sex=sex or tab.unit and UnitSex(tab.unit)
     sex= sex==2 and 'male' or sex==3 and 'female'
+
     if sex and race then
         if race=='Scourge' then
             race='Undead'
@@ -408,7 +413,7 @@ function WoWTools_UnitMixin:GetRaceIcon(tab)--玩家种族图标 {unit=nil, guid
         if tab.reAtlas then
             return 'raceicon128-'..race..'-'..sex
         else
-            return '|A:raceicon128-'..race..'-'..sex..':0:0|a'
+            return '|A:raceicon128-'..race..'-'..sex..':'..size..':'..size..'|a'
         end
     end
 end
