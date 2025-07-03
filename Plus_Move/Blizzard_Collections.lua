@@ -232,13 +232,13 @@ local function Init_CollectionsJournal()
     MountJournal.LeftInset:SetPoint('TOPRIGHT', MountJournal.RightInset, 'TOPLEFT', -24, 0)
     MountJournal.LeftInset:SetPoint('LEFT', 6, 0)
     MountJournal.LeftInset:SetPoint('BOTTOM', MountJournalMountButton, 'TOP', 0, 2)
-    
+
     --MountJournal.BottomLeftInset:SetPoint('TOPRIGHT', MountJournal.LeftInset, 'BOTTOMRIGHT', 0, -10)
     MountJournal.BottomLeftInset:ClearAllPoints()
     MountJournal.BottomLeftInset:SetPoint('BOTTOM', MountJournal.RightInset)
     MountJournal.BottomLeftInset:SetSize(279, 75)
     MountJournal.BottomLeftInset:SetFrameStrata('DIALOG')
-    
+
     --MountJournal.MountDisplay.ModelScene.TogglePlayer:ClearAllPoints()
     --MountJournal.MountDisplay.ModelScene.TogglePlayer:SetPoint('BOTTOMLEFT', MountJournal.BottomLeftInset, 'TOPLEFT', 22, -4)
     MountJournal.MountDisplay.ModelScene.TogglePlayer:SetScript('OnLeave', GameTooltip_Hide)
@@ -249,7 +249,7 @@ local function Init_CollectionsJournal()
     end)
     MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText:SetText('')
     MountJournal.MountDisplay.ModelScene.TogglePlayer.TogglePlayerText:SetAlpha(0)
-    
+
 
     MountJournal.MountDisplay.ModelScene.ControlFrame:ClearAllPoints()
     MountJournal.MountDisplay.ModelScene.ControlFrame:SetPoint('TOP', MountJournalLore, 'BOTTOM', 0, -12)
@@ -298,7 +298,7 @@ local function Init_CollectionsJournal()
         end
     })
 
-    
+
     WoWTools_MoveMixin:Setup(MountJournal.BottomLeftInset, {frame=CollectionsJournal})
 
     WoWTools_MoveMixin:Setup(PetJournalPetCard, {frame=CollectionsJournal})
@@ -377,14 +377,16 @@ local function Init_WardrobeFrame()
         if not btn or not btn.setSize then
             return
         end
-        if parent==CollectionsJournal then
+        --[[if parent==CollectionsJournal then
 
-        elseif parent==WardrobeFrame then
+        else]]
+
+        if parent==WardrobeFrame then
             self:SetPoint('BOTTOMLEFT', 300,0)
         end
         init_items_colllection(btn)
+    
     end)
-
 
 
     Init_WardrobeFrame=function()end

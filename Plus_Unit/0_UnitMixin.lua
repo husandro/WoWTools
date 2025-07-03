@@ -406,7 +406,7 @@ function WoWTools_UnitMixin:GetRaceIcon(unit, guid, race, tab)
     local reAtlas= tab.reAtlas
 
     if not sex or not race then
-        if unit and UnitExists(unit) then
+        if unit then
             race= select(2,UnitRace(unit))
             sex= UnitSex(unit)
 
@@ -435,8 +435,6 @@ function WoWTools_UnitMixin:GetRaceIcon(unit, guid, race, tab)
         end
     end
 end
-
-
 
 
 

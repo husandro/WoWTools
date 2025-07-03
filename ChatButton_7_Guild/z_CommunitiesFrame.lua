@@ -108,5 +108,5 @@ end
 
 
 function WoWTools_GuildMixin:Plus_CommunitiesFrame()
-    hooksecurefunc(CommunitiesListEntryMixin, 'Init', Init_List)
+    hooksecurefunc(CommunitiesListEntryMixin, 'Init', function(...) Init_List(...) end)
 end

@@ -2197,7 +2197,7 @@ function WoWTools_TextureMixin.Events:Blizzard_PlayerSpells()
     self:HideTexture(PlayerSpellsFrame.SpellBookFrame.TopBar)--法术书
 
     self:SetEditBox(PlayerSpellsFrame.SpellBookFrame.SearchBox)
-    self:SetFrame(PlayerSpellsFrame.SpellBookFrame.SearchPreviewContainer, {isMinAlpha=true})
+    self:SetFrame(PlayerSpellsFrame.SpellBookFrame.SearchPreviewContainer)
 
     --英雄专精
     self:SetNineSlice(HeroTalentsSelectionDialog, self.min, true)

@@ -5982,7 +5982,11 @@
         "ContainerFrame1MoneyFrame",
         "ContainerFrameUtil_EnumerateContainerFrames",
         "ContainerFrame2",
-        "NUM_CONTAINER_FRAMES"
+        "NUM_CONTAINER_FRAMES",
+        "WardrobeSetsCollectionMixin",
+        "TransmogFrameMixin",
+        "WardrobeCollectionFrameMixin",
+        "CommunitiesGuildMemberDetailMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

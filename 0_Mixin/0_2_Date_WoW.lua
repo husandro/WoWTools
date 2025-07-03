@@ -660,7 +660,7 @@ end)]]
 EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, success)
     if success then
         WoWTools_DataMixin.Player.Sex= UnitSex("player")
-        WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
+        WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player') or ''
     end
 end)
 
@@ -690,6 +690,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     WoWTools_WoWDate= WoWTools_WoWDate or {}
 
     WoWToolsPlayerDate= WoWToolsPlayerDate or {}
+
+    WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
 
     local day= date('%x')--日期
     local guid= WoWTools_DataMixin.Player.GUID
@@ -767,8 +769,7 @@ end)
 
 
 EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(owner)
-    WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
-
+   
     if  WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
         Get_Info_Challenge()--挑战
     end

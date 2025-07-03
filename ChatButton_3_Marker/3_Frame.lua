@@ -606,7 +606,12 @@ local function Init()--设置标记, 框架
                     WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET),
                     not can and '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '禁用' or DISABLE)
                 )
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME))
+                GameTooltip:AddLine(
+                    WoWTools_DataMixin.Icon.right
+                    ..WoWTools_DataMixin.Icon.Player
+                    ..WoWTools_DataMixin.Player.col
+                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                )
                 GameTooltip:AddLine(' ')
                 GameTooltip:AddLine(MicroButtonTooltipText('Alt+'..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2), 'RAIDTARGETNONE'))
 

@@ -136,6 +136,7 @@ local function Set_List_Button(btn, displayData)
     end
 
     local setID= displayData.setID or btn.setID
+
     if Save().hideSets or not setID then
         if btn.set_Rest then
             btn:set_Rest()
@@ -230,10 +231,6 @@ end
 
 --套装物品 Link
 local function Init_Wardrobe_DetailsFrame(_, itemFrame)
-    if not itemFrame:IsVisible() then
-        return
-    end
-
     if Save().hideSets  then
         if itemFrame.indexbtn then
             for i = 1, itemFrame.indexbtn do
@@ -246,18 +243,22 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
         end
         return
     end
-        
+
     local sourceInfo = C_TransmogCollection.GetSourceInfo(itemFrame.sourceID)
     local slot = C_Transmog.GetSlotForInventoryType(sourceInfo.invType)
     local sources = C_TransmogSets.GetSourcesForSlot(itemFrame:GetParent():GetParent():GetSelectedSetID(), slot)
+
     if ( #sources == 0 ) then
         tinsert(sources, sourceInfo)
     end
     CollectionWardrobeUtil.SortSources(sources, sourceInfo.visualID, itemFrame.sourceID)
-    local numItems=#sources
+
+    local numItems= #sources
     for i=1, numItems do
         local index = CollectionWardrobeUtil.GetValidIndexForNumSources(i, numItems)
-        local link = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
+
+
+        local itemLink = select(6, C_TransmogCollection.GetAppearanceSourceInfo(sources[index].sourceID))
         local btn=itemFrame['btn'..i]
         if not btn then
             btn=WoWTools_ButtonMixin:Cbtn(itemFrame, {
@@ -270,28 +271,28 @@ local function Init_Wardrobe_DetailsFrame(_, itemFrame)
             else
                 btn:SetPoint('TOP', itemFrame, 'BOTTOM', 0 , -(i-2)*10)
             end
-            btn:SetAlpha(0.2)
-            btn:SetScript("OnEnter",function(self2)
-                if not self2.link then
-                        return
-                end
-                self2:SetAlpha(1)
-                GameTooltip:ClearLines()
-                GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
-                GameTooltip:SetHyperlink(self2.link)
-                GameTooltip:Show()
+            btn:SetScript("OnEnter",function(self)
+                WoWTools_SetTooltipMixin:Frame(self)
+                self:GetNormalTexture():SetAlpha(1)
             end)
-            btn:SetScript("OnMouseDown", function(self2)
-                WoWTools_ChatMixin:Chat(self2.link, nil, true)
+            btn:SetScript("OnMouseDown", function(self)
+                WoWTools_ChatMixin:Chat(self.itemLink, nil, true)
             end)
-            btn:SetScript("OnLeave",function(self2)
-                    self2:SetAlpha(0.2)
-                    GameTooltip:Hide()
+            btn:SetScript("OnLeave",function(self)
+                self:GetNormalTexture():SetAlpha(0.5)
+                GameTooltip:Hide()
             end)
         end
-        btn.link=link
+
+        btn.itemLink= itemLink
+        if sources[index].isCollected then
+            btn:GetNormalTexture():SetVertexColor(0,1,0, 0.5)
+        else
+            btn:GetNormalTexture():SetVertexColor(1,0,0, 0.5)
+        end
         btn:SetShown(true)
     end
+
     if itemFrame.indexbtn and itemFrame.indexbtn > numItems then
         for i = numItems+1, itemFrame.indexbtn do
             local btn=itemFrame['btn'..i]
@@ -322,7 +323,7 @@ end
 local function Init()
     SetsDataProvider= CreateFromMixins(WardrobeSetsDataProviderMixin)
 
-    --点击，按钮信息
+--点击，按钮信息
     TipsLabel= WoWTools_LabelMixin:Create(WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, {size=14})
     TipsLabel:SetPoint('BOTTOMLEFT', WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame, 'BOTTOMRIGHT', 8, 8)
     if not WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame.Background then
@@ -330,7 +331,8 @@ local function Init()
         texture:SetPoint('TOPLEFT', TipsLabel, -4, 4)
         texture:SetPoint('BOTTOMRIGHT', TipsLabel, 4, -4)
     end
-    --点击，显示套装情况Blizzard_Wardrobe.lua
+
+--点击，显示套装情况Blizzard_Wardrobe.lua
     hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'OnClick', function(btn, buttonName)
         if not btn:IsVisible() then
             return
@@ -341,24 +343,26 @@ local function Init()
             TipsLabel:SetText("")
         end
     end)
-    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame:HookScript('OnShow', function(self)
+    WardrobeCollectionFrame.SetsCollectionFrame.DetailsFrame:HookScript('OnShow', function()
         if Save().hideSets then
             TipsLabel:SetText('')
         end
     end)
 
-    --幻化，套装，索引
-    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', set_Sets_Tooltips)
+--幻化，套装，索引
+    hooksecurefunc(WardrobeCollectionFrame.SetsTransmogFrame, 'UpdateSets', function(...) set_Sets_Tooltips(...) end)
 
 
-    --套装，列表
-    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', Set_List_Button)
+--套装，列表
+    hooksecurefunc(WardrobeSetsScrollFrameButtonMixin, 'Init', function(...) Set_List_Button(...) end)
 
 
 
 
-    --套装,物品, Link
-    hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', Init_Wardrobe_DetailsFrame)
+    --套装,物品, Link WardrobeSetsCollectionMixin
+    hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'SetItemFrameQuality', function(...) Init_Wardrobe_DetailsFrame(...) end)
+     --hooksecurefunc(WardrobeCollectionFrame.SetsCollectionFrame, 'DisplaySet', function(...)
+        
 
     return true
 end

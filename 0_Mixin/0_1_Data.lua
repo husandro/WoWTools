@@ -98,7 +98,6 @@ end
 --disabledLUA={},--禁用插件 {save='', text} e.DisabledLua=true
 
 
-
 WoWTools_DataMixin.Icon={
     Player= '',-- WoWTools_UnitMixin:GetRaceIcon('player') 玩家图标icon
     icon= 'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
@@ -136,6 +135,7 @@ WoWTools_DataMixin.Icon={
     [STABLE_PET_SPEC_FEROCITY] = "ferocity-icon-small",
     [STABLE_PET_SPEC_TENACITY] = "tenacity-icon-small",
 }
+
 
 --[[
 disabled='talents-button-reset',

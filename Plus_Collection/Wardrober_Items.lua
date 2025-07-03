@@ -240,6 +240,103 @@ local function get_Link_Item_Type_Source(sourceID, type)
         end
     end
 end
+
+local function btn_alphacolor(btn)
+    local icon= btn:GetNormalTexture()
+    if not icon then
+        return
+    end
+    if btn:IsMouseOver() then
+        if btn.index==1 then
+            icon:SetDesaturated(false)
+        end
+        icon:SetAlpha(1)
+    else
+        if btn.index==1 then
+            icon:SetDesaturated(not btn.isCollected and true or false)
+            icon:SetAlpha(btn.isCollected and 1 or 0.5)
+        else
+            if btn.isCollected then
+                icon:SetVertexColor(0, 1, 0, 0.5)
+            else
+                icon:SetVertexColor(1, 0, 0, 0.5)
+            end
+        end
+    end
+end
+
+local function btn_enter(self)
+    local link2= self.link
+    if not link2 then
+        return
+    end
+
+    GameTooltip:ClearLines()
+    GameTooltip:SetOwner(self:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
+
+    if self.illusionID then
+        local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self.illusionID)
+        GameTooltip:AddLine(name)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddLine(sourceText, 1,1,1, true)
+        GameTooltip:AddLine(' ')
+
+        local info = C_TransmogCollection.GetIllusionInfo(self.illusionID)
+        if info then
+            GameTooltip:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
+            GameTooltip:AddDoubleLine(
+                info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
+            GameTooltip:AddDoubleLine(
+                info.isCollected
+                and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)
+                or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)),
+
+                info.isUsable
+                and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '可用' or AVAILABLE)
+                or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不可用' or UNAVAILABLE))
+            )
+        end
+    else
+        GameTooltip:SetHyperlink(link2)
+    end
+    GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送' or SEND_LABEL, WoWTools_DataMixin.Icon.left)
+
+    GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
+    GameTooltip:Show()
+end
+
+
+local function Create_Items_ListButton(model, index, x, y, h )
+    local btn=WoWTools_ButtonMixin:Cbtn(model, {
+        size= index==1 and {14.4, 14.4} or h,
+    })
+
+    if index==1 then
+        btn:SetPoint('BOTTOMLEFT', -4, -4)
+    else
+        btn:SetPoint('BOTTOMLEFT', x, y)
+    end
+
+    btn:SetScript("OnLeave",function(self)
+        btn_alphacolor(self)
+        GameTooltip:Hide()
+    end)
+
+    btn:SetScript("OnEnter",function(self)
+        btn_enter(self)
+        btn_alphacolor(self)
+    end)
+
+    btn:SetScript("OnClick", function(self)
+        local link2= get_Link_Item_Type_Source(self.sourceID, self.type) or self.link
+        WoWTools_ChatMixin:Chat(link2, nil, true)
+    end)
+
+    model.itemButton[index]= btn
+    return btn
+end
+
+
 local function set_Items_Tooltips(self)--UpdateItems
     if not self:IsVisible() then
         return
@@ -250,22 +347,36 @@ local function set_Items_Tooltips(self)--UpdateItems
         local model = self.Models[i]
         if model and model:IsShown() then
             model.itemButton=model.itemButton or {}
+
             local itemLinks={}
+
             if not Save().hideItems and self.transmogLocation then
                 local findLinks={}
                 if self.transmogLocation:IsIllusion() then--WardrobeItemsModelMixin:OnMouseDown(button)
                     local link= get_Link_Item_Type_Source(model.visualInfo.sourceID, 'illusion')--select(2, C_TransmogCollection.GetIllusionStrings(model.visualInfo.sourceID))
                     if link then
                         WoWTools_Mixin:Load({id=link, type='item'})--加载 item quest spell
-                        table.insert(itemLinks, {link= link, sourceID= model.visualInfo.sourceID, type='illusion'})
+                        --visualInfo={isHideVisual=, visualID=, isCollected=, sourceID=, icon=, isUsable=}
+                        table.insert(itemLinks, {
+                            link= link,
+                            sourceID= model.visualInfo.sourceID,
+                            type='illusion',
+                            isCollected= model.visualInfo.isCollected
+                        })
                     end
                 else
                     local sources = CollectionWardrobeUtil.GetSortedAppearanceSources(model.visualInfo.visualID, self:GetActiveCategory(), self.transmogLocation) or {}
                     for index= 1, #sources do
                         local link= get_Link_Item_Type_Source(sources[index],'item')--WardrobeCollectionFrame:GetAppearanceItemHyperlink(sources[index])
                         if link and not findLinks[link] then
+                            --sources[index]= {sourceType=3, visualID=1, isCollected=, isValidSourceForPlayer, categoryID, isHideVisual, quality, invType, sourceID, playerCanCollect, inventorySlot, itemID, itemModID, name, canDisplayerOnPlayer}
                             WoWTools_Mixin:Load({id=link, type='item'})--加载 item quest spell
-                            table.insert(itemLinks, {link=link, sourceID=sources[index], type='item'})
+                            table.insert(itemLinks, {
+                                link=link,
+                                sourceID=sources[index],
+                                type='item',
+                                isCollected= sources[index].isCollected
+                            })
                             findLinks[link]=true
                         end
                     end
@@ -274,80 +385,17 @@ local function set_Items_Tooltips(self)--UpdateItems
 
                 local y, x, h =0,0, 11
                 for index, tab in pairs(itemLinks) do
-                    local btn= model.itemButton[index]
-                    if not btn then
+                    local btn= model.itemButton[index] or Create_Items_ListButton(model, index, x, y, h )
 
-                        btn=WoWTools_ButtonMixin:Cbtn(model, {
-                            size=index==1 and {14.4, 14.4} or h,
-                        })
-                        if index==1 then
-                            btn:SetPoint('BOTTOMLEFT', -4, -4)
-                        else
-                            btn:SetPoint('BOTTOMLEFT', x, y)
-                        end
-                        if index>1 then
-                            btn:SetAlpha(0.5)
-                        else
-                            btn.isPrima=true
-                        end
-
-                        btn:SetScript("OnEnter",function(self2)
-                            local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
-                            if link2 then
-                                self2:SetAlpha(1)
-                                GameTooltip:ClearLines()
-                                GameTooltip:SetOwner(self2:GetParent():GetParent(), "ANCHOR_RIGHT",8,-300)
-                                if self2.illusionID then
-                                    local name, _, sourceText = C_TransmogCollection.GetIllusionStrings(self2.illusionID)
-                                    GameTooltip:AddLine(name)
-                                    GameTooltip:AddLine(' ')
-                                    GameTooltip:AddLine(sourceText, 1,1,1, true)
-                                    GameTooltip:AddLine(' ')
-
-                                    local info = C_TransmogCollection.GetIllusionInfo(self2.illusionID)
-                                    if info then
-                                        GameTooltip:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
-                                        GameTooltip:AddDoubleLine(
-                                            info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
-                                        GameTooltip:AddDoubleLine(
-                                            info.isCollected
-                                            and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)
-                                            or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)),
-
-                                            info.isUsable
-                                            and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '可用' or AVAILABLE)
-                                            or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不可用' or UNAVAILABLE))
-                                        )
-                                    end
-                                else
-                                    GameTooltip:SetHyperlink(link2)
-                                end
-                                GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送' or SEND_LABEL, WoWTools_DataMixin.Icon.left)
-                                
-                                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
-                                GameTooltip:Show()
-                             end
-                             self2:SetAlpha(1)
-                        end)
-                        btn:SetScript("OnClick", function(self2)
-                            local link2= get_Link_Item_Type_Source(self2.sourceID, self2.type) or self2.link
-                            WoWTools_ChatMixin:Chat(link2, nil, true)
-                        end)
-                        btn:SetScript("OnLeave",function(self2)
-                            if not self2.isPrima then
-                                self2:SetAlpha(0.5)
-                            end
-                            GameTooltip:Hide()
-                        end)
-                        model.itemButton[index]=btn
-                    end
                     if index~=1 and select(2, math.modf(index / 10))==0 then
                         x= x+ h
                         y=0
                     else
                         y=y+ h
                     end
+
                     local illusionID= tab.link:match('Htransmogillusion:(%d+)') or tab.type=='illusion'
+
                     if index==1 then
                         local icon
                         if illusionID and illusionID~=true then
@@ -365,14 +413,20 @@ local function set_Items_Tooltips(self)--UpdateItems
                     else
                         btn:SetNormalAtlas('adventure-missionend-line')
                     end
+
                     btn.link=tab.link
                     btn.sourceID= tab.sourceID
                     btn.type= tab.type
                     btn.illusionID= illusionID
                     btn.index=index
+                    btn.isCollected= tab.isCollected
+
+                    btn_alphacolor(btn)
+
                     btn:SetShown(true)
                 end
             end
+
             for index= #itemLinks+1, #model.itemButton do
                 model.itemButton[index]:SetShown(false)
             end
@@ -383,7 +437,6 @@ local function set_Items_Tooltips(self)--UpdateItems
                 if not model.Text then
                     model.Text= WoWTools_LabelMixin:Create(model, {color={r=1,g=1,b=1}})
                     model.Text:SetPoint('BOTTOMRIGHT', -3, 2)
-                    --model.Text:SetPoint('TOPRIGHT', 3, 2)
                     model.Text:SetAlpha(0.5)
                 end
             end
