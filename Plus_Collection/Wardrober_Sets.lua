@@ -109,6 +109,8 @@ local function Init_Button(btn)
 
         self.tooltip=nil
     end
+
+    btn.Name:SetPoint('RIGHT', -4, 0)
 end
 
 
@@ -162,7 +164,7 @@ local function Set_List_Button(btn, displayData)
             if meno and numAll then
 
                 text= (text or '').. meno..' '--未收集，数量
-                --version= version or _G['EXPANSION_NAME'..(info.expansionID or '')]--版本
+                
                 isLimited= isLimited or info.limitedTimeSet--限时套装
 
                 local name= info.description or info.name or ''
@@ -181,7 +183,7 @@ local function Set_List_Button(btn, displayData)
                 tipsText= tipsText..'|n'..(isCollected and '|cnGREEN_FONT_COLOR:'..tip..'|r' or tip)
             end
             patch= patch or (info.patchID and info.patchID>0 and 'v'..(info.patchID/10000))
-            version= version or (info.expansionID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..info.expansionID]))
+            version= WoWTools_TextureMixin:GetWoWLog(info.expansionID, nil) or (info.expansionID and WoWTools_TextMixin:CN(_G['EXPANSION_NAME'..info.expansionID]))
         end
     end
 

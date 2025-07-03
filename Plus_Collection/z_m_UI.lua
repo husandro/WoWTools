@@ -262,7 +262,9 @@ local function Init_CollectionsJournal()
     PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
     --PetJournalSearchBox:SetPoint('LEFT', PetJournalFilterButton, 'RIGHT',-2, 0)
 
-
+    hooksecurefunc('MountJournal_InitMountButton', function(btn)
+        btn.name:SetPoint('RIGHT', -4, 0)
+    end)
     WardrobeCollectionFrame.SetsCollectionFrame.RightInset:ClearAllPoints()
     WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetWidth(410)
     WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetPoint('TOPRIGHT', 2, 0)
@@ -310,12 +312,8 @@ local function Init_CollectionsJournal()
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet3.modelScene.cardButton, {frame=CollectionsJournal})
 
 
-    C_Timer.After(2, function()
-        local frame= _G['ManuscriptsJournal']
-        if frame then
-            WoWTools_MoveMixin:Setup(frame, {frame=CollectionsJournal})
-        end
-    end)
+   
+    WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
 
     if _G['RematchFrame'] then
         _G['RematchFrame']:HookScript('OnShow', init_rematch)
@@ -385,7 +383,6 @@ local function Init_WardrobeFrame()
             self:SetPoint('BOTTOMLEFT', 300,0)
         end
         init_items_colllection(btn)
-    
     end)
 
 

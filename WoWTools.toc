@@ -128,7 +128,6 @@ Plus_Move\Professions.lua
 Plus_Move\ProfessionsCustomerOrders.lua
 Plus_Move\ClassPower.lua
 Plus_Move\WorldMapFrame.lua
-Plus_Move\Blizzard_Collections.lua
 Plus_Move\z_Events.lua
 Plus_Move\z_Frames.lua
 
@@ -287,6 +286,7 @@ Plus_ObjectiveTracker\World_Quest.lua
 ##战团藏品
 Plus_Collection\0_CollectedMixin.lua
 Plus_Collection\1_Init.lua
+Plus_Collection\2_Menu.lua
 Plus_Collection\Mount.lua
 Plus_Collection\Pet.lua
 Plus_Collection\ToyBox.lua
@@ -294,8 +294,8 @@ Plus_Collection\Heirloom.lua
 Plus_Collection\Wardrober_Items.lua
 Plus_Collection\Wardrober_Sets.lua
 Plus_Collection\DressUpFrames.lua
-Plus_Collection\2_Menu.lua
-
+Plus_Collection\z_m_UI.lua
+Plus_Collection\z_t_UI.lua
 
 ##世界地图，增强
 Plus_WorldMap\0_WorldMapMixin.lua

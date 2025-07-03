@@ -120,7 +120,7 @@ local function Init()
         PetJournal.PetCount.Count:SetFormattedText('%d/%d', C_PetJournal.GetNumPets())
     end)
 
-
+--列表
     hooksecurefunc('PetJournal_InitPetButton', function(pet, data)
         local abilityIconA, abilityIconB
         if not Save().hidePets and Save().petListIconSize~=0 then
@@ -129,8 +129,8 @@ local function Init()
         if not pet.abilityLabel then
             pet.abilityLabel= WoWTools_LabelMixin:Create(pet, {layer='OVERLAY'})
             pet.abilityLabel:SetPoint('BOTTOMRIGHT', 2, -1)
-            pet.subName:SetPoint('RIGHT')
-            pet.name:SetPoint('RIGHT')
+            pet.subName:SetPoint('RIGHT', -4, 0)
+            pet.name:SetPoint('RIGHT', -4, 0)
 
             function pet.abilityLabel:set_shown()
                 self:SetShown(PetJournalPetCard.petIndex ~= self.index and not GameTooltip:IsOwned(self))
@@ -265,9 +265,7 @@ local function Init()
         end
     end)
 
-    Init=function()
-       
-    end
+    Init=function()end
 end
 
 

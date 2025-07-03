@@ -373,7 +373,7 @@ local ExpansionIcon = {
 
 
 
-function WoWTools_TextureMixin:GetWoWLog(expacID, texture)
+function WoWTools_TextureMixin:GetWoWLog(expacID, texture, size)
     local info= ExpansionIcon[expacID]
     if not info then
         return
@@ -387,7 +387,7 @@ function WoWTools_TextureMixin:GetWoWLog(expacID, texture)
 
     return ("|T%s:%d:%f:%d:%d:%d:%d:%d:%d:%d:%d|t"):format(
         info.textureFile,
-        0,
+        size or 0,
         info.aspectRatio,
         info.xOffset or 0,
         info.yOffset or 0,
