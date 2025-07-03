@@ -98,7 +98,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
     local zone, npc
     if guid then
 --位面,NPCID
-        zone, npc = select(5, strsplit("-", guid))
+        npc, zone =  WoWTools_UnitMixin:GetNpcID(unit, guid)
 --布莱恩·铜须
         Set_BrannBronzebeard(tooltip, unit, npc, self.iconSize)
         if zone or npc then

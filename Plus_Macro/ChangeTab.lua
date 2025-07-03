@@ -19,53 +19,8 @@ local ScrollBoxBackground
 
 --设置，列表
 local function Init_ChangeTab(self, tabID)
-    if WoWTools_FrameMixin:IsLocked(MacroFrame) then
-        return
-    end
-
-    self.MacroSelector:ClearAllPoints()
-
-    local point= Save().toRightLeft
-        if point==1 then--左边
-            self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
-            self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
-
-        elseif point==2 then--右边
-            self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
-            self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
-
-        elseif point==4 then--左|右
-            self.MacroSelector:SetPoint('TOPLEFT', self, 12, -66)
-            self.MacroSelector:SetPoint('BOTTOMRIGHT', self, 'BOTTOM', 0, 45)
-
-      else--默认
-        self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
-        self.MacroSelector:SetPoint('BOTTOMRIGHT', self, 'RIGHT', -6, 0)
-    end
-
-    MacroFrameScrollFrame:ClearAllPoints()
-    if point==4 then
-        MacroFrameScrollFrame:SetPoint('TOPLEFT', self.MacroSelector, 'TOPRIGHT', 0, -52)
-        MacroFrameScrollFrame:SetPoint('BOTTOMLEFT', self.MacroSelector, 'BOTTOMRIGHT', 0, -16)
-        MacroFrameScrollFrame:SetPoint('RIGHT', self, -34, 0)
-    else
-        MacroFrameScrollFrame:SetPoint('TOPLEFT', self, 'LEFT', 12, -60)
-        MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 30)
-    end
-
-
-    local show=(point==1 or point==2) and true or false
-    if _G['WoWToolsMacroPlusNoteEditBox'] then
-        _G['WoWToolsMacroPlusNoteEditBox']:SetShown(show)
-    end
-    --ScrollBoxBackground:SetShown(show)
-
---图像    
-    MacroFramePortrait:SetAtlas(
-        tabID==2
-        and WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {reAtlas=true})
-        or 'Interface\\MacroFrame\\MacroFrame-Icon'
-    )
+    print(tabID)
+    
     
 end
 
@@ -90,9 +45,6 @@ end
 
 
 local function Init()
-    --ScrollBoxBackground=WoWTools_TextureMixin:CreateBG(MacroFrame.MacroSelector.ScrollBox)--, {isAllPoint=true})
-    --ScrollBoxBackground:SetAllPoints(MacroFrame.MacroSelector.ScrollBox.Shadows)
-
 --ScrollFrame
     MacroFrameScrollFrame:ClearAllPoints()
     MacroFrameScrollFrame:SetPoint('TOPLEFT', MacroFrame, 'LEFT', 12, -60)
@@ -113,8 +65,53 @@ local function Init()
 
 
 --设置，列表
-    hooksecurefunc(MacroFrame, 'ChangeTab', function(...)
-        Init_ChangeTab(...)
+    hooksecurefunc(MacroFrame, 'ChangeTab', function(self, tabID)
+        if WoWTools_FrameMixin:IsLocked(MacroFrame) then
+            return
+        end
+
+        self.MacroSelector:ClearAllPoints()
+
+        local point= Save().toRightLeft
+            if point==1 then--左边
+                self.MacroSelector:SetPoint('TOPRIGHT', self, 'TOPLEFT',10,-12)
+                self.MacroSelector:SetPoint('BOTTOMLEFT', -319, 0)
+
+            elseif point==2 then--右边
+                self.MacroSelector:SetPoint('TOPLEFT', self, 'TOPRIGHT',0,-12)
+                self.MacroSelector:SetPoint('BOTTOMRIGHT', 319, 0)
+
+            elseif point==4 then--左|右
+                self.MacroSelector:SetPoint('TOPLEFT', self, 12, -66)
+                self.MacroSelector:SetPoint('BOTTOMRIGHT', self, 'BOTTOM', 0, 45)
+
+        else--默认
+            self.MacroSelector:SetPoint('TOPLEFT', 12,-66)
+            self.MacroSelector:SetPoint('BOTTOMRIGHT', self, 'RIGHT', -6, 0)
+        end
+
+        MacroFrameScrollFrame:ClearAllPoints()
+        if point==4 then
+            MacroFrameScrollFrame:SetPoint('TOPLEFT', self.MacroSelector, 'TOPRIGHT', 0, -52)
+            MacroFrameScrollFrame:SetPoint('BOTTOMLEFT', self.MacroSelector, 'BOTTOMRIGHT', 0, -16)
+            MacroFrameScrollFrame:SetPoint('RIGHT', self, -34, 0)
+        else
+            MacroFrameScrollFrame:SetPoint('TOPLEFT', self, 'LEFT', 12, -60)
+            MacroFrameScrollFrame:SetPoint('BOTTOMRIGHT', -32, 30)
+        end
+
+
+        local show=(point==1 or point==2) and true or false
+        if _G['WoWToolsMacroPlusNoteEditBox'] then
+            _G['WoWToolsMacroPlusNoteEditBox']:SetShown(show)
+        end
+
+    --图像    
+        if tabID==2 then
+            MacroFramePortrait:SetAtlas(WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {reAtlas=true}))
+        else
+            MacroFramePortrait:SetTexture('Interface\\MacroFrame\\MacroFrame-Icon')
+        end
     end)
 
     Init=function()end

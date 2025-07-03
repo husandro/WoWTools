@@ -119,7 +119,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
         text= (server and server.col or '')
                     ..(friend or '')
-                    ..(self:GetFaction(unit, faction) or '')--检查, 是否同一阵营
+                    ..(self:GetFaction(unit, faction, nil, {size=size}) or '')--检查, 是否同一阵营
                     ..(self:GetRaceIcon(unit, guid, englishRace, {sex=sex, size=size}) or '')
                     ..(self:GetClassIcon(unit, guid, englishClass, {size=size}) or '')
 
@@ -171,15 +171,19 @@ end
 
 
 
-
-
---NPC ID, 注意是：字符
-function WoWTools_UnitMixin:GetNpcID(unit)
-    if UnitExists(unit) then
-        local guid=UnitGUID(unit)
-        if guid then
-            return select(6,  strsplit("-", guid))
-        end
+--[[
+if unit_type == "Creature" or unit_type == "Vehicle" then
+    local _, _, server_id, instance_id, zone_uid, npc_id, spawn_uid = strsplit("-", guid)
+elseif unit_type == "Player" then
+    local _, server_id, player_id = strsplit("-", guid)
+end
+NPC ID, 注意是：字符 Creature-0-1465-0-2105-448-000043F59F
+]]
+function WoWTools_UnitMixin:GetNpcID(unit, guid)
+    guid= guid or UnitExists(unit) and  UnitGUID(unit)
+    if guid then
+        local zone, npc = select(5, strsplit("-", guid))
+        return npc, zone
     end
 end
 
@@ -257,10 +261,11 @@ end
 
 
 
-function WoWTools_UnitMixin:GetFaction(unit, englishFaction, all)--检查, 是否同一阵营
+function WoWTools_UnitMixin:GetFaction(unit, englishFaction, all, tab)--检查, 是否同一阵营
     englishFaction= englishFaction or (unit and  UnitFactionGroup(unit))
     if englishFaction and (englishFaction~= WoWTools_DataMixin.Player.Faction or all) then
-        return format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[englishFaction] or '')
+        local size= tab and tab.size or 0
+        return format('|A:%s:'..size..':'..size..'|a', WoWTools_DataMixin.Icon[englishFaction] or '')
     end
 end
 

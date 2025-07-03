@@ -76,8 +76,8 @@ local function Init()
         end
 
         CharacterLevelText:SetText(
-            format('|A:%s:26:26|a', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or '')
-            ..(WoWTools_UnitMixin:GetRaceIcon('player', {size=26}) or '')
+            (WoWTools_UnitMixin:GetFaction('player', nil, true, {size=26}) or '')
+            ..(WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {size=26}) or '')
             ..(WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {size=26}) or '')
             ..level
         )

@@ -104,15 +104,15 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -8, 12)
     WoWTools_TextureMixin:SetScrollBar(scrollFrame)
 
-    scrollFrame.bg= CreateFrame('Frame', name..'BG', scrollFrame, 'TooltipBackdropTemplate')
-    scrollFrame.bg:SetPoint('TOPLEFT', -5, 5)
-    scrollFrame.bg:SetPoint('BOTTOMRIGHT', 0, -5)
-    scrollFrame.bg:SetFrameLevel(level+1)
-    scrollFrame.bg:EnableMouse(true)
-    scrollFrame.bg:SetScript('OnMouseDown', function(s)
+    scrollFrame.BGFrame= CreateFrame('Frame', nil, scrollFrame, 'TooltipBackdropTemplate')
+    scrollFrame.BGFrame:SetPoint('TOPLEFT', -5, 5)
+    scrollFrame.BGFrame:SetPoint('BOTTOMRIGHT', 0, -5)
+    scrollFrame.BGFrame:SetFrameLevel(level+1)
+    scrollFrame.BGFrame:EnableMouse(true)
+    scrollFrame.BGFrame:SetScript('OnMouseDown', function(s)
         s:GetParent().editBox:SetFocus()
     end)
-    WoWTools_TextureMixin:SetNineSlice(scrollFrame.bg, 0.5, true)
+    WoWTools_TextureMixin:SetNineSlice(scrollFrame.BGFrame)
 
 
     scrollFrame.editBox= CreateFrame('EditBox', nil, scrollFrame)--, 'SearchBoxTemplate')
@@ -201,8 +201,6 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     scrollFrame.SetFocus= function(s)
         s.editBox:SetFocus()
     end
-
-    
 
     return scrollFrame
 end
