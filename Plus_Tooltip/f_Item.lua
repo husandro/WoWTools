@@ -382,7 +382,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     tooltip:AddDoubleLine(
         itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t|cffffffff'..itemTexture or ' ',
 
-        'itemID'
+        'itemID|cffffffff'
         ..WoWTools_DataMixin.Icon.icon2
         ..itemID
     )
