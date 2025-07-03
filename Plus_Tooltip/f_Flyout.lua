@@ -38,7 +38,7 @@ function WoWTools_TooltipMixin:Set_Flyout(tooltip, flyoutID)
         (not isKnown and '|cnRED_FONT_COLOR:' or '')
         ..'flyoutID|r'
         ..WoWTools_DataMixin.Icon.icon2
-        '|cffffffff'
+        ..'|cffffffff'
         ..flyoutID
     )
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)

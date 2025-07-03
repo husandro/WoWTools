@@ -10,7 +10,12 @@ end
 --RaidFinder.lua
 local function isRaidFinderDungeonDisplayable(dungeonID)
     local _, _, _, minLevel, maxLevel, _, _, _, expansionLevel = GetLFGDungeonInfo(dungeonID)
-    local myLevel = WoWTools_DataMixin.Player.Level
+    local myLevel = WoWTools_DataMixin.Player.Level or 1
+
+    expansionLevel= expansionLevel or 1
+    minLevel= minLevel or 1
+    maxLevel= maxLevel or 1
+
     return myLevel >= minLevel and myLevel <= maxLevel and EXPANSION_LEVEL >= expansionLevel
 end
 

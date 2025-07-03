@@ -54,7 +54,7 @@
 
 
 --成员,叙述
-    self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.Border, 1)
+    self:SetFrame(CommunitiesFrame.GuildMemberDetailFrame.Border, {alpha=1})
     self:SetButton(CommunitiesFrame.GuildMemberDetailFrame.CloseButton)
 
 
