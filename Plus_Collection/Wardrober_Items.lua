@@ -303,22 +303,29 @@ local function set_Items_Tooltips(self)--UpdateItems
                                     GameTooltip:AddLine(' ')
                                     GameTooltip:AddLine(sourceText, 1,1,1, true)
                                     GameTooltip:AddLine(' ')
+
                                     local info = C_TransmogCollection.GetIllusionInfo(self2.illusionID)
                                     if info then
                                         GameTooltip:AddDoubleLine('visualID '..(info.visualID or ''), 'sourceID '..(info.sourceID or ''))
-                                        GameTooltip:AddDoubleLine(info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
-                                        GameTooltip:AddDoubleLine(info.isCollected and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)..'|r' or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)..'|r'),
-                                                            info.isUsable and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '可用' or AVAILABLE)..'|r' or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不可用' or UNAVAILABLE)..'|r'))
-                                        GameTooltip:AddLine(' '
-                                    )
+                                        GameTooltip:AddDoubleLine(
+                                            info.icon and '|T'..info.icon..':0|t'..info.icon or '', 'isHideVisual '..(info.isHideVisual and 'true' or 'false'))
+                                        GameTooltip:AddDoubleLine(
+                                            info.isCollected
+                                            and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已收集' or COLLECTED)
+                                            or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '未收集' or NOT_COLLECTED)),
+
+                                            info.isUsable
+                                            and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '可用' or AVAILABLE)
+                                            or ('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '不可用' or UNAVAILABLE))
+                                        )
                                     end
                                 else
                                     GameTooltip:SetHyperlink(link2)
                                 end
-                                GameTooltip:AddLine(' ')
                                 GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '发送' or SEND_LABEL, WoWTools_DataMixin.Icon.left)
+                                
+                                GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
                                 GameTooltip:Show()
-                               GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_CollectionMixin.addName)
                              end
                              self2:SetAlpha(1)
                         end)

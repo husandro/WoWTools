@@ -81,9 +81,9 @@ function WoWTools_TooltipMixin:Set_Spell(tooltip, spellID)--法术
     local spellTexture=  originalIcon or icon
     tooltip:AddLine(' ')
     tooltip:AddDoubleLine(
-        spellTexture and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture or ' ',
+        spellTexture and '|T'..spellTexture..':'..self.iconSize..'|t|cffffffff'..spellTexture or ' ',
         
-        'spellID'
+        'spellID|cffffffff'
         ..WoWTools_DataMixin.Icon.icon2
         ..spellID
     )

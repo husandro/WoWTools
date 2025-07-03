@@ -39,7 +39,7 @@ local function Set_BrannBronzebeard(tooltip, unit, npcID, size)
 
     tooltip:AddDoubleLine(
         right or ' ',
-        WoWTools_DataMixin.Icon.icon2..'companionFactionID '..companionFactionID
+        'companionFactionID'..WoWTools_DataMixin.Icon.icon2..companionFactionID
     )
 end
 

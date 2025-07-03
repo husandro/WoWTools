@@ -19,34 +19,45 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
                 or ''
     if info.friendshipID then
         tooltip:AddDoubleLine(
-            (factionID~=info.friendshipID and 'factionID'..WoWTools_DataMixin.Icon.icon2..info.factionID..' ' or '')
-            ..icon..(info.texture or ''),
+            (factionID~=info.friendshipID and 'factionID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.factionID..' ' or '')
+            ..icon
+            ..(info.texture and '|cffffffff'..info.texture or ''),
 
-            'friendshipID'..WoWTools_DataMixin.Icon.icon2..info.friendshipID
+            'friendshipID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.friendshipID
         )
     elseif info.isMajor then
         tooltip:AddLine(
             icon
             ..(WoWTools_DataMixin.onlyChinese and '阵营' or MAJOR_FACTION_LIST_TITLE)
             ..WoWTools_DataMixin.Icon.icon2
+            ..'|cffffffff'
             ..info.factionID
         )
     else
         tooltip:AddDoubleLine(
             icon..(info.texture or ''),
 
-            'factionID'..WoWTools_DataMixin.Icon.icon2..info.factionID
+            'factionID'
+            ..WoWTools_DataMixin.Icon.icon2
+            ..'|cffffffff'
+            ..info.factionID
         )
     end
     if info.isUnlocked then
         if info.factionStandingtext or info.valueText then
             tooltip:AddDoubleLine(
                 info.factionStandingtext or ' ',
-                (info.hasRewardPending or '')..(info.valueText or '')..(info.valueText and info.isParagon and '|A:Banker:0:0|a' or '')
+
+                (info.hasRewardPending or '')
+                ..(info.valueText or '')
+                ..(info.valueText and info.isParagon and '|A:Banker:0:0|a' or '')
             )
         end
         if info.hasRewardPending then
-            tooltip:AddLine('|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE))
+            tooltip:AddLine(
+                '|cnRED_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '你有未领取的奖励' or WEEKLY_REWARDS_UNCLAIMED_TITLE)
+            )
         end
     else
         tooltip:AddLine(
@@ -58,10 +69,11 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         )
     end
     WoWTools_TooltipMixin:Set_Web_Link(tooltip, {type='faction', id=info.friendshipID or info.factionID, name=info.name, col=nil, isPetUI=false})--取得网页，数据链接
+
     if tooltip==EmbeddedItemTooltip then
         GameTooltip_AddBlankLineToTooltip(tooltip)
     end
-    --tooltip:Show()
+
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end
 

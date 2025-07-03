@@ -9,18 +9,24 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
 
     local icon, isWide, isTrans, col= WoWTools_CurrencyMixin:GetAccountIcon(currencyID)
 
+    col= col or '|cffffffff'
+    icon= icon or ''
 
     tooltip:AddDoubleLine(
-        info2.iconFileID and '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'..(col or '')..info2.iconFileID,
+        info2.iconFileID and '|T'..(info2.iconFileID or 0)..':'..self.iconSize..'|t'..col..info2.iconFileID,
 
-        (icon or '')..(col or '')..'currencyID'..WoWTools_DataMixin.Icon.icon2..currencyID
+        icon..'currencyID'..WoWTools_DataMixin.Icon.icon2..'|r'..col..currencyID
     )
 
     local factionID = C_CurrencyInfo.GetFactionGrantedByCurrency(currencyID)--派系声望
     if factionID and factionID>0 then
         local name= (C_Reputation.GetFactionDataByID(factionID) or {}).name
         if name then
-            tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION, WoWTools_TextMixin:CN(name)..' '..factionID)
+            tooltip:AddDoubleLine(
+                WoWTools_DataMixin.onlyChinese and '声望' or REPUTATION,
+
+                WoWTools_TextMixin:CN(name)..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..factionID
+            )
         end
     end
 

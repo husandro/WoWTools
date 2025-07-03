@@ -86,8 +86,8 @@ local function Set_Equip(self, tooltip, itemID, itemLink, itemLevel, itemEquipLo
             end
 --栏位
             tooltip:AddDoubleLine(
-                (WoWTools_TextMixin:CN(_G[itemEquipLoc]) or '')..' '..(itemEquipLoc or ''),
-                ( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' '..slot
+                (WoWTools_TextMixin:CN(_G[itemEquipLoc]) or '')..' |cffffffff'..(itemEquipLoc or ''),
+                ( WoWTools_DataMixin.onlyChinese and '栏位' or TRADESKILL_FILTER_SLOTS)..' |cffffffff'..slot
             )
 
             local slotLink=GetInventoryItemLink('player', slot)
@@ -372,7 +372,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     if expacID or setID then
         tooltip:AddDoubleLine(
             WoWTools_Mixin:GetExpansionText(expacID, nil) or '  ',
-            setID and 'setID '..setID
+            setID and 'setID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..setID
         )
     end
 
@@ -380,7 +380,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
 
 --itemID,  图标
     tooltip:AddDoubleLine(
-        itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t'..itemTexture or ' ',
+        itemTexture and '|T'..itemTexture..':'..self.iconSize..'|t|cffffffff'..itemTexture or ' ',
 
         'itemID'
         ..WoWTools_DataMixin.Icon.icon2
@@ -388,10 +388,10 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     )
 
 --物品，类型
-    if classID and subclassID then
+    if classID or subclassID then
         tooltip:AddDoubleLine(
-            (WoWTools_TextMixin:CN(itemType) or 'itemType')..' '..classID,
-            (WoWTools_TextMixin:CN(itemSubType) or 'itemSubType')..' '..subclassID
+            classID and (WoWTools_TextMixin:CN(itemType) or 'itemType')..' |cffffffff'..classID,
+            subclassID and (WoWTools_TextMixin:CN(itemSubType) or 'itemSubType')..' |cffffffff'..subclassID
         )
     end
 
@@ -411,7 +411,7 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         C_WowTokenPublic.UpdateMarketPrice()
         local price= C_WowTokenPublic.GetCurrentMarketPrice()
         if price and price>0 then
-            textLeft='|A:token-choice-wow:0:0|a'..C_CurrencyInfo.GetCoinTextureString(price)
+            textLeft='|A:token-choice-wow:0:0|a|cffffffff'..C_CurrencyInfo.GetCoinTextureString(price)
         end
 
 
@@ -437,10 +437,10 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
         local spellTexture= C_Spell.GetSpellTexture(spellID)
         local cnName= WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true})
         tooltip:AddDoubleLine(
-            spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t'..spellTexture or ' ',
+            spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t|cffffffff'..spellTexture or ' ',
 
             (itemName~=spellName and '|cff71d5ff['..cnName..']|r' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' '..spellID
+            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' |cffffffff'..spellID
         )
     end
 

@@ -25,7 +25,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     end
 
     tooltip:AddDoubleLine(
-        'questID'
+        'questID|cffffffff'
         ..WoWTools_DataMixin.Icon.icon2
         ..questID,
 
@@ -50,7 +50,7 @@ function WoWTools_TooltipMixin:Set_Quest(tooltip, questID, info)
     else
         local tagID= C_QuestLog.GetQuestType(questID)
         if tagID and tagID>0 then
-            tooltip:AddDoubleLine('tagID', tagID)
+            tooltip:AddDoubleLine('tagID|cffffffff'..WoWTools_DataMixin.Icon.icon2..tagID)
         end
     end
 

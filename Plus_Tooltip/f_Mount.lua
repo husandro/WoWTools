@@ -22,10 +22,14 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     WoWTools_Mixin:Load({id=spellID, type='spell'})
 
     tooltip:AddDoubleLine(
-        spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':'..self.iconSize..'|t'..'spellID '..spellID or ' ',
+        spellID and '|T'..(C_Spell.GetSpellTexture(spellID) or 0)..':0|t'
+        ..'spellID'
+        ..WoWTools_DataMixin.Icon.icon2
+        ..'|cffffffff'..spellID,
 
         'mountID'
         ..WoWTools_DataMixin.Icon.icon2
+        ..'|cffffffff'
         ..mountID
     )
 
@@ -50,7 +54,11 @@ function WoWTools_TooltipMixin:Set_Mount(tooltip, mountID, type)--坐骑
     local creatureDisplayInfoID, _, source, isSelfMount, _, _, animID, spellVisualKitID = C_MountJournal.GetMountInfoExtraByID(mountID)
     if creatureDisplayInfoID then
         tooltip:AddDoubleLine(
-            'creatureDisplayInfoID'..WoWTools_DataMixin.Icon.icon2..'creatureDisplayInfoID',
+            'creatureDisplayInfoID'
+            ..WoWTools_DataMixin.Icon.icon2
+            ..'|cffffffff'
+            ..creatureDisplayInfoID,
+
             isSelfMount and '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '变形' or TUTORIAL_TITLE61_DRUID)
         )
     end

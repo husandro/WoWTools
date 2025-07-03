@@ -15,8 +15,8 @@ function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
     tooltip:AddLine(' ')
 
     tooltip:AddDoubleLine(
-        icon and '|T'..icon..':'..self.iconSize..'|t'..icon or ' ',
-        'auraID'..WoWTools_DataMixin.Icon.icon2..spellID
+        icon and '|T'..icon..':'..self.iconSize..'|t|cffffffff'..icon or ' ',
+        'auraID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..spellID
     )
 
     local mountID = C_MountJournal.GetMountFromSpell(spellID)
@@ -51,7 +51,10 @@ function WoWTools_TooltipMixin:Set_Buff(_, tooltip, ...)
             or UnitIsPlayer(source) and WoWTools_UnitMixin:GetPlayerInfo(source, nil, nil, {reName=true})
             or UnitName(source) or _G[source] or source
 
-    tooltip:AddLine((col or '|cffffffff') ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)..'|r')
+    tooltip:AddLine(
+        (col or '|cffffffff')
+        ..format(WoWTools_DataMixin.onlyChinese and '来源：%s' or RUNEFORGE_LEGENDARY_POWER_SOURCE_FORMAT, text)
+    )
 
     WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
 end

@@ -15,18 +15,18 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
 
 --speciesID, icon
     tooltip:AddDoubleLine(
-        speciesIcon and '|T'..speciesIcon..':'..self.iconSize..'|t'..speciesIcon,
+        speciesIcon and '|T'..speciesIcon..':'..self.iconSize..'|t|cffffffff'..speciesIcon,
 
-        'speciesID'
+        'speciesID|cffffffff'
         ..WoWTools_DataMixin.Icon.icon2
         ..speciesID
     )
 
 --displayID companionID
     tooltip:AddDoubleLine(
-        creatureDisplayID and 'displayID'..WoWTools_DataMixin.Icon.icon2..creatureDisplayID,
+        creatureDisplayID and 'displayID|cffffffff'..WoWTools_DataMixin.Icon.icon2..creatureDisplayID,
 
-        companionID and 'companionID '..companionID
+        companionID and 'companionID|cffffffff'..WoWTools_DataMixin.Icon.icon2..companionID
     )
 
 --技能图标
@@ -53,7 +53,7 @@ function WoWTools_TooltipMixin:Set_Pet(tooltip, speciesID)--宠物
     local cnName= WoWTools_TextMixin:CN(nil, {npcID=companionID, isName=true})
 
     if cnName then
-        tooltip:AddLine('|cffffffff'..cnName..'|r')
+        tooltip:AddLine(cnName)
     end
 
     if tooltipDescription or sourceInfo[1] then

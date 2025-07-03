@@ -10,8 +10,12 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     local _, name, points, completed, _, _, _, _, flags, icon, _, isGuild = GetAchievementInfo(achievementID)
 
     tooltip:AddDoubleLine(
-        icon and '|T'..icon..':'..self.iconSize..'|t'..icon or ' ',
-        'achievementID'..WoWTools_DataMixin.Icon.icon2..(flags==0x20000 and '|cffff00ff'..WoWTools_DataMixin.Icon.wow2..achievementID or achievementID)
+        icon and '|T'..icon..':'..self.iconSize..'|t|cffffffff'..icon or ' ',
+
+        'achievementID'
+        ..WoWTools_DataMixin.Icon.icon2
+        ..(flags==0x20000 and '|cff00ccff'..WoWTools_DataMixin.Icon.wow2 or '|cffffffff')
+        ..achievementID
     )
 
 
@@ -37,7 +41,7 @@ function WoWTools_TooltipMixin:Set_Achievement(tooltip, achievementID)--成就
     if flags==0x20000 then
         tooltip.text2Right:SetText(
             WoWTools_DataMixin.Icon.net2
-            ..'|cffff00ff'
+            ..'|cff00ccff'
             ..(WoWTools_DataMixin.onlyChinese and '战网' or COMMUNITY_COMMAND_BATTLENET)
         )
     else

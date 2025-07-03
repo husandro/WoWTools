@@ -156,10 +156,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
             local rank=''
             if guildRankIndex then
                 guildRankName= WoWTools_TextMixin:sub(guildRankName, 8, 4)
-                rank= guildRankIndex==0 and '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:'..size..'|t'
-                    or (guildRankIndex==1 and '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:'..size..'|t')
+                rank= guildRankIndex==0 and '|TInterface\\GroupFrame\\UI-Group-LeaderIcon:0|t'
+                    or (guildRankIndex==1 and '|TInterface\\GroupFrame\\UI-Group-AssistantIcon:0|t')
                     or (' '..(guildRankName or guildRankIndex))
             end
+
             lineLeft2:SetText(
                 '|A:UI-HUD-MicroMenu-GuildCommunities-Mouseover:0:0|a'
                 ..guildName
@@ -200,9 +201,9 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
             text= text..' '..(WoWTools_UnitMixin:GetRaceIcon(unit, guid, raceFile, {sex=sex, size=self.iconSize}) or '')
-                    ..' '..WoWTools_UnitMixin:GetClassIcon(nil, nil, classFilename)
+                    ..' '..WoWTools_UnitMixin:GetClassIcon(nil, nil, classFilename, {size=self.iconSize})
                     ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
-                    ..' |A:recipetoast-icon-star:0:0|a|cffffffff'..info.currentSeasonScore..'|r'
+                    ..' |A:recipetoast-icon-star:0:0|a'..info.currentSeasonScore..'|r'
 
             if info.runs and info.runs then
                 local bestRunLevel=0
@@ -212,7 +213,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                     end
                 end
                 if bestRunLevel>0 then
-                    text= text..' (|cffffffff'..bestRunLevel..'|r)'
+                    text= text..' (|cnGREEN_FONT_COLOR:'..bestRunLevel..'|r)'
                 end
             end
         else
@@ -223,10 +224,11 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         end
         lineLeft3:SetText(text)
 
-        local lineRight3= isInGuild and _G[tooltipName..'TextRight3'] or _G[tooltipName..'TextRight2']
+        --[[local lineRight3= isInGuild and _G[tooltipName..'TextRight3'] or _G[tooltipName..'TextRight2']
         if lineRight3 then
             lineRight3:SetText(' ')
-        end
+            lineRight3:SetShown(true)
+        end]]
     end
 
     local hideLine--取得网页，数据链接
