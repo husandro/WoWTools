@@ -99,7 +99,7 @@ local function Init_RaidGroupFrame_Update()
                 end
 
                 if subframes.level and level==maxLevel then
-                    subframes.level:SetText(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=nil, sex=nil, reAtlas=false}) or '')
+                    subframes.level:SetText(WoWTools_UnitMixin:GetRaceIcon(unit, guid, nil) or '')
                 end
             end
         end

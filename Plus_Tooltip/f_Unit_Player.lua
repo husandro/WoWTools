@@ -199,7 +199,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
 
         info= C_PlayerInfo.GetPlayerMythicPlusRatingSummary(unit)--挑战, 分数
         if info and info.currentSeasonScore and info.currentSeasonScore>0 then
-            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false, size=self.iconSize}) or '')
+            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon(unit, guid, raceFile, {sex=sex, size=self.iconSize}) or '')
                     ..' '..WoWTools_UnitMixin:GetClassIcon(nil, nil, classFilename)
                     ..' '..(UnitIsPVP(unit) and  '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or PVP)..'|r' or (WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE))
                     ..' |A:recipetoast-icon-star:0:0|a|cffffffff'..info.currentSeasonScore..'|r'
@@ -216,7 +216,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
                 end
             end
         else
-            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon({unit=unit, guid=guid, race=raceFile, sex=sex, reAtlas=false, size=self.iconSize})  or '')
+            text= text..' '..(WoWTools_UnitMixin:GetRaceIcon(unit, guid, raceFile, {sex=sex, size=self.iconSize})  or '')
                     ..(WoWTools_TextMixin:CN(raceName) or WoWTools_TextMixin:CN(raceFile) or '')
                     ..' '..(WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, {size=self.iconSize}) or '')
                     ..' '..(UnitIsPVP(unit) and '(|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and 'PvP' or TRANSMOG_SET_PVP)..'|r)' or ('('..(WoWTools_DataMixin.onlyChinese and 'PvE' or TRANSMOG_SET_PVE)..')'))

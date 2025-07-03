@@ -60,12 +60,13 @@ local function Init_ChangeTab(self, tabID)
     end
     --ScrollBoxBackground:SetShown(show)
 
---图像
-    if tabID==2 then
-        MacroFramePortrait:SetAtlas(WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=WoWTools_DataMixin.Player.GUID , race=nil , sex=WoWTools_DataMixin.Player.Sex , reAtlas=true}))
-    else
-        MacroFramePortrait:SetTexture('Interface\\MacroFrame\\MacroFrame-Icon')
-    end
+--图像    
+    MacroFramePortrait:SetAtlas(
+        tabID==2
+        and WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {reAtlas=true})
+        or 'Interface\\MacroFrame\\MacroFrame-Icon'
+    )
+    
 end
 
 

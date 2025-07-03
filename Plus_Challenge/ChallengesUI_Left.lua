@@ -27,14 +27,14 @@ local function Initializer(btn, data)
     local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
 
 --玩家，图标
-    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon({
-        guid=data.guid,
-        reAtlas=true,
-    } or ''))
+    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
 
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
-        btn.Name:SetText((WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..'|A:CampCollection-icon-star:0:0|a')
+        btn.Name:SetText(
+            (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+            ..'|A:CampCollection-icon-star:0:0|a'
+        )
     else
         local name= data.name or ''
         btn.Name:SetText(

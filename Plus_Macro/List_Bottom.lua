@@ -867,7 +867,7 @@ local function Init()
 
 --角色，装备
     local equipButton= WoWTools_ButtonMixin:Menu(Frame, {
-        atlas=WoWTools_UnitMixin:GetRaceIcon({unit='player', reAtlas=true}),
+        atlas=WoWTools_UnitMixin:GetRaceIcon('player', nil, nil, {reAtlas=true}),
         isType2=true,
         name='WoWToolsMacroBottomListEquipButton',
     })

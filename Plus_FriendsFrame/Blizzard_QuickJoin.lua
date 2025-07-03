@@ -44,7 +44,7 @@ local function Init()--快速加入, 初始化 QuickJoin.lua
             local name = nameObj and nameObj.name
             if guid and name then
                 local _, class, _, race, sex = GetPlayerInfoByGUID(guid)
-                local raceTexture=WoWTools_UnitMixin:GetRaceIcon({unit=nil, guid=guid, race=race, sex=sex , reAtlas=false})
+                local raceTexture=WoWTools_UnitMixin:GetRaceIcon(nil, guid, race, {sex=sex})
                 local hex= select(4, GetClassColor(class))
                 hex= '|c'..hex
                 name= (raceTexture or '').. name

@@ -39,22 +39,51 @@ local function Init()
         if option and option.previewAtlas then
             expansion= '|A:'..option.previewAtlas..':0:0|a'..expansion
         end
-        local text= format(WoWTools_DataMixin.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION, expansion)
-        GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))..': '..WoWTools_TextMixin:GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
-                                text
-                            )
+
+        GameTooltip:AddDoubleLine(
+            (WoWTools_DataMixin.onlyChinese and '选择时空漫游战役' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHROMIE_TIME_SELECT_EXAPANSION_BUTTON, CHROMIE_TIME_PREVIEW_CARD_DEFAULT_TITLE))
+            ..': '
+            ..WoWTools_TextMixin:GetEnabeleDisable(C_PlayerInfo.CanPlayerEnterChromieTime()),
+
+            format(
+                WoWTools_DataMixin.onlyChinese and '你目前处于|cffffffff时空漫游战役：%s|r' or PARTY_PLAYER_CHROMIE_TIME_SELF_LOCATION,
+
+                expansion or WoWTools_TextMixin:GetYesNo(false)
+            )
+        )
+
         GameTooltip:AddLine(' ')
         for _, info2 in pairs(C_ChromieTime.GetChromieTimeExpansionOptions() or {}) do
             local col= info2.alreadyOn and '|cffff00ff' or ''-- option and option.id==info.id
             GameTooltip:AddDoubleLine((info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight) or '')..col..(info2.previewAtlas and '|A:'..info2.previewAtlas..':0:0|a' or '')..info2.name..(info2.alreadyOn and format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft) or '')..col..' ID '.. info2.id, col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info2.completed))
-            --GameTooltip:AddDoubleLine(' ', col..(info.mapAtlas and '|A:'..info.mapAtlas..':0:0|a'.. info.mapAtlas))
-            --GameTooltip:AddDoubleLine(' ', col..(info.previewAtlas and '|A:'..info.previewAtlas..':0:0|a'.. info.previewAtlas))
-            --GameTooltip:AddDoubleLine(' ', col..(WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE)..': '..WoWTools_TextMixin:GetYesNo(info.completed))
         end
 
         GameTooltip:Show()
         self:SetAlpha(0.3)
     end)
+
+    hooksecurefunc('PaperDollFrame_SetLevel', function()
+         if Save().hide then
+            return
+        end
+
+        local level
+        level= UnitLevel("player") or 1
+        local effectiveLevel = UnitEffectiveLevel("player") or 1
+
+        if effectiveLevel ~= level then
+            level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
+        end
+
+        CharacterLevelText:SetText(
+            format('|A:%s:26:26|a', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or '')
+            ..(WoWTools_UnitMixin:GetRaceIcon('player', {size=26}) or '')
+            ..(WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {size=26}) or '')
+            ..level
+        )
+    end)
+
+    Init=function()end
 end
 
 
@@ -70,27 +99,6 @@ end
 
 
 
-
-
-
-local function Settings()
-    if Save().hide then
-        return
-    end
-
-    local race= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=true})
-    local class= WoWTools_UnitMixin:GetClassIcon('player', nil, nil, {reAltlas=true})
-    local level
-    level= UnitLevel("player")
-    local effectiveLevel = UnitEffectiveLevel("player")
-
-    if ( effectiveLevel ~= level ) then
-        level = EFFECTIVE_LEVEL_FORMAT:format('|cnGREEN_FONT_COLOR:'..effectiveLevel..'|r', level)
-    end
-    local faction= format('|A:%s:26:26|a', WoWTools_DataMixin.Icon[WoWTools_DataMixin.Player.Faction] or '')
-
-    CharacterLevelText:SetText('  '..faction..(race and '|A:'..race..':26:26|a' or '')..(class and '|A:'..class..':26:26|a  ' or '')..level)
-end
 
 
 
@@ -100,5 +108,4 @@ end
 
 function WoWTools_PaperDollMixin:Init_SetLevel()
     Init()
-    hooksecurefunc('PaperDollFrame_SetLevel', Settings)
 end

@@ -660,7 +660,7 @@ end)]]
 EventRegistry:RegisterFrameEventAndCallback("BARBER_SHOP_RESULT", function(_, success)
     if success then
         WoWTools_DataMixin.Player.Sex= UnitSex("player")
-        WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false})
+        WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
     end
 end)
 

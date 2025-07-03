@@ -253,7 +253,7 @@ local function Init_Menu(self, root)
                             col..msg.time,
 
                             col..(WoWTools_UnitMixin:GetIsFriendIcon(description.data.name, description.data.guid, nil) or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight))
-                            ..(WoWTools_UnitMixin:GetRaceIcon({guid=description.data.guid}) or '')
+                            ..(WoWTools_UnitMixin:GetRaceIcon(nil, description.data.guid, nil) or '')
                             ..msg.text.. (player and ' |cnGREEN_FONT_COLOR:*|r' or '')
                         )
                     end
@@ -268,7 +268,14 @@ local function Init_Menu(self, root)
 
             sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function(data)
                 col= select(5, WoWTools_UnitMixin:GetColor(nil, data.guid)) or '|cffffffff'
-                local text= '|cff9e9e9e'..WoWTools_DataMixin.Player.name_realm..'|r'..WoWTools_DataMixin.Icon.Player..' <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n|n'
+                local text= '|cff9e9e9e'
+                            ..WoWTools_DataMixin.Player.name_realm
+                            ..'|r'..WoWTools_DataMixin.Icon.Player
+                            ..' <-> '
+                            ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
+                            ..col
+                            ..data.name
+                            ..'|r|n|n'
                 local playerList={}
                 for _, msg in pairs(data.msg) do
                     text= text and text..'|n' or ''
@@ -288,7 +295,13 @@ local function Init_Menu(self, root)
                 end
 
                 for player in pairs(playerList) do
-                    text=text..'|n|cff9e9e9e'..player..'|r <-> '..(WoWTools_UnitMixin:GetRaceIcon({guid=data.guid}) or '')..col..data.name..'|r|n'
+                    text=text
+                        ..'|n|cff9e9e9e'
+                        ..player..'|r <-> '
+                        ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
+                        ..col
+                        ..data.name
+                        ..'|r|n'
                 end
                 WoWTools_TextMixin:ShowText(text, WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, data.name, {reName=true, reRealm=true}))
                 return MenuResponse.Open

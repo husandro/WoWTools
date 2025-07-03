@@ -120,7 +120,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         text= (server and server.col or '')
                     ..(friend or '')
                     ..(self:GetFaction(unit, faction) or '')--检查, 是否同一阵营
-                    ..(self:GetRaceIcon({unit=unit, guid=guid , race=englishRace, sex=sex, reAtlas=false, size=size}) or '')
+                    ..(self:GetRaceIcon(unit, guid, englishRace, {sex=sex, size=size}) or '')
                     ..(self:GetClassIcon(unit, guid, englishClass, {size=size}) or '')
 
         if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标
@@ -241,7 +241,7 @@ function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链�
             if class then
                 showName= '|c'..select(4,GetClassColor(class))..showName..'|r'
             end
-            return (onlyLink and '' or self:GetRaceIcon({unit=nil, guid=guid , race=race , sex=sex , reAtlas=false}))..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
+            return (onlyLink and '' or self:GetRaceIcon(unit, guid, race, {sex=sex , reAtlas=false}))..'|Hplayer:'..name2..((realm and realm~='') and '-'..realm or '')..'|h['..showName..']|h'
         end
     elseif name then
         return '|Hplayer:'..name..'|h['..self:NameRemoveRealm(name)..']|h'
@@ -392,20 +392,26 @@ function WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, tab)
 end
 
 
+--玩家种族图标 
+function WoWTools_UnitMixin:GetRaceIcon(unit, guid, race, tab)
+    tab= tab or {}
 
-function WoWTools_UnitMixin:GetRaceIcon(tab)--玩家种族图标 {unit=nil, guid=nil, race=nil, sex=nil, reAtlas=false} 
-    local race =tab.race or tab.unit and select(2,UnitRace(tab.unit))
-    local sex= tab.sex
     local size= tab.size or 0
+    local sex= tab.sex
+    local reAtlas= tab.reAtlas
 
-    if not (race or sex) and tab.guid then
-        race, sex = select(4, GetPlayerInfoByGUID(tab.guid))
+    if not sex or not race then
+        if unit and UnitExists(unit) then
+            race= select(2,UnitRace(unit))
+            sex= UnitSex(unit)
+
+        elseif guid then
+            race, sex = select(4, GetPlayerInfoByGUID(guid))
+        end
     end
 
-    sex=sex or tab.unit and UnitSex(tab.unit)
-    sex= sex==2 and 'male' or sex==3 and 'female'
-
-    if sex and race then
+    if race then
+        sex= sex==3 and 'female' or 'male'
         if race=='Scourge' then
             race='Undead'
         elseif race=='HighmountainTauren' then
@@ -417,14 +423,15 @@ function WoWTools_UnitMixin:GetRaceIcon(tab)--玩家种族图标 {unit=nil, guid
         elseif race=='Dracthyr' then
             race='dracthyrvisage'
         end
-        if tab.reAtlas then
+        if reAtlas then
             return 'raceicon128-'..race..'-'..sex
         else
             return '|A:raceicon128-'..race..'-'..sex..':'..size..':'..size..'|a'
         end
     end
 end
-WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon({unit='player', guid=nil , race=nil , sex=nil , reAtlas=false})
+
+WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
 
 
 

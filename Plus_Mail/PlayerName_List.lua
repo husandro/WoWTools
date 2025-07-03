@@ -440,7 +440,7 @@ local function Init()
                 if index>0 and index<9 then
                     texture= 'Interface\\TargetingFrame\\UI-RaidTargetingIcon_'..index
                 else
-                    atlas= WoWTools_UnitMixin:GetRaceIcon({unit= 'target', reAtlas=true})
+                    atlas= WoWTools_UnitMixin:GetRaceIcon('target', nil, nil, {reAtlas=true})
                 end
                 if texture then
                     self.btn:SetNormalTexture(texture)
