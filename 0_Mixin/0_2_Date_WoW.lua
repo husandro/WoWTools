@@ -680,13 +680,10 @@ end)
 
 
 
-
 EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1)
     if arg1~='WoWTools' then
         return
     end
-
-    WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
 
     WoWToolsSave= WoWToolsSave or {}
 
@@ -770,6 +767,8 @@ end)
 
 
 EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(owner)
+    WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
+
     if  WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
         Get_Info_Challenge()--挑战
     end

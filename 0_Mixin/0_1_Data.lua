@@ -100,7 +100,7 @@ end
 
 
 WoWTools_DataMixin.Icon={
-    --Player= WoWTools_UnitMixin:GetRaceIcon('player') 玩家图标icon
+    Player= '',-- WoWTools_UnitMixin:GetRaceIcon('player') 玩家图标icon
     icon= 'Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
     icon2='|TInterface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools:0|t',
 
