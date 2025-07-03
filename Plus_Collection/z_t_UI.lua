@@ -165,6 +165,7 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
             return
         end
         self:HideFrame(ManuscriptsJournal.iconsFrame.NineSlice)
+        self:HideTexture(ManuscriptsJournal.iconsFrame.Bg)
     end)
     
     
