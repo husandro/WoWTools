@@ -216,7 +216,13 @@ local function Init()--设置标记, 框架
             if self.action then
                 GameTooltip:AddLine(MicroButtonTooltipText(self.name, self.action), 1,1,1)
                 GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(not UnitExists('target') and '|cff9e9e9e' or '')..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS), 1,1,1)
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME), 1,1,1)
+                GameTooltip:AddLine(
+                    WoWTools_DataMixin.Icon.right
+                    ..WoWTools_DataMixin.Icon.Player
+                    ..WoWTools_DataMixin.Player.col
+                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+                    1,1,1
+                )
             else
                 local find
                 local pingTab= self:GetParent().tab
@@ -238,8 +244,14 @@ local function Init()--设置标记, 框架
                 )
 
                 type= C_Ping.GetContextualPingTypeForUnit(WoWTools_DataMixin.Player.GUID)
-                GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.col..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-                            ..((type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or '')
+                GameTooltip:AddLine(
+                    WoWTools_DataMixin.Icon.right
+                    ..WoWTools_DataMixin.Icon.Player
+                    ..WoWTools_DataMixin.Player.col
+                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+                    ..(
+                        (type and pingTab[type]) and '|A:'..pingTab[type].atlas..':0:0|a'..pingTab[type].name or ''
+                    )
                 )
 
             end

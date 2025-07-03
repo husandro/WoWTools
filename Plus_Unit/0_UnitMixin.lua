@@ -436,8 +436,6 @@ function WoWTools_UnitMixin:GetRaceIcon(unit, guid, race, tab)
     end
 end
 
-WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
-
 
 
 

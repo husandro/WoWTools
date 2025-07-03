@@ -686,6 +686,8 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         return
     end
 
+    WoWTools_DataMixin.Icon.Player= WoWTools_UnitMixin:GetRaceIcon('player')
+
     WoWToolsSave= WoWToolsSave or {}
 
     WoWTools_WoWDate= WoWTools_WoWDate or {}
