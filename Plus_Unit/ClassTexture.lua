@@ -130,7 +130,7 @@ local function Init_UnitFrame_Update(frame, isParty)--UnitFrame.lua--职业, 图
                 name= WoWTools_TextMixin:sub(name, 4, 8)
                 frame.name:SetText(name)
             elseif unit=='target' and guid then
-                local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, guid)
+                local wow= WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, nil)
                 if wow then
                     name= wow..GetUnitName(unit, false)
                 end

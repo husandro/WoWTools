@@ -416,7 +416,7 @@ local function Set_Queue_Status()--小眼睛, 信息
                                     ..(itemLevelText or '')
                                     ..scorsoText
 
-                                    ..(WoWTools_UnitMixin:GetIsFriendIcon(name) or '')
+                                    ..(WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, name) or '')
                                     ..icon
                                     ..(tank and INLINE_TANK_ICON or '')
                                     ..(healer and INLINE_HEALER_ICON or '')

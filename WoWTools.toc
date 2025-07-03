@@ -328,12 +328,12 @@ Plus_Unit\RaidFrame.lua
 Plus_Unit\TargetFrame.lua
 
 ##好友，面板
-Plus_FriendsFrame\1_Init.lua
-Plus_FriendsFrame\Blizzard_FriendsFrame.lua
-Plus_FriendsFrame\Blizzard_QuickJoin.lua
-Plus_FriendsFrame\Blizzard_RaidFrame.lua
-Plus_FriendsFrame\Blizzard_RaidUI.lua
-Plus_FriendsFrame\z_UI.lua
+Plus_Friends\1_Init.lua
+Plus_Friends\Blizzard_FriendsFrame.lua
+Plus_Friends\Blizzard_QuickJoin.lua
+Plus_Friends\Blizzard_RaidFrame.lua
+Plus_Friends\Blizzard_RaidUI.lua
+Plus_Friends\z_UI.lua
 
 
 ##卖买

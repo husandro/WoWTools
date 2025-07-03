@@ -172,6 +172,7 @@ local function Set_Friend_Event(self, _, friendIndex)
     end
 
     local accountInfo= friendIndex and C_BattleNet.GetFriendAccountInfo(friendIndex) --FriendsFrame_UpdateFriendButton FriendsFrame.lua
+
     if not accountInfo
         or (
             not Save().allFriendInfo--仅限，WoW，好友
@@ -548,7 +549,7 @@ local function Init()--好友列表, 初始化
                                     ..(WoWTools_UnitMixin:GetClassIcon(nil, nil, info.filename) or '')
                                     ..self.col
                                     ..info.fullName
-                                    ..(WoWTools_UnitMixin:GetIsFriendIcon(info.fullName) or '')
+                                    ..(WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, info.fullName) or '')
                                     ..(info.level and ' '..(info.level~=GetMaxLevelForLatestExpansion() and '|cnGREEN_FONT_COLOR:' or '')..info.level or '')
                                 )
                         GameTooltip:AddLine('|A:UI-HUD-MicroMenu-GuildCommunities-GuildColor-Mouseover:0:0|a'..self.col..(info.fullGuildName or ''))
@@ -591,7 +592,7 @@ local function Init()--好友列表, 初始化
                     if info.fullName== WoWTools_DataMixin.Player.Name then
                         btn.Name:SetText(format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toLeft))
                     else
-                        local nameText= WoWTools_UnitMixin:GetIsFriendIcon(info.fullName)--检测, 是否好友
+                        local nameText= WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, info.fullName)--检测, 是否好友
                         if nameText then
                             nameText= nameText..info.fullName
                             if info.fullName== WoWTools_DataMixin.Player.Name then

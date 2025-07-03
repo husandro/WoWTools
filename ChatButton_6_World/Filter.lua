@@ -423,7 +423,11 @@ local function WoWTools_Word_Filters(_, _, msg, name, _, _, _, _, _, _, _, _, _,
             FilterTextTab[msg].num= FilterTextTab[msg].num +1
             return true
 
-        elseif not guid or guid== WoWTools_DataMixin.Player.GUID or WoWTools_UnitMixin:GetIsFriendIcon(name, guid) or WoWTools_DataMixin.GroupGuid[guid] then--自已, 好友
+        elseif not guid
+            or guid== WoWTools_DataMixin.Player.GUID
+            or WoWTools_UnitMixin:GetIsFriendIcon(nil, guid, name)
+            or WoWTools_DataMixin.GroupGuid[guid]
+        then--自已, 好友
             return false
 
         elseif strlenutf8(msg)>Save().myChatFilterNum or msg:find('WTS') then-- msg:find('<.->') or  then

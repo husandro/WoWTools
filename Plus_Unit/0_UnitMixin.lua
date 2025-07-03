@@ -283,7 +283,7 @@ BNET_CLIENT_CLNT = "CLNT";
 
 --WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].region= WoWTools_DataMixin.Player.Region
 --WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag= WoWTools_DataMixin.Player.BattleTag or WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].battleTag
-function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好友
+function WoWTools_UnitMixin:GetIsFriendIcon(unit, guid, name)--检测, 是否好友
     if guid or unit then
         guid= guid or self:GetGUID(unit, name)
         if guid and guid~=WoWTools_DataMixin.Player.GUID then
@@ -308,7 +308,7 @@ function WoWTools_UnitMixin:GetIsFriendIcon(name, guid, unit)--检测, 是否好
                     if C_Texture.IsTitleIconTextureReady(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Large) then
                         C_Texture.GetTitleIconTexture(gameAccountInfo.clientProgram, Enum.TitleIconVersion.Large, function(success, texture)
                             if success then
-                                text = BNet_GetClientEmbeddedTexture(texture)--.." ";
+                                text = BNet_GetClientEmbeddedTexture(texture, 0, 0)--.." ";
                             end
                         end);
                     end

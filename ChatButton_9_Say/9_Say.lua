@@ -240,10 +240,10 @@ local function Init_Menu(self, root)
                 return MenuResponse.Open
             end, tab)
 
-            sub2:SetTooltip(function(tooltip, description)
-                col= select(5, WoWTools_UnitMixin:GetColor(nil, description.data.guid))
+            sub2:SetTooltip(function(tooltip, desc)
+                col= select(5, WoWTools_UnitMixin:GetColor(nil, desc.data.guid))
                 local find
-                for _, msg in pairs(description.data.msg) do
+                for _, msg in pairs(desc.data.msg) do
                     local player= msg.player and msg.player~=WoWTools_DataMixin.Player.name_realm and msg.player
 
                     if msg.type then--发送
@@ -252,8 +252,12 @@ local function Init_Menu(self, root)
                         tooltip:AddDoubleLine(
                             col..msg.time,
 
-                            col..(WoWTools_UnitMixin:GetIsFriendIcon(description.data.name, description.data.guid, nil) or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight))
-                            ..(WoWTools_UnitMixin:GetRaceIcon(nil, description.data.guid, nil) or '')
+                            col
+                            ..(
+                                WoWTools_UnitMixin:GetIsFriendIcon(nil, desc.data.guid, desc.data.name)
+                                or format('|A:%s:0:0|a', WoWTools_DataMixin.Icon.toRight)
+                            )
+                            ..(WoWTools_UnitMixin:GetRaceIcon(nil, desc.data.guid, nil) or '')
                             ..msg.text.. (player and ' |cnGREEN_FONT_COLOR:*|r' or '')
                         )
                     end

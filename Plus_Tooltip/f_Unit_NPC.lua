@@ -104,7 +104,7 @@ function WoWTools_TooltipMixin:Set_Unit_NPC(tooltip, name, unit, guid)
         if zone or npc then
             tooltip:AddDoubleLine(
                 zone and WoWTools_DataMixin.Icon.icon2..WoWTools_DataMixin.Player.Language.layer..zone,
-                npc and 'npcID '..npc
+                npc and 'npcID'..WoWTools_DataMixin.Icon.icon2..npc
             )
 
             WoWTools_DataMixin.Player.Layer=zone
