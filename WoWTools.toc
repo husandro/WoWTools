@@ -58,8 +58,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 ##坐骑， Tools 主要的，
 Tools\0_ToolsButtonMixin.lua
 Tools\1_Init.lua
-
-
 ##坐骑
 Tools_B1_Mount\B1_Mount.lua
 Tools_B1_Mount\Button.lua
@@ -67,35 +65,27 @@ Tools_B1_Mount\Menu.lua
 Tools_B1_Mount\Mount_Show.lua
 Tools_B1_Mount\UI_Collections.lua
 Tools_B1_Mount\UI_SpellBook.lua
-
 ##随机炉石
 Tools_B2_Hearthstone\1_Init.lua
 Tools_B2_Hearthstone\2_Button.lua
 Tools_B2_Hearthstone\3_Menu.lua
 Tools_B2_Hearthstone\4_Toy_Menu.lua
 Tools_B2_Hearthstone\z_Blizzard_Collections.lua
-
 ##打开物品，各种物品
 Tools_B3_OpenItems\1_Init.lua
 Tools_B3_OpenItems\2_Button.lua
 Tools_B3_OpenItems\3_Menu.lua
 Tools_B3_OpenItems\4_Get_Item.lua
-
 ##侦察地图, 玩具, 没有小号，可以禁用
-Tools\B4_MapToy.lua
-
+Tools_B4_MapToy\B4_MapToy.lua
 ##随机，玩具
-Tools\L0_UseToy.lua
+Tools_L0_UseToy\L0_UseToy.lua
 ##传业
-
-Tools\L1_Professions.lua
+Tools_L1_Professions\L1_Professions.lua
 ##自动召唤，宠物
-
-Tools\L2_Pet.lua
+Tools_L2_Pet\L2_Pet.lua
 ##诺格弗格药剂 Noggenfogger Elixir
-Tools\L3_NoggenfoggerElixir.lua
-
-
+Tools_L3_NoggenfoggerElixir\L3_NoggenfoggerElixir.lua
 ##各种专送门,物品，玩具
 Tools_L4_UsaItems\0_UsaItems.lua
 Tools_L4_UsaItems\All_Buttons.lua
@@ -103,19 +93,14 @@ Tools_L4_UsaItems\Init_Button.lua
 Tools_L4_UsaItems\Menu.lua
 Tools_L4_UsaItems\UI_Spell.lua
 Tools_L4_UsaItems\UI_Toy.lua
-
-
 ##食物
 Tools_5B_Food\5B_Food.lua
 Tools_5B_Food\Button_Init.lua
 Tools_5B_Food\Button_AltKey.lua
 Tools_5B_Food\Create_Button.lua
 Tools_5B_Food\Menu_Init.lua
-
-
 ##法师传送门
-Tools\LL_MagePortal.lua
-
+Tools_LL_MagePortal\LL_MagePortal.lua
 
 ##WoWPlus
 ##移动框架, 缩放
