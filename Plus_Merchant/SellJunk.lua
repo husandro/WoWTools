@@ -57,7 +57,12 @@ local function Init()
         for bag= Enum.BagIndex.Backpack, NUM_BAG_FRAMES + NUM_REAGENTBAG_FRAMES do
             for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
                 local info = C_Container.GetContainerItemInfo(bag,slot)
-                if info
+
+                if IsModifierKeyDown() or not MerchantFrame:IsVisible() or InCombatLockdown() then
+                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT)
+                    return
+
+                elseif info
                     and info.hyperlink
                     and info.itemID
                     and info.quality
@@ -69,11 +74,11 @@ local function Init()
 
                         local prece =0
                         if not info.hasNoValue then--卖出钱
-                            prece = (select(11, C_Item.GetItemInfo(info.hyperlink)) or 0) * (C_Container.stackCount or 1)--价格
+                            prece = (select(11, C_Item.GetItemInfo(info.hyperlink)) or 0) * (info.stackCount or 1)--价格
                             preceTotale = preceTotale + prece
                         end
                         gruop= gruop+ 1
-                        num= num+ (C_Container.stackCount or 1)--数量
+                        num= num+ (info.stackCount or 1)--数量
 
                         print('|cnRED_FONT_COLOR:'..gruop..')|r', checkText or '', info.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
 
@@ -87,9 +92,10 @@ local function Init()
                 end
             end
         end
+
         if num > 0 then
             print(
-                WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName,
+                WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
                 (WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' |cnGREEN_FONT_COLOR:'..gruop..'|r'..(WoWTools_DataMixin.onlyChinese and '组' or AUCTION_PRICE_PER_STACK),
                 '|cnGREEN_FONT_COLOR:'..num..'|r'..(WoWTools_DataMixin.onlyChinese and '件' or AUCTION_HOUSE_QUANTITY_LABEL),
                 C_CurrencyInfo.GetCoinTextureString(preceTotale)

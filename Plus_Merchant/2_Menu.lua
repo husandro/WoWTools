@@ -11,12 +11,12 @@ end
 
 
 --显示背景
-local function Set_ShowBackground()
+--[[local function Set_ShowBackground()
     local alpha= Save().bgAlpha or 0.5
     WoWTools_ColorMixin:Setup(MerchantFrameBg, {type='Texture', alpha=alpha})
     MerchantFrameBg:SetAlpha(alpha)
     WoWTools_ColorMixin:Setup(MerchantFrameInset.Bg, {type='Texture', alpha=alpha})
-end
+end]]
 
 
 
@@ -343,8 +343,19 @@ local function Init_Menu(self, root)
         Save().saveBossLootList = not Save().saveBossLootList and true or nil
     end)
 
---回购
+--[[添加 按钮菜单
+    sub2= sub:CreateCheckbox(
+        '|A:Perks-ShoppingCart:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '按钮菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, HUD_EDIT_MODE_MICRO_MENU_LABEL),
+    function()
+        return Save().addButtonMenu
+    end, function()
+        Save().addButtonMenu= not Save().addButtonMenu and true or nil
+    end)]]
+    
 
+
+--回购
     root:CreateDivider()
     Buyback_Menu(self, root)
 
@@ -455,14 +466,14 @@ local function Init_Menu(self, root)
 
 
 
---显示背景
+--[[显示背景
     WoWTools_MenuMixin:BgAplha(root,
     function()
         return Save().bgAlpha or 0.5
     end, function(value)
         Save().bgAlpha= value
         Set_ShowBackground()
-    end)
+    end)]]
 
 --打开选项界面
     root:CreateDivider()
@@ -502,7 +513,7 @@ local function Init()
     end)
 
 --显示背景
-    Set_ShowBackground()
+    --Set_ShowBackground()
 
     Init=function()end
 end

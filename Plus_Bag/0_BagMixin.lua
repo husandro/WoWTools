@@ -107,6 +107,14 @@ function WoWTools_BagMixin:GetFree(isRegentBag)
 end
 
 
+
+
+
+
+
+
+
+
 function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBagFunc)
     local Tabs={}
 
@@ -115,7 +123,7 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
     local isCraftingReagent
 
     for bag= BACKPACK_CONTAINER, num do--0-5
-    
+
         for slot=1, C_Container.GetContainerNumSlots(bag) do
 
             local info = C_Container.GetContainerItemInfo(bag, slot)
@@ -138,7 +146,7 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
                             info=info,
                             bag=bag,
                             slot=slot,
-                            isRegent=true,
+                            isRegent=isCraftingReagent,
                         })
                     end
                 else
@@ -254,7 +262,7 @@ function WoWTools_BagMixin:SetFreeNum(btn)
     btn.set_free= function(b)
         local hasItem = GameTooltip:SetInventoryItem("player",  b:GetInventorySlot())
         local free, maxSlot
-        
+
         if hasItem then
             local bagID= b:GetBagID()
             maxSlot= C_Container.GetContainerNumSlots(bagID)
