@@ -47,6 +47,7 @@ local function Init()
         if IsModifierKeyDown()
             or not C_MerchantFrame.IsSellAllJunkEnabled()
             or InCombatLockdown()
+            or MerchantFrame.selectedTab~=1
         then
             return
         end
@@ -58,7 +59,10 @@ local function Init()
             for slot=1, C_Container.GetContainerNumSlots(bag) do--背包数量
                 local info = C_Container.GetContainerItemInfo(bag,slot)
 
-                if IsModifierKeyDown() or not MerchantFrame:IsVisible() or InCombatLockdown() then
+                if IsModifierKeyDown()
+                    or InCombatLockdown()
+                    or MerchantFrame.selectedTab~=1
+                then
                     print(WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName, WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT)
                     return
 
@@ -66,11 +70,14 @@ local function Init()
                     and info.hyperlink
                     and info.itemID
                     and info.quality
-                    and (info.quality<5 or Sell[info.itemID] and not notSellCustom)
+                    and (info.quality<Enum.ItemQuality.Legendary or Sell[info.itemID] and not notSellCustom)
                 then
                     local checkText= WoWTools_MerchantMixin:CheckSellItem(info.itemID, info.hyperlink, info.quality, info.isBound)--检察 ,boss掉落, 指定 或 出售灰色,宠物
                     if not info.isLocked and checkText then
-                        C_Container.UseContainerItem(bag, slot)--买出
+
+                        do
+                            C_Container.UseContainerItem(bag, slot)--买出
+                        end
 
                         local prece =0
                         if not info.hasNoValue then--卖出钱

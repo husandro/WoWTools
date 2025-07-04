@@ -327,7 +327,6 @@ Plus_Merchant\DELETE.lua
 Plus_Merchant\LootFrame.lua
 Plus_Merchant\Repair.lua
 Plus_Merchant\SellJunk.lua
-Plus_Merchant\Sell_ButtonMenu.lua
 Plus_Merchant\BuyItem.lua
 Plus_Merchant\Buyback.lua
 Plus_Merchant\Plus_WidthX2.lua

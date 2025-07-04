@@ -60,8 +60,6 @@ local function Init()
 --商人 Plus
     WoWTools_MerchantMixin:Init_WidthX2()
     WoWTools_MerchantMixin:Plus_ItemInfo()
---出售，菜单，按钮
-    WoWTools_MerchantMixin:Init_SellButtonMenu()
 
     Init=function()end
 end

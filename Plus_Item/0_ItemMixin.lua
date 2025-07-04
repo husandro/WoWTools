@@ -43,9 +43,9 @@ function WoWTools_ItemMixin:SetGemStats(frame, itemLink)--显示, 宝石, 属性
     if itemLink then
         local dateInfo
         if WoWTools_DataMixin.Is_Timerunning then
-            dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, index=3})--物品提示，信息
+            dateInfo= self:GetTooltip({hyperLink=itemLink, index=3})--物品提示，信息
         else
-            dateInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
+            dateInfo= self:GetTooltip({hyperLink=itemLink, text={'(%+.+)', }})--物品提示，信息
         end
         local text= dateInfo.text['(%+.+)'] or dateInfo.indexText
 
@@ -221,7 +221,7 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
             else
                 --local quality = C_Item.GetItemQualityByID(link)--颜色
                 --if quality==7 then
-                local dataInfo= WoWTools_ItemMixin:GetTooltip({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
+                local dataInfo= self:GetTooltip({hyperLink=link, itemID= itemID or C_Item.GetItemInfoInstant(link), text={itemLevelStr}, onlyText=true})--物品提示，信息
                 if dataInfo.text[itemLevelStr] then
                     itemLevel= tonumber(dataInfo.text[itemLevelStr])
                 end

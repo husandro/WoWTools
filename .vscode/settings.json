@@ -5987,7 +5987,8 @@
         "TransmogFrameMixin",
         "WardrobeCollectionFrameMixin",
         "CommunitiesGuildMemberDetailMixin",
-        "MountJournal_InitMountButton"
+        "MountJournal_InitMountButton",
+        "SWITCH"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

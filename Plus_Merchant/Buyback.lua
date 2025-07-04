@@ -13,13 +13,14 @@ end
 
 
 
---购回物品, itemID, itemLink
-local function Get_Buyback_ItemID()
+--[[购回物品, itemID, itemLink
+local function Get_Buyback_ItemID(index)
     local num= GetNumBuybackItems()
     if num and num>0 then
-        return C_MerchantFrame.GetBuybackItemID(num), GetMerchantItemLink(num)
+        index= index or num
+        return C_MerchantFrame.GetBuybackItemID(index), GetMerchantItemLink(index)
     end
-end
+end]]
 
 
 
@@ -107,28 +108,68 @@ end
 
 
 local function Init_Menu(self, root)
-    local name, sub
-    local itemID= Get_Buyback_ItemID()
-    if itemID then
-        name= WoWTools_ItemMixin:GetName(itemID)--取得物品，名称
-    end
+    local sub, itemID, itemLink
+    local allNum= GetNumBuybackItems() or 0
 
-    if name then
-        sub=root:CreateCheckbox(name, function(data)
-            return Save().noSell[data.itemID]
-        end, function(data)
-            Add_Remove_ToSave(data.itemID)
-        end, {itemID=itemID})
-        sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '添加回购' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BUYBACK))
+    sub= root:CreateButton(
+        '|A:bag-main:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK)
+        ..' #|cnGREEN_FONT_COLOR:'..allNum,
+    function()
+        allNum= GetNumBuybackItems() or 0
+
+        if allNum==0 then
+            return
+        end
+
+        local tab={}
+
+        for index= allNum, 1, -1 do
+            BuybackItem(index)
+            table.insert(tab, GetBuybackItemLink(index))
+        end
+
+        C_Timer.After(0.3, function()
+            print(
+                WoWTools_DataMixin.Icon.icon2..WoWTools_MerchantMixin.addName,
+                table.concat(tab, '|n'),
+                '|n',
+                allNum..(WoWTools_DataMixin.onlyChinese and '购回' or BUYBACK)
+            )
         end)
-    else
-        root:CreateTitle(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
+        return MenuResponse.Open
+    end)
 
-    end
+    sub:SetTooltip(function(tooltip)
+        for index=1, GetNumBuybackItems() do
+            tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(nil, GetBuybackItemLink(index)), index)
+        end
+    end)
 
     root:CreateDivider()
+    if allNum>0 then
+        for index= allNum, 1, -1 do
+            itemID, itemLink = C_MerchantFrame.GetBuybackItemID(index), GetMerchantItemLink(index)
+            sub=root:CreateCheckbox(
+                WoWTools_ItemMixin:GetName(itemID, itemLink, nil),--取得物品，名称
+            function(data)
+                return Save().noSell[data.itemID]
+            end, function(data)
+                Add_Remove_ToSave(data.itemID)
+            end, {itemID=itemID})
+
+            sub:SetTooltip(function(tooltip)
+                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '添加回购' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, BUYBACK))
+            end)
+        end
+    end
+
+    
+
     WoWTools_MerchantMixin:Buyback_Menu(self, root)
+
+    root:CreateDivider()
+    root:CreateTitle(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))
 end
 
 
@@ -146,7 +187,7 @@ end
 --购回
 local function Init()
 
-    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
+    local BuybackButton= WoWTools_ButtonMixin:Cbtn(MerchantFrame, {
         name='WoWTools_BuybackButton',
         size=35
     })
