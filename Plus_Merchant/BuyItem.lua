@@ -246,7 +246,7 @@ local function Sell_Items(tab)
             prece = (select(11, C_Item.GetItemInfo(data.hyperlink)) or 0) * (data.stackCount or 1)--价格
             preceTotale = preceTotale + prece
         end
-    
+
         gruop= gruop+ 1
         num= num+ (data.stackCount or 1)--数量
         print('|cnRED_FONT_COLOR:'..gruop..')|r',  data.hyperlink, C_CurrencyInfo.GetCoinTextureString(prece))
@@ -317,7 +317,7 @@ local function Init_Menu_Sell(self, root)
         [2]= WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC,
         [3]= WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC,
         [4]= WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC,
-        
+
     }
     for quality= 0 , 4 do
         name= select(4, WoWTools_ItemMixin:GetColor(quality))
