@@ -301,7 +301,10 @@ function WoWTools_QuestMixin:GetColor(text, questID)
     if text then
         return QustColorTab[text]
 
-    elseif questID and UnitEffectiveLevel('player')== WoWTools_DataMixin.Player.Level then
+    elseif questID then --and UnitEffectiveLevel('player')== WoWTools_DataMixin.Player.Level then
+        
+    
+    
         local difficulty= C_PlayerInfo.GetContentDifficultyQuestForPlayer(questID)
         if difficulty then
             if difficulty== 0 then--Trivial    

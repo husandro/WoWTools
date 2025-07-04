@@ -127,7 +127,7 @@ local function QuestList_Tooltip(tooltip, data)
             and Is_Check(info, data)
         then
 
-            
+
 --QuestMapFrame.QuestsFrame.ScrollFrame:ScrollToQuest(info.questID)
 --QuestMapFrame:OnHighlightedQuestPOIChange(info.questID)
 
@@ -136,11 +136,15 @@ local function QuestList_Tooltip(tooltip, data)
             if num==1 then
                text= info.title
             end
+
+            local color= select(2, WoWTools_QuestMixin:GetAtlasColor(info.questID, info))
+
             tooltip:AddDoubleLine(
-                WoWTools_TextMixin:CN(
+                (color and color.hex or '')
+                ..WoWTools_TextMixin:CN(
                     GetQuestLink(info.questID) or info.title or info.questID, {questID=info.questID, isName=true}
                 )
-                ..(C_QuestLog.IsComplete(info.questID) and ' |cnGREEN_FONT_COLOR:'..(
+                ..(C_QuestLog.IsComplete(info.questID) and ' |cnGREEN_FONT_COLOR:|A:common-dropdown-icon-checkmark-yellow:0:0|a'..(
                     WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE
                 ) or '')
                 ,
@@ -148,7 +152,7 @@ local function QuestList_Tooltip(tooltip, data)
             )
         end
     end
-    
+
     if QuestScrollFrame.SearchBox:IsEnabled() then
         if text then
            QuestScrollFrame.SearchBox:SetText(text)
