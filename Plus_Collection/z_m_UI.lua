@@ -170,47 +170,6 @@ end
 
 
 
-local function init_rematch()
-    local self= _G['RematchFrame']
-    self:ClearAllPoints()
-    self:SetAllPoints(CollectionsJournal)
-
-    self.Canvas:ClearAllPoints()
-    self.Canvas:SetPoint('TOPLEFT', 2, -60)
-    self.Canvas:SetPoint('BOTTOMRIGHT', -2, 34)
-
-    self.LoadedTargetPanel:ClearAllPoints()
-    self.LoadedTargetPanel:SetPoint('TOP', self.ToolBar, 'BOTTOM')
-    self.LoadedTargetPanel:SetSize(277, 75)
-    self.LoadoutPanel:ClearAllPoints()
-    self.LoadoutPanel:SetPoint('TOP', self.LoadedTeamPanel, 'BOTTOM')
-    self.LoadoutPanel:SetWidth(277)
-    self.LoadoutPanel:SetPoint('BOTTOM')
-
-    self.PetsPanel:ClearAllPoints()
-    self.PetsPanel:SetPoint('TOPLEFT', self.ToolBar, 'BOTTOMLEFT')
-    self.PetsPanel:SetPoint('BOTTOMRIGHT', self.LoadoutPanel, 'BOTTOMLEFT',0,38)
-
-    self.OptionsPanel:ClearAllPoints()
-    self.OptionsPanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
-    self.OptionsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
-
-    self.TeamsPanel:ClearAllPoints()
-    self.TeamsPanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
-    self.TeamsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
-
-    self.TargetsPanel:ClearAllPoints()
-    self.TargetsPanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
-    self.TargetsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
-
-    self.QueuePanel:ClearAllPoints()
-    self.QueuePanel:SetPoint('TOPLEFT', self.LoadedTargetPanel, 'TOPRIGHT')
-    self.QueuePanel:SetPoint('BOTTOMRIGHT', -4, 38)
-    self.QueuePanel.List.Help:ClearAllPoints()
-    self.QueuePanel.List.Help:SetPoint('TOPLEFT', 8, 22)
-    self.QueuePanel.List.Help:SetPoint('BOTTOMRIGHT', -22, 22)
-end
-
 
 
 
@@ -260,7 +219,6 @@ local function Init_CollectionsJournal()
     PetJournalLeftInset:SetPoint('RIGHT', PetJournalRightInset, 'LEFT', -24, 0)
     PetJournalLoadoutBorder:ClearAllPoints()
     PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
-    --PetJournalSearchBox:SetPoint('LEFT', PetJournalFilterButton, 'RIGHT',-2, 0)
 
     hooksecurefunc('MountJournal_InitMountButton', function(btn)
         btn.name:SetPoint('RIGHT', -4, 0)
@@ -315,11 +273,50 @@ local function Init_CollectionsJournal()
     C_Timer.After(0.3, function()
         WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
     end)
+
+
     if _G['RematchFrame'] then
-        _G['RematchFrame']:HookScript('OnShow', init_rematch)
-        hooksecurefunc(_G['RematchFrame'].PanelTabs, 'TabOnClick', init_rematch)
-        WoWTools_MoveMixin:Setup(_G['RematchFrame'].TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
-        WoWTools_MoveMixin:Setup(_G['RematchFrame'].QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
+        RematchFrame:HookScript('OnSizeChanged', function(f)
+            f:ClearAllPoints()
+            f:SetAllPoints(CollectionsJournal)
+
+            f.Canvas:ClearAllPoints()
+            f.Canvas:SetPoint('TOPLEFT', 2, -60)
+            f.Canvas:SetPoint('BOTTOMRIGHT', -2, 34)
+
+            f.LoadedTargetPanel:ClearAllPoints()
+            f.LoadedTargetPanel:SetPoint('TOP', f.ToolBar, 'BOTTOM')
+            f.LoadedTargetPanel:SetSize(277, 75)
+            f.LoadoutPanel:ClearAllPoints()
+            f.LoadoutPanel:SetPoint('TOP', f.LoadedTeamPanel, 'BOTTOM')
+            f.LoadoutPanel:SetWidth(277)
+            f.LoadoutPanel:SetPoint('BOTTOM')
+
+            f.PetsPanel:ClearAllPoints()
+            f.PetsPanel:SetPoint('TOPLEFT', f.ToolBar, 'BOTTOMLEFT')
+            f.PetsPanel:SetPoint('BOTTOMRIGHT', f.LoadoutPanel, 'BOTTOMLEFT',0,38)
+
+            f.OptionsPanel:ClearAllPoints()
+            f.OptionsPanel:SetPoint('TOPLEFT', f.LoadedTargetPanel, 'TOPRIGHT')
+            f.OptionsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
+
+            f.TeamsPanel:ClearAllPoints()
+            f.TeamsPanel:SetPoint('TOPLEFT', f.LoadedTargetPanel, 'TOPRIGHT')
+            f.TeamsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
+
+            f.TargetsPanel:ClearAllPoints()
+            f.TargetsPanel:SetPoint('TOPLEFT', f.LoadedTargetPanel, 'TOPRIGHT')
+            f.TargetsPanel:SetPoint('BOTTOMRIGHT', -4, 38)
+
+            f.QueuePanel:ClearAllPoints()
+            f.QueuePanel:SetPoint('TOPLEFT', f.LoadedTargetPanel, 'TOPRIGHT')
+            f.QueuePanel:SetPoint('BOTTOMRIGHT', -4, 38)
+            f.QueuePanel.List.Help:ClearAllPoints()
+            f.QueuePanel.List.Help:SetPoint('TOPLEFT', 8, 22)
+            f.QueuePanel.List.Help:SetPoint('BOTTOMRIGHT', -22, 22)
+        end)
+        WoWTools_MoveMixin:Setup(RematchFrame.TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
+        WoWTools_MoveMixin:Setup(RematchFrame.QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
     end
 
     Init_CollectionsJournal=function()end

@@ -167,8 +167,10 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:HideFrame(ManuscriptsJournal.iconsFrame.NineSlice)
         self:HideTexture(ManuscriptsJournal.iconsFrame.Bg)
     end)
-    
-    
+
+
+
+
     if _G['RematchJournal'] then
         self:SetNineSlice(_G['RematchJournal'])
         self:SetAlphaColor(_G['RematchJournalBg'])
@@ -182,15 +184,155 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         self:SetAlphaColor(RematchLoadoutPanel.TopLoadout.InsetBack)
     end
 
+
+
     if _G['RematchFrame'] then
-        
-        self:HideTexture(_G['RematchFrame'].Bg)
-        self:HideTexture(_G['RematchFrame'].OptionsPanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].QueuePanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].TargetsPanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].TeamsPanel.List.Back)
-        self:HideTexture(_G['RematchFrame'].ToolBar.Bg)
-    end
+         for _, btn in pairs({RematchFrame.PanelTabs:GetChildren()}) do
+                if btn:IsObjectType('Button') then
+                    self:SetTabButton(btn)
+                end
+            end
+        self:SetFrame(RematchFrame, {alpha=1})
+        self:HideTexture(RematchFrame.Bg)
+        self:SetButton(RematchFrame.TitleBar.CloseButton)
+        self:SetFrame(RematchFrame.TitleBar.Portrait, {notAlpha=true})
+
+        if RematchFrame.ToolBar then
+            self:HideFrame(RematchFrame.ToolBar)
+            self:HideFrame(RematchFrame.ToolBar.TotalsButton)
+            self:SetNineSlice(RematchFrame.ToolBar)
+
+            for _, btn in pairs({RematchFrame.ToolBar:GetChildren()}) do
+                if btn:IsObjectType('Button') then
+                    self:HideTexture(btn.Border)
+                end
+            end
+        end
+
+        if RematchFrame.PetsPanel then
+            self:HideTexture(RematchFrame.PetsPanel.Top.TypeBar.TabbedBorder)
+            self:HideFrame(RematchFrame.PetsPanel.ResultsBar)
+            self:HideFrame(RematchFrame.PetsPanel.Top.TypeBar.Level25Button)
+        end
+
+        if RematchFrame.LoadedTargetPanel then
+            self:HideFrame(RematchFrame.LoadedTargetPanel)
+            self:SetAlphaColor(RematchFrame.LoadedTargetPanel.BigLoadSaveButton.Back, true)
+            self:HideTexture(RematchFrame.LoadedTargetPanel.SmallTeamsButton.Back)
+            self:HideTexture(RematchFrame.LoadedTargetPanel.SmallRandomButton.Back)
+
+            self:HideFrame(RematchFrame.LoadedTeamPanel.TeamButton)
+        end
+
+        if RematchFrame.LoadoutPanel  then
+            self:SetFrame(RematchFrame.LoadoutPanel, {isSub=true})
+        end
+
+        local frame
+        for _, panel in pairs({
+            'QueuePanel',
+            'TeamsPanel',
+            'TargetsPanel',
+            'OptionsPanel',
+            'PetsPanel',
+        }) do
+            frame= RematchFrame[panel] or frame
+            if frame then
+                if frame.Top then
+                    if frame.Top.AllButton then
+                        self:SetAlphaColor(frame.Top.AllButton.Back)
+
+                    elseif frame.Top.TeamsButton then
+                        self:SetAlphaColor(frame.Top.TeamsButton.Back)
+
+                    elseif frame.Top.ToggleButton then
+                        self:SetAlphaColor(frame.Top.ToggleButton.Back)
+                        self:SetAlphaColor(frame.Top.FilterButton.Back)
+
+                    elseif frame.Top.QueueButton then
+                        self:SetAlphaColor(frame.Top.QueueButton.Back)
+
+                    end
+
+                    self:HideFrame(frame.Top)
+                    self:SetEditBox(frame.Top.SearchBox)
+                end
+
+                if frame.PreferencesFrame then
+                    self:HideFrame(frame.PreferencesFrame)
+                    if frame.PreferencesFrame.PreferencesButton then
+                        self:SetAlphaColor(frame.PreferencesFrame.PreferencesButton.Back)
+                    end
+                end
+
+                if frame.List then
+                    self:HideFrame(frame.List)
+                    self:SetScrollBar(frame.List)
+                    self:SetAlphaColor(frame.List.ScrollToTopButton.Texture, true)
+                    self:SetAlphaColor(frame.List.ScrollToBottomButton.Texture, true)
+
+                    hooksecurefunc(frame.List.ScrollBox, 'Update', function(frame)
+                        if not frame:GetView() then
+                            return
+                        end
+                        for _, btn in pairs(frame:GetFrames() or {}) do
+                            self:SetAlphaColor(btn.Back)
+                            if btn.widget and btn.widget.DropDown then
+                                self:SetFrame(btn.widget.DropDown, {notAlpha=true})
+                            end
+                        end
+                    end)
+                end
+            end
+        end
+
+        frame= _G['RematchPetCard']
+        if frame then
+            self:SetFrame(frame, {notAlpha=true})
+            self:SetButton(frame.MinimizeButton)
+            self:SetButton(frame.CloseButton)
+            if frame.Content then
+                self:SetNineSlice(frame.Content, 1)
+                self:SetFrame(frame.Content.Front, {notAlpha=true})
+                self:SetFrame(frame.Content.Abilities, {notAlpha=true})
+            end
+        end
+
+        frame= _G['RematchDialog']
+        if frame then
+            self:SetFrame(frame, {notAlpha=true})
+            self:SetButton(frame.CloseButton)
+
+            self:HideTexture(frame.InsetBorderBottomLeft)
+            self:HideTexture(frame.InsetBorderBottomRight)
+            self:HideTexture(frame.InsetBorderTopRight)
+            self:HideTexture(frame.InsetBorderTopLeft)
+            self:HideTexture(frame.InsetBorderRight)
+            self:HideTexture(frame.InsetBorderTop)
+            self:HideTexture(frame.InsetBorderLeft)
+            self:HideTexture(frame.InsetBorderBottom)
+        end
+
+        frame= _G['RematchDialogCanvas']
+        if frame then
+            self:HideFrame(frame.TeamPicker.Lister.List)
+            self:HideFrame(frame.TeamPicker.Lister.Top)
+
+            self:HideFrame(frame.TeamPicker.Picker.Top)
+            self:HideFrame(frame.TeamPicker.Picker.List)
+            self:SetScrollBar(frame.TeamPicker.Picker.List)
+            self:SetAlphaColor(frame.TeamPicker.Picker.List.ScrollToTopButton.Texture, true)
+            self:SetAlphaColor(frame.TeamPicker.Picker.List.ScrollToBottomButton.Texture, true)
+
+            self:SetEditBox(frame.MultiLineEditBox)
+            self:SetFrame(RematchDialogCanvasScrollBarScrollUpButton, {notAlpha=true})
+            self:SetAlphaColor(RematchDialogCanvasScrollBarThumbTexture, true)
+            self:SetFrame(RematchDialogCanvasScrollBarScrollDownButton, {notAlpha=true})
+
+            self:HideFrame(frame.GroupPicker.Top)
+            self:HideFrame(frame.GroupPicker.List)
+        end
+    end    
 end
 
 

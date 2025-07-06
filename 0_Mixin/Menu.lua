@@ -843,7 +843,8 @@ function WoWTools_MenuMixin:Set_Specialization(root)
     function()
         return C_PvP.IsWarModeDesired()
     end,function()
-        C_PvP.ToggleWarMode()
+        --C_PvP.ToggleWarMode()
+        WoWTools_LoadUIMixin:SpellBook(2)
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '战争模式' or PVP_LABEL_WAR_MODE)
@@ -856,7 +857,7 @@ function WoWTools_MenuMixin:Set_Specialization(root)
                 ),
             true)
 
-        elseif C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()) then
+        elseif C_PvP.CanToggleWarMode(not C_PvP.IsWarModeDesired()) or InCombatLockdown() then
             GameTooltip_AddErrorLine(tooltip, WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
 		end
     end)

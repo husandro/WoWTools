@@ -22,7 +22,7 @@ end
 
 --隐藏，材质
 function WoWTools_TextureMixin:HideTexture(object)--, notClear)
-    if object and object:GetObjectType()=='Texture' then
+    if object and object:IsObjectType('Texture') then
         object:SetTexture(0)
     end
 end
@@ -77,15 +77,29 @@ function WoWTools_TextureMixin:HideFrame(frame, tab)
 
     tab= tab or {}
     tab.show= tab.show or {}
-    if tab.index then
-        local icon= select(tab.index, frame:GetRegions())
-        if icon and icon:GetObjectType()=="Texture" then
-            icon:SetTexture(0)
+
+    if tab.isSub then
+        local t
+        for _, f in pairs({RematchFrame.LoadoutPanel:GetChildren()})do
+            t= f:GetObjectType()
+            if t=='Frame' or t=='Button' then
+                self:HideFrame(f)
+                if f.NineSlice then
+                    self:SetNineSlice(f)
+                end
+            end
         end
     else
-        for _, icon in pairs({frame:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" and not tab.show[icon] then
+        if tab.index then
+            local icon= select(tab.index, frame:GetRegions())
+            if icon and icon:IsObjectType("Texture") then
                 icon:SetTexture(0)
+            end
+        else
+            for _, icon in pairs({frame:GetRegions()}) do
+                if icon:IsObjectType("Texture") and not tab.show[icon] then
+                    icon:SetTexture(0)
+                end
             end
         end
     end
@@ -104,9 +118,21 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
         alpha= tab.alpha or self.min
     end
 
-    if tab and tab.index then
+    if tab.isSub then
+        local t
+        for _, f in pairs({RematchFrame.LoadoutPanel:GetChildren()})do
+            t= f:GetObjectType()
+            if t=='Frame' or t=='Button' then
+                self:SetFrame(f, {alpha=alpha, notColor=notColor})
+                if f.NineSlice then
+                    self:SetNineSlice(f, alpha)
+                end
+            end
+        end
+
+    elseif tab and tab.index then
         local icon= select(tab.index, frame:GetRegions())
-        if icon and icon:GetObjectType()=="Texture" then
+        if icon and icon:IsObjectType("Texture") then
              if not notColor then
                 WoWTools_ColorMixin:Setup(icon, {type='Texture'})
             end
@@ -118,7 +144,7 @@ function WoWTools_TextureMixin:SetFrame(frame, tab)
     else
         local show= tab.show or {}
         for _, icon in pairs({frame:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" and not show[icon] then
+            if icon:IsObjectType("Texture") and not show[icon] then
                 if not notColor then
                     WoWTools_ColorMixin:Setup(icon, {type='Texture'})
                 end
@@ -297,7 +323,7 @@ function WoWTools_TextureMixin:SetSlider(frame)
     local back= frame.Slider.Back or frame.Back
     if back then
         for _, icon in pairs({back:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" then
+            if icon:IsObjectType("Texture") then
                 WoWTools_ColorMixin:Setup(icon, {type='Texture'})
             end
         end
@@ -305,7 +331,7 @@ function WoWTools_TextureMixin:SetSlider(frame)
     local forward= frame.Slider.Forward or frame.Forward
     if forward then
         for _, icon in pairs({forward:GetRegions()}) do
-            if icon:GetObjectType()=="Texture" then
+            if icon:IsObjectType("Texture") then
                 WoWTools_ColorMixin:Setup(icon, {type='Texture'})
             end
         end
@@ -388,14 +414,14 @@ function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
         for _, tabID in pairs(frame:GetTabSet()) do
             btn= frame:GetTabButton(tabID)
             if btn then
-                self:SetFrame(frame, {alpha=alpha or 0.75})
+                self:SetFrame(frame, {alpha=alpha or self.tabAlpha})
                 if frame.Text then
                     frame.Text:SetShadowOffset(1, -1)
                 end
             end
         end
     else
-        self:SetFrame(frame, {alpha=alpha or 0.75})
+        self:SetFrame(frame, {alpha=alpha or self.tabAlpha})
         if frame.Text then
             frame.Text:SetShadowOffset(1, -1)
         end
@@ -460,6 +486,10 @@ function WoWTools_TextureMixin:SetAllFrames(frame, tab)
     local r,g, b= col.r, col.g, col.b
     local name= frame:GetName()
 
+    if not name then
+        return
+    end
+
     self:HideFrame(frame)
     if frame.NineSlice then
         frame.NineSlice:SetBorderColor(r, g, b, 0.3)
@@ -496,7 +526,7 @@ function WoWTools_TextureMixin:SetAllFrames(frame, tab)
 --isChildren
     if isChildren then
         for _, f in pairs({frame:GetChildren()})do
-            if f:GetObjectType()=='Frame' then
+            if f:IsObjectType('Frame') then
                 set_frame(f)
             end
         end

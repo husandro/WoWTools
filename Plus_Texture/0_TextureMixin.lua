@@ -24,6 +24,7 @@ WoWTools_TextureMixin={
     Events={},
     Frames={},
     min=0.5,
+    tabAlpha= 0.75,
 }
 
 function WoWTools_TextureMixin:SetBG(frame, tab)
@@ -40,11 +41,9 @@ function WoWTools_TextureMixin:SetBG(frame, tab)
         all=true
     end
 
-    for _, r in pairs({CommunitiesFrameGuildDetailsFrameNews:GetRegions()}) do
-        if r:GetDrawLayer()~='BACKGROUND' then
-            break
-        end
-        if r:GetObjectType()=='Texture'
+    for _, r in pairs({frame:GetRegions()}) do
+        if r:GetDrawLayer()=='BACKGROUND'
+            and r:IsObjectType('Texture')
             and (file and r:GetTextureFileID()==file or not file)
         then
             r:SetAtlas('ChallengeMode-guild-background')

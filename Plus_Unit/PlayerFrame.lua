@@ -474,8 +474,9 @@ local function Create_warModeButton(frame)
     frame.warModeButton= WoWTools_ButtonMixin:Cbtn(frame, {size=20, isType2=true})
     frame.warModeButton:SetPoint('LEFT', frame, 5, 12)
     frame.warModeButton:SetScript('OnClick',  function(self)
-        C_PvP.ToggleWarMode()
-        C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
+        --C_PvP.ToggleWarMode()
+        WoWTools_LoadUIMixin:SpellBook(2)
+        --C_Timer.After(1, function() if GameTooltip:IsShown() then self:set_tooltip() end end)
     end)
     function frame.warModeButton:GetWarModeDesired()
         return UnitPopupSharedUtil.IsInWarModeState()
@@ -501,7 +502,7 @@ local function Create_warModeButton(frame)
                 ),
             true)
 
-        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false)  then
+        elseif not C_PvP.CanToggleWarMode(true) or not C_PvP.CanToggleWarMode(false) or InCombatLockdown() then
             GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '当前不能操作' or SPELL_FAILED_NOT_HERE, 1,0,0)
 		end
 

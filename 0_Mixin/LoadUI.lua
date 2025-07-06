@@ -325,6 +325,10 @@ end
 
 --法术书 PlayerSpellsUtil.lua
 function WoWTools_LoadUIMixin:SpellBook(index, spellID)
+    if InCombatLockdown() then
+        return
+    end
+    
     do
         if not PlayerSpellsFrame then
             PlayerSpellsFrame_LoadUI();

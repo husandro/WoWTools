@@ -5988,7 +5988,14 @@
         "WardrobeCollectionFrameMixin",
         "CommunitiesGuildMemberDetailMixin",
         "MountJournal_InitMountButton",
-        "SWITCH"
+        "SWITCH",
+        "RematchFrame",
+        "RematchPetCard",
+        "RematchDialogCanvas",
+        "RematchDialogCanvasScrollBar",
+        "RematchDialogCanvasScrollBarScrollUpButton",
+        "RematchDialogCanvasScrollBarThumbTexture",
+        "RematchDialogCanvasScrollBarScrollDownButton"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
