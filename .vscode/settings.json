@@ -5998,7 +5998,9 @@
         "RematchDialogCanvasScrollBarScrollDownButton",
         "ReputationFrameMixin",
         "ManuscriptsJournalSearchBox",
-        "ManuscriptsSkillLineManuscriptsTab"
+        "ManuscriptsSkillLineManuscriptsTab",
+        "ManuscriptsJournalProgressBar",
+        "SoulshapesJournalProgressBar"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

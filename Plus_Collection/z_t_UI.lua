@@ -346,6 +346,19 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
         if not _G['ManuscriptsJournal'] then
             return
         end
+        self:HideTexture(ManuscriptsJournalProgressBar.border)
+        ManuscriptsJournalProgressBar:DisableDrawLayer('BACKGROUND')
+
+        self:HideTexture(SoulshapesJournalProgressBar.border)
+        SoulshapesJournalProgressBar:DisableDrawLayer('BACKGROUND')
+        
+        for i=1, 7 do
+            local bar= _G['ManuscriptsJournalMount'..i..'Bar']
+            if bar then
+                self:HideTexture(bar.border)
+                bar:DisableDrawLayer('BACKGROUND')
+            end
+        end
         for _, name in pairs({
             'Manuscripts',
             'Soulshapes',

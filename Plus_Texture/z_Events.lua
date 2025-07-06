@@ -793,6 +793,7 @@ end
 
 
 
+
 --专业, 初始化, 透明
 function WoWTools_TextureMixin.Events:Blizzard_Professions()
     --self:SetNineSlice(ProfessionsFrame)
@@ -800,16 +801,23 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     self:SetButton(ProfessionsFrame.CloseButton)
     self:SetButton(ProfessionsFrame.MaximizeMinimize.MaximizeButton)
     self:SetButton(ProfessionsFrame.MaximizeMinimize.MinimizeButton)
+
+    self:SetFrame(ProfessionsFrame.CraftingPage.LinkButton, {notAlpha=true})
     self:SetButton(ProfessionsFrame.CraftingPage.TutorialButton)
-
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.RankBar.Background, nil, nil, 0.5)
-
+    self:SetFrame(ProfessionsFrame.CraftingPage.RankBar.ExpansionDropdownButton, {notAlpha=true})
+    self:HideTexture(ProfessionsFrame.CraftingPage.RankBar.Border)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Background, nil, nil, 0.5)
     self:SetNineSlice(ProfessionsFrame.CraftingPage.SchematicForm)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.MinimalBackground, nil, nil, 0.5)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundTop)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundMiddle)
     self:SetAlphaColor(ProfessionsFrame.CraftingPage.SchematicForm.Details.BackgroundBottom)
+    self:SetFrame(ProfessionsFrame.CraftingPage.GearSlotDivider)
+
+    self:SetFrame(ProfessionsFrame.CraftingPage.Prof1Gear0Slot, {show={[ProfessionsFrame.CraftingPage.Prof1Gear0Slot.icon]=true}})
+    self:SetFrame(ProfessionsFrame.CraftingPage.Prof1Gear1Slot, {show={[ProfessionsFrame.CraftingPage.Prof1Gear1Slot.icon]=true}})
+    self:SetFrame(ProfessionsFrame.CraftingPage.Prof1ToolSlot, {show={[ProfessionsFrame.CraftingPage.Prof1ToolSlot.icon]=true}})
 
     self:SetAlphaColor(ProfessionsFrame.SpecPage.TreeView.Background, nil, nil, 0)
     self:HideTexture(ProfessionsFrame.SpecPage.DetailedView.Background)
@@ -855,17 +863,13 @@ function WoWTools_TextureMixin.Events:Blizzard_Professions()
     for _, typeTab in ipairs(ProfessionsFrame.OrdersPage.BrowseFrame.orderTypeTabs) do
         self:SetTabButton(typeTab)
 	end
-    --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.PublicOrdersButton)
-    --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.GuildOrdersButton)
-    --self:SetTabButton(ProfessionsFrame.OrdersPage.BrowseFrame.GuildOrdersButton)
 
     self:SetNineSlice(ProfessionsFrame.CraftingPage.CraftingOutputLog)
     self:SetScrollBar(ProfessionsFrame.CraftingPage.CraftingOutputLog)
 
     self:SetScrollBar(ProfessionsFrame.CraftingPage.RecipeList)
-    self:SetNineSlice(ProfessionsFrame.CraftingPage.RecipeList.BackgroundNineSlice)
-
-
+    self:HideFrame(ProfessionsFrame.CraftingPage.RecipeList.BackgroundNineSlice)
+    self:SetEditBox(ProfessionsFrame.CraftingPage.RecipeList.SearchBox)
 
     self:SetScrollBar(ProfessionsFrame.OrdersPage.BrowseFrame.OrderList)
 

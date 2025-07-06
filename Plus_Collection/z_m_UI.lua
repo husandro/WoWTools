@@ -276,10 +276,6 @@ local function Init_CollectionsJournal()
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet3.modelScene.cardButton, {frame=CollectionsJournal})
 
 
-    C_Timer.After(0.3, function()
-        WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
-    end)
-
 
     if _G['RematchFrame'] then
         RematchFrame:HookScript('OnSizeChanged', function(f)
@@ -321,9 +317,22 @@ local function Init_CollectionsJournal()
             f.QueuePanel.List.Help:SetPoint('TOPLEFT', 8, 22)
             f.QueuePanel.List.Help:SetPoint('BOTTOMRIGHT', -22, 22)
         end)
+
+        WoWTools_MoveMixin:Setup(RematchFrame, {frame=CollectionsJournal})
         WoWTools_MoveMixin:Setup(RematchFrame.TeamsPanel.List.ScrollBox, {frame=CollectionsJournal})
         WoWTools_MoveMixin:Setup(RematchFrame.QueuePanel.List.ScrollBox, {frame=CollectionsJournal})
     end
+
+
+
+
+
+
+    
+    C_Timer.After(0.3, function()
+        WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
+    end)
+
 
     Init_CollectionsJournal=function()end
 end
