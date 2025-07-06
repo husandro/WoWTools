@@ -157,8 +157,8 @@ function WoWTools_TooltipMixin.Events:Blizzard_GenericTraitUI()
             (WoWTools_DataMixin.onlyChinese and '总花费：' or ITEM_UPGRADE_COST_LABEL)..(currencyInfo.spent or 0)
         )
         GameTooltip:AddDoubleLine(
-            WoWTools_DataMixin.Icon.icon2..'traitCurrencyID '..currencyInfo.traitCurrencyID,
-            icon and '  |T'..icon..':0|t'..icon
+            icon and '|T'..icon..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..icon,
+            'traitCurrencyID|cffffffff'..WoWTools_DataMixin.Icon.icon2..currencyInfo.traitCurrencyID
         )
 
         GameTooltip:Show()

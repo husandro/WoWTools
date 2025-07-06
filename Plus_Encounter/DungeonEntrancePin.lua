@@ -27,24 +27,24 @@ local function Init(frame)
         if not GameTooltip:IsShown() then
             GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
             GameTooltip:SetText(name)
-        else
-            GameTooltip:AddLine(' ')
         end
         local cnName= WoWTools_TextMixin:CN(name)
 
-        GameTooltip:AddDoubleLine(mapID and 'mapID '..mapID or nil,  cnName~=name and cnName or nil)
-        GameTooltip:AddDoubleLine('journalInstanceID '..self.journalInstanceID, (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID or nil)
-        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
+            mapID and 'mapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..mapID or nil,
+            cnName~=name and cnName
+        )
+        GameTooltip:AddDoubleLine(
+            'journalInstanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.journalInstanceID,
+            (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID
+        )
 
-        if WoWTools_EncounterMixin:GetInstanceData(self, true) then
-            GameTooltip:AddLine(' ')
-        end
+        WoWTools_EncounterMixin:GetInstanceData(self, true)
         if isAltKeyDown then
             GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil,nil,nil,true)
-            GameTooltip:AddLine(' ')
         end
         GameTooltip:AddDoubleLine(
-            WoWTools_EncounterMixin.addName..WoWTools_DataMixin.Icon.icon2,
+            WoWTools_EncounterMixin.addName,
             isAltKeyDown and '' or '|cnGREEN_FONT_COLOR:Alt+'..(WoWTools_DataMixin.onlyChinese and '描述' or CALENDAR_EVENT_DESCRIPTION)
         )
         GameTooltip:Show()
@@ -59,5 +59,5 @@ end
 
 
 function WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', Init)
+    hooksecurefunc(DungeonEntrancePinMixin, 'OnAcquired', function(...) Init(...) end)
 end

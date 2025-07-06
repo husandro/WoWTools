@@ -47,7 +47,7 @@ local function Init()
 
 
 --战斗宠物，技能 SharedPetBattleTemplates.lua  SharedPetBattleAbilityTooltipTemplate
-    hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo, additionalText)
+    hooksecurefunc('SharedPetBattleAbilityTooltip_SetAbility', function(self, abilityInfo)
         local abilityID = abilityInfo:GetAbilityID()
         if not abilityID then
             if self.WoWToolsLabel then
@@ -205,8 +205,8 @@ local function Init()
             GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
             GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
             GameTooltip:AddDoubleLine(
-                'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.affixID,
-                filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid
+                filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid,
+                'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.affixID
             )
             WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
             GameTooltip:Show()
@@ -219,8 +219,8 @@ local function Init()
                 GameTooltip:SetText(WoWTools_TextMixin:CN(name), 1, 1, 1, 1, true)
                 GameTooltip:AddLine(WoWTools_TextMixin:CN(description), nil, nil, nil, true)
                 GameTooltip:AddDoubleLine(
-                    'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.affixID,
-                    filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid
+                    filedataid and '|T'..filedataid..':'..WoWTools_TooltipMixin.iconSize..'|t|cffffffff'..filedataid,
+                    'affixID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.affixID
                 )
                 WoWTools_TooltipMixin:Set_Web_Link(GameTooltip, {type='affix', id=self.affixID, name=name, isPetUI=false})--取得网页，数据链接
                 GameTooltip:Show()
