@@ -92,6 +92,7 @@ end
 local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemID
     local icon= data.icon or ''
     local col= data.col or ''
+    
     if data.mountID then
         root:CreateButton(
             icon..col..(WoWTools_DataMixin.onlyChinese and '召唤' or SUMMON),
@@ -100,6 +101,7 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
         )
         root:CreateDivider()
     end
+
 
     root:CreateButton(
         (data.mountID and '|A:QuestLegendary:0:0|a' or icon)..(WoWTools_DataMixin.onlyChinese and '修改' or EDIT)..(data.mountID and '' or WoWTools_DataMixin.Icon.left),
@@ -123,21 +125,18 @@ local function Set_Mount_Sub_Options(root, data)--icon,col,mountID,spellID,itemI
     end
 
 
-    root:CreateButton(
+    root:CreateDivider()
+    root:CreateCheckbox(
         '|A:common-icon-redx:0:0|a'..(WoWTools_DataMixin.onlyChinese and '移除' or REMOVE),
-        function(info)
-            Save().Mounts[info.type][info.itemID or info.spellID]=nil
+    function()
+        return Save().Mounts[data.type][data.itemID or data.spellID]
+    end, function()
+        Save().Mounts[data.type][data.itemID or data.spellID]= not Save().Mounts[data.type][data.itemID or data.spellID] and true or nil
 
-            print(WoWTools_DataMixin.Icon.icon2..WoWTools_MountMixin.addName, WoWTools_DataMixin.onlyChinese and '移除' or REMOVE,
-                    WoWTools_ItemMixin:GetLink(info.itemID)
-                    or (info.spellID and C_Spell.GetSpellLink(info.spellID)
-                    or info.itemID or info.spellID
-            ))
-            WoWTools_MountMixin.MountButton:settings()
-            return MenuResponse.Open
-        end,
-        data
-    )
+        WoWTools_MountMixin.MountButton:settings()
+    end)
+
+
 end
 
 

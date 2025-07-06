@@ -118,16 +118,18 @@ local function New_MountJournal_FullUpdate()
             spellIDs[spellID]=true
         end
     end
-    local newDataProvider = CreateDataProvider();
+    local newDataProvider = CreateDataProvider()
     for index = 1, C_MountJournal.GetNumDisplayedMounts()  do
         local _, spellID, _, _, _, _, _, _, _, _, _, mountID   = C_MountJournal.GetDisplayedMountInfo(index)
         if mountID and spellID and spellIDs[spellID] then
             newDataProvider:Insert({index = index, mountID = mountID})
         end
     end
-    MountJournal.ScrollBox:SetDataProvider(newDataProvider, ScrollBoxConstants.RetainScrollPosition);
+
+    MountJournal.ScrollBox:SetDataProvider(newDataProvider, ScrollBoxConstants.RetainScrollPosition)
+
     if (not MountJournal.selectedSpellID) then
-        MountJournal_Select(1);
+        MountJournal_Select(1)
     end
     MountJournal_UpdateMountDisplay()
 end
@@ -142,12 +144,11 @@ local function Updata_MountJournal_FullUpdate(self)
     MountJournal.FilterDropdown:Reset()
     WoWTools_Mixin:Call(MountJournal_SetUnusableFilter, true)
     WoWTools_Mixin:Call(MountJournal_FullUpdate, MountJournal)
-    C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
+    C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true)
 
     self.ResetButton:SetShown(true)
     self:set_text()
 end
-
 
 
 
@@ -164,13 +165,20 @@ local function Init_UI_List_Menu(self, root)
         root:CreateCheckbox(WoWTools_TextMixin:CN(type)..' #|cnGREEN_FONT_COLOR:'..WoWTools_MountMixin:Get_Table_Num(type), function(data)
             return self.Type[data]
         end, function(data)
+
             self.Type[data]= not self.Type[data] and true or nil
+            if self.Type[data] then
+                C_MountJournal.SetAllSourceFilters(true)
+                C_MountJournal.SetAllTypeFilters(true)
+            end
             Updata_MountJournal_FullUpdate(self)
         end, type)
     end
 
     root:CreateDivider()
-    root:CreateButton('     '..(WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL), function()
+    root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
+    function()
         self.Type={
             [MOUNT_JOURNAL_FILTER_GROUND]=true,
             [MOUNT_JOURNAL_FILTER_AQUATIC]=true,
@@ -179,12 +187,16 @@ local function Init_UI_List_Menu(self, root)
             ['Shift']=true, ['Alt']=true, ['Ctrl']=true,
             [FLOOR]=true,
         }
+
+        C_MountJournal.SetAllSourceFilters(true)
+        C_MountJournal.SetAllTypeFilters(true)
+
         Updata_MountJournal_FullUpdate(self)
 
         return MenuResponse.Refresh
     end)
 
-    root:CreateButton('     '..(WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL), function()
+    root:CreateButton(WoWTools_DataMixin.onlyChinese and '撤选所有' or UNCHECK_ALL, function()
         self:rest_type()
         self.ResetButton:Click()
         return MenuResponse.Refresh
@@ -303,7 +315,7 @@ local function Init()
         MountJournal_FullUpdate= frame.MountJournal_FullUpdate
         frame:set_text()
         MountJournal.FilterDropdown:Reset()
-        C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true);
+        C_MountJournal.SetCollectedFilterSetting(LE_MOUNT_JOURNAL_FILTER_UNUSABLE or 3, true)
         WoWTools_Mixin:Call(MountJournal_SetUnusableFilter,true)
         WoWTools_Mixin:Call(MountJournal_FullUpdate, MountJournal)
         self:Hide()

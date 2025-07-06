@@ -6,7 +6,6 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
     self:HideTexture(CollectionsJournal.TopTileStreaks)
     self:SetButton(CollectionsJournalCloseButton)
-    --self:SetNineSlice(CollectionsJournal)
     self:HideTexture(CollectionsJournalBg)
     self:SetButton(PetJournalTutorialButton)
     PetJournalTutorialButton:SetFrameLevel(CollectionsJournal.TitleContainer:GetFrameLevel()+1)
@@ -39,6 +38,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
     if MountJournal.SummonRandomFavoriteSpellFrame then
         self:SetAlphaColor(MountJournal.SummonRandomFavoriteSpellFrame.Button.Border, true)
     end
+     hooksecurefunc('MountJournal_InitMountButton', function(btn)
+     end)
 --宠物
     self:HideFrame(PetJournalLoadoutBorder)
 

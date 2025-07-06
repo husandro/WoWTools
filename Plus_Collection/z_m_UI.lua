@@ -221,7 +221,13 @@ local function Init_CollectionsJournal()
     PetJournalLoadoutBorder:SetPoint('TOP', PetJournalRightInset)
 
     hooksecurefunc('MountJournal_InitMountButton', function(btn)
+        if btn.is_setting then
+            return
+        end
+        btn.is_setting= true
         btn.name:SetPoint('RIGHT', -4, 0)
+        btn.background:SetTexture(0)
+        btn.background:SetColorTexture(0, 0, 0, 0.5)
     end)
     WardrobeCollectionFrame.SetsCollectionFrame.RightInset:ClearAllPoints()
     WardrobeCollectionFrame.SetsCollectionFrame.RightInset:SetWidth(410)

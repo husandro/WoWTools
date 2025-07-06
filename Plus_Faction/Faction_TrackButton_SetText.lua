@@ -169,10 +169,12 @@ end
 
 --设置 Text
 function WoWTools_FactionMixin:TrackButton_Settings()
-	if not self.TrackButton or not self.TrackButton:IsShown() or not self.TrackButton.Frame:IsShown() then
+	if not self.TrackButton or not self.TrackButton:IsShown() or not self.TrackButton.Frame:IsShown() or self.TrackButton.isInTracking then
 		return
 	end
-print('a')
+
+	self.TrackButton.isInTracking= true
+
 	local faction={}
 	if Save().indicato then
 		for factionID in pairs(Save().factions) do
@@ -224,6 +226,8 @@ print('a')
 		btn.isParagon= nil
 		btn.name= nil
 	end
+
+	self.TrackButton.isInTracking= nil
 end
 
 
