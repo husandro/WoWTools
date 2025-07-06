@@ -172,7 +172,7 @@ function WoWTools_FactionMixin:TrackButton_Settings()
 	if not self.TrackButton or not self.TrackButton:IsShown() or not self.TrackButton.Frame:IsShown() then
 		return
 	end
-
+print('a')
 	local faction={}
 	if Save().indicato then
 		for factionID in pairs(Save().factions) do

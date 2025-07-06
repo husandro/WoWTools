@@ -1,62 +1,69 @@
+local EditBox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init_Search(self)
-	local numList= self:IsVisible() and C_Reputation.GetNumFactions() or 0
+	local numList= C_Reputation.GetNumFactions() or 0
 	if numList<=0 then
 		return
 	end
 
-	local factionID, name, factionIndex
-	local findTab={}
+	local factionID, name, data
+	local factionList={}
 
-	factionID =math.max(self:GetNumber() or 0)
+	factionID =math.max(EditBox:GetNumber() or 0)
 	factionID= factionID>0 and factionID or nil
 
-	name= self:GetText() or ''
-	name= name:gsub(' ', '')~='' and name or nil
+	name= EditBox:GetText() or ''
+	name= name~='' and name or nil
 
 	if name or factionID then
-		for index= numList, 1, -1 do
-			local data= C_Reputation.GetFactionDataByIndex(index)
-			if data and data.factionID and data.name then
-	--查找 ID
+		for index= 1, numList do
+			data= C_Reputation.GetFactionDataByIndex(index)
+			if data then
+--查找 ID
 				if factionID and data.factionID==factionID then
-					findTab[data.factionID]=true
-					factionIndex= index
+					data.factionIndex = index
+					tinsert(factionList, data)
 					break
-	--查找 名称
-				elseif name then
+--查找 名称
+				elseif data.name and name then
 					local cn= WoWTools_TextMixin:CN(data.name)
-					cn= cn~=data.name and cn or nil
-					if cn and cn==name or data.name== name then
-						findTab[data.factionID]=true
-						factionIndex= index
+					cn= cn~=data.name and cn:upper() or nil
+
+					local p_name= data.name:upper()
+					name= name:upper()
+
+					if cn and cn==name or p_name== name then
+						data.factionIndex = index
+						tinsert(factionList, data)
 						break
 
-					elseif cn and cn:find(name) or data.name:find(name) then
-						findTab[data.factionID]=true
-						factionIndex= index
+					elseif cn and cn:find(name) or p_name:find(name) then
+						data.factionIndex = index
+						tinsert(factionList, data)
 					end
 				end
 			end
 		end
 	end
 
-	if factionIndex then
-		ReputationFrame.ScrollBox:ScrollToElementDataIndex(factionIndex)
-	end
-
-	for _, btn in pairs(ReputationFrame.ScrollBox:GetFrames()) do
-		if btn.Content and btn.elementData then
-			if findTab[btn.elementData.factionID] then
-				btn.Content.BackgroundHighlight:SetAlpha(0.3)
-			else
-				btn.Content.BackgroundHighlight:SetAlpha(0)
-			end
-		end
-	end
-
-	findTab=nil
+	self.ScrollBox:SetDataProvider(CreateDataProvider(factionList), ScrollBoxConstants.RetainScrollPosition);
+	self.ReputationDetailFrame:Refresh()
 end
 
 
@@ -65,25 +72,7 @@ end
 
 
 
-local function Expand_All()
-	local num= C_Reputation.GetNumFactions() or 0
-	if num<=0 then
-		return
-	end
 
-	for index= num, 1,-1 do
-		local data= C_Reputation.GetFactionDataByIndex(index)
-		if data and data.isHeader and data.isCollapsed then
-			C_Reputation.ExpandFactionHeader(index)
-		end
-	end
-
-	for _, frame in pairs(ReputationFrame.ScrollBox:GetFrames()) do
-		if frame.elementData.isHeader and frame:IsCollapsed() then
-			frame:ToggleCollapsed()
-		end
-	end
-end
 
 
 
@@ -98,11 +87,18 @@ end
 
 
 local function Init()
+	local P_Update= ReputationFrame.Update
+
 	local down= WoWTools_ButtonMixin:Cbtn(WoWTools_FactionMixin.Button, {size=22, atlas='NPE_ArrowDown'})--texture='Interface\\Buttons\\UI-MinusButton-Up'})--展开所有
     WoWTools_FactionMixin.down= down
 	down:SetPoint("RIGHT", ReputationFrame.filterDropdown, 'LEFT',-2,0)
 	down:SetScript("OnClick", function()
-		Expand_All()
+		for index=C_Reputation.GetNumFactions(), 1, -1 do
+			local data= C_Reputation.GetFactionDataByIndex(index)
+			if data and data.isHeader and data.isCollapsed then
+				C_Reputation.ExpandFactionHeader(index)
+			end
+		end
 	end)
 	down:SetScript("OnLeave", function() GameTooltip_Hide() end)
 	down:SetScript('OnEnter', function(self)
@@ -113,10 +109,29 @@ local function Init()
 		GameTooltip:Show()
 	end)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	local up= WoWTools_ButtonMixin:Cbtn(down, {size=22, atlas='NPE_ArrowUp'})--texture='Interface\\Buttons\\UI-PlusButton-Up'})--收起所有
 	up:SetPoint("RIGHT", down, 'LEFT', -2, 0)
 	up:SetScript("OnClick", function()
-		C_Reputation.CollapseAllFactionHeaders()
+		for index=C_Reputation.GetNumFactions(), 1, -1 do
+			local data= C_Reputation.GetFactionDataByIndex(index)
+			if data and data.isHeader and not data.isCollapsed then
+				C_Reputation.CollapseFactionHeader(index)
+			end
+		end
 	end)
 	up:SetScript("OnLeave", function() GameTooltip_Hide() end)
 	up:SetScript('OnEnter', function(self)
@@ -127,31 +142,72 @@ local function Init()
 		GameTooltip:Show()
 	end)
 
-	local edit= WoWTools_EditBoxMixin:Create(up, {
+
+
+
+
+
+
+
+
+
+
+
+	EditBox= WoWTools_EditBoxMixin:Create(up, {
 		name='WoWTools_PlusFactionSearchBox',
 		Template='SearchBoxTemplate'
 	})
-	edit:SetPoint('RIGHT', up, 'LEFT', -6, 0)
-	edit:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
-	edit:SetAlpha(0.3)
 
-	edit:HookScript('OnTextChanged', function(self)
-		Init_Search(self)
+	EditBox:SetPoint('RIGHT', up, 'LEFT', -6, 0)
+	EditBox:SetPoint('BOTTOMLEFT', CharacterFramePortrait, 'BOTTOMRIGHT')
+
+	EditBox:SetScript('OnTextChanged', function(self)
+		local show= self:GetText() ~= ""
+		self.Instructions:SetShown(not show)
+		local hasfocus= self:HasFocus()
+		self:SetAlpha((show or hasfocus) and 1 or 0.3)
+
+		if hasfocus then
+			Init_Search(ReputationFrame)
+		end
+
 	end)
-	edit:SetScript('OnEnterPressed', function(self)
-		Init_Search(self)
+
+	EditBox:SetScript('OnEnterPressed', function()
+		Init_Search(ReputationFrame)
 	end)
-	edit:HookScript('OnEditFocusLost', function(self)
-		self:SetAlpha(0.3)
-	end)
-	edit:HookScript('OnEditFocusGained', function(self)
+
+	EditBox:SetScript('OnEditFocusGained', function(self)
+		ReputationFrame.Update= Init_Search
 		self:SetAlpha(1)
-		Expand_All()
 		if self:GetText()~='' then
-			Init_Search(self)
+			Init_Search(ReputationFrame)
+		end
+		self.clearButton:SetShown(true)
+	end)
+
+	EditBox:SetScript('OnEditFocusLost', function(self)
+		if self.clearButton:IsShown() and self:GetText()=='' then
+			self.clearButton:Click()
 		end
 	end)
 
+	EditBox.clearButton:SetScript('OnClick', function(self)
+		ReputationFrame.Update= P_Update
+		ReputationFrame:Update()
+		EditBox:SetText('')
+		EditBox:ClearFocus()
+		self:Hide()
+		EditBox:SetAlpha(0.3)
+	end)
+
+	EditBox:SetScript('OnEscapePressed', function(self)
+		self:ClearFocus()
+	end)
+
+
+
+	Init=function()end
 end
 
 
