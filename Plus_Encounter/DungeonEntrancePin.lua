@@ -31,12 +31,12 @@ local function Init(frame)
         local cnName= WoWTools_TextMixin:CN(name)
 
         GameTooltip:AddDoubleLine(
-            mapID and 'mapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..mapID or nil,
-            cnName~=name and cnName
+            mapID and 'mapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..mapID,
+            'journalInstanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.journalInstanceID
         )
         GameTooltip:AddDoubleLine(
-            'journalInstanceID|cffffffff'..WoWTools_DataMixin.Icon.icon2..self.journalInstanceID,
-            (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID '..dungeonAreaMapID
+            (dungeonAreaMapID and dungeonAreaMapID>0) and 'dungeonAreaMapID|cffffffff'..WoWTools_DataMixin.Icon.icon2..dungeonAreaMapID,
+            cnName~=name and cnName
         )
 
         WoWTools_EncounterMixin:GetInstanceData(self, true)
