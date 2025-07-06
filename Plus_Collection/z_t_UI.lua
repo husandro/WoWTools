@@ -161,13 +161,8 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
 
 
 
-    C_Timer.After(0.3, function()
-        if not _G['ManuscriptsJournal'] then
-            return
-        end
-        self:HideFrame(ManuscriptsJournal.iconsFrame.NineSlice)
-        self:HideTexture(ManuscriptsJournal.iconsFrame.Bg)
-    end)
+
+   
 
 
 
@@ -334,6 +329,70 @@ function WoWTools_TextureMixin.Events:Blizzard_Collections()
             self:HideFrame(frame.GroupPicker.List)
         end
     end    
+
+
+
+
+
+
+
+
+
+
+
+
+
+     C_Timer.After(0.3, function()
+        if not _G['ManuscriptsJournal'] then
+            return
+        end
+        for _, name in pairs({
+            'Manuscripts',
+            'Soulshapes',
+            'TameTomes',
+            'Dirigible',
+        }) do
+            local frame= _G[name..'Journal']
+            if frame then
+                self:HideFrame(frame.iconsFrame, {show={[frame.iconsFrame.BackgroundTile]=true}})
+                self:HideFrame(frame.iconsFrame.BackgroundTile)
+                self:SetNineSlice(frame.iconsFrame)
+                local edit= _G[name..'JournalSearchBox']
+                if edit then
+                    self:SetFrame(frame.FilterButton, {alpha=0.5})
+                    self:SetEditBox(edit)
+                end
+            end
+            local tab= _G['ManuscriptsSkillLine'..name..'Tab']
+            if tab then
+                self:HideFrame(tab, {index=1})
+                WoWTools_ButtonMixin:AddMask(tab, {isType=true})
+            end
+        end
+
+        for _, name in pairs({
+            'Warrior',
+            'Paladin',
+            'Hunter',
+            'Rogue',
+            'Priest',
+            'Death',
+            'Shaman',
+            'Mage',
+            'Warlock',
+            'Monk',
+            'Druid',
+            'Demon',
+            'Evoker',
+        }) do
+            local tab= _G['ManuscriptsSkillLine'..name..'Tab']
+            if tab then
+                self:HideFrame(tab, {index=1})
+                WoWTools_ButtonMixin:AddMask(tab, {isType=true})
+            end
+        end
+    end)
+
 end
 
 

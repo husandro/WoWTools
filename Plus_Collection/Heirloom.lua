@@ -157,7 +157,7 @@ end
 local ListButton
 local function Init_ClassListButton()
 
-    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal, {
+    ListButton= WoWTools_ButtonMixin:Cbtn(HeirloomsJournal.FilterDropdown, {
         size=22,
         texture='Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools',
         name='WoWTools_PlusHeirloomsClassListButton'
