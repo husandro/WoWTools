@@ -356,8 +356,10 @@ Plus_BankGuild\z_UI.lua
 ##容器
 Plus_Bag\0_BagMixin.lua
 Plus_Bag\1_Init_Bag.lua
-Plus_Bag\z_Container_Menu.lua
+Plus_Bag\Container_Menu.lua
+Plus_Bag\WoW_ItemList.lua
 Plus_Bag\z_UI.lua
+
 
 
 ##自动对话，任务

@@ -14,7 +14,9 @@ local function Init()
     if Save().disabled then
         return
     end
+
     WoWTools_BagMixin:Init_Container_Menu()--背包，菜单，增强
+    WoWTools_BagMixin:Init_WoW_ItemList()
 
     Init=function()end
 end
@@ -44,7 +46,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                     Save().disabled= not Save().disabled and true or nil
                     Init()
                     if Save().disabled then
-                        print(WoWTools_DataMixin.Icon.icon2..WoWTools_BagMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                        print(
+                            WoWTools_DataMixin.Icon.icon2..WoWTools_BagMixin.addName,
+                            WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                            WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                        )
                     end
                 end,
                 layout= WoWTools_OtherMixin.Layout,
@@ -54,7 +60,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             self:UnregisterEvent(event)
         end
 
-    elseif event=='PLAYER_LOGIN' then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         Init()
         self:UnregisterEvent(event)
     end
