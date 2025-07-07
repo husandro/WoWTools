@@ -319,7 +319,7 @@ local function Init()
 --添加 WidgetSetID
     hooksecurefunc('GameTooltip_AddWidgetSet', function(tooltip, uiWidgetSetID)
         if uiWidgetSetID then
-            tooltip:AddLine('WidgetSetID'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
+            tooltip:AddLine('widgetSetID|cffffffff'..WoWTools_DataMixin.Icon.icon2..uiWidgetSetID)
             WoWTools_Mixin:Call(GameTooltip_CalculatePadding, tooltip)
         end
     end)

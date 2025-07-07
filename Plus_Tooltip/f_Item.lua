@@ -435,12 +435,11 @@ function WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     local spellName, spellID = C_Item.GetItemSpell(itemID)--物品法术
     if spellName and spellID then
         local spellTexture= C_Spell.GetSpellTexture(spellID)
-        local cnName= WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true})
         tooltip:AddDoubleLine(
             spellTexture and spellTexture~=itemTexture  and '|T'..spellTexture..':'..self.iconSize..'|t|cffffffff'..spellTexture or ' ',
 
-            (itemName~=spellName and '|cff71d5ff['..cnName..']|r' or '')
-            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..' |cffffffff'..spellID
+            (itemName~=spellName and '|cff71d5ff['..WoWTools_TextMixin:CN(spellName, {spellID=spellID, isName=true})..']|r' or '')
+            ..(WoWTools_DataMixin.onlyChinese and '法术' or SPELLS)..'|T'..(spellTexture or itemTexture or 0)..':0|t|cffffffff'..spellID
         )
     end
 
