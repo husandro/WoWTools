@@ -287,7 +287,7 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
         end
     end
 
-    
+
 
     if settings.isPvP then
         local CONQUEST_SIZE_STRINGS = {'', '2v2', '3v3', '10v10'}--PVP
@@ -307,7 +307,7 @@ function WoWTools_ChallengeMixin:ActivitiesFrame(frame, settings)--周奖励，�
                     text= ' ('..best..'|cnGREEN_FONT_COLOR:'..seasonWon..'|r/'..seasonPlayed..')'
                 end
                 text= (tierInfo.tierIconID and '|T'..tierInfo.tierIconID..':0|t' or '')..CONQUEST_SIZE_STRINGS[i]..(rating==0 and ' |cff9e9e9e' or ' |cffffffff')..rating..'|r' ..text
-                
+
                 local head= CONQUEST_SIZE_STRINGS[i]
 
                 local label= frame.WeekRewards['rewardChestHead'..head] or Create_Activities_HeaderLable(frame, head, nil, last)

@@ -116,7 +116,7 @@ local function Initializer(btn, data)
     btn.specID= data.specID
     btn.itemLevel= data.itemLevel
 
-    btn:SetAlpha(btn.itemLink and 1 or 0.5)
+    --btn:SetAlpha(btn.itemLink and 1 or 0.5)
 end
 
 
@@ -198,16 +198,23 @@ local function Set_List()
         then
             num= num+1
 
-            local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
-            local link= isFind and info.Keystone.link and info.Keystone.link:match('|h%[(.-)]|h'):upper()
+            local itemLink= info.Keystone.link
+            local fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
 
-            if (isFind and link and (link:find(findText) or name:find(findText))) or not isFind then
+            local cnLink= WoWTools_HyperLink:CN_Link(itemLink, {isName=true})
+            cnLink= cnLink~=itemLink and cnLink or nil
+
+            if isFind and (
+                    itemLink and itemLink:upper():find(findText)
+                    or (cnLink and cnLink:upper():find(findText))
+                    or fullName:upper():find(findText)
+            ) or not isFind then
 
                 data:Insert({
                     guid=guid,
-                    name= WoWTools_UnitMixin:GetFullName(nil, nil, guid),
+                    name= fullName,
                     faction=info.faction,
-                    itemLink= info.Keystone.link,
+                    itemLink= itemLink,
 
                     score= info.score or 0,
                     weekNum= info.weekNum or 0,

@@ -97,7 +97,8 @@ local function Initializer(btn, data)
     btn.specID= data.specID
     btn.itemLevel= data.itemLevel
 
-    btn:SetAlpha(btn.itemLink and 1 or 0.5)
+    --btn:SetAlpha(btn.itemLink and 1 or 0.5)
+    btn.SelectBg:SetShown(data.guid==Frame.guid)
 end
 
 
@@ -140,8 +141,7 @@ end
 
 
 local function Set_List()
-    local findText= Frame.SearchBox:HasFocus() and Frame.SearchBox:GetText() or ''
-    findText= findText:upper()
+    local findText= (Frame.SearchBox:GetText() or ''):upper()
 
     local isFind= findText~=''
     local num=0
@@ -150,16 +150,23 @@ local function Set_List()
     for guid, info in pairs(WoWTools_WoWDate) do
         num= num+1
 
-        local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
-        local link= isFind and info.Keystone.link and info.Keystone.link:match('|h%[(.-)]|h'):upper()
+        local itemLink= info.Keystone.link
+        local fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
 
-        if (isFind and link and (link:find(findText) or name:find(findText))) or not isFind then
+        local cnLink= WoWTools_HyperLink:CN_Link(itemLink, {isName=true})
+        cnLink= cnLink~=itemLink and cnLink or nil
+
+        if isFind and (
+                itemLink and itemLink:upper():find(findText)
+                or (cnLink and cnLink:upper():find(findText))
+                or fullName:upper():find(findText)
+        ) or not isFind then
 
             data:Insert({
                 guid=guid,
-                name= WoWTools_UnitMixin:GetFullName(nil, nil, guid),
+                name= fullName,
                 faction=info.faction,
-                itemLink= info.Keystone.link,
+                itemLink= itemLink,
 
                 score= info.score or 0,
                 weekNum= info.weekNum or 0,
@@ -267,7 +274,10 @@ local function Init_List()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', function(...) Initializer(...) end)
 
-    Frame.Menu= WoWTools_ButtonMixin:Menu(Frame, {size=23})
+    Frame.Menu= WoWTools_ButtonMixin:Menu(Frame, {
+        size=23,
+        icon='hide',
+    })
     Frame.Menu:SetPoint('LEFT', Frame.SearchBox, 'RIGHT')
     Frame.Menu:SetupMenu(function(...)
         Init_Menu(...)
@@ -275,7 +285,7 @@ local function Init_List()
 
 
 --数量
-    Frame.NumLabel= WoWTools_LabelMixin:Create(Frame.Menu, {color=true})
+    Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
     Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
 
 

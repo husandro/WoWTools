@@ -10,15 +10,16 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
     <Scripts>
         <OnLeave>
             self.Select:Hide()
-            self:SetAlpha(self.itemLink and 1 or 0.5)
+            --self:SetAlpha(self.itemLink and 1 or 0.5)
         </OnLeave>
         <OnEnter>
             self.Select:Show()
-            self:SetAlpha(1)
+            --self:SetAlpha(1)
         </OnEnter>
     </Scripts>
 
     <Layers>
+        
         <Layer level="BACKGROUND" textureSubLevel="1">
             <Texture parentKey="Background" atlas="QuestItemBorder">
                 <TexCoords left="1" right="0" top="0" bottom="1" />
@@ -35,8 +36,18 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="TOP" x="0" y="0"/>
                 </Anchors>
             </Texture> 
-         </Layer>
+        </Layer>
+
         <Layer level="BACKGROUND" textureSubLevel="3">
+            <Texture parentKey="SelectBg" atlas="glues-characterSelect-card-glow-swap" hidden='true'>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="-6" y="6"/>
+                    <Anchor point="BOTTOMRIGHT" x="6" y="0"/>
+                </Anchors>
+            </Texture>
+        </Layer>
+
+        <Layer level="BACKGROUND" textureSubLevel="4">
             <Texture parentKey="Select" atlas="GarrMission_FollowerListButton-Select" hidden='true' setAllPoints="true"/>
         </Layer>
         
