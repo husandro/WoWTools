@@ -28,7 +28,9 @@ local function Create_ShowTextFrame()
     if ShowTextFrame then
         return
     end
-    ShowTextFrame= WoWTools_FrameMixin:Create(nil, {name='WoWToolsShowTextEditBoxFrame'})
+    ShowTextFrame= WoWTools_FrameMixin:Create(nil, {
+        name='WoWToolsShowTextEditBoxFrame'
+    })
     ShowTextFrame.ScrollBox=WoWTools_EditBoxMixin:CreateFrame(ShowTextFrame, {
         isLink=true
     })

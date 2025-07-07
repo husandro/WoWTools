@@ -145,14 +145,13 @@ local function Init()
     Frame.ScrollBox:SetAllPoints()
 
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
-    Frame.ScrollBar:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 6,-12)
-    Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 6,12)
-    --Frame.ScrollBar:SetHideIfUnscrollable(true)
+    Frame.ScrollBar:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 6, -12)
+    Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 6, 12)
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
-    Frame.view:SetElementInitializer('WoWToolsAffixTemplate', Initializer)
+    Frame.view:SetElementInitializer('WoWToolsAffixTemplate', function(...) Initializer(...) end)
 
 
 

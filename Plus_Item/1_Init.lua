@@ -45,6 +45,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Set_Event(name)
                     end
                 end
+
+                WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
             end
 
         elseif WoWToolsSave then

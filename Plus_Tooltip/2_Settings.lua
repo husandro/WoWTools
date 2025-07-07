@@ -46,7 +46,7 @@ local function Init()
             return
         end
         local itemLink, itemID= select(2, TooltipUtil.GetDisplayedItem(tooltip))
-        itemLink= itemLink or itemID or data.id
+        itemID= itemID or data.id
         WoWTools_TooltipMixin:Set_Item(tooltip, itemLink, itemID)
     end)
 

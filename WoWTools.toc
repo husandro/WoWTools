@@ -36,7 +36,6 @@ Source\Libs\LibRangeCheck-3.0.lua
 0_Mixin\EditBox.lua
 0_Mixin\Frame.lua
 0_Mixin\Group.lua
-0_Mixin\Item_Stats.lua
 0_Mixin\ItemLocation.lua
 0_Mixin\Key.lua
 0_Mixin\Label.lua
@@ -137,6 +136,7 @@ Plus_Item\0_SetupInfo.lua
 Plus_Item\1_Init.lua
 Plus_Item\Events.lua
 Plus_Item\Frames.lua
+Plus_Item\WoW_ItemList.lua
 
 ##颜色选择器
 Plus_Color\0_ColorMixin.lua
@@ -357,7 +357,6 @@ Plus_BankGuild\z_UI.lua
 Plus_Bag\0_BagMixin.lua
 Plus_Bag\1_Init_Bag.lua
 Plus_Bag\Container_Menu.lua
-Plus_Bag\WoW_ItemList.lua
 Plus_Bag\z_UI.lua
 
 

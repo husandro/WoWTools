@@ -16,7 +16,6 @@ local function Init()
     end
 
     WoWTools_BagMixin:Init_Container_Menu()--背包，菜单，增强
-    WoWTools_BagMixin:Init_WoW_ItemList()
 
     Init=function()end
 end

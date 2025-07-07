@@ -40,6 +40,9 @@ end
 local TextureTab={
 [RestIcon]=1,
 ['Interface\\AddOns\\WoWTools\\Source\\Background\\White.tga']=1,
+['Interface\\DialogFrame\\UI-DialogBox-Background']=1,
+['Interface\\DialogFrame\\UI-DialogBox-Background-Dark']=1,
+['Interface\\DialogFrame\\UI-DialogBox-Gold-Background']=1,
 
 ['talents-background-warrior-arms']=1,
 ['talents-background-warrior-fury']=1,

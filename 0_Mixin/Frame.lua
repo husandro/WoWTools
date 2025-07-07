@@ -23,7 +23,7 @@ end
 
 
 
-local function getSize(value)
+local function Get_Size(value)
     local w, h
     local t= type(value)
     if t=='table' then
@@ -78,7 +78,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
 
     local name= tab.name or ((parent:GetName() or 'WoWTools')..'Frame'..getIndex())
     local size= tab.size
-    local strata= tab.strata
+    --local strata= tab.strata
     local template= tab.template
     local setID= tab.setID
     local point= tab.point
@@ -86,30 +86,54 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local minW= tab.minW
     local minH= tab.minH
     local sizeRestFunc= tab.sizeRestFunc
+    local restPointFunc= tab.restPointFunc
 
-    local w, h= getSize(size)
     local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent or UIParent, template, setID)
+    frame:SetToplevel(true)
+--设置大小
+    local w, h= Get_Size(size)
     frame:SetSize(w, h)
-    frame:SetFrameStrata(strata or 'MEDIUM')
-    if type(point)=='table' and point[1] then
-        frame:SetPoint(point[1], point[2] or UIParent, point[3], point[4], point[5])
-    else
-        frame:SetPoint('CENTER')
-    end
-
-
-    frame.Border= CreateFrame('Frame', nil, frame,'DialogBorderTemplate')
-    frame.Header= CreateFrame('Frame', nil, frame, 'DialogHeaderTemplate')--DialogHeaderMixin
-
-    frame.CloseButton=CreateFrame('Button', nil, frame, 'UIPanelCloseButton')
-    frame.CloseButton:SetPoint('TOPRIGHT')
-
-    WoWTools_TextureMixin:SetButton(frame.CloseButton, {alpha=0.5})
-    WoWTools_TextureMixin:SetFrame(frame.Border, {alpha=0.5})
-    WoWTools_TextureMixin:SetFrame(frame.Header, {alpha=0.7})
-
     frame.width= w
     frame.height= h
+--Strata
+
+    frame:SetFrameStrata('MEDIUM')
+
+--设置，位置
+    if restPointFunc then
+        frame.restPointFunc= restPointFunc
+    else
+        function frame:restPointFunc()
+            if type(point)=='table' and point[1] then
+                self:SetPoint(point[1], point[2] or UIParent, point[3], point[4], point[5])
+            else
+                self:SetPoint('CENTER')
+            end
+        end
+    end
+    frame:restPointFunc()
+
+
+--Border
+    frame.Border= CreateFrame('Frame', name..'Border', frame, 'DialogBorderTemplate')
+    frame.Border.Bg:SetTexture('Interface\\AddOns\\WoWTools\\Source\\Background\\Black.tga')
+    frame.Border:SetScript('OnKeyDown', function(f, key)
+        if key=='ESCAPE' then
+            f:GetParent():SetShown(false)
+        end
+    end)
+
+--Header
+    frame.Header= CreateFrame('Frame', name..'Header', frame, 'DialogHeaderTemplate')--DialogHeaderMixin
+    if tab.header then
+        frame.Header:Setup(tab.header)
+    end
+
+--CloseButton
+    frame.CloseButton=CreateFrame('Button', name..'CloseButton', frame, 'UIPanelCloseButton')
+    frame.CloseButton:SetPoint('TOPRIGHT')
+
+--移动
     WoWTools_MoveMixin:Setup(frame, {
         --needMove=true,
         minW=minW or 370,
@@ -121,16 +145,25 @@ function WoWTools_FrameMixin:Create(parent, tab)
                 frame:SetSize(w, h)
             end
         end,
+        restPointFunc= restPointFunc or function()
+            frame:restPointFunc()
+        end,
     })
     WoWTools_MoveMixin:Setup(frame.Header, {frame=frame})
     WoWTools_MoveMixin:Setup(frame.Border, {frame=frame})
 
-   frame.Border:SetScript('OnKeyDown', function(f, key)
-        if key=='ESCAPE' then
-            f:GetParent():Hide()
-        end
-    end)
+--材质
+    WoWTools_TextureMixin:SetButton(frame.CloseButton)
+    WoWTools_TextureMixin:SetFrame(frame.Border, {show={[frame.Border.Bg]=true}})
+    WoWTools_TextureMixin:SetFrame(frame.Header)
 
+    WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
+        enabled=true,
+        isNewButton=true,
+        settings=function(_, texture, alpha)
+            frame.Border:SetAlpha(texture and 0 or alpha or 0.5)
+        end
+    })
 
     return frame
 end
@@ -207,7 +240,7 @@ function WoWTools_FrameMixin:IsInSchermo(frame)
     if not frame or not frame:IsVisible() then
         return false
     end
-    
+
     frame= frame.TitleContainer or frame
 
     local isInSchermo= true

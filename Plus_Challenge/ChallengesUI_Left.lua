@@ -128,27 +128,27 @@ end
 
 
 local function Sort_Order(a,b)
-        if a.faction==b.faction then
-            if a.itemLevel==b.itemLevel then
-                if a.score==b.score then
-                    if a.weekNum== b.weekNum then
-                        if not b.itemLink or not a.itemLink then
-                            return a.itemLink and true or false
-                        else
-                            return a.weekLevel> b.weekLevel
-                        end
+    if a.faction==b.faction then
+        if a.itemLevel==b.itemLevel then
+            if a.score==b.score then
+                if a.weekNum== b.weekNum then
+                    if not b.itemLink or not a.itemLink then
+                        return a.itemLink and true or false
                     else
-                        return a.weekNum> b.weekNum
+                        return a.weekLevel> b.weekLevel
                     end
                 else
-                    return a.score>b.score
+                    return a.weekNum> b.weekNum
                 end
             else
-                return a.itemLevel>b.itemLevel
+                return a.score>b.score
             end
         else
-            return a.faction==WoWTools_DataMixin.Player.Faction
+            return a.itemLevel>b.itemLevel
         end
+    else
+        return a.faction==WoWTools_DataMixin.Player.Faction
+    end
 end
 
 
@@ -201,7 +201,7 @@ local function Set_List()
             local name= isFind and WoWTools_UnitMixin:GetFullName(nil, nil, guid):upper()
             local link= isFind and info.Keystone.link and info.Keystone.link:match('|h%[(.-)]|h'):upper()
 
-            if (isFind and (link:find(findText) or name:find(findText))) or not isFind then
+            if (isFind and link and (link:find(findText) or name:find(findText))) or not isFind then
 
                 data:Insert({
                     guid=guid,
@@ -228,7 +228,7 @@ local function Set_List()
     end
 
 
-    data:SetSortComparator(Sort_Order)
+    data:SetSortComparator(function(...) Sort_Order(...) end)
 
     Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
 
@@ -545,7 +545,7 @@ local function Init()
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
-    Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
+    Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', function(...) Initializer(...) end)
 
 
 
