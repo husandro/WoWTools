@@ -97,7 +97,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     frame.height= h
 --Strata
 
-    frame:SetFrameStrata(tab.strata or 'MEDIUM')
+    frame:SetFrameStrata('MEDIUM')
 
 --设置，位置
     if restPointFunc then
