@@ -290,26 +290,14 @@ local function Init_Menu_Sell(self, root)
     items= Check_All()
     num= #items
 
-    name= (WoWTools_DataMixin.onlyChinese and '出售全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, ALL))
-        ..' #|cnGREEN_FONT_COLOR:'..num
-
     sub= root:CreateButton(
-        name,
-    function(data)
-        StaticPopup_Show('WoWTools_OK',
-            '|A:Perks-ShoppingCart:0:0|a'..data.name..att,
-            nil,
-            {SetValue=function()
-                Sell_Items(Check_All())
-            end})
+        '|A:Perks-ShoppingCart:0:0|a'..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' #|cnGREEN_FONT_COLOR:'..num,
+    function()
         return MenuResponse.Open
-    end, {name=name})
-
-    sub:SetTooltip(function(tooltip)
-        for index, info in pairs(Check_All()) do
-            tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
-        end
     end)
+
+
+    
 
     local tabCN= {
         [0]= WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC,
@@ -320,7 +308,8 @@ local function Init_Menu_Sell(self, root)
 
     }
     for quality= 0 , 4 do
-        name= select(4, WoWTools_ItemMixin:GetColor(quality))
+        name= '|A:Perks-ShoppingCart:0:0|a'
+            ..select(4, WoWTools_ItemMixin:GetColor(quality))
             ..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)
             ..tabCN[quality]
             ..' #|cffffffff'..#Check_All(quality)
@@ -343,6 +332,29 @@ local function Init_Menu_Sell(self, root)
             end
         end)
     end
+
+    sub:CreateDivider()
+    name= '|A:Perks-ShoppingCart:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '出售全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, ALL))
+        ..' #|cnGREEN_FONT_COLOR:'..num
+
+    sub2= sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+            '|A:Perks-ShoppingCart:0:0|a'..data.name..att,
+            nil,
+            {SetValue=function()
+                Sell_Items(Check_All())
+            end})
+        return MenuResponse.Open
+    end, {name=name})
+
+    sub2:SetTooltip(function(tooltip)
+        for index, info in pairs(Check_All()) do
+            tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
+        end
+    end)
 end
 
 
