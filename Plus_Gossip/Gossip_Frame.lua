@@ -126,7 +126,7 @@ local function Init(isShow)
     List.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     List.ScrollBar:SetPoint("TOPLEFT", List, "TOPRIGHT", 8,0)
     List.ScrollBar:SetPoint("BOTTOMLEFT", List, "BOTTOMRIGHT",8,12)
-    WoWTools_TextureMixin:SetScrollBar(List)
+    WoWTools_TextureMixin:SetScrollBar(List, true)
 
     List.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(List, List.ScrollBar, List.view)

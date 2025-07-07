@@ -130,7 +130,7 @@ local function Init_LeftList()
     local ScrollBar= CreateFrame("EventFrame", nil, EventTrace.Log, "MinimalScrollBar")
     ScrollBar:SetPoint("TOPRIGHT", ScrollBox, "TOPLEFT", -4, -6)
     ScrollBar:SetPoint("BOTTOMRIGHT", ScrollBox, "BOTTOMLEFT", -4, 6)
-    WoWTools_TextureMixin:SetScrollBar(ScrollBar)
+    WoWTools_TextureMixin:SetScrollBar(ScrollBar, true)
 
     ScrollBox.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(ScrollBox, ScrollBar, ScrollBox.view)

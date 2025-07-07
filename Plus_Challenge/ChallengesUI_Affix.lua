@@ -148,7 +148,7 @@ local function Init()
     Frame.ScrollBar:SetPoint("TOPLEFT", Frame, "TOPRIGHT", 6,-12)
     Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame, "BOTTOMRIGHT", 6,12)
     --Frame.ScrollBar:SetHideIfUnscrollable(true)
-    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
+    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)

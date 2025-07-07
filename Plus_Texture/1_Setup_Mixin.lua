@@ -275,7 +275,7 @@ end
 
 
 --设置，滚动条，颜色
-function WoWTools_TextureMixin:SetScrollBar(bar)
+function WoWTools_TextureMixin:SetScrollBar(bar, isAutoHide)
     bar= bar and bar.ScrollBar or bar
     if not bar or not bar.Track then
         return
@@ -296,6 +296,10 @@ function WoWTools_TextureMixin:SetScrollBar(bar)
 
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, true)
+
+    if isAutoHide then
+        bar:SetHideIfUnscrollable(true)
+    end
 end
     --[[if not bar:GetParent():IsProtected() then
         bar:SetHideIfUnscrollable(true)
