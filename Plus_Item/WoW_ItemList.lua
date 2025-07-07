@@ -96,9 +96,21 @@ local function Initializer(btn, data)
     btn.battleTag= data.battleTag
     btn.specID= data.specID
     btn.itemLevel= data.itemLevel
+    btn.guid= data.guid
 
     --btn:SetAlpha(btn.itemLink and 1 or 0.5)
     btn.SelectBg:SetShown(data.guid==Frame.guid)
+
+
+    if btn:GetScript('OnMouseDown') then
+        return
+    end
+
+    btn:SetScript('OnMouseDown', function(self)
+        Frame.guid= self.guid
+        --Frame.ScrollBox:Update()
+        Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
+    end)
 end
 
 
@@ -228,12 +240,12 @@ local function Init_List()
 
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollBox:SetPoint('TOPRIGHT', -28, -55)
-    Frame.ScrollBox:SetPoint('BOTTOMLEFT', Frame, 'BOTTOM', 0, 3)
+    Frame.ScrollBox:SetPoint('BOTTOMLEFT', Frame, 'BOTTOM', 0, 6)
     
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
-    Frame.ScrollBar:SetPoint("TOPLEFT", Frame.ScrollBox, "TOPRIGHT", 6,-12)
-    Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame.ScrollBox, "BOTTOMRIGHT", 6,12)
-    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)--, true)
+    Frame.ScrollBar:SetPoint("TOPLEFT", Frame.ScrollBox, "TOPRIGHT", 6, -12)
+    Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame.ScrollBox, "BOTTOMRIGHT", 6, 12)
+    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
 
     
 
