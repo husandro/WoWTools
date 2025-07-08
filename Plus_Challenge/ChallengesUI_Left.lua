@@ -116,7 +116,7 @@ local function Initializer(btn, data)
     btn.specID= data.specID
     btn.itemLevel= data.itemLevel
 
-    --btn:SetAlpha(btn.itemLink and 1 or 0.5)
+    btn:SetAlpha(btn.itemLink and 1 or 0.5)
 end
 
 

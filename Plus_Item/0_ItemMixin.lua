@@ -172,6 +172,8 @@ function WoWTools_ItemMixin:SetItemStats(frame, link, setting)--设置，物品�
     local itemID= setting.itemID
     local hideStats= setting.hideStats
 
+    link= link or (itemID and select(2, C_Item.GetItemInfo(itemID)))
+
     if link then
         local itemID2, _, _, _, _, classID= C_Item.GetItemInfoInstant(link)
         if classID==2 or classID==4 then

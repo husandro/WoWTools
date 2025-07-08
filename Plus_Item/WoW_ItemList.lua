@@ -4,6 +4,106 @@ local Frame
 
 
 
+
+
+
+
+
+
+
+local function Init_Left_Button(btn, data)
+    btn.data= data
+
+    WoWTools_Mixin:Load({id=data.itemID, type='item'})
+
+    if not btn:GetScript('OnEnter') then
+
+        btn:SetPoint('RIGHT')
+        btn.NameFrame:SetPoint('RIGHT')
+        btn.Name:SetPoint('RIGHT')
+
+        function btn:settings()
+            local itemName, itemName, itemLink, itemQuality, itemTexture
+            local itemID= self.data and self.data.itemID
+            local bag= itemID and data.bag
+
+            if itemID then
+                itemName, itemLink, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
+
+                itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
+                itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
+
+                local r,g,b= C_Item.GetItemQualityColor(itemQuality or 1)
+                self.Name:SetTextColor(r or 1, g or 1, b or 1)
+            end
+
+            self.Name:SetText(itemName or '')
+            self.Icon:SetTexture(itemTexture or 0)
+            self.Count:SetText(bag or '')
+
+            WoWTools_ItemMixin:SetItemStats(btn, itemLink, {itemID=itemID, point=btn.Icon})
+        end
+
+        btn:SetScript('OnHide', function(self)
+            self.data= nil
+            self:settings()
+            self:UnregisterEvent('ITEM_DATA_LOAD_RESULT')
+        end)
+        btn:SetScript('OnShow', function(self)
+            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
+        end)
+        btn:SetScript('OnEvent', function(self, itemID, success)
+            if success and self.data and self.data.itemID== itemID then
+                self:settings()
+            end
+        end)
+
+    end
+    btn:settings()
+end
+
+
+
+
+
+
+
+local function Set_Left_List()
+    local data = CreateDataProvider()
+    local info= WoWTools_WoWDate[Frame.guid] and WoWTools_WoWDate[Frame.guid].Item or {}
+    for itemID, numInfo in pairs(info) do
+        data:Insert({
+            itemID= itemID,
+            bag= numInfo.bag or 0,
+            bank= numInfo.bank or 0,
+            quality= C_Item.GetItemQualityByID(itemID) or 1,
+        })
+    end
+
+    data:SetSortComparator(function(a, b)
+        return a.quality>b.quality
+    end)
+
+    Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Initializer(btn, data)
     local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
 
@@ -47,6 +147,7 @@ local function Initializer(btn, data)
             ..data.itemLevel
         )
     else
+
         btn.ItemLevelText:SetText('')
     end
 
@@ -100,6 +201,7 @@ local function Initializer(btn, data)
 
     --btn:SetAlpha(btn.itemLink and 1 or 0.5)
     btn.SelectBg:SetShown(data.guid==Frame.guid)
+    btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
 
 
     if btn:GetScript('OnMouseDown') then
@@ -110,6 +212,14 @@ local function Initializer(btn, data)
         Frame.guid= self.guid
         --Frame.ScrollBox:Update()
         Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
+        Set_Left_List()
+    end)
+
+    btn:SetScript('OnLeave', function(self)
+        self.Select:Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        self.Select:Show()
     end)
 end
 
@@ -126,37 +236,33 @@ end
 
 
 local function Sort_Order(a,b)
-    if a.faction==b.faction then
-        if a.itemLevel==b.itemLevel then
-            if a.score==b.score then
-                if a.weekNum== b.weekNum then
-                    if not b.itemLink or not a.itemLink then
-                        return a.itemLink and true or false
-                    else
-                        return a.weekLevel> b.weekLevel
-                    end
-                else
-                    return a.weekNum> b.weekNum
-                end
-            else
-                return a.score>b.score
-            end
-        else
-            return a.itemLevel>b.itemLevel
-        end
+    if a.faction==WoWTools_DataMixin.Player.Faction and b.faction~=WoWTools_DataMixin.Player.Faction
+        or a.itemLevel>b.itemLevel
+        or a.score>b.score
+        or a.weekLevel> b.weekLevel
+        or a.weekNum> b.weekNum
+        or (a.itemLink and not b.itemLink)
+
+    then
+        return true
     else
-        return a.faction==WoWTools_DataMixin.Player.Faction
+        return false
     end
 end
 
 
 
 
+
+
+
+
+
 local function Set_List()
     local findText= (Frame.SearchBox:GetText() or ''):upper()
-
     local isFind= findText~=''
     local num=0
+    local findData
 
     local data = CreateDataProvider()
     for guid, info in pairs(WoWTools_WoWDate) do
@@ -173,8 +279,7 @@ local function Set_List()
                 or (cnLink and cnLink:upper():find(findText))
                 or fullName:upper():find(findText)
         ) or not isFind then
-
-            data:Insert({
+            local insertData=  {
                 guid=guid,
                 name= fullName,
                 faction=info.faction,
@@ -193,7 +298,14 @@ local function Set_List()
                 battleTag= info.battleTag,
                 specID= info.specID or 0,
                 itemLevel= info.itemLevel or 0
-            })
+            }
+
+            data:Insert(insertData)
+            
+
+            if not Frame.guid and guid==WoWTools_DataMixin.Player.GUID or Frame.guid==guid then
+                findData= insertData
+            end
         end
     end
 
@@ -205,53 +317,78 @@ local function Set_List()
     Frame.SearchBox:SetShown(num>5)
     Frame.Menu:SetShown(num>0)
     Frame.NumLabel:SetText(num>0 and num or '')
+
+--转到以前，指定位置
+    if findData then
+        Frame.ScrollBox:ScrollToElementData(findData)
+    end
+
+--刷新，列表
+    if Frame.guid then
+        Set_Left_List()
+    end
 end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 
 local function Init_Menu(self, root)
-    
+
 end
 
 
-local function Init_List()
 
+
+
+
+
+
+
+
+
+
+local function Init_List()
     Frame= WoWTools_FrameMixin:Create(nil, {
         name='WoWToolsWoWItemListFrame',
         header= WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
     })
 
     Frame:SetScript('OnHide', function(self)
-        self:UnregisterAllEvents()
-        self.view:SetDataProvider(CreateDataProvider())
+        --self:UnregisterAllEvents()
+        local data= CreateDataProvider()
+        self.view:SetDataProvider(data)
+        self.view2:SetDataProvider(data)
     end)
 
-    Frame:SetScript('OnShow', function(self)
-        self:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
-        self:RegisterEvent('BAG_UPDATE_DELAYED')
+    Frame:SetScript('OnShow', function()
+        --self:RegisterEvent('CHALLENGE_MODE_MAPS_UPDATE')
+        --self:RegisterEvent('BAG_UPDATE_DELAYED')
         Set_List()
     end)
-    Frame:SetScript('OnEvent', function()
+    --[[Frame:SetScript('OnEvent', function()
         Set_List()
-    end)
-
-
+    end)]]
 
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollBox:SetPoint('TOPRIGHT', -28, -55)
-    Frame.ScrollBox:SetPoint('BOTTOMLEFT', Frame, 'BOTTOM', 0, 6)
-    
+    Frame.ScrollBox:SetPoint('BOTTOMLEFT', Frame, 'BOTTOM', 0, 13)
+
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar:SetPoint("TOPLEFT", Frame.ScrollBox, "TOPRIGHT", 6, -12)
     Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame.ScrollBox, "BOTTOMRIGHT", 6, 12)
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
 
-    
-
-
-
---SearchBox
     Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
         isSearch=true,
     })
@@ -278,10 +415,6 @@ local function Init_List()
         self:SetAlpha(self:HasFocus() and 1 or 0.3)
     end)
 
-
-
-
-
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', function(...) Initializer(...) end)
@@ -295,12 +428,45 @@ local function Init_List()
         Init_Menu(...)
     end)
 
-
 --数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
     Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
 
 
+
+
+
+
+
+
+
+
+
+    Frame.ScrollBox2= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
+    Frame.ScrollBox2:SetPoint('TOPLEFT', 13, -55)
+    Frame.ScrollBox2:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOM', -23, 13)
+
+    Frame.ScrollBar2= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
+    Frame.ScrollBar2:SetPoint("TOPLEFT", Frame.ScrollBox2, "TOPRIGHT", 6, -12)
+    Frame.ScrollBar2:SetPoint("BOTTOMLEFT", Frame.ScrollBox2, "BOTTOMRIGHT", 6, 12)
+    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar2)--, true)
+
+    Frame.view2 = CreateScrollBoxListLinearView()
+    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox2, Frame.ScrollBar2, Frame.view2)
+    Frame.view2:SetElementInitializer('SmallItemButtonTemplate', function(...) Init_Left_Button(...) end)
+
+
+
+
+
+
+--加载，物品数据
+    --[[for _, info in pairs(WoWTools_WoWDate) do
+        WoWTools_Mixin:Load({itemLink=info.Keystone.link, type='item'})
+        for itemID in pairs(info.Item) do
+            WoWTools_Mixin:Load({id=itemID, type='item'})
+        end
+    end]]
 
     Init_List=function()
         Frame:SetShown(not Frame:IsShown())
@@ -352,9 +518,10 @@ local function Init()
     end)
     WoWTools_TextureMixin:SetButton(btn)
 
-    if WoWTools_DataMixin.Player.husandro then
-        Init_List()
-    end
+
+
+    Init_List()
+
 
     Init=function()end
 end

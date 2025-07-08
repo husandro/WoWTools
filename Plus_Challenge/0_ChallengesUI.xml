@@ -10,12 +10,38 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
     <Scripts>
         <OnLeave>
             self.Select:Hide()
-            --self:SetAlpha(self.itemLink and 1 or 0.5)
+            self:SetAlpha(self.itemLink and 1 or 0.5)
         </OnLeave>
         <OnEnter>
             self.Select:Show()
-            --self:SetAlpha(1)
+            self:SetAlpha(1)
         </OnEnter>
+
+        <OnHide>
+            self.itemLink= nil
+            self.battleTag= nil
+            self.specID= nil
+            self.itemLevel= nil
+            self.guid= nil
+
+            self.Name:SetText('')
+            self.AffixText:SetText('')
+            self.ItemLevelText:SetText('')
+            self.Name2:SetText('')
+            self.RaidText:SetText('')
+            self.DungeonText:SetText('')
+            self.WorldText:SetText('')
+            self.PvPText:SetText('')
+
+            self.ScoreText:SetText('')
+            self.WeekNumText:SetText('')
+            self.WeekLevelText:SetText('')
+
+            self.Icon:SetTexture(0)
+            self.Class:SetTexture(0)
+            self.Spec:SetTexture(0)
+            self.Background:SetTexture(0)
+        </OnHide>
     </Scripts>
 
     <Layers>
