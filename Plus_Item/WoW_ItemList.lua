@@ -801,7 +801,7 @@ end
 function WoWTools_ItemMixin:OpenWoWItemListMenu(frame, root)--战团，物品列表
     root:CreateButton(
         WoWTools_DataMixin.Icon.wow2
-        ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)),
+        ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)),
     function()
         Init_List()
         return MenuResponse.Open
