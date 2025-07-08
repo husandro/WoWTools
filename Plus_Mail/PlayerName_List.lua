@@ -177,7 +177,7 @@ local function Init_Guild(root)
     local sub
     local num=0
     for index=1, GetNumGuildMembers() do
-        local name, rankName, rankIndex, lv, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
+        local name, rankName, rankIndex, lv, _, _, _, _, isOnline, _, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)
         --if name and guid and (isOnline or rankIndex<2 or (Save().show['GUILD'] and num<60)) and not WoWTools_WoWDate[guid] then
         if name and guid and (isOnline or rankIndex<2 or Save().show['GUILD']) and not WoWTools_WoWDate[guid] and not WoWTools_MailMixin:GetRealmInfo(name) then
             local text= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true, level=lv})--角色信息

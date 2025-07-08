@@ -44,10 +44,10 @@ local function Chat_Affix()
         return
     end
 
-    local chat, name,_, filedataid
+    local chat
 
     for _, affixID  in pairs(select(2, C_ChallengeMode.GetActiveKeystoneInfo()) or {}) do
-        name,_, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
+        local name,_, filedataid = C_ChallengeMode.GetAffixInfo(affixID)
         if filedataid == 136177 then--赏金
             C_Timer.After(6, Affix_136177)
             return

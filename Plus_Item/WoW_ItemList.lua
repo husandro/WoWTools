@@ -23,7 +23,7 @@ local function Init_Left_Button(btn, data)
         btn.Name:SetPoint('RIGHT')
 
         function btn:settings()
-            local itemName, itemName, itemLink, itemQuality, itemTexture
+            local itemName, itemLink, itemQuality, itemTexture, _
             local itemID= self.data and self.data.itemID
             local bag= itemID and data.bag
 

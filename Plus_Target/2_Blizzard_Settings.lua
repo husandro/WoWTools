@@ -314,9 +314,9 @@ local function Init_Options()
         end
 
         local num=0
-        local sub, isAtlas, _, icon
+        local sub
         for name, use in pairs(get_texture_tab()) do
-            isAtlas, _, icon= WoWTools_TextureMixin:IsAtlas(name, 128)
+            local isAtlas, _, icon= WoWTools_TextureMixin:IsAtlas(name, 128)
             if icon then
                 sub=root:CreateRadio(
                     (use=='use' and '|cnGREEN_FONT_COLOR:' or '')

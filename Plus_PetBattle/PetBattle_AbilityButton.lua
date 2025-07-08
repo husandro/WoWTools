@@ -47,7 +47,7 @@ local function AbilityButton_UpdateTypeTips(self)
     if not petIndex then
         return
     end
-    local typeTexture, strongTexture, weakHintsTexture, maxCooldown, petType, noStrongWeakHints, abilityID, texture, _
+    local typeTexture, strongTexture, weakHintsTexture, maxCooldown, petType, noStrongWeakHints, abilityID, _
     if petIndex and not Save().AbilityButton.disabled then
         abilityID, _, _, maxCooldown, _, _, petType, noStrongWeakHints = C_PetBattles.GetAbilityInfo(self.petOwner, petIndex, self.abilityIndex)
     end
@@ -118,7 +118,7 @@ local function AbilityButton_Update(self)
     local show= false
     local enemyOwner= PetBattleUtil_GetOtherPlayer(petOwner)-- petOwner==Enum.BattlePetOwner.Enemy and Enum.BattlePetOwner.Ally or Enum.BattlePetOwner.Enemy
     local enemyIndex= C_PetBattles.GetActivePet(enemyOwner)
-    local abilityID, _, texture, _, _, _, allyType = C_PetBattles.GetAbilityInfo(petOwner, petIndex, abilityIndex)
+    local _, _, texture, _, _, _, allyType = C_PetBattles.GetAbilityInfo(petOwner, petIndex, abilityIndex)
  	local enemyType = enemyIndex and C_PetBattles.GetPetType(enemyOwner, enemyIndex)
     if allyType and enemyType then
         local modifier = C_PetBattles.GetAttackModifier(allyType, enemyType) or 1

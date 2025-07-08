@@ -296,7 +296,7 @@ local function Guild_Player_List(_, root)
 
     local map=WoWTools_MapMixin:GetUnit('player')
     local maxLevel= GetMaxLevelForLatestExpansion()
-    local name, rankName, rankIndex, level, zone, publicNote, officerNote, isOnline, status, guid
+    local name, rankName, rankIndex, level, zone, publicNote, officerNote, isOnline, status, guid, _
 
     for index=1, total, 1 do
         name, rankName, rankIndex, level, _, zone, publicNote, officerNote, isOnline, status, _, _, _, _, _, _, guid = GetGuildRosterInfo(index)

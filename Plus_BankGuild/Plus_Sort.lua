@@ -16,7 +16,7 @@ local function Init(self)
     local saveItemSeconds= (Save().saveItemSeconds or 0.8)+0.2
     local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
 
-    local find, itemLink, itemQuality, itemTexture, classID, subclassID
+    local find, itemLink, itemQuality, itemTexture, classID, subclassID, _
     local isRightToLeft= Save().sortRightToLeft
 
     local items = {}
@@ -26,7 +26,7 @@ local function Init(self)
     for slot = 1, MAX_GUILDBANK_SLOTS_PER_TAB do
         itemLink = GetGuildBankItemLink(currentIndex, slot)
         if itemLink then
-            _, _, itemQuality, _, _, _, _, _, _, itemTexture, _, classID, subclassID, _, _, _, _= C_Item.GetItemInfo(itemLink)
+            _, _, itemQuality, _, _, _, _, _, _, itemTexture, _, classID, subclassID= C_Item.GetItemInfo(itemLink)
             table.insert(items, {
                 slot = slot,
                 link = itemLink,

@@ -107,7 +107,7 @@ end
 
 --GetLink
 function WoWTools_CurrencyMixin:GetLink(currencyID, index, link, isCN)
-    local info
+    local info, _
     info, _, link = get_info(currencyID, index, link)
     if link and isCN and info and info.name then
         local cnName= WoWTools_TextMixin:CN(info.name)

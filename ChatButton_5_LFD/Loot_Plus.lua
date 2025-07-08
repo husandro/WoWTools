@@ -142,7 +142,7 @@ local function Init()
             btn.itemSubTypeLabel:SetText(text or '')
         end
     end
-    hooksecurefunc(LootHistoryElementMixin, 'Init', set_LootFrame_btn)
+    hooksecurefunc(LootHistoryElementMixin, 'Init', function(...) set_LootFrame_btn(...) end)
     hooksecurefunc(GroupLootHistoryFrame.ScrollBox, 'SetScrollTargetOffset', function(self)
         if not self:GetView() then
             return
