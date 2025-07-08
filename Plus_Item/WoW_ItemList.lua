@@ -345,19 +345,25 @@ local function Set_List()
 
     local data = CreateDataProvider()
     for guid, info in pairs(WoWTools_WoWDate) do
-        num= num+1
 
-        local itemLink, fullName, cnLink, realm
+
+        local itemLink, fullName, cnLink, realm, class, cnClass, faction, cnFaction, _
 
         itemLink= info.Keystone.link
         fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
 
         if isFind then
             cnLink= WoWTools_HyperLink:CN_Link(itemLink, {isName=true})
-            cnLink= cnLink~=itemLink and cnLink and cnLink:upper() or nil
-            realm= select(7, GetPlayerInfoByGUID(guid))
+            cnLink= cnLink~=itemLink and cnLink or nil
+
+            class, _, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
             realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
-            realm= realm:upper()
+
+            cnClass= WoWTools_TextMixin:CN(class)
+            cnClass= cnClass~=class and cnClass or nil
+
+            faction= info.faction
+            cnFaction= WoWTools_TextMixin:CN(faction)
         end
 
 
@@ -366,7 +372,12 @@ local function Set_List()
                 itemLink and itemLink:upper():find(findText)
                 or (cnLink and cnLink:upper():find(findText))
                 or fullName:upper():find(findText)
-                or realm==findText
+                or (realm and realm:upper()==findText)
+                or (class and class:upper():find(findText))
+                or (cnClass and cnClass:upper():find(findText))
+                or (cnFaction and cnFaction:upper():find(findText))
+                or (faction and faction:upper():find(findText))
+
         ) or not isFind then
             local insertData=  {
                 guid=guid,
@@ -391,7 +402,8 @@ local function Set_List()
 
             data:Insert(insertData)
 
-
+            num= num+1
+            
             if not Frame.guid and guid==WoWTools_DataMixin.Player.GUID or Frame.guid==guid then
                 findData= insertData
             end
@@ -433,6 +445,88 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
+end
+
+
+
+
+
+local function Init_IsMe_Menu(_, root)
+    root:CreateButton(
+        WoWTools_DataMixin.Icon.Player
+        ..WoWTools_DataMixin.Player.col
+        ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
+    function()
+        Frame.SearchBox:SetText(UnitName('player'))
+        return MenuResponse.Open
+    end)
+
+
+    local s, c= {}, {}
+    local bl, lm= 0, 0
+    for guid, tab in pairs(WoWTools_WoWDate) do
+        local class, englishClass, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
+        realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
+
+        s[realm]= (s[realm] or 0)+1
+
+        c[class]= {
+            num=(c[class] and c[class].num or 0)+1,
+            icon= WoWTools_UnitMixin:GetClassIcon(nil, nil, englishClass) or '',
+            col= select(5, WoWTools_UnitMixin:GetColor(nil, nil, englishClass)) or ''
+        }
+
+        if tab.faction=='Alliance' then
+            lm= lm+1
+        elseif tab.faction=='Horde' then
+            bl= bl+1
+        end
+
+    end
+
+    root:CreateDivider()
+    for realm, num in pairs(s) do
+        root:CreateButton(
+            (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:' or '')
+            ..realm..' #'..num,
+        function(data)
+            Frame.SearchBox:SetText(data.realm)
+            return MenuResponse.Open
+        end, {realm=realm})
+    end
+
+    root:CreateDivider()
+    for class, tab in pairs(c) do
+        root:CreateButton(
+            tab.icon
+            ..tab.col
+            ..WoWTools_TextMixin:CN(class)
+            ..' #'
+            ..tab.num,
+        function(data)
+            Frame.SearchBox:SetText(data.class)
+            return MenuResponse.Open
+        end, {class=class})
+    end
+
+    root:CreateDivider()
+    root:CreateButton(
+        '|A:communities-create-button-wow-horde:0:0|a|cffff2834'
+        ..(WoWTools_DataMixin.onlyChinese and '部落' or FACTION_HORDE)
+        ..' #'..bl,
+    function()
+        Frame.SearchBox:SetText('Horde')
+        return MenuResponse.Open
+    end)
+
+    root:CreateButton(
+        '|A:communities-create-button-wow-alliance:0:0|a|cff00adf0'
+        ..(WoWTools_DataMixin.onlyChinese and '联盟' or FACTION_ALLIANCE)
+        ..' #'..lm,
+    function()
+        Frame.SearchBox:SetText('Alliance')
+        return MenuResponse.Open
+    end)
 end
 
 
@@ -505,35 +599,10 @@ local function Init_List()
         if d=='LeftButton' then
             Frame.SearchBox:SetText(UnitName('player'))
         else
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                root:CreateButton(
-                    WoWTools_DataMixin.Icon.Player
-                    ..WoWTools_DataMixin.Player.col
-                    ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
-                function()
-                    Frame.SearchBox:SetText(UnitName('player'))
-                    return MenuResponse.Open
-                end)
-
-                local ser= {[WoWTools_DataMixin.Player.realm]=0}
-                for guid in pairs(WoWTools_WoWDate) do
-                    local realm= select(7, GetPlayerInfoByGUID(guid))
-                    realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
-                    ser[realm]= (ser[realm] or 0)+1
-                end
-
-                for realm, num in pairs(ser) do
-                    root:CreateButton(
-                        (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:' or '')
-                        ..realm..' #'..num,
-                    function(data)
-                        Frame.SearchBox:SetText(data.realm)
-                        return MenuResponse.Open
-                    end, {realm=realm})
-                end
+            MenuUtil.CreateContextMenu(self, function(...)
+                Init_IsMe_Menu(...)
             end)
         end
-        
     end)
 
     Frame.Menu= WoWTools_ButtonMixin:Menu(Frame, {
@@ -548,7 +617,6 @@ local function Init_List()
 --数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
     Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
-
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
