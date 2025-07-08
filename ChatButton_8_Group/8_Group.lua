@@ -575,9 +575,7 @@ local function Init()
     end
 
 
-    GroupButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    GroupButton:SetupMenu(Init_Menu)
 
     function GroupButton:chat_Up_down(d)
         local text

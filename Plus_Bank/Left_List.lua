@@ -70,7 +70,7 @@ end
 
 
 local function Init_Button_Menu(self, root)
-    if not self.classID then
+    if not self.classID or not self:IsMouseOver() then
         return
     end
 
@@ -181,11 +181,7 @@ local function Create_ListButton(index)
     btn:SetScript('OnMouseDown', btn.set_tooltip)
     btn:SetScript('OnHide', btn.rest)
 
-    btn:SetupMenu(function(f, ...)
-        if f:IsVisible() then
-            Init_Button_Menu(f, ...)
-        end
-    end)
+    btn:SetupMenu(Init_Button_Menu)
 
     table.insert(Buttons, btn)
     return btn

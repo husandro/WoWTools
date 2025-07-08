@@ -465,6 +465,10 @@ end
 
 
 local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     local sub
     sub=root:CreateCheckbox(
         'Plus',
@@ -545,11 +549,7 @@ local function Init()
     local btn= WoWTools_ButtonMixin:Menu(ChallengesKeystoneFrame.CloseButton, {name='ChallengesKeystoneFrameWoWToolsMenu'})
     btn:SetPoint('RIGHT', ChallengesKeystoneFrame.CloseButton, 'LEFT')
 
-    btn:SetupMenu(function(self, ...)
-        if self:IsMouseOver() then
-            Init_Menu(self, ...)
-        end
-    end)
+    btn:SetupMenu(Init_Menu)
 
     KeyFrame= CreateFrame('Frame', nil, ChallengesKeystoneFrame.CloseButton)
     KeyFrame:SetFrameLevel(ChallengesKeystoneFrame.CloseButton:GetFrameLevel()+1)

@@ -476,9 +476,7 @@ local function Init_Button()
         self:set_tooltip()
     end)
 
-    ClickToMoveButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    ClickToMoveButton:SetupMenu(Init_Menu)
 
     ClickToMoveButton:Settings()
 

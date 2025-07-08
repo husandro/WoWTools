@@ -492,9 +492,7 @@ local function Init()
         GameTooltip:Show()
     end
 
-    SayButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    SayButton:SetupMenu(Init_Menu)
 
     function SayButton:set_OnMouseDown()
         if Save().type or Save().name then

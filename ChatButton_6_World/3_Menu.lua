@@ -250,7 +250,5 @@ end
 
 
 function WoWTools_WorldMixin:Init_Menu()
-    self.Button:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    self.Button:SetupMenu(Init_Menu)
 end

@@ -157,7 +157,6 @@ local function Set_Left_List()
             return a.quality>b.quality
         end
     end)
-
     Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
     Frame.NumLabel2:SetText(num or '')
 end
@@ -347,10 +346,11 @@ local function Set_List()
     for guid, info in pairs(WoWTools_WoWDate) do
 
 
-        local itemLink, fullName, cnLink, realm, class, cnClass, faction, cnFaction, _
+        local cnLink, realm, class, cnClass, faction, cnFaction, _
 
-        itemLink= info.Keystone.link
-        fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
+        local itemLink= info.Keystone.link
+        local fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
+        local battleTag= info.battleTag
 
         if isFind then
             cnLink= WoWTools_HyperLink:CN_Link(itemLink, {isName=true})
@@ -372,12 +372,18 @@ local function Set_List()
                     or WEEKLY_REWARDS_MYTHIC_KEYSTONE:upper()==findText
                 )
                 or (cnLink and cnLink:upper():find(findText))
+
                 or fullName:upper():find(findText)
+
                 or (realm and realm:upper()==findText)
+
                 or (class and class:upper():find(findText))
                 or (cnClass and cnClass:upper():find(findText))
-                or (cnFaction and cnFaction:upper():find(findText))
+
                 or (faction and faction:upper():find(findText))
+                or (cnFaction and cnFaction:upper():find(findText))
+
+                or (battleTag and battleTag:upper()==findText)
 
         ) or not isFind then
             local insertData=  {
@@ -396,7 +402,7 @@ local function Set_List()
                 world= info.Keystone.weekWorld,
                 pvp= info.Keystone.weekPvP,
 
-                battleTag= info.battleTag,
+                battleTag= battleTag,
                 specID= info.specID or 0,
                 itemLevel= info.itemLevel or 0
             }
@@ -412,9 +418,9 @@ local function Set_List()
     end
 
 
-    data:SetSortComparator(function(...) Sort_Order(...) end)
+    data:SetSortComparator(Sort_Order)
 
-    Frame.view:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
+    Frame.ScrollBox:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
     Frame.NumLabel:SetText(num or '')
 
 --转到以前，指定位置
@@ -452,7 +458,11 @@ end
 
 
 
-local function Init_IsMe_Menu(_, root)
+local function Init_IsMe_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     root:CreateButton(
         WoWTools_DataMixin.Icon.Player
         ..WoWTools_DataMixin.Player.col
@@ -461,7 +471,7 @@ local function Init_IsMe_Menu(_, root)
         Frame.SearchBox:SetText(UnitName('player'))
         return MenuResponse.Open
     end)
-    
+
     root:CreateButton(
         '|T525134:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE),
@@ -470,9 +480,9 @@ local function Init_IsMe_Menu(_, root)
         return MenuResponse.Open
     end)
 
-    local s, c= {}, {}
+    local s, c, b= {}, {}, {}
     local bl, lm= 0, 0
-    
+
     for guid, tab in pairs(WoWTools_WoWDate) do
         local class, englishClass, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
         realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
@@ -491,17 +501,29 @@ local function Init_IsMe_Menu(_, root)
             bl= bl+1
         end
 
+        b[tab.battleTag]= (b[tab.battleTag] or 0)+1
     end
 
     root:CreateDivider()
     for realm, num in pairs(s) do
         root:CreateButton(
-            (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:' or '')
+            '|A:tokens-guildRealmTransfer-small:0:0|a'
+            ..(WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:' or '')
             ..realm..' #'..num,
         function(data)
             Frame.SearchBox:SetText(data.realm)
             return MenuResponse.Open
         end, {realm=realm})
+    end
+    for battleTag, num in pairs(b) do
+        root:CreateButton(
+            '|A:tokens-WoW-generic-small:0:0|a'
+            ..(WoWTools_DataMixin.Player.BattleTag== battleTag and '|cnGREEN_FONT_COLOR:' or '')
+            ..battleTag..' #'..num,
+        function(data)
+            Frame.SearchBox:SetText(data.battleTag)
+            return MenuResponse.Open
+        end, {battleTag=battleTag})
     end
 
     root:CreateDivider()
@@ -554,14 +576,16 @@ end
 local function Init_List()
     Frame= WoWTools_FrameMixin:Create(nil, {
         name='WoWToolsWoWItemListFrame',
-        header= WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
+        header= WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
     })
 
     Frame:SetScript('OnHide', function(self)
-        --self:UnregisterAllEvents()
-        local data= CreateDataProvider()
-        self.view:SetDataProvider(data)
-        self.view2:SetDataProvider(data)
+        --local data= CreateDataProvider()
+        --self.view:SetDataProvider(data)
+        --self.view2:SetDataProvider(data)
+        self.ScrollBox:RemoveDataProvider()
+        self.ScrollBox2:RemoveDataProvider()
     end)
 
     Frame:SetScript('OnShow', function()
@@ -579,15 +603,15 @@ local function Init_List()
 
     Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
         isSearch=true,
-        text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
+        --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     })
-    Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 4, 2)
+    Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 24, 2)
     Frame.SearchBox:SetPoint('RIGHT', Frame, -55, 2)
     Frame.SearchBox:HookScript('OnTextChanged', function()
         Set_List()
     end)
 
-    Frame.IsMe= WoWTools_ButtonMixin:Cbtn(Frame, {
+    Frame.IsMe= WoWTools_ButtonMixin:Menu(Frame, {
         size=23,
         atlas= WoWTools_UnitMixin:GetClassIcon(nil, WoWTools_DataMixin.Player.GUID, nil, {reAtlas=true})
     })
@@ -598,15 +622,20 @@ local function Init_List()
     Frame.IsMe:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(
+        GameTooltip:SetText(
+            '|A:common-search-magnifyingglass:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+        )
+        --[[GameTooltip:AddDoubleLine(
             (WoWTools_DataMixin.onlyChinese and '转到我' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIEW, COMBATLOG_FILTER_STRING_ME))
             ..WoWTools_DataMixin.Icon.left,
             WoWTools_DataMixin.Icon.right
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
-        )
+        )]]
         GameTooltip:Show()
     end)
-    Frame.IsMe:SetScript('OnClick', function(self, d)
+    Frame.IsMe:SetupMenu(Init_IsMe_Menu)
+    --[[Frame.IsMe:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Frame.SearchBox:SetText(UnitName('player'))
         else
@@ -614,20 +643,21 @@ local function Init_List()
                 Init_IsMe_Menu(...)
             end)
         end
-    end)
+    end)]]
 
     Frame.Menu= WoWTools_ButtonMixin:Menu(Frame, {
         size=23,
-        icon='hide',
+        atlas='GM-icon-settings-hover'
     })
     Frame.Menu:SetPoint('LEFT', Frame.IsMe, 'RIGHT')
-    Frame.Menu:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    Frame.Menu:SetupMenu(Init_Menu)
+    WoWTools_TextureMixin:SetButton(Frame.Menu)
 
 --数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
+    --Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
+    Frame.NumLabel:SetPoint('RIGHT', Frame.SearchBox, 'LEFT', -6, 0)
+
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
@@ -668,13 +698,12 @@ local function Init_List()
         icon='hide',
     })
     Frame.Menu2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT')
-    Frame.Menu2:SetupMenu(function(...)
-        Init_Left_Menu(...)
-    end)
+    Frame.Menu2:SetupMenu(Init_Left_Menu)
 
 --数量
     Frame.NumLabel2= WoWTools_LabelMixin:Create(Frame, {color=true})
     Frame.NumLabel2:SetPoint('CENTER', Frame.Menu2)
+    --Frame.NumLabel2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT', -23, 0)
 
 
     Frame.view2 = CreateScrollBoxListLinearView()

@@ -495,9 +495,7 @@ end
 
 
 function WoWTools_PaperDollMixin:Init_Status_Menu(btn)
-    btn:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    btn:SetupMenu(Init_Menu)
 end
 
 function WoWTools_PaperDollMixin:Init_AttributesCategory_Menu()

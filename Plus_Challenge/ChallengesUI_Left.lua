@@ -499,9 +499,7 @@ local function Init()
     Frame.Menu:SetPoint('BOTTOMRIGHT', Frame, 'TOPRIGHT', 0,2)
     Frame.Menu:SetFrameStrata('HIGH')
     Frame.Menu:SetFrameLevel(3)
-    Frame.Menu:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    Frame.Menu:SetupMenu(Init_Menu)
 
 
 --数量

@@ -187,9 +187,7 @@ local function Init()
     MenuButton:SetFrameStrata(GuildBankFrame.CloseButton:GetFrameStrata())
     MenuButton:SetFrameLevel(GuildBankFrame.CloseButton:GetFrameLevel()+1)
 
-    MenuButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    MenuButton:SetupMenu(Init_Menu)
 
     RefreshButton=  WoWTools_ButtonMixin:Cbtn(MenuButton, {
         name='WoWToolsGuildBankRefreshButton',

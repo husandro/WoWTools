@@ -100,9 +100,7 @@ local function Init(frame)
     btn:SetFrameStrata(title:GetFrameStrata())
     btn:SetFrameLevel(title:GetFrameLevel()+1)
 
-    btn:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    btn:SetupMenu(Init_Menu)
 
     function btn:settings()
         self:SetAlpha(GameTooltip:IsOwned(self) and 1 or 0.3)

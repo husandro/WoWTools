@@ -188,7 +188,5 @@ end
 
 
 function WoWTools_AuctionHouseMixin:Sell_Setup_Menu(button)
-    button:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    button:SetupMenu(Init_Menu)
 end

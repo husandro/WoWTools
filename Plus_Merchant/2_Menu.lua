@@ -506,9 +506,7 @@ end
 local function Init()
     local btn= WoWTools_ButtonMixin:Menu(MerchantFrameCloseButton, {name='WoWTools_SellBuyMenuButton'})
     btn:SetPoint('RIGHT', MerchantFrameCloseButton, 'LEFT', -2, 0)
-    btn:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    btn:SetupMenu(Init_Menu)
 
 --显示背景
     --Set_ShowBackground()

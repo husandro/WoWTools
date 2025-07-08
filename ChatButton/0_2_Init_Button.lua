@@ -271,9 +271,7 @@ local function Init()
     ChatButton:set_point()
     ChatButton:set_scale()
     ChatButton:set_size()
-    ChatButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    ChatButton:SetupMenu(Init_Menu)
 end
 
 

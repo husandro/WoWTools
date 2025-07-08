@@ -312,14 +312,12 @@ local function Init()--好友列表, 初始化
     FriendsButton:SetPoint('RIGHT', FriendsFrameCloseButton, 'LEFT')
     FriendsButton:GetFrameStrata(FriendsFrameCloseButton:GetFrameStrata())
     FriendsButton:SetFrameLevel(FriendsFrameCloseButton:GetFrameLevel()+1)
-    FriendsButton:SetupMenu(function(...) Init_Friends_Menu(...) end)
+    FriendsButton:SetupMenu(Init_Friends_Menu)
 
     FriendsButton.playerRealmID = GetRealmID()
 
 --处理，好友，在线信息
-    FriendsButton:SetScript('OnEvent', function(...)
-        Set_Friend_Event(...)
-    end)
+    FriendsButton:SetScript('OnEvent', Set_Friend_Event)
 
 
     function FriendsButton:set_events()

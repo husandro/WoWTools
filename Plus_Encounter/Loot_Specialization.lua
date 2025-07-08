@@ -228,9 +228,7 @@ local function set_Loot_Spec(button)
     if not button.LootButton then
         button.LootButton= WoWTools_ButtonMixin:Menu(button, {isType2=true, size=26, icon='hide'})
         button.LootButton:SetPoint('LEFT', button, 'RIGHT', -3, 0)
-        button.LootButton:SetupMenu(function(...)
-            Init_Menu(...)
-        end)
+        button.LootButton:SetupMenu(Init_Menu)
 
         if not button.OnEnter then
             button:SetScript('OnLeave', GameTooltip_Hide)

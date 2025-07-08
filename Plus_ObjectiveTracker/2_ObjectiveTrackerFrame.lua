@@ -226,9 +226,7 @@ local function Init()
         )
         GameTooltip:Show()
     end)
-    MenuButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    MenuButton:SetupMenu(Init_Menu)
 
     MenuButton:SetScript('OnEvent', function(self, event)
         if event=='PLAYER_REGEN_DISABLED' then

@@ -284,9 +284,7 @@ local function Init()
         WoWTools_BagMixin:OpenBag(nil, true)
         C_Timer.After(0.3, function() BankFrame:Raise() end)
     end
-    OptionButton:SetupMenu(function(...)
-        Init_Menu(...)
-    end)
+    OptionButton:SetupMenu(Init_Menu)
 
 
     OptionButton:SetScript('OnLeave', GameTooltip_Hide)
