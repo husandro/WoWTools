@@ -327,7 +327,7 @@ local function Init()
 
     btn:rest_type()
     btn:set_text()
-    btn:SetupMenu(function(...) Init_UI_List_Menu(...) end)--过滤，列表，菜单    
+    btn:SetupMenu(Init_UI_List_Menu)--过滤，列表，菜单    
 end
 
 

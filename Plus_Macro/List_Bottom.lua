@@ -846,7 +846,7 @@ local function Init()
             btn.name= data.name
             btn.index= i
 
-            btn:SetupMenu(function(...) Init_SpellBook_Menu(...) end)
+            btn:SetupMenu(Init_SpellBook_Menu)
             Set_Button_OnEnter(btn)
             last= btn
         end
@@ -860,7 +860,7 @@ local function Init()
         })
     pvpButton:SetNormalAtlas('')
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
-    pvpButton:SetupMenu(function(...) Init_PvP_Menu(...) end)
+    pvpButton:SetupMenu(Init_PvP_Menu)
     pvpButton.name= WoWTools_DataMixin.onlyChinese and 'PvP天赋' or PVP_LABEL_PVP_TALENTS
     Set_Button_OnEnter(pvpButton)
     last=pvpButton
@@ -872,7 +872,7 @@ local function Init()
         name='WoWToolsMacroBottomListEquipButton',
     })
     equipButton:SetPoint('LEFT', last, 'RIGHT')
-    equipButton:SetupMenu(function(...) Init_Equip_Menu(...) end)
+    equipButton:SetupMenu(Init_Equip_Menu)
     equipButton.name= WoWTools_DataMixin.onlyChinese and '装备' or EQUIPSET_EQUIP
     Set_Button_OnEnter(equipButton)
     last=equipButton
@@ -885,7 +885,7 @@ local function Init()
     })
     spellchButton:SetPoint('LEFT', last, 'RIGHT')
     spellchButton.listTab= TextEmoteSpeechList
-    spellchButton:SetupMenu(function(...) Init_Chat_Menu(...) end)
+    spellchButton:SetupMenu(Init_Chat_Menu)
     spellchButton.name= WoWTools_DataMixin.onlyChinese and '谈话' or VOICEMACRO_LABEL
     Set_Button_OnEnter(spellchButton)
     last=spellchButton
@@ -898,7 +898,7 @@ local function Init()
         })
     emoteButton:SetPoint('LEFT', last, 'RIGHT')
     emoteButton.listTab= EmoteList
-    emoteButton:SetupMenu(function(...) Init_Chat_Menu(...) end)
+    emoteButton:SetupMenu(Init_Chat_Menu)
     emoteButton.name= WoWTools_DataMixin.onlyChinese and '表情' or EMOTE
     Set_Button_OnEnter(emoteButton)
     last= emoteButton
@@ -912,7 +912,7 @@ local function Init()
         name='WoWToolsMacroBottomListNormalButton'
     })
     macroListButton:SetPoint('LEFT', last, 'RIGHT')
-    macroListButton:SetupMenu(function(...) Init_MacroList_Menu(...) end)
+    macroListButton:SetupMenu(Init_MacroList_Menu)
 --设置
     function Frame:settings()
         self:SetScale(Save().bottomListScale or 1)

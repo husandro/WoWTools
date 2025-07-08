@@ -805,7 +805,11 @@ end
 
 
 --初始菜单
-local function Init_Menu(_, root)
+local function Init_Menu(self, root)
+    if not self:IsMouseOver() then
+        return
+    end
+
     local sub, sub2, sub3, num
     local isLeader, isTank, isHealer, isDPS = GetLFGRoles()--角色职责
     local tank, healer, dps
@@ -1232,6 +1236,6 @@ end
 
 
 
-function WoWTools_LFDMixin:Init_Menu(...)
-    Init_Menu(...)
+function WoWTools_LFDMixin:Init_Menu(btn)
+    btn:SetupMenu(Init_Menu)
 end

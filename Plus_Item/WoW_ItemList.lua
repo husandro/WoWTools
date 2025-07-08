@@ -782,8 +782,9 @@ local function Init()
     WoWTools_TextureMixin:SetButton(btn)
 
 
-
+if WoWTools_DataMixin.Player.husandro then
     Init_List()
+end
 
 
     Init=function()end

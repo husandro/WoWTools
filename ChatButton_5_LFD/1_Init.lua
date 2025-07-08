@@ -54,11 +54,8 @@ local function Init()
         GameTooltip:Show()
     end
 
-    LFDButton:SetupMenu(function(self, ...)
-        if self:IsMouseOver() then
-            WoWTools_LFDMixin:Init_Menu(self, ...)
-        end
-    end)
+    WoWTools_LFDMixin:Init_Menu(LFDButton)
+   
 
     function LFDButton:set_OnMouseDown()
         if self.dungeonID then
