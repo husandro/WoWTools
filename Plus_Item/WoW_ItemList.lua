@@ -63,7 +63,7 @@ local function Set_Left_Button(btn)
             itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
 
             wow= WoWTools_ItemMixin:GetWoWCount(itemID)
-            wow= wow>0 and wow or nil
+            wow= wow>0 and WoWTools_Mixin:MK(wow, 3) or nil
 
             local r,g,b= C_Item.GetItemQualityColor(itemQuality or 1)
             self.Name:SetTextColor(r or 1, g or 1, b or 1)
@@ -366,10 +366,11 @@ local function Set_List()
             cnFaction= WoWTools_TextMixin:CN(faction)
         end
 
-
-
         if isFind and (
-                itemLink and itemLink:upper():find(findText)
+                itemLink and (
+                    itemLink:upper():find(findText)
+                    or WEEKLY_REWARDS_MYTHIC_KEYSTONE:upper()==findText
+                )
                 or (cnLink and cnLink:upper():find(findText))
                 or fullName:upper():find(findText)
                 or (realm and realm:upper()==findText)
@@ -403,7 +404,7 @@ local function Set_List()
             data:Insert(insertData)
 
             num= num+1
-            
+
             if not Frame.guid and guid==WoWTools_DataMixin.Player.GUID or Frame.guid==guid then
                 findData= insertData
             end
@@ -460,10 +461,18 @@ local function Init_IsMe_Menu(_, root)
         Frame.SearchBox:SetText(UnitName('player'))
         return MenuResponse.Open
     end)
-
+    
+    root:CreateButton(
+        '|T525134:0|t'
+        ..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE),
+    function()
+        Frame.SearchBox:SetText(WEEKLY_REWARDS_MYTHIC_KEYSTONE)
+        return MenuResponse.Open
+    end)
 
     local s, c= {}, {}
     local bl, lm= 0, 0
+    
     for guid, tab in pairs(WoWTools_WoWDate) do
         local class, englishClass, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
         realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
@@ -527,6 +536,8 @@ local function Init_IsMe_Menu(_, root)
         Frame.SearchBox:SetText('Alliance')
         return MenuResponse.Open
     end)
+
+    WoWTools_MenuMixin:SetScrollMode(root)
 end
 
 
