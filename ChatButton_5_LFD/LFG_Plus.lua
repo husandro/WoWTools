@@ -163,7 +163,7 @@ local function Init_LFGListSearchEntry_Update(self)
     for i = 1, 5 do
         local class, specLocalized, isLeader
         if orderIndexes[i] then
-            class= WoWTools_UnitMixin:GetClassIcon(nil, nil, orderIndexes[i][2], {reAltlas=true})
+            class= WoWTools_UnitMixin:GetClassIcon(nil, nil, orderIndexes[i][2], {reAtlas=true})
             specLocalized= orderIndexes[i][3]
             isLeader= orderIndexes[i][4]
         end

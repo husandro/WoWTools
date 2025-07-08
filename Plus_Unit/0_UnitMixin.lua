@@ -371,7 +371,7 @@ end
 function WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, tab)
     tab= tab or {}
 
-    local reAltlas= tab.reAltlas
+    local reAtlas= tab.reAtlas
     local size= tab.size or 0
 
     if not classFilename then
@@ -388,7 +388,7 @@ function WoWTools_UnitMixin:GetClassIcon(unit, guid, classFilename, tab)
         else
             classFilename= 'groupfinder-icon-class-'..classFilename
         end
-        if reAltlas then
+        if reAtlas then
             return classFilename
         else
             return '|A:'..classFilename ..':'..size..':'..size..'|a'

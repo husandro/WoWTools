@@ -112,7 +112,7 @@ local function Init()
             colorTab[text]= true
             local texture= Create_Texture(
                 col.r, col.g, col.b, col.a,
-                WoWTools_UnitMixin:GetClassIcon(nil, nil, className, {reAltlas=true})
+                WoWTools_UnitMixin:GetClassIcon(nil, nil, className, {reAtlas=true})
             )
             texture:SetPoint('TOPLEFT', ColorPickerFrame, 'TOPRIGHT', x, y)
             texture.tooltip= 'RAID_CLASS_COLORS["'..className..'"]'

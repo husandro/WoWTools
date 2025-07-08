@@ -735,6 +735,9 @@ end
 
 function WoWTools_ItemMixin:GetWoWCount(itemID)--WoWTools_BagMixin:GetItem_WoW_Num()--取得WOW物品数量
     local all,numPlayer=0,0
+    if not itemID then
+        return 0, 0
+    end
     for guid, info in pairs(WoWTools_WoWDate) do
         if info.region==WoWTools_DataMixin.Player.Region and guid~=WoWTools_DataMixin.Player.GUID then
             if C_Item.IsItemKeystoneByID(itemID) and info.Keystone.link then--Keystone

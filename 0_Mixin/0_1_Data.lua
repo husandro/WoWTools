@@ -89,8 +89,8 @@ WoWTools_DataMixin.Player={
     Layer= nil, --位面数字
     Language={},--多语言，文本
 }
-for k, v in pairs(GetAutoCompleteRealms()) do
-    WoWTools_DataMixin.Player.Realms[v]=k
+for realmIndex, realmName in pairs(GetAutoCompleteRealms()) do
+    WoWTools_DataMixin.Player.Realms[realmName]=realmIndex
 end
 
 --zh= LOCALE_zhCN or LOCALE_zhTW,--GetLocale()== ("zhCN" or 'zhTW'),
