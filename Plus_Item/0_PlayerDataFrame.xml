@@ -19,6 +19,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             self.data= nil
 
             self.Name:SetText('')
+            self.BattleTag:SetText('')
             self.AffixText:SetText('')
             self.ItemLevelText:SetText('')
             self.ItemName:SetText('')
@@ -84,173 +85,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
         <Layer level="BORDER">
-            <Texture parentKey="Raid" atlas="worldquest-icon-raid" enableMouse="true">
-                <Size x="16" y="16"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" x="4" y="0"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-            <FontString parentKey="RaidText" inherits="ChatFontNormal">
-                <Anchors>
-                    <Anchor point="LEFT" relativeKey="$parent.Raid" relativePoint="RIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-            <Texture parentKey="Dungeon" atlas="questlog-questtypeicon-group" enableMouse="true">
-                <Size x="16" y="16"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.Raid" relativePoint="BOTTOMLEFT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-            <FontString parentKey="DungeonText" inherits="ChatFontNormal">
-                <Anchors>
-                    <Anchor point="LEFT" relativeKey="$parent.Dungeon" relativePoint="RIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-            <Texture parentKey="World" atlas="delves-bountiful" enableMouse="true">
-                <Size x="16" y="16"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.Dungeon" relativePoint="BOTTOMLEFT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '世界' or WORLD)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-            <FontString parentKey="WorldText" inherits="ChatFontNormal">
-                  <Anchors>
-                    <Anchor point="LEFT" relativeKey="$parent.World" relativePoint="RIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-            <Texture parentKey="PvP" atlas="CrossedFlags" enableMouse="true">
-                <Size x="16" y="16"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.World" relativePoint="BOTTOMLEFT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText('PvP')
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-            <FontString parentKey="PvPText" inherits="ChatFontNormal">
-                <Anchors>
-                    <Anchor point="LEFT" relativeKey="$parent.PvP" relativePoint="RIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-
-            <Texture parentKey="Item" atlas="poi-islands-table" enableMouse="true">
-                <Size x="16" y="16"/>
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.PvP" relativePoint="BOTTOMLEFT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '钥石' or CHALLENGE_MODE_KEYSTONE_NAME:format(''))
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-
-            
-
-            <FontString parentKey="ItemName" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true" wordwrap="false" >
-                <Anchors>
-                    <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                </Shadow>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.data.itemLink, owner=self})                        
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <Texture parentKey="Icon">
                 <Size x="36" y="36"/>
                 <Anchors>
@@ -311,18 +145,14 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                         self:SetAlpha(1)
                     </OnLeave>
                     <OnEnter>
-                        local battleTag= self:GetParent().data.battleTag
+                        lcoal data= self:GetParent().data
                         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG)
-                        if battleTag then
-                            local tag= WoWTools_DataMixin.Player.BattleTag~= battleTag and WoWTools_DataMixin.Player.BattleTag
-                            GameTooltip:AddLine((tag and '|cnRED_FONT_COLOR:' or '|cffffffff')..battleTag)
-                            if tag then
-                                GameTooltip:AddLine(
-                                    '|A:tokens-guildRealmTransfer-small:0:0|a'
-                                    ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
-                                )
-                            end
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or Name)
+                        local guid= data and data.guid
+                        if guid then
+                            local name, realmName = select(6, GetPlayerInfoByGUID(guid))
+                            GameTooltip:AddLine(name)
+                            GameTooltip:AddLine(realmName)
                         end                        
                         GameTooltip:Show()
                         self:SetAlpha(0.3)
@@ -441,9 +271,204 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Shadow>
             </FontString>
 
+            <Texture parentKey="Battle" atlas="gmchat-icon-blizz">
+                <Size x="12" y="12"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.WeekLevel" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local data= self:GetParent().data
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG)
+                        local battleTag= data and data.battleTag
+                        if battleTag then
+                            local tag= WoWTools_DataMixin.Player.BattleTag~= battleTag and WoWTools_DataMixin.Player.BattleTag
+                            GameTooltip:AddLine((tag and '|cnRED_FONT_COLOR:' or '|cffffffff')..battleTag)
+                            if tag then
+                                GameTooltip:AddLine(
+                                    '|A:tokens-guildRealmTransfer-small:0:0|a'
+                                    ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
+                                )
+                            end
+                        end
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="BattleTag" inherits="ChatFontNormal" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.Battle" relativePoint="LEFT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0.8" b="1"/>
+                </Shadow>
+            </FontString>
 
 
 
+
+
+
+
+            <Texture parentKey="Raid" atlas="worldquest-icon-raid" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" x="4" y="0"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '团队副本' or RAIDS)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="RaidText" inherits="ChatFontNormal">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Raid" relativePoint="RIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+            <Texture parentKey="Dungeon" atlas="questlog-questtypeicon-group" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Raid" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '地下城' or DUNGEONS)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="DungeonText" inherits="ChatFontNormal">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Dungeon" relativePoint="RIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+            <Texture parentKey="World" atlas="delves-bountiful" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Dungeon" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '世界' or WORLD)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="WorldText" inherits="ChatFontNormal">
+                  <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.World" relativePoint="RIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+            <Texture parentKey="PvP" atlas="CrossedFlags" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.World" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText('PvP')
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="PvPText" inherits="ChatFontNormal">
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.PvP" relativePoint="RIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+            <Texture parentKey="Item" atlas="poi-islands-table" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.PvP" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '钥石' or CHALLENGE_MODE_KEYSTONE_NAME:format(''))
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>            
+
+            <FontString parentKey="ItemName" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true" wordwrap="false" >
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.BattleTag" relativePoint="LEFT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="1" g="1" b="1"/>
+                </Shadow>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local parent= self:GetParent()
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.data.itemLink, owner=self})                        
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
 
 
 

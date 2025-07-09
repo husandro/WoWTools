@@ -109,7 +109,7 @@ local function SetScript_Left_Button(btn)
         self:SetAlpha(1)
     end)
     btn:SetScript('OnEnter', function(self)
-        WoWTools_SetTooltipMixin:Frame(self)
+        WoWTools_SetTooltipMixin:Frame(self, nil, {itemID=self.data.itemID})
         self:SetAlpha(0.5)
     end)
 end
@@ -310,6 +310,7 @@ local function Init_Right_List()
 --转到以前，指定位置
     if findData then
         Frame.ScrollBox:ScrollToElementData(findData)
+        --Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     end
 
 --刷新，列表
@@ -354,6 +355,9 @@ local function Settings_Right_Button(btn, data)
         )
     end
     btn.Name:SetTextColor(col.r, col.g, col.b)
+
+    btn.BattleTag:SetText(data.battleTag or '')
+
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
 
@@ -438,6 +442,9 @@ local function SetScript_Right_Button(btn)
     end
 
     btn:SetScript('OnMouseDown', function(self, d)
+        if not self.data then
+            return
+        end
         local guid= self.data.guid
         
         if d=='LeftButton' then
@@ -554,12 +561,20 @@ local function Init_IsMe_Menu(self, root)
         ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
     function()
         --Frame.SearchBox:SetText(UnitName('player'))
-        Frame.ScrollBox:ScrollToElementData(function(_,data)
+        Frame.SearchBox:SetText('')
+        if Frame.ScrollBox:ScrollToElementDataByPredicate(function(data)
             return data.guid== WoWTools_DataMixin.Player.GUID
         end)
+        then
+            Frame.guid= WoWTools_DataMixin.Player.GUID
+            Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
+            Init_Left_List()
+        end
+
         return MenuResponse.Open
     end)
 
+    root:CreateDivider()
     root:CreateButton(
         '|T525134:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '史诗钥石' or WEEKLY_REWARDS_MYTHIC_KEYSTONE),
@@ -592,7 +607,7 @@ local function Init_IsMe_Menu(self, root)
         b[tab.battleTag]= (b[tab.battleTag] or 0)+1
     end
 
-    root:CreateDivider()
+
     for realm, num in pairs(s) do
         root:CreateButton(
             '|A:tokens-guildRealmTransfer-small:0:0|a'
@@ -800,10 +815,10 @@ local function Init_List()
 
     Frame.view2 = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox2, Frame.ScrollBar2, Frame.view2)
-    Frame.view2:SetElementInitializer('SmallItemButtonTemplate', function(self, data)
-        SetScript_Left_Button(self)
-        self.data= data
-        Settings_Left_Button(self)
+    Frame.view2:SetElementInitializer('SmallItemButtonTemplate', function(btn, data)
+        btn.data= data
+        SetScript_Left_Button(btn)
+        Settings_Left_Button(btn)
     end)
 
 

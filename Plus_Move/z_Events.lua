@@ -1145,8 +1145,18 @@ end
 --StaticPopup 11.2才有
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
     for i=1, 4 do
-        self:Setup(_G['StaticPopup'..i], {
-            onShowFunc=true,
-        })
+        local dialog= _G['StaticPopup'..i]
+        if dialog then
+
+            self:Setup(_G['StaticPopup'..i], {
+                notSave=true,
+            })
+
+            --[[if dialog.SetupAnchor then
+                hooksecurefunc(dialog, 'SetupAnchor', function(f)
+                    self:SetPoint(f)
+                end)
+            end]]
+        end
     end
 end
