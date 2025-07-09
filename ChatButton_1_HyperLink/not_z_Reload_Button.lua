@@ -99,13 +99,13 @@ local function Init()
 
         self:AddSection()
 
-        local btn = self:AddButton(
+        --[[local btn = self:AddButton(
             WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI,
         function()
             WoWTools_Mixin:Reload()
         end)
 
-        Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
+        Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})]]
     end)
 
 

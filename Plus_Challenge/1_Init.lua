@@ -83,7 +83,7 @@ end]]
 local function Init()
     WoWTools_ChallengeMixin:ChallengesUI_Info()
     WoWTools_ChallengeMixin:ChallengesUI_Porta()
-    WoWTools_ChallengeMixin:ChallengesUI_Left()
+    --WoWTools_ChallengeMixin:ChallengesUI_Left()
     WoWTools_ChallengeMixin:ChallengesUI_Right()
     WoWTools_ChallengeMixin:ChallengesUI_Activities()
     WoWTools_ChallengeMixin:ChallengesUI_Affix()

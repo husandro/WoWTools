@@ -1249,7 +1249,7 @@ end
 
 
 
-
+--主菜单
 function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
     self:HideFrame(GameMenuFrame.Header)
     GameMenuFrame.Header.Text:ClearAllPoints()
@@ -1262,6 +1262,50 @@ function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
             btn:SetPoint('TOPLEFT', GameMenuFrame.Border)
         end
     })
+
+
+
+    local dataButton={--layoutIndex
+        [GAMEMENU_OPTIONS]= {'mechagon-projects', false},--选项
+        [HUD_EDIT_MODE_MENU]= {'UI-HUD-Minimap-CraftingOrder-Up', false},--编辑模式
+        [MACROS]= {'NPE_Icon', false},--宏命令设置
+
+        [ADDONS]= {'dressingroom-button-appearancelist-up', false},--插件
+        [LOG_OUT]= {'perks-warning-large', false, {0,0.8,1}},--登出
+        [EXIT_GAME]= {'Ping_Chat_Warning', false, {0,0.8,1}},--退出游戏
+        [RETURN_TO_GAME]= {'poi-traveldirections-arrow', true, {0,1,0}},--返回游戏
+    }
+    hooksecurefunc(GameMenuFrame, 'InitButtons', function(frame)
+        for btn in frame.buttonPool:EnumerateActive() do
+            local data= dataButton[btn:GetText()]
+            if data then
+                if  not btn.Texture then
+                    btn.Texture= btn:CreateTexture(nil, 'BORDER')
+                    btn.Texture:SetSize(26, 26)--200, 36
+                    btn.Texture:SetPoint('RIGHT', btn, 'LEFT', 6,0)
+                end
+                if btn.Texture then
+                    if data and data[1] then
+                        btn.Texture:SetAtlas(data[1])
+                    else
+                        btn.Texture:SetTexture(nil)
+                    end
+                    if data and data[2] then
+                        btn.Texture:SetTexCoord(1,0,1,0)
+                    end
+                end
+
+                local font= btn:GetFontString()
+                local r, g, b
+                if data[3] then
+                    r, g, b= data[3][1], data[3][2], data[3][3]
+                elseif data then
+                    r, g, b= 1, 1, 1
+                end
+                font:SetTextColor(r or 1, g or 0.82, b or 0)
+            end
+        end
+    end)
 end
 
 
@@ -1567,15 +1611,21 @@ function WoWTools_TextureMixin.Events:Blizzard_ObjectiveTracker()
     })
 end
 
---对话框
+--对话框 11.2没了
 function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Frame()
     self:SetFrame(StaticPopup1.Border, {notAlpha=true})
     self:SetAlphaColor(StaticPopup1.Border.Bg, true)
-
 end
 
-
-
+--11.2才有
+function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
+    for i=1, 4 do
+        local p= _G['StaticPopup'..i]
+        if p then
+            self:SetFrame(p.BG, {notAlpha=true})
+        end
+    end
+end
 
 
 

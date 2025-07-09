@@ -774,10 +774,6 @@ end
 
 
 
-local function Set_OnShow(self)
-
-end
-
 
 
 

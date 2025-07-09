@@ -109,8 +109,19 @@ local function Init_Guild_Menu(self, root)
 
 
 
+    sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '显示名单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, GUILD_TAB_ROSTER),
+    function()
+        return Save().showListName
+    end, function()
+        Save().showListName= not Save().showListName and true or nil
+    end)
+
+
+
 
     --公会信息
+    sub:CreateDivider()
     sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '公会信息' or GUILD_INFORMATION, function()
         return Save().guildInfo
     end, function()
@@ -280,6 +291,10 @@ end
 
 --公会在线列表
 local function Guild_Player_List(_, root)
+    if not Save().showListName then
+        return
+    end
+
     local total, online = GetNumGuildMembers()
     local showNotOnLine= Save().showNotOnLine
 
@@ -410,7 +425,7 @@ local function Init_Menu(self, root)
     Guild_Player_List(self, root)
 
 
-    WoWTools_MenuMixin:SetScrollMode(root)
+
 end
 
 

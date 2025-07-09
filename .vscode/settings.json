@@ -6000,7 +6000,8 @@
         "ManuscriptsJournalSearchBox",
         "ManuscriptsSkillLineManuscriptsTab",
         "ManuscriptsJournalProgressBar",
-        "SoulshapesJournalProgressBar"
+        "SoulshapesJournalProgressBar",
+        "GUILD_TAB_ROSTER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -539,7 +539,7 @@ local function Init_Menu(self, root)
     sub=WoWTools_MenuMixin:Reload(root, false)
 
 --添加按钮
-    sub2=sub:CreateCheckbox(
+    --[[sub2=sub:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '添加按钮' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, 'Button'),
     function ()
         return not Save().not_Add_Reload_Button
@@ -554,7 +554,7 @@ local function Init_Menu(self, root)
         tooltip:AddLine(' ')
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '主菜单' or MAINMENU_BUTTON)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '选项' or OPTIONS)
-    end)
+    end)]]
 end
 
 

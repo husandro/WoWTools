@@ -1139,3 +1139,14 @@ function WoWTools_MoveMixin.Events:Blizzard_ObjectiveTracker()
         frame=ObjectiveTrackerFrame,
     })
 end
+
+
+
+--StaticPopup 11.2才有
+function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
+    for i=1, 4 do
+        self:Setup(_G['StaticPopup'..i], {
+            onShowFunc=true,
+        })
+    end
+end

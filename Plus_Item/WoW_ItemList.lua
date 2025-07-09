@@ -4,16 +4,46 @@ local function Save()
 end
 
 local Frame
+local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.+)')
 
 
 
 
 
+local function Settings_Left_Button(self)
+    local itemID= self.data and self.data.itemID
+    local itemName, itemQuality, itemTexture, bag, bank, wow, _
+
+    if itemID then
+        itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
+
+        itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
+        itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
+
+        wow= WoWTools_ItemMixin:GetWoWCount(itemID)
+        wow= wow>0 and WoWTools_Mixin:MK(wow, 3) or nil
+
+        local r,g,b= C_Item.GetItemQualityColor(itemQuality or 1)
+        self.Name:SetTextColor(r or 1, g or 1, b or 1)
+
+        bag= itemID and self.data.bag
+        bank= itemID and self.data.bank
+    end
+
+    self.Name:SetText(itemName or '')
+    self.Icon:SetTexture(itemTexture or 0)
+    self.Count:SetText(bag and bag>0 and WoWTools_Mixin:MK(bag, 3) or '')
+    self.Count2:SetText(bank and bank>0 and WoWTools_Mixin:MK(bank, 3) or '')
+    self.Count3:SetText(wow or '')
+    self.BagTexture:SetShown(bag)
+    self.BankTexture:SetShown(bank)
+    self.WoWTexture:SetShown(wow)
+end
 
 
 
 
-local function Set_Left_Button(btn)
+local function SetScript_Left_Button(btn)
     if btn.Count2 then
        return
     end
@@ -56,43 +86,10 @@ local function Set_Left_Button(btn)
 
 
 
-    function btn:settings()
-        local itemName, itemQuality, itemTexture, _
-        local itemID= self.itemID
-        local wow
-        if itemID then
-            itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
-
-            itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
-            itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
-
-            wow= WoWTools_ItemMixin:GetWoWCount(itemID)
-            wow= wow>0 and WoWTools_Mixin:MK(wow, 3) or nil
-
-            local r,g,b= C_Item.GetItemQualityColor(itemQuality or 1)
-            self.Name:SetTextColor(r or 1, g or 1, b or 1)
-        end
-
-        local bag= self.bag and self.bag>0 and WoWTools_Mixin:MK(self.bag, 3)
-        local bank= self.bank and self.bank>0 and WoWTools_Mixin:MK(self.bank, 3)
-
-
-        self.Name:SetText(itemName or '')
-        self.Icon:SetTexture(itemTexture or 0)
-        self.Count:SetText(bag or '')
-        self.Count2:SetText(bank or '')
-        self.Count3:SetText(wow or '')
-        self.BagTexture:SetShown(bag)
-        self.BankTexture:SetShown(bank)
-        self.WoWTexture:SetShown(wow)
-        --self.Level:SetText(itemLevel or '')
-    end
 
     btn:SetScript('OnHide', function(self)
-        self.itemID= nil
-        self.bag= nil
-        self.bank= nil
-        self:settings()
+        self.data=nil
+        Settings_Left_Button(self)
         self:UnregisterEvent('ITEM_DATA_LOAD_RESULT')
     end)
 
@@ -102,8 +99,8 @@ local function Set_Left_Button(btn)
     end)
 
     btn:SetScript('OnEvent', function(self, _, itemID, success)
-        if success and self.itemID== itemID then
-            self:settings()
+        if success and self.data and self.data.itemID== itemID then
+            Settings_Left_Button(self)
         end
     end)
 
@@ -123,7 +120,10 @@ end
 
 
 
-local function Set_Left_List()
+
+
+
+local function Init_Left_List()
     local findText= (Frame.SearchBox2:GetText() or ''):upper()
     local isFind= findText~=''
     local findItemID= isFind and tonumber(findText)
@@ -169,140 +169,6 @@ end
 
 
 
-local function Init_Left_Menu(self, root)
-    if not self:IsMouseOver() then
-        return
-    end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-local function Initializer(btn, data)
-    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
-
---玩家，图标
-    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
-
---玩家，名称
-    if data.guid== WoWTools_DataMixin.Player.GUID then
-        btn.Name:SetText(
-            (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
-            ..'|A:CampCollection-icon-star:0:0|a'
-        )
-    else
-        local name= data.name or ''
-        btn.Name:SetText(
-            name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
-            ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
-                and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
-            )
-            ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
-        )
-    end
-    btn.Name:SetTextColor(col.r, col.g, col.b)
---职业
-    btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
-
---Affix
-    local affix= WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or ''
-    affix= affix:gsub(':0|t', ':17|t')
-    btn.AffixText:SetText(affix)
-
---专精，天赋
-    local sex=  select(5, GetPlayerInfoByGUID(data.guid))
-    btn.Spec:SetTexture(data.specID>0 and select(4, GetSpecializationInfoForSpecID(data.specID, sex)) or 0)
-
---装等
-    if data.itemLevel and data.itemLevel>0 then
-        local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
-        btn.ItemLevelText:SetText(
-            (item>6 and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
-            ..data.itemLevel
-        )
-    else
-
-        btn.ItemLevelText:SetText('')
-    end
-
---钥石，名称
-    local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
-    btn.Name2:SetText(
-        data.itemLink and
-        (
-            itemName~=data.itemLink and itemName
-            or WoWTools_TextMixin:CN(data.itemLink:match(CHALLENGE_MODE_KEYSTONE_NAME) or data.itemLink)
-        )
-        or ''
-    )
-
---背景
-    btn.Background:SetAtlas(
-        data.faction=='Alliance' and 'Campaign_Alliance'
-        or (data.faction=='Horde' and 'Campaign_Horde')
-        or 'StoryHeader-BG'
-    )
-
-    btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-    btn.DungeonText:SetText(data.mythic or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-    btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-    btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-
---分数
-    btn.ScoreText:SetText(
-        WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
-        or ''
-    )
---本周次数
-    btn.WeekNumText:SetText(
-        data.weekNum==0 and '' or data.weekNum
-    )
-
---本周最高
-    btn.WeekLevelText:SetText(
-        data.weekLevel==0 and '' or data.weekLevel
-    )
-
---背景
-    btn.Background:SetAlpha(0.75)
-
---数据
-    btn.itemLink= data.itemLink
-    btn.battleTag= data.battleTag
-    btn.specID= data.specID
-    btn.itemLevel= data.itemLevel
-    btn.guid= data.guid
-
-    --btn:SetAlpha(btn.itemLink and 1 or 0.5)
-    btn.SelectBg:SetShown(data.guid==Frame.guid)
-    btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
-
-
-    if btn:GetScript('OnMouseDown') then
-        return
-    end
-
-    btn:SetScript('OnMouseDown', function(self)
-        Frame.guid= Frame.guid~=self.guid and self.guid or nil
-        Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
-        Set_Left_List()
-    end)
-
-    btn:SetScript('OnLeave', function(self)
-        self.Select:Hide()
-    end)
-    btn:SetScript('OnEnter', function(self)
-        self.Select:Show()
-    end)
-end
 
 
 
@@ -325,7 +191,30 @@ end
 
 
 
-local function Set_List()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Right_List()
     local findText= (Frame.SearchBox:GetText() or ''):upper()
     local isFind= findText~=''
     local num=0
@@ -425,7 +314,7 @@ local function Set_List()
 
 --刷新，列表
     if Frame.guid then
-        Set_Left_List()
+        Init_Left_List()
     end
 end
 
@@ -442,13 +331,209 @@ end
 
 
 
+local function Settings_Right_Button(btn, data)
+    local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
 
-local function Init_Menu(self, root)
+--玩家，图标
+    btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
+
+--玩家，名称
+    if data.guid== WoWTools_DataMixin.Player.GUID then
+        btn.Name:SetText(
+            (WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
+            ..'|A:CampCollection-icon-star:0:0|a'
+        )
+    else
+        local name= data.name or ''
+        btn.Name:SetText(
+            name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
+            ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
+                and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
+            )
+            ..format('|A:%s:0:0|a', WoWTools_DataMixin.Icon[data.faction] or '')
+        )
+    end
+    btn.Name:SetTextColor(col.r, col.g, col.b)
+--职业
+    btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
+
+--Affix
+    local affix= WoWTools_HyperLink:GetKeyAffix(data.itemLink, nil) or ''
+    affix= affix:gsub(':0|t', ':17|t')
+    btn.AffixText:SetText(affix)
+
+--专精，天赋
+    local sex=  select(5, GetPlayerInfoByGUID(data.guid))
+    btn.Spec:SetTexture(data.specID>0 and select(4, GetSpecializationInfoForSpecID(data.specID, sex)) or 0)
+
+--装等
+    if data.itemLevel and data.itemLevel>0 then
+        local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
+        btn.ItemLevelText:SetText(
+            (item>6 and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+            ..data.itemLevel
+        )
+    else
+
+        btn.ItemLevelText:SetText('')
+    end
+
+--钥石，名称
+    local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
+    if itemName then
+        itemName= itemName:match('%[(.-)]') or itemName
+        itemName= itemName:match(CHALLENGE_MODE_KEYSTONE_NAME) or itemName:match('钥石：(.+)') or itemName:match('钥石: (.+)') or itemName
+    end
+    btn.ItemName:SetText(itemName or '')
+
+--背景
+    btn.Background:SetAtlas(
+        data.faction=='Alliance' and 'Campaign_Alliance'
+        or (data.faction=='Horde' and 'Campaign_Horde')
+        or 'StoryHeader-BG'
+    )
+
+    btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.DungeonText:SetText(data.mythic or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+
+--分数
+    btn.ScoreText:SetText(
+        WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
+        or ''
+    )
+--本周次数
+    btn.WeekNumText:SetText(
+        data.weekNum==0 and '' or data.weekNum
+    )
+
+--本周最高
+    btn.WeekLevelText:SetText(
+        data.weekLevel==0 and '' or data.weekLevel
+    )
+
+--背景
+    btn.Background:SetAlpha(0.75)
+
+
+    btn.SelectBg:SetShown(data.guid==Frame.guid)
+    btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+local function SetScript_Right_Button(btn)
+    if btn:GetScript('OnMouseDown') then
+        return
+    end
+
+    btn:SetScript('OnMouseDown', function(self, d)
+        local guid= self.data.guid
+        
+        if d=='LeftButton' then
+            Frame.guid= Frame.guid~=guid and guid or nil
+
+        elseif d=='RightButton' then
+            Frame.guid= guid
+
+            MenuUtil.CreateContextMenu(self, function(_, root)
+                local isMe= guid==WoWTools_DataMixin.Player.GUID
+                local battleTag= self.data.battleTag
+                local faction= self.data.faction
+
+                local sub=root:CreateButton(
+                    WoWTools_DataMixin.Icon.wow2
+                    ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                function()
+                    StaticPopup_Show('WoWTools_OK',
+                        WoWTools_DataMixin.Icon.wow2
+                        ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+                        ..'|n|n'
+                        ..(battleTag or '')
+                        ..'|n'
+                        ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=faction, reName=true, reRealm=true})
+                        ..'|n|n|cnGREEN_FONT_COLOR:'
+                        ..(isMe and (WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI) or ''),
+
+                        nil,
+                        {SetValue=function()
+                            WoWTools_WoWDate[guid]=nil
+                            if isMe then
+                                WoWTools_Mixin:Reload()
+                            else
+                                Init_Right_List()
+                            end
+                        end}
+                    )
+                end)
+                sub:SetTooltip(function(tootip)
+                    if isMe then
+                        tootip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    end
+                end)
+            end)
+        end
+        Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
+        Init_Left_List()
+    end)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+local function Init_Right_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
 
-    
+    local sub
+
+    sub= root:CreateButton(
+        WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
+    function()
+        StaticPopup_Show('WoWTools_RestData',
+            WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+            ..'|n|n|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+            nil,
+            function()
+                WoWTools_WoWDate={}
+                WoWTools_Mixin:Reload()
+            end
+        )
+        return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tootip)
+        tootip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+    end)
+
 end
 
 
@@ -576,6 +661,19 @@ end
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Init_List()
     Frame= WoWTools_FrameMixin:Create(nil, {
         name='WoWToolsWoWItemListFrame',
@@ -589,7 +687,7 @@ local function Init_List()
     end)
 
     Frame:SetScript('OnShow', function(self)
-        Set_List()
+        Init_Right_List()
         --self.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     end)
 
@@ -609,7 +707,7 @@ local function Init_List()
     Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 24, 2)
     Frame.SearchBox:SetPoint('RIGHT', Frame, -55, 2)
     Frame.SearchBox:HookScript('OnTextChanged', function()
-        Set_List()
+        Init_Right_List()
     end)
 
     Frame.IsMe= WoWTools_ButtonMixin:Menu(Frame, {
@@ -637,18 +735,21 @@ local function Init_List()
         atlas='GM-icon-settings-hover'
     })
     Frame.Menu:SetPoint('LEFT', Frame.IsMe, 'RIGHT')
-    Frame.Menu:SetupMenu(Init_Menu)
+    Frame.Menu:SetupMenu(Init_Right_Menu)
     WoWTools_TextureMixin:SetButton(Frame.Menu)
 
 --数量
     Frame.NumLabel= WoWTools_LabelMixin:Create(Frame, {color=true})
-    --Frame.NumLabel:SetPoint('CENTER', Frame.Menu)
     Frame.NumLabel:SetPoint('RIGHT', Frame.SearchBox, 'LEFT', -6, 0)
 
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
-    Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
+    Frame.view:SetElementInitializer('WoWToolsPlayerFrameTemplate', function(self, data)
+        SetScript_Right_Button(self)
+        self.data= data
+        Settings_Right_Button(self, data)
+    end)
 
 
 
@@ -677,31 +778,32 @@ local function Init_List()
     Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 29, 2)
     Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -32, 2)
     Frame.SearchBox2:HookScript('OnTextChanged', function()
-        Set_Left_List()
+        Init_Left_List()
     end)
-
+--[[
     Frame.Menu2= WoWTools_ButtonMixin:Menu(Frame, {
         size=23,
         icon='hide',
     })
     Frame.Menu2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT')
-    Frame.Menu2:SetupMenu(Init_Left_Menu)
+    Frame.Menu2:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
+        end
+    end)]]
 
 --数量
     Frame.NumLabel2= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel2:SetPoint('CENTER', Frame.Menu2)
-    
+    Frame.NumLabel2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT')
+
 
 
     Frame.view2 = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox2, Frame.ScrollBar2, Frame.view2)
     Frame.view2:SetElementInitializer('SmallItemButtonTemplate', function(self, data)
-        Set_Left_Button(self)
-        self.itemID= data.itemID
-        self.bag= data.bag
-        self.bank= data.bank
-
-        self:settings()
+        SetScript_Left_Button(self)
+        self.data= data
+        Settings_Left_Button(self)
     end)
 
 

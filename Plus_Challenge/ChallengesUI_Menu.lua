@@ -138,7 +138,8 @@ local function Init_Menu(self, root)
 
 
     root:CreateDivider()
-    WoWTools_ChallengeMixin:ChallengesUI_Left_Menu(self, root)
+
+    --WoWTools_ChallengeMixin:ChallengesUI_Left_Menu(self, root)
 
 
 
@@ -551,10 +552,12 @@ sub:CreateTitle(name)
 
 
 
+    root:CreateDivider()
+--战团，物品列表
+    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root)
 
 
 --插入史诗钥石，打开界面
-    root:CreateDivider()
     sub=root:CreateButton(
         '|A:ChallengeMode-KeystoneSlotFrame:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '插入史诗钥石' or CHALLENGE_MODE_INSERT_KEYSTONE),
@@ -565,12 +568,9 @@ sub:CreateTitle(name)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '显示UI' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SHOW, 'UI'))
     end)
+
 --菜单
     WoWTools_ChallengeMixin:ChallengesKeystoneFrame_Menu(self, sub)
-
-
-
-
 
 --打开选项界面
     WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_ChallengeMixin.addName})

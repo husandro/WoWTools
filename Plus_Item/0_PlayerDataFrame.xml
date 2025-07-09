@@ -1,8 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
 
-<Frame name="WoWToolsKeystoneButtonTemplate" virtual="true">
-    <Size x="250" y="82"/>
+<Frame name="WoWToolsPlayerFrameTemplate" virtual="true">
+    <Size x="0" y="86"/>
     <Anchors>
         <Anchor point="LEFT"/>
         <Anchor point="RIGHT"/>
@@ -10,24 +10,18 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
     <Scripts>
         <OnLeave>
             self.Select:Hide()
-            self:SetAlpha(self.itemLink and 1 or 0.5)
         </OnLeave>
         <OnEnter>
             self.Select:Show()
-            self:SetAlpha(1)
         </OnEnter>
 
         <OnHide>
-            self.itemLink= nil
-            self.battleTag= nil
-            self.specID= nil
-            self.itemLevel= nil
-            self.guid= nil
+            self.data= nil
 
             self.Name:SetText('')
             self.AffixText:SetText('')
             self.ItemLevelText:SetText('')
-            self.Name2:SetText('')
+            self.ItemName:SetText('')
             self.RaidText:SetText('')
             self.DungeonText:SetText('')
             self.WorldText:SetText('')
@@ -78,212 +72,22 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
         </Layer>
         
         
+
+
+
+
+
+
+
+
+
+
+
         <Layer level="BORDER">
-            <Texture parentKey="Icon">
-                <Size x="36" y="36"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT"/>
-                </Anchors>
-            </Texture>
-
-            <Texture parentKey="Spec" enableMouse="true">
-                <Size x="14" y="14"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.specID, owner=self})
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-
-            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
-                <Anchors>
-                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
-
-
-            <FontString parentKey="Name2" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Spec" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.itemLink, owner=self})                        
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
-
-            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name2"  relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="2" y="-2"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local battleTag= self:GetParent().battleTag
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG)
-                        if battleTag then
-                            local tag= WoWTools_DataMixin.Player.BattleTag~= battleTag and WoWTools_DataMixin.Player.BattleTag
-                            GameTooltip:AddLine((tag and '|cnRED_FONT_COLOR:' or '|cffffffff')..battleTag)
-                            if tag then
-                                GameTooltip:AddLine(
-                                    '|A:tokens-guildRealmTransfer-small:0:0|a'
-                                    ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
-                                )
-                            end
-                        end                        
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
- 
-            <Texture parentKey="NameBackground" atlas="ChallengeMode-guild-background" alpha="0.5">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.Name"/>
-                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
-                </Anchors>
-            </Texture>
-
-
-
-
-
-
-            <Texture parentKey="Score" atlas="recipetoast-icon-star">
-                <Size x="12" y="12"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="TOPLEFT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>            
-            <FontString parentKey="ScoreText" inherits="ChatFontNormal" justifyH="RIGHT">
-                <Anchors>
-                    <Anchor point="RIGHT" relativeKey="$parent.Score" relativePoint="LEFT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-            <Texture parentKey="WeekNum" atlas="TaskPOI-IconSelect">
-                <Size x="12" y="12"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Score" relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周完成次数' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHALLENGE_MODE_THIS_WEEK, COMPLETE))
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>            
-            <FontString parentKey="WeekNumText" inherits="ChatFontNormal" justifyH="RIGHT">
-                <Anchors>
-                    <Anchor point="RIGHT" relativeKey="$parent.WeekNum" relativePoint="LEFT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-
-            <Texture parentKey="WeekLevel" atlas="characterupdate_clock-icon">
-                <Size x="12" y="12"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.WeekNum" relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-            <FontString parentKey="WeekLevelText" inherits="ChatFontNormal" justifyH="RIGHT">
-                <Anchors>
-                    <Anchor point="RIGHT" relativeKey="$parent.WeekLevel" relativePoint="LEFT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-
-
-
-
-
-
-
             <Texture parentKey="Raid" atlas="worldquest-icon-raid" enableMouse="true">
                 <Size x="16" y="16"/>
                 <Anchors>
-                    <Anchor point="TOPLEFT" x="4" y="-4"/>
+                    <Anchor point="TOPLEFT" x="4" y="0"/>
                 </Anchors>
                 <Scripts>
                     <OnLeave>
@@ -391,6 +195,262 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
             </FontString>
+
+
+            <Texture parentKey="Item" atlas="poi-islands-table" enableMouse="true">
+                <Size x="16" y="16"/>
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.PvP" relativePoint="BOTTOMLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '钥石' or CHALLENGE_MODE_KEYSTONE_NAME:format(''))
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+
+            
+
+            <FontString parentKey="ItemName" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true" wordwrap="false" >
+                <Anchors>
+                    <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                </Shadow>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local parent= self:GetParent()
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.data.itemLink, owner=self})                        
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <Texture parentKey="Icon">
+                <Size x="36" y="36"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT"/>
+                </Anchors>
+            </Texture>
+
+            <Texture parentKey="Spec" enableMouse="true">
+                <Size x="14" y="14"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local parent= self:GetParent()
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self})
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+
+            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
+                <Anchors>
+                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
+
+
+
+
+            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="2" y="-2"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local battleTag= self:GetParent().data.battleTag
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG)
+                        if battleTag then
+                            local tag= WoWTools_DataMixin.Player.BattleTag~= battleTag and WoWTools_DataMixin.Player.BattleTag
+                            GameTooltip:AddLine((tag and '|cnRED_FONT_COLOR:' or '|cffffffff')..battleTag)
+                            if tag then
+                                GameTooltip:AddLine(
+                                    '|A:tokens-guildRealmTransfer-small:0:0|a'
+                                    ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
+                                )
+                            end
+                        end                        
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
+ 
+            <Texture parentKey="NameBackground" atlas="ChallengeMode-guild-background" alpha="0.5">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Name"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
+                </Anchors>
+            </Texture>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <Texture parentKey="Score" atlas="recipetoast-icon-star">
+                <Size x="12" y="12"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="TOPLEFT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '史诗钥石评分' or DUNGEON_SCORE)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>            
+            <FontString parentKey="ScoreText" inherits="ChatFontNormal" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.Score" relativePoint="LEFT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+            <Texture parentKey="WeekNum" atlas="TaskPOI-IconSelect">
+                <Size x="12" y="12"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Score" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周完成次数' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CHALLENGE_MODE_THIS_WEEK, COMPLETE))
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>            
+            <FontString parentKey="WeekNumText" inherits="ChatFontNormal" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.WeekNum" relativePoint="LEFT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+
+            <Texture parentKey="WeekLevel" atlas="characterupdate_clock-icon">
+                <Size x="12" y="12"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.WeekNum" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '本周最高等级' or format(CURRENCY_THIS_WEEK, BEST))
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+            <FontString parentKey="WeekLevelText" inherits="ChatFontNormal" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.WeekLevel" relativePoint="LEFT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+
+
+
+
+
+
+
+
+
+
+
 
 
 

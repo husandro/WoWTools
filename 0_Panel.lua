@@ -68,7 +68,10 @@ local function Init_Options()
         addSearchTags= WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data',
         SetValue= function()
             StaticPopup_Show('WoWTools_RestData',
-                (WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'))..'|n|n|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)..'|r',
+                WoWTools_DataMixin.Icon.wow2
+                ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+                ..'|n|n|cnGREEN_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
                 nil,
                 function()
                     WoWTools_WoWDate={}

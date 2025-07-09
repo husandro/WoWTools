@@ -79,7 +79,7 @@ local function Init()
     WoWTools_HyperLink:Init_Event_Sound()--播放, 事件声音
     WoWTools_HyperLink:Init_NPC_Talking()--隐藏NPC发言
     WoWTools_HyperLink:Init_Welcome()--欢迎加入
-    WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
+    --WoWTools_HyperLink:Init_Reload()--添加 RELOAD 按钮
 
     WoWTools_HyperLink:Blizzard_DebugTools()
 
