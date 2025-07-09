@@ -32,7 +32,7 @@ local function Init()--设置标记, 框架
     btn:RegisterForDrag("RightButton")
     btn:SetMovable(true)
     btn:SetScript("OnDragStart", function(self, d)
-        if d=='RightButton' and IsAltKeyDown() then
+        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             self:GetParent():StartMoving()
         end
     end)
@@ -44,19 +44,13 @@ local function Init()--设置标记, 框架
         if WoWTools_FrameMixin:IsInSchermo(self) then
             Save().markersFramePoint={self:GetPoint(1)}
             Save().markersFramePoint[2]=nil
-        else
-            print(
-                WoWTools_DataMixin.addName,
-                '|cnRED_FONT_COLOR:',
-                WoWTools_DataMixin.onlyChinese and '保存失败' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, FAILED)
-            )
         end
     end)
     function btn:set_Alpha(enter)
         self:SetAlpha(enter and 1 or 0.1)
     end
     btn:SetScript('OnMouseDown', function(self, d)
-        if d=='RightButton' and IsAltKeyDown() then
+        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             SetCursor('UI_MOVE_CURSOR')
         elseif not IsModifierKeyDown() then
             MenuUtil.CreateContextMenu(self, function(frame, root)

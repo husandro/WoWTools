@@ -61,7 +61,7 @@ local function Set_OnDragStart(self, d)
         and (data.isAltKeyDown and IsAltKeyDown() or not data.isAltKeyDown)
     then
         local frame= _G[data.target] or self
-        if frame and frame:IsMovable() then
+        if frame and frame:IsMovable() and not WoWTools_FrameMixin:IsLocked(frame) then
             frame:StartMoving()
         end
     end
@@ -85,15 +85,16 @@ end
 --设置光标
 local function Set_OnMouseDown(self, d)
     local data= self.moveFrameData
+    local frame= _G[data.target] or self
+
     if
         (d=='RightButton' or d=='LeftButton')
         and (d== data.click or not data.click)
         and (data.isAltKeyDown and IsAltKeyDown() or not data.isAltKeyDown)
+        and frame:IsMovable()
+        and not WoWTools_FrameMixin:IsLocked(frame)
     then
-        local frame= _G[data.target] or self
-        if frame:IsMovable() then
-            SetCursor('UI_MOVE_CURSOR')
-        end
+        SetCursor('UI_MOVE_CURSOR')
     end
 end
 
