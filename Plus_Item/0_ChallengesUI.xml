@@ -85,17 +85,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-            
-            <!--MaskTexture parentKey="IconMask" atlas="UI-HUD-UnitFrame-Player-Portrait-Mask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE">
-                <Size x="36" y="36"/>
-                <Anchors>
-                    <Anchor point="CENTER" relativeKey="$parent.Icon" x="0" y="2"/>
-                </Anchors>
-                <MaskedTextures>
-                    <MaskedTexture childKey="Icon"/>
-                </MaskedTextures>
-            </MaskTexture-->
-        
 
             <Texture parentKey="Spec" enableMouse="true">
                 <Size x="14" y="14"/>

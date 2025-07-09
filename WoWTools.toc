@@ -131,6 +131,7 @@ Plus_Texture\z_Events.lua
 
 
 ##物品信息，显示包里，和商人，物品信息，现仅支持系统
+Plus_Item\0_ChallengesUI.xml
 Plus_Item\0_ItemMixin.lua
 Plus_Item\0_SetupInfo.lua
 Plus_Item\1_Init.lua
@@ -397,7 +398,6 @@ Plus_Encounter\UI_ListInstances.lua
 
 ##史诗钥石地下城, 挑战增强
 Plus_Challenge\0_ChallengeMixin.lua
-Plus_Challenge\0_ChallengesUI.xml
 Plus_Challenge\1_Init.lua
 Plus_Challenge\ChallengesUI_Info.lua
 Plus_Challenge\ChallengesUI_Porta.lua

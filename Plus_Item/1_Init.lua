@@ -25,6 +25,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {}
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
+
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_ItemMixin.addName,
@@ -45,23 +46,23 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                         Set_Event(name)
                     end
                 end
-
-                WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
             end
+
+            WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
 
         elseif WoWToolsSave then
             Set_Event(arg1)
-
         end
+
     elseif event=='PLAYER_ENTERING_WORLD' then
         for name in pairs(WoWTools_ItemMixin.Frames) do
             if _G[name] then
-                do
-                    WoWTools_ItemMixin.Frames[name](WoWTools_ItemMixin)
-                end
-                WoWTools_ItemMixin.Frames[name]= nil
+                Set_Event(name)
             end
         end
+
+        
+
         self:UnregisterEvent(event)
     end
 end)

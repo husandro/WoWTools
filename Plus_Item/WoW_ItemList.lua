@@ -1,4 +1,8 @@
 --战团，物品列表
+local function Save()
+    return WoWToolsSave['Plus_ItemInfo'] or {}
+end
+
 local Frame
 
 
@@ -150,15 +154,15 @@ local function Set_Left_List()
         end
     end
 
-    data:SetSortComparator(function(a, b)
-        if a.quality==b.quality then
-            return a.itemID> b.itemID
-        else
-            return a.quality>b.quality
-        end
+    data:SetSortComparator(function(v1, v2)
+        return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
     end)
     Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
+
+--数量
     Frame.NumLabel2:SetText(num or '')
+--头像
+    Frame:set_portrait()
 end
 
 
@@ -287,8 +291,7 @@ local function Initializer(btn, data)
     end
 
     btn:SetScript('OnMouseDown', function(self)
-        Frame.guid= self.guid
-        --Frame.ScrollBox:Update()
+        Frame.guid= Frame.guid~=self.guid and self.guid or nil
         Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
         Set_Left_List()
     end)
@@ -313,20 +316,6 @@ end
 
 
 
-local function Sort_Order(a,b)
-    if a.faction==WoWTools_DataMixin.Player.Faction and b.faction~=WoWTools_DataMixin.Player.Faction
-        or a.itemLevel>b.itemLevel
-        or a.score>b.score
-        or a.weekLevel> b.weekLevel
-        or a.weekNum> b.weekNum
-        or (a.itemLink and not b.itemLink)
-
-    then
-        return true
-    else
-        return false
-    end
-end
 
 
 
@@ -418,7 +407,13 @@ local function Set_List()
     end
 
 
-    data:SetSortComparator(Sort_Order)
+    data:SetSortComparator(function(v1, v2)
+        return v1.itemLevel>v2.itemLevel
+            or v1.score> v2.score
+            or v1.weekLevel> v2.weekLevel
+            or v1.weekNum> v2.weekNum
+
+    end)
 
     Frame.ScrollBox:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
     Frame.NumLabel:SetText(num or '')
@@ -452,7 +447,12 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
+
+    
 end
+
+
+
 
 
 
@@ -468,7 +468,10 @@ local function Init_IsMe_Menu(self, root)
         ..WoWTools_DataMixin.Player.col
         ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME),
     function()
-        Frame.SearchBox:SetText(UnitName('player'))
+        --Frame.SearchBox:SetText(UnitName('player'))
+        Frame.ScrollBox:ScrollToElementData(function(_,data)
+            return data.guid== WoWTools_DataMixin.Player.GUID
+        end)
         return MenuResponse.Open
     end)
 
@@ -581,15 +584,13 @@ local function Init_List()
     })
 
     Frame:SetScript('OnHide', function(self)
-        --local data= CreateDataProvider()
-        --self.view:SetDataProvider(data)
-        --self.view2:SetDataProvider(data)
         self.ScrollBox:RemoveDataProvider()
         self.ScrollBox2:RemoveDataProvider()
     end)
 
-    Frame:SetScript('OnShow', function()
+    Frame:SetScript('OnShow', function(self)
         Set_List()
+        --self.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     end)
 
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
@@ -626,24 +627,10 @@ local function Init_List()
             '|A:common-search-magnifyingglass:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         )
-        --[[GameTooltip:AddDoubleLine(
-            (WoWTools_DataMixin.onlyChinese and '转到我' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, VIEW, COMBATLOG_FILTER_STRING_ME))
-            ..WoWTools_DataMixin.Icon.left,
-            WoWTools_DataMixin.Icon.right
-            ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
-        )]]
         GameTooltip:Show()
     end)
     Frame.IsMe:SetupMenu(Init_IsMe_Menu)
-    --[[Frame.IsMe:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            Frame.SearchBox:SetText(UnitName('player'))
-        else
-            MenuUtil.CreateContextMenu(self, function(...)
-                Init_IsMe_Menu(...)
-            end)
-        end
-    end)]]
+
 
     Frame.Menu= WoWTools_ButtonMixin:Menu(Frame, {
         size=23,
@@ -661,7 +648,7 @@ local function Init_List()
 
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
-    Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', function(...) Initializer(...) end)
+    Frame.view:SetElementInitializer('WoWToolsKeystoneButtonTemplate', Initializer)
 
 
 
@@ -687,7 +674,7 @@ local function Init_List()
         isSearch=true,
         --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     })
-    Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 4, 2)
+    Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 29, 2)
     Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -32, 2)
     Frame.SearchBox2:HookScript('OnTextChanged', function()
         Set_Left_List()
@@ -703,7 +690,7 @@ local function Init_List()
 --数量
     Frame.NumLabel2= WoWTools_LabelMixin:Create(Frame, {color=true})
     Frame.NumLabel2:SetPoint('CENTER', Frame.Menu2)
-    --Frame.NumLabel2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT', -23, 0)
+    
 
 
     Frame.view2 = CreateScrollBoxListLinearView()
@@ -720,16 +707,19 @@ local function Init_List()
 
 
 
-
-
-
---加载，物品数据
-    --[[for _, info in pairs(WoWTools_WoWDate) do
-        WoWTools_Mixin:Load({itemLink=info.Keystone.link, type='item'})
-        for itemID in pairs(info.Item) do
-            WoWTools_Mixin:Load({id=itemID, type='item'})
+--头像
+    Frame.Portrait=Frame:CreateTexture(nil, 'ARTWORK')
+    Frame.Portrait:SetPoint('RIGHT', Frame.SearchBox2, 'LEFT', -4, 0)
+    Frame.Portrait:SetSize(23,23)
+    function Frame:set_portrait()
+        local atlas= WoWTools_UnitMixin:GetRaceIcon(nil, self.guid, nil, {reAtlas=true})
+        if atlas then
+            self.Portrait:SetAtlas(atlas)
+        else
+            self.Portrait:SetTexture(0)
         end
-    end]]
+    end
+
 
     Init_List=function()
         Frame:SetShown(not Frame:IsShown())
@@ -759,6 +749,10 @@ end
 
 
 local function Init()
+    if Save().disabled then
+        return
+    end
+
     local btn= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags.CloseButton, {
         name='WoWToolsWoWItemListBagButton',
         atlas='glues-characterSelect-iconShop-hover',
@@ -787,7 +781,9 @@ if WoWTools_DataMixin.Player.husandro then
 end
 
 
-    Init=function()end
+    Init=function()
+        Init_List()
+    end
 end
 
 
