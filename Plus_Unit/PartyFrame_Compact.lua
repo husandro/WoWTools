@@ -28,8 +28,8 @@ local function set_CompactPartyFrame()--CompactPartyFrame.lua
     CompactPartyFrame.moveFrame:SetMovable(true)
     CompactPartyFrame.moveFrame:RegisterForDrag('RightButton')
     CompactPartyFrame.moveFrame:SetScript("OnDragStart", function(self,d)
-        if d=='RightButton' and not IsModifierKeyDown() then
-            local frame= self:GetParent()
+        local frame= self:GetParent()
+        if d=='RightButton' and not IsModifierKeyDown() and not WoWTools_FrameMixin:IsLocked(frame)  then
             if not frame:IsMovable() then
                 frame:SetMovable(true)
             end

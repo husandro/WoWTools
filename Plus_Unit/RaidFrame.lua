@@ -142,8 +142,8 @@ local function Init()--设置,团队
     CompactRaidFrameContainer:SetMovable(true)
     CompactRaidFrameContainer.moveFrame:RegisterForDrag('RightButton')
     CompactRaidFrameContainer.moveFrame:SetScript("OnDragStart", function(self)
-        if IsAltKeyDown() then
-            local frame= self:GetParent()
+        local frame= self:GetParent()
+        if IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(frame) then
             if not frame:IsMovable()  then
                 frame:SetMovable(true)
             end
@@ -154,8 +154,8 @@ local function Init()--设置,团队
         self:GetParent():StopMovingOrSizing()
     end)
     CompactRaidFrameContainer.moveFrame:SetScript('OnMouseUp', ResetCursor)
-    CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function()
-        if IsAltKeyDown() then
+    CompactRaidFrameContainer.moveFrame:SetScript("OnMouseDown", function(self)
+        if IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self:GetParent()) then
             SetCursor('UI_MOVE_CURSOR')
         end
     end)

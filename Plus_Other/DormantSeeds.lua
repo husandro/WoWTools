@@ -96,7 +96,7 @@ local function Init()
     Button:SetMovable(true)
     Button:RegisterForDrag("RightButton")
     Button:SetScript("OnDragStart", function(self)
-        if IsAltKeyDown() then
+        if IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then
             self:StartMoving()
         end
     end)
@@ -118,7 +118,9 @@ local function Init()
     Button:SetScript("OnMouseUp", ResetCursor)
     Button:SetScript("OnMouseDown", function(self, d)
         if d=='RightButton' and IsAltKeyDown() then--移动
-            SetCursor('UI_MOVE_CURSOR');
+            if not WoWTools_FrameMixin:IsLocked(self) then
+                SetCursor('UI_MOVE_CURSOR');
+            end
         elseif d=='RightButton' and IsControlKeyDown() then--还原
             if self:CanChangeAttribute() then
                 Save().point=nil

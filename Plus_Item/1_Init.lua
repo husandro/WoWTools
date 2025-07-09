@@ -3,15 +3,6 @@ local function Save()
 end
 
 
-local function Set_Event(name)
-    if WoWTools_ItemMixin.Events[name] then
-        do
-            WoWTools_ItemMixin.Events[name](WoWTools_ItemMixin)
-        end
-        WoWTools_ItemMixin.Events[name]= nil
-    end
-end
-
 
 
 
@@ -41,23 +32,37 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 self:UnregisterAllEvents()
             else
 
-                for name in pairs(WoWTools_ItemMixin.Events) do
-                    if C_AddOns.IsAddOnLoaded(name) then
-                        Set_Event(name)
-                    end
-                end
+
             end
 
             WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
 
         elseif WoWToolsSave then
-            Set_Event(arg1)
+            if WoWTools_ItemMixin.Events[arg1] then
+                do
+                    WoWTools_ItemMixin.Events[arg1](WoWTools_ItemMixin)
+                end
+                WoWTools_ItemMixin.Events[arg1]= nil
+            end
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then
+
+        for name in pairs(WoWTools_ItemMixin.Events) do
+            if C_AddOns.IsAddOnLoaded(name) then
+                do
+                    WoWTools_ItemMixin.Events[name](WoWTools_ItemMixin)
+                end
+                WoWTools_ItemMixin.Events[name]= nil
+            end
+        end
+
         for name in pairs(WoWTools_ItemMixin.Frames) do
             if _G[name] then
-                Set_Event(name)
+                do
+                    WoWTools_ItemMixin.Frames[name](WoWTools_ItemMixin)
+                end
+                WoWTools_ItemMixin.Frames[name]= nil
             end
         end
 

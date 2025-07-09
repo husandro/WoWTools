@@ -102,7 +102,7 @@ local function Init(btn)
     btn:SetMovable(true)
     btn:SetClampedToScreen(true)
     btn:SetScript("OnDragStart", function(self)
-        if IsAltKeyDown() then
+        if IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then
             self:StartMoving()
         end
     end)
@@ -126,7 +126,7 @@ local function Init(btn)
             if not IsModifierKeyDown() then--菜单
                 WoWTools_FoodMixin:Init_Menu(self)
                 self:set_tooltip()
-            elseif IsAltKeyDown() then--移动
+            elseif IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(self) then--移动
                 SetCursor('UI_MOVE_CURSOR')
             end
         end

@@ -167,10 +167,8 @@ local function Create_Spec_Button(index)
 
     btn:RegisterForDrag("RightButton")
     btn:SetScript('OnDragStart', function(self, d)
-        if d=='RightButton' and IsAltKeyDown() then
-            if SpecFrame:IsMovable() then
-                SpecFrame:StartMoving()
-            end
+        if d=='RightButton' and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(SpecFrame) and SpecFrame:IsMovable() then
+            SpecFrame:StartMoving()
         end
     end)
     btn:SetScript("OnDragStop", function()
@@ -188,7 +186,7 @@ local function Create_Spec_Button(index)
     btn:SetScript('OnMouseDown', function(self, d)
         if d=='LeftButton' then
             self:Set_Active()
-        elseif d=='RightButton' and SpecFrame:IsMovable() and IsAltKeyDown() then
+        elseif d=='RightButton' and SpecFrame:IsMovable() and IsAltKeyDown() and not WoWTools_FrameMixin:IsLocked(SpecFrame) then
             SetCursor('UI_MOVE_CURSOR')
         else
             MenuUtil.CreateContextMenu(self, Init_Spec_Menu)
