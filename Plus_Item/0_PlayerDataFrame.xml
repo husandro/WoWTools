@@ -274,7 +274,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             <Texture parentKey="Battle" atlas="gmchat-icon-blizz">
                 <Size x="12" y="12"/>
                 <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.WeekLevel" relativePoint="BOTTOMRIGHT"/>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
                 <Scripts>
                     <OnLeave>
