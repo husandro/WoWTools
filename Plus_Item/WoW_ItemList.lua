@@ -356,7 +356,7 @@ local function Settings_Right_Button(btn, data)
     end
     btn.Name:SetTextColor(col.r, col.g, col.b)
 
-    btn.BattleTag:SetText(data.battleTag or '')
+    btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
 
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))

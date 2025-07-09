@@ -136,7 +136,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
                 <Shadow>
-                    <Offset x="2" y="-2"/>
+                    <Offset x="1" y="-1"/>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
                  <Scripts>
@@ -307,8 +307,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>
-                    <Color r="0" g="0.8" b="1"/>
+                    <Color r="0" g="0" b="0"/>
                 </Shadow>
+                <Color r="0" g="0.8" b="1"/>
             </FontString>
 
 
@@ -448,15 +449,16 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Scripts>
             </Texture>            
 
-            <FontString parentKey="ItemName" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true" wordwrap="false" >
+            <FontString parentKey="ItemName" inherits="ChatFontNormal" justifyH="LEFT" enableMouse="true" wordwrap="false" >
                 <Anchors>
                     <Anchor point="LEFT" relativeKey="$parent.Item" relativePoint="RIGHT"/>
                     <Anchor point="RIGHT" relativeKey="$parent.BattleTag" relativePoint="LEFT"/>
                 </Anchors>
                 <Shadow>
                     <Offset x="1" y="-1"/>
-                    <Color r="1" g="1" b="1"/>
+                    <Color r="0" g="0" b="0"/>
                 </Shadow>
+                <Color r="1" g="0" b="1"/>
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()
