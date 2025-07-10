@@ -9,31 +9,29 @@ WoWTools_BagMixin:GetItem_WoW_Num(itemID)--取得WOW物品数量  return all, nu
 
 WoWTools_DataMixin.WoWGUID={}--WoWTools_DataMixin.WoWGUID[名称-服务器]=guid
 
-WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID]={
-    Keystone={
-        score= score,
-        all= all,
-        week= WoWTools_DataMixin.Player.Week,
-        weekNum= weekNum,
-        weekLevel= weekLevel,
-        weekPvE= WoWTools_ChallengeMixin:GetRewardText(3),--Raid
-        weekMythicPlus= WoWTools_ChallengeMixin:GetRewardText(1),--MythicPlus
-        weekPvP= WoWTools_ChallengeMixin:GetRewardText(2),--RankedPvP
-        weekWorld= WoWTools_ChallengeMixin:GetRewardText(6),--世界
-        link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
+WoWTools_WoWDate[guid]= {--默认数据
+    Item={},--{itemID={bag=包, bank=银行}},
+    Currency={},--{[currencyID] = 数量}
+
+    Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
+
+    Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
+    Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
+    Rare={day=day, boss={}},--稀有
+    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+    Guild={
+        --text= text, GuildInfo() 公会信息,
+        --guid= guid, 公会 clubFinderGUID 
+        data={},-- {guildName, guildRankName, guildRankIndex, realm} = GetGuildInfo('player')
     },
-    Item={
-        [itemID]={
-            bag=bag,
-            bank=C_Item.GetItemCount(itemID, true, false, true)-bag,
-        },
-    },
-    Money= GetMoney() or 0
-    level=
-    faction=
-    region=
-    specID 专精
-    itemLevel 装等
+    --Money=钱
+    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
+    region= WoWTools_DataMixin.Player.Region
+    --specID 专精
+    --itemLevel 装等
+    --faction
+    --level
+    --battleTag
 }
 
 WoWTools_DataMixin.UnitItemLevel=[guid] = {--玩家装等
@@ -698,7 +696,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
     if not WoWTools_WoWDate[guid] then
         WoWTools_WoWDate[guid]= {--默认数据
             Item={},--{itemID={bag=包, bank=银行}},
-            Currency={},--{currencyID = 数量}
+            Currency={},--{[currencyID]=数量}
 
             Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
@@ -716,6 +714,9 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             region= WoWTools_DataMixin.Player.Region
             --specID 专精
             --itemLevel 装等
+            --faction
+            --level
+            --battleTag
         }
     end
 

@@ -5,39 +5,92 @@ end
 
 local Frame
 local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.+)')
+local List2Type='Item'
+--[[
+ WoWTools_WoWDate[guid]= {--默认数据
+    Item={},--{itemID={bag=包, bank=银行}},
+    Currency={},--{currencyID = 数量}
 
+    Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
+    Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
+    Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
+    Rare={day=day, boss={}},--稀有
+    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+    Guild={
+        --text= text, GuildInfo() 公会信息,
+        --guid= guid, 公会 clubFinderGUID 
+        data={},-- {guildName, guildRankName, guildRankIndex, realm} = GetGuildInfo('player')
+    },
+    --Money=钱
+    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
+    region= WoWTools_DataMixin.Player.Region
+    --specID 专精
+    --itemLevel 装等
+    --faction
+    --level
+    --battleTag
+}
+]]
 
 
 
 local function Settings_Left_Button(self)
-    local itemID= self.data and self.data.itemID
-    local itemName, itemQuality, itemTexture, bag, bank, wow, _
-
+    local data= self.data
+    local itemName, itemTexture, count
+    local itemID, currencyID
+    if data then
+        itemID= data.itemID
+        currencyID= data.currencyID
+    end
+--物品
     if itemID then
+        local itemQuality, _
         itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
 
         itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
         itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
 
-        wow= WoWTools_ItemMixin:GetWoWCount(itemID)
-        wow= wow>0 and WoWTools_Mixin:MK(wow, 3) or nil
-
-        local r,g,b= C_Item.GetItemQualityColor(itemQuality or 1)
+        local r,g,b= C_Item.GetItemQualityColor(itemQuality or data.quality or 1)
         self.Name:SetTextColor(r or 1, g or 1, b or 1)
 
-        bag= itemID and self.data.bag
-        bank= itemID and self.data.bank
+        local bag, bank ,wow
+        bag= self.data.bag
+        bag= bag>0 and WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a' or ''
+
+        bank= self.data.bank
+        bank= bank>0 and WoWTools_Mixin:MK(bank, 3)..'|A:ParagonReputation_Bag:0:0|a' or ''
+
+        wow= WoWTools_ItemMixin:GetWoWCount(itemID, Frame.guid)
+        wow= wow>0 and '|cff00ccff'..WoWTools_Mixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or ''
+
+        count= wow..bank..bag
+
+--货币
+    elseif currencyID then
+        local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
+        if info then
+            local icon, _, _, col= WoWTools_CurrencyMixin:GetAccountIcon(currencyID)
+            itemName= (icon or '')..(col or '')..WoWTools_TextMixin:CN(info.name) or currencyID
+            itemTexture= info.iconFileID
+
+            local wow= WoWTools_CurrencyMixin:GetWoWCount(currencyID, Frame.guid)
+            count= (wow>0 and '|cff00ccff'..wow..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
+                ..(data.num>0 and WoWTools_Mixin:MK(data.num, 3)..WoWTools_DataMixin.Icon.Player or '')
+
+            local r,g,b= C_Item.GetItemQualityColor(info.quality or 1)
+            self.Name:SetTextColor(r or 1, g or 1, b or 1)
+        end
     end
 
     self.Name:SetText(itemName or '')
     self.Icon:SetTexture(itemTexture or 0)
-    self.Count:SetText(bag and bag>0 and WoWTools_Mixin:MK(bag, 3) or '')
-    self.Count2:SetText(bank and bank>0 and WoWTools_Mixin:MK(bank, 3) or '')
-    self.Count3:SetText(wow or '')
-    self.BagTexture:SetShown(bag)
-    self.BankTexture:SetShown(bank)
-    self.WoWTexture:SetShown(wow)
+    self.Count:SetText(count or '')
+    --self.Count2:SetText(bank and bank>0 and WoWTools_Mixin:MK(bank, 3)..'|A:ParagonReputation_Bag:0:0|a' or '')
+    --self.Count3:SetText(wow and wow..'|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
+    --self.BagTexture:SetShown(bag)
+    --self.BankTexture:SetShown(bank)
+    --self.WoWTexture:SetShown(wow)
 end
 
 
@@ -52,7 +105,7 @@ local function SetScript_Left_Button(btn)
     btn.NameFrame:SetPoint('RIGHT')
     btn.NameFrame:SetAlpha(0.5)
 
-    btn.BagTexture= btn:CreateTexture(nil, 'ARTWORK')
+    --[[btn.BagTexture= btn:CreateTexture(nil, 'ARTWORK')
     btn.BagTexture:SetSize(12,12)
     btn.BagTexture:SetAtlas('bag-main')
     btn.BagTexture:SetPoint('BOTTOMRIGHT', btn.NameFrame, -2, 2)
@@ -66,25 +119,30 @@ local function SetScript_Left_Button(btn)
     btn.WoWTexture= btn:CreateTexture(nil, 'ARTWORK')
     btn.WoWTexture:SetSize(12,12)
     btn.WoWTexture:SetAtlas('glues-characterSelect-iconShop-hover')
-    btn.WoWTexture:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')
+    btn.WoWTexture:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')]]
 
-    btn.Count:ClearAllPoints()
-    btn.Count:SetPoint('RIGHT', btn.BagTexture, 'LEFT')
+    --btn.Count:ClearAllPoints()
+    --btn.Count:SetPoint('BOTTOMRIGHT', btn.NameFrame, -2, 2)
+    --btn.Count:SetPoint('RIGHT', btn.BagTexture, 'LEFT')
 
-    btn.Count2= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-    btn.Count2:SetPoint('RIGHT', btn.BankTexture, 'LEFT')
+    --btn.Count2= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+    --btn.Count2:SetPoint('BOTTOM', btn.BagTexture, 'TOP')
+    --btn.Count2:SetPoint('RIGHT', btn.BankTexture, 'LEFT')
 
-    btn.Count3= WoWTools_LabelMixin:Create(btn, {color={r=0,g=0.8,b=1}})
-    btn.Count3:SetPoint('LEFT', btn.WoWTexture, 'RIGHT')
+    --[[btn.Count3= WoWTools_LabelMixin:Create(btn, {color={r=0,g=0.8,b=1}})
+    btn.Count3:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')]]
+    --btn.Count3:SetPoint('LEFT', btn.WoWTexture, 'RIGHT')
 
 
     btn.Name:ClearAllPoints()
-    btn.Name:SetPoint('BOTTOMLEFT', btn.NameFrame, 2, 2)
-    btn.Name:SetPoint('RIGHT', btn.Count, 'LEFT', -2, 0)
     btn.Name:SetHeight(0)
+    btn.Name:SetPoint('BOTTOMLEFT', btn.NameFrame, 2, 2)
+    btn.Name:SetPoint('RIGHT', btn.NameFrame,-2, 0)--, btn.Count, 'LEFT', -2, 0)
     btn.Name:SetWordWrap(false)
 
-
+    btn.Count:ClearAllPoints()
+    btn.Count:SetPoint('TOPRIGHT', btn.NameFrame, -2, -2)
+    btn.Count:SetJustifyH('RIGHT')
 
 
     btn:SetScript('OnHide', function(self)
@@ -109,7 +167,13 @@ local function SetScript_Left_Button(btn)
         self:SetAlpha(1)
     end)
     btn:SetScript('OnEnter', function(self)
-        WoWTools_SetTooltipMixin:Frame(self, nil, {itemID=self.data.itemID})
+        if not self.data then
+            return
+        end
+        WoWTools_SetTooltipMixin:Frame(self, nil, {
+            itemID=self.data.itemID,
+            currencyID=self.data.currencyID,
+        })
         self:SetAlpha(0.5)
     end)
 end
@@ -130,37 +194,69 @@ local function Init_Left_List()
     local num=0
 
     local data = CreateDataProvider()
-    local info= WoWTools_WoWDate[Frame.guid] and WoWTools_WoWDate[Frame.guid].Item or {}
-    for itemID, tab in pairs(info) do
-        WoWTools_Mixin:Load({id=itemID, type='item'})
-        local name, cnName
-        if isFind then
-            name= C_Item.GetItemNameByID(itemID)
-            cnName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true})
-            cnName= cnName and cnName~=name and cnName:upper() or nil
-            name=  name and name:upper()
-        end
+    local wowData= WoWTools_WoWDate[Frame.guid]
+    if wowData then
+        if List2Type=='Item' then
+            for itemID, tab in pairs(wowData.Item or {}) do
+                WoWTools_Mixin:Load({id=itemID, type='item'})
 
-        if isFind and (itemID==findItemID or (name and name:find(findText)) or cnName and cnName:find(findText))
-            or not isFind
-        then
-            data:Insert({
-                itemID= itemID,
-                bag= tab.bag or 0,
-                bank= tab.bank or 0,
-                quality= C_Item.GetItemQualityByID(itemID) or 1,
-            })
-            num=num+1
+                local name, cnName
+                if isFind then
+                    name= C_Item.GetItemNameByID(itemID)
+                    cnName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true})
+                    cnName= cnName and cnName~=name and cnName:upper() or nil
+                    name=  name and name:upper()
+                end
+
+                if isFind and (itemID==findItemID or (name and name:find(findText)) or cnName and cnName:find(findText))
+                    or not isFind
+                then
+                    data:Insert({
+                        itemID= itemID,
+                        bag= tab.bag or 0,
+                        bank= tab.bank or 0,
+                        quality= C_Item.GetItemQualityByID(itemID) or 1,
+                    })
+                    num=num+1
+                end
+            end
+            data:SetSortComparator(function(v1, v2)
+                return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
+            end)
+
+        elseif List2Type=='Currency' then
+            for currencyID, all in pairs(wowData.Currency or {}) do
+                local name, cnName
+                if isFind then
+                    local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
+                    name= info and info.name
+                    if name then
+                        cnName= WoWTools_TextMixin:CN(name)
+                        cnName= cnName and cnName~=name and cnName:upper() or nil
+                        name=  name and name:upper()
+                    end
+                end
+
+                if isFind and (currencyID==findItemID or (name and name:find(findText)) or cnName and cnName:find(findText))
+                    or not isFind
+                then
+                    data:Insert({
+                        currencyID= currencyID,
+                        num= all or 0,
+                    })
+                    num=num+1
+                end
+            end
+            data:SetSortComparator(function(v1, v2)
+                return v1.currencyID>v2.currencyID
+            end)
         end
     end
 
-    data:SetSortComparator(function(v1, v2)
-        return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
-    end)
     Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
 
 --数量
-    Frame.NumLabel2:SetText(num or '')
+    Frame.NumLabel2:SetText(num)
 --头像
     Frame:set_portrait()
 end
@@ -235,6 +331,7 @@ local function Init_Right_List()
             cnLink= cnLink~=itemLink and cnLink or nil
 
             class, _, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
+            realm= info.region or realm
             realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
 
             cnClass= WoWTools_TextMixin:CN(class)
@@ -355,9 +452,8 @@ local function Settings_Right_Button(btn, data)
         )
     end
     btn.Name:SetTextColor(col.r, col.g, col.b)
-
-    btn.BattleTag:SetText(data.battleTag or '')
-    --btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
+--提示，不同战网
+    btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
     btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
 
 --职业
@@ -399,10 +495,10 @@ local function Settings_Right_Button(btn, data)
         or 'StoryHeader-BG'
     )
 
-    btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-    btn.DungeonText:SetText(data.mythic or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-    btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
-    btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8' or ''))
+    btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.DungeonText:SetText(data.mythic or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
+    btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
 
 --分数
     btn.ScoreText:SetText(
@@ -591,6 +687,7 @@ local function Init_IsMe_Menu(self, root)
 
     for guid, tab in pairs(WoWTools_WoWDate) do
         local class, englishClass, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
+        realm= tab.region or realm
         realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
 
         s[realm]= (s[realm] or 0)+1
@@ -794,10 +891,20 @@ local function Init_List()
         --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     })
     Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 29, 2)
-    Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -32, 2)
+    Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -23*3, 2)
     Frame.SearchBox2:HookScript('OnTextChanged', function()
         Init_Left_List()
     end)
+
+
+    Frame.view2 = CreateScrollBoxListLinearView()
+    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox2, Frame.ScrollBar2, Frame.view2)
+    Frame.view2:SetElementInitializer('SmallItemButtonTemplate', function(btn, data)
+        btn.data= data
+        SetScript_Left_Button(btn)
+        Settings_Left_Button(btn)
+    end)
+
 --[[
     Frame.Menu2= WoWTools_ButtonMixin:Menu(Frame, {
         size=23,
@@ -809,23 +916,6 @@ local function Init_List()
             return
         end
     end)]]
-
---数量
-    Frame.NumLabel2= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT')
-
-
-
-    Frame.view2 = CreateScrollBoxListLinearView()
-    ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox2, Frame.ScrollBar2, Frame.view2)
-    Frame.view2:SetElementInitializer('SmallItemButtonTemplate', function(btn, data)
-        btn.data= data
-        SetScript_Left_Button(btn)
-        Settings_Left_Button(btn)
-    end)
-
-
-
 
 --头像
     Frame.Portrait=Frame:CreateTexture(nil, 'ARTWORK')
@@ -839,6 +929,78 @@ local function Init_List()
             self.Portrait:SetTexture(0)
         end
     end
+
+    --数量
+    Frame.NumLabel2= WoWTools_LabelMixin:Create(Frame, {color=true})
+    Frame.NumLabel2:SetPoint('BOTTOMLEFT', Frame.Portrait, 'TOPLEFT')
+
+
+
+
+
+
+
+
+
+    local List2Buttons={}
+    for index, data in pairs({
+        {type='Item', atlas='bag-main', tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS},
+        {type='Currency', atlas='PH-currency-icon', tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY},
+        {type='Gold', atlas='Auctioneer', tooltip=WoWTools_DataMixin.onlyChinese and '钱' or MONEY}
+    }) do
+
+        List2Buttons[index]= WoWTools_ButtonMixin:Cbtn(Frame, {
+            name='WoWToolsWoWList2'..data.type..'Button',
+            icon='hide',
+            addTexture=true,
+            size=23,
+        })
+        List2Buttons[index].texture:SetAtlas(data.atlas)
+
+        List2Buttons[index].type= data.type
+        List2Buttons[index].tooltip= data.tooltip
+        --List2Buttons[index]:SetPushedAtlas('glues-characterSelect-card-glow-swap')
+        List2Buttons[index]:SetPoint('LEFT', List2Buttons[index-1] or Frame.SearchBox2, 'RIGHT')
+
+        List2Buttons[index]:SetScript('OnLeave', function()
+            GameTooltip:Hide()
+        end)
+        List2Buttons[index]:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:SetText(self.tooltip)
+            GameTooltip:Show()
+        end)
+        List2Buttons[index]:SetScript('OnClick', function(self)
+            List2Type= self.type
+            Init_Left_List()
+            for _, btn in pairs(List2Buttons) do
+                local isSelect= List2Type==btn.type
+                btn:SetButtonState(isSelect and 'PUSHED' or 'NORMAL', true)
+                btn.texture:SetDesaturated(isSelect)
+            end
+        end)
+        List2Buttons[1]:SetButtonState('PUSHED', true)
+        List2Buttons[1].texture:SetDesaturated(true)
+    end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     Init_List=function()

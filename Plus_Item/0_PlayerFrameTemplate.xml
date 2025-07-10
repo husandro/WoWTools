@@ -91,7 +91,15 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="TOPRIGHT"/>
                 </Anchors>
             </Texture>
-
+            <FontString parentKey="PlayerLevelText" inherits="ChatFontNormal" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Icon"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
 
 
 
@@ -263,6 +271,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                         local guid= data and data.guid
                         if guid then
                             local name, realmName = select(6, GetPlayerInfoByGUID(guid))
+                            realmName= data.region or realmName
                             realmName= (realmName=='' or not realmName) and WoWTools_DataMixin.Player.Realm
                             realmName= (WoWTools_DataMixin.Player.Realms[realmName] and '|cnGREEN_FONT_COLOR:' or '')..realmName
                             GameTooltip:AddLine(name)
@@ -501,7 +510,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Offset x="1" y="-1"/>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
-                <Color r="1" g="0" b="1"/>
                  <Scripts>
                     <OnLeave>
                         GameTooltip:Hide()

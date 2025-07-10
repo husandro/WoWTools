@@ -35,7 +35,7 @@ function WoWTools_CurrencyMixin:Find(currencyID, name)--选中提示
     if all==0 then
         return
     end
-    
+
     currencyID= currencyID and currencyID>0 and currencyID or nil
 
     if currencyID or name then
@@ -133,7 +133,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
     local canQuantity= info.maxQuantity and info.maxQuantity>0--最大数 quantity maxQuantity
     local canEarned= info.useTotalEarnedForMaxQty and canQuantity--赛季 totalEarned已获取 maxQuantity
     local canWeek= info.canEarnPerWeek and info.quantityEarnedThisWeek and info.maxWeeklyQuantity and info.maxWeeklyQuantity>0--本周 quantityEarnedThisWeek maxWeeklyQuantity
-    
+
     --local isMax= C_CurrencyInfo.PlayerHasMaxQuantity(currencyID) or C_CurrencyInfo.PlayerHasMaxWeeklyQuantity(currencyID)    
     --local canWeek= info.canEarnPerWeek and not C_CurrencyInfo.PlayerHasMaxWeeklyQuantity(currencyID)
     local isMax= canQuantity and C_CurrencyInfo.PlayerHasMaxQuantity(currencyID)--已最大数
@@ -142,7 +142,7 @@ function WoWTools_CurrencyMixin:GetInfo(currencyID, index, link)
             --(canWeek and info.maxWeeklyQuantity==info.quantityEarnedThisWeek)
             --or (canEarned and info.totalEarned==info.maxQuantity)
             --or (canQuantity and info.quantity==info.maxQuantity)
-            
+
     local num, totale, percent
     if canWeek then
         num, totale= info.quantityEarnedThisWeek, info.maxWeeklyQuantity
@@ -250,7 +250,22 @@ faction
 ]]
 
 
-
+function WoWTools_CurrencyMixin:GetWoWCount(currencyID, checkGUID)
+    local all, numPlayer= 0, 0
+    if not currencyID then
+        return 0, 0
+    end
+    for guid, info in pairs(WoWTools_WoWDate) do
+        local num= info.battleTag==WoWTools_DataMixin.Player.BattleTag
+                and (not checkGUID and guid~=WoWTools_DataMixin.Player.GUID or guid~=checkGUID)
+                and info.Currency[currencyID]
+        if num and num>0 then
+            all=all + num
+            numPlayer=numPlayer +1
+        end
+    end
+    return all, numPlayer
+end
 
 
 
