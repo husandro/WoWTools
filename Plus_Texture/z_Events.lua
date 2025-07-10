@@ -1616,7 +1616,7 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Frame()
     self:SetAlphaColor(StaticPopup1.Border.Bg, true)
 end
 
---[[11.2才有
+--11.2才有
 function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
     for i=1, 4 do
         local p= _G['StaticPopup'..i]
@@ -1624,7 +1624,7 @@ function WoWTools_TextureMixin.Events:Blizzard_StaticPopup_Game()
             self:SetFrame(p.BG, {notAlpha=true})
         end
     end
-end]]
+end
 
 
 

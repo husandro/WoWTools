@@ -462,7 +462,4 @@ end
 
 
 
-function WoWTools_TextureMixin.Frames:UIWidgetBelowMinimapContainerFrame()
-    
-
-end
+--function WoWTools_TextureMixin.Frames:UIWidgetBelowMinimapContainerFrame()

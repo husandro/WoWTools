@@ -1141,7 +1141,7 @@ function WoWTools_MoveMixin.Events:Blizzard_ObjectiveTracker()
 end
 
 
---[[
+
 --StaticPopup 11.2才有
 function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
     for i=1, 4 do
@@ -1160,4 +1160,3 @@ function WoWTools_MoveMixin.Events:Blizzard_StaticPopup_Game()
         end
     end
 end
-]]
