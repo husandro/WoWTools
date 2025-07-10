@@ -573,14 +573,13 @@ ChatButton\0_2_Init_Button.lua
 ##超链接， 欢迎, 一些其他功能
 ChatButton_1_HyperLink\0_HyperLinkMixin.lua
 ChatButton_1_HyperLink\1_Init.lua
-##ChatButton_1_HyperLink\2_Button.lua
 ChatButton_1_HyperLink\3_Menu.lua
 ChatButton_1_HyperLink\4_Link_Icon.lua
 ChatButton_1_HyperLink\Blizzard_Settings.lua
 ChatButton_1_HyperLink\Blizzard_DebugTools.lua
 ChatButton_1_HyperLink\Blizzard_EventTrace.lua
 ChatButton_1_HyperLink\z_Event_Sound.lua
-##ChatButton_1_HyperLink\z_Reload_Button.lua
+ChatButton_1_HyperLink\z_Reload_Button.lua
 ChatButton_1_HyperLink\z_Talking.lua
 ChatButton_1_HyperLink\z_Welcome.lua
 ##ROLL
