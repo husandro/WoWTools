@@ -28,11 +28,11 @@ local function Init_Label()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_PaperDollMixin.addName)
         GameTooltip:AddLine(' ')
-        local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
+        local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)--服务器，EU， US {col=, text=, realm=}
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '服务器:' or FRIENDS_LIST_REALM, server and server.col..' '..server.realm)
         local ok2
         for k, v in pairs(GetAutoCompleteRealms()) do
-            if v==WoWTools_DataMixin.Player.realm then
+            if v==WoWTools_DataMixin.Player.Realm then
                 GameTooltip:AddDoubleLine(v..'|A:auctionhouse-icon-favorite:0:0|a', k, 0,1,0)
             else
                 GameTooltip:AddDoubleLine(v, k)
@@ -40,7 +40,7 @@ local function Init_Label()
             ok2=true
         end
         if not ok2 then
-            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '唯一' or ITEM_UNIQUE, WoWTools_DataMixin.Player.realm)
+            GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '唯一' or ITEM_UNIQUE, WoWTools_DataMixin.Player.Realm)
         end
 
         GameTooltip:AddLine(' ')
@@ -71,10 +71,10 @@ end
 
 local function Settings()
     local ser=GetAutoCompleteRealms() or {}
-    local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.realm, nil, nil)
+    local server= WoWTools_RealmMixin:Get_Region(WoWTools_DataMixin.Player.Realm, nil, nil)
     local num= #ser
     local text= (num>1 and '|cnGREEN_FONT_COLOR:'..num..'|r ' or '')
-            ..WoWTools_DataMixin.Player.realm
+            ..WoWTools_DataMixin.Player.Realm
             ..(server and ' '..server.col or '')
     Label:SetText(text or '')
 end

@@ -140,7 +140,7 @@ local function Add_BuyItem(itemID, itemLink)
         StaticPopupDialogs['WoWTools_AutoBuy']= {
             text =WoWTools_DataMixin.addName..' '..WoWTools_MerchantMixin.addName
             ..'|n|n'.. (WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..icon ..itemLink
-            ..'|n|n'..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.name_realm..': ' ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
+            ..'|n|n'..WoWTools_DataMixin.Icon.Player..WoWTools_DataMixin.Player.Name_Realm..': ' ..(WoWTools_DataMixin.onlyChinese and '数量' or AUCTION_HOUSE_QUANTITY_LABEL)
             ..'|n|n0: '..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
             ..(Save().notAutoBuy and '|n|n'..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE))..': '..WoWTools_TextMixin:GetEnabeleDisable(false) or ''),
             button1 = WoWTools_DataMixin.onlyChinese and '购买' or PURCHASE,

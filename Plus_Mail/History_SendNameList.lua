@@ -38,7 +38,7 @@ local function created_button(index)
     function btn:settings()
         self.Text:SetText(WoWTools_MailMixin:GetNameInfo(self.name))
         self:SetWidth(self.Text:GetWidth()+4)
-        self.alpha= (self.name==WoWTools_DataMixin.Player.name_realm or WoWTools_MailMixin:GetRealmInfo(self.name)) and 0.3 or 1
+        self.alpha= (self.name==WoWTools_DataMixin.Player.Name_Realm or WoWTools_MailMixin:GetRealmInfo(self.name)) and 0.3 or 1
         self:set_alpha()
         self:SetShown(true)
     end
@@ -68,7 +68,7 @@ local function set_list()
     end
     local index=1
     for _, name in pairs(Save().lastSendPlayerList) do
-        if not WoWTools_MailMixin:GetRealmInfo(name) and name~=WoWTools_DataMixin.Player.name_realm then
+        if not WoWTools_MailMixin:GetRealmInfo(name) and name~=WoWTools_DataMixin.Player.Name_Realm then
             local btn= Tab[index] or created_button(index)
             btn.name=name
             btn:settings()
@@ -149,7 +149,7 @@ local function Init_Menu(self, root)
         sub2=sub:CreateCheckbox(
             (
                 WoWTools_MailMixin:GetRealmInfo(name) and '|cff9e9e9e'
-                or (name==WoWTools_DataMixin.Player.name_realm and '|cff00ff00')
+                or (name==WoWTools_DataMixin.Player.Name_Realm and '|cff00ff00')
                 or ''
             )
             ..WoWTools_MailMixin:GetNameInfo(name),

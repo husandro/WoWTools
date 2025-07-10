@@ -227,7 +227,7 @@ function WoWTools_TextureMixin:SetNineSlice(frame, alpha, notBg)
         return
     end
 
-    local col= WoWTools_DataMixin.Player.useColor
+    local col= WoWTools_DataMixin.Player.UseColor
     local r,g, b= col.r, col.g, col.b
 
     alpha= (alpha==nil and 0)
@@ -486,7 +486,7 @@ function WoWTools_TextureMixin:SetAllFrames(frame, tab)
     local isChildren= tab.isChildren
     local bg= tab.bg
 
-    local col= WoWTools_DataMixin.Player.useColor
+    local col= WoWTools_DataMixin.Player.UseColor
     local r,g, b= col.r, col.g, col.b
     local name= frame:GetName()
 

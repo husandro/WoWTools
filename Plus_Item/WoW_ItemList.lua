@@ -235,7 +235,7 @@ local function Init_Right_List()
             cnLink= cnLink~=itemLink and cnLink or nil
 
             class, _, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
-            realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
+            realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
 
             cnClass= WoWTools_TextMixin:CN(class)
             cnClass= cnClass~=class and cnClass or nil
@@ -347,7 +347,7 @@ local function Settings_Right_Button(btn, data)
     else
         local name= data.name or ''
         btn.Name:SetText(
-            name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
+            name:gsub('-'..WoWTools_DataMixin.Player.Realm, '')--取得全名
             ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
                 and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
             )
@@ -356,7 +356,9 @@ local function Settings_Right_Button(btn, data)
     end
     btn.Name:SetTextColor(col.r, col.g, col.b)
 
-    btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
+    btn.BattleTag:SetText(data.battleTag or '')
+    --btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
+    btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
 
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
@@ -422,7 +424,7 @@ local function Settings_Right_Button(btn, data)
 
 
     btn.SelectBg:SetShown(data.guid==Frame.guid)
-    btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
+
 end
 
 
@@ -446,7 +448,7 @@ local function SetScript_Right_Button(btn)
             return
         end
         local guid= self.data.guid
-        
+
         if d=='LeftButton' then
             Frame.guid= Frame.guid~=guid and guid or nil
 
@@ -490,6 +492,7 @@ local function SetScript_Right_Button(btn)
                 end)
             end)
         end
+
         Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
         Init_Left_List()
     end)
@@ -588,7 +591,7 @@ local function Init_IsMe_Menu(self, root)
 
     for guid, tab in pairs(WoWTools_WoWDate) do
         local class, englishClass, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
-        realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.realm or realm
+        realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
 
         s[realm]= (s[realm] or 0)+1
 

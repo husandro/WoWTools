@@ -27,7 +27,7 @@ local function Save_WoWGuild()
             guid= club.clubFinderGUID,
             link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID),
             clubID= clubID,
-            data={guildName, guildRankName, guildRankIndex, realm or WoWTools_DataMixin.Player.realm},
+            data={guildName, guildRankName, guildRankIndex, realm or WoWTools_DataMixin.Player.Realm},
             text= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text
         }
 

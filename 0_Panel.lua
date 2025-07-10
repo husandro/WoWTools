@@ -18,11 +18,11 @@ end
 --自定义，颜色
 local function Set_Color()
     if Save().useColor==1 then
-        WoWTools_DataMixin.Player.useColor= {r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, a=1, hex= WoWTools_DataMixin.Player.col}
+        WoWTools_DataMixin.Player.UseColor= {r=WoWTools_DataMixin.Player.r, g=WoWTools_DataMixin.Player.g, b=WoWTools_DataMixin.Player.b, a=1, hex= WoWTools_DataMixin.Player.col}
     elseif Save().useColor==2 then
-        WoWTools_DataMixin.Player.useColor= Save().useCustomColorTab
+        WoWTools_DataMixin.Player.UseColor= Save().useCustomColorTab
     else
-        WoWTools_DataMixin.Player.useColor=nil
+        WoWTools_DataMixin.Player.UseColor=nil
     end
 end
 
@@ -97,7 +97,7 @@ local function Init_Options()
                     local hex=WoWTools_ColorMixin:RGBtoHEX(setR, setG, setB, setA)--RGB转HEX
                     Save().useCustomColorTab={r=setR, g=setG, b=setB, a=setA, hex= '|c'..hex }
                     Set_Color()--自定义，颜色
-                    print(WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', WoWTools_DataMixin.addName,   WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(WoWTools_DataMixin.Player.UseColor and WoWTools_DataMixin.Player.UseColor.hex or '', WoWTools_DataMixin.addName,   WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
                 end
                 WoWTools_ColorMixin:ShowColorFrame(valueR, valueG, valueB, valueA, function()
                         setR, setG, setB, setA= WoWTools_ColorMixin:Get_ColorFrameRGBA()
@@ -112,7 +112,7 @@ local function Init_Options()
                     ColorPickerFrame.Footer.OkayButton:Click()
                 end
                 Set_Color()--自定义，颜色
-                print(WoWTools_DataMixin.addName, WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '', (WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)..'|r',   WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                print(WoWTools_DataMixin.addName, WoWTools_DataMixin.Player.UseColor and WoWTools_DataMixin.Player.UseColor.hex or '', (WoWTools_DataMixin.onlyChinese and '颜色' or COLOR)..'|r',   WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
             end
             Save().useColor= value
 
@@ -125,7 +125,7 @@ local function Init_Options()
 			return container:GetData();
         end,
         GetValue= function() return Save().useColor end,
-        name= (WoWTools_DataMixin.Player.useColor and WoWTools_DataMixin.Player.useColor.hex or '')..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
+        name= (WoWTools_DataMixin.Player.UseColor and WoWTools_DataMixin.Player.UseColor.hex or '')..(WoWTools_DataMixin.onlyChinese and '颜色' or COLOR),
         tooltip= WoWTools_DataMixin.addName,
     })
 

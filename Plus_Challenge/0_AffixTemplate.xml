@@ -1,0 +1,53 @@
+
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Blizzard_SharedXML/UI.xsd">
+
+
+<Frame name="WoWToolsAffixTemplate" virtual="true">
+    <Size x="0" y="58"/>
+    <Anchors>
+        <Anchor point="LEFT"/>
+        <Anchor point="RIGHT"/>
+    </Anchors>
+
+    <Frames>
+        <Frame parentKey="Affix4" inherits="ChallengesKeystoneFrameAffixTemplate">
+            <Anchors>
+                <Anchor point="RIGHT"/>
+            </Anchors>            
+        </Frame>
+
+        <Frame parentKey="Affix3" inherits="ChallengesKeystoneFrameAffixTemplate">
+            <Anchors>
+                <Anchor point="RIGHT" relativeKey="$parent.Affix4" relativePoint="LEFT"/>
+            </Anchors>
+        </Frame>
+
+        <Frame parentKey="Affix2" inherits="ChallengesKeystoneFrameAffixTemplate">
+            <Anchors>
+                <Anchor point="RIGHT" relativeKey="$parent.Affix3" relativePoint="LEFT"/>
+            </Anchors>
+        </Frame>
+
+        <Frame parentKey="Affix1" inherits="ChallengesKeystoneFrameAffixTemplate">
+            <Anchors>
+                <Anchor point="RIGHT" relativeKey="$parent.Affix2" relativePoint="LEFT"/>
+            </Anchors>
+        </Frame>
+    </Frames>
+
+    <Layers>
+        <Layer level="BORDER">        
+             <FontString parentKey="Text" inherits="Game30Font" justifyH="RIGHT">
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.Affix1" relativePoint="LEFT" x="-4" y="0"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+            </FontString>
+        </Layer>
+    </Layers>
+</Frame>
+</Ui>

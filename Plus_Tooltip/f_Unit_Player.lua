@@ -6,7 +6,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
         return
     end
 
-    local realm= select(2, UnitName(unit)) or WoWTools_DataMixin.Player.realm--服务器
+    local realm= select(2, UnitName(unit)) or WoWTools_DataMixin.Player.Realm--服务器
     local isPlayer = UnitIsPlayer(unit)
     local isSelf= UnitIsUnit('player', unit)--我
     local isGroupPlayer= (not isSelf and WoWTools_DataMixin.GroupGuid[guid]) and true or nil--队友
@@ -77,7 +77,7 @@ function WoWTools_TooltipMixin:Set_Unit_Player(tooltip, name, unit, guid)
     textRight=realm
         ..(isSelf
             and '|A:auctionhouse-icon-favorite:0:0|a'
-            or (realm==WoWTools_DataMixin.Player.realm and '|A:common-icon-checkmark:0:0|a')
+            or (realm==WoWTools_DataMixin.Player.Realm and '|A:common-icon-checkmark:0:0|a')
             or (WoWTools_DataMixin.Player.Realms[realm] and '|A:Adventures-Checkmark:0:0|a')
             or ''
         )

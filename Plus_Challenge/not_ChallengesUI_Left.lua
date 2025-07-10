@@ -38,7 +38,7 @@ local function Initializer(btn, data)
     else
         local name= data.name or ''
         btn.Name:SetText(
-            name:gsub('-'..WoWTools_DataMixin.Player.realm, '')--取得全名
+            name:gsub('-'..WoWTools_DataMixin.Player.Realm, '')--取得全名
             ..(WoWTools_DataMixin.Player.BattleTag~= data.battleTag and WoWTools_DataMixin.Player.BattleTag and data.battleTag
                 and '|A:tokens-guildRealmTransfer-small:0:0|a' or ''
             )

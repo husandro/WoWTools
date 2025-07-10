@@ -60,7 +60,7 @@ local function Init_Dialogs()
 
     StaticPopupDialogs['WoWToolsChatWolrdAddPlayerNameChatFilter']= {
         text=(WoWTools_DataMixin.onlyChinese and '自定义屏蔽' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, CUSTOM, IGNORE))
-            ..'|n|n'..WoWTools_DataMixin.Player.name_realm..'|n',
+            ..'|n|n'..WoWTools_DataMixin.Player.Name_Realm..'|n',
         whileDead=true, hideOnEscape=true, exclusive=true,
         hasEditBox=true,
         button1= WoWTools_DataMixin.onlyChinese and '添加' or ADD,
@@ -77,7 +77,7 @@ local function Init_Dialogs()
             local edit= self.editBox or self:GetEditBox()
             local text= edit:GetText() or ''
             if not text:find('%-') then
-                text= text..'-'..WoWTools_DataMixin.Player.realm
+                text= text..'-'..WoWTools_DataMixin.Player.Realm
             end
             Save().userChatFilterTab[text]={num=0, guid=nil}
             print(WoWTools_DataMixin.Icon.icon2..WoWTools_WorldMixin.addName, WoWTools_DataMixin.onlyChinese and '添加' or ADD, text, WoWTools_UnitMixin:GetPlayerInfo(nil, nil, text, {reName=true, reRealm=true, reLink=true}))
@@ -86,7 +86,7 @@ local function Init_Dialogs()
             local text= self:GetText() or ''
             local enabled=true
             if text==''
-                or text== WoWTools_DataMixin.Player.name_realm
+                or text== WoWTools_DataMixin.Player.Name_Realm
                 or text== WoWTools_DataMixin.Player.Name
 
                 or text:find('^ ')

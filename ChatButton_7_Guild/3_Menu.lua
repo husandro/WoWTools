@@ -179,7 +179,7 @@ end
 
 
 
---帐号，公会，数据  WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.data[4]= WoWTools_DataMixin.Player.realm
+--帐号，公会，数据  WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.data[4]= WoWTools_DataMixin.Player.Realm
 local function WoW_List(_, root)
     local sub, sub2
 
@@ -210,7 +210,7 @@ local function WoW_List(_, root)
                 ..' '
                 ..WoWTools_GuildMixin:Get_Rank_Texture(rankIndex, true)
                 ..name
-                ..(realm and realm~=WoWTools_DataMixin.Player.realm
+                ..(realm and realm~=WoWTools_DataMixin.Player.Realm
                     and (WoWTools_DataMixin.Player.Realms[realm] and '|cnGREEN_FONT_COLOR:-|r' or '|cnRED_FONT_COLOR:-|r')..realm
                     or ''
                 ),

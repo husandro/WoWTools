@@ -22,14 +22,14 @@ local Frame
 
     if WoWTools_DataMixin.Player.husandro and #data==0 then
         data={
-            name= WoWTools_DataMixin.Player.name_realm,
+            name= WoWTools_DataMixin.Player.Name_Realm,
             classFilename= UnitClassBase('player'),
             keystoneLevel=11,
             mapChallengeModeID=247,
             isYou= true,
             members= {
                 {
-                    name= WoWTools_DataMixin.Player.name_realm,
+                    name= WoWTools_DataMixin.Player.Name_Realm,
                     classFileName= UnitClassBase('player'),
                 },
             },

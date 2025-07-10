@@ -393,7 +393,7 @@ local function Init_Button()
             btn:SetScript('OnClick', function(self, d)
                 if d=='LeftButton' then
                     local name= Save().fast[self.name]
-                    if name and name~=WoWTools_DataMixin.Player.name_realm then
+                    if name and name~=WoWTools_DataMixin.Player.Name_Realm then
                          WoWTools_MailMixin:SetSendName(name)--设置，发送名称，文
                     end
                     self:GetParent():GetParent():set_PickupContainerItem(self.classID, self.subClassID, self.findString)--自动放物品

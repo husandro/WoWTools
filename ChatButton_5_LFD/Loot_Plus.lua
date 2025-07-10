@@ -63,7 +63,7 @@ local function Init()
                 local playerName= info.playerName
                 if playerName and info.playerGUID and not playerName:find('%-') then
                     local realm= select(7,GetPlayerInfoByGUID(info.playerGUID))
-                    if realm and realm~='' and realm~=WoWTools_DataMixin.Player.realm then
+                    if realm and realm~='' and realm~=WoWTools_DataMixin.Player.Realm then
                         playerName= playerName..'-'..realm
                     end
                 end

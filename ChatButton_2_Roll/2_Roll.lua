@@ -34,7 +34,7 @@ local function setCHAT_MSG_SYSTEM(text)
     if not (name and roll and minText=='1' and maxText=='100') then
         return
     end
-    name=name:find('%-') and name or (name..'-'..WoWTools_DataMixin.Player.realm)
+    name=name:find('%-') and name or (name..'-'..WoWTools_DataMixin.Player.Realm)
     if not findRolled(name) then
         if not Max or roll>Max then
             if Max then
@@ -53,7 +53,7 @@ local function setCHAT_MSG_SYSTEM(text)
     end
 
     local faction,guid
-    if name==WoWTools_DataMixin.Player.name_realm then
+    if name==WoWTools_DataMixin.Player.Name_Realm then
         faction= WoWTools_DataMixin.Player.Faction
         guid= WoWTools_DataMixin.Player.GUID
     elseif WoWTools_DataMixin.GroupGuid[name] then

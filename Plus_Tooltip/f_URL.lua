@@ -194,7 +194,7 @@ local function GameTooltip_URL(tooltip, tab)
 
     elseif tab.unitName then
         if IsControlKeyDown() and IsShiftKeyDown() then
-            WoWTools_TooltipMixin:Show_URL(false, nil, tab.realm or WoWTools_DataMixin.Player.realm, tab.unitName)
+            WoWTools_TooltipMixin:Show_URL(false, nil, tab.realm or WoWTools_DataMixin.Player.Realm, tab.unitName)
         else
             if tooltip then
                 tooltip:SetText('|A:questlegendary:0:0|a'..(tab.col or '')..'Raider.IO |A:NPE_Icon:0:0|a Ctrl+Shift')
@@ -283,7 +283,7 @@ function WoWTools_TooltipMixin:Show_URL(isWoWHead, typeOrRegion, typeIDOrRealm, 
         StaticPopup_Show("WoWTools_Tooltips_LinkURL",
             'Raider.IO',
             nil,
-            format(raiderioText, typeOrRegion or GetCurrentRegionName() or '', typeIDOrRealm or WoWTools_DataMixin.Player.realm, name)
+            format(raiderioText, typeOrRegion or GetCurrentRegionName() or '', typeIDOrRealm or WoWTools_DataMixin.Player.Realm, name)
         )
     else
         StaticPopup_Show("WoWTools_Tooltips_LinkURL", '', nil, name or '')

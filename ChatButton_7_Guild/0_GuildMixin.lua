@@ -92,7 +92,7 @@ function WoWTools_GuildMixin:OnEnter_GuildInfo()
 --在线成员：
         GameTooltip:AddLine(
             guildName
-            ..(realm and realm~=WoWTools_DataMixin.Player.realm and '-'..realm or ' ')
+            ..(realm and realm~=WoWTools_DataMixin.Player.Realm and '-'..realm or ' ')
             ..' ('..all..')',
             nil, nil, nil, true
         )

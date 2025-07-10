@@ -17,7 +17,7 @@ local function Init_Menu(_, root, data)
         --not Save().myChatFilter
             not data.chatTarget
         or data.which~='FRIEND'
-        or data.chatTarget==WoWTools_DataMixin.Player.name_realm
+        or data.chatTarget==WoWTools_DataMixin.Player.Name_Realm
         or WoWTools_UnitMixin:GetIsFriendIcon(nil, nil, data.chatTarget)
         or WoWTools_DataMixin.GroupGuid[data.chatTarget]
     then

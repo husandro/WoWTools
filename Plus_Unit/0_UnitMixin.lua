@@ -6,7 +6,7 @@ function WoWTools_UnitMixin:NameRemoveRealm(name, realm)--玩家名称, 去服�
     end
     local reName= name:match('(.+)%-') or name
     local reRealm= name:match('%-(.+)') or realm
-    if not reName or reRealm=='' or reRealm==WoWTools_DataMixin.Player.realm then
+    if not reName or reRealm=='' or reRealm==WoWTools_DataMixin.Player.Realm then
         return reName
     elseif WoWTools_DataMixin.Player.Realms[reRealm] then
         return reName..'|cnGREEN_FONT_COLOR:*|r'
@@ -87,7 +87,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
 
     if guid==WoWTools_DataMixin.Player.GUID
         or name==WoWTools_DataMixin.Player.Name
-        or name==WoWTools_DataMixin.Player.name_realm
+        or name==WoWTools_DataMixin.Player.Name_Realm
     then
         return WoWTools_DataMixin.Icon.Player
             ..(
@@ -128,7 +128,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         end
         if reName and name then
             if reRealm then
-                if not realm or realm=='' or realm==WoWTools_DataMixin.Player.realm then
+                if not realm or realm=='' or realm==WoWTools_DataMixin.Player.Realm then
                     text= text..name
                 else
                     text= text..name..'-'..realm
@@ -236,7 +236,7 @@ end
 function WoWTools_UnitMixin:GetLink(unit, guid, name, onlyLink) --玩家超链接
     guid= guid or self:GetGUID(unit, name)
     if guid==WoWTools_DataMixin.Player.GUID then--自已
-        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.name_realm..'|h['..WoWTools_DataMixin.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
+        return (onlyLink and '' or WoWTools_DataMixin.Icon.Player)..'|Hplayer:'..WoWTools_DataMixin.Player.Name_Realm..'|h['..WoWTools_DataMixin.Player.col..COMBATLOG_FILTER_STRING_ME..'|r'..']|h'
     end
     if guid then
         local _, class, _, race, sex, name2, realm = GetPlayerInfoByGUID(guid)
@@ -324,7 +324,7 @@ function WoWTools_UnitMixin:GetIsFriendIcon(unit, guid, name)--检测, 是否好
         end
 
     elseif name then
-        if C_FriendList.GetFriendInfo(name:gsub('%-'..WoWTools_DataMixin.Player.realm, ''))  then
+        if C_FriendList.GetFriendInfo(name:gsub('%-'..WoWTools_DataMixin.Player.Realm, ''))  then
             return '|A:groupfinder-icon-friend:0:0|a'--好友
         end
 
@@ -343,7 +343,7 @@ function WoWTools_UnitMixin:GetGUID(unit, name)--从名字,名unit, 获取GUID
         return UnitGUID(unit)
 
     elseif name then
-        local info=C_FriendList.GetFriendInfo(name:gsub('%-'..WoWTools_DataMixin.Player.realm, ''))--好友
+        local info=C_FriendList.GetFriendInfo(name:gsub('%-'..WoWTools_DataMixin.Player.Realm, ''))--好友
         if info then
             return info.guid
         end
@@ -445,14 +445,14 @@ end
 function WoWTools_UnitMixin:GetFullName(name, unit, guid)--取得全名
     if name and name:gsub(' ','')~='' then
         if not name:find('%-') then
-            name= name..'-'..WoWTools_DataMixin.Player.realm
+            name= name..'-'..WoWTools_DataMixin.Player.Realm
         end
         return name
     elseif guid then
         local name2, realm = select(6, GetPlayerInfoByGUID(guid))
         if name2 then
             if not realm or realm=='' then
-                realm= WoWTools_DataMixin.Player.realm
+                realm= WoWTools_DataMixin.Player.Realm
             end
             return name2..'-'..realm
         end
@@ -460,7 +460,7 @@ function WoWTools_UnitMixin:GetFullName(name, unit, guid)--取得全名
         local name2, realm= UnitName(unit)
         if name2 then
             if not realm or realm=='' then
-                realm= WoWTools_DataMixin.Player.realm
+                realm= WoWTools_DataMixin.Player.Realm
             end
             return name2..'-'..realm
         end
@@ -472,7 +472,7 @@ end
     end
     local reName= name:match('(.+)%-') or name
     local reRealm= name:match('%-(.+)') or realm
-    if not reName or reRealm=='' or reRealm==WoWTools_DataMixin.Player.realm then
+    if not reName or reRealm=='' or reRealm==WoWTools_DataMixin.Player.Realm then
         return reName
     elseif WoWTools_DataMixin.Player.Realms[reRealm] then
         return reName..'|cnGREEN_FONT_COLOR:*|r'

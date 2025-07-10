@@ -57,7 +57,7 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
     local split= LinkUtil.SplitLink(link)
     local name= split and split:match('player:(.-):') or link:match('|Hplayer:.-|h%[|cff......(.-)|r]') or link:match('|Hplayer:.-|h%[(.-)]|h')
     local server= name and name:match('%-(.+)')
-    if name==WoWTools_DataMixin.Player.name_realm or name==WoWTools_DataMixin.Player.Name then
+    if name==WoWTools_DataMixin.Player.Name_Realm or name==WoWTools_DataMixin.Player.Name then
         return '[|A:auctionhouse-icon-favorite:0:0|a'
             ..WoWTools_DataMixin.Player.col
             ..(WoWTools_DataMixin.onlyChinese and '我' or COMBATLOG_FILTER_STRING_ME)
@@ -65,7 +65,7 @@ local function Set_Realm(link)--去服务器为*, 加队友种族图标,和N,T
     else
         local text= WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name)
         if server then
-            if server== WoWTools_DataMixin.Player.realm then
+            if server== WoWTools_DataMixin.Player.Realm then
                 return (text or '')..link:gsub('%-'..server..'|r]|h', '|r]|h')
             else
                 return (text or '')..link:gsub('%-'..server..'|r]|h', (WoWTools_DataMixin.Player.Realms[server] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..'*|r|r]|h')

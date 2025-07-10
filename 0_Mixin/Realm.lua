@@ -162,9 +162,9 @@ function WoWTools_RealmMixin:Get_Region(realm, guid, unit, disabled)--WoWTools_R
         regionColor={}
         Realms={}
     else
-        realm= realm=='' and WoWTools_DataMixin.Player.realm
+        realm= realm=='' and WoWTools_DataMixin.Player.Realm
                 or realm
-                or unit and ((select(2, UnitName(unit)) or WoWTools_DataMixin.Player.realm))
+                or unit and ((select(2, UnitName(unit)) or WoWTools_DataMixin.Player.Realm))
                 or guid and select(7, GetPlayerInfoByGUID(guid))
         return realm and Realms[realm] and regionColor[Realms[realm]]
     end

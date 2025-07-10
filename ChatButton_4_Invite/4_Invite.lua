@@ -10,7 +10,7 @@ local P_Save={
     FriendAceInvite=true,--接受, 好友, 邀请
     InvNoFriendNum=0,--拒绝, 次数
     restingTips=true,--休息区提示
-    ChannelText=WoWTools_DataMixin.Player.cn and '1' or 'inv',--频道, 邀请, 事件,内容
+    ChannelText=WoWTools_DataMixin.Player.IsCN and '1' or 'inv',--频道, 邀请, 事件,内容
 
     Summon= true,--接受, 召唤
     notSummonChat=nil,--不说

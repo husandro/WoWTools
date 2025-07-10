@@ -13,10 +13,10 @@ local P_Save={
     disabledKeyColor= not WoWTools_DataMixin.Player.husandro,--禁用，内容颜色，和频道名称替换
 
     groupWelcome= WoWTools_DataMixin.Player.husandro,--欢迎
-    --groupWelcomeText= WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
+    --groupWelcomeText= WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}',
 
     guildWelcome= WoWTools_DataMixin.Player.husandro,
-    --guildWelcomeText= WoWTools_DataMixin.Player.cn and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
+    --guildWelcomeText= WoWTools_DataMixin.Player.IsCN and '宝贝，欢迎你加入' or EMOTE103_CMD1:gsub('/',''),
 
     welcomeOnlyHomeGroup=true,--仅限, 手动组队
 
@@ -119,8 +119,8 @@ panel:SetScript('OnEvent', function(self, event, arg1)
 
 
             WoWToolsPlayerDate['HyperLinkColorText']= WoWToolsPlayerDate['HyperLinkColorText'] or {[ACHIEVEMENTS]=true}
-            WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.cn and '欢迎' or EMOTE103_CMD1:gsub('/',''))
-            WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.cn and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
+            WoWToolsPlayerDate['HyperLinkGuildWelcomeText']= WoWToolsPlayerDate['HyperLinkGuildWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '欢迎' or EMOTE103_CMD1:gsub('/',''))
+            WoWToolsPlayerDate['HyperLinkGroupWelcomeText']= WoWToolsPlayerDate['HyperLinkGroupWelcomeText'] or (WoWTools_DataMixin.Player.IsCN and '{rt1}欢迎{rt1}' or '{rt1}Hi{rt1}')
 
             Save().linkIcon= not Save().disabed
             Save().disabed= nil

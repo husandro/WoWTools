@@ -312,14 +312,14 @@ local function Init()--设置标记, 框架
             if self.star then
                 C_PartyInfo.DoCountdown(0)
             end
-            WoWTools_ChatMixin:Chat(WoWTools_DataMixin.Player.cn and '{rt7}取消 取消 取消{rt7}' or '{rt7}STOP STOP STOP{rt7}', nil, nil)
+            WoWTools_ChatMixin:Chat(WoWTools_DataMixin.Player.IsCN and '{rt7}取消 取消 取消{rt7}' or '{rt7}STOP STOP STOP{rt7}', nil, nil)
         end
     end)
     MakerFrame.countdown:SetScript('OnEnter', function(self)
         self:GetParent():set_Tooltips_Point()
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '/倒计时' or SLASH_COUNTDOWN2)..' '..(Save().countdown or 7))
-        GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.Player.cn and '取消 取消 取消' or 'STOP STOP STOP'))
+        GameTooltip:AddLine(WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.Player.IsCN and '取消 取消 取消' or 'STOP STOP STOP'))
         GameTooltip:AddLine(' ')
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '备注：不要太快了' or (LABEL_NOTE..': '..ERR_GENERIC_THROTTLE), 1,0,0)
         GameTooltip:AddLine(WoWTools_DataMixin.Icon.mid..(WoWTools_DataMixin.onlyChinese and '设置' or SETTINGS))

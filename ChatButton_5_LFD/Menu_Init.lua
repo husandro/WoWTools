@@ -921,7 +921,7 @@ local function Init_Menu(self, root)
     end)
 
 --职责，可选列表
-    Init_All_Role(_, sub2)
+    Init_All_Role(self, sub2)
 
 
 --设置,战场

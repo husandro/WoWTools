@@ -56,8 +56,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 tooltip='|cnRED_FONT_COLOR:Bug',
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
+                    Save().disabled= not Save().disabled and true or nil
                     Init()
-                    print(WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+                    print(
+                        WoWTools_DataMixin.Icon.icon2..WoWTools_ObjectiveMixin.addName,
+                        WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled),
+                        WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD
+                    )
                 end
             })
 

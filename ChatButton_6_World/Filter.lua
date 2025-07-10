@@ -160,7 +160,7 @@ local function Init_Filter_Menu(self, root)
 
             local name2, realmName = select(6, GetPlayerInfoByGUID(guid))
             if name2 and realmName then
-                realmName= realmName =='' and WoWTools_DataMixin.Player.realm or realmName
+                realmName= realmName =='' and WoWTools_DataMixin.Player.Realm or realmName
                 sub3:CreateButton(WoWTools_DataMixin.onlyChinese and '密语' or SLASH_TEXTTOSPEECH_WHISPER, function(data)
                     WoWTools_ChatMixin:Say(nil, data)
                     return MenuResponse.Open

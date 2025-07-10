@@ -72,10 +72,10 @@ local function findWhisper(name)
 end
 
 local function getWhisper(event, text, name, _, _, _, _, _, _, _, _, _, guid)
-    if WoWTools_DataMixin.Player.name_realm~=name and name then
+    if WoWTools_DataMixin.Player.Name_Realm~=name and name then
         local type= event:find('INFORM') and true or nil--_INFORM 发送
         local index=findWhisper(name)
-        local tab= {text=text, type=type, player=WoWTools_DataMixin.Player.name_realm, time=date('%X')}
+        local tab= {text=text, type=type, player=WoWTools_DataMixin.Player.Name_Realm, time=date('%X')}
         if index then
             Save().WhisperTab[index].guid=guid
             table.insert(Save().WhisperTab[index].msg, tab)
@@ -244,7 +244,7 @@ local function Init_Menu(self, root)
                 col= select(5, WoWTools_UnitMixin:GetColor(nil, desc.data.guid))
                 local find
                 for _, msg in pairs(desc.data.msg) do
-                    local player= msg.player and msg.player~=WoWTools_DataMixin.Player.name_realm and msg.player
+                    local player= msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm and msg.player
 
                     if msg.type then--发送
                         tooltip:AddLine((player and '|cnGREEN_FONT_COLOR:' or '|cff9e9e9e')..msg.time..' |A:voicechat-icon-textchat-silenced:0:0|a'..msg.text..'|r')
@@ -273,7 +273,7 @@ local function Init_Menu(self, root)
             sub2:CreateButton(WoWTools_DataMixin.onlyChinese and '显示' or SHOW, function(data)
                 col= select(5, WoWTools_UnitMixin:GetColor(nil, data.guid)) or '|cffffffff'
                 local text= '|cff9e9e9e'
-                            ..WoWTools_DataMixin.Player.name_realm
+                            ..WoWTools_DataMixin.Player.Name_Realm
                             ..'|r'..WoWTools_DataMixin.Icon.Player
                             ..' <-> '
                             ..(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil) or '')
@@ -284,14 +284,14 @@ local function Init_Menu(self, root)
                 for _, msg in pairs(data.msg) do
                     text= text and text..'|n' or ''
                     if msg.type then--发送
-                        text= text..'|cff9e9e9e'..msg.time..' '..(msg.player or WoWTools_DataMixin.Player.name_realm)..': '..msg.text..'|r'
-                        if msg.player and msg.player~=WoWTools_DataMixin.Player.name_realm then
+                        text= text..'|cff9e9e9e'..msg.time..' '..(msg.player or WoWTools_DataMixin.Player.Name_Realm)..': '..msg.text..'|r'
+                        if msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm then
                             playerList[msg.player]= true
                             text=text..' |cnGREEN_FONT_COLOR:*|r'
                         end
                     else--接收
                         text= text..col..msg.time..' '..data.name..': '..msg.text..'|r'
-                        if msg.player and msg.player~=WoWTools_DataMixin.Player.name_realm then
+                        if msg.player and msg.player~=WoWTools_DataMixin.Player.Name_Realm then
                             playerList[msg.player]= true
                             text=text..' ->|cnGREEN_FONT_COLOR:'..msg.player'|r'
                         end

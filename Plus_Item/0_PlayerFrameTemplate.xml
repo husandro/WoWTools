@@ -92,80 +92,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Anchors>
             </Texture>
 
-            <Texture parentKey="Spec" enableMouse="true">
-                <Size x="14" y="14"/>
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self})
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </Texture>
-
-            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
-                <Anchors>
-                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
-                </Anchors>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
-
-
-
-
-            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
-                <Anchors>
-                    <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-                 <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        lcoal data= self:GetParent().data
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or Name)
-                        local guid= data and data.guid
-                        if guid then
-                            local name, realmName = select(6, GetPlayerInfoByGUID(guid))
-                            GameTooltip:AddLine(name)
-                            GameTooltip:AddLine(realmName)
-                        end                        
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
-            </FontString>
- 
-            <Texture parentKey="NameBackground" atlas="ChallengeMode-guild-background" alpha="0.5">
-                <Anchors>
-                    <Anchor point="TOPLEFT" relativeKey="$parent.Name"/>
-                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
-                </Anchors>
-            </Texture>
 
 
 
@@ -178,14 +104,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
 
-
-
-
-
-
-
-
-
+            
             <Texture parentKey="Score" atlas="recipetoast-icon-star">
                 <Size x="12" y="12"/>
                 <Anchors>
@@ -271,6 +190,97 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 </Shadow>
             </FontString>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <Texture parentKey="Spec" enableMouse="true">
+                <Size x="14" y="14"/>
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Icon" relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local parent= self:GetParent()
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self})
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+
+            <FontString parentKey="ItemLevelText" inherits="ChatFontNormal">
+                <Anchors>
+                   <Anchor point="RIGHT" relativeKey="$parent.Spec" relativePoint="LEFT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '装等' or STAT_AVERAGE_ITEM_LEVEL)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
+
+
+
+
+            <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
+                <Anchors>
+                    <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>
+                </Anchors>
+                <Shadow>
+                    <Offset x="1" y="-1"/>
+                    <Color r="0" g="0" b="0"/>
+                </Shadow>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        local data= self:GetParent().data
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or Name)
+                        local guid= data and data.guid
+                        if guid then
+                            local name, realmName = select(6, GetPlayerInfoByGUID(guid))
+                            realmName= (realmName=='' or not realmName) and WoWTools_DataMixin.Player.Realm
+                            realmName= (WoWTools_DataMixin.Player.Realms[realmName] and '|cnGREEN_FONT_COLOR:' or '')..realmName
+                            GameTooltip:AddLine(name)
+                            GameTooltip:AddLine(realmName)
+                        end
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </FontString>
+ 
+            <Texture parentKey="NameBackground" atlas="ChallengeMode-guild-background" alpha="0.5">
+                <Anchors>
+                    <Anchor point="TOPLEFT" relativeKey="$parent.Name"/>
+                    <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
+                </Anchors>
+            </Texture>
+
             <Texture parentKey="Battle" atlas="gmchat-icon-blizz">
                 <Size x="12" y="12"/>
                 <Anchors>
@@ -301,7 +311,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnEnter>
                 </Scripts>
             </Texture>
-            <FontString parentKey="BattleTag" inherits="ChatFontNormal" justifyH="RIGHT">
+            <FontString parentKey="BattleTag" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.Battle" relativePoint="LEFT"/>
                 </Anchors>
@@ -310,7 +320,40 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
                 <Color r="0" g="0.8" b="1"/>
+                <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(
+                            '|A:tokens-guildRealmTransfer-small:0:0|a'
+                            ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
+                        )
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
             </FontString>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
 
 
 
@@ -498,58 +541,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
 
-
-
-
-
-
-<Frame name="WoWToolsAffixTemplate" virtual="true">
-    <Size x="0" y="58"/>
-    <Anchors>
-        <Anchor point="LEFT"/>
-        <Anchor point="RIGHT"/>
-    </Anchors>
-
-    <Frames>
-        <Frame parentKey="Affix4" inherits="ChallengesKeystoneFrameAffixTemplate">
-            <Anchors>
-                <Anchor point="RIGHT"/>
-            </Anchors>            
-        </Frame>
-
-        <Frame parentKey="Affix3" inherits="ChallengesKeystoneFrameAffixTemplate">
-            <Anchors>
-                <Anchor point="RIGHT" relativeKey="$parent.Affix4" relativePoint="LEFT"/>
-            </Anchors>
-        </Frame>
-
-        <Frame parentKey="Affix2" inherits="ChallengesKeystoneFrameAffixTemplate">
-            <Anchors>
-                <Anchor point="RIGHT" relativeKey="$parent.Affix3" relativePoint="LEFT"/>
-            </Anchors>
-        </Frame>
-
-        <Frame parentKey="Affix1" inherits="ChallengesKeystoneFrameAffixTemplate">
-            <Anchors>
-                <Anchor point="RIGHT" relativeKey="$parent.Affix2" relativePoint="LEFT"/>
-            </Anchors>
-        </Frame>
-    </Frames>
-
-    <Layers>
-        <Layer level="BORDER">        
-             <FontString parentKey="Text" inherits="Game30Font" justifyH="RIGHT">
-                <Anchors>
-                    <Anchor point="RIGHT" relativeKey="$parent.Affix1" relativePoint="LEFT" x="-4" y="0"/>
-                </Anchors>
-                <Shadow>
-                    <Offset x="1" y="-1"/>
-                    <Color r="0" g="0" b="0"/>
-                </Shadow>
-            </FontString>
-        </Layer>
-    </Layers>
-</Frame>
 
 
 </Ui>

@@ -102,7 +102,7 @@ function WoWTools_MailMixin:SetSendName(name, guid)
     if not name then
         return
     end
-    name= name:gsub('%-'..WoWTools_DataMixin.Player.realm, '')
+    name= name:gsub('%-'..WoWTools_DataMixin.Player.Realm, '')
     SendMailNameEditBox:SetText(name)
     SendMailNameEditBox:SetCursorPosition(0)
     SendMailNameEditBox:ClearFocus()
@@ -129,7 +129,7 @@ function WoWTools_MailMixin:GetNameInfo(name)
         end
     end
     reName= reName or WoWTools_UnitMixin:GetPlayerInfo(nil, nil, name, {reName=true, reRealm=true})
-    return reName and reName:gsub('%-'..WoWTools_DataMixin.Player.realm, '') or name
+    return reName and reName:gsub('%-'..WoWTools_DataMixin.Player.Realm, '') or name
 end
 
 
@@ -139,7 +139,7 @@ function WoWTools_MailMixin:GetRealmInfo(name)
         return
     end
     local realm= name:match('%-(.+)')
-    if realm and not (WoWTools_DataMixin.Player.Realms[realm] or realm==WoWTools_DataMixin.Player.realm) then
+    if realm and not (WoWTools_DataMixin.Player.Realms[realm] or realm==WoWTools_DataMixin.Player.Realm) then
         return format('|cnRED_FONT_COLOR:%s|r', WoWTools_DataMixin.onlyChinese and '该玩家与你不在同一个服务器' or ERR_PETITION_NOT_SAME_SERVER)
     end
 end

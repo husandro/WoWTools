@@ -1,7 +1,7 @@
 local P_Save={
     --disabled=true,    
     disabledADD={
-        ['ChatButton_Emoji']= not WoWTools_DataMixin.Player.cn and not WoWTools_DataMixin.Player.husandro,
+        ['ChatButton_Emoji']= not WoWTools_DataMixin.Player.IsCN and not WoWTools_DataMixin.Player.husandro,
     },
     scale= 1,
     strata='MEDIUM',

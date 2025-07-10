@@ -61,22 +61,22 @@ end
 
 
 WoWTools_DataMixin.Player={
-    realm= playerRealm,
+    Realm= playerRealm,
     Realms= {},--多服务器
 
-    name_realm= UnitName('player')..'-'..playerRealm,
+    Name_Realm= UnitName('player')..'-'..playerRealm,
     Name= UnitName('player'),
     Sex= UnitSex("player"),--1	Neutrum / Unknown 2	Male 3	Female
     Class= baseClass,
 
     Region= currentRegion,--1US (includes Brazil and Oceania) 2Korea 3Europe (includes Russia) 4Taiwan 5China
-    cn= currentRegion==5 or currentRegion==4,
+    IsCN= currentRegion==5 or currentRegion==4,
 
     r= r,
     g= g,
     b= b,
     col= '|c'..hex,
-    useColor= {r=r, g=g, b=b, a=1, hex='|c'..hex},--使用颜色
+    UseColor= {r=r, g=g, b=b, a=1, hex='|c'..hex},--使用颜色
 
     --Lo= GetLocale(),
     Week= GetWeek(),--周数 date('%W')
