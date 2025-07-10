@@ -944,8 +944,10 @@ local function Init_List()
 
     local List2Buttons={}
     for index, data in pairs({
-        {type='Item', atlas='bag-main', tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS},
-        {type='Currency', atlas='PH-currency-icon', tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY},
+        {type='Item', atlas='bag-main', tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS, check=function(self)
+        end},
+        {type='Currency', atlas='PH-currency-icon', tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY, check=function(self)
+        end},
         {type='Gold', atlas='Auctioneer', tooltip=WoWTools_DataMixin.onlyChinese and '钱' or MONEY}
     }) do
 
@@ -955,13 +957,14 @@ local function Init_List()
             addTexture=true,
             size=23,
         })
-        List2Buttons[index].texture:SetAtlas(data.atlas)
 
         List2Buttons[index].type= data.type
         List2Buttons[index].tooltip= data.tooltip
-        --List2Buttons[index]:SetPushedAtlas('glues-characterSelect-card-glow-swap')
-        List2Buttons[index]:SetPoint('LEFT', List2Buttons[index-1] or Frame.SearchBox2, 'RIGHT')
+        List2Buttons[index].check= data.check
 
+
+        List2Buttons[index].texture:SetAtlas(data.atlas)
+        List2Buttons[index]:SetPoint('LEFT', List2Buttons[index-1] or Frame.SearchBox2, 'RIGHT')
         List2Buttons[index]:SetScript('OnLeave', function()
             GameTooltip:Hide()
         end)
