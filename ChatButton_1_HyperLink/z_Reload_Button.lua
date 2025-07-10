@@ -63,7 +63,7 @@ end
 
 --添加 RELOAD 按钮
 local function Init()
-    if not Save().not_Add_Reload_Button then
+    if Save().not_Add_Reload_Button then
         return
     end
 
