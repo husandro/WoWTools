@@ -63,6 +63,10 @@ end
 
 --添加 RELOAD 按钮
 local function Init()
+    if not Save().not_Add_Reload_Button then
+        return
+    end
+
     --for _, frame in pairs({SettingsPanel.AddOnsTab}) do
     local frame= SettingsPanel.AddOnsTab
     if frame then
@@ -99,18 +103,16 @@ local function Init()
 
         self:AddSection()
 
-        --[[local btn = self:AddButton(
+        local btn = self:AddButton(
             WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI,
         function()
             WoWTools_Mixin:Reload()
         end)
 
-        Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})]]
+        Create_Texture_Tips(btn, {'BattleBar-SwapPetIcon', false, {1,1,1}})
     end)
 
-
-
-    return true
+    Init=function()end
 end
 
 
@@ -121,8 +123,5 @@ end
 
 --添加 RELOAD 按钮
 function WoWTools_HyperLink:Init_Reload()
-    if not Save().not_Add_Reload_Button and Init() then
-        Init=function()end
-        return true
-    end
+    Init()
 end

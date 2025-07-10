@@ -1262,10 +1262,10 @@ function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
             btn:SetPoint('TOPLEFT', GameMenuFrame.Border)
         end
     })
+end
 
 
-
-    local dataButton={--layoutIndex
+    --[[local dataButton={--layoutIndex
         [GAMEMENU_OPTIONS]= {'mechagon-projects', false},--选项
         [HUD_EDIT_MODE_MENU]= {'UI-HUD-Minimap-CraftingOrder-Up', false},--编辑模式
         [MACROS]= {'NPE_Icon', false},--宏命令设置
@@ -1305,8 +1305,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GameMenu()
                 font:SetTextColor(r or 1, g or 0.82, b or 0)
             end
         end
-    end)
-end
+    end)]]
 
 
 

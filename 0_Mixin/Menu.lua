@@ -593,7 +593,7 @@ function WoWTools_MenuMixin:OpenSpellBook(root, tab)--天赋和法术书
     local sub=root:CreateButton(
         tab.name or ('|A:common-icon-zoomin:0:0|a'..(WoWTools_DataMixin.onlyChinese and '天赋和法术书' or PLAYERSPELLS_BUTTON)),
     function()
-        if SettingsPanel:IsShown() then--ToggleGameMenu()
+        if SettingsPanel:IsShown() and not WoWTools_FrameMixin:IsLocked(SettingsPanel) then--ToggleGameMenu()
             SettingsPanel:Close()
         end
         if tab.index== PlayerSpellsUtil.FrameTabs.ClassSpecializations then--1
