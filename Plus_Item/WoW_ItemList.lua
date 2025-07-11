@@ -1269,7 +1269,7 @@ local function Init_List()
     Frame.ScrollBar2= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar2:SetPoint("TOPLEFT", Frame.ScrollBox2, "TOPRIGHT", 6, -12)
     Frame.ScrollBar2:SetPoint("BOTTOMLEFT", Frame.ScrollBox2, "BOTTOMRIGHT", 6, 12)
-    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar2)--, true)
+    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar2, true)
 
     Frame.SearchBox2= WoWTools_EditBoxMixin:Create(Frame, {
         isSearch=true,
