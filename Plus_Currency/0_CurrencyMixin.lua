@@ -220,13 +220,16 @@ end
 
 
 
-function WoWTools_CurrencyMixin:GetAccountInfo(currencyID, notSelf)
+function WoWTools_CurrencyMixin:GetAccountInfo(currencyID, checkGUID)
     local new={}
     local num=0
-    if currencyID and currencyID>0 then
+
+    if currencyID and currencyID>0 and C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then
+        checkGUID= checkGUID or WoWTools_DataMixin.Player.GUID
+
         if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
             for _, tab in pairs(C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyID) or {}) do
-                if not notSelf or tab.characterGUID~=WoWTools_DataMixin.Player.GUID then
+                if checkGUID~= tab.characterGUID then
                     if WoWTools_WoWDate[tab.characterGUID] then
                         tab.faction= WoWTools_WoWDate[tab.characterGUID].faction
                     end
@@ -252,16 +255,27 @@ faction
 
 function WoWTools_CurrencyMixin:GetWoWCount(currencyID, checkGUID)
     local all, numPlayer= 0, 0
-    if not currencyID then
+    if not currencyID or currencyID<1 or C_CurrencyInfo.IsAccountWideCurrency(currencyID) then
         return 0, 0
     end
+
+    checkGUID= checkGUID or WoWTools_DataMixin.Player.GUID
+
     for guid, info in pairs(WoWTools_WoWDate) do
-        local num= info.battleTag==WoWTools_DataMixin.Player.BattleTag
-                and (not checkGUID and guid~=WoWTools_DataMixin.Player.GUID or guid~=checkGUID)
-                and info.Currency[currencyID]
-        if num and num>0 then
-            all=all + num
-            numPlayer=numPlayer +1
+        if info.battleTag==WoWTools_DataMixin.Player.BattleTag and guid~=checkGUID then
+            if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then
+                local transNum, transTab= self:GetAccountInfo(currencyID, checkGUID)
+                if transNum>0 then
+                    all= all+transNum
+                    numPlayer= numPlayer+ #transTab
+                end
+            else
+                local num= info.Currency[currencyID]
+                if num and num>0 then
+                    all= all+ num
+                    numPlayer=numPlayer +1
+                end
+            end
         end
     end
     return all, numPlayer

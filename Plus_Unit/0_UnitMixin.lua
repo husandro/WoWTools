@@ -63,7 +63,17 @@ end
 
 
 
---e.GetPlayerInfo(unit, guid, name{faction=nil, reName=true, reLink=false, reRealm=false, reNotRegion=false, level=10})
+--[[
+WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name,{
+    faction=nil,
+    reName=true,
+    reLink=false,
+    reRealm=false,
+    reNotRace=false,
+    reNotRegion=false,
+    level=10
+})
+]]
 function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     if type(unit)=='table' then
         tab= unit
@@ -81,6 +91,8 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     local reLink= tab.reLink
     local reName= tab.reName
     local reNotRegion= tab.reNotRegion
+    local reNotRace= tab.reNotRace
+    local realm= tab.region
     local reRealm= tab.reRealm
     local size= tab.size or 0
 
@@ -96,14 +108,15 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     end
 
     if reLink then
-        return self:GetLink(unit, guid, name, true) --玩家超链接
+        return self:GetLink(unit, guid, name, true)--玩家超链接
     end
 
 
 
     local text
     if guid and C_PlayerInfo.GUIDIsPlayer(guid) then
-        local _, englishClass, _, englishRace, sex, name2, realm = GetPlayerInfoByGUID(guid)
+        local _, englishClass, _, englishRace, sex, name2, realm2 = GetPlayerInfoByGUID(guid)
+        realm= realm or realm2
         name= name2
 
         if guid and (not faction or unit) then
@@ -120,7 +133,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
         text= (server and server.col or '')
                     ..(friend or '')
                     ..(self:GetFaction(unit, faction, nil, {size=size}) or '')--检查, 是否同一阵营
-                    ..(self:GetRaceIcon(unit, guid, englishRace, {sex=sex, size=size}) or '')
+                    ..(not reNotRace and self:GetRaceIcon(unit, guid, englishRace, {sex=sex, size=size}) or '')
                     ..(self:GetClassIcon(unit, guid, englishClass, {size=size}) or '')
 
         if groupInfo.combatRole=='HEALER' or groupInfo.combatRole=='TANK' then--职业图标

@@ -6,6 +6,7 @@ end
 local Frame
 local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.+)')
 local List2Type='Item'
+local List2Buttons={}
 --[[
  WoWTools_WoWDate[guid]= {--默认数据
     Item={},--{itemID={bag=包, bank=银行}},
@@ -37,11 +38,12 @@ local List2Type='Item'
 
 local function Settings_Left_Button(self)
     local data= self.data
-    local itemName, itemTexture, count
-    local itemID, currencyID
+    local itemName, itemTexture, itemAtlas, count
+    local itemID, currencyID, money
     if data then
         itemID= data.itemID
         currencyID= data.currencyID
+        money= data.money
     end
 --物品
     if itemID then
@@ -81,11 +83,24 @@ local function Settings_Left_Button(self)
             local r,g,b= C_Item.GetItemQualityColor(info.quality or 1)
             self.Name:SetTextColor(r or 1, g or 1, b or 1)
         end
+--钱
+    elseif money then
+        itemName= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reNotRace=true, faction=data.faction, level=data.level, realm=data.realm, reRealm=true, reName=true}) or data.guid
+        if data.battleTag and WoWTools_DataMixin.Player.BattleTag~=data.battleTag then
+            itemName= '|cnRED_FONT_COLOR:'..data.battleTag..'|r'
+        end
+
+        itemAtlas= WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true})
+        count= WoWTools_Mixin:MK(money/10000, 3)..'|A:Auctioneer:0:0|a'
     end
 
     self.Name:SetText(itemName or '')
-    self.Icon:SetTexture(itemTexture or 0)
     self.Count:SetText(count or '')
+    if itemAtlas then
+        self.Icon:SetAtlas(itemAtlas)
+    else
+        self.Icon:SetTexture(itemTexture or 0)
+    end
     --self.Count2:SetText(bank and bank>0 and WoWTools_Mixin:MK(bank, 3)..'|A:ParagonReputation_Bag:0:0|a' or '')
     --self.Count3:SetText(wow and wow..'|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
     --self.BagTexture:SetShown(bag)
@@ -196,6 +211,7 @@ local function Init_Left_List()
     local data = CreateDataProvider()
     local wowData= WoWTools_WoWDate[Frame.guid]
     if wowData then
+--物品
         if List2Type=='Item' then
             for itemID, tab in pairs(wowData.Item or {}) do
                 WoWTools_Mixin:Load({id=itemID, type='item'})
@@ -217,13 +233,14 @@ local function Init_Left_List()
                         bank= tab.bank or 0,
                         quality= C_Item.GetItemQualityByID(itemID) or 1,
                     })
-                    num=num+1
+                    num=num+ (tab.bag or 0)+ (tab.bank or 0)
                 end
             end
             data:SetSortComparator(function(v1, v2)
                 return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
             end)
 
+--货币
         elseif List2Type=='Currency' then
             for currencyID, all in pairs(wowData.Currency or {}) do
                 local name, cnName
@@ -244,11 +261,30 @@ local function Init_Left_List()
                         currencyID= currencyID,
                         num= all or 0,
                     })
-                    num=num+1
+                    num=num+all
                 end
             end
             data:SetSortComparator(function(v1, v2)
                 return v1.currencyID>v2.currencyID
+            end)
+--钱
+        elseif List2Type=='Money' then
+            for guid, tab in pairs(WoWTools_WoWDate) do
+                if tab.Money and tab.Money>0 then
+                    data:Insert({
+                        guid= guid,
+                        money= tab.Money,
+                        realm= tab.region,
+                        faction= tab.faction,
+                        battleTag= tab.battleTag,
+                        level= tab.level
+                    })
+                    num= num+ tab.Money
+                end
+            end
+            num= num/10000
+            data:SetSortComparator(function(v1, v2)
+                return v2.money and v1.money> v2.money
             end)
         end
     end
@@ -256,9 +292,14 @@ local function Init_Left_List()
     Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
 
 --数量
-    Frame.NumLabel2:SetText(num)
+    Frame.NumLabel2:SetText(WoWTools_Mixin:MK(num, 3))
+
 --头像
     Frame:set_portrait()
+
+    for _, btn in pairs(List2Buttons) do
+        btn:settings()
+    end
 end
 
 
@@ -942,13 +983,46 @@ local function Init_List()
 
 
 
-    local List2Buttons={}
+
+
+
+
+
+
+
     for index, data in pairs({
-        {type='Item', atlas='bag-main', tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS, check=function(self)
+--物品
+        {type='Item', atlas='bag-main', tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS, settings=function(self)
+            local num=0
+            local wowData= WoWTools_WoWDate[Frame.guid]
+            if wowData and wowData.Currency then
+                for _ in pairs(wowData.Currency) do
+                    num=num+1
+                end
+            end
+            self.Text:SetText(num==0 and '|cff6060600' or num)
         end},
-        {type='Currency', atlas='PH-currency-icon', tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY, check=function(self)
+--货币
+        {type='Currency', atlas='PH-currency-icon', tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY, settings=function(self)
+            local num=0
+            local wowData= WoWTools_WoWDate[Frame.guid]
+            if wowData and wowData.Item then
+                for _ in pairs(wowData.Item) do
+                    num=num+1
+                end
+            end
+            self.Text:SetText(num==0 and '|cff6060600' or num)
         end},
-        {type='Gold', atlas='Auctioneer', tooltip=WoWTools_DataMixin.onlyChinese and '钱' or MONEY}
+--钱
+        {type='Money', atlas='Auctioneer', tooltip=WoWTools_DataMixin.onlyChinese and '钱' or MONEY, settings=function(self)
+            local num=0
+            for _, data in pairs(WoWTools_WoWDate) do
+                if data.Money and data.Money>0 then
+                    num= num+1
+                end
+            end
+            self.Text:SetText(num==0 and '|cff6060600' or num)
+        end}
     }) do
 
         List2Buttons[index]= WoWTools_ButtonMixin:Cbtn(Frame, {
@@ -960,8 +1034,10 @@ local function Init_List()
 
         List2Buttons[index].type= data.type
         List2Buttons[index].tooltip= data.tooltip
-        List2Buttons[index].check= data.check
+        List2Buttons[index].settings= data.settings or function()end
 
+        List2Buttons[index].Text= WoWTools_LabelMixin:Create(List2Buttons[index], {color={r=1,g=1,b=1}})
+        List2Buttons[index].Text:SetPoint('BOTTOMRIGHT')
 
         List2Buttons[index].texture:SetAtlas(data.atlas)
         List2Buttons[index]:SetPoint('LEFT', List2Buttons[index-1] or Frame.SearchBox2, 'RIGHT')
@@ -976,6 +1052,7 @@ local function Init_List()
         List2Buttons[index]:SetScript('OnClick', function(self)
             List2Type= self.type
             Init_Left_List()
+
             for _, btn in pairs(List2Buttons) do
                 local isSelect= List2Type==btn.type
                 btn:SetButtonState(isSelect and 'PUSHED' or 'NORMAL', true)
