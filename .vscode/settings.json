@@ -6001,7 +6001,9 @@
         "ManuscriptsSkillLineManuscriptsTab",
         "ManuscriptsJournalProgressBar",
         "SoulshapesJournalProgressBar",
-        "GUILD_TAB_ROSTER"
+        "GUILD_TAB_ROSTER",
+        "ERR_TRAVEL_PASS_DIFFERENT_REGION",
+        "BATTLETAG"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

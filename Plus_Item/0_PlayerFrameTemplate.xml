@@ -99,6 +99,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Offset x="1" y="-1"/>
                     <Color r="0" g="0" b="0"/>
                 </Shadow>
+                <Color r="0" g="1" b="0"/>
             </FontString>
 
 
@@ -295,30 +296,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
-                <Scripts>
-                    <OnLeave>
-                        GameTooltip:Hide()
-                        self:SetAlpha(1)
-                    </OnLeave>
-                    <OnEnter>
-                        local data= self:GetParent().data
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG)
-                        local battleTag= data and data.battleTag
-                        if battleTag then
-                            local tag= WoWTools_DataMixin.Player.BattleTag~= battleTag and WoWTools_DataMixin.Player.BattleTag
-                            GameTooltip:AddLine((tag and '|cnRED_FONT_COLOR:' or '|cffffffff')..battleTag)
-                            if tag then
-                                GameTooltip:AddLine(
-                                    '|A:tokens-guildRealmTransfer-small:0:0|a'
-                                    ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
-                                )
-                            end
-                        end
-                        GameTooltip:Show()
-                        self:SetAlpha(0.3)
-                    </OnEnter>
-                </Scripts>
             </Texture>
             <FontString parentKey="BattleTag" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>

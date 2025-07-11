@@ -63,7 +63,7 @@ local function Settings_Left_Button(self)
         bank= self.data.bank
         bank= bank>0 and WoWTools_Mixin:MK(bank, 3)..'|A:ParagonReputation_Bag:0:0|a' or ''
 
-        wow= WoWTools_ItemMixin:GetWoWCount(itemID, Frame.guid)
+        wow= WoWTools_ItemMixin:GetWoWCount(itemID, Frame.guid, Frame.regon)
         wow= wow>0 and '|cff00ccff'..WoWTools_Mixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or ''
 
         count= wow..bank..bag
@@ -76,7 +76,7 @@ local function Settings_Left_Button(self)
             itemName= (icon or '')..(col or '')..WoWTools_TextMixin:CN(info.name) or currencyID
             itemTexture= info.iconFileID
 
-            local wow= WoWTools_CurrencyMixin:GetWoWCount(currencyID, Frame.guid)
+            local wow= WoWTools_CurrencyMixin:GetWoWCount(currencyID, Frame.guid, Frame.regon)
             count= (wow>0 and '|cff00ccff'..wow..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
                 ..(data.num>0 and WoWTools_Mixin:MK(data.num, 3)..WoWTools_DataMixin.Icon.Player or '')
 
@@ -85,7 +85,14 @@ local function Settings_Left_Button(self)
         end
 --钱
     elseif money then
-        itemName= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {reNotRace=true, faction=data.faction, level=data.level, realm=data.realm, reRealm=true, reName=true}) or data.guid
+        itemName= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {
+            reNotRace=true,
+            faction=data.faction,
+            level=data.level,
+            realm=data.realm,
+            reRealm=true,
+            reName=true}
+        ) or data.guid
         if data.battleTag and WoWTools_DataMixin.Player.BattleTag~=data.battleTag then
             itemName= '|cnRED_FONT_COLOR:'..data.battleTag..'|r'
         end
@@ -182,13 +189,24 @@ local function SetScript_Left_Button(btn)
         self:SetAlpha(1)
     end)
     btn:SetScript('OnEnter', function(self)
-        if not self.data then
+        local data= self.data
+        if not data then
             return
         end
-        WoWTools_SetTooltipMixin:Frame(self, nil, {
-            itemID=self.data.itemID,
-            currencyID=self.data.currencyID,
-        })
+        if data.guid then
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid))
+            GameTooltip:AddDoubleLine('Realm', (WoWTools_DataMixin.Player.Realm~= data.realm and '|cnRED_FONT_COLOR:' or '')..(data.realm or ''))
+            GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''))
+            GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''))
+            GameTooltip:Show()
+        else
+            WoWTools_SetTooltipMixin:Frame(self, nil, {
+                itemID=data.itemID,
+                currencyID=data.currencyID,
+            })
+        end
         self:SetAlpha(0.5)
     end)
 end
@@ -274,7 +292,7 @@ local function Init_Left_List()
                     data:Insert({
                         guid= guid,
                         money= tab.Money,
-                        realm= tab.region,
+                        region= tab.region,
                         faction= tab.faction,
                         battleTag= tab.battleTag,
                         level= tab.level
@@ -361,7 +379,7 @@ local function Init_Right_List()
     for guid, info in pairs(WoWTools_WoWDate) do
 
 
-        local cnLink, realm, class, cnClass, faction, cnFaction, _
+        local cnLink, realm, class, cnClass, faction, cnFaction, region, _
 
         local itemLink= info.Keystone.link
         local fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
@@ -372,7 +390,6 @@ local function Init_Right_List()
             cnLink= cnLink~=itemLink and cnLink or nil
 
             class, _, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
-            realm= info.region or realm
             realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
 
             cnClass= WoWTools_TextMixin:CN(class)
@@ -380,6 +397,7 @@ local function Init_Right_List()
 
             faction= info.faction
             cnFaction= WoWTools_TextMixin:CN(faction)
+            region= format('REGION%d', info.region or 0)
         end
 
         if isFind and (
@@ -400,6 +418,7 @@ local function Init_Right_List()
                 or (cnFaction and cnFaction:upper():find(findText))
 
                 or (battleTag and battleTag:upper()==findText)
+                or region==findText
 
         ) or not isFind then
             local insertData=  {
@@ -419,8 +438,10 @@ local function Init_Right_List()
                 pvp= info.Keystone.weekPvP,
 
                 battleTag= battleTag,
+                region= info.region,
                 specID= info.specID or 0,
-                itemLevel= info.itemLevel or 0
+                itemLevel= info.itemLevel or 0,
+                playerLevel= info.level or 1,
             }
 
             data:Insert(insertData)
@@ -475,7 +496,8 @@ local function Settings_Right_Button(btn, data)
 
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
-
+--玩家等级
+    btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
         btn.Name:SetText(
@@ -557,7 +579,8 @@ local function Settings_Right_Button(btn, data)
     )
 
 --背景
-    btn.Background:SetAlpha(0.75)
+    btn.Background:SetAlpha(WoWTools_DataMixin.Player.BattleTag~=data.battleTag and 0.5 or 1)
+    btn.Background:SetDesaturated(WoWTools_DataMixin.Player.Region~=data.region)
 
 
     btn.SelectBg:SetShown(data.guid==Frame.guid)
@@ -573,67 +596,118 @@ end
 
 
 
+local function OnEnter_BattleTexture(self)
+    local data= self:GetParent().data
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:AddDoubleLine()
 
-
-local function SetScript_Right_Button(btn)
-    if btn:GetScript('OnMouseDown') then
-        return
+    local battleTag= data and data.battleTag
+    GameTooltip:AddDoubleLine(
+        WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG,
+        (battleTag~=WoWTools_DataMixin.Player.BattleTag and '|cnRED_FONT_COLOR:' or '|cffffffff')
+        ..(battleTag or '')
+    )
+    if battleTag==WoWTools_DataMixin.Player.BattleTag then
+        GameTooltip:AddLine(
+            '|A:tokens-guildRealmTransfer-small:0:0|a|cnRED_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
+        )
     end
 
-    btn:SetScript('OnMouseDown', function(self, d)
-        if not self.data then
-            return
+    local curRegion= GetCurrentRegion()
+    local region= data and data.region
+    if region then
+        GameTooltip:AddDoubleLine(
+            'Region',
+            (region~=curRegion and '|cnRED_FONT_COLOR:' or '|cffffffff')
+            ..region
+        )
+        if region~=curRegion then
+            GameTooltip:AddLine(
+                '|A:adventureguide-microbutton-alert:0:0|a|cnRED_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '不同地区' or ERR_TRAVEL_PASS_DIFFERENT_REGION)
+            )
         end
-        local guid= self.data.guid
+    end
 
-        if d=='LeftButton' then
-            Frame.guid= Frame.guid~=guid and guid or nil
-
-        elseif d=='RightButton' then
-            Frame.guid= guid
-
-            MenuUtil.CreateContextMenu(self, function(_, root)
-                local isMe= guid==WoWTools_DataMixin.Player.GUID
-                local battleTag= self.data.battleTag
-                local faction= self.data.faction
-
-                local sub=root:CreateButton(
-                    WoWTools_DataMixin.Icon.wow2
-                    ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
-                function()
-                    StaticPopup_Show('WoWTools_OK',
-                        WoWTools_DataMixin.Icon.wow2
-                        ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
-                        ..'|n|n'
-                        ..(battleTag or '')
-                        ..'|n'
-                        ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=faction, reName=true, reRealm=true})
-                        ..'|n|n|cnGREEN_FONT_COLOR:'
-                        ..(isMe and (WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI) or ''),
-
-                        nil,
-                        {SetValue=function()
-                            WoWTools_WoWDate[guid]=nil
-                            if isMe then
-                                WoWTools_Mixin:Reload()
-                            else
-                                Init_Right_List()
-                            end
-                        end}
-                    )
-                end)
-                sub:SetTooltip(function(tootip)
-                    if isMe then
-                        tootip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
-                    end
-                end)
-            end)
-        end
-
-        Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
-        Init_Left_List()
-    end)
+    if curRegion then
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
+            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT, ' Region'),
+            curRegion
+        )
+    end
+    GameTooltip:Show()
+    self:SetAlpha(0.3)
 end
+
+
+
+
+
+
+
+
+
+local function OnMouseDown_RightButton(self, d)
+    if not self.data then
+        return
+    end
+    local guid= self.data.guid
+
+    if d=='LeftButton' then
+        Frame.guid= Frame.guid~=guid and guid or nil
+
+    else
+        Frame.guid= guid
+
+        MenuUtil.CreateContextMenu(self, function(_, root)
+            local isMe= guid==WoWTools_DataMixin.Player.GUID
+            local battleTag= self.data.battleTag
+            local faction= self.data.faction
+
+            local sub=root:CreateButton(
+                WoWTools_DataMixin.Icon.wow2
+                ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+            function()
+                StaticPopup_Show('WoWTools_OK',
+                    WoWTools_DataMixin.Icon.wow2
+                    ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+                    ..'|n|n'
+                    ..(battleTag or '')
+                    ..'|n'
+                    ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=faction, reName=true, reRealm=true})
+                    ..'|n|n|cnGREEN_FONT_COLOR:'
+                    ..(isMe and (WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI) or ''),
+
+                    nil,
+                    {SetValue=function()
+                        WoWTools_WoWDate[guid]=nil
+                        if isMe then
+                            WoWTools_Mixin:Reload()
+                        else
+                            Init_Right_List()
+                        end
+                    end}
+                )
+            end)
+            sub:SetTooltip(function(tootip)
+                if isMe then
+                    tootip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                end
+            end)
+        end)
+
+        Frame.regon= Frame.guid and self.data.region or nil
+    end
+
+
+
+    Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
+    Init_Left_List()
+end
+
+
 
 
 
@@ -658,15 +732,15 @@ local function Init_Right_Menu(self, root)
         return
     end
 
-    local sub
+    local sub, name
 
+    name= WoWTools_DataMixin.Icon.wow2
+        ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
     sub= root:CreateButton(
-        WoWTools_DataMixin.Icon.wow2
-            ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data'),
-    function()
+        name,
+    function(data)
         StaticPopup_Show('WoWTools_RestData',
-            WoWTools_DataMixin.Icon.wow2
-            ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+            data.name
             ..'|n|n|cnGREEN_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
             nil,
@@ -676,11 +750,44 @@ local function Init_Right_Menu(self, root)
             end
         )
         return MenuResponse.Open
-    end)
-    sub:SetTooltip(function(tootip)
-        tootip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+    end, {name=name})
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     end)
 
+    name= WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '清除不同地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, ERR_TRAVEL_PASS_DIFFERENT_REGION))
+    sub= root:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+            data.name,
+            nil,
+            {SetValue=function()
+                for guid, info in pairs(WoWTools_WoWDate) do
+                    if info.region~=WoWTools_DataMixin.Player.Region and guid~=WoWTools_DataMixin.Player.GUID then
+                        WoWTools_WoWDate[guid]=nil
+                    end
+                end
+            end
+        })
+        return MenuResponse.Open
+    end, {name=name})
+    sub:SetTooltip(function(tooltip)
+        local index=1
+        tooltip:AddDoubleLine(
+            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,  'Region'),
+            GetCurrentRegion()
+        )
+        for guid, info in pairs(WoWTools_WoWDate) do
+            --if info.region~=WoWTools_DataMixin.Player.Region then
+                tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
+                    '|cnRED_FONT_COLOR:'..(info.rigon or '')..'|r('..index
+                )
+                index=index+1
+            --end
+        end
+    end)
 end
 
 
@@ -694,6 +801,7 @@ local function Init_IsMe_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
+    local sub
 
     root:CreateButton(
         WoWTools_DataMixin.Icon.Player
@@ -728,7 +836,6 @@ local function Init_IsMe_Menu(self, root)
 
     for guid, tab in pairs(WoWTools_WoWDate) do
         local class, englishClass, _, _, _, _, realm=  GetPlayerInfoByGUID(guid)
-        realm= tab.region or realm
         realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
 
         s[realm]= (s[realm] or 0)+1
@@ -802,6 +909,36 @@ local function Init_IsMe_Menu(self, root)
         Frame.SearchBox:SetText('Alliance')
         return MenuResponse.Open
     end)
+
+--Region
+    local regions={}
+    for _, info in pairs(WoWTools_WoWDate) do
+        regions[info.region]= (regions[info.region] or 0)+ 1
+    end
+    root:CreateDivider()
+    local curRegion= GetCurrentRegion()
+    for r, num in pairs(regions) do
+        local isCurRegion= r==WoWTools_DataMixin.Player.Region
+        sub=root:CreateButton(
+            (isCurRegion and '|cnGREEN_FONT_COLOR:' or '|cffedd100')
+            ..(WoWTools_DataMixin.onlyChinese and '地区' or ZONE)
+            ..' '..r..' #'..num,
+        function(data)
+            Frame.SearchBox:SetText('Region'..data.region)
+            return MenuResponse.Open
+        end, {region=r, isCurRegion=isCurRegion})
+        
+        sub:SetTooltip(function(tootip, desc)
+            tootip:AddDoubleLine('Region', curRegion)
+            if not desc.data.isCurRegion then
+                tootip:AddLine(
+                    '|cnRED_FONT_COLOR:'
+                    ..(WoWTools_DataMixin.onlyChinese and '不同的地区' or ERR_TRAVEL_PASS_DIFFERENT_REGION)
+                )
+            end
+        end)
+    end
+
 
     WoWTools_MenuMixin:SetScrollMode(root)
 end
@@ -902,7 +1039,18 @@ local function Init_List()
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsPlayerFrameTemplate', function(self, data)
-        SetScript_Right_Button(self)
+         if not self:GetScript('OnMouseDown') then
+            self:SetScript('OnMouseDown', function(...)
+                OnMouseDown_RightButton(...)
+            end)
+            self.Battle:SetScript('OnLeave', function(frame)
+                GameTooltip:Hide()
+                frame:SetAlpha(1)
+            end)
+            self.Battle:SetScript('OnEnter', function(...)
+                OnEnter_BattleTexture(...)
+            end)
+        end
         self.data= data
         Settings_Right_Button(self, data)
     end)

@@ -253,16 +253,20 @@ faction
 ]]
 
 
-function WoWTools_CurrencyMixin:GetWoWCount(currencyID, checkGUID)
+function WoWTools_CurrencyMixin:GetWoWCount(currencyID, checkGUID, checkRegion)
     local all, numPlayer= 0, 0
     if not currencyID or currencyID<1 or C_CurrencyInfo.IsAccountWideCurrency(currencyID) then
         return 0, 0
     end
 
     checkGUID= checkGUID or WoWTools_DataMixin.Player.GUID
+    checkRegion= checkRegion or WoWTools_DataMixin.Player.Region
 
     for guid, info in pairs(WoWTools_WoWDate) do
-        if info.battleTag==WoWTools_DataMixin.Player.BattleTag and guid~=checkGUID then
+        if info.battleTag==WoWTools_DataMixin.Player.BattleTag
+            and guid~=checkGUID
+            and info.region==checkRegion
+        then
             if C_CurrencyInfo.IsAccountTransferableCurrency(currencyID) then
                 local transNum, transTab= self:GetAccountInfo(currencyID, checkGUID)
                 if transNum>0 then
