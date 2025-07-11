@@ -40,7 +40,6 @@ end
 
 
 local List2TypeTab= {
-
 --物品
     ['Item']= {
     atlas='bag-main',
@@ -135,7 +134,7 @@ local List2TypeTab= {
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
         local data, num= CreateDataProvider(), 0
-        for currencyID, all in pairs(wowData.Currency or {}) do
+        for currencyID, all in pairs(wowData and wowData.Currency or {}) do
             local name, cnName
             if isFind then
                 local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
@@ -416,7 +415,6 @@ local function SetScript_Left_Button(btn)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid))
-            GameTooltip:AddDoubleLine('Realm', (WoWTools_DataMixin.Player.Realm~= data.realm and '|cnRED_FONT_COLOR:' or '')..(data.realm or ''))
             GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''))
             GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''))
             GameTooltip:Show()
@@ -1278,7 +1276,7 @@ local function Init_List()
         --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     })
     Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 29, 2)
-    Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -23*3, 2)
+    Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -23*4, 2)
     Frame.SearchBox2:HookScript('OnTextChanged', function()
         Init_Left_List()
     end)
