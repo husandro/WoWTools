@@ -225,7 +225,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self})
+                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self, anchor='ANCHOR_RIGHT'})
                         self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
@@ -267,14 +267,13 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnLeave>
                     <OnEnter>
                         local data= self:GetParent().data
-                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
                         GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '名称' or Name)
                         local guid= data and data.guid
                         if guid then
                             local name, realmName = select(6, GetPlayerInfoByGUID(guid))
-                            realmName= data.region or realmName
-                            realmName= (realmName=='' or not realmName) and WoWTools_DataMixin.Player.Realm or realmName
-                            realmName= (WoWTools_DataMixin.Player.Realms[realmName] and '|cnGREEN_FONT_COLOR:' or '')..realmName
+                            realmName= realmName~='' and realmName or WoWTools_DataMixin.Player.Realm
+                            realmName= (WoWTools_DataMixin.Player.Realms[realmName] and '|cnGREEN_FONT_COLOR:' or '|cnRED_FONT_COLOR:')..realmName
                             GameTooltip:AddLine(name)
                             GameTooltip:AddLine(realmName)
                         end
