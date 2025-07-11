@@ -313,14 +313,9 @@ local List2TypeTab= {
         if totalTime then
             itemName, itemAtlas= Get_Player_Name(data)
             count= WoWTools_TimeMixin:SecondsToFullTime(totalTime)
-            
         end
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end}
-
-
-
-
 }
 
 --[[

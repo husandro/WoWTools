@@ -36,20 +36,28 @@ panel:SetScript('OnEvent', function(self, event, arg1)
             WoWTools_CombatMixin.addName= '|A:Warfronts-BaseMapIcons-Horde-Barracks-Minimap:0:0|a'..(WoWTools_DataMixin.onlyChinese and '战斗信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, COMBAT, INFO))
             WoWTools_CombatMixin.CombatButton= WoWTools_ChatMixin:CreateButton('Combat', WoWTools_CombatMixin.addName)
 
+
+            local notData= not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime
+                        or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.upData
+
             if WoWTools_CombatMixin.CombatButton then--禁用Chat Button
                 if WoWToolsSave['ChatButton_Combat'].SayTime==0 then
                     WoWToolsSave['ChatButton_Combat'].disabledSayTime= true
                     WoWToolsSave['ChatButton_Combat'].SayTime=120
                 end
-
-                if WoWToolsSave['ChatButton_Combat'].AllOnlineTime or not WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time.totalTime then--总游戏时间
+--总游戏时间
+                if WoWToolsSave['ChatButton_Combat'].AllOnlineTime or notData then
                     RequestTimePlayed()
                 end
 
                 WoWTools_CombatMixin:Init_Button()
                 WoWTools_CombatMixin:Init_TrackButton()
                 WoWTools_CombatMixin:Init_SetupMenu()
+
+            elseif notData then
+                RequestTimePlayed()
             end
+
             self:UnregisterEvent(event)
         end
     end

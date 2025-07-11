@@ -152,25 +152,29 @@ local function Init_Menu(self, root)
         )
     end)
 
---总游戏时间
+--游戏时间
     local tab=WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time
     sub=root:CreateCheckbox(
-        tab.totalTime and SecondsToTime(tab.totalTime)
+        tab.totalTime and WoWTools_TimeMixin:SecondsToFullTime(tab.totalTime, tab.upData)
         or (WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', '')),
     function()
         return Save().AllOnlineTime
     end, function ()
         Save().AllOnlineTime = not Save().AllOnlineTime and true or nil
-        if Save().AllOnlineTime then
-            RequestTimePlayed()
-        end
-    end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', ''))
-        tooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, ''))
+        RequestTimePlayed()
+    end, tab)
+    sub:SetTooltip(function(tooltip, desc)
+        tooltip:AddDoubleLine(
+            WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', ''),
+            WoWTools_TimeMixin:SecondsToFullTime(desc.data.totalTime, desc.data.upData)
+        )
+        tooltip:AddDoubleLine(
+            format(WoWTools_DataMixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, ''),
+            WoWTools_TimeMixin:SecondsToFullTime(desc.data.levelTime, desc.data.upData)
+        )
     end)
 
-    local timeAll=0
+    --[[local timeAll=0
     local numPlayer=0
     for guid, tab2 in pairs(WoWTools_WoWDate or {}) do
         local time= tab2.Time and tab2.Time.totalTime
@@ -189,7 +193,7 @@ local function Init_Menu(self, root)
     sub:CreateDivider()
     if timeAll>0 then
         sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll))
-    end
+    end]]
     WoWTools_ItemMixin:OpenWoWItemListMenu(self, sub)--战团，物品列表
 
     root:CreateDivider()

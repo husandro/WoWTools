@@ -80,11 +80,13 @@ function WoWTools_TimeMixin:GetUpdate_Seconds(upData, curData)
 end
 
 
-function WoWTools_TimeMixin:SecondsToFullTime(seconds)
+function WoWTools_TimeMixin:SecondsToFullTime(seconds, upData, curData)
     if not seconds then
         return ''
     end
     
+    seconds= seconds+self:GetUpdate_Seconds(upData, curData)
+
     local years = math.floor(seconds / (365*24*60*60))--31536000
     seconds = seconds % (365*24*60*60)
     local months = math.floor(seconds / (30*24*60*60))
