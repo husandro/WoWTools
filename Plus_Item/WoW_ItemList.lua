@@ -13,32 +13,6 @@ local List2Buttons={}
 
 
 
-local function SecondsToFullTime(seconds)
-    local years = math.floor(seconds / (365*24*60*60))--31536000
-    seconds = seconds % (365*24*60*60)
-    local months = math.floor(seconds / (30*24*60*60))
-    seconds = seconds % (30*24*60*60)
-    local days = math.floor(seconds / (24*60*60))
-    seconds = seconds % (24*60*60)
-    local hours = math.floor(seconds / (60*60))
-    seconds = seconds % (60*60)
-    local minutes = math.floor(seconds / 60)
-    seconds = math.floor(seconds % 60)
-
-    local str = ""
-    if years > 0 then str = str .. years ..(WoWTools_DataMixin.onlyChinese and "年" or 'Y') end
-    if months > 0 then str = str .. months ..(WoWTools_DataMixin.onlyChinese and "月" or 'M') end
-    if days > 0 then str = str .. days ..(WoWTools_DataMixin.onlyChinese and "日" or 'D') end
-    if hours > 0 then str = str .. hours ..(WoWTools_DataMixin.onlyChinese and "时" or 'h') end
-    if minutes > 0 then str = str .. minutes ..(WoWTools_DataMixin.onlyChinese and "分" or 'm') end
-    if seconds>0 then str = str .. minutes ..(WoWTools_DataMixin.onlyChinese and "秒" or 's') end
-
-
-    return str
-end
-
-
-
 local function Get_Player_Name(data)
     local name= WoWTools_UnitMixin:GetPlayerInfo(nil, data.guid, nil, {
         reNotRace=true,
@@ -596,20 +570,21 @@ local function Init_Right_List()
                 guid=guid,
                 name= fullName,
                 faction=info.faction,
+                battleTag= battleTag,
+                region= info.region,
+                realm= realm,
+
                 itemLink= itemLink,
 
                 score= info.score or 0,
                 weekNum= info.weekNum or 0,
                 weekLevel= info.weekLevel or 0,
 
-
                 pve= info.Keystone.weekPvE,
                 mythic= info.Keystone.weekMythicPlus,
                 world= info.Keystone.weekWorld,
                 pvp= info.Keystone.weekPvP,
 
-                battleTag= battleTag,
-                region= info.region,
                 specID= info.specID or 0,
                 itemLevel= info.itemLevel or 0,
                 playerLevel= info.level or 1,
@@ -1362,7 +1337,6 @@ local function Init_List()
 
     local x=0
     for name, data in pairs(List2TypeTab) do
-
         List2Buttons[name]= WoWTools_ButtonMixin:Cbtn(Frame, {
             name='WoWToolsWoWList2'..name..'Button',
             icon='hide',
