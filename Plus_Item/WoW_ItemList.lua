@@ -165,6 +165,7 @@ local function SetScript_Left_Button(btn)
     btn.Count:ClearAllPoints()
     btn.Count:SetPoint('TOPRIGHT', btn.NameFrame, -2, -2)
     btn.Count:SetJustifyH('RIGHT')
+    btn.Count:SetFontObject('ChatFontNormal')
 
 
     btn:SetScript('OnHide', function(self)
@@ -515,6 +516,7 @@ local function Settings_Right_Button(btn, data)
         )
     end
     btn.Name:SetTextColor(col.r, col.g, col.b)
+
 --提示，不同战网
     btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
     btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
@@ -607,7 +609,7 @@ local function OnEnter_BattleTexture(self)
         (battleTag~=WoWTools_DataMixin.Player.BattleTag and '|cnRED_FONT_COLOR:' or '|cffffffff')
         ..(battleTag or '')
     )
-    if battleTag==WoWTools_DataMixin.Player.BattleTag then
+    if battleTag~=WoWTools_DataMixin.Player.BattleTag then
         GameTooltip:AddLine(
             '|A:tokens-guildRealmTransfer-small:0:0|a|cnRED_FONT_COLOR:'
             ..(WoWTools_DataMixin.onlyChinese and '不同战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
@@ -734,34 +736,50 @@ local function Init_Right_Menu(self, root)
 
     local sub, name
 
-    name= WoWTools_DataMixin.Icon.wow2
-        ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
-    sub= root:CreateButton(
-        name,
-    function(data)
-        StaticPopup_Show('WoWTools_RestData',
-            data.name
-            ..'|n|n|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
-            nil,
-            function()
-                WoWTools_WoWDate={}
-                WoWTools_Mixin:Reload()
-            end
-        )
-        return MenuResponse.Open
-    end, {name=name})
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
-    end)
+    local all, region, tag= {}, {}, {}
 
-    name= WoWTools_DataMixin.Icon.wow2
-            ..(WoWTools_DataMixin.onlyChinese and '清除不同地区' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SLASH_STOPWATCH_PARAM_STOP2, ERR_TRAVEL_PASS_DIFFERENT_REGION))
+    for guid, info in pairs(WoWTools_WoWDate) do
+        name= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true})
+        local tab= {name=name or guid, region=info.region, tag=info.battleTag}
+        table.insert(all, tab)
+
+        if info.region~=WoWTools_DataMixin.Player.Region then
+            table.insert(region, tab)
+        end
+
+        if info.battleTag~=WoWTools_DataMixin.Player.BattleTag then
+            table.insert(tag, tab)
+        end
+    end
+
+    local function set_tooltip(tooltip, desc)
+        tooltip:AddDoubleLine(
+        format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,  'Region'),
+           WoWTools_DataMixin.Player.Region
+        )
+        tooltip:AddDoubleLine(
+           WoWTools_DataMixin.onlyChinese and '战网昵称' or BATTLETAG,
+           WoWTools_DataMixin.Player.BattleTag
+        )
+        for index, info in pairs(desc.data) do
+            if index==1 then
+                tooltip:AddLine(' ')
+            end
+            tooltip:AddDoubleLine((info.name or '')..' |cff00ccff'..(info.region or ''), '|cff00ccff'..(info.tag or '').. ' |r('..index)
+        end
+    end
+
+
+
+--清除不同地区
+    local regionText= '|A:bags-button-autosort-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '不同地区' or ERR_TRAVEL_PASS_DIFFERENT_REGION)
+            ..' #'..#region
     sub= root:CreateButton(
-        name,
-    function(data)
+        regionText,
+    function()
         StaticPopup_Show('WoWTools_OK',
-            data.name,
+            regionText,
             nil,
             {SetValue=function()
                 for guid, info in pairs(WoWTools_WoWDate) do
@@ -772,22 +790,57 @@ local function Init_Right_Menu(self, root)
             end
         })
         return MenuResponse.Open
-    end, {name=name})
-    sub:SetTooltip(function(tooltip)
-        local index=1
-        tooltip:AddDoubleLine(
-            format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,  'Region'),
-            GetCurrentRegion()
+    end, region)
+    sub:SetTooltip(set_tooltip)
+
+--清除不同战网
+    local tagTtext= '|A:bags-button-autosort-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '其它战网' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OTHER, COMMUNITY_COMMAND_BATTLENET))
+            ..' #'..#tag
+    sub= root:CreateButton(
+        tagTtext,
+    function()
+        StaticPopup_Show('WoWTools_OK',
+            tagTtext,
+            nil,
+            {SetValue=function()
+                for guid, info in pairs(WoWTools_WoWDate) do
+                    if info.battleTag ~=WoWTools_DataMixin.Player.BattleTag and guid~=WoWTools_DataMixin.Player.GUID then
+                        WoWTools_WoWDate[guid]=nil
+                    end
+                end
+            end
+        })
+        return MenuResponse.Open
+    end, tag)
+    sub:SetTooltip(set_tooltip)
+
+
+--清除WoW数据
+    local allTtext= '|A:bags-button-autosort-up:0:0|a'
+        ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
+        ..' #'..#all
+    sub= root:CreateButton(
+        allTtext,
+    function()
+        StaticPopup_Show('WoWTools_RestData',
+            allTtext
+            ..'|n|n|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI),
+            nil,
+            function()
+                WoWTools_WoWDate={}
+                WoWTools_Mixin:Reload()
+            end
         )
-        for guid, info in pairs(WoWTools_WoWDate) do
-            --if info.region~=WoWTools_DataMixin.Player.Region then
-                tooltip:AddDoubleLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {reName=true, reRealm=true}),
-                    '|cnRED_FONT_COLOR:'..(info.rigon or '')..'|r('..index
-                )
-                index=index+1
-            --end
-        end
-    end)
+        return MenuResponse.Open
+    end, all)
+    sub:SetTooltip(set_tooltip)
+
+
+--重新加载UI
+    root:CreateDivider()
+    WoWTools_MenuMixin:Reload(root)
 end
 
 
@@ -927,7 +980,7 @@ local function Init_IsMe_Menu(self, root)
             Frame.SearchBox:SetText('Region'..data.region)
             return MenuResponse.Open
         end, {region=r, isCurRegion=isCurRegion})
-        
+
         sub:SetTooltip(function(tootip, desc)
             tootip:AddDoubleLine('Region', curRegion)
             if not desc.data.isCurRegion then
