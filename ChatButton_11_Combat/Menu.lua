@@ -156,7 +156,7 @@ local function Init_Menu(self, root)
     local tab=WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time
     sub=root:CreateCheckbox(
         tab.totalTime and SecondsToTime(tab.totalTime)
-        or (WoWTools_DataMixin.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, '')),
+        or (WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', '')),
     function()
         return Save().AllOnlineTime
     end, function ()
@@ -166,7 +166,7 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '总游戏时间' or format(TIME_PLAYED_TOTAL, ''):gsub(HEADER_COLON, ''))
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', ''))
         tooltip:AddLine(format(WoWTools_DataMixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL, ''))
     end)
 
@@ -186,11 +186,11 @@ local function Init_Menu(self, root)
     end
     WoWTools_MenuMixin:SetScrollMode(sub)
 
+    sub:CreateDivider()
     if timeAll>0 then
-        sub:CreateDivider()
         sub:CreateTitle((WoWTools_DataMixin.onlyChinese and '总计：' or FROM_TOTAL).. SecondsToTime(timeAll))
-
     end
+    WoWTools_ItemMixin:OpenWoWItemListMenu(self, sub)--战团，物品列表
 
     root:CreateDivider()
     sub=root:CreateButton(

@@ -59,3 +59,51 @@ function WoWTools_TimeMixin:Info(value, chat, time, expirationTime)
         end
     end
 end
+
+
+-- upData 是上次更新时间，格式为 date('%Y-%m-%d %H:%M:%S')
+-- (%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)
+function WoWTools_TimeMixin:GetUpdate_Seconds(upData, curData)
+    local seconds=0
+    if upData then
+        curData = curData or date('%Y-%m-%d %H:%M:%S')
+        local y, m, d, h, min, s = upData:match('(%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)')
+        local y2, m2, d2, h2, min2, s2= curData:match('(%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)')
+        if y and m and d and h and min and s then
+            local t = time({year = y, month = m, day = d, hour = h, min = min, sec = s})
+            if t then
+                seconds= time({year = y2, month = m2, day = d2, hour = h2, min = min2, sec = s2}) - t
+            end
+        end
+    end
+    return seconds
+end
+
+
+function WoWTools_TimeMixin:SecondsToFullTime(seconds)
+    if not seconds then
+        return ''
+    end
+    
+    local years = math.floor(seconds / (365*24*60*60))--31536000
+    seconds = seconds % (365*24*60*60)
+    local months = math.floor(seconds / (30*24*60*60))
+    seconds = seconds % (30*24*60*60)
+    local days = math.floor(seconds / (24*60*60))
+    seconds = seconds % (24*60*60)
+    local hours = math.floor(seconds / (60*60))
+    seconds = seconds % (60*60)
+    local minutes = math.floor(seconds / 60)
+    seconds = math.floor(seconds % 60)
+
+    local str = ""
+    if years > 0 then str = str .. years ..(WoWTools_DataMixin.onlyChinese and "年" or 'Y') end
+    if months > 0 then str = str .. months ..(WoWTools_DataMixin.onlyChinese and "月" or 'M') end
+    if days > 0 then str = str .. days ..(WoWTools_DataMixin.onlyChinese and "日" or 'D') end
+    if hours > 0 then str = str .. hours ..(WoWTools_DataMixin.onlyChinese and "时" or 'h') end
+    if minutes > 0 then str = str .. minutes ..(WoWTools_DataMixin.onlyChinese and "分" or 'm') end
+    if seconds>0 then str = str .. minutes ..(WoWTools_DataMixin.onlyChinese and "秒" or 's') end
+
+
+    return str
+end

@@ -18,7 +18,7 @@ WoWTools_WoWDate[guid]= {--默认数据
     Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
     Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
     Rare={day=day, boss={}},--稀有
-    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
     Guild={
         --text= text, GuildInfo() 公会信息,
         --guid= guid, 公会 clubFinderGUID 
@@ -594,6 +594,8 @@ EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1,
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Time={
             totalTime= arg1,
             levelTime= arg2,
+            upData= date('%Y-%m-%d %H:%M:%S'),
+            
         }
     end
 end)
@@ -703,7 +705,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
             Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
             Rare={day=day, boss={}},--稀有
-            Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
+            Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
             Guild={
                 --text= text, GuildInfo() 公会信息,
                 --guid= guid, 公会 clubFinderGUID 
