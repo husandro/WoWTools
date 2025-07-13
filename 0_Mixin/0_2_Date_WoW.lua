@@ -601,7 +601,6 @@ EventRegistry:RegisterFrameEventAndCallback("TIME_PLAYED_MSG", function(_, arg1,
             totalTime= arg1,
             levelTime= arg2,
             upData= date('%Y-%m-%d %H:%M:%S'),
-            
         }
     end
 end)
@@ -785,16 +784,17 @@ local function Save_WoWGuild()
 
         realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
         local old= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild
-        if club.clubFinderGUID and old.guid and club.clubFinderGUID~=old.guid then
+        if club.clubFinderGUID and club.clubFinderGUID~=old.guid then
             old={}
         end
 
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {
-            guid= club.clubFinderGUID,
+            guid= club.clubFinderGUID or old.guid,
             link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID) or old.link,
-            clubID= clubID,
+            clubID= clubID or old.clubID,
             data={guildName, guildRankName, guildRankIndex, realm},
-            text= old.text--公会创立于 ， 名成员， 个帐号
+            text= old.text,--公会创立于 ， 名成员， 个帐号
+            tabardData=C_GuildInfo.GetGuildTabardInfo('player') or old.tabardData,
         }
     else
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {data={}}
@@ -807,8 +807,10 @@ end)
 EventRegistry:RegisterFrameEventAndCallback('GUILD_RENAME_REQUIRED', function()
     C_Timer.After(2, Save_WoWGuild)
 end)
-
-
+EventRegistry:RegisterFrameEventAndCallback('LOADING_SCREEN_DISABLED', function(owner)
+    C_Timer.After(2, Save_WoWGuild)
+    EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
+end)
 
 
 
@@ -854,8 +856,6 @@ EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(ow
     end
 
     Get_WoW_GUID_Info()--战网，好友GUID
-
-    C_Timer.After(4, Save_WoWGuild)
 
     EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
 end)

@@ -494,68 +494,6 @@ local List2TypeTab= {
 
 
     
---稀有
-    ['Guild']= {
-    atlas='communities-guildbanner-background',
-    tooltip=WoWTools_DataMixin.onlyChinese and '公会' or GUILD,
-    set_num=function(self)
-        local guid= Frame.guid
-        local data= guid and WoWTools_WoWDate[Frame.guid]
-        local num=0
-        for _ in pairs(data and data.Worldboss.boss or {}) do
-            num= num+1
-        end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
-    end,
-    get_data=function(isFind, findText)
-        local data, num= CreateDataProvider(), 0
-        local guid= Frame.guid
-        local info= guid and WoWTools_WoWDate[Frame.guid]
-        for _ in pairs(info and info.Worldboss.boss or {}) do
-            num= num+1
-        end
-        if num>0 then
-            local index=0
-            local rare, rare2
-            for name in pairs(info.Worldboss.boss) do--[name]= UnitGUID('target')
-                index= index+1
-                name= '|cff606060'..index..'|r'..WoWTools_TextMixin:CN(name)
-                if select(2, math.modf(index/2))~=0 then
-                    rare= (rare and ' ' or '')..name
-                else
-                    rare2= (rare2 and ' ' or '')..name
-                end
-            end
-            if isFind and (
-                    rare and rare:upper():find(findText)
-                    or (rare2 and rare:upper():find(findText))
-                ) or not isFind
-            then
-                data:Insert({
-                    rare= rare,
-                    rare2= rare2,
-                    rareTab=info.Rare.boss
-                })
-            end
-        end
-        return data, num
-    end,
-    set_button=function(data)
-        local itemName, itemTexture, itemAtlas, count, r, g, b
-        itemName= data.rare
-        count= data.rare2
-        return itemName, itemTexture, itemAtlas, count, r, g, b
-    end,
-    set_tips=function(data)
-        local index=0
-        local col
-        GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
-        for name in pairs(data.rareTab or {}) do
-            index= index+1
-            col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
-            GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
-        end
-    end},
 }
 
 --[[
@@ -893,6 +831,8 @@ local function Init_Right_List()
                 specID= info.specID or 0,
                 itemLevel= info.itemLevel or 0,
                 playerLevel= info.level or 1,
+
+                guild= info.Guild or {}
             }
 
             data:Insert(insertData)
@@ -947,9 +887,11 @@ local function Settings_Right_Button(btn, data)
     local r,g,b= col.r, col.g, col.b
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
+
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
     btn.PlayerLevelText:SetTextColor(col.r, col.g, col.b)
+
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
         btn.Name:SetText(
@@ -996,6 +938,30 @@ local function Settings_Right_Button(btn, data)
 
         btn.ItemLevelText:SetText('')
     end
+--SetLargeGuildTabardTextures(unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
+--公会信息
+    local guild= data.guild
+    local guidName= guild.data[1]
+    if guidName then
+        guidName=WoWTools_TextMixin:sub(guidName, 12, 24)
+        --[[if guild.tabardData then
+            SetSmallGuildTabardTextures(-- SetSmallGuildTabardTextures(
+                nil,
+                nil,
+                btn.GuildBg,
+                btn.GuildBorder,
+                guild.tabardData
+            )
+        else]]
+        btn.GuildBg:SetAtlas('communities-guildbanner-background')
+        btn.GuildBorder:SetTexture(0)
+    end
+    btn.GuildBg:SetShown(guidName)
+    btn.GuildBorder:SetShown(guidName)
+    btn.GuildText:SetText(guidName or '')
+    
+        --SetSmallGuildTabardTextures(nil, btn.GuildEmblemTexture, btn.GuildBackgroundTexture, btn.GuildBorderTexture, guild.tabardData)
+    
 
 --钥石，名称
     local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
@@ -1059,7 +1025,7 @@ end
 local function OnEnter_BattleTexture(self)
     local data= self:GetParent().data
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:AddDoubleLine()
+    GameTooltip:ClearLines()
 
     local battleTag= data and data.battleTag
     GameTooltip:AddDoubleLine(
@@ -1103,7 +1069,19 @@ end
 
 
 
-
+local function OnEntre_GuildText(self)
+    local data= self:GetParent().data
+    if not data or not data.guild then
+        return
+    end
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip:ClearLines()
+    for _, text in pairs(data.guild) do
+        GameTooltip:AddLine(text)
+    end
+    GameTooltip:Show()
+    self:SetAlpha(0.3)
+end
 
 
 
@@ -1560,6 +1538,15 @@ local function Init_List()
             self.Battle:SetScript('OnEnter', function(...)
                 OnEnter_BattleTexture(...)
             end)
+            self.GuildText:SetScript('OnEnter', function(...)
+                OnEntre_GuildText(...)
+            end)
+             self.GuildBorder:SetScript('OnEnter', function(...)
+                OnEntre_GuildText(...)
+            end)
+
+
+            OnEntre_GuildText(self)
         end
         self.data= data
         Settings_Right_Button(self, data)

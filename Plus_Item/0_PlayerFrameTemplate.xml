@@ -251,6 +251,46 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
 
+            <Texture parentKey="GuildBg">
+                <Size x="14" y="14"/>
+                <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.ItemLevelText" relativePoint="LEFT"/>
+                </Anchors>
+            </Texture>
+
+            <Texture parentKey="GuildBorder" enableMouse="true">
+                <Size x="14" y="14"/>
+                <Anchors>
+                    <Anchor point="CENTER" relativeKey="$parent.GuildBg"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                    <OnEnter>
+                        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+                        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '公会' or GUILD)
+                        GameTooltip:Show()
+                        self:SetAlpha(0.3)
+                    </OnEnter>
+                </Scripts>
+            </Texture>
+
+
+
+            <FontString parentKey="GuildText" inherits="ChatFontNormal" enableMouse="true">
+                <Anchors>
+                   <Anchor point="RIGHT" relativeKey="$parent.GuildBorder" relativePoint="LEFT"/>
+                </Anchors>
+                 <Scripts>
+                    <OnLeave>
+                        GameTooltip:Hide()
+                        self:SetAlpha(1)
+                    </OnLeave>
+                </Scripts>
+            </FontString>
+
             <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Spec"  relativePoint="BOTTOMRIGHT"/>

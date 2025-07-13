@@ -209,7 +209,7 @@ local function Init(GuildButton)
     GuildButton:set_guildinfo_event()
     GuildButton:set_new_application(Save().guildInfo)--申请者
 
-    return true
+    Init=function()end
 end
 
 
@@ -223,7 +223,5 @@ end
 
 
 function WoWTools_GuildMixin:Init_Button()
-    if Init(self.GuildButton) then
-        Init=function()end
-    end
+    Init(self.GuildButton)
 end
