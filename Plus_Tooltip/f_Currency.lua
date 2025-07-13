@@ -61,20 +61,27 @@ function WoWTools_TooltipMixin:Set_Currency(tooltip, currencyID)--货币
         end
     end
 
-
-    if isTrans then
+local numPlayer= #data
+    if isTrans and numPlayer>0 then
         tooltip:AddLine(' ')
+
+        
         for index, info in pairs(data) do
             tooltip:AddDoubleLine(
-                WoWTools_UnitMixin:GetPlayerInfo(nil, info.characterGUID, nil, {reName=true, reRealm=true, faction=info.faction}),
+                index
+                ..')'
+                ..WoWTools_UnitMixin:GetPlayerInfo(nil, info.characterGUID, nil, {reName=true, reRealm=true, faction=info.faction}),
                 WoWTools_Mixin:MK(info.quantity, 3)
             )
-            if index>4 then
+            if index>2 and not IsShiftKeyDown() then
+                if index<numPlayer then
+                    tooltip:AddLine('|cnGREEN_FONT_COLOR:<|A:NPE_Icon:0:0|aShift+ '..(WoWTools_DataMixin.onlyChinese and '角色' or CHARACTER)..' '..numPlayer..'>')
+                end
                 break
             end
         end
 
-        local numPlayer= #data
+        
         tooltip.textLeft:SetText(
             (col or '|cnGREEN_FONT_COLOR:')
             ..numPlayer

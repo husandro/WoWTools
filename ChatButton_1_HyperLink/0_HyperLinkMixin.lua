@@ -22,7 +22,6 @@ function WoWTools_HyperLink:GetKeyAffix(link, tab)
         tab= {link:match('Hkeystone:%d+:%d+:%d+:(%d+):(%d+):(%d+):(%d+)')}
     end
     local icon
-
     for _, v in pairs(tab or {}) do
         if v and v ~='0' then
             local texture= select(3, C_ChallengeMode.GetAffixInfo(v))

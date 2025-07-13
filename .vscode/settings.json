@@ -6005,7 +6005,9 @@
         "ERR_TRAVEL_PASS_DIFFERENT_REGION",
         "BATTLETAG",
         "TOKEN_REDEEM_GAME_TIME_TITLE",
-        "SLASH_PLAYED2"
+        "SLASH_PLAYED2",
+        "RaidInfoCloseButton",
+        "SLASH_STOPWATCH_PARAM_STOP5"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

@@ -83,12 +83,10 @@ end
 
 function WoWTools_TextureMixin.Events:Blizzard_RaidFrame()
     self:HideTexture(RaidInfoDetailHeader)
-    self:SetAlphaColor(RaidInfoFrame.Header.LeftBG)
-    self:SetAlphaColor(RaidInfoFrame.Header.CenterBG)
-    self:SetAlphaColor(RaidInfoFrame.Header.RightBG)
+    self:SetButton(RaidInfoCloseButton)
+    self:SetFrame(RaidInfoFrame.Border)
+    self:SetFrame(RaidInfoFrame.Header)
     self:SetAlphaColor(RaidInfoDetailFooter)
-    self:SetFrame(RaidInfoFrame.Border.LeftEdge, {alpha=0.3})
-    self:HideTexture(RaidInfoFrame.Border.Bg)
     self:SetScrollBar(RaidInfoFrame)
 end
 

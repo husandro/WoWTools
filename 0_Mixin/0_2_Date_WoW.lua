@@ -461,7 +461,9 @@ EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--
             local killed = encounterProgress ..'/'..numEncounters;
             killed = encounterProgress ==numEncounters and '|cnGREEN_FONT_COLOR:'..killed..'|r' or killed
             difficultyName=WoWTools_MapMixin:GetDifficultyColor(difficultyName, difficulty)
+
             tab[name] = tab[name] or {}
+
             tab[name][difficultyName]=killed
         end
     end

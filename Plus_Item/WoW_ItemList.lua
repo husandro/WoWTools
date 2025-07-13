@@ -288,7 +288,61 @@ local List2TypeTab= {
             count= WoWTools_TimeMixin:SecondsToFullTime(totalTime)
         end
         return itemName, itemTexture, itemAtlas, count, r, g, b
-    end}
+    end},
+
+
+
+
+
+
+    ['Instance']= {
+    atlas='poi-rift1',
+    tooltip=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
+    set_num=function(self)
+        local guid= Frame.guid
+        local data= guid and WoWTools_WoWDate[Frame.guid]
+        local num=0
+        for _ in pairs(data and data.Instance.ins or {}) do
+            num= num+1
+        end
+        self.Text:SetText(num==0 and '|cff6060600' or num)
+    end,
+    get_data=function(isFind, findText)
+        local data, num= CreateDataProvider(), 0
+        local guid= Frame.guid
+        local info= guid and WoWTools_WoWDate[Frame.guid]
+        for insName, tab in pairs(info and info.Instance.ins or {}) do--[名字]={[难度]=已击杀数}
+            local text
+            for difficuly, killNum in pairs(tab) do
+                text= (text and ' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
+            end
+            if text then
+                if isFind and (text:upper():find(findText) or insName:upper():find(findText))
+                    or not isFind
+                then
+                    data:Insert({
+                        insName= WoWTools_TextMixin:CN(insName),
+                        killText= text,
+                    })
+                end
+            end
+        end
+
+        --[[data:SetSortComparator(function(v1, v2)
+            return v1.totalTime> v2.totalTime
+        end)]]
+
+        return data, WoWTools_TimeMixin:SecondsToFullTime(num)
+    end,
+    set_button=function(self)
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        local data= self.data
+        if data then
+            itemName= data.insName
+            count= data.killText
+        end
+        return itemName, itemTexture, itemAtlas, count, r, g, b
+    end},
 }
 
 --[[
@@ -320,6 +374,23 @@ local List2TypeTab= {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Settings_Left_Button(self)
     local itemName, itemTexture, itemAtlas, count, r, g, b = List2TypeTab[List2Type].set_button(self)
     self.Name:SetText(itemName or '')
@@ -342,7 +413,9 @@ local function SetScript_Left_Button(btn)
 
     btn:SetPoint('RIGHT')
     btn.NameFrame:SetPoint('RIGHT')
-    btn.NameFrame:SetAlpha(0.5)
+    --btn.NameFrame:SetAlpha(0.5)
+    btn.NameFrame:SetTexture(0)
+    btn.NameFrame:SetColorTexture(0, 0, 0, 0.3)
 
     --[[btn.BagTexture= btn:CreateTexture(nil, 'ARTWORK')
     btn.BagTexture:SetSize(12,12)
@@ -379,10 +452,16 @@ local function SetScript_Left_Button(btn)
     btn.Name:SetPoint('RIGHT', btn.NameFrame,-2, 0)--, btn.Count, 'LEFT', -2, 0)
     btn.Name:SetWordWrap(false)
 
+
+
     btn.Count:ClearAllPoints()
     btn.Count:SetPoint('TOPRIGHT', btn.NameFrame, -2, -2)
     btn.Count:SetJustifyH('RIGHT')
     btn.Count:SetFontObject('ChatFontNormal')
+
+    --[[btn.Name2= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
+    btn.Name2:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')
+    btn.Name2:SetPoint('RIGHT', btn.Count, 'LEFT', -2, 0)]]
 
 
     btn:SetScript('OnHide', function(self)
@@ -417,6 +496,21 @@ local function SetScript_Left_Button(btn)
             GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid))
             GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''))
             GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''))
+
+            if data.totalTime then
+                GameTooltip:AddLine(' ')
+                GameTooltip:AddLine(format(
+                    WoWTools_DataMixin.onlyChinese and '总游戏时间：%s' or TIME_PLAYED_TOTAL,
+                    WoWTools_TimeMixin:SecondsToFullTime(data.totalTime)
+                ), nil, nil, nil)
+            end
+            if data.levelTime then
+                GameTooltip:AddLine(format(
+                    WoWTools_DataMixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL,
+                    WoWTools_TimeMixin:SecondsToFullTime(data.levelTime)
+                ))
+            end
+
             GameTooltip:Show()
         else
             WoWTools_SetTooltipMixin:Frame(self, nil, {
@@ -637,11 +731,12 @@ end
 
 local function Settings_Right_Button(btn, data)
     local col= WoWTools_UnitMixin:GetColor(nil, data.guid)
-
+    local r,g,b= col.r, col.g, col.b
 --玩家，图标
     btn.Icon:SetAtlas(WoWTools_UnitMixin:GetRaceIcon(nil, data.guid, nil, {reAtlas=true} or ''))
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
+    btn.PlayerLevelText:SetTextColor(col.r, col.g, col.b)
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
         btn.Name:SetText(
@@ -662,7 +757,8 @@ local function Settings_Right_Button(btn, data)
 
 --提示，不同战网
     btn.BattleTag:SetText(data.battleTag~=WoWTools_DataMixin.Player.BattleTag and data.battleTag or '')
-    btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
+    --btn:SetAlpha(data.battleTag== WoWTools_DataMixin.Player.BattleTag and 1 or 0.5)
+    btn.BattleTag:SetTextColor(r,g,b)
 
 --职业
     btn.Class:SetAtlas('classicon-'..(select(2, GetPlayerInfoByGUID(data.guid)) or ''))
@@ -680,7 +776,7 @@ local function Settings_Right_Button(btn, data)
     if data.itemLevel and data.itemLevel>0 then
         local item= data.itemLevel- (WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].itemLevel or 0)
         btn.ItemLevelText:SetText(
-            (item>6 and '|cnGREEN_FONT_COLOR:' or '|cffffffff')
+            (item>6 and '|cnGREEN_FONT_COLOR:' or col.hex)
             ..data.itemLevel
         )
     else
@@ -695,6 +791,7 @@ local function Settings_Right_Button(btn, data)
         itemName= itemName:match(CHALLENGE_MODE_KEYSTONE_NAME) or itemName:match('钥石：(.+)') or itemName:match('钥石: (.+)') or itemName
     end
     btn.ItemName:SetText(itemName or '')
+    btn.ItemName:SetTextColor(r,g,b)
 
 --背景
     btn.Background:SetAtlas(
@@ -708,6 +805,11 @@ local function Settings_Right_Button(btn, data)
     btn.WorldText:SetText(data.world or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
     btn.PvPText:SetText(data.pvp or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
 
+    btn.RaidText:SetTextColor(r,g,b)
+    btn.DungeonText:SetTextColor(r,g,b)
+    btn.WorldText:SetTextColor(r,g,b)
+    btn.PvPText:SetTextColor(r,g,b)
+
 --分数
     btn.ScoreText:SetText(
         WoWTools_ChallengeMixin:KeystoneScorsoColor(data.score)
@@ -717,19 +819,19 @@ local function Settings_Right_Button(btn, data)
     btn.WeekNumText:SetText(
         data.weekNum==0 and '' or data.weekNum
     )
+    btn.WeekNumText:SetTextColor(r,g,b)
 
 --本周最高
     btn.WeekLevelText:SetText(
         data.weekLevel==0 and '' or data.weekLevel
     )
+    btn.WeekLevelText:SetTextColor(r,g,b)
 
 --背景
     btn.Background:SetAlpha(WoWTools_DataMixin.Player.BattleTag~=data.battleTag and 0.5 or 1)
     btn.Background:SetDesaturated(WoWTools_DataMixin.Player.Region~=data.region)
 
-
     btn.SelectBg:SetShown(data.guid==Frame.guid)
-
 end
 
 
@@ -799,13 +901,9 @@ local function OnMouseDown_RightButton(self, d)
         return
     end
     local guid= self.data.guid
+    Frame.guid= guid
 
-    if d=='LeftButton' then
-        Frame.guid= Frame.guid~=guid and guid or nil
-
-    else
-        Frame.guid= guid
-
+    if d=='RightButton' then
         MenuUtil.CreateContextMenu(self, function(_, root)
             local isMe= guid==WoWTools_DataMixin.Player.GUID
             local battleTag= self.data.battleTag
@@ -843,10 +941,10 @@ local function OnMouseDown_RightButton(self, d)
             end)
         end)
 
-        Frame.regon= Frame.guid and self.data.region or nil
+
     end
 
-
+    Frame.regon= Frame.guid and self.data.region or nil
 
     Frame.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     Init_Left_List()
@@ -896,6 +994,7 @@ local function Init_Right_Menu(self, root)
     end
 
     local function set_tooltip(tooltip, desc)
+        tooltip:AddLine('|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2))
         tooltip:AddDoubleLine(
         format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WoWTools_DataMixin.onlyChinese and '当前' or REFORGE_CURRENT,  'Region'),
            WoWTools_DataMixin.Player.Region
@@ -911,7 +1010,6 @@ local function Init_Right_Menu(self, root)
             tooltip:AddDoubleLine((info.name or '')..' |cff00ccff'..(info.region or ''), '|cff00ccff'..(info.tag or '').. ' |r('..index)
         end
     end
-
 
 
 --清除不同地区
@@ -960,6 +1058,7 @@ local function Init_Right_Menu(self, root)
 
 
 --清除WoW数据
+    root:CreateSpacer()
     local allTtext= '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL)
         ..' #'..#all
@@ -1169,6 +1268,8 @@ local function Init_List()
         header= WoWTools_DataMixin.Icon.wow2
             ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
     })
+
+    Frame.guid=WoWTools_DataMixin.Player.GUID
 
     Frame:SetScript('OnHide', function(self)
         self.ScrollBox:RemoveDataProvider()
@@ -1448,6 +1549,35 @@ local function Init()
         Init_List()
     end)
     WoWTools_TextureMixin:SetButton(btn)
+
+
+
+
+    MainMenuBarBackpackButton:HookScript('OnEnter', function()
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
+            ..WoWTools_DataMixin.Icon.mid
+        )
+        GameTooltip:Show()
+    end)
+    MainMenuBarBackpackButton:EnableMouseWheel(true)
+    MainMenuBarBackpackButton:SetScript('OnMouseWheel', function(_, d)
+        if d==1 then
+            if not Frame then
+                Init_List()
+            else
+                Frame:SetShown(true)
+            end
+        elseif Frame then
+            Frame:SetShown(false)
+        end
+    end)
+
+
+
+
+
 
 
 if WoWTools_DataMixin.Player.husandro then
