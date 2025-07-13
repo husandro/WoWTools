@@ -294,7 +294,7 @@ local List2TypeTab= {
 
 
 
-
+--副本
     ['Instance']= {
     atlas='poi-rift1',
     tooltip=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
@@ -327,11 +327,6 @@ local List2TypeTab= {
                 end
             end
         end
-
-        --[[data:SetSortComparator(function(v1, v2)
-            return v1.totalTime> v2.totalTime
-        end)]]
-
         return data, WoWTools_TimeMixin:SecondsToFullTime(num)
     end,
     set_button=function(self)
@@ -343,6 +338,57 @@ local List2TypeTab= {
         end
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
+
+
+
+
+
+--稀有
+    ['worldquest-icon-boss']= {
+    atlas='poi-rift1',
+    tooltip=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
+    set_num=function(self)
+        local guid= Frame.guid
+        local data= guid and WoWTools_WoWDate[Frame.guid]
+        local num=0
+        for _ in pairs(data and data.Instance.ins or {}) do
+            num= num+1
+        end
+        self.Text:SetText(num==0 and '|cff6060600' or num)
+    end,
+    get_data=function(isFind, findText)
+        local data, num= CreateDataProvider(), 0
+        local guid= Frame.guid
+        local info= guid and WoWTools_WoWDate[Frame.guid]
+        for insName, tab in pairs(info and info.Instance.ins or {}) do--[名字]={[难度]=已击杀数}
+            local text
+            for difficuly, killNum in pairs(tab) do
+                text= (text and ' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
+            end
+            if text then
+                if isFind and (text:upper():find(findText) or insName:upper():find(findText))
+                    or not isFind
+                then
+                    data:Insert({
+                        insName= WoWTools_TextMixin:CN(insName),
+                        killText= text,
+                    })
+                end
+            end
+        end
+        return data, WoWTools_TimeMixin:SecondsToFullTime(num)
+    end,
+    set_button=function(self)
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        local data= self.data
+        if data then
+            itemName= data.insName
+            count= data.killText
+        end
+        return itemName, itemTexture, itemAtlas, count, r, g, b
+    end},
+
+    
 }
 
 --[[
@@ -1377,7 +1423,7 @@ local function Init_List()
         --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
     })
     Frame.SearchBox2:SetPoint('BOTTOMLEFT', Frame.ScrollBox2, 'TOPLEFT', 29, 2)
-    Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -23*4, 2)
+    --Frame.SearchBox2:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', -23*4, 2)
     Frame.SearchBox2:HookScript('OnTextChanged', function()
         Init_Left_List()
     end)
@@ -1434,7 +1480,8 @@ local function Init_List()
 
 
 
-    local x=0
+   
+    local last
     for name, data in pairs(List2TypeTab) do
         List2Buttons[name]= WoWTools_ButtonMixin:Cbtn(Frame, {
             name='WoWToolsWoWList2'..name..'Button',
@@ -1452,8 +1499,13 @@ local function Init_List()
 
         List2Buttons[name].texture:SetAtlas(data.atlas)
 
-        List2Buttons[name]:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT', x, 0)
-        x= x+23
+        if last then
+            List2Buttons[name]:SetPoint('RIGHT', last, 'LEFT')
+        else
+            List2Buttons[name]:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', 0, 2)
+        end
+        --List2Buttons[name]:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT', x, 0)
+        --x= x+23
         List2Buttons[name]:SetScript('OnLeave', function()
             GameTooltip:Hide()
         end)
@@ -1472,16 +1524,18 @@ local function Init_List()
                 btn.texture:SetDesaturated(isSelect)
             end
         end)
+        last=List2Buttons[name]
     end
+
+
+
+
+
 
     List2Buttons[List2Type]:SetButtonState('PUSHED', true)
     List2Buttons[List2Type].texture:SetDesaturated(true)
-
-
-
-
-
-
+    Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT')
+    
 
 
 
@@ -1556,8 +1610,10 @@ local function Init()
     MainMenuBarBackpackButton:HookScript('OnEnter', function()
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.wow2
+            ..'|cnGREEN_FONT_COLOR:<'
             ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
             ..WoWTools_DataMixin.Icon.mid
+            ..'>'
         )
         GameTooltip:Show()
     end)
