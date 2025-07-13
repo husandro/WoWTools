@@ -11,44 +11,10 @@ local P_Save={
 
 
 
---保存公会数据，到WOW
-local function Save_WoWGuild()
-    if IsInGuild() then
-        local clubID= C_Club.GetGuildClubId()
-
-        if clubID then
-            WoWTools_GuildMixin:Load_Club(clubID)
-        end
-
-        local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID) or {}
-        local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
-
-        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {
-            guid= club.clubFinderGUID,
-            link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID),
-            clubID= clubID,
-            data={guildName, guildRankName, guildRankIndex, realm or WoWTools_DataMixin.Player.Realm},
-            text= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text
-        }
-
-    else
-        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {data={}}
-    end
-end
-
-
-
-
-
-
-
-
-
 
 
 local panel= CreateFrame('Frame')
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_GUILD_UPDATE')
 panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1)
@@ -74,11 +40,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         WoWTools_GuildMixin:Plus_CommunitiesFrame()--社区 Plus
         WoWTools_GuildMixin:Init_PetitionFrame()--新建，公会, 签名 OfferPetition
 
-        Save_WoWGuild()--保存公会数据，到WOW
-
         self:UnregisterEvent(event)
-
-    elseif event=='PLAYER_GUILD_UPDATE' then
-        Save_WoWGuild()--保存公会数据，到WOW
     end
 end)

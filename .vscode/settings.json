@@ -6007,7 +6007,9 @@
         "TOKEN_REDEEM_GAME_TIME_TITLE",
         "SLASH_PLAYED2",
         "RaidInfoCloseButton",
-        "SLASH_STOPWATCH_PARAM_STOP5"
+        "SLASH_STOPWATCH_PARAM_STOP5",
+        "MAP_LEGEND_RARE",
+        "MAP_LEGEND_WORLDBOSS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

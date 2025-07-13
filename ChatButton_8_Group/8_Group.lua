@@ -332,8 +332,8 @@ local function Init_Menu(self, root)
             self:chat_Up_down(data.type=='GroupMouseUpText' and 1 or -1)
         end, tab)
         sub:SetTooltip(function(tooltip, desc)
-            tooltip:AddLine('|A:voicechat-icon-textchat-silenced:0:0|a|A:'..desc.data.icon..':0:0|a'..desc.data.text)
-            tooltip:AddLine(WoWToolsPlayerDate[desc.data.type])
+            tooltip:AddLine('|A:voicechat-icon-textchat-silenced:0:0|a|A:'..desc.data.icon..':0:0|a'..desc.data.text, nil, nil, nil, true)
+            tooltip:AddLine(WoWToolsPlayerDate[desc.data.type], nil,nil,nil, true)
         end)
 
         sub:CreateButton(
@@ -561,14 +561,16 @@ local function Init()
             '|A:voicechat-icon-textchat-silenced:0:0|a'
             ..WoWTools_DataMixin.Icon.mid
             ..'|A:bags-greenarrow:0:0|a'
-            ..WoWToolsPlayerDate['GroupMouseUpText']
+            ..WoWToolsPlayerDate['GroupMouseUpText'],
+            nil,nil,nil, true
         )
 
         GameTooltip:AddLine(
             '|A:voicechat-icon-textchat-silenced:0:0|a'
             ..WoWTools_DataMixin.Icon.mid
             ..'|A:UI-HUD-MicroMenu-StreamDLRed-Up:0:0|a'
-            ..WoWToolsPlayerDate['GroupMouseDownText']
+            ..WoWToolsPlayerDate['GroupMouseDownText'],
+            nil,nil,nil, true
         )
 
         GameTooltip:Show()

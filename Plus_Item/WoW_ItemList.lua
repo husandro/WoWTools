@@ -83,32 +83,32 @@ local List2TypeTab= {
         end)
         return data, num
     end,
-    set_button=function(self)
-        local data= self.data
-        local itemID= data and data.itemID
-        local itemName, itemTexture, itemAtlas, count, r, g, b
-        if itemID then
-            local itemQuality, _
-            itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
-
-            itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
-            itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
-
-            r,g,b= C_Item.GetItemQualityColor(itemQuality or data.quality or 1)
-
-
-            local bag, bank ,wow
-            bag= data.bag
-            bag= bag>0 and WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a' or ''
-
-            bank= data.bank
-            bank= bank>0 and WoWTools_Mixin:MK(bank, 3)..'|A:ParagonReputation_Bag:0:0|a' or ''
-
-            wow= WoWTools_ItemMixin:GetWoWCount(itemID, Frame.guid, Frame.regon)
-            wow= wow>0 and '|cff00ccff'..WoWTools_Mixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or ''
-
-            count= wow..bank..bag
+    set_button=function(data)
+        local itemID= data.itemID
+        if not itemID then
+            return
         end
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        local itemQuality, _
+        itemName, _, itemQuality, _, _, _, _, _, _, itemTexture= C_Item.GetItemInfo(itemID)
+
+        itemName= WoWTools_TextMixin:CN(itemName, {itemID=itemID, isName=true}) or itemID
+        itemTexture= itemTexture or C_Item.GetItemIconByID(itemID)
+
+        r,g,b= C_Item.GetItemQualityColor(itemQuality or data.quality or 1)
+
+
+        local bag, bank ,wow
+        bag= data.bag
+        bag= bag>0 and WoWTools_Mixin:MK(bag, 3)..'|A:bag-main:0:0|a' or ''
+
+        bank= data.bank
+        bank= bank>0 and WoWTools_Mixin:MK(bank, 3)..'|A:ParagonReputation_Bag:0:0|a' or ''
+
+        wow= WoWTools_ItemMixin:GetWoWCount(itemID, Frame.guid, Frame.regon)
+        wow= wow>0 and '|cff00ccff'..WoWTools_Mixin:MK(wow, 3)..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or ''
+
+        count= wow..bank..bag
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end
     },
@@ -161,23 +161,23 @@ local List2TypeTab= {
         end)
         return data, WoWTools_Mixin:MK(num, 3)
     end,
-    set_button=function(self)
+    set_button=function(data)
+        local currencyID= data.currencyID
+        if not currencyID then
+            return
+        end
         local itemName, itemTexture, itemAtlas, count, r, g, b
-        local data= self.data
-        local currencyID= data and data.currencyID
-        if currencyID then
-            local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
-            if info then
-                local icon, _, _, col= WoWTools_CurrencyMixin:GetAccountIcon(currencyID)
-                itemName= (icon or '')..(col or '')..WoWTools_TextMixin:CN(info.name) or currencyID
-                itemTexture= info.iconFileID
+        local info= C_CurrencyInfo.GetCurrencyInfo(currencyID)
+        if info then
+            local icon, _, _, col= WoWTools_CurrencyMixin:GetAccountIcon(currencyID)
+            itemName= (icon or '')..(col or '')..WoWTools_TextMixin:CN(info.name) or currencyID
+            itemTexture= info.iconFileID
 
-                local wow= WoWTools_CurrencyMixin:GetWoWCount(currencyID, Frame.guid, Frame.regon)
-                count= (wow>0 and '|cff00ccff'..wow..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
-                    ..(data.num>0 and WoWTools_Mixin:MK(data.num, 3)..WoWTools_DataMixin.Icon.Player or '')
+            local wow= WoWTools_CurrencyMixin:GetWoWCount(currencyID, Frame.guid, Frame.regon)
+            count= (wow>0 and '|cff00ccff'..wow..'|r|A:glues-characterSelect-iconShop-hover:0:0|a' or '')
+                ..(data.num>0 and WoWTools_Mixin:MK(data.num, 3)..WoWTools_DataMixin.Icon.Player or '')
 
-                r,g,b= C_Item.GetItemQualityColor(info.quality or 1)
-            end
+            r,g,b= C_Item.GetItemQualityColor(info.quality or 1)
         end
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
@@ -222,14 +222,14 @@ local List2TypeTab= {
         end)
         return data, WoWTools_Mixin:MK(num/10000, 3)
     end,
-    set_button=function(self)
+    set_button=function(data)
+        local money= data.money
+        if not money then
+            return
+         end
         local itemName, itemTexture, itemAtlas, count, r, g, b
-        local data= self.data
-        local money= data and data.money
-        if money then
-            itemName, itemAtlas= Get_Player_Name(data)
-            count= WoWTools_Mixin:MK(money/10000, 3)..'|A:Auctioneer:0:0|a'
-        end
+        itemName, itemAtlas= Get_Player_Name(data)
+        count= WoWTools_Mixin:MK(money/10000, 3)..'|A:Auctioneer:0:0|a'
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
 
@@ -279,15 +279,30 @@ local List2TypeTab= {
 
         return data, WoWTools_TimeMixin:SecondsToFullTime(num)
     end,
-    set_button=function(self)
-        local itemName, itemTexture, itemAtlas, count, r, g, b
-        local data= self.data
-        local totalTime= data and data.totalTime
-        if totalTime then
-            itemName, itemAtlas= Get_Player_Name(data)
-            count= WoWTools_TimeMixin:SecondsToFullTime(totalTime)
+    set_button=function(data)
+        local totalTime= data.totalTime
+        if not totalTime then
+            return
         end
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        itemName, itemAtlas= Get_Player_Name(data)
+        count= WoWTools_TimeMixin:SecondsToFullTime(totalTime)
         return itemName, itemTexture, itemAtlas, count, r, g, b
+    end,
+    set_tips=function(data)
+        if data.totalTime then
+            GameTooltip:AddLine(' ')
+            GameTooltip:AddLine(format(
+                WoWTools_DataMixin.onlyChinese and '总游戏时间：%s' or TIME_PLAYED_TOTAL,
+                WoWTools_TimeMixin:SecondsToFullTime(data.totalTime)
+            ), nil, nil, nil)
+        end
+        if data.levelTime then
+            GameTooltip:AddLine(format(
+                WoWTools_DataMixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL,
+                WoWTools_TimeMixin:SecondsToFullTime(data.levelTime)
+            ))
+        end
     end},
 
 
@@ -324,18 +339,16 @@ local List2TypeTab= {
                         insName= WoWTools_TextMixin:CN(insName),
                         killText= text,
                     })
+                    num=num+1
                 end
             end
         end
-        return data, WoWTools_TimeMixin:SecondsToFullTime(num)
+        return data, num
     end,
-    set_button=function(self)
+    set_button=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
-        local data= self.data
-        if data then
-            itemName= data.insName
-            count= data.killText
-        end
+        itemName= data.insName
+        count= data.killText
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
 
@@ -344,14 +357,14 @@ local List2TypeTab= {
 
 
 --稀有
-    ['worldquest-icon-boss']= {
-    atlas='poi-rift1',
-    tooltip=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
+    ['Rare']= {
+    atlas='UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star',
+    tooltip=WoWTools_DataMixin.onlyChinese and '稀有' or MAP_LEGEND_RARE,
     set_num=function(self)
         local guid= Frame.guid
         local data= guid and WoWTools_WoWDate[Frame.guid]
         local num=0
-        for _ in pairs(data and data.Instance.ins or {}) do
+        for _ in pairs(data and data.Rare.boss or {}) do
             num= num+1
         end
         self.Text:SetText(num==0 and '|cff6060600' or num)
@@ -360,35 +373,189 @@ local List2TypeTab= {
         local data, num= CreateDataProvider(), 0
         local guid= Frame.guid
         local info= guid and WoWTools_WoWDate[Frame.guid]
-        for insName, tab in pairs(info and info.Instance.ins or {}) do--[名字]={[难度]=已击杀数}
-            local text
-            for difficuly, killNum in pairs(tab) do
-                text= (text and ' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
-            end
-            if text then
-                if isFind and (text:upper():find(findText) or insName:upper():find(findText))
-                    or not isFind
-                then
-                    data:Insert({
-                        insName= WoWTools_TextMixin:CN(insName),
-                        killText= text,
-                    })
+        for _ in pairs(info and info.Rare.boss or {}) do
+            num= num+1
+        end
+        if num>0 then
+            local index=0
+            local rare, rare2
+            for name in pairs(info.Rare.boss) do--[name]= UnitGUID('target')
+                index= index+1
+                name= '|cff606060'..index..'|r'..WoWTools_TextMixin:CN(name)
+                if select(2, math.modf(index/2))~=0 then
+                    rare= (rare and ' ' or '')..name
+                else
+                    rare2= (rare2 and ' ' or '')..name
                 end
             end
+            if isFind and (
+                    rare and rare:upper():find(findText)
+                    or (rare2 and rare:upper():find(findText))
+                ) or not isFind
+            then
+                data:Insert({
+                    rare= rare,
+                    rare2= rare2,
+                    rareTab=info.Rare.boss
+                })
+            end
         end
-        return data, WoWTools_TimeMixin:SecondsToFullTime(num)
+        return data, num
     end,
-    set_button=function(self)
+    set_button=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
-        local data= self.data
-        if data then
-            itemName= data.insName
-            count= data.killText
-        end
+        itemName= data.rare
+        count= data.rare2
         return itemName, itemTexture, itemAtlas, count, r, g, b
+    end,
+    set_tips=function(data)
+        local index=0
+        local col
+        GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
+        for name in pairs(data.rareTab or {}) do
+            index= index+1
+            col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
+            GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
+        end
     end},
 
+
+
+
+
+
+
+
+
+
+--稀有
+    ['Worldboss']= {
+    atlas='vignettekillboss',
+    tooltip=WoWTools_DataMixin.onlyChinese and '世界首领' or MAP_LEGEND_WORLDBOSS,
+    set_num=function(self)
+        local guid= Frame.guid
+        local data= guid and WoWTools_WoWDate[Frame.guid]
+        local num=0
+        for _ in pairs(data and data.Worldboss.boss or {}) do
+            num= num+1
+        end
+        self.Text:SetText(num==0 and '|cff6060600' or num)
+    end,
+    get_data=function(isFind, findText)
+        local data, num= CreateDataProvider(), 0
+        local guid= Frame.guid
+        local info= guid and WoWTools_WoWDate[Frame.guid]
+        for _ in pairs(info and info.Worldboss.boss or {}) do
+            num= num+1
+        end
+        if num>0 then
+            local index=0
+            local rare, rare2
+            for name in pairs(info.Worldboss.boss) do--[name]= UnitGUID('target')
+                index= index+1
+                name= '|cff606060'..index..'|r'..WoWTools_TextMixin:CN(name)
+                if select(2, math.modf(index/2))~=0 then
+                    rare= (rare and ' ' or '')..name
+                else
+                    rare2= (rare2 and ' ' or '')..name
+                end
+            end
+            if isFind and (
+                    rare and rare:upper():find(findText)
+                    or (rare2 and rare:upper():find(findText))
+                ) or not isFind
+            then
+                data:Insert({
+                    rare= rare,
+                    rare2= rare2,
+                    rareTab=info.Rare.boss
+                })
+            end
+        end
+        return data, num
+    end,
+    set_button=function(data)
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        itemName= data.rare
+        count= data.rare2
+        return itemName, itemTexture, itemAtlas, count, r, g, b
+    end,
+    set_tips=function(data)
+        local index=0
+        local col
+        GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
+        for name in pairs(data.rareTab or {}) do
+            index= index+1
+            col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
+            GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
+        end
+    end},
+
+
+
     
+--稀有
+    ['Guild']= {
+    atlas='communities-guildbanner-background',
+    tooltip=WoWTools_DataMixin.onlyChinese and '公会' or GUILD,
+    set_num=function(self)
+        local guid= Frame.guid
+        local data= guid and WoWTools_WoWDate[Frame.guid]
+        local num=0
+        for _ in pairs(data and data.Worldboss.boss or {}) do
+            num= num+1
+        end
+        self.Text:SetText(num==0 and '|cff6060600' or num)
+    end,
+    get_data=function(isFind, findText)
+        local data, num= CreateDataProvider(), 0
+        local guid= Frame.guid
+        local info= guid and WoWTools_WoWDate[Frame.guid]
+        for _ in pairs(info and info.Worldboss.boss or {}) do
+            num= num+1
+        end
+        if num>0 then
+            local index=0
+            local rare, rare2
+            for name in pairs(info.Worldboss.boss) do--[name]= UnitGUID('target')
+                index= index+1
+                name= '|cff606060'..index..'|r'..WoWTools_TextMixin:CN(name)
+                if select(2, math.modf(index/2))~=0 then
+                    rare= (rare and ' ' or '')..name
+                else
+                    rare2= (rare2 and ' ' or '')..name
+                end
+            end
+            if isFind and (
+                    rare and rare:upper():find(findText)
+                    or (rare2 and rare:upper():find(findText))
+                ) or not isFind
+            then
+                data:Insert({
+                    rare= rare,
+                    rare2= rare2,
+                    rareTab=info.Rare.boss
+                })
+            end
+        end
+        return data, num
+    end,
+    set_button=function(data)
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        itemName= data.rare
+        count= data.rare2
+        return itemName, itemTexture, itemAtlas, count, r, g, b
+    end,
+    set_tips=function(data)
+        local index=0
+        local col
+        GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
+        for name in pairs(data.rareTab or {}) do
+            index= index+1
+            col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
+            GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
+        end
+    end},
 }
 
 --[[
@@ -438,7 +605,10 @@ local List2TypeTab= {
 
 
 local function Settings_Left_Button(self)
-    local itemName, itemTexture, itemAtlas, count, r, g, b = List2TypeTab[List2Type].set_button(self)
+    local itemName, itemTexture, itemAtlas, count, r, g, b
+    if self.data then
+        itemName, itemTexture, itemAtlas, count, r, g, b= List2TypeTab[List2Type].set_button(self.data)
+    end
     self.Name:SetText(itemName or '')
     self.Name:SetTextColor(r or 1, g or 1, b or 1)
     self.Count:SetText(count or '')
@@ -536,34 +706,31 @@ local function SetScript_Left_Button(btn)
         if not data then
             return
         end
+
+        if data.itemID or data.currencyID then
+              WoWTools_SetTooltipMixin:Frame(self, nil, {
+                itemID=data.itemID,
+                currencyID=data.currencyID,
+            })
+            return
+        end
+
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
         if data.guid then
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
             GameTooltip:ClearLines()
             GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid))
             GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''))
             GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''))
-
-            if data.totalTime then
-                GameTooltip:AddLine(' ')
-                GameTooltip:AddLine(format(
-                    WoWTools_DataMixin.onlyChinese and '总游戏时间：%s' or TIME_PLAYED_TOTAL,
-                    WoWTools_TimeMixin:SecondsToFullTime(data.totalTime)
-                ), nil, nil, nil)
-            end
-            if data.levelTime then
-                GameTooltip:AddLine(format(
-                    WoWTools_DataMixin.onlyChinese and '你在这个等级的游戏时间：%s' or TIME_PLAYED_LEVEL,
-                    WoWTools_TimeMixin:SecondsToFullTime(data.levelTime)
-                ))
-            end
-
-            GameTooltip:Show()
-        else
-            WoWTools_SetTooltipMixin:Frame(self, nil, {
-                itemID=data.itemID,
-                currencyID=data.currencyID,
-            })
         end
+
+        if List2TypeTab[List2Type] and List2TypeTab[List2Type].set_tips then
+            List2TypeTab[List2Type].set_tips(data)
+        end
+
+        GameTooltip:Show()
+
         self:SetAlpha(0.5)
     end)
 end
@@ -1480,7 +1647,7 @@ local function Init_List()
 
 
 
-   
+
     local last
     for name, data in pairs(List2TypeTab) do
         List2Buttons[name]= WoWTools_ButtonMixin:Cbtn(Frame, {
@@ -1494,7 +1661,7 @@ local function Init_List()
         List2Buttons[name].tooltip= data.tooltip
 
 
-        List2Buttons[name].Text= WoWTools_LabelMixin:Create(List2Buttons[name], {color=true})
+        List2Buttons[name].Text= WoWTools_LabelMixin:Create(List2Buttons[name], {color={r=1,g=1,b=1}})
         List2Buttons[name].Text:SetPoint('BOTTOMRIGHT')
 
         List2Buttons[name].texture:SetAtlas(data.atlas)
@@ -1535,7 +1702,7 @@ local function Init_List()
     List2Buttons[List2Type]:SetButtonState('PUSHED', true)
     List2Buttons[List2Type].texture:SetDesaturated(true)
     Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT')
-    
+
 
 
 

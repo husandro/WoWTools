@@ -74,8 +74,8 @@
     --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAtlas('ChallengeMode-guild-background')
     --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAlpha(0.3)
 
-
-    --
+--角色名称邀请你加入
+    self:SetNineSlice(CommunitiesFrame.ClubFinderInvitationFrame.InsetFrame)
 
 
 --公会设置

@@ -17,12 +17,14 @@ WoWTools_WoWDate[guid]= {--默认数据
 
     Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
     Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
-    Rare={day=day, boss={}},--稀有
+    Rare={day=day, boss={[name]=guid}},--稀有 
     Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
     Guild={
-        --text= text, GuildInfo() 公会信息,
-        --guid= guid, 公会 clubFinderGUID 
-        data={},-- {guildName, guildRankName, guildRankIndex, realm} = GetGuildInfo('player')
+        guid= club.clubFinderGUID,
+        link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID),
+        clubID= clubID,
+        data={guildName, guildRankName, guildRankIndex, realm or WoWTools_DataMixin.Player.Realm},
+        text= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text
     },
     --Money=钱
     Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
@@ -495,8 +497,8 @@ end)
 
 
 --稀有怪数 BOSS_KILL
-EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, unit)
-    if not IsInInstance() or not unit or not UnitIsDead(unit) or UnitIsPlayer(unit) then
+--[[EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, unit)
+    if IsInInstance() or not unit or not UnitIsDead(unit) or UnitIsPlayer(unit) then
         return
     end
     local classification = UnitClassification(unit)
@@ -506,23 +508,25 @@ EventRegistry:RegisterFrameEventAndCallback("UNIT_FLAGS", function(_, unit)
             local name=UnitName(unit)
             if name then
                 WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target')--以前用true,注意旧数据
-                RequestRaidInfo()
+                print(name, UnitGUID('target'))
+                --RequestRaidInfo()
             end
         end
     end
-end)
+end)]]
 
 
 EventRegistry:RegisterFrameEventAndCallback("LOOT_OPENED", function()
-    if not IsInInstance() then
+    if IsInInstance() or not UnitExists('target') then
         return
     end
-    local classification = UnitExists('target') and UnitClassification('target')
+    local classification = UnitClassification('target')
     if classification == "rare" or classification == "rareelite" then
         local name=UnitName('target')
         if name then
             WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Rare.boss[name]= UnitGUID('target')
-            RequestRaidInfo()
+            print(name, UnitGUID('target'))
+            --RequestRaidInfo()
         end
     end
 end)
@@ -706,7 +710,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
 
             Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
             Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
-            Rare={day=day, boss={}},--稀有
+            Rare={day=day, boss={}},--稀有 [name]=guid
             Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
             Guild={
                 --text= text, GuildInfo() 公会信息,
@@ -767,6 +771,44 @@ end)
 
 
 
+--保存公会数据，到WOW
+local function Save_WoWGuild()
+    if IsInGuild() then
+        local clubID= C_Club.GetGuildClubId()
+
+        if clubID then
+            WoWTools_GuildMixin:Load_Club(clubID)
+        end
+
+        local club= clubID and C_ClubFinder.GetRecruitingClubInfoFromClubID(clubID) or {}
+        local guildName, guildRankName, guildRankIndex, realm= GetGuildInfo('player')
+
+        realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
+        local old= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild
+        if club.clubFinderGUID and old.guid and club.clubFinderGUID~=old.guid then
+            old={}
+        end
+
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {
+            guid= club.clubFinderGUID,
+            link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID) or old.link,
+            clubID= clubID,
+            data={guildName, guildRankName, guildRankIndex, realm},
+            text= old.text--公会创立于 ， 名成员， 个帐号
+        }
+    else
+        WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {data={}}
+    end
+end
+
+EventRegistry:RegisterFrameEventAndCallback('PLAYER_GUILD_UPDATE', function()
+    C_Timer.After(2, Save_WoWGuild)
+end)
+EventRegistry:RegisterFrameEventAndCallback('GUILD_RENAME_REQUIRED', function()
+    C_Timer.After(2, Save_WoWGuild)
+end)
+
+
 
 
 
@@ -812,6 +854,8 @@ EventRegistry:RegisterFrameEventAndCallback('PLAYER_ENTERING_WORLD', function(ow
     end
 
     Get_WoW_GUID_Info()--战网，好友GUID
+
+    C_Timer.After(4, Save_WoWGuild)
 
     EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
 end)
