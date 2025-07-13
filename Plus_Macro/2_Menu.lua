@@ -112,7 +112,6 @@ local PointTab={
     function()
         return MenuResponse.Open
     end)
-    sub:CreateDivider()
 
 --删除，通用宏
     num, num2= GetNumMacros()
