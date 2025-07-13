@@ -254,7 +254,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             <Texture parentKey="GuildBg">
                 <Size x="14" y="14"/>
                 <Anchors>
-                    <Anchor point="RIGHT" relativeKey="$parent.ItemLevelText" relativePoint="LEFT"/>
+                    <Anchor point="RIGHT" relativeKey="$parent.ItemLevelText" relativePoint="LEFT" x="-2" y="0"/>
                 </Anchors>
             </Texture>
 

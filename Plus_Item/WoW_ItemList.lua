@@ -1076,7 +1076,7 @@ local function OnEntre_GuildText(self)
     end
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
-    for _, text in pairs(data.guild) do
+    for _, text in pairs(data.guild.data or {}) do
         GameTooltip:AddLine(text)
     end
     GameTooltip:Show()
