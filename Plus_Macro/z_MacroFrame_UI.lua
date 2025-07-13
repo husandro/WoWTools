@@ -141,11 +141,12 @@ local function Init()
 
 
 --宏数量
-    MacroFrameTab1.label= WoWTools_LabelMixin:Create(MacroFrameTab1)
-    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1, 'TOP', 0, -8)
+    MacroFrameTab1.label= WoWTools_LabelMixin:Create(MacroFrameTab1, {color={r=1,g=1,b=1,a=1}})
+    MacroFrameTab1.label:SetPoint('BOTTOM', MacroFrameTab1.Text, 'TOP', 0, 8)
     MacroFrameTab1.label:SetAlpha(0.7)
+
     MacroFrameTab2.label= WoWTools_LabelMixin:Create(MacroFrameTab2)
-    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2, 'TOP', 0, -8)
+    MacroFrameTab2.label:SetPoint('BOTTOM', MacroFrameTab2.Text, 'TOP', 0, 8)
     MacroFrameTab2.label:SetAlpha(0.7)
     hooksecurefunc(MacroFrame, 'Update', function()
     	local numAccountMacros, numCharacterMacros

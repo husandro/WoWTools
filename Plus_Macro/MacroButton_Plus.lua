@@ -141,9 +141,9 @@ local function Set_OnLoad(btn)
         end
     end)
 
-    btn.indexLable= WoWTools_LabelMixin:Create(btn, {color={r=0.7,g=0.7,b=0.7}})
-    btn.indexLable:SetPoint('LEFT', -6, 0)
-    btn.indexLable:SetAlpha(0.5)
+    btn.indexLable= WoWTools_LabelMixin:Create(btn, {color={r=0.62,g=0.62,b=0.62, a=0.3}, layer='BACKGROUND'})
+    btn.indexLable:SetPoint('CENTER')--'LEFT', -6, 0)
+    --btn.indexLable:SetAlpha(0.3)
     function btn:set_index_label()
         self.indexLable:SetText(self.selectionIndex or '')
     end
@@ -160,7 +160,9 @@ end
 
 local function Init()
     --列表，按钮，操作
-    hooksecurefunc(MacroButtonMixin, 'OnLoad', Set_OnLoad)
+    hooksecurefunc(MacroButtonMixin, 'OnLoad', function(...)
+        Set_OnLoad(...)
+    end)
 
     --宏，名称，修改，字符长度
     hooksecurefunc(MacroFrame.MacroSelector, 'setupCallback', function(self, _, name)--Blizzard_MacroUI.lua

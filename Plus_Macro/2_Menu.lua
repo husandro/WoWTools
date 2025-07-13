@@ -91,7 +91,7 @@ local PointTab={
         return not Save().hideBottomList
     end, function()
         Save().hideBottomList= not Save().hideBottomList and true or nil
-        WoWTools_MacroMixin.BottomListFrame:settings()
+        _G['WoWToolsMacroBottomListFrame']:settings()
         WoWTools_MacroMixin.NewEmptyButton:settings()
         TargetButton:settings()
     end)
@@ -102,16 +102,16 @@ local PointTab={
         return Save().bottomListScale or 1
     end, function(value)
         Save().bottomListScale=value
-        WoWTools_MacroMixin.BottomListFrame:settings()
+        _G['WoWToolsMacroBottomListFrame']:settings()
     end)
 
-
-
---打开，选项界面
+--全部删除
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
-
-    sub:CreateTitle(WoWTools_DataMixin.onlyChinese and '全部删除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL))
+    sub=root:CreateButton(
+        WoWTools_DataMixin.onlyChinese and '全部删除' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DELETE, ALL),
+    function()
+        return MenuResponse.Open
+    end)
     sub:CreateDivider()
 
 --删除，通用宏
@@ -127,14 +127,21 @@ local PointTab={
             if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 return
             end
-            print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))
+            print(
+                WoWTools_MacroMixin.addName,
+                '|cnRED_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
+            )
             for i = GetNumMacros(), 1, -1 do
-                if IsModifierKeyDown() or UnitAffectingCombat('player') then
+                if IsModifierKeyDown() or InCombatLockdown() then
                     return
                 end
                 local name, icon = GetMacroInfo(i)
                 DeleteMacro(i)
-                print(i..') ', WoWTools_MacroMixin:GetName(name, icon))
+                print(
+                    i..') ',
+                    WoWTools_MacroMixin:GetName(name, icon)
+                )
             end
         end})
     end, {text=text})
@@ -146,7 +153,7 @@ local PointTab={
             WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {reName=true})
         )
         ..(num2==0 and ' |cff9e9e9e#' or ' #')..num2
-    
+
     sub:CreateButton(
         '|A:XMarksTheSpot:0:0|a'..text,
     function(data)
@@ -157,8 +164,12 @@ local PointTab={
             if WoWTools_FrameMixin:IsLocked(MacroFrame) then
                 return
             end
-            print(WoWTools_MacroMixin.addName, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE))
-            for  i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), 121, -1 do
+            print(
+                WoWTools_MacroMixin.addName,
+                '|cnRED_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '删除' or DELETE)
+            )
+            for i = MAX_ACCOUNT_MACROS + select(2,GetNumMacros()), MAX_ACCOUNT_MACROS+1, -1 do
                 if IsModifierKeyDown() or UnitAffectingCombat('player') then
                     return
                 end
@@ -168,6 +179,14 @@ local PointTab={
             end
         end})
     end, {text=text})
+
+
+--打开，选项界面
+    root:CreateDivider()
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_MacroMixin.addName,})
+--重新加载UI
+    WoWTools_MenuMixin:Reload(sub)
+
 end
 
 

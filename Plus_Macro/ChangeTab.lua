@@ -2,7 +2,6 @@
 local function Save()
     return WoWToolsSave['Plus_Macro2']
 end
-local ScrollBoxBackground
 
 
 
@@ -16,13 +15,6 @@ local ScrollBoxBackground
 
 
 
-
---设置，列表
-local function Init_ChangeTab(self, tabID)
-    print(tabID)
-    
-    
-end
 
 
 

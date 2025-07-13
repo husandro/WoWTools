@@ -23,7 +23,7 @@ function WoWTools_LabelMixin:Create(frame, tab)
     tab= tab or {}
     frame= frame or UIParent
     local name= tab.name --or ((frame:GetName() or 'WoWTools')..'Label'..IndexLabel)
-    local alpha= tab.alpha
+    local alpha= tab.alpha or 1
     local font= tab.changeFont
     local layer= tab.layer or 'OVERLAY'--BACKGROUND BORDER ARTWORK OVERLAY HIGHLIGHT
     local fontName= tab.fontName or 'ChatFontNormal'--'GameFontNormal'
@@ -47,7 +47,9 @@ function WoWTools_LabelMixin:Create(frame, tab)
         font:SetFontObject(copyFont:GetFontObject())
         font:SetShadowColor(copyFont:GetShadowColor())
         font:SetShadowOffset(copyFont:GetShadowOffset())
-        if justifyH then font:SetJustifyH(justifyH) end
+        if justifyH then
+            font:SetJustifyH(justifyH)
+        end
     else
         if WoWTools_DataMixin.onlyChinese or size then--THICKOUTLINE
             local fontName2, size2, fontFlag2= font:GetFont()
@@ -64,11 +66,11 @@ function WoWTools_LabelMixin:Create(frame, tab)
     end
     if color~=false then
         if color==true then--颜色
-            WoWTools_ColorMixin:Setup(font, {type='FontString'})
+            WoWTools_ColorMixin:Setup(font, {type='FontString', alpha=alpha})
         elseif type(color)=='table' then
-            font:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1)
+            font:SetTextColor(color.r or 1, color.g or 1, color.b or 1, color.a or 1, alpha)
         else
-            font:SetTextColor(1, 0.82, 0, 1)
+            font:SetTextColor(1, 0.82, 0, alpha)
         end
     end
     if mouse then
@@ -77,9 +79,9 @@ function WoWTools_LabelMixin:Create(frame, tab)
     if wheel then
         font:EnableMouseWheel(true)
     end
-    if alpha then
+    --[[if alpha then
         font:SetAlpha(alpha)
-    end
+    end]]
     return font
 end
 

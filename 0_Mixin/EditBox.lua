@@ -36,10 +36,10 @@ end
 
 
 function WoWTools_EditBoxMixin:Create(frame, tab)
-    index= index+1
+    --index= index+1
     tab= tab or {}
 
-    local name= tab.name or format('%s%d', 'WoWTools_EditBox', index)
+    local name= tab.name-- or format('%s%d', 'WoWTools_EditBox', index)
     local font= tab.font or 'ChatFontNormal'
     local template= tab.isSearch and 'SearchBoxTemplate' or tab.Template--SearchBoxTemplate
     local setID= tab.setID
@@ -86,11 +86,11 @@ end
 
 --local font= tab.font or 'GameFontHighlightSmall'--字体 ChatFontNormal
 function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
-    index= index+1
+    --index= index+1
     tab= tab or {}
 
 
-    local name= tab.name or ((frame:GetName() or 'WoWTools')..'ScrollFrame'..index)--.. format('%s%d', 'WoWTools_EditScrollFrame', index)--名称
+    local name= tab.name --or ((frame:GetName() or 'WoWTools')..'ScrollFrame'..index)--.. format('%s%d', 'WoWTools_EditScrollFrame', index)--名称
     local isLink= tab.isLink--超链接
     local text= tab.text--使用说明
     --local clearButton= tab.clear

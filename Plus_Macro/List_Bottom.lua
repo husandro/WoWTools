@@ -237,6 +237,32 @@ local MacroList={
 
 
 
+local function Find_SpellMacro(spellID)
+    local tabID= PanelTemplates_GetSelectedTab(MacroFrame)
+    if tabID>2 then
+        return
+    end
+    local count= select(tabID, GetNumMacros())+ (tabID==1 and 0 or MAX_ACCOUNT_MACROS)
+    local i= tabID==1 and 1 or (MAX_ACCOUNT_MACROS+1)
+
+    for index= i, count do
+        if GetMacroSpell(index)==spellID then
+            return '|A:AlliedRace-UnlockingFrame-Checkmark:0:0|a'
+        end
+    end
+    return ''
+end
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -444,9 +470,12 @@ end
 
 
 
+
+
+
+
 --创建，法术，列表
---##############
-local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法术，列表
+local function Create_Spell_Menu(root, spellID, icon, name, index)
     WoWTools_Mixin:Load({id=spellID, type='spell'})
 
     local macroText= Get_Spell_Macro(name, spellID)
@@ -454,6 +483,7 @@ local function Create_Spell_Menu(root, spellID, icon, name, index)--创建，法
 
     local sub=root:CreateButton(
         index..' '
+        ..Find_SpellMacro(spellID)
         ..WoWTools_SpellMixin:GetName(spellID)--取得法术，名称
         ..(macroText and '|cnGREEN_FONT_COLOR:*|r' or ''),
     function(data)
@@ -797,6 +827,7 @@ local function Set_Button_OnEnter(btn)
     if not btn.name then
         return
     end
+
     btn:SetScript('OnLeave', GameTooltip_Hide)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -824,11 +855,14 @@ end
 
 --命令，按钮，列表
 local function Init()
-    Frame= CreateFrame("Frame", nil, MacroFrame)
-    WoWTools_MacroMixin.BottomListFrame= Frame
+    Frame= CreateFrame("Frame", 'WoWToolsMacroBottomListFrame', MacroFrame)
+    --WoWTools_MacroMixin.BottomListFrame= Frame
 
-    Frame:SetSize(1,1)
-    Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 0, -12)
+    WoWTools_TextureMixin:CreateBG(Frame, {isColor=true})
+    Frame.Background:SetPoint('TOPLEFT', Frame, -2, 5)
+
+    Frame:SetSize(1, 1)
+    Frame:SetPoint('TOPLEFT', MacroFrame, 'BOTTOMLEFT', 6, -2)
 
     local last= Frame
     local btn
@@ -842,22 +876,23 @@ local function Init()
                 name='WoWToolsMacroBottomListButton'..i,
                 isType2=true,
             })
-            btn:SetPoint('LEFT', last, 'RIGHT')
+            btn:SetPoint('TOPLEFT', last, 'TOPRIGHT')
             btn.name= data.name
             btn.index= i
 
             btn:SetupMenu(Init_SpellBook_Menu)
             Set_Button_OnEnter(btn)
+
             last= btn
         end
     end
 
 --PVP，天赋，法术
     local pvpButton= WoWTools_ButtonMixin:Menu(Frame, {
-            atlas='pvptalents-warmode-swords',
-            isType2=true,
-            name='WoWToolsMacroBottomListPVPButton'
-        })
+        atlas='pvptalents-warmode-swords',
+        isType2=true,
+        name='WoWToolsMacroBottomListPVPButton'
+    })
     pvpButton:SetNormalAtlas('')
     pvpButton:SetPoint('LEFT', last, 'RIGHT')
     pvpButton:SetupMenu(Init_PvP_Menu)
@@ -918,6 +953,9 @@ local function Init()
         self:SetScale(Save().bottomListScale or 1)
         self:SetShown(not Save().hideBottomList)
     end
+
+
+    Frame.Background:SetPoint('BOTTOMRIGHT', macroListButton, 2, -2)
 
     Frame:settings()
 
