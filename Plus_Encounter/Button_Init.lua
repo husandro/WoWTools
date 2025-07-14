@@ -6,13 +6,13 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(EncounterJournal.EncounterJournalCloseButton, {--按钮, 总开关
+    local btn= WoWTools_ButtonMixin:Menu(EncounterJournalCloseButton, {--按钮, 总开关
         name='WoWToolsAdventureJournalMenuButton',
         size=23,
         icon='hide',
 
     })
-    WoWTools_TextureMixin:SetButton(btn)
+
     btn:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
 
     --[[function btn:set_Tooltips()
@@ -23,24 +23,47 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '奖励' or QUEST_REWARDS, WoWTools_TextMixin:GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..WoWTools_DataMixin.Icon.right)
         GameTooltip:Show()
     end]]
+    btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(WoWTools_EncounterMixin.addName)
         GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
         GameTooltip:Show()
     end)
-    function btn:set_icon()
-        if Save().hideEncounterJournal then
-            self:SetNormalAtlas('talents-button-reset')
-        else
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+    btn:SetupMenu(function(self, root)
+        if not self:IsMouseOver() then
+            return
         end
-    end
-    btn:SetScript('OnClick', function(self, d)
+        local sub
+        root:CreateCheckbox(
+            'Plus',
+        function()
+            return not Save().hideEncounterJournal
+        end, function()
+            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
+            WoWTools_EncounterMixin:Init_Specialization_Loot()--BOSS战时, 指定拾取, 专精, 事件
+            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+            self:set_icon()
+        end)
+
+        root:CreateCheckbox(
+            WoWTools_DataMixin.onlyChinese and '信息' or INFO,
+        function()
+            return not Save().hideEncounterJournal_All_Info_Text
+        end, function()
+            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+        end)
+
+--打开选项界面
+        root:CreateDivider()
+        sub= WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_EncounterMixin.addName,})
+--重新加载UI
+        WoWTools_MenuMixin:Reload(sub)
+    end)
+    --[[btn:SetScript('OnClick', function(self, d)
         if d=='LeftButton' then
             Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-            self:set_Shown()
-
             WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
             WoWTools_Mixin:Call(EncounterJournal_ListInstances)
             self:set_icon()
@@ -49,13 +72,25 @@ local function Init()
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end
         self:set_Tooltips()
-    end)
-    btn:SetScript("OnLeave",GameTooltip_Hide)
+    end)]]
+    
+    function btn:set_icon()
+        if Save().hideEncounterJournal then
+            self:SetNormalAtlas('talents-button-reset')
+        else
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        end
+        WoWTools_TextureMixin:SetButton(btn)
+    end
     btn:set_icon()
 
+
+    local wow= WoWTools_ItemMixin:Create_WoWButton(btn)
+    wow:SetPoint('RIGHT', btn, 'LEFT')
+
     if WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
-        local key =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色,挑战
-        key:SetPoint('RIGHT', btn, 'LEFT')
+        local key =WoWTools_ButtonMixin:Cbtn(btn, {size=22})--所有角色,挑战
+        key:SetPoint('RIGHT', wow, 'LEFT')
         key:SetNormalTexture(4352494)
         key:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
@@ -81,6 +116,7 @@ local function Init()
         key:SetScript('OnMouseDown', function()
             PVEFrame_ToggleFrame('ChallengesFrame', 3)
         end)
+        WoWTools_TextureMixin:SetButton(key)
     end
 
     Init=function()end

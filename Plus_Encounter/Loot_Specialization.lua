@@ -271,7 +271,6 @@ local function Init_ScrollBox(frame)
         return
     end
     for _, button in pairs(frame:GetFrames()) do
-
         set_Loot_Spec(button)
     end
 end
@@ -329,29 +328,29 @@ local function Init()
         end
     end)
 
+    hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', function(...)
+            Init_ScrollBox(...)
+    end)
 
     Frame:set_event()
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-function WoWTools_EncounterMixin:Specialization_Loot_SetEvent()
-    if Frame then
+    Init=function()
         Frame:set_event()
     end
 end
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 function WoWTools_EncounterMixin:Init_Specialization_Loot()
     Init()
-    hooksecurefunc(EncounterJournal.encounter.info.BossesScrollBox, 'SetScrollTargetOffset', Init_ScrollBox)
 end

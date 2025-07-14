@@ -1717,36 +1717,13 @@ end
 
 
 
-
-
 local function Init()
     if Save().disabled then
         return
     end
 
-    local btn= WoWTools_ButtonMixin:Cbtn(ContainerFrameCombinedBags.CloseButton, {
-        name='WoWToolsWoWItemListBagButton',
-        atlas='glues-characterSelect-iconShop-hover',
-        size=23,
-    })
+    local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton)
     btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -23, 0)
-
-    btn:SetScript('OnLeave', function()
-        GameTooltip_Hide()
-    end)
-    btn:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:SetText(
-            WoWTools_DataMixin.Icon.wow2
-            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)))
-        GameTooltip:Show()
-    end)
-    btn:SetScript('OnClick', function()
-        Init_List()
-    end)
-    WoWTools_TextureMixin:SetButton(btn)
-
-
 
 
     MainMenuBarBackpackButton:HookScript('OnEnter', function()
@@ -1778,10 +1755,6 @@ local function Init()
 
 
 
---[[if WoWTools_DataMixin.Player.husandro then
-    Init_List()
-end]]
-
 
     Init=function()
         Init_List()
@@ -1793,6 +1766,35 @@ end
 
 function WoWTools_ItemMixin:Init_WoW_ItemList()
     Init()
+end
+
+
+
+
+
+
+
+function WoWTools_ItemMixin:Create_WoWButton(frame, name)
+    local btn= WoWTools_ButtonMixin:Cbtn(frame, {
+        name=name,
+        atlas='glues-characterSelect-iconShop-hover',
+        size=23,
+    })
+    btn:SetScript('OnLeave', function()
+        GameTooltip_Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(
+            WoWTools_DataMixin.Icon.wow2
+            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)))
+        GameTooltip:Show()
+    end)
+    btn:SetScript('OnClick', function()
+        Init_List()
+    end)
+    WoWTools_TextureMixin:SetButton(btn)
+    return btn
 end
 
 
