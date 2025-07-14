@@ -55,7 +55,7 @@ local endOfRunRewardLevel={
 }
 
 local WeekItemLevel={
-    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',
+    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',--14
     [3]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t12',
     [4]='%d'..Level_Text('Champion')..'3/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t14',
     [5]='%d'..Level_Text('Champion')..'4/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t16',
@@ -72,6 +72,38 @@ local WeekItemLevel={
     max=12,
 }
 
+if C_MythicPlus.GetCurrentSeason()==15 then--内战 第三赛季
+    endOfRunRewardLevel={
+    [2]=684,
+    [3]=684,
+    [4]=688,
+    [5]=691,
+    [6]=694,
+    [7]=694,
+    [8]=697,
+    [9]=697,
+    [10]=701,
+    [11]=701,
+    [12]=701,
+    }
+    WeekItemLevel={
+    [2]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t10',--14
+    [3]='%d'..Level_Text('Champion')..'2/8  %d'..Level_Text('Hero')..'1/6|T5872051:0|t12',
+    [4]='%d'..Level_Text('Champion')..'3/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t14',
+    [5]='%d'..Level_Text('Champion')..'4/8  %d'..Level_Text('Hero')..'2/6|T5872051:0|t16',
+    [6]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'3/6|T5872051:0|t18',
+
+    [7]='%d'..Level_Text('Hero')..'1/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t10',
+    [8]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t12',
+    [9]='%d'..Level_Text('Hero')..'2/6  %d'..Level_Text('Hero')..'4/6|T5872049:0|t14',
+    [10]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t16',
+    [11]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t18',
+    [12]='%d'..Level_Text('Hero')..'3/6  %d'..Level_Text('Myth')..'1/6|T5872049:0|t20',
+
+    min=2,
+    max=12,
+}
+end
 
 function WoWTools_DataMixin:GetChallengesWeekItemLevel(level, isGetNum)
     if isGetNum then

@@ -15,6 +15,7 @@ end
 
 local BuyItemButton
 
+local tabCN
 
 
 
@@ -208,18 +209,22 @@ end
 
 
 
-local function Check_All(quality)
-     return WoWTools_BagMixin:GetItems(true, nil, nil, function(_, _, info)
-        local data= WoWTools_ItemMixin:GetTooltip({
-            hyperLink= info.hyperlink,
+local function Check_All(onlyRegents)
+    return WoWTools_BagMixin:GetItems(nil, not onlyRegents, onlyRegents, function(_, _, info)
+        --[[local data= WoWTools_ItemMixin:GetTooltip({
+            --hyperLink= info.hyperlink,
+            bag=bag,
+            slot=slot,
             onlyText=true,
             text={ITEM_UNSELLABLE}--无法出售
-        })
+        })]]
+
+        --print((select(11, C_Item.GetItemInfo(info.hyperlink))), 'a')
         return not info.isLocked
             and info.quality<Enum.ItemQuality.Legendary
+            and (select(11, C_Item.GetItemInfo(info.hyperlink)) or 0)> 0
             and not Save().noSell[info.itemID]
-            and not data.text[ITEM_UNSELLABLE]
-            and (info.quality==quality or not quality)
+            --and not data.text[ITEM_UNSELLABLE]
     end)
 end
 
@@ -236,7 +241,6 @@ local function Sell_Items(tab)
         end
 
         data= info.info
-
         do
             C_Container.UseContainerItem(info.bag, info.slot)--买出
         end
@@ -268,7 +272,7 @@ end
 
 
 
-local function Init_Menu_Sell(self, root)
+local function Init_Menu_Sell(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then
         return
     elseif not C_MerchantFrame.IsSellAllJunkEnabled() then
@@ -284,74 +288,111 @@ local function Init_Menu_Sell(self, root)
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
             ..(WoWTools_DataMixin.onlyChinese and '危险！' or VOICEMACRO_1_Sc_0)
             ..'|n'
-    local sub, sub2, name, num, items
+    local sellText=  '|T236994:0|t'..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)
+    local sub, sub2, name
 
+
+
+
+    local items= Check_All()
+    local regents= Check_All(true)
+    local tabs={
+        [0]={},
+        [1]={},
+        [2]={},
+        [3]={},
+        [4]={},
+    }
+    for _, data in pairs(items) do
+        if tabs[data.info.quality] then
+            table.insert(tabs[data.info.quality], data)
+        end
+    end
+
+    local num= #items
+    local regionNum= #regents
+   
 --出售全部
-    items= Check_All()
-    num= #items
-
     sub= root:CreateButton(
-        '|A:Perks-ShoppingCart:0:0|a'..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)..' #|cnGREEN_FONT_COLOR:'..num,
+        sellText
+        ..' #|cnGREEN_FONT_COLOR:'
+        ..num+regionNum,
     function()
         return MenuResponse.Open
     end)
 
-
-    
-
-    local tabCN= {
-        [0]= WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC,
-        [1]= WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC,
-        [2]= WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC,
-        [3]= WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC,
-        [4]= WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC,
-
-    }
+   
     for quality= 0 , 4 do
-        name= '|A:Perks-ShoppingCart:0:0|a'
+        name= '|T236994:0|t'
             ..select(4, WoWTools_ItemMixin:GetColor(quality))
-            ..(WoWTools_DataMixin.onlyChinese and '出售' or AUCTION_HOUSE_SELL_TAB)
             ..tabCN[quality]
-            ..' #|cffffffff'..#Check_All(quality)
+            ..' #|cffffffff'..#tabs[quality]
 
         sub2= sub:CreateButton(
             name,
         function(data)
             StaticPopup_Show('WoWTools_OK',
-                '|A:Perks-ShoppingCart:0:0|a'..data.name..att,
+                sellText..data.name..att,
                 nil,
                 {SetValue=function()
-                    Sell_Items(Check_All(data.quality))
+                    Sell_Items(data.tab)
                 end})
             return MenuResponse.Open
-        end, {name=name, quality=quality})
+        end, {tab=tabs[quality], name=name})
 
         sub2:SetTooltip(function(tooltip, desc)
-            for index, info in pairs(Check_All(desc.data.quality)) do
+            for index, info in pairs(desc.data.tab) do
                 tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
             end
         end)
     end
 
     sub:CreateDivider()
-    name= '|A:Perks-ShoppingCart:0:0|a'
-        ..(WoWTools_DataMixin.onlyChinese and '出售全部' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, AUCTION_HOUSE_SELL_TAB, ALL))
+    name= '|T236994:0|t'
+        ..(WoWTools_DataMixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
+        ..' #'..#regents
+    sub2= sub:CreateButton(
+        name,
+    function(data)
+        StaticPopup_Show('WoWTools_OK',
+            sellText..data.name..att,
+            nil,
+            {SetValue=function()
+                Sell_Items(regents)
+            end})
+        return MenuResponse.Open
+    end, {name=name})
+    sub2:SetTooltip(function(tooltip)
+        for index, info in pairs(regents) do
+            tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
+        end
+    end)
+
+
+    sub:CreateDivider()
+    name= '|T236994:0|t'
+        ..(WoWTools_DataMixin.onlyChinese and '全部' or  ALL)
         ..' #|cnGREEN_FONT_COLOR:'..num
 
     sub2= sub:CreateButton(
         name,
     function(data)
         StaticPopup_Show('WoWTools_OK',
-            '|A:Perks-ShoppingCart:0:0|a'..data.name..att,
+            sellText..data.name..att,
             nil,
             {SetValue=function()
-                Sell_Items(Check_All())
+                do
+                    Sell_Items(items)
+                end
+                do
+                    Sell_Items(regents)
+                end
             end})
         return MenuResponse.Open
     end, {name=name})
 
     sub2:SetTooltip(function(tooltip)
-        for index, info in pairs(Check_All()) do
+        for index, info in pairs(items) do
             tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
         end
     end)
@@ -379,6 +420,15 @@ end
 
 
 local function Init()
+    tabCN= {
+        [0]= WoWTools_DataMixin.onlyChinese and '粗糙' or ITEM_QUALITY0_DESC,
+        [1]= WoWTools_DataMixin.onlyChinese and '普通' or ITEM_QUALITY1_DESC,
+        [2]= WoWTools_DataMixin.onlyChinese and '优秀' or ITEM_QUALITY2_DESC,
+        [3]= WoWTools_DataMixin.onlyChinese and '精良' or ITEM_QUALITY3_DESC,
+        [4]= WoWTools_DataMixin.onlyChinese and '史诗' or ITEM_QUALITY4_DESC,
+
+}
+
     BuyItemButton=WoWTools_ButtonMixin:Cbtn(MerchantBuyBackItem, {
         name='WoWTools_BuyItemButton',
         addTexture=true,
@@ -406,10 +456,18 @@ local function Init()
             local icon= C_Item.GetItemIconByID(itemLink)
             local name= '|T'..(icon or 0)..':0|t'..itemLink
             if Save().Sell[itemIDorIndex] then
-                GameTooltip:AddDoubleLine(name, '|cnRED_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB)))
+                GameTooltip:AddDoubleLine(
+                    name,
+                    '|A:bags-button-autosort-up:0:0|a|cnRED_FONT_COLOR:'
+                    ..(WoWTools_DataMixin.onlyChinese and '移除出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, REMOVE, AUCTION_HOUSE_SELL_TAB))
+                )
                 self.texture:SetAtlas('bags-button-autosort-up')
             else
-                GameTooltip:AddDoubleLine(name, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB)))
+                GameTooltip:AddDoubleLine(
+                    name,
+                    '|T236994:0|t|cnGREEN_FONT_COLOR:'
+                    ..(WoWTools_DataMixin.onlyChinese and '添加出售' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ADD, AUCTION_HOUSE_SELL_TAB))
+                )
                 if icon then
                     self.texture:SetTexture(icon)
                 end
@@ -436,7 +494,11 @@ local function Init()
 
             --GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_MerchantMixin.addName)
             local num= self:set_text()--回购，数量，提示
-            GameTooltip:AddDoubleLine('|A:Perks-ShoppingCart:0:0|a|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)), '|cnGREEN_FONT_COLOR: #'..num..'|r')
+            GameTooltip:AddDoubleLine(
+                '|A:Perks-ShoppingCart:0:0|a|cffff00ff'
+                ..(WoWTools_DataMixin.onlyChinese and '自动购买' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, PURCHASE)),
+                '|cnGREEN_FONT_COLOR: #'..num..'|r'
+            )
             GameTooltip:AddLine(' ')
             GameTooltip:AddDoubleLine((WoWTools_DataMixin.onlyChinese and '拖曳' or DRAG_MODEL)..WoWTools_DataMixin.Icon.left..(WoWTools_DataMixin.onlyChinese and '物品' or ITEMS), WoWTools_DataMixin.onlyChinese and '出售/购买' or (AUCTION_HOUSE_SELL_TAB..'/'..PURCHASE))
             GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU, WoWTools_DataMixin.Icon.left)

@@ -324,6 +324,7 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     local tooltipData
 
     local bag= tab.bag--bag, slot
+    local slot= tab.slot
     local guidBank= tab.guidBank--tab, slot
     local merchant= tab.merchant--slot
     local inventory= tab.inventory
@@ -344,10 +345,8 @@ function WoWTools_ItemMixin:GetTooltip(tab)
     local red= tab.red--是否有红色字体，一般指 不可用
     local onlyRed= tab.onlyRed--仅查红色
 
-    if bag then
-        if bag.bag and bag.slot then
-            tooltipData= C_TooltipInfo.GetBagItem(bag.bag, bag.slot)
-        end
+    if bag and slot then
+        tooltipData= C_TooltipInfo.GetBagItem(bag, slot)
 
     elseif guidBank then-- guidBank then
         if guidBank.tab and guidBank.slot then

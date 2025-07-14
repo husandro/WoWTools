@@ -130,8 +130,7 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
             if info and info.itemID and
                 (context
                     and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot))
-                    or (checkBagFunc and checkBagFunc(bag, slot, info))
-                    or not checkBagFunc
+                    or (not checkBagFunc or checkBagFunc(bag, slot, info))
                 )
             then
 

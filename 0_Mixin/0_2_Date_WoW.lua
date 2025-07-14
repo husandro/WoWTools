@@ -16,7 +16,7 @@ WoWTools_WoWDate[guid]= {--默认数据
     Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
     Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
-    Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
+    Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss={[name]=worldBossID}}}
     Rare={day=day, boss={[name]=guid}},--稀有 
     Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
     Guild={
@@ -288,6 +288,7 @@ local function Update_Challenge_Mode()--{score=总分数,itemLink={超连接}, w
         weekPvP= WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.RankedPvP),--RankedPvP
         weekWorld=WoWTools_ChallengeMixin:GetRewardText(Enum.WeeklyRewardChestThresholdType.World),--world
         link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link,
+        --itemLevel= C_MythicPlus.GetOwnedKeystoneLevel(),
     }
 end
 
@@ -440,7 +441,7 @@ end)
 --副本, 世界BOSS
 EventRegistry:RegisterFrameEventAndCallback("UPDATE_INSTANCE_INFO", function()--encounterID, encounterName)
     local tab={}--已杀世界BOSS
-    for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={name=true}}}
+    for i=1, GetNumSavedWorldBosses() do--{week=周数, boss={[name]=worldBossID}}}
         local bossName, worldBossID, reset=GetSavedWorldBossInfo(i)
         if bossName and (not reset or reset>0) then
             tab[bossName] = worldBossID
@@ -708,7 +709,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
             Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
 
             Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
-            Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
+            Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss={[name]=worldBossID}}}
             Rare={day=day, boss={}},--稀有 [name]=guid
             Time={},--{totalTime=总游戏时间, levelTime=当前等级时间, upData=更新时间}总游戏时间
             Guild={
@@ -784,17 +785,18 @@ local function Save_WoWGuild()
 
         realm= (realm=='' or not realm) and WoWTools_DataMixin.Player.Realm or realm
         local old= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild
-        if club.clubFinderGUID and club.clubFinderGUID~=old.guid then
+        if guildName and guildName~=old.data[1] then
             old={}
         end
 
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {
             guid= club.clubFinderGUID or old.guid,
             link= WoWTools_GuildMixin:GetClubLink(clubID, club.clubFinderGUID) or old.link,
-            clubID= clubID or old.clubID,
+            --clubID= clubID or old.clubID,
             data={guildName, guildRankName, guildRankIndex, realm},
             text= old.text,--公会创立于 ， 名成员， 个帐号
-            tabardData=C_GuildInfo.GetGuildTabardInfo('player') or old.tabardData,
+            --tabardData=C_GuildInfo.GetGuildTabardInfo('player'),-- or old.tabardData,
+            --emblemFilename = select(10, GetGuildLogoInfo()) or old.emblemFilename
         }
     else
         WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild= {data={}}
@@ -809,7 +811,7 @@ EventRegistry:RegisterFrameEventAndCallback('GUILD_RENAME_REQUIRED', function()
 end)
 EventRegistry:RegisterFrameEventAndCallback('LOADING_SCREEN_DISABLED', function(owner)
     C_Timer.After(2, Save_WoWGuild)
-    EventRegistry:UnregisterCallback('PLAYER_ENTERING_WORLD', owner)
+    EventRegistry:UnregisterCallback('LOADING_SCREEN_DISABLED', owner)
 end)
 
 

@@ -250,18 +250,14 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
 
+            
 
-            <Texture parentKey="GuildBg">
+
+
+            <Texture parentKey="Guild" enableMouse="true" atlas="communities-guildbanner-background">
                 <Size x="14" y="14"/>
                 <Anchors>
                     <Anchor point="RIGHT" relativeKey="$parent.ItemLevelText" relativePoint="LEFT" x="-2" y="0"/>
-                </Anchors>
-            </Texture>
-
-            <Texture parentKey="GuildBorder" enableMouse="true">
-                <Size x="14" y="14"/>
-                <Anchors>
-                    <Anchor point="CENTER" relativeKey="$parent.GuildBg"/>
                 </Anchors>
                  <Scripts>
                     <OnLeave>
@@ -275,13 +271,10 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                         self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
-            </Texture>
-
-
-
+            </Texture>            
             <FontString parentKey="GuildText" inherits="ChatFontNormal" enableMouse="true">
                 <Anchors>
-                   <Anchor point="RIGHT" relativeKey="$parent.GuildBorder" relativePoint="LEFT"/>
+                   <Anchor point="RIGHT" relativeKey="$parent.Guild" relativePoint="LEFT"/>
                 </Anchors>
                  <Scripts>
                     <OnLeave>
@@ -290,6 +283,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnLeave>
                 </Scripts>
             </FontString>
+
+
+
 
             <FontString parentKey="Name" inherits="ChatFontNormal" justifyH="RIGHT" enableMouse="true">
                 <Anchors>
@@ -328,9 +324,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     <Anchor point="BOTTOMRIGHT" relativeKey="$parent.Name"/>
                 </Anchors>
             </Texture>
-
+        
             <Texture parentKey="Battle" atlas="gmchat-icon-blizz">
-                <Size x="12" y="12"/>
+                <Size x="14" y="14"/>
                 <Anchors>
                     <Anchor point="TOPRIGHT" relativeKey="$parent.Name" relativePoint="BOTTOMRIGHT"/>
                 </Anchors>
@@ -360,15 +356,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnEnter>
                 </Scripts>
             </FontString>
-
-
-
-
-
-
-
-
-
 
 
 
@@ -555,9 +542,6 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                    <Anchor point="TOP" relativeKey="$parent"/>
                 </Anchors>
             </FontString>
-
-           
-
         </Layer>
     </Layers>
 </Frame>

@@ -83,7 +83,7 @@ local List2TypeTab= {
         end)
         return data, num
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local itemID= data.itemID
         if not itemID then
             return
@@ -161,7 +161,7 @@ local List2TypeTab= {
         end)
         return data, WoWTools_Mixin:MK(num, 3)
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local currencyID= data.currencyID
         if not currencyID then
             return
@@ -222,7 +222,7 @@ local List2TypeTab= {
         end)
         return data, WoWTools_Mixin:MK(num/10000, 3)
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local money= data.money
         if not money then
             return
@@ -279,7 +279,7 @@ local List2TypeTab= {
 
         return data, WoWTools_TimeMixin:SecondsToFullTime(num)
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local totalTime= data.totalTime
         if not totalTime then
             return
@@ -329,7 +329,7 @@ local List2TypeTab= {
         for insName, tab in pairs(info and info.Instance.ins or {}) do--[名字]={[难度]=已击杀数}
             local text
             for difficuly, killNum in pairs(tab) do
-                text= (text and ' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
+                text= (text and text..' ' or '')..WoWTools_MapMixin:GetDifficultyColor(difficuly)..killNum
             end
             if text then
                 if isFind and (text:upper():find(findText) or insName:upper():find(findText))
@@ -345,7 +345,7 @@ local List2TypeTab= {
         end
         return data, num
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
         itemName= data.insName
         count= data.killText
@@ -373,36 +373,30 @@ local List2TypeTab= {
         local data, num= CreateDataProvider(), 0
         local guid= Frame.guid
         local info= guid and WoWTools_WoWDate[Frame.guid]
-        for _ in pairs(info and info.Rare.boss or {}) do
+        local rare, rare2
+        for name in pairs(info and info.Rare.boss or {}) do--[name]= UnitGUID('target')
             num= num+1
+            name= '|cff606060'..num..'|r'..WoWTools_TextMixin:CN(name)
+            if select(2, math.modf(num/2))~=0 then
+                rare= (rare and ' ' or '')..name
+            else
+                rare2= (rare2 and ' ' or '')..name
+            end
         end
-        if num>0 then
-            local index=0
-            local rare, rare2
-            for name in pairs(info.Rare.boss) do--[name]= UnitGUID('target')
-                index= index+1
-                name= '|cff606060'..index..'|r'..WoWTools_TextMixin:CN(name)
-                if select(2, math.modf(index/2))~=0 then
-                    rare= (rare and ' ' or '')..name
-                else
-                    rare2= (rare2 and ' ' or '')..name
-                end
-            end
-            if isFind and (
-                    rare and rare:upper():find(findText)
-                    or (rare2 and rare:upper():find(findText))
-                ) or not isFind
-            then
-                data:Insert({
-                    rare= rare,
-                    rare2= rare2,
-                    rareTab=info.Rare.boss
-                })
-            end
+        if isFind and (
+                rare and rare:upper():find(findText)
+                or (rare2 and rare:upper():find(findText))
+            ) or not isFind
+        then
+            data:Insert({
+                rare= rare,
+                rare2= rare2,
+                rareTab=info.Rare.boss
+            })
         end
         return data, num
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
         itemName= data.rare
         count= data.rare2
@@ -445,46 +439,40 @@ local List2TypeTab= {
         local data, num= CreateDataProvider(), 0
         local guid= Frame.guid
         local info= guid and WoWTools_WoWDate[Frame.guid]
-        for _ in pairs(info and info.Worldboss.boss or {}) do
+        local boos, boos2
+        for name in pairs(info and info.Worldboss.boss  or {}) do--[name]= id
             num= num+1
+            name= '|cff606060'..num..'|r'..WoWTools_TextMixin:CN(name)
+            if select(2, math.modf(num/2))~=0 then
+                boos= (boos and boos..' ' or '')..name
+            else
+                boos2= (boos2 and boos2..' ' or '')..name
+            end
         end
-        if num>0 then
-            local index=0
-            local rare, rare2
-            for name in pairs(info.Worldboss.boss) do--[name]= UnitGUID('target')
-                index= index+1
-                name= '|cff606060'..index..'|r'..WoWTools_TextMixin:CN(name)
-                if select(2, math.modf(index/2))~=0 then
-                    rare= (rare and ' ' or '')..name
-                else
-                    rare2= (rare2 and ' ' or '')..name
-                end
-            end
-            if isFind and (
-                    rare and rare:upper():find(findText)
-                    or (rare2 and rare:upper():find(findText))
-                ) or not isFind
-            then
-                data:Insert({
-                    rare= rare,
-                    rare2= rare2,
-                    rareTab=info.Rare.boss
-                })
-            end
+        if isFind and (
+                boos and boos:upper():find(findText)
+                or (boos2 and boos:upper():find(findText))
+            ) or not isFind
+        then
+            data:Insert({
+                boos= boos,
+                boos2= boos2,
+                boosTab=info.Worldboss.boss
+            })
         end
         return data, num
     end,
-    set_button=function(data)
+    set_btn=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
-        itemName= data.rare
-        count= data.rare2
+        itemName= data.boos
+        count= data.boos2
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end,
     set_tips=function(data)
         local index=0
         local col
         GameTooltip:AddLine('|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '已击败' or DUNGEON_ENCOUNTER_DEFEATED))
-        for name in pairs(data.rareTab or {}) do
+        for name in pairs(data.boosTab or {}) do
             index= index+1
             col= select(2, math.modf(index/2))~=0 and '|cff00ccff' or '|cffff8000'
             GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
@@ -545,7 +533,7 @@ local List2TypeTab= {
 local function Settings_Left_Button(self)
     local itemName, itemTexture, itemAtlas, count, r, g, b
     if self.data then
-        itemName, itemTexture, itemAtlas, count, r, g, b= List2TypeTab[List2Type].set_button(self.data)
+        itemName, itemTexture, itemAtlas, count, r, g, b= List2TypeTab[List2Type].set_btn(self.data)
     end
     self.Name:SetText(itemName or '')
     self.Name:SetTextColor(r or 1, g or 1, b or 1)
@@ -938,30 +926,16 @@ local function Settings_Right_Button(btn, data)
 
         btn.ItemLevelText:SetText('')
     end
---SetLargeGuildTabardTextures(unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
+
 --公会信息
     local guild= data.guild
     local guidName= guild.data[1]
-    if guidName then
+    if guidName then--SetLargeGuildTabardTextures(unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
         guidName=WoWTools_TextMixin:sub(guidName, 12, 24)
-        --[[if guild.tabardData then
-            SetSmallGuildTabardTextures(-- SetSmallGuildTabardTextures(
-                nil,
-                nil,
-                btn.GuildBg,
-                btn.GuildBorder,
-                guild.tabardData
-            )
-        else]]
-        btn.GuildBg:SetAtlas('communities-guildbanner-background')
-        btn.GuildBorder:SetTexture(0)
     end
-    btn.GuildBg:SetShown(guidName)
-    btn.GuildBorder:SetShown(guidName)
+    btn.Guild:SetShown(guidName)
     btn.GuildText:SetText(guidName or '')
-    
-        --SetSmallGuildTabardTextures(nil, btn.GuildEmblemTexture, btn.GuildBackgroundTexture, btn.GuildBorderTexture, guild.tabardData)
-    
+    btn.GuildText:SetTextColor(r,g,b)
 
 --钥石，名称
     local itemName= WoWTools_HyperLink:CN_Link(data.itemLink, {isName=true})
@@ -1067,23 +1041,41 @@ local function OnEnter_BattleTexture(self)
     self:SetAlpha(0.3)
 end
 
-
-
 local function OnEntre_GuildText(self)
-    local data= self:GetParent().data
-    if not data or not data.guild then
+    local p= self:GetParent()
+    local data= p.data and p.data.guild
+    if not data then
         return
     end
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
     GameTooltip:ClearLines()
-    for _, text in pairs(data.guild.data or {}) do
-        GameTooltip:AddLine(text)
+    if data.data then
+        GameTooltip:AddLine(data.data[1], data.data[4])
+        GameTooltip:AddDoubleLine(data.data[2], data.data[3])
+    end
+    GameTooltip:AddLine(data.text, nil, nil, nil, true)
+    if data.link then
+        GameTooltip:AddLine(
+            '|cff00ccff'
+            ..(WoWTools_DataMixin.onlyChinese and '分享链接至聊天栏' or CLUB_FINDER_LINK_POST_IN_CHAT)
+            ..WoWTools_DataMixin.Icon.left
+        )
     end
     GameTooltip:Show()
     self:SetAlpha(0.3)
 end
 
-
+local function OnMouseDown_GuildText(self)
+    local p= self:GetParent()
+    local data= p.data and p.data.guild
+    if not data or not data.link then
+        return
+    end
+    WoWTools_ChatMixin:Chat(data.link,
+        nil,
+        ChatEdit_GetActiveWindow() and true or false
+    )
+end
 
 
 
@@ -1481,10 +1473,7 @@ local function Init_List()
     Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame.ScrollBox, "BOTTOMRIGHT", 6, 12)
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
 
-    Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {
-        isSearch=true,
-        --text= WoWTools_DataMixin.onlyChinese and '角色名称，副本'or (REPORTING_MINOR_CATEGORY_CHARACTER_NAME..', '..INSTANCE)
-    })
+    Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {isSearch=true})
     Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 24, 2)
     Frame.SearchBox:SetPoint('RIGHT', Frame, -55, 2)
     Frame.SearchBox:HookScript('OnTextChanged', function()
@@ -1541,10 +1530,9 @@ local function Init_List()
             self.GuildText:SetScript('OnEnter', function(...)
                 OnEntre_GuildText(...)
             end)
-             self.GuildBorder:SetScript('OnEnter', function(...)
-                OnEntre_GuildText(...)
+            self.GuildText:SetScript('OnMouseDown', function(...)
+                OnMouseDown_GuildText(...)
             end)
-
 
             OnEntre_GuildText(self)
         end
@@ -1654,9 +1642,9 @@ local function Init_List()
         List2Buttons[name].texture:SetAtlas(data.atlas)
 
         if last then
-            List2Buttons[name]:SetPoint('RIGHT', last, 'LEFT')
+            List2Buttons[name]:SetPoint('RIGHT', last, 'LEFT', -2, 0)
         else
-            List2Buttons[name]:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT', 0, 2)
+            List2Buttons[name]:SetPoint('BOTTOMRIGHT', Frame.ScrollBox2, 'TOPRIGHT')
         end
         --List2Buttons[name]:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT', x, 0)
         --x= x+23
@@ -1688,7 +1676,7 @@ local function Init_List()
 
     List2Buttons[List2Type]:SetButtonState('PUSHED', true)
     List2Buttons[List2Type].texture:SetDesaturated(true)
-    Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT')
+    Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT', -2, 0)
 
 
 
@@ -1790,9 +1778,9 @@ local function Init()
 
 
 
-if WoWTools_DataMixin.Player.husandro then
+--[[if WoWTools_DataMixin.Player.husandro then
     Init_List()
-end
+end]]
 
 
     Init=function()

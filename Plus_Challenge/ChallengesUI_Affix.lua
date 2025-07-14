@@ -18,7 +18,11 @@ local function Find_Cursor_Affix()
         return
     end
     for index, affixes in pairs(WoWTools_DataMixin.affixSchedule) do
-        if affixes[1]== currentAffixes[1].id and affixes[2]==currentAffixes[2].id and affixes[3]==currentAffixes[3].id and affixes[4]==currentAffixes[4].id then
+        if currentAffixes[1] and affixes[1]== currentAffixes[1].id
+            and currentAffixes[2] and affixes[2]==currentAffixes[2].id
+            and currentAffixes[3] and affixes[3]==currentAffixes[3].id
+            and currentAffixes[4] and affixes[4]==currentAffixes[4].id
+        then
             CurrentWeek= index
             return
         end
