@@ -65,7 +65,9 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent('PLAYER_LOGIN')
+panel:RegisterEvent('UPDATE_INSTANCE_INFO')
+panel:RegisterEvent('WEEKLY_REWARDS_UPDATE')
+panel:RegisterEvent('PLAYER_ENTERING_WORLD')
 
 panel:SetScript("OnEvent", function(self, event, arg1, arg2)
     if event == "ADDON_LOADED" then
@@ -75,7 +77,7 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
             Save().loot[WoWTools_DataMixin.Player.Class]= Save().loot[WoWTools_DataMixin.Player.Class] or {}--这个不能删除，不然换职业会出错
             Save().favorites[WoWTools_DataMixin.Player.GUID]= Save().favorites[WoWTools_DataMixin.Player.GUID] or {}
-            
+
             WoWTools_EncounterMixin.addName= '|A:UI-HUD-MicroMenu-AdventureGuide-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL)
 
             --添加控制面板
@@ -91,17 +93,14 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
-                
-
-                self:RegisterEvent('UPDATE_INSTANCE_INFO')
-                self:RegisterEvent('WEEKLY_REWARDS_UPDATE')
-                self:RegisterEvent('BOSS_KILL')
 
                 if C_AddOns.IsAddOnLoaded('Blizzard_EncounterJournal') then
                     Init_EncounterJournal()--冒险指南界面
                     self:UnregisterEvent(event)
                 end
             end
+
+            self:RegisterEvent('BOSS_KILL')
 
         elseif arg1=='Blizzard_EncounterJournal' and WoWToolsSave then---冒险指南
             Init_EncounterJournal()--冒险指南界面
@@ -115,20 +114,20 @@ panel:SetScript("OnEvent", function(self, event, arg1, arg2)
 
     elseif event=='UPDATE_INSTANCE_INFO' then
         C_Timer.After(2, function()
-            WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
-            WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
+            --WoWTools_EncounterMixin:InstanceBoss_Settings()--显示副本击杀数据
+            --WoWTools_EncounterMixin:WorldBoss_Settings()--显示世界BOSS击杀数据Text
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
-    
+
     elseif event=='WEEKLY_REWARDS_UPDATE' then
         C_Timer.After(2, function()
             WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
         end)
 
-    elseif event=='PLAYER_LOGIN' then
+    elseif event=='PLAYER_ENTERING_WORLD' then
         WoWTools_EncounterMixin:Init_DungeonEntrancePin()--世界地图，副本，提示
-        WoWTools_EncounterMixin:WorldBoss_Settings()
-        WoWTools_EncounterMixin:InstanceBoss_Settings()
+        --WoWTools_EncounterMixin:WorldBoss_Settings()
+        --WoWTools_EncounterMixin:InstanceBoss_Settings()
         self:UnregisterEvent(event)
     end
 end)

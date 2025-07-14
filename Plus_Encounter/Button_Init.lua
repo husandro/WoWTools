@@ -2,7 +2,95 @@
 local function Save()
     return WoWToolsSave['Adventure_Journal']
 end
-local Button
+
+
+
+local function Init()
+    local btn= WoWTools_ButtonMixin:Menu(EncounterJournal.EncounterJournalCloseButton, {--按钮, 总开关
+        name='WoWToolsAdventureJournalMenuButton',
+        size=23,
+        icon='hide',
+
+    })
+    WoWTools_TextureMixin:SetButton(btn)
+    btn:SetPoint('RIGHT', EncounterJournalCloseButton, 'LEFT')
+
+    --[[function btn:set_Tooltips()
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_TextMixin:GetEnabeleDisable(not Save().hideEncounterJournal).. WoWTools_DataMixin.Icon.left)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '奖励' or QUEST_REWARDS, WoWTools_TextMixin:GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..WoWTools_DataMixin.Icon.right)
+        GameTooltip:Show()
+    end]]
+    btn:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:SetText(WoWTools_EncounterMixin.addName)
+        GameTooltip:AddLine((WoWTools_DataMixin.onlyChinese and '菜单' or SLASH_TEXTTOSPEECH_MENU)..WoWTools_DataMixin.Icon.left)
+        GameTooltip:Show()
+    end)
+    function btn:set_icon()
+        if Save().hideEncounterJournal then
+            self:SetNormalAtlas('talents-button-reset')
+        else
+            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
+        end
+    end
+    btn:SetScript('OnClick', function(self, d)
+        if d=='LeftButton' then
+            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
+            self:set_Shown()
+
+            WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
+            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
+            self:set_icon()
+        elseif d=='RightButton' then
+            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
+            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
+        end
+        self:set_Tooltips()
+    end)
+    btn:SetScript("OnLeave",GameTooltip_Hide)
+    btn:set_icon()
+
+    if WoWTools_DataMixin.Player.IsMaxLevel and not PlayerGetTimerunningSeasonID() then
+        local key =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色,挑战
+        key:SetPoint('RIGHT', btn, 'LEFT')
+        key:SetNormalTexture(4352494)
+        key:SetScript('OnEnter', function(self)
+            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+            GameTooltip:ClearLines()
+            local find= WoWTools_ChallengeMixin:ActivitiesTooltip()--周奖励，提示
+            local link= WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Keystone.link
+            if link then
+                GameTooltip:AddLine(WoWTools_HyperLink:CN_Link(link, {isName=true}))
+            end
+
+            if find or link then
+                GameTooltip:AddLine(' ')
+            end
+
+            GameTooltip:AddLine(
+                (WoWTools_DataMixin.onlyChinese and '史诗地下城' or MYTHIC_DUNGEONS)
+                ..WoWTools_DataMixin.Icon.left
+            )
+
+            GameTooltip:Show()
+        end)
+        key:SetScript("OnLeave",GameTooltip_Hide)
+        key:SetScript('OnMouseDown', function()
+            PVEFrame_ToggleFrame('ChallengesFrame', 3)
+        end)
+    end
+
+    Init=function()end
+end
+
+function WoWTools_EncounterMixin:Button_Init()
+    Init()
+end
+
+--[[local Button
 
 
 
@@ -57,7 +145,7 @@ local function Set_Money(self, isTooltip)--险指南界面, 钱
         GameTooltip:Show()
     end
     return numPlayer, allMoney
-end
+end]]
 
 
 
@@ -74,46 +162,10 @@ end
 
 
 
-
-local function Init()
-    Button= WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22, icon='hide'})--按钮, 总开关
-    Button:SetPoint('RIGHT',-22, -2)
-    function Button:set_Tooltips()
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_EncounterMixin.addName)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '冒险指南' or ADVENTURE_JOURNAL, WoWTools_TextMixin:GetEnabeleDisable(not Save().hideEncounterJournal).. WoWTools_DataMixin.Icon.left)
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '奖励' or QUEST_REWARDS, WoWTools_TextMixin:GetShowHide(not Save().hideEncounterJournal_All_Info_Text)..WoWTools_DataMixin.Icon.right)
-        GameTooltip:Show()
-    end
-    Button:SetScript('OnEnter', Button.set_Tooltips)
-    function Button:set_icon()
-        if Save().hideEncounterJournal then
-            self:SetNormalAtlas('talents-button-reset')
-        else
-            self:SetNormalTexture('Interface\\AddOns\\WoWTools\\Source\\Texture\\WoWtools')
-        end
-    end
-    Button:SetScript('OnClick', function(self, d)
-        if d=='LeftButton' then
-            Save().hideEncounterJournal= not Save().hideEncounterJournal and true or nil
-            self:set_Shown()
-
-            WoWTools_EncounterMixin:Specialization_Loot_SetEvent()--BOSS战时, 指定拾取, 专精, 事件
-            WoWTools_Mixin:Call(EncounterJournal_ListInstances)
-            self:set_icon()
-        elseif d=='RightButton' then
-            Save().hideEncounterJournal_All_Info_Text= not Save().hideEncounterJournal_All_Info_Text and true or nil
-            WoWTools_EncounterMixin:Set_RightAllInfo()--冒险指南,右边,显示所数据
-        end
-        self:set_Tooltips()
-    end)
-    Button:SetScript("OnLeave",GameTooltip_Hide)
-    Button:set_icon()
-
+   --[[
     Button.btn={}
 
-    Button.btn.instance =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色副本
+ Button.btn.instance =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色副本
     Button.btn.instance:SetPoint('RIGHT', Button, 'LEFT')
     Button.btn.instance:SetNormalAtlas('animachannel-icon-kyrian-map')
     Button.btn.instance:SetScript('OnEnter',function(self2)
@@ -184,23 +236,14 @@ local function Init()
             Save().hideWorldBossText=nil
         end
         WoWTools_EncounterMixin:WorldBoss_Settings()
-    end)
+    end)]]
 
 
-    if WoWTools_DataMixin.Player.IsMaxLevel then
-        Button.btn.keystones =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--所有角色,挑战
-        Button.btn.keystones:SetPoint('RIGHT', Button.btn.Worldboss, 'LEFT')
-        Button.btn.keystones:SetNormalTexture(4352494)
-        Button.btn.keystones:SetScript('OnEnter', set_EncounterJournal_Keystones_Tips)
-        Button.btn.keystones:SetScript("OnLeave",GameTooltip_Hide)
-        Button.btn.keystones:SetScript('OnMouseDown', function()
-            PVEFrame_ToggleFrame('ChallengesFrame', 3)
-        end)
-    end
 
 
-    Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--钱
-    Button.btn.money:SetPoint('RIGHT', Button.btn.keystones or Button.btn.Worldboss, 'LEFT')
+
+    --[[Button.btn.money =WoWTools_ButtonMixin:Cbtn(EncounterJournal.TitleContainer, {size=22})--钱
+    Button.btn.money:SetPoint('RIGHT', key or Button.btn.Worldboss, 'LEFT')
     Button.btn.money:SetNormalAtlas('Front-Gold-Icon')
     Button.btn.money:SetScript('OnEnter', function(self)
         Set_Money(self, true)
@@ -227,8 +270,7 @@ local function Init()
         end
     end
 
-    Button:set_Shown()
-end
+    --Button:set_Shown()]]
 
 
 
@@ -238,6 +280,3 @@ end
 
 
 
-function WoWTools_EncounterMixin:Button_Init()
-    Init()
-end

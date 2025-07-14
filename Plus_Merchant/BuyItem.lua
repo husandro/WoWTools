@@ -13,6 +13,8 @@ local function SaveBuyItem(itemID, num)--当num=nil时，会清除
     WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]=num
 end
 
+
+
 local BuyItemButton
 
 local tabCN
@@ -272,6 +274,39 @@ end
 
 
 
+
+local function Set_SellMenu_Tooltip(tooltip, desc)
+    if not desc.data.tab then
+        return
+    end
+    for index, info in pairs(desc.data.tab) do
+        tooltip:AddDoubleLine(
+            '|T'..(info.info.iconFileID or 0)..':0|t'
+            ..WoWTools_HyperLink:CN_Link(info.info.hyperlink, {isName=true, itemID=info.info.itemID})
+            ..' |cffffffffx'
+            ..(info.info.stackCount or 1),
+            index..')'
+        )
+    end
+    if not desc.data.tab2 then
+        return
+    end
+    tooltip:AddLine(' ')
+
+    for index, info in pairs(desc.data.tab2) do
+        tooltip:AddDoubleLine(
+            '|T'..(info.info.iconFileID or 0)..':0|t'
+            ..WoWTools_HyperLink:CN_Link(info.info.hyperlink, {isName=true, itemID=info.info.itemID})
+            ..' |cffffffffx'
+            ..(info.info.stackCount or 1),
+            index..')'
+        )
+    end
+end
+
+
+
+
 local function Init_Menu_Sell(_, root)
     if WoWTools_MenuMixin:CheckInCombat(root) then
         return
@@ -340,17 +375,13 @@ local function Init_Menu_Sell(_, root)
             return MenuResponse.Open
         end, {tab=tabs[quality], name=name})
 
-        sub2:SetTooltip(function(tooltip, desc)
-            for index, info in pairs(desc.data.tab) do
-                tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
-            end
-        end)
+        sub2:SetTooltip(Set_SellMenu_Tooltip)
     end
 
     sub:CreateDivider()
     name= '|T236994:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)
-        ..' #'..#regents
+        ..' #'..regionNum
     sub2= sub:CreateButton(
         name,
     function(data)
@@ -361,18 +392,14 @@ local function Init_Menu_Sell(_, root)
                 Sell_Items(regents)
             end})
         return MenuResponse.Open
-    end, {name=name})
-    sub2:SetTooltip(function(tooltip)
-        for index, info in pairs(regents) do
-            tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
-        end
-    end)
+    end, {name=name, tab=regents})
+    sub2:SetTooltip(Set_SellMenu_Tooltip)
 
 
     sub:CreateDivider()
     name= '|T236994:0|t'
         ..(WoWTools_DataMixin.onlyChinese and '全部' or  ALL)
-        ..' #|cnGREEN_FONT_COLOR:'..num
+        ..' #'..num..'+'..regionNum
 
     sub2= sub:CreateButton(
         name,
@@ -389,13 +416,9 @@ local function Init_Menu_Sell(_, root)
                 end
             end})
         return MenuResponse.Open
-    end, {name=name})
+    end, {name=name, tab=items, tab2=regents})
 
-    sub2:SetTooltip(function(tooltip)
-        for index, info in pairs(items) do
-            tooltip:AddDoubleLine(WoWTools_ItemMixin:GetName(info.info.itemID, info.info.hyperlink), index)
-        end
-    end)
+    sub2:SetTooltip(Set_SellMenu_Tooltip)
 end
 
 

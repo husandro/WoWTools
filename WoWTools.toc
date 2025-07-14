@@ -381,8 +381,8 @@ Plus_Gossip\Gossip_Menu_Move.lua
 ##冒险指南, 增强
 Plus_Encounter\0_EncounterMixin.lua
 Plus_Encounter\1_Init.lua
-Plus_Encounter\Boss_Instance.lua
-Plus_Encounter\Boss_World.lua
+##Plus_Encounter\Boss_Instance.lua
+##Plus_Encounter\Boss_World.lua
 Plus_Encounter\Button_Init.lua
 Plus_Encounter\DungeonEntrancePin.lua
 Plus_Encounter\Item_Boss.lua
