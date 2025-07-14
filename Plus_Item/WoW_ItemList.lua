@@ -1,7 +1,7 @@
 --战团，物品列表
-local function Save()
+--[[local function Save()
     return WoWToolsSave['Plus_ItemInfo'] or {}
-end
+end]]
 
 
 
@@ -123,7 +123,7 @@ local TypeTabs= {
     set_num=function(self)
         local num=0
         local wowData= WoWTools_WoWDate[Frame.guid]
-        for _ in pairs(wowData and wowData.Item or {}) do
+        for _ in pairs(wowData and wowData.Currency or {}) do
             num=num+1
         end
         self.Text:SetText(num==0 and '|cff6060600' or num)
@@ -380,16 +380,18 @@ local TypeTabs= {
                 rare2= (rare2 and ' ' or '')..name
             end
         end
-        if isFind and (
-                rare and rare:upper():find(findText)
-                or (rare2 and rare:upper():find(findText))
-            ) or not isFind
-        then
-            data:Insert({
-                rare= rare,
-                rare2= rare2,
-                rareTab=info.Rare.boss
-            })
+        if rare then
+            if isFind and (
+                    rare and rare:upper():find(findText)
+                    or (rare2 and rare:upper():find(findText))
+                ) or not isFind
+            then
+                data:Insert({
+                    rare= rare,
+                    rare2= rare2,
+                    rareTab=info.Rare.boss
+                })
+            end
         end
         return data, num
     end,
@@ -419,7 +421,7 @@ local TypeTabs= {
 
 
 
---稀有
+--世界首领
     ['Worldboss']= {
     atlas='vignettekillboss',
     tooltip=WoWTools_DataMixin.onlyChinese and '世界首领' or MAP_LEGEND_WORLDBOSS,
@@ -446,16 +448,18 @@ local TypeTabs= {
                 boos2= (boos2 and boos2..' ' or '')..name
             end
         end
-        if isFind and (
-                boos and boos:upper():find(findText)
-                or (boos2 and boos:upper():find(findText))
-            ) or not isFind
-        then
-            data:Insert({
-                boos= boos,
-                boos2= boos2,
-                boosTab=info.Worldboss.boss
-            })
+        if boos then
+            if isFind and (
+                    boos and boos:upper():find(findText)
+                    or (boos2 and boos:upper():find(findText))
+                ) or not isFind
+            then
+                data:Insert({
+                    boos= boos,
+                    boos2= boos2,
+                    boosTab=info.Worldboss.boss
+                })
+            end
         end
         return data, num
     end,
@@ -496,6 +500,19 @@ local TypeTabs= {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 local function Settings_Left_Button(self)
     local itemName, itemTexture, itemAtlas, count, r, g, b
     if self.data then
@@ -512,6 +529,48 @@ local function Settings_Left_Button(self)
 end
 
 
+local function OnEnter_Left_Button(self)
+    self:SetAlpha(0.5)
+    local data= self.data
+    if not data then
+        return
+    end
+
+    if data.itemID or data.currencyID then
+            WoWTools_SetTooltipMixin:Frame(self, nil, {
+            itemID=data.itemID,
+            currencyID=data.currencyID,
+        })
+        return
+    end
+
+    GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    GameTooltip:ClearLines()
+    if data.guid then
+        local r,g,b= select(2, WoWTools_UnitMixin:GetColor(nil, data.guid))
+        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+        GameTooltip:ClearLines()
+        GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid), r,g,b)
+        GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''), r,g,b, r,g,b)
+        GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''), r,g,b, r,g,b)
+    end
+
+    if TypeTabs[List2Type] and TypeTabs[List2Type].set_tips then
+        TypeTabs[List2Type].set_tips(data)
+    end
+
+    GameTooltip:Show()
+end
+
+
+
+
+
+
+
+
+
+
 
 
 local function SetScript_Left_Button(btn)
@@ -524,24 +583,16 @@ local function SetScript_Left_Button(btn)
     btn.NameFrame:SetTexture(0)
     btn.NameFrame:SetColorTexture(0, 0, 0, 0.3)
 
-
     btn.Name:ClearAllPoints()
     btn.Name:SetHeight(0)
     btn.Name:SetPoint('BOTTOMLEFT', btn.NameFrame, 2, 2)
     btn.Name:SetPoint('RIGHT', btn.NameFrame,-2, 0)--, btn.Count, 'LEFT', -2, 0)
     btn.Name:SetWordWrap(false)
 
-
-
     btn.Count:ClearAllPoints()
     btn.Count:SetPoint('TOPRIGHT', btn.NameFrame, -2, -2)
     btn.Count:SetJustifyH('RIGHT')
     btn.Count:SetFontObject('ChatFontNormal')
-
-    --[[btn.Name2= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-    btn.Name2:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')
-    btn.Name2:SetPoint('RIGHT', btn.Count, 'LEFT', -2, 0)]]
-
 
     btn:SetScript('OnHide', function(self)
         self.data=nil
@@ -549,9 +600,10 @@ local function SetScript_Left_Button(btn)
         self:UnregisterEvent('ITEM_DATA_LOAD_RESULT')
     end)
 
-    btn:RegisterEvent('ITEM_DATA_LOAD_RESULT')
     btn:SetScript('OnShow', function(self)
-        self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
+        if List2Type=='Item' then
+            self:RegisterEvent('ITEM_DATA_LOAD_RESULT')
+        end
     end)
 
     btn:SetScript('OnEvent', function(self, _, itemID, success)
@@ -565,36 +617,7 @@ local function SetScript_Left_Button(btn)
         self:SetAlpha(1)
     end)
     btn:SetScript('OnEnter', function(self)
-        local data= self.data
-        if not data then
-            return
-        end
-
-        if data.itemID or data.currencyID then
-              WoWTools_SetTooltipMixin:Frame(self, nil, {
-                itemID=data.itemID,
-                currencyID=data.currencyID,
-            })
-            return
-        end
-
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        if data.guid then
-            GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:AddLine(WoWTools_UnitMixin:GetFullName(nil, nil, data.guid))
-            GameTooltip:AddDoubleLine('Region', (WoWTools_DataMixin.Player.Region~= data.region and '|cnRED_FONT_COLOR:' or '')..(data.region or ''))
-            GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''))
-        end
-
-        if TypeTabs[List2Type] and TypeTabs[List2Type].set_tips then
-            TypeTabs[List2Type].set_tips(data)
-        end
-
-        GameTooltip:Show()
-
-        self:SetAlpha(0.5)
+        OnEnter_Left_Button(self)
     end)
 end
 
@@ -615,9 +638,9 @@ local function Init_Left_List()
     local data, num
     if TypeTabs[List2Type] then
         data, num= TypeTabs[List2Type].get_data(isFind, findText, findID)
-        num= num and num~=0 and '|A:'..TypeTabs[List2Type].atlas..':0:0|a'..num
+        num= '|A:'..TypeTabs[List2Type].atlas..':0:0|a'..(num or 0)
     else
-        data= CreateDataProvider()
+        --data= CreateDataProvider()
     end
 
     Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
@@ -1010,7 +1033,7 @@ local function OnMouseDown_GuildText(self)
     end
     WoWTools_ChatMixin:Chat(data.link,
         nil,
-        ChatEdit_GetActiveWindow() and true or false
+        true--ChatEdit_GetActiveWindow() and true or false
     )
 end
 
@@ -1553,9 +1576,12 @@ local function Init_List()
         List2Buttons[name]= WoWTools_ButtonMixin:Cbtn(Frame, {
             name='WoWToolsWoWList2'..name..'Button',
             icon='hide',
-            addTexture=true,
+            --addTexture=true,
             size=23,
         })
+        List2Buttons[name].texture=List2Buttons[name]:CreateTexture(nil, 'BORDER')
+        List2Buttons[name].texture:SetPoint('CENTER')
+        List2Buttons[name].texture:SetSize(23,23)
 
         List2Buttons[name].name= name
         List2Buttons[name].tooltip= data.tooltip
@@ -1587,8 +1613,9 @@ local function Init_List()
 
             for _, btn in pairs(List2Buttons) do
                 local isSelect= List2Type==btn.name
-                btn:SetButtonState(isSelect and 'PUSHED' or 'NORMAL', true)
+                --btn:SetButtonState(isSelect and 'PUSHED' or 'NORMAL', true)
                 btn.texture:SetDesaturated(isSelect)
+                btn.texture:SetScale(isSelect and 0.5 or 1)
             end
         end)
         last=List2Buttons[name]
@@ -1599,8 +1626,9 @@ local function Init_List()
 
 
 
-    List2Buttons[List2Type]:SetButtonState('PUSHED', true)
+    --List2Buttons[List2Type]:SetButtonState('PUSHED', true)
     List2Buttons[List2Type].texture:SetDesaturated(true)
+    List2Buttons[List2Type].texture:SetScale(0.5)
     Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT', -2, 0)
 
 
@@ -1634,13 +1662,8 @@ end
 
 
 local function Init()
-    if Save().disabled then
-        return
-    end
-
     local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton)
     btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -23, 0)
-
 
     MainMenuBarBackpackButton:HookScript('OnEnter', function()
         GameTooltip:AddLine(
@@ -1666,12 +1689,6 @@ local function Init()
     end)
 
 
-
-
-
-
-
-
     Init=function()
         Init_List()
     end
@@ -1683,6 +1700,14 @@ end
 function WoWTools_ItemMixin:Init_WoW_ItemList()
     Init()
 end
+
+
+
+
+
+
+
+
 
 
 

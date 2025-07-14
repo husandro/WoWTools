@@ -16,11 +16,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             WoWToolsSave['Plus_ItemInfo']= WoWToolsSave['Plus_ItemInfo'] or {}
             WoWTools_ItemMixin.addName= '|A:Barbershop-32x32:0:0|a'..(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO))
 
-
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({
                 name= WoWTools_ItemMixin.addName,
-                tooltip= WoWTools_DataMixin.onlyChinese and '系统背包|n商人' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
+                --tooltip= WoWTools_DataMixin.onlyChinese and '物品信息' or (BAGSLOT..'|n'..MERCHANT),--'Inventorian, Baggins', 'Bagnon'
                 GetValue= function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
@@ -31,11 +30,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             if Save().disabled then
                 self:UnregisterAllEvents()
             else
-
-
+                WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
             end
-
-            WoWTools_ItemMixin:Init_WoW_ItemList()--战团，物品列表
 
         elseif WoWToolsSave then
             if WoWTools_ItemMixin.Events[arg1] then
