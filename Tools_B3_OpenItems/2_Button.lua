@@ -216,7 +216,6 @@ local function Init(OpenButton)
                         or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
                         or UnitHasVehicleUI('player')
-                        
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, Events_All)

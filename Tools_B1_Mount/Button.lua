@@ -597,7 +597,7 @@ local function Init_Event()
     MountButton:RegisterEvent('PLAYER_STOPPED_MOVING')
     MountButton:RegisterEvent('PLAYER_STARTED_MOVING')--设置, TOOLS 框架,隐藏
     MountButton:RegisterEvent('NEUTRAL_FACTION_SELECT_RESULT')
-    --MountButton:RegisterEvent('UPDATE_EXTRA_ACTIONBAR')
+
 
     MountButton:SetScript("OnEvent", function(self, event, arg1, arg2)
         if event=='PLAYER_REGEN_DISABLED' then

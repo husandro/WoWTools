@@ -3,11 +3,6 @@ local function Save()
     return WoWToolsSave['Plus_ItemInfo'] or {}
 end
 
-local Frame
-local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.+)')
-local List2Type='Item'
-local List2Buttons={}
-
 
 
 
@@ -37,9 +32,11 @@ end
 
 
 
-
-
-local List2TypeTab= {
+local Frame
+local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.+)')
+local List2Type='Item'
+local List2Buttons={}
+local TypeTabs= {
 --物品
     ['Item']= {
     atlas='bag-main',
@@ -478,38 +475,7 @@ local List2TypeTab= {
             GameTooltip:AddDoubleLine(col..WoWTools_TextMixin:CN(name), col..'('..index)
         end
     end},
-
-
-
-    
 }
-
---[[
- WoWTools_WoWDate[guid]= {--默认数据
-    Item={},--{itemID={bag=包, bank=银行}},
-    Currency={},--{currencyID = 数量}
-
-    Keystone={week=WoWTools_DataMixin.Player.Week},--{score=总分数, link=超连接, weekLevel=本周最高, weekNum=本周次数, all=总次数,week=周数},
-
-    Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=day},--ins={[名字]={[难度]=已击杀数}}
-    Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=day},--{week=周数, boss=table}
-    Rare={day=day, boss={}},--稀有
-    Time={},--{totalTime=总游戏时间, levelTime=当前等级时间}总游戏时间
-    Guild={
-        --text= text, GuildInfo() 公会信息,
-        --guid= guid, 公会 clubFinderGUID 
-        data={},-- {guildName, guildRankName, guildRankIndex, realm} = GetGuildInfo('player')
-    },
-    --Money=钱
-    Bank={},--{[itemID]={num=数量,quality=品质}}银行，数据
-    region= WoWTools_DataMixin.Player.Region
-    --specID 专精
-    --itemLevel 装等
-    --faction
-    --level
-    --battleTag
-}
-]]
 
 
 
@@ -533,7 +499,7 @@ local List2TypeTab= {
 local function Settings_Left_Button(self)
     local itemName, itemTexture, itemAtlas, count, r, g, b
     if self.data then
-        itemName, itemTexture, itemAtlas, count, r, g, b= List2TypeTab[List2Type].set_btn(self.data)
+        itemName, itemTexture, itemAtlas, count, r, g, b= TypeTabs[List2Type].set_btn(self.data)
     end
     self.Name:SetText(itemName or '')
     self.Name:SetTextColor(r or 1, g or 1, b or 1)
@@ -555,37 +521,8 @@ local function SetScript_Left_Button(btn)
 
     btn:SetPoint('RIGHT')
     btn.NameFrame:SetPoint('RIGHT')
-    --btn.NameFrame:SetAlpha(0.5)
     btn.NameFrame:SetTexture(0)
     btn.NameFrame:SetColorTexture(0, 0, 0, 0.3)
-
-    --[[btn.BagTexture= btn:CreateTexture(nil, 'ARTWORK')
-    btn.BagTexture:SetSize(12,12)
-    btn.BagTexture:SetAtlas('bag-main')
-    btn.BagTexture:SetPoint('BOTTOMRIGHT', btn.NameFrame, -2, 2)
-
-    btn.BankTexture= btn:CreateTexture(nil, 'ARTWORK')
-    btn.BankTexture:SetSize(12,12)
-    btn.BankTexture:SetAtlas('ParagonReputation_Bag')
-    btn.BankTexture:SetPoint('BOTTOM', btn.BagTexture, 'TOP')
-
-
-    btn.WoWTexture= btn:CreateTexture(nil, 'ARTWORK')
-    btn.WoWTexture:SetSize(12,12)
-    btn.WoWTexture:SetAtlas('glues-characterSelect-iconShop-hover')
-    btn.WoWTexture:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')]]
-
-    --btn.Count:ClearAllPoints()
-    --btn.Count:SetPoint('BOTTOMRIGHT', btn.NameFrame, -2, 2)
-    --btn.Count:SetPoint('RIGHT', btn.BagTexture, 'LEFT')
-
-    --btn.Count2= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1}})
-    --btn.Count2:SetPoint('BOTTOM', btn.BagTexture, 'TOP')
-    --btn.Count2:SetPoint('RIGHT', btn.BankTexture, 'LEFT')
-
-    --[[btn.Count3= WoWTools_LabelMixin:Create(btn, {color={r=0,g=0.8,b=1}})
-    btn.Count3:SetPoint('BOTTOMLEFT', btn.Name, 'TOPLEFT')]]
-    --btn.Count3:SetPoint('LEFT', btn.WoWTexture, 'RIGHT')
 
 
     btn.Name:ClearAllPoints()
@@ -651,8 +588,8 @@ local function SetScript_Left_Button(btn)
             GameTooltip:AddDoubleLine('BattleTag', (WoWTools_DataMixin.Player.BattleTag~= data.battleTag and '|cnRED_FONT_COLOR:' or '')..(data.battleTag or ''))
         end
 
-        if List2TypeTab[List2Type] and List2TypeTab[List2Type].set_tips then
-            List2TypeTab[List2Type].set_tips(data)
+        if TypeTabs[List2Type] and TypeTabs[List2Type].set_tips then
+            TypeTabs[List2Type].set_tips(data)
         end
 
         GameTooltip:Show()
@@ -676,9 +613,9 @@ local function Init_Left_List()
     local findID= isFind and tonumber(findText)
 
     local data, num
-    if List2TypeTab[List2Type] then
-        data, num= List2TypeTab[List2Type].get_data(isFind, findText, findID)
-        num= num and num~=0 and '|A:'..List2TypeTab[List2Type].atlas..':0:0|a'..num
+    if TypeTabs[List2Type] then
+        data, num= TypeTabs[List2Type].get_data(isFind, findText, findID)
+        num= num and num~=0 and '|A:'..TypeTabs[List2Type].atlas..':0:0|a'..num
     else
         data= CreateDataProvider()
     end
@@ -692,7 +629,7 @@ local function Init_Left_List()
     Frame:set_portrait()
 
     for _, btn in pairs(List2Buttons) do
-        List2TypeTab[btn.name].set_num(btn)
+        TypeTabs[btn.name].set_num(btn)
     end
 end
 
@@ -1579,18 +1516,6 @@ local function Init_List()
         Settings_Left_Button(btn)
     end)
 
---[[
-    Frame.Menu2= WoWTools_ButtonMixin:Menu(Frame, {
-        size=23,
-        icon='hide',
-    })
-    Frame.Menu2:SetPoint('LEFT', Frame.SearchBox2, 'RIGHT')
-    Frame.Menu2:SetupMenu(function(self, root)
-        if not self:IsMouseOver() then
-            return
-        end
-    end)]]
-
 --头像
     Frame.Portrait=Frame:CreateTexture(nil, 'ARTWORK')
     Frame.Portrait:SetPoint('RIGHT', Frame.SearchBox2, 'LEFT', -4, 0)
@@ -1624,7 +1549,7 @@ local function Init_List()
 
 
     local last
-    for name, data in pairs(List2TypeTab) do
+    for name, data in pairs(TypeTabs) do
         List2Buttons[name]= WoWTools_ButtonMixin:Cbtn(Frame, {
             name='WoWToolsWoWList2'..name..'Button',
             icon='hide',
@@ -1656,7 +1581,7 @@ local function Init_List()
             GameTooltip:SetText(self.tooltip)
             GameTooltip:Show()
         end)
-        List2Buttons[name]:SetScript('OnClick', function(self)
+        List2Buttons[name]:SetScript('OnMouseDown', function(self)
             List2Type= self.name
             Init_Left_List()
 
@@ -1677,15 +1602,6 @@ local function Init_List()
     List2Buttons[List2Type]:SetButtonState('PUSHED', true)
     List2Buttons[List2Type].texture:SetDesaturated(true)
     Frame.SearchBox2:SetPoint('RIGHT', last, 'LEFT', -2, 0)
-
-
-
-
-
-
-
-
-
 
 
 
