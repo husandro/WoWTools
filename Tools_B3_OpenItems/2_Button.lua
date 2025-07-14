@@ -12,6 +12,7 @@ local Events_All={
     'PET_BATTLE_CLOSE',
     'PET_BATTLE_OPENING_DONE',
     'ZONE_CHANGED_NEW_AREA',
+    'UPDATE_EXTRA_ACTIONBAR'
 }
 
 local Event_Unit={
@@ -165,14 +166,13 @@ local function Init(OpenButton)
 
 
     OpenButton:SetScript('OnEvent', function(self, event)
-
         if event=='PLAYER_ENTERING_WORLD' or event=='PLAYER_MAP_CHANGED' then--出进副本
-            C_Timer.After(1, function()
+            --[[C_Timer.After(1, function()
                 if not InCombatLockdown() then
                     self:SetShown(not IsInInstance() or WoWTools_MapMixin:IsInDelve())
-                end
+                end]]
                 self:settings()
-            end)
+            --end)
 
         elseif event=='PLAYER_MOUNT_DISPLAY_CHANGED'--上下坐骑
             or event=='UNIT_ENTERED_VEHICLE'--车辆
@@ -180,6 +180,7 @@ local function Init(OpenButton)
             or event=='PET_BATTLE_CLOSE'
             or event=='PET_BATTLE_OPENING_DONE'
             or event=='ZONE_CHANGED_NEW_AREA'
+            --or event=='UPDATE_EXTRA_ACTIONBAR'
 
         then
             self:settings()
@@ -216,6 +217,8 @@ local function Init(OpenButton)
                         --or not self:IsVisible()
                         or C_PetBattles.IsInBattle()
                         or UnitHasVehicleUI('player')
+                        --or HasVehicleActionBar()
+                        --or OverrideActionBar:IsShown()
 
         if self.isDisabled then
             FrameUtil.UnregisterFrameForEvents(self, Events_All)
