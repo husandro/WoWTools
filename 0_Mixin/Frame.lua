@@ -8,11 +8,14 @@ WoWTools_FrameMixin= {}
 
 
 function WoWTools_FrameMixin:IsLocked(frame)
-    local disabled= (frame:IsProtected() and InCombatLockdown()) or issecure()
+    if not frame or not frame.IsProtected then
+        return
+    end
+    local disabled=frame:IsProtected() and InCombatLockdown() or issecure()
 
     if WoWTools_DataMixin.Player.husandro and disabled then
         local name= frame.GetName and frame:GetName()
-        print(name, '|cnGREEN_FONT_COLOR:IsProtected|r', frame:IsProtected() , '|cnGREEN_FONT_COLOR:issecure|r', issecure() )
+        print(name, '|cnGREEN_FONT_COLOR:IsProtected|r', frame.IsProtected and frame:IsProtected() , '|cnGREEN_FONT_COLOR:issecure|r', issecure() )
     end
     return disabled
 end

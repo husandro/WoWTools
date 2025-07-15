@@ -96,29 +96,45 @@ local function Init()
 
 --声望
     hooksecurefunc(ReputationEntryMixin, 'ShowStandardTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        end
     end)
     hooksecurefunc(ReputationEntryMixin, 'ShowMajorFactionRenownTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        end
     end)
     hooksecurefunc(ReputationEntryMixin, 'ShowFriendshipReputationTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        end
     end)
     hooksecurefunc(ReputationEntryMixin, 'ShowParagonRewardsTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+        end
     end)
 
     hooksecurefunc(ReputationSubHeaderMixin, 'ShowStandardTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        end
     end)
     hooksecurefunc(ReputationSubHeaderMixin, 'ShowMajorFactionRenownTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        end
     end)
     hooksecurefunc(ReputationSubHeaderMixin, 'ShowFriendshipReputationTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(GameTooltip, self.elementData.factionID)
+        end
     end)
     hooksecurefunc(ReputationSubHeaderMixin, 'ShowParagonRewardsTooltip', function(self)
-        WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+        if self.elementData and self.elementData.factionID then
+            WoWTools_TooltipMixin:Set_Faction(EmbeddedItemTooltip, self.elementData.factionID)
+        end
     end)
 
 

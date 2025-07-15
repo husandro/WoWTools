@@ -3,7 +3,11 @@
 
 
 function WoWTools_TooltipMixin:Set_All_Aura(tooltip, data)
-    if WoWTools_FrameMixin:IsLocked(tooltip) then
+    if not tooltip
+        or not data
+        or not data.id
+        or WoWTools_FrameMixin:IsLocked(tooltip)
+    then
         return
     end
 
