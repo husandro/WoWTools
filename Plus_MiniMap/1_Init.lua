@@ -108,11 +108,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Minimap_Plus']= WoWToolsSave['Minimap_Plus'] or P_Save
 
+            Save().Icons= Save().Icons or P_Save.Icons
+            
             Save().MajorFactionRenownFrame_Button_Scale=nil
 			Save().hide_MajorFactionRenownFrame_Button=nil
             Save().Icons.hideBackground= nil
-
-            Save().Icons= Save().Icons or P_Save.Icons
 
             WoWTools_MinimapMixin.addName= '|A:UI-HUD-Minimap-Tracking-Mouseover:0:0|a'..(WoWTools_DataMixin.onlyChinese and '小地图' or HUD_EDIT_MODE_MINIMAP_LABEL)
             WoWTools_MinimapMixin.addName2= '|A:VignetteKillElite:0:0|a'..(WoWTools_DataMixin.onlyChinese and '追踪' or TRACKING)

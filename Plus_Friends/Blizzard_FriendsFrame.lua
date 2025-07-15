@@ -323,7 +323,7 @@ local function Init()--好友列表, 初始化
     function FriendsButton:set_events()
         if Save().disabledBNFriendInfo then
             self.tips= nil
-            self:UnregisterEvents('BN_FRIEND_INFO_CHANGED')
+            self:UnregisterEvent('BN_FRIEND_INFO_CHANGED')
         else
             self:RegisterEvent('BN_FRIEND_INFO_CHANGED')
         end
