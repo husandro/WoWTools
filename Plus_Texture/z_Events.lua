@@ -1204,11 +1204,18 @@ function WoWTools_TextureMixin.Events:Blizzard_WorldMap()
 
     self:SetScrollBar(QuestMapDetailsScrollFrame)
 
-    self:SetFrame(QuestMapFrame.MapLegend.BorderFrame, {alpha=0})
     self:SetFrame(QuestMapFrame.QuestsFrame.DetailsFrame.BorderFrame, {alpha=0})
-    self:HideTexture(QuestMapFrame.MapLegendTab.Background)
     self:HideTexture(QuestMapFrame.QuestsTab.Background)
     self:HideTexture(QuestMapFrame.QuestsTab.SelectedTexture)
+
+    if QuestMapFrame.EventsTab then
+        self:HideTexture(QuestMapFrame.EventsTab.Background)--11.2才有
+    end
+
+    self:SetFrame(QuestMapFrame.MapLegend.BorderFrame, {alpha=0})
+    self:HideTexture(QuestMapFrame.MapLegendTab.Background)
+    
+    
 
     self:SetFrame(QuestScrollFrame.BorderFrame, {alpha=0})
     self:SetScrollBar(QuestScrollFrame)
@@ -2524,4 +2531,9 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:HideFrame(bar.overlay)
         self:HideFrame(bar.Inset)
     end)
+
+    --[[hooksecurefunc(IconSelectorPopupFrameTemplateMixin, 'OnLoad', function(btn)
+        print('a')
+        self:HideFrame(btn, {index=1})
+    end)]]
 end

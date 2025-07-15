@@ -4,12 +4,14 @@ end
 
 
 local P_Save={
-
+    line=2,
+    num=15,
+    plus=true,
 }
 
 
 local function Save()
-    return WoWToolsSave['Plus_Bank2'] or {}
+    return WoWToolsSave['Plus_Bank2']
 end
 
 
@@ -17,7 +19,8 @@ local function Init()
     if Save().disabled then
         return
     end
-
+    
+    WoWTools_BankMixin:Init_Plus()
     WoWTools_BankMixin:Init_UI2()
     Init=function()end
 end
@@ -39,6 +42,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Bank2']= Save() or P_Save
+            WoWToolsSave['Plus_Bank']= nil
 
             WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
 

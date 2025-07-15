@@ -210,5 +210,11 @@ end
 
 function WoWTools_MoveMixin.Frames:UIWidgetBelowMinimapContainerFrame()
     self:Setup(UIWidgetBelowMinimapContainerFrame, {frame=UIParentRightManagedFrameContainer, notSave=true})--UIParentRightManagedFrameContainer
-
 end
+
+
+
+function WoWTools_MoveMixin.Frames:GearManagerPopupFrame()
+    self:Setup(GearManagerPopupFrame, {notSave=true})
+end
+    

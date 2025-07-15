@@ -6011,7 +6011,8 @@
         "MAP_LEGEND_RARE",
         "MAP_LEGEND_WORLDBOSS",
         "EJ_ContentTab_OnClick",
-        "BankPanel"
+        "BankPanel",
+        "ContainerFrameUtil_ConvertFilterFlagsToList"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

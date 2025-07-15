@@ -931,6 +931,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
     TokenFrame.ScrollBox:SetPoint('TOPLEFT', TokenFrame, 4, -58)
     TokenFrame.ScrollBox:SetPoint('BOTTOMRIGHT', TokenFrame , -22, 2)
 
+    
 
     local function Set_Slot_Point()
         if not WoWTools_FrameMixin:IsLocked(CharacterFrame) then
@@ -1035,6 +1036,7 @@ function WoWTools_MoveMixin.Frames:CharacterFrame()--:Init_CharacterFrame()--角
             CurrencyTransferLog:SetPoint('TOPLEFT', CharacterFrame, 'TOPRIGHT', 5,0)
         end,
     })
+
 end
 
 
