@@ -50,22 +50,23 @@ local C_ContainerFrameUtil_ConvertFilterFlagsToList = function(filterFlags)
     end
 
     if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionCurrent) then--内容更新:仅限当前内容)
-        filterList = filterList
+        index= index+1
+        filterList = (filterList or '')
                     ..(select(2, math.modf(index/3))==0 and '|n' or '')
                     ..'|A:SmallQuestBang:0:0|a'
-        
+
 	elseif FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionLegacy) then--内容更新:仅限旧版内容;
         index= index+1
-         filterList = filterList
+         filterList = (filterList or '')
                     ..(select(2, math.modf(index/3))==0 and '|n' or '')
                     ..'|A:Islands-QuestBangDisable:0:0|a'
 	end
-    if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.DisableAutoSor) then--忽略此标签
+    --[[if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.DisableAutoSort) then--忽略此标签 1
         index= index+1
-         filterList = filterList
+         filterList = (filterList or '')
                     ..(select(2, math.modf(index/3))==0 and '|n' or '')
                     ..'|A:bags-button-autosort-down:0:0|a'
-    end
+    end]]
 
     return filterList
 end
@@ -111,6 +112,9 @@ local function Init()
             btn.Name:SetPoint('BOTTOM')
             btn.FlagsText= WoWTools_LabelMixin:Create(btn, {color=true})
             btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
+            WoWTools_TextureMixin:CreateBG(btn, {point=function(bg)
+                bg:SetAllPoints(btn.FlagsText)
+            end})
         end
         btn.Name:SetText(WoWTools_TextMixin:sub(Save().plus and data.name, 2, 5) or '')
 
