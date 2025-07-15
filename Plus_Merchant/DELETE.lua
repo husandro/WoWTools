@@ -13,11 +13,12 @@ end
 
 
 local function Init()
-    StaticPopupDialogs["DELETE_GOOD_ITEM"].acceptDelay=1
+    StaticPopupDialogs["DELETE_GOOD_ITEM"].acceptDelay=0.5
     hooksecurefunc(StaticPopupDialogs["DELETE_GOOD_ITEM"],"OnShow",function(self)
         if not Save().notDELETE then
             local edit= self.editBox or self:GetEditBox()
             edit:SetText(DELETE_ITEM_CONFIRM_STRING)
+            edit:ClearFocus()
         end
     end)
 
@@ -26,6 +27,7 @@ local function Init()
         if not Save().notDELETE then
             local edit= self.editBox or self:GetEditBox()
             edit:SetText(DELETE_ITEM_CONFIRM_STRING)
+            edit:ClearFocus()
         end
     end)
 
@@ -34,6 +36,7 @@ local function Init()
         if not Save().notDELETE then
             local edit= self.editBox or self:GetEditBox()
             edit:SetText(COMMUNITIES_DELETE_CONFIRM_STRING)
+            edit:ClearFocus()
         end
     end)
 end

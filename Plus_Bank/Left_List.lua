@@ -1,5 +1,8 @@
 
 --存取，分类，按钮
+if not BankFrameTab2 then
+    return
+end
 
 local function Save()
     return WoWToolsSave['Plus_Bank'] or {}

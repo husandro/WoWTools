@@ -7,6 +7,9 @@ NUM_TOTAL_BAG_FRAMES = Constants.InventoryConstants.NumBagSlots + Constants.Inve
 CONTAINER_OFFSET_Y = 85;
 CONTAINER_OFFSET_X = -4;
 ]]
+if not BankFrameTab2 then
+    return
+end
 
 
 local function Save()

@@ -1,3 +1,7 @@
+if not BankFrameTab2 then
+    return
+end
+
 function WoWTools_ItemMixin.Frames:BankPanelItemButtonMixin()
 --银行
     hooksecurefunc('BankFrameItemButton_Update', function(btn)

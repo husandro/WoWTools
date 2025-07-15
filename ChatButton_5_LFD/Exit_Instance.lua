@@ -163,7 +163,7 @@ local function Init()
             end
         end,
         OnUpdate= function(self)
-            if IsModifierKeyDown() then
+            if IsModifierKeyDown() or RolePollPopup:IsShown() then
                 self:Hide()
                 ExitIns=nil
             end

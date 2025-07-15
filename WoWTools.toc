@@ -335,15 +335,21 @@ Plus_Merchant\Plus_ItemInfo.lua
 
 
 ##银行
-Plus_Bank\0_BankMixin.lua
-Plus_Bank\1_Init_Bank.lua
-Plus_Bank\2_Menu.lua
-Plus_Bank\3_MoveFrame.lua
-Plus_Bank\Left_List.lua
-Plus_Bank\Set_UI.lua
-Plus_Bank\Plus_Bank.lua
-Plus_Bank\ItemInfo.lua
+#Plus_Bank\0_BankMixin.lua
+#Plus_Bank\1_Init_Bank.lua
+#Plus_Bank\2_Menu.lua
+#Plus_Bank\3_MoveFrame.lua
+#Plus_Bank\Left_List.lua
+#Plus_Bank\Set_UI.lua
+#Plus_Bank\Plus_Bank.lua
+#Plus_Bank\ItemInfo.lua
 
+Plus_Bank2\0_BankMixin.lua
+Plus_Bank2\1_Init.lua
+Plus_Bank2\2_Menu.lua
+Plus_Bank2\Plus.lua
+Plus_Bank2\Item_Info.lua
+Plus_Bank2\z_UI.lua
 
 ##公会银行
 Plus_BankGuild\0_GuildBankMixin.lua

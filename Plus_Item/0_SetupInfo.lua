@@ -582,7 +582,7 @@ local function Get_Info(tab)
                     end
                 end
             end
-            
+
 
             local collectedIcon, isCollected= WoWTools_CollectedMixin:Item(itemLink, nil, true)--幻化
             bottomRightText= not isCollected and collectedIcon or bottomRightText
@@ -766,7 +766,7 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
         if type(setIDItem)=='number' then
             local r, g, b = C_Item.GetItemQualityColor(setIDItem)
             frame.setIDItem:SetVertexColor(r or 1, g or 1, b or 1)
-        else            
+        else
             frame.setIDItem:SetVertexColor(0,1,0)
         end
     end

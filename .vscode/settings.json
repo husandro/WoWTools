@@ -6010,7 +6010,8 @@
         "SLASH_STOPWATCH_PARAM_STOP5",
         "MAP_LEGEND_RARE",
         "MAP_LEGEND_WORLDBOSS",
-        "EJ_ContentTab_OnClick"
+        "EJ_ContentTab_OnClick",
+        "BankPanel"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

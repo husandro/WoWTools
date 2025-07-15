@@ -1,3 +1,6 @@
+if not BankFrameTab2 then
+    return
+end
 --[[
     local index= BankFrame.activeTabIndex
 	Enum.BankType = {
@@ -6,9 +9,7 @@
 		Account = 2,
 	},
 ]]
-WoWTools_BankMixin={
-    Init_Guild_Texture=function()end
-}
+WoWTools_BankMixin={}
 
 function WoWTools_BankMixin:GetIndex(index)
     return index or BankFrame.activeTabIndex or 1
