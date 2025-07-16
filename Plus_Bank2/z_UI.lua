@@ -12,6 +12,7 @@ local function Save()
 end
 
 local function Init_Move()
+    BankPanel.PurchasePrompt:SetPoint('BOTTOMRIGHT', -20, 20)
     WoWTools_MoveMixin:Setup(BankFrame, {
         setSize=true, minW=80, minH=140,
     sizeUpdateFunc= function()

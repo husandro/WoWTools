@@ -1655,8 +1655,11 @@ function WoWTools_TextureMixin.Events:Blizzard_GroupFinder()
     self:HideTexture(LFGListFrame.CategorySelection.Inset.CustomBG)
 
     self:SetFrame(LFGDungeonReadyDialog.Border, {alpha= 0.3})
+    self:SetButton(LFGDungeonReadyDialogCloseButton)
+
     self:SetFrame(LFDRoleCheckPopup.Border, {alpha= 0.3})
     self:SetFrame(LFGDungeonReadyStatus.Border, {alpha= 0.3})
+    self:SetButton(LFGDungeonReadyStatusCloseButton)
 
     self:SetScrollBar(LFDQueueFrameSpecific)
 

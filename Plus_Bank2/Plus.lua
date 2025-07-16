@@ -11,97 +11,147 @@ end
 
 --[[
 	if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionCurrent) then
-		GameTooltip_AddNormalLine(tooltip, 内容更新:format(仅限当前内容));
+		GameTooltip_AddNormalLine(tooltip, 内容更新:format(仅限当前内容))
 	elseif FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionLegacy) then
-		GameTooltip_AddNormalLine(tooltip, 内容更新:format(仅限旧版内容));
+		GameTooltip_AddNormalLine(tooltip, 内容更新:format(仅限旧版内容))
 	end
     BankPanel.selectedTabID
-};
+}
 ]]
 
 local C_BAG_FILTER_LABELS = {
-	[Enum.BagSlotFlags.ClassEquipment]= '|A:Warfronts-BaseMapIcons-Alliance-Armory-Minimap:0:0|a',--装备 BAG_FILTER_EQUIPMENT 2
-	[Enum.BagSlotFlags.ClassConsumables]= '|A:Food:0:0|a',--消耗品 BAG_FILTER_CONSUMABLES 4
-	[Enum.BagSlotFlags.ClassProfessionGoods]= '|A:Profession:0:0|a', --专业技能货物 BAG_FILTER_PROFESSION_GOODS 8
-	[Enum.BagSlotFlags.ClassJunk]= '|A:auctionhouse-icon-coin-copper:0:0|a',--垃圾 BAG_FILTER_JUNK 16
-	[Enum.BagSlotFlags.ClassQuestItems]= '|A:AdventureMapIcon-SandboxQuest:0:0|a',--任务物品 BAG_FILTER_QUEST_ITEMS 32
-	[Enum.BagSlotFlags.ClassReagents]= '|A:Professions_Tracking_Fish:0:0|a',--材料 BAG_FILTER_REAGENTS 128
+	[Enum.BagSlotFlags.ClassEquipment]= 'Warfronts-BaseMapIcons-Alliance-Armory-Minimap',--装备 BAG_FILTER_EQUIPMENT 2
+	[Enum.BagSlotFlags.ClassConsumables]= 'Food',--消耗品 BAG_FILTER_CONSUMABLES 4
+	[Enum.BagSlotFlags.ClassProfessionGoods]= 'Profession', --专业技能货物 BAG_FILTER_PROFESSION_GOODS 8
+	[Enum.BagSlotFlags.ClassJunk]= 'Coin-Silver',--垃圾 BAG_FILTER_JUNK 16
+	[Enum.BagSlotFlags.ClassQuestItems]= 'AdventureMapIcon-SandboxQuest',--任务物品 BAG_FILTER_QUEST_ITEMS 32
+	[Enum.BagSlotFlags.ClassReagents]= 'Professions_Tracking_Fish',--材料 BAG_FILTER_REAGENTS 128
+
+    [Enum.BagSlotFlags.ExpansionCurrent]= 'QuestLegendary',--内容更新:仅限当前内容 256
+    [Enum.BagSlotFlags.ExpansionLegacy]= 'QuestDaily',--内容更新:仅限旧版内容 512
+    [Enum.BagSlotFlags.DisableAutoSort]= 'bags-button-autosort-up',--忽略此标签 1
 }
 
 
-local C_ContainerFrameUtil_ConvertFilterFlagsToList = function(filterFlags)
-    if not filterFlags then
-        return;
-    end
+local function Init()
+--右边Tab, 右击，选项面板，图标提示
+    for _, check in ipairs(BankPanel.TabSettingsMenu.DepositSettingsMenu.DepositSettingsCheckboxes) do
+        local atlas= C_BAG_FILTER_LABELS[check.settingFlag]
+        if atlas then
+            local icon=check:CreateTexture()
+            icon:SetPoint('RIGHT', -18, 0)
+            icon:SetSize(20, 20)
+            icon:SetAtlas(atlas)
+        end
+	end
+    hooksecurefunc(BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown, 'SetFilterValue', function(self, filterType)
+        local atlas= C_BAG_FILTER_LABELS[filterType]
+        if not self.Icon then
+            self.Icon= self:CreateTexture()
+            self.Icon:SetPoint('RIGHT', self, 'LEFT', 10, 0)
+            self.Icon:SetSize(23, 23)
+        end
+        if atlas then
+            self.Icon:SetAtlas(atlas)
+        else
+            self.Icon:SetTexture(0)
+        end
+    end)
 
-    local filterList
-    local index=0
-    for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
-        if FlagsUtil.IsSet(filterFlags, filter) then
-            index= index+ 1
-            if not filterList then
-                filterList = C_BAG_FILTER_LABELS[filter]
-            else
-                filterList = filterList
-                    ..(select(2, math.modf(index/3))==0 and '|n' or '')
-                    .. C_BAG_FILTER_LABELS[filter]
+
+--替换，原生 右边Tab OnEnter
+    local function AddBankTabSettingsToTooltip(self)
+        local depositFlags= not self:IsPurchaseTab() and self.tabData and self.tabData.depositFlags
+        if not depositFlags then
+            return
+        end
+        GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+        GameTooltip_SetTitle(GameTooltip,
+            '|T'..(self.tabData.icon or 0)..':0|t'
+            ..self.tabData.name,
+            NORMAL_FONT_COLOR
+        )
+        if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionCurrent) then
+            local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent]..':0:0|a'
+            GameTooltip_AddNormalLine(GameTooltip,
+                WoWTools_DataMixin.onlyChinese and '内容更新：'..icon..'|cnHIGHLIGHT_FONT_COLOR:仅限当前内容|r'
+                or BANK_TAB_EXPANSION_ASSIGNMENT:format(icon..BANK_TAB_EXPANSION_FILTER_CURRENT)
+            )
+        elseif FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionLegacy) then
+            local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy]..':0:0|a'
+            GameTooltip_AddNormalLine(GameTooltip,
+                WoWTools_DataMixin.onlyChinese and '内容更新：'..icon..'|cff626262仅限旧版内容|r'
+                or BANK_TAB_EXPANSION_ASSIGNMENT:format(icon..'|cff626262'..BANK_TAB_EXPANSION_FILTER_LEGACY)
+            )
+        end
+        local text
+        for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
+            if FlagsUtil.IsSet(depositFlags, filter) then
+                text= (text or '')
+                    ..'|n    '
+                    ..'|cnHIGHLIGHT_FONT_COLOR:'
+                    ..(C_BAG_FILTER_LABELS[filter] and '|A:'..C_BAG_FILTER_LABELS[filter]..':0:0|a' or '')
+                    ..(WoWTools_TextMixin:CN(BAG_FILTER_LABELS[filter]) or '')
             end
         end
+        if text then
+            GameTooltip_AddNormalLine(GameTooltip,
+                format(WoWTools_DataMixin and '指定到：|cnHIGHLIGHT_FONT_COLOR:%s|r' or BANK_TAB_DEPOSIT_ASSIGNMENTS, text)
+            )
+        end
+        if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.DisableAutoSort) then
+            GameTooltip_AddNormalLine(GameTooltip,
+                (WoWTools_DataMixin.onlyChinese and '清理：' or BANK_TAB_CLEANUP_SETTINGS_HEADER)
+                ..'|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort]..':0:0|a'
+                ..'|cnHIGHLIGHT_FONT_COLOR:'
+                ..(WoWTools_DataMixin.onlyChinese and '忽略此标签' or BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX)
+            )
+        end
+        GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '<右键点击进行设置>' or BANK_TAB_TOOLTIP_CLICK_INSTRUCTION)
+        GameTooltip:Show()
     end
+    hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
+        btn:SetScript('OnEnter', function(self)
+            AddBankTabSettingsToTooltip(self)
+        end)
+    end)
 
-    if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionCurrent) then--内容更新:仅限当前内容)
-        index= index+1
-        filterList = (filterList or '')
-                    ..(select(2, math.modf(index/3))==0 and '|n' or '')
-                    ..'|A:SmallQuestBang:0:0|a'
-
-	elseif FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionLegacy) then--内容更新:仅限旧版内容;
-        index= index+1
-         filterList = (filterList or '')
-                    ..(select(2, math.modf(index/3))==0 and '|n' or '')
-                    ..'|A:Islands-QuestBangDisable:0:0|a'
-	end
-    --[[if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.DisableAutoSort) then--忽略此标签 1
-        index= index+1
-         filterList = (filterList or '')
-                    ..(select(2, math.modf(index/3))==0 and '|n' or '')
-                    ..'|A:bags-button-autosort-down:0:0|a'
-    end]]
-
-    return filterList
-end
-
-local function Init()
-
-
-
-    --[[BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignEquipmentCheckbox.Text:SetText(
-        C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ClassEquipment]
-        ..(WoWTools_DataMixin.onlyChinese and '装备' or BAG_FILTER_EQUIPMENT)
-    )
-
-    BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignConsumablesCheckbox.Text:SetText(
-        C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ClassConsumables]
-        ..(WoWTools_DataMixin.onlyChinese and '消耗品' or BAG_FILTER_CONSUMABLES)
-    )
- 
-
-    BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignProfessionGoodsCheckbox.Text:SetText(
-        C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ClassProfessionGoods]
-        ..(WoWTools_DataMixin.onlyChinese and '专业技能货物' or BAG_FILTER_PROFESSION_GOODS)
-    )
-
-    BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignReagentsCheckbox.Text:SetText(
-        C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ClassReagents]
-        ..(WoWTools_DataMixin.onlyChinese and '材料' or BAG_FILTER_REAGENTS)        
-    )
-
-    BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignJunkCheckbox.Text:SetText(
-        C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ClassJunk]
-        ..(WoWTools_DataMixin.onlyChinese and '垃圾' or BAG_FILTER_JUNK)        
-    )]]
-
-
+--右边 Tab 添加，提示
+    local C_ContainerFrameUtil_ConvertFilterFlagsToList = function(filterFlags)
+        if not filterFlags then
+            return
+        end
+        local tab={}
+        for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
+            if FlagsUtil.IsSet(filterFlags, filter) then
+                table.insert(tab, C_BAG_FILTER_LABELS[filter])
+            end
+        end
+    --内容更新:仅限当前内容)
+        if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionCurrent) then
+            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent])
+    --内容更新:仅限旧版内容
+        elseif FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionLegacy) then
+            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy])
+        end
+    --忽略此标签 1
+        if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.DisableAutoSort) then
+            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort])
+        end
+        local num=#tab
+        if num>0 then
+            local meta= math.modf(num/2)+ 1
+            local text=''
+            for index, icon in pairs(tab) do
+                if icon then
+                    text= text
+                        ..(index==meta and '|n' or '')
+                        ..'|A:'..icon..':0:0|a'
+                end
+            end
+            return text..' '
+        end
+    end
     hooksecurefunc(BankPanelTabMixin, 'Init', function(btn)
         local data= btn.tabData--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
         if not data or btn:IsPurchaseTab() then
@@ -110,24 +160,24 @@ local function Init()
         if not btn.Name then
             btn.Name= WoWTools_LabelMixin:Create(btn, {color=true})
             btn.Name:SetPoint('BOTTOM')
-            btn.FlagsText= WoWTools_LabelMixin:Create(btn, {color=true})
+
+            btn.FlagsText= WoWTools_LabelMixin:Create(btn)--, {color=true})--, layer='BACKGROUND'})
             btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
-            WoWTools_TextureMixin:CreateBG(btn, {point=function(bg)
-                bg:SetAllPoints(btn.FlagsText)
-            end})
+
+            btn.bg= btn:CreateTexture(nil, 'BACKGROUND')
+            btn.bg:SetAllPoints(btn.Name)
         end
         btn.Name:SetText(WoWTools_TextMixin:sub(Save().plus and data.name, 2, 5) or '')
-
         btn.FlagsText:SetText(C_ContainerFrameUtil_ConvertFilterFlagsToList(data.depositFlags) or '')
-
     end)
 
 
 
-
+--当选项面板显示，清队EditBox焦点
     BankPanel.TabSettingsMenu:HookScript('OnShow', function(self)
         self.BorderBox.IconSelectorEditBox:ClearFocus()
     end)
+--修该长度，中文会被截断
     BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignProfessionGoodsCheckbox.Text:SetPoint('RIGHT', BankPanel.TabSettingsMenu.DepositSettingsMenu)
 
     Init=function()

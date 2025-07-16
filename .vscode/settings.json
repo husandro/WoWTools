@@ -6012,7 +6012,15 @@
         "MAP_LEGEND_WORLDBOSS",
         "EJ_ContentTab_OnClick",
         "BankPanel",
-        "ContainerFrameUtil_ConvertFilterFlagsToList"
+        "ContainerFrameUtil_ConvertFilterFlagsToList",
+        "LFGDungeonReadyStatusCloseButton",
+        "BANK_TAB_TOOLTIP_CLICK_INSTRUCTION",
+        "BANK_TAB_EXPANSION_ASSIGNMENT",
+        "BANK_TAB_EXPANSION_FILTER_CURRENT",
+        "BANK_TAB_EXPANSION_FILTER_LEGACY",
+        "BANK_TAB_DEPOSIT_ASSIGNMENTS",
+        "BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX",
+        "BANK_TAB_CLEANUP_SETTINGS_HEADER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

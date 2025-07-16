@@ -192,7 +192,7 @@ end
 
 
 local function Create_Label(frame, tab)
-    if frame.bottomLeftText then
+    if frame.bottomLeftText or frame.topLeftText then
         return
     end
 
@@ -749,6 +749,7 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
         Create_Label(frame, tab)
         topLeftText, leftText, bottomLeftText, topRightText, rightText, bottomRightText, setIDItem= Get_Info(tab)
     end
+
     if not frame.topRightText then
         return
     end
