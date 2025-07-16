@@ -10,7 +10,7 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
-    local sub
+    local sub, sub2
 
 --Plus
     sub= root:CreateCheckbox(
@@ -37,6 +37,48 @@ local function Init_Menu(self, root)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     end)
+
+
+    
+--行数
+    --root:CreateDivider()
+    sub:CreateSpacer()
+    sub2=WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().num
+        end, setValue=function(value)
+            if Save().allBank then
+                Save().num=value
+                WoWTools_BankMixin:Init_AllBank()
+            end
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
+        minValue=4,
+        maxValue=32,
+        step=1,
+        bit=nil,
+    })
+    sub2:SetEnabled(Save().allBank)
+
+--间隔
+    sub:CreateSpacer()
+    sub:CreateSpacer()
+    sub2=WoWTools_MenuMixin:CreateSlider(sub, {
+        getValue=function()
+            return Save().line
+        end, setValue=function(value)
+            if Save().allBank then
+                Save().line=value
+                WoWTools_BankMixin:Init_AllBank()
+            end
+        end,
+        name=WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval',
+        minValue=0,
+        maxValue=32,
+        step=1,
+        bit=nil,
+    })
+    sub2:SetEnabled(Save().allBank)
 
 
 

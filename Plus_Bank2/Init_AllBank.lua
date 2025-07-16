@@ -5,6 +5,7 @@ end
 local function Save()
     return WoWToolsSave['Plus_Bank2']
 end
+
 --[[
 self:GetActiveBankType() == Enum.BankType.Account
 
@@ -27,10 +28,71 @@ BankFrame:GetActiveBankType()
 local PURCHASE_TAB_ID= -1
 
 local function GenerateItemSlotsForSelectedTab(self)
-    if not self.selectedTabID or self.selectedTabID == PURCHASE_TAB_ID or not Save().allBank then
-        return
+    self.itemButtonPool:ReleaseAll();
+
+	if not self.selectedTabID or self.selectedTabID == PURCHASE_TAB_ID then
+		return;
+	end
+
+    local line= Save().line or 2
+    local num= Save().num or 15
+    local last
+    local x, y= 26, -63
+    local index= 1
+    for _, bankTabData in ipairs(self.purchasedBankTabData) do
+        for containerSlotID = 1, C_Container.GetContainerNumSlots(bankTabData.ID) do
+            local btn = self.itemButtonPool:Acquire()--37 x 37
+            btn:SetPoint("TOPLEFT", self, "TOPLEFT", x, y)
+            btn:Init(self.bankType, bankTabData.ID, containerSlotID)
+            btn:Show()
+
+            index= index+1
+            if index>=num and select(2, math.modf(index/num))==0 then
+                x= x+ 37 +line
+                y= -63
+            else
+                y= (y-37)-line
+            end
+            
+        end
     end
+
+        --[[for containerSlotID = 1, C_Container.GetContainerNumSlots(self.selectedTabID) do
+            local button = self.itemButtonPool:Acquire();
+                
+            local isFirstButton = containerSlotID == 1;
+
+            local needNewColumn = (containerSlotID % numRows) == 1;
+
+            if isFirstButton then
+                local xOffset, yOffset = 26, -63;
+                button:SetPoint("TOPLEFT", self, "TOPLEFT", currentColumn * xOffset, yOffset);
+                lastColumnStarterButton = button;
+
+            elseif needNewColumn then
+                currentColumn = currentColumn + 1;
+
+                local xOffset, yOffset = 8, 0;
+                -- We reached the last subcolumn, time to add space for a new "big" column
+                local startNewBigColumn = (currentColumn % numSubColumns == 1);
+                if startNewBigColumn then
+                    xOffset = 19;
+                end
+                button:SetPoint("TOPLEFT", lastColumnStarterButton, "TOPRIGHT", xOffset, yOffset);
+                lastColumnStarterButton = button;
+            else
+                local xOffset, yOffset = 0, -10;
+                button:SetPoint("TOPLEFT", lastCreatedButton, "BOTTOMLEFT", xOffset, yOffset);
+            end
+            
+            button:Init(self.bankType, self.selectedTabID, containerSlotID);
+            button:Show();
+
+            lastCreatedButton = button;
+        end]]
 end
+
+
 
 
 
@@ -86,14 +148,21 @@ local function Init()
     BankPanel.MoneyFrame:SetPoint('TOPRIGHT', BankPanel, 'BOTTOMRIGHT')
 
 --整全一起
-    hooksecurefunc(BankPanel, 'GenerateItemSlotsForSelectedTab', GenerateItemSlotsForSelectedTab)
-
+    BankPanel.GenerateItemSlotsForSelectedTab= GenerateItemSlotsForSelectedTab
+    --hooksecurefunc(BankPanel, 'GenerateItemSlotsForSelectedTab', GenerateItemSlotsForSelectedTab)
+    --BankPanelMixin:GenerateItemSlotsForSelectedTab()
+    
     --BankFrame:UpdateWidthForSelectedTab()
 
 
 
 
     Init=function()
+        if Save().allBank then
+            BankPanel.GenerateItemSlotsForSelectedTab= GenerateItemSlotsForSelectedTab
+        else
+            BankPanel.GenerateItemSlotsForSelectedTab= BankPanelMixin.GenerateItemSlotsForSelectedTab
+        end
         --WoWTools_Mixin:Call(BankFrame, 'UpdateWidthForSelectedTab', BankFrame)
         BankPanel:GenerateItemSlotsForSelectedTab()
     end
@@ -113,13 +182,15 @@ local function Init_Move()
     sizeUpdateFunc= function()
         local h= math.ceil((BankFrame:GetHeight()-108)/(Save().line+37))
         Save().num= h
+        BankPanel:GenerateItemSlotsForSelectedTab()
         --Init()
     end, sizeRestFunc= function()
         Save().num=15
         Init()
+        BankFrame:Hide()
         --BankFrame:SetSize(738, 460)
     end, sizeStopFunc= function()
-        Init()
+        --Init()
     end})
     WoWTools_MoveMixin:Setup(BankPanel.TabSettingsMenu, {frame=BankFrame})
     WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
