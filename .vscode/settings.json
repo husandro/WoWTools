@@ -6020,7 +6020,11 @@
         "BANK_TAB_EXPANSION_FILTER_LEGACY",
         "BANK_TAB_DEPOSIT_ASSIGNMENTS",
         "BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX",
-        "BANK_TAB_CLEANUP_SETTINGS_HEADER"
+        "BANK_TAB_CLEANUP_SETTINGS_HEADER",
+        "BANK_CONFIRM_CLEANUP_PROMPT",
+        "BankPanelGoldButtonText",
+        "BankPanelCopperButtonText",
+        "BankFrameMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

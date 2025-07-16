@@ -1,44 +1,51 @@
+
 if BankFrameTab2 then
     return
 end
---[[
-Enum.BankType.Character
-Enum.BankType.Guild
-Enum.BankType.Account
-]]
-
 local function Save()
     return WoWToolsSave['Plus_Bank2']
 end
 
-local function Init_Move()
-    BankPanel.PurchasePrompt:SetPoint('BOTTOMRIGHT', -20, 20)
-    WoWTools_MoveMixin:Setup(BankFrame, {
-        setSize=true, minW=80, minH=140,
-    sizeUpdateFunc= function()
-        local h= math.ceil((BankFrame:GetHeight()-108)/(Save().line+37))
-        Save().num= h
-        WoWTools_BankMixin:Init_Plus()
-    end, sizeRestFunc= function()
-        Save().num=15
-        WoWTools_BankMixin:Init_Plus()
-        --BankFrame:SetSize(738, 460)
-    end, sizeStopFunc= function()
-        WoWTools_BankMixin:Init_Plus()
-    end})
-    WoWTools_MoveMixin:Setup(BankPanel.TabSettingsMenu, {frame=BankFrame})
-    WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
-end
 
-function WoWTools_MoveMixin.Frames:BankFrame()
-    if Save().disabled then
-        self:Setup(BankFrame)
-        self:Setup(BankPanel.TabSettingsMenu, {frame=BankFrame})
-        WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
-    end
+
+
+
+--银行，物品信息
+function WoWTools_ItemMixin.Frames:BankFrame()
+    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(btn)
+        WoWTools_ItemMixin:SetupInfo(btn, {bag={bag=btn:GetBankTabID(), slot= btn:GetContainerSlotID()}})
+    end)
 end
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--SetTexture
 function WoWTools_TextureMixin.Frames:BankFrame()
 --下面Tab
     self:SetTabButton(BankFrame)
@@ -78,7 +85,7 @@ function WoWTools_TextureMixin.Frames:BankFrame()
     self:SetMenu(BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown)
     self:SetEditBox(BankPanel.TabSettingsMenu.BorderBox.IconSelectorEditBox)
     self:HideFrame(BankPanel.TabSettingsMenu.BorderBox.SelectedIconArea.SelectedIconButton)
-    
+
 --button
     hooksecurefunc(BankPanelItemButtonMixin, 'OnLoad', function(btn)
         self:SetAlphaColor(btn.Background, nil, nil, 0.2)
@@ -95,20 +102,4 @@ function WoWTools_TextureMixin.Frames:BankFrame()
             BankFrame.Background:SetAlpha(alpha)
         end
     })
-end
-
-
-
-
-
-
-
-local function Init()
-
-    Init_Move()
-    Init=function()end
-end
-
-function WoWTools_BankMixin:Init_UI2()
-    Init()
 end

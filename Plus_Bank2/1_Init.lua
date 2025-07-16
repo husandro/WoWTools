@@ -1,12 +1,13 @@
 if BankFrameTab2 then
     return
 end
-
+WoWTools_BankMixin={}
 
 local P_Save={
     line=2,
     num=15,
     plus=true,
+    allBank=WoWTools_DataMixin.Player.husandro,--整合银行
 }
 
 
@@ -16,12 +17,9 @@ end
 
 
 local function Init()
-    if Save().disabled then
-        return
-    end
-    
-    WoWTools_BankMixin:Init_Plus()
-    WoWTools_BankMixin:Init_UI2()
+    WoWTools_BankMixin:Init_AllBank()
+    WoWTools_BankMixin:Init_BankPlus()
+    WoWTools_BankMixin:Init_BankMenu()
     Init=function()end
 end
 
@@ -52,11 +50,11 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 GetValue=function() return not Save().disabled end,
                 SetValue= function()
                     Save().disabled= not Save().disabled and true or nil
-                    
-                    Init()
 
                     if Save().disabled  then
                         print(WoWTools_DataMixin.Icon.icon2..WoWTools_BankMixin.addName, WoWTools_TextMixin:GetEnabeleDisable(not Save().disabled), WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+                    else
+                        Init()
                     end
                 end
             })
