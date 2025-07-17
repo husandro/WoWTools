@@ -41,7 +41,8 @@ local function GenerateItemSlotsForSelectedTab(self)
     local x, y= 26, -63
     local index=0
     local numWidth= 0
-    local ID= NUM_TOTAL_BAG_FRAMES
+    local indexTab= 0
+    local isAccount= self:GetActiveBankType() == Enum.BankType.Account
 
     for _, bankTabData in ipairs(self.purchasedBankTabData) do
         local numSlot= C_Container.GetContainerNumSlots(bankTabData.ID)
@@ -51,24 +52,26 @@ local function GenerateItemSlotsForSelectedTab(self)
             btn:SetPoint("TOPLEFT", self, "TOPLEFT", x, y)
             btn:Init(self.bankType, bankTabData.ID, containerSlotID)
             btn:Show()
-
+--Tab名称 和 空格
             if containerSlotID==1 and y==-63 then
-                ID= bankTabData.ID
-                if not self.tabNames[ID] then
-                    self.tabNames[ID]= WoWTools_LabelMixin:Create(self)
+                indexTab= indexTab+1
+                if not self.tabNames[indexTab] then
+                    self.tabNames[indexTab]= WoWTools_LabelMixin:Create(self)
                 end
-                self.tabNames[ID]:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
-                self.tabNames[ID]:SetText(
+                self.tabNames[indexTab]:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
+                self.tabNames[indexTab]:SetText(
                     '|T'..(bankTabData.icon or 0)..':0|t'
                     ..(bankTabData.name or '')
-                    ..'|cnGREEN_FONT_COLOR:'..(C_Container.GetContainerNumFreeSlots(ID) or '')
+                    ..'|cnGREEN_FONT_COLOR:'
+                    ..(C_Container.GetContainerNumFreeSlots(bankTabData.ID) or '')
                 )
-                if self:GetActiveBankType() == Enum.BankType.Account then
-                    self.tabNames[ID]:SetTextColor(0,0.8,1)
+                if isAccount then
+                    self.tabNames[indexTab]:SetTextColor(0,0.8,1)
                 else
-                    self.tabNames[ID]:SetTextColor(1,0.5,0)
+                    self.tabNames[indexTab]:SetTextColor(1,0.5,0)
                 end
             end
+--x,y
             index= index+1
             if select(2, math.modf(index/num))==0 or containerSlotID==numSlot then
                 x= x+ 37 +line
@@ -81,12 +84,14 @@ local function GenerateItemSlotsForSelectedTab(self)
         index= 0
     end
 
-    for i= ID+1, #self.tabNames do
+--清除，其它
+    for i= indexTab+1, #self.tabNames do
         if self.tabNames[i] then
             self.tabNames[i]:SetText('')
         end
     end
 
+--设置大小
     BankFrame:SetSize(
         52+(37+line)*numWidth,
         63+(37+line)*num+26-line
