@@ -22,7 +22,9 @@ local C_BAG_FILTER_LABELS = {
 }
 
 
-
+--[[
+BankPanelTabMixin.tabData= {bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation}
+]]
 
 
 
@@ -219,7 +221,9 @@ local function Init()
         end)
     end)
 
+    hooksecurefunc(BankPanelTabMixin, 'Init', function()
 
+    end)
 
 
 
@@ -267,31 +271,67 @@ local function Init()
             return text..' '
         end
     end
-    hooksecurefunc(BankPanelTabMixin, 'Init', function(btn)
-        local data= btn.tabData--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
-        if not data or btn:IsPurchaseTab() or not Save().plus then
-            if btn.FlagsText then
-                btn.Name:SetText('')
-                btn.FlagsText:SetText('')
-            end
+--空位，数量，百份比
+    local function Set_Tab_Free(containerID)
+        if not containerID then
+            return
+        end
+        local free= C_Container.GetContainerNumFreeSlots(containerID) or 0
+        local num= C_Container.GetContainerNumSlots(containerID) or 0
+        local percent
+        if num>0 then
+            percent= math.modf(free/num*100)..'%'
+        end
+        return percent
+    end
+
+    hooksecurefunc(BankPanelTabMixin, 'Init', function(btn, tabData)--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
+        if btn:IsPurchaseTab() or not tabData then
             return
         end
         if not btn.Name then
-            btn.Name= WoWTools_LabelMixin:Create(btn, {color=true})
+            btn.Name= WoWTools_LabelMixin:Create(btn)
             btn.Name:SetPoint('BOTTOM')
 
             btn.FlagsText= WoWTools_LabelMixin:Create(btn)--, {color=true})--, layer='BACKGROUND'})
             btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
 
-            btn.bg= btn:CreateTexture(nil, 'BACKGROUND')
-            btn.bg:SetAllPoints(btn.Name)
+            btn.freeText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
+            btn.freeText:SetPoint('TOP', btn.Name, 'BOTTOM')
         end
-        btn.Name:SetText(WoWTools_TextMixin:sub(data.name, 2, 5) or '')
-        btn.FlagsText:SetText(C_ContainerFrameUtil_ConvertFilterFlagsToList(data.depositFlags) or '')
+
+        local flag, name, free
+        if Save().plus then
+            name= WoWTools_TextMixin:sub(tabData.name, 2, 5)
+            flag= C_ContainerFrameUtil_ConvertFilterFlagsToList(tabData.depositFlags)
+            free= C_Container.GetContainerNumFreeSlots(tabData.ID)
+            local r,g,b
+            if btn:GetActiveBankType() == Enum.BankType.Account then
+                r,g,b= 0,0.8,1
+            else
+                r,g,b= 1,0.5,0
+            end
+            btn.Name:SetTextColor(r,g,b)
+            btn.FlagsText:SetTextColor(r,g,b)
+        end
+        btn.Name:SetText(name or '')
+        btn.FlagsText:SetText(flag or '')
+        btn.freeText:SetText(free or '')
     end)
 
-
-
+    BankPanel:HookScript('OnEvent', function(self, event, containerID)
+        if not Save().plus or event~= 'BAG_UPDATE' or not self:GetTabData(containerID) then
+            return
+        end
+        for btn in self.bankTabPool:EnumerateActive() do
+            if btn.tabData and btn.tabData.ID==containerID then
+                if btn.FlagsText then
+                    btn.FlagsText:SetText(C_Container.GetContainerNumFreeSlots(containerID) or '')
+                end
+                break
+            end
+        end
+    end)
 
 
 
@@ -316,6 +356,30 @@ local function Init()
 
 
 
+--ItemButton 索引
+    hooksecurefunc(BankPanelItemButtonMixin, 'Init', function(btn, bankType, bankTabID, containerSlotID)
+        if not btn.indexText then
+            btn.indexText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER'})
+            btn.indexText:SetPoint('CENTER')
+        end
+        local index= Save().plusIndex and Save().plus and containerSlotID
+        if index then
+            local r,g,b
+            if select(2, math.modf(bankTabID/2))==0 then
+                if bankType==Enum.BankType.Account then
+                    r,g,b= 0,0.8,1
+                else
+                    r,g,b= 1,0.5,0
+                end
+            else
+                r,g,b=1,1,1
+            end
+            btn.indexText:SetTextColor(r,g,b, 0.3)
+        end
+        btn.indexText:SetText(index or '')
+    end)
+
+
 
 
     Init=function()
@@ -327,6 +391,7 @@ local function Init()
         end
     end
 end
+
 
 
 

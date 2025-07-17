@@ -25,6 +25,21 @@ local function Init_Menu(self, root)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
     end)
 
+
+--索引
+    sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '索引' or 'Index', function()
+        return Save().plusIndex
+    end, function()
+        Save().plusIndex= not Save().plusIndex and true or nil--显示，索引
+        WoWTools_BankMixin:Init_BankPlus()
+    end)
+
+
+
+
+
+
+
 --转化为联合的大包
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED,

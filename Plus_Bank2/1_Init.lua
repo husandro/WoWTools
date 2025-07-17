@@ -4,7 +4,7 @@ end
 WoWTools_BankMixin={}
 
 local P_Save={
-    line=2,
+    line=0,
     num=15,
     plus=true,
     allBank=WoWTools_DataMixin.Player.husandro,--整合银行

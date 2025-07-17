@@ -28,35 +28,70 @@ BankFrame:GetActiveBankType()
 local PURCHASE_TAB_ID= -1
 
 local function GenerateItemSlotsForSelectedTab(self)
-    self.itemButtonPool:ReleaseAll();
+
+    self.itemButtonPool:ReleaseAll()
 
 	if not self.selectedTabID or self.selectedTabID == PURCHASE_TAB_ID then
 		return;
 	end
 
+
     local line= Save().line or 2
     local num= Save().num or 15
-    local last
     local x, y= 26, -63
-    local index= 1
+    local index=0
+    local numWidth= 0
+    local ID= NUM_TOTAL_BAG_FRAMES
+
     for _, bankTabData in ipairs(self.purchasedBankTabData) do
-        for containerSlotID = 1, C_Container.GetContainerNumSlots(bankTabData.ID) do
+        local numSlot= C_Container.GetContainerNumSlots(bankTabData.ID)
+        for containerSlotID = 1, numSlot do
+--新建
             local btn = self.itemButtonPool:Acquire()--37 x 37
             btn:SetPoint("TOPLEFT", self, "TOPLEFT", x, y)
             btn:Init(self.bankType, bankTabData.ID, containerSlotID)
             btn:Show()
 
+            if containerSlotID==1 and y==-63 then
+                ID= bankTabData.ID
+                if not self.tabNames[ID] then
+                    self.tabNames[ID]= WoWTools_LabelMixin:Create(self)
+                end
+                self.tabNames[ID]:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT')
+                self.tabNames[ID]:SetText(
+                    '|T'..(bankTabData.icon or 0)..':0|t'
+                    ..(bankTabData.name or '')
+                    ..'|cnGREEN_FONT_COLOR:'..(C_Container.GetContainerNumFreeSlots(ID) or '')
+                )
+                if self:GetActiveBankType() == Enum.BankType.Account then
+                    self.tabNames[ID]:SetTextColor(0,0.8,1)
+                else
+                    self.tabNames[ID]:SetTextColor(1,0.5,0)
+                end
+            end
             index= index+1
-            if index>=num and select(2, math.modf(index/num))==0 then
+            if select(2, math.modf(index/num))==0 or containerSlotID==numSlot then
                 x= x+ 37 +line
                 y= -63
+                numWidth= numWidth+1
             else
                 y= (y-37)-line
             end
-            
+        end
+        index= 0
+    end
+
+    for i= ID+1, #self.tabNames do
+        if self.tabNames[i] then
+            self.tabNames[i]:SetText('')
         end
     end
 
+    BankFrame:SetSize(
+        52+(37+line)*numWidth,
+        63+(37+line)*num+26-line
+    )
+end
         --[[for containerSlotID = 1, C_Container.GetContainerNumSlots(self.selectedTabID) do
             local button = self.itemButtonPool:Acquire();
                 
@@ -90,8 +125,6 @@ local function GenerateItemSlotsForSelectedTab(self)
 
             lastCreatedButton = button;
         end]]
-end
-
 
 
 
@@ -145,13 +178,43 @@ local function Init()
         icon:SetPoint('BOTTOMRIGHT', BankPanelCopperButtonText, 2, -2)
     end})
     BankPanel.MoneyFrame:ClearAllPoints()
-    BankPanel.MoneyFrame:SetPoint('TOPRIGHT', BankPanel, 'BOTTOMRIGHT')
+    BankPanel.MoneyFrame:SetPoint('BOTTOM', 0, 1)
+    --BankPanel.MoneyFrame:SetPoint('TOPRIGHT', BankPanel, 'BOTTOMRIGHT')
 
 --整全一起
+    BankPanel.tabNames= {}
     BankPanel.GenerateItemSlotsForSelectedTab= GenerateItemSlotsForSelectedTab
+    BankPanel:HookScript('OnEvent', function(self, event, ...)
+        if not Save().plus then
+            return
+        end
+        if event=='ITEM_LOCK_CHANGED' then
+            local bankTabID, containerSlotID= ...
+            if bankTabID ~= self:GetSelectedTabID() then
+                for itemButton in self:EnumerateValidItems() do
+                    if itemButton:GetContainerSlotID() == containerSlotID
+                        and itemButton:GetBankTabID()== bankTabID
+                    then
+                        itemButton:Refresh()
+                        return
+                    end
+                end
+            end
+        elseif event== 'BAG_UPDATE' then
+            local containerID = ...
+            if self.selectedTabID ~= containerID and self:GetTabData(containerID) then
+               self:MarkDirty()
+            end
+        end
+    end)
+    hooksecurefunc(BankPanel, 'RefreshHeaderText', function(self)
+        if Save().allBank then
+            self.Header.Text:SetText('')
+        end
+    end)
+
     --hooksecurefunc(BankPanel, 'GenerateItemSlotsForSelectedTab', GenerateItemSlotsForSelectedTab)
     --BankPanelMixin:GenerateItemSlotsForSelectedTab()
-    
     --BankFrame:UpdateWidthForSelectedTab()
 
 
@@ -162,9 +225,13 @@ local function Init()
             BankPanel.GenerateItemSlotsForSelectedTab= GenerateItemSlotsForSelectedTab
         else
             BankPanel.GenerateItemSlotsForSelectedTab= BankPanelMixin.GenerateItemSlotsForSelectedTab
+            BankFrame:SetSize(738, 460)
+            for _, label in pairs(BankPanel.tabNames) do
+                label:SetText('')
+            end
         end
         --WoWTools_Mixin:Call(BankFrame, 'UpdateWidthForSelectedTab', BankFrame)
-        BankPanel:GenerateItemSlotsForSelectedTab()
+        BankPanel:RefreshBankPanel()
     end
 end
 
@@ -180,17 +247,17 @@ local function Init_Move()
     WoWTools_MoveMixin:Setup(BankFrame, {
         setSize=true, minW=80, minH=140,
     sizeUpdateFunc= function()
-        local h= math.ceil((BankFrame:GetHeight()-108)/(Save().line+37))
-        Save().num= h
-        BankPanel:GenerateItemSlotsForSelectedTab()
+
         --Init()
     end, sizeRestFunc= function()
         Save().num=15
-        Init()
-        BankFrame:Hide()
         --BankFrame:SetSize(738, 460)
+        BankPanel:GenerateItemSlotsForSelectedTab()
     end, sizeStopFunc= function()
-        --Init()
+        local line= Save().line
+        local h= math.ceil((BankFrame:GetHeight()+line-63-26)/(37+line))
+        Save().num= h
+        BankPanel:GenerateItemSlotsForSelectedTab()
     end})
     WoWTools_MoveMixin:Setup(BankPanel.TabSettingsMenu, {frame=BankFrame})
     WoWTools_MoveMixin:Setup(BankCleanUpConfirmationPopup)
