@@ -2,20 +2,8 @@
 if BankFrameTab2 then
     return
 end
-local function Save()
-    return WoWToolsSave['Plus_Bank2']
-end
 
 
-
-
-
---银行，物品信息
-function WoWTools_ItemMixin.Frames:BankFrame()
-    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(btn)
-        WoWTools_ItemMixin:SetupInfo(btn, {bag={bag=btn:GetBankTabID(), slot= btn:GetContainerSlotID()}})
-    end)
-end
 
 
 

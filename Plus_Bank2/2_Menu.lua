@@ -13,26 +13,50 @@ local function Init_Menu(self, root)
     local sub, sub2
 
 --Plus
-    sub= root:CreateCheckbox(
+    sub= root:CreateButton(
         'Plus',
     function()
-        return Save().plus
+        return MenuResponse.Open
+    end)
+
+--标签
+    sub2=sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '标签' or 'Tab',
+    function()
+        return Save().plusTab
     end, function()
-        Save().plus= not Save().plus and true or nil
+        Save().plusTab= not Save().plusTab and true or nil
         WoWTools_BankMixin:Init_BankPlus()
     end)
-    sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
     end)
 
-
 --索引
-    sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '索引' or 'Index', function()
+    sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '索引' or 'Index', function()
         return Save().plusIndex
     end, function()
         Save().plusIndex= not Save().plusIndex and true or nil--显示，索引
         WoWTools_BankMixin:Init_BankPlus()
     end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+--索引
+    sub2=sub:CreateCheckbox(WoWTools_DataMixin.onlyChinese and '物品信息' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ITEMS, INFO), function()
+        return Save().plusItem
+    end, function()
+        Save().plusItem= not Save().plusItem and true or nil--显示，索引
+        WoWTools_BankMixin:Init_BankPlus()
+    end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
+    end)
+
+--重新加载UI
+    sub:CreateDivider()
+    WoWTools_MenuMixin:Reload(sub)
 
 
 
@@ -54,7 +78,7 @@ local function Init_Menu(self, root)
     end)
 
 
-    
+
 --行数
     --root:CreateDivider()
     sub:CreateSpacer()
@@ -99,7 +123,7 @@ local function Init_Menu(self, root)
 
 --打开选项界面
     root:CreateDivider()
-    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName,})
+    sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})
 --重新加载UI
     WoWTools_MenuMixin:Reload(sub)
 end

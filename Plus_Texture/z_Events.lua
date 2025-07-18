@@ -1528,9 +1528,14 @@ function WoWTools_TextureMixin.Events:Blizzard_UnitFrame()
         self:SetAlphaColor(_G['OverrideActionBarXpDiv'..i], nil, nil, 0)
     end
 
+    
 --货币，XP，追踪，最下面BAR
-    self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0)
-    self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0)
+    --self:SetAlphaColor(MainStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
+    --self:SetAlphaColor(SecondaryStatusTrackingBarContainer.BarFrameTexture, nil, nil, 0.1)
+
+    for _, barContainer in ipairs(StatusTrackingBarManager.barContainers or {}) do
+        self:HideTexture(barContainer.BarFrameTexture)
+    end
 
     self:SetAlphaColor(MultiBarBottomLeftButton10.SlotBackground, nil, nil, 0)
 

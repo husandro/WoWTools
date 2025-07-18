@@ -6024,7 +6024,9 @@
         "BANK_CONFIRM_CLEANUP_PROMPT",
         "BankPanelGoldButtonText",
         "BankPanelCopperButtonText",
-        "BankFrameMixin"
+        "BankFrameMixin",
+        "StatusTrackingManagerMixin",
+        "BankPanelTabSettingsMenuMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

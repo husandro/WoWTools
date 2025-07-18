@@ -772,6 +772,10 @@ function WoWTools_ItemMixin:SetupInfo(frame, tab)
         end
     end
     frame.setIDItem:SetShown(setIDItem)
+
+    if frame.Count and frame.Count:GetText()=='1000' then
+        frame.Count:SetText('1k')
+    end
 end
 
 

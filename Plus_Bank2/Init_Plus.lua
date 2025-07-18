@@ -39,34 +39,25 @@ BankPanelTabMixin.tabData= {bankType name ID depositFlags icon tabNameEditBoxHea
 
 
 local function Init()
-    if not Save().plus then
-        return
-    end
-
-
-
-
-
-
 --清理战团银行
     BankPanel.AutoSortButton:HookScript('OnEnter', function()
-        if Save().plus then
-            GameTooltip:AddLine(
-                (WoWTools_DataMixin.onlyChinese and '确认' or OKAY)..': '
-                ..WoWTools_TextMixin:GetEnabeleDisable(GetCVarBool("bankConfirmTabCleanUp"))
-                ..WoWTools_DataMixin.Icon.right
-            )
-            GameTooltip:Show()
-        end
+        GameTooltip:AddLine(
+            (WoWTools_DataMixin.onlyChinese and '确认' or OKAY)..': '
+            ..WoWTools_TextMixin:GetEnabeleDisable(GetCVarBool("bankConfirmTabCleanUp"))
+            ..WoWTools_DataMixin.Icon.right
+        )
+        GameTooltip:Show()
+
     end)
     BankPanel.AutoSortButton:HookScript('OnMouseDown', function(self, d)
-        if d~='RightButton' or not Save().plus then
+        if d~='RightButton' then
             return
         end
         MenuUtil.CreateContextMenu(self, function(_, root)
             local sub=root:CreateCheckbox(
                 '|A:bags-button-autosort-up:0:0|a'
-                ..(WoWTools_DataMixin.onlyChinese and '确认' or OKAY),
+                ..(WoWTools_DataMixin.onlyChinese and '确认' or OKAY)
+                ..WoWTools_DataMixin.Icon.icon2,
             function()
                 return C_CVar.GetCVarBool("bankConfirmTabCleanUp") and true or false
             end, function()
@@ -76,9 +67,15 @@ local function Init()
             end)
             sub:SetTooltip(function(tooltip)
                 tooltip:AddLine(WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2)
-                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的标签。' or BANK_CONFIRM_CLEANUP_PROMPT)
                 tooltip:AddLine(' ')
-                tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。' or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT)
+                tooltip:AddLine(
+                    '|cffff8000'
+                    ..(WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的标签。' or BANK_CONFIRM_CLEANUP_PROMPT)
+                )
+                tooltip:AddLine(' ')
+                tooltip:AddLine(
+                    '|cff00ccff'
+                    ..(WoWTools_DataMixin.onlyChinese and '你确定要自动整理你的物品吗？|n该操作会影响所有的战团标签。' or ACCOUNT_BANK_CONFIRM_CLEANUP_PROMPT))
             end)
             sub:SetEnabled(not InCombatLockdown())
         end)
@@ -86,41 +83,53 @@ local function Init()
 
 
 
-
-
-
-
-
-
-
-
-
-
---Tab,显示 名称
-    BankPanel.Header.Text:SetShadowOffset(1, -1)
-    hooksecurefunc(BankPanel, 'RefreshHeaderText', function(self)
-        if Save().plus and self:GetActiveBankType() == Enum.BankType.Account then
-            self.Header.Text:SetTextColor(0, 0.8, 1)
-        else
-            self.Header.Text:SetTextColor(1,1,1)
+--下面, Tab，加颜色
+    for _, btn in pairs(BankFrame.TabSystem.tabs) do--TabSystemMixin
+        local ID= btn:GetTabID()
+        if ID==BankFrame.accountBankTabID then
+            btn.Text:SetTextColor(0, 0.8, 1)
+            btn.Text:SetText(WoWTools_DataMixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+        elseif ID==BankFrame.characterBankTabID then
+            btn.Text:SetTextColor(1,0.5,0)
+            btn.Text:SetText(WoWTools_DataMixin.onlyChinese and '银行' or BANK)
         end
-    end)
+    end
 
-
-
-
-
-
-
-
---[[BankFrame标题 测试不了
-    hooksecurefunc(BankFrame, 'OnTitleUpdateRequested', function(self)
+--BankFrame，标题，加颜色
+--替换，原生
+    function BankPanel:RequestTitleRefresh()
+        local name, freeAll, numAll
         if self:GetActiveBankType() == Enum.BankType.Account then
             BankFrameTitleText:SetTextColor(0, 0.8, 1)
+            name= WoWTools_DataMixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE
         else
-            BankFrameTitleText:SetTextColor(1, 0.823, 0)
+            BankFrameTitleText:SetTextColor(1,0.5,0)
+            name= WoWTools_DataMixin.onlyChinese and '银行' or BANK
         end
-    end)]]
+        for _, tabData in ipairs(self.purchasedBankTabData or {}) do
+            if tabData.ID then
+                local free= C_Container.GetContainerNumFreeSlots(tabData.ID)
+                local num= C_Container.GetContainerNumSlots(tabData.ID)
+                if free then
+                    freeAll= (freeAll or 0)+ free
+                    numAll= (numAll or 0)+ num
+                end
+            end
+        end
+        BankFrameTitleText:SetText(
+            name
+            ..(numAll and numAll>0 and
+                ' |cnGREEN_FONT_COLOR:'..freeAll..'|r/'..numAll..' |cnGREEN_FONT_COLOR:'
+                ..math.modf(freeAll/numAll*100)..'%'
+                or ''
+            )
+        )
+    end
+    BankPanel:HookScript('OnEvent', function(self, event, containerID)
+        if event== 'BAG_UPDATE' and self:GetTabData(containerID) then
+            BankPanel:RequestTitleRefresh()
+        end
+    end)
 
 --右边Tab, 右击，选项面板，图标提示
     for _, check in ipairs(BankPanel.TabSettingsMenu.DepositSettingsMenu.DepositSettingsCheckboxes) do
@@ -133,7 +142,7 @@ local function Init()
         end
 	end
     hooksecurefunc(BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown, 'SetFilterValue', function(self, filterType)
-        local atlas= Save().plus and C_BAG_FILTER_LABELS[filterType]
+        local atlas= C_BAG_FILTER_LABELS[filterType]
         if not self.Icon then
             self.Icon= self:CreateTexture()
             self.Icon:SetPoint('RIGHT', self, 'LEFT', 10, 0)
@@ -148,6 +157,8 @@ local function Init()
 
 
 
+    Init=function()end
+end
 
 
 
@@ -159,6 +170,63 @@ local function Init()
 
 
 
+
+
+
+
+
+
+local function Init_TabSystem()
+    if not Save().plusTab then
+        return
+    end
+
+--右边 Tab 添加，提示
+    hooksecurefunc(BankPanelTabMixin, 'Init', function(btn, tabData)--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
+        if btn:IsPurchaseTab() or not tabData then
+            return
+        end
+        if not btn.Name then
+            btn.Name= WoWTools_LabelMixin:Create(btn)
+            btn.Name:SetPoint('BOTTOM')
+
+            btn.FlagsText= WoWTools_LabelMixin:Create(btn)--, {color=true})--, layer='BACKGROUND'})
+            btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
+
+            btn.freeText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
+            btn.freeText:SetPoint('TOP', btn.Name, 'BOTTOM')
+        end
+        local flag, name, free
+
+        name= WoWTools_TextMixin:sub(tabData.name, 2, 5)
+        flag= WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, true)
+        free= C_Container.GetContainerNumFreeSlots(tabData.ID)
+        local r,g,b
+        if btn:GetActiveBankType() == Enum.BankType.Account then
+            r,g,b= 0,0.8,1
+        else
+            r,g,b= 1,0.5,0
+        end
+        btn.Name:SetTextColor(r,g,b)
+        btn.FlagsText:SetTextColor(r,g,b)
+
+        btn.Name:SetText(name or '')
+        btn.FlagsText:SetText(flag or '')
+        btn.freeText:SetText(free or '')
+    end)
+    BankPanel:HookScript('OnEvent', function(self, event, containerID)
+        if event~= 'BAG_UPDATE' or not self:GetTabData(containerID) then
+            return
+        end
+        for btn in self.bankTabPool:EnumerateActive() do
+            if btn.tabData and btn.tabData.ID==containerID then
+                if btn.FlagsText then
+                    btn.FlagsText:SetText(C_Container.GetContainerNumFreeSlots(containerID) or '')
+                end
+                break
+            end
+        end
+    end)
 
 --替换，原生 右边Tab OnEnter
     local function AddBankTabSettingsToTooltip(self)
@@ -213,156 +281,51 @@ local function Init()
     end
     hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
         btn:SetScript('OnEnter', function(self)
-            if Save().plus then
-                AddBankTabSettingsToTooltip(self)
-            else
-                BankPanelTabMixin.OnEnter(self)
-            end
+            AddBankTabSettingsToTooltip(self)--BankPanelTabMixin.OnEnter(self)
         end)
     end)
-
-    hooksecurefunc(BankPanelTabMixin, 'Init', function()
-
-    end)
-
-
-
-
-
-
-
-
-
-
-
---右边 Tab 添加，提示
-    local function C_ContainerFrameUtil_ConvertFilterFlagsToList(filterFlags)
-        if not filterFlags then
-            return
-        end
-        local tab={}
-        for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
-            if FlagsUtil.IsSet(filterFlags, filter) then
-                table.insert(tab, C_BAG_FILTER_LABELS[filter])
-            end
-        end
-    --内容更新:仅限当前内容)
-        if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionCurrent) then
-            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent])
-    --内容更新:仅限旧版内容
-        elseif FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.ExpansionLegacy) then
-            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy])
-        end
-    --忽略此标签 1
-        if FlagsUtil.IsSet(filterFlags, Enum.BagSlotFlags.DisableAutoSort) then
-            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort])
-        end
-        local num=#tab
-        if num>0 then
-            local meta= math.modf(num/2)+ 1
-            local text=''
-            for index, icon in pairs(tab) do
-                if icon then
-                    text= text
-                        ..(index==meta and '|n' or '')
-                        ..'|A:'..icon..':0:0|a'
-                end
-            end
-            return text..' '
-        end
-    end
---空位，数量，百份比
-    local function Set_Tab_Free(containerID)
-        if not containerID then
-            return
-        end
-        local free= C_Container.GetContainerNumFreeSlots(containerID) or 0
-        local num= C_Container.GetContainerNumSlots(containerID) or 0
-        local percent
-        if num>0 then
-            percent= math.modf(free/num*100)..'%'
-        end
-        return percent
-    end
-
-    hooksecurefunc(BankPanelTabMixin, 'Init', function(btn, tabData)--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
-        if btn:IsPurchaseTab() or not tabData then
-            return
-        end
-        if not btn.Name then
-            btn.Name= WoWTools_LabelMixin:Create(btn)
-            btn.Name:SetPoint('BOTTOM')
-
-            btn.FlagsText= WoWTools_LabelMixin:Create(btn)--, {color=true})--, layer='BACKGROUND'})
-            btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
-
-            btn.freeText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
-            btn.freeText:SetPoint('TOP', btn.Name, 'BOTTOM')
-        end
-
-        local flag, name, free
-        if Save().plus then
-            name= WoWTools_TextMixin:sub(tabData.name, 2, 5)
-            flag= C_ContainerFrameUtil_ConvertFilterFlagsToList(tabData.depositFlags)
-            free= C_Container.GetContainerNumFreeSlots(tabData.ID)
-            local r,g,b
-            if btn:GetActiveBankType() == Enum.BankType.Account then
-                r,g,b= 0,0.8,1
-            else
-                r,g,b= 1,0.5,0
-            end
-            btn.Name:SetTextColor(r,g,b)
-            btn.FlagsText:SetTextColor(r,g,b)
-        end
-        btn.Name:SetText(name or '')
-        btn.FlagsText:SetText(flag or '')
-        btn.freeText:SetText(free or '')
-    end)
-
-    BankPanel:HookScript('OnEvent', function(self, event, containerID)
-        if not Save().plus or event~= 'BAG_UPDATE' or not self:GetTabData(containerID) then
-            return
-        end
-        for btn in self.bankTabPool:EnumerateActive() do
-            if btn.tabData and btn.tabData.ID==containerID then
-                if btn.FlagsText then
-                    btn.FlagsText:SetText(C_Container.GetContainerNumFreeSlots(containerID) or '')
-                end
-                break
-            end
-        end
-    end)
-
-
 
 
 
 --当选项面板显示，清队EditBox焦点
     BankPanel.TabSettingsMenu:HookScript('OnShow', function(self)
-        if Save().plus then
-            self.BorderBox.IconSelectorEditBox:ClearFocus()
-        end
+        self.BorderBox.IconSelectorEditBox:ClearFocus()
     end)
-
-
-
-
-
-
-
 
 --修该长度，中文会被截断
     BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignProfessionGoodsCheckbox.Text:SetPoint('RIGHT', BankPanel.TabSettingsMenu.DepositSettingsMenu)
 
+    Init_TabSystem=function()end
+end
+        --[[BankPanel:Reset()
+        for _, check in ipairs(BankPanel.TabSettingsMenu.DepositSettingsMenu.DepositSettingsCheckboxes) do
+            if check then
+                check.Icon:SetShown(Save().plusTab)
+            end
+        end]]
+
+
+
+
+
+
+
+
+
 
 
 --ItemButton 索引
+local function Init_IndexText()
+    if not Save().plusIndex then
+        return
+    end
+
     hooksecurefunc(BankPanelItemButtonMixin, 'Init', function(btn, bankType, bankTabID, containerSlotID)
         if not btn.indexText then
             btn.indexText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER'})
             btn.indexText:SetPoint('CENTER')
         end
-        local index= Save().plusIndex and Save().plus and containerSlotID
+        local index= containerSlotID
         if index then
             local r,g,b
             if select(2, math.modf(bankTabID/2))==0 then
@@ -379,17 +342,7 @@ local function Init()
         btn.indexText:SetText(index or '')
     end)
 
-
-
-
-    Init=function()
-        BankPanel:Reset()
-        for _, check in ipairs(BankPanel.TabSettingsMenu.DepositSettingsMenu.DepositSettingsCheckboxes) do
-            if check then
-                check.Icon:SetShown(Save().plus)
-            end
-        end
-    end
+    Init_IndexText=function()end
 end
 
 
@@ -397,13 +350,25 @@ end
 
 
 
+local function Init_ItemInfo()
+    if not Save().plusItem then
+        return
+    end
 
+    hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(btn)
+        WoWTools_ItemMixin:SetupInfo(btn, {bag={bag=btn:GetBankTabID(), slot= btn:GetContainerSlotID()}})
+    end)
 
+    Init_ItemInfo=function()end
+end
 
 
 
 function WoWTools_BankMixin:Init_BankPlus()
     Init()
+    Init_TabSystem()
+    Init_IndexText()
+    Init_ItemInfo()
 end
 
 
@@ -411,10 +376,55 @@ end
 
 
 
+function WoWTools_BankMixin:GetFlagsText(flags, isNewLine)
+        if not flags then
+            return
+        end
+        local tab={}
+        for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
+            if FlagsUtil.IsSet(flags, filter) then
+                table.insert(tab, C_BAG_FILTER_LABELS[filter])
+            end
+        end
+    --内容更新:仅限当前内容)
+        if FlagsUtil.IsSet(flags, Enum.BagSlotFlags.ExpansionCurrent) then
+            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent])
 
+    --内容更新:仅限旧版内容
+        elseif FlagsUtil.IsSet(flags, Enum.BagSlotFlags.ExpansionLegacy) then
+            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy])
+        end
 
+    --忽略此标签 1
+        if FlagsUtil.IsSet(flags, Enum.BagSlotFlags.DisableAutoSort) then
+            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort])
+        end
 
+        local num=#tab
+        if num==0 then
+            return
+        end
 
+        local text=''
+        if isNewLine then
+            local meta= math.modf(num/2)+ 1
+            for index, icon in pairs(tab) do
+                if icon then
+                    text= text
+                        ..(index==meta and '|n' or '')
+                        ..'|A:'..icon..':0:0|a'
+                end
+            end
+            text= text..' '
+        else
+             for _, icon in pairs(tab) do
+                if icon then
+                    text= text..'|A:'..icon..':0:0|a'
+                end
+            end
+        end
+        return text
+    end
 
 
 

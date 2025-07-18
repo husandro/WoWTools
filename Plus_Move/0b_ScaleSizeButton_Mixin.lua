@@ -623,28 +623,31 @@ end
 
 
 local function Set_Enter(btn, target)
+    
     if btn.alpha then
-        btn:SetAlpha(btn.alpha)
-        if btn.alpha==0 then
-            target:HookScript('OnEnter', function(self)
-                self.ResizeButton:SetAlpha(1)
-            end)
-            target:HookScript('OnLeave', function(self)
-                self.ResizeButton:SetAlpha(0)
-            end)
-        end
+        
+        --if btn.alpha==0 then
+        target:HookScript('OnEnter', function(self)
+            self.ResizeButton:SetAlpha(1)
+        end)
+        target:HookScript('OnLeave', function(self)
+            self.ResizeButton:SetAlpha(self.ResizeButton.alpha)
+        end)
+        --end
     end
-
+    
     btn:SetScript('OnLeave', function(self)
         GameTooltip_Hide()
         ResetCursor()
-        btn:SetAlpha(self.alpha or 0.5)
+        self:SetAlpha(self.alpha or 0.5)
     end)
     btn:SetScript('OnEnter', function(self)
         Set_Tooltip(self)
         SetCursor('Interface\\CURSOR\\Crosshair\\UI-Cursor-SizeRight')
         self:SetAlpha(1)
     end)
+
+    btn:SetAlpha(btn.alpha or 0.5)
 end
 
 
@@ -870,7 +873,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn.scaleUpdateFunc= tab.scaleUpdateFunc
     btn.scaleRestFunc= tab.scaleRestFunc--清除，数据
     btn.restPointFunc= tab.restPointFunc--还原，（清除，位置，数据）
-    btn.alpha= tab.alpha--设置透明度为0，移到frame设置为1
+    btn.alpha= tab.alpha--button 透明度
     btn.setSize= setSize --and not disabledSize--是否有，设置大小，功能    
     --btn.notInCombat= tab.notInCombat--战斗中，禁止操作
     btn.notUpdatePositon= tab.notUpdatePositon
@@ -881,7 +884,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     btn.sizeRestTooltipColorFunc= tab.sizeRestTooltipColorFunc--重置，提示SIZE，颜色
     btn.sizeStopFunc= tab.sizeStopFunc--保存，大小，内容
     btn.sizeTooltip= tab.sizeTooltip
-    btn.alpha= tab.alpha
+    --btn.alpha= tab.alpha
 
     --btn.hideButton= tab.hideButton--隐藏按钮，移过时，才显示
 
@@ -905,7 +908,7 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
     WoWTools_ColorMixin:Setup(btn, {type='Button', alpha=1})--设置颜色
 
     btn:SetClampedToScreen(true)
-    Set_Enter(btn, frame)
+    
 
     btn.SOS = { --Scaler Original State
         dist = 0,
@@ -933,6 +936,9 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         end)
         Set_Tooltip(s)
     end)
+
+
+
     frame:HookScript('OnHide', function(s)
         local b= s.ResizeButton
         local d= b and b.isActiveButton
@@ -962,6 +968,8 @@ function WoWTools_MoveMixin:Scale_Size_Button(frame, tab)
         UIPanelWindows[name]= nil
         FrameOnShow_SetPoint(btn, false)
     end
+
+    Set_Enter(btn, frame)
 end
 
 

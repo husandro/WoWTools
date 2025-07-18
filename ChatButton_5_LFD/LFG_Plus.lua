@@ -255,8 +255,8 @@ local function Init_LFGListUtil_SetSearchEntryTooltip(tooltip, resultID, autoAcc
                     end
                 end
                 text= text.. roleText
+                tooltip:AddDoubleLine((WoWTools_UnitMixin:GetClassIcon(classInfo.classFile) or '').. (text or ''), col..i)
             end
-            tooltip:AddDoubleLine(WoWTools_UnitMixin:GetClassIcon(classInfo.classFile).. (text or ''), col..i)
         end
     end
     tooltip:AddLine(' ')

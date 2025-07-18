@@ -406,9 +406,13 @@ function WoWTools_TextureMixin:SetTabSystem(frame)--TabSystemOwner.lua
     for _, tabID in pairs(frame:GetTabSet() or {}) do
         self:SetTabButton(frame:GetTabButton(tabID))
     end
-end]]
+end
+--TabSystemOwnerMixin TabSystem
+]]
 
 --PanelTemplates_TabResize(frame, frame:GetParent().tabPadding or 0 , nil, frame:GetParent().minTabWidth, frame:GetParent().maxTabWidth)
+--hooksecurefunc(TabSystemButtonMixin, 'Init', function(self)
+    
 function WoWTools_TextureMixin:SetTabButton(frame, alpha)--TabSystemOwner.lua
     if not frame then
         return
