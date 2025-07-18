@@ -276,6 +276,7 @@ local function Init_TabSystem()
                 ..(WoWTools_DataMixin.onlyChinese and '忽略此标签' or BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX)
             )
         end
+        GameTooltip:AddLine(' ')
         GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '<右键点击进行设置>' or BANK_TAB_TOOLTIP_CLICK_INSTRUCTION)
         GameTooltip:Show()
     end

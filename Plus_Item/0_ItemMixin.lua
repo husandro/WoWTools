@@ -497,9 +497,9 @@ end
 
 
 function WoWTools_ItemMixin:GetName(itemID, itemLink, itemLocation, tab)--取得物品，名称 itemLocation,ItemButton
-    tab= tab or {}
+    --tab= tab or {}
 
-    local disableCount= tab.notCount
+    local disableCount= tab and tab.notCount
 
     itemID= itemID or self:GetItemID(itemLink)
     if itemLocation then

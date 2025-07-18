@@ -349,6 +349,7 @@ Plus_Bank2\1_Init.lua
 Plus_Bank2\2_Menu.lua
 Plus_Bank2\Init_AllBank.lua
 Plus_Bank2\Init_Plus.lua
+Plus_Bank2\Out_In_Plus.lua
 Plus_Bank2\z_UI.lua
 
 

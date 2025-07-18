@@ -24,6 +24,7 @@ local function Init()
     WoWTools_BankMixin:Init_AllBank()
     WoWTools_BankMixin:Init_BankPlus()
     WoWTools_BankMixin:Init_BankMenu()
+    WoWTools_BankMixin:Out_In_Plus()
     Init=function()end
 end
 
