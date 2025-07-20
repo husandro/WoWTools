@@ -6030,7 +6030,8 @@
         "DELVES_CURIO_SLOT_EMPTY",
         "BankPanelSystemMixin",
         "ACCOUNT_BANK_ERROR_NO_LOCK",
-        "EVENTTRACE_BUTTON_DISABLE_FILTERS"
+        "EVENTTRACE_BUTTON_DISABLE_FILTERS",
+        "EVENTTRACE_BUTTON_ENABLE_FILTERS"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
