@@ -119,6 +119,7 @@ local function Init_Menu(self, root)
         return Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID]
     end, function()
         Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID]= not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] and true or nil
+        self:settings()
     end)
 --战团
     for guid, wow in pairs(WoWTools_WoWDate) do
@@ -196,7 +197,10 @@ local function Init()
     btn.Text:SetPoint('RIGHT', btn, 'LEFT')
 
     function btn:settings()
-        local autoSaveMoney= not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] and Save().autoSaveMoney
+        local autoSaveMoney
+        if C_Bank.CanDepositMoney(Enum.BankType.Account) and not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] then
+            autoSaveMoney= Save().autoSaveMoney
+        end
         local icon= self:GetNormalTexture()
         icon:SetAlpha(autoSaveMoney and 1 or 0.5)
         icon:SetDesaturated(not autoSaveMoney and true or false)
@@ -233,8 +237,11 @@ local function Init()
     end)
     btn:SetupMenu(Init_Menu)
     
-    btn:settings()
+    --btn:settings()
 
+    hooksecurefunc(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()
+        btn:settings()
+    end)
     BankFrame:HookScript('OnShow', function()
         Auto_Save_Money()
     end)
