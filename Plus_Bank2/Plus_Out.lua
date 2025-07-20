@@ -19,7 +19,9 @@ local function Get_Container_Tab(containerID)
     for slotID = C_Container.GetContainerNumSlots(containerID) or 0, 1, -1 do
         local info = C_Container.GetContainerItemInfo(containerID, slotID)
         local classID, subClassID
-
+        if info and not info.hyperlink then
+            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
+        end
         if info and not info.isFiltered and info.hyperlink then
             classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.hyperlink))
         end
@@ -77,22 +79,21 @@ local function Use_Container_Item(free, containerID, data)
     free= free or WoWTools_BagMixin:GetFree(true) or 0
 
     for _, itemInfo in pairs(data) do
-        if C_Container.HasContainerItem(containerID, itemInfo.slotID) then
-            if free==0 or IsModifierKeyDown() then
-                free=0
-                break
+        if free==0 or IsModifierKeyDown() or not BankFrame:IsShown() or InCombatLockdown() then
+            free=0
+            break
 
-            elseif C_Container.HasContainerItem(containerID, itemInfo.slotID) then
-                C_Container.UseContainerItem(containerID, itemInfo.slotID)
-                free= free-1
-            end
+        elseif C_Container.HasContainerItem(containerID, itemInfo.slotID) then
+            C_Container.UseContainerItem(containerID, itemInfo.slotID)
+            free= free-1
         end
+        
     end
     return free
 end
 
 local function Set_Tooltip_ItemList(tooltip, containerID, data)
-    for _, itemInfo in pairs(data) do
+    for _, itemInfo in pairs(data or {}) do
         if C_Container.HasContainerItem(containerID, itemInfo.slotID) then
             tooltip:AddLine(
                 '|T'..(itemInfo.iconFileID or 0)..':0|t'
@@ -108,18 +109,27 @@ end
 
 
 
-local function Init_RightTab_Menu(self, root)
-    local containerID= (not self:IsPurchaseTab() and not self:IsActiveBankTypeLocked())
-                        and self.tabData and self.tabData.ID
-    if not containerID or containerID==-1 then
+
+
+
+
+
+
+
+
+local function Init_RightTab_Menu(root, tabData)
+    if BankPanelSystemMixin:IsActiveBankTypeLocked() then
+        root:CreateTitle(WoWTools_DataMixin and '你无法和另一名角色一起同时使用战团银行。' or ACCOUNT_BANK_ERROR_NO_LOCK )
         return
     end
 
-    local itemTab, itemNum=Get_Container_Tab(containerID)
+    local containerID= tabData.ID
+
+    local itemTab, itemNum= Get_Container_Tab(containerID)
 
     root:CreateTitle(
-        ('|T'..(self.tabData.icon or '')..':0|t')
-        ..(self:GetActiveBankType()== Enum.BankType.Account and '|cff00ccff' or '|cffff8000')
+        ('|T'..(tabData.icon or 0)..':0|t')
+        ..(BankPanel:GetActiveBankType()== Enum.BankType.Account and '|cff00ccff' or '|cffff8000')
         ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..' #'..itemNum
     )
     if itemNum==0 then
@@ -164,13 +174,13 @@ local function Init_RightTab_Menu(self, root)
 
     root:CreateDivider()
     root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '全部' or ALL)
-        ..' |cnGREEN_FONT_COLOR:#'..itemNum,
+        '|cnGREEN_FONT_COLOR:#'..itemNum..'|r '
+        ..(WoWTools_DataMixin.onlyChinese and '全部' or ALL),
     function()
         local free= WoWTools_BagMixin:GetFree(true) or 0
         for _, item in pairs(itemTab) do
             free= Use_Container_Item(free, containerID, item.item)
-            if free==0 then
+            if free==0 or not BankFrame:IsShown() then
                 break
             end
         end
@@ -184,16 +194,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
 local function Init()
-    BankPanel.AutoDepositFrame.DepositButton:HookScript('OnEnter', function(self)
+    --[[BankPanel.AutoDepositFrame.DepositButton:HookScript('OnEnter', function(self)
         if not self:IsEnabled() then
             return
         end
@@ -203,12 +205,16 @@ local function Init()
             return
         end
 
-    end)
+    end)]]
 
 --右边Tab
     hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
         btn:SetScript('OnMouseWheel', function(self)
-            MenuUtil.CreateContextMenu(self, Init_RightTab_Menu)
+            MenuUtil.CreateContextMenu(self, function(_, root)
+                if self.tabData and not self:IsPurchaseTab() and not self:IsActiveBankTypeLocked() then
+                    Init_RightTab_Menu(root, self.tabData)
+                end
+            end)
         end)
 
         btn:HookScript('OnEnter', function(self)
@@ -217,7 +223,7 @@ local function Init()
                     WoWTools_DataMixin.Icon.mid
                     ..'|cnGREEN_FONT_COLOR:<'
                     ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)--..(WoWTools_DataMixin.onlyChinese and '提取菜单' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, WITHDRAW, HUD_EDIT_MODE_MICRO_MENU_LABEL))
-                    ..'>'
+                    ..'>|A:dressingroom-button-appearancelist-up:0:0|a'
                 )
                 GameTooltip:Show()
             end
@@ -231,9 +237,25 @@ end
 
 
 
+function WoWTools_BankMixin:Init_Out_Menu(root, tabData)
+    Init_RightTab_Menu(root, tabData)
+end
 
 
-
-function WoWTools_BankMixin:Out_In_Plus()
+function WoWTools_BankMixin:Init_Out_Plus()
     Init()
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+

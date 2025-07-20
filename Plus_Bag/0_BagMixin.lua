@@ -127,11 +127,9 @@ function WoWTools_BagMixin:GetItems(checkAllBag, onlyItem, onlyRegents, checkBag
         for slot=1, C_Container.GetContainerNumSlots(bag) do
 
             local info = C_Container.GetContainerItemInfo(bag, slot)
-            if info and info.itemID and
-                (context
-                    and ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot))
-                    or (not checkBagFunc or checkBagFunc(bag, slot, info))
-                )
+            if info and info.itemID
+                and (not context or ItemButtonUtil.ItemContextMatchResult.Match == ItemButtonUtil.GetItemContextMatchResultForItem(ItemLocation:CreateFromBagAndSlot(bag, slot)))
+                and (not checkBagFunc or checkBagFunc(bag, slot, info))
             then
 
                 WoWTools_Mixin:Load({id=info.itemID, type='item'})

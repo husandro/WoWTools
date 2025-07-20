@@ -66,7 +66,7 @@ local function Init()
                 end
             end)
             sub:SetTooltip(function(tooltip)
-                tooltip:AddLine(WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2)
+                tooltip:AddLine(WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2..' bankConfirmTabCleanUp')
                 tooltip:AddLine(' ')
                 tooltip:AddLine(
                     '|cffff8000'
@@ -175,6 +175,136 @@ end
 
 
 
+--替换，原生 右边Tab OnEnter
+local function AddBankTabSettingsToTooltip(self, tabData)
+    if not tabData or not tabData.depositFlags or not tabData.ID or tabData.ID==-1 then
+        return
+    end
+
+    local depositFlags= tabData.depositFlags
+
+    local isAccount= BankPanel:GetActiveBankType() == Enum.BankType.Account
+    GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+    GameTooltip_SetTitle(GameTooltip,
+        (isAccount and '|cff00ccff' or '|cffff8000')
+        ..'|T'..(tabData.icon or 0)..':0|t'
+        ..(tabData.name or ''),
+        NORMAL_FONT_COLOR
+    )
+    if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionCurrent) then
+        local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent]..':0:0|a'
+        GameTooltip_AddNormalLine(GameTooltip,
+            WoWTools_DataMixin.onlyChinese and '内容更新：'..icon..'|cnHIGHLIGHT_FONT_COLOR:仅限当前内容|r'
+            or BANK_TAB_EXPANSION_ASSIGNMENT:format(icon..BANK_TAB_EXPANSION_FILTER_CURRENT)
+        )
+    elseif FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionLegacy) then
+        local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy]..':0:0|a'
+        GameTooltip_AddNormalLine(GameTooltip,
+            WoWTools_DataMixin.onlyChinese and '内容更新：'..icon..'|cff626262仅限旧版内容|r'
+            or BANK_TAB_EXPANSION_ASSIGNMENT:format(icon..'|cff626262'..BANK_TAB_EXPANSION_FILTER_LEGACY)
+        )
+    end
+    local text
+    for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
+        if FlagsUtil.IsSet(depositFlags, filter) then
+            text= (text or '')
+                ..'|n    '
+                ..'|cnHIGHLIGHT_FONT_COLOR:'
+                ..(C_BAG_FILTER_LABELS[filter] and '|A:'..C_BAG_FILTER_LABELS[filter]..':0:0|a' or '')
+                ..(WoWTools_TextMixin:CN(BAG_FILTER_LABELS[filter]) or '')
+        end
+    end
+    if text then
+        GameTooltip_AddNormalLine(GameTooltip,
+            format(WoWTools_DataMixin and '指定到：|cnHIGHLIGHT_FONT_COLOR:%s|r' or BANK_TAB_DEPOSIT_ASSIGNMENTS, text)
+        )
+    end
+    if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.DisableAutoSort) then
+        GameTooltip_AddNormalLine(GameTooltip,
+            (WoWTools_DataMixin.onlyChinese and '清理：' or BANK_TAB_CLEANUP_SETTINGS_HEADER)
+            ..'|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort]..':0:0|a'
+            ..'|cnHIGHLIGHT_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '忽略此标签' or BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX)
+        )
+    end
+    --GameTooltip:AddLine(' ')
+    local free= C_Container.GetContainerNumFreeSlots(tabData.ID) or 0
+    local num= C_Container.GetContainerNumSlots(tabData.ID) or 0
+    if num >0 then
+        GameTooltip_AddNormalLine(GameTooltip,
+            (WoWTools_DataMixin.onlyChinese and '空置' or DELVES_CURIO_SLOT_EMPTY)..': '
+            ..free..'/'..num..' '..math.modf(free/num*100)..'%'
+        )
+    end
+    GameTooltip_AddNormalLine(GameTooltip,
+        WoWTools_DataMixin.Icon.right
+        ..'|cnGREEN_FONT_COLOR:'
+        ..(WoWTools_DataMixin.onlyChinese and '<设置>' or ('<'..SETTINGS..'>'))
+    )
+    GameTooltip:Show()
+end
+    
+
+local function GetFlagsText(flags, isNewLine)
+    if not flags then
+        return
+    end
+    local tab={}
+    for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
+        if FlagsUtil.IsSet(flags, filter) then
+            table.insert(tab, C_BAG_FILTER_LABELS[filter])
+        end
+    end
+--内容更新:仅限当前内容)
+    if FlagsUtil.IsSet(flags, Enum.BagSlotFlags.ExpansionCurrent) then
+        table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent])
+
+--内容更新:仅限旧版内容
+    elseif FlagsUtil.IsSet(flags, Enum.BagSlotFlags.ExpansionLegacy) then
+        table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy])
+    end
+
+--忽略此标签 1
+    if FlagsUtil.IsSet(flags, Enum.BagSlotFlags.DisableAutoSort) then
+        table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort])
+    end
+
+    local num=#tab
+    if num==0 then
+        return
+    end
+
+    local text=''
+    if isNewLine then
+        local meta= math.modf(num/2)+ 1
+        for index, icon in pairs(tab) do
+            if icon then
+                text= text
+                    ..(index==meta and '|n' or '')
+                    ..'|A:'..icon..':0:0|a'
+            end
+        end
+        text= text..' '
+    else
+            for _, icon in pairs(tab) do
+            if icon then
+                text= text..'|A:'..icon..':0:0|a'
+            end
+        end
+    end
+    return text
+end
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init_TabSystem()
     if not Save().plusTab then
@@ -200,7 +330,7 @@ local function Init_TabSystem()
         local flag, name, free
 
         name= WoWTools_TextMixin:sub(tabData.name, 2, 5)
-        flag= WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, true)
+        flag= GetFlagsText(tabData.depositFlags, true)
         free= C_Container.GetContainerNumFreeSlots(tabData.ID)
 
         local r,g,b
@@ -230,75 +360,10 @@ local function Init_TabSystem()
         end
     end)
 
---替换，原生 右边Tab OnEnter
-    local function AddBankTabSettingsToTooltip(self)
-        local depositFlags= not self:IsPurchaseTab() and self.tabData and self.tabData.depositFlags
-        if not depositFlags then
-            return
-        end
-        local isAccount= BankPanel:GetActiveBankType() == Enum.BankType.Account
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-        GameTooltip_SetTitle(GameTooltip,
-            (isAccount and '|cff00ccff' or '|cffff8000')
-            ..'|T'..(self.tabData.icon or 0)..':0|t'
-            ..self.tabData.name,
-            NORMAL_FONT_COLOR
-        )
-        if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionCurrent) then
-            local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent]..':0:0|a'
-            GameTooltip_AddNormalLine(GameTooltip,
-                WoWTools_DataMixin.onlyChinese and '内容更新：'..icon..'|cnHIGHLIGHT_FONT_COLOR:仅限当前内容|r'
-                or BANK_TAB_EXPANSION_ASSIGNMENT:format(icon..BANK_TAB_EXPANSION_FILTER_CURRENT)
-            )
-        elseif FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.ExpansionLegacy) then
-            local icon= '|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy]..':0:0|a'
-            GameTooltip_AddNormalLine(GameTooltip,
-                WoWTools_DataMixin.onlyChinese and '内容更新：'..icon..'|cff626262仅限旧版内容|r'
-                or BANK_TAB_EXPANSION_ASSIGNMENT:format(icon..'|cff626262'..BANK_TAB_EXPANSION_FILTER_LEGACY)
-            )
-        end
-        local text
-        for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
-            if FlagsUtil.IsSet(depositFlags, filter) then
-                text= (text or '')
-                    ..'|n    '
-                    ..'|cnHIGHLIGHT_FONT_COLOR:'
-                    ..(C_BAG_FILTER_LABELS[filter] and '|A:'..C_BAG_FILTER_LABELS[filter]..':0:0|a' or '')
-                    ..(WoWTools_TextMixin:CN(BAG_FILTER_LABELS[filter]) or '')
-            end
-        end
-        if text then
-            GameTooltip_AddNormalLine(GameTooltip,
-                format(WoWTools_DataMixin and '指定到：|cnHIGHLIGHT_FONT_COLOR:%s|r' or BANK_TAB_DEPOSIT_ASSIGNMENTS, text)
-            )
-        end
-        if FlagsUtil.IsSet(depositFlags, Enum.BagSlotFlags.DisableAutoSort) then
-            GameTooltip_AddNormalLine(GameTooltip,
-                (WoWTools_DataMixin.onlyChinese and '清理：' or BANK_TAB_CLEANUP_SETTINGS_HEADER)
-                ..'|A:'..C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort]..':0:0|a'
-                ..'|cnHIGHLIGHT_FONT_COLOR:'
-                ..(WoWTools_DataMixin.onlyChinese and '忽略此标签' or BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX)
-            )
-        end
-        --GameTooltip:AddLine(' ')
-        local free= C_Container.GetContainerNumFreeSlots(self.tabData.ID) or 0
-        local num= C_Container.GetContainerNumSlots(self.tabData.ID) or 0
-        if num >0 then
-            GameTooltip_AddNormalLine(GameTooltip,
-                (WoWTools_DataMixin.onlyChinese and '空置' or DELVES_CURIO_SLOT_EMPTY)..': '
-                ..free..'/'..num..' '..math.modf(free/num*100)..'%'
-            )
-        end
-        GameTooltip_AddNormalLine(GameTooltip,
-            WoWTools_DataMixin.Icon.right
-            ..'|cnGREEN_FONT_COLOR:'
-            ..(WoWTools_DataMixin.onlyChinese and '<设置>' or ('<'..SETTINGS..'>'))
-        )
-        GameTooltip:Show()
-    end
     hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
         btn:SetScript('OnEnter', function(self)
-            AddBankTabSettingsToTooltip(self)--BankPanelTabMixin.OnEnter(self)
+            AddBankTabSettingsToTooltip(self, self.tabData)
+            --BankPanelTabMixin.OnEnter(self)
         end)
     end)
 
@@ -398,55 +463,17 @@ end
 
 
 
+
+
+
+
+function WoWTools_BankMixin:AddBankTabSettingsToTooltip(frame, tabData)
+    AddBankTabSettingsToTooltip(frame, tabData)
+end
+
 function WoWTools_BankMixin:GetFlagsText(flags, isNewLine)
-        if not flags then
-            return
-        end
-        local tab={}
-        for _, filter in ContainerFrameUtil_EnumerateBagGearFilters() do
-            if FlagsUtil.IsSet(flags, filter) then
-                table.insert(tab, C_BAG_FILTER_LABELS[filter])
-            end
-        end
-    --内容更新:仅限当前内容)
-        if FlagsUtil.IsSet(flags, Enum.BagSlotFlags.ExpansionCurrent) then
-            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionCurrent])
-
-    --内容更新:仅限旧版内容
-        elseif FlagsUtil.IsSet(flags, Enum.BagSlotFlags.ExpansionLegacy) then
-            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.ExpansionLegacy])
-        end
-
-    --忽略此标签 1
-        if FlagsUtil.IsSet(flags, Enum.BagSlotFlags.DisableAutoSort) then
-            table.insert(tab, C_BAG_FILTER_LABELS[Enum.BagSlotFlags.DisableAutoSort])
-        end
-
-        local num=#tab
-        if num==0 then
-            return
-        end
-
-        local text=''
-        if isNewLine then
-            local meta= math.modf(num/2)+ 1
-            for index, icon in pairs(tab) do
-                if icon then
-                    text= text
-                        ..(index==meta and '|n' or '')
-                        ..'|A:'..icon..':0:0|a'
-                end
-            end
-            text= text..' '
-        else
-             for _, icon in pairs(tab) do
-                if icon then
-                    text= text..'|A:'..icon..':0:0|a'
-                end
-            end
-        end
-        return text
-    end
+    return GetFlagsText(flags, isNewLine)
+end
 
 
 

@@ -1,3 +1,19 @@
+--[[
+BankPanelSystemMixin:IsActiveBankTypeLocked()
+BankPanelSystemMixin:GetActiveBankType()
+BankPanel:GetActiveBankType() == Enum.BankType.Account
+
+BankPanel.selectedTabID
+BankPanel.bankType
+BankPanel.purchasedBankTabData
+BankPanel.itemButtonPool
+BankPanel.bankTabPool
+BankPanel:GetActiveBankType()
+BankPanel:IsBankTypeLocked()
+BankPanel:RefreshBankPanel()
+BankPanel:GenerateItemSlotsForSelectedTab()
+BankFrame:GetActiveBankType()
+]]
 if BankFrameTab2 then
     return
 end
@@ -11,6 +27,9 @@ local P_Save={
     plusIndex=true,
     plusItem=true,
 
+
+    autoSaveMoney= WoWTools_DataMixin.Player.husandro and 500,--大于当前值，自动存放多余的金到银行去
+    filterSaveMoney={},--[guid]=true
     allBank=WoWTools_DataMixin.Player.husandro,--整合银行
 }
 
@@ -24,7 +43,10 @@ local function Init()
     WoWTools_BankMixin:Init_AllBank()
     WoWTools_BankMixin:Init_BankPlus()
     WoWTools_BankMixin:Init_BankMenu()
-    WoWTools_BankMixin:Out_In_Plus()
+    WoWTools_BankMixin:Init_Out_Plus()
+    WoWTools_BankMixin:Init_In_Plus()
+    WoWTools_BankMixin:Init_Money_Plus()
+    
     Init=function()end
 end
 
@@ -45,6 +67,8 @@ panel:SetScript("OnEvent", function(self, event, arg1)
         if arg1== 'WoWTools' then
 
             WoWToolsSave['Plus_Bank2']= Save() or P_Save
+            
+            Save().filterSaveMoney=  Save().filterSaveMoney or {}
             WoWToolsSave['Plus_Bank']= nil
 
             WoWTools_BankMixin.addName= '|A:Banker:0:0|a'..(WoWTools_DataMixin.onlyChinese and '银行' or BANK)

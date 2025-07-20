@@ -7,22 +7,7 @@ local function Save()
 end
 
 --[[
-self:GetActiveBankType() == Enum.BankType.Account
 
-BankPanel.selectedTabID
-    bankType
-    purchasedBankTabData
-
-BankPanel.itemButtonPool
-    bankTabPool
-
-
-BankPanel:GetActiveBankType()
-    IsBankTypeLocked()
-    RefreshBankPanel()
-    GenerateItemSlotsForSelectedTab()
-
-BankFrame:GetActiveBankType()
 }
 ]]
 local PURCHASE_TAB_ID= -1
@@ -36,6 +21,21 @@ local function Set_TabInfoText(label, tabData, isName)
         ..(C_Container.GetContainerNumFreeSlots(tabData.ID) or '')
         ..(WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, false) or '')
     )
+end
+
+local function Set_Tab_Label_OnEnter(self, tabID)
+    if tabID and tabID~=-1 then
+        WoWTools_BankMixin:AddBankTabSettingsToTooltip(self, BankPanel:GetTabData(tabID))
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.left
+            ..'|cnGREEN_FONT_COLOR:<'
+            ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
+            ..'>|A:dressingroom-button-appearancelist-up:0:0|a'
+        )
+        GameTooltip:Show()
+        --SetCursor('Interface\\CURSOR\\openhand')
+    end
+    self:SetAlpha(0.5)
 end
 
 
@@ -55,6 +55,7 @@ local function Init()
             self.Header.Text:SetText('')
         else
             Set_TabInfoText(self.Header.Text, self:GetTabData(self.selectedTabID), true)
+
             if self:GetActiveBankType() == Enum.BankType.Account then
                 self.Header.Text:SetTextColor(0,0.8,1)
             else
@@ -62,7 +63,6 @@ local function Init()
             end
         end
     end
-
     Init=function()end
 end
 
@@ -102,8 +102,12 @@ local function Init_UI()
     BankItemSearchBox:SetPoint('TOPRIGHT', -56, -25)--<Anchor point="TOPRIGHT" x="-56" y="-33"/>
 
 --存放各种材料
+    BankPanel.AutoDepositFrame:ClearAllPoints()
+    BankPanel.AutoDepositFrame:SetWidth(47)
+    BankPanel.AutoDepositFrame:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -42,0)
+
     BankPanel.AutoDepositFrame.DepositButton:ClearAllPoints()
-    BankPanel.AutoDepositFrame.DepositButton:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -8,0)
+    BankPanel.AutoDepositFrame.DepositButton:SetPoint('RIGHT')
     BankPanel.AutoDepositFrame.DepositButton:SetSize(23, 23)
     BankPanel.AutoDepositFrame.DepositButton.Left:SetAlpha(0)
     BankPanel.AutoDepositFrame.DepositButton.Right:SetAlpha(0)
@@ -113,10 +117,15 @@ local function Init_UI()
     BankPanel.AutoDepositFrame.DepositButton:HookScript('OnMouseDown', function(self)
         self:SetAlpha(0.5)
     end)
-    hooksecurefunc(BankPanel.AutoDepositFrame.DepositButton, 'UpdateTextForBankType', function(self)
-        self:SetText('')
-    end)
-    BankPanel.AutoDepositFrame.DepositButton:SetNormalAtlas('Professions_Tracking_Fish')
+
+    BankPanel.AutoDepositFrame.DepositButton:SetText('')
+--替换，原生
+    function BankPanel.AutoDepositFrame.DepositButton:UpdateTextForBankType()
+        self:SetNormalAtlas(self:GetActiveBankType() == Enum.BankType.Account
+            and 'quest-important-available'
+            or 'Professions_Tracking_Fish'
+        )
+    end
     BankPanel.AutoDepositFrame.DepositButton:SetScript('OnLeave', GameTooltip_Hide)
     BankPanel.AutoDepositFrame.DepositButton:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
@@ -125,7 +134,7 @@ local function Init_UI()
     end)
 
 --Check 包括可交易的材料
-    BankPanel.AutoDepositFrame.IncludeReagentsCheckbox:ClearAllPoints()
+    BankPanel.AutoDepositFrame.IncludeReagentsCheckbox:ClearAllPoints()--24,23
     BankPanel.AutoDepositFrame.IncludeReagentsCheckbox:SetPoint('RIGHT', BankPanel.AutoDepositFrame.DepositButton, 'LEFT')
     BankPanel.AutoDepositFrame.IncludeReagentsCheckbox:SetScript('OnLeave', GameTooltip_Hide)
     BankPanel.AutoDepositFrame.IncludeReagentsCheckbox:SetScript('OnEnter', function(self)
@@ -134,10 +143,11 @@ local function Init_UI()
         GameTooltip:Show()
     end)
 
+    BankPanel.AutoDepositFrame.IncludeReagentsCheckbox.Text:ClearAllPoints()
     BankPanel.AutoDepositFrame.IncludeReagentsCheckbox.Text:SetAlpha(0)
-    hooksecurefunc(BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'Init', function(self)
+    --[[hooksecurefunc(BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'Init', function(self)
         self.Text:SetText('')
-    end)
+    end)]]
 
 --钱
     WoWTools_TextureMixin:CreateBG(BankPanel.MoneyFrame, {point=function(icon)
@@ -162,10 +172,51 @@ end
 
 
 
+local function Create_Tab_Label(frame, indexTab)
+    if frame.tabNames[indexTab] then
+        return
+    end
 
+    frame.tabNames[indexTab]= WoWTools_LabelMixin:Create(BankFrame.TitleContainer, {muose=true})
+    frame.tabNames[indexTab]:SetScript('OnLeave', function(f)
+        GameTooltip:Hide()
+        --ResetCursor()
+        f:SetAlpha(1)
+    end)
 
+    frame.tabNames[indexTab]:SetScript('OnEnter', function(self)
+        local tabID= select(2, self:GetPoint(1)):GetBankTabID()
+        Set_Tab_Label_OnEnter(self, tabID)
+    end)
+    frame.tabNames[indexTab]:SetScript('OnMouseUp', function(f)
+        f:SetAlpha(0.5)
+    end)
 
+    frame.tabNames[indexTab]:SetScript('OnMouseDown', function(self, d)
+        local tabID= select(2, self:GetPoint(1)):GetBankTabID()
+        local tabData= tabID and BankPanel:GetTabData(tabID)
+        if not tabData or not tabData.ID or tabData.ID==-1 then
+            return
+        end
+--提取
+        if d=='LeftButton' then
+            MenuUtil.CreateContextMenu(frame, function(_, root)
+                WoWTools_BankMixin:Init_Out_Menu(root, tabData)
+            end)
+            Set_Tab_Label_OnEnter(self, tabID)
+        else
+--设置
+           for btn in BankPanel.bankTabPool:EnumerateActive() do
+                if btn.tabData and btn.tabData.ID==tabID then
+                    btn:OnClick(d)
+                    break
+                end
+           end
+        end
+        self:SetAlpha(0.3)
+    end)
 
+end
 
 
 
@@ -191,7 +242,7 @@ local function Init_All()
         local width= BODER_LEFT*2
         local indexTab= 0
 
-        for _, bankTabData in ipairs(self.purchasedBankTabData) do
+        for _, bankTabData in ipairs(self.purchasedBankTabData or {}) do
             local numSlot= C_Container.GetContainerNumSlots(bankTabData.ID)
             for containerSlotID = 1, numSlot do
     --新建
@@ -202,9 +253,7 @@ local function Init_All()
     --Tab名称 和 空格
                 if containerSlotID==1 and y==-63 then
                     indexTab= indexTab+1
-                    if not self.tabNames[indexTab] then
-                        self.tabNames[indexTab]= WoWTools_LabelMixin:Create(BankFrame.TitleContainer)
-                    end
+                    Create_Tab_Label(self, indexTab)
                     self.tabNames[indexTab]:SetPoint('BOTTOMLEFT', btn, 'TOPLEFT', 0, 3)
                     Set_TabInfoText(self.tabNames[indexTab], bankTabData)
                 end
@@ -272,7 +321,7 @@ local function Init_All()
                 label:SetText('')
             end
         end
-        BankPanel.Header.Text:SetAlpha(Save().allBank and 0 or 1)
+        --BankPanel.Header.Text:SetAlpha(Save().allBank and 0 or 1)
         BankPanel:RefreshBankPanel()
     end
 end
