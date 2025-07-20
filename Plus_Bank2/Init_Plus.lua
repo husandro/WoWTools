@@ -183,24 +183,26 @@ local function Init_TabSystem()
 
 --右边 Tab 添加，提示
     hooksecurefunc(BankPanelTabMixin, 'Init', function(btn, tabData)--bankType name ID depositFlags icon tabNameEditBoxHeader tabCleanupConfirmation
-        if btn:IsPurchaseTab() or not tabData then
+        if not tabData or btn:IsPurchaseTab() then
             return
         end
-        if not btn.Name then
+        if not btn.FlagsText then
             btn.Name= WoWTools_LabelMixin:Create(btn)
-            btn.Name:SetPoint('BOTTOM')
+            btn.Name:SetPoint('BOTTOM', 0, -6)
 
             btn.FlagsText= WoWTools_LabelMixin:Create(btn)--, {color=true})--, layer='BACKGROUND'})
             btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
 
-            btn.freeText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
-            btn.freeText:SetPoint('TOP', btn.Name, 'BOTTOM')
+            btn.FreeText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
+            --btn.FreeText:SetPoint('TOP', btn.Name, 'BOTTOM')
+            btn.FreeText:SetPoint('LEFT', btn.FlagsText, 'RIGHT')
         end
         local flag, name, free
 
         name= WoWTools_TextMixin:sub(tabData.name, 2, 5)
         flag= WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, true)
         free= C_Container.GetContainerNumFreeSlots(tabData.ID)
+
         local r,g,b
         if btn:GetActiveBankType() == Enum.BankType.Account then
             r,g,b= 0,0.8,1
@@ -212,7 +214,7 @@ local function Init_TabSystem()
 
         btn.Name:SetText(name or '')
         btn.FlagsText:SetText(flag or '')
-        btn.freeText:SetText(free or '')
+        btn.FreeText:SetText(free or '')
     end)
     BankPanel:HookScript('OnEvent', function(self, event, containerID)
         if event~= 'BAG_UPDATE' or not self:GetTabData(containerID) then
@@ -234,9 +236,11 @@ local function Init_TabSystem()
         if not depositFlags then
             return
         end
+        local isAccount= BankPanel:GetActiveBankType() == Enum.BankType.Account
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip_SetTitle(GameTooltip,
-            '|T'..(self.tabData.icon or 0)..':0|t'
+            (isAccount and '|cff00ccff' or '|cffff8000')
+            ..'|T'..(self.tabData.icon or 0)..':0|t'
             ..self.tabData.name,
             NORMAL_FONT_COLOR
         )
@@ -276,8 +280,20 @@ local function Init_TabSystem()
                 ..(WoWTools_DataMixin.onlyChinese and '忽略此标签' or BANK_TAB_IGNORE_IN_CLEANUP_CHECKBOX)
             )
         end
-        GameTooltip:AddLine(' ')
-        GameTooltip_AddInstructionLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '<右键点击进行设置>' or BANK_TAB_TOOLTIP_CLICK_INSTRUCTION)
+        --GameTooltip:AddLine(' ')
+        local free= C_Container.GetContainerNumFreeSlots(self.tabData.ID) or 0
+        local num= C_Container.GetContainerNumSlots(self.tabData.ID) or 0
+        if num >0 then
+            GameTooltip_AddNormalLine(GameTooltip,
+                (WoWTools_DataMixin.onlyChinese and '空置' or DELVES_CURIO_SLOT_EMPTY)..': '
+                ..free..'/'..num..' '..math.modf(free/num*100)..'%'
+            )
+        end
+        GameTooltip_AddNormalLine(GameTooltip,
+            WoWTools_DataMixin.Icon.right
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '<设置>' or ('<'..SETTINGS..'>'))
+        )
         GameTooltip:Show()
     end
     hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
@@ -357,7 +373,12 @@ local function Init_ItemInfo()
     end
 
     hooksecurefunc(BankPanelItemButtonMixin, 'Refresh', function(btn)
-        WoWTools_ItemMixin:SetupInfo(btn, {bag={bag=btn:GetBankTabID(), slot= btn:GetContainerSlotID()}})
+        WoWTools_ItemMixin:SetupInfo(btn, {
+            bag={
+                bag= btn:GetBankTabID(),
+                slot= btn:GetContainerSlotID()
+            }
+        })
     end)
 
     Init_ItemInfo=function()end

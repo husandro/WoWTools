@@ -6026,7 +6026,8 @@
         "BankPanelCopperButtonText",
         "BankFrameMixin",
         "StatusTrackingManagerMixin",
-        "BankPanelTabSettingsMenuMixin"
+        "BankPanelTabSettingsMenuMixin",
+        "DELVES_CURIO_SLOT_EMPTY"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

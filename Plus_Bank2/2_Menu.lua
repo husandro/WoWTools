@@ -12,7 +12,7 @@ local function Init_Menu(self, root)
     end
     local sub, sub2
 
---Plus
+--Plus 必需重新载加，因为hook Mixin
     sub= root:CreateButton(
         'Plus',
     function()
@@ -71,7 +71,13 @@ local function Init_Menu(self, root)
         return Save().allBank
     end, function()
         Save().allBank= not Save().allBank and true or nil
-        WoWTools_BankMixin:Init_AllBank()
+        local isInit= BankPanel.tabNames
+        do
+            WoWTools_BankMixin:Init_AllBank()
+        end
+        if not isInit then
+            BankPanel:RefreshBankPanel()
+        end
     end)
     sub:SetTooltip(function(tooltip)
         tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
@@ -86,10 +92,8 @@ local function Init_Menu(self, root)
         getValue=function()
             return Save().num
         end, setValue=function(value)
-            if Save().allBank then
-                Save().num=value
-                WoWTools_BankMixin:Init_AllBank()
-            end
+            Save().num=value
+            WoWTools_BankMixin:Init_AllBank()
         end,
         name=WoWTools_DataMixin.onlyChinese and '行数' or HUD_EDIT_MODE_SETTING_ACTION_BAR_NUM_ROWS,
         minValue=4,
@@ -106,10 +110,8 @@ local function Init_Menu(self, root)
         getValue=function()
             return Save().line
         end, setValue=function(value)
-            if Save().allBank then
-                Save().line=value
-                WoWTools_BankMixin:Init_AllBank()
-            end
+            Save().line=value
+            WoWTools_BankMixin:Init_AllBank()
         end,
         name=WoWTools_DataMixin.onlyChinese and '间隔' or 'Interval',
         minValue=0,
