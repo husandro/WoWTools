@@ -1,3 +1,8 @@
+--[[
+QueryGuildBankLog(tab)
+QueryGuildBankTab(tab)
+QueryGuildBankText(tab)
+]]
 WoWTools_GuildBankMixin={}
 
 function WoWTools_GuildBankMixin:GetFree(tabID)

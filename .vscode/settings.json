@@ -6032,7 +6032,12 @@
         "ACCOUNT_BANK_ERROR_NO_LOCK",
         "EVENTTRACE_BUTTON_DISABLE_FILTERS",
         "EVENTTRACE_BUTTON_ENABLE_FILTERS",
-        "BankPanelLockPromptMixin"
+        "BankPanelLockPromptMixin",
+        "MoneyFrame_Update",
+        "NO_VIEWABLE_GUILDBANK_TABS",
+        "NO_VIEWABLE_GUILDBANK_LOGS",
+        "NO_GUILDBANK_TABS",
+        "GuildBankFrameTabMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

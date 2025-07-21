@@ -33,11 +33,7 @@ end
 
 
 
---[[
-QueryGuildBankLog(tab)
-QueryGuildBankTab(tab)
-QueryGuildBankText(tab)
-]]
+
 function WoWTools_Mixin:Load(tab)--WoWTools_Mixin:Load({id=, type=''})--加载 item quest spell, uiMapID
     if not tab or not tab.id then
         return
