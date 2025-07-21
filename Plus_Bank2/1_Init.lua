@@ -11,7 +11,6 @@ local P_Save={
     plusIndex=true,
     plusItem=true,
 
-
     autoSaveMoney= WoWTools_DataMixin.Player.husandro and 500,--大于当前值，自动存放多余的金到银行去
     filterSaveMoney={},--[guid]=true
     allBank=WoWTools_DataMixin.Player.husandro,--整合银行

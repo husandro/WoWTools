@@ -82,6 +82,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             })
 
             if Save().disabled then
+                WoWTools_MoveMixin:Setup(GuildBankFrame)
                 self:UnregisterEvent(event)
 
             elseif C_AddOns.IsAddOnLoaded('Blizzard_GuildBankUI') then
