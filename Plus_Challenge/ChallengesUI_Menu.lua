@@ -619,11 +619,14 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(ChallengesFrame)
+    local btn= WoWTools_ButtonMixin:Menu(ChallengesFrame, {name='WoWToolsChallengesFrameMenuButton'})
     btn:SetPoint('RIGHT', PVEFrameCloseButton, 'LEFT')
     btn:SetFrameLevel(PVEFrame.TitleContainer:GetFrameLevel()+1)
 
     btn:SetupMenu(Init_Menu)
+
+    local wow= WoWTools_ItemMixin:Create_WoWButton(ChallengesFrame, 'WoWToolsChallengesFrameWoWItemButton')
+    wow:SetPoint('RIGHT', btn, 'LEFT')
 
     Init=function()end
 end
