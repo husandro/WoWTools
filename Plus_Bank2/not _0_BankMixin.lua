@@ -29,4 +29,3 @@ C_Bank.FetchViewableBankTypes() :
 
 ]]
 
-WoWTools_BankMixin={}

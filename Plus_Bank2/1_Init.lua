@@ -2,7 +2,7 @@
 if BankFrameTab2 then
     return
 end
-
+WoWTools_BankMixin={}
 local P_Save={
     line=2,
     num=20,
