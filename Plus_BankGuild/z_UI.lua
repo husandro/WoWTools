@@ -98,3 +98,5 @@ end
 function WoWTools_GuildBankMixin:Init_UI()
     Init(WoWTools_TextureMixin)
 end
+
+

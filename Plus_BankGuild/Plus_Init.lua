@@ -527,7 +527,7 @@ local function Init_UI()
     --GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildItemSearchBox, 'LEFT', -2, 0)
     --GuildBankWithdrawMoneyFrame:SetPoint('RIGHT', GuildBankFrame.TabTitle, 'LEFT', 2, 0)
     GuildBankWithdrawMoneyFrame:SetPoint('TOPRIGHT', -2, -28)
-    
+
     GuildBankWithdrawMoneyFrame:SetScript('OnLeave', GameTooltip_Hide)
     GuildBankWithdrawMoneyFrame:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -579,10 +579,6 @@ local function Init_UI()
     end)
 
 end
-
-
-
-
 
 
 
@@ -708,7 +704,9 @@ local function Init()
 
 
    hooksecurefunc(GuildBankFrame, 'Update', function(...)
-        Init_Button(...)
+        if not WoWTools_GuildBankMixin.isInRun then
+            Init_Button(...)
+        end
    end)
 
     hooksecurefunc(GuildBankFrame, 'UpdateFiltered', function(self)
@@ -735,7 +733,7 @@ local function Init()
         WoWTools_GuildBankMixin.isInRun= nil
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -746,18 +744,44 @@ end
 
 
 
+function WoWTools_ItemMixin.Events:Blizzard_GuildBankUI()
+    if Save().disabled or
+        (Save().plusOnlyOfficerAndLeader--仅限公会官员
+        and not (WoWTools_GuildMixin:IsLeaderOrOfficer()))--会长或官员
+    then
+        hooksecurefunc(GuildBankFrame, 'Update', function(frame)
+            if frame.mode ~= "bank" then
+                return
+            end
+            local tab = GetCurrentGuildBankTab();
+            for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+                local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+                if ( index == 0 ) then
+                    index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+                end
+                local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
+                local button = frame.Columns[column].Buttons[index]
+                WoWTools_ItemMixin:SetupInfo(button, {guidBank={tab=tab, slot=i}})
+            end
+        end)
+    end
+end
 
 
 
-
+function WoWTools_MoveMixin.Events:Blizzard_GuildBankUI()
+     if Save().disabled or
+        (Save().plusOnlyOfficerAndLeader--仅限公会官员
+        and not (WoWTools_GuildMixin:IsLeaderOrOfficer()))--会长或官员
+    then
+       WoWTools_MoveMixin:Setup(GuildBankFrame)
+    end
+end
 
 
 
 function WoWTools_GuildBankMixin:Init_Plus()
-    if Init() then
-        Init=function () end
-        return true
-    end
+    Init()
 end
 
 

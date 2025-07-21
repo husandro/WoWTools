@@ -26,7 +26,7 @@ local function Init_Menu(self, root)
     local frame= self:GetParent():GetParent()--GuildBankFrame
     local currentIndex= GetCurrentGuildBankTab()--当前 Tab
     local numTab= GetNumGuildBankTabs()--总计Tab
-    local isEnabled= frame.mode== "bank" and currentIndex<= numTab
+    local isEnabled= frame.mode== "bank" and currentIndex<= numTab and true or false
 
 
 --仅限公会官员
@@ -36,9 +36,7 @@ local function Init_Menu(self, root)
         return Save().plusOnlyOfficerAndLeader
     end, function()
         Save().plusOnlyOfficerAndLeader= not Save().plusOnlyOfficerAndLeader and true or nil
-        if not WoWTools_GuildBankMixin:Init_Plus() then
-            print(WoWTools_GuildBankMixin.addName, WoWTools_DataMixin.onlyChinese and '需要重新加载' or REQUIRES_RELOAD)
-        end
+        WoWTools_GuildBankMixin:Init_Plus()
         return MenuButton.CloseButton
     end)
     sub:SetTooltip(function(tooltip)
@@ -54,6 +52,7 @@ local function Init_Menu(self, root)
     then
         root:CreateDivider()
         WoWTools_MenuMixin:Reload(root, false)
+        WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_GuildBankMixin.addName})
         return
     end
 
