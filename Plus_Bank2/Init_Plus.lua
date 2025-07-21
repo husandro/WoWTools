@@ -89,6 +89,19 @@ local function Init()
         if ID==BankFrame.accountBankTabID then
             btn.Text:SetTextColor(0, 0.8, 1)
             btn.Text:SetText(WoWTools_DataMixin.onlyChinese and '战团' or ACCOUNT_QUEST_LABEL)
+
+            BankPanel.MoneyFrame.Text2= WoWTools_LabelMixin:Create(btn, {color={r=0,g=0.8,b=1}})
+            BankPanel.MoneyFrame.Text2:SetPoint('TOP', btn.Text, 'BOTTOM')
+            --BankPanel.MoneyFrame.Text2:SetPoint('BOTTOMRIGHT')
+            hooksecurefunc(BankPanel.MoneyFrame, 'Refresh', function(self)
+                local text
+                local money=C_Bank.FetchDepositedMoney(Enum.BankType.Account)
+                if money and money>10000 then
+                    text= WoWTools_Mixin:MK(math.modf(money/10000), 3)
+                end
+                self.Text2:SetText(text or '')
+            end)
+
         elseif ID==BankFrame.characterBankTabID then
             btn.Text:SetTextColor(1,0.5,0)
             btn.Text:SetText(WoWTools_DataMixin.onlyChinese and '银行' or BANK)

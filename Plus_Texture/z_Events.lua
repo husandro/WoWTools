@@ -2505,7 +2505,7 @@ end
     end)
 end]]
 
-
+--菜单
 function WoWTools_TextureMixin.Events:Blizzard_Menu()
     hooksecurefunc(MenuProxyMixin, 'OnLoad', function(menu)
         self:SetScrollBar(menu)

@@ -102,7 +102,10 @@ local function Init_RightTab_Menu(self, root)
     if not self:IsMouseOver() then
         return
     elseif BankPanelSystemMixin:IsActiveBankTypeLocked() then
-        root:CreateTitle(WoWTools_DataMixin and '你无法和另一名角色一起同时使用战团银行。' or ACCOUNT_BANK_ERROR_NO_LOCK )
+        local sub= root:CreateTitle(WoWTools_DataMixin.onlyChinese and '锁定' or LOCKED)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_TextMixin:CN(BankPanelLockPromptMixin:GetBankLockedMessage()))
+        end)
         return
     end
 
@@ -171,7 +174,8 @@ end
 local function Init()
     local btn= WoWTools_ButtonMixin:Menu(BankPanel, {
         size=23,
-        atlas='Levelup-Icon-Bag',
+        name='WoWToolsPlusBankInItemsButton',
+        atlas='bag-main'--Levelup-Icon-Bag',
     })
 
     btn:SetPoint('RIGHT', BankItemSearchBox, 'LEFT', -16, 0)
@@ -180,9 +184,8 @@ local function Init()
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:SetText(
             (BankPanel:GetActiveBankType()== Enum.BankType.Account and '|cff00ccff' or '|cffff8000')
-            ..WoWTools_DataMixin.Icon.icon2
-            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
             ..'|A:dressingroom-button-appearancelist-up:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
         )
         GameTooltip:Show()
     end)

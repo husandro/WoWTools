@@ -728,7 +728,7 @@ EventRegistry:RegisterFrameEventAndCallback("ADDON_LOADED", function(owner, arg1
         }
     end
 
-    WoWTools_WoWDate[guid].Bank= WoWTools_WoWDate[guid].Bank or {}--派系
+    WoWTools_WoWDate[guid].Bank= WoWTools_WoWDate[guid].Bank or {}--银行
 
     WoWTools_WoWDate[guid].Guild= WoWTools_WoWDate[guid].Guild or {data={}}--公会信息
 

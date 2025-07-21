@@ -17,9 +17,9 @@ local function Set_TabInfoText(label, tabData, isName)
     label:SetText(
         '|T'..(tabData.icon or 0)..':0|t'
         ..(isName and tabData.name and tabData.name..' ' or '')
+        ..(WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, false) or '')
         ..'|cnGREEN_FONT_COLOR:'
         ..(C_Container.GetContainerNumFreeSlots(tabData.ID) or '')
-        ..(WoWTools_BankMixin:GetFlagsText(tabData.depositFlags, false) or '')
     )
 end
 
@@ -63,6 +63,45 @@ local function Init()
             end
         end
     end
+
+--提取，菜单
+    BankPanel.Header.Text:EnableMouse(true)
+    BankPanel.Header.Text:SetScript('OnLeave', function(self)
+        self:SetAlpha(1)
+    end)
+    BankPanel.Header.Text:SetScript('OnEnter', function(self)
+        WoWTools_BankMixin:AddBankTabSettingsToTooltip(self, BankPanel:GetSelectedTabData())
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.left
+            ..'|cnGREEN_FONT_COLOR:<'
+            ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
+            ..'>|A:dressingroom-button-appearancelist-up:0:0|a'
+        )
+        GameTooltip:Show()
+        self:SetAlpha(0.5)
+    end)
+    BankPanel.Header.Text:SetScript('OnMouseUp', function(self)
+        self:SetAlpha(0.5)
+    end)
+    BankPanel.Header.Text:SetScript('OnMouseDown', function(self, d)
+        if d=='LeftButton' then
+            MenuUtil.CreateContextMenu(self:GetParent(), function(_, root)
+                WoWTools_BankMixin:Init_Out_Menu(root, BankPanel:GetSelectedTabData())
+            end)
+        else
+            local tabID= BankPanel:GetSelectedTabID()
+            for btn in BankPanel.bankTabPool:EnumerateActive() do
+                if btn.tabData and btn.tabData.ID==tabID then
+                    btn:OnClick(d)
+                    break
+                end
+            end
+        end
+        self:SetAlpha(0.3)
+    end)
+
+
+
     Init=function()end
 end
 
@@ -154,13 +193,19 @@ local function Init_UI()
         icon:SetPoint('TOPLEFT', BankPanelGoldButtonText, -2, 2)
         icon:SetPoint('BOTTOMRIGHT', BankPanelCopperButtonText, 2, -2)
     end, isColor=true})
-    BankPanel.MoneyFrame:ClearAllPoints()
-    BankPanel.MoneyFrame:SetPoint('RIGHT', BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'LEFT', -8, 0)
+    local function Set_Money_Point()
+        BankPanel.MoneyFrame:ClearAllPoints()
+        if Save().allBank then
+            BankPanel.MoneyFrame:SetPoint('RIGHT', BankPanel.AutoDepositFrame.IncludeReagentsCheckbox, 'LEFT', -8, 0)
+        else
+            BankPanel.MoneyFrame:SetPoint('BOTTOMRIGHT', -3, 3)
+        end
+    end
+    Set_Money_Point()
 
-
-
-
-    Init_UI=function()end
+    Init_UI=function()
+        Set_Money_Point()
+    end
 end
 
 

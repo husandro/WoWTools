@@ -65,6 +65,7 @@ local function Init_Menu(self, root)
 
 
 --转化为联合的大包
+    root:CreateSpacer()
     sub=root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '转化为联合的大包' or BAG_COMMAND_CONVERT_TO_COMBINED,
     function()
@@ -147,7 +148,7 @@ end
 
 
 local function Init()
-    local OptionButton= WoWTools_ButtonMixin:Menu(BankFrameCloseButton, {name='WoWTools_BankFrameMenuButton'})
+    local OptionButton= WoWTools_ButtonMixin:Menu(BankFrameCloseButton, {name='WoWToolsPlusBankMenuButton'})
     OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
     function OptionButton:Open_Bag()

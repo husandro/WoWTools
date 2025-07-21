@@ -86,8 +86,13 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             end
             s.setValue(value, s)
             s.Text:SetText(value)
-            if type(desc.data.tooltip)=='function' then
+            local t= type(desc.data.tooltip)
+            if t=='function' then
                 MenuUtil.ShowTooltip(f, desc.data.tooltip, desc)
+            elseif t=='string' then
+                MenuUtil.ShowTooltip(f, function(tooltip)
+				    GameTooltip_SetTitle(tooltip, desc.data.tooltip)
+			    end, desc)
             end
         end)
 
@@ -104,15 +109,17 @@ function WoWTools_MenuMixin:CreateSlider(root, tab)
             s:SetValue(value, s)
         end)
         f:SetScript('OnHide', function(s)
-            f.getValue=nil
-            f.setValue=nil
-            f.minValue=nil
-            f.maxValue=nil
-            f.step=nil
-            f.bit=nil
-            f:SetScript('OnMouseWheel', nil)
-            f:SetScript('OnValueChanged', nil)
-            f:SetScript('OnHide', nil)
+            s.getValue=nil
+            s.setValue=nil
+            s.minValue=nil
+            s.maxValue=nil
+            s.step=nil
+            s.bit=nil
+            s.elapsed=nil
+            s:SetScript('OnMouseWheel', nil)
+            s:SetScript('OnValueChanged', nil)
+            s:SetScript('OnHide', nil)
+            s:SetScript('OnUpdate', nil)
         end)
     end)
 

@@ -19,11 +19,9 @@ local function Get_Container_Tab(containerID)
     for slotID = C_Container.GetContainerNumSlots(containerID) or 0, 1, -1 do
         local info = C_Container.GetContainerItemInfo(containerID, slotID)
         local classID, subClassID
-        if info and not info.hyperlink then
-            for k, v in pairs(info or {}) do if v and type(v)=='table' then print('|cff00ff00---',k, '---STAR') for k2,v2 in pairs(v) do print(k2,v2) end print('|cffff0000---',k, '---END') else print(k,v) end end print('|cffff00ff——————————')
-        end
-        if info and not info.isFiltered and info.hyperlink then
-            classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.hyperlink))
+
+        if info and not info.isFiltered and not info.isLocked and info.itemID then
+            classID, subClassID = select(6, C_Item.GetItemInfoInstant(info.itemID))
         end
 
         if classID then
@@ -118,27 +116,36 @@ end
 
 
 local function Init_RightTab_Menu(root, tabData)
-    if BankPanelSystemMixin:IsActiveBankTypeLocked() then
-        root:CreateTitle(WoWTools_DataMixin and '你无法和另一名角色一起同时使用战团银行。' or ACCOUNT_BANK_ERROR_NO_LOCK )
+    if not tabData or tabData.ID==-1 then
+        return
+    elseif BankPanelSystemMixin:IsActiveBankTypeLocked() then
+        local sub= root:CreateTitle(WoWTools_DataMixin.onlyChinese and '锁定' or LOCKED)
+        sub:SetTooltip(function(tooltip)
+            tooltip:AddLine(WoWTools_TextMixin:CN(BankPanelLockPromptMixin:GetBankLockedMessage()))
+        end)
         return
     end
 
     local containerID= tabData.ID
 
     local itemTab, itemNum= Get_Container_Tab(containerID)
+    local sub, sub2
 
-    root:CreateTitle(
+    sub=root:CreateTitle(
         ('|T'..(tabData.icon or 0)..':0|t')
         ..(BankPanel:GetActiveBankType()== Enum.BankType.Account and '|cff00ccff' or '|cffff8000')
         ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..' #'..itemNum
     )
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '可用搜索过滤' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SEARCH, CALENDAR_FILTERS))
+    end)
     if itemNum==0 then
         return
     else
         root:CreateDivider()
     end
 
-    local sub, sub2
+
 
     for classID, info in pairs(itemTab) do
         sub=root:CreateButton(
@@ -211,14 +218,12 @@ local function Init()
     hooksecurefunc(BankPanelTabMixin, 'OnLoad', function(btn)
         btn:SetScript('OnMouseWheel', function(self)
             MenuUtil.CreateContextMenu(self, function(_, root)
-                if self.tabData and not self:IsPurchaseTab() and not self:IsActiveBankTypeLocked() then
-                    Init_RightTab_Menu(root, self.tabData)
-                end
+                Init_RightTab_Menu(root, self.tabData)
             end)
         end)
 
         btn:HookScript('OnEnter', function(self)
-            if not self:IsPurchaseTab() and not self:IsActiveBankTypeLocked() and self.tabData then
+            if not self:IsPurchaseTab() and self.tabData then
                 GameTooltip:AddLine(
                     WoWTools_DataMixin.Icon.mid
                     ..'|cnGREEN_FONT_COLOR:<'

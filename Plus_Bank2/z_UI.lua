@@ -6,33 +6,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 --SetTexture
 function WoWTools_TextureMixin.Frames:BankFrame()
 --下面Tab

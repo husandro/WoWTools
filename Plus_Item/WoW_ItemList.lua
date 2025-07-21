@@ -214,18 +214,32 @@ local TypeTabs= {
                 num= num+ tab.Money
             end
         end
+
+        local account= C_Bank.FetchDepositedMoney(Enum.BankType.Account) or 0
+        num= num+ account
+        data:Insert({
+            isAccunt= true,
+            money=account,
+        })
+
         data:SetSortComparator(function(v1, v2)
-            return v1.money> v2.money
+            return v1.isAccunt or v1.money> v2.money
         end)
+
         return data, WoWTools_Mixin:MK(num/10000, 3)
     end,
     set_btn=function(data)
         local money= data.money
         if not money then
             return
-         end
+        end
         local itemName, itemTexture, itemAtlas, count, r, g, b
-        itemName, itemAtlas= Get_Player_Name(data)
+        if data.isAccunt then
+            itemName= '|cff00ccff'..(WoWTools_DataMixin.onlyChinese and '战团银行' or ACCOUNT_BANK_PANEL_TITLE)..'|r'
+            itemAtlas= 'questlog-questtypeicon-account'
+        else
+            itemName, itemAtlas= Get_Player_Name(data)
+        end
         count= WoWTools_Mixin:MK(money/10000, 3)..'|A:Auctioneer:0:0|a'
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
@@ -795,7 +809,8 @@ local function Init_Right_List()
 
 
     data:SetSortComparator(function(v1, v2)
-        return v1.itemLevel>v2.itemLevel
+        return v1.guid==WoWTools_DataMixin.Player.GUID
+            or v1.itemLevel>v2.itemLevel
             or v1.score> v2.score
             or v1.weekLevel> v2.weekLevel
             or v1.weekNum> v2.weekNum
@@ -1434,7 +1449,7 @@ local function Init_List()
     WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
 
     Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {isSearch=true})
-    Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 24, 2)
+    Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 24, 4)
     Frame.SearchBox:SetPoint('RIGHT', Frame, -55, 2)
     Frame.SearchBox:HookScript('OnTextChanged', function()
         Init_Right_List()

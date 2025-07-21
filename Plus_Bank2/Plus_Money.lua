@@ -8,8 +8,11 @@ local function Save()
 end
 
 
-
-
+--C_Bank.CanWithdrawMoney(Enum.BankType.Account)
+local function Can_DepositMoney()
+    return C_Bank.DoesBankTypeSupportMoneyTransfer(Enum.BankType.Account)
+        and C_Bank.CanDepositMoney(Enum.BankType.Account)
+end
 
 
 
@@ -23,7 +26,7 @@ local function Auto_Save_Money()
     local autoSaveMoney= Save().autoSaveMoney
 
     if not autoSaveMoney
-        or not C_Bank.CanDepositMoney(Enum.BankType.Account)
+        or not Can_DepositMoney()
         or Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID]
     then
         return
@@ -35,7 +38,23 @@ local function Auto_Save_Money()
     end
 
     C_Bank.DepositMoney(Enum.BankType.Account, saveMoney)
+
+    print(WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2,
+        '|cff00ccff'
+        ..(WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL))
+        ..'|r',
+        C_CurrencyInfo.GetCoinTextureString(saveMoney)
+    )
 end
+
+
+
+
+
+
+
+
+
 
 
 
@@ -45,45 +64,76 @@ local function Init_Menu(self, root)
     if not self:IsMouseOver() then
         return
     end
+
     self:set_tooltip()
-    local sub
-    if not C_Bank.CanDepositMoney(Enum.BankType.Account) then
+
+    local sub, sub2
+
+    if not Can_DepositMoney() then
         sub=root:CreateTitle(WoWTools_DataMixin.onlyChinese and '锁定' or LOCKED)
         sub:SetTooltip(function(tooltip)
-            tooltip:AddLine(WoWTools_TextMixin:CN(C_Bank.FetchBankLockedReason(Enum.BankType.Account)))
+            GameTooltip_AddErrorLine(tooltip,
+                WoWTools_TextMixin:CN(BankPanelLockPromptMixin:GetBankLockedMessage()),
+                true
+            )
         end)
         return
     end
 
+
+
+
 --存放
-    local autoSaveMoney= not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] and Save().autoSaveMoney
-    local saveMoney
-    if autoSaveMoney then
-        saveMoney= math.modf(GetMoney()/10000- autoSaveMoney)
-        saveMoney= saveMoney>0 and saveMoney or nil
-    end
-    root:CreateButton(
-        (autoSaveMoney and '' or '|cff626262')
+    --local autoSaveMoney= not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] and Save().autoSaveMoney
+    local function Get_Save_Text()
+        local saveMoney
+        local autoSaveMoney= Save().autoSaveMoney
+        if autoSaveMoney then
+            saveMoney= math.modf(GetMoney()/10000- autoSaveMoney)
+            saveMoney= math.max(saveMoney, 0)
+        end
+        return '|cff00ccff'
         ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
-        ..(saveMoney and ' '..WoWTools_Mixin:MK(saveMoney, 3)..'|A:Coin-Gold:0:0|a' or ''),
+        ..(saveMoney and ' '..WoWTools_Mixin:MK(saveMoney, 3)..'|A:Coin-Gold:0:0|a' or '')
+    end
+
+    local autoSub=root:CreateButton(
+        Get_Save_Text(),
     function()
         Auto_Save_Money()
         return MenuResponse.Open
     end)
-    
 
-    root:CreateSpacer()
-    sub= root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL),
+--自动存钱
+    sub2=autoSub:CreateCheckbox(
+        '|cff00ccff'
+        ..(WoWTools_DataMixin.onlyChinese and '自动' or SELF_CAST_AUTO),
     function()
         return Save().autoSaveMoney
     end, function()
         Save().autoSaveMoney= not Save().autoSaveMoney and 500 or nil
         self:settings()
     end)
+    sub2:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '打开银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, BANK))
+    end)
+    autoSub:AddInitializer(function(btn)
+        btn:SetScript("OnUpdate", function(frame, elapsed)
+            frame.elapsed= (frame.elapsed or 0.3) +elapsed
+            if frame.elapsed>0.3 then
+                frame.elapsed=0
+                frame.fontString:SetText(Get_Save_Text())
+            end
+        end)
+        btn:SetScript('OnHide', function(frame)
+            frame:SetScript('OnUpdate', nil)
+            frame.elapsed=nil
+        end)
+    end)
 
-    sub:CreateSpacer()
-    WoWTools_MenuMixin:CreateSlider(sub, {
+--自定义数量
+    --sub:CreateSpacer()
+    sub2=WoWTools_MenuMixin:CreateSlider(autoSub, {
         getValue=function()
             return Save().autoSaveMoney or 500
         end, setValue=function(value)
@@ -92,28 +142,39 @@ local function Init_Menu(self, root)
             end
             self:settings()
         end,
-        name=
-            (WoWTools_DataMixin.onlyChinese and '存钱' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
-            ..'|A:Coin-Gold:0:0|a |cnGREEN_FONT_COLOR:>',
-        minValue=50,
+        name='',
+        tooltip='|cnGREEN_FONT_COLOR:> |A:Coin-Gold:0:0|a',
+            --[['|cff00ccff'
+            ..(WoWTools_DataMixin.onlyChinese and '存钱' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            ..'|r|A:Coin-Gold:0:0|a |cnGREEN_FONT_COLOR:>',]]
+        minValue=0,
         maxValue=10000,
-        step=50,
-        bit=nil,
+        step=100,
     })
-
+    sub2:AddInitializer(function(btn)
+        btn:SetScript('OnUpdate', function(frame, elapsed)
+            frame.elapsed= (frame.elapsed or 0.3) +elapsed
+            if frame.elapsed>0.3 then
+                frame.elapsed=0
+                frame:SetEnabled(Save().autoSaveMoney and true or false)
+            end
+        end)
+    end)
+    autoSub:CreateSpacer()
 --过滤器
     local num=0
     for _ in pairs(Save().filterSaveMoney) do
         num= num+1
     end
-    root:CreateSpacer()
-    sub=root:CreateButton(
-        (WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)..' |cnGREEN_FONT_COLOR:#'..num,
+    sub2=autoSub:CreateButton(
+        '|cff00ccff'
+        ..(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
+        ..'|r |cnGREEN_FONT_COLOR:#'..num,
     function()
         return MenuResponse.Open
     end)
 --我
-    sub:CreateCheckbox(
+    sub2:CreateCheckbox(
         WoWTools_UnitMixin:GetPlayerInfo(nil, WoWTools_DataMixin.Player.GUID, nil, {faction=WoWTools_DataMixin.Player.Faction, reName=true,reRealm=true, level=WoWTools_DataMixin.Player.Level}),
     function()
         return Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID]
@@ -127,7 +188,7 @@ local function Init_Menu(self, root)
             and wow.region== WoWTools_DataMixin.Player.Region
             and wow.battleTag== WoWTools_DataMixin.Player.BattleTag
         then
-            sub:CreateCheckbox(
+            sub2:CreateCheckbox(
                 WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wow.faction, reName=true,reRealm=true, level=wow.level}),
             function(data)
                 return Save().filterSaveMoney[data.guid]
@@ -136,9 +197,9 @@ local function Init_Menu(self, root)
             end, {guid=guid})
         end
     end
-    sub:CreateDivider()
+    sub2:CreateDivider()
 --勾选所有
-    sub:CreateCheckbox(
+    sub2:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or EVENTTRACE_BUTTON_ENABLE_FILTERS,
     function()
         for guid in pairs(WoWTools_WoWDate) do
@@ -154,9 +215,10 @@ local function Init_Menu(self, root)
                 Save().filterSaveMoney[guid]= true
             end
         end
+        self:settings()
     end)
 --撤选所有
-    sub:CreateCheckbox(
+    sub2:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '撤选所有' or EVENTTRACE_BUTTON_DISABLE_FILTERS,
     function()
         for _ in pairs(Save().filterSaveMoney) do
@@ -165,8 +227,18 @@ local function Init_Menu(self, root)
         return true
     end, function()
         Save().filterSaveMoney={}
+        self:settings()
     end)
-    WoWTools_MenuMixin:SetScrollMode(sub)
+    WoWTools_MenuMixin:SetScrollMode(sub2)
+
+--全部存放
+    root:CreateButton(
+        '|cff00ccff'
+        ..(WoWTools_DataMixin.onlyChinese and '全部存放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, BANK_DEPOSIT_MONEY_BUTTON_LABEL)),
+    function()
+        C_Bank.DepositMoney(Enum.BankType.Account, GetMoney())
+        return MenuResponse.Open
+    end)
 
 --打开选项界面
     root:CreateDivider()
@@ -183,48 +255,48 @@ EVENTTRACE_BUTTON_ENABLE_FILTERS = "勾选所有";
 
 
 
+
+
+
+
+
+
+
+
 local function Init()
-    local btn= WoWTools_ButtonMixin:Menu(BankPanel.MoneyFrame, {
-        size=23,
-        --icon='hide',
-        --addTexture=true,
-        atlas='BonusLoot-Chest',
-    })
+    local btn= WoWTools_ButtonMixin:Menu(BankPanel.MoneyFrame, {size=23,icon='hide', name='WoWToolsPlusBankMoneyButton'})
+    btn.texture= btn:CreateTexture(nil, 'BORDER')
+    btn.texture:SetPoint('CENTER')
+    btn.texture:SetSize(18,18)
+    btn.texture:SetAtlas('greatVault-whole-normal')
 
     btn:SetPoint('RIGHT', BankPanel.MoneyFrame.MoneyDisplay, 'LEFT', -8, 0)
-    
-    btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=0,g=0.8,b=1}})
-    btn.Text:SetPoint('RIGHT', btn, 'LEFT')
 
-    function btn:settings()
-        local autoSaveMoney
-        if C_Bank.CanDepositMoney(Enum.BankType.Account) and not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] then
-            autoSaveMoney= Save().autoSaveMoney
-        end
-        local icon= self:GetNormalTexture()
-        icon:SetAlpha(autoSaveMoney and 1 or 0.5)
-        icon:SetDesaturated(not autoSaveMoney and true or false)
-        self.Text:SetText(autoSaveMoney and WoWTools_Mixin:MK(autoSaveMoney, 3) or '')
-    end
+    btn.Text= WoWTools_LabelMixin:Create(btn)--, {color={r=0, g=0.8, b=1}})
+    btn.Text:SetPoint('RIGHT', btn.texture, 'LEFT')
+
+
     function btn:set_tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:SetText(
             WoWTools_DataMixin.Icon.icon2
             ..(WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL))
-            ..': '
-            ..(Save().autoSaveMoney and WoWTools_Mixin:MK(Save().autoSaveMoney, 3)..'|A:Coin-Gold:0:0|a'..'' or '')
+            ..': |cnGREEN_FONT_COLOR:>|r '
+            ..(Save().autoSaveMoney
+                and WoWTools_Mixin:MK(Save().autoSaveMoney, 3)..'|A:Coin-Gold:0:0|a'
+                or WoWTools_TextMixin:GetEnabeleDisable(false)
+            )
         )
 
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.Player
             ..(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
-            ..': '..WoWTools_TextMixin:GetYesNo(not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID])
+            ..': '..WoWTools_TextMixin:GetYesNo(Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID])
         )
-        if not C_Bank.CanDepositMoney(Enum.BankType.Account) then
-            GameTooltip:AddLine(
-                '|cnRED_FONT_COLOR:'
-                ..(WoWTools_TextMixin:CN(C_Bank.FetchBankLockedReason(Enum.BankType.Account)) or (WoWTools_DataMixin.onlyChinese and '锁定' or LOCKED)),
-                nil, nil, nil, true
+        if not Can_DepositMoney() then
+            GameTooltip_AddErrorLine(GameTooltip,
+                WoWTools_TextMixin:CN(BankPanelLockPromptMixin:GetBankLockedMessage()),
+                true
             )
         end
         GameTooltip:Show()
@@ -235,9 +307,19 @@ local function Init()
     btn:SetScript('OnEnter', function(self)
         self:set_tooltip()
     end)
+
     btn:SetupMenu(Init_Menu)
-    
-    --btn:settings()
+
+    function btn:settings()
+        local autoSaveMoney
+        if Can_DepositMoney() and not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] then
+            autoSaveMoney= Save().autoSaveMoney
+        end
+        --local icon= self:GetNormalTexture()
+        self.texture:SetAlpha(autoSaveMoney and 1 or 0.5)
+        self.texture:SetDesaturated(not autoSaveMoney and true or false)
+        self.Text:SetText(autoSaveMoney and '|cff00ccff'..WoWTools_Mixin:MK(autoSaveMoney, 3) or '')
+    end
 
     hooksecurefunc(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()
         btn:settings()

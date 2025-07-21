@@ -345,6 +345,7 @@ Plus_Bank\Plus_Bank.lua
 Plus_Bank\ItemInfo.lua
 
 
+Plus_Bank2\0_BankMixin.lua
 Plus_Bank2\1_Init.lua
 Plus_Bank2\2_Menu.lua
 Plus_Bank2\Init_AllBank.lua

@@ -1,23 +1,7 @@
---[[
-BankPanelSystemMixin:IsActiveBankTypeLocked()
-BankPanelSystemMixin:GetActiveBankType()
-BankPanel:GetActiveBankType() == Enum.BankType.Account
 
-BankPanel.selectedTabID
-BankPanel.bankType
-BankPanel.purchasedBankTabData
-BankPanel.itemButtonPool
-BankPanel.bankTabPool
-BankPanel:GetActiveBankType()
-BankPanel:IsBankTypeLocked()
-BankPanel:RefreshBankPanel()
-BankPanel:GenerateItemSlotsForSelectedTab()
-BankFrame:GetActiveBankType()
-]]
 if BankFrameTab2 then
     return
 end
-WoWTools_BankMixin={}
 
 local P_Save={
     line=2,
