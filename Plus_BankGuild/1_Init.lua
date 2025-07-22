@@ -1,18 +1,22 @@
+WoWTools_GuildBankMixin={}
 local P_Save={
-    disabled= not WoWTools_DataMixin.Player.husandro,
-    line=0,
-    num=20,
-    BgAplha=1,--背景ALPHA
+    --disabled= not WoWTools_DataMixin.Player.husandro,
+    
     showIndex=true,
     autoOpenBags=WoWTools_DataMixin.Player.husandro,--自动，打开背包
-    plusOnlyOfficerAndLeader=true,
-
+    
     saveItemSeconds=0.8,--保存，提取物品，延迟
     sortRightToLeft=true,--排序，从后到前
 }
+--[[旧数据
+line=0,
+num=20,
+BgAplha=1
+--plusOnlyOfficerAndLeader=true,
+]]
 
 local function Save()
-    return WoWToolsSave['Plus_GuildBank'] or {}
+    return WoWToolsSave['Plus_GuildBank']
 end
 
 
@@ -20,21 +24,16 @@ end
 
 
 local function Init()
-    if WoWTools_TextureMixin.Events.Blizzard_GuildBankUI then
-        do
-            WoWTools_TextureMixin.Events:Blizzard_GuildBankUI(WoWTools_TextureMixin)
-        end
-        WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
-    end
+    WoWTools_GuildBankMixin:Init_Plus()
+    WoWTools_GuildBankMixin:Init_Menu()
 
-    WoWTools_GuildBankMixin:Guild_Plus()
     --WoWTools_GuildBankMixin:Init_GuildMenu()
-    WoWTools_GuildBankMixin:Init_Plus_Sort()
+    --WoWTools_GuildBankMixin:Init_Plus_Sort()
     --WoWTools_GuildBankMixin:Init_UI()
 
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)
-        if WoWToolsSave['Plus_GuildBank'].autoOpenBags then
+        if WoWToolsSave['Plus_GuildBank'].autoOpenBags and not InCombatLockdown() then
             do
                 WoWTools_BagMixin:OpenBag(nil, false)
             end
@@ -42,7 +41,7 @@ local function Init()
         end
     end)
 
-    return true
+    Init=function()end
 end
 
 
@@ -93,9 +92,7 @@ panel:SetScript("OnEvent", function(self, event, arg1)
             end
 
         elseif arg1=='Blizzard_GuildBankUI' and WoWToolsSave then
-            if Init() then
-                Init=function()end
-            end
+            Init()
             self:UnregisterEvent(event)
         end
     end

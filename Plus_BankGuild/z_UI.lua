@@ -78,10 +78,12 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
 
 
 
-    self:Init_BGMenu_Frame(GuildBankFrame, {enabled=true,
+    self:Init_BGMenu_Frame(GuildBankFrame, {
+        enabled=true,
+        alpha=1,
         isNewButton=true,
         newButtonPoint=function(btn)
-            btn:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT', -48, 0)
+            btn:SetPoint('RIGHT', GuildBankFrame.CloseButton, 'LEFT', -23, 0)
         end,
         settings=function(_, texture, alpha)
             GuildBankFrame.BlackBG:SetAlpha(texture and 0 or alpha or 1)
@@ -109,7 +111,7 @@ end
 
 
 
-
+--[[
 function WoWTools_ItemMixin.Events:Blizzard_GuildBankUI()
     hooksecurefunc(GuildBankFrame, 'Update', function(frame)
         if frame.mode ~= "bank" then
@@ -130,4 +132,4 @@ function WoWTools_ItemMixin.Events:Blizzard_GuildBankUI()
             WoWTools_ItemMixin:SetupInfo(button, {guidBank={tab=tab, slot=i}})
         end
     end)
-end
+end]]

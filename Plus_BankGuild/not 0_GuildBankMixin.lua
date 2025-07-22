@@ -4,7 +4,7 @@ QueryGuildBankTab(tab)
 QueryGuildBankText(tab)
 ]]
 WoWTools_GuildBankMixin={}
-
+--[[
 function WoWTools_GuildBankMixin:GetFree(tabID)
     tabID = tabID or GetCurrentGuildBankTab()
     local numFreeSlots = 0
@@ -56,3 +56,4 @@ function WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
 
     return numOut, numIn
 end
+]]

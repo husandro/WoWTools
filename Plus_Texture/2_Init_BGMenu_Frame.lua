@@ -230,6 +230,8 @@ local function Set_BGTexture(self, name)
 --PortraitContainer
     if self.PortraitContainer then
         WoWTools_TextureMixin:SetAlphaColor(self.PortraitContainer.portrait, nil, true, portraitAlpha)
+    elseif self.Emblem then--公会银行就用这个
+        WoWTools_TextureMixin:SetFrame(self.Emblem, {notColor=true, alpha=portraitAlpha})
     end
 
 --DrawLayer
@@ -714,7 +716,8 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).portraitAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name= (self.PortraitContainer and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '头像' or 'Portrait'),
+        name= ((self.PortraitContainer or self.Emblem) and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '头像' or 'Portrait'),
         minValue=0,
         maxValue=1,
         step=0.05,
