@@ -2554,7 +2554,6 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     end)
 
     --[[hooksecurefunc(IconSelectorPopupFrameTemplateMixin, 'OnLoad', function(btn)
-        print('a')
         self:HideFrame(btn, {index=1})
     end)]]
 end

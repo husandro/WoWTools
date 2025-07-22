@@ -2,7 +2,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     GuildBankFrame.Emblem.Left:Hide()
     GuildBankFrame.Emblem.Right:Hide()
 
-    self:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, 0.3)
+    --[[self:SetAlphaColor(GuildBankFrame.TopLeftCorner, nil, nil, 0.3)
     self:SetAlphaColor(GuildBankFrame.TopRightCorner, nil, nil, 0.3)
     self:SetAlphaColor(GuildBankFrame.BotLeftCorner, nil, nil, 0.3)
     self:SetAlphaColor(GuildBankFrame.BotRightCorner, nil, nil, 0.3)
@@ -10,7 +10,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     self:SetAlphaColor(GuildBankFrame.LeftBorder, nil, nil, 0.3)
     self:SetAlphaColor(GuildBankFrame.RightBorder, nil, nil, 0.3)
     self:SetAlphaColor(GuildBankFrame.TopBorder, nil, nil, 0.3)
-    self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, 0.3)
+    self:SetAlphaColor(GuildBankFrame.BottomBorder, nil, nil, 0.3)]]
 
     self:SetButton(GuildBankFrame.CloseButton, {all=true,})
 
@@ -56,6 +56,7 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     self:HideTexture(GuildBankFrame.TabTitleBGLeft)
     self:HideTexture(GuildBankFrame.TabTitleBGRight)
 
+--按钮，列，背景
     for i=1, 7 do
         local frame= GuildBankFrame['Column'..i]
         if frame then
@@ -64,13 +65,14 @@ function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     end
 
 
+
     self:SetScrollBar(GuildBankFrame.Log)
     self:SetScrollBar(GuildBankInfoScrollFrame)
 
 --右边 Tab
     for index, tab in pairs(GuildBankFrame.BankTabs) do
-        self:HideFrame(_G['GuildBankTab'..index])
-        tab.Button.NormalTexture:SetTexture(0)
+        self:SetFrame(_G['GuildBankTab'..index], {alpha=0})
+        self:SetAlphaColor(tab.Button.NormalTexture, nil, true, 0)
         WoWTools_ButtonMixin:AddMask(tab.Button, true, tab.Button.IconTexture)
     end
 

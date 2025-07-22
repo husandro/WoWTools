@@ -220,7 +220,12 @@ local function Set_BGTexture(self, name)
 --NineSlice
     if self.NineSlice then
         WoWTools_TextureMixin:SetNineSlice(self, nineSliceAlpha)
+    else
+--BaseFrame 外框
+        WoWTools_TextureMixin:SetBaseFrame(self, nineSliceAlpha)
     end
+
+
 
 --PortraitContainer
     if self.PortraitContainer then
@@ -682,7 +687,8 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).nineSliceAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name= (self.NineSlice and '' or '|cff626262')..(WoWTools_DataMixin.onlyChinese and '边框' or EMBLEM_BORDER),--EMBLEM_BORDER
+        name= ((self.NineSlice or self.TopBorder) and '' or '|cff626262')
+            ..(WoWTools_DataMixin.onlyChinese and '边框' or EMBLEM_BORDER),
         minValue=0,
         maxValue=1,
         step=0.05,

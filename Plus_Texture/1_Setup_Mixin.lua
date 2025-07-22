@@ -459,6 +459,8 @@ function WoWTools_TextureMixin:SetInset(frame, alphaORmin)
 end
 
 
+
+
 --IconSelectorPopupFrameTemplateMixin
 function WoWTools_TextureMixin:SetIconSelectFrame(frame)
     if not frame then
@@ -594,3 +596,26 @@ end
     self:SetNineSlice(frame)
     self:SetAlphaColor(frame:GetName()..'Bg', nil, nil, true)
 end]]
+
+
+
+
+--公会银行就用这个 BaseBasicFrameTemplate
+function WoWTools_TextureMixin:SetBaseFrame(frame, alpha)
+    if not frame or not frame.TopLeftCorner then
+        return
+    end
+
+    alpha= alpha or self.min or 0.5
+
+--OVERLAY
+    self:SetAlphaColor(frame.TopLeftCorner, nil, nil, alpha)
+    self:SetAlphaColor(frame.TopRightCorner, nil, nil, alpha)
+    self:SetAlphaColor(frame.TopBorder, nil, nil, alpha)
+--BORDER
+    self:SetAlphaColor(frame.BotLeftCorner, nil, nil, alpha)
+    self:SetAlphaColor(frame.BotRightCorner, nil, nil, alpha)
+    self:SetAlphaColor(frame.BottomBorder, nil, nil, alpha)
+    self:SetAlphaColor(frame.LeftBorder, nil, nil, alpha)
+    self:SetAlphaColor(frame.RightBorder, nil, nil, alpha)
+end
