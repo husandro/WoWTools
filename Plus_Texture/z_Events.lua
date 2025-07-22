@@ -340,21 +340,6 @@ end
 
 
 
-function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
-    self:SetNineSlice(GuildRenameFrame)
-    self:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
-    self:HideTexture(GuildRenameFrameInset.Bg)
-    --self:SetInset(GuildRenameFrameInset)
-    self:SetNineSlice(GuildRenameFrameInset)
-
-    GuildRegistrarFrameNpcNameText:SetParent(GuildRegistrarFrame.TitleContainer)
-
-    self:SetEditBox(GuildRegistrarFrameEditBox)
-
-end
-
-
-
 
 
 
@@ -1992,14 +1977,15 @@ function WoWTools_TextureMixin.Frames:CharacterFrame()
     self:SetAlphaColor(CharacterModelFrameBackgroundBotLeft, nil, nil, 0)
     self:SetAlphaColor(CharacterModelFrameBackgroundBotRight, nil, nil, 0)
     self:SetAlphaColor(CharacterModelFrameBackgroundOverlay, nil, nil, 0)
-    CharacterModelFrameBackgroundOverlay:Hide()
+    CharacterModelFrameBackgroundOverlay:Hide()--:SetAlpha(0)---Hide()
 
 --图标，选取
-    self:HideFrame(GearManagerPopupFrame.BorderBox)
+    self:SetIconSelectFrame(GearManagerPopupFrame)
+    --[[self:HideFrame(GearManagerPopupFrame.BorderBox)
     self:SetAlphaColor(GearManagerPopupFrame.BG, nil, nil, 0.3)
     self:SetScrollBar(GearManagerPopupFrame.IconSelector)
     self:SetEditBox(GearManagerPopupFrame.BorderBox.IconSelectorEditBox)
-    self:SetMenu(GearManagerPopupFrame.BorderBox.IconTypeDropdown)
+    self:SetMenu(GearManagerPopupFrame.BorderBox.IconTypeDropdown)]]
 
 --声望
     self:SetScrollBar(ReputationFrame)
@@ -2532,6 +2518,33 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
     hooksecurefunc(PanelTopTabButtonMixin, 'OnLoad', function(btn)
         self:SetTabButton(btn, 0.5)
     end)
+
+--将一个图标拖曳至此处来显示
+    hooksecurefunc(IconSelectorPopupFrameTemplateMixin, 'OnLoad', function(frame)
+        self:SetIconSelectFrame(frame)
+    end)
+
+--图标，修改，列表 Blizzard_SelectorUI.lua
+    hooksecurefunc(SelectorButtonMixin, 'Init', function(btn)
+        if btn.IconMask then
+            return
+        end
+        do
+            self:HideFrame(btn, {index=1})
+        end
+        WoWTools_ButtonMixin:AddMask(btn, nil, btn.Icon)
+    
+        btn.SelectedTexture:ClearAllPoints()
+        btn.SelectedTexture:SetPoint('TOPLEFT',-3,3)
+        btn.SelectedTexture:SetPoint('BOTTOMRIGHT',3,-3)
+        btn.SelectedTexture:SetVertexColor(0,1,0)
+    end)
+
+        --[[frame.SelectedIconMouseLabel= WoWTools_LabelMixin:Create(frame.BorderBox.SelectedIconArea, {color=true})
+        frame.SelectedIconMouseLabel:SetPoint('BOTTOMRIGHT', frame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconHeader, 'TOPRIGHT')
+        frame.SelectedIconMouseLabel:SetText(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))]]
+    
+
     --hooksecurefunc(ButtonStateBehaviorMixin , 'OnLoad', function(btn)
 
     hooksecurefunc('NavBar_Initialize', function(bar)
@@ -2545,3 +2558,4 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         self:HideFrame(btn, {index=1})
     end)]]
 end
+

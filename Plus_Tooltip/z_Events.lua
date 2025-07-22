@@ -417,3 +417,56 @@ function WoWTools_TooltipMixin.Events:Blizzard_AchievementUI()
     end)
 
 end
+
+
+
+
+
+
+
+
+
+
+
+function WoWTools_TooltipMixin.Events:Blizzard_SharedXML()
+    print('asaaaaaaa')
+--图标，修该, 提示，图标
+    local function Set_SetIconTexture(btn, iconTexture)
+        if not btn.Text then
+            btn.Text= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1, mouse=true}})
+            --btn.Text:SetPoint('TOPRIGHT', btn, 'TOPLEFT', -6, 6)
+            btn.Text:SetPoint('BOTTOM', btn, 'TOP')
+            --btn.Text:SetPoint('BOTTOMRIGHT', btn:GetParent().SelectedIconText.SelectedIconHeader, 'TOPRIGHT')
+            --GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconText
+              --GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton
+
+            btn.Text:SetScript('OnLeave', function(label)
+                GameTooltip:Hide()
+                label:SetAlpha(1)
+            end)
+            btn.Text:SetScript('OnEnter', function(label)
+                GameTooltip:SetOwner(label, 'ANCHOR_LEFT')
+                GameTooltip:ClearLines()
+                local icon= label:GetText() or ''
+                GameTooltip:AddDoubleLine(
+                    self.addName..WoWTools_DataMixin.Icon.icon2,
+                    '|T'..icon..':0|t'..icon
+                )
+                GameTooltip:Show()
+                label:SetAlpha(0.5)
+            end)
+        end
+        btn.Text:SetText(iconTexture or '')
+        print(iconTexture)
+    end
+--装备管理
+    hooksecurefunc(GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton, 'SetIconTexture', function(...)
+        print('SetIconTexture',...)
+        Set_SetIconTexture(...)
+    end)
+--图标，修改
+    hooksecurefunc(SelectedIconButtonMixin, 'SetIconTexture', function(...)
+        Set_SetIconTexture(...)
+        print('SelectedIconButtonMixinSetIconTexture', ...)
+    end)
+end

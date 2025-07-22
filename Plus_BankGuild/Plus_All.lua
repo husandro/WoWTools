@@ -166,6 +166,7 @@ local function Set_Button_Script(btn)
     end)
 
     function btn:OnEnter()
+       
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
         GameTooltip:SetGuildBankItem(self.tabID, self.slotID)
     end
@@ -188,6 +189,9 @@ local function Set_Button_Script(btn)
 
     function btn:OnReceiveDrag()
         PickupGuildBankItem(self.tabID, self.slotID)
+         if not GetCurrentGuildBankTab() ~= self.tabID then
+            self:update_tab()
+        end
     end
 
     function btn:OnEvent()
@@ -196,9 +200,12 @@ local function Set_Button_Script(btn)
         end
     end
 
+    function btn:update_tab()
+        QueryGuildBankTab(self.tabID)
+    end
+
     function btn:Init()
         local texture, itemCount, locked, isFiltered, quality = GetGuildBankItemInfo(self.tabID, self.slotID)
-        
         SetItemButtonTexture(self, texture)
         SetItemButtonCount(self, itemCount)
         SetItemButtonDesaturated(self, locked)
@@ -319,10 +326,12 @@ local function GuildBankFrameMixinUpdate(self)
 
     -- Update the tab items
     for _, btn in ipairs(Buttons) do
+        
         btn:Init()
     end
 
-    MoneyFrame_Update("GuildBankMoneyFrame", GetGuildBankMoney())
+    MoneyFrame_Update("GuildBankMoneyFrame", GetGuildBankMoney)
+    
     if CanWithdrawGuildBankMoney() then
         self.WithdrawButton:Enable()
     else
@@ -331,6 +340,34 @@ local function GuildBankFrameMixinUpdate(self)
 
     self:UpdateWithdrawMoney()
 end
+
+
+
+
+
+
+
+
+local function GuildBankFrameMixin_UpdateFiltered(self)
+	if self.mode ~= "bank" then
+        return
+    end
+    for _, btn in ipairs(Buttons) do
+        btn:Init()
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 local function Init()
@@ -396,6 +433,7 @@ local function Init()
 
 --替换，原生
     GuildBankFrame.Update= GuildBankFrameMixinUpdate
+    GuildBankFrame.UpdateFiltered= GuildBankFrameMixin_UpdateFiltered
 
 --调整，UI
     Init_UI()

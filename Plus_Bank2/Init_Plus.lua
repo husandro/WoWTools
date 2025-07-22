@@ -383,9 +383,9 @@ local function Init_TabSystem()
 
 
 --当选项面板显示，清队EditBox焦点
-    BankPanel.TabSettingsMenu:HookScript('OnShow', function(self)
+    --[[BankPanel.TabSettingsMenu:HookScript('OnShow', function(self)
         self.BorderBox.IconSelectorEditBox:ClearFocus()
-    end)
+    end)]]
 
 --修该长度，中文会被截断
     BankPanel.TabSettingsMenu.DepositSettingsMenu.AssignProfessionGoodsCheckbox.Text:SetPoint('RIGHT', BankPanel.TabSettingsMenu.DepositSettingsMenu)

@@ -1,6 +1,6 @@
 --SecureScrollTemplates.xml
 --SecureUIPanelTemplates.lua
-local index=1
+
 WoWTools_EditBoxMixin={}
 
 
@@ -9,24 +9,37 @@ WoWTools_EditBoxMixin={}
 
 
 
-local function Create_Label(self, isInstructions, isMaxLetter)
+local function Create_Label(self,  tab)
+    local isInstructions= tab.isInstructions
+    local isMaxLetter= tab.isMaxLetter
+
     local isMultiLine= self:IsMultiLine()
 
     if isInstructions and not self.Instructions then
-        self.Instructions=WoWTools_LabelMixin:Create(self, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
-        if isMultiLine then
-            self.Instructions:SetPoint('TOPLEFT')
+        self.Instructions= WoWTools_LabelMixin:Create(self, {layer='BORDER', color={r=0.35, g=0.35, b=0.35}})
+
+        if tab.instructionsPoint then
+            tab.instructionsPoint(self, self.Instructions)
         else
-            self.Instructions:SetPoint('LEFT')
+            if isMultiLine then
+                self.Instructions:SetPoint('TOPLEFT')
+            else
+                self.Instructions:SetPoint('LEFT')
+            end
         end
     end
 
     if isMaxLetter and not self.MaxLetterLabel then
         self.MaxLetterLabel=WoWTools_LabelMixin:Create(self, {color=true})
-        if isMultiLine then
-            self.MaxLetterLabel:SetPoint('BOTTOMRIGHT')
+
+        if tab.maxLetterPoint then
+            tab.maxLetterPoint(self, self.MaxLetterLabel)
         else
-            self.MaxLetterLabel:SetPoint('RIGHT')
+            if isMultiLine then
+                self.MaxLetterLabel:SetPoint('BOTTOMRIGHT')
+            else
+                self.MaxLetterLabel:SetPoint('RIGHT')
+            end
         end
     end
 end
@@ -214,10 +227,12 @@ function WoWTools_EditBoxMixin:Setup(edit,  tab)
     tab= tab or {}
 
     local isInstructions= tab.isInstructions
+    --instructionsPoint==function(edit, label) end
     local isMaxLetter= tab.isMaxLetter
+    --maxLetterPoint=function(edit, label) end
 
 
-    Create_Label(edit, isInstructions, isMaxLetter)
+    Create_Label(edit, tab)
 
     if type(isInstructions)=='string' then
         edit.Instructions:SetText(isInstructions)

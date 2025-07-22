@@ -1,4 +1,4 @@
-local function Init(self)
+function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()
     GuildBankFrame.Emblem.Left:Hide()
     GuildBankFrame.Emblem.Right:Hide()
 
@@ -67,16 +67,14 @@ local function Init(self)
     self:SetScrollBar(GuildBankFrame.Log)
     self:SetScrollBar(GuildBankInfoScrollFrame)
 
-
-    for i=1, MAX_GUILDBANK_TABS do
-		local btn= GuildBankFrame.BankTabs[i].Button
-        btn.NormalTexture:SetTexture(0)
-
-        btn= _G['GuildBankTab'..i]
-        if btn then
-            self:SetFrame(btn, {alpha=0})
-        end
+--右边 Tab
+    for index, tab in pairs(GuildBankFrame.BankTabs) do
+        self:HideFrame(_G['GuildBankTab'..index])
+        tab.Button.NormalTexture:SetTexture(0)
+        WoWTools_ButtonMixin:AddMask(tab.Button, true, tab.Button.IconTexture)
     end
+
+
 
     self:Init_BGMenu_Frame(GuildBankFrame, {enabled=true,
         isNewButton=true,
@@ -87,16 +85,47 @@ local function Init(self)
             GuildBankFrame.BlackBG:SetAlpha(texture and 0 or alpha or 1)
         end
     })
-
-    Init=function()end
 end
 
 
-function WoWTools_TextureMixin.Events:Blizzard_GuildBankUI()--成就
-    Init(self)
-end
-function WoWTools_GuildBankMixin:Init_UI()
-    Init(WoWTools_TextureMixin)
+
+
+
+
+
+
+
+
+function WoWTools_MoveMixin.Events:Blizzard_GuildBankUI()
+    self:Setup(GuildBankFrame)
+    self:Setup(GuildBankInfoScrollFrame, {frame=GuildBankFrame})
+    self:Setup(GuildBankPopupFrame, {frame=GuildBankFrame})
+    
 end
 
 
+
+
+
+
+function WoWTools_ItemMixin.Events:Blizzard_GuildBankUI()
+    hooksecurefunc(GuildBankFrame, 'Update', function(frame)
+        if frame.mode ~= "bank" then
+            return
+        end
+
+        local MAX_GUILDBANK_SLOTS_PER_TAB = 98
+        local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
+
+        local tab = GetCurrentGuildBankTab();
+        for i=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+            local index = mod(i, NUM_SLOTS_PER_GUILDBANK_GROUP);
+            if ( index == 0 ) then
+                index = NUM_SLOTS_PER_GUILDBANK_GROUP;
+            end
+            local column = ceil((i-0.5)/NUM_SLOTS_PER_GUILDBANK_GROUP);
+            local button = frame.Columns[column].Buttons[index]
+            WoWTools_ItemMixin:SetupInfo(button, {guidBank={tab=tab, slot=i}})
+        end
+    end)
+end

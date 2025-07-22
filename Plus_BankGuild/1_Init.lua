@@ -27,10 +27,10 @@ local function Init()
         WoWTools_TextureMixin.Events.Blizzard_GuildBankUI=nil
     end
 
-    WoWTools_GuildBankMixin:Init_Plus()
-    WoWTools_GuildBankMixin:Init_GuildMenu()
+    WoWTools_GuildBankMixin:Guild_Plus()
+    --WoWTools_GuildBankMixin:Init_GuildMenu()
     WoWTools_GuildBankMixin:Init_Plus_Sort()
-    WoWTools_GuildBankMixin:Init_UI()
+    --WoWTools_GuildBankMixin:Init_UI()
 
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)

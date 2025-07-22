@@ -1,4 +1,16 @@
 
+function WoWTools_TextureMixin.Events:Blizzard_GuildRename()--11.1.5
+    self:SetNineSlice(GuildRenameFrame)
+    self:SetAlphaColor(GuildRenameFrameBg, nil, nil, true)
+    self:HideTexture(GuildRenameFrameInset.Bg)
+    --self:SetInset(GuildRenameFrameInset)
+    self:SetNineSlice(GuildRenameFrameInset)
+end
+
+
+
+
+
  --公会和社区 Blizzard_Communities
  function WoWTools_TextureMixin.Events:Blizzard_Communities()
     self:SetButton(CommunitiesFrameCloseButton)
@@ -57,6 +69,8 @@
     self:SetFrame(CommunitiesFrame.GuildMemberDetailFrame.Border, {alpha=1})
     self:SetButton(CommunitiesFrame.GuildMemberDetailFrame.CloseButton)
     self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.NoteBackground, 0.5)
+    self:SetMenu(CommunitiesFrame.GuildMemberDetailFrame.RankDropdown)
+    self:SetNineSlice(CommunitiesFrame.GuildMemberDetailFrame.OfficerNoteBackground, 0.5)
 
 
 --公会奖励，列表, 物品，GuildRewards.lua
@@ -97,13 +111,7 @@
     self:SetNineSlice(PetitionFrameInset)
     self:SetScrollBar(PetitionFrame)
 
---公会，可以使用的服务
-    self:SetNineSlice(GuildRegistrarFrame)
-    self:SetAlphaColor(GuildRegistrarFrameBg, nil, nil,true)
-    self:HideTexture(GuildRegistrarFrameInset.Bg)
-    self:SetInset(GuildRegistrarFrameInset)
-    self:SetNineSlice(GuildRegistrarFrameInset)
-    self:SetScrollBar(GuildRegistrarFrame)
+
 
 --设计，公会战袍
     self:SetAllFrames(TabardFrame, {
@@ -120,9 +128,9 @@
     self:SetButton(TabardCharacterModelRotateLeftButton)
     self:SetButton(TabardCharacterModelRotateRightButton)
 
-    
+
     --self:SetButton(TabardFrameCloseButton)
-    
+
 
 --信息
     self:SetFrame(CommunitiesFrameGuildDetailsFrameInfo)
@@ -301,8 +309,6 @@ end
 
 
 
---今日信息
-
 
 function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     local sub
@@ -411,7 +417,7 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
         end,
     })
 
-    
+
     --[[没有GetName()
     self:Setup(CommunitiesFrame.RecruitmentDialog)
     self:Setup(CommunitiesFrame.NotificationSettingsDialog)
@@ -472,8 +478,6 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     end})
     PetitionFrame.Bg:SetPoint('BOTTOMRIGHT',-32,30)
 
---公会，可以使用的服务
-    self:Setup(GuildRegistrarFrame)
 
 --公会和社区，列表
     CommunitiesFrameCommunitiesList:SetPoint('BOTTOMRIGHT', CommunitiesFrame, 'BOTTOMLEFT', 170, 3)
@@ -535,10 +539,53 @@ function WoWTools_MoveMixin.Events:Blizzard_Communities()--公会和社区
     GuildControlUIRankBankFrameInset:SetPoint('BOTTOMRIGHT', -2, 2)
 
 --社区设置
---[[修改，图标
+--修改，图标, 可能会有BUG
     self:Setup(CommunitiesAvatarPickerDialog, {
         setSize=true, notFuori=true,
-    sizeRestFunc=function(btn)
+    sizeRestFunc=function()
         CommunitiesAvatarPickerDialog:SetSize(510, 480)
-    end})]]
+    end})
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--公会，可以使用的服务
+function WoWTools_TextureMixin.Frames:GuildRegistrarFrame()
+    GuildRegistrarFrameNpcNameText:SetParent(GuildRegistrarFrame.TitleContainer)
+    self:SetButton(GuildRegistrarFrameCloseButton)
+    self:SetNineSlice(GuildRegistrarFrame)
+    self:SetAlphaColor(GuildRegistrarFrameBg, nil, nil,true)
+    self:HideTexture(GuildRegistrarFrameInset.Bg)
+    self:SetInset(GuildRegistrarFrameInset)
+    self:SetNineSlice(GuildRegistrarFrameInset)
+    self:SetScrollBar(GuildRegistrarFrame)
+    self:SetEditBox(GuildRegistrarFrameEditBox)
+end
+
+--公会，可以使用的服务
+function WoWTools_MoveMixin.Frames:GuildRegistrarFrame()
+    self:Setup(GuildRegistrarFrame)
+
+--注册公会
+    WoWTools_EditBoxMixin:Setup(GuildRegistrarFrameEditBox,  {isMaxLetter=true, maxLetterPoint=function(edit, label)
+        label:SetPoint('BOTTOMRIGHT', edit, 'TOPRIGHT')
+    end})
+--公会更名
+    WoWTools_EditBoxMixin:Setup(GuildRenameFrame.RenameFlow.NameBox,  {isMaxLetter=true, maxLetterPoint=function(edit, label)
+        label:SetPoint('BOTTOMRIGHT', edit, 'TOPRIGHT')
+    end})
+    local label= WoWTools_LabelMixin:Create(GuildRenameFrame.RenameFlow.NameBox, {color=true, name='WoWToolsGuildRenameFrameRenameMaxLabel'})
+    label:SetPoint('LEFT', GuildRenameFrame.RenameFlow.NameBox, 'RIGHT')
+    label:SetText(24)
 end

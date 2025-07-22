@@ -216,5 +216,5 @@ end
 
 
 function WoWTools_GuildBankMixin:Init_GuildMenu()
-   Init()
+   --Init()
 end

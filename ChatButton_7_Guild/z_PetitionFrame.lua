@@ -5,16 +5,89 @@ local function Save()
 end
 
 
-local check
+local function Invite(unit)
+    if not UnitExists(unit)
+        or not UnitIsConnected(unit)
+        or not UnitIsPlayer(unit)
+        or UnitIsUnit('player', unit)
+        or UnitIsEnemy('player', unit)
+    then
+        return
+    end
+    local guid= UnitGUID(unit)
+    
+    if guid and not IsPlayerInGuildFromGUID(guid) then
+        OfferPetition()
+    end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 local function Init()
     if IsInGuild() then
         return
     end
 
-    check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
+    local btn= WoWTools_ButtonMixin:Cbtn(PetitionFrame, {isUI=true, size={120, 23}})
 
-    check:SetPoint('TOPLEFT', 50, -33)
+    btn:SetText(WoWTools_DataMixin.onlyChinese and '姓名板' or NAMEPLATES_LABEL)
+    btn:SetPoint('TOPLEFT', 50, -33)
+
+    btn:SetScript('OnLeave', function()
+        GameTooltip:Hide()
+    end)
+    btn:SetScript('OnEnter', function(self)
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:SetText(WoWTools_DataMixin.onlyChinese and '开启友方姓名板' or NAMEPLATES_MESSAGE_FRIENDLY_ON)
+        if InCombatLockdown() then
+            GameTooltip_AddErrorLine(GameTooltip, WoWTools_DataMixin.onlyChinese and '战斗中' or HUD_EDIT_MODE_SETTING_ACTION_BAR_VISIBLE_SETTING_IN_COMBAT)
+        end
+        GameTooltip:Show()
+    end)
+    btn:SetScript('OnClick', function()
+        if InCombatLockdown() then
+            return
+        end
+        C_CVar.SetCVar('nameplateShowFriends', C_CVar.GetCVarBool('nameplateShowFriends') and '0' or '1')
+    end)
+        --[[local p=C_CVar.GetCVarBool('nameplateShowFriends')
+        --local all= C_CVar.GetCVarBool('nameplateShowAll')
+
+        if not p then
+            C_CVar.SetCVar('nameplateShowFriends', '1')
+        end
+
+        C_Timer.After(0.3, function()
+            for _, v in pairs(C_NamePlate.GetNamePlates() or {}) do
+                local unit = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
+                if unit then
+                    Invite(unit)
+                end
+            end
+            if not InCombatLockdown() and not p then
+                C_CVar.SetCVar('nameplateShowFriends', '0')
+            end
+        end)]]
+    
+
+    local check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
+
+    --check:SetPoint('TOPLEFT', 50, -33)
+    check:SetPoint('LEFT', btn, 'RIGHT', 2, 0)
     check.Text:SetText(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
     check:SetScript('OnLeave', GameTooltip_Hide)
     check:SetChecked(not Save().disabledPetitionTarget)
@@ -27,34 +100,24 @@ local function Init()
         GameTooltip:ClearLines()
         GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
         GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动要求签名' or  format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, REQUEST_SIGNATURE), WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
+        GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动要求签名' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REQUEST_SIGNATURE), WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
         GameTooltip:Show()
     end)
 
-    function check:OfferPetition(unit)
-        unit= unit or 'player'
-        local guid= UnitGUID('target')
-        if not UnitIsPlayer('target')
-            or IsPlayerInGuildFromGUID(guid)
-            or UnitIsUnit('player', 'target')
-            or UnitIsEnemy('player', 'target')
-            or not UnitIsConnected('target')
-        then
-            return
-        end
-        OfferPetition()
-    end
+
 
     function check:set_event()
         if self:IsVisible() and self:GetChecked() then
             self:RegisterEvent('PLAYER_TARGET_CHANGED')
-            self:OfferPetition()
+            Invite('target')
         else
             self:UnregisterEvent('PLAYER_TARGET_CHANGED')
         end
     end
 
-    check:SetScript('OnEvent', check.OfferPetition)
+    check:SetScript('OnEvent',  function()
+        Invite('target')
+    end)
 
     PetitionFrame:HookScript('OnHide', function()
         check:set_event()
@@ -62,6 +125,8 @@ local function Init()
     PetitionFrame:HookScript('OnShow', function()
         check:set_event()
     end)
+
+    Init=function()end
 end
 
 

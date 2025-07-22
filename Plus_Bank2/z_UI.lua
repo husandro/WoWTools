@@ -40,13 +40,7 @@ function WoWTools_TextureMixin.Frames:BankFrame()
     end)
 
 --TabSettingsMenu
-    self:SetFrame(BankPanel.TabSettingsMenu.BorderBox)
-    self:SetFrame(BankPanel.TabSettingsMenu.DepositSettingsMenu)
-    self:SetScrollBar(BankPanel.TabSettingsMenu.IconSelector)
-    self:SetMenu(BankPanel.TabSettingsMenu.BorderBox.IconTypeDropdown)
-    self:SetMenu(BankPanel.TabSettingsMenu.DepositSettingsMenu.ExpansionFilterDropdown)
-    self:SetEditBox(BankPanel.TabSettingsMenu.BorderBox.IconSelectorEditBox)
-    self:HideFrame(BankPanel.TabSettingsMenu.BorderBox.SelectedIconArea.SelectedIconButton)
+    self:SetIconSelectFrame(BankPanel.TabSettingsMenu)
 
 --button
     hooksecurefunc(BankPanelItemButtonMixin, 'OnLoad', function(btn)

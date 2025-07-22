@@ -6037,7 +6037,14 @@
         "NO_VIEWABLE_GUILDBANK_TABS",
         "NO_VIEWABLE_GUILDBANK_LOGS",
         "NO_GUILDBANK_TABS",
-        "GuildBankFrameTabMixin"
+        "GuildBankFrameTabMixin",
+        "GuildBankTab8",
+        "NAMEPLATES_MESSAGE_FRIENDLY_ON",
+        "GuildRegistrarFrameCloseButton",
+        "GuildBankPopupFrame",
+        "SelectedIconButtonMixin",
+        "ICON_SELECTION_DRAG",
+        "SelectorButtonMixin"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

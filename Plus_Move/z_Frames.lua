@@ -220,6 +220,6 @@ end
 
 
 function WoWTools_MoveMixin.Frames:GearManagerPopupFrame()
-    self:Setup(GearManagerPopupFrame, {notSave=true})
+    self:Setup(GearManagerPopupFrame, {frame=CharacterFrame})
 end
     

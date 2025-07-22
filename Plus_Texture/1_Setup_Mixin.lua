@@ -281,10 +281,10 @@ function WoWTools_TextureMixin:SetScrollBar(bar, isAutoHide)
         return
     end
 
-    self:SetFrame(bar.Back, {alpha=0.5})
-    self:SetFrame(bar.Forward, {alpha=0.5})
+    self:SetFrame(bar.Back, {alpha=0.8})
+    self:SetFrame(bar.Forward, {alpha=0.8})
     self:SetFrame(bar.Track, {alpha=0.5})
-    self:SetFrame(bar.Track.Thumb, {alpha=0.5})
+    self:SetFrame(bar.Track.Thumb, {alpha=0.8})
     
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.5)
@@ -457,6 +457,52 @@ function WoWTools_TextureMixin:SetInset(frame, alphaORmin)
     self:SetAlphaColor(frame.BottomLeftCorner, nil, nil, alphaORmin)
 
 end
+
+
+--IconSelectorPopupFrameTemplateMixin
+function WoWTools_TextureMixin:SetIconSelectFrame(frame)
+    if not frame then
+        return
+    end
+
+    local border= frame.BorderBox
+    if border then
+        self:SetFrame(border)
+        self:SetMenu(border.IconTypeDropdown)
+        self:SetEditBox(border.IconSelectorEditBox)
+
+        --[[self:SetFrame(border.SelectedIconArea.SelectedIconButton, {show={
+            [border.SelectedIconArea.SelectedIconButton.Icon]=true,
+            [border.SelectedIconArea.SelectedIconButton.Highlight]=true,
+        }})]]
+        self:HideFrame(border.SelectedIconArea.SelectedIconButton, {index=1})
+        WoWTools_ButtonMixin:AddMask(border.SelectedIconArea.SelectedIconButton, nil, border.SelectedIconArea.SelectedIconButton.Icon)
+
+        border.IconSelectionText:SetText(
+            '|A:communities-icon-addchannelplus:0:0|a|cnGREEN_FONT_COLOR:'
+            ..(WoWTools_DataMixin.onlyChinese and '将一个图标拖曳至此处来显示' or ICON_SELECTION_DRAG)
+        )
+
+--清除，焦点
+        frame:HookScript('OnShow', function(f)
+            if f.BorderBox.IconSelectorEditBox:HasFocus() then
+                f.BorderBox.IconSelectorEditBox:ClearFocus()
+            end
+        end)
+    end
+
+    self:SetScrollBar(frame.IconSelector)
+
+    if frame.DepositSettingsMenu then--银行
+        self:SetFrame(frame.DepositSettingsMenu)
+        self:SetMenu(frame.DepositSettingsMenu.ExpansionFilterDropdown)
+    end
+    if frame.BG then
+        frame.BG:SetTexture(0)
+        frame.BG:SetColorTexture(0,0,0,1)
+    end
+end
+
 
 
 
