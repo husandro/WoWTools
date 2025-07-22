@@ -160,7 +160,7 @@ local function Init_RightTab_Menu(self, root)
         '|cnGREEN_FONT_COLOR:#'..itemNum..'|r '
         ..(WoWTools_DataMixin.onlyChinese and '全部' or ALL),
     function()
-        local free= WoWTools_BagMixin:GetFree(true) or 0
+        local free= Get_Bank_Free()
         for _, item in pairs(itemTab) do
             free= Use_Container_Item(free, item.item)
             if free==0 then

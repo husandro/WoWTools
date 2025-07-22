@@ -61,7 +61,12 @@ end
 
 --拾取
 function WoWTools_ItemMixin.Frames:LootFrame()
-
+    hooksecurefunc(LootFrameItemElementMixin, 'Init', function(btn)
+        WoWTools_ItemMixin:SetupInfo(btn.Item, {lootIndex= btn:GetSlotIndex()})
+    end)
+end
+    --[[
+    local texture, item, quantity, currencyID, itemQuality, locked, isQuestItem, questID, isActive = GetLootSlotInfo(slotIndex);
     hooksecurefunc(LootFrame, 'Open', function(frame)--LootFrame.lua
         if not frame.ScrollBox:GetView() then
             return
@@ -77,8 +82,7 @@ function WoWTools_ItemMixin.Frames:LootFrame()
         for index, btn in pairs(frame:GetFrames() or {}) do
             WoWTools_ItemMixin:SetupInfo(btn.Item, {lootIndex=btn.GetOrderIndex() or btn:GetSlotIndex() or index})
         end
-    end)
-end
+    end)]]
 
 
 

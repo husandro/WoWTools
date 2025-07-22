@@ -360,8 +360,8 @@ Plus_Bank2\z_UI.lua
 Plus_BankGuild\0_GuildBankMixin.lua
 Plus_BankGuild\1_Init.lua
 Plus_BankGuild\Menu.lua
-Plus_BankGuild\Plus_Init.lua
-##Plus_BankGuild\Plus_All.lua
+##Plus_BankGuild\Plus_Init.lua
+Plus_BankGuild\Plus_All.lua
 Plus_BankGuild\Plus_TabButton_Menu.lua
 Plus_BankGuild\Plus_Sort.lua
 Plus_BankGuild\z_UI.lua

@@ -159,11 +159,12 @@ end
 --物品拾取
 function WoWTools_MoveMixin.Frames:LootFrame()
 
-    LootFrame.ScrollBox:SetPoint('RIGHT')
+    LootFrame.ScrollBox:SetPoint('RIGHT', -12, 0)
 
-    hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
+    hooksecurefunc(LootFrameItemElementMixin, 'OnLoad', function(btn)
         btn.Text:SetPoint('RIGHT', -8, 0)
     end)
+    --hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)
 
     hooksecurefunc(LootFrame, 'Open', function(frame)
         if WoWTools_FrameMixin:IsLocked(frame) then
@@ -183,6 +184,9 @@ function WoWTools_MoveMixin.Frames:LootFrame()
         end
         if s and s[1] then
             frame:SetWidth(s[1])
+            if s[2] then
+                frame:SetHeight(s[2])
+            end
         end
     end)
 
@@ -190,10 +194,11 @@ function WoWTools_MoveMixin.Frames:LootFrame()
     self:Setup(LootFrame, {
         setSize=true, isShow=true,
     sizeStopFunc=function()
-        ScrollingFlatPanelMixin.Open(LootFrame, true)
+        Save().size['LootFrame']= {LootFrame:GetSize()}
+        --ScrollingFlatPanelMixin.Open(LootFrame, false)
     end, sizeRestFunc=function()
         Save().size['LootFrame']= nil
-        LootFrame:SetWidth(220)
+        --LootFrame:SetWidth(220)
 	    ScrollingFlatPanelMixin.Open(LootFrame, true)
     end})
 end

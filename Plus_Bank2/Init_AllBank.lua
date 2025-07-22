@@ -286,6 +286,7 @@ local function Init_All()
         local index=0
         local width= BODER_LEFT*2
         local indexTab= 0
+        local newContainer= line>8 and line or 8
 
         for _, bankTabData in ipairs(self.purchasedBankTabData or {}) do
             local numSlot= C_Container.GetContainerNumSlots(bankTabData.ID)
@@ -304,10 +305,14 @@ local function Init_All()
                 end
     --x,y
                 index= index+1
-                if select(2, math.modf(index/num))==0 or containerSlotID==numSlot then
-                    x= x+ 37 +line
+                local isNewContainer= containerSlotID==numSlot
+                if select(2, math.modf(index/num))==0 or isNewContainer then
+
+                    x= x+ 37 +line+ (isNewContainer and newContainer or 0)
                     y= -63
-                    width= width+ 37 +line
+                    width= width+ 37+ line+  (isNewContainer and newContainer or 0)
+
+                    
                 else
                     y= (y-37)-line
                 end
@@ -325,7 +330,7 @@ local function Init_All()
 
     --设置大小
         BankFrame:SetSize(
-            width-line+3,
+            width- line+ 3 -newContainer,
             63+ (37+line)*num -line + BODER_LEFT+3
         )
     end
@@ -375,7 +380,7 @@ end
 
 
 
-
+--C_Container.SortBank(Enum.BankType.Guild)
 
 
 

@@ -135,7 +135,7 @@ end
 
 --GuildBankItemButtonMixin
 local function Set_Button_Script(btn)
-    function btn:OnClick(button)
+    btn:SetScript('OnClick', function(self, d)
         if HandleModifiedItemClick(GetGuildBankItemLink(self.tabID, self.slotID)) then
             return
         end
@@ -156,14 +156,14 @@ local function Set_Button_Script(btn)
             DropCursorMoney()
             ClearCursor()
         else
-            if button == "RightButton" then
+            if d == "RightButton" then
                 AutoStoreGuildBankItem(self.tabID, self.slotID)
                 self:OnLeave()
             else
                 PickupGuildBankItem(self.tabID, self.slotID)
             end
         end
-    end
+    end)
 
     function btn:OnEnter()
         GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
@@ -211,7 +211,7 @@ local function Set_Button_Script(btn)
 
     btn:RegisterForClicks("LeftButtonUp", "RightButtonUp")
     btn:RegisterForDrag("LeftButton")
-    function btn:SplitStack(split)
+    btn.SplitStack= function(self, split)
         SplitGuildBankItem(self.tabID, self.slotID, split)
     end
     btn.UpdateTooltip = btn.OnEnter
@@ -241,33 +241,37 @@ local function Set_Button_Point()
     local index=0
 
     for tabID=1, GetNumGuildBankTabs() do
-        for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
-            index= index+1
+        if select(3, GetGuildBankTabInfo(tabID)) then--name, icon, isViewable, canDeposit, numWithdrawals, remainingWithdrawals, filtered 
+            for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
+                index= index+1
 
-            local btn= Buttons[index]
-            if not btn then
-                btn= CreateFrame('ItemButton', nil, GuildBankFrame.Column1, 'GuildBankItemButtonTemplate', tabID)
-                btn.tabID= tabID
-                btn.slotID= slotID
-                Set_Button_Script(btn)
-                table.insert(Buttons, btn)
-            end
+                local btn= Buttons[index]
+                if not btn then
+                    btn= CreateFrame('ItemButton', nil, GuildBankFrame.Column1, 'GuildBankItemButtonTemplate', tabID)
+                    btn.tabID= tabID
+                    btn.slotID= slotID
+                    Set_Button_Script(btn)
+                    table.insert(Buttons, btn)
+                end
 
-            btn:SetPoint("TOPLEFT", GuildBankFrame, x, y)
+                btn:SetPoint("TOPLEFT", GuildBankFrame, x, y)
 
-            if slotID==MAX_GUILDBANK_SLOTS_PER_TAB or select(2, math.modf(index/num))==0 then--37 37
-                x= x+ line+ 37
-                y= -60
-            else
-                y= y- line- 37
+                if slotID==MAX_GUILDBANK_SLOTS_PER_TAB or select(2, math.modf(index/num))==0 then--37 37
+                    x= x+ line+ 37
+                    y= -60
+                else
+                    y= y- line- 37
+                end
             end
         end
     end
 
-    GuildBankFrame:SetSize(
-        x+8,
-        (37+line)*num+60+8-line
-    )
+    if index>0 then
+        GuildBankFrame:SetSize(
+            x+8,
+            (37+line)*num+60+8-line
+        )
+    end
 end
 
 
@@ -334,6 +338,19 @@ local function Init()
 --加载数据
     for tabID= 1, GetNumGuildBankTabs() do
         QueryGuildBankTab(tabID)
+    end
+
+    local isCanViewable=nil
+    for tabID=1, GetNumGuildBankTabs() do
+        if select(3, GetGuildBankTabInfo(tabID)) then
+            isCanViewable=true
+            break
+        end
+    end
+    if not isCanViewable then
+        Set_Button_Point= function()end
+        Set_UpdateTabs= function()end
+        return
     end
 
     --自带按钮

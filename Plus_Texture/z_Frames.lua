@@ -450,6 +450,7 @@ function WoWTools_TextureMixin.Frames:LootFrame()
     self:SetNineSlice(LootFrame)
     self:HideFrame(LootFrameBg)
     self:SetButton(LootFrame.ClosePanelButton)
+    self:SetScrollBar(LootFrame)
 
 
     hooksecurefunc(LootFrameElementMixin, 'Init', function(btn)

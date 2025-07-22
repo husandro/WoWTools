@@ -527,7 +527,7 @@ local function Init_Menu(self, root)
     end)
     root:CreateDivider()
 
-    sub2= sub:CreateCheckbox(
+    sub:CreateCheckbox(
         (rightToleft and '' or '|A:common-icon-rotateright:0:0|a')
         ..(WoWTools_DataMixin.onlyChinese and '反向整理公会仓库' or REVERSE_CLEAN_UP_BAGS_TEXT:gsub(HUD_EDIT_MODE_BAGS_LABEL, GUILD_BANK))
         ..(rightToleft and '|A:common-icon-rotateleft:0:0|a' or ''),
