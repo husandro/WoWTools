@@ -429,7 +429,6 @@ end
 
 
 function WoWTools_TooltipMixin.Events:Blizzard_SharedXML()
-    print('asaaaaaaa')
 --图标，修该, 提示，图标
     local function Set_SetIconTexture(btn, iconTexture)
         if not btn.Text then
@@ -457,16 +456,13 @@ function WoWTools_TooltipMixin.Events:Blizzard_SharedXML()
             end)
         end
         btn.Text:SetText(iconTexture or '')
-        print(iconTexture)
     end
 --装备管理
     hooksecurefunc(GearManagerPopupFrame.BorderBox.SelectedIconArea.SelectedIconButton, 'SetIconTexture', function(...)
-        print('SetIconTexture',...)
         Set_SetIconTexture(...)
     end)
 --图标，修改
     hooksecurefunc(SelectedIconButtonMixin, 'SetIconTexture', function(...)
         Set_SetIconTexture(...)
-        print('SelectedIconButtonMixinSetIconTexture', ...)
     end)
 end

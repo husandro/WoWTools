@@ -2487,7 +2487,7 @@ end
 
 --[[function WoWTools_TextureMixin.Events:Blizzard_HelpPlate()
     hooksecurefunc(HelpPlateButtonMixin, 'OnShow', function()
-        print('ab')
+  
     end)
 end]]
 
