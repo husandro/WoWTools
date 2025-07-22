@@ -24,7 +24,6 @@ local function Init_Button()
         local btn= GuildBankFrame.Columns[column].Buttons[btnIndex]
         if btn then
             if not btn.indexText then
-                
 --索引
                 WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, true, 0.2)
                 btn.indexText= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1, a=0.3}})
