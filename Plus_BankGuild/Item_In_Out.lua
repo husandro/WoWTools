@@ -89,7 +89,7 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(WoWTools_GuildBankMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '背包已满' or SPELL_FAILED_CUSTOM_ERROR_1059)
+                print(WoWTools_GuildBankMixin.addName, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r',  WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT)
             else
                 print(WoWTools_GuildBankMixin.addName, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE )
             end
@@ -278,7 +278,7 @@ local function Out_Bags(self, tabID, classID, subClassID, onlyItem)
 
         if not find or freeSlots <= 0 then
             if freeSlots <= 0  then
-                print(itemIndex, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '你的银行已满' or ERR_BANK_FULL )
+                print(itemIndex, '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r',  WoWTools_DataMixin.onlyChinese and '中断' or INTERRUPT )
             else
                 print(itemIndex, '|cnGREEN_FONT_COLOR:'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT)..'|r', WoWTools_DataMixin.onlyChinese and '完成' or COMPLETE )
             end

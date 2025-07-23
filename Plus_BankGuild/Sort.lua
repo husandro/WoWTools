@@ -24,17 +24,18 @@ local function Init_Sort()
     if IsInRun then--禁用，按钮移动事件
         StopRun=true--停止，已运行
         return
-    else
-        local atlas= WoWTools_GuildBankMixin:Get_Access()
-        if atlas then
-            return
-        end
+    end
+
+    local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
+    local numOut= WoWTools_GuildBankMixin:GetNumWithdrawals(currentIndex)
+    if not numOut or numOut==0 then
+        return
     end
 
     IsInRun= true
 
     local saveItemSeconds= (Save().saveItemSeconds or 0.8)+0.2
-    local currentIndex = GetCurrentGuildBankTab() -- 当前 Tab
+
 
     local find, itemLink, itemQuality, itemTexture, classID, subclassID, _
     local isRightToLeft= Save().sortRightToLeft
@@ -146,7 +147,6 @@ local function Init_Menu(self, root)
         return
     end
 
-
     root:CreateButton(
         '|A:bags-button-autosort-up:0:0|a'
         ..(WoWTools_DataMixin.onlyChinese and '整理银行' or BAG_CLEANUP_BANK),
@@ -206,7 +206,7 @@ local function Init()
     end)
     btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
-        
+
         GameTooltip:SetText(
             '|A:bags-button-autosort-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '整理银行' or BAG_CLEANUP_BANK)
@@ -229,7 +229,7 @@ local function Init()
             MenuUtil.CreateContextMenu(self, Init_Menu)
         end
     end)
-    
+
 
 
     GuildItemSearchBox:ClearAllPoints()
