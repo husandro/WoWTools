@@ -124,6 +124,17 @@ local function Init_Menu(self, root)
 
 
 
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS),
+    function()
+        return Save().saveWoWData
+    end, function()
+        Save().saveWoWData= not Save().saveWoWData and true or nil
+        BankPanel:Clean()
+    end)
+    WoWTools_ItemMixin:OpenWoWItemListMenu(self, sub)
+
+
 --打开选项界面
     root:CreateDivider()
     sub=WoWTools_MenuMixin:OpenOptions(root, {name=WoWTools_BankMixin.addName})

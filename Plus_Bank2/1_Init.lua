@@ -15,6 +15,8 @@ local P_Save={
     autoOutMoney= WoWTools_DataMixin.Player.husandro and 100,
     filterSaveMoney={},--[guid]=true
     allBank=WoWTools_DataMixin.Player.husandro,--整合银行
+
+    saveWoWData=true,
 }
 
 

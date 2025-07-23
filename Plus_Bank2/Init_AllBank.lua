@@ -335,6 +335,7 @@ local function Init_All()
         )
     end
 
+--替换，原生
     BankPanel.GenerateItemSlotsForSelectedTab= GenerateItemSlotsForSelectedTab
 
     BankPanel:HookScript('OnEvent', function(self, event, ...)

@@ -164,6 +164,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
         enabled=true,
         isNewButton=true,
+        alpha=1,
         settings=function(_, texture, alpha)
             frame.Border:SetAlpha(texture and 0 or alpha or 0.5)
         end

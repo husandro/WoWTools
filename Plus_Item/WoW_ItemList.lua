@@ -37,6 +37,8 @@ local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.
 local List2Type='Item'
 local List2Buttons={}
 local TypeTabs= {
+
+
 --物品
     ['Item']= {
     atlas='bag-main',
@@ -107,11 +109,76 @@ local TypeTabs= {
 
         count= wow..bank..bag
         return itemName, itemTexture, itemAtlas, count, r, g, b
-    end
-    },
+    end},
 
 
 
+
+
+
+
+
+
+
+
+
+    
+--银行
+    ['Bank']= {
+    atlas='Banker',
+    tooltip=WoWTools_DataMixin.onlyChinese and '银行' or BANK,
+    set_num=function(self)
+        local num=0
+        local wowData= WoWTools_WoWDate[Frame.guid]
+        for _ in pairs(wowData and wowData.Bank or {}) do
+            num=num+1
+        end
+        self.Text:SetText(num==0 and '|cff6060600' or num)
+    end,
+    get_data=function(isFind, findText, findID)
+        local wowData= WoWTools_WoWDate[Frame.guid]
+        local data, num= CreateDataProvider(), 0
+        for itemID, tab in pairs(wowData and wowData.Bank or {}) do
+            print(itemID)
+            WoWTools_Mixin:Load({id=itemID, type='item'})
+
+            local name, cnName
+            if isFind then
+                name= C_Item.GetItemNameByID(itemID)
+                cnName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true})
+                cnName= cnName and cnName~=name and cnName:upper() or nil
+                name=  name and name:upper()
+            end
+
+            if isFind and (itemID==findID or (name and name:find(findText)) or cnName and cnName:find(findText))
+                or not isFind
+            then
+                data:Insert({
+                    itemID= itemID,
+                    num= tab.num,
+                    quality= tab.quality,
+                })
+                num=num+ tab.num
+            end
+        end
+        data:SetSortComparator(function(v1, v2)
+            return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
+        end)
+        return data, num
+    end,
+    set_btn=function(data)
+        local itemID= data.itemID
+        if not itemID then
+            return
+        end
+        local itemName, itemTexture, itemAtlas, count, r, g, b
+        local name, _, _, _, _, _, _, _, _, texture= C_Item.GetItemInfo(itemID)
+        itemName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}) or itemID
+        itemTexture= texture or C_Item.GetItemIconByID(itemID)
+        r,g,b= C_Item.GetItemQualityColor(data.quality or 1)
+        count= WoWTools_Mixin:MK(data.num, 3)..'|A:Banker:0:0'
+        return itemName, itemTexture, itemAtlas, count, r, g, b
+    end},
 
 
 
@@ -1436,8 +1503,15 @@ local function Init_List()
 
     Frame:SetScript('OnShow', function(self)
         Init_Right_List()
+        if not InCombatLockdown() then
+            self:Raise()
+        end
         --self.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     end)
+    
+    if not InCombatLockdown() then
+        Frame:Raise()
+    end
 
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
     Frame.ScrollBox:SetPoint('TOPRIGHT', -28, -55)

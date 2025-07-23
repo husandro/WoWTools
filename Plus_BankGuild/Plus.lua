@@ -13,7 +13,7 @@ local NUM_SLOTS_PER_GUILDBANK_GROUP = 14
 
 local function Init_Button()
 --按钮，边框
-    local plusIndex= Save().plusIndex
+    local showIndex= Save().showIndex
 
     for slotID=1, MAX_GUILDBANK_SLOTS_PER_TAB do
         local btnIndex = mod(slotID, NUM_SLOTS_PER_GUILDBANK_GROUP)
@@ -26,7 +26,7 @@ local function Init_Button()
             if not btn.indexText then
 --索引
                 WoWTools_TextureMixin:SetAlphaColor(btn.NormalTexture, nil, true, 0.2)
-                btn.indexText= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1, a=0.3}})
+                btn.indexText= WoWTools_LabelMixin:Create(btn, {color={r=1,g=1,b=1, a=0.3}, layer='BACKGROUND'})
                 btn.indexText:SetPoint('CENTER')
 --物品信息
                 hooksecurefunc(btn, 'SetMatchesSearch', function(self)
@@ -35,7 +35,7 @@ local function Init_Button()
                     })
                 end)
             end
-            btn.indexText:SetText(plusIndex and slotID or '')
+            btn.indexText:SetText(showIndex and slotID or '')
         end
     end
 end
