@@ -1219,7 +1219,7 @@ local function OnMouseDown_RightButton(self, d)
                         '|A:'..info.atlas..':0:0|a'..info.tooltip,
                     function(data)
                         StaticPopup_Show('WoWTools_OK',
-                            '|A:'..data.info.atlas..':0:0|a'
+                            '|A:'..data.atlas..':0:0|a'
                             ..data.name
                             ..'|n'
                             ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
