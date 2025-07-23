@@ -36,13 +36,22 @@ local Frame
 local CHALLENGE_MODE_KEYSTONE_NAME= CHALLENGE_MODE_KEYSTONE_NAME:gsub('%%s', '(.+)')
 local List2Type='Item'
 local List2Buttons={}
-local TypeTabs= {
+
+local TypeTabs
+
+local function Init_TypeTabs_Data()
+TypeTabs= {
 
 
 --物品
     ['Item']= {
     atlas='bag-main',
     tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Item={}
+        end
+    end,
     set_num=function(self)
         local num=0
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -127,6 +136,11 @@ local TypeTabs= {
     ['Bank']= {
     atlas='Banker',
     tooltip=WoWTools_DataMixin.onlyChinese and '银行' or BANK,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Bank={}
+        end
+    end,
     set_num=function(self)
         local num=0
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -139,7 +153,6 @@ local TypeTabs= {
         local wowData= WoWTools_WoWDate[Frame.guid]
         local data, num= CreateDataProvider(), 0
         for itemID, tab in pairs(wowData and wowData.Bank or {}) do
-            print(itemID)
             WoWTools_Mixin:Load({id=itemID, type='item'})
 
             local name, cnName
@@ -176,7 +189,9 @@ local TypeTabs= {
         itemName= WoWTools_TextMixin:CN(name, {itemID=itemID, isName=true}) or itemID
         itemTexture= texture or C_Item.GetItemIconByID(itemID)
         r,g,b= C_Item.GetItemQualityColor(data.quality or 1)
-        count= WoWTools_Mixin:MK(data.num, 3)..'|A:Banker:0:0'
+        if data.num>1 then
+            count= WoWTools_Mixin:MK(data.num, 3)..'|A:Banker:0:0|a'
+        end
         return itemName, itemTexture, itemAtlas, count, r, g, b
     end},
 
@@ -187,6 +202,11 @@ local TypeTabs= {
     ['Currency']= {
     atlas='PH-currency-icon',
     tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Currency={}
+        end
+    end,
     set_num=function(self)
         local num=0
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -256,6 +276,11 @@ local TypeTabs= {
     ['Money']= {
     atlas='Auctioneer',
     tooltip=WoWTools_DataMixin.onlyChinese and '钱' or MONEY,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Money=nil
+        end
+    end,
     set_num=function(self)
         local num=0
         for _, data in pairs(WoWTools_WoWDate) do
@@ -323,6 +348,11 @@ local TypeTabs= {
     ['Time']= {
     atlas='clock-icon',
     tooltip=WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', ''),
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Time={}
+        end
+    end,
     set_num=function(self)
         local num=0
         for _, data in pairs(WoWTools_WoWDate) do
@@ -391,6 +421,11 @@ local TypeTabs= {
     ['Instance']= {
     atlas='poi-rift1',
     tooltip=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
+        end
+    end,
     set_num=function(self)
         local guid= Frame.guid
         local data= guid and WoWTools_WoWDate[Frame.guid]
@@ -438,6 +473,11 @@ local TypeTabs= {
     ['Rare']= {
     atlas='UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star',
     tooltip=WoWTools_DataMixin.onlyChinese and '稀有' or MAP_LEGEND_RARE,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Rare={day=date('%x'), boss={}}
+        end
+    end,
     set_num=function(self)
         local guid= Frame.guid
         local data= guid and WoWTools_WoWDate[Frame.guid]
@@ -506,6 +546,11 @@ local TypeTabs= {
     ['Worldboss']= {
     atlas='vignettekillboss',
     tooltip=WoWTools_DataMixin.onlyChinese and '世界首领' or MAP_LEGEND_WORLDBOSS,
+    clear_wow=function(guid)
+        if WoWTools_WoWDate[guid] then
+            WoWTools_WoWDate[guid].Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
+        end
+    end,
     set_num=function(self)
         local guid= Frame.guid
         local data= guid and WoWTools_WoWDate[Frame.guid]
@@ -562,7 +607,8 @@ local TypeTabs= {
     end},
 }
 
-
+Init_TypeTabs_Data=function() end
+end
 
 
 
@@ -1133,7 +1179,7 @@ local function OnMouseDown_RightButton(self, d)
             local isMe= guid==WoWTools_DataMixin.Player.GUID
             local battleTag= self.data.battleTag
             local faction= self.data.faction
-
+--全部清除
             local sub=root:CreateButton(
                 WoWTools_DataMixin.Icon.wow2
                 ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
@@ -1158,12 +1204,38 @@ local function OnMouseDown_RightButton(self, d)
                         end
                     end}
                 )
+                return MenuResponse.Open
             end)
             sub:SetTooltip(function(tootip)
                 if isMe then
                     tootip:AddLine(WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI)
                 end
             end)
+--清除，角色数据库
+            root:CreateDivider()
+            for name, info in pairs(TypeTabs) do
+                if info.clear_wow then
+                    root:CreateButton(
+                        '|A:'..info.atlas..':0:0|a'..info.tooltip,
+                    function(data)
+                        StaticPopup_Show('WoWTools_OK',
+                            '|A:'..data.info.atlas..':0:0|a'
+                            ..data.name
+                            ..'|n'
+                            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                            ..'|n|n'
+                            ..(battleTag or '')
+                            ..'|n'
+                            ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=faction, reName=true, reRealm=true}),
+                            nil,
+                            {SetValue=function()
+                                TypeTabs[data.name].clear_wow(guid)
+                                Init_Right_List()
+                            end}
+                        )
+                    end, {name=name, atlas=info.atlas})
+                end
+            end
         end)
 
 
@@ -1488,6 +1560,10 @@ end
 
 
 local function Init_List()
+    do 
+        Init_TypeTabs_Data()
+    end
+
     Frame= WoWTools_FrameMixin:Create(nil, {
         name='WoWToolsWoWItemListFrame',
         header= WoWTools_DataMixin.Icon.wow2
