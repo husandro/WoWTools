@@ -85,10 +85,12 @@ function WoWTools_GuildBankMixin:GetNumWithdrawals(tabID)
         numIn= false
     end
 
-    if remainingWithdrawals > 0  and remainingWithdrawals then
+    if remainingWithdrawals and remainingWithdrawals > 0 then
         numOut= remainingWithdrawals
-    elseif (remainingWithdrawals==0 and numOut==false) then--'无'
+
+    elseif remainingWithdrawals==0 then--'无'
         numOut=false
+
     else --'无限制'
         numOut=true
     end

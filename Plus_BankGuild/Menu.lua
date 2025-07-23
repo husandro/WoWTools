@@ -75,11 +75,12 @@ local function Init_Menu(self, root)
         end,
         name=WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE,
         minValue=0.2,
-        maxValue=1.5,
+        maxValue=3,
         step=0.1,
         bit='%.1f',
         tooltip=function(tooltip)
             tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE)
+            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
             if WoWTools_DataMixin.onlyChinese then
                 tooltip:AddLine('存放，提取，整理')
             else

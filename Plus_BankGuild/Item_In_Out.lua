@@ -52,9 +52,9 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
     local freeSlots =  WoWTools_BagMixin:GetFree(false)
 
-    --[[if type(numOut)=='number' then
+    if type(numOut)=='number' and numOut>=0 then
         freeSlots= math.min(freeSlots, numOut)
-    end]]
+    end
 
     local saveItemSeconds= Save().saveItemSeconds or 0.8
 
@@ -471,7 +471,7 @@ local function Init_Out_Bank_Menu(self, root)
         return MenuResponse.Open
     end, {tabID= tabID, numOut=numOut, items})
     Set_ItemList_Tooltip(sub)
-    sub:SetEnabled(numOut)
+    --sub:SetEnabled(numOut and true or nil)
 
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, true, numOut, true, name)
@@ -490,7 +490,7 @@ local function Init_Out_Bank_Menu(self, root)
         return MenuResponse.Open
     end, {tabID=tabID, numOut=numOut})
     Set_ItemList_Tooltip(sub)
-    sub:SetEnabled(numOut)
+    --sub:SetEnabled(numOut and true or nil)
 
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, true, numOut, false, name)
@@ -532,7 +532,7 @@ local function Init_Out_Bag_Menu(self, root)
         return MenuResponse.Open
     end, {tabID= tabID, items=items})
     Set_ItemList_Tooltip(sub)
-    sub:SetEnabled(numIn)
+    --sub:SetEnabled(numIn and true or nil)
 
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, false, numIn, true, name)
@@ -551,7 +551,7 @@ local function Init_Out_Bag_Menu(self, root)
         return MenuResponse.Open
     end, {tabID= tabID, items=items})
     Set_ItemList_Tooltip(sub)
-    sub:SetEnabled(numIn)
+    --sub:SetEnabled(numIn and true or nil)
 
     if not disabled and num>0 then
         Init_SubMenu(self, sub, tabID, false, numIn, false, name)
@@ -639,7 +639,7 @@ local function Init()
 
         GameTooltip:SetText(
             WoWTools_DataMixin.Icon.icon2
-            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            ..(WoWTools_DataMixin.onlyChinese and '提取' or WITHDRAW)
             ..'|A:dressingroom-button-appearancelist-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..WoWTools_DataMixin.Icon.left
