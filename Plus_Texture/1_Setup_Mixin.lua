@@ -283,7 +283,7 @@ function WoWTools_TextureMixin:SetScrollBar(bar, isAutoHide)
 
     self:SetFrame(bar.Back, {alpha=0.8})
     self:SetFrame(bar.Forward, {alpha=0.8})
-    self:SetFrame(bar.Track, {alpha=0.5})
+    self:SetFrame(bar.Track, {alpha=0.8})
     self:SetFrame(bar.Track.Thumb, {alpha=0.8})
     
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
@@ -348,7 +348,7 @@ function WoWTools_TextureMixin:SetButton(btn, tab)
         return
     end
     tab= tab or {}
-    tab.alpha=tab.alpha or 0.3
+    tab.alpha=tab.alpha or 0.5
     if not tab.show then
         tab.show= {}
         local p= btn:GetPushedTexture()

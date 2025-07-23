@@ -6044,7 +6044,8 @@
         "GuildBankPopupFrame",
         "SelectedIconButtonMixin",
         "ICON_SELECTION_DRAG",
-        "SelectorButtonMixin"
+        "SelectorButtonMixin",
+        "GUILDBANK_WITHDRAW"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
