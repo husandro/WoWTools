@@ -211,6 +211,8 @@ local function Init()
             '|A:bags-button-autosort-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '整理银行' or BAG_CLEANUP_BANK)
             ..WoWTools_DataMixin.Icon.left
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(Save().saveItemSeconds or 0.8)
         )
         GameTooltip:AddLine(
             '|A:dressingroom-button-appearancelist-up:0:0|a'

@@ -52,9 +52,9 @@ local function Out_Bank(self, tabID, classID, subClassID, onlyItem, numOut)
 
     local freeSlots =  WoWTools_BagMixin:GetFree(false)
 
-    if type(numOut)=='number' then
+    --[[if type(numOut)=='number' then
         freeSlots= math.min(freeSlots, numOut)
-    end
+    end]]
 
     local saveItemSeconds= Save().saveItemSeconds or 0.8
 
@@ -468,7 +468,7 @@ local function Init_Out_Bank_Menu(self, root)
        name,
     function(data)
         Out_Bank(self, data.tabID, nil, nil, true, data.numOut)
-        return MenuResponse.Close
+        return MenuResponse.Open
     end, {tabID= tabID, numOut=numOut, items})
     Set_ItemList_Tooltip(sub)
     sub:SetEnabled(numOut)
@@ -487,7 +487,7 @@ local function Init_Out_Bank_Menu(self, root)
         name,
     function(data)
         Out_Bank(self, data.tabID, nil, nil, false, numOut)
-        return MenuResponse.Close
+        return MenuResponse.Open
     end, {tabID=tabID, numOut=numOut})
     Set_ItemList_Tooltip(sub)
     sub:SetEnabled(numOut)
@@ -529,7 +529,7 @@ local function Init_Out_Bag_Menu(self, root)
         name,
     function(data)
         Out_Bags(self, data.tabID, nil, nil, true)
-        return MenuResponse.Close
+        return MenuResponse.Open
     end, {tabID= tabID, items=items})
     Set_ItemList_Tooltip(sub)
     sub:SetEnabled(numIn)
@@ -548,7 +548,7 @@ local function Init_Out_Bag_Menu(self, root)
         name,
     function(data)
         Out_Bags(self, data.tabID, nil, nil, false)
-        return MenuResponse.Close
+        return MenuResponse.Open
     end, {tabID= tabID, items=items})
     Set_ItemList_Tooltip(sub)
     sub:SetEnabled(numIn)
@@ -615,10 +615,13 @@ local function Init()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 
         GameTooltip:SetText(
-            (WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
             ..'|A:dressingroom-button-appearancelist-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..WoWTools_DataMixin.Icon.left
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(Save().saveItemSeconds or 0.8)
         )
         GameTooltip:Show()
     end)
@@ -635,10 +638,13 @@ local function Init()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
 
         GameTooltip:SetText(
-            (WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
             ..'|A:dressingroom-button-appearancelist-up:0:0|a'
             ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
             ..WoWTools_DataMixin.Icon.left
+            ..'|cnGREEN_FONT_COLOR:'
+            ..(Save().saveItemSeconds or 0.8)
         )
         GameTooltip:Show()
     end)
