@@ -1220,7 +1220,7 @@ local function OnMouseDown_RightButton(self, d)
                     function(data)
                         StaticPopup_Show('WoWTools_OK',
                             '|A:'..data.atlas..':0:0|a'
-                            ..data.name
+                            ..data.tooltip
                             ..'|n'
                             ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                             ..'|n|n'
@@ -1233,7 +1233,7 @@ local function OnMouseDown_RightButton(self, d)
                                 Init_Right_List()
                             end}
                         )
-                    end, {name=name, atlas=info.atlas})
+                    end, {name=name, atlas=info.atlas, tooltip=info.tooltip})
                 end
             end
         end)
