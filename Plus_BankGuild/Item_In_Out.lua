@@ -629,7 +629,7 @@ local function Init()
 
 
     local btn2= WoWTools_ButtonMixin:Menu(GuildBankFrame, {atlas='Cursor_OpenHand_32'})
-    btn2:SetPoint('RIGHT', btn, 'LEFT')
+    btn2:SetPoint('RIGHT', btn, 'LEFT', -2, 0)
 
     btn2:SetScript('OnLeave', function()
         GameTooltip:Hide()

@@ -27,7 +27,7 @@ end
 
 local panel= CreateFrame("Frame")
 panel:RegisterEvent("ADDON_LOADED")
-panel:RegisterEvent("PLAYER_LOGIN")
+panel:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
@@ -55,8 +55,6 @@ panel:SetScript("OnEvent", function(self, event, arg1)
                 layout= WoWTools_OtherMixin.Layout,
                 category= WoWTools_OtherMixin.Category,
             })
-
-            self:UnregisterEvent(event)
         end
 
     elseif event=='PLAYER_ENTERING_WORLD' then

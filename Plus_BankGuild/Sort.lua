@@ -200,7 +200,7 @@ end
 --..(WoWTools_DataMixin.onlyChinese and '整理银行' or BAG_CLEANUP_BANK)
 local function Init()
     local btn= WoWTools_ButtonMixin:Cbtn(GuildBankFrame, {atlas='bags-button-autosort-up'})
-    btn:SetPoint('TOPRIGHT', -15, -36)
+    btn:SetPoint('TOPRIGHT', -15, -28)-- -15 -36
     btn:SetScript('OnLeave', function()
         GameTooltip:Hide()
     end)
