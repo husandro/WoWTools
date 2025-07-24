@@ -765,7 +765,8 @@ local function Init_Left_List()
     local data, num
     if TypeTabs[List2Type] then
         data, num= TypeTabs[List2Type].get_data(isFind, findText, findID)
-        num= '|A:'..TypeTabs[List2Type].atlas..':0:0|a'..(num or 0)
+        num= WoWTools_Mixin:MK(num or 0, 3)
+        num= '|A:'..TypeTabs[List2Type].atlas..':0:0|a'..(num==0 and '|cff606060' or '')..num
     else
         --data= CreateDataProvider()
     end
@@ -1017,7 +1018,7 @@ local function Settings_Right_Button(btn, data)
 
 --公会信息
     local guild= data.guild
-    local guidName= guild.data[1]
+    local guidName= guild and guild.data and guild.data[1]
     if guidName then--SetLargeGuildTabardTextures(unit, emblemTexture, backgroundTexture, borderTexture, tabardData)
         guidName=WoWTools_TextMixin:sub(guidName, 12, 24)
     end
@@ -1772,15 +1773,57 @@ local function Init_List()
             GameTooltip:SetText(self.tooltip)
             GameTooltip:Show()
         end)
-        List2Buttons[name]:SetScript('OnMouseDown', function(self)
+        List2Buttons[name]:SetScript('OnMouseDown', function(self, d)
             List2Type= self.name
-            Init_Left_List()
+            if d=='LeftButton' then
+                Init_Left_List()
 
-            for _, btn in pairs(List2Buttons) do
-                local isSelect= List2Type==btn.name
-                --btn:SetButtonState(isSelect and 'PUSHED' or 'NORMAL', true)
-                btn.texture:SetDesaturated(isSelect)
-                btn.texture:SetScale(isSelect and 0.5 or 1)
+                for _, btn in pairs(List2Buttons) do
+                    local isSelect= List2Type==btn.name
+                    btn.texture:SetDesaturated(isSelect)
+                    btn.texture:SetScale(isSelect and 0.5 or 1)
+                end
+            else
+                MenuUtil.CreateContextMenu(self, function(_, root)
+                    local guid= Frame.guid
+                    local wowData= WoWTools_WoWDate[guid]
+
+                    local tab= TypeTabs[self.name]
+                    local clear_wow= tab.clear_wow
+
+                    if not wowData or not clear_wow then
+                        return
+                    end
+
+                    local atlas= tab.atlas
+                    local tooltip= tab.tooltip
+                    
+                    root:CreateButton(
+                        '|A:'..atlas..':0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                    function()
+                        StaticPopup_Show('WoWTools_OK',
+                            '|A:'..atlas..':0:0|a'
+                            ..tooltip
+                            ..'|n'
+                            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                            ..'|n|n'
+                            ..(wowData.battleTag or '')
+                            ..'|n'
+                            ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}),
+                            nil,
+                            {SetValue=function()
+                                clear_wow(guid)
+                                Init_Right_List()
+                            end}
+                        )
+                    end)
+
+                    root:CreateDivider()
+                    root:CreateTitle(
+                        WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true})
+                    )
+
+                end)
             end
         end)
         last=List2Buttons[name]

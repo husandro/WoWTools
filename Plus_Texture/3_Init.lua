@@ -118,12 +118,14 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Texture']= Save() or P_Save
 
-            Save().Bg= Save().Bg or P_Save.Bg
+            if not Save().Bg then
+                Save().Bg= P_Save.Bg
 
-            if Save().Bg.UseTexture then
+            elseif Save().Bg.UseTexture then
                 WoWToolsPlayerDate['BGTexture']= Save().Bg.UseTexture
                 Save().Bg.UseTexture=nil
             end
+
             WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
 
             Save().Bg= Save().Bg or P_Save.Bg
