@@ -131,7 +131,7 @@ TypeTabs= {
 
 
 
-    
+
 --银行
     ['Bank']= {
     atlas='Banker',
@@ -1560,7 +1560,7 @@ end
 
 
 local function Init_List()
-    do 
+    do
         Init_TypeTabs_Data()
     end
 
@@ -1584,7 +1584,7 @@ local function Init_List()
         end
         --self.ScrollBox:Rebuild(ScrollBoxConstants.RetainScrollPosition)
     end)
-    
+
     if not InCombatLockdown() then
         Frame:Raise()
     end

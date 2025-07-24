@@ -34,7 +34,7 @@ local P_Save={
                 notLayer=true-- self:SetDrawLayerEnabled('BACKGROUND', not Save().Add[name].notLayer)
             }
 ]]
-       
+
         },
         Anims={
             --disabled=true,
@@ -46,7 +46,7 @@ local P_Save={
 
 
 local function Save()
-    return WoWToolsSave['Plus_Texture'] or {}
+    return WoWToolsSave['Plus_Texture']
 end
 
 
@@ -116,11 +116,13 @@ panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
 
-            WoWToolsSave['Plus_Texture']= WoWToolsSave['Plus_Texture'] or P_Save
+            WoWToolsSave['Plus_Texture']= Save() or P_Save
 
-            if WoWToolsSave['Plus_Texture'].Bg.UseTexture then
-                WoWToolsPlayerDate['BGTexture']= WoWToolsSave['Plus_Texture'].Bg.UseTexture
-                WoWToolsSave['Plus_Texture'].Bg.UseTexture=nil
+            Save().Bg= Save().Bg or P_Save.Bg
+
+            if Save().Bg.UseTexture then
+                WoWToolsPlayerDate['BGTexture']= Save().Bg.UseTexture
+                Save().Bg.UseTexture=nil
             end
             WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
 
