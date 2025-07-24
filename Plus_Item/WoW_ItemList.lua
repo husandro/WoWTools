@@ -57,9 +57,11 @@ TypeTabs= {
             WoWTools_WoWDate[guid].Item={}
         end
     end,
-    set_num=function(self)
+    isItems=true,
+    set_num=function(self, guid)
         local num=0
-        local wowData= WoWTools_WoWDate[Frame.guid]
+        guid= guid or Frame.guid
+        local wowData= WoWTools_WoWDate[guid]
         for _ in pairs(wowData and wowData.Item or {}) do
             num=num+1
         end
@@ -151,9 +153,11 @@ TypeTabs= {
             WoWTools_WoWDate[guid].Bank={}
         end
     end,
-    set_num=function(self)
+    isItems=true,
+    set_num=function(self, guid)
         local num=0
-        local wowData= WoWTools_WoWDate[Frame.guid]
+        guid= guid or Frame.guid
+        local wowData= WoWTools_WoWDate[guid]
         for _ in pairs(wowData and wowData.Bank or {}) do
             num=num+1
         end
@@ -222,9 +226,11 @@ TypeTabs= {
             WoWTools_WoWDate[guid].Currency={}
         end
     end,
-    set_num=function(self)
+    isItems=true,
+    set_num=function(self, guid)
         local num=0
-        local wowData= WoWTools_WoWDate[Frame.guid]
+        guid= guid or Frame.guid
+        local wowData= WoWTools_WoWDate[guid]
         for _ in pairs(wowData and wowData.Currency or {}) do
             num=num+1
         end
@@ -456,11 +462,12 @@ TypeTabs= {
             WoWTools_WoWDate[guid].Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
         end
     end,
-    set_num=function(self)
-        local guid= Frame.guid
-        local data= guid and WoWTools_WoWDate[Frame.guid]
+    isItems=true,
+    set_num=function(self, guid)
         local num=0
-        for _ in pairs(data and data.Instance.ins or {}) do
+        guid= guid or Frame.guid
+        local wowData= WoWTools_WoWDate[guid]
+        for _ in pairs(wowData and wowData.Instance and wowData.Instance.ins or {}) do
             num= num+1
         end
         self.Text:SetText(num==0 and '|cff6060600' or num)
@@ -513,11 +520,12 @@ TypeTabs= {
             WoWTools_WoWDate[guid].Rare={day=date('%x'), boss={}}
         end
     end,
-    set_num=function(self)
-        local guid= Frame.guid
-        local data= guid and WoWTools_WoWDate[Frame.guid]
+    isItems=true,
+    set_num=function(self, guid)
         local num=0
-        for _ in pairs(data and data.Rare.boss or {}) do
+        guid= guid or Frame.guid
+        local wowData= WoWTools_WoWDate[guid]
+        for _ in pairs(wowData and wowData.Rare and wowData.Rare.boss or {}) do
             num= num+1
         end
         self.Text:SetText(num==0 and '|cff6060600' or num)
@@ -591,11 +599,12 @@ TypeTabs= {
             WoWTools_WoWDate[guid].Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
         end
     end,
-    set_num=function(self)
-        local guid= Frame.guid
-        local data= guid and WoWTools_WoWDate[Frame.guid]
+    isItems=true,
+    set_num=function(self, guid)
         local num=0
-        for _ in pairs(data and data.Worldboss.boss or {}) do
+        guid= guid or Frame.guid
+        local wowData= WoWTools_WoWDate[guid]
+        for _ in pairs(wowData and wowData.Worldboss and wowData.Worldboss.boss or {}) do
             num= num+1
         end
         self.Text:SetText(num==0 and '|cff6060600' or num)
@@ -649,6 +658,25 @@ TypeTabs= {
 
     Init_TypeTabs_Data=function() end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -819,7 +847,7 @@ local function Init_Left_List()
     Frame:set_portrait()
 
     for _, btn in pairs(List2Buttons) do
-        TypeTabs[btn.name].set_num(btn)
+        TypeTabs[btn.name].set_num(btn, nil)
     end
 end
 
@@ -1117,6 +1145,11 @@ local function Settings_Right_Button(btn, data)
     btn.Background:SetDesaturated(WoWTools_DataMixin.Player.Region~=data.region)
 
     btn.SelectBg:SetShown(data.guid==Frame.guid)
+
+
+    for name, texture in pairs(btn.ItemTextures) do
+        TypeTabs[name].set_num(texture, data.guid)
+    end
 end
 
 
@@ -1712,6 +1745,30 @@ local function Init_List()
             end)
 
             OnEntre_GuildText(self)
+
+            self.ItemTextures={}
+            local x, y= 0, -4.5
+            local w= 22
+            local index=0
+            for name, tab in pairs(TypeTabs) do
+                if tab.isItems then
+                    self.ItemTextures[name]= self:CreateTexture(nil, 'BACKGROUND', nil, 3)
+                    self.ItemTextures[name]:SetSize(w, w)
+                    self.ItemTextures[name]:SetAtlas(tab.atlas)
+                    self.ItemTextures[name]:SetAlpha(0.5)
+                    self.ItemTextures[name].Text= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, layer='BORDER'})
+                    self.ItemTextures[name].Text:SetPoint('BOTTOMRIGHT', self.ItemTextures[name])
+
+                    index= index+1
+                    self.ItemTextures[name]:SetPoint('TOPRIGHT', self.Class, 'TOPLEFT', x, y)
+                    if select(2, math.modf(index/3))==0 then
+                        x= x-w
+                        y= -4.5
+                    else
+                        y= y-w
+                    end
+                end
+            end
         end
         self.data= data
         Settings_Right_Button(self, data)

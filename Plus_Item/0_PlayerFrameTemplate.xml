@@ -59,7 +59,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             </Texture> 
         </Layer>
 
-        <Layer level="BACKGROUND" textureSubLevel="3">
+        <Layer level="BACKGROUND" textureSubLevel="6">
             <Texture parentKey="SelectBg" atlas="glues-characterSelect-card-glow-swap" hidden='true'>
                 <Anchors>
                     <Anchor point="TOPLEFT" x="-6" y="6"/>
@@ -68,7 +68,7 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
             </Texture>
         </Layer>
 
-        <Layer level="BACKGROUND" textureSubLevel="4">
+        <Layer level="BACKGROUND" textureSubLevel="7">
             <Texture parentKey="Select" atlas="GarrMission_FollowerListButton-Select" hidden='true' setAllPoints="true"/>
         </Layer>
         
