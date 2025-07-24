@@ -188,12 +188,16 @@ local function Init()
                 self:set_click()
             else
                 MenuUtil.CreateContextMenu(self, function(_, root)
-                    root:CreateCheckbox(
-                        WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS),
+                    local sub=root:CreateCheckbox(
+                        '|A:BonusLoot-Chest:0:0|a'
+                        ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS)),
                     function()
                         return Save().saveWoWData
                     end, function()
                         self:set_click()
+                    end)
+                    sub:SetTooltip(function(tooltip)
+                        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '记录' or GUILD_BANK_LOG)
                     end)
 
                     root:CreateSpacer()

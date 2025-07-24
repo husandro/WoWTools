@@ -6045,7 +6045,9 @@
         "SelectedIconButtonMixin",
         "ICON_SELECTION_DRAG",
         "SelectorButtonMixin",
-        "GUILDBANK_WITHDRAW"
+        "GUILDBANK_WITHDRAW",
+        "WOW_LABS_STAY",
+        "GARRISON_MISSION_TIMELEFT"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

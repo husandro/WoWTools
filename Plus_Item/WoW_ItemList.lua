@@ -1915,10 +1915,9 @@ local function Init_List()
                         '|A:'..atlas..':0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                     function()
                         StaticPopup_Show('WoWTools_OK',
-                            '|A:'..atlas..':0:0|a'
+                            '|A:bags-button-autosort-up:0:0|a'
+                            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)..'|A:'..atlas..':0:0|a'
                             ..self.tooltip
-                            ..'|n'
-                            ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                             ..'|n|n'
                             ..(wowData.battleTag or '')
                             ..'|n'
@@ -1932,6 +1931,7 @@ local function Init_List()
                         return MenuResponse.Open
                     end)
                     sub:SetTooltip(function(tooltip)
+                        tooltip:AddLine(self.tooltip)
                         tooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}))
                     end)
                     sub:SetEnabled(clear_wow and true or false)
@@ -1945,10 +1945,8 @@ local function Init_List()
                          StaticPopup_Show('WoWTools_OK',
                             '|A:'..atlas..':0:0|a'
                             ..self.tooltip
-                            ..'|n'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
-                            ..'|n'..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER))
-                            ..'|n|n'..(wowData.battleTag or '')
-                            ..'|n'..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}),
+                            ..'|n|n|A:bags-button-autosort-up:0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                            ..WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
                             nil,
                             {SetValue=function()
                                 clear_all()
@@ -1956,6 +1954,10 @@ local function Init_List()
                             end}
                         )
                         return MenuResponse.Open
+                    end)
+                    sub:SetTooltip(function(tooltip)
+                        tooltip:AddLine(self.tooltip)
+                        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                     end)
                     sub:SetEnabled(clear_all and true or false)
                 end)
