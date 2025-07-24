@@ -356,13 +356,13 @@ local function Init_Menu(self, root)
             return Save().size[name]
         end, function()
             Save().size[name]=nil
-            local target=self:GetParent()
-            if not WoWTools_FrameMixin:IsLocked(target) then
+            local t=self:GetParent()
+            if not WoWTools_FrameMixin:IsLocked(t) then
                 if self.sizeRestFunc then--还原
                     self:sizeRestFunc()
                 end
                 if not self.notUpdatePositon then
-                    WoWTools_Mixin:Call(UpdateUIPanelPositions, target)
+                    WoWTools_Mixin:Call(UpdateUIPanelPositions, t)
                 end
             end
             return MenuResponse.Refresh

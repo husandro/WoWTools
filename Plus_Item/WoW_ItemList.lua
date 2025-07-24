@@ -47,6 +47,11 @@ TypeTabs= {
     ['Item']= {
     atlas='bag-main',
     tooltip=WoWTools_DataMixin.onlyChinese and '物品' or ITEMS,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Item={}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Item={}
@@ -89,7 +94,7 @@ TypeTabs= {
         data:SetSortComparator(function(v1, v2)
             return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
         end)
-        return data, num
+        return data, WoWTools_Mixin:MK(num, 3)
     end,
     set_btn=function(data)
         local itemID= data.itemID
@@ -136,6 +141,11 @@ TypeTabs= {
     ['Bank']= {
     atlas='Banker',
     tooltip=WoWTools_DataMixin.onlyChinese and '银行' or BANK,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Bank={}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Bank={}
@@ -177,7 +187,7 @@ TypeTabs= {
         data:SetSortComparator(function(v1, v2)
             return v1.quality==v2.quality and v1.itemID> v2.itemID or v1.quality>v2.quality
         end)
-        return data, num
+        return data, WoWTools_Mixin:MK(num, 3)
     end,
     set_btn=function(data)
         local itemID= data.itemID
@@ -200,8 +210,13 @@ TypeTabs= {
 
 --货币
     ['Currency']= {
-    atlas='PH-currency-icon',
+    atlas='legionmission-icon-currency',--'PH-currency-icon',
     tooltip=WoWTools_DataMixin.onlyChinese and '货币' or CURRENCY,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Currency={}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Currency={}
@@ -276,6 +291,11 @@ TypeTabs= {
     ['Money']= {
     atlas='Auctioneer',
     tooltip=WoWTools_DataMixin.onlyChinese and '钱' or MONEY,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Money=nil
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Money=nil
@@ -348,6 +368,11 @@ TypeTabs= {
     ['Time']= {
     atlas='clock-icon',
     tooltip=WoWTools_DataMixin.onlyChinese and '游戏时间' or TOKEN_REDEEM_GAME_TIME_TITLE or SLASH_PLAYED2:gsub('/', ''),
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Time={}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Time={}
@@ -421,6 +446,11 @@ TypeTabs= {
     ['Instance']= {
     atlas='poi-rift1',
     tooltip=WoWTools_DataMixin.onlyChinese and '副本' or INSTANCE,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Instance={ins={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
@@ -456,7 +486,7 @@ TypeTabs= {
                 end
             end
         end
-        return data, num
+        return data, WoWTools_Mixin:MK(num, 3)
     end,
     set_btn=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
@@ -473,6 +503,11 @@ TypeTabs= {
     ['Rare']= {
     atlas='UI-HUD-UnitFrame-Target-PortraitOn-Boss-Rare-Star',
     tooltip=WoWTools_DataMixin.onlyChinese and '稀有' or MAP_LEGEND_RARE,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Rare={day=date('%x'), boss={}}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Rare={day=date('%x'), boss={}}
@@ -514,7 +549,7 @@ TypeTabs= {
                 })
             end
         end
-        return data, num
+        return data, WoWTools_Mixin:MK(num, 3)
     end,
     set_btn=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
@@ -546,6 +581,11 @@ TypeTabs= {
     ['Worldboss']= {
     atlas='vignettekillboss',
     tooltip=WoWTools_DataMixin.onlyChinese and '世界首领' or MAP_LEGEND_WORLDBOSS,
+    clear_all=function()
+        for _, data in pairs(WoWTools_WoWDate) do
+            data.Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
+        end
+    end,
     clear_wow=function(guid)
         if WoWTools_WoWDate[guid] then
             WoWTools_WoWDate[guid].Worldboss={boss={}, week=WoWTools_DataMixin.Player.Week, day=date('%x')}
@@ -587,7 +627,7 @@ TypeTabs= {
                 })
             end
         end
-        return data, num
+        return data, WoWTools_Mixin:MK(num, 3)
     end,
     set_btn=function(data)
         local itemName, itemTexture, itemAtlas, count, r, g, b
@@ -607,7 +647,7 @@ TypeTabs= {
     end},
 }
 
-Init_TypeTabs_Data=function() end
+    Init_TypeTabs_Data=function() end
 end
 
 
@@ -765,10 +805,9 @@ local function Init_Left_List()
     local data, num
     if TypeTabs[List2Type] then
         data, num= TypeTabs[List2Type].get_data(isFind, findText, findID)
-        num= WoWTools_Mixin:MK(num or 0, 3)
-        num= '|A:'..TypeTabs[List2Type].atlas..':0:0|a'..(num==0 and '|cff606060' or '')..num
+        num= '|A:'..TypeTabs[List2Type].atlas..':32:32|a'..(num or '')
     else
-        --data= CreateDataProvider()
+        data= CreateDataProvider()
     end
 
     Frame.view2:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
@@ -846,7 +885,7 @@ local function Init_Right_List()
         local cnLink, realm, class, cnClass, faction, cnFaction, region, _
 
         local itemLink= info.Keystone.link
-        local fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or '^_^'
+        local fullName= WoWTools_UnitMixin:GetFullName(nil, nil, guid) or guid
         local battleTag= info.battleTag
 
         if isFind then
@@ -895,9 +934,9 @@ local function Init_Right_List()
 
                 itemLink= itemLink,
 
-                score= info.score or 0,
-                weekNum= info.weekNum or 0,
-                weekLevel= info.weekLevel or 0,
+                score= info.Keystone.score or 0,
+                weekNum= info.Keystone.weekNum or 0,
+                weekLevel= info.Keystone.weekLevel or 0,
 
                 pve= info.Keystone.weekPvE,
                 mythic= info.Keystone.weekMythicPlus,
@@ -923,12 +962,15 @@ local function Init_Right_List()
 
 
     data:SetSortComparator(function(v1, v2)
-        return v1.guid==WoWTools_DataMixin.Player.GUID
-            or v1.itemLevel>v2.itemLevel
-            or v1.score> v2.score
-            or v1.weekLevel> v2.weekLevel
-            or v1.weekNum> v2.weekNum
-
+        if not v1 or not v2 then
+            return false
+        else
+            return v1.guid==WoWTools_DataMixin.Player.GUID
+                or v1.itemLevel>v2.itemLevel
+                or v1.score> v2.score
+                or v1.weekLevel> v2.weekLevel
+                or v1.weekNum> v2.weekNum
+        end
     end)
 
     Frame.ScrollBox:SetDataProvider(data, ScrollBoxConstants.RetainScrollPosition)
@@ -967,7 +1009,7 @@ local function Settings_Right_Button(btn, data)
 
 --玩家等级
     btn.PlayerLevelText:SetText(data.playerLevel~=GetMaxLevelForPlayerExpansion() and data.playerLevel or '')
-    btn.PlayerLevelText:SetTextColor(col.r, col.g, col.b)
+    --btn.PlayerLevelText:SetTextColor(col.r, col.g, col.b)
 
 --玩家，名称
     if data.guid== WoWTools_DataMixin.Player.GUID then
@@ -1037,9 +1079,10 @@ local function Settings_Right_Button(btn, data)
 
 --背景
     btn.Background:SetAtlas(
-        data.faction=='Alliance' and 'Campaign_Alliance'
+        data.guid==WoWTools_DataMixin.Player.GUID and 'StoryHeader-BG'
+        or (data.faction=='Alliance' and 'Campaign_Alliance')
         or (data.faction=='Horde' and 'Campaign_Horde')
-        or 'StoryHeader-BG'
+        or 'CampaignHeader_SelectedGlow'
     )
 
     btn.RaidText:SetText(data.pve or (WoWTools_DataMixin.Player.husandro and '|cff8282822/4/8') or '')
@@ -1169,10 +1212,12 @@ end
 
 
 local function OnMouseDown_RightButton(self, d)
-    if not self.data then
+    local guid= self.data and self.data.guid
+
+    if not guid then
         return
     end
-    local guid= self.data.guid
+    
     Frame.guid= guid
 
     if d=='RightButton' then
@@ -1180,18 +1225,21 @@ local function OnMouseDown_RightButton(self, d)
             local isMe= guid==WoWTools_DataMixin.Player.GUID
             local battleTag= self.data.battleTag
             local faction= self.data.faction
+            local player= WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=faction, reName=true, reRealm=true})
 --全部清除
             local sub=root:CreateButton(
                 WoWTools_DataMixin.Icon.wow2
-                ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
+                ..(WoWTools_DataMixin.onlyChinese and '全部清除' or CLEAR_ALL),
+                --..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
             function()
                 StaticPopup_Show('WoWTools_OK',
                     WoWTools_DataMixin.Icon.wow2
-                    ..(WoWTools_DataMixin.onlyChinese and '清除WoW数据' or 'Clear WoW data')
+                    ..(WoWTools_DataMixin.onlyChinese and '全部清除 WoW 数据' or (CLEAR_ALL..' WoW data'))
+                    --..(WoWTools_DataMixin.onlyChinese and '全部清除WoW数据' or 'Clear WoW data')
                     ..'|n|n'
                     ..(battleTag or '')
                     ..'|n'
-                    ..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=faction, reName=true, reRealm=true})
+                    ..player
                     ..'|n|n|cnGREEN_FONT_COLOR:'
                     ..(isMe and (WoWTools_DataMixin.onlyChinese and '重新加载UI' or RELOADUI) or ''),
 
@@ -1237,6 +1285,9 @@ local function OnMouseDown_RightButton(self, d)
                     end, {name=name, atlas=info.atlas, tooltip=info.tooltip})
                 end
             end
+
+            root:CreateDivider()
+            root:CreateTitle(player)
         end)
 
 
@@ -1720,7 +1771,7 @@ local function Init_List()
 
     --数量
     Frame.NumLabel2= WoWTools_LabelMixin:Create(Frame, {color=true})
-    Frame.NumLabel2:SetPoint('BOTTOMLEFT', Frame.Portrait, 'TOPLEFT')
+    Frame.NumLabel2:SetPoint('BOTTOMLEFT', Frame.Portrait, 'TOPLEFT', -15, -6 )
 
 
 
@@ -1770,7 +1821,11 @@ local function Init_List()
         end)
         List2Buttons[name]:SetScript('OnEnter', function(self)
             GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-            GameTooltip:SetText(self.tooltip)
+            GameTooltip:ClearLines()
+            GameTooltip:AddDoubleLine(
+                WoWTools_DataMixin.Icon.right..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL),
+                self.tooltip..WoWTools_DataMixin.Icon.left
+            )
             GameTooltip:Show()
         end)
         List2Buttons[name]:SetScript('OnMouseDown', function(self, d)
@@ -1790,20 +1845,21 @@ local function Init_List()
 
                     local tab= TypeTabs[self.name]
                     local clear_wow= tab.clear_wow
+                    local clear_all= tab.clear_all
 
-                    if not wowData or not clear_wow then
+                    if not wowData then
+                        root:CreateTitle(WoWTools_DataMixin.Icon.wow2..(WoWTools_DataMixin.onlyChinese and '无数据' or 'No data'))
                         return
                     end
 
                     local atlas= tab.atlas
-                    local tooltip= tab.tooltip
-                    
-                    root:CreateButton(
+
+                    local sub= root:CreateButton(
                         '|A:'..atlas..':0:0|a'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2),
                     function()
                         StaticPopup_Show('WoWTools_OK',
                             '|A:'..atlas..':0:0|a'
-                            ..tooltip
+                            ..self.tooltip
                             ..'|n'
                             ..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
                             ..'|n|n'
@@ -1816,13 +1872,35 @@ local function Init_List()
                                 Init_Right_List()
                             end}
                         )
+                        return MenuResponse.Open
                     end)
+                    sub:SetTooltip(function(tooltip)
+                        tooltip:AddLine(WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}))
+                    end)
+                    sub:SetEnabled(clear_wow and true or false)
 
                     root:CreateDivider()
-                    root:CreateTitle(
-                        WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true})
-                    )
 
+                    sub=root:CreateButton(
+                        WoWTools_DataMixin.Icon.wow2
+                        ..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER)),
+                    function()
+                         StaticPopup_Show('WoWTools_OK',
+                            '|A:'..atlas..':0:0|a'
+                            ..self.tooltip
+                            ..'|n'..(WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+                            ..'|n'..(WoWTools_DataMixin.onlyChinese and '所有角色' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, CHARACTER))
+                            ..'|n|n'..(wowData.battleTag or '')
+                            ..'|n'..WoWTools_UnitMixin:GetPlayerInfo(nil, guid, nil, {faction=wowData.faction, reName=true, reRealm=true}),
+                            nil,
+                            {SetValue=function()
+                                clear_all()
+                                Init_Right_List()
+                            end}
+                        )
+                        return MenuResponse.Open
+                    end)
+                    sub:SetEnabled(clear_all and true or false)
                 end)
             end
         end)
@@ -1870,7 +1948,7 @@ end
 
 
 local function Init()
-    local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton)
+    local btn= WoWTools_ItemMixin:Create_WoWButton(ContainerFrameCombinedBags.CloseButton, {name='WoWToolsCombinedBagsWoWButton'})
     btn:SetPoint('RIGHT', ContainerFrameCombinedBags.CloseButton, 'LEFT', -23, 0)
 
     MainMenuBarBackpackButton:HookScript('OnEnter', function()
@@ -1923,24 +2001,47 @@ end
 
 
 
-function WoWTools_ItemMixin:Create_WoWButton(frame, name)
+function WoWTools_ItemMixin:Create_WoWButton(frame, tab)
+    tab= tab or {}
+
+    local name= tab.name
+    local click= tab.click
+    local tooltip= tab.tooltip
+
     local btn= WoWTools_ButtonMixin:Cbtn(frame, {
         name=name,
         atlas='glues-characterSelect-iconShop-hover',
         size=23,
     })
+
+    btn.click= click
+    btn.tooltip= tooltip
+
     btn:SetScript('OnLeave', function()
         GameTooltip_Hide()
     end)
-    btn:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
+    btn:SetScript('OnEnter', function(s)
+        GameTooltip:SetOwner(s, "ANCHOR_LEFT")
         GameTooltip:SetText(
             WoWTools_DataMixin.Icon.wow2
-            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)))
+            ..(WoWTools_DataMixin.onlyChinese and '战团物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS))
+        )
+        if s.tooltip then
+            if type(s.tooltip)=='function' then
+                s.tooltip(GameTooltip, s)
+            else
+                GameTooltip:AddLine(s.tooltip)
+            end
+        end
         GameTooltip:Show()
     end)
-    btn:SetScript('OnClick', function()
-        Init_List()
+
+    btn:SetScript('OnClick', function(s, d)
+        if s.click then
+            s.click(s, d, function() Init_List() end)
+        else
+            Init_List()
+        end
     end)
     WoWTools_TextureMixin:SetButton(btn)
     return btn
@@ -1948,11 +2049,14 @@ end
 
 
 function WoWTools_ItemMixin:OpenWoWItemListMenu(_, root)--战团，物品列表
-    root:CreateButton(
+    local sub= root:CreateButton(
         WoWTools_DataMixin.Icon.wow2
         ..(WoWTools_DataMixin.onlyChinese and '战网物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ACCOUNT_QUEST_LABEL, ITEMS)),
     function()
         Init_List()
         return MenuResponse.Open
+    end)
+    sub:SetTooltip(function(tooltip)
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '打开/关闭用户界面' or BINDING_NAME_TOGGLEUI)
     end)
 end

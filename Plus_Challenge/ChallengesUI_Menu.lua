@@ -625,7 +625,7 @@ local function Init()
 
     btn:SetupMenu(Init_Menu)
 
-    local wow= WoWTools_ItemMixin:Create_WoWButton(ChallengesFrame, 'WoWToolsChallengesFrameWoWItemButton')
+    local wow= WoWTools_ItemMixin:Create_WoWButton(ChallengesFrame, {name='WoWToolsChallengesFrameWoWItemButton'})
     wow:SetPoint('RIGHT', btn, 'LEFT')
 
     Init=function()end

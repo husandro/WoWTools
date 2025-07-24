@@ -124,15 +124,7 @@ local function Init_Menu(self, root)
 
 
 
-    sub=root:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS),
-    function()
-        return Save().saveWoWData
-    end, function()
-        Save().saveWoWData= not Save().saveWoWData and true or nil
-        BankPanel:Clean()
-    end)
-    WoWTools_ItemMixin:OpenWoWItemListMenu(self, sub)
+
 
 
 --打开选项界面
@@ -159,24 +151,84 @@ end
 
 
 local function Init()
-    local OptionButton= WoWTools_ButtonMixin:Menu(BankFrameCloseButton, {name='WoWToolsPlusBankMenuButton'})
-    OptionButton:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
+    local btn= WoWTools_ButtonMixin:Menu(BankFrameCloseButton, {name='WoWToolsPlusBankMenuButton'})
+    btn:SetPoint('RIGHT', BankFrameCloseButton, 'LEFT', -2,0)
 
-    function OptionButton:Open_Bag()
+    function btn:Open_Bag()
         WoWTools_BagMixin:OpenBag(nil, true)
         C_Timer.After(0.3, function() BankFrame:Raise() end)
     end
-    OptionButton:SetupMenu(Init_Menu)
+    btn:SetupMenu(Init_Menu)
 
 
-    OptionButton:SetScript('OnLeave', GameTooltip_Hide)
-    OptionButton:SetScript('OnEnter', function(self)
+    btn:SetScript('OnLeave', GameTooltip_Hide)
+    btn:SetScript('OnEnter', function(self)
         GameTooltip:SetOwner(self, "ANCHOR_LEFT")
         GameTooltip:ClearLines()
         GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
         GameTooltip:Show()
     end)
 
+
+    local wow= WoWTools_ItemMixin:Create_WoWButton(btn, {
+        name='WoWToolsPlusBankWoWButton',
+        tooltip=function(tooltip)
+            tooltip:AddLine(' ')
+            tooltip:AddLine(
+                WoWTools_DataMixin.Icon.left
+                ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS))
+            )
+            tooltip:AddLine(
+                WoWTools_DataMixin.Icon.right
+                ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+            )
+        end,
+        click=function(self, d)
+            if d=='LeftButton' then
+                self:set_click()
+            else
+                MenuUtil.CreateContextMenu(self, function(_, root)
+                    root:CreateCheckbox(
+                        WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS),
+                    function()
+                        return Save().saveWoWData
+                    end, function()
+                        self:set_click()
+                    end)
+
+                    root:CreateSpacer()
+
+                    WoWTools_ItemMixin:OpenWoWItemListMenu(self, root)
+                end)
+            end
+        end}
+    )
+    wow:SetPoint('RIGHT', btn, 'LEFT')
+    function wow:settings()
+        local saveWoWData= Save().saveWoWData
+        local icon= self:GetNormalTexture()
+        icon:SetDesaturated(not saveWoWData)
+        icon:SetAlpha(saveWoWData and 1 or 0.3)
+    end
+    function wow:set_click()
+        Save().saveWoWData= not Save().saveWoWData and true or nil
+        self:settings()
+        BankPanel:Clean()
+    end
+    wow:settings()
+
+
+    --[[
+    sub=root:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS),
+    function()
+        return Save().saveWoWData
+    end, function()
+        Save().saveWoWData= not Save().saveWoWData and true or nil
+        BankPanel:Clean()
+    end)
+    WoWTools_ItemMixin:OpenWoWItemListMenu(self, sub)
+    ]]
     Init=function()end
 end
 

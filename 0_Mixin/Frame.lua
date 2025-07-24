@@ -145,6 +145,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
         notFuori=true,
         setSize=true,
         sizeRestFunc= sizeRestFunc or function()
+            print(w,h)
             if not self:IsLocked(frame) then
                 frame:SetSize(w, h)
             end
