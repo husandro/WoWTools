@@ -652,22 +652,24 @@ local function Init()
     btn.Text:SetPoint('TOPRIGHT', btn, 'TOPLEFT')
     btn.Text2= WoWTools_LabelMixin:Create(btn, {color={r=0.62, g=0.62, b=0.62}})
     btn.Text2:SetPoint('BOTTOMRIGHT', btn, 'BOTTOMLEFT')
-    --btn.Text2:SetText('aaaaaaa')
-
-    --btn.Text:SetPoint('RIGHT', btn.texture, 'LEFT')
 
 
     function btn:set_tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
+        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '打开银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, BANK))
+        GameTooltip:AddLine(' ')
+
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.Player
             ..(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
             ..': '..WoWTools_TextMixin:GetYesNo(Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID])
         )
+        GameTooltip:AddLine(' ')
 
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.icon2
+            ..'|cff00ccff'
             ..(WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL))
             ..': |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoSaveMoney
@@ -678,6 +680,7 @@ local function Init()
 
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.icon2
+            ..WoWTools_DataMixin.Player.col
             ..(WoWTools_DataMixin.onlyChinese and '自动填充' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW))
             ..': |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoOutMoney
@@ -703,14 +706,15 @@ local function Init()
     btn:SetupMenu(Init_Menu)
 
     function btn:settings()
-        local autoSaveMoney
-        if C_Bank.CanDepositMoney(Enum.BankType.Account) and not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] then
-            autoSaveMoney= Save().autoSaveMoney
+        local save, out
+        if not Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID] then
+            save= Save().autoSaveMoney
+            out= Save().autoOutMoney
         end
-        --local icon= self:GetNormalTexture()
-        self.texture:SetAlpha(autoSaveMoney and 1 or 0.5)
-        self.texture:SetDesaturated(not autoSaveMoney and true or false)
-        self.Text:SetText(autoSaveMoney and '|cff00ccff'..WoWTools_Mixin:MK(autoSaveMoney, 3) or '')
+        self.texture:SetAlpha((save or out) and 1 or 0.5)
+        self.texture:SetDesaturated(not (save and out) and true or false)
+        self.Text:SetText(save and '|cff00ccff'..WoWTools_Mixin:MK(save, 3) or '')
+        self.Text2:SetText(out and WoWTools_DataMixin.Player.col..WoWTools_Mixin:MK(out, 3) or '')
     end
 
     hooksecurefunc(BankPanel.MoneyFrame.DepositButton, 'Refresh', function()
