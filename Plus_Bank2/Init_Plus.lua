@@ -256,7 +256,7 @@ local function AddBankTabSettingsToTooltip(self, tabData)
     )
     GameTooltip:Show()
 end
-    
+
 
 local function GetFlagsText(flags, isNewLine)
     if not flags then
@@ -337,15 +337,18 @@ local function Init_TabSystem()
             btn.FlagsText:SetPoint('LEFT', btn, 'RIGHT')
 
             btn.FreeText= WoWTools_LabelMixin:Create(btn, {color={r=0,g=1,b=0}})
-            --btn.FreeText:SetPoint('TOP', btn.Name, 'BOTTOM')
             btn.FreeText:SetPoint('LEFT', btn.FlagsText, 'RIGHT')
+
+            function btn:set_flags_text(data)
+                local flag, free
+                if data then
+                    flag= GetFlagsText(data.depositFlags, true)
+                    free= data.ID and C_Container.GetContainerNumFreeSlots(data.ID)
+                end
+                self.FlagsText:SetText(flag or '')
+                self.FreeText:SetText(free or '')
+            end
         end
-        local flag, name, free
-
-        name= WoWTools_TextMixin:sub(tabData.name, 2, 5)
-        flag= GetFlagsText(tabData.depositFlags, true)
-        free= C_Container.GetContainerNumFreeSlots(tabData.ID)
-
         local r,g,b
         if btn:GetActiveBankType() == Enum.BankType.Account then
             r,g,b= 0,0.8,1
@@ -354,19 +357,27 @@ local function Init_TabSystem()
         end
         btn.Name:SetTextColor(r,g,b)
         btn.FlagsText:SetTextColor(r,g,b)
-
-        btn.Name:SetText(name or '')
-        btn.FlagsText:SetText(flag or '')
-        btn.FreeText:SetText(free or '')
+        btn.Name:SetText(WoWTools_TextMixin:sub(tabData.name, 2, 5) or '')
+        btn:set_flags_text(tabData)
     end)
+
+
+    --[[BankPanel:HookScript('OnShow', function(self)
+        for btn in self.bankTabPool:EnumerateActive() do
+            if btn.set_flags_text then
+                btn:set_flags_text(btn.tabData)
+            end
+        end
+    end)]]
+
     BankPanel:HookScript('OnEvent', function(self, event, containerID)
         if event~= 'BAG_UPDATE' or not self:GetTabData(containerID) then
             return
         end
         for btn in self.bankTabPool:EnumerateActive() do
             if btn.tabData and btn.tabData.ID==containerID then
-                if btn.FlagsText then
-                    btn.FlagsText:SetText(C_Container.GetContainerNumFreeSlots(containerID) or '')
+                if btn.set_flags_text then
+                    btn:set_flags_text(btn.tabData)
                 end
                 break
             end

@@ -43,7 +43,7 @@ local function Save_Text(num)
        text= ' '..WoWTools_Mixin:MK(math.modf(money/10000), 3)..'|A:Coin-Gold:0:0|a'
     end
     return '|cff00ccff'
-            ..(WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            ..(WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
             ..text
 end
 
@@ -61,12 +61,12 @@ local function Save_Tooltip(tooltip, num)
 
     tooltip:AddLine(' ')
     tooltip:AddLine(
-        (WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+        (WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
         ..C_CurrencyInfo.GetCoinTextureString(money)
     )
 end
 
---自动存放
+--自动存钱
 local function Save_Money(num)
     local money= C_Bank.CanDepositMoney(Enum.BankType.Account)
                 and Save_Value(num)
@@ -79,8 +79,8 @@ local function Save_Money(num)
 
     print(
         WoWTools_BankMixin.addName..WoWTools_DataMixin.Icon.icon2,
-        '|A:greatVault-whole-normal:0:0|a|cff00ccff'
-        ..(WoWTools_DataMixin.onlyChinese and '自动存放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL))
+        '|A:Banker:0:0|a|cff00ccff'
+        ..(WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, DEPOSIT))
         ..'|r',
         C_CurrencyInfo.GetCoinTextureString(money)
     )
@@ -192,16 +192,16 @@ end
 
 
 
---存放
+--存钱
 local function Init_Save_Menu(self, root)
     if not C_Bank.CanDepositMoney(Enum.BankType.Account) then
-        root:CreateTitle('|cff606060'..(WoWTools_DataMixin.onlyChinese and '存放' or DEPOSIT))
+        root:CreateTitle('|cff606060'..(WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT))
         return
     end
 
     local sub, sub2
 
---存放
+--存钱
     local autoSub=root:CreateButton(
         Save_Text(),
     function()
@@ -228,7 +228,7 @@ local function Init_Save_Menu(self, root)
 --自动存钱
     sub=autoSub:CreateCheckbox(
         '|cff00ccff'
-        ..(WoWTools_DataMixin.onlyChinese and '自动存放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL)),
+        ..(WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, DEPOSIT)),
     function()
         return Save().autoSaveMoney
     end, function()
@@ -258,7 +258,7 @@ local function Init_Save_Menu(self, root)
             Save_Tooltip(tooltip)
         end,
         --[['|cff00ccff'
-            ..(WoWTools_DataMixin.onlyChinese and '存钱' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            ..(WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
             ..'|cnGREEN_FONT_COLOR:> |A:Coin-Gold:0:0|a',]]
         minValue=0,
         maxValue=100000,
@@ -281,10 +281,10 @@ local function Init_Save_Menu(self, root)
 
 
 
---全部存放
+--全部存钱
     sub=root:CreateButton(
         '|cff00ccff'
-        ..(WoWTools_DataMixin.onlyChinese and '全部存放' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, BANK_DEPOSIT_MONEY_BUTTON_LABEL)),
+        ..(WoWTools_DataMixin.onlyChinese and '全部存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, DEPOSIT)),
     function()
         C_Bank.DepositMoney(Enum.BankType.Account, GetMoney())
         return MenuResponse.Open
@@ -293,17 +293,17 @@ local function Init_Save_Menu(self, root)
         local bank= C_Bank.FetchDepositedMoney(Enum.BankType.Account) or 0
         local bag= GetMoney()
         tooltip:AddLine(
-            '|A:greatVault-whole-normal:0:0|a|cff00ccff'..C_CurrencyInfo.GetCoinTextureString(bag+ bank)
+            '|A:Banker:0:0|a|cff00ccff'..C_CurrencyInfo.GetCoinTextureString(bag+ bank)
         )
         tooltip:AddLine(' ')
         tooltip:AddLine(
-            (WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            (WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
             ..' '
             ..C_CurrencyInfo.GetCoinTextureString(bag)
         )
     end)
 
---存放 100, 500, 1000, 5000, 10000
+--存钱 100, 500, 1000, 5000, 10000
     for _, num in pairs({100000,50000, 10000,5000, 1000, 500, 100}) do
         sub2= sub:CreateButton(
             '|cff00ccff'
@@ -447,7 +447,7 @@ local function Init_Out_Menu(self, root)
 --全部填充
     sub=root:CreateButton(
         WoWTools_DataMixin.Player.col
-        ..(WoWTools_DataMixin.onlyChinese and '全部填充' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, BANK_DEPOSIT_MONEY_BUTTON_LABEL)),
+        ..(WoWTools_DataMixin.onlyChinese and '全部填充' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, ALL, DEPOSIT)),
     function()
         C_Bank.WithdrawMoney(Enum.BankType.Account, C_Bank.FetchDepositedMoney(Enum.BankType.Account) or 0)
         return MenuResponse.Open
@@ -462,7 +462,7 @@ local function Init_Out_Menu(self, root)
         )
         tooltip:AddLine(' ')
         tooltip:AddLine(
-            (WoWTools_DataMixin.onlyChinese and '存放' or BANK_DEPOSIT_MONEY_BUTTON_LABEL)
+            (WoWTools_DataMixin.onlyChinese and '填充' or DEPOSIT)
             ..' '
             ..C_CurrencyInfo.GetCoinTextureString(bank)
         )
@@ -657,21 +657,24 @@ local function Init()
     function btn:set_tooltip()
         GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
         GameTooltip:ClearLines()
-        GameTooltip:AddLine(WoWTools_DataMixin.onlyChinese and '打开银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, BANK))
+        GameTooltip:AddLine(
+            WoWTools_DataMixin.Icon.icon2
+            ..(WoWTools_DataMixin.onlyChinese and '打开银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, BANK))
+        )
         GameTooltip:AddLine(' ')
 
         GameTooltip:AddLine(
             WoWTools_DataMixin.Icon.Player
+            ..WoWTools_DataMixin.Player.col
             ..(WoWTools_DataMixin.onlyChinese and '过滤' or CALENDAR_FILTERS)
             ..': '..WoWTools_TextMixin:GetYesNo(Save().filterSaveMoney[WoWTools_DataMixin.Player.GUID])
         )
         GameTooltip:AddLine(' ')
 
         GameTooltip:AddLine(
-            WoWTools_DataMixin.Icon.icon2
-            ..'|cff00ccff'
-            ..(WoWTools_DataMixin.onlyChinese and '自动存钱' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, BANK_DEPOSIT_MONEY_BUTTON_LABEL))
-            ..': |cnGREEN_FONT_COLOR:>|r '
+            '|cff00ccff'
+            ..(WoWTools_DataMixin.onlyChinese and '存钱' or DEPOSIT)
+            ..' |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoSaveMoney
                 and WoWTools_Mixin:MK(Save().autoSaveMoney, 3)..'|A:Coin-Gold:0:0|a'
                 or WoWTools_TextMixin:GetEnabeleDisable(false)
@@ -679,10 +682,9 @@ local function Init()
         )
 
         GameTooltip:AddLine(
-            WoWTools_DataMixin.Icon.icon2
-            ..WoWTools_DataMixin.Player.col
-            ..(WoWTools_DataMixin.onlyChinese and '自动填充' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW))
-            ..': |cnGREEN_FONT_COLOR:>|r '
+            WoWTools_DataMixin.Player.col
+            ..(WoWTools_DataMixin.onlyChinese and '填充' or WITHDRAW)
+            ..' |cnGREEN_FONT_COLOR:>|r '
             ..(Save().autoOutMoney
                 and WoWTools_Mixin:MK(Save().autoOutMoney, 3)..'|A:Coin-Gold:0:0|a'
                 or WoWTools_TextMixin:GetEnabeleDisable(false)

@@ -173,19 +173,21 @@ local function Init()
     local wow= WoWTools_ItemMixin:Create_WoWButton(btn, {
         name='WoWToolsPlusBankWoWButton',
         tooltip=function(tooltip)
-            tooltip:AddLine(' ')
+            --[[tooltip:AddLine(' ')
             tooltip:AddLine(
                 WoWTools_DataMixin.Icon.left
                 ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS))
-            )
+            )]]
             tooltip:AddLine(
-                WoWTools_DataMixin.Icon.right
-                ..(WoWTools_DataMixin.onlyChinese and '菜单' or HUD_EDIT_MODE_MICRO_MENU_LABEL)
+                '|A:BonusLoot-Chest:0:0|a'
+                ..(WoWTools_DataMixin.onlyChinese and '保存物品' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SAVE, ITEMS))
+                ..WoWTools_DataMixin.Icon.right
+                ..WoWTools_TextMixin:GetEnabeleDisable(Save().saveWoWData)
             )
         end,
-        click=function(self, d)
+        click=function(self, d, click)
             if d=='LeftButton' then
-                self:set_click()
+                click()
             else
                 MenuUtil.CreateContextMenu(self, function(_, root)
                     local sub=root:CreateCheckbox(
