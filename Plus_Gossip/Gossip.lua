@@ -516,7 +516,7 @@ local function Create_GossipOptionCheckBox(frame, info)
             GameTooltip:AddDoubleLine(
                 '|T'..(self.icon or 0)..':0|t'
                 ..(self.name or ''),
-                
+
                 'gossipOptionID: |cnGREEN_FONT_COLOR:'
                 ..self.gossipOptionID
             )
@@ -526,6 +526,7 @@ local function Create_GossipOptionCheckBox(frame, info)
             GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetLink(self.spellID, true), 'spellID '.. self.spellID)
         end
 
+    
         if showFrame and not ColorPickerFrame:IsShown() then
             _G['WoWToolsGossipTextIconOptionsList']:set_date(self.gossipOptionID)--设置，数据
 
@@ -712,7 +713,7 @@ local function Init_Hook()
         local find
         local quest= FlagsUtil.IsSet(info.flags, Enum.GossipOptionRecFlags.QuestLabelPrepend)
 	    --local quest= FlagsUtil.IsAnySet(info.flags, bit.bor(Enum.GossipOptionRecFlags.QuestLabelPrepend, Enum.GossipOptionRecFlags.PlayMovieLabelPrepend))
-        
+
         if Save().gossipOption[index] then--自定义
             C_GossipInfo.SelectOption(index)
             find=true
