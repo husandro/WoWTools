@@ -220,6 +220,8 @@ local function Set_BGTexture(self, name)
 --NineSlice
     if self.NineSlice then
         WoWTools_TextureMixin:SetNineSlice(self, nineSliceAlpha)
+    elseif self.Border then
+        WoWTools_TextureMixin:SetFrame(self.Border, {alpha=nineSliceAlpha, show={[self.Border.Bg]=true}})
     else
 --BaseFrame 外框
         WoWTools_TextureMixin:SetBaseFrame(self, nineSliceAlpha)
@@ -232,6 +234,8 @@ local function Set_BGTexture(self, name)
         WoWTools_TextureMixin:SetAlphaColor(self.PortraitContainer.portrait, nil, true, portraitAlpha)
     elseif self.Emblem then--公会银行就用这个
         WoWTools_TextureMixin:SetFrame(self.Emblem, {notColor=true, alpha=portraitAlpha})
+    elseif self.Header then
+        WoWTools_TextureMixin:SetFrame(self.Header, {alpha=portraitAlpha})
     end
 
 --DrawLayer
@@ -239,6 +243,8 @@ local function Set_BGTexture(self, name)
 
 --动画
     Update_Animation(self)
+
+
 end
 
 
@@ -689,7 +695,7 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).nineSliceAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name= ((self.NineSlice or self.TopBorder) and '' or '|cff626262')
+        name= ((self.NineSlice or self.TopBorder or self.Border) and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '边框' or EMBLEM_BORDER),
         minValue=0,
         maxValue=1,
@@ -716,7 +722,7 @@ local function Init_Menu(self, root, isSub)
             SaveData(name).portraitAlpha=value
             Settings(IsEnabledSaveBg(name) and self or nil)
         end,
-        name= ((self.PortraitContainer or self.Emblem) and '' or '|cff626262')
+        name= ((self.PortraitContainer or self.Emblem or self.Header) and '' or '|cff626262')
             ..(WoWTools_DataMixin.onlyChinese and '头像' or 'Portrait'),
         minValue=0,
         maxValue=1,

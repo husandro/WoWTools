@@ -538,9 +538,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
 
 
             <FontString parentKey="AffixText" inherits="ChatFontNormal" justifyH="CENTER">
-                <Size x="0" y="19.5"/>
+                <Size x="0" y="18"/>
                 <Anchors>
-                   <Anchor point="TOP" relativeKey="$parent"/>
+                   <Anchor point="TOP" relativeKey="$parent" x="0" y="-4"/>
                 </Anchors>
             </FontString>
         </Layer>

@@ -65,7 +65,7 @@ TypeTabs= {
         for _ in pairs(wowData and wowData.Item or {}) do
             num=num+1
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -161,7 +161,7 @@ TypeTabs= {
         for _ in pairs(wowData and wowData.Bank or {}) do
             num=num+1
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -234,7 +234,7 @@ TypeTabs= {
         for _ in pairs(wowData and wowData.Currency or {}) do
             num=num+1
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -314,7 +314,7 @@ TypeTabs= {
                 num= num+1
             end
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -391,7 +391,7 @@ TypeTabs= {
                 num= num+1
             end
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -470,7 +470,7 @@ TypeTabs= {
         for _ in pairs(wowData and wowData.Instance and wowData.Instance.ins or {}) do
             num= num+1
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -528,7 +528,7 @@ TypeTabs= {
         for _ in pairs(wowData and wowData.Rare and wowData.Rare.boss or {}) do
             num= num+1
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -607,7 +607,7 @@ TypeTabs= {
         for _ in pairs(wowData and wowData.Worldboss and wowData.Worldboss.boss or {}) do
             num= num+1
         end
-        self.Text:SetText(num==0 and '|cff6060600' or num)
+        self.Text:SetText(num>0 and num or '')
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -1747,8 +1747,8 @@ local function Init_List()
             OnEntre_GuildText(self)
 
             self.ItemTextures={}
-            local x, y= 0, -4.5
-            local w= 22
+            local x, y= 0, 0-- -4.5
+            local w= 21
             local index=0
             for name, tab in pairs(TypeTabs) do
                 if tab.isItems then
@@ -1763,7 +1763,7 @@ local function Init_List()
                     self.ItemTextures[name]:SetPoint('TOPRIGHT', self.Class, 'TOPLEFT', x, y)
                     if select(2, math.modf(index/3))==0 then
                         x= x-w
-                        y= -4.5
+                        y= 0-- -4.5
                     else
                         y= y-w
                     end

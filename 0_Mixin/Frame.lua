@@ -82,7 +82,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local name= tab.name or ((parent:GetName() or 'WoWTools')..'Frame'..getIndex())
     local size= tab.size
     --local strata= tab.strata
-    local template= tab.template
+    local template= tab.template-- or 'BasicFrameTemplate'-- or 'BaseBasicFrameTemplate'
     local setID= tab.setID
     local point= tab.point
 
@@ -92,6 +92,7 @@ function WoWTools_FrameMixin:Create(parent, tab)
     local restPointFunc= tab.restPointFunc
 
     local frame= CreateFrame('Frame', name or ('WoWTools_EditBoxFrame'..getIndex()), parent or UIParent, template, setID)
+    tinsert (UISpecialFrames, name)
     frame:SetToplevel(true)
 --设置大小
     local w, h= Get_Size(size)
@@ -145,7 +146,6 @@ function WoWTools_FrameMixin:Create(parent, tab)
         notFuori=true,
         setSize=true,
         sizeRestFunc= sizeRestFunc or function()
-            print(w,h)
             if not self:IsLocked(frame) then
                 frame:SetSize(w, h)
             end
@@ -159,15 +159,17 @@ function WoWTools_FrameMixin:Create(parent, tab)
 
 --材质
     WoWTools_TextureMixin:SetButton(frame.CloseButton)
-    WoWTools_TextureMixin:SetFrame(frame.Border, {show={[frame.Border.Bg]=true}})
-    WoWTools_TextureMixin:SetFrame(frame.Header)
+    --[[WoWTools_TextureMixin:SetFrame(frame.Border, {show={[frame.Border.Bg]=true}})
+    WoWTools_TextureMixin:SetFrame(frame.Header)]]
 
     WoWTools_TextureMixin:Init_BGMenu_Frame(frame, {
         enabled=true,
         isNewButton=true,
-        alpha=1,
+        nineSliceAlpha=0,
+        portraitAlpha=0.5,
+        alpha=0.5,
         settings=function(_, texture, alpha)
-            frame.Border:SetAlpha(texture and 0 or alpha or 0.5)
+            frame.Border.Bg:SetAlpha(texture and 0 or alpha or 0.5)
         end
     })
 

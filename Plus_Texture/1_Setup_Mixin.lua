@@ -618,4 +618,17 @@ function WoWTools_TextureMixin:SetBaseFrame(frame, alpha)
     self:SetAlphaColor(frame.BottomBorder, nil, nil, alpha)
     self:SetAlphaColor(frame.LeftBorder, nil, nil, alpha)
     self:SetAlphaColor(frame.RightBorder, nil, nil, alpha)
+
+    self:SetAlphaColor(frame.RightBorder, nil, nil, alpha)
 end
+
+--DialogBorderTemplate
+function WoWTools_TextureMixin:SetBorder(frame, alpha)
+    if not frame or not frame.Bg then
+        return
+    end
+    alpha= alpha or self.min or 0.5
+
+    self:SetFrame(frame, alpha)
+end
+
