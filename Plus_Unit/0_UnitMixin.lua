@@ -85,7 +85,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     unit= unit or tab.unit or (guid and UnitTokenFromGUID(guid))
     name= name or tab.name
     guid= guid or tab.guid or (UnitExists(unit) and UnitGUID(unit)) or self:GetGUID(unit, name)
-    
+
     local reName= tab.reName
     local reRealm= tab.reRealm
 
@@ -93,7 +93,7 @@ function WoWTools_UnitMixin:GetPlayerInfo(unit, guid, name, tab)
     local reNotRace= tab.reNotRace
     local faction= tab.faction
     local reLink= tab.reLink
-    
+
     local size= tab.size or 0
 
     if guid==WoWTools_DataMixin.Player.GUID
