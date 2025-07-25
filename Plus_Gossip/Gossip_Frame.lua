@@ -86,6 +86,7 @@ local function Init(isShow)
     end
 
     Frame= CreateFrame('Frame', 'WoWToolsGossipTextIconOptionsFrame', UIParent)--, 'DialogBorderTemplate')--'ButtonFrameTemplate')
+    tinsert (UISpecialFrames, 'WoWToolsGossipTextIconOptionsFrame')
     Frame:Hide()
 
     List = CreateFrame("Frame", 'WoWToolsGossipTextIconOptionsList', Frame, "WowScrollBoxList")
