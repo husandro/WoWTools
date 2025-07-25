@@ -159,8 +159,13 @@ local function Init_Texture(self)
     end)
 
     for i=1, 5 do
-        self:HideTexture(StableFrame.ActivePetList['PetButton'..i].Background)
+        if StableFrame.ActivePetList['PetButton'..i] then
+            self:HideTexture(StableFrame.ActivePetList['PetButton'..i].Background)
+            self:SetAlphaColor(StableFrame.ActivePetList['PetButton'..i].Border)
+        end
     end
+    self:SetAlphaColor(StableFrame.ActivePetList.BeastMasterSecondaryPetButton.Border)
+
     self:HideTexture(StableFrame.ActivePetList.BeastMasterSecondaryPetButton.Background)
 
     self:HideFrame(StableFrame.StabledPetList.ListCounter)

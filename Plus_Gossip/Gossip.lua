@@ -512,7 +512,15 @@ local function Create_GossipOptionCheckBox(frame, info)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_GossipMixin.addName)
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动对话' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, ENABLE_DIALOG), WoWTools_TextMixin:GetEnabeleDisable(Save().gossip))
         GameTooltip:AddDoubleLine(' ')
-        GameTooltip:AddDoubleLine('|T'..(self.icon or 0)..':0|t'..(self.name or ''), 'gossipOptionID: |cnGREEN_FONT_COLOR:'..self.gossipOptionID..'|r')
+        if self.gossipOptionID then
+            GameTooltip:AddDoubleLine(
+                '|T'..(self.icon or 0)..':0|t'
+                ..(self.name or ''),
+                
+                'gossipOptionID: |cnGREEN_FONT_COLOR:'
+                ..self.gossipOptionID
+            )
+        end
 
         if self.spellID then
             GameTooltip:AddDoubleLine(WoWTools_SpellMixin:GetLink(self.spellID, true), 'spellID '.. self.spellID)
