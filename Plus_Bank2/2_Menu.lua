@@ -208,6 +208,7 @@ local function Init()
         end}
     )
     wow:SetPoint('RIGHT', btn, 'LEFT')
+    wow:GetNormalTexture():SetVertexColor(1,1,1)
     function wow:settings()
         local saveWoWData= Save().saveWoWData
         local icon= self:GetNormalTexture()
