@@ -2,7 +2,9 @@
 if BankFrameTab2 then
     return
 end
+
 WoWTools_BankMixin={}
+
 local P_Save={
     line=2,
     num=20,
@@ -16,7 +18,7 @@ local P_Save={
     filterSaveMoney={},--[guid]=true
     allBank=WoWTools_DataMixin.Player.husandro,--整合银行
 
-    saveWoWData=true,
+    saveWoWData=WoWTools_DataMixin.Player.husandro,
 }
 
 
