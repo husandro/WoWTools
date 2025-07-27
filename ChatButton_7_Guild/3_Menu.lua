@@ -116,7 +116,13 @@ local function Init_Guild_Menu(self, root)
     end, function()
         Save().showListName= not Save().showListName and true or nil
     end)
-
+    sub2= sub:CreateCheckbox(
+        WoWTools_DataMixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
+    function()
+        return Save().showNotOnLine
+    end, function()
+        Save().showNotOnLine= not Save().showNotOnLine and true or nil
+    end)
 
 
 
@@ -132,14 +138,7 @@ local function Init_Guild_Menu(self, root)
         tooltip:AddLine(WoWTools_WoWDate[WoWTools_DataMixin.Player.GUID].Guild.text)
     end)
 
-    sub2= sub:CreateCheckbox(
-        WoWTools_DataMixin.onlyChinese and '显示离线成员' or COMMUNITIES_MEMBER_LIST_SHOW_OFFLINE,
-    function()
-        return Save().showNotOnLine
-    end, function()
-        Save().showNotOnLine= not Save().showNotOnLine and true or nil
-        return MenuResponse.CloseAll
-    end)
+
 
     sub:CreateSpacer()
     sub:CreateSpacer()
