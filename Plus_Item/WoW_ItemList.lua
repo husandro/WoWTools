@@ -66,6 +66,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -162,6 +163,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -235,6 +237,7 @@ TypeTabs= {
             num=num+1
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText, findID)
         local wowData= WoWTools_WoWDate[Frame.guid]
@@ -315,6 +318,7 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -392,6 +396,7 @@ TypeTabs= {
             end
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function()
         local data, num= CreateDataProvider(), 0
@@ -471,6 +476,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -529,6 +535,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -608,6 +615,7 @@ TypeTabs= {
             num= num+1
         end
         self.Text:SetText(num>0 and num or '')
+        self:SetAlpha(num>0 and 1 or 0.3)
     end,
     get_data=function(isFind, findText)
         local data, num= CreateDataProvider(), 0
@@ -1765,7 +1773,7 @@ local function Init_List()
                     self.ItemTextures[name]= self:CreateTexture(nil, 'BACKGROUND', nil, 3)
                     self.ItemTextures[name]:SetSize(w, w)
                     self.ItemTextures[name]:SetAtlas(tab.atlas)
-                    self.ItemTextures[name]:SetAlpha(0.5)
+                    --self.ItemTextures[name]:SetAlpha(0.5)
                     self.ItemTextures[name].Text= WoWTools_LabelMixin:Create(self, {color={r=1,g=1,b=1}, layer='BORDER'})
                     self.ItemTextures[name].Text:SetPoint('BOTTOMRIGHT', self.ItemTextures[name])
 
@@ -1867,15 +1875,13 @@ local function Init_List()
         List2Buttons[name].texture=List2Buttons[name]:CreateTexture(nil, 'BORDER')
         List2Buttons[name].texture:SetPoint('CENTER')
         List2Buttons[name].texture:SetSize(23,23)
+        List2Buttons[name].texture:SetAtlas(data.atlas)
 
         List2Buttons[name].name= name
         List2Buttons[name].tooltip= data.tooltip
 
-
         List2Buttons[name].Text= WoWTools_LabelMixin:Create(List2Buttons[name], {color={r=1,g=1,b=1}})
         List2Buttons[name].Text:SetPoint('BOTTOMRIGHT')
-
-        List2Buttons[name].texture:SetAtlas(data.atlas)
 
         if last then
             List2Buttons[name]:SetPoint('RIGHT', last, 'LEFT', -2, 0)
