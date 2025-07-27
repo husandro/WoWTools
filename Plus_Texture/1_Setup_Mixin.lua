@@ -281,10 +281,10 @@ function WoWTools_TextureMixin:SetScrollBar(bar, isAutoHide)
         return
     end
 
-    self:SetFrame(bar.Back, {alpha=0.8})
-    self:SetFrame(bar.Forward, {alpha=0.8})
-    self:SetFrame(bar.Track, {alpha=0.8})
-    self:SetFrame(bar.Track.Thumb, {alpha=0.8})
+    self:SetFrame(bar.Back, {notAlpha=true})--{alpha=0.8})
+    self:SetFrame(bar.Forward, {notAlpha=true})--{{alpha=0.8})
+    self:SetFrame(bar.Track, {notAlpha=true})--{{alpha=0.8})
+    self:SetFrame(bar.Track.Thumb, {notAlpha=true})--{{alpha=0.8})
     
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.5)
