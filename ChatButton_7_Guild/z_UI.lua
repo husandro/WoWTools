@@ -19,11 +19,11 @@ end
 
     --self:SetNineSlice(CommunitiesFrame, true)
 
-    self:SetScrollBar(CommunitiesFrame.Chat)
+    self:SetScrollBar(CommunitiesFrame.Chat, true)
     self:SetNineSlice(CommunitiesFrame.Chat.InsetFrame)
     self:CreateBG(CommunitiesFrame.Chat, {isAllPoint=true, isColor=true})
 --新闻过滤
-    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews)
+    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameNews, true)
     self:SetBG(CommunitiesFrameGuildDetailsFrameNews)
 
     self:SetNineSlice(CommunitiesFrameInset)
@@ -34,7 +34,7 @@ end
 --公会和社区，列表
     self:HideTexture(CommunitiesFrameCommunitiesList.Bg)
     self:SetNineSlice(CommunitiesFrameCommunitiesList.InsetFrame, nil, true)
-    self:SetScrollBar(CommunitiesFrameCommunitiesList)
+    self:SetScrollBar(CommunitiesFrameCommunitiesList, true)
     self:HideFrame(CommunitiesFrameCommunitiesList.FilligreeOverlay)
     self:HideTexture(CommunitiesFrameCommunitiesList.TopFiligree)
     self:HideTexture(CommunitiesFrameCommunitiesList.BottomFiligree)
@@ -55,13 +55,13 @@ end
     self:SetFrame(CommunitiesFrame.AddToChatButton, {notAlpha=true})
 
     self:SetFrame(CommunitiesFrame.NotificationSettingsDialog.Selector)
-    self:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame)
+    self:SetScrollBar(CommunitiesFrame.NotificationSettingsDialog.ScrollFrame, true)
     self:SetAlphaColor(CommunitiesFrame.NotificationSettingsDialog.BG, {notAlpha=true})
 
 --成员，列表
     self:SetNineSlice(CommunitiesFrame.MemberList.InsetFrame)
     self:HideFrame(CommunitiesFrame.MemberList.ColumnDisplay)
-    self:SetScrollBar(CommunitiesFrame.MemberList)
+    self:SetScrollBar(CommunitiesFrame.MemberList, true)
     self:CreateBG(CommunitiesFrame.MemberList, {isAllPoint=true})
 
 
@@ -75,18 +75,16 @@ end
 
 --公会奖励，列表, 物品，GuildRewards.lua
     self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg)
-    self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards)
+    self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Rewards, true)
     CommunitiesFrame.GuildBenefitsFrame.Perks:DisableDrawLayer('BACKGROUND')
     self:HideFrame(CommunitiesFrame.GuildBenefitsFrame)
     self:HideTexture(CommunitiesFrame.GuildBenefitsFrame.FactionFrame.Bar.BG)
+    self:SetScrollBar(CommunitiesFrame.GuildBenefitsFrame.Perks.ScrollBar, true)
 
     hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(f)
         self:SetBG(f)
     end)
-    --hooksecurefunc(CommunitiesGuildRewardsButtonMixin, 'Init', function(btn)
-    --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetPoint('BOTTOM')
-    --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAtlas('ChallengeMode-guild-background')
-    --CommunitiesFrame.GuildBenefitsFrame.Rewards.Bg:SetAlpha(0.3)
+    
 
 --角色名称邀请你加入
     self:SetNineSlice(CommunitiesFrame.ClubFinderInvitationFrame.InsetFrame)
@@ -98,7 +96,7 @@ end
     self:SetMenu(GuildControlUINavigationDropdown)
     self:SetMenu(GuildControlUIRankBankFrameRankDropdown)
     self:SetInset(GuildControlUIRankBankFrameInset)
-    self:SetScrollBar(GuildControlUIRankBankFrameInsetScrollFrame)
+    self:SetScrollBar(GuildControlUIRankBankFrameInsetScrollFrame, true)
     self:SetMenu(GuildControlUIRankSettingsFrameRankDropdown)
 
 
@@ -109,7 +107,7 @@ end
     self:HideTexture(PetitionFrameInset.Bg)
     self:SetInset(PetitionFrameInset)
     self:SetNineSlice(PetitionFrameInset)
-    self:SetScrollBar(PetitionFrame)
+    self:SetScrollBar(PetitionFrame, true)
 
 
 
@@ -136,21 +134,21 @@ end
     self:SetFrame(CommunitiesFrameGuildDetailsFrameInfo)
     CommunitiesFrameGuildDetailsFrameInfo:DisableDrawLayer('BACKGROUND')
     self:SetFrame(CommunitiesFrameGuildDetailsFrame)
-    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame)
-    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame)
+    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame, true)
+    self:SetScrollBar(CommunitiesFrameGuildDetailsFrameInfo.DetailsFrame, true)
     --CommunitiesFrameGuildDetailsFrameInfoMOTDScrollFrame:SetPoint('BOTTOMRIGHT')
 
 --公会信息， 点击以编辑
     --CommunitiesGuildTextEditFrame
     self:SetFrame(CommunitiesGuildTextEditFrame)
     self:SetNineSlice(CommunitiesGuildTextEditFrame.Container, nil, true)
-    self:SetScrollBar(CommunitiesGuildTextEditFrame.Container.ScrollFrame)
+    self:SetScrollBar(CommunitiesGuildTextEditFrame.Container.ScrollFrame, true)
 
 --查看日志，记录
     self:SetFrame(CommunitiesGuildLogFrame)
     self:SetFrame(CommunitiesGuildLogFrameCloseButton)
     self:SetNineSlice(CommunitiesGuildLogFrame.Container, nil, true)
-    self:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame)
+    self:SetScrollBar(CommunitiesGuildLogFrame.Container.ScrollFrame, true)
 
 
 --新闻过滤
@@ -158,7 +156,7 @@ end
     self:SetButton(CommunitiesGuildNewsFiltersFrame.CloseButton)
 
 --寻找社区
-    self:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards)
+    self:SetScrollBar(ClubFinderCommunityAndGuildFinderFrame.CommunityCards, true)
     self:SetEditBox(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SearchBox)
     self:SetNineSlice(ClubFinderCommunityAndGuildFinderFrame.InsetFrame)
     self:SetMenu(ClubFinderCommunityAndGuildFinderFrame.OptionsList.SortByDropdown)
@@ -569,7 +567,7 @@ function WoWTools_TextureMixin.Frames:GuildRegistrarFrame()
     self:HideTexture(GuildRegistrarFrameInset.Bg)
     self:SetInset(GuildRegistrarFrameInset)
     self:SetNineSlice(GuildRegistrarFrameInset)
-    self:SetScrollBar(GuildRegistrarFrame)
+    self:SetScrollBar(GuildRegistrarFrame, true)
     self:SetEditBox(GuildRegistrarFrameEditBox)
 end
 

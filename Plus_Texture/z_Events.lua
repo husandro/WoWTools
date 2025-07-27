@@ -2543,21 +2543,18 @@ function WoWTools_TextureMixin.Events:Blizzard_SharedXML()
         btn.SelectedTexture:SetVertexColor(0,1,0)
     end)
 
-        --[[frame.SelectedIconMouseLabel= WoWTools_LabelMixin:Create(frame.BorderBox.SelectedIconArea, {color=true})
-        frame.SelectedIconMouseLabel:SetPoint('BOTTOMRIGHT', frame.BorderBox.SelectedIconArea.SelectedIconText.SelectedIconHeader, 'TOPRIGHT')
-        frame.SelectedIconMouseLabel:SetText(WoWTools_DataMixin.onlyChinese and '拖曳物品' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, DRAG_MODEL, ITEMS))]]
-    
+--ScrollBarMixin
+    hooksecurefunc(ScrollBarMixin, 'Update', function(bar)
+        if not bar.hideIfUnscrollable then--SetHideIfUnscrollable
+            bar:SetAlpha(bar:HasScrollableExtent() and 1 or 0)
+        end
+    end)
 
-    --hooksecurefunc(ButtonStateBehaviorMixin , 'OnLoad', function(btn)
 
     hooksecurefunc('NavBar_Initialize', function(bar)
         self:HideFrame(bar)
         self:HideFrame(bar.overlay)
         self:HideFrame(bar.Inset)
     end)
-
-    --[[hooksecurefunc(IconSelectorPopupFrameTemplateMixin, 'OnLoad', function(btn)
-        self:HideFrame(btn, {index=1})
-    end)]]
 end
 

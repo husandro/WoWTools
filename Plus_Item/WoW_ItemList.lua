@@ -1683,6 +1683,7 @@ local function Init_List()
     end
 
     Frame.ScrollBox= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
+    Frame.ScrollBox:SetFrameStrata('HIGH')
     Frame.ScrollBox:SetPoint('TOPRIGHT', -28, -55)
     Frame.ScrollBox:SetPoint('BOTTOMLEFT', Frame, 'BOTTOM', 0, 13)
 
@@ -1732,6 +1733,7 @@ local function Init_List()
 
 
     Frame.view = CreateScrollBoxListLinearView()
+    --Frame.view:SetDataProvider(CreateDataProvider())
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsPlayerFrameTemplate', function(self, data)
          if not self.ItemTextures then
@@ -1794,6 +1796,7 @@ local function Init_List()
 
 
     Frame.ScrollBox2= CreateFrame('Frame', nil, Frame, 'WowScrollBoxList')
+    Frame.ScrollBox2:SetFrameStrata('HIGH')
     Frame.ScrollBox2:SetPoint('TOPLEFT', 13, -55)
     Frame.ScrollBox2:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOM', -23, 13)
 
