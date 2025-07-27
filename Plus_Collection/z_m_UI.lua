@@ -266,7 +266,6 @@ local function Init_CollectionsJournal()
 
 
     WoWTools_MoveMixin:Setup(MountJournal.BottomLeftInset, {frame=CollectionsJournal})
-
     WoWTools_MoveMixin:Setup(PetJournalPetCard, {frame=CollectionsJournal})
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet1, {frame=CollectionsJournal})
     WoWTools_MoveMixin:Setup(PetJournalLoadoutPet2, {frame=CollectionsJournal})
@@ -330,7 +329,9 @@ local function Init_CollectionsJournal()
 
     
     C_Timer.After(0.3, function()
-        WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
+        if _G['ManuscriptsJournal'] then
+            WoWTools_MoveMixin:Setup(_G['ManuscriptsJournal'], {frame=CollectionsJournal})
+        end
     end)
 
 
