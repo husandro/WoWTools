@@ -2033,7 +2033,7 @@ function WoWTools_TextureMixin.Events:Blizzard_TokenUI()
     self:SetFrame(TokenFrame)
     self:SetMenu(TokenFrame.filterDropdown)
 
-    self:SetScrollBar(TokenFrame, {notHide=true})--bug，货币转移，出错
+    self:SetScrollBar(TokenFrame)--bug，货币转移，出错
     --[[self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.Begin, true)
     self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.Middle, true)
     self:SetAlphaColor(TokenFrame.ScrollBar.Track.Thumb.End, true)]]

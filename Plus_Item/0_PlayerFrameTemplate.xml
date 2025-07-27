@@ -225,7 +225,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self, anchor='ANCHOR_RIGHT'})
+                        if parent.data then
+                            WoWTools_SetTooltipMixin:Frame(parent, nil, {specID=parent.data.specID, owner=self, anchor='ANCHOR_RIGHT'})
+                        end
                         self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>
@@ -520,7 +522,9 @@ https://raw.githubusercontent.com/Gethe/wow-ui-source/live/Interface/AddOns/Bliz
                     </OnLeave>
                     <OnEnter>
                         local parent= self:GetParent()
-                        WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.data.itemLink, owner=self})                        
+                        if parent.data then
+                            WoWTools_SetTooltipMixin:Frame(parent, nil, {itemLink=parent.data.itemLink, owner=self})
+                        end
                         self:SetAlpha(0.3)
                     </OnEnter>
                 </Scripts>

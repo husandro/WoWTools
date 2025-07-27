@@ -275,7 +275,7 @@ end
 
 
 --设置，滚动条，颜色
-function WoWTools_TextureMixin:SetScrollBar(bar, isAutoHide)
+function WoWTools_TextureMixin:SetScrollBar(bar)
     bar= bar and bar.ScrollBar or bar
     if not bar or not bar.Track then
         return
@@ -285,26 +285,12 @@ function WoWTools_TextureMixin:SetScrollBar(bar, isAutoHide)
     self:SetFrame(bar.Forward, {notAlpha=true})--{{alpha=0.8})
     self:SetFrame(bar.Track, {notAlpha=true})--{{alpha=0.8})
     self:SetFrame(bar.Track.Thumb, {notAlpha=true})--{{alpha=0.8})
-    
+
     self:SetAlphaColor(bar.Backplate, nil, nil, 0)
     self:SetAlphaColor(bar.Background, nil, nil, 0.5)
+--bar:SetHideIfUnscrollable(true)
 
-    if isAutoHide then
-        bar:SetHideIfUnscrollable(true)
-    end
 end
-    --[[if not bar:GetParent():IsProtected() then
-        bar:SetHideIfUnscrollable(true)
-        --bar.hideIfUnscrollable =true
-    else
-        bar.scrollBarHideIfUnscrollable=true
-    end]]
-
-    --bar.scrollBarHideIfUnscrollable=true
-    --[[if bar.SetHideIfUnscrollable and not tab.notHide then--货币转移，出错, 这鸟BUG
-       bar:SetHideIfUnscrollable(true)
-    end]]
-
 
 
 --Slider

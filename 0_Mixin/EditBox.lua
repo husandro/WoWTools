@@ -115,7 +115,7 @@ function WoWTools_EditBoxMixin:CreateFrame(frame, tab)
     scrollFrame.ScrollBar:ClearAllPoints()--MinimalScrollBar
     scrollFrame.ScrollBar:SetPoint('TOPRIGHT', -8, -17)
     scrollFrame.ScrollBar:SetPoint('BOTTOMRIGHT', -8, 12)
-    WoWTools_TextureMixin:SetScrollBar(scrollFrame, true)
+    WoWTools_TextureMixin:SetScrollBar(scrollFrame)
 
     scrollFrame.BGFrame= CreateFrame('Frame', nil, scrollFrame, 'TooltipBackdropTemplate')
     scrollFrame.BGFrame:SetPoint('TOPLEFT', -5, 5)

@@ -1244,6 +1244,10 @@ end
 
 
 
+
+
+
+
 local function OnMouseDown_RightButton(self, d)
     local guid= self.data and self.data.guid
 
@@ -1474,6 +1478,10 @@ end
 
 
 
+
+
+
+
 local function Init_IsMe_Menu(self, root)
     if not self:IsMouseOver() then
         return
@@ -1681,7 +1689,7 @@ local function Init_List()
     Frame.ScrollBar= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar:SetPoint("TOPLEFT", Frame.ScrollBox, "TOPRIGHT", 6, -12)
     Frame.ScrollBar:SetPoint("BOTTOMLEFT", Frame.ScrollBox, "BOTTOMRIGHT", 6, 12)
-    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar, true)
+    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar)
 
     Frame.SearchBox= WoWTools_EditBoxMixin:Create(Frame, {isSearch=true})
     Frame.SearchBox:SetPoint('BOTTOMLEFT', Frame.ScrollBox, 'TOPLEFT', 24, 4)
@@ -1726,7 +1734,7 @@ local function Init_List()
     Frame.view = CreateScrollBoxListLinearView()
     ScrollUtil.InitScrollBoxListWithScrollBar(Frame.ScrollBox, Frame.ScrollBar, Frame.view)
     Frame.view:SetElementInitializer('WoWToolsPlayerFrameTemplate', function(self, data)
-         if not self:GetScript('OnMouseDown') then
+         if not self.ItemTextures then
             self:SetScript('OnMouseDown', function(...)
                 OnMouseDown_RightButton(...)
             end)
@@ -1792,7 +1800,7 @@ local function Init_List()
     Frame.ScrollBar2= CreateFrame("EventFrame", nil, Frame, "MinimalScrollBar")
     Frame.ScrollBar2:SetPoint("TOPLEFT", Frame.ScrollBox2, "TOPRIGHT", 6, -12)
     Frame.ScrollBar2:SetPoint("BOTTOMLEFT", Frame.ScrollBox2, "BOTTOMRIGHT", 6, 12)
-    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar2, true)
+    WoWTools_TextureMixin:SetScrollBar(Frame.ScrollBar2)
 
     Frame.SearchBox2= WoWTools_EditBoxMixin:Create(Frame, {
         isSearch=true,
