@@ -91,13 +91,14 @@ local function Init()
 
 
     function btn:settings()
-        btn:SetNormalAtlas(Get_Money() and 'Cursor_OpenHandGlow_32' or 'Cursor_unableOpenHandGlow_32')
-        btn:GetNormalTexture():SetAlpha(Save().autoOutMoney and 1 or 0.5)
+        self:SetNormalAtlas(Get_Money() and 'Cursor_OpenHandGlow_32' or 'Cursor_unableOpenHandGlow_32')
+        self:GetNormalTexture():SetAlpha(Save().autoOutMoney and 1 or 0.5)
     end
 
 
 --菜单
     btn:SetupMenu(function(self, root)
+--自动提取
         local num= Save().autoOutMoney or 0
         root:CreateCheckbox(
             WoWTools_DataMixin.onlyChinese and '自动提取' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, WITHDRAW),
@@ -109,11 +110,11 @@ local function Init()
         end)
 
 
-        --自定义数量
+--自定义数量
         root:CreateSpacer()
         WoWTools_MenuMixin:CreateSlider(root, {
             getValue=function()
-                return Save().autoOutMoney or 500
+                return Save().autoOutMoney or num
             end, setValue=function(value)
                 if Save().autoOutMoney then
                     Save().autoOutMoney=value

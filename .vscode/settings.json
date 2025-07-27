@@ -6049,7 +6049,11 @@
         "WOW_LABS_STAY",
         "GARRISON_MISSION_TIMELEFT",
         "ACTION_SPELL_ENERGIZE",
-        "ACTION_SPELL_PERIODIC_ENERGIZE"
+        "ACTION_SPELL_PERIODIC_ENERGIZE",
+        "ArchaeologyFrameCloseButton",
+        "ArchaeologyFrameRankBarBorder",
+        "ArchaeologyFrameArtifactPageHistoryScrollChild",
+        "ArchaeologyFrameArtifactPageHistoryScroll"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {

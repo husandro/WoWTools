@@ -118,18 +118,10 @@ panel:SetScript("OnEvent", function(self, event, arg1)
 
             WoWToolsSave['Plus_Texture']= Save() or P_Save
 
-            if not Save().Bg then
-                Save().Bg= P_Save.Bg
-
-            elseif Save().Bg.UseTexture then
-                WoWToolsPlayerDate['BGTexture']= Save().Bg.UseTexture
-                Save().Bg.UseTexture=nil
-            end
-
-            WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
-
             Save().Bg= Save().Bg or P_Save.Bg
             Save().Bg.Anims= Save().Bg.Anims or P_Save.Bg.Anims
+
+            WoWToolsPlayerDate['BGTexture']= WoWToolsPlayerDate['BGTexture'] or {}
 
             WoWTools_TextureMixin.addName= '|A:AnimCreate_Icon_Texture:0:0|a'..(WoWTools_DataMixin.onlyChinese and '材质' or TEXTURES_SUBHEADER)
 

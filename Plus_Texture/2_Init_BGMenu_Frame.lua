@@ -329,10 +329,12 @@ local function texture_list(self, root, name, icon, texture, isAdd)
             WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
         function()
             StaticPopup_Show('WoWTools_OK',
-            WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2,
+            (WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2)
+            ..'|n|n'..texture:gsub('Interface\\AddOns\\WoWTools\\Source\\Background\\', ''),
             nil,
             {SetValue=function()
                 WoWToolsPlayerDate['BGTexture'][texture]= nil
+                print(WoWTools_DataMixin.Icon.icon2, WoWTools_DataMixin.onlyChinese and '清除' or SLASH_STOPWATCH_PARAM_STOP2, texture)
             end})
             return MenuResponse.Open
         end)
@@ -474,7 +476,7 @@ local function Add_Frame_Menu(_, root)
     end
 
 
-
+    
 --勾选所有
     sub2=sub:CreateButton(
         WoWTools_DataMixin.onlyChinese and '勾选所有' or CHECK_ALL,
@@ -519,7 +521,13 @@ local function Add_Frame_Menu(_, root)
 
 
 
-    table.sort(newTab, function(a, b) return a.name < b.name end)
+    table.sort(newTab, function(a, b)
+        if a.enabled and b.enabled then
+            return a.name < b.name
+        else
+            return a.enabled
+        end
+    end)
 
     for index, tab in pairs(newTab) do
         local isAtlas, textureID, icon2= WoWTools_TextureMixin:IsAtlas(tab.texture, {480, 240})

@@ -886,7 +886,7 @@ end
 
 
 function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
-    --self:SetNineSlice(ArchaeologyFrame, true)
+    self:SetButton(ArchaeologyFrameCloseButton)
     self:SetNineSlice(ArchaeologyFrameInset)
     self:HideTexture(ArchaeologyFrameBg)
     self:HideTexture(ArchaeologyFrameInset.Bg)
@@ -895,14 +895,17 @@ function WoWTools_TextureMixin.Events:Blizzard_ArchaeologyUI()
     self:SetAlphaColor(ArchaeologyFrameRaceFilterLeft, nil, nil, 0.3)
     self:SetAlphaColor(ArchaeologyFrameRaceFilterRight, nil, nil, 0.3)
 
+    self:SetAlphaColor(ArchaeologyFrameRankBarBorder)
+
     self:Init_BGMenu_Frame(ArchaeologyFrame, {
+        enabled=true,
+        alpha=1,
         settings= function(_, texture, alpha)
             alpha= texture and 0 or alpha or 1
             ArchaeologyFrameBgLeft:SetAlpha(alpha)
             ArchaeologyFrameBgRight:SetAlpha(alpha)
         end
-    }
-    )
+    })
 end
 
 

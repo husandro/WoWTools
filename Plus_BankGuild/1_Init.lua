@@ -5,7 +5,7 @@ local P_Save={
     plusTab=true,
 
     autoOpenBags=WoWTools_DataMixin.Player.husandro,--自动，打开背包
-    autoOutMoney=true,--自动，提取钱
+    --autoOutMoney=0,--自动取钱，0：全部提取 数值：指定数量 nil:禁用
 
     saveItemSeconds=0.8,--保存，提取物品，延迟
     sortRightToLeft=true,--排序，从后到前
