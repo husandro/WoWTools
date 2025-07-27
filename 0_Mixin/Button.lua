@@ -114,11 +114,6 @@ end
 local function On_Click(self, ...)
     if self.settings then
         self:settings(...)
-        if ( self:GetChecked() ) then
-            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
-        else
-            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
-        end
     end
 end
 
@@ -132,6 +127,11 @@ local function Set_CheckButton(btn, isRightText)
     function btn:GetText(...)
         self.Text:GetText(...)
     end
+
+    btn:SetScript('OnLeave', function(...) On_Leave(...) end)
+    btn:SetScript('OnEnter', function(...) On_Enter(...) end)
+    btn:SetScript('OnMouseUp', function(...) On_Enter(...) end)
+    btn:SetScript('OnClick', function(...) On_Click(...) end)
 
     if isRightText then
         btn.Text:ClearAllPoints()
@@ -278,30 +278,13 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     btn:SetSize(width, height)
 
 
---RegisterForMouse , RegisterForClicks RegisterForClicks("anyUp")
     if isMenu then
         btn:RegisterForMouse("RightButtonDown", 'LeftButtonDown', "LeftButtonUp", 'RightButtonUp')
     else
         btn:RegisterForClicks(WoWTools_DataMixin.LeftButtonDown, WoWTools_DataMixin.RightButtonDown)
-        --btn:RegisterForClicks("AnyDown", "AnyUp")
-    end
 
---OnLeave
-    btn:SetScript('OnLeave', function(f)
-       On_Leave(f)
-    end)
---OnEnter
-    btn:SetScript('OnEnter', function(f)
-        On_Enter(f)
-    end)
---OnMouseUp
-    btn:SetScript('OnMouseUp', function(f)
-        On_Enter(f)
-    end)
---OnClick
-    btn:SetScript('OnClick', function(f)
-        On_Click(f)
-    end)
+    end
+    
     return btn
 end
 
