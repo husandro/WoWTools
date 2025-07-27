@@ -12,7 +12,7 @@ end
 local AutoReadyTime--时间
 local PlayerNameText--就绪名称
 
-local Checks--选项
+local Checks={}--选项
 local AltCanellText--Alt, 取消提示
 
 
@@ -78,27 +78,26 @@ local function Init_UI()
     PlayerNameText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame, {name='ReadyCheckFramePlayerNameText', justifyH='CENTER'})
     PlayerNameText:SetPoint('BOTTOM', ReadyCheckFrameText, 'TOP', 0, 2)
 
-    Checks={}
 
-    local check
+
+
     for i=0, 2 do
-        check= CreateFrame('CheckButton', 'WoWToolsChatButtonMarkersReadyCheckButton'..i, ReadyCheckListenerFrame, 'InterfaceOptionsCheckButtonTemplate')
-        check:SetPoint('RIGHT', ReadyCheckListenerFrame, 'LEFT', -2, 20-(i*20))
-        check.value= i>0 and i or nil
+        Checks[i]= WoWTools_ButtonMixin:Cbtn(ReadyCheckListenerFrame, {
+            name='WoWToolsChatButtonMarkersReadyCheckButton'..i,
+            isCheck=true,
+            text= WoWTools_MarkerMixin:Get_ReadyTextAtlas(i) or (WoWTools_DataMixin.onlyChinese and '无' or NONE),
+            isRightText=true,
+        })
 
-        check.Text:SetText(
-            WoWTools_MarkerMixin:Get_ReadyTextAtlas(i)
-            or (WoWTools_DataMixin.onlyChinese and '无' or NONE)
-        )
-        check.Text:ClearAllPoints()
-        check.Text:SetPoint('RIGHT', check, 'LEFT')
+        Checks[i]:SetPoint('RIGHT', ReadyCheckListenerFrame, 'LEFT', -2, 20-(i*20))
+        Checks[i].value= i>0 and i or nil
 
-
-        check:SetScript('OnShow', function(self)
+        Checks[i]:SetScript('OnShow', function(self)
             self:SetChecked(self.value== Save().autoReady)
         end)
 
-        check:SetScript('OnMouseDown', function(self)
+
+        Checks[i].settings= function(self)
             Save().autoReady= self.value
             Set_Ready()--设置，就绪，未就绪
             WoWTools_MarkerMixin.MarkerButton:settings()
@@ -108,23 +107,19 @@ local function Init_UI()
                 end
             end
             AltCanellText:set_shown()
-        end)
+        end
+        Checks[i].tooltip= function(_, tooltip)
+            tooltip:AddLine(WoWTools_DataMixin.addName)
+            tooltip:AddLine(WoWTools_MarkerMixin.addName)
+        end
 
-        check:SetScript('OnLeave', GameTooltip_Hide)
-        check:SetScript('OnEnter', function(self)
-            GameTooltip:SetOwner(self.Text, "ANCHOR_LEFT")
-            GameTooltip:ClearLines()
-            GameTooltip:AddLine(WoWTools_DataMixin.addName)
-            GameTooltip:AddLine(WoWTools_MarkerMixin.addName)
-            GameTooltip:Show()
-        end)
-
-        table.insert(Checks, check)
+        --table.insert(Checks, check)
     end
 
     AltCanellText= WoWTools_LabelMixin:Create(ReadyCheckListenerFrame)
-    AltCanellText:SetPoint('TOPRIGHT', check, 'BOTTOMLEFT', 0,-2)
+    AltCanellText:SetPoint('TOPRIGHT', Checks[2], 'BOTTOMLEFT', 0,-2)
     AltCanellText:SetText('Alt '..(WoWTools_DataMixin.onlyChinese and '取消' or CANCEL))
+
     function AltCanellText:set_shown()
         AltCanellText:SetShown(Save().autoReady)
     end
@@ -220,7 +215,7 @@ local function Init()
         end
     end)
 
-    return true
+     Init=function()end
 end
 
 
@@ -229,7 +224,5 @@ end
 
 
 function WoWTools_MarkerMixin:Init_AutoReady()
-    if Init() then
-        Init=function()end
-    end
+    Init()
 end

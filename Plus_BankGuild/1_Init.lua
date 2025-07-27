@@ -5,7 +5,8 @@ local P_Save={
     plusTab=true,
 
     autoOpenBags=WoWTools_DataMixin.Player.husandro,--自动，打开背包
-    
+    autoOutMoney=true,--自动，提取钱
+
     saveItemSeconds=0.8,--保存，提取物品，延迟
     sortRightToLeft=true,--排序，从后到前
 }
@@ -38,6 +39,7 @@ local function Init()
     WoWTools_GuildBankMixin:Init_Menu()
     WoWTools_GuildBankMixin:Init_Sort()
     WoWTools_GuildBankMixin:Init_InOut_Item()
+    WoWTools_GuildBankMixin:Init_Out_Money()
 
 --自动，打开背包 
     GuildBankFrame:HookScript('OnShow', function(self)
@@ -45,7 +47,9 @@ local function Init()
             do
                 WoWTools_BagMixin:OpenBag(nil, false)
             end
-            self:Raise()
+            if not InCombatLockdown() then
+                self:Raise()
+            end
         end
     end)
 

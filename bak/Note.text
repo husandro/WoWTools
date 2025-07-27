@@ -240,7 +240,7 @@ wrapFunc(C_PetBattles.DeclineQueuedPVPMatch)
 
 
 SharedUIPanelTemplates.xml
-UICheckButtonTemplate
+InterfaceOptionsCheckButtonTemplate
 InterfaceOptionsCheckButtonTemplate
 local myCheckButton = CreateFrame("CheckButton", nil, UIParent, "ChatConfigCheckButtonTemplate")
 myCheckButton:SetPoint("TOPLEFT", 200, -65)

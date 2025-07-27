@@ -64,29 +64,8 @@ local function Init()
         end
         C_CVar.SetCVar('nameplateShowFriends', C_CVar.GetCVarBool('nameplateShowFriends') and '0' or '1')
     end)
-        --[[local p=C_CVar.GetCVarBool('nameplateShowFriends')
-        --local all= C_CVar.GetCVarBool('nameplateShowAll')
-
-        if not p then
-            C_CVar.SetCVar('nameplateShowFriends', '1')
-        end
-
-        C_Timer.After(0.3, function()
-            for _, v in pairs(C_NamePlate.GetNamePlates() or {}) do
-                local unit = v.namePlateUnitToken or v.UnitFrame and v.UnitFrame.unit
-                if unit then
-                    Invite(unit)
-                end
-            end
-            if not InCombatLockdown() and not p then
-                C_CVar.SetCVar('nameplateShowFriends', '0')
-            end
-        end)]]
-    
 
     local check= CreateFrame('CheckButton', 'PetitionFrameAutoPetitionTargetCheckBox', PetitionFrame, 'InterfaceOptionsCheckButtonTemplate')
-
-    --check:SetPoint('TOPLEFT', 50, -33)
     check:SetPoint('LEFT', btn, 'RIGHT', 2, 0)
     check.Text:SetText(WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
     check:SetScript('OnLeave', GameTooltip_Hide)
@@ -103,8 +82,6 @@ local function Init()
         GameTooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '自动要求签名' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, REQUEST_SIGNATURE), WoWTools_DataMixin.onlyChinese and '目标' or TARGET)
         GameTooltip:Show()
     end)
-
-
 
     function check:set_event()
         if self:IsVisible() and self:GetChecked() then

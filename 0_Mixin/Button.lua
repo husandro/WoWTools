@@ -16,6 +16,7 @@ end]]
 local TemplateSizeTab={
     ['DropdownButton']= 23,
     ['ItemButton']=36,
+    ['CheckButton']= 26,
 }
 
 
@@ -58,7 +59,7 @@ UI-HUD-CoolDownManager-Mask
 --遮罩
 function WoWTools_ButtonMixin:AddMask(btn, isType2, region)
     btn.IconMask= btn.IconMask or btn:CreateMaskTexture()
-    
+
     if not isType2 then--方形，按钮
         btn.IconMask:SetAtlas('UI-HUD-CoolDownManager-Mask')--'spellbook-item-spellicon-mask'
         btn.IconMask:SetPoint('TOPLEFT', region or btn, 0.5, -0.5)
@@ -84,6 +85,61 @@ end
 
 
 
+
+
+
+
+
+local function On_Leave(self)
+    GameTooltip_Hide()
+    if self.set_alpha then
+        self:set_alpha()
+    end
+end
+local function On_Enter(self)
+    if self.tooltip then
+        GameTooltip:SetOwner(self, 'ANCHOR_LEFT')
+        GameTooltip:ClearLines()
+        if type(self.tooltip)=='function' then
+            self:tooltip(GameTooltip)
+        else
+            GameTooltip:AddLine(self.tooltip)
+        end
+        GameTooltip:Show()
+    end
+    if self.set_alpha then
+        self:set_alpha()
+    end
+end
+local function On_Click(self, ...)
+    if self.settings then
+        self:settings(...)
+        if ( self:GetChecked() ) then
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+        else
+            PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF);
+        end
+    end
+end
+
+
+
+
+local function Set_CheckButton(btn, isRightText)
+    function btn:SetText(...)
+        self.Text:SetText(...)
+    end
+    function btn:GetText(...)
+        self.Text:GetText(...)
+    end
+
+    if isRightText then
+        btn.Text:ClearAllPoints()
+        btn.Text:SetPoint('LEFT', btn, 'RIGHT', 2, 0)
+        btn.Text:SetJustifyH('LEFT')
+    end
+end
+
 --[[template
 UIPanelCloseButton
 ]]
@@ -104,18 +160,28 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
     local isTexture= tab.addTexture or (isType2 and not tab.notTexture)
     local useAtlasSize= tab.useAtlasSize and TextureKitConstants.UseAtlasSize or TextureKitConstants.IgnoreAtlasSize
 
+    local isCheck= tab.isCheck
+    local isRightText= tab.isRightText
+
+    local isUI= tab.isUI
+
     local name= tab.name --or ((frame and frame:GetName() or 'WoWTools')..'Button'..get_index())
+--
     local frameType= tab.frameType
                     or (isMenu and 'DropdownButton')
                     or (isItem and 'ItemButton')
+                    or (isCheck and 'CheckButton')
                     or 'Button'
+  --template
     local template= tab.template
-                    or (isSecure and 'SecureActionButtonTemplate')
-                    or (tab.isUI and 'UIPanelButtonTemplate')
+            or (isSecure and 'SecureActionButtonTemplate')
+            or (isUI and 'UIPanelButtonTemplate')
+            or (isCheck and 'UICheckButtonTemplate')--32x32
+
                     --or (isType2 and isItem and 'CircularItemButtonTemplate')
     local width, height= get_size(tab.size, frameType)
     local setID= tab.setID
-    --local iconSize= tab.iconSize--自定义，图标大小
+
 
 
 
@@ -126,6 +192,11 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
 
 --建立
     local btn= CreateFrame(frameType, name, frame or UIParent, template, setID)
+
+--设置 CheckButton
+    if isCheck then
+        Set_CheckButton(btn, isRightText)
+    end
 
     if isTexture then
 --添加，遮罩
@@ -163,7 +234,7 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
             self:AddMask(btn)
         end
     end
-    if template~='UIPanelButtonTemplate' then
+    if not isUI and not isCheck then
         btn:SetPushedAtlas(pushedAtlas)
         if isLocked then
             btn:SetHighlightAtlas(highlightAtlas)
@@ -183,8 +254,29 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         btn:SetNormalTexture(texture)
     end
 
+--遮罩
+    if isMask or ((atlas or texture) and not pushedAtlas and not isType2) then
+        self:AddMask(btn)
+    end
+
+--SetText
+
+    if text and btn.SetText then
+        btn:SetText(text)
+    end
+
+--alpha
+    if alpha then
+        btn:SetAlpha(alpha)
+    end
+--EnableMouseWheel
+    if setWheel then
+        btn:EnableMouseWheel(true)
+    end
+
 --设置大小
     btn:SetSize(width, height)
+
 
 --RegisterForMouse , RegisterForClicks RegisterForClicks("anyUp")
     if isMenu then
@@ -194,26 +286,22 @@ function WoWTools_ButtonMixin:Cbtn(frame, tab)
         --btn:RegisterForClicks("AnyDown", "AnyUp")
     end
 
---EnableMouseWheel
-    if setWheel then
-        btn:EnableMouseWheel(true)
-    end
-
---SetText
-    if text and btn.SetText then
-        btn:SetText(text)
-    end
-
---alpha
-    if alpha then
-        btn:SetAlpha(alpha)
-    end
-
---遮罩
-    if isMask or ((atlas or texture) and not pushedAtlas and not isType2) then
-        self:AddMask(btn)
-    end
-
+--OnLeave
+    btn:SetScript('OnLeave', function(f)
+       On_Leave(f)
+    end)
+--OnEnter
+    btn:SetScript('OnEnter', function(f)
+        On_Enter(f)
+    end)
+--OnMouseUp
+    btn:SetScript('OnMouseUp', function(f)
+        On_Enter(f)
+    end)
+--OnClick
+    btn:SetScript('OnClick', function(f)
+        On_Click(f)
+    end)
     return btn
 end
 

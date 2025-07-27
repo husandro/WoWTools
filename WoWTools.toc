@@ -364,6 +364,7 @@ Plus_BankGuild\2_Menu.lua
 Plus_BankGuild\Plus.lua
 Plus_BankGuild\z_UI.lua
 Plus_BankGuild\Sort.lua
+Plus_BankGuild\Out_Money.lua
 Plus_BankGuild\Item_In_Out.lua
 ##Plus_BankGuild\Plus_Init.lua
 ##Plus_BankGuild\Plus_All.lua

@@ -79,24 +79,29 @@ end
 --设置，自动申请，check
 --####################
 local function set_check(frame)
-    local check= CreateFrame("CheckButton", nil, frame, "InterfaceOptionsCheckButtonTemplate")
+    local check= WoWTools_ButtonMixin:Cbtn(frame, {
+        isCheck=true,
+    })
     check:SetPoint('RIGHT', frame, 'LEFT', 0, 12)
     check:SetChecked(not Save().notAutoRequestToJoinClub)
-    check:SetScript('OnClick', function()
-        Save().notAutoRequestToJoinClub= not Save().notAutoRequestToJoinClub and true or nil
-    end)
-    check:SetScript('OnLeave', GameTooltip_Hide)
-    check:SetScript('OnEnter', function(self2)
-        GameTooltip:SetOwner(self2, "ANCHOR_RIGHT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
-        GameTooltip:AddLine(' ')
-        GameTooltip:AddDoubleLine('|A:communities-icon-addgroupplus:0:0|a'..(WoWTools_DataMixin.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))..WoWTools_DataMixin.Icon.left, WoWTools_TextMixin:GetEnabeleDisable(not Save().notAutoRequestToJoinClub))
-        GameTooltip:Show()
-    end)
-    check:SetScript('OnShow', function(self2)
+        check:SetScript('OnShow', function(self2)
         self2:SetChecked(not Save().notAutoRequestToJoinClub)
     end)
+
+    function check:settings()
+        Save().notAutoRequestToJoinClub= not Save().notAutoRequestToJoinClub and true or nil
+    end
+    function check:tooltip()
+         GameTooltip:AddDoubleLine(WoWTools_ChatMixin.addName, WoWTools_GuildMixin.addName)
+        GameTooltip:AddLine(' ')
+        GameTooltip:AddDoubleLine(
+            '|A:communities-icon-addgroupplus:0:0|a'
+            ..(WoWTools_DataMixin.onlyChinese and '自动申请' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, SIGN_UP))
+            ..WoWTools_DataMixin.Icon.left,
+
+            WoWTools_TextMixin:GetEnabeleDisable(not Save().notAutoRequestToJoinClub)
+        )
+    end
 end
 
 

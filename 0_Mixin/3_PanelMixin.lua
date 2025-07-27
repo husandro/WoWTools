@@ -81,8 +81,13 @@ function WoWTools_PanelMixin:ReloadButton(tab)
         end)
     end
     if tab.disabledfunc then
-        local check=CreateFrame("CheckButton", nil, tab.panel, "InterfaceOptionsCheckButtonTemplate")
-        check.text:SetText(WoWTools_TextMixin:GetEnabeleDisable(true))
+        
+        local check=WoWTools_ButtonMixin:Cbtn(tab.panel, {
+            isCheck=true,
+            text=WoWTools_TextMixin:GetEnabeleDisable(true),
+            isRightText=true,
+        })
+        --check.Text:SetText(WoWTools_TextMixin:GetEnabeleDisable(true))
         check:SetChecked(tab.checked)
         if reload then
             check:SetPoint('LEFT', reload, 'RIGHT')

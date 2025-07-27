@@ -22,7 +22,7 @@ local function Init()--设置 panel
 
     for index, info in pairs(Tabs) do
         if info.dps and not findDps then
-            check=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--四属性, 仅限DPS
+            check=WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--四属性, 仅限DPS
             check:SetChecked(Save().onlyDPS)
             check:SetPoint('TOPLEFT', last, 'BOTTOMLEFT',0, -16)
             if WoWTools_DataMixin.onlyChinese then
@@ -30,7 +30,7 @@ local function Init()--设置 panel
             else
                 check.text:SetFormattedText(LFG_LIST_CROSS_FACTION , INLINE_DAMAGER_ICON..INLINE_HEALER_ICON)
             end
-            check:SetScript('OnMouseUp',function(self)
+            check:SetScript('OnMouseUp',function()
                 Save().onlyDPS = not Save().onlyDPS and true or false
                 WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
             end)
@@ -49,7 +49,7 @@ local function Init()--设置 panel
             last= text
         end
 
-        check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--禁用, 启用
+        check= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--禁用, 启用
         check:SetChecked(not Save().tab[info.name].hide)
         if info.name=='STATUS' or info.name=='SPEED' or info.name=='LIFESTEAL' then
             if last then
@@ -133,7 +133,7 @@ local function Init()--设置 panel
         end
 
         if info.name=='STATUS' then--主属性, 使用bar
-            local current= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            local current= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
             current:SetChecked(Save().tab[info.name].bar)
             current:SetPoint('LEFT', text, 'RIGHT',2,0)
             current.text:SetText(WoWTools_DataMixin.Player.col..'Bar')
@@ -166,7 +166,7 @@ local function Init()--设置 panel
 
         elseif info.name=='SPEED' then--速度, 当前速度, 选项
 --目标移动速度
-            local targetCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            local targetCheck= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
             targetCheck:SetChecked(Save().showTargetSpeed)
             targetCheck:SetPoint('LEFT', text, 'RIGHT',2, 0)
             targetCheck.text:SetText('|A:common-icon-rotateright:0:0|a'..(WoWTools_DataMixin.onlyChinese and '目标' or TARGET))
@@ -176,7 +176,7 @@ local function Init()--设置 panel
             end)
 
             --驭空术UI，速度
-            local dragonriding= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            local dragonriding= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
             dragonriding:SetChecked(not Save().disabledDragonridingSpeed)
             --dragonriding:SetPoint('LEFT', text, 'RIGHT',2,0)
             dragonriding:SetPoint('TOPLEFT', text, 'BOTTOMLEFT', 0, -2)
@@ -188,7 +188,7 @@ local function Init()--设置 panel
             end)
 
             --载具，速度
-            local vehicleSpeedCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+            local vehicleSpeedCheck= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
             vehicleSpeedCheck:SetChecked(not Save().disabledVehicleSpeed)
             vehicleSpeedCheck:SetPoint('LEFT', dragonriding.text, 'RIGHT',2,0)
             vehicleSpeedCheck.text:SetFormattedText(WoWTools_DataMixin.onlyChinese and '%s载具' or UNITNAME_SUMMON_TITLE9, '|TInterface\\Vehicles\\UI-Vehicles-Button-Exit-Up:0|t')
@@ -200,7 +200,7 @@ local function Init()--设置 panel
 
 
         elseif info.name=='VERSATILITY' then--全能5
-            local check2=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--仅防卫
+            local check2=WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--仅防卫
             check2:SetChecked(Save().tab['VERSATILITY'].onlyDefense)
             check2:SetPoint('LEFT', text, 'RIGHT',2,0)
             check2.text:SetText((WoWTools_DataMixin.onlyChinese and '仅防御' or format(LFG_LIST_CROSS_FACTION, DEFENSE)))
@@ -223,7 +223,7 @@ local function Init()--设置 panel
             end)
             check2.name= info.name
 
-            check2.A=CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--双属性 22/18%
+            check2.A=WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--双属性 22/18%
             check2.A:SetChecked(Save().tab['VERSATILITY'].damageAndDefense)
             check2.A:SetPoint('LEFT', check2.text, 'RIGHT',2,0)
             check2.A.text:SetText('22/18%')
@@ -316,7 +316,7 @@ local function Init()--设置 panel
     sliderY:SetPoint("LEFT", sliderX, 'RIGHT', 2, 0)
     sliderY.text= text
 
-    local notTextCheck= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    local notTextCheck= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
     notTextCheck:SetPoint("TOPLEFT", panel, 'TOP', 0, -32)
     notTextCheck.text:SetText(WoWTools_DataMixin.onlyChinese and '隐藏数值' or HIDE..STATUS_TEXT_VALUE)
     notTextCheck:SetChecked(Save().notText)
@@ -357,7 +357,7 @@ local function Init()--设置 panel
     end)
 
 
-    check= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    check= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
     check:SetPoint("TOPLEFT", notTextCheck, 'BOTTOMLEFT')
     check.text:SetText((WoWTools_DataMixin.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)..' 23%'..Tabs[2].text)
     check:SetChecked(Save().toLeft)
@@ -367,7 +367,7 @@ local function Init()--设置 panel
     end)
 
 
-    local check5= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--使用，数值
+    local check5= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--使用，数值
     check5:SetPoint("TOPLEFT", check, 'BOTTOMLEFT')
     check5.text:SetText((WoWTools_DataMixin.onlyChinese and '数值' or STATUS_TEXT_VALUE)..' 2K')
     check5:SetChecked(Save().useNumber)
@@ -390,7 +390,7 @@ local function Init()--设置 panel
     sliderBit:SetPoint("LEFT", check5.text, 'RIGHT', 6,0)
 
 
-    local barValueText= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--增加,减少,值
+    local barValueText= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--增加,减少,值
     barValueText:SetPoint("TOPLEFT", check5, 'BOTTOMLEFT')
     barValueText.text:SetText(WoWTools_DataMixin.onlyChinese and '增益' or BENEFICIAL)
     barValueText:SetChecked(Save().setMaxMinValue)
@@ -472,7 +472,7 @@ local function Init()--设置 panel
         )
     end)
 
-    local check2= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar
+    local check2= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar
     check2:SetPoint("TOPLEFT", barValueText, 'BOTTOMLEFT',0,-62)
     check2.text:SetText('Bar')
     check2:SetChecked(Save().bar)
@@ -481,7 +481,7 @@ local function Init()--设置 panel
         WoWTools_AttributesMixin:Frame_Init(true)--初始，设置
     end)
 
-    local check3= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    local check3= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar，图片，样式2
     check3:SetPoint("LEFT", check2.text, 'RIGHT', 6, 0)
     check3.text:SetText((WoWTools_DataMixin.onlyChinese and '格式' or FORMATTING).. ' 2')
     check3:SetChecked(Save().barTexture2)
@@ -517,7 +517,7 @@ local function Init()--设置 panel
     barX:SetPoint("TOPLEFT", barWidth.Low, 'BOTTOMLEFT', 0, -10)
 
 
-    local barToLeft= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar 向左
+    local barToLeft= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar 向左
     barToLeft:SetPoint("TOPLEFT", check2, 'BOTTOMLEFT')
     barToLeft.text:SetText(WoWTools_DataMixin.onlyChinese and '向左' or BINDING_NAME_STRAFELEFT)
     barToLeft:SetChecked(Save().barToLeft)
@@ -570,8 +570,8 @@ local function Init()--设置 panel
     slider3:SetPoint("TOPLEFT", slider, 'BOTTOMLEFT', 0,-24)
 
 
-    local checkStrupper= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
-    local checkStrlower= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")--bar，图片，样式2
+    local checkStrupper= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar，图片，样式2
+    local checkStrlower= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})--bar，图片，样式2
     checkStrupper:SetPoint("LEFT", slider3, 'RIGHT')
     checkStrupper.text:SetText('ABC')--大写
     checkStrupper:SetChecked(Save().strupper)
@@ -667,7 +667,7 @@ local function Init()--设置 panel
     end)
 
 
-    local checkHidePet= CreateFrame("CheckButton", nil, panel, "InterfaceOptionsCheckButtonTemplate")
+    local checkHidePet= WoWTools_ButtonMixin:Cbtn(panel, {isCheck=true})
     checkHidePet:SetPoint('BOTTOMLEFT')
     checkHidePet.text:SetText(WoWTools_DataMixin.onlyChinese and '自动隐藏' or  format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, SELF_CAST_AUTO, HIDE))
     checkHidePet:SetChecked(Save().hideInPetBattle)

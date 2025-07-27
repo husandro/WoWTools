@@ -100,20 +100,22 @@ local function Init()
         end
     end)
 
-    local check= CreateFrame('CheckButton', 'WoWToolsHyperLinkTableAttributeDisplayHideCheckBox', btn, 'UICheckButtonTemplate')
-    check:SetPoint('RIGHT', edit, 'LEFT')
-    check:SetChecked(Save().autoHideTableAttributeDisplay)
-    check:HookScript('OnClick', function()
+    
+    
+    local check= WoWTools_ButtonMixin:Cbtn(btn, {
+        name='WoWToolsHyperLinkTableAttributeDisplayHideCheckBox',
+        isCheck=true
+    })
+    function check:settings()
         Save().autoHideTableAttributeDisplay= not Save().autoHideTableAttributeDisplay and true or nil
-    end)
-    check:SetScript('OnLeave', GameTooltip_Hide)
-    check:SetScript('OnEnter', function(self)
-        GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-        GameTooltip:ClearLines()
-        GameTooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HyperLink.addName)
-        GameTooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_DataMixin.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
-        GameTooltip:Show()
-    end)
+    end
+    function check:tooltip(tooltip)
+        tooltip:AddDoubleLine(WoWTools_DataMixin.addName, WoWTools_HyperLink.addName)
+        tooltip:AddDoubleLine('|cff00ff00FST|rACK', WoWTools_DataMixin.onlyChinese and '自动关闭' or format(GARRISON_FOLLOWER_NAME, SELF_CAST_AUTO, CLOSE))
+    end
+    check:SetPoint('RIGHT', edit, 'LEFT', -2, 0)
+    check:SetChecked(Save().autoHideTableAttributeDisplay)
+    
 
     Init=function()
         btn:SetShown(not Save().disabedFrameStackPlus)
