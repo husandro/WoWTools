@@ -68,6 +68,8 @@ end
 
 
 local function Init()
+    --MonthlySupersedeActivitiesButtonMixin
+    --MonthlyActivitiesButtonMixin
     hooksecurefunc(EncounterJournalMonthlyActivitiesFrame.ScrollBox, 'SetScrollTargetOffset', Update)
 
 --任务，提示

@@ -83,7 +83,14 @@ local function Init(GuildButton)
     GuildButton.inviteTexture:SetPoint('TOPLEFT',1,-1)
     GuildButton.inviteTexture:SetAtlas('communities-icon-invitemail')
     GuildButton.inviteTexture:SetSize(12,12)
+    --GuildButton.inviteTexture:Hide()
 
+    --[[GuildMicroButton.inviteTexture= GuildButton:CreateTexture(nil, 'OVERLAY')
+    GuildMicroButton.inviteTexture:SetPoint('TOPLEFT',1,-1)
+    GuildMicroButton.inviteTexture:SetAtlas('communities-icon-invitemail')
+    GuildMicroButton.inviteTexture:SetSize(12,12)]]
+    
+    
     GuildButton.msgTexture= GuildButton:CreateTexture(nil, 'BORDER', nil, 2)
     GuildButton.msgTexture:SetPoint('LEFT',-3,0)
     GuildButton.msgTexture:SetSize(12,12)
@@ -132,6 +139,7 @@ local function Init(GuildButton)
             end
         end
         self.inviteTexture:SetShown(isInviete)
+        --GuildMicroButton.inviteTexture:SetShown(isInviete)
         self.msgTexture:SetShown(isMessage)
     end
 
@@ -207,7 +215,7 @@ local function Init(GuildButton)
     Set_Text(GuildButton)
 
     GuildButton:set_guildinfo_event()
-    GuildButton:set_new_application(Save().guildInfo)--申请者
+    GuildButton:set_new_application(WoWTools_GuildMixin:IsLeaderOrOfficer())--申请者
 
     Init=function()end
 end

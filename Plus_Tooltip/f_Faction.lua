@@ -21,7 +21,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         tooltip:AddDoubleLine(
             (factionID~=info.friendshipID and 'factionID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.factionID..' ' or '')
             ..icon
-            ..(info.texture and '|cffffffff'..info.texture or ''),
+            ..(info.texture and '|cffffffff'..info.texture or ' '),
 
             'friendshipID'..WoWTools_DataMixin.Icon.icon2..'|cffffffff'..info.friendshipID
         )
@@ -35,7 +35,7 @@ function WoWTools_TooltipMixin:Set_Faction(tooltip, factionID)--, frame)
         )
     else
         tooltip:AddDoubleLine(
-            icon..(info.texture or ''),
+            icon..(info.texture or ' '),
 
             'factionID'
             ..WoWTools_DataMixin.Icon.icon2
