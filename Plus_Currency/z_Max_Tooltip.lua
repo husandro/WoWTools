@@ -41,9 +41,12 @@ local function Currency_Max(curID)--已达到资源上限
     end
 
     if num>0 then
-        print(WoWTools_DataMixin.Icon.icon2..WoWTools_CurrencyMixin.addName)
+        print(WoWTools_CurrencyMixin.addName..WoWTools_DataMixin.Icon.icon2)
+        local index=0
         for currencyID, info in pairs(tab) do
+            index= index+1
             print(
+                '   '..index..')',
                 (WoWTools_CurrencyMixin:GetLink(currencyID) or currencyID)
                 ..(info.isMaxWeek and (WoWTools_DataMixin.onlyChinese and '本周' or GUILD_CHALLENGES_THIS_WEEK) or '')
             )

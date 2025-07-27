@@ -15,7 +15,7 @@ local function Init()
 
     else
         print(
-            WoWTools_DataMixin.Icon.icon2..WoWTools_ChallengeMixin.addName,
+            WoWTools_ChallengeMixin.addName..WoWTools_DataMixin.Icon.icon2,
             '|cffff00ff'..(WoWTools_DataMixin.onlyChinese and "返回宏伟宝库，获取你的奖励" or WEEKLY_REWARDS_RETURN_TO_CLAIM)
         )
     end

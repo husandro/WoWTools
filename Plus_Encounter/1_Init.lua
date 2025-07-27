@@ -49,7 +49,6 @@ local function Init_EncounterJournal()--冒险指南界面
     --记录上次选择版本
     hooksecurefunc('EJ_SelectTier', function(tier)
         Save().EncounterJournalTier=tier
-        print('b', tier)
     end)]]
 
     Init_EncounterJournal=function()end
