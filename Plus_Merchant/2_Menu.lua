@@ -181,6 +181,11 @@ local function BuyItem_Menu(_, root)
     --列表，购买
     num=0
     for itemID, numItem in pairs(Save().buyItems[WoWTools_DataMixin.Player.GUID] or {}) do
+        if numItem==true then--上次Bug
+            numItem= 1
+            Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]= 1
+        end
+
         num=num+1
         local itemName= WoWTools_ItemMixin:GetName(itemID)
         sub2=sub:CreateCheckbox(
@@ -188,13 +193,13 @@ local function BuyItem_Menu(_, root)
         function(data)
             return Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]
         end, function(data)
-            Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]=not Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID] and true or nil
+            Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID]=not Save().buyItems[WoWTools_DataMixin.Player.GUID][data.itemID] and data.num or nil
            WoWTools_MerchantMixin:Update_MerchantFrame()
             local btn= _G['WoWTools_BuybackButton']
             if btn then
                 btn:set_text()--回购，数量，提示
             end
-        end, {itemID=itemID})
+        end, {itemID=itemID, num= Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID] or 1})
         WoWTools_SetTooltipMixin:Set_Menu(sub2)
     end
 

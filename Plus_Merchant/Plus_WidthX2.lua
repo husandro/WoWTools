@@ -43,8 +43,8 @@ local function Create_Lable(btn)
     btn.SlotTexture:SetTexture(0)
 
 --物品，名称
-    btn.Name:SetPoint('RIGHT')
-    btn.Name:SetPoint('TOPLEFT', _G[name..'ItemButtonIconTexture'], 'TOPRIGHT', 2, 0)
+    btn.Name:SetPoint('RIGHT', -2,0)
+    btn.Name:SetPoint('TOPLEFT', _G[name..'ItemButtonIconTexture'], 'TOPRIGHT', 2, 6)
     btn.Name:SetPoint('BOTTOM', _G[name..'AltCurrencyFrame'], 'TOP')
 
 
@@ -548,6 +548,9 @@ local function Init_WidthX2()
        WoWTools_MerchantMixin:Update_MerchantFrame()
     end
 
+    --钱 MerchantFrame_UpdateCurrencies()
+    --MerchantMoneyFrame:ClearAllPoints()
+    --MerchantMoneyFrame:SetPoint('BOTTOMLEFT', 3, 3)
 
     Init_WidthX2=function()end
 end

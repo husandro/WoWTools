@@ -5,11 +5,14 @@ end
 
 local function Get_Buy_Num(itemID)
     if itemID then
-        return WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+        local num=WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+        num= num==true and 1 or num
+        return num
     end
 end
 
-local function SaveBuyItem(itemID, num)--当num=nil时，会清除
+local function SaveBuyItem(itemID, num)--当num=nil时，会清除    
+    num= num==true and 1 or num
     WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID][itemID]=num
 end
 
@@ -170,6 +173,7 @@ local function Add_BuyItem(itemID, itemLink)
                 local num= Get_Buy_Num(itemID) or 1
                 if num then
                     edit:SetText(num)
+                    edit:SetFocus()
                 end
             end,
             OnHide= function(self)

@@ -423,7 +423,7 @@ local function Init_IndexText()
 
     hooksecurefunc(BankPanelItemButtonMixin, 'Init', function(btn, bankType, bankTabID, containerSlotID)
         if not btn.indexText then
-            btn.indexText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER'})
+            btn.indexText=WoWTools_LabelMixin:Create(btn, {justifyH='CENTER', layer='BACKGROUND', })
             btn.indexText:SetPoint('CENTER')
         end
         local index= containerSlotID

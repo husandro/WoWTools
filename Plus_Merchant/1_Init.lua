@@ -78,12 +78,20 @@ panel:RegisterEvent("PLAYER_LOGOUT")
 panel:SetScript("OnEvent", function(self, event, arg1)
     if event == "ADDON_LOADED" then
         if arg1== 'WoWTools' then
-            WoWToolsSave['Plus_SellBuy']= WoWToolsSave['Plus_SellBuy'] or P_Save
+            WoWToolsSave['Plus_SellBuy']= Save() or P_Save
 
-            WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID]= WoWToolsSave['Plus_SellBuy'].buyItems[WoWTools_DataMixin.Player.GUID] or {}
-            WoWToolsSave['Plus_SellBuy'].WoWBuyItems= WoWToolsSave['Plus_SellBuy'].WoWBuyItems or {}
+            Save().buyItems= Save().buyItems or {}
+            Save().buyItems[WoWTools_DataMixin.Player.GUID]= Save().buyItems[WoWTools_DataMixin.Player.GUID] or {}
+            Save().WoWBuyItems= Save().WoWBuyItems or {}
 
             WoWTools_MerchantMixin.addName= '|A:SpellIcon-256x256-SellJunk:0:0|a'..(WoWTools_DataMixin.onlyChinese and '商人' or MERCHANT)
+
+            --上次的BUG
+            for itemID, numItem in pairs(Save().buyItems[WoWTools_DataMixin.Player.GUID]) do
+                if type(numItem)~='number' then
+                    Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]= nil
+                end
+            end
 
             --添加控制面板
             WoWTools_PanelMixin:OnlyCheck({

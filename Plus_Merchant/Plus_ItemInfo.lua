@@ -155,15 +155,12 @@ local function Create_Label(btn)
 
 --索引
     btn.IndexLable= WoWTools_LabelMixin:Create(btn, {size=10})
-    --btn.IndexLable:SetPoint('TOPRIGHT', 4, 4)
-    --btn.IndexLable:SetPoint('LEFT', btn.buyItemNum, 'RIGHT', 2,0)
     btn.IndexLable:SetPoint('BOTTOMRIGHT', 2, -2)
     btn.IndexLable:SetAlpha(0.3)
 
 --数量
     btn.buyItemNum=WoWTools_LabelMixin:Create(btn, {size=10})
-    --btn.buyItemNum:SetPoint('BOTTOMRIGHT', -5, -2)
-    btn.buyItemNum:SetPoint('RIGHT', btn.IndexLable, 'LEFT', -2, 0)
+    btn.buyItemNum:SetPoint('BOTTOMRIGHT', btn.IndexLable, 'TOPRIGHT', 0,3)
 
 --属性
     btn.stats=WoWTools_LabelMixin:Create(btn, {size=10, mouse=true})
@@ -221,6 +218,8 @@ local function Set_Item_Info()
 
 --自动购买， 数量
             num=(not Save().notAutoBuy and itemID) and Save().buyItems[WoWTools_DataMixin.Player.GUID][itemID]
+
+
 
             num= num and num..'|T236994:0|t' or ''
 
