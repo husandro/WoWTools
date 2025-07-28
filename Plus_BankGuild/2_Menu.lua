@@ -28,9 +28,9 @@ local function Init_Menu(self, root)
     root:CreateCheckbox(
         WoWTools_DataMixin.onlyChinese and '索引' or 'Index',
     function()
-        return Save().plusIndex
+        return Save().showIndex
     end, function()
-        Save().plusIndex= not Save().plusIndex and true or nil--显示，索引
+        Save().showIndex= not Save().showIndex and true or nil--显示，索引
         WoWTools_GuildBankMixin:Init_Plus()
     end)
 
@@ -62,7 +62,8 @@ local function Init_Menu(self, root)
         end
     end)
     sub:SetTooltip(function(tooltip)
-        tooltip:AddLine(MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '打开/关闭所有的背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
+        tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '打开公会银行时' or format(CLUB_FINDER_LOOKING_FOR_CLASS_SPEC, OPENING, GUILD_BANK))
+        tooltip:AddLine(MicroButtonTooltipText(WoWTools_DataMixin.onlyChinese and '打开所有背包' or BINDING_NAME_OPENALLBAGS, "OPENALLBAGS")
     )
     end)
 
@@ -79,8 +80,9 @@ local function Init_Menu(self, root)
         step=0.1,
         bit='%.1f',
         tooltip=function(tooltip)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE)
-            tooltip:AddLine(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+            tooltip:AddDoubleLine(WoWTools_DataMixin.onlyChinese and '延迟' or LAG_TOLERANCE,
+                (Save().saveItemSeconds or 0.8 )..' '..(WoWTools_DataMixin.onlyChinese and '秒' or LOSS_OF_CONTROL_SECONDS)
+            )
             if WoWTools_DataMixin.onlyChinese then
                 tooltip:AddLine('存放，提取，整理')
             else

@@ -6053,7 +6053,9 @@
         "ArchaeologyFrameCloseButton",
         "ArchaeologyFrameRankBarBorder",
         "ArchaeologyFrameArtifactPageHistoryScrollChild",
-        "ArchaeologyFrameArtifactPageHistoryScroll"
+        "ArchaeologyFrameArtifactPageHistoryScroll",
+        "COMMUNITY_MEMBER_ROLE_NAME_MEMBER",
+        "COMMUNITY_MEMBER_ROLE_NAME_LEADER"
     ],
     "Lua.runtime.version": "Lua 5.1",
     "Lua.runtime.builtin": {
